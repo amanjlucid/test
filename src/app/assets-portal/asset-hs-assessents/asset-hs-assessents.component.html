@@ -1,0 +1,112 @@
+<div class="row" *ngIf="hsData?.length > 0">
+
+
+  <div class="col-1 filterAttrdiv d-it" style="max-width: 12.66667%;">
+    <select (change)="filterAttributes($event.target.value)">
+      <option *ngFor="let filter of hsFilters" [value]="filter.filterName">
+        {{ filter.filterName }}</option>
+
+    </select>
+  </div>
+
+  <div class="col-1">
+    <div class="dropdown" id="nesting-dropdown-demo">
+      <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown"
+        aria-expanded="false">Export</button>
+      <div class="dropdown-menu" x-placement="bottom-start"
+        style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
+
+        <a class="dropdown-item" (click)="exportToExcel(grid,'xlsx')" href="javascript:void(0)">Export Grid</a>
+        <a class="dropdown-item" (click)="exportToExcel(grid,'xlsx','selected')" href="javascript:void(0)">Export
+          Selected</a>
+        <!-- <div class="dropdown-toggle">
+                  <div class="dropdown-item">Export Grid</div>
+                  <div class="dropdown-menu">
+                      <a class="dropdown-item" (click)="exportToExcel(grid,'xlsx')" href="javascript:void(0)">Export Excel</a>
+                      <a class="dropdown-item" (click)="exportToExcel(grid,'csv')" href="javascript:void(0)">Export Csv</a>
+                      <a class="dropdown-item" (click)="exportToExcel(grid,'txt')" href="javascript:void(0)">Export Text</a>
+                      <a class="dropdown-item" (click)="exportToExcel(grid,'html')" href="javascript:void(0)">Export Html</a>
+                  </div>
+                </div>
+               
+               
+                <div class="dropdown-toggle">
+                  <div class="dropdown-item">Export Selected</div>
+                  <div class="dropdown-menu">
+                      <a class="dropdown-item" (click)="exportToExcel(grid,'xlsx','selected')" href="javascript:void(0)">Export Excel</a>
+                      <a class="dropdown-item" (click)="exportToExcel(grid,'csv','selected')" href="javascript:void(0)">Export Csv</a>
+                      <a class="dropdown-item" (click)="exportToExcel(grid,'txt','selected')" href="javascript:void(0)">Export Text</a>
+                      <a class="dropdown-item" (click)="exportToExcel(grid,'html','selected')" href="javascript:void(0)">Export Html</a>
+                  </div>
+                </div> -->
+      </div>
+    </div>
+  </div>
+
+  <div class="col-10 text-right" style="max-width: 79%; flex-basis: 79%;">
+      <button class="btn btn-sm themeButton" [disabled]="resultData == undefined" (click)="openResult()">View</button>
+   </div>
+
+</div>
+
+<div class="row mt-2">
+  <div class="col-md-12">
+    <kendo-grid #grid="kendoGrid" [data]="gridView" [selectable]="{
+        mode: 'multiple'
+      }" [kendoGridSelectBy]="mySelectionKey" [selectedKeys]="mySelection" [groupable]="true"
+      (groupChange)="groupChange($event)" [group]="state.group" [resizable]="true" [skip]="state.skip"
+      [sort]="state.sort" [filter]="state.filter" filterable="menu" [sortable]="{
+            allowUnsort: allowUnsort,
+            mode: multiple ? 'multiple' : 'single'
+            }" (sortChange)="sortChange($event)" (filterChange)="filterChange($event)" [height]="610"
+      (cellClick)="cellClickHandler($event)">
+      <kendo-grid-column field="hascode" title="Definition" width="120" [filterable]="true">
+
+      </kendo-grid-column>
+      <kendo-grid-column field="hasversion" title="Version" width="70" filter="numeric">
+
+      </kendo-grid-column>
+      <kendo-grid-column field="hasassessmentref" title="Assessment Ref" width="180">
+      </kendo-grid-column>
+      <kendo-grid-column field="hasassessmentdate" title="Assessment Date" width="120">
+        <ng-template kendoGridCellTemplate let-dataItem>
+          {{ dataItem.hasassessmentdate }}
+        </ng-template>
+      </kendo-grid-column>
+
+      <kendo-grid-column field="hasassessor" title="Assessor" width="120">
+      </kendo-grid-column>
+      <kendo-grid-column field="hasasource" title="Source" width="140">
+      </kendo-grid-column>
+      <kendo-grid-column field="supcode" title="Project" width="140">
+
+      </kendo-grid-column>
+
+
+      <kendo-grid-excel fileName="{{fileName}}">
+        <!-- <kendo-excelexport-column field="healthAndSafetySurveyYN" title="H&S">
+              </kendo-excelexport-column>
+              <kendo-excelexport-column field="survey_Date" title="Survey Date">
+              </kendo-excelexport-column>
+              <kendo-excelexport-column field="project_Code" title="Characteristics">
+                </kendo-excelexport-column>
+                <kendo-excelexport-column field="project_Name" title="Name">
+                  </kendo-excelexport-column>
+                  <kendo-excelexport-column field="survey_Code" title="Characteristic Value">
+                    </kendo-excelexport-column>
+                    <kendo-excelexport-column field="survey_Version" title="Modified By">
+                      </kendo-excelexport-column>
+                      <kendo-excelexport-column field="batch_Name" title="Modified Date">
+                        </kendo-excelexport-column>
+                        <kendo-excelexport-column field="batch_Asset_Status" title="Modified Date">
+                          </kendo-excelexport-column>
+                          <kendo-excelexport-column field="surveyor" title="Modified Date">
+                            </kendo-excelexport-column> -->
+
+      </kendo-grid-excel>
+
+
+    </kendo-grid>
+
+  </div>
+</div>

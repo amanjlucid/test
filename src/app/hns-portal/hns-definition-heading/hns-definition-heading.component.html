@@ -1,0 +1,122 @@
+<kendo-window title="{{title}}" *ngIf="isOpenDefHeading" (close)="closeDefHeadingForm()" [top]="80" [minWidth]="400"
+  [width]="700" [height]="auto" [minHeight]="250">
+
+  <div class="row detailDiv">
+    <div class="detailHeadingDiv">
+      <!-- <span class="">Definition: {{selectedDefinition?.hascode}} ({{selectedDefinition?.hasversion}})
+        {{selectedDefinition?.hasname}}</span> -->
+        <p>Definition<span class="boldSpan">: {{selectedDefinition?.hascode}} ({{selectedDefinition?.hasversion}})
+          {{selectedDefinition?.hasname}}</span></p>
+        <p>Group<span class="boldSpan">: {{nodeMap?.parentGroup}}</span></p>
+    </div>
+  </div>
+
+
+  <form class="formCl mt-3" [formGroup]="defintionHeadingForm" (ngSubmit)="onSubmit()" autocomplete="off">
+    <div class="row mt-2">
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-md-3">
+            <label class="col-form-label">Heading</label>
+          </div>
+          <div class="col-md-8">
+            <input #firstInp type="text" formControlName="heading" [ngClass]="{ 'is-invalid': submitted && formErrors.heading }"
+              class="form-control">
+            <div *ngIf="submitted && formErrors.heading" class="invalid-feedback">
+              <div *ngIf="formErrors.heading">{{ formErrors.heading }}</div>
+            </div>
+          </div>
+          <div class="col-md-1">
+            <i title="Name of Health and Safety Heading" class="fas fa-info-circle d-block"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-2">
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-md-3">
+            <label class="col-form-label">Status</label>
+          </div>
+
+          <div class="col-md-3">
+            <select formControlName="status" class="form-control">
+              <option value="A">Active</option>
+              <option value="I">Inactive</option>
+            </select>
+          </div>
+
+          <div class="col-md-1">
+            <i title="Active or Inactive indicates whether the Health and Safety Heading is in use."
+              class="fas fa-info-circle d-block"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+
+
+    <div class="changedBy" *ngIf='defGrpFormMode == "change"'>
+      <div class="row mt-2">
+        <div class="col-md-12">
+          <div class="row">
+            <div class="col-md-2">
+              <label class="col-form-label">Created By</label>
+            </div>
+            <div class="col-md-4">
+              <input [readonly]="isReadOnly" type="text" class="form-control" formControlName="createdBy"
+                [ngClass]="{ 'is-invalid': submitted && formErrors.createdBy }">
+            </div>
+
+            <div class="col-md-2">
+              <label class="col-form-label">Modified By</label>
+            </div>
+            <div class="col-md-4">
+              <input [readonly]="isReadOnly" type="text" class="form-control" formControlName="modifiedBy"
+                [ngClass]="{ 'is-invalid': submitted && formErrors.modifiedBy }">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mt-2">
+        <div class="col-md-12">
+          <div class="row">
+            <div class="col-md-2">
+              <label class="col-form-label">Created Date</label>
+            </div>
+            <div class="col-md-4">
+              <input [readonly]="isReadOnly" type="text" class="form-control" formControlName="createdDate"
+                [ngClass]="{ 'is-invalid': submitted && formErrors.createdDate }">
+            </div>
+
+            <div class="col-md-2">
+              <label class="col-form-label">Modified Date</label>
+            </div>
+            <div class="col-md-4">
+              <input [readonly]="isReadOnly" type="text" class="form-control" formControlName="modifiedDate"
+                [ngClass]="{ 'is-invalid': submitted && formErrors.modifiedDate }">
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+
+    <div class="row mt-3">
+      <div class="col-md-12 text-right actionAreaBtn">
+        <button type="button" class="btn btn-sm themeButton" *ngIf="!disableActins && defGrpFormMode =='new' && hnsPermission.indexOf('Create Another Header') != -1" (click)="onSubmit('create')">Create Another</button>
+        <button type="submit" class="btn btn-sm themeButton" [disabled]="disableActins">OK</button>
+        <button type="button" class="btn btn-sm themeButton" (click)="closeDefHeadingForm()">Cancel</button>
+
+      </div>
+    </div>
+
+  </form>
+
+
+</kendo-window>

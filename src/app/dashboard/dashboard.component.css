@@ -1,0 +1,68 @@
+.text-muted a{
+    text-decoration: none;
+    color: #a3a4a6;
+}
+
+.dashboardIcon{
+    height: 80px;
+}
+
+.card-body{padding-top: 1.5rem !important; padding-bottom: 1.5rem !important; padding-left: 0px !important; padding-right: 0px !important;}
+
+h4 { font-family: Raleway; font-size: 16px; font-style: normal; font-variant: normal; font-weight: 600; } 
+
+.eventDiv .eventChartDiv{ display: inline-block !important ; vertical-align: top;}
+
+.pieChartContainer {min-width: 350px; max-width: 600px; height: 400px; margin: 0 auto}
+
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+    img[src$=".svg"] {
+      width: 100%; 
+    }
+  }
+
+
+  #wrapper{
+    padding: 5px;
+    display: grid; 
+    grid-gap: 5px; 
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  [id^=calendar]
+  {
+    /* width: 400px; */
+    border-radius: 6px;
+    background: #fff;
+    border: solid 1px #ddd;
+    max-height: 395px;
+    overflow: hidden;
+  }
+
+  [id^=calendar] + h3{
+    text-align: center;
+  }
+
+  #calTFooter{ display: none !important;}
+  /* #calTbody  .a-date{ padding: 14px 0px 14px 0px !important; } */
+
+  /* #calThead, #calTbody, #calTFooter{ color: black !important;} */
+
+
+  
+  @media only screen and (max-width: 500px){
+    #wrapper{
+      padding: 1em;
+      display: block;
+    }
+    [id^=calendar],
+    [id^=calendar] + h3{
+      width: 100%;
+      max-width: 400px;
+      margin: 1em auto;
+    }
+    [id^=calendar] + h3{
+      display: block;
+      margin-bottom: 2em;
+    }
+  }

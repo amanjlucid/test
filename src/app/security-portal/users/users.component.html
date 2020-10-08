@@ -1,0 +1,253 @@
+<div class="container-fluid flex-grow-1 container-p-y">
+
+  <div class="row">
+    <div class="col-md-8 col-sm-8">
+      <h4 class="font-weight-bold py-3 mb-1">
+        <span class="text-muted font-weight-light">Security /</span> Users
+      </h4>
+    </div>
+    <div class="col-md-4 col-sm-4 actionBtn">
+
+      <div class="btn-group pull-right mt-3">
+        <button id="showFilePanel" (click)="openSearchBar()" class="btn btn-sm themeButton"><i class="fa fa-search"></i>
+        </button>
+        <button (click)="exportData()" class="btn btn-sm btn-outline-secondary themeButton">Export</button>
+        <button (click)="openUserPopup('new')" class="btn btn-sm btn-outline-secondary themeButton">New</button>
+        <!-- <button type="button" (click)="opneUserGroup(selectedUser)"
+          class="btn btn-sm btn-outline-secondary themeButton">Assign
+          Groups</button> -->
+      </div>
+    </div>
+  </div>
+
+
+  <div class="row" style="margin-top:13px;">
+    <div class="table-responsive userTbl" *ngIf="users">
+      <table class="table table-striped table-bordered usersTable">
+        <thead>
+          <tr>
+            <th class="" style="width:3px;"></th>
+            <th>User</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Status</th>
+            <th>Login Allowed</th>
+            <th>Admin</th>
+            <th>Login Type</th>
+            <th>User Type</th>
+            <th>DEA Enabled</th>
+            <th>Contractor Name</th>
+            <!-- <th>Assign Group</th> -->
+          </tr>
+        </thead>
+        <tbody *ngIf="users">
+
+          <tr class="odd gradeX" *ngFor="let user of users" (click)="toggleClass($event,user)"
+            (dblclick)="opneUserGroup(user)">
+            <td>
+              <li class="nav-item dropdown list-unstyled">
+                <i (click)=toggleUserClass($event,user) data-toggle="dropdown" aria-expanded="false"
+                  class="fas fa-bars"></i>
+                <div class="dropdown-menu">
+                  <a class="dropdown-item" (click)="openUserPopup('edit', user)" href="javascript:void(0)">Edit</a>
+                  <a class="dropdown-item" (click)="openConfirmationDialog(user)" href="javascript:void(0)">Delete</a>
+                  <a class="dropdown-item" (click)="opneUserGroup(user)" href="javascript:void(0)">Assign Group</a>
+
+                </div>
+              </li>
+            </td>
+            <td>{{ user.userId }}</td>
+            <td>{{ user.userName }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.status }}</td>
+            <td>{{ user.logAllowed }}</td>
+            <td>{{ user.admin }}</td>
+            <td>{{ user.loginType }}</td>
+            <td>{{ user.userType }}</td>
+            <td>{{ user.deaEnabled }}</td>
+            <td>{{ user.contractor }}</td>
+            <!-- <td><button type="button" (click)="opneUserGroup(user)"
+              class="btn btn-sm btn-outline-secondary themeButton">Assign
+              Groups</button></td> -->
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+
+
+  <div class="example-wrapper">
+    <kendo-window [(width)]="windowWidth" [(top)]="windowTop" [minWidth]="250" [minHeight]="350"
+      title="Show Security Groups for User {{selectedUser.userName}}" *ngIf="windowOpened" (close)="close()">
+      <div class="col-md-12 col-sm-12 col-xs-12 user_sec_grp">
+        <div style="margin: 0px">
+
+          <div class="">
+
+            <label class="form-check form-check-inline">
+              <input (change)="includeOnlyGroup($event)" class="form-check-input" type="checkbox">
+              <span class="form-check-label">
+                Included Only
+              </span>
+            </label>
+          </div>
+        </div>
+
+        <div class="table-responsive mt-2">
+          <table *ngIf="userGroups" class="table table-striped table-bordered innerTable1">
+            <thead>
+              <tr>
+                <th style="width:1px;"></th>
+                <th style="width:80px;">Group</th>
+                <th>Description</th>
+                <th>Created By</th>
+                <th style="display:none;">CD</th>
+                <th>Created Date</th>
+
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="odd gradeX" *ngFor="let userGroup of userGroups" (click)="toggleGroupClass($event, userGroup)">
+                <td><input (change)="assigneGroup($event, userGroup.userId, userGroup.groupId)"
+                    [attr.checked]="userGroup.isSelected ? 'checked' : null" type="checkbox"></td>
+                <td>{{ userGroup?.groupName }}</td>
+                <td>{{ userGroup?.description }}</td>
+                <td>{{ userGroup?.createdBy }}</td>
+                <td style="display:none;">{{ userGroup?.createdDate | dateFormat : 'YYYY-MM-DD' }}</td>
+                <td>{{ userGroup?.createdDate | dateFormat : 'DD-MMM-YYYY' }}</td>
+
+              </tr>
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </kendo-window>
+
+    <app-user-form [userFormType]="userFormType" [userFormWindow]="userFormWindow" [selectedUser]="selectedUser"
+      *ngIf="userFormWindow" (closeUserFormWin)="closeUserFormWin($event)">
+    </app-user-form>
+  </div>
+
+</div>
+
+<div class="search-container dismiss">
+
+  <h5 style="color:white" class="p-4 m-0 line-height-1 font-weight-bolder bg-light theme-settings-header"> Filters
+    <a href="javascript:void(0)" (click)="closeSearchBar()" class="theme-settings-close-btn font-weight-light px-4 py-2"
+      style="color:#ffffff;" tabindex="-1">×</a> </h5>
+
+  <div class="searchDiv">
+    <form id="userSearch">
+      <div class="form-group">
+        <label class="form-label form-label-sm">User</label>
+        <input (keyup)="searchInUserTable($event)" name="user" data-col="1" type="text"
+          class="form-control form-control-sm" placeholder="Search By User">
+      </div>
+
+
+      <div class="form-group">
+        <label class="form-label form-label-sm">Name</label>
+        <input (keyup)="searchInUserTable($event)" name="name" data-col="2" type="text"
+          class="form-control form-control-sm" placeholder="Search By Name">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label form-label-sm">Email</label>
+        <input (keyup)="searchInUserTable($event)" name="email" data-col="3" type="text"
+          class="form-control form-control-sm" placeholder="Search By Email">
+      </div>
+
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label class="form-label form-label-sm">Status</label>
+          <select data-col="4" class="form-control form-control-sm" name="status"
+            (change)="searchInUserTable($event, 'select')">
+            <option value="">All</option>
+            <option value="Active">Active</option>
+            <option value="Inactive">Inactive</option>
+          </select>
+
+        </div>
+
+        <div class="form-group col-md-6">
+          <label class="form-label form-label-sm">Login Allowed?</label>
+          <select data-col="5" class="form-control form-control-sm" name="status"
+            (change)="searchInUserTable($event, 'select')">
+            <option value="">All</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+            <option value="Change Password">Change Password</option>
+          </select>
+
+        </div>
+      </div>
+
+
+      <div class="form-group">
+        <label class="form-label form-label-sm">Admin</label>
+        <select data-col="6" class="form-control form-control-sm" name="status"
+          (change)="searchInUserTable($event, 'select')">
+          <option value="">All</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+
+      </div>
+
+      <div class="form-group">
+        <label class="form-label form-label-sm">Login Type</label>
+        <!-- <input (keyup)="searchInUserTable($event)" name="email" data-col="7" type="text"
+          class="form-control form-control-sm" placeholder="Search By Email"> -->
+          
+          <select data-col="7" class="form-control form-control-sm"
+          (change)="searchInUserTable($event, 'select')">
+          <option value="">All</option>
+          <option value="Standard">Standard</option>
+          <option value="Active Directory">Active Directory</option>
+        </select>
+      </div>
+
+
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label class="form-label form-label-sm">User Type</label>
+          <select data-col="8" class="form-control form-control-sm"
+            (change)="searchInUserTable($event, 'select')">
+            <option value="">All</option>
+            <option value="Internal">Internal</option>
+            <option value="External">External</option>
+          </select>
+
+        </div>
+
+        <div class="form-group col-md-6">
+          <label class="form-label form-label-sm">DEA Enabled</label>
+          <select data-col="9" class="form-control form-control-sm" 
+            (change)="searchInUserTable($event, 'select')">
+            <option value="">All</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+          </select>
+
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label form-label-sm">Contractor Name</label>
+        <input (keyup)="searchInUserTable($event)"  data-col="10" type="text"
+          class="form-control form-control-sm" placeholder="Search By Contractor">
+      </div>
+
+
+      <div class="form-group">
+        <button id="" (click)="clearUserSearchForm()" class="btn btn-sm themeButton">Clear
+        </button>
+      </div>
+    </form>
+
+  </div>
+</div>

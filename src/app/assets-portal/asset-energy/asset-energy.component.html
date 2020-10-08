@@ -1,0 +1,250 @@
+<div class="row">
+    
+      <div class="col-md-2">
+          <div class="dropdown" id="nesting-dropdown-demo">
+              <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Export</button>
+              <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
+                 
+                        <div class="dropdown-toggle">
+                            <div class="dropdown-item">Top Grid</div>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" (click)="exportToExcelTop(gridUpper,'xlsx')" href="javascript:void(0)">Export Grid </a>
+                                
+                            </div>
+                          </div>
+    
+                          <div class="dropdown-toggle">
+                              <div class="dropdown-item">Main Grid</div>
+                              <div class="dropdown-menu">
+                                  <a class="dropdown-item" (click)="exportToExcel(grid,'xlsx')" href="javascript:void(0)">Export Grid</a>
+                                  <a class="dropdown-item" (click)="exportToExcel(grid,'xlsx','selected')" href="javascript:void(0)">Export Selected</a>
+                                  
+                              </div>
+                            </div>
+               
+                <!-- <div class="dropdown-toggle">
+                  <div class="dropdown-item">Export</div>
+                  <div class="dropdown-menu">
+                      <div class="dropdown-toggle">
+                        <div class="dropdown-item">Top Grid</div>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" (click)="exportToExcelTop(gridUpper,'excel')" href="javascript:void(0)">Export to excel energy rating </a>
+                            <a class="dropdown-item" (click)="exportToExcelTop(gridUpper,'csv')" href="javascript:void(0)">Export to csv energy rating</a>
+                            <a class="dropdown-item" (click)="exportToExcelTop(gridUpper,'txt')" href="javascript:void(0)">Export to text energy rating</a>
+                            <a class="dropdown-item" (click)="exportToExcelTop(gridUpper,'html')" href="javascript:void(0)">Export to html energy rating</a>
+                        </div>
+                      </div>
+
+                      <div class="dropdown-toggle">
+                          <div class="dropdown-item">Main Grid</div>
+                          <div class="dropdown-menu">
+                              <a class="dropdown-item" (click)="exportToExcel(grid,'excel')" href="javascript:void(0)">Export to excel energy answer</a>
+                              <a class="dropdown-item" (click)="exportToExcel(grid,'csv')" href="javascript:void(0)">Export to csv energy answer</a>
+                              <a class="dropdown-item" (click)="exportToExcel(grid,'txt')" href="javascript:void(0)">Export to text energy answer</a>
+                              <a class="dropdown-item" (click)="exportToExcel(grid,'html')" href="javascript:void(0)">Export to html energy answer</a>
+                          </div>
+                        </div>
+
+                    </div>
+
+                </div>
+               
+                
+                <div class="dropdown-toggle">
+                    <div class="dropdown-item">Export Selected</div>
+                    <div class="dropdown-menu">
+                        
+                        <div class="dropdown-toggle">
+                            <div class="dropdown-item">Main Grid</div>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" (click)="exportToExcel(grid,'xlsx','selected')" href="javascript:void(0)">Export to excel energy answer</a>
+                                <a class="dropdown-item" (click)="exportToExcel(grid,'csv','selected')" href="javascript:void(0)">Export to csv energy answer</a>
+                                <a class="dropdown-item" (click)="exportToExcel(grid,'txt','selected')" href="javascript:void(0)">Export to text energy answer</a>
+                                <a class="dropdown-item" (click)="exportToExcel(grid,'html','selected')" href="javascript:void(0)">Export to html energy answer</a>
+                            </div>
+                          </div>
+  
+                      </div>
+  
+                  </div> -->
+              </div>
+            </div>
+        </div>
+  </div>
+
+
+<div class="row mt-2">
+  <div class="col-md-12 energyGrid">
+    <kendo-grid [data]="energyTableData" [resizable]="true"  #gridUpper="kendoGrid" >
+      <kendo-grid-column field="eeaextractlevel" title="Rating Status" width="130">
+          <ng-template kendoGridCellTemplate let-dataItem>
+              <span [style.color]="dataItem.eeastatus == 'Error' ? '#800000' : dataItem.rdsapStatus == 'Matched' ? 'green' : 'blue'" >
+                {{ dataItem.eeaextractlevel }}
+              </span>
+            </ng-template>
+      </kendo-grid-column>
+      <kendo-grid-column field="analysis_Date" title="Analysis Date" width="130">
+          <ng-template kendoGridCellTemplate let-dataItem>
+              <span [style.color]="dataItem.eeastatus == 'Error' ? '#800000' : dataItem.rdsapStatus == 'Matched' ? 'green' : 'blue'" >
+                {{ dataItem.analysis_Date }}
+              </span>
+            </ng-template>
+      </kendo-grid-column>
+      <kendo-grid-column field="sprsap" title="SAP" width="90">
+          <ng-template kendoGridCellTemplate let-dataItem>
+              <span [style.color]="dataItem.eeastatus == 'Error' ? '#800000' : dataItem.rdsapStatus == 'Matched' ? 'green' : 'blue'" >
+                {{ dataItem.sprsap }}
+              </span>
+            </ng-template>
+      </kendo-grid-column>
+      <kendo-grid-column field="sprsapband" title="SAP Band" width="110">
+          <ng-template kendoGridCellTemplate let-dataItem>
+              <span [style.color]="dataItem.eeastatus == 'Error' ? '#800000' : dataItem.rdsapStatus == 'Matched' ? 'green' : 'blue'" >
+                {{ dataItem.sprsapband }}
+              </span>
+            </ng-template>
+      </kendo-grid-column>
+      <kendo-grid-column field="sprei" title="EI" width="80">
+          <ng-template kendoGridCellTemplate let-dataItem>
+              <span [style.color]="dataItem.eeastatus == 'Error' ? '#800000' : dataItem.rdsapStatus == 'Matched' ? 'green' : 'blue'" >
+                {{ dataItem.sprei }}
+              </span>
+            </ng-template>
+      </kendo-grid-column>
+      <kendo-grid-column field="spreiband" title="EI Band" width="100">
+          <ng-template kendoGridCellTemplate let-dataItem>
+              <span [style.color]="dataItem.eeastatus == 'Error' ? '#800000' : dataItem.rdsapStatus == 'Matched' ? 'green' : 'blue'" >
+                {{ dataItem.spreiband }}
+              </span>
+            </ng-template>
+      </kendo-grid-column>
+      <kendo-grid-column field="sprcO2" title="CO2" width="120">
+          <ng-template kendoGridCellTemplate let-dataItem>
+              <span [style.color]="dataItem.eeastatus == 'Error' ? '#800000' : dataItem.rdsapStatus == 'Matched' ? 'green' : 'blue'" >
+                {{ dataItem.sprcO2 }}
+              </span>
+            </ng-template>
+      </kendo-grid-column>
+      <kendo-grid-column field="sprenergyuse" title="Energy Use" width="120">
+          <ng-template kendoGridCellTemplate let-dataItem>
+              <span [style.color]="dataItem.eeastatus == 'Error' ? '#800000' : dataItem.rdsapStatus == 'Matched' ? 'green' : 'blue'" >
+                {{ dataItem.sprenergyuse }}
+              </span>
+            </ng-template>
+      </kendo-grid-column>
+      <kendo-grid-column field="sprlightcost" title="Lighting" width="110">
+          <ng-template kendoGridCellTemplate let-dataItem>
+              <span [style.color]="dataItem.eeastatus == 'Error' ? '#800000' : dataItem.rdsapStatus == 'Matched' ? 'green' : 'blue'" >
+                {{'£'}}{{ helper.moneyFormat(dataItem.sprlightcost)  }}
+              </span>
+            </ng-template>
+      </kendo-grid-column>
+      <kendo-grid-column field="sprspaceheat" title="Space Heating " width="120"> 
+          <ng-template kendoGridCellTemplate let-dataItem>
+              <span [style.color]="dataItem.eeastatus == 'Error' ? '#800000' : dataItem.rdsapStatus == 'Matched' ? 'green' : 'blue'" >
+                {{'£'}}{{ helper.moneyFormat(dataItem.sprspaceheat) }}
+              </span>
+            </ng-template>
+      </kendo-grid-column>
+      <kendo-grid-column field="sprwaterheat" title="Water Heating" width="120">
+          <ng-template kendoGridCellTemplate let-dataItem>
+              <span [style.color]="dataItem.eeastatus == 'Error' ? '#800000' : dataItem.rdsapStatus == 'Matched' ? 'green' : 'blue'" >
+                {{'£'}}{{ helper.moneyFormat(dataItem.sprwaterheat) }}
+              </span>
+            </ng-template>
+      </kendo-grid-column>
+      <kendo-grid-column field="sprsecspaceheat" title="Secondary Heating" width="120">
+          <ng-template kendoGridCellTemplate let-dataItem>
+              <span [style.color]="dataItem.eeastatus == 'Error' ? '#800000' : dataItem.rdsapStatus == 'Matched' ? 'green' : 'blue'" >
+                {{'£'}}{{ helper.moneyFormat(dataItem.sprsecspaceheat) }}
+              </span>
+            </ng-template>
+      </kendo-grid-column>
+
+      <kendo-grid-column field="sprspacecool" title="Space Cooling Costs" width="120">
+          <ng-template kendoGridCellTemplate let-dataItem>
+              <span [style.color]="dataItem.eeastatus == 'Error' ? '#800000' : dataItem.rdsapStatus == 'Matched' ? 'green' : 'blue'" >
+                {{'£'}}{{ helper.moneyFormat(dataItem.sprspacecool) }}
+              </span>
+            </ng-template>
+      </kendo-grid-column>
+      <kendo-grid-column field="sprpumpsfans" title="Pump/Fans" width="120">
+        <ng-template kendoGridCellTemplate let-dataItem>
+            <span [style.color]="dataItem.eeastatus == 'Error' ? '#800000' : dataItem.rdsapStatus == 'Matched' ? 'green' : 'blue'" >
+              {{'£'}}{{ helper.moneyFormat(dataItem.sprpumpsfans) }}
+            </span>
+          </ng-template>
+      </kendo-grid-column>
+      <kendo-grid-column field="sprtotalcost" title="Total" width="100">
+          <ng-template kendoGridCellTemplate let-dataItem>
+              <span [style.color]="dataItem.eeastatus == 'Error' ? '#800000' : dataItem.rdsapStatus == 'Matched' ? 'green' : 'blue'" >
+                {{'£'}}{{ helper.moneyFormat(dataItem.sprtotalcost) }}
+              </span>
+            </ng-template>
+      </kendo-grid-column>
+      <kendo-grid-excel fileName="{{fileNameTop}}"></kendo-grid-excel>
+
+    </kendo-grid>
+
+  </div>
+</div>
+
+<div class="row mt-2">
+  <div class="col-md-12">
+    <kendo-grid 
+    #grid="kendoGrid" 
+    [data]="gridView" 
+    [selectable]="{
+      mode: 'multiple'
+    }" 
+    [kendoGridSelectBy]="mySelectionKey"
+    [selectedKeys]="mySelection"
+    [sortable]="{
+            allowUnsort: allowUnsort,
+            mode: multiple ? 'multiple' : 'single'
+            }" 
+    [sort]="state.sort" 
+    [group]="state.group" 
+    [skip]="state.skip"  
+    [height]="520">
+      <!-- <ng-template kendoGridToolbarTemplate>
+                  <button type="button" kendoGridExcelCommand icon="file-excel">Export to Excel</button>
+              </ng-template> -->
+
+      <kendo-grid-column field="edcname"  title="Energy Field" [width]="200" [filterable]="false" [sortable]="false">
+          <ng-template kendoGridGroupHeaderTemplate let-group let-field="edcname" let-value="value">
+              {{value}}
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem>
+              <span [style.color]="dataItem.rdsapStatus == 'Missing' ? 'red' : dataItem.rdsapStatus == 'Matched' ? 'green' : 'blue'" >
+                {{ dataItem.edqtext }}
+              </span>
+          </ng-template>
+      </kendo-grid-column>
+      <!-- <kendo-grid-column field="edqtext" title="Energy Field" [width]="300">
+          <ng-template kendoGridCellTemplate let-dataItem>
+              <span [style.color]="dataItem.rdsapStatus == 'Missing' ? 'red' : dataItem.rdsapStatus == 'Matched' ? 'green' : 'blue'" >
+                {{ dataItem.edqtext }}
+              </span>
+            </ng-template>
+      </kendo-grid-column> -->
+      <kendo-grid-column field="rdsapStatus" title="Mapping" [width]="140" [filterable]="false" [sortable]="false">
+          <ng-template kendoGridCellTemplate let-dataItem>
+              <span [style.color]="dataItem.rdsapStatus == 'Missing' ? 'red' : dataItem.rdsapStatus == 'Matched' ? 'green' : 'blue'" >
+                {{ dataItem.rdsapStatus }}
+              </span>
+            </ng-template>
+      </kendo-grid-column>
+      <kendo-grid-column field="answer" title="Value" [width]="140" [filterable]="false" [sortable]="false">
+          <ng-template kendoGridCellTemplate let-dataItem>
+              <span [style.color]="dataItem.rdsapStatus == 'Missing' ? 'red' : dataItem.rdsapStatus == 'Matched' ? 'green' : 'blue'" >
+                {{ dataItem.answer }}
+              </span>
+            </ng-template>
+      </kendo-grid-column>
+      <kendo-grid-excel fileName="{{fileName}}"></kendo-grid-excel>
+    </kendo-grid>
+
+
+  </div>
+</div>

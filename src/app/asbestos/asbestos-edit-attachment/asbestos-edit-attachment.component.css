@@ -1,0 +1,11 @@
+.k-window-wrapper{
+    position: fixed !important;
+}
+
+.editAttachmentActionArea button{
+    margin-left:4px; 
+}
+
+.invalid-feedback{
+    display: block;
+}

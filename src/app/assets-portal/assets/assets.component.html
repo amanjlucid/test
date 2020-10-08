@@ -1,0 +1,724 @@
+<div class="container-fluid flex-grow-1 container-p-y">
+  <div class="row">
+    <div class="col-md-2 col-sm-3">
+      <h4 class="font-weight-bold py-3 mb-1">
+        <!-- <span class="text-muted font-weight-light">Assets/</span> Assets -->
+        Assets
+      </h4>
+    </div>
+
+
+
+    <div class="col-md-9 col-sm-9">
+      <div class="row mt-3 pull-right btnGrp">
+        <div class="dropdown" id="nesting-dropdown-demo">
+          <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown"
+            aria-expanded="false">Export</button>
+          <div class="dropdown-menu" x-placement="bottom-start"
+            style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
+            <a class="dropdown-item" (click)="exportToExcel('xlsx')" href="javascript:void(0)">Export Grid</a>
+            <a class="dropdown-item" (click)="exportToExcel('xlsx' , 'selected')" href="javascript:void(0)">Export
+              Selected</a>
+
+          </div>
+        </div>
+
+        <button id="showFilePanel" (click)="openSearchBar()" class="btn btn-sm themeButton"><i class="fa fa-search"></i>
+        </button>
+
+      </div>
+    </div>
+
+    <div class="col-md-1 col-sm-12"></div>
+
+  </div>
+
+
+
+  <div class="row mt-2 hiearchyDiv">
+    <label class="col-sm-12 col-md-1">Hierarchy</label>
+    <div class="col-sm-12 col-md-6 pl-0 hiearchyTree">
+      <ul id="myUL">
+        <ng-template #recursiveList let-printHiearchy>
+          <li *ngFor="let item of printHiearchy">
+            <span><span style="color:red;">({{ item?.assetName }})</span> {{ item?.assetId }} -
+              {{ item?.address }}</span>
+            <ul *ngIf="item.childLayers.length > 0">
+              <ng-container *ngTemplateOutlet="recursiveList; context:{ $implicit: item.childLayers }"></ng-container>
+            </ul>
+          </li>
+        </ng-template>
+        <ng-container *ngTemplateOutlet="recursiveList; context:{ $implicit: printHiearchy }"></ng-container>
+
+      </ul>
+    </div>
+
+    <div class="hiearchyBtn col-md-2 p-0">
+      <button type="button" (click)="openHiearchyWindow()" class="btn btn-sm">...</button>
+      <button type="button" (click)="clearPropSec()" class="btn btn-sm">Clear</button>
+    </div>
+
+    <label class="col-sm-6 col-md-1 text-right assetTypeLabel">Asset Type:</label>
+    <div class="col-md-2 col-sm-6 typeDiv">
+      <select class="assetSelect" (change)="filterAssetType($event.target.value)">
+        <option selected value="">All Types</option>
+        <option *ngFor="let assetType of assetTypes" [value]="assetType">{{assetType}}</option>
+      </select>
+    </div>
+
+    <!-- <div class="col-md-1 col-sm-6 exportDiv">
+      <div class="dropdown" id="nesting-dropdown-demo">
+        <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown"
+          aria-expanded="false">Export</button>
+        <div class="dropdown-menu" x-placement="bottom-start"
+          style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
+          <a class="dropdown-item" (click)="exportToExcel('xlsx')" href="javascript:void(0)">Export Excel</a>
+          <a class="dropdown-item" (click)="exportToExcel('csv')" href="javascript:void(0)">Export Csv</a>
+          <a class="dropdown-item" (click)="exportToExcel('txt')" href="javascript:void(0)">Export Text</a>
+          <a class="dropdown-item" (click)="exportToExcel('html')" href="javascript:void(0)">Export Html</a>
+        </div>
+      </div>
+    </div> -->
+  </div>
+
+  <div class="row">
+    <label class="col-sm-12 col-md-1">Asset ID:</label>
+    <input type="text" [(ngModel)]="assetFilterId" class="col-sm-12 col-md-2 assetInpBox"
+      (keydown)="keyDownFunction($event)">
+
+    <label class="col-sm-12 col-md addr_search">Address Search:</label>
+    <input type="text" [(ngModel)]="assetFilterAddress" class="col-sm-12 col-md-6 assetInpBox"
+      (keydown)="keyDownFunction($event)">
+    <div class="col-sm-12 col-md-1 goBtnDiv">
+      <button class="btn btn-sm" (click)="filterAssetGrid(false)">Search</button>
+    </div>
+  </div>
+
+
+  <div class="row" style="margin-top:13px;">
+    <!-- table-responsive -->
+    <div class="assetGrid">
+      <!-- [ngStyle]="{'width': getTableWidth()}" -->
+      <table id="assetTbl" class="table table-striped table-bordered assetTbl"
+        *ngIf="attributeLists.length > 0; else no_record">
+        <thead class="fixedHeader">
+          <tr>
+            <!-- [ngStyle]="{'width': asbestosColumn ? '3%' : '2%' }" -->
+            <th class="smallCol"></th>
+            <!-- <th><i class="fab fa-adversal d-block"></i></th>
+            <th><i class="fas fa-book d-block"></i></th>
+            <th><i class="fas fa-h-square d-block"></i></th>
+            <th><i class="fas fa-heartbeat d-block"></i></th>
+            <th><i class="ion ion-md-hammer d-block"></i></th>
+            <th><i class="fas fa-sticky-note d-block"></i></th> -->
+            <th [ngClass]="{
+              'midCol': asbestosColumn || serviceColumn,
+              'midBigCol': !asbestosColumn && !serviceColumn
+            }" style="cursor: pointer;" (click)="orderBy('astname')">Type
+              <i class="lnr lnr-arrow-up sortIcon" aria-hidden="true"
+                *ngIf="assetList.OrderBy === 'astname' && assetList.OrderType === 'Ascending'"></i>
+              <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
+                *ngIf="assetList.OrderBy === 'astname' && assetList.OrderType === 'Descending'"></i>
+            </th>
+            <th [ngClass]="{
+              'midCol': asbestosColumn || serviceColumn,
+              'midBigCol': !asbestosColumn && !serviceColumn
+            }" style="cursor: pointer;" (click)="orderBy('ASSID')">Asset ID
+              <i class="lnr lnr-arrow-up sortIcon" aria-hidden="true"
+                *ngIf="assetList.OrderBy === 'ASSID' && assetList.OrderType === 'Ascending'"></i>
+              <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
+                *ngIf="assetList.OrderBy === 'ASSID' && assetList.OrderType === 'Descending'"></i>
+
+            </th>
+            <th [ngClass]="{
+              'midAddressCol': asbestosColumn || serviceColumn,
+              'addressCol': !asbestosColumn && !serviceColumn
+            }" style="cursor: pointer;" (click)="orderBy('ASTCONCATADDRESS')">Address
+              <i class="lnr lnr-arrow-up sortIcon" aria-hidden="true"
+                *ngIf="assetList.OrderBy === 'ASTCONCATADDRESS' && assetList.OrderType === 'Ascending'"></i>
+              <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
+                *ngIf="assetList.OrderBy === 'ASTCONCATADDRESS' && assetList.OrderType === 'Descending'"></i>
+            </th>
+            <th [ngClass]="{
+              'midCol': asbestosColumn || serviceColumn,
+              'midBigCol': !asbestosColumn && !serviceColumn
+            }" style="cursor: pointer;" (click)="orderBy('ASSPOSTCODE')">Postcode
+              <i class="lnr lnr-arrow-up sortIcon" aria-hidden="true"
+                *ngIf="assetList.OrderBy === 'ASSPOSTCODE' && assetList.OrderType === 'Ascending'"></i>
+              <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
+                *ngIf="assetList.OrderBy === 'ASSPOSTCODE' && assetList.OrderType === 'Descending'"></i>
+            </th>
+
+            <th [ngClass]="{
+              'midCol': asbestosColumn || serviceColumn,
+              'midBigCol': !asbestosColumn && !serviceColumn
+            }" style="cursor: pointer;" (click)="orderBy('ASSSTATUS')">Status
+              <i class="lnr lnr-arrow-up sortIcon" aria-hidden="true"
+                *ngIf="assetList.OrderBy === 'ASSSTATUS' && assetList.OrderType === 'Ascending'"></i>
+              <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
+                *ngIf="assetList.OrderBy === 'ASSSTATUS' && assetList.OrderType === 'Descending'"></i>
+            </th>
+
+            <th class="midCol" style="cursor: pointer;" *ngIf="asbestosColumn">No Asbestos
+              <i class="lnr lnr-arrow-up sortIcon" aria-hidden="true"
+                *ngIf="assetList.OrderBy === 'asbestosCount' && assetList.OrderType === 'Ascending'"></i>
+              <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
+                *ngIf="assetList.OrderBy === 'asbestosCount' && assetList.OrderType === 'Descending'"></i>
+            </th>
+
+            <th class="midCol" style="cursor: pointer;" *ngIf="asbestosColumn">Presumed
+              <i class="lnr lnr-arrow-up sortIcon" aria-hidden="true"
+                *ngIf="assetList.OrderBy === 'asbestosCount' && assetList.OrderType === 'Ascending'"></i>
+              <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
+                *ngIf="assetList.OrderBy === 'asbestosCount' && assetList.OrderType === 'Descending'"></i>
+            </th>
+
+            <th class="bigCol" style="cursor: pointer;" *ngIf="asbestosColumn">Strongly Presumed
+              <i class="lnr lnr-arrow-up sortIcon" aria-hidden="true"
+                *ngIf="assetList.OrderBy === 'asbestosCount' && assetList.OrderType === 'Ascending'"></i>
+              <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
+                *ngIf="assetList.OrderBy === 'asbestosCount' && assetList.OrderType === 'Descending'"></i>
+            </th>
+            <th class="midCol" style="cursor: pointer;;" *ngIf="asbestosColumn">Identified
+              <i class="lnr lnr-arrow-up sortIcon" aria-hidden="true"
+                *ngIf="assetList.OrderBy === 'asbestosCount' && assetList.OrderType === 'Ascending'"></i>
+              <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
+                *ngIf="assetList.OrderBy === 'asbestosCount' && assetList.OrderType === 'Descending'"></i>
+            </th>
+            <th class="bigCol" style="cursor: pointer;" *ngIf="asbestosColumn">Highest Material Risk
+              <i class="lnr lnr-arrow-up sortIcon" aria-hidden="true"
+                *ngIf="assetList.OrderBy === 'asbestosCount' && assetList.OrderType === 'Ascending'"></i>
+              <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
+                *ngIf="assetList.OrderBy === 'asbestosCount' && assetList.OrderType === 'Descending'"></i>
+            </th>
+            <th class="bigCol" style="cursor: pointer;" *ngIf="asbestosColumn">Highest Priority Risk
+              <i class="lnr lnr-arrow-up sortIcon" aria-hidden="true"
+                *ngIf="assetList.OrderBy === 'asbestosCount' && assetList.OrderType === 'Ascending'"></i>
+              <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
+                *ngIf="assetList.OrderBy === 'asbestosCount' && assetList.OrderType === 'Descending'"></i>
+            </th>
+            <th class="bigCol" style="cursor: pointer;" *ngIf="asbestosColumn">Highest Total Risk
+              <i class="lnr lnr-arrow-up sortIcon" aria-hidden="true"
+                *ngIf="assetList.OrderBy === 'asbestosCount' && assetList.OrderType === 'Ascending'"></i>
+              <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
+                *ngIf="assetList.OrderBy === 'asbestosCount' && assetList.OrderType === 'Descending'"></i>
+            </th>
+            <th class="midCol" style="cursor: pointer;" *ngIf="asbestosColumn">HSE Notify
+              <i class="lnr lnr-arrow-up sortIcon" aria-hidden="true"
+                *ngIf="assetList.OrderBy === 'asbestosCount' && assetList.OrderType === 'Ascending'"></i>
+              <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
+                *ngIf="assetList.OrderBy === 'asbestosCount' && assetList.OrderType === 'Descending'"></i>
+            </th>
+
+            <!-- Service column -->
+            <th class="midCol" style="cursor: pointer;" *ngIf="serviceColumn">Primary Jobs
+              <!-- <i class="lnr lnr-arrow-up sortIcon" aria-hidden="true"
+                *ngIf="assetList.OrderBy === 'asbestosCount' && assetList.OrderType === 'Ascending'"></i>
+              <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
+                *ngIf="assetList.OrderBy === 'asbestosCount' && assetList.OrderType === 'Descending'"></i> -->
+            </th>
+
+            <th class="midCol" style="cursor: pointer;" *ngIf="serviceColumn">Complete Jobs
+              <!-- <i class="lnr lnr-arrow-up sortIcon" aria-hidden="true"
+                *ngIf="assetList.OrderBy === 'asbestosCount' && assetList.OrderType === 'Ascending'"></i>
+              <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
+                *ngIf="assetList.OrderBy === 'asbestosCount' && assetList.OrderType === 'Descending'"></i> -->
+            </th>
+
+            <th class="midCol" style="cursor: pointer;" *ngIf="serviceColumn">Cancelled Jobs
+              <!-- <i class="lnr lnr-arrow-up sortIcon" aria-hidden="true"
+                *ngIf="assetList.OrderBy === 'asbestosCount' && assetList.OrderType === 'Ascending'"></i>
+              <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
+                *ngIf="assetList.OrderBy === 'asbestosCount' && assetList.OrderType === 'Descending'"></i> -->
+            </th>
+
+            <th class="midCol" style="cursor: pointer;" *ngIf="serviceColumn">Overdue Jobs
+              <!-- <i class="lnr lnr-arrow-up sortIcon" aria-hidden="true"
+                *ngIf="assetList.OrderBy === 'asbestosCount' && assetList.OrderType === 'Ascending'"></i>
+              <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
+                *ngIf="assetList.OrderBy === 'asbestosCount' && assetList.OrderType === 'Descending'"></i> -->
+            </th>
+
+            <th class="bigCol" style="cursor: pointer;" *ngIf="serviceColumn">Past Deadline Jobs
+              <!-- <i class="lnr lnr-arrow-up sortIcon" aria-hidden="true"
+                *ngIf="assetList.OrderBy === 'asbestosCount' && assetList.OrderType === 'Ascending'"></i>
+              <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
+                *ngIf="assetList.OrderBy === 'asbestosCount' && assetList.OrderType === 'Descending'"></i> -->
+            </th>
+
+            <th class="bigCol" style="cursor: pointer;" *ngIf="assetList.SimCompliance != ''">Servicing
+              Compliance
+              <!-- <i class="lnr lnr-arrow-up sortIcon" aria-hidden="true"
+                *ngIf="assetList.OrderBy === 'asbestosCount' && assetList.OrderType === 'Ascending'"></i>
+              <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
+                *ngIf="assetList.OrderBy === 'asbestosCount' && assetList.OrderType === 'Descending'"></i> -->
+            </th>
+            <!-- <th>Assign Group</th> -->
+          </tr>
+        </thead>
+        <tbody class="fixTbody" (scroll)="onScroll($event)"
+          [ngStyle]="{'overflow-y': attributeLists.length == 0 ? 'hidden' : 'scroll' }">
+
+          <tr class="odd gradeX" *ngFor="let attributeList of attributeLists let i = index; trackBy:trackByFunction"
+            (click)="toggleClass($event,attributeList)">
+            <td class="smallCol">
+              <i style="color: #dfdbdb;" *ngIf="tabsData != undefined && tabsData == '' " class="fas fa-bars"></i>
+
+              <li class="nav-item dropdown list-unstyled" *ngIf="tabsData != undefined && tabsData != '' ">
+                <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
+                <div class="dropdown-menu">
+                  <a class="dropdown-item" *ngIf="checkTabPermission('Attributes')"
+                    (click)="openTabWindow('attributes',attributeList)" href="javascript:void(0)">Attributes</a>
+                  <a class="dropdown-item" *ngIf="checkTabPermission('Characteristics')"
+                    (click)="openTabWindow('characteristics',attributeList)"
+                    href="javascript:void(0)">Characteristics</a>
+                  <a class="dropdown-item"
+                    *ngIf="checkTabPermission('Asbestos') && checkAsbestosPortalAccess() && checkGroupPermission('Asbestos Portal Access')"
+                    (click)="openTabWindow('asbestos',attributeList)" href="javascript:void(0)">Asbestos</a>
+                  <a class="dropdown-item" *ngIf="checkTabPermission('Energy')"
+                    (click)="openTabWindow('energy',attributeList)" href="javascript:void(0)">Energy</a>
+                  <a class="dropdown-item" *ngIf="checkTabPermission('Surveys')"
+                    (click)="openTabWindow('surveys',attributeList)" href="javascript:void(0)">Surveys</a>
+                  <a class="dropdown-item" *ngIf="checkTabPermission('Health and Safety')"
+                    (click)="openTabWindow('assessments',attributeList)" href="javascript:void(0)">Health & Safety</a>
+                  <a class="dropdown-item"
+                    *ngIf="checkTabPermission('Servicing') && checkGroupPermission('Servicing Portal Access')"
+                    (click)="openTabWindow('servicing',attributeList)" href="javascript:void(0)">Servicing</a>
+                  <a class="dropdown-item" *ngIf="checkTabPermission('HHSRS')"
+                    (click)="openTabWindow('hhrs',attributeList)" href="javascript:void(0)">HHSRS</a>
+                  <a class="dropdown-item" *ngIf="checkTabPermission('Works Management')"
+                    (click)="openTabWindow('workmanagement',attributeList)" href="javascript:void(0)">Work
+                    Management</a>
+                  <a class="dropdown-item" *ngIf="checkTabPermission('Quality')"
+                    (click)="openTabWindow('quality',attributeList)" href="javascript:void(0)">Quality Standard</a>
+                  <a class="dropdown-item" *ngIf="checkTabPermission('Notepad')"
+                    (click)="openTabWindow('notepad',attributeList)" href="javascript:void(0)">Notepad</a>
+                  <!-- <a class="dropdown-item" (click)="openConfirmationDialog(user)" href="javascript:void(0)">Delete</a>
+                          <a class="dropdown-item" (click)="opneUserGroup(user)" href="javascript:void(0)">Assign Group</a> -->
+
+                </div>
+              </li>
+            </td>
+            <!-- <td><i class="fab fa-adversal d-block" *ngIf="attributeList.colour != ''"
+                [ngStyle]="{'color':attributeList.colour}"></i></td>
+            <td>
+              <i *ngIf="attributeList.epcStatus != '' && attributeList.epcStatus=='New'"
+                class="fas fa-book d-block"></i>
+              <i *ngIf="attributeList.epcStatus != '' && attributeList.epcStatus=='Lodged EPC'"
+                class="fas fa-book-open d-block"></i>
+            </td>
+            <td><i *ngIf="attributeList.outstandingHHSRS" class="fas fa-h-square d-block"></i></td>
+            <td><i *ngIf="attributeList.outstandingHAS" class="fas fa-heartbeat d-block"></i></td>
+            <td><i *ngIf="attributeList.outstandingWork" class="ion ion-md-hammer d-block"></i></td>
+            <td><i *ngIf="attributeList.notepadCount" class="fas fa-sticky-note d-block"></i></td> -->
+            <td [ngClass]="{
+              'midCol': asbestosColumn || serviceColumn,
+              'midBigCol': !asbestosColumn && !serviceColumn
+            }">{{attributeList.type}}</td>
+            <td [ngClass]="{
+              'midCol': asbestosColumn || serviceColumn,
+              'midBigCol': !asbestosColumn && !serviceColumn
+            }">{{attributeList.assetId}}</td>
+            <td [ngClass]="{
+              'midAddressCol': asbestosColumn || serviceColumn,
+              'addressCol': !asbestosColumn && !serviceColumn
+            }">{{attributeList.address}}
+              <div class="iconDiv">
+                <!-- <i class="fab fa-adversal d-block" *ngIf="attributeList.colour != ''"
+                  [ngStyle]="{'color':attributeList.colour}"></i> -->
+                <!-- <i *ngIf="attributeList.epcStatus != '' && attributeList.epcStatus=='New'"
+                  class="fas fa-book d-block"></i> -->
+                <!-- <i *ngIf="attributeList.epcStatus != '' && attributeList.epcStatus=='Lodged EPC'"
+                  class="fas fa-book-open d-block"></i> -->
+                <!-- <i *ngIf="attributeList.outstandingHHSRS" class="fas fa-h-square d-block"></i>
+                <i *ngIf="attributeList.outstandingHAS" class="fas fa-heartbeat d-block"></i> -->
+                <!-- <i *ngIf="attributeList.outstandingWork" class="ion ion-md-hammer d-block"></i> -->
+                <!-- <i *ngIf="attributeList.notepadCount" class="fas fa-sticky-note d-block"></i> -->
+
+                <img title="Medium/High Asbestos" *ngIf="attributeList.colour != '' && attributeList.colour == 'Red'"
+                  class="table-icon-wr" src="assets/img/icons/asbestos-red.png" />
+                <img title="No Asbestos" *ngIf="attributeList.colour != '' && attributeList.colour == 'Black'"
+                  class="table-icon-wr" src="assets/img/icons/asbestos-black.png" />
+                <img title="Very Low/Low Asbestos" *ngIf="attributeList.colour != '' && attributeList.colour == 'Green'"
+                  class="table-icon-wr" src="assets/img/icons/asbestos-green.png" />
+
+                <img title="New EPC" *ngIf="attributeList.epcStatus != '' && attributeList.epcStatus=='New'"
+                  class="table-icon-wr" src="assets/img/icons/epc-new.png" />
+                <img title="Lodged EPC" *ngIf="attributeList.epcStatus != '' && attributeList.epcStatus=='Lodged EPC'"
+                  class="table-icon-wr" src="assets/img/icons/epc-logged.png" />
+                <img title="HHSRS" *ngIf="attributeList.outstandingHHSRS" style="width: 19px; margin: 3px" class=""
+                  src="assets/img/icons/HHSRS.png" />
+                <img title="Health & Safety" *ngIf="attributeList.outstandingHAS"
+                  style="width: 19px; height: 22px; margin: 3px;" class="" src="assets/img/icons/healthSafety.png" />
+                <!-- <i title="HHSRS" *ngIf="attributeList.outstandingHHSRS" style="font-size: 16px; vertical-align: middle;" class="fas fa-h-square d-block"></i> -->
+                <!-- <i title="Health & Safety" *ngIf="attributeList.outstandingHAS" style="font-size: 16px; vertical-align: middle;" class="fas fa-heartbeat d-block"></i> -->
+                <!-- <img *ngIf="attributeList.outstandingWork" class="table-icon" src="assets/img/icons/works-management.png" /> -->
+                <!-- <img *ngIf="attributeList.outstandingWork" class="table-icon" src="assets/img/icons/works-management.png" /> -->
+                <img title="Work Management" *ngIf="attributeList.outstandingWork" class="table-icon"
+                  src="assets/img/icons/works-management.png" />
+                <img title="Notepad" *ngIf="attributeList.notepadCount" class="table-icon-wr"
+                  src="assets/img/icons/attach.png" />
+              </div>
+            </td>
+            <td [ngClass]="{
+              'midCol': asbestosColumn || serviceColumn,
+              'midBigCol': !asbestosColumn && !serviceColumn
+            }">{{attributeList.postCode}}</td>
+
+            <!-- <td>{{attributeList.status == 'A' ? 'Active' : 'InActive'}}</td> -->
+            <td [ngClass]="{
+              'midCol': asbestosColumn || serviceColumn,
+              'midBigCol': !asbestosColumn && !serviceColumn
+            }">{{ checkAssetStatus(attributeList.status, i) }}</td>
+            <td *ngIf="asbestosColumn" class="midCol">
+              {{attributeList.asbestosCount != 0 ? attributeList.asbestosCount : ''}}</td>
+            <td class="midCol" *ngIf="asbestosColumn">{{attributeList.presumed != 0 ? attributeList.presumed : ''}}
+            </td>
+            <td class="bigCol" *ngIf="asbestosColumn">
+              {{attributeList.stronglypresumed != 0 ? attributeList.stronglypresumed : ''}}</td>
+            <td class="midCol" *ngIf="asbestosColumn">
+              {{attributeList.identified != 0 ? attributeList.identified : ''}}</td>
+            <td class="bigCol" *ngIf="asbestosColumn">{{attributeList.highestMaterialRisk }}</td>
+            <td class="bigCol" *ngIf="asbestosColumn">{{attributeList.highestPriorityRisk }}</td>
+            <td class="bigCol" *ngIf="asbestosColumn">{{attributeList.highestTotalRisk }}</td>
+            <td class="midCol" *ngIf="asbestosColumn">
+              {{attributeList.hsenotifiable == 'Y' ? 'Notifiable' : attributeList.hsenotifiable == 'N' ? 'Not Notifiable' : attributeList.hsenotifiable }}
+            </td>
+
+            <!-- Service column -->
+            <td class="midCol" *ngIf="serviceColumn">{{attributeList?.primaryJobs }}</td>
+            <td class="midCol" *ngIf="serviceColumn">{{attributeList?.completedJobs }}</td>
+            <td class="midCol" *ngIf="serviceColumn">{{attributeList?.cancelledJobs }}</td>
+            <td class="midCol" *ngIf="serviceColumn">{{attributeList?.overdueJobs }}</td>
+            <td class="bigCol" *ngIf="serviceColumn">{{attributeList?.pastDeadline }}</td>
+            <td class="midBigCol" *ngIf="assetList.SimCompliance != ''">{{attributeList?.compliance }}
+            </td>
+
+          </tr>
+        </tbody>
+
+      </table>
+
+      <!-- If table is empty -->
+      <ng-template #no_record>
+        <table id="assetTbl" class="table table-striped table-bordered assetTbl">
+          <thead class="fixedHeader">
+            <tr>
+              <th class="smallCol"></th>
+              <th [ngClass]="{
+                'midCol': asbestosColumn || serviceColumn,
+                'midBigCol': !asbestosColumn && !serviceColumn
+              }" style="cursor: pointer;" (click)="orderBy('astname')">Type
+
+              </th>
+              <th [ngClass]="{
+                'midCol': asbestosColumn || serviceColumn,
+                'midBigCol': !asbestosColumn && !serviceColumn
+              }" style="cursor: pointer;" (click)="orderBy('ASSID')">Asset ID
+
+
+              </th>
+              <th [ngClass]="{
+                'midAddressCol': asbestosColumn || serviceColumn,
+                'addressCol': !asbestosColumn && !serviceColumn
+              }" style="cursor: pointer;" (click)="orderBy('ASTCONCATADDRESS')">Address
+
+              </th>
+              <th [ngClass]="{
+                'midCol': asbestosColumn || serviceColumn,
+                'midBigCol': !asbestosColumn && !serviceColumn
+              }" style="cursor: pointer;" (click)="orderBy('ASSPOSTCODE')">Postcode
+
+              </th>
+
+              <th [ngClass]="{
+                'midCol': asbestosColumn || serviceColumn,
+                'midBigCol': !asbestosColumn && !serviceColumn
+              }" style="cursor: pointer;" (click)="orderBy('ASSSTATUS')">Status
+
+              </th>
+
+              <th class="midCol" style="cursor: pointer;" *ngIf="asbestosColumn">No Asbestos </th>
+
+              <th class="midCol" style="cursor: pointer;" *ngIf="asbestosColumn">Presumed </th>
+
+              <th class="bigCol" style="cursor: pointer;" *ngIf="asbestosColumn">Strongly Presumed </th>
+              <th class="midCol" style="cursor: pointer;;" *ngIf="asbestosColumn">Identified </th>
+              <th class="bigCol" style="cursor: pointer;" *ngIf="asbestosColumn">Highest Material Risk </th>
+              <th class="bigCol" style="cursor: pointer;" *ngIf="asbestosColumn">Highest Priority Risk </th>
+              <th class="bigCol" style="cursor: pointer;" *ngIf="asbestosColumn">Highest Total Risk </th>
+              <th class="midCol" style="cursor: pointer;" *ngIf="asbestosColumn">HSE Notify </th>
+
+              <!-- Service column -->
+              <th class="midCol" style="cursor: pointer;" *ngIf="serviceColumn">Primary Jobs </th>
+
+              <th class="midCol" style="cursor: pointer;" *ngIf="serviceColumn">Complete Jobs </th>
+
+              <th class="midCol" style="cursor: pointer;" *ngIf="serviceColumn">Cancelled Jobs </th>
+
+              <th class="midCol" style="cursor: pointer;" *ngIf="serviceColumn">Overdue Jobs </th>
+
+              <th class="bigCol" style="cursor: pointer;" *ngIf="serviceColumn">Past Deadline Jobs </th>
+
+              <th class="bigCol" style="cursor: pointer;" *ngIf="assetList.SimCompliance != '' ">Servicing
+                Compliance </th>
+
+            </tr>
+          </thead>
+          <tbody style="overflow-y:hidden;">
+            <tr>
+              <td style="background:#f8f8f8; border: none;">
+                No records available.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </ng-template>
+
+    </div>
+    <div class="col-md-12">
+      <span *ngIf="totalAssetCount >= 0" class="assetCount">Total rows {{totalAssetCount}}</span>
+    </div>
+  </div>
+
+  <div class="portalwBlurtab"></div>
+
+</div>
+
+
+
+<div class="example-wrapper">
+  <app-tab-window [selectedAsset]="selectedAsset" [assetId]="assetId" [tabWindow]="tabWindow" [tabName]="tabName"
+    *ngIf="tabWindow" (closeWindow)="closeTabWindow($event)"></app-tab-window>
+
+</div>
+
+
+
+<!-- window for add new hiearchy starts -->
+<kendo-window [height]="640" [width]="700" title="Select Hierarchy..." *ngIf="hiearchyWindow"
+  (close)="closeHiearchyWindow()">
+  <div class="row hiearchyDiv">
+    <div class="col-md-12">
+      <div class="form-group">
+        <select class="form-control" id="sel1" (change)="getHiearchyTree()" [(ngModel)]="selectedHiearchyType">
+          <option *ngFor="let hiearchyTypeList of hiearchyTypeLists" [ngValue]="hiearchyTypeList.hierarchyTypeCode">
+            {{hiearchyTypeList.hierarchyTypeName}}</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="col-md-12">
+      <ul class="tree" *ngIf="hierarchyLevels">
+        <ng-template #recursiveList let-hierarchyLevels>
+          <li *ngFor="let item of hierarchyLevels" class="{{item?.assetId}}">
+            <!-- <input *ngIf="item.childLayers.length > 0" type="checkbox" id="{{item?.assetId}}" /> -->
+
+            <!-- <label  [class.tree_label]="item.childLayers.length > 0" for="{{item?.assetId}}">({{ item?.assetName }}) {{ item?.assetId }} - {{ item?.address }}</label> -->
+
+            <ng-container *ngIf="item.childLayers.length > 0; then someContent else otherContent"></ng-container>
+            <ng-template #someContent>
+              <input type="checkbox" [checked]="visitedHierarchy[item?.assetId] != undefined" id="{{item?.assetId}}"
+                class="chkBox" />
+              <label
+                [className]="selectedhierarchyLevel != undefined ? ( selectedhierarchyLevel.assetId == item.assetId ? 'tree_label selected' : 'tree_label') : 'tree_label'"
+                (click)="selectHiearchy($event, item)" for="{{item?.assetId}}"><span
+                  style="color:red;">({{ item?.assetName }})</span>
+                {{ item?.assetId }} - {{ item?.address }}</label>
+            </ng-template>
+            <ng-template #otherContent>
+              <label (click)="selectHiearchy($event, item)"> <span
+                  [className]="selectedhierarchyLevel != undefined ? ( selectedhierarchyLevel.assetId == item.assetId ? 'tree_label selected' : 'tree_label') : 'tree_label'"><span
+                    style="color:red;">({{ item?.assetName }})</span> {{ item?.assetId }} -
+                  {{ item?.address }}</span></label>
+            </ng-template>
+
+            <ul *ngIf="item.childLayers.length > 0">
+              <ng-container *ngTemplateOutlet="recursiveList; context:{ $implicit: item.childLayers }"></ng-container>
+            </ul>
+          </li>
+        </ng-template>
+        <ng-container *ngTemplateOutlet="recursiveList; context:{ $implicit: hierarchyLevels }"></ng-container>
+      </ul>
+
+
+      <div class="pull-right footerButton footerSec">
+        <button (click)="closeHiearchyWindow()" class="btn btn-sm">Cancel</button>
+        <button class="btn btn-sm btn-default themeButton" (click)="setHiearchyValues()">Ok</button>
+
+      </div>
+
+
+    </div>
+
+  </div>
+
+</kendo-window>
+<!-- window for add new hiearchy ends -->
+
+
+<!-- Search bar -->
+<div class="search-container dismiss">
+
+  <h5 style="color:white" class="p-4 m-0 line-height-1 font-weight-bolder bg-light theme-settings-header"> Filters
+    <a href="javascript:void(0)" (click)="closeSearchBar()" class="theme-settings-close-btn font-weight-light px-4 py-2"
+      style="color:#ffffff;" tabindex="-1">×</a> </h5>
+
+  <div class="searchDiv">
+    <form id="assetSearch">
+      <div class="filtersection">
+        <span class="filterHead">Asset</span>
+        <div class="form-group mt-3">
+          <label class="form-label form-label-sm">Postcode</label>
+          <input (keyup)="filterAssetTable($event.target.value, 'PostCode')" name="postcode" data-col="2" type="text"
+            class="form-control form-control-sm" placeholder="Search By Postcode">
+        </div>
+
+
+        <div class="form-group">
+          <label class="form-label form-label-sm">Status</label>
+          <select data-col="9" class="form-control form-control-sm"
+            (change)="filterAssetTable($event.target.value, 'AssetStatus')">
+            <option [selected]="assetList.AssetStatus == ''" value="">All</option>
+            <option selected [selected]="assetList.AssetStatus == 'A'" value="A">Active</option>
+            <option [selected]="assetList.AssetStatus == 'I'" value="I">Inactive</option>
+          </select>
+
+        </div>
+      </div>
+
+      <div class="filtersection"
+        *ngIf="checkTabPermission('Asbestos') && checkAsbestosPortalAccess() && checkGroupPermission('Asbestos Portal Access')">
+        <span class="filterHead">Asbestos</span>
+
+        <div class="form-group mt-3">
+          <label class="form-label form-label-sm">Asbestos View</label>
+          <label class="switcher switcher-secondary osFilterLabel">
+            <input type="checkbox" value="{{asbestosColumn}}"
+              (change)="filterAssetTable($event.target.value, 'Asbestos')" class="switcher-input">
+            <span class="switcher-indicator asbestosColumnSwitch">
+              <span class="switcher-yes">
+                <span class="ion ion-md-checkmark"></span>
+              </span>
+              <span class="switcher-no">
+                <span class="ion ion-md-close"></span>
+              </span>
+            </span>
+            <!-- <span class="switcher-label">Management Actions</span> -->
+          </label>
+        </div>
+
+
+        <div class="form-group">
+          <label class="form-label form-label-sm">Asbestos Status</label>
+          <select data-col="9" class="form-control form-control-sm"
+            (change)="filterAssetTable($event.target.value, 'AsbestosStatus')">
+            <option value="">Select Asbestos Status</option>
+            <option value="All">All</option>
+            <option value="High">High</option>
+            <option value="Low">Low</option>
+            <option value="None">None</option>
+          </select>
+
+        </div>
+
+
+        <div class="form-group">
+          <label class="form-label form-label-sm">Outstanding Request</label>
+          <label class="switcher switcher-secondary osFilterLabel">
+            <input type="checkbox" value="{{authOs}}" (change)="filterAssetTable($event.target.value, 'os')"
+              class="switcher-input">
+            <span class="switcher-indicator osFilterSwitch">
+              <span class="switcher-yes">
+                <span class="ion ion-md-checkmark"></span>
+              </span>
+              <span class="switcher-no">
+                <span class="ion ion-md-close"></span>
+              </span>
+            </span>
+            <!-- <span class="switcher-label">Management Actions</span> -->
+          </label>
+        </div>
+      </div>
+
+
+      <div class="filtersection"
+        *ngIf="checkTabPermission('Servicing') && checkGroupPermission('Servicing Portal Access')">
+        <span class="filterHead">Servicing</span>
+
+        <div class="form-group mt-3">
+          <label class="form-label form-label-sm">Service View</label>
+          <label class="switcher switcher-secondary filterLabel">
+            <input type="checkbox" [checked]="serviceColumn" value="{{serviceColumn}}"
+              (change)="filterAssetTable($event.target.value, 'Service')" class="switcher-input">
+            <span class="switcher-indicator colSwitch">
+              <span class="switcher-yes">
+                <span class="ion ion-md-checkmark"></span>
+              </span>
+              <span class="switcher-no">
+                <span class="ion ion-md-close"></span>
+              </span>
+            </span>
+            <!-- <span class="switcher-label">Management Actions</span> -->
+          </label>
+        </div>
+
+
+        <div class="form-group">
+          <label class="form-label form-label-sm">Service Type</label>
+          <select name="serviceType" [(ngModel)]="assetList.Setcode" class="form-control form-control-sm"
+            (change)="filterAssetTable($event.target.value, 'Service Type')">
+            <option *ngFor="let serviceType of serviceTypes" [selected]="serviceType.key == assetList.Setcode"
+              [ngValue]="serviceType.key">{{serviceType.value}}
+            </option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label form-label-sm">Servicing Compliance</label>
+          <select name="serviceCompliance" [(ngModel)]="assetList.SimCompliance" class="form-control form-control-sm"
+            (change)="filterAssetTable($event.target.value, 'Service Compliance')">
+            <option *ngFor="let stV of serviceTypes" [selected]="stV.key == assetList.SimCompliance" [ngValue]="stV.key">{{stV.value}}
+            </option>
+          </select>
+        </div>
+
+        <div class="" *ngIf="assetFilterObj != undefined">
+          <div class="form-group">
+            <label class="form-label form-label-sm">Contractor</label>
+            <input type="text" class="form-control form-control-sm readonlyCl" value="{{assetFilterObj?.contractor}}"
+              readonly>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label form-label-sm">Contract</label>
+            <input type="text" class="form-control form-control-sm readonlyCl" value="{{assetFilterObj?.contract}}"
+              readonly>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label form-label-sm">Service Type</label>
+            <input type="text" class="form-control form-control-sm readonlyCl" value="{{assetFilterObj?.serviceType}}"
+              readonly>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label form-label-sm">Service Stage</label>
+            <input type="text" class="form-control form-control-sm readonlyCl" value="{{assetFilterObj?.serviceStage}}"
+              readonly>
+          </div>
+        </div>
+
+      </div>
+
+
+      <div class="filtersection">
+        <div class="form-group">
+          <button id="" (click)="clearAssetTable()" class="btn btn-sm themeButton">Clear
+          </button>
+        </div>
+      </div>
+    </form>
+
+  </div>
+</div>

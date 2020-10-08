@@ -1,0 +1,11 @@
+.k-window-wrapper {
+    position: fixed !important;
+}
+
+.surveyTypeActonBtn button{
+    margin-left: 5px;
+}
+
+.surveyTypeActonBtn {
+    text-align: right;
+}

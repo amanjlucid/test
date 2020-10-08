@@ -1,0 +1,160 @@
+<div class="layout-content">
+
+  <!-- Content -->
+  <div class="container-fluid flex-grow-1 container-p-y">
+
+    <h4 class="font-weight-bold py-3 mb-4">
+      <span class="text-muted font-weight-light">Health and Safety Settings</span>
+    </h4>
+
+    <div class="card mb-4">
+      <!-- <h6 class="card-header">
+        Change Password
+      </h6> -->
+      <div class="card-body">
+        <form [formGroup]="settingsForm" (ngSubmit)="onSubmit()" autocomplete="off">
+          <div class="row">
+
+            <div class="col-md-12">
+              <div class="form-group">
+                <label class="form-label">Assessment Document Upload Location</label>
+                <input type="text" class="form-control" formControlName="hsdoclocn"
+                  placeholder="Assessment Document Upload Location"
+                  [ngClass]="{ 'is-invalid': submitted && formErrors.hsdoclocn }" autocomplete="off">
+                <div *ngIf="submitted && formErrors.hsdoclocn" class="invalid-feedback">
+                  <div *ngIf="formErrors.hsdoclocn">{{ formErrors.hsdoclocn }}</div>
+                </div>
+              </div>
+            </div>
+
+
+
+
+            <div class="col-md-12">
+              <div class="form-group">
+                <label class="form-label">Assessment Image Upload Location</label>
+                <input type="text" class="form-control" formControlName="imagelocal"
+                  placeholder="Assessment Image Upload Location"
+                  [ngClass]="{ 'is-invalid': submitted && formErrors.imagelocal }" autocomplete="off">
+                <div *ngIf="submitted && formErrors.imagelocal" class="invalid-feedback">
+                  <div *ngIf="formErrors.imagelocal">{{ formErrors.imagelocal }}</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-3">
+              <div class="form-group">
+                <label class="form-label">Assessment Report Footer Image</label>
+                <button class="btn btn-sm themeButton uploadBtn" type="button" (click)="openUploadImagePopup()">Upload</button>
+                <!-- <input (change)="onFileChange($event)" type="file" class="form-control" formControlName="image"
+                  [ngClass]="{ 'is-invalid': submitted && formErrors.image }" autocomplete="off">
+                <div *ngIf="submitted && formErrors.image" class="invalid-feedback">
+                  <div *ngIf="formErrors.image">{{ formErrors.image }}</div>
+                </div> -->
+              </div>
+            </div>
+
+            <div class="col-md-9">
+              <div class="form-group">
+                <!-- <button type="button" class="btn btn-sm themeButton" (click)="viewHnsReportImages()">View Images</button> -->
+                <img class="imgCl" [src]="getImg(hnsSettingData.propertyLogoImage)" *ngIf="hnsSettingData">
+              </div>
+            </div>
+
+            <div class="col-md-6 mt-2">
+              <div class="form-group">
+                <label class="switcher switcher-secondary">
+                  <input type="checkbox" class="switcher-input" formControlName="hsdownrsvd">
+                  <span class="switcher-indicator">
+                    <span class="switcher-yes">
+                      <span class="ion ion-md-checkmark"></span>
+                    </span>
+                    <span class="switcher-no">
+                      <span class="ion ion-md-close"></span>
+                    </span>
+                  </span>
+                  <span class="switcher-label">Download Resolved Issues To Survey Manager</span>
+                </label>
+                <div *ngIf="submitted && formErrors.hsdownrsvd" class="invalid-feedback">
+                  <div *ngIf="formErrors.hsdownrsvd">{{ formErrors.hsdownrsvd }}</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6 mt-2">
+              <div class="form-group">
+                <label class="switcher switcher-secondary">
+                  <input type="checkbox" class="switcher-input" formControlName="hsphotodnl">
+                  <span class="switcher-indicator">
+                    <span class="switcher-yes">
+                      <span class="ion ion-md-checkmark"></span>
+                    </span>
+                    <span class="switcher-no">
+                      <span class="ion ion-md-close"></span>
+                    </span>
+                  </span>
+                  <span class="switcher-label">Download Photos To Survey Manager</span>
+                </label>
+                <div *ngIf="submitted && formErrors.hsdownrsvd" class="invalid-feedback">
+                  <div *ngIf="formErrors.hsdownrsvd">{{ formErrors.hsdownrsvd }}</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="switcher switcher-secondary">
+                  <input type="checkbox" class="switcher-input" formControlName="hideqcode">
+                  <span class="switcher-indicator">
+                    <span class="switcher-yes">
+                      <span class="ion ion-md-checkmark"></span>
+                    </span>
+                    <span class="switcher-no">
+                      <span class="ion ion-md-close"></span>
+                    </span>
+                  </span>
+                  <span class="switcher-label">Hide Question Codes on Reports</span>
+                </label>
+                <div *ngIf="submitted && formErrors.hsdownrsvd" class="invalid-feedback">
+                  <div *ngIf="formErrors.hsdownrsvd">{{ formErrors.hsdownrsvd }}</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- <div class="col-md-6">
+              <div class="form-group">
+                <label class="switcher switcher-secondary">
+                  <input type="checkbox" class="switcher-input" formControlName="hasdelete">
+                  <span class="switcher-indicator">
+                    <span class="switcher-yes">
+                      <span class="ion ion-md-checkmark"></span>
+                    </span>
+                    <span class="switcher-no">
+                      <span class="ion ion-md-close"></span>
+                    </span>
+                  </span>
+                  <span class="switcher-label">Allow Assessment Deletion</span>
+                </label>
+                <div *ngIf="submitted && formErrors.hsdownrsvd" class="invalid-feedback">
+                  <div *ngIf="formErrors.hsdownrsvd">{{ formErrors.hsdownrsvd }}</div>
+                </div>
+              </div>
+            </div> -->
+
+
+          </div>
+          <button class="btn btn-default themeButton">Submit</button>
+        </form>
+      </div>
+    </div>
+
+
+
+  </div>
+
+
+</div>
+
+<div class="hnsSettingOverlay"></div>
+<app-hns-report-images *ngIf="showReportImages" [showReportImages]="showReportImages" [uploadFooterImageLocation]="uploadFooterImageLocation" (uploadedSuccessfull)="uploadedSuccessfull($event)"
+  (closeReportImages)="closeReportImages($event)"></app-hns-report-images>

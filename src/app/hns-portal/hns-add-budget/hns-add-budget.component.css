@@ -1,0 +1,25 @@
+.k-window-wrapper {
+    position: fixed !important;
+}
+
+.actionArea{
+    text-align: right;
+}
+
+.actionArea button{
+    margin-left: 5px;
+}
+
+.wrapdiv{
+    display: inline-flex;
+    width: 100%;
+}
+
+.fa-info-circle{
+    margin-left: 10px;
+    margin-top: 9px;
+}
+
+.invalid-feedback{
+    display: block;
+}

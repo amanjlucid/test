@@ -1,0 +1,12 @@
+.k-window-wrapper {
+    position: fixed !important;
+}
+
+.actionAreaBtn button {
+    margin-left: 5px;
+}
+
+.searchField{
+    height: 30px;
+    min-height: 30px !important;
+}

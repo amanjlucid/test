@@ -1,0 +1,220 @@
+
+/* group home page side upper button */
+/* .actionBtn button{
+    margin-top: 12px;
+    font-size: .75rem;
+    border-radius: .25rem;
+    user-select: none;
+    margin-left:5px;
+    
+} */
+
+.actionBtn button { margin-left: 5px;}
+
+.newBtn{
+    background-color: #e4287e;
+    border-color: #e4287e;
+    color: #fff;
+}
+
+.reportBtn{
+    background-color: #fff;
+    color: black;
+    border-top-right-radius:2px !important;
+    border-bottom-right-radius:2px !important;
+}
+
+
+/* table css */
+thead th{
+    font-weight: 600;
+   
+}
+
+.groupPopup{width: 800px;}
+
+.groupPopup .groupDiv{
+    background-color: #fff;
+    padding: 17px;
+    font-size: 13px;
+    font-weight: 700
+}
+
+.grpTable th:not(:first-child){
+    min-width: 100px !important;
+}
+
+.grpTable th:nth-child(3){
+    min-width: 305px !important;
+}
+
+.grpTable th:nth-child(2){
+    min-width: 125px !important;
+}
+
+.grpTable th:nth-last-child(-n+4){
+    min-width: 148px !important;
+}
+
+.underline{
+    border-bottom: 1px solid #e7e5e6;
+    width: 100%;
+    display: block;
+}
+
+.groupSetting label{
+    color: #a59f9f;
+}
+
+.formBtn{
+    margin-top:-22px;
+}
+
+.formBtn button{
+    margin-left:5px; 
+}
+
+/* group css ends here */
+
+
+.k-form input, .k-form {
+    display: inline !important;
+}
+
+/* 
+.selectionDiv{
+    float: left;
+} */
+
+.incChek{
+    position: absolute;
+   
+    margin-left: 270px;
+    margin-top: 2px
+}
+
+.incChek input[type='checkbox']{
+    margin-top: 5px;
+    float: left;
+}
+
+
+.card-body{ padding: 0px !important;}
+
+
+.buttonDiv button{
+    margin: 0px 5px 5px 5px;
+    width: 63px;
+}
+
+.dropdown-item.disabled {
+    pointer-events: none;
+    cursor: default;
+  }
+
+.groupPopup .form-control{color: black;}  
+
+@media screen and (max-width: 769px) {
+  .groupPopup{width: 100%;}
+}
+
+
+/* Ipad device  */
+  @media only screen
+  and (min-device-width : 768px) 
+  and (max-device-width : 1024px)  { 
+    /* .groupPopup{
+        width: 600px;
+        height: 620px;
+    } */
+ 
+  }
+
+
+
+  @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+    #DataTables_Table_0_paginate .row:last-child {
+        position: absolute;
+        width: 83%;
+        margin-top: 20px;
+    }
+   }
+
+   /* side bar css */
+
+  
+.notification-container {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 245px;
+  display: none;
+  height: 100%;
+  overflow: hidden;
+  background: #070627;
+  
+  z-index: 999;
+  /* transform: translateX(100%); */
+  -webkit-transform: translateX(100%);
+}
+
+.selectedcs {
+  animation: slide-in 0.5s forwards;
+  -webkit-animation: slide-in 0.5s forwards;
+}
+
+.dismiss {
+  animation: slide-out 0.5s forwards;
+  -webkit-animation: slide-out 0.5s forwards;
+  
+}
+
+.searchDiv{
+    padding: 7px;
+    color: white;
+   
+}
+
+/* .searchDiv input{
+    margin: 14px;
+    width: 90%;
+} */
+
+@keyframes slide-in {
+  0% {
+    -webkit-transform: translateX(100%);
+  }
+  100% {
+    -webkit-transform: translateX(0%);
+  }
+}
+
+@-webkit-keyframes slide-in {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(0%);
+  }
+}
+
+@keyframes slide-out {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@-webkit-keyframes slide-out {
+  0% {
+    -webkit-transform: translateX(0%);
+  }
+  100% {
+    -webkit-transform: translateX(100%);
+  }
+}
+
+
+

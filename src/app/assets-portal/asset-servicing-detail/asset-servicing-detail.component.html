@@ -1,0 +1,187 @@
+<kendo-window title="Servicing Detail" [(state)]="windowState" [(top)]="windowTop" [width]="800" [minWidth]="250" *ngIf="servicingDetailWindow"
+    (close)="closeServicingDetailWin()" [resizable]="true">
+    <div class="flex-grow-1 assetService">
+
+        <form autocomplete="off" id="print-section">
+            <div class="assetDetail">
+                <div class="form-row m-0 p-0">
+                    <p class="col-md-2 m-0 p-0"> Asset ID: </p>
+                    <p class="col-md-3 m-0 p-0">{{servicingDetails?.assid}}</p>
+                    <p class="col-md-7 m-0 p-0">{{servicingDetails?.address}}</p>
+                </div>
+                <div class="form-row m-0 p-0">
+                    <p class="col-md-2 m-0 p-0"> Contractor: </p>
+                    <p class="col-md-3 m-0 p-0">{{servicingDetails?.contractor_Code}}</p>
+                    <p class="col-md-7 m-0 p-0">{{servicingDetails?.contractor}}</p>
+                </div>
+                <div class="form-row m-0 p-0">
+                    <p class="col-md-2 m-0 p-0"> Service Contract: </p>
+                    <p class="col-md-3 m-0 p-0">{{servicingDetails?.service_Type_Code}}</p>
+                    <p class="col-md-7 m-0 p-0">{{servicingDetails?.service_Type}}</p>
+                </div>
+            </div>
+
+            <div class="form-row mt-2">
+
+                <label class="col-form-label col-md-2 text-sm-left">Job Number</label>
+                <div class="col-md-4">
+                    <input type="text" class="form-control" value="{{servicingDetails?.job_Number}}"
+                        [readonly]=readonly>
+                </div>
+            </div>
+
+
+            <div class="form-row mt-2">
+                <label class="col-form-label col-md-2 text-sm-left">Servicing Type</label>
+                <div class="col-md-5">
+                    <input type="text" class="form-control" value="{{servicingDetails?.service_Type_Code}}"
+                        [readonly]=readonly>
+                </div>
+
+                <div class="col-md-5">
+                    <input type="text" class="form-control" value="{{servicingDetails?.service_Type}}"
+                        [readonly]=readonly>
+                </div>
+
+            </div>
+
+
+            <div class="form-row mt-2">
+
+                <label class="col-form-label col-md-2 text-sm-left">Service Stage</label>
+                <div class="col-md-5">
+                    <input type="text" class="form-control" value="{{servicingDetails?.service_Stage_Code}}"
+                        [readonly]=readonly>
+                </div>
+
+                <div class="col-md-5">
+                    <input type="text" class="form-control" value="{{servicingDetails?.service_Stage}}"
+                        [readonly]=readonly>
+                </div>
+
+            </div>
+
+            <div class="form-row mt-2">
+                <label class="col-form-label col-md-2 text-sm-left">Stage Complete</label>
+                <div class="col-md-4">
+                    <input type="text" class="form-control"
+                        value="{{servicingDetails?.stage_Complete == 'N' ? 'No' : servicingDetails?.stage_Complete == 'Y' ? 'Yes' : ''}}" [readonly]=readonly>
+                </div>
+
+                <label class="col-form-label col-md-2 text-sm-left">Due Date</label>
+                <div class="col-md-4">
+                    <input type="text" class="form-control"
+                        value="{{servicingDetails?.due_Date | dateFormat : 'DD-MMM-YYYY'}}" [readonly]=readonly>
+                </div>
+
+
+
+            </div>
+
+            <div class="form-row mt-2">
+
+                <label class="col-form-label col-md-2 text-sm-left">Planned Date</label>
+                <div class="col-md-4">
+                    <input type="text" class="form-control"
+                        value="{{servicingDetails?.planned_Date | dateFormat : 'DD-MMM-YYYY'}}" [readonly]=readonly>
+                </div>
+
+                <label class="col-form-label col-md-2 text-sm-left">Job Type</label>
+                <div class="col-md-4">
+                    <input type="text" class="form-control" value="{{servicingDetails?.job_Type }}" [readonly]=readonly>
+                </div>
+
+            </div>
+
+            <div class="form-row mt-2">
+
+                <label class="col-form-label col-md-2 text-sm-left">Review Date</label>
+                <div class="col-md-4">
+                    <input type="text" class="form-control"
+                        value="{{servicingDetails?.review_Date | dateFormat : 'DD-MMM-YYYY'}}" [readonly]=readonly>
+                </div>
+
+                <label class="col-form-label col-md-2 text-sm-left">Planned Time</label>
+                <div class="col-md-4">
+                    <input type="text" class="form-control"
+                        value="{{servicingDetails?.planned_Time | dateFormat : 'DD-MMM-YYYY' }}" [readonly]=readonly>
+                </div>
+
+            </div>
+
+
+            <div class="form-row mt-2">
+
+                <label class="col-form-label col-md-2 text-sm-left">Service Cost</label>
+                <div class="col-md-4">
+                    <input type="text" class="form-control" value="{{ helper.moneyFormat(servicingDetails?.service_Cost)}}"
+                        [readonly]=readonly>
+                </div>
+
+                <label class="col-form-label col-md-2 text-sm-left">Service Date</label>
+                <div class="col-md-4">
+                    <input type="text" class="form-control"
+                        value="{{servicingDetails?.service_Date | dateFormat : 'DD-MMM-YYYY'}}" [readonly]=readonly>
+                </div>
+
+            </div>
+
+            <div class="form-row mt-2">
+                <label class="col-form-label col-md-2 text-sm-left">Planned Time Text</label>
+                <div class="col-md-4">
+                    <input type="text" class="form-control" value="{{servicingDetails?.planned_Time_Text}}"
+                        [readonly]=readonly>
+                </div>
+
+                <label class="col-form-label col-md-2 text-sm-left">Completion Date</label>
+                <div class="col-md-4">
+                    <input type="text" class="form-control"
+                        value="{{servicingDetails?.completion_Date | dateFormat : 'DD-MMM-YYYY'}}" [readonly]=readonly>
+                </div>
+
+            </div>
+
+
+            <div class="form-row mt-2">
+                <label class="col-form-label col-md-2 text-sm-left">Last Transaction Type</label>
+                <div class="col-md-3">
+                    <input type="text" class="form-control" value="{{servicingDetails?.transaction_Type}}"
+                        [readonly]=readonly>
+                </div>
+
+                <label class="col-form-label col-md-2 text-sm-left">Last Updated BY/Date</label>
+                <div class="col-md-3">
+                    <input type="text" class="form-control" value="{{servicingDetails?.last_Updated_By}}"
+                        [readonly]=readonly>
+                </div>
+                <div class="col-md-2">
+                    <input type="text" class="form-control"
+                        value="{{servicingDetails?.last_Updated_Date | dateFormat : 'DD-MMM-YYYY'}}"
+                        [readonly]=readonly>
+                </div>
+
+            </div>
+            <div class="form-row mt-2">
+                <label class="col-form-label col-md-2 text-sm-left">Notes</label>
+                <div class="col-md-10">
+                    <textarea class="form-control" [readonly]=readonly></textarea>
+                </div>
+
+
+            </div>
+
+
+        </form>
+
+        <div class="buttonDiv pull-right">
+            <button type="button" (click)="printDiv()" 
+                printSectionId="print-section" class="btn btn-sm">Print</button>
+                <!-- <button type="button" (click)="printDiv()" styleSheetFile="assets/css/print.css"
+                printSectionId="print-section" ngxPrint class="btn btn-sm">Print</button> -->
+            <button type="button" (click)="closeServicingDetailWin()" class="btn btn-sm">Close</button>
+        </div>
+
+
+        
+    </div>
+</kendo-window>

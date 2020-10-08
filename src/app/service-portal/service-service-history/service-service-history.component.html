@@ -1,0 +1,127 @@
+<div class="row">
+  <div class="col-md-12">
+    <div class="row">
+      <div class="col-md-2">
+        <label class="col-form-label">Asset:</label>
+      </div>
+      <div class="col-md-3 form-group">
+        <input type="text" [readonly]="readonly" value="{{servicingDetails?.assid}}" class="form-control">
+      </div>
+      <div class="col-md-7 form-group">
+        <input type="text" [readonly]="readonly" value="{{servicingDetails?.address}}" class="form-control">
+      </div>
+    </div>
+  </div>
+  <div class="col-md-12">
+    <div class="row">
+      <div class="col-md-2">
+        <label class="col-form-label">Contractor:</label>
+      </div>
+      <div class="col-md-3 form-group">
+        <input type="text" [readonly]="readonly" value="{{servicingDetails?.contractor_Code}}" class="form-control">
+      </div>
+      <div class="col-md-7 form-group">
+        <input type="text" [readonly]="readonly" value="{{servicingDetails?.contractor}}" class="form-control">
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-12">
+    <div class="row">
+      <div class="col-md-2">
+        <label class="col-form-label">Service Contract:</label>
+      </div>
+      <div class="col-md-3 form-group">
+        <input type="text" [readonly]="readonly" value="{{servicingDetails?.service_Contract_Code}}"
+          class="form-control">
+      </div>
+      <div class="col-md-7 form-group">
+        <input type="text" [readonly]="readonly" value="{{servicingDetails?.service_Contract}}" class="form-control">
+      </div>
+    </div>
+  </div>
+
+
+
+  <div class="col-md-12">
+    <div class="row">
+      <div class="col-md-2">
+        <label class="col-form-label">Job No:</label>
+      </div>
+      <div class="col-md-3 form-group">
+        <input type="text" [readonly]="readonly" value="{{servicingDetails?.job_Number}}" class="form-control">
+      </div>
+
+    </div>
+  </div>
+
+
+</div>
+
+<div class="row mt-3">
+  <div class="col-md-12">
+    <kendo-grid [data]="gridView" [resizable]="true" [skip]="state.skip" [sort]="state.sort" [sortable]="{
+        allowUnsort: allowUnsort,
+        mode: multiple ? 'multiple' : 'single'
+        }" (sortChange)="sortChange($event)" [selectable]="{mode: 'single'}" (filterChange)="filterChange($event)"
+      [filter]="state.filter" filterable="menu" (cellClick)="cellClickHandler($event)" [height]="350">
+      <!-- <kendo-grid-checkbox-column></kendo-grid-checkbox-column> -->
+      <kendo-grid-column field="history_Date" title="History Date" width="170" [filterable]="true"></kendo-grid-column>
+      <kendo-grid-column field="created_by" title="Created By" width="120" [filterable]="true"></kendo-grid-column>
+      <kendo-grid-column field="transaction_Type" title="Transaction Type" width="250" [filterable]="false">
+      </kendo-grid-column>
+      <kendo-grid-column field="service_Type" title="Service Type" width="250" [filterable]="false"></kendo-grid-column>
+      <kendo-grid-column field="service_Stage" title="Service Stage" width="160" [filterable]="false">
+      </kendo-grid-column>
+      <kendo-grid-column field="stage_Complete" title="Stage Complete" width="130" [filterable]="false">
+      </kendo-grid-column>
+      <kendo-grid-column field="job_type" title="Job Type" width="110" [filterable]="false"></kendo-grid-column>
+      <kendo-grid-column field="due_Date" title="Due Date" width="120" [filterable]="false">
+        <ng-template kendoGridCellTemplate let-dataItem>
+          {{ dataItem.history_Date | dateFormat : 'DD-MMM-YYYY' }}
+        </ng-template>
+      </kendo-grid-column>
+      <kendo-grid-column field="deadline_Date" title="Deadline Date" width="130" [filterable]="false">
+        <ng-template kendoGridCellTemplate let-dataItem>
+          {{ dataItem.deadline_Date | dateFormat : 'DD-MMM-YYYY' }}
+        </ng-template>
+      </kendo-grid-column>
+      <kendo-grid-column field="planned_Date" title="Planned Date" width="130" [filterable]="false">
+        <ng-template kendoGridCellTemplate let-dataItem>
+          {{ dataItem.planned_Date | dateFormat : 'DD-MMM-YYYY' }}
+        </ng-template>
+      </kendo-grid-column>
+      <kendo-grid-column field="review_date" title="Review Date" width="130" [filterable]="false">
+        <ng-template kendoGridCellTemplate let-dataItem>
+          {{ dataItem.review_date | dateFormat : 'DD-MMM-YYYY' }}
+        </ng-template>
+      </kendo-grid-column>
+      <kendo-grid-column field="completion_date" title="Completion Date" width="140" [filterable]="false">
+        <ng-template kendoGridCellTemplate let-dataItem>
+          {{ dataItem.completion_date | dateFormat : 'DD-MMM-YYYY' }}
+        </ng-template>
+      </kendo-grid-column>
+      <kendo-grid-column field="service_date" title="Service Date" width="140" [filterable]="false">
+        <ng-template kendoGridCellTemplate let-dataItem>
+          {{ dataItem.service_date | dateFormat : 'DD-MMM-YYYY' }}
+        </ng-template>
+      </kendo-grid-column>
+      <kendo-grid-column field="service_Cost" title="Service Cost" width="130" [filterable]="false">
+        <ng-template kendoGridCellTemplate let-dataItem>
+          &pound;{{ helper.moneyFormat(dataItem.service_Cost) }}
+        </ng-template>
+      </kendo-grid-column>
+      <kendo-grid-column field="no_Entry_Count" title="No Entry Cost" width="150" [filterable]="false">
+      </kendo-grid-column>
+      <kendo-grid-column field="planned_Time" title="Planned Time" width="120" [filterable]="false">
+        <ng-template kendoGridCellTemplate let-dataItem>
+          {{ dataItem.planned_Time | dateFormat : 'DD-MMM-YYYY' }}
+        </ng-template>
+      </kendo-grid-column>
+      <kendo-grid-column field="planned_time_text" title="Planned Time Text" width="150" [filterable]="false">
+      </kendo-grid-column>
+      <kendo-grid-column field="notes" title="Notes" width="160" [filterable]="false"></kendo-grid-column>
+
+    </kendo-grid>
+  </div>
+</div>

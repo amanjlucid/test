@@ -1,0 +1,77 @@
+<kendo-window [(state)]="windowState" [top]="0" [minWidth]="900" [width]="1464" *ngIf="tabWindow" (close)="closeTabWindow()"
+  title="{{selectedAsset.assetId+' - '+selectedAsset.address}}">
+  <div class="row" *ngIf="tabsData != undefined && tabsData != '' ">
+    <div class="col-md-12 col-sm-12">
+      <div class="nav-responsive-lg">
+        <ul class="nav nav-tabs tabs-alt">
+          <li class="nav-item" *ngIf="checkTabPermission('Attributes')">
+            <a class="nav-link" [ngClass]="{'active': tabName=='attributes'}" (click)="showTab('attributes')"
+              href="javascript:void(0)">Attributes</a>
+          </li>
+          <li class="nav-item" *ngIf="checkTabPermission('Characteristics')">
+            <a class="nav-link" [ngClass]="{'active': tabName=='characteristics'}" (click)="showTab('characteristics')"
+              href="javascript:void(0)">Characteristics</a>
+          </li>
+          <li class="nav-item" *ngIf="checkTabPermission('Asbestos') && checkAsbestosPortalAccess() && checkGroupPermission('Asbestos Portal Access')">
+            <a class="nav-link" [ngClass]="{'active': tabName=='asbestos'}" (click)="showTab('asbestos')"
+              href="javascript:void(0)">Asbestos</a>
+          </li>
+          <li class="nav-item" *ngIf="checkTabPermission('Energy')">
+            <a class="nav-link" [ngClass]="{'active': tabName=='energy'}" (click)="showTab('energy')"
+              href="javascript:void(0)">Energy</a>
+          </li>
+          <li class="nav-item" *ngIf="checkTabPermission('Surveys')">
+            <a class="nav-link" [ngClass]="{'active': tabName=='surveys'}" (click)="showTab('surveys')"
+              href="javascript:void(0)">Surveys</a>
+          </li>
+          <li class="nav-item" *ngIf="checkTabPermission('Health and Safety')">
+            <a class="nav-link" [ngClass]="{'active': tabName=='assessments'}" (click)="showTab('assessments')"
+              href="javascript:void(0)">H&S Assessments</a>
+          </li>
+          <li class="nav-item" *ngIf="checkTabPermission('Servicing') && checkGroupPermission('Servicing Portal Access')">
+            <a class="nav-link" [ngClass]="{'active': tabName=='servicing'}" (click)="showTab('servicing')"
+              href="javascript:void(0)">Servicing</a>
+          </li>
+          <li class="nav-item" *ngIf="checkTabPermission('HHSRS')">
+            <a class="nav-link" [ngClass]="{'active': tabName=='hhrs'}" (click)="showTab('hhrs')"
+              href="javascript:void(0)">HHSRS</a>
+          </li>
+          <li class="nav-item" *ngIf="checkTabPermission('Works Management')">
+            <a class="nav-link" [ngClass]="{'active': tabName=='workmanagement'}" (click)="showTab('workmanagement')"
+              href="javascript:void(0)">Work Management</a>
+          </li>
+          <li class="nav-item" *ngIf="checkTabPermission('Quality')">
+            <a class="nav-link" [ngClass]="{'active': tabName=='quality'}" (click)="showTab('quality')"
+              href="javascript:void(0)">Quality Standard</a>
+          </li>
+          <li class="nav-item" *ngIf="checkTabPermission('Notepad')">
+            <a class="nav-link" [ngClass]="{'active': tabName=='notepad'}" (click)="showTab('notepad')"
+              href="javascript:void(0)">Notepad</a>
+          </li>
+        </ul>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-2" *ngIf="tabsData != undefined && tabsData != '' ">
+    <div class="col-md-12">
+      <app-attributes [selectedAsset]="selectedAsset" [assetId]="assetId" *ngIf="tabName == 'attributes'">
+      </app-attributes>
+      <app-asset-characteristics [selectedAsset]="selectedAsset" [assetId]="assetId"
+        *ngIf="tabName == 'characteristics'"></app-asset-characteristics>
+      <app-asset-asbestos [selectedAsset]="selectedAsset" [assetId]="assetId" *ngIf="tabName == 'asbestos'">
+      </app-asset-asbestos>
+      <app-asset-energy [selectedAsset]="selectedAsset" [assetId]="assetId" *ngIf="tabName == 'energy'"></app-asset-energy>
+      <app-asset-surveys [selectedAsset]="selectedAsset" [assetId]="assetId" *ngIf="tabName == 'surveys'"></app-asset-surveys>
+      <app-asset-hs-assessents [selectedAsset]="selectedAsset" [assetId]="assetId" *ngIf="tabName == 'assessments'"></app-asset-hs-assessents>
+      <app-asset-servicing [selectedAsset]="selectedAsset" [assetId]="assetId" *ngIf="tabName == 'servicing'"></app-asset-servicing>
+      <app-asset-hhsrs [selectedAsset]="selectedAsset" [assetId]="assetId" *ngIf="tabName == 'hhrs'"></app-asset-hhsrs>
+      <app-asset-works-management [selectedAsset]="selectedAsset" [assetId]="assetId" *ngIf="tabName == 'workmanagement'"></app-asset-works-management>
+      <app-asset-quality [selectedAsset]="selectedAsset" [assetId]="assetId" *ngIf="tabName == 'quality'"></app-asset-quality>
+      <app-asset-notepad [selectedAsset]="selectedAsset" [assetId]="assetId" *ngIf="tabName == 'notepad'"></app-asset-notepad>
+    </div>
+
+  </div>
+
+</kendo-window>

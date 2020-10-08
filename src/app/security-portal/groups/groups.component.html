@@ -1,0 +1,390 @@
+<div class="container-fluid flex-grow-1 container-p-y" style="padding-bottom: 4.5rem !important;">
+
+  <div class="row">
+    <div class="col-md-8 col-sm-8">
+      <h4 class="font-weight-bold py-3 mb-1">
+        <span class="text-muted font-weight-light">Security /</span> Groups
+      </h4>
+    </div>
+
+    <!-- <div class="col-md-4 col-sm-4 actionBtn">
+      <div class="btn-group pull-right">
+
+        <button id="showFilePanel" (click)="openSearchBar()" class="btn btn-sm newBtn"><i class="fa fa-search"></i> </button>
+        <button (click)="openPopup('new')" class="btn btn-sm newBtn">New</button>
+        <button type="button" class="btn btn-sm dropdown-toggle-split reportBtn" data-toggle="dropdown"
+          aria-expanded="false">Reporting
+          v</button>
+        <div class="dropdown-menu" x-placement="bottom-start"
+          style="position: absolute; will-change: top, left; top: 38px; left: 66px;">
+          <a class="dropdown-item" (click)="openReport(selectedGroup,'allUserNGroup')" href="javascript:void(0)">All
+            Users and Groups</a>
+          <a class="dropdown-item" (click)="openReport(selectedGroup, 'selectedGrpDetail')"
+            href="javascript:void(0)">Group Details for Selected Group</a>
+          <a class="dropdown-item" (click)="openReport(selectedGroup, 'allGrpDetail')" href="javascript:void(0)">Group
+            Details for all Groups</a>
+        </div>
+      </div>
+    </div> -->
+
+    <div class="col-md-4 col-sm-4 actionBtn">
+
+      <div class="btn-group pull-right mt-3">
+        <button id="showFilePanel" (click)="openSearchBar()" class="btn btn-sm themeButton"><i class="fa fa-search"></i>
+        </button>
+        <button (click)="openPopup('new')" class="btn btn-sm btn-outline-secondary themeButton">New</button>
+        
+        <button type="button" class="btn btn-sm dropdown-toggle-split reportBtn" data-toggle="dropdown"
+        aria-expanded="false">Reporting
+        v</button>
+   <div class="dropdown-menu" x-placement="bottom-start"
+          style="position: absolute; will-change: top, left; top: 38px; left: 66px;">
+          <a class="dropdown-item" (click)="openReport(selectedGroup,'allUserNGroup')" href="javascript:void(0)">All
+            Users and Groups</a>
+          <a class="dropdown-item" (click)="openReport(selectedGroup, 'selectedGrpDetail')"
+            href="javascript:void(0)">Group Details for Selected Group</a>
+          <a class="dropdown-item" (click)="openReport(selectedGroup, 'allGrpDetail')" href="javascript:void(0)">Group
+            Details for all Groups</a>
+        </div>
+      
+      </div>
+    </div>
+
+
+  </div>
+
+  <div class="row" style="margin-top:13px;">
+    <div class="table-responsive groupTable">
+      <table class="table table-striped table-bordered grpTable" *ngIf="groups">
+        <thead>
+          <tr>
+            <th style="width:3px;"></th>
+            <th>Group</th>
+            <th>Description</th>
+            <th>Show No Char Group</th>
+            <th>Show No Elements</th>
+            <th>Include All Char Groups</th>
+            <th>Include All Elements</th>
+            <th>Include All Portal Tabs</th>
+            <th>Work Order Level</th>
+            <th>Property Security Set</th>
+            <th>Char Group Security Set</th>
+            <th>Element Security Set</th>
+            <th>Function Security Set</th>
+            <th>Attribute Group Security Set</th>
+            <th>Status</th>
+            <th>Created By</th>
+            <th style="display:none;">CD</th>
+            <th>Created Date</th>
+            <th>Changed By</th>
+            <th style="display:none;">CHD</th>
+            <th>Changed Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="odd gradeX" *ngFor="let group of groups"
+            [className]="selectedGroup != undefined ? ( selectedGroup.groupId === group.groupId ? 'selected' : '') : ''"
+            (click)=toggleClass(group)>
+            <td>
+              <li class="nav-item dropdown list-unstyled">
+                <i (click)=toggleClass(group) data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
+                <div class="dropdown-menu">
+                  <a class="dropdown-item" (click)="openPopup('edit', group)" href="javascript:void(0)">Edit</a>
+                  <a class="dropdown-item" [class.disabled]="!group.canDelete" (click)="openConfirmationDialog(group)"
+                    href="javascript:void(0)">Delete</a>
+                  <a class="dropdown-item" (click)="openPopup('copy', group)" href="javascript:void(0)">Copy</a>
+                  <a class="dropdown-item" (click)="openCharGrpWin(group)" href="javascript:void(0)">Characteristic
+                    Groups</a>
+                  <a class="dropdown-item" (click)="openElmGrpWin(group)" href="javascript:void(0)">Elements</a>
+                  <a class="dropdown-item" (click)="openAttrGrpWin(group)" href="javascript:void(0)">Attribute
+                    Groups</a>
+                  <a class="dropdown-item" (click)="openPortalGrpWin(group)" href="javascript:void(0)">Asset Tabs</a>
+                  <a class="dropdown-item" (click)="openFunctionSecWindow(group)" href="javascript:void(0)">Function
+                    Security</a>
+                  <a class="dropdown-item" (click)="openPropSecWindow(group)" href="javascript:void(0)">Property
+                    Security</a>
+                </div>
+              </li>
+            </td>
+            <td>{{group.groupName}}</td>
+            <td>{{group.groupDescription}}</td>
+            <td class="text-center"><i *ngIf="group.showNoCharGroup" class="fas fa-check"></i></td>
+            <td class="text-center"><i *ngIf="group.showNoElement" class="fas fa-check"></i></td>
+            <td class="text-center"><i *ngIf="group.includeAllCharGroup" class="fas fa-check"></i></td>
+            <td class="text-center"><i *ngIf="group.includeAllElements" class="fas fa-check"></i></td>
+            <td class="text-center"><i *ngIf="group.includeAllPortalTabs" class="fas fa-check"></i></td>
+            <td class="text-center"><i *ngIf="group.workOrderLevel" class="fas fa-check"></i></td>
+            <td class="text-center"><i *ngIf="group.propertySecuritySet" class="fas fa-check"></i></td>
+            <td class="text-center"><i *ngIf="group.charGroupSecuritySet" class="fas fa-check"></i></td>
+            <td class="text-center"><i *ngIf="group.elementSecuritySet" class="fas fa-check"></i></td>
+            <td class="text-center"><i *ngIf="group.functionSecuritySet" class="fas fa-check"></i></td>
+            <td class="text-center"><i *ngIf="group.attributeGroupSecuritySet" class="fas fa-check"></i></td>
+            <td>{{group.status == true ? "Active" : "Inactive"}}</td>
+            <td>{{group.createdBy}}</td>
+            <td style="display:none;">{{group.createdDate | dateFormat : 'YYYY-MM-DD'}}</td>
+            <td>{{group.createdDate | dateFormat : 'DD-MMM-YYYY' }}</td>
+            <td>{{group.changedBy}}</td>
+            <td style="display:none;">{{group.changedDate | dateFormat : 'YYYY-MM-DD'}}</td>
+            <td>{{group.changedDate | dateFormat : 'DD-MMM-YYYY'}}</td>
+
+
+          </tr>
+
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+
+</div>
+
+
+
+<div class="example-wrapper">
+
+  <kendo-window title="{{windowTitle}}" [(width)]="windowWidth" [minWidth]="250" *ngIf="dialogOpened"
+    (close)="closePopup()">
+    <div class="groupPopup">
+      <form (ngSubmit)="onSubmit()" #securityGroupForm="ngForm">
+        <div class="groupDiv col-md-12 col-sm-12 col-xs-12">
+          <div class="form-group">
+            <label for="group">Group:</label>
+            <input type="text" [(ngModel)]="selectedGroup.groupName" name="groupName" required #groupName="ngModel"
+              class="form-control" id="group" placeholder="Group">
+            <div [hidden]="groupName.valid || groupName.pristine" class="bg-danger text-white">
+              Grouop Name is required
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="description">Description:</label>
+            <input type="text" [(ngModel)]="selectedGroup.groupDescription" name="groupDescription" required
+              #groupDescription="ngModel" class="form-control" id="description" placeholder="Description">
+            <div [hidden]="groupDescription.valid || groupDescription.pristine" class="bg-danger text-white">
+              Description is required
+            </div>
+          </div>
+
+        </div>
+
+        <div class="groupDiv groupSetting row m-0 mt-4">
+          <p>Group Settings</p>
+          <span class="underline"></span>
+          <div class="col-md-5 mt-4">
+            <p>Characteristics</p>
+            <div class="row">
+              <label class="col-md-10">Show Characteristics with no Group</label>
+              <div class="col-md-2">
+                <label class="switcher">
+                  <input [(ngModel)]="selectedGroup.showNoCharGroup"
+                    [attr.checked]="selectedGroup.showNoCharGroup ? 'checked' : null" type="checkbox"
+                    name="showNoCharGroup" class="switcher-input">
+                  <span class="switcher-indicator">
+                    <span class="switcher-yes"><span class="ion ion-md-checkmark"></span></span>
+                    <span class="switcher-no"><span class="ion ion-md-close"></span></span>
+                  </span>
+
+                </label>
+              </div>
+
+
+            </div>
+
+          </div>
+          <div class="col-md-1 mt-4"></div>
+          <div class="col-md-4 mt-4">
+            <p>&nbsp;</p>
+            <div class="row">
+              <label class="col-md-10">Include All Characteristics?</label>
+              <div class="col-md-2">
+                <label class="switcher">
+                  <input [(ngModel)]="selectedGroup.includeAllCharGroup"
+                    [attr.checked]="selectedGroup.includeAllCharGroup ? 'checked' : null" type="checkbox"
+                    name="includeAllCharGroup" type="checkbox" class="switcher-input">
+                  <span class="switcher-indicator">
+                    <span class="switcher-yes"><span class="ion ion-md-checkmark"></span></span>
+                    <span class="switcher-no"><span class="ion ion-md-close"></span></span>
+                  </span>
+
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-5 mt-4">
+            <p>Attributes</p>
+            <div class="row">
+              <label class="col-md-10">Show Attribute with no Elements?</label>
+              <div class="col-md-2">
+                <label class="switcher">
+                  <input [(ngModel)]="selectedGroup.showNoElement"
+                    [attr.checked]="selectedGroup.showNoElement ? 'checked' : null" type="checkbox" name="showNoElement"
+                    type="checkbox" class="switcher-input">
+                  <span class="switcher-indicator">
+                    <span class="switcher-yes"><span class="ion ion-md-checkmark"></span></span>
+                    <span class="switcher-no"><span class="ion ion-md-close"></span></span>
+                  </span>
+
+                </label>
+              </div>
+
+
+            </div>
+
+          </div>
+          <div class="col-md-1 mt-4"></div>
+          <div class="col-md-4 mt-4">
+            <p>&nbsp;</p>
+            <div class="row">
+              <label class="col-md-10">Include All Elements?</label>
+              <div class="col-md-2">
+                <label class="switcher">
+                  <input [(ngModel)]="selectedGroup.includeAllElements"
+                    [attr.checked]="selectedGroup.includeAllElements ? 'checked' : null" type="checkbox"
+                    name="includeAllElements" type="checkbox" class="switcher-input">
+                  <span class="switcher-indicator">
+                    <span class="switcher-yes"><span class="ion ion-md-checkmark"></span></span>
+                    <span class="switcher-no"><span class="ion ion-md-close"></span></span>
+                  </span>
+
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-5 mt-4">
+            <p>Additional</p>
+            <div class="row">
+              <label class="col-md-10">Include All Portals</label>
+              <div class="col-md-2">
+                <label class="switcher">
+                  <input [(ngModel)]="selectedGroup.includeAllPortalTabs"
+                    [attr.checked]="selectedGroup.includeAllPortalTabs ? 'checked' : null" type="checkbox"
+                    name="includeAllPortalTabs" type="checkbox" class="switcher-input">
+                  <span class="switcher-indicator">
+                    <span class="switcher-yes"><span class="ion ion-md-checkmark"></span></span>
+                    <span class="switcher-no"><span class="ion ion-md-close"></span></span>
+                  </span>
+
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-1 mt-4"></div>
+
+          <div class="col-md-4 mt-4">
+            <p>&nbsp;</p>
+            <div class="row">
+              <label class="col-md-10">Works Order Level Security?</label>
+              <div class="col-md-2">
+                <label class="switcher">
+                  <input [(ngModel)]="selectedGroup.workOrderLevel" [disabled]="!selectedGroup.canEditWorkOrderOnly"
+                    [attr.checked]="selectedGroup.workOrderLevel ? 'checked' : null" type="checkbox"
+                    name="workOrderLevel" class="switcher-input">
+                  <span class="switcher-indicator">
+                    <span class="switcher-yes"><span class="ion ion-md-checkmark"></span></span>
+                    <span class="switcher-no"><span class="ion ion-md-close"></span></span>
+                  </span>
+
+                </label>
+              </div>
+            </div>
+          </div>
+
+
+          <div class="col-md-5 mt-4">
+            <div class="row">
+              <label class="col-md-10">Status</label>
+              <div class="col-md-2">
+                <!-- <select name="status" class="form-control-sm inp-sm" [(ngModel)]="selectedGroup.status">
+                  <option value="Active">Active</option>
+                  <option value="Inactive">Inactive</option>
+                </select> -->
+                <label class="switcher">
+                  <input [(ngModel)]="selectedGroup.status" [attr.checked]="selectedGroup.status ? 'checked' : null"
+                    type="checkbox" name="status" class="switcher-input">
+                  <span class="switcher-indicator">
+                    <span class="switcher-yes"><span class="ion ion-md-checkmark"></span></span>
+                    <span class="switcher-no"><span class="ion ion-md-close"></span></span>
+                  </span>
+
+                </label>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+        <div class="groupDiv groupSetting m-0">
+          <div class="formBtn pull-right">
+            <button type="button" (click)="closePopup();" class="btn btn-sm">Cancel</button>
+            <button type="submit" [disabled]="!securityGroupForm.form.valid" class="btn btn-sm newBtn">Ok</button>
+          </div>
+        </div>
+      </form>
+
+    </div>
+
+  </kendo-window>
+
+
+  <app-characteristic-group [charGrpWindow]="charGrpWindow" [selectedGroup]="selectedGroup" *ngIf="charGrpWindow"
+    (closeCharGrpWin)="closeCharGrpWin($event)"></app-characteristic-group>
+
+
+  <app-elements-group [elmGrpWindow]="elmGrpWindow" [selectedGroup]="selectedGroup" *ngIf="elmGrpWindow"
+    (closeElmGrpWin)="closeElmGrpWin($event)"></app-elements-group>
+
+  <app-attribute-group [attrGrpWindow]="attrGrpWindow" [selectedGroup]="selectedGroup" *ngIf="attrGrpWindow"
+    (closeAttrGrpWin)="closeAttrGrpWin($event)"></app-attribute-group>
+
+
+  <app-portal-tabs [portalGrpWindow]="portalGrpWindow" [selectedGroup]="selectedGroup" *ngIf="portalGrpWindow"
+    (closePortalGrpWin)="closePortalGrpWin($event)"></app-portal-tabs>
+
+  <app-function-security [selectedGroup]="selectedGroup" [functionSecurityWindow]="functionSecurityWindow"
+    *ngIf="functionSecurityWindow" (closeWindow)="closeFuncitonSecWin($event)"></app-function-security>
+
+  <app-property-security [selectedGroup]="selectedGroup" [propertySecurityWindow]="propertySecurityWindow"
+    *ngIf="propertySecurityWindow" (closePropSecWin)="closePropSecWin($event)"></app-property-security>
+
+
+
+
+  <!-- Reporting Section -->
+
+  <app-reporting [reportingAction]="reportingAction" [selectedGroup]="selectedGroup" [openReports]="openReports"
+    *ngIf="openReports" (closeReportingWin)="closeReportingWin($event)"></app-reporting>
+
+</div>
+
+
+<div class="notification-container dismiss">
+
+  <h5 style="color:white" class="p-4 m-0 line-height-1 font-weight-bolder bg-light theme-settings-header"> Filters<a href="javascript:void(0)" (click)="closeSearchBar()"
+      class="theme-settings-close-btn font-weight-light px-4 py-2" style="color:#ffffff;" tabindex="-1">×</a> </h5>
+
+  <div class="searchDiv">
+      <form id="groupSearch">
+      <div class="form-group">
+          <label class="form-label form-label-sm">Group</label>
+          <input (keyup)="searchInGroupTable($event)" data-col="1" type="text" class="form-control form-control-sm"
+            placeholder="Search By Group">
+        </div>
+    
+        <div class="form-group">
+          <label class="form-label form-label-sm">Description</label>
+          <input (keyup)="searchInGroupTable($event)" data-col="2" type="text" class="form-control form-control-sm"
+            placeholder="Search By Description">
+        </div>
+
+        <div class="form-group">
+            <button id="" (click)="clearGroupSearchForm()" class="btn btn-sm themeButton">Clear
+            </button>
+          </div>
+        </form>
+   
+  </div>
+</div>

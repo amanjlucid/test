@@ -1,0 +1,7 @@
+.buttonDiv button{ margin-left: 8px; }
+.newBtn{background-color: #e4287e; border-color: #e4287e; color: #fff;}
+.userFrm{width: 805px;}
+
+@media screen and (max-width: 769px) {
+    .userFrm{width: 100%;}
+}

@@ -1,0 +1,131 @@
+<kendo-window title="{{title}}" *ngIf="openAddPriority" (close)="closePriorityMethod()" [top]="30" [minWidth]="400"
+  [width]="550" [height]="auto" [minHeight]="200">
+  <form class="difinitionForm" [formGroup]="formGrp" (ngSubmit)="onSubmit()" autocomplete="off">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-md-3 text-right">
+            <label class="col-form-label">Code</label>
+          </div>
+
+          <div class="col-md-5">
+            <div class="wrapdiv">
+              <input #firstInp style="text-transform:uppercase" [readonly]="formMode == 'view' || formMode == 'edit'" type="text"
+                [ngClass]="{ 'is-invalid': submitted && formErrors.code }" class="form-control" formControlName="code"
+                [ngClass]="{ 'is-invalid': submitted && formErrors.code }">
+              <i title="10 Character long code representing specific Priority Level"
+                class="fas fa-info-circle d-block"></i>
+            </div>
+
+            <div *ngIf="submitted && formErrors.code" class="invalid-feedback">
+              <div *ngIf="formErrors.code">{{ formErrors.code }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-1">
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-md-3 text-right">
+            <label class="col-form-label">Description</label>
+          </div>
+          <div class="col-md-9">
+            <div class="wrapdiv">
+              <input  #secondInp [readonly]="formMode == 'view'" type="text" class="form-control" formControlName="description"
+                [ngClass]="{ 'is-invalid': submitted && formErrors.description }"><i
+                title="Description of Priority Level." class="fas fa-info-circle d-block"></i>
+            </div>
+
+            <div *ngIf="submitted && formErrors.description" class="invalid-feedback">
+              <div *ngIf="formErrors.description">{{ formErrors.description }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+
+    <div class="row mt-2">
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-md-3 text-right">
+            <label class="col-form-label">Days to Resolve</label>
+          </div>
+          <div class="col-md-5">
+            <div class="wrapdiv">
+              <input (keypress)="numberOnly($event)" [readonly]="formMode == 'view'" type="text" class="form-control"
+                formControlName="daysToResolve" [ngClass]="{ 'is-invalid': submitted && formErrors.daysToResolve }"><i
+                title="Number of days allowed to resolve the issue." class="fas fa-info-circle d-block"></i>
+            </div>
+
+            <div *ngIf="submitted && formErrors.daysToResolve" class="invalid-feedback">
+              <div *ngIf="formErrors.daysToResolve">{{ formErrors.daysToResolve }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="row mt-2" *ngIf="selectedDefinition.hasscoring == 2">
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-md-3 text-right">
+            <label class="col-form-label">Lower Score Limit</label>
+          </div>
+          <div class="col-md-5">
+            <div class="wrapdiv">
+              <input (keypress)="numberOnly($event)" [readonly]="formMode == 'view'" type="numer" class="form-control"
+                formControlName="hasrisklower" [ngClass]="{ 'is-invalid': submitted && formErrors.hasrisklower }"><i
+                title="Lower Score Limit for Risk Matrix." class="fas fa-info-circle d-block"></i>
+            </div>
+
+            <div *ngIf="submitted && formErrors.hasrisklower" class="invalid-feedback">
+              <div *ngIf="formErrors.hasrisklower">{{ formErrors.hasrisklower }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="row mt-2" *ngIf="selectedDefinition.hasscoring == 2">
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-md-3 text-right">
+            <label class="col-form-label">Upper Score Limit</label>
+          </div>
+          <div class="col-md-5">
+            <div class="wrapdiv">
+              <input (keypress)="numberOnly($event)" [readonly]="formMode == 'view'" type="numer" class="form-control"
+                formControlName="hasriskupper" [ngClass]="{ 'is-invalid': submitted && formErrors.hasriskupper }"><i
+                title="Upper Score Limit for Risk Matrix." class="fas fa-info-circle d-block"></i>
+            </div>
+
+            <div *ngIf="submitted && formErrors.hasriskupper" class="invalid-feedback">
+              <div *ngIf="formErrors.hasriskupper">{{ formErrors.hasriskupper }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+
+
+    <div class="row mt-3">
+      <div class="col-md-12 text-right actionArea">
+        <button type="button" class="btn btn-sm themeButton" (click)="onSubmit('another')"
+          *ngIf="formMode == 'add' && hnsPermission.indexOf('Create Another Priority') != -1">Create Another</button>
+        <button type="submit" class="btn btn-sm themeButton">OK</button>
+        <button type="button" class="btn btn-sm themeButton" (click)="closePriorityMethod()">Cancel</button>
+      </div>
+    </div>
+
+  </form>
+
+
+</kendo-window>

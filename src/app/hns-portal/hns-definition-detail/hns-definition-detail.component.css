@@ -1,0 +1,51 @@
+.k-window-content {
+    padding-top: 6px!important;
+}
+
+/* .treeSection {
+    width: 100%;
+} */
+
+.detailHeading h4 {
+    /* width: 23%; */
+    /* margin: auto; */
+    text-align: center;
+}
+
+.detailHeading h4 span {
+    background: #dbdbdb;
+    padding: 5px 10px;
+    font-weight: 600;
+    font-size: 17px;
+    border-radius: 5px;
+}
+
+.kendoTreeM {
+    border: 1px solid #d3d2d2;
+    padding: 11px;
+    min-height: 450px;
+    max-height: 646px;
+    overflow: auto;
+}
+
+.treeData {
+    font-size: 17px !important;
+}
+
+.fa-folder-plus {
+    font-size: 18px !important;
+}
+
+.drop-hint {
+    width: 160px;
+    height: 1px;
+    background: #333;
+}
+
+.plusFolder{
+    height: 23px;
+}
+
+.simpleFolder{
+    height: 17px;
+}

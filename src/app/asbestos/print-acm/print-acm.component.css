@@ -1,0 +1,22 @@
+/* .k-window-wrapper{
+    position: fixed !important;
+} */
+
+.asbestosDetailsDivP{
+    border: 1px solid #cccccc;
+    background-color:  #fcfcfc;
+}
+
+.detailDivp{
+    background-color: #d7d7d7;
+    font-weight: 600;
+    padding: 2px;
+}
+
+.fullDetailDiv span{
+    font-weight: 600;
+} 
+
+.sampleTable thead th{
+    border-left: 2px solid #f1f1f2 !important;
+}

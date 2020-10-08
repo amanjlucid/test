@@ -1,0 +1,127 @@
+.k-window-wrapper {
+    position: fixed !important;
+}
+
+.editAnswerHeader {
+    background: gainsboro;
+    /* font-size: 15px; */
+    font-weight: 600;
+    line-height: 1.6;
+    margin-top: -17px;
+    padding-top: 6px;
+    padding-bottom: 9px;
+    line-height: 1.6;
+}
+
+.fa-info-circle {
+    margin-left: 10px;
+    height: 20px;
+    font-size: 16px;
+    margin-top: 9px;
+}
+
+.spellChecker {
+    margin-left: 16px;
+    border: 1px solid #a59f9f;
+    width: 40px;
+    margin-top: 3px;
+    min-width: 40px;
+    cursor: pointer !important;
+}
+
+.spellTxt {
+    font-family: Arial, sans-serif;
+    font-size: 0.8em;
+    top: -6px;
+    left: 1px;
+}
+
+.displayInherit{
+    display: inherit;
+}
+
+.locationInp{
+    width: 59%;
+}
+
+.foorLbl{
+    margin-right: 24px;
+}
+
+.formDiv{
+    padding: 10px 25px;
+    border: 1px solid #dfdfdf;
+}
+
+.rightCheck {
+    margin-top: 6px;
+    color: green;
+}
+
+.group1, .group2, .group3, .group4, .group5{
+    border: 1px solid #dfdfdf;
+    padding: 5px;
+}
+
+.col-form-label{
+    font-weight: 600;
+}
+
+.inpFull{
+    width: 100% !important;
+}
+
+.actionBtn button{
+    margin-left: 5px;
+}
+
+.form-control{
+    min-height: 34px;
+    height: 35px;
+}
+
+.modifiedDetail {
+    display: inherit;
+}
+
+.modifiedDetail input, .modifiedDetail label {
+    margin-right: 10px;
+}
+
+.modifiedDetail label{
+    width: 80%;
+}
+
+.formDiv{
+    max-height: 737px;
+    overflow-y: auto;
+}
+
+.invalid-feedback{
+    display: block;
+}
+
+.fixLbl{
+    width: 97px;
+}
+
+.flLbl{
+    width: 98px;
+}
+
+.flSelect, .probSelect{
+    width: 59%;
+}
+
+.postponedBtn{
+    margin-right: 26px
+}
+
+.workLbl{
+    width: 165px;
+    text-align: right;
+}
+
+.errorAssDate{
+    padding-left: 70px !important   ;
+}

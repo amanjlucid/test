@@ -1,0 +1,46 @@
+.k-window-wrapper {
+    position: fixed !important;
+}
+
+.asbestosMangeDetailsDiv {
+    border: 1px solid #cccccc;
+    background-color: #fcfcfc;
+}
+
+.mangeDetailDiv {
+    background-color: #d7d7d7;
+    font-weight: 600;
+    padding: 2px;
+}
+
+.fullDetailManagementDiv span {
+    font-weight: 600;
+}
+
+/* .fullDetailManagementDiv, .asbestosMangeDetailsDiv {
+    padding: 5px;
+} */
+
+.fullDetailManagementDiv{
+    padding: 0px 5px;
+}
+
+.requestTableHeader {
+    background-color: #070627;
+    height: 44px;
+    padding: 13px 0px 5px 19px;
+    color: white;
+}
+
+p {
+    min-height: 20px;
+}
+
+.asbestosDetailDiv{
+    padding: 13px 7px;
+    text-align: center;
+}
+
+.asbestosDetailDiv p{
+    font-weight: 600;
+}

@@ -1,0 +1,14 @@
+<kendo-window title="{{title}}" *ngIf="viewImage" (close)="closeViewImageMethod()" [top]="10" [minWidth]="700"
+  [width]="780" [height]="auto" [minHeight]="300">
+  <div class="row">
+    <div class="col-md-12 imageDiv" *ngIf="imageStr">
+      <img class="imgCl" [src]="getImg(imageStr)">
+    </div>
+  </div>
+  <div class="row mt-2">
+    <div class="col-md-12 text-right">
+      <button type="button" class="btn btn-sm themeButton clsBtn" (click)="closeViewImageMethod()">Close</button>
+    </div>
+
+  </div>
+</kendo-window>

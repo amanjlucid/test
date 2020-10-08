@@ -1,0 +1,72 @@
+/* .assetAttr{
+    width:800px;
+} */
+
+.assetDetail{
+    background-color: #eaeaea;
+    padding: 15px 0px 12px 10px;
+    border-radius: 2px;
+    margin-top:-8px;
+}
+
+.k-window-wrapper{
+    position: fixed !important;
+}
+
+.buttonDiv button{
+    margin-left: 5px;
+    margin-top: 15px;
+}
+
+.assetDetail p{
+    font-weight: 600;
+}
+
+.workHeading{
+    margin-bottom: 3px;
+    font-weight: 600;
+}
+
+.underline{
+    border-bottom: 1px solid #e7e5e6;
+    margin-bottom: 11px;
+}
+
+.workDetailDivFull{
+    font-size: 12px;
+}
+
+.workDetailDivFull{
+    margin-top: -14px;
+    
+    /* overflow: scroll; */
+}
+
+.workDetailDivFull input[type=text]{
+    font-size: 12px;
+    min-height: 0px;
+    height: 28px !important;
+}
+
+.workDetailDivFull textarea{
+    min-height: 38px !important;
+}
+
+.wagInput{
+    max-width:152px;
+    margin-left:2%;
+}
+
+
+
+
+/* .workDetailDivFull .form-control{
+    min-height: 0px;
+    height: 28px !important;
+} */
+
+
+
+/* .k-window-content{
+    padding-top:4px;
+} */

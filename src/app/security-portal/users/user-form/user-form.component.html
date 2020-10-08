@@ -1,0 +1,229 @@
+<kendo-window title="{{windowTitle}}" [(width)]="windowWidth" [minWidth]="250" *ngIf="userFormWindow"
+  (close)="closeUserFormWindow()">
+  <div class="flex-grow-1 userFrm">
+
+    <form [formGroup]="userForm" (ngSubmit)="onSubmit()" autocomplete="off">
+      <div class="form-row">
+        <div class="form-group col-md-12">
+          <div class="form-row">
+            <label class="col-md-1">Status</label>
+            <div class="col-md-4">
+              <label class="switcher">
+                <input type="checkbox" class="switcher-input" formControlName="status"
+                  [ngClass]="{ 'is-invalid': submitted && formErrors.status }">
+                <span class="switcher-indicator">
+                  <span class="switcher-yes"><span class="ion ion-md-checkmark"></span></span>
+                  <span class="switcher-no"><span class="ion ion-md-close"></span></span>
+                </span>
+
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group col-md-6">
+          <label class="form-label">User</label>
+          <input [readonly]="readInput" oninput="this.value = this.value.toUpperCase()" type="text" class="form-control"
+            placeholder="User" formControlName="user" [ngClass]="{ 'is-invalid': submitted && formErrors.user }">
+
+          <div *ngIf="submitted && formErrors.user" class="invalid-feedback">
+            <div *ngIf="formErrors.user">{{ formErrors.user }}</div>
+          </div>
+        </div>
+        <div class="form-group col-md-6">
+          <label class="form-label">Name</label>
+          <input type="text" class="form-control" placeholder="Name" formControlName="name"
+            [ngClass]="{ 'is-invalid': submitted && formErrors.name }">
+
+          <div *ngIf="submitted && formErrors.name" class="invalid-feedback">
+            <div *ngIf="formErrors.name">{{ formErrors.name }}</div>
+          </div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label class="form-label">Login Type</label>
+          <select class="custom-select" formControlName="loginType"
+            [ngClass]="{ 'is-invalid': submitted && formErrors.loginType }">
+            <option value="S">Standard Apex</option>
+            <option value="A">Active Directory</option>
+          </select>
+
+          <div *ngIf="submitted && formErrors.loginType" class="invalid-feedback">
+            <div *ngIf="formErrors.loginType">{{ formErrors.loginType }}</div>
+          </div>
+        </div>
+        <div class="form-group col-md-6">
+          <label class="form-label">User Type</label>
+          <select class="custom-select" formControlName="userType"
+            [ngClass]="{ 'is-invalid': submitted && formErrors.userType }">
+            <option value="E">External</option>
+            <option value="I">Internal</option>
+
+          </select>
+          <div *ngIf="submitted && formErrors.userType" class="invalid-feedback">
+            <div *ngIf="formErrors.userType">{{ formErrors.userType }}</div>
+          </div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label class="form-label">Password</label>
+          <input type="password" class="form-control" placeholder="Password" formControlName="password"
+            [ngClass]="{ 'is-invalid': submitted && formErrors.password }">
+
+          <div *ngIf="submitted && formErrors.password" class="invalid-feedback">
+            <div *ngIf="formErrors.password">{{ formErrors.password }}</div>
+          </div>
+        </div>
+        <div class="form-group col-md-6" id="contractorDiv"
+          [style.display]="selectedUser ? selectedUser.userType == 'Internal' ? 'none':'':''">
+          <label class="form-label">Contractor</label>
+          <!-- <input type="text" class="form-control" placeholder="Contractor" formControlName="contractor"
+            [ngClass]="{ 'is-invalid': submitted && formErrors.contractor }"> -->
+          <select class="form-control" formControlName="contractor"
+            [ngClass]="{ 'is-invalid': submitted && formErrors.contractor }">
+            <option value="">Select Contractor</option>
+            <option [value]="contractor" *ngFor="let contractor of contractorList">{{contractor}}</option>
+          </select>
+
+          <div *ngIf="submitted && formErrors.contractor" class="invalid-feedback">
+            <div *ngIf="formErrors.contractor">{{ formErrors.contractor }}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label class="form-label">Login Allowed?</label>
+          <select class="custom-select" formControlName="loginAllowed"
+            [ngClass]="{ 'is-invalid': submitted && formErrors.loginAllowed }">
+            <option value="Y">Yes</option>
+            <option value="N">No</option>
+            <option value="C">Change Password</option>
+
+          </select>
+        </div>
+
+        <div class="form-group col-md-6">
+          <div class="form-row" style="padding-top:32px;">
+            <label class="col-md-8">Administrators Rights</label>
+            <div class="col-md-4">
+              <label class="switcher">
+                <input type="checkbox" class="switcher-input" formControlName="administratorsRight"
+                  [ngClass]="{ 'is-invalid': submitted && formErrors.administratorsRight }">
+                <span class="switcher-indicator">
+                  <span class="switcher-yes"><span class="ion ion-md-checkmark"></span></span>
+                  <span class="switcher-no"><span class="ion ion-md-close"></span></span>
+                </span>
+
+              </label>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group col-md-4">
+          <label class="form-label">Password Duration</label>
+          <input type="text" class="form-control" placeholder="Password Duration in days"
+            formControlName="passwordDuration" [ngClass]="{ 'is-invalid': submitted && formErrors.passwordDuration }">
+
+          <div *ngIf="submitted && formErrors.passwordDuration" class="invalid-feedback">
+            <div *ngIf="formErrors.passwordDuration">{{ formErrors.passwordDuration }}</div>
+          </div>
+        </div>
+        <div class="form-group col-md-4">
+          <label class="form-label">Last Changed Date</label>
+          <input [readonly]="readInput" type="text" class="form-control" placeholder="Last Changed Date"
+            formControlName="lastChargeDate" [ngClass]="{ 'is-invalid': submitted && formErrors.lastChargeDate }">
+
+          <div *ngIf="submitted && formErrors.lastChargeDate" class="invalid-feedback">
+            <div *ngIf="formErrors.lastChargeDate">{{ formErrors.lastChargeDate }}</div>
+          </div>
+        </div>
+        <div class="form-group col-md-4">
+          <label class="form-label">Maximum Login Attempts</label>
+          <input type="text" class="form-control" placeholder="Maximum Login Attempts" formControlName="maxLoginAttempt"
+            [ngClass]="{ 'is-invalid': submitted && formErrors.maxLoginAttempt }">
+
+          <div *ngIf="submitted && formErrors.maxLoginAttempt" class="invalid-feedback">
+            <div *ngIf="formErrors.maxLoginAttempt">{{ formErrors.maxLoginAttempt }}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group col-md-8">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-control" placeholder="Email" formControlName="email"
+            [ngClass]="{ 'is-invalid': submitted && formErrors.email }">
+
+          <div *ngIf="submitted && formErrors.email" class="invalid-feedback">
+            <div *ngIf="formErrors.email">{{ formErrors.email }}</div>
+          </div>
+        </div>
+
+
+      </div>
+
+      <div class="form-row">
+        <div class="form-group col-md-4">
+          <div class="form-row" style="padding-top:32px;">
+            <label class="col-md-8">DEA</label>
+            <div class="col-md-4">
+              <label class="switcher">
+                <input type="checkbox" class="switcher-input" placeholder="DEA" formControlName="dea"
+                  [ngClass]="{ 'is-invalid': submitted && formErrors.dea }">
+                <span class="switcher-indicator">
+                  <span class="switcher-yes"><span class="ion ion-md-checkmark"></span></span>
+                  <span class="switcher-no"><span class="ion ion-md-close"></span></span>
+                </span>
+
+              </label>
+            </div>
+
+            <div *ngIf="submitted && formErrors.dea" class="invalid-feedback">
+              <div *ngIf="formErrors.dea">{{ formErrors.dea }}</div>
+            </div>
+          </div>
+
+
+        </div>
+
+        <div class="form-group col-md-4">
+          <label class="form-label">Accreditation Number</label>
+          <input type="text" class="form-control" placeholder="Accreditation Number"
+            formControlName="accreditationNumber"
+            [ngClass]="{ 'is-invalid': submitted && formErrors.accreditationNumber }">
+
+          <div *ngIf="submitted && formErrors.accreditationNumber" class="invalid-feedback">
+            <div *ngIf="formErrors.accreditationNumber">{{ formErrors.accreditationNumber }}</div>
+          </div>
+        </div>
+        <div class="form-group col-md-4">
+          <label class="form-label">DEA Password</label>
+          <input type="password" class="form-control" placeholder="DEA Password" formControlName="deaPassword"
+            [ngClass]="{ 'is-invalid': submitted && formErrors.deaPassword }">
+
+          <div *ngIf="submitted && formErrors.deaPassword" class="invalid-feedback">
+            <div *ngIf="formErrors.deaPassword">{{ formErrors.deaPassword }}</div>
+          </div>
+        </div>
+
+
+
+      </div>
+
+      <div class="buttonDiv pull-right">
+        <button type="button" (click)="closeUserFormWindow()" class="btn btn-sm">Cancel</button>
+        <button type="submit"  class="btn btn-sm newBtn">Ok</button>
+        <!-- <button type="button" (click)="refreshForm()" class="btn btn-sm btn-outline-secondary themeButton">Refresh</button> -->
+
+      </div>
+    </form>
+
+
+  </div>
+</kendo-window>

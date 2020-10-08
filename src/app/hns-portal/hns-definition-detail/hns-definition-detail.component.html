@@ -1,0 +1,102 @@
+<kendo-window title="{{title}}" *ngIf="definitionDetailIsTrue"
+  (close)="closeDefinitionDetail()" [top]="10" [minWidth]="400" [width]="800" [height]="auto" [minHeight]="500">
+  <div class="row">
+    <div class="col-md-12 detailHeading text-center">
+      <h4><span>Definition: {{selectedDefinition?.hascode}} ({{selectedDefinition?.hasversion}})
+          {{selectedDefinition?.hasname}}</span></h4>
+    </div>
+
+   
+      <div class="col-md-12">
+        <div class="kendoTreeM" (contextmenu)="nodeClick($event)">
+          <kendo-treeview #treeview kendoTreeViewExpandable [expandBy]="'text'" [expandedKeys]="expandedKeys"
+            [nodes]="definitionDetails" [textField]="'text'" kendoTreeViewHierarchyBinding [childrenField]="'items'"
+            kendoTreeViewDragAndDrop kendoTreeViewDragAndDropEditing kendoTreeViewSelectable
+            (nodeClick)="onNodeClick($event)" (nodeDragStart)="log('nodeDragStart', $event)"
+            (nodeDrag)="log('nodeDrag', $event)" (nodeDrop)="handleDrop($event)" (addItem)="log('addItem', $event)"
+            (removeItem)="log('removeItem', $event)" (nodeDragEnd)="log('nodeDragEnd', $event)" (contextmenu)="nodeClick($event)">
+            <ng-template kendoTreeViewNodeTemplate let-dataItem >
+              <span [treeNodeColor]="dataItem" class="treeData k-icon fa fa-question-circle" *ngIf="isOfType(dataItem.elType, ['ques'], dataItem.hasrepeatable)"></span>
+
+              <img *ngIf="isOfType(dataItem.elType, ['group', 'heading'], dataItem.hasrepeatable)" class="simpleFolder" src="assets/img/icons/tree-folder.png">
+
+              <img *ngIf="isOfTpeGroup(dataItem.elType, ['group'], dataItem.hasrepeatable)" class="plusFolder" src="assets/img/icons/treefolder-add-icon.png">
+
+              
+             
+
+
+              <!-- <span class="treeData k-icon fa"
+                [ngClass]="[isOfType(dataItem.elType, ['ques'], dataItem.hasrepeatable) ? 'fa-question-circle' : '', isOfType(dataItem.elType, ['group', 'heading'], dataItem.hasrepeatable) ? 'fa-folder' : '',  isOfTpeGroup(dataItem.elType, ['group'], dataItem.hasrepeatable) ? 'fas fa-folder-plus' : '']"
+                [treeNodeColor]="dataItem"></span> -->
+
+              <span class="treeData textSpan"><b>{{ dataItem.sqstr }} </b> <b
+                  *ngIf="dataItem.elType == 'ques'">({{dataItem.hasquestioncode}})</b> {{ dataItem.text }}</span> 
+            </ng-template>
+            <ng-template *ngIf="selectedDefinition.hasinuse != 'Y'" kendoTreeViewDragClueTemplate let-action="action"
+              let-destinationItem="destinationItem" let-sourceItem="sourceItem" let-text="text">
+              [{{ getActionText(action, destinationItem, sourceItem) }}]: {{ text }}
+              <!-- <span class="k-drag-status k-icon" [ngClass]="getDragStatus(action, destinationItem)"></span>
+            <span>{{ text }}</span> -->
+              <ng-template kendoTreeViewDropHintTemplate>
+                <div class="drop-hint"></div>
+              </ng-template>
+            </ng-template>
+          </kendo-treeview>
+
+          <!-- <kendo-contextmenu #treemenu [items]="items" (select)="onSelect($event)">
+        </kendo-contextmenu> -->
+          <treeview-context-menu [for]="treeview" [selectedDefinition]="selectedDefinition" [menuItems]="treeMenuItems" (select)="onSelect($event)">
+          </treeview-context-menu>
+
+          <!-- <simple-context-menu *ngIf="simleContextMenu" [selectedDefinition]="selectedDefinition" [menuItems]="treeMenuItems" (select)="onSelect($event)"></simple-context-menu> -->
+
+          <simple-context-menu *ngIf="showSimpleContextMenu" [showSimpleContextMenu]="showSimpleContextMenu" [clickEvent]="clickEvent" [selectedDefinition]="selectedDefinition" [menuItems]="treeMenuItems" (hideContextMenu)="hideContextMenu($event)" (select)="onSelect($event)"></simple-context-menu>
+        </div>
+      </div>
+
+      <div class="col-md-12 mt-3">
+        <div class="actionBtn text-right">
+          <button type="button" class="btn btn-sm themeButton" (click)="closeDefinitionDetail()">Close</button>
+        </div>
+      </div>
+  
+
+  </div>
+
+  <div class="detailvieBlur"></div>
+
+  <app-hns-definition-group *ngIf="isCreateNewGrp" [disableActins]="disableActins" [isCreateNewGrp]="isCreateNewGrp" [defGrpFormMode]="defGrpFormMode"
+    [selectedDefinition]="selectedDefinition" [selectedNode]="selectedNode"
+    (isSuccessFullSubmit)="isSuccessFullSubmit($event)" (closeDefGrp)="closeDefGrp($event)">
+  </app-hns-definition-group>
+
+  <app-hns-definition-heading *ngIf="isOpenDefHeading" [disableActins]="disableActins" [isOpenDefHeading]="isOpenDefHeading"
+    [defGrpFormMode]="defGrpFormMode" [selectedDefinition]="selectedDefinition" [selectedNode]="selectedNode"
+    (isSuccessFullSubmit)="isSuccessFullSubmit($event)" (closeDefHeading)="closeDefHeading($event)" [nodeMap]="nodeMap">
+  </app-hns-definition-heading>
+
+  <app-hns-definition-question *ngIf="isQuestionOpen" [isQuestionOpen]="isQuestionOpen" [disableActins]="disableActins" [defGrpFormMode]="defGrpFormMode" [selectedDefinition]="selectedDefinition" [selectedNode]="selectedNode"
+  (isSuccessFullSubmit)="isSuccessFullSubmit($event)" (closeDefQuestion)="closeDefQuestion($event)" [nodeMap]="nodeMap"></app-hns-definition-question>
+
+  <app-hns-template-issue *ngIf="templateIssueOpen" [templateIssueOpen]="templateIssueOpen" [selectedNode]="selectedNode" (closeTemplateIssue)="closeTemplateIssue($event)"></app-hns-template-issue>
+
+  <app-hns-template-action *ngIf="templateActionOpen" [templateActionOpen]="templateActionOpen" [selectedNode]="selectedNode" (closeTemplateAction)="closeTemplateAction($event)"></app-hns-template-action>
+
+  <app-hns-edit-scoring-rules *ngIf="scoringRulesOpen" [scoringRulesOpen]="scoringRulesOpen" [selectedDefinition]="selectedDefinition" [selectedNode]="selectedNode" [nodeMap]="nodeMap" (closeScoringRules)="closeScoringRules($event)"></app-hns-edit-scoring-rules>
+
+
+  <kendo-dialog title="Please confirm" *ngIf="isOpenNewGrpDialog" (close)="closeDialog('cancel')" [minWidth]="250"
+    [width]="450">
+    <p style="margin: 30px; text-align: center;">No existing Health and Safety Definition detail. Add new Group?</p>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="actionBtn text-right">
+          <button class="btn btn-sm themeButton mr-1" (click)="closeDialog('no')">No</button>
+          <button class="btn btn-sm themeButton" (click)="closeDialog('yes')">Yes</button>
+        </div>
+      </div>
+    </div>
+  </kendo-dialog>
+
+</kendo-window>

@@ -1,1 +1,567 @@
 /* You can add global styles to this file, and also import other style files */
+
+@import "assets/vendor/fonts/fontawesome.css";
+@import "assets/vendor/fonts/ionicons.css";
+@import "assets/vendor/fonts/linearicons.css";
+@import "assets/vendor/fonts/open-iconic.css";
+@import "assets/vendor/fonts/pe-icon-7-stroke.css";
+@import "assets/css/demo.css";
+@import "assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css";
+@import "assets/vendor/libs/datatables/datatables.css";
+@import "assets/vendor/css/pages/authentication.css";
+@import "assets/css/MyFontsWebfontsKit.css";
+@import "assets/css/mini-event-calendar.min.css";
+@import "assets/css/goldenlayout-base.css";
+@import "assets/css/goldenlayout-light-theme.css";
+/* @import "assets/css/tabelizer.min.css"; */
+
+body {
+    font-family: 'MuseoSansRounded-300', sans-serif;
+}
+
+.MuseoSansRounded-300 {
+    font-family: MuseoSansRounded-300;
+}
+
+.MuseoSansRounded-900 {
+    font-family: MuseoSansRounded-900;
+}
+
+.MuseoSansRounded-500 {
+    font-family: MuseoSansRounded-500;
+}
+
+.MuseoSansRounded-100 {
+    font-family: MuseoSansRounded-100;
+}
+
+.MuseoSansRounded-1000 {
+    font-family: MuseoSansRounded-1000;
+}
+
+.MuseoSansRounded-700 {
+    font-family: MuseoSansRounded-700;
+}
+
+.MuseoSansRounded-700Italic {
+    font-family: MuseoSansRounded-700Italic;
+}
+
+.MuseoSansRounded-900Italic {
+    font-family: MuseoSansRounded-900Italic;
+}
+
+.MuseoSansRounded-1000Italic {
+    font-family: MuseoSansRounded-1000Italic;
+}
+
+.MuseoSansRounded-300Italic {
+    font-family: MuseoSansRounded-300Italic;
+}
+
+.MuseoSansRounded-500Italic {
+    font-family: MuseoSansRounded-500Italic;
+}
+
+.MuseoSansRounded-100Italic {
+    font-family: MuseoSansRounded-100Italic;
+}
+
+.sidbarDiv {
+    background-color: #070627 !important;
+}
+
+.form-label {
+    font-weight: 500;
+}
+
+.d-it {
+    display: inline-table;
+}
+
+/* table css */
+
+thead th {
+    font-weight: 600!important;
+}
+
+.bgColor {
+    background-color: #070627;
+}
+
+.k-dialog-titlebar {
+    background-color: #070627;
+}
+
+/* global popup design */
+
+.k-dialog {
+    background-color: #f8f8f8 !important;
+}
+
+.page-item.active .page-link, .page-item.active .page-link:hover, .page-item.active .page-link:focus, .pagination li.active>a:not(.page-link), .pagination li.active>a:not(.page-link):hover, .pagination li.active>a:not(.page-link):focus {
+    border-color: #e4287e !important;
+    background-color: #e4287e !important;
+    color: #fff !important;
+}
+
+.k-grid-header .k-grid-filter.k-state-active {
+    background-color: #e4287e !important;
+}
+
+.custom-control.custom-checkbox .custom-control-input:indeterminate~.custom-control-label::before, .custom-control.custom-checkbox .custom-control-input:checked~.custom-control-label::before, .custom-control.custom-radio .custom-control-input:checked~.custom-control-label::before {
+    border-color: #e4287e;
+    background-color: #e4287e;
+}
+
+.bg-primary {
+    background-color: #e4287e!important;
+}
+
+.btn-link {
+    color: #a3a4a6!important;
+}
+
+.ngb-dp-weekday {
+    color: rgba(24, 28, 33, 0.9)!important;
+    font-style: normal!important;
+}
+
+.ovrlay {
+    background: none repeat scroll 0 0 black;
+    position: fixed;
+    display: block;
+    opacity: 0.5;
+    z-index: 999;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+}
+
+tr.k-state-selected>td {
+    background-color: #d4cdcd!important;
+}
+
+tr.selected {
+    background-color: #cacaca !important;
+}
+
+.themeButton {
+    background-color: #e4287e;
+    border-color: #e4287e;
+    color: #fff;
+}
+
+.contentDiv .dataTables_scrollHeadInner {
+    width: auto !important;
+}
+
+.multiselect-dropdown {
+    font-size: .83125rem !important;
+}
+
+.multiselect-dropdown .dropdown-btn .dropdown-down {
+    border-top: 8px solid #adadad !important;
+    border-left: 8px solid transparent !important;
+    border-right: 8px solid transparent !important;
+}
+
+.multiselect-dropdown .dropdown-btn .dropdown-up {
+    border-bottom: 8px solid #adadad !important;
+    border-left: 8px solid transparent !important;
+    border-right: 8px solid transparent !important;
+}
+
+.multiselect-dropdown .dropdown-btn {
+    border: 1px solid rgba(24, 28, 33, 0.1) !important;
+}
+
+.dropdown-list ul:nth-child(2n) {
+    max-height: 180px !important;
+}
+
+.dt-buttons {
+    display: none !important;
+}
+
+/* 
+.emailReport .dropdown-list ul:nth-child(2n){
+    max-height: 197px !important;
+} */
+
+/* .dropdown-list{
+    position: inherit !important;
+} */
+
+.switcher-input:checked~.switcher-indicator {
+    background: #e4287e !important;
+    color: #fff;
+}
+
+.tabs-alt.nav-tabs .nav-link.active, .tabs-alt.nav-tabs .nav-link.active:hover, .tabs-alt.nav-tabs .nav-link.active:focus, .tabs-alt>.nav-tabs .nav-link.active, .tabs-alt>.nav-tabs .nav-link.active:hover, .tabs-alt>.nav-tabs .nav-link.active:focus {
+    box-shadow: 0 -2px 0 #e4287e inset !important;
+}
+
+.k-dialog-titlebar button:first-of-type {
+    display: none !important;
+}
+
+/* .groupTable .dataTables_scrollBody {
+    min-height: 25rem !important;
+} */
+
+.dataTables_scrollBody {
+    min-height: 25rem !important;
+}
+
+.attrListGrid .dataTables_scrollBody {
+    min-height: 295px !important;
+}
+
+.availableCharList .dataTables_scrollBody {
+    min-height: 450px !important;
+}
+
+.userTbl .dataTables_scrollBody {
+    min-height: 25rem !important;
+}
+
+.userTbl .dataTables_scroll {
+    height: 65vh;
+}
+
+.user_sec_grp .dataTables_scroll {
+    height: 62vh !important;
+}
+
+.groupTable .dataTables_scrollBody {
+    min-height: 25rem !important;
+}
+
+.functionSecurityWindow .dataTables_scrollBody {
+    min-height: 22rem !important;
+}
+
+.highcharts-credits {
+    display: none !important;
+}
+
+.dropdown-item:not(.disabled):active {
+    background-color: #e4287e;
+}
+
+#theme-settings {
+    display: none;
+}
+
+table {
+    cursor: default !important;
+}
+
+.filterAttrdiv select {
+    width: 145px !important;
+}
+
+#nesting-dropdown-demo button {
+    background-color: #e4287e;
+    color: white;
+}
+
+/* Asseet portal energy tab grid */
+
+.energyGrid .k-grid-header {
+    padding: 0 !important;
+}
+
+.energyGrid .k-grid-content {
+    overflow-y: visible;
+}
+
+.qualityDiv .k-grid-header .k-header:first-child .k-grid-filter {
+    padding: 0px !important;
+    margin: 0px !important;
+    width: 100% !important;
+    position: relative !important;
+    text-align: center !important;
+    margin-left: 5px !important;
+}
+
+.qualityDiv .k-grid-header .k-header:first-child .k-grid-filter:hover {
+    background-color: #f3f3f3!important;
+}
+
+.qualityDiv .k-grid-header .k-header:first-child .k-grid-filter .k-icon {
+    line-height: 33px !important;
+}
+
+.table-icon {
+    /* height: 14px; */
+    width: 16px;
+    padding: 0px 1px;
+    margin: 3px;
+    transform: rotate(45deg);
+}
+
+.inner-table-icon {
+    /* height: 18px; */
+    width: 17px;
+    transform: rotate(11deg);
+    margin-top: -7px;
+}
+
+.attachmentIcon {
+    margin-top: -20px;
+}
+
+.table-icon-wr {
+    /* height: 14px; */
+    width: 16px;
+    margin: 3px;
+}
+
+/** golden layout **/
+
+.lm_popout {
+    display: none !important;
+}
+
+.lm_selected .lm_header {
+    background-color: #cbc8c5;
+}
+
+.lm_header .lm_tab {
+    background: #e1e1e1 !important;
+}
+
+.lm_header .lm_tab.lm_active {
+    background: #ffffff !important;
+}
+
+.vert, .horz {
+    background-color: #ffffff !important;
+}
+
+.kendoTreeM .k-treeview .k-i-expand:before {
+    content: '\002B';
+}
+
+.kendoTreeM .k-treeview .k-i-collapse:before {
+    content: "\2212";
+}
+
+.kendoTreeM .k-icon.k-i-expand, .kendoTreeM .k-icon.k-i-collapse {
+    background: #b42a2a;
+    color: #fff;
+    text-align: center;
+    border-radius: 3px;
+    /* position: relative; */
+    z-index: 999;
+}
+
+.kendoTreeM .k-treeview .k-in {
+    margin-left: 6px;
+}
+
+.kendoTreeM .k-treeview-lines li:before {
+    position: absolute;
+    top: 0;
+    /* bottom: 18px; */
+    bottom: 14px;
+    left: -.5em;
+    display: block;
+    width: 0;
+    border-left: 1px solid #777;
+    content: "";
+}
+
+.kendoTreeM .k-treeview-lines .k-group .k-in:after {
+    position: absolute;
+    top: 12;
+    left: -36.5px;
+    display: block;
+    height: .5em;
+    width: 2em;
+    border-bottom: 1px solid #777;
+    /* border-left: 1px solid #777; */
+    border-radius: 0 0 0 .4em;
+    content: '';
+}
+
+.kendoTreeM .k-icon.k-i-collapse~.k-in:after, .kendoTreeM .k-icon.k-i-expand~.k-in:after {
+    border-bottom: none !important;
+    border-left: none !important;
+}
+
+.kendoTreeM .fa-folder, .kendoTreeM .fa-folder-plus {
+    color: #e1e147 !important;
+    font-size: 18px !important;
+}
+
+.kendoTreeM .textSpan {
+    margin-left: 5px;
+}
+
+.kendoTreeM .k-treeview .k-item {
+    padding: 6px 0px 0px 24px;
+}
+
+.kendoTreeM .k-icon {
+    width: 17px;
+    height: 17px;
+}
+
+span .spellChecker {
+    cursor: pointer !important;
+}
+
+app-dropdown+.k-action-buttons .k-button.k-primary {
+    display: none !important;
+}
+
+/* .fa-info-circle{
+    color: #eb589c;
+} */
+
+.fa-info-circle:hover {
+    color: #e4287e;
+}
+
+
+.historyRow{
+    background-color: #b2adad !important;
+}
+
+/* .kendoTreeM .fa-folder-plus{
+    font-size: 20px !important;
+} */
+
+/* .countDiv{height: 88% !important;}
+.lmGoldenLayout{height: 100% !important; width: 100% !important;}
+.goldenLayoutW_H100{width: 100% !important; height: 44% !important;} */
+
+/* .lm_item{
+    height: 330px !important;
+} */
+
+/* .crtAttFrm .k-content{
+    overflow: visible !important;
+} */
+
+/* css for treeview on h&s portal*/
+
+/* k-treeview .k-icon.k-i-collapse {
+    color: red;
+}
+
+.k-treeview .k-icon.k-i-expand {
+    color: blue;
+}
+
+.k-treeview .k-i-collapse:before {
+    content: "\2212";
+}
+
+.k-treeview .k-i-expand:before {
+    content: "\002B";
+}
+
+.k-treeview .k-top, .k-treeview .k-mid, .k-treeview .k-bot {
+    background-image: url('http://aspnet-skins.telerikstatic.com/mvc/2012.2.607/Default/treeview-nodes.png');
+    background-repeat: no-repeat;
+    margin-left: -16px;
+    padding-left: 16px;
+}
+
+.k-treeview .k-item {
+    background-image: url('http://aspnet-skins.telerikstatic.com/mvc/2012.2.607/Default/treeview-line.png');
+}
+
+.k-treeview .k-last {
+    background-image: none;
+}
+
+.k-treeview .k-top {
+    background-position: -91px 0;
+}
+
+.k-treeview .k-bot {
+    background-position: -69px -22px;
+}
+
+.k-treeview .k-mid {
+    background-position: -47px -37px;
+}
+
+.k-treeview .k-last .k-top {
+    background-position: -25px -66px;
+}
+
+.k-treeview .k-group .k-last .k-bot {
+    background-position: -69px -22px;
+}
+
+.k-treeview .k-item {
+    background-repeat: no-repeat;
+}
+
+.k-treeview .k-first {
+    background-repeat: no-repeat;
+    background-position: 0 16px;
+} */
+
+.red {
+    color: red !important;
+}
+
+.green {
+    color: green !important;
+}
+
+.actionGrid .k-grid td, .resAssessment .k-grid td {
+    white-space: nowrap !important;
+}
+
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+    .table-responsive {
+        /* display: block !important;
+       width: 100% !important;
+       overflow-x: hidden !important; 
+       -webkit-overflow-scrolling:touch !important; */
+        -ms-overflow-style: scrollbar !important;
+    }
+    .dataTables_wrapper.dt-bootstrap4 .row:last-child {
+        position: absolute;
+        width: 85%;
+        margin-top: 22px;
+    }
+}
+
+.display_none {
+    display: none;
+}
+
+.actionGrid kendo-grid-filter-cell-operators {
+    display: none!important;
+}
+
+/* .a-date.blurred {
+    display: none !important;
+} */
+
+/* show only logo when click on hide sidebar */
+
+@media (min-width: 992px) {
+    .layout-collapsed:not(.layout-offcanvas):not(.layout-fixed-offcanvas) .layout-sidenav:not(:hover) .app-brand-logo, .layout-collapsed:not(.layout-offcanvas):not(.layout-fixed-offcanvas) .layout-sidenav:not(:hover) .app-brand-text {
+        display: none !important;
+    }
+    .layout-collapsed:not(.layout-offcanvas):not(.layout-fixed-offcanvas) .layout-sidenav:not(:hover) .app-brand-logo, .layout-collapsed:not(.layout-offcanvas):not(.layout-fixed-offcanvas) .layout-sidenav:not(:hover) .brand-logo {
+        margin-left: 20px !important;
+    }
+}
+
+@media screen and (max-width: 769px) {
+    .k-window-wrapper {
+        left: 0px;
+    }
+}

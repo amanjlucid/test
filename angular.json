@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "my-app": {
+    "rowanwood": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/my-app",
+            "outputPath": "dist/rowanwood",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -24,9 +24,38 @@
               "src/assets"
             ],
             "styles": [
+              {
+                "input": "node_modules/@progress/kendo-theme-default/dist/all.css"
+              },
               "src/styles.css"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/jquery/dist/jquery.min.js",
+              "node_modules/jquery/dist/jquery.js",
+              "node_modules/datatables.net/js/jquery.dataTables.js",
+              "src/assets/vendor/libs/popper/popper.js",
+              "src/assets/vendor/js/bootstrap.js",
+              "src/assets/vendor/js/sidenav.js",
+              "src/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js",
+              "src/assets/vendor/libs/datatables/datatables.js",
+              "src/assets/js/demo.js",
+              "src/assets/vendor/js/dropdown-hover.js",
+              "src/assets/vendor/js/pace.js",
+              "src/assets/js/highcharts.js",
+              "src/assets/js/data.js",
+              "src/assets/js/drilldown.js",
+              "src/assets/js/ColReorderWithResize.js",
+              "src/assets/js/mini-event-calendar.min.js",
+              "src/assets/js/ui_tooltips.js",
+              "node_modules/jszip/dist/jszip.js",
+              "node_modules/datatables.net-buttons/js/dataTables.buttons.js",
+              "node_modules/datatables.net-buttons/js/buttons.colVis.js",
+              "node_modules/datatables.net-buttons/js/buttons.flash.js",
+              "node_modules/datatables.net-buttons/js/buttons.html5.js",
+              "node_modules/datatables.net-buttons/js/buttons.print.js",
+              "src/assets/js/goldenlayout.min.js",
+              "src/assets/js/jquery.tabelizer.js"
+            ]
           },
           "configurations": {
             "production": {
@@ -62,18 +91,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "my-app:build"
+            "browserTarget": "rowanwood:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "my-app:build:production"
+              "browserTarget": "rowanwood:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "my-app:build"
+            "browserTarget": "rowanwood:build"
           }
         },
         "test": {
@@ -93,32 +122,29 @@
             "scripts": []
           }
         },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": [
-              "tsconfig.app.json",
-              "tsconfig.spec.json",
-              "e2e/tsconfig.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
-          }
-        },
         "e2e": {
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "my-app:serve"
+            "devServerTarget": "rowanwood:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "my-app:serve:production"
+              "devServerTarget": "rowanwood:serve:production"
             }
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": "e2e/tsconfig.e2e.json",
+            "exclude": [
+              "**/node_modules/**"
+            ]
           }
         }
       }
-    }},
-  "defaultProject": "my-app"
+    }
+  },
+  "defaultProject": "rowanwood"
 }

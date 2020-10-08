@@ -1,0 +1,34 @@
+.k-window-wrapper {
+    position: fixed !important;
+}
+
+.defDetailDiv{
+    margin-top: -12px;
+}
+
+.detailHeadingDiv{
+    width: 100%;
+    /* text-align: center; */
+    background: #d7d7d7;
+    position: relative;
+    padding: 5px;
+    
+}
+
+.detailHeadingDiv span{
+    font-weight: 600;
+    font-size: 17px;
+}
+
+.actionAreaBtn button{
+    margin-left: 5px;
+}
+
+.fa-info-circle{
+    font-size: 17px;
+    margin-top: 9px;
+}
+
+.repblCheck{
+    width: 15px;
+}

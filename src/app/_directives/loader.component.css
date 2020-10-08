@@ -1,0 +1,52 @@
+.hidden {
+    visibility: hidden;
+  }
+  
+  .loader-overlay {
+    /* position: absolute;
+    background: none repeat scroll 0 0 black;
+    width: 100%;
+    z-index: 500000;
+    top: 0;
+    opacity: 0.5;
+    display: block;
+    height: 100%; */
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 10100;/*10001;*/
+    width: 100%;
+    height: 100%;
+    opacity: .5;
+    background: none repeat scroll 0 0 #000;
+   
+  }
+  .loader {
+    height: 4px;
+    width: 100%;
+    position: fixed; 
+    overflow: hidden;
+    background-color: #FFF;
+  }
+
+  .loader:before {
+    display: block;
+    position: absolute;
+    content: "";
+    left: -200px;
+    width: 200px;
+    height: 4px;
+    background-color: #e4287e;
+    animation: loading 2s linear infinite;
+  }
+  
+  @keyframes loading {
+    from {left: -200px; width: 30%;}
+    50% {width: 30%;}
+    70% {width: 70%;}
+    80% {left: 50%;}
+    95% {left: 120%;}
+    to {left: 100%;}
+  }
+
+

@@ -1,0 +1,204 @@
+<kendo-window title="{{title}}" *ngIf="showInfoEditAns" (close)="closeInfoAns()" [top]="10" [minWidth]="700"
+  [width]="990" [height]="auto" [minHeight]="300">
+
+  <div class="row editAnswerHeader">
+    <div class="col-md-12">
+      <div class="row">
+        <div class="col-md-2">
+          <span class="left">Group:</span>
+        </div>
+        <div class="col-md-10">
+          <span class="right">{{selectedAction?.hasgroupname}} - {{selectedAction?.hasheadingname}}</span>
+        </div>
+
+        <div class="col-md-2">
+          <span class="left">Question Code:</span>
+        </div>
+        <div class="col-md-10">
+          <span class="right">{{selectedAction?.hasquestioncode}}</span>
+        </div>
+
+        <div class="col-md-2">
+          <span class="left">Question:</span>
+        </div>
+        <div class="col-md-10">
+          <span class="right">{{selectedAction?.hasquestiontext}}</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <form [formGroup]="editAnsForm" (ngSubmit)="onSubmit()" autocomplete="off">
+    <div class="row mt-3">
+      <div class="col-md-2 text-right">
+        <label class="col-form-label">Answer</label>
+      </div>
+
+      <div class="col-md-6 disInherit">
+        <input [readonly]="answerReadonly" type="text" class="form-control" formControlName="answer">
+        <i title="Answer to an Information Question." class="fas fa-info-circle d-block inputI"></i>
+        <span *ngIf="charData?.infoDataType == 'C'" class="fa-stack spellChecker" (click)="openSpellingCheck('answer', charData.chaType)">
+            <i class="fa fa-check fa-stack-1x rightCheck"></i>
+            <i class="fa fa-stack-1x spellTxt">ABC</i>
+        </span>
+      </div>
+
+      <div class="col-md-3">
+        <input [(ngModel)]="answerVal" [ngModelOptions]="{standalone: true}" (ngModelChange)="setAnsValue($event)"
+          *ngIf="charData?.infoDataType == 'D'" type="text" class="form-control" (click)="openCalendar(s)"
+          [minDate]="{year: 1800, month: 1, day: 1}" ngbDatepicker #s="ngbDatepicker" autocomplete="off">
+
+        <select class="form-control" *ngIf="charData?.chaType == 'F'" [(ngModel)]="answerVal" [ngModelOptions]="{standalone: true}" (ngModelChange)="setAnsValue($event)">
+          <option *ngFor="let fixedTypeVal of fixedTypeValue" value="{{fixedTypeVal.chaText}}">{{fixedTypeVal.chaText}}
+          </option>
+        </select>
+      </div>
+
+    </div>
+
+    <div class="row mt-1">
+      <div class="col-md-2 text-right">
+        <label class="col-form-label">Location</label>
+      </div>
+
+      <div class="col-md-6 disInherit">
+        <input type="text" class="form-control" formControlName="location">
+        <i title="The location to which answer relates." class="fas fa-info-circle d-block inputI"></i>
+        <span class="fa-stack spellChecker" (click)="openSpellingCheck('location')">
+            <i class="fa fa-check fa-stack-1x rightCheck"></i>
+            <i class="fa fa-stack-1x spellTxt">ABC</i>
+        </span>
+      </div>
+
+    </div>
+
+    <div class="row mt-1">
+      <div class="col-md-2 text-right">
+        <label class="col-form-label">Floor</label>
+      </div>
+
+      <div class="col-md-5 disInherit">
+        <select class="form-control" formControlName="floor">
+          <option *ngFor="let fl of floorDrp; let i = index" value="{{floorDrp[i]}}">{{floorDrp[i]}}</option>
+        </select>
+        <i title="The Floor to which answer relates." class="fas fa-info-circle d-block inputI"></i>
+
+      </div>
+
+    </div>
+
+    <div class="row mt-1">
+      <div class="col-md-2 text-right">
+        <label class="col-form-label">Comments</label>
+      </div>
+
+      <div class="col-md-9 disInherit">
+        <textarea class="form-control" formControlName="comments"></textarea>
+        <i title="Additional information/comments." class="fas fa-info-circle d-block inputI"></i>
+        <span class="fa-stack spellChecker" (click)="openSpellingCheck('comments')">
+            <i class="fa fa-check fa-stack-1x rightCheck"></i>
+            <i class="fa fa-stack-1x spellTxt">ABC</i>
+        </span>
+      </div>
+    </div>
+
+    <div class="sepSec">
+      <div class="row mt-2">
+        <div class="col-md-2 text-right">
+          <label class="col-form-label fnwieght">Characteristic</label>
+        </div>
+        <div class="col-md-10 disInherit">
+          <input type="text" class="form-control chCol1" formControlName="charone" [readonly]="readonly">
+          <input type="text" class="form-control chCol2" formControlName="chartwo" [readonly]="readonly">
+        </div>
+      </div>
+    </div>
+
+    <div class="sepSec">
+      <div class="row mt-2">
+        <div class="col-md-2 text-right">
+          <label class="col-form-label fnwieght">Assessor</label>
+        </div>
+        <div class="col-md-4 disInherit">
+          <input type="text" class="form-control" formControlName="assessor" [readonly]="readonly">
+        </div>
+        <div class="col-md-2 text-right">
+          <label class="col-form-label fnwieght">Assessment Date</label>
+        </div>
+        <div class="col-md-4 disInherit">
+          <input type="text" class="form-control" formControlName="assessmentDate" [readonly]="readonly"
+            (click)="openCalendar(s, 'assessmentDate')" [minDate]="{year: 1800, month: 1, day: 1}" ngbDatepicker
+            #s="ngbDatepicker" autocomplete="off">
+        </div>
+      </div>
+
+      <div class="row mt-1">
+        <div class="col-md-2 text-right">
+          <label class="col-form-label fnwieght">Assessment Ref</label>
+        </div>
+        <div class="col-md-4 disInherit">
+          <input type="text" class="form-control" formControlName="assessmentRef" [readonly]="readonly">
+        </div>
+
+      </div>
+    </div>
+
+
+    <div class="sepSec">
+      <div class="row mt-2">
+        <div class="col-md-2 text-right">
+          <label class="col-form-label">Created By</label>
+        </div>
+        <div class="col-md-4 disInherit">
+          <input type="text" class="form-control" [readonly]="readonly" [value]="modifiedProp.createdBy">
+        </div>
+        <div class="col-md-2 text-right">
+          <label class="col-form-label">Modified By</label>
+        </div>
+        <div class="col-md-4 disInherit">
+          <input type="text" class="form-control" [readonly]="readonly"
+            [value]="modifiedProp.createdDate | dateFormat : 'DD-MMM-YYYY'">
+        </div>
+      </div>
+      <div class="row mt-1">
+        <div class="col-md-2 text-right">
+          <label class="col-form-label">Created Date</label>
+        </div>
+        <div class="col-md-4 disInherit">
+          <input type="text" class="form-control" [readonly]="readonly" [value]="modifiedProp.modifiedBy">
+        </div>
+        <div class="col-md-2 text-right">
+          <label class="col-form-label">Modified Date</label>
+        </div>
+        <div class="col-md-4 disInherit">
+          <input type="text" class="form-control" [readonly]="readonly"
+            [value]="modifiedProp.modifiedDate | dateFormat : 'DD-MMM-YYYY'">
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6 text-left">
+        <button type="button" *ngIf="hnsPermission.indexOf('Images') != -1" class="btn btn-sm themeButton"
+          (click)="viewImage()">Answer Image(s)...</button>
+      </div>
+
+      <div class="col-md-6 text-right">
+        <button type="submit" class="btn btn-sm themeButton" [disabled]="viewOnly">Ok</button>
+        <button type="button" class="btn btn-sm themeButton ml-1" (click)="closeInfoAns()">Cancel</button>
+      </div>
+    </div>
+
+  </form>
+  <div class="editInfoAnsOvrlay"></div>
+
+  <app-hns-res-ans-image *ngIf="showImage" [showImage]="showImage" [isAssessment]="isAssessment"
+    [selectedAction]="selectedAction" [rootAction]="selectedAction" [imageFor]="'ans'"
+    (closerImage)="closerImage($event)"></app-hns-res-ans-image>
+
+
+  <app-spell-checker *ngIf="openSpellChecker" [openSpellChecker]="openSpellChecker" [textId]="textId"
+    [textString]="textString" (closeSpellChecker)="closeSpellChecker($event)"
+    (textStringReturn)="textStringReturn($event)"></app-spell-checker>
+</kendo-window>

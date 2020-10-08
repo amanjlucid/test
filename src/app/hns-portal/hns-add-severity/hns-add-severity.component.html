@@ -1,0 +1,86 @@
+<kendo-window title="{{title}}" *ngIf="opneAddSeverity" (close)="closeSeverityMethod()" [top]="30" [minWidth]="400"
+  [width]="550" [height]="auto" [minHeight]="200">
+  <form class="difinitionForm" [formGroup]="formGrp" (ngSubmit)="onSubmit()" autocomplete="off">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-md-3 text-right">
+            <label class="col-form-label">Severity Code</label>
+          </div>
+
+          <div class="col-md-5">
+            <div class="wrapdiv">
+              <input #firstInp style="text-transform:uppercase" [readonly]="formMode == 'view' || formMode == 'edit'" type="text"
+                [ngClass]="{ 'is-invalid': submitted && formErrors.hasseveritycode }" class="form-control" formControlName="hasseveritycode"
+                [ngClass]="{ 'is-invalid': submitted && formErrors.hasseveritycode }">
+              <i title="20 Character long code representing specific Severity Code."
+                class="fas fa-info-circle d-block"></i>
+            </div>
+
+            <div *ngIf="submitted && formErrors.hasseveritycode" class="invalid-feedback">
+              <div *ngIf="formErrors.hasseveritycode">{{ formErrors.hasseveritycode }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-2">
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-md-3 text-right">
+            <label class="col-form-label">Description</label>
+          </div>
+          <div class="col-md-9">
+            <div class="wrapdiv">
+              <input #secondInp [readonly]="formMode == 'view'" type="text" class="form-control" formControlName="hasseveritydesc"
+                [ngClass]="{ 'is-invalid': submitted && formErrors.hasseveritydesc }"><i
+                title="Description of Severity Level." class="fas fa-info-circle d-block"></i>
+            </div>
+
+            <div *ngIf="submitted && formErrors.hasseveritydesc" class="invalid-feedback">
+              <div *ngIf="formErrors.hasseveritydesc">{{ formErrors.hasseveritydesc }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+
+    <div class="row mt-2">
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-md-3 text-right">
+            <label class="col-form-label">Severity Score</label>
+          </div>
+          <div class="col-md-5">
+            <div class="wrapdiv">
+              <input (keypress)="numberOnly($event)" [readonly]="true" type="text" class="form-control"
+                formControlName="hasseverityscore" [ngClass]="{ 'is-invalid': submitted && formErrors.hasseverityscore }"><i
+                title="Severity Score Value." class="fas fa-info-circle d-block"></i>
+            </div>
+
+            <div *ngIf="submitted && formErrors.hasseverityscore" class="invalid-feedback">
+              <div *ngIf="formErrors.hasseverityscore">{{ formErrors.hasseverityscore }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+   
+
+    <div class="row mt-3">
+      <div class="col-md-12 text-right actionArea">
+        <button type="button" class="btn btn-sm themeButton" (click)="onSubmit('another')"
+          *ngIf="formMode == 'add' && hnsPermission.indexOf('Create Another Severity') != -1">Create Another</button>
+        <button type="submit" class="btn btn-sm themeButton">OK</button>
+        <button type="button" class="btn btn-sm themeButton" (click)="closeSeverityMethod()">Cancel</button>
+      </div>
+    </div>
+
+  </form>
+
+
+</kendo-window>

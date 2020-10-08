@@ -1,0 +1,277 @@
+<div class="container-fluid flex-grow-1 container-p-y">
+    <div class="row">
+        <div class="col-md-2 col-sm-3">
+            <h4 class="font-weight-bold py-3 mb-1">
+                <!-- <span class="text-muted font-weight-light">Assets/</span> Assets -->
+                Definitions
+            </h4>
+        </div>
+
+        <div class="col-md-10 col-sm-9 ">
+            <button (click)="openHnsForm('new')" class="pull-right btn btn-sm themeButton mt-3"
+                *ngIf="hnsPermission.indexOf('New') != -1">New
+            </button>
+        </div>
+
+        <!-- <div class="col-md-1 col-sm-12"></div> -->
+
+    </div>
+
+
+
+    <div class="row filterArea">
+
+        <div class="col-sm-12 col-md-1">
+            <label class="">Text Search:</label>
+        </div>
+        <div class="col-sm-12 col-md-9">
+            <input type="text" class="searchBox" (keyup)="search($event)">
+        </div>
+
+        <div class="col-sm-12 col-md-2 radioFilterDiv">
+            <div class="radioDiv">
+                <label class="radio-inline">
+                    <input (click)="setStatus('all')" value="all" [(ngModel)]="activeInactive" type="radio"
+                        name="status">All
+                </label>
+                <label class="radio-inline">
+                    <input (click)="setStatus('active')" value="active" [(ngModel)]="activeInactive" type="radio"
+                        name="status">Active
+                </label>
+                <label class="radio-inline">
+                    <input (click)="setStatus('inactive')" value="inactive" [(ngModel)]="activeInactive" type="radio"
+                        name="status">Inactive
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-2">
+        <div class="col-md-12">
+            <kendo-grid #grid [data]="gridView" [height]="660" [selectable]="{
+                        mode: 'multiple'
+                      }" filterable="menu" [resizable]="true" [sortable]="{
+                        allowUnsort: allowUnsort,
+                        mode: multiple ? 'multiple' : 'single'
+                        }" [skip]="state.skip" [pageSize]="pageSize" [rowHeight]="36" (pageChange)="pageChange($event)"
+                scrollable="virtual" [sort]="state.sort" [filter]="state.filter" (sortChange)="sortChange($event)"
+                (filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)" [navigable]="true">
+
+                <kendo-grid-column title=" " width="37" [filterable]="false">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <li (click)="triggerLi($event)" class="nav-item dropdown list-unstyled"
+                            style="margin-top: -7px;">
+                            <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
+                            <div class="dropdown-menu">
+                                <!-- <a class="dropdown-item" (click)="openHnsForm('new')" href="javascript:void(0)">New</a> -->
+                                <a class="dropdown-item" (click)="openHnsForm('copy')" href="javascript:void(0)"
+                                    *ngIf="hnsPermission.indexOf('Copy') != -1">Copy</a>
+                                <a *ngIf="dataItem.hasinuse == 'N' && hnsPermission.indexOf('Edit') != -1"
+                                    class="dropdown-item" (click)="openHnsForm('edit')"
+                                    href="javascript:void(0)">Edit</a>
+                                <!-- <a *ngIf="dataItem.hasinuse == 'N' && hnsPermission.indexOf('Edit') == -1"
+                                    class="dropdown-item" (click)="openHnsForm('edit')"
+                                    href="javascript:void(0)">View</a> -->
+                                <a *ngIf="dataItem.hasinuse == 'Y' && hnsPermission.indexOf('Edit') != -1"
+                                    class="dropdown-item" (click)="openHnsForm('view')"
+                                    href="javascript:void(0)">View</a>
+                                <a class="dropdown-item" (click)="openConfirmationDialog(dataItem)"
+                                    href="javascript:void(0)" *ngIf="hnsPermission.indexOf('Delete') != -1">Delete</a>
+                                <a class="dropdown-item" *ngIf="hnsPermission.indexOf('Definitions') != -1"
+                                    (click)="openDefinitionDetailPopUp(dataItem, true)"
+                                    href="javascript:void(0)">Definition</a>
+                                <a class="dropdown-item" *ngIf="hnsPermission.indexOf('Edit Priority List') != -1"
+                                    (click)="priorityList()" href="javascript:void(0)">Edit
+                                    Priority List</a>
+                                <a class="dropdown-item" *ngIf="hnsPermission.indexOf('Edit Budget List') != -1"
+                                    (click)="budgetList()" href="javascript:void(0)">Edit
+                                    Budget List</a>
+                                <a class="dropdown-item" *ngIf="hnsPermission.indexOf('Edit Scoring Band') != -1"
+                                    [ngClass]="{'disabled' : dataItem.hasscoring != 1}" (click)="scoringBands($event)"
+                                    href="javascript:void(0)">Edit
+                                    Scoring Bands</a>
+
+                                <div *ngIf="hnsPermission.indexOf('Edit Risk Matrix') != -1" class="dropdown-toggle"
+                                    [ngClass]="{'disabled' : dataItem.hasscoring != 2}">
+                                    <div class="dropdown-item" [ngClass]="{'disabled' : dataItem.hasscoring != 2}">Edit
+                                        Risk Matrix List</div>
+                                    <div class="dropdown-menu">
+                                        <a *ngIf="hnsPermission.indexOf('Edit Severity List') != -1"
+                                            class="dropdown-item" (click)="openSeverityListMethod()"
+                                            href="javascript:void(0)">Edit
+                                            Severity List</a>
+                                        <a *ngIf="hnsPermission.indexOf('Edit Probability List') != -1"
+                                            class="dropdown-item" (click)="openProbabilityListMethod()"
+                                            href="javascript:void(0)">Edit Probablity List</a>
+
+                                    </div>
+                                </div>
+                                <a class="dropdown-item" [ngClass]="{'disabled' : dataItem.hasscoring != 1}"
+                                    (click)="recalculateScores()" href="javascript:void(0)"
+                                    *ngIf="hnsPermission.indexOf('Recalculate Scores') != -1">Recalculate Scores</a>
+
+
+                                <div class="dropdown-toggle"
+                                    *ngIf="hnsPermission.indexOf('Definition Report') != -1 || hnsPermission.indexOf('Definition Report With Dependencies') != -1">
+                                    <div class="dropdown-item">Reports...</div>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item"
+                                            *ngIf="hnsPermission.indexOf('Definition Report') != -1"
+                                            (click)="report(false)" href="javascript:void(0)">Definition Report...</a>
+                                        <a class="dropdown-item"
+                                            *ngIf="hnsPermission.indexOf('Definition Report With Dependencies') != -1"
+                                            (click)="report(true)" href="javascript:void(0)">Definition with Question
+                                            Dependencies...</a>
+
+                                    </div>
+                                </div>
+
+                                <!-- <a class="nav-link dropdown-toggle dropright" data-trigger="hover" aria-expanded="false"
+                                    data-toggle="dropdown" [ngClass]="{'disabled' : dataItem.hasscoring != 2}"
+                                    (click)="priorityList()" href="javascript:void(0)">Edit
+                                    Risk Matrix List</a>
+
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" (click)="openSeverityList()" href="javascript:void(0)">Edit
+                                        Severity List</a>
+                                    <a class="dropdown-item" (click)="openProbabilityList()"
+                                        href="javascript:void(0)">Edit Probablity List</a>
+                                </div> -->
+
+                            </div>
+                        </li>
+
+                    </ng-template>
+                </kendo-grid-column>
+
+                <kendo-grid-column field="hascode" title="Code" width="120">
+                </kendo-grid-column>
+                <kendo-grid-column field="hasversion" title="Version" width="100" filter="numeric">
+                </kendo-grid-column>
+                <kendo-grid-column field="hasname" title="Name" width="220">
+                </kendo-grid-column>
+
+                <kendo-grid-column field="valid" title="Valid?" width="90" [style]="{'text-align': 'center'}">
+                    <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
+                        let-filterService="filterService">
+                        <app-dropdown (filterGrid)="filterGrid($event)" [filter]="state.filter" [data]="filterDropDown"
+                            field="valid" textField="val" valueField="valid">
+                        </app-dropdown>
+                    </ng-template>
+
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <img style="height: 14px;" *ngIf="dataItem.valid == 'Y'" src="assets/img/icons/tick.png" />
+                    </ng-template>
+                </kendo-grid-column>
+
+                <kendo-grid-column field="hasinuse" title="In Use?" width="100" [style]="{'text-align': 'center'}">
+                    <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
+                        let-filterService="filterService">
+                        <app-dropdown (filterGrid)="filterGrid($event)" [filter]="state.filter"
+                            [data]="inUserFilterDrpDwn" field="hasinuse" textField="val" valueField="hasinuse">
+                        </app-dropdown>
+                    </ng-template>
+
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <img style="height: 14px;" *ngIf="dataItem.hasinuse == 'Y'" src="assets/img/icons/tick.png" />
+                    </ng-template>
+                </kendo-grid-column>
+
+                <kendo-grid-column field="hasstatus" title="Status" width="120">
+                    <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
+                        let-filterService="filterService">
+                        <app-dropdown (filterGrid)="filterGrid($event)" [filter]="state.filter"
+                            [data]="statusFilterDrpDwn" field="hasstatus" textField="val" valueField="hasstatus">
+                        </app-dropdown>
+                    </ng-template>
+
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.hasstatus == "A" ? 'Active' : 'Inactive' }}
+                        </span>
+                    </ng-template>
+                </kendo-grid-column>
+
+                <kendo-grid-column field="createdby" title="Created By" width="120">
+                </kendo-grid-column>
+                <kendo-grid-column field="createddate" title="Created Date" width="150" [filterable]="false">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.createddate | dateFormat : 'DD-MMM-YYYY' }}
+                        </span>
+                    </ng-template>
+                </kendo-grid-column>
+                <kendo-grid-column field="modifiedby" title="Modified By" width="150">
+                </kendo-grid-column>
+                <kendo-grid-column field="modifieddate" title="Modified Date" width="150" [filterable]="false">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.modifieddate | dateFormat : 'DD-MMM-YYYY' }}
+                        </span>
+                    </ng-template>
+                </kendo-grid-column>
+                <kendo-grid-column field="srtcode" title="Survey Type" width="130">
+                </kendo-grid-column>
+
+                <kendo-grid-column field="bandsYN" title="Bands?" width="100" [style]="{'text-align': 'center'}">
+                    <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
+                        let-filterService="filterService">
+                        <app-dropdown (filterGrid)="filterGrid($event)" [filter]="state.filter"
+                            [data]="bandsFilterDrpDwn" field="bandsYN" textField="val" valueField="bandsYN">
+                        </app-dropdown>
+                    </ng-template>
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <img style="height: 14px;" *ngIf="dataItem.bandsYN == 'Y'" src="assets/img/icons/tick.png" />
+                    </ng-template>
+                </kendo-grid-column>
+
+                <kendo-grid-column field="hasscoring" title="Scoring Method" width="160">
+                    <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
+                        let-filterService="filterService">
+                        <app-dropdown (filterGrid)="filterGrid($event)" [filter]="state.filter"
+                            [data]="scoringFilterDrpDwn" field="hasscoring" textField="val" valueField="hasscoring">
+                        </app-dropdown>
+                    </ng-template>
+
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.hasscoring == 0 ? 'None' : dataItem.hasscoring == 1 ? 'Scoring Rules' : dataItem.hasscoring == 2 ? 'Risk Matrix' : '' }}
+                        </span>
+                    </ng-template>
+                </kendo-grid-column>
+            </kendo-grid>
+
+            <div *ngIf="loading" class="k-i-loading"></div>
+
+            <grid-context-menu [for]="grid" [menuItems]="contextMenus" (select)="onSelect($event)">
+            </grid-context-menu>
+        </div>
+    </div>
+</div>
+
+<div class="difinitionOverlay"></div>
+
+<app-hns-definition-form [definitionFormMode]="definitionFormMode" [definitionFormOpen]="definitionFormOpen"
+    [selectedDefinition]="selectedDefinition" (successfulSubmit)="reloadGrid($event)"
+    (closeFormEvent)="closeDefinitionForm($event)" *ngIf="definitionFormOpen">
+</app-hns-definition-form>
+
+<app-hns-definition-detail *ngIf="definitionDetailIsTrue" [definitionDetailIsTrue]="definitionDetailIsTrue"
+    [selectedDefinition]="selectedDefinition" (closeDefinitionDetailEven)="closeDefinitionDetail($event)">
+</app-hns-definition-detail>
+
+<app-hns-priority-list *ngIf="openPriorityList" [openPriorityList]="openPriorityList"
+    [selectedDefinition]="selectedDefinition" (closePriorityList)="closePriorityList($event)"></app-hns-priority-list>
+
+<app-hns-budget-list *ngIf="openBudgetList" [openBudgetList]="openBudgetList" [selectedDefinition]="selectedDefinition"
+    (closeBudgetList)="closeBudgetList($event)"></app-hns-budget-list>
+
+<app-hns-scoring-bands *ngIf="openScoringBand" [openScoringBand]="openScoringBand"
+    [selectedDefinition]="selectedDefinition" (closeScoringBands)="closeScoringBands($event)"></app-hns-scoring-bands>
+
+<app-hns-severity-list *ngIf="openSeverityList" [openSeverityList]="openSeverityList"
+    [selectedDefinition]="selectedDefinition" (closeSeverityList)="closeSeverityList($event)"></app-hns-severity-list>
+
+<app-hns-probability-list *ngIf="openProbabilityList" [openProbabilityList]="openProbabilityList"
+    [selectedDefinition]="selectedDefinition" (closeProbabilityList)="closeProbabilityList($event)">
+</app-hns-probability-list>

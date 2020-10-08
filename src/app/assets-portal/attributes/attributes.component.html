@@ -1,0 +1,528 @@
+<div class="mainDiv">
+  <div class="row">
+    <div class="col-md-1 col-sm-6 filterAttrdiv d-it" *ngIf='attributeLists?.length > 0'>
+      <select (change)="filterAttributes($event.target.value)">
+        <option *ngFor="let attributeFilter of attributeFilterList" [value]="attributeFilter.filterName">
+          {{ attributeFilter.filterName }}</option>
+
+      </select>
+    </div>
+
+
+
+    <div class="col-md-1 col-sm-6" *ngIf='attributeLists?.length > 0'>
+      <div class="dropdown" id="nesting-dropdown-demo">
+        <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown"
+          aria-expanded="false">Export</button>
+        <div class="dropdown-menu" x-placement="bottom-start"
+          style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
+          <a class="dropdown-item" (click)="exportToExcel(grid,'xlsx')" href="javascript:void(0)">Export Grid</a>
+          <a class="dropdown-item" (click)="exportToExcel(grid,'xlsx','selected')" href="javascript:void(0)">Export
+            Selected</a>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-1 col-sm-6" *ngIf="checkAssetAttributeAccess('Attribute Add')">
+      <button (click)="openCreateAttribute('new')" class="btn btn-sm themeButton">New</button>
+    </div>
+
+
+  </div>
+
+
+  <div class="row mt-2">
+    <div class="col-md-12">
+      <kendo-grid #grid="kendoGrid" [data]="gridView" [selectable]="{
+          mode: 'multiple'
+        }" [groupable]="true" (groupChange)="groupChange($event)" [group]="state.group"
+        [kendoGridSelectBy]="mySelectionKey" [selectedKeys]="mySelection" [skip]="state.skip" [sort]="state.sort"
+        [filter]="state.filter" filterable="menu" [resizable]="true" [sortable]="{
+              allowUnsort: allowUnsort,
+              mode: multiple ? 'multiple' : 'single'
+              }" (sortChange)="sortChange($event)" (filterChange)="filterChange($event)" [height]="620"
+        (cellClick)="cellClickHandler($event)" [navigable]="true">
+
+        <kendo-grid-column field="wagStatus" title=" " width="37" [filterable]="false" [groupable]="false">
+          <ng-template kendoGridHeaderTemplate>
+
+          </ng-template>
+
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <li class="nav-item dropdown list-unstyled" style="margin-top: -7px;">
+              <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
+              <div class="dropdown-menu">
+                <a *ngIf="checkAssetAttributeAccess('Attribute Edit')" class="dropdown-item"
+                  (click)="openCreateAttribute('edit', dataItem)" href="javascript:void(0)">Edit</a>
+                <a *ngIf="checkAssetAttributeAccess('Attribute Delete')" class="dropdown-item"
+                  (click)="openConfirmationDialog(dataItem)" href="javascript:void(0)">Delete</a>
+                <a class="dropdown-item" *ngIf="dataItem.wagStatus != 'None'" href="javascript:void(0)"
+                  (click)="openWag(dataItem)">WAG</a>
+
+                <div class="dropdown-toggle" *ngIf="dataItem.serviceLists?.length > 0">
+                  <div class="dropdown-item">Servicing</div>
+                  <div class="dropdown-menu">
+                    <a *ngFor="let ser of dataItem.serviceLists" class="dropdown-item"
+                      (click)="openServicingDetail(dataItem, ser)" href="javascript:void(0)">{{ ser.name}}</a>
+
+                  </div>
+                </div>
+                <a class="dropdown-item" *ngIf="dataItem.workListStsDesc != ''" href="javascript:void(0)"
+                  (click)="openWorkDetail(dataItem)">Work Management</a>
+                <a class="dropdown-item" href="javascript:void(0)"
+                  (click)="openRepairWindowFromAttrMenuList(dataItem)">Repairs</a>
+
+              </div>
+            </li>
+
+          </ng-template>
+
+        </kendo-grid-column>
+
+
+        <kendo-grid-column field="notepadLists" title="Passed?" width="38" [filterable]="false" [groupable]="false">
+          <ng-template kendoGridHeaderTemplate>
+            <!-- <i class="fas fa-sticky-note"></i> -->
+            <img style="height:14px; width:16px;" src="assets/img/icons/attach.png" />
+          </ng-template>
+
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <li class="nav-item dropdown list-unstyled" *ngIf="dataItem.notepadLists?.length > 0">
+              <!-- <i data-toggle="dropdown" aria-expanded="true" class="fas fa-sticky-note d-block"></i> -->
+              <img data-toggle="dropdown" aria-expanded="true" style="height:14px; width:16px;" class="attachmentIcon" src="assets/img/icons/attach.png" />
+
+              <div class="dropdown-menu">
+                <a class="dropdown-item" href="javascript:void(0)" *ngFor="let notes of dataItem.notepadLists"
+                  (click)="openNotesDetails(notes)">{{ notes.name}}</a>
+              </div>
+            </li>
+
+          </ng-template>
+
+        </kendo-grid-column>
+
+
+        <kendo-grid-column field="attribute" title="Attribute" width="345">
+          <ng-template kendoGridCellTemplate let-dataItem>
+
+            <div style="display: inline-block;" class="attrDes">
+              <span [ngStyle]="{'color':getColor(dataItem)}">
+                {{ dataItem.attribute }}
+              </span>
+              <div *ngIf="dataItem.wagStatus != 'None'">
+                <!-- <i aria-expanded="true" *ngIf="dataItem.wagStatus != 'Current'" title="{{dataItem.wagSummary}}"
+                  class="fas fa-tag d-block"></i>
+
+                <i aria-expanded="true" *ngIf="dataItem.wagStatus != 'Expired'" title="{{dataItem.wagSummary}}"
+                  class="fas fa-tags d-block"></i> -->
+
+                  <img style="width: 17px;" class="inner-table-icon" *ngIf="dataItem.wagStatus == 'Current'" title="{{dataItem.wagSummary}}" src="assets/img/icons/tag.png" />
+                  <img style="width: 17px;" class="inner-table-icon" *ngIf="dataItem.wagStatus == 'Expired'" title="{{dataItem.wagSummary}}" src="assets/img/icons/tag-cross.png" />
+              </div>
+
+              <div *ngIf="dataItem.workListStsDesc != ''">
+                <!-- <i aria-expanded="true" class="ion ion-md-hammer d-block" *ngIf="dataItem.workListStatus =='COMPLETED'"
+                  title="{{dataItem.workListStsDesc}}"></i>
+                <i aria-expanded="true" class="ion ion-ios-hammer d-block" *ngIf="dataItem.workListStatus !='COMPLETED'"
+                  title="{{dataItem.workListStsDesc}}"></i> -->
+
+                  <img style="width: 15px;" class="inner-table-icon" *ngIf="dataItem.workListStatus =='COMPLETED'"
+                  title="{{dataItem.workListStsDesc}}" src="assets/img/icons/works-management-check.png" />
+                  <img style="width: 15px;" class="inner-table-icon" *ngIf="dataItem.workListStatus !='COMPLETED'"
+                  title="{{dataItem.workListStsDesc}}" src="assets/img/icons/works-management.png" />
+
+              </div>
+
+              <div *ngIf="dataItem.serviceLists?.length > 0">
+                <!-- <i *ngIf="dataItem.serviceLists?.length > 0" title="{{dataItem.workListStsDesc}}" aria-expanded="true"
+                  class="fas fa-wrench d-block"></i> -->
+                  <img style="width: 17px;" class="inner-table-icon" *ngIf="dataItem.serviceLists?.length > 0 && dataItem.serviced == 'P'" title="{{dataItem.workListStsDesc}}" src="assets/img/icons/servicing.png" />
+                  <img style="width: 17px;" class="inner-table-icon" *ngIf="dataItem.serviceLists?.length > 0 && dataItem.serviced == 'C'" title="{{dataItem.workListStsDesc}}" src="assets/img/icons/servicing-check.png" />
+              </div>
+
+            </div>
+          </ng-template>
+
+        </kendo-grid-column>
+        <kendo-grid-column field="installationDate" title="Installation Date" width="150">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span [ngStyle]="{'color':getColor(dataItem)}">
+              {{ dataItem.installationDate }}
+            </span>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column field="quantity" title="Qty" width="80" filter="numeric">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span [ngStyle]="{'color':getColor(dataItem)}">
+              {{ dataItem.quantity }}
+            </span>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column field="uom" title="UOM" width="90">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span [ngStyle]="{'color':getColor(dataItem)}">
+              {{ dataItem.uom }}
+            </span>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column field="repairYear" title="Repair Year" width="120">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span [ngStyle]="{'color':getColor(dataItem)}">
+              {{ dataItem.repairYear }}
+            </span>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column field="surveyDate" title="Survey Date" width="130">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span [ngStyle]="{'color':getColor(dataItem)}">
+              {{ dataItem.surveyDate }}
+            </span>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column field="lastServiceDate" title="Last Service Date" width="150">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span [ngStyle]="{'color':getColor(dataItem)}">
+              {{ dataItem.lastServiceDate }}
+            </span>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column field="dataSource" title="Data Source" width="120">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span [ngStyle]="{'color':getColor(dataItem)}">
+              {{ dataItem.dataSource }}
+            </span>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column field="modifiedBy" title="Modified By" width="130">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span [ngStyle]="{'color':getColor(dataItem)}">
+              {{ dataItem.modifiedBy }}
+            </span>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column field="dateModified" title="Date Modified" width="140">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span [ngStyle]="{'color':getColor(dataItem)}">
+              {{ dataItem.dateModified }}
+            </span>
+          </ng-template>
+        </kendo-grid-column>
+
+
+        <kendo-grid-excel fileName="{{fileName}}">
+          <kendo-excelexport-column field="attribute" title="Attribute"></kendo-excelexport-column>
+          <kendo-excelexport-column field="installationDate" title="Installation Date">
+          </kendo-excelexport-column>
+          <kendo-excelexport-column field="quantity" title="Qty"></kendo-excelexport-column>
+          <kendo-excelexport-column field="uom" title="UOM"></kendo-excelexport-column>
+          <kendo-excelexport-column field="repairYear" title="Repair Year">
+          </kendo-excelexport-column>
+          <kendo-excelexport-column field="surveyDate" title="Survey Date"></kendo-excelexport-column>
+          <kendo-excelexport-column field="lastServiceDate" title="Last Service">
+          </kendo-excelexport-column>
+          <kendo-excelexport-column field="dataSource" title="Data Source">
+          </kendo-excelexport-column>
+          <kendo-excelexport-column field="modifiedBy" title="Modified By">
+          </kendo-excelexport-column>
+          <kendo-excelexport-column field="dateModified" title="Date Modified">
+          </kendo-excelexport-column>
+        </kendo-grid-excel>
+
+
+      </kendo-grid>
+
+    </div>
+  </div>
+
+
+  <div class="portalwBlur"></div>
+
+</div>
+
+
+<div class="example-wrapper">
+
+  <app-asset-attribute [repairWin]="repairWin" [fromAttrList]="fromAttrList" [assetAttrWindow]="assetAttrWindow"
+    [selectedAttribute]="selectedAttribute" [selectedAsset]="selectedAsset" [editFromAssetAttr]="editFromAssetAttr"
+    *ngIf="assetAttrWindow" (wagWin)="wagWinfunction($event)" (closeAssetAttrWin)="closeAssetAttrWindow($event)"
+    (closeRepairFromAttrWin)="closeRepairWindowFromAttrMenuList($event)" (editAttrWin)="editAttrWindow($event)">
+  </app-asset-attribute>
+
+  <app-asset-work-detail [assetWorkDetailWindow]="assetWorkDetailWindow" [selectedAttribute]="selectedAttribute"
+    [selectedAsset]="selectedAsset" *ngIf="assetWorkDetailWindow"
+    (closeassetWorkDetailWindow)="closeassetWorkDetailWindow($event)"></app-asset-work-detail>
+
+  <app-asset-servicing-detail [selectedAttribute]="selectedAttribute" [selectedAsset]="selectedAsset"
+    [servicingDetailWindow]="servicingDetailWindow" *ngIf="servicingDetailWindow"
+    (closeServicingDetailWindow)="closeServicingDetailWindow($event)"></app-asset-servicing-detail>
+
+    <app-service-servicing-detail [selectedAttribute]="selectedAttribute" [selectedAsset]="selectedAsset" [serviceServicingDetailWindow]="serviceServicingDetailWindow" *ngIf="serviceServicingDetailWindow" (closeServiceServicingDetailWindow)="closeServiceServicingDetailWindow($event)"></app-service-servicing-detail>
+
+  <app-asset-wag-detail [selectedAttribute]="selectedAttribute" [selectedAsset]="selectedAsset" [wagWindow]="wagWindow"
+    *ngIf="wagWindow" (closewagWindow)="closewagWindow($event)"></app-asset-wag-detail>
+
+
+  <kendo-window title="{{notesTitle}}" *ngIf="notesDetails" (close)="closeNotesDetails()" [top]="15" [minWidth]="250"
+    [width]="800" [height]="680">
+    <div class="row">
+      <div class="col-md-12" *ngIf="notesTitle != 'Attribute Image' && selectedNotes.type == 'N'">
+        <textarea style="height: 500px;" class="form-control" [readonly]="true">{{selectedNotes.text}}</textarea>
+      </div>
+
+      <div class="col-md-12" *ngIf="notesTitle == 'Attribute Image' && selectedNotes.type == 'P'">
+        <img [src]="notesImagePath" alt="{{selectedNotes.text}}" width="auto"
+          style="position: relative; height: 500px;">
+        <p class="mt-2 m-0 p-0">{{selectedNotes.link}}</p>
+        <p class="p-0 mt-1">{{selectedNotes.text}}</p>
+      </div>
+
+      <div class="col-md-12 text-right mt-2 noteBtn">
+        <button class="btn btn-sm" (click)="closeNotesDetails()">Close</button>
+      </div>
+    </div>
+  </kendo-window>
+
+
+  <div class="crtAttFrm" *ngIf="createAttribute">
+    <kendo-window title="{{selectedAsset.assetId+' -'+selectedAsset.address}}" *ngIf="createAttribute"
+      (close)="closeCreateAttribute()" [top]="10" [minWidth]="450" [minHeight]="385" [width]="750"
+      [(height)]="createAttrFormHeight" [kzindex]="editFromAssetAttr">
+      <div class="kendodiv"></div>
+      <div class="row" *ngIf="createAttrFormMode ;else other_content">
+        <div class="col-md-8 col-sm-6">
+          <h5 class="createAttrHeader">{{createAttrTitle}}</h5>
+        </div>
+
+        <div class="col-md-4 text-right col-sm-6" *ngIf="createAttrFormMode">
+          <label class="p-0 mr-4">Search: </label>
+          <input class="form-control-sm searchBox" [ngModel]="search" (ngModelChange)="searchAvailableAttr($event)"
+            type="text">
+        </div>
+
+      </div>
+      <ng-template #other_content>
+        <h5 class="createAttrHeader">{{createAttrTitle}}</h5>
+      </ng-template>
+
+      <div *ngIf="createAttrFormMode" class="table-responsive attrListGrid">
+        <table class="table table-striped table-bordered attributeListTable">
+          <thead class="fixedHeader">
+            <tr>
+              <th style="cursor: pointer; width: 20%;" (click)="orderBy('attcodE1')">Attribute
+                <i class="lnr lnr-arrow-up sortIcon" aria-hidden="true"
+                  *ngIf="availableAttrModel.OrderBy === 'attcodE1' && availableAttrModel.OrderType === 'Ascending'"></i>
+                <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
+                  *ngIf="availableAttrModel.OrderBy === 'attcodE1' && availableAttrModel.OrderType === 'Descending'"></i>
+              </th>
+              <th style="cursor: pointer; width: 55%;" (click)="orderBy('atadescription')">Description
+                <i class="lnr lnr-arrow-up sortIcon" aria-hidden="true"
+                  *ngIf="availableAttrModel.OrderBy === 'atadescription' && availableAttrModel.OrderType === 'Ascending'"></i>
+                <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
+                  *ngIf="availableAttrModel.OrderBy === 'atadescription' && availableAttrModel.OrderType === 'Descending'"></i>
+              </th>
+              <th style="cursor: pointer; width: 25%;" (click)="orderBy('elementName')">Element
+                <i class="lnr lnr-arrow-up sortIcon" aria-hidden="true"
+                  *ngIf="availableAttrModel.OrderBy === 'elementName' && availableAttrModel.OrderType === 'Ascending'"></i>
+                <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
+                  *ngIf="availableAttrModel.OrderBy === 'elementName' && availableAttrModel.OrderType === 'Descending'"></i>
+              </th>
+            </tr>
+          </thead>
+          <tbody class="fixTbody" (scroll)="onScroll($event)">
+
+            <tr class="odd gradeX" *ngFor="let availableAttr of availableAttributes"
+              [class.selected]="availableAttr == selectedAvailableAttr" (click)="selectAvailableAttr(availableAttr)">
+              <td style="width: 20%;">
+                {{ availableAttr.attcodE1+ "-" + availableAttr.attcodE2 +"-"+availableAttr.attcodE3+"-"+availableAttr.attcodE4 }}
+              </td>
+              <td style="width: 55%;">{{ availableAttr.atadescription  }}</td>
+              <td style="width: 25%;">{{ availableAttr.elementName  }}</td>
+            </tr>
+          </tbody>
+        </table>
+
+      </div>
+
+      <form [formGroup]="createAttributeForm" (ngSubmit)="onSubmit()" autocomplete="off">
+        <div class="row mt-4">
+          <div class="col-md-6">
+            <div class="row">
+              <div class="col-md-5">
+                <label class="col-form-label">Installation Date</label>
+              </div>
+              <div class="col-md-7 form-group">
+                <input (click)="i.toggle()" [placement]="calendarPosition" [minDate]="{year: 1800, month: 1, day: 1}"
+                  ngbDatepicker #i="ngbDatepicker" type="text" class="form-control" formControlName="installationDate"
+                  [ngClass]="{ 'is-invalid': submitted && formErrors.installationDate }">
+                <div *ngIf="submitted && formErrors.installationDate" class="invalid-feedback">
+                  <div *ngIf="formErrors.installationDate">{{ formErrors.installationDate }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="row">
+              <div class="col-md-5">
+                <label class="col-form-label">Quantity</label>
+              </div>
+              <div class="col-md-7 form-group">
+                <input type="text" class="form-control" formControlName="quantity"
+                  [ngClass]="{ 'is-invalid': submitted && formErrors.quantity }">
+                <div *ngIf="submitted && formErrors.quantity" class="invalid-feedback">
+                  <div *ngIf="formErrors.quantity">{{ formErrors.quantity }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div class="row mt-1">
+          <div class="col-md-6">
+            <div class="row">
+              <div class="col-md-5">
+                <label class="col-form-label">Survey Date</label>
+              </div>
+              <div class="col-md-7 form-group">
+                <input (click)="s.toggle()" [placement]="calendarPosition" ngbDatepicker #s="ngbDatepicker" type="text"
+                  class="form-control" formControlName="surveyDate" [minDate]="{year: 1800, month: 1, day: 1}"
+                  [ngClass]="{ 'is-invalid': submitted && formErrors.surveyDate }">
+                <div *ngIf="submitted && formErrors.surveyDate" class="invalid-feedback">
+                  <div *ngIf="formErrors.surveyDate">{{ formErrors.surveyDate }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="row">
+              <div class="col-md-5">
+                <label class="col-form-label">Unit of Measure</label>
+              </div>
+              <div class="col-md-7 form-group">
+                <input maxlength="4" type="text" class="form-control" formControlName="uom"
+                  [ngClass]="{ 'is-invalid': submitted && formErrors.uom }">
+                <div *ngIf="submitted && formErrors.uom" class="invalid-feedback">
+                  <div *ngIf="formErrors.uom">{{ formErrors.uom }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div class="row mt-1">
+          <div class="col-md-6">
+            <div class="row">
+              <div class="col-md-5">
+                <label class="col-form-label">Service Date</label>
+              </div>
+              <div class="col-md-7 form-group">
+                <input (click)="d.toggle()" [placement]="calendarPosition" ngbDatepicker #d="ngbDatepicker"
+                  [minDate]="{year: 1800, month: 1, day: 1}" type="text" class="form-control"
+                  formControlName="serviceDate" [ngClass]="{ 'is-invalid': submitted && formErrors.serviceDate }">
+                <div *ngIf="submitted && formErrors.serviceDate" class="invalid-feedback">
+                  <div *ngIf="formErrors.serviceDate">{{ formErrors.serviceDate }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="row">
+              <div class="col-md-5">
+                <label class="col-form-label">Data Source</label>
+              </div>
+              <div class="col-md-7 form-group">
+                <select class="form-control" formControlName="dataSource"
+                  [ngClass]="{ 'is-invalid': submitted && formErrors.dataSource }">
+                  <option value="R">Real</option>
+                  <option value="A">Assumed</option>
+                  <option value="U">Unknown</option>
+                </select>
+                <!-- <input type="text" class="form-control" formControlName="dataSource"
+                [ngClass]="{ 'is-invalid': submitted && formErrors.dataSource }"> -->
+                <div *ngIf="submitted && formErrors.dataSource" class="invalid-feedback">
+                  <div *ngIf="formErrors.dataSource">{{ formErrors.dataSource }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="row mt-1">
+          <div class="col-md-6" *ngIf="createAttrFormMode">
+            <div class="row">
+              <div class="col-md-5">
+                <label class="col-form-label">Generate Repairs</label>
+              </div>
+              <div class="col-md-7 form-group">
+                <label class="switcher switcherInp">
+                  <input type="checkbox" class="switcher-input" formControlName="generatorRepairs"
+                    [ngClass]="{ 'is-invalid': submitted && formErrors.generatorRepairs }"
+                    [attr.disabled]="selectedAvailableAttr == undefined ? true : selectedAvailableAttr.elementLife == 0 ? true : null">
+                  <span class="switcher-indicator">
+                    <span class="switcher-yes"><span class="ion ion-md-checkmark"></span></span>
+                    <span class="switcher-no"><span class="ion ion-md-close"></span></span>
+                  </span>
+
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="row">
+              <div class="col-md-5">
+                <label class="col-form-label">Status</label>
+              </div>
+              <div class="col-md-7 form-group">
+                <label class="switcher switcherInp">
+                  <input type="checkbox" class="switcher-input" formControlName="status"
+                    [ngClass]="{ 'is-invalid': submitted && formErrors.status }">
+                  <span class="switcher-indicator">
+                    <span class="switcher-yes"><span class="ion ion-md-checkmark"></span></span>
+                    <span class="switcher-no"><span class="ion ion-md-close"></span></span>
+                  </span>
+
+                </label>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- <div class="row mt-1">
+        <div class="col-md-6">
+          <div class="row">
+            <div class="col-md-5">
+              <label class="col-form-label">Status</label>
+            </div>
+            <div class="col-md-7 form-group">
+              <label class="switcher">
+                <input type="checkbox" class="switcher-input" formControlName="status"
+                  [ngClass]="{ 'is-invalid': submitted && formErrors.status }">
+                <span class="switcher-indicator">
+                  <span class="switcher-yes"><span class="ion ion-md-checkmark"></span></span>
+                  <span class="switcher-no"><span class="ion ion-md-close"></span></span>
+                </span>
+
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+        </div>
+      </div> -->
+        <div class="row mt-3 pull-right">
+          <div class="buttonDiv">
+            <button type="button" (click)="closeCreateAttribute()" class="btn btn-sm">Cancel</button>
+            <button type="submit" class="btn btn-sm newBtn">Ok</button>
+          </div>
+        </div>
+      </form>
+
+
+    </kendo-window>
+  </div>
+
+</div>

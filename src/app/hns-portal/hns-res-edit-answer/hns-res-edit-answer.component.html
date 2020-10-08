@@ -1,0 +1,246 @@
+<kendo-window title="{{title}}" *ngIf="showEditAnswer" (close)="closeEditAnswerMethod()" [top]="10" [minWidth]="700"
+  [width]="990" [height]="auto" [minHeight]="300">
+  <div class="row editAnswerHeader">
+    <div class="col-md-2">
+      <span>AssetId:</span>
+    </div>
+
+    <div class="col-md-10">
+      <span>{{headingValues?.assid}}</span>
+    </div>
+    <div class="col-md-2">
+      <span>Address:</span>
+    </div>
+
+    <div class="col-md-10">
+      <span>{{headingValues?.astconcataddress}}</span>
+    </div>
+
+    <div class="col-md-2">
+      <span>PostCode:</span>
+    </div>
+
+    <div class="col-md-10">
+      <span>{{headingValues?.asspostcode}}</span>
+    </div>
+
+    <div class="col-md-2">
+      <span>Group:</span>
+    </div>
+
+    <div class="col-md-10">
+      <span>{{headingValues?.hasgroupname}} - {{headingValues?.hasheadingname}}</span>
+    </div>
+
+
+    <div class="col-md-2">
+      <span>Question Code:</span>
+    </div>
+
+    <div class="col-md-10">
+      <span>{{selectedAction?.hasquestioncode}}</span>
+    </div>
+
+    <div class="col-md-2">
+      <span>Question:</span>
+    </div>
+
+    <div class="col-md-10">
+      <span>{{selectedAction?.hasquestiontext}}</span>
+    </div>
+
+
+  </div>
+
+  <form [formGroup]="editAnsForm" (ngSubmit)="onSubmit()" autocomplete="off">
+    <div class="row mt-2 detailDiv">
+
+      <div class="col-md-12 radioFilterDiv">
+        <label> Answer </label>
+
+        <div class="radioDiv">
+          <label class="radio-inline">
+            <input value="Y" type="radio" formControlName="answer">Yes
+          </label>
+          <label class="radio-inline">
+            <input value="N" type="radio" formControlName="answer">No
+          </label>
+
+          <!-- <label class="radio-inline" *ngIf="healthAndSafetyAns?.hasayesnona != 'Y' && healthAndSafetyAns?.hasayesnona != 'N'"> -->
+          <label class="radio-inline" *ngIf="selectedAction?.hasquestiontype == 'NA'">
+            <input value="X" type="radio" formControlName="answer">N/A
+          </label>
+
+        </div>
+      </div>
+
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-md-6 colsix">
+            <label class="col-form-label">Location</label>
+            <input type="text" class="form-control input-sm" formControlName="location" [readonly]="viewOnly">
+            <i title="The location to which the answer relates." class="fas fa-info-circle d-block inputI"></i>
+            <span class="fa-stack spellChecker" (click)="openSpellingCheck('location')">
+                <i class="fa fa-check fa-stack-1x rightCheck"></i>
+                <i class="fa fa-stack-1x spellTxt">ABC</i>
+            </span>
+          </div>
+
+          <div class="col-md-6 colsix">
+            <label class="col-form-label">Floor</label>
+            <select class="form-control" formControlName="floor">
+              <option *ngFor="let fl of floorDrp; let i = index" value="{{floorDrp[i]}}">{{floorDrp[i]}}</option>
+            </select>
+            <i title="The floor to which the answer relates." class="fas fa-info-circle d-block inputI"></i>
+            <!-- <span class="fa-stack spellChecker">
+                <i class="fa fa-check fa-stack-1x rightCheck"></i>
+                <i class="fa fa-stack-1x spellTxt">ABC</i>
+            </span> -->
+          </div>
+
+          <div class="col-md-12 floorDiv mt-2">
+            <label class="col-form-label">Comments</label>
+            <textarea class="form-control" formControlName="comments"></textarea>
+            <span class="fa-stack spellChecker" (click)="openSpellingCheck('comments')">
+                <i class="fa fa-check fa-stack-1x rightCheck"></i>
+                <i class="fa fa-stack-1x spellTxt">ABC</i>
+            </span>
+          </div>
+
+          <div class="col-md-12 accessorDiv mt-2">
+            <label class="col-form-label">Assessor</label>
+            <input type="text" [readonly]="readonly" formControlName="assessor" class="form-control input-sm">
+
+            <label class="col-form-label">Date</label>
+            <!-- <input type="text" class="form-control input-sm" [value]="healthAndSafetyAns?.hasaassessmentdate | dateFormat : 'DD-MMM-YYYY'"> -->
+            <input type="text" class="form-control" formControlName="date" [(ngModel)]="assessorDate"
+              (click)="openCalendar(s)" [minDate]="{year: 1800, month: 1, day: 1}" ngbDatepicker #s="ngbDatepicker"
+              autocomplete="off">
+
+            <label class="col-form-label">Ref</label>
+            <input type="text" [readonly]="readonly" class="form-control input-sm"
+              [value]="healthAndSafetyAns?.hasaassessmentref">
+          </div>
+
+          <div class="col-md-12 modifiedDetail mt-2">
+            <label class="col-form-label">Created By</label>
+            <input type="text" [readonly]="readonly" class="form-control input-sm"
+              [value]="healthAndSafetyAns?.createdby">
+
+            <label class="col-form-label">Created Date</label>
+            <input type="text" [readonly]="readonly" class="form-control input-sm"
+              [value]="healthAndSafetyAns?.createddate | dateFormat : 'DD-MMM-YYYY'">
+
+            <label class="col-form-label">Modified By</label>
+            <input type="text" [readonly]="readonly" class="form-control input-sm"
+              [value]="healthAndSafetyAns?.modifiedby">
+
+            <label class="col-form-label">Modified Date</label>
+            <input type="text" [readonly]="readonly" class="form-control input-sm"
+              [value]="healthAndSafetyAns?.modifieddate | dateFormat : 'DD-MMM-YYYY'">
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <div class="row mt-2 gridRow">
+      <span class="col-md-12">Issue(s):</span>
+      <div class="col-md-12">
+        <kendo-grid [data]="gridView" [height]="230" filterable="menu" [resizable]="true" [sortable]="{
+        allowUnsort: allowUnsort,
+        mode: multiple ? 'multiple' : 'single'
+        }" [skip]="state.skip" [sort]="state.sort" [selectable]="{
+          mode: 'multiple'
+        }" [filter]="state.filter" (sortChange)="sortChange($event)" (filterChange)="filterChange($event)"
+          (cellClick)="cellClickHandler($event)" [navigable]="true">
+
+          <kendo-grid-column field="pictureCount" title="" width="30" [filterable]="false">
+            <ng-template kendoGridHeaderTemplate>
+              <i class="fa fa-camera" aria-hidden="true"></i>
+            </ng-template>
+            <ng-template kendoGridCellTemplate let-dataItem>
+              <span>
+                <img *ngIf="dataItem.pictureCount > 0" src="assets/img/icons/camera.png"
+                  style="height:17px; margin-top: -2px;">
+              </span>
+            </ng-template>
+          </kendo-grid-column>
+
+          <kendo-grid-column field="hasPhoto" title="" width="30" [filterable]="false">
+            <ng-template kendoGridHeaderTemplate>
+              <i class="fa fa-question" aria-hidden="true"></i>
+            </ng-template>
+            <ng-template kendoGridCellTemplate let-dataItem>
+              <!-- <i *ngIf="dataItem.hasiactionstatus === 'O' || dataItem.hasiactionstatus === 'Y' || dataItem.hasiactionstatus === ' '"
+                class="red fa fa-exclamation-circle" aria-hidden="true"></i>
+              <i *ngIf="dataItem.hasiactionstatus === 'R' || dataItem.hasiactionstatus === 'I'"
+                class="fa fa-check-circle green" aria-hidden="true"></i> -->
+
+              <img style="height: 14px;" *ngIf="dataItem.hasiactionstatus === 'R'" src="assets/img/icons/tick.png" />
+              <img style="height: 14px;" *ngIf="dataItem.hasiactionstatus === 'O' || dataItem.hasiactionstatus === 'Y'"
+                src="assets/img/icons/cross.png" />
+            </ng-template>
+          </kendo-grid-column>
+
+
+          <kendo-grid-column field="hasiactionstatus" title="Status" width="100">
+            <ng-template kendoGridCellTemplate let-dataItem>
+              <span>
+                {{ dataItem.hasiactionstatus == "O" || dataItem.hasiactionstatus == "Y" ? "Outstanding" : dataItem.hasiactionstatus == "R" ? "Resolved" : "" }}
+              </span>
+            </ng-template>
+          </kendo-grid-column>
+          <kendo-grid-column field="hasiissue" title="Issue" width="120">
+          </kendo-grid-column>
+          <kendo-grid-column field="hasiproposedaction" title="Proposed Action" width="120">
+          </kendo-grid-column>
+          <kendo-grid-column field="hasBudgetName" title="Budget" width="80">
+          </kendo-grid-column>
+          <kendo-grid-column field="hasiworkstatus" title="Work Status" width="80">
+          </kendo-grid-column>
+          <kendo-grid-column field="hasiresolution" title="Resolution" width="80">
+          </kendo-grid-column>
+        </kendo-grid>
+      </div>
+
+      <div class="col-md-12 mt-1 issueBtns">
+        <button type="button" *ngIf="hnsPermission.indexOf('Add Issue') != -1" class="btn btn-sm themeButton"
+          (click)="openIssue('add')" [disabled]="disableBtn">Add
+          Issue</button>
+        <button type="button"
+          *ngIf="hnsPermission.indexOf('Edit Issue') != -1 || hnsPermission.indexOf('Edit Issue (Work Fields Only)') != -1"
+          class="btn btn-sm themeButton" (click)="openIssue('edit')"
+          [disabled]="disableIssBtn">{{issueBtnString}}</button>
+      </div>
+    </div>
+
+    <div class="row mt-2">
+      <div class="col-md-3 text-left">
+        <button type="button" *ngIf="hnsPermission.indexOf('Images') != -1" class="btn btn-sm themeButton"
+          (click)="viewImage()">Answer Image(s)</button>
+      </div>
+      <div class="col-md-9 text-right actionBtn">
+        <button type="button" class="btn btn-sm themeButton" (click)="saveUpdateIssue()"
+          [disabled]="disableBtn || viewOnly">Ok</button>
+        <button type="button" class="btn btn-sm themeButton" (click)="closeEditAnswerMethod()">Cancel</button>
+      </div>
+    </div>
+  </form>
+
+  <div class="editAnsOvrlay"></div>
+  <app-hns-res-ans-image *ngIf="showImage" [showImage]="showImage" [isAssessment]="isAssessment"
+    [selectedAction]="selectedAction" [rootAction]="rootAssessment" [imageFor]="'ans'"
+    (closerImage)="closerImage($event)"></app-hns-res-ans-image>
+
+
+  <app-hns-res-add-edit-issue *ngIf="showIssue" [issueFormMode]="issueFormMode" [isAssessment]="true"
+    [showIssue]="showIssue" [selectedAction]="selectedAction" [fromAns]="true" [allIssuesList]="healthAndSafetyIss"
+    [selectedIssue]="selectedIssue" [rootAssessment]="rootAssessment" (closeIssueEvt)="closeIssue($event)">
+  </app-hns-res-add-edit-issue>
+
+  <app-spell-checker *ngIf="openSpellChecker" [openSpellChecker]="openSpellChecker" [textId]="textId"
+    [textString]="textString" (closeSpellChecker)="closeSpellChecker($event)"
+    (textStringReturn)="textStringReturn($event)"></app-spell-checker>
+</kendo-window>

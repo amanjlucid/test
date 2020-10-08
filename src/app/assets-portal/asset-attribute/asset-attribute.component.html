@@ -1,0 +1,519 @@
+<kendo-window title="Asset Attribute" [(state)]="windowState" [(top)]="windowTop" [width]="800" [minWidth]="700"
+  *ngIf="assetAttrWindow && fromAttrList == false" (close)="closeAssetAttrWindow()">
+  <div class="flex-grow-1 assetAttr">
+
+    <form autocomplete="off" disabled>
+      <div class="assetDetail">
+        <div class="form-row m-0 p-0">
+          <p class="col-md-2 m-0 p-0">Asset ID : </p>
+          <p class="col-md-10 m-0 p-0">{{selectedAsset.assetId}}</p>
+        </div>
+        <div class="form-row m-0 p-0">
+          <p class="col-md-2 m-0 p-0"> Address : </p>
+          <p class="col-md-10 m-0 p-0">{{selectedAsset.address}}</p>
+        </div>
+        <div class="form-row m-0 p-0">
+          <p class="col-md-2 m-0 p-0"> Attribute : </p>
+          <p class="col-md-10 m-0 p-0">{{selectedAttribute.attribute}}</p>
+        </div>
+      </div>
+
+      <div class="form-row mt-2">
+        <div class="form-group col-md-4">
+          <label class="form-label">Survey Date</label>
+          <input type="text" value="{{selectedAttribute.surveyDate | dateFormat : 'DD-MMM-YYYY'}}" class="form-control"
+            [readonly]="true">
+        </div>
+
+        <div class="form-group col-md-4">
+          <label class="form-label">Last Service Date</label>
+          <input type="text" value="{{selectedAttribute.lastServiceDate | dateFormat : 'DD-MMM-YYYY'}}"
+            class="form-control" [readonly]="true">
+        </div>
+
+
+        <div class="form-group col-md-4">
+          <label class="form-label">Installation Date</label>
+          <input type="text" value="{{selectedAttribute.installationDate | dateFormat : 'DD-MMM-YYYY'}}"
+            class="form-control" [readonly]="true" />
+        </div>
+      </div>
+
+      <div class="form-row mt-2">
+        <div class="form-group col-md-4">
+          <label class="form-label">Quantity</label>
+          <input type="text" value="{{selectedAttribute.quantity}}" class="form-control" [readonly]="true">
+        </div>
+
+        <div class="form-group col-md-4">
+          <label class="form-label">UOM</label>
+          <input type="text" value="{{selectedAttribute.uom}}" class="form-control" [readonly]="true">
+        </div>
+
+
+        <div class="form-group col-md-4">
+          <label class="form-label">First Repair</label>
+          <input type="text" value="{{selectedAttribute.repairYear}}" class="form-control" [readonly]="true">
+        </div>
+      </div>
+
+      <div class="form-row mt-2">
+
+
+        <div class="form-group col-md-4">
+          <label class="form-label">Repair Cost</label>
+          <input type="text" value="{{'£'+helperService.moneyFormat(selectedAttribute?.repairCost)}}"
+            class="form-control" [readonly]="true">
+        </div>
+
+
+        <div class="form-group col-md-4">
+          <label class="form-label">Repair Quantity</label>
+          <input type="text" value="{{selectedAttribute.repairQuantity}}" class="form-control" [readonly]="true" />
+        </div>
+
+        <div class="form-group col-md-4">
+          <label class="form-label">Data Source</label>
+          <input type="text" value="{{selectedAttribute.dataSource}}" class="form-control" [readonly]="true">
+        </div>
+      </div>
+
+
+      <div class="form-row mt-2">
+
+        <div class="form-group col-md-4">
+          <label class="form-label">Managed within Servicing</label>
+          <input type="text" value="{{selectedAttribute.managedWithServicing}}" class="form-control" [readonly]="true">
+        </div>
+
+        <div class="form-group col-md-4">
+          <label class="form-label">Modified By</label>
+          <input type="text" value="{{selectedAttribute.modifiedBy}}" class="form-control" [readonly]="true">
+        </div>
+
+        <div class="form-group col-md-4">
+          <label class="form-label">Modified Date</label>
+          <input type="text" value="{{selectedAttribute.dateModified}}" class="form-control" [readonly]="true">
+        </div>
+
+      </div>
+
+
+      <div class="form-row mt-2">
+
+        <div class="form-group col-md-4">
+          <label class="form-label">Module Updated By</label>
+          <input type="text" value="{{selectedAttribute.moduleUpdatedBy}}" class="form-control" [readonly]="true" />
+        </div>
+
+        <div class="form-group col-md-4">
+          <label class="form-label">Status</label>
+          <input type="text" value="{{selectedAttribute.status}}" class="form-control" [readonly]="true">
+        </div>
+      </div>
+
+
+
+      <div class="form-row mt-2 pull-right">
+        <div class="assetAttrBtn buttonDiv">
+          <button type="button"
+            [disabled]="!checkAssetAttributeAccess('Attribute Edit')"
+            (click)="editAttrWinOpen()" class="btn btn-sm">Edit</button>
+
+          <button type="button" (click)="openRepair()" class="btn btn-sm">Repairs</button>
+          <button type="button" [disabled]="selectedAttribute.wagStatus == 'None'" (click)="openWag()"
+            class="btn btn-sm">WAG</button>
+          <button type="button" (click)="printDiv()" class="btn btn-sm">Print</button>
+          <button type="button" (click)="closeAssetAttrWindow()" class="btn btn-sm">Close</button>
+        </div>
+      </div>
+    </form>
+
+    <div class="attrBgblur"></div>
+  </div>
+
+  <!-- Repair wndow -->
+  <kendo-window title="Asset Attribute Repair Years" [top]="10" [height]="auto" [minWidth]="550" [minHeight]="550"
+    *ngIf="repairWin && fromAttrList == false" [width]="1150" (close)="closeRepairWindow()">
+    <div class="flex-grow-1 repairDiv">
+      <div class="assetDetail mb-2">
+        <div class="form-row m-0 p-0">
+          <p class="col-md-2 m-0 p-0">Asset ID : </p>
+          <p class="col-md-10 m-0 p-0">{{selectedAsset.assetId}}</p>
+        </div>
+        <div class="form-row m-0 p-0">
+          <p class="col-md-2 m-0 p-0"> Address : </p>
+          <p class="col-md-10 m-0 p-0">{{selectedAsset.address}}</p>
+        </div>
+        <div class="form-row m-0 p-0">
+          <p class="col-md-2 m-0 p-0"> Attribute : </p>
+          <p class="col-md-10 m-0 p-0">{{selectedAttribute.attribute}}</p>
+        </div>
+      </div>
+      <div class="newBtnRpr" [style.display]="reapairTable == undefinded ? 'none': ''">
+        <button *ngIf="checkAssetAttributeAccess('Attribute Add')" (click)="openCreateAttributeReapirs('new')"
+          class="btn btn-sm themeButton">New</button>
+      </div>
+      <div class="table-responsive reapirGrid">
+        <table class="table table-striped table-bordered reapirTbl">
+          <thead>
+            <tr>
+
+              <th><span style="visibility: hidden;">R</span></th>
+              <th>Repair Year Band</th>
+              <th>Repair Year</th>
+              <th>Quantity</th>
+              <th>Spot Price</th>
+              <th>Cost</th>
+              <th>UOM</th>
+              <th>Source of Repair</th>
+              <th>Date Modified</th>
+              <th>Modified By</th>
+
+            </tr>
+          </thead>
+          <tbody>
+
+            <tr [class.selected]="assetRepairList == selectedRepair" class="odd gradeX"
+              *ngFor="let assetRepairList of assetRepairLists" (click)="selectRepairRow($event,assetRepairList)">
+
+              <td>
+                <li class="nav-item dropdown list-unstyled"
+                  *ngIf="checkAssetAttributeAccess('Attribute Edit') || checkAssetAttributeAccess('Attribute Delete')">
+                  <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
+                  <div class="dropdown-menu">
+                    <a *ngIf="checkAssetAttributeAccess('Attribute Edit')" class="dropdown-item"
+                      (click)="openCreateAttributeReapirs('edit', assetRepairList)" href="javascript:void(0)">Edit</a>
+                    <a *ngIf="checkAssetAttributeAccess('Attribute Delete')" class="dropdown-item"
+                      (click)="openConfirmationDialog(assetRepairList)" href="javascript:void(0)">Delete</a>
+
+
+                  </div>
+                </li>
+              </td>
+              <td style="width: 10%;">{{assetRepairList.year_Range}}</td>
+              <td>{{assetRepairList.repair_Description}}</td>
+              <td>{{assetRepairList.quantity}}</td>
+              <td>{{'£'+helperService.moneyFormat(assetRepairList?.spot_Price)}}</td>
+              <td>{{'£'+helperService.moneyFormat(assetRepairList?.cost)}}</td>
+              <td>{{assetRepairList.uom}}</td>
+              <td>{{assetRepairList.input_Source}}</td>
+              <td>{{helperService.dateFormat(assetRepairList.modified_Date)}}</td>
+              <td>{{assetRepairList.modified_By}}</td>
+
+            </tr>
+          </tbody>
+        </table>
+
+      </div>
+
+      <div class="row mt-2">
+        <div class="col-md-12 text-right">
+          <button type="submit" (click)="closeRepairWindow()" class="btn btn-sm">Close</button>
+        </div>
+
+      </div>
+
+    </div>
+    <div class="attrRprBgblur"></div>
+
+    <kendo-window title="{{selectedAsset.assetId+' -'+selectedAsset.address}}" *ngIf="createAttributeRepair"
+      (close)="closeCreateAttributeRpr()" [top]="10" [minWidth]="550" [width]="810"
+      [(height)]="createAttrRprFormHeight">
+      <h5 [style.position]="createAttrRprFormMode ? 'absolute': 'relative'" class="createAttrHeader">
+        {{createAttrRprTitle}}</h5>
+      <div *ngIf="createAttrRprFormMode" class="table-responsive attrRprGrid"
+        [style.margin-top]="availableAttrRpr == undefinded || availableAttrRpr.length == 0 ? '25px' : ''">
+        <table class="table table-striped table-bordered attributeListRprTable">
+          <thead>
+            <tr>
+              <th>Repair Start Year</th>
+              <th>Repair Year Band</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+
+            <tr class="odd gradeX" *ngFor="let availableRpr of availableAttrRpr"
+              (click)="selectAvailableRpr(availableRpr)" [style.color]="availableRpr.canAdd == 0 ? 'gainsboro' : '' "
+              [class.selected]="selectedAvailableRpr == availableRpr">
+              <td>{{ availableRpr.reyrstartyear }}</td>
+              <td>{{ availableRpr.reyrtext }}</td>
+              <td>Year {{ availableRpr.reyrtext }}</td>
+            </tr>
+          </tbody>
+        </table>
+
+      </div>
+
+      <form [formGroup]="createAttributeRprForm" (ngSubmit)="onSubmit()" autocomplete="off">
+        <div class="row mt-3">
+          <div class="col-md-6">
+            <div class="row">
+              <div class="col-md-5">
+                <label class="col-form-label">Quantity</label>
+              </div>
+              <div class="col-md-7 form-group">
+                <input type="text" class="form-control" formControlName="quantity"
+                  [ngClass]="{ 'is-invalid': submitted && formErrors.quantity }">
+                <div *ngIf="submitted && formErrors.quantity" class="invalid-feedback">
+                  <div *ngIf="formErrors.quantity">{{ formErrors.quantity }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="row">
+              <div class="col-md-5">
+                <label class="col-form-label">Unit of Measure</label>
+              </div>
+              <div class="col-md-7 form-group">
+                <input type="text" class="form-control" formControlName="uom"
+                  [ngClass]="{ 'is-invalid': submitted && formErrors.uom }">
+                <div *ngIf="submitted && formErrors.uom" class="invalid-feedback">
+                  <div *ngIf="formErrors.uom">{{ formErrors.uom }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div class="row mt-1">
+          <div class="col-md-6">
+            <div class="row">
+              <div class="col-md-5">
+                <label class="col-form-label">Spot Price</label>
+              </div>
+              <div class="col-md-7 form-group">
+                <input type="text" class="form-control" formControlName="spotPrice"
+                  [ngClass]="{ 'is-invalid': submitted && formErrors.spotPrice }">
+                <div *ngIf="submitted && formErrors.spotPrice" class="invalid-feedback">
+                  <div *ngIf="formErrors.spotPrice">{{ formErrors.spotPrice }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="row">
+              <div class="col-md-5">
+                <label class="col-form-label">Specific Year</label>
+              </div>
+              <div class="col-md-7 form-group">
+                <input type="text" class="form-control" formControlName="specificYear"
+                  [ngClass]="{ 'is-invalid': submitted && formErrors.specificYear }">
+                <div *ngIf="submitted && formErrors.specificYear" class="invalid-feedback">
+                  <div *ngIf="formErrors.specificYear">{{ formErrors.specificYear }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+
+
+        <div class="row mt-2">
+          <div class="col-md-12 text-right">
+            <button type="button" (click)="closeCreateAttributeRpr()" class="btn btn-sm mr-2">Cancel</button>
+            <button type="submit" class="btn btn-sm themeButton">Ok</button>
+          </div>
+        </div>
+      </form>
+    </kendo-window>
+  </kendo-window>
+
+
+
+
+  <app-asset-wag-detail [selectedAttribute]="selectedAttribute" [selectedAsset]="selectedAsset" [wagWindow]="wagWindow"
+    *ngIf="wagWindow" (closewagWindow)="closewagWindow($event)"></app-asset-wag-detail>
+
+</kendo-window>
+
+<!-- Repair wndow from attribute list -->
+<kendo-window title="Asset Attribute Repair Years" [top]="10" [height]="auto" [minWidth]="550" [minHeight]="550"
+  *ngIf="repairWin && fromAttrList" [width]="1150" (close)="closeRepairWindow()">
+  <div class="flex-grow-1 repairDiv">
+    <div class="assetDetail mb-2">
+      <div class="form-row m-0 p-0">
+        <p class="col-md-2 m-0 p-0">Asset ID : </p>
+        <p class="col-md-10 m-0 p-0">{{selectedAsset.assetId}}</p>
+      </div>
+      <div class="form-row m-0 p-0">
+        <p class="col-md-2 m-0 p-0"> Address : </p>
+        <p class="col-md-10 m-0 p-0">{{selectedAsset.address}}</p>
+      </div>
+      <div class="form-row m-0 p-0">
+        <p class="col-md-2 m-0 p-0"> Attribute : </p>
+        <p class="col-md-10 m-0 p-0">{{selectedAttribute.attribute}}</p>
+      </div>
+    </div>
+    <div class="newBtnRpr" [style.display]="reapairTable == undefinded ? 'none': ''">
+      <button *ngIf="checkAssetAttributeAccess('Attribute Add')" (click)="openCreateAttributeReapirs('new')"
+        class="btn btn-sm themeButton">New</button>
+    </div>
+    <div class="table-responsive reapirGrid">
+      <table class="table table-striped table-bordered reapirTbl">
+        <thead>
+          <tr>
+
+            <th><span style="visibility: hidden;">R</span></th>
+            <th>Repair Year Band</th>
+            <th>Repair Year</th>
+            <th>Quantity</th>
+            <th>Spot Price</th>
+            <th>Cost</th>
+            <th>UOM</th>
+            <th>Source of Repair</th>
+            <th>Date Modified</th>
+            <th>Modified By</th>
+
+          </tr>
+        </thead>
+        <tbody>
+
+          <tr [class.selected]="assetRepairList == selectedRepair" class="odd gradeX"
+            *ngFor="let assetRepairList of assetRepairLists" (click)="selectRepairRow($event,assetRepairList)">
+
+            <td>
+              <li class="nav-item dropdown list-unstyled"
+                *ngIf="checkAssetAttributeAccess('Attribute Edit') || checkAssetAttributeAccess('Attribute Delete')">
+                <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
+                <div class="dropdown-menu">
+                  <a *ngIf="checkAssetAttributeAccess('Attribute Edit')" class="dropdown-item"
+                    (click)="openCreateAttributeReapirs('edit', assetRepairList)" href="javascript:void(0)">Edit</a>
+                  <a *ngIf="checkAssetAttributeAccess('Attribute Delete')" class="dropdown-item"
+                    (click)="openConfirmationDialog(assetRepairList)" href="javascript:void(0)">Delete</a>
+
+
+                </div>
+              </li>
+            </td>
+            <td>{{assetRepairList.year_Range}}</td>
+            <td>{{assetRepairList.repair_Description}}</td>
+            <td>{{assetRepairList.quantity}}</td>
+            <td>{{'£'+helperService.moneyFormat(assetRepairList?.spot_Price)}}</td>
+            <td>{{'£'+helperService.moneyFormat(assetRepairList?.cost)}}</td>
+            <td>{{assetRepairList.uom}}</td>
+            <td>{{assetRepairList.input_Source}}</td>
+            <td>{{helperService.dateFormat(assetRepairList.modified_Date)}}</td>
+            <td>{{assetRepairList.modified_By}}</td>
+
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+
+    <div class="row mt-2">
+      <div class="col-md-12 text-right">
+        <button type="submit" (click)="closeRepairWindow()" class="btn btn-sm">Close</button>
+      </div>
+    </div>
+
+  </div>
+  <div class="attrRprBgblur"></div>
+
+  <kendo-window title="{{selectedAsset.assetId+' -'+selectedAsset.address}}" *ngIf="createAttributeRepair"
+    (close)="closeCreateAttributeRpr()" [top]="10" [minWidth]="250" [width]="810" [(height)]="createAttrRprFormHeight">
+    <h5 [style.position]="createAttrRprFormMode ? 'absolute': 'relative'" class="createAttrHeader">
+      {{createAttrRprTitle}}</h5>
+    <div *ngIf="createAttrRprFormMode" class="table-responsive attrRprGrid"
+      [style.margin-top]="availableAttrRpr == undefinded || availableAttrRpr.length == 0 ? '25px' : ''">
+      <table class="table table-striped table-bordered attributeListRprTable">
+        <thead>
+          <tr>
+            <th>Repair Start Year</th>
+            <th>Repair Year Band</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <tr class="odd gradeX" *ngFor="let availableRpr of availableAttrRpr"
+            (click)="selectAvailableRpr(availableRpr)" [style.color]="availableRpr.canAdd == 0 ? 'gainsboro' : '' "
+            [class.selected]="selectedAvailableRpr == availableRpr">
+            <td>{{ availableRpr.reyrstartyear }}</td>
+            <td>{{ availableRpr.reyrtext }}</td>
+            <td>Year {{ availableRpr.reyrtext }}</td>
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+
+    <form [formGroup]="createAttributeRprForm" (ngSubmit)="onSubmit()" autocomplete="off">
+      <div class="row mt-3">
+        <div class="col-md-6">
+          <div class="row">
+            <div class="col-md-5">
+              <label class="col-form-label">Quantity</label>
+            </div>
+            <div class="col-md-7 form-group">
+              <input type="text" class="form-control" formControlName="quantity"
+                [ngClass]="{ 'is-invalid': submitted && formErrors.quantity }">
+              <div *ngIf="submitted && formErrors.quantity" class="invalid-feedback">
+                <div *ngIf="formErrors.quantity">{{ formErrors.quantity }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="row">
+            <div class="col-md-5">
+              <label class="col-form-label">Unit of Measure</label>
+            </div>
+            <div class="col-md-7 form-group">
+              <input type="text" class="form-control" formControlName="uom"
+                [ngClass]="{ 'is-invalid': submitted && formErrors.uom }">
+              <div *ngIf="submitted && formErrors.uom" class="invalid-feedback">
+                <div *ngIf="formErrors.uom">{{ formErrors.uom }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="row mt-1">
+        <div class="col-md-6">
+          <div class="row">
+            <div class="col-md-5">
+              <label class="col-form-label">Spot Price</label>
+            </div>
+            <div class="col-md-7 form-group">
+              <input type="text" class="form-control" formControlName="spotPrice"
+                [ngClass]="{ 'is-invalid': submitted && formErrors.spotPrice }">
+              <div *ngIf="submitted && formErrors.spotPrice" class="invalid-feedback">
+                <div *ngIf="formErrors.spotPrice">{{ formErrors.spotPrice }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="row">
+            <div class="col-md-5">
+              <label class="col-form-label">Specific Year</label>
+            </div>
+            <div class="col-md-7 form-group">
+              <input type="text" class="form-control" formControlName="specificYear"
+                [ngClass]="{ 'is-invalid': submitted && formErrors.specificYear }">
+              <div *ngIf="submitted && formErrors.specificYear" class="invalid-feedback">
+                <div *ngIf="formErrors.specificYear">{{ formErrors.specificYear }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+
+
+      <div class="row mt-2">
+        <div class="col-md-12 text-right">
+          <button type="button" (click)="closeCreateAttributeRpr()" class="btn btn-sm mr-2">Cancel</button>
+          <button type="submit" class="btn btn-sm themeButton">Ok</button>
+        </div>
+      </div>
+    </form>
+  </kendo-window>
+</kendo-window>

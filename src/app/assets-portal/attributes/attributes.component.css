@@ -1,0 +1,142 @@
+/* .attributeGrid{
+    height:580px;
+    overflow-y:scroll;
+} */
+
+/* .attributeTbl th{
+    position: sticky;
+    top:-1px;
+    background: #fafafa;
+    z-index: 1;
+  } */
+
+  .dataTables_filter label{
+      margin-right: 10px !important;
+  }
+
+ /* .filterAttrdiv{
+    position: absolute;
+    margin-top: 3px;
+    z-index: 1;
+    display: inline-flex;
+    
+} */
+.attributeTbl{
+    cursor: default;
+}
+
+.k-window-wrapper{
+    position: fixed !important;
+}
+
+.noteBtn{
+    bottom: 10px;
+    position: absolute;
+    right: 6px;
+}
+
+.dropdown.list-unstyled{
+    position: absolute !important;
+}
+
+.attrDes div{
+    display: inline-block;
+}
+
+.attrDes div i{
+    display: inline-block;
+    margin:0px 5px !important;
+}
+
+/*.attributeTbl th, .attributeTbl td {  
+    
+    /* word-break: break-word; */
+    /* white-space: nowrap; */
+    /* margin: 0px;
+    padding: 8px 10px 8px 10px; 
+}*/
+
+.attributeTbl th:nth-child(5), .attributeTbl td:nth-child(5){
+    max-width: 220px;
+}
+
+
+
+.filterAttrdiv select{
+    height: calc(1.5rem + 2px);
+    background-position: right .625rem center;
+    font-size: .75rem;
+    line-height: 1.5;
+    background-clip: padding-box;
+    border: 1px solid rgba(24,28,33,0.1);
+    position: sticky;
+    top:1px;
+    
+}
+
+.dt-buttons{
+    display: none;
+}
+
+.createAttrHeader{
+    margin-top: 5px;
+}
+
+.buttonDiv button{ margin-left: 8px; }
+.newBtn{background-color: #e4287e; border-color: #e4287e; color: #fff;}
+.buttonDiv{
+    position: relative;
+    bottom: 15px;
+    right: 13px;
+    margin-top: 20px;
+}
+
+/* .attrListGrid{
+    height:275px;
+    overflow-y:scroll;
+  } */
+
+  .fixTbody {
+    height: 275px;
+    display:block;
+    overflow-y: scroll;
+  }
+
+  .fixedHeader {
+    width: calc(100% - 20px);
+  }
+
+  .attributeListTable tbody tr, thead {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+  }
+
+  .switcherInp{
+      margin-top:6px;
+  }
+
+  .attrDes img{
+      margin-left: 3px;
+  }
+
+ 
+
+/* .attributeListTable th{
+  position: sticky;
+  top:-1px;
+  background: #fafafa;
+  z-index: 1;
+} */
+
+.sortIcon{
+    font-size: 11px;
+  }
+
+  .searchBox{
+    color: #4E5155;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid rgba(24,28,33,0.1);
+  }
+

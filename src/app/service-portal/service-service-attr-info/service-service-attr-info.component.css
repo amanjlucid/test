@@ -1,0 +1,18 @@
+.k-window-wrapper{
+    position: fixed !important;
+}
+
+.colOne input[type='text']{
+    width: 105px;
+    margin-left: 10px;
+}
+
+.selectedServiceAttrDiv {padding: 0px 12px;}
+
+.colOne{width: 15%; display: inline-flex;}
+
+.colLast{width : 39%; display: inline-flex;}
+.colLast input[type='text']{
+    width: 350px;
+    margin-left: 10px;
+}

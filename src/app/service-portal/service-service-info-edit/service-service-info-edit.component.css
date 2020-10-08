@@ -1,0 +1,17 @@
+.k-window-wrapper{
+    position: fixed !important;
+}
+
+form{ width: 100%;}
+
+.inlineInp1{
+    width: 132px;
+    margin-left: 12px;
+}
+
+.inlineInp2{
+    width: 217px;
+    margin-left: 12px;
+}
+
+.infoDateDiv label{margin-left: 11px;}

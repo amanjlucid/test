@@ -1,0 +1,118 @@
+<kendo-window title="Attachments for Asbestos Update Requests..." *ngIf="attachment" (close)="closeAsbestosAttachmenttWin()" [top]="10"
+  [minWidth]="900" [width]="1460" [height]="auto" [minHeight]="500">
+
+
+  <div class="row mt-2">
+    <div class="col-md-12">
+      <div class="row">
+        <div class="col-md-3">
+          <label class="col-form-label">ACM Category/Detail:</label>
+        </div>
+        <div class="col-md-9 form-group">
+          <input type="text" [readonly]="readonly" value="{{selectedAsbestos?.auctext}} - {{selectedAsbestos?.audtext}}" class="form-control">
+        </div>
+      </div>
+    </div>
+    <div class="col-md-12">
+      <div class="row">
+        <div class="col-md-3">
+          <label class="col-form-label">Floor:</label>
+        </div>
+        <div class="col-md-9 form-group">
+          <input type="text" [readonly]="readonly" value="{{selectedAsbestos?.floor}}" class="form-control">
+        </div>
+      </div>
+    </div>
+    <div class="col-md-12">
+      <div class="row">
+        <div class="col-md-3">
+          <label class="col-form-label">Location:</label>
+        </div>
+        <div class="col-md-9 form-group">
+          <input type="text" [readonly]="readonly" value="{{selectedAsbestos?.location}}" class="form-control">
+        </div>
+      </div>
+    </div>
+    <div class="col-md-12">
+      <div class="row">
+        <div class="col-md-3">
+          <label class="col-form-label">Position:</label>
+        </div>
+        <div class="col-md-9 form-group">
+          <input type="text" [readonly]="readonly" value="{{selectedAsbestos?.position}}" class="form-control">
+
+        </div>
+      </div>
+    </div>
+    <div class="col-md-12">
+      <div class="row">
+        <div class="col-md-3">
+          <label class="col-form-label">Presence:</label>
+        </div>
+        <div class="col-md-9 form-group">
+          <input type="text" [readonly]="readonly" value="{{selectedAsbestos?.presence}}" class="form-control">
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+
+  <div class="row mt-3">
+    <div class="attachmentDiv">
+      <div class="col-md-12 attachmentTableHeader">
+        <h5>Attachments</h5>
+      </div>
+    </div>
+    <div class="col-md-12">
+      <kendo-grid [data]="gridView" [resizable]="true" [skip]="state.skip" [sort]="state.sort" [sortable]="{
+          allowUnsort: allowUnsort,
+          mode: multiple ? 'multiple' : 'single'
+          }" (sortChange)="sortChange($event)" [selectable]="{mode: 'single'}" (cellClick)="cellClickHandler($event)"
+        [height]="260">
+        <!-- <kendo-grid-checkbox-column></kendo-grid-checkbox-column> -->
+        <kendo-grid-column field="aauaattachmentname" title="Attachment Name" width="70"></kendo-grid-column>
+        <kendo-grid-column field="aauatype" title="Attachment Type" width="70"></kendo-grid-column>
+        <kendo-grid-column field="aauadesc" title="Description" width="230"></kendo-grid-column>
+        <kendo-grid-column field="aauaadddatetime" title="Date Added" width="60">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            {{ dataItem.aauaadddatetime | dateFormat : 'DD-MMM-YYYY' }}
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column field="aauastatus" title="Status" width="40"></kendo-grid-column>
+        <kendo-grid-column field="aauanote" title="Note" width="230"></kendo-grid-column>
+      </kendo-grid>
+    </div>
+
+  </div>
+  <div class="row mt-3 attachmentActionArea">
+    <div class="col-md-9 p-0">
+      <button type="button" class="btn btn-sm themeButton" (click)="viewAttachmentFunction()">View Attachment</button>
+      <button type="button" class="btn btn-sm themeButton"
+        (click)="editAttachmentDetailsFunction('description')">Edit</button>
+      <!-- <button type="button" class="btn btn-sm themeButton" (click)="editAttachmentDetailsFunction('note')">Edit Note</button> -->
+      <button type="button" class="btn btn-sm themeButton" (click)="uploadAttachmentFunction()">Add Attachment</button>
+      <button type="button" class="btn btn-sm themeButton" (click)="openConfirmationDialog()">Remove Attachment</button>
+      <!-- <button type="button" class="btn btn-sm themeButton" (click)="editAttachmentDetailsFunction('status')">Edit Status</button> -->
+
+    </div>
+    <div class="col-md-3 p-0">
+      <button type="button" class="btn btn-sm themeButton pull-right" (click)="closeAsbestosAttachmenttWin()">Close</button>
+    </div>
+  </div>
+
+
+
+  <div class="attachmentOverlay"></div>
+
+  <app-asbestos-edit-attachment [selectedAsbestos]="selectedAsbestos" [selectedAttachment]="selectedAttachment" [editAttachmentArea]="editAttachmentArea"
+    [editAttachmentDetails]="editAttachmentDetails" (closeEditAttachment)="closeEditAttachment($event)"
+    *ngIf="editAttachmentDetails"></app-asbestos-edit-attachment>
+
+  <app-asbestos-upload-attachment [selectedAsbestos]="selectedAsbestos" [uploadAttachment]="uploadAttachment"
+    (closeUploadAttachment)="closeUploadAttachment($event)" *ngIf="uploadAttachment"></app-asbestos-upload-attachment>
+
+    <app-asbestos-view-attachment [viewAttachment]="viewAttachment" [selectedAsbestos]="selectedAsbestos" [selectedAttachment]="selectedAttachment" (closeViewAttachment)="closeViewAttachment($event)" *ngIf="viewAttachment"></app-asbestos-view-attachment>
+
+</kendo-window>

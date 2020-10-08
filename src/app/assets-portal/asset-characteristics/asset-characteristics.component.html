@@ -1,0 +1,272 @@
+<div class="row">
+  <div class="col-md-1 col-sm-6 filterAttrdiv d-it" *ngIf='characteristicData?.length > 0'>
+    <select (change)="filterAttributes($event.target.value)">
+      <option *ngFor="let characteristicFilter of characteristicFilters" [value]="characteristicFilter.filterName">
+        {{ characteristicFilter.filterName }}</option>
+
+    </select>
+  </div>
+
+  <!-- <div class="col-md-2"> 
+        <button type="button" class="btn btn-sm dropdown-toggle-split" data-toggle="dropdown"
+        aria-expanded="false">Export v</button>
+        <div class="dropdown-menu" x-placement="bottom-start"
+          style="position: absolute; will-change: top, left; top: 38px; left: 66px;">
+          <a class="dropdown-item" (click)="exportToExcel(grid,'excel')" href="javascript:void(0)">Export to excel</a>
+          <a class="dropdown-item" (click)="exportToExcel(grid,'csv')" href="javascript:void(0)">Export to csv</a>
+          <a class="dropdown-item" (click)="exportToExcel(grid,'txt')" href="javascript:void(0)">Export to text</a>
+          
+
+        </div>
+      </div> -->
+  <div class="col-md-1  col-sm-6" *ngIf='characteristicData?.length > 0'>
+    <div class="dropdown" id="nesting-dropdown-demo">
+      <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown"
+        aria-expanded="false">Export</button>
+      <div class="dropdown-menu" x-placement="bottom-start"
+        style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
+        <a class="dropdown-item" (click)="exportToExcel(grid,'xlsx')" href="javascript:void(0)">Export Grid</a>
+        <a class="dropdown-item" (click)="exportToExcel(grid,'xlsx','selected')" href="javascript:void(0)">Export
+            Selected</a>
+        <!-- Level two -->
+        <!-- <div class="dropdown-toggle">
+          <div class="dropdown-item">Export Grid</div>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" (click)="exportToExcel(grid,'xlsx')" href="javascript:void(0)">Export Excel</a>
+            <a class="dropdown-item" (click)="exportToExcel(grid,'csv')" href="javascript:void(0)">Export Csv</a>
+            <a class="dropdown-item" (click)="exportToExcel(grid,'txt')" href="javascript:void(0)">Export Text</a>
+            <a class="dropdown-item" (click)="exportToExcel(grid,'html')" href="javascript:void(0)">Export Html</a>
+          </div>
+        </div> -->
+
+        <!-- Level two -->
+        <!-- <div class="dropdown-toggle">
+          <div class="dropdown-item">Export Selected</div>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" (click)="exportToExcel(grid,'xlsx','selected')" href="javascript:void(0)">Export
+              Excel</a>
+            <a class="dropdown-item" (click)="exportToExcel(grid,'csv','selected')" href="javascript:void(0)">Export
+              Csv</a>
+            <a class="dropdown-item" (click)="exportToExcel(grid,'txt','selected')" href="javascript:void(0)">Export
+              Text</a>
+            <a class="dropdown-item" (click)="exportToExcel(grid,'html','selected')" href="javascript:void(0)">Export
+              Html</a>
+          </div>
+        </div> -->
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-1 col-sm-6" *ngIf="checkAssetCharAccess('Characteristic Add')">
+    <button (click)="openCreateChar('new')" class="btn btn-sm themeButton">New</button>
+  </div>
+  <!-- <button (click)="newMessage()">New Message </button><p>{{message | json}}</p> -->
+</div>
+
+<div class="example-wrapper mt-1">
+  <kendo-grid #grid="kendoGrid" [groupable]="true" [data]="gridView" [selectable]="{
+            mode: 'multiple'
+          }" [kendoGridSelectBy]="mySelectionKey" [selectedKeys]="mySelection" [height]="620" [group]="state.group"
+    [resizable]="true" [skip]="state.skip" (groupChange)="groupChange($event)" [sort]="state.sort"
+    [filter]="state.filter" filterable="menu" [sortable]="{
+            allowUnsort: allowUnsort,
+            mode: multiple ? 'multiple' : 'single'
+            }" (sortChange)="sortChange($event)" (filterChange)="filterChange($event)">
+    <!-- <ng-template kendoGridToolbarTemplate>
+            <button type="button" kendoGridExcelCommand icon="file-excel">Export to Excel</button>
+        </ng-template>   -->
+    <kendo-grid-column field="notepadLists" [width]="30" [filterable]="false" [groupable]="false">
+      <ng-template kendoGridHeaderTemplate>
+
+      </ng-template>
+      <ng-template kendoGridCellTemplate let-dataItem>
+        <li class="nav-item dropdown list-unstyled" style="margin-top: -7px;" *ngIf="checkAssetCharAccess('Characteristic Edit') || checkAssetCharAccess('Characteristic Delete')">
+          <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" *ngIf="checkAssetCharAccess('Characteristic Edit')" (click)="openCreateChar('edit', dataItem)" href="javascript:void(0)">Edit</a>
+            <a class="dropdown-item" *ngIf="checkAssetCharAccess('Characteristic Delete')" (click)="openConfirmationDialog(dataItem)" href="javascript:void(0)">Delete</a>
+          </div>
+        </li>
+      </ng-template>
+    </kendo-grid-column>
+
+
+    <kendo-grid-column field="notepadLists" [width]="25" [filterable]="false" [groupable]="false">
+      <ng-template kendoGridHeaderTemplate>
+        <!-- <i class="fas fa-sticky-note"></i> -->
+        <img style="height:14px; width:16px;" src="assets/img/icons/attach.png" />
+      </ng-template>
+      <ng-template kendoGridCellTemplate let-dataItem>
+        <li class="nav-item dropdown list-unstyled" *ngIf="dataItem.notepadLists?.length > 0">
+            <img data-toggle="dropdown" aria-expanded="true" style="height:14px; width:16px;" class="attachmentIcon" src="assets/img/icons/attach.png" />
+          <!-- <i data-toggle="dropdown" aria-expanded="true" class="fas fa-sticky-note d-block"></i> -->
+          <div class="dropdown-menu">
+            <a class="dropdown-item" href="javascript:void(0)" *ngFor="let notes of dataItem.notepadLists"
+              (click)="openNotesDetails(notes)">{{ notes.name}}</a>
+          </div>
+        </li>
+        <!-- <i *ngIf="dataItem.Discontinued" class="fas fa-sticky-note d-block"></i> -->
+
+      </ng-template>
+    </kendo-grid-column>
+    <kendo-grid-column field="group" title="Group" [width]="124" [filterable]="true"></kendo-grid-column>
+    <kendo-grid-column field="type" title="Type" [width]="120"></kendo-grid-column>
+    <kendo-grid-column field="characteristic" title="Characteristic" [width]="120"></kendo-grid-column>
+    <kendo-grid-column field="name" title="Name" [width]="160"></kendo-grid-column>
+    <kendo-grid-column field="characteristicValue" title="Characteristic Value" [width]="120"></kendo-grid-column>
+    <kendo-grid-column field="modifiedBy" title="Modified By" [width]="120"></kendo-grid-column>
+    <kendo-grid-column field="dateModified" title="Modified Date" [width]="120">
+      <ng-template kendoGridCellTemplate let-dataItem>
+        {{dataItem.dateModified}}
+      </ng-template>
+    </kendo-grid-column>
+
+    <kendo-grid-excel fileName="{{fileName}}">
+      <kendo-excelexport-column field="group" title="group">
+      </kendo-excelexport-column>
+      <kendo-excelexport-column field="type" title="Type">
+      </kendo-excelexport-column>
+      <kendo-excelexport-column field="characteristic" title="Characteristics">
+      </kendo-excelexport-column>
+      <kendo-excelexport-column field="name" title="Name">
+      </kendo-excelexport-column>
+      <kendo-excelexport-column field="characteristicValue" title="Characteristic Value">
+      </kendo-excelexport-column>
+      <kendo-excelexport-column field="modifiedBy" title="Modified By">
+      </kendo-excelexport-column>
+      <kendo-excelexport-column field="dateModified" title="Modified Date">
+      </kendo-excelexport-column>
+
+    </kendo-grid-excel>
+
+  </kendo-grid>
+
+  <div class="charBlur"></div>
+
+  <kendo-window title="{{notesTitle}}" *ngIf="notesDetails" (close)="closeNotesDetails()" [top]="15" [minWidth]="250"
+    [width]="800" [height]="680">
+    <div class="row">
+      <div class="col-md-12" *ngIf="notesTitle != 'Attribute Image' && selectedNotes.type == 'N'">
+        <textarea style="height: 500px;" class="form-control" [readonly]="true">{{selectedNotes.text}}</textarea>
+      </div>
+
+      <div class="col-md-12" *ngIf="notesTitle == 'Attribute Image' && selectedNotes.type == 'P'">
+        <img [src]="notesImagePath" alt="{{selectedNotes.text}}" width="auto"
+          style="position: relative; height: 500px;">
+        <p class="mt-2 m-0 p-0">{{selectedNotes.link}}</p>
+        <p class="p-0 mt-1">{{selectedNotes.text}}</p>
+      </div>
+
+      <div class="col-md-12 text-right mt-2 noteBtn">
+        <button class="btn btn-sm" (click)="closeNotesDetails()">Close</button>
+      </div>
+    </div>
+  </kendo-window>
+
+
+  <kendo-window title="{{selectedAsset.assetId+' -'+selectedAsset.address}}" *ngIf="createCar"
+    (close)="closeCreateChar()" [top]="10" [minWidth]="250" [(width)]="createCharFormWidth"
+    [(height)]="createCharFormHeight">
+    <div class="row" *ngIf="createCharFormMode ;else other_content">
+      <div class="col-8">
+        <h5>{{createCharTitle}}</h5>
+      </div>
+
+      <div class="col-4 text-right" *ngIf="createCharFormMode">
+        <label class="p-0 mr-4">Search: </label>
+        <input class="form-control-sm searchBox" [ngModel]="search" (ngModelChange)="searchAvailableAttr($event)"
+          type="text">
+      </div>
+
+    </div>
+    <ng-template #other_content>
+      <h5 class="createCharHeader">{{createCharTitle}}</h5>
+    </ng-template>
+
+    <div *ngIf="createCharFormMode" class="table-responsive availableCharList mt-1">
+      <table class="table table-striped table-bordered availCharListTable">
+        <thead class="fixedHeader">
+          <tr>
+            <th (click)="orderBy('characteristicGroupName')" style="cursor: pointer; width: 20%;">Characteristic Group Name
+              <i class="lnr lnr-arrow-up sortIcon" aria-hidden="true"
+                *ngIf="availableCharModel.OrderBy === 'characteristicGroupName' && availableCharModel.OrderType === 'Ascending'"></i>
+              <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
+                *ngIf="availableCharModel.OrderBy === 'characteristicGroupName' && availableCharModel.OrderType === 'Descending'"></i>
+            </th>
+            <th (click)="orderBy('characteristicGroup')" style="cursor: pointer; width: 20%;">Characteristic Group
+              <i class="lnr lnr-arrow-up sortIcon" aria-hidden="true"
+                *ngIf="availableCharModel.OrderBy === 'characteristicGroup' && availableCharModel.OrderType === 'Ascending'"></i>
+              <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
+                *ngIf="availableCharModel.OrderBy === 'characteristicGroup' && availableCharModel.OrderType === 'Descending'"></i>
+            </th>
+            <th (click)="orderBy('characteristicCode')" style="cursor: pointer; width: 20%;">Characteristic Code
+              <i class="lnr lnr-arrow-up sortIcon" aria-hidden="true"
+                *ngIf="availableCharModel.OrderBy === 'characteristicCode' && availableCharModel.OrderType === 'Ascending'"></i>
+              <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
+                *ngIf="availableCharModel.OrderBy === 'characteristicCode' && availableCharModel.OrderType === 'Descending'"></i>
+            </th>
+            <th (click)="orderBy('characteristicName')" style="cursor: pointer; width: 20%;">Characteristic Name
+              <i class="lnr lnr-arrow-up sortIcon" aria-hidden="true"
+                *ngIf="availableCharModel.OrderBy === 'characteristicName' && availableCharModel.OrderType === 'Ascending'"></i>
+              <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
+                *ngIf="availableCharModel.OrderBy === 'characteristicName' && availableCharModel.OrderType === 'Descending'"></i>
+            </th>
+            <th (click)="orderBy('characteristicType')" style="cursor: pointer; width: 20%;">Characteristic Type
+              <i class="lnr lnr-arrow-up sortIcon" aria-hidden="true"
+                *ngIf="availableCharModel.OrderBy === 'characteristicType' && availableCharModel.OrderType === 'Ascending'"></i>
+              <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
+                *ngIf="availableCharModel.OrderBy === 'characteristicType' && availableCharModel.OrderType === 'Descending'"></i>
+            </th>
+          </tr>
+        </thead>
+        <tbody class="fixTbody" (scroll)="onScroll($event)">
+          <tr class="odd gradeX" *ngFor="let availableChar of availableChars"
+            [class.selected]="availableChar == selectedAvailableChar" (click)="selectAvailableChar(availableChar)">
+            <td style="width: 20%;">{{ availableChar.characteristicGroupName  }}</td>
+            <td style="width: 20%;">{{ availableChar.characteristicGroup  }}</td>
+            <td style="width: 20%;">{{ availableChar.characteristicCode  }}</td>
+            <td style="width: 20%;">{{ availableChar.characteristicName  }}</td>
+            <td>
+              {{ (availableChar.characteristicType == 'V') ? "Value" : (availableChar.characteristicType == "F") ? "Fixed Condition" : (availableChar.characteristicType == "T") ? "Text" : (availableChar.characteristicType == "N") ? "Numeric" : ""   }}
+            </td>
+
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+
+    <form [formGroup]="createCarForm" (ngSubmit)="onSubmit()" autocomplete="off">
+      <div class="row mt-3">
+        <div class="col-md-10">
+          <div class="row">
+            <div class="col-md-3">
+              <label class="col-form-label">Value</label>
+            </div>
+            <div class="col-md-9 form-group">
+              <input *ngIf="characteristicType != undefined && characteristicType != 'F'" type="text"
+                class="form-control" formControlName="charvalue"
+                [ngClass]="{ 'is-invalid': submitted && formErrors.charvalue }">
+              <select *ngIf="characteristicType == 'F' && charcFixedTypeDropDown" class="form-control"
+                formControlName="charvalue">
+                <option *ngFor="let charcFixedType of charcFixedTypeDropDown" value="{{charcFixedType}}">
+                  {{charcFixedType}}</option>
+              </select>
+
+              <div *ngIf="submitted && formErrors.charvalue" class="invalid-feedback">
+                <div *ngIf="formErrors.charvalue">{{ formErrors.charvalue }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+      </div>
+
+      <div class="buttonDiv">
+        <button type="button" (click)="closeCreateChar()" class="btn btn-sm">Cancel</button>
+        <button type="submit" class="btn btn-sm themeButton">Ok</button>
+      </div>
+    </form>
+  </kendo-window>
+</div>

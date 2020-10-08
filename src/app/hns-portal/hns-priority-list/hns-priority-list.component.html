@@ -1,0 +1,94 @@
+<kendo-window title="{{title}}" *ngIf="openPriorityList" (close)="closePriorityListMethod()" [top]="5" [minWidth]="400"
+  [width]="780" [height]="auto" [minHeight]="300">
+
+  <div class="row detailDiv">
+    <div class="detailHeadingDiv">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="row">
+            <div class="col-md-2">
+              <span>Definition:</span>
+            </div>
+            <div class="col-md-10">
+              <span class="boldSpan">{{selectedDefinition.hascode }} ({{selectedDefinition.hasversion}})
+                {{selectedDefinition.hasname}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-2">
+    <div class="col-md-12">
+      <ng-template [ngIf]="selectedDefinition.hasscoring == 2" [ngIfElse]="otherScoringMethod">
+        <kendo-grid [data]="gridView" [height]="410" [selectable]="{
+          mode: 'single'
+        }" [filterable]="false" [resizable]="true" [sortable]="false" [skip]="state.skip" [sort]="state.sort"
+          [filter]="state.filter" (sortChange)="sortChange($event)" (filterChange)="filterChange($event)"
+          (cellClick)="cellClickHandler($event)" [navigable]="true">
+
+          <kendo-grid-column field="haspriority" title="Code" width="110">
+          </kendo-grid-column>
+          <kendo-grid-column field="hasprioritydescription" title="Description" width="160">
+          </kendo-grid-column>
+          <kendo-grid-column field="hasdaystoresolve" title="Days to Resolve" width="140">
+          </kendo-grid-column>
+          <kendo-grid-column field="hasrisklower" title="Lower Score Limit" width="150">
+          </kendo-grid-column>
+          <kendo-grid-column field="hasriskupper" title="Upper Score Limit" width="150">
+          </kendo-grid-column>
+        </kendo-grid>
+      </ng-template>
+
+      <ng-template #otherScoringMethod>
+        <kendo-grid [data]="gridView" [height]="410" [selectable]="{
+          mode: 'single'
+        }" [filterable]="false" [resizable]="true" [sortable]="false" [skip]="state.skip" [sort]="state.sort"
+          [filter]="state.filter" (sortChange)="sortChange($event)" (filterChange)="filterChange($event)"
+          (cellClick)="cellClickHandler($event)" [navigable]="true">
+
+          <kendo-grid-column field="haspriority" title="Code" width="120">
+          </kendo-grid-column>
+          <kendo-grid-column field="hasprioritydescription" title="Description" width="100">
+          </kendo-grid-column>
+          <kendo-grid-column field="hasdaystoresolve" title="Days to Resolve" width="220">
+          </kendo-grid-column>
+        </kendo-grid>
+      </ng-template>
+
+
+    </div>
+  </div>
+
+  <div class="row mt-2">
+    <div class="col-md-8 actionAreaBtnleft">
+      <button type="button" *ngIf="hnsPermission.indexOf('Add Priority List') != -1" [disabled]="disableAddBtn"
+        class="btn btn-sm themeButton" (click)="addPriority('add')">Add</button>
+      <button type="button" [disabled]="disableBtn" class="btn btn-sm themeButton" (click)="addPriority('view')"
+        *ngIf="selectedDefinition.hasinuse == 'Y'">View</button>
+      <button type="button" [disabled]="disableBtn" class="btn btn-sm themeButton" (click)="addPriority('edit')"
+        *ngIf="selectedDefinition.hasinuse == 'N' && hnsPermission.indexOf('Edit Priority List') != -1">Edit</button>
+      <button type="button" [disabled]="disableBtn" class="btn btn-sm themeButton" (click)="openConfirmationDialog()"
+        *ngIf="hnsPermission.indexOf('Delete Priority List') != -1">Delete</button>
+      <button type="button" [disabled]="disableBtn" class="btn btn-sm themeButton"
+        *ngIf="hnsPermission.indexOf('Move Up') != -1" (click)="movePriority('up')"><i
+          class='fas fa-long-arrow-alt-up'></i> Move up</button>
+      <button type="button" [disabled]="disableBtn" *ngIf="hnsPermission.indexOf('Move Down') != -1"
+        class="btn btn-sm themeButton" (click)="movePriority('down')"><i class='fas fa-long-arrow-alt-down'> </i> Move
+        Down</button>
+    </div>
+    <div class="col-md-4 actionAreaBtnright">
+      <button type="button" class="btn btn-sm themeButton" (click)="closePriorityListMethod()">Cancel</button>
+    </div>
+  </div>
+
+  <div class="priorityOverlay"></div>
+
+  <app-hns-add-priority *ngIf="openAddPriority" [range]="range" [openAddPriority]="openAddPriority"
+    [formMode]="formMode" [selectedDefinition]="selectedDefinition" [priorityData]="listData"
+    [selectedPriority]="selectedData" (closeAddPriority)="closeAddPriority($event)"
+    (successFullSubmit)="successFullSubmit($event)">
+  </app-hns-add-priority>
+
+</kendo-window>

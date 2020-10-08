@@ -1,0 +1,333 @@
+<kendo-window title="Management Requests - {{selectedAsset.assetId+' - '+selectedAsset.address}}" *ngIf="manageAsbestos"
+  (close)="closeManageAsbestosRequestWin()" [top]="5" [minWidth]="900" [width]="1410" [height]="840" [minHeight]="600">
+
+  <div class="manageReqDiv">
+
+    <div class="col-md-12 text-right p-0">
+      <button class="btn btn-sm themeButton mr-2" [disabled]="checkAsbestosPropAccess('new request')" *ngIf="disableActionBtn == false" (click)="openAsbestosRequestPopup()">New
+        Request</button>
+      <button class="btn btn-sm themeButton mr-2" [disabled]="checkAsbestosPropAccess('edit')" *ngIf="disableActionBtn"
+        (click)="openAsbestosRequestPopup()">Edit</button>
+      <button class="btn btn-sm themeButton" [disabled]="!disableActionBtn || checkAuthNReqUser || checkAsbestosPropAccess('auth')" (click)="openAsbestosAuthPopup()">Manage
+        Request</button>
+    </div>
+
+    <div class="asbestosMangeDetailsDiv mt-2">
+      <div class="col-md-12 mangeDetailDiv">
+        Details
+      </div>
+
+      <div class="asbestosDetailDiv">
+        <div class="row">
+          <div class="col-md-3">
+            <p class="mb-0">ACM Category / Detail:</p>
+            <span>{{selectedAsbestos.auctext}} - {{selectedAsbestos.audtext}}</span>
+          </div>
+
+          <div class="col-md-3">
+            <p class="mb-0">Floor:</p>
+            <span>{{selectedAsbestos.floor}}</span>
+          </div>
+
+          <div class="col-md-3">
+            <p class="mb-0">Location:</p>
+            <span>{{selectedAsbestos.location}}</span>
+          </div>
+
+          <div class="col-md-3">
+            <p class="mb-0">Position:</p>
+            <span>{{selectedAsbestos.position}}</span>
+          </div>
+
+        </div>
+
+
+        <div class="row">
+          <div class="col-md-3">
+            <p class="mb-0">Presence:</p>
+            <span>{{selectedAsbestos.auctext}}</span>
+          </div>
+
+          <div class="col-md-3">
+            <p class="mb-0">Type:</p>
+            <span>{{selectedAsbestos.floor}}</span>
+          </div>
+
+          <div class="col-md-3">
+            <p class="mb-0">Material Risk:</p>
+            <span [style.color]="getColor(selectedAsbestos.materialRisk)">{{selectedAsbestos.materialRisk}} </span>
+          </div>
+
+          <div class="col-md-3">
+            &nbsp;
+          </div>
+
+        </div>
+      </div>
+      <!-- <div class="row">
+        <div class="col-md-4"></div>
+        <div class="col-md-4">
+          <div class="row font-weight-bold">
+            <div class="col-md-4 text-center">
+              <p class="mb-0">Material Risk :</p>
+              <span [style.color]="getColor(selectedAsbestos.materialRisk)">{{selectedAsbestos.materialRisk}} </span>
+            </div>
+            <div class="col-md-4 text-center">
+              <p class="mb-0">Priority Risk :</p>
+              <span [style.color]="getColor(selectedAsbestos.priorityRisk)">{{selectedAsbestos.priorityRisk}}</span>
+            </div>
+            <div class="col-md-4 text-center">
+              <p class="mb-0"> Total Risk</p>
+              <span [style.color]="getColor(selectedAsbestos.totalRisk)">{{selectedAsbestos.totalRisk}}</span>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4"></div>
+      </div> -->
+
+
+      <!-- <div class="fullDetailManagementDiv row mt-3">
+        <div class="col-md-3">
+          <div class="row">
+            <div class="col-md-5 text-right p-0 m-0">
+              <p><span>Extent:</span></p>
+              <p><span>Survey Date:</span></p>
+              <p><span>Description:</span> </p>
+              <p><span>Additional Notes:</span></p>
+            </div>
+            <div class="col-md-7 text-left p-0 m-0 pl-1">
+              <p>{{selectedAsbestos.asasextent}}</p>
+              <p>{{selectedAsbestos.asassurveydate}}</p>
+              <p>{{selectedAsbestos.asasdescription}}</p>
+              <p>{{selectedAsbestos.asasadditionalnotes}}</p>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="col-md-2">
+          <div class="row">
+            <div class="col-md-5 text-right p-0 m-0">
+              <p><span>UOM:</span></p>
+              <p><span>Surveyor:</span></p>
+
+            </div>
+
+            <div class="col-md-7 text-left p-0 m-0 pl-1">
+              <p>{{selectedAsbestos.uom}}</p>
+              <p>{{selectedAsbestos.svrname}}</p>
+
+            </div>
+          </div>
+
+        </div>
+
+        <div class="col-md-4">
+          <div class="row">
+            <div class="col-md-5 text-right p-0 m-0">
+              <p><span>Inspection Accessibility:</span></p>
+              <p><span>Data Source:</span></p>
+
+            </div>
+            <div class="col-md-7 text-left p-0 m-0 pl-1">
+              <p>{{selectedAsbestos.asactext}}</p>
+              <p>{{selectedAsbestos.dataSource}}</p>
+            </div>
+
+          </div>
+
+
+        </div>
+
+        <div class="col-md-3">
+          <div class="row">
+            <div class="col-md-5 text-right p-0 m-0">
+              <p><span>HSE Notifiable:</span></p>
+            </div>
+            <div class="col-md-7 text-left p-0 m-0 pl-1">
+              <p>{{selectedAsbestos.hseNotifiable}}</p>
+
+            </div>
+          </div>
+
+
+        </div>
+      </div> -->
+
+
+    </div>
+
+    <div class="asbestosMangeDetailsDiv mt-2">
+      <div class="col-md-12 mangeDetailDiv">
+        Material Assessment
+      </div>
+
+      <div class="fullDetailManagementDiv row text-center mt-1">
+        <div class="col-md-6">
+          <div class="row">
+            <div class="col-md-5 text-right p-0 m-0">
+              <p><span>Product:</span></p>
+              <p><span>Surface:</span></p>
+            </div>
+            <div class="col-md-7 text-left p-0 m-0 pl-1">
+              <p>{{selectedAsbestos.apsproducttext}}</p>
+              <p>{{selectedAsbestos.assctext}}</p>
+
+            </div>
+          </div>
+
+
+        </div>
+
+        <div class="col-md-6">
+          <div class="row">
+            <div class="col-md-5 text-right p-0 m-0">
+              <p><span>Damage:</span></p>
+              <p><span>Type:</span></p>
+            </div>
+            <div class="col-md-7 text-left p-0 m-0 pl-1">
+              <p>{{selectedAsbestos.adstext}}</p>
+              <p>{{selectedAsbestos.atstext}}</p>
+            </div>
+          </div>
+
+
+        </div>
+      </div>
+
+
+
+    </div>
+
+    <div class="asbestosMangeDetailsDiv  mt-2">
+      <div class="col-md-12 mangeDetailDiv">
+        Management Actions
+      </div>
+
+      <div class="fullDetailManagementDiv row text-center mt-1">
+        <div class="col-md-3">
+          <div class="row">
+            <div class="col-md-6 text-right p-0 m-0">
+              <p><span>Initial:</span></p>
+              <p><span>Subsequent:</span></p>
+              <p><span>Review Timeframe:</span></p>
+              <p><span>Reinspection Timeframe:</span></p>
+            </div>
+
+            <div class="col-md-6 text-left p-0 m-0 pl-1">
+              <p>{{selectedAsbestos.initialAction}}</p>
+              <p>{{selectedAsbestos.subsequentAction}}</p>
+              <p>{{selectedAsbestos.reviewTimeframe}}</p>
+              <p>{{selectedAsbestos.reinspectionTimeframe}}</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="row">
+            <div class="col-md-5 text-right p-0 m-0">
+              <p><span>TimeFrame:</span></p>
+              <p><span>TimeFrame:</span></p>
+              <p><span>Review Date:</span></p>
+              <p><span>Reinspection Date:</span></p>
+            </div>
+
+            <div class="col-md-7 text-left p-0 m-0 pl-1">
+              <p>{{selectedAsbestos.initialTimeframe}}</p>
+              <p>{{selectedAsbestos.subsequentTimeframe}}</p>
+              <p>{{selectedAsbestos.reviewDate | dateFormat : 'DD-MMM-YYYY'}}</p>
+              <p>{{selectedAsbestos.reinspectionDate | dateFormat : 'DD-MMM-YYYY'}}</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="row">
+            <div class="col-md-5 text-right p-0 m-0">
+              <p><span>Status:</span></p>
+              <p><span>Status:</span></p>
+            </div>
+            <div class="col-md-7 text-left p-0 m-0 pl-1">
+              <p>
+                {{selectedAsbestos.initialStatus == 'O' ? 'Outstanding' : selectedAsbestos.initialStatus == 'C' ? 'Complete' : selectedAsbestos.initialStatus == '' ? 'No' : selectedAsbestos.initialStatus == 'N' ? '' : ''}}
+              </p>
+              <p>
+                {{selectedAsbestos.subsequentStatus == 'O' ? 'Outstanding' : selectedAsbestos.subsequentStatus == 'C' ? 'Complete' : selectedAsbestos.subsequentStatus.trim() == '' ? 'No' : selectedAsbestos.subsequentStatus == 'N' ? '' : ''}}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="row">
+            <div class="col-md-5 text-right p-0 m-0">
+              <p><span>Deadline:</span></p>
+              <p><span>Deadline:</span></p>
+            </div>
+
+            <div class="col-md-7 text-left p-0 m-0 pl-1">
+              <p>{{selectedAsbestos.asmainitialdeadline | dateFormat : 'DD-MMM-YYYY'}}</p>
+              <p>{{selectedAsbestos.asmasubseqdeadline | dateFormat : 'DD-MMM-YYYY'}}</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <div class="mt-2">
+      <div class="requestTableHeader">
+        <h5>{{reqStr}}</h5>
+      </div>
+      <kendo-grid [data]="gridView" [resizable]="true" [skip]="state.skip" [sort]="state.sort" [sortable]="{
+        allowUnsort: allowUnsort,
+        mode: multiple ? 'multiple' : 'single'
+        }" (sortChange)="sortChange($event)" [selectable]="{mode: 'single'}" [height]="180">
+        <!-- <kendo-grid-checkbox-column></kendo-grid-checkbox-column> -->
+        <kendo-grid-column field="aaudreqstatusname" title="Request Status" width="140"></kendo-grid-column>
+        <kendo-grid-column field="aaudactiontype" title="Action Type" width="130"></kendo-grid-column>
+        <kendo-grid-column field="requestUserId" title="Request User" width="120"></kendo-grid-column>
+        <kendo-grid-column field="aaudcompletiondate" title="Completion Date" width="120">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            {{ dataItem.aaudcompletiondate | dateFormat : 'DD-MMM-YYYY' }}
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column field="aauddescription" title="Description" width="140"></kendo-grid-column>
+        <kendo-grid-column field="authUserId" title="Authorisation User" width="140"></kendo-grid-column>
+        <kendo-grid-column field="authDate" title="Authorisation Date" width="120">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            {{ dataItem.authDate | dateFormat : 'DD-MMM-YYYY' }}
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column field="attachmentCount" title="Attachments" width="100"></kendo-grid-column>
+
+      </kendo-grid>
+    </div>
+  </div>
+
+  <div class="text-right mt-3">
+    <button class="btn btn-sm themeButton" (click)="closeManageAsbestosRequestWin()">Cancel</button>
+  </div>
+  <div class="manageAsbestosReq"></div>
+
+  <app-asbestos-request [disableActionBtn]="disableActionBtn" [asbestosRequest]="asbestosRequest" [selectedAsbestos]="selectedAsbestos"
+    (closeAsbestosRequest)="closeAsbestosRequest($event)" *ngIf="asbestosRequest"></app-asbestos-request>
+
+  <app-asbestos-auth [disableActionBtn]="disableActionBtn" [selectedAsbestos]="selectedAsbestos"
+    [asbestosAuth]="asbestosAuth" (closeAsbestosAuth)="closeAsbestosAuth($event)" *ngIf="asbestosAuth">
+  </app-asbestos-auth>
+
+  <kendo-dialog title="No Request against ACM" *ngIf="wariningPopup" (close)="closerWarningPopup('close')"
+    [minWidth]="250" [width]="450">
+
+    <p style="margin: 30px; text-align: center; font-weight: 600;">No request exists against this ACM to authorise.</p>
+    <div class="row">
+      <div class="col-md-12 text-right">
+        <button class="btn btn-sm btn btn-sm themeButton" (click)="closerWarningPopup('close')"
+          primary="true">Ok</button>
+      </div>
+    </div>
+  </kendo-dialog>
+
+</kendo-window>

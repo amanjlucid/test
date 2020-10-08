@@ -1,0 +1,136 @@
+<kendo-window title="Authorise Request" *ngIf="asbestosAuth" (close)="closeAsbestosAuthWin()" [top]="10"
+  [minWidth]="500" [width]="830" [height]="auto" [minHeight]="500">
+
+  <form [formGroup]="asbestosAuthForm" (ngSubmit)="onSubmit()" autocomplete="off">
+    <div class="row mt-2">
+      <div class="col-md-6">
+        <div class="row">
+          <div class="col-md-3">
+            <label class="col-form-label">Action:</label>
+          </div>
+          <div class="col-md-9 form-group">
+            <select *ngIf="!disableAsbestosForm" class="form-control" formControlName="action"
+              [ngClass]="{ 'is-invalid': submitted && formErrors.action }">
+              <option value="">Select</option>
+              <option value="Remove">Remove</option>
+              <option value="Protect/Enclose">Protect/Enclose</option>
+              <option value="Seal/Encapsulate">Seal/Encapsulate</option>
+            </select>
+            <!-- When form is disabled -->
+            <input *ngIf="disableAsbestosForm" [readonly]="disableAsbestosForm" type="text" class="form-control"
+              formControlName="action" [ngClass]="{ 'is-invalid': submitted && formErrors.action }">
+            <div *ngIf="submitted && formErrors.action" class="invalid-feedback">
+              <div *ngIf="formErrors.action">{{ formErrors.action }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="row">
+          <div class="col-md-4">
+            <label class="col-form-label">Completion Date:</label>
+          </div>
+          <div class="col-md-8 form-group">
+            <input [readonly]="disableAsbestosForm" type="text" class="form-control"
+               [minDate]="{year: 1800, month: 1, day: 1}" ngbDatepicker #i="ngbDatepicker"
+              formControlName="completionDate" [ngClass]="{ 'is-invalid': submitted && formErrors.completionDate }">
+            <!-- When form is disabled -->
+            <!-- <input *ngIf="disableAsbestosForm" [readonly]="disableAsbestosForm" type="text" class="form-control"
+              formControlName="completionDate"> -->
+
+            <div *ngIf="submitted && formErrors.completionDate" class="invalid-feedback">
+              <div *ngIf="formErrors.completionDate">{{ formErrors.completionDate }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="row mt-2">
+      <div class="col-md-2 desLabel">
+        <label class="col-form-label">Description:</label>
+      </div>
+      <div class="col-md-10 form-group desTextArea">
+        <textarea [readonly]="disableAsbestosForm" rows="6" class="form-control" formControlName="description"
+          [ngClass]="{ 'is-invalid': submitted && formErrors.description }"></textarea>
+        <div *ngIf="submitted && formErrors.description" class="invalid-feedback">
+          <div *ngIf="formErrors.description">{{ formErrors.description }}</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="row mt-3">
+      <div class="attachmentDiv">
+        <div class="col-md-12 attachmentTableHeader">
+          <h5>Attachments</h5>
+        </div>
+      </div>
+      <div class="col-md-12">
+        <kendo-grid [data]="gridView" [resizable]="true" [skip]="state.skip" [sort]="state.sort" [sortable]="{
+          allowUnsort: allowUnsort,
+          mode: multiple ? 'multiple' : 'single'
+          }" (sortChange)="sortChange($event)" [selectable]="{mode: 'single'}" (cellClick)="cellClickHandler($event)"
+          [height]="260">
+          <!-- <kendo-grid-checkbox-column></kendo-grid-checkbox-column> -->
+          <kendo-grid-column field="aauaattachmentname" title="Attachment Name" width="140"></kendo-grid-column>
+          <kendo-grid-column field="aauatype" title="Attachment Type" width="130"></kendo-grid-column>
+          <kendo-grid-column field="aauadesc" title="Description" width="120"></kendo-grid-column>
+          <kendo-grid-column field="aauaadddatetime" title="Date Added" width="120">
+            <ng-template kendoGridCellTemplate let-dataItem>
+              {{ dataItem.aauaadddatetime | dateFormat : 'DD-MMM-YYYY' }}
+            </ng-template>
+          </kendo-grid-column>
+          <kendo-grid-column field="aauastatus" title="Status" width="90"></kendo-grid-column>
+          <kendo-grid-column field="aauanote" title="Note" width="140"></kendo-grid-column>
+        </kendo-grid>
+      </div>
+
+    </div>
+    <div class="row mt-2">
+      <div class="col-md-6 attachmentActionArea">
+        <button type="button" class="btn btn-sm themeButton" (click)="openAttachment()">Add Attachment</button>
+        <button type="button" class="btn btn-sm themeButton" (click)="openConfirmationDialog()">Remove
+          Attachment</button>
+        <button type="button" class="btn btn-sm themeButton" (click)="editAttachmentDetailsFunction()">Edit</button>
+      </div>
+      <div class="col-md-6 requestActionArea text-right">
+        <button type="button" class="btn btn-sm themeButton" (click)="closeAsbestosAuthWin()">Cancel</button>
+        <button type="button" class="btn btn-sm themeButton" [disabled]="!disableActionBtn"
+          (click)="authoriseRequest(true)">Accept</button>
+        <button type="button" class="btn btn-sm themeButton" [disabled]="!disableActionBtn"
+          (click)="authoriseRequest(false)">Reject</button>
+      </div>
+    </div>
+
+
+
+  </form>
+
+  <div class="asbestosReq"></div>
+
+
+  <app-asbestos-edit-attachment [selectedAsbestos]="selectedAsbestos" [selectedAttachment]="selectedAttachment"
+    [editAttachmentDetails]="editAttachmentDetails" (closeEditAttachment)="closeEditAttachment($event)"
+    *ngIf="editAttachmentDetails"></app-asbestos-edit-attachment>
+
+  <app-asbestos-attachment [selectedAsbestos]="selectedAsbestos" [attachment]="attachment"
+    (closeAttachment)="closeAttachment($event)" *ngIf="attachment">
+  </app-asbestos-attachment>
+
+  <kendo-dialog title="Asbestos" *ngIf="wariningPopup" (close)="closerWarningPopup('close')"
+    [minWidth]="250" [width]="450">
+
+    <p style="font-weight: 600;">You cannot Accept/Reject a Request for an ACM with Pending Sample(s).</p>
+    <br>
+    <p style="font-weight: 600;">Authorise action will be cancelled.</p>
+    <div class="row">
+      <div class="col-md-12 text-right">
+        <button class="btn btn-sm btn btn-sm themeButton" (click)="closerWarningPopup('close')"
+          primary="true">Ok</button>
+      </div>
+    </div>
+  </kendo-dialog>
+
+</kendo-window>

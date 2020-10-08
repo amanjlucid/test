@@ -1,0 +1,198 @@
+<kendo-window title="Service Info Edit" *ngIf="openAddEditInfo" (close)="closeAddEditInfoMethod()" [top]="70"
+  [minWidth]="400" [width]="1000" [height]="auto" [minHeight]="330">
+
+  <div class="row" *ngIf="serviceInfoEditResult">
+    <form name="form" #serviceInfo='ngForm' (ngSubmit)="serviceInfo.form.valid && submitForm(serviceInfo)" novalidate>
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-md-2">
+            <label class="col-form-label">Asset:</label>
+          </div>
+          <div class="col-md-3 form-group">
+            <input type="text" [readonly]="readonly" value="{{serviceInfoEditResult?.assID}}" class="form-control">
+          </div>
+          <div class="col-md-7 form-group">
+            <input type="text" [readonly]="readonly" value="{{servicingDetails?.address}}" class="form-control">
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-md-2">
+            <label class="col-form-label">Service Type:</label>
+          </div>
+          <div class="col-md-3 form-group">
+            <input type="text" [readonly]="readonly" value="{{serviceInfoEditResult?.serviceTypeCode}}"
+              class="form-control">
+          </div>
+          <div class="col-md-7 form-group">
+            <input type="text" [readonly]="readonly" value="{{serviceInfoEditResult?.serviceTypeName}}"
+              class="form-control">
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-md-2">
+            <label class="col-form-label">Service Info:</label>
+          </div>
+          <div class="col-md-3 form-group">
+            <input type="text" [readonly]="readonly" value="{{serviceInfoEditResult?.serviceInfoCode}}"
+              class="form-control">
+          </div>
+          <div class="col-md-7 form-group">
+            <input type="text" [readonly]="readonly" value="{{serviceInfoEditResult?.serviceInfoName}}"
+              class="form-control">
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-md-2">
+            <label class="col-form-label">Characteristic:</label>
+          </div>
+          <div class="col-md-3 form-group">
+            <input type="text" [readonly]="readonly" value="{{serviceInfoEditResult?.char_Code}}" class="form-control">
+          </div>
+          <div class="col-md-7 form-group">
+            <input type="text" [readonly]="readonly" value="{{serviceInfoEditResult?.characteristic}}"
+              class="form-control">
+          </div>
+        </div>
+      </div>
+
+
+      <div class="col-md-12" *ngIf="serviceInfoEditResult.chaType == 'X' || serviceInfoEditResult.chaType == 'T'">
+        <div class="row">
+          <div class="col-md-2">
+            <label class="col-form-label">Text:</label>
+          </div>
+          <div class="col-md-10 form-group">
+            <input type="text" name="value" required #value="ngModel"
+              [ngClass]="{ 'is-invalid': serviceInfo.submitted && value.invalid }"
+              [(ngModel)]="serviceInfoEditResult.value" class="form-control">
+            <div *ngIf="serviceInfo.submitted && value.invalid" class="invalid-feedback">
+              <div *ngIf="value.errors.required">Text is required</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="col-md-12" *ngIf="serviceInfoEditResult.chaType == 'F'">
+        <div class="row">
+          <div class="col-md-2">
+            <label class="col-form-label">Fixed Condition:</label>
+          </div>
+          <div class="col-md-6 form-group">
+            <select name="value" [(ngModel)]="serviceInfoEditResult.value" required #value="ngModel" [ngClass]="{ 'is-invalid': serviceInfo.submitted && value.invalid }" class="form-control">
+              <option *ngFor="let val of fixedConditionDrpDwn" [ngValue]="val">{{val}}</option>
+            </select>
+            <div *ngIf="serviceInfo.submitted && value.invalid" class="invalid-feedback">
+              <div *ngIf="value.errors.required">Fixed Condition is required</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="col-md-12" *ngIf="serviceInfoEditResult.chaType == 'N'">
+        <div class="row">
+          <div class="col-md-2">
+            <label class="col-form-label">Number:</label>
+          </div>
+          <div class="col-md-6 form-group">
+            <input (keypress)="isNumberKey($event)" min="0" type="number" name="value" required #value="ngModel"
+              [ngClass]="{ 'is-invalid': serviceInfo.submitted && value.invalid }"
+              [(ngModel)]="serviceInfoEditResult.value" class="form-control">
+            <div *ngIf="serviceInfo.submitted && value.invalid" class="invalid-feedback">
+              <div *ngIf="value.errors.required">Numeric value is required</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-12" *ngIf="serviceInfoEditResult.chaType == 'V'">
+        <div class="row">
+          <div class="col-md-2">
+            <label class="col-form-label">Decimal:</label>
+          </div>
+          <div class="col-md-6 form-group">
+            <input decimalValidation type="text" name="value" required #value="ngModel"
+              [ngClass]="{ 'is-invalid': serviceInfo.submitted && value.invalid }"
+              [(ngModel)]="serviceInfoEditResult.value" class="form-control">
+            <div *ngIf="serviceInfo.submitted && value.invalid" class="invalid-feedback">
+              <div *ngIf="value.errors.required">Decimal value is required</div>
+              <div *ngIf="value.errors?.invalidDecimal">Invalid Decimal value</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-md-2">
+            <label class="col-form-label">Note:</label>
+          </div>
+          <div class="col-md-10 form-group">
+            <textarea name="notes" [(ngModel)]="serviceInfoEditResult.notes" class="form-control" cols="30"
+              rows="4"></textarea>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-md-2">
+            <label class="col-form-label">Status:</label>
+          </div>
+          <div class="col-md-2 form-group">
+            <label class="col-form-label"><input type="radio" name="status" value="A"
+                [(ngModel)]="serviceInfoEditResult.status">
+              Active</label>
+          </div>
+
+          <div class="col-md-8 form-group">
+            <label class="col-form-label"><input type="radio" name="status" value="I"
+                [(ngModel)]="serviceInfoEditResult.status">
+              InActive</label>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="col-md-12">
+        <div class="row infoDateDiv">
+          <label class="col-form-label">Created By:</label>
+          <input [readonly]="readonly" type="text" value="{{serviceInfoEditResult?.createdBy}}"
+            class="form-control inlineInp1">
+          <label class="col-form-label">On:</label>
+          <input [readonly]="readonly" type="text" value="{{helper.formatDateTime(serviceInfoEditResult?.createdOn)}}"
+            class="form-control inlineInp2">
+          <label class="col-form-label">Updated By:</label>
+          <input [readonly]="readonly" type="text" value="{{serviceInfoEditResult?.updatedBy}}"
+            class="form-control inlineInp1">
+          <label class="col-form-label">On:</label>
+          <input [readonly]="readonly" type="text" value="{{helper.formatDateTime(serviceInfoEditResult?.updatedOn)}}"
+            class="form-control inlineInp2">
+        </div>
+      </div>
+
+      <div class="col-md-12 mt-3">
+        <div class="actionBtn text-right">
+          <button type="submit" [disabled]="btnDisabled" class="btn btn-sm themeButton">Save</button>
+          <button type="button" [disabled]="btnDisabled" class="btn btn-sm themeButton ml-1"
+            (click)="closeAddEditInfoMethod()">Close</button>
+        </div>
+      </div>
+
+    </form>
+
+  </div>
+
+
+</kendo-window>

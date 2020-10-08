@@ -1,0 +1,15 @@
+.k-window-wrapper{
+    position: fixed !important;
+}
+
+.imgTag{
+    position: relative;
+    height: 500px;
+    width: auto;
+}
+
+.cancelBtn{
+    bottom: 10px;
+    position: absolute;
+    right: 12px;
+}

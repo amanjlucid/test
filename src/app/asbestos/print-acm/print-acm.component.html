@@ -1,0 +1,341 @@
+<!-- <kendo-window title="" *ngIf="printAcm" (close)="closePrintAcmWin()" [state]="'maximized'" [top]="0" [minWidth]="250"
+  [width]="auto" [height]="auto"> -->
+
+<div id="print-area" style="display: none;" *ngIf="printAcm">
+ 
+  <div *ngFor="let asbestosD of asbestosData">
+    <div class="asbestosDetailsDivP">
+      <div class="col-md-12 detailDivp">
+        Details
+      </div>
+
+      <div class="row">
+        <div class="col-md-4"></div>
+        <div class="col-md-4">
+          <div class="row font-weight-bold">
+            <div class="col-md-4 text-center p-0">
+              <p class="mb-0">Material Risk :</p>
+              <span [style.color]="getColor(asbestosD.materialRisk)">{{asbestosD.materialRisk}} </span>
+            </div>
+            <div class="col-md-4 text-center p-0">
+              <p class="mb-0">Priority Risk :</p>
+              <span [style.color]="getColor(asbestosD.priorityRisk)">{{asbestosD.priorityRisk}}</span>
+            </div>
+            <div class="col-md-4 text-center p-0">
+              <p class="mb-0"> Total Risk</p>
+              <span [style.color]="getColor(asbestosD.totalRisk)">{{asbestosD.totalRisk}}</span>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4"></div>
+      </div>
+
+      <div class="fulldetailDivp row mt-2">
+        <div class="col-md-3">
+          <div class="row">
+            <div class="col-md-5 text-right p-0 m-0">
+              <p><span>Extent:</span></p>
+              <p><span>Survey Date:</span></p>
+              <p><span>Description:</span> </p>
+              <p><span>Additional Notes:</span></p>
+            </div>
+            <div class="col-md-7 text-left p-0 m-0 pl-1">
+              <p>{{asbestosD.asasextent}}</p>
+              <p>{{asbestosD.asassurveydate}}</p>
+              <p>{{asbestosD.asasdescription}}</p>
+              <p>{{asbestosD.asasadditionalnotes}}</p>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="col-md-2">
+          <div class="row">
+            <div class="col-md-5 text-right p-0 m-0">
+              <p><span>UOM:</span></p>
+              <p><span>Surveyor:</span></p>
+
+            </div>
+
+            <div class="col-md-7 text-left p-0 m-0 pl-1">
+              <p>{{asbestosD.uom != '' ? asbestosD.uom : '&nbsp;'}}</p>
+              <p>{{asbestosD.svrname}}</p>
+
+            </div>
+          </div>
+
+
+        </div>
+
+        <div class="col-md-4">
+          <div class="row">
+            <div class="col-md-5 text-right p-0 m-0">
+              <p><span>Inspection Accessibility:</span></p>
+              <p><span>Data Source:</span></p>
+
+            </div>
+            <div class="col-md-7 text-left p-0 m-0 pl-1">
+              <p>{{asbestosD.asactext}}</p>
+              <p>{{asbestosD.dataSource}}</p>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="row">
+            <div class="col-md-5 text-right p-0 m-0">
+              <p><span>HSE Notifiable:</span></p>
+            </div>
+            <div class="col-md-7 text-left p-0 m-0 pl-1">
+              <p>{{asbestosD.hseNotifiable}}</p>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+
+    <div class="asbestosDetailsDivP mt-2">
+      <div class="col-md-12 detailDivp">
+        Material Assessment
+      </div>
+
+      <div class="fulldetailDivp row text-center mt-1">
+        <div class="col-md-6">
+          <div class="row">
+            <div class="col-md-5 text-right p-0 m-0">
+              <p><span>Product:</span></p>
+              <p><span>Surface:</span></p>
+            </div>
+            <div class="col-md-7 text-left p-0 m-0 pl-1">
+              <p>{{asbestosD.apsproducttext}}</p>
+              <p>{{asbestosD.assctext}}</p>
+
+            </div>
+          </div>
+
+        </div>
+
+        <div class="col-md-6">
+          <div class="row">
+            <div class="col-md-5 text-right p-0 m-0">
+              <p><span>Damage:</span></p>
+              <p><span>Type:</span></p>
+            </div>
+            <div class="col-md-7 text-left p-0 m-0 pl-1">
+              <p>{{asbestosD.adstext}}</p>
+              <p>{{asbestosD.atstext}}</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+
+    <div class="asbestosDetailsDivP mt-2">
+      <div class="col-md-12 detailDivp">
+        Priority Assessment
+      </div>
+
+
+      <div class="fulldetailDivp row text-center mt-1">
+        <div class="col-md-4">
+          <div class="row">
+            <div class="col-md-5 text-right p-0 m-0">
+              <p><span>Main Activity:</span></p>
+              <p><span>Location:</span></p>
+              <p><span>No. of Occupants:</span></p>
+              <p><span>Maintenance:</span></p>
+            </div>
+
+            <div class="col-md-7 text-left p-0 m-0 pl-1">
+              <p>{{asbestosD.mainactivity}}</p>
+              <p>{{asbestosD.priorityLocation}}</p>
+              <p>{{asbestosD.priorityOccupants}}</p>
+              <p>{{asbestosD.priorityMaintenanceType}}</p>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="col-md-4">
+          <div class="row">
+            <div class="col-md-5 text-right p-0 m-0">
+              <p><span>Secondary Activity:</span></p>
+              <p><span>Accessibility:</span></p>
+              <p><span>Frequency of use:</span></p>
+              <p><span>Maintenance Frequency:</span></p>
+            </div>
+
+            <div class="col-md-7 text-left p-0 m-0 pl-1">
+              <p>{{asbestosD.secondaryactivity}}</p>
+              <p>{{asbestosD.priorityAccess}}</p>
+              <p>{{asbestosD.priorityFrequency}}</p>
+              <p>{{asbestosD.priorityMaintenanceFrequency}}</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="row">
+            <div class="col-md-5 text-right p-0 m-0">
+              <p><span>Extent/Amount:</span></p>
+              <p><span>Time in use:</span></p>
+            </div>
+
+            <div class="col-md-7 text-left p-0 m-0 pl-1">
+              <p>{{asbestosD.priorityExtent}}</p>
+              <p>{{asbestosD.priorityTimeInUse}}</p>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="asbestosDetailsDivP  mt-2">
+      <div class="col-md-12 detailDivp">
+        Management Actions
+      </div>
+
+      <div class="fulldetailDivp row text-center mt-1">
+        <div class="col-md-3">
+          <div class="row">
+            <div class="col-md-6 text-right p-0 m-0">
+              <p><span>Initial:</span></p>
+              <p><span>Subsequent:</span></p>
+              <p><span>Review Timeframe:</span></p>
+              <p><span>Reinspection Timeframe:</span></p>
+            </div>
+
+            <div class="col-md-6 text-left p-0 m-0 pl-1">
+              <p>{{asbestosD.initialAction}}</p>
+              <p>{{asbestosD.subsequentAction}}</p>
+              <p>{{asbestosD.reviewTimeframe}}</p>
+              <p>{{asbestosD.reinspectionTimeframe}}</p>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="col-md-3">
+          <div class="row">
+            <div class="col-md-5 text-right p-0 m-0">
+              <p><span>TimeFrame:</span></p>
+              <p><span>TimeFrame:</span></p>
+              <p><span>Review Date:</span></p>
+              <p><span>Reinspection Date:</span></p>
+            </div>
+
+            <div class="col-md-7 text-left p-0 m-0 pl-1">
+              <p>{{asbestosD.initialTimeframe}}</p>
+              <p>{{asbestosD.subsequentTimeframe}}</p>
+              <p>{{asbestosD.reviewDate | dateFormat : 'DD-MMM-YYYY'}}</p>
+              <p>{{asbestosD.reinspectionDate | dateFormat : 'DD-MMM-YYYY'}}</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="row">
+            <div class="col-md-5 text-right p-0 m-0">
+              <p><span>Status:</span></p>
+              <p><span>Status:</span></p>
+            </div>
+
+            <div class="col-md-7 text-left p-0 m-0 pl-1">
+              <p>{{asbestosD.initialStatus == 'O' ? 'Outstanding' : asbestosD.initialStatus == 'C' ? 'Complete' : asbestosD.initialStatus.trim() == '' ? 'No' : asbestosD.initialStatus}}</p>
+              <p>{{asbestosD.subsequentStatus == 'O' ? 'Outstanding' : asbestosD.subsequentStatus == 'C' ? 'Complete' : asbestosD.subsequentStatus.trim() == '' ? 'No' : asbestosD.subsequentStatus}}</p>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="col-md-3">
+          <div class="row">
+            <div class="col-md-5 text-right p-0 m-0">
+              <p><span>Deadline:</span></p>
+              <p><span>Deadline:</span></p>
+            </div>
+
+            <div class="col-md-7 text-left p-0 m-0 pl-1">
+              <p>{{asbestosD.asmainitialdeadline | dateFormat : 'DD-MMM-YYYY'}}</p>
+              <p>{{asbestosD.asmasubseqdeadline | dateFormat : 'DD-MMM-YYYY'}}</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="asbestosDetailsDivP  mt-2">
+      <div class="col-md-12 detailDivp">
+        Samples
+      </div>
+
+      <div class="fulldetailDivp row text-center mt-1">
+        <div class="col-md-12">
+          <table class="table table-striped table-bordered sampleTable">
+            <thead>
+              <tr>
+                <th style="width: 10%;">Sample Date</th>
+                <th style="width: 7%;">Sample ID</th>
+                <th>Reference</th>
+                <th style="width: 10%;">Analysis Status</th>
+                <th style="width: 8%;">Analysis Date</th>
+                <th style="width: 7%;">Presence</th>
+                <th>Type</th>
+                <th>Laboratory</th>
+                <th style="width: 12%;">Laboratory Reference</th>
+                <th style="width: 7%;">Analyst</th>
+                <th style="width: 11%;">Certificate Number</th>
+                <th>Notes</th>
+
+              </tr>
+            </thead>
+
+            <tbody *ngIf="asbestosD.sampleList?.length > 0; else no_record">
+              <tr class="odd gradeX" *ngFor="let listsample of asbestosD.sampleList">
+                <td>{{ helperService.dateFormat(listsample.dateTaken)  }}</td>
+                <td>{{ listsample.sampleID }}</td>
+                <td>{{ listsample.sampleReference }}</td>
+                <td>{{ listsample.analysisStatusText }}</td>
+                <td>{{ helperService.dateFormat(listsample.analysisDate) }}</td>
+                <td>{{ listsample.presence }}</td>
+                <td>{{ listsample.type }}</td>
+                <td>{{ listsample.laboratory }}</td>
+                <td>{{ listsample.reference }}</td>
+                <td>{{ listsample.analyst }}</td>
+                <td>{{ listsample.certificateNumber }}</td>
+                <td>{{ listsample.sampleNotes }}</td>
+              </tr>
+            </tbody>
+            <ng-template #no_record>
+              <tbody>
+                <tr>
+                  <td colspan="12">No records available.</td>
+                </tr>
+              </tbody>
+            </ng-template>
+
+          </table>
+
+
+        </div>
+      </div>
+
+    </div>
+    <br>
+    <footer></footer>
+  </div>
+
+</div>
+
+<!-- </kendo-window> -->

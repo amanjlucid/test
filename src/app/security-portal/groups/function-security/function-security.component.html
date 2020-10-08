@@ -1,0 +1,116 @@
+<kendo-window [(state)]="windowState" [top]="100" *ngIf="functionSecurityWindow" (close)="closeFunctionSecWindow()"
+  title="Show Function Security for Security Group: {{selectedGroup.groupName}}">
+  <div class="col-md-12 col-sm-12 col-xs-12 functionSecurityWindow">
+    <div class="">
+      <div class="cui-example">
+        <div class="col-md-5 col-sm-12 col-xs-12">
+
+          <div class="form-group row">
+            <label class="col-form-label col-form-label col-sm-3 text-right">Portal:</label>
+            <div class="col-sm-9">
+
+              <select class="form-control form-control" [(ngModel)]="selectedPortal" (change)="getAllFunctionList()">
+                <option *ngFor="let val of functionPortals" [ngValue]="val">{{val}}</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-form-label col-form-label col-sm-3 text-right">Function Type:</label>
+            <div class="col-sm-9">
+
+              <select class="form-control form-control" [(ngModel)]="selectedFunctionType"
+                (change)="getAllFunctionList()">
+                <option *ngFor="let type of functionType" [ngValue]="type">{{type}}</option>
+              </select>
+            </div>
+          </div>
+
+
+
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+
+      <div class="col-md-5 col-sm-12 col-xs-12">
+
+        <div class="table-responsive mt-2">
+          <table class="table table-striped table-bordered availableFunctionTable">
+            <thead>
+              <tr>
+                <th>Available Function</th>
+                <th>Portal Area</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="odd gradeX" *ngFor="let availableFunction of availableFunctions"
+                (click)="toggleAvailableFunction($event,availableFunction)">
+
+                <td>{{availableFunction?.functionName}}</td>
+                <td>{{availableFunction?.portalArea}}</td>
+
+              </tr>
+
+            </tbody>
+
+          </table>
+        </div>
+      </div>
+
+      <div class="col-md-2 col-sm-12 col-xs-12">
+        <div class="btn-group-vertical btn_grp">
+          <button [disabled]="availableFunctionLists?.length == 0" (click)="includeAvailableFunction()"
+            class="btn btn-secondary">Include &gt;</button>
+          <button [disabled]="availableFunctions?.length == 0" (click)="includeAvailableFunction(true)"
+            class="btn btn-secondary">Include All &gt;&gt;</button>
+          <br>
+
+          <button [disabled]="assignedFunctionLists?.length == 0" (click)="removeAvailableFunction()"
+            class="btn btn-secondary">&lt; Remove</button>
+          <button type="button" [disabled]="assignedFunctions?.length == 0" (click)="removeAvailableFunction(true)"
+            class="btn btn-secondary">&lt;&lt; Remove All</button>
+        </div>
+      </div>
+
+      <div class="col-md-5 col-sm-12 col-xs-12">
+
+        <div class="table-responsive mt-2">
+          <table class="table table-striped table-bordered assignedFunctionTable">
+            <thead>
+              <tr>
+
+                <th>Assigned Function</th>
+                <th>Portal Area</th>
+
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="odd gradeX" *ngFor="let assignedFunction of assignedFunctions"
+                (click)="toggleAssignedFunction($event,assignedFunction)">
+
+                <td>{{assignedFunction?.functionName}}</td>
+                <td>{{assignedFunction?.portalArea}}</td>
+
+              </tr>
+
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="row mt-10 footerSec">
+      <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="pull-right footerButton">
+          
+          <button (click)="closeFunctionSecWindow()" class="btn btn-sm">Cancel</button>
+          <button [disabled]="availableFunctions?.length == 0 && assignedFunctions?.length == 0"
+            class="btn btn-sm themeButton" (click)="saveGroupFunction()">Ok</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</kendo-window>

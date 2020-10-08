@@ -1,0 +1,98 @@
+<div class="row">
+  <div class="col-md-12">
+    <div class="row">
+      <div class="col-md-2">
+        <label class="col-form-label">Asset:</label>
+      </div>
+      <div class="col-md-3 form-group">
+        <input type="text" [readonly]="readonly" value="{{servicingDetails?.assid}}" class="form-control">
+      </div>
+      <div class="col-md-7 form-group">
+        <input type="text" [readonly]="readonly" value="{{servicingDetails?.address}}" class="form-control">
+      </div>
+    </div>
+  </div>
+
+
+  <div class="col-md-12">
+    <div class="row">
+      <div class="col-md-2">
+        <label class="col-form-label">Job Number:</label>
+      </div>
+      <div class="col-md-3 form-group">
+        <input type="text" [readonly]="readonly" value="{{servicingDetails?.job_Number}}" class="form-control">
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="row mt-3">
+  <div class="col-md-12">
+    <kendo-grid [data]="gridView" [resizable]="true" [skip]="state.skip" [sort]="state.sort" [sortable]="{
+        allowUnsort: allowUnsort,
+        mode: multiple ? 'multiple' : 'single'
+        }" (sortChange)="sortChange($event)" [selectable]="{mode: 'single'}" (filterChange)="filterChange($event)"
+      [filter]="state.filter" filterable="menu" (cellClick)="cellClickHandler($event)" [height]="430">
+
+      <kendo-grid-column field="itemExists" title=" " width="30" [filterable]="false"
+        [style]="{'text-align': 'center'}">
+        <ng-template kendoGridCellTemplate let-dataItem>
+          <div style="width:100%; text-align: center;">
+            <img style="height:16px;" *ngIf="dataItem.ntplinktype == 'L'" src="assets/img/icons/attach.png" />
+            <img style="height:16px;" *ngIf="dataItem.ntplinktype == 'N'" src="assets/img/icons/pen.png" />
+            <!-- <img style="height:16px;" *ngIf="dataItem.ntplinktype == 'L'" src="assets/img/icons/weblink.png" /> -->
+            <img style="height:16px;" *ngIf="dataItem.ntplinktype == 'P'" src="assets/img/icons/camera.png" />
+          </div>
+        </ng-template>
+      </kendo-grid-column>
+      <kendo-grid-column field="description" title="Notepad" width="220" [filterable]="true"></kendo-grid-column>
+
+      <kendo-grid-column field="ntptexT2" title="Description" width="150" [filterable]="true">
+      </kendo-grid-column>
+      <kendo-grid-column field="ncycode" title="Category" width="130" [filterable]="true">
+      </kendo-grid-column>
+      <kendo-grid-column field="ntpmodifiedtime" title="Modified Date" width="130" [filterable]="true">
+        <ng-template kendoGridCellTemplate let-dataItem>
+          {{ helper.formatDateTime(dataItem.ntpmodifiedtime)}}
+        </ng-template>
+      </kendo-grid-column>
+
+    </kendo-grid>
+  </div>
+
+  <div class="col-md-12 mt-2">
+    <div class="actionBtn">
+      <button type="button" class="btn btn-sm themeButton" (click)="viewNotepadAttachment()">View Attachment</button>
+      <button type="button" class="btn btn-sm themeButton" (click)="editNotepadAttachment()">Edit</button>
+      <button type="button" class="btn btn-sm themeButton" (click)="addNotepadAttachment()">Add Attachment</button>
+      <button type="button" class="btn btn-sm themeButton" (click)="openConfirmationDialog()">Remove Attachment</button>
+
+      <button type="button" (click)="closeServiceDetailWindow()" class="btn btn-sm pull-right">Close</button>
+    </div>
+  </div>
+</div>
+
+<div class="notepadOverlay"></div>
+<app-service-upload-attachment [uploadAttachment]="uploadAttachment" [servicingDetails]="servicingDetails"
+  (closeNotepadAttachment)="closeNotepadAttachment($event)" *ngIf="uploadAttachment"></app-service-upload-attachment>
+
+<app-service-edit-notepad *ngIf="editNotePad" [editNotePad]="editNotePad" [selectedNotepad]="selectedNotepad"
+  [servicingDetails]="servicingDetails" (closeEditAttachment)="closeEditAttachment($event)"></app-service-edit-notepad>
+
+<kendo-window title="Notepad Image" *ngIf="notesDetails" (close)="closeNotesDetails()" [top]="20" [minWidth]="250"
+  [width]="780" [height]="710">
+  <div class="row">
+    <div class="col-md-12" style="height: 520px;">
+      <img [src]="notesImagePath" alt="{{selectedNotes?.ntplink}}" width="auto"
+        style="position: relative; height: 500px;">
+    </div>
+    <div class="col-md-12">
+      <p class="m-0 p-0">{{selectedNotepad.ntplink}}</p>
+      <p class="p-0 mt-1">{{selectedNotepad.ntptexT2}}</p>
+    </div>
+    <div class="col-md-12 text-right noteBtn">
+      <button class="btn btn-sm" (click)="closeNotesDetails()">Close</button>
+    </div>
+  </div>
+</kendo-window>

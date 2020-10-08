@@ -1,0 +1,32 @@
+.k-window-wrapper{
+    position: fixed !important;
+}
+
+.attachmentTableHeader{
+    background-color: #070627;
+    height: 44px;
+    padding: 13px 0px 5px 19px;
+    color: white;
+}
+
+.desLabel{
+    max-width: 12.66667% !important;
+}
+
+.desTextArea{
+    max-width: 87.33333% !important;
+    flex: 1 0 83.33333%;
+}
+
+.attachmentDiv{
+    padding: 0px 12px;
+    width: 100%;
+}
+
+.attachmentActionArea, .requestActionArea{
+    padding: 0px 12px;
+}
+
+.attachmentActionArea button, .requestActionArea button{
+    margin: 4px 4px 4px 0px;
+}

@@ -1,0 +1,51 @@
+<div class="layout-content">
+
+  <!-- Content -->
+  <div class="container-fluid flex-grow-1 container-p-y">
+
+    <h4 class="font-weight-bold py-3 mb-4">
+      <span class="text-muted font-weight-light">User /</span> My Profile
+    </h4>
+
+    <div class="card mb-4">
+      <h6 class="card-header">
+        Change Password
+      </h6>
+      <div class="card-body">
+        <form [formGroup]="myProfileForm" (ngSubmit)="onSubmit()">
+          <!-- <div class="form-group">
+            <label class="form-label">Username</label>
+            <input type="text" class="form-control" formControlName="username" placeholder="Username" [ngClass]="{ 'is-invalid': submitted && formErrors.username }">
+
+            <div *ngIf="submitted && formErrors.username" class="invalid-feedback">
+              <div *ngIf="formErrors.username">{{ formErrors.username }}</div>
+            </div>
+          </div> -->
+         
+          <div class="form-group">
+            <label class="form-label">New Password</label>
+            <input type="password" class="form-control" formControlName="newPassword" placeholder="New Password" [ngClass]="{ 'is-invalid': submitted && formErrors.newPassword }">
+
+            <div *ngIf="submitted && formErrors.newPassword" class="invalid-feedback">
+              <div *ngIf="formErrors.newPassword">{{ formErrors.newPassword }}</div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Confirm Password</label>
+            <input type="password" class="form-control" formControlName="confirmPassword" placeholder="Confirm Password" [ngClass]="{ 'is-invalid': submitted && formErrors.confirmPassword }">
+            <div *ngIf="submitted && formErrors.confirmPassword" class="invalid-feedback">
+              <div *ngIf="formErrors.confirmPassword">{{ formErrors.confirmPassword }}</div>
+            </div>
+          </div>
+          <button class="btn btn-default themeButton">Submit</button>
+        </form>
+      </div>
+    </div>
+
+   
+
+  </div>
+
+
+</div>

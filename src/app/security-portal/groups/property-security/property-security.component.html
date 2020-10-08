@@ -1,0 +1,201 @@
+<kendo-window [width]="auto" [height]="auto" title="Property Security for '{{selectedGroup.groupName}}'" *ngIf="propertySecurityWindow"
+  (close)="closePropSecWindow()">
+  <div style="margin: 0px" class="propsecDiv">
+    <div class="card">
+      <div class="card-block k-form">
+        <div class="k-form-field selectionDiv pull-right">
+          <button type="button" (click)="openNewPropSecPopup()" class="btn btn-sm themeButton">New</button>&nbsp;
+          <button type="button" [disabled]="!selectedPropGroup" (click)="deleteSecPropGrp()" class="themeButton btn btn-sm ">Delete</button>&nbsp;
+          <!-- <button type="button" (click)="refreshTable()" class="btn btn-sm btn-outline-secondary">Refresh</button>&nbsp; -->
+          <button type="button" (click)="closePropSecWindow()" class="btn btn-sm themeButton">Close</button>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="table-responsive mt-2">
+      <table class="table table-striped table-bordered propSecTable">
+        <thead>
+          <tr>
+
+            <th>Hierarchy Type</th>
+            <th>Assid</th>
+            <th>Address</th>
+            <th>Area</th>
+            <th>Access</th>
+          </tr>
+        </thead>
+        <tbody *ngIf="propSecGroups">
+          <tr class="odd gradeX" *ngFor="let propSecGroup of propSecGroups" [className]="selectedPropGroup != undefined ? ( selectedPropGroup.assetId == propSecGroup.assetId ? '' : '') : ''"
+          (click)=toggleClass($event,propSecGroup)>
+              
+              <td>{{propSecGroup?.hierarchyTypeCode}}</td>
+              <td>{{propSecGroup?.assetId}}</td>
+              <td>{{propSecGroup?.assetAddress}}</td>
+              <td>{{propSecGroup?.accessArea}}</td>
+              <td>{{propSecGroup?.accessLevel}}</td>
+            </tr>
+
+
+        </tbody>
+      </table>
+
+      <!-- window for add new property starts -->
+      <kendo-dialog title="Add New Property Security '{{selectedGroup.groupName}}'" *ngIf="dialogNewPropSec" (close)="closeNewPropSecPopup()">
+        <div class="card-body createPropSecDiv">
+
+          <form [formGroup]="newPropForm" (ngSubmit)="onSubmit()" class="mt-0">
+            <div class="form-group row">
+              <label class="col-form-label col-form-label-sm col-sm-2 text-sm-left">Hierarchy</label>
+              <div class="col-sm-12 col-md-8  hiearchyTree">
+                  <ul id="myUL">
+
+                      <ng-template #recursiveList let-printHiearchy>
+                          <li *ngFor="let item of printHiearchy">
+                            <span><span
+                              style="color:red;">({{ item?.assetName }})</span> {{ item?.assetId }} - {{ item?.address }}</span>
+                            <ul *ngIf="item.childLayers.length > 0">
+                              <ng-container *ngTemplateOutlet="recursiveList; context:{ $implicit: item.childLayers }"></ng-container>
+                            </ul>
+                          </li>
+                        </ng-template>
+                        <ng-container *ngTemplateOutlet="recursiveList; context:{ $implicit: printHiearchy }"></ng-container>
+
+                  </ul>
+                <!-- <input formControlName="hiearchy" type="text" readonly class="form-control form-control-sm" placeholder=""> -->
+
+              </div>
+              <div class="col-md-2 col-sm-12 hiearchyBtn">
+                <button type="button" (click)="openHiearchyWindow()" class="btn btn-sm">...</button>
+                <button type="button" (click)="clearPropSec()" class="btn btn-sm">Clear</button>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label class="col-form-label col-form-label-sm col-md-2 text-sm-left">Hiearchy Type:</label>
+              <div class="col-md-3">
+                <input type="text" formControlName="hiearchyType" readonly class="form-control form-control-sm"
+                  placeholder="">
+              </div>
+              <div class="col-md-7">
+                <input type="text" formControlName="hiearchyType1" readonly class="form-control form-control-sm"
+                  placeholder="">
+              </div>
+
+            </div>
+
+            <div class="form-group row">
+              <label class="col-form-label col-form-label-sm col-md-2 text-sm-left">Asset ID:</label>
+              <div class="col-md-3">
+                <input type="text" formControlName="assetId" readonly class="form-control form-control-sm" placeholder="">
+              </div>
+              <div class="col-md-7">
+                <input type="text" formControlName="assetId1" readonly class="form-control form-control-sm" placeholder="">
+              </div>
+
+            </div>
+
+
+            <div class="form-group row">
+              <label class="col-form-label col-form-label-sm col-md-2 text-sm-left">Portal:</label>
+              <div class="col-md-4">
+
+                <select name="portal" formControlName="portal" (change)="checkAccess()" class="form-control form-control-sm" [(ngModel)]="selectedPortal">
+                  <option *ngFor="let portal of portals" [ngValue]="portal">{{portal}}</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group row" *ngIf="showAccess">
+                <label class="col-form-label col-form-label-sm col-md-2 text-sm-left">Access:</label>
+                <div class="col-md-4">
+  
+                  <select name="access" [(ngModel)]="access" formControlName="access" class="form-control form-control-sm">
+                    <option selected value="R">Read</option>
+                    <option value="E">Edit</option>
+                    <option value="A">Authorise</option>
+                  </select>
+                </div>
+              </div>
+
+            <div class="pull-right buttonDiv">
+                <button type="button" (click)="closeNewPropSecPopup()" class="btn btn-sm">Cancel</button>
+              <button type="submit" [disabled]="!newPropForm.valid" class="btn btn-sm themeButton">Ok</button>
+              
+            </div>
+          </form>
+          <div class="portalwBlur"></div>
+        </div>
+      </kendo-dialog>
+      <!-- window for add new property ends -->
+
+    </div>
+
+  </div>
+  <div class="psWindowBlur"></div>
+</kendo-window>
+
+
+
+<!-- window for add new hiearchy starts -->
+<kendo-window [height]="640" [width]="700" title="Select Hierarchy..." *ngIf="hiearchyWindow" (close)="closeHiearchyWindow()">
+  <div class="row hiearchyDiv">
+    <div class="col-md-12">
+      <div class="form-group">
+        <select class="form-control" id="sel1" (change)="getHiearchyTree()" [(ngModel)]="selectedHiearchyType">
+          <option *ngFor="let hiearchyTypeList of hiearchyTypeLists" [ngValue]="hiearchyTypeList.hierarchyTypeCode">{{hiearchyTypeList.hierarchyTypeName}}</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="col-md-12">
+      <ul class="tree" *ngIf="hierarchyLevels">
+        <ng-template #recursiveList let-hierarchyLevels>
+          <li *ngFor="let item of hierarchyLevels" class="{{item?.assetId}}">
+            <!-- <input *ngIf="item.childLayers.length > 0" type="checkbox" id="{{item?.assetId}}" /> -->
+
+            <!-- <label  [class.tree_label]="item.childLayers.length > 0" for="{{item?.assetId}}">({{ item?.assetName }}) {{ item?.assetId }} - {{ item?.address }}</label> -->
+
+            <ng-container *ngIf="item.childLayers.length > 0; then someContent else otherContent"></ng-container>
+            <ng-template #someContent>
+              <input type="checkbox" id="{{item?.assetId}}" />
+              <label [className]="selectedhierarchyLevel != undefined ? ( selectedhierarchyLevel.assetId == item.assetId ? 'tree_label selected' : 'tree_label') : 'tree_label'"
+                (click)="selectHiearchy($event,item)" for="{{item?.assetId}}"><span style="color:red;">({{ item?.assetName }})</span>
+                {{ item?.assetId }} - {{ item?.address }}</label>
+            </ng-template>
+            <ng-template #otherContent>
+              <label (click)="selectHiearchy($event,item)"> <span [className]="selectedhierarchyLevel != undefined ? ( selectedhierarchyLevel.assetId == item.assetId ? 'tree_label selected' : 'tree_label') : 'tree_label'"><span
+                    style="color:red;">({{ item?.assetName }})</span> {{ item?.assetId }} - {{ item?.address }}</span></label>
+            </ng-template>
+
+
+
+
+            <ul *ngIf="item.childLayers.length > 0">
+              <ng-container *ngTemplateOutlet="recursiveList; context:{ $implicit: item.childLayers }"></ng-container>
+            </ul>
+          </li>
+        </ng-template>
+        <ng-container *ngTemplateOutlet="recursiveList; context:{ $implicit: hierarchyLevels }"></ng-container>
+      </ul>
+
+      <!-- <kendo-treeview [nodes]="data" textField="text" [hasChildren]="hasChildren" [children]="fetchChildren"
+          kendoTreeViewExpandable [expandedKeys]="expandedKeys" kendoTreeViewSelectable [selectBy]="'text'"
+          [(selectedKeys)]="selectedKeys" [isSelected]="isItemSelected"
+          (selectionChange)="handleSelection($event)">
+        </kendo-treeview> -->
+
+
+      <div class="pull-right footerButton footerSec">
+          <button (click)="closeHiearchyWindow()" class="btn btn-sm">Cancel</button>
+        <button class="btn btn-sm btn-default themeButton" (click)="setHiearchyValues()">Ok</button>
+        
+      </div>
+
+
+    </div>
+
+  </div>
+
+</kendo-window>
+<!-- window for add new hiearchy ends -->

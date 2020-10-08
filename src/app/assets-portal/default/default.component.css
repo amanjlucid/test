@@ -1,0 +1,31 @@
+.sidenav-inner img{
+    height: 28px;
+}
+
+.sidenav-item div, a{
+    color:#b9b4b4;
+}
+
+.sidenav-item.active div {
+    color: white!important;
+}
+
+li.open .sidenav-toggle div {
+    color: white!important;
+}
+
+.sidenav-item a div:hover { 
+    color: white;
+}
+
+.contentDiv{
+    min-height: 603px;
+}
+
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+    .app-brand .brand-logo{
+        width: 33px !important;
+    }
+}
+
+   

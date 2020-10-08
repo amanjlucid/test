@@ -1,0 +1,46 @@
+<kendo-window title="{{title}}" *ngIf="showEditAssetText" (close)="closeEditAssetTextMethod()" [top]="10"
+  [minWidth]="700" [width]="870" [height]="auto" [minHeight]="300">
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="row">
+        <div class="col-md-12">
+          <span class="left"> Asset ID: </span>
+          <span class="right"> {{selectedAction?.assid}} </span>
+          <span class="left"> Address: </span>
+          <span class="right"> {{selectedAction?.astconcataddress}} </span>
+        </div>
+
+      </div>
+
+      <div class="row mt-1" *ngIf="assetUpdatedData">
+        <div class="col-md-12">
+          <span class="left"> Amended By: </span>
+          <span class="right"> {{assetUpdatedData?.amendeD_BY}} </span>
+          <span class="left"> Amended Date: </span>
+          <span class="right"> {{assetUpdatedData?.amendeD_DATE}} </span>
+        </div>
+
+
+      </div>
+
+    </div>
+  </div>
+
+  <div class="row mt-3">
+    <div class="col-md-12">
+      <textarea rows="14" [(ngModel)]="assetText" class="form-control"></textarea>
+    </div>
+  </div>
+
+  <div class="row mt-3">
+    <div class="col-md-12 text-right">
+      <button type="button" class="btn btn-sm themeButton clsBtn" (click)="saveAssetText()">Apply</button>
+      <button type="button" class="btn btn-sm themeButton clsBtn ml-2"
+        (click)="closeEditAssetTextMethod()">Cancel</button>
+    </div>
+  </div>
+
+
+
+</kendo-window>

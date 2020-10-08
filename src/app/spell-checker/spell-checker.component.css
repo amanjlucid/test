@@ -1,0 +1,55 @@
+.k-window-wrapper {
+    position: fixed !important;
+}
+
+.contentDiv{
+    border: 1px solid #cbc4c4;
+    height: 150px;
+    max-height: 150px;
+    overflow: auto;
+}
+
+.changedTO{
+    border: 1px solid #cbc4c4;
+    height: 37px;
+    padding: 8px;
+    width: 100%;
+}
+
+.spellingToCheck {
+    padding: 8px;
+}
+
+.spellingToCheck .highlight {
+    background-color: yellow !important;
+}
+
+.fa-exclamation-triangle{
+    font-size: 47px;
+    color: #dbdb27;
+}
+
+.comp{
+    font-size: 17px;
+}
+
+.actionRow{
+    border-top: 1px solid #c3c2c2;
+    padding-top: 20px;
+}
+
+.suggestion ul{
+    list-style: none;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.selectedSeuggestion{
+    background: gainsboro;
+    width: auto;
+}
+
+.spellCheckComp{
+    color: red;
+    font-weight: 600;
+}

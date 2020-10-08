@@ -1,0 +1,58 @@
+.functionSecurityWindow{
+    padding: 20px;
+}
+
+
+.btn_grp button{
+    margin-bottom: 6px;
+}
+
+
+.btn_grp{
+    vertical-align: middle;
+    float: none;
+    /* display: inline-flex; */
+    top: 130px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* margin-left: 74px; */
+}
+
+
+
+/* .footerButton{
+    margin-right: 40px;
+} */
+
+.footerButton button{
+    margin-left: 8px;
+}
+
+.footerSec{
+    /* bottom: -150px;
+    right: 0;
+    position: absolute; */
+    margin-top: 10px;
+    
+}
+
+
+
+@media only screen
+and (min-device-width : 768px) 
+and (max-device-width : 1024px)  { 
+ 
+  .btn_grp button{
+      padding: 5px;
+      width: 117px;
+  }
+
+  .footer{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+  
+}
+

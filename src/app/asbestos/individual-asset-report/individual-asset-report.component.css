@@ -1,0 +1,60 @@
+span, h4{
+    font-weight: 900;
+
+}
+
+
+
+.assetHeading{
+    border-bottom: 2px solid black;
+    width: 100%;
+    display: inline-flex;
+}
+
+.bb-1{
+    border-bottom: 1px solid black;
+}
+
+.btd-1{
+    border-top: 1px dashed black;
+}
+
+.scoreDiv{
+    padding: 20px;
+    border: 3px solid;
+    text-align: center;
+    width: 45%;
+}
+
+/*cds*/
+
+.table_pdf{
+    width: 100%;
+    font-size: 20px;
+    
+}
+
+#contentToConvert{
+    /* margin: 30px 40px; */
+    padding: 50px;
+}
+
+.second_row{
+    border-top:2px solid;
+}
+
+.third_row{
+    border-top: 1px solid;
+}
+
+.eight_row, .ten_row, .twelve_row{
+    border-top: 1px dashed;
+}
+
+.eight_row td{
+    padding: 15px;
+}
+
+.twelve_row td, .ten_row td, .second_row td{
+    padding: 15px;
+}

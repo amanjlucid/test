@@ -1,0 +1,13 @@
+.dropdown.list-unstyled{
+    position: absolute !important;
+}
+
+.noteBtn{
+    bottom: 10px;
+    position: absolute;
+    right: 6px;
+}
+
+.k-window-wrapper{
+    position: fixed !important;
+}

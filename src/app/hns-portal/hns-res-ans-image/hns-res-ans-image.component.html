@@ -1,0 +1,84 @@
+<kendo-window title="{{title}}" *ngIf="showImage" (close)="closeImageWin()" [top]="10" [minWidth]="700" [width]="800"
+  [height]="auto" [minHeight]="300">
+
+  <div class="row headingDetail">
+    <div class="headingDiv">
+      <div class="leftHheadingDiv">
+        <div class="tp">
+          <span class="lbl">Asset ID: </span> <span>{{selectedAction?.assid}}</span>
+        </div>
+        <div class="bt">
+          <span class="lbl">Code: </span> <span>{{selectedAction?.hascode}}</span>
+        </div>
+        <div class="bt">
+          <span class="lbl">Question Code: </span> <span>{{selectedAction?.hasquestioncode}}</span>
+        </div>
+        <div class="bt">
+          <span class="lbl">Question: </span> <span>{{selectedAction?.hasquestiontext}}</span>
+        </div>
+        <div class="bt" *ngIf="imageFor != 'ans'">
+          <span class="lbl">Issue: </span> <span>{{issueName}}</span>
+        </div>
+      </div>
+
+      <div class="rightHheadingDiv">
+        <div class="tp">
+          <span class="lbl">Address: </span>
+          <span *ngIf="isAssessment">{{selectedAction?.astconcateaddress}}</span>
+          <span *ngIf="!isAssessment">{{selectedAction?.astconcataddress}}</span>
+        </div>
+        <div class="bt">
+          <span class="lbl">Version: </span> <span>{{selectedAction?.hasversion}}</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+
+  <div class="row mt-2">
+    <div class="col-md-12 imageListDiv">
+      <kendo-grid [data]="gridData" [selectable]="{
+        mode: 'multiple'
+      }" (cellClick)="cellClickHandler($event)" [resizable]="true" [height]="410">
+
+        <kendo-grid-column field="image" title="Image" width="100">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <img class="imgCl" [src]="getImg(dataItem.image)">
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column field="ntplink" title="Path" width="200">
+        </kendo-grid-column>
+        <kendo-grid-column field="ntptexT1" title="File Name" width="130">
+        </kendo-grid-column>
+
+
+      </kendo-grid>
+    </div>
+  </div>
+
+  <div class="row mt-2">
+    <div class="col-md-4">
+      <button type="button" *ngIf="hnsPermission.indexOf('Remove Image') != -1 && showUploadNRemoveBtn" class="btn btn-sm themeButton clsBtn"
+        (click)="openConfirmationDialog()">Remove</button>
+      <button type="button" class="btn btn-sm themeButton clsBtn ml-2"
+        (click)="viewImageMethod()">View Image</button>
+    </div>
+    <div class="col-md-8 text-right actoonBtn">
+      <button type="button" class="btn btn-sm themeButton clsBtn"
+        *ngIf="showUploadBtn && hnsPermission.indexOf('Upload Image') != -1 && showUploadNRemoveBtn" (click)="uploadImage(imageFor)">Upload
+        Image</button>
+
+      <button type="button" class="btn btn-sm themeButton clsBtn" (click)="closeImageWin()">Ok</button>
+    </div>
+  </div>
+
+  <div class="viewImageOverlay"></div>
+
+  <app-hns-res-upload-ans-image *ngIf="uploadAttachment" [uploadAttachment]="uploadAttachment"
+    [selectedAction]="selectedAction" [selectedIssue]="selectedIssue" [isAssessment]="isAssessment" [imageFor]="imageFor" [rootAction]="rootAction"
+    (closeAttachment)="closeAttachment($event)" (complete)="complete($event)"></app-hns-res-upload-ans-image>
+
+    <app-res-view-image *ngIf="viewImage" [viewImage]="viewImage" [imageData]="selectedImg" (closeViewImage)="closeViewImage($event)"></app-res-view-image>
+
+</kendo-window>

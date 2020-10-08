@@ -1,0 +1,148 @@
+.k-window-wrapper {
+    position: fixed !important;
+}
+
+.detailDiv {
+    margin-top: -12px;
+}
+
+.detailHeadingDiv {
+    width: 100%;
+    /* text-align: center; */
+    background: #d7d7d7;
+    position: relative;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+.detailHeadingDiv p {
+    margin: 0px;
+    padding-bottom: 4px;
+}
+
+span.bold {
+    font-weight: 800;
+}
+
+.divwrap {
+    display: inline-flex;
+    width: 100%;
+}
+
+.noScoringRules{
+    width: 100%;
+    border: 1px solid #d1c8c8;
+    /* padding: 5px 0px 15px; */
+    border-radius: 5px;
+    margin: 2px 6px;
+}
+
+.detailHeadingDiv span {
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.actionAreaBtn button {
+    margin-left: 5px;
+}
+
+.inputI {
+    /* font-size: 17px; */
+    margin-top: 9px;
+    margin-left: 9px;
+}
+
+.radioI {
+    margin-left: 9px;
+    margin-top: 2px;
+}
+
+.questionType {
+    display: inline-flex;
+    padding-top: 8px;
+}
+
+.radioDiv {
+    margin-right: 36px;
+}
+
+.radioDiv .chk {
+    margin-right: 6px;
+}
+
+.chkDiv{
+    display: inline-flex;
+    height: 20px;
+    margin-top: 10px;
+}
+
+.chkDiv .fa-info-circle{
+    margin-left: 15px;
+    height: 20px;
+}
+
+.quesTypeDiv {
+    width: 100%;
+    border: 1px solid #d1c8c8;
+    padding: 5px 0px 15px;
+    border-radius: 5px;
+}
+
+/* .noScoringRules .fa-info-circle {
+    margin-top: 0px;
+} */
+
+.difinitionQuestionForm .col-form-label {
+    /* font-weight: 800; */
+    font-size: 13px;
+}
+
+.characteristicInfo, .characteristicAction {
+    display: inline-flex;
+}
+
+.characteristicInfo .chCode {
+    width: 23%;
+}
+
+.characteristicInfo .chName {
+    width: 52%;
+}
+
+.characteristicOpnBtn, .characteristicClrBtn {
+    margin-left: 1px;
+    height: 30px;
+}
+
+/* .questionTpeInfoDiv .chrstInfo {
+    margin-left: 37px;
+} */
+
+input:-moz-read-only {
+    /* For Firefox */
+    background-color: #fdfdfd;
+}
+
+input:read-only {
+    background-color: #fdfdfd;
+}
+
+.input-sm {
+    height: 30px !important;
+    min-height: 30px;
+}
+
+select.input-sm {
+    padding: 0;
+    padding-left: 6px;
+}
+
+.invalid-feedback {
+    display: block !important;
+}
+
+/* .changedBy {
+   
+    border: 2px solid #e5e3e3;
+    padding: 20px 45px;
+} */

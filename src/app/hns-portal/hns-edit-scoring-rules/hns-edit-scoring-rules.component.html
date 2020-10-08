@@ -1,0 +1,115 @@
+<kendo-window title="Edit Scoring Rules..." *ngIf="scoringRulesOpen" (close)="closeScoringRulesMethod()" [top]="20"
+  [minWidth]="400" [width]="700" [height]="auto" [minHeight]="200">
+
+  <div class="row detailDiv">
+    <div class="detailHeadingDiv">
+      <div class="row">
+        <div class="col-md-2"> <p> Definition </p></div>
+        <div class="col-md-10"> <span class="boldSpan">: {{selectedDefinition?.hascode}} ({{selectedDefinition?.hasversion}})
+          {{selectedDefinition?.hasname}}</span></div>
+      </div>
+      <div class="row">
+        <div class="col-md-2"> <p> Group </p></div>
+        <div class="col-md-10"> <span class="boldSpan">: {{nodeMap?.parentGroup}}</span></div>
+      </div>
+      <div class="row">
+        <div class="col-md-2"> <p> Heading </p></div>
+        <div class="col-md-10"> <span class="boldSpan">: {{nodeMap?.parentHeading}}</span></div>
+      </div>
+      <div class="row">
+        <div class="col-md-2"> <p> Question </p></div>
+        <div class="col-md-10"> <span class="boldSpan">: {{selectedNode?.hasquestiontext}}</span></div>
+      </div>
+
+      <!-- <p>Definition:<span class="boldSpan">: {{selectedDefinition?.hascode}} ({{selectedDefinition?.hasversion}})
+          {{selectedDefinition?.hasname}}</span></p>
+      <p>Group:<span class="boldSpan">: {{nodeMap?.parentGroup}}</span></p>
+      <p>Heading:<span class="boldSpan">: {{nodeMap?.parentHeading}}</span></p>
+      <p>Question:<span class="boldSpan">: {{selectedNode?.hasquestiontext}}</span></p> -->
+    </div>
+  </div>
+
+  <form class="scoringRulesForm mt-3" [formGroup]="scoringRuleForm" (ngSubmit)="onSubmit()" autocomplete="off">
+    <fieldset class="scheduler-border">
+      <legend class="scheduler-border">{{scoringRuleText}}</legend>
+      <div class="scoringText" *ngIf="selectedNode.hasquestiontype != 'Info'">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="radioDiv">
+              <input type="radio" id="answerValue" class="chk mr-3" formControlName="ansType" value="AnswerValue">
+              <label class="" for="answerValue">Answer Value</label>
+            </div>
+          </div>
+          <div class="col-md-6" *ngIf="nodeMap.grpRepeatable != 'Y'">
+            <div class="radioDiv">
+              <input type="radio" id="percentageChange" class="chk mr-3" formControlName="ansType"
+                value="PercentageChange">
+              <label class="" for="percentageChange">Percentage Change</label>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="row mt-1">
+          <div class="col-md-2"> Yes Value: </div>
+          <div class="col-md-5"> <input (keypress)="numberOnly($event)" type="text" formControlName="yesVal"
+              [ngClass]="{ 'is-invalid': submitted && formErrors.yesVal }" class="form-control input-sm"> </div>
+        </div>
+        <div class="row mt-1">
+          <div class="col-md-2"> No Value: </div>
+          <div class="col-md-5"> <input (keypress)="numberOnly($event)" type="text" formControlName="noVal"
+              [ngClass]="{ 'is-invalid': submitted && formErrors.noVal }" class="form-control input-sm"> </div>
+        </div>
+        <div class="row mt-1" *ngIf="selectedNode.hasquestiontype == 'NA'">
+          <div class="col-md-2"> N/A Value: </div>
+          <div class="col-md-5"> <input (keypress)="numberOnly($event)" type="text" formControlName="naVal"
+              [ngClass]="{ 'is-invalid': submitted && formErrors.naVal }" class="form-control input-sm"> </div>
+        </div>
+      </div>
+
+
+      <div class="scoringInt" *ngIf="selectedNode.hasquestiontype == 'Info'">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="radioDiv">
+              <input type="radio" id="answerValue" class="chk mr-3" formControlName="ansType" value="NumericValue">
+              <label class="" for="answerValue">Numeric Value</label>
+            </div>
+          </div>
+          <div class="col-md-6" *ngIf="nodeMap.grpRepeatable == 'Y'">
+            <div class="radioDiv">
+              <input type="radio" id="percentageChange" class="chk mr-3" formControlName="ansType"
+                value="InstanceCount">
+              <label class="" for="percentageChange">Instance Count</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mt-1" *ngIf="showMinMaxField">
+          <div class="col-md-3"> Minimum Value: </div>
+          <div class="col-md-5"> <input (keypress)="numberOnly($event)" type="text" formControlName="minVal"
+              [ngClass]="{ 'is-invalid': submitted && formErrors.yesVal }" class="form-control input-sm"> </div>
+        </div>
+        <div class="row mt-1" *ngIf="showMinMaxField">
+          <div class="col-md-3"> Maximum Value: </div>
+          <div class="col-md-5"> <input (keypress)="numberOnly($event)" type="text" formControlName="maxVal"
+              [ngClass]="{ 'is-invalid': submitted && formErrors.noVal }" class="form-control input-sm"> </div>
+        </div>
+
+      </div>
+
+
+    </fieldset>
+
+    <div class="row">
+      <div class="col-md-12 text-right actionAreaBtn">
+        <button type="button" class="btn btn-sm themeButton float-left" (click)="openConfirmationDialog()" *ngIf="showDeleteBtn && hnsPermission.indexOf('Delete Scoring Rule') != -1">Delete</button>
+        <button type="submit" class="btn btn-sm themeButton mr-2">Apply</button>
+        <button type="button" class="btn btn-sm themeButton" (click)="closeScoringRulesMethod()">Cancel</button>
+      </div>
+    </div>
+
+  </form>
+
+
+</kendo-window>

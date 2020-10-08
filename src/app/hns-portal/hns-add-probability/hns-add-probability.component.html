@@ -1,0 +1,86 @@
+<kendo-window title="{{title}}" *ngIf="opneAddProbability" (close)="closeProbability()" [top]="30" [minWidth]="400"
+  [width]="550" [height]="auto" [minHeight]="200">
+  <form class="difinitionForm" [formGroup]="formGrp" (ngSubmit)="onSubmit()" autocomplete="off">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-md-3 text-right">
+            <label class="col-form-label">Probability Code</label>
+          </div>
+
+          <div class="col-md-5">
+            <div class="wrapdiv">
+              <input #firstInp style="text-transform:uppercase" [readonly]="formMode == 'view' || formMode == 'edit'" type="text"
+                [ngClass]="{ 'is-invalid': submitted && formErrors.hasprobabilitycode }" class="form-control" formControlName="hasprobabilitycode"
+                [ngClass]="{ 'is-invalid': submitted && formErrors.hasprobabilitycode }">
+              <i title="20 Character long code representing specific Probability Code."
+                class="fas fa-info-circle d-block"></i>
+            </div>
+
+            <div *ngIf="submitted && formErrors.hasprobabilitycode" class="invalid-feedback">
+              <div *ngIf="formErrors.hasprobabilitycode">{{ formErrors.hasprobabilitycode }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-2">
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-md-3 text-right">
+            <label class="col-form-label">Description</label>
+          </div>
+          <div class="col-md-9">
+            <div class="wrapdiv">
+              <input #secondInp [readonly]="formMode == 'view'" type="text" class="form-control" formControlName="hasprobabilitydesc"
+                [ngClass]="{ 'is-invalid': submitted && formErrors.hasprobabilitydesc }"><i
+                title="Description of Probability Level." class="fas fa-info-circle d-block"></i>
+            </div>
+
+            <div *ngIf="submitted && formErrors.hasprobabilitydesc" class="invalid-feedback">
+              <div *ngIf="formErrors.hasprobabilitydesc">{{ formErrors.hasprobabilitydesc }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+
+    <div class="row mt-2">
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-md-3 text-right">
+            <label class="col-form-label">Probability Score</label>
+          </div>
+          <div class="col-md-5">
+            <div class="wrapdiv">
+              <input (keypress)="numberOnly($event)" [readonly]="true" type="text" class="form-control"
+                formControlName="hasprobabilityscore" [ngClass]="{ 'is-invalid': submitted && formErrors.hasprobabilityscore }"><i
+                title="Probability Score Value." class="fas fa-info-circle d-block"></i>
+            </div>
+
+            <div *ngIf="submitted && formErrors.hasprobabilityscore" class="invalid-feedback">
+              <div *ngIf="formErrors.hasprobabilityscore">{{ formErrors.hasprobabilityscore }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+   
+
+    <div class="row mt-3">
+      <div class="col-md-12 text-right actionArea">
+        <button type="button" class="btn btn-sm themeButton" (click)="onSubmit('another')"
+          *ngIf="formMode == 'add' && hnsPermission.indexOf('Create Another Probability') != -1">Create Another</button>
+        <button type="submit" class="btn btn-sm themeButton">OK</button>
+        <button type="button" class="btn btn-sm themeButton" (click)="closeProbability()">Cancel</button>
+      </div>
+    </div>
+
+  </form>
+
+
+</kendo-window>

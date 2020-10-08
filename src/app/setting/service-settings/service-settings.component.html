@@ -1,0 +1,63 @@
+<div class="layout-content">
+
+  <!-- Content -->
+  <div class="container-fluid flex-grow-1 container-p-y">
+
+    <h4 class="font-weight-bold py-3 mb-4">
+      <span class="text-muted font-weight-light">Settings</span>
+    </h4>
+
+    <div class="card mb-4">
+      <!-- <h6 class="card-header">
+        Change Password
+      </h6> -->
+      <div class="card-body">
+        <form [formGroup]="settingsForm" (ngSubmit)="onSubmit()" autocomplete="off">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-label">Start Date</label>
+                <input type="text" class="form-control" (click)="openCalendar(s)" [minDate]="{year: 1800, month: 1, day: 1}"
+                ngbDatepicker #s="ngbDatepicker" formControlName="startDate" placeholder="Start Date"
+                  [ngClass]="{ 'is-invalid': submitted && formErrors.startDate }" autocomplete="off">
+
+                <div *ngIf="submitted && formErrors.startDate" class="invalid-feedback">
+                  <div *ngIf="formErrors.startDate">{{ formErrors.startDate }}</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-label">End Date</label>
+                <input type="text" class="form-control" (click)="openCalendar(e)" [minDate]="{year: 1800, month: 1, day: 1}"
+                ngbDatepicker #e="ngbDatepicker" formControlName="endDate"
+                  placeholder="End Date" [ngClass]="{ 'is-invalid': submitted && formErrors.endDate }" autocomplete="off">
+                <div *ngIf="submitted && formErrors.endDate" class="invalid-feedback">
+                  <div *ngIf="formErrors.endDate">{{ formErrors.endDate }}</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-12">
+              <div class="form-group">
+                <label class="form-label">Service Job Document Upload Location</label>
+                <input type="text" class="form-control" formControlName="uploadLocation"
+                  placeholder="Service Job Document Upload Location" [ngClass]="{ 'is-invalid': submitted && formErrors.uploadLocation }" autocomplete="off">
+                <div *ngIf="submitted && formErrors.uploadLocation" class="invalid-feedback">
+                  <div *ngIf="formErrors.uploadLocation">{{ formErrors.uploadLocation }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <button class="btn btn-default themeButton">Submit</button>
+        </form>
+      </div>
+    </div>
+
+
+
+  </div>
+
+
+</div>

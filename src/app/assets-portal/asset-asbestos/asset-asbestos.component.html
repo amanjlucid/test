@@ -1,0 +1,614 @@
+<div class="row">
+  <div class="col-md-6">
+    <div class="demo-inline-spacing">
+      <label class="switcher switcher-secondary">
+        <input type="checkbox" class="switcher-input" [(ngModel)]="materialAssessment">
+        <span class="switcher-indicator">
+          <span class="switcher-yes">
+            <span class="ion ion-md-checkmark"></span>
+          </span>
+          <span class="switcher-no">
+            <span class="ion ion-md-close"></span>
+          </span>
+        </span>
+        <span class="switcher-label">Material Assessment</span>
+      </label>
+
+      <label class="switcher switcher-secondary">
+        <input type="checkbox" class="switcher-input" [(ngModel)]="priorityAssessment">
+        <span class="switcher-indicator">
+          <span class="switcher-yes">
+            <span class="ion ion-md-checkmark"></span>
+          </span>
+          <span class="switcher-no">
+            <span class="ion ion-md-close"></span>
+          </span>
+        </span>
+        <span class="switcher-label">Priority Assessment</span>
+      </label>
+
+      <label class="switcher switcher-secondary">
+        <input type="checkbox" class="switcher-input" [(ngModel)]="managementActions">
+        <span class="switcher-indicator">
+          <span class="switcher-yes">
+            <span class="ion ion-md-checkmark"></span>
+          </span>
+          <span class="switcher-no">
+            <span class="ion ion-md-close"></span>
+          </span>
+        </span>
+        <span class="switcher-label">Management Actions</span>
+      </label>
+
+
+      <label class="switcher switcher-secondary">
+        <input type="checkbox" class="switcher-input" [(ngModel)]="samples">
+        <span class="switcher-indicator">
+          <span class="switcher-yes">
+            <span class="ion ion-md-checkmark"></span>
+          </span>
+          <span class="switcher-no">
+            <span class="ion ion-md-close"></span>
+          </span>
+        </span>
+        <span class="switcher-label">Samples</span>
+      </label>
+    </div>
+  </div>
+  <div class="col-md-6 text-right asbestosReqBtn">
+
+    <button (click)="openManageAsbestosRequestPopup('request')" [disabled]="checkAsbestosPropAccess()"
+      class="btn btn-sm themeButton">Requests</button>
+    <!-- <button (click)="openManageAsbestosRequestPopup('auth')" class="btn btn-sm themeButton">Auth</button> -->
+    <button (click)="printAcmFunction()" class="btn btn-sm themeButton">Print Asset ACMs</button>
+    <button (click)="openWorkStatusFunction()" class="btn btn-sm themeButton">Work Status</button>
+    <app-individual-asset-report style="margin-left: 4px;"> </app-individual-asset-report>
+
+    <button type="button" (click)="requestFurtherInfo()" [disabled]="!selectedAsset"
+      class="btn btn-sm themeButton">Request Further Information
+    </button>
+  </div>
+
+</div>
+
+<div class="row mt-2">
+  <div class="col-md-12">
+    <kendo-grid [data]="gridView"  [selectable]="{mode: 'single'}" [skip]="state.skip" [sort]="state.sort"
+      [filter]="state.filter" filterable="menu" [sortable]="{
+            allowUnsort: allowUnsort,
+            mode: multiple ? 'multiple' : 'single'
+            }" (sortChange)="sortChange($event)" (cellClick)="cellClickHandler($event)" [groupable]="true"
+      (groupChange)="groupChange($event)" [group]="state.group" (filterChange)="filterChange($event)" [height]="610">
+      <kendo-grid-column field="Discontinued" [width]="60" [filterable]="false" [groupable]="false">
+        <ng-template kendoGridHeaderTemplate>
+          <!-- <i class="fas fa-sticky-note"></i> -->
+          <img style="height:14px; width:16px;" src="assets/img/icons/attach.png" />
+        </ng-template>
+
+        <ng-template kendoGridCellTemplate let-dataItem>
+          <li class="nav-item dropdown list-unstyled" *ngIf="dataItem.notepadLists?.length > 0">
+            <!-- <i data-toggle="dropdown" aria-expanded="true" class="fas fa-sticky-note d-block"></i> -->
+            <img data-toggle="dropdown" aria-expanded="true" style="height:14px; width:16px;" class="attachmentIcon"
+              src="assets/img/icons/attach.png" />
+            <div class="dropdown-menu">
+              <a class="dropdown-item" href="javascript:void(0)" *ngFor="let notes of dataItem.notepadLists"
+                (click)="openNotesDetails(notes)">{{ notes.name}}</a>
+            </div>
+          </li>
+          <!-- <i *ngIf="dataItem.Discontinued" class="fas fa-sticky-note d-block"></i> -->
+
+        </ng-template>
+
+
+      </kendo-grid-column>
+      <kendo-grid-column field="auctext" title="ACM Category" [width]="150"></kendo-grid-column>
+      <kendo-grid-column field="audtext" title="ACM Detail" [width]="150"></kendo-grid-column>
+      <kendo-grid-column field="location" title="Location" [width]="100"></kendo-grid-column>
+      <kendo-grid-column field="floor" title="Floor" [width]="80"></kendo-grid-column>
+      <kendo-grid-column field="position" title="Position" [width]="100"></kendo-grid-column>
+      <kendo-grid-column field="presence" title="Presence" [width]="100"></kendo-grid-column>
+      <kendo-grid-column field="type" title="Type" [width]="130"></kendo-grid-column>
+      <kendo-grid-column field="materialRisk" title="Material Risk" [width]="120"></kendo-grid-column>
+      <kendo-grid-column field="priorityRisk" title="Priority Risk" [width]="120"></kendo-grid-column>
+      <kendo-grid-column field="totalRisk" title="Total Risk" [width]="110"></kendo-grid-column>
+      <kendo-grid-column field="pendingChangeYN" title="Pending Request?" [width]="120" [filterable]="false">
+        <ng-template kendoGridCellTemplate let-dataItem>
+          <i *ngIf="dataItem.pendingChangeYN == 'Y'" class="fas fa-check d-block text-center" style="color: green;"></i>
+        </ng-template>
+
+      </kendo-grid-column>
+      <ng-template kendoGridDetailTemplate let-dataItem>
+        <section *ngIf="dataItem" style="padding-bottom: 15px;">
+          <div class="asbestosDetailsDiv">
+            <div class="col-md-12 detailDiv">
+              Details
+            </div>
+
+            <div class="row">
+              <div class="col-md-4"></div>
+              <div class="col-md-4">
+                <div class="row font-weight-bold">
+                  <div class="col-md-4 text-center">
+                    <p class="mb-0">Material Risk :</p>
+                    <span [style.color]="getColor(dataItem.materialRisk)">{{dataItem.materialRisk}} </span>
+                  </div>
+                  <div class="col-md-4 text-center">
+                    <p class="mb-0">Priority Risk :</p>
+                    <span [style.color]="getColor(dataItem.priorityRisk)">{{dataItem.priorityRisk}}</span>
+                  </div>
+                  <div class="col-md-4 text-center">
+                    <p class="mb-0"> Total Risk</p>
+                    <span [style.color]="getColor(dataItem.totalRisk)">{{dataItem.totalRisk}}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4"></div>
+            </div>
+
+
+
+            <div class="fullDetailDiv row mt-2">
+              <div class="col-md-3">
+                <div class="row">
+                  <div class="col-md-5 text-right p-0 m-0">
+                    <span>Extent:</span>
+                  </div>
+
+                  <div class="col-md-7 text-left p-0 m-0 pl-1">
+                    <span class="spanCl">{{dataItem.asasextent}}</span>
+                  </div>
+                </div>
+
+                <div class="row mt-3">
+                  <div class="col-md-5 text-right p-0 m-0">
+                    <span>Survey Date:</span>
+                  </div>
+
+                  <div class="col-md-7 text-left p-0 m-0 pl-1">
+                    <span class="spanCl">{{dataItem.asassurveydate}}</span>
+                  </div>
+                </div>
+
+                <div class="row mt-3">
+                  <div class="col-md-5 text-right p-0 m-0">
+                    <span>Description:</span>
+                  </div>
+
+                  <div class="col-md-7 text-left p-0 m-0 pl-1">
+                    <!-- <span>{{dataItem.asasdescription}}</span> -->
+                    <span class="spanCl">{{dataItem.asasdescription}}</span>
+                  </div>
+                </div>
+
+                <div class="row mt-3">
+                  <div class="col-md-5 text-right p-0 m-0">
+                    <span>Additional Notes:</span>
+
+
+                    
+                  </div>
+
+                  <div class="col-md-7 text-left p-0 m-0 pl-1">
+                    <!-- <span>{{dataItem.asasadditionalnotes}}</span> -->
+                    <span class="spanCl">{{dataItem.asasadditionalnotes}}</span>
+                  </div>
+                </div>
+
+                <div class="row mt-3" *ngIf="dataItem.asasadditionalnotes.indexOf('SAMPLEXREF') !== -1">
+                  <div class="col-md-12 text-left ml-3 mb-2">
+                    <span class="refRed">Client cross-referenced sample</span><br>
+                    <span class="refRedlight">{{dataItem | refDetail:dataItem.asasadditionalnotes }}</span>
+                  </div>
+                </div>
+
+                <!-- <div class="row">
+                  <div class="col-md-5 text-right p-0 m-0">
+                    <p><span>Extent:</span></p>
+                    <p><span>Survey Date:</span></p>
+                    <p><span>Description:</span> </p>
+                    <p><span>Additional Notes:</span></p>
+                  </div>
+                  <div class="col-md-7 text-left p-0 m-0 pl-1">
+                    <p>{{dataItem.asasextent}}</p>
+                    <p>{{dataItem.asassurveydate}}</p>
+                    <p>{{dataItem.asasdescription}}</p>
+                    <p>{{dataItem.asasadditionalnotes}}</p>
+                  </div>
+
+                </div> -->
+              </div>
+
+              <div class="col-md-2">
+                <div class="row">
+                  <div class="col-md-5 text-right p-0 m-0">
+                    <p><span>UOM:</span></p>
+                    <p><span>Surveyor:</span></p>
+
+                  </div>
+
+                  <div class="col-md-7 text-left p-0 m-0 pl-1">
+                    <p>{{dataItem.uom}}</p>
+                    <p>{{dataItem.svrname}}</p>
+
+                  </div>
+                </div>
+
+              </div>
+
+              <div class="col-md-4">
+                <div class="row">
+                  <div class="col-md-5 text-right p-0 m-0">
+                    <p><span>Inspection Accessibility:</span></p>
+                    <p><span>Data Source:</span></p>
+
+                  </div>
+                  <div class="col-md-7 text-left p-0 m-0 pl-1">
+                    <p>{{dataItem.asactext}}</p>
+                    <p>{{dataItem.dataSource}}</p>
+                  </div>
+
+                </div>
+
+              </div>
+
+              <div class="col-md-3">
+                <div class="row">
+                  <div class="col-md-5 text-right p-0 m-0">
+                    <p><span>HSE Notifiable:</span></p>
+                  </div>
+                  <div class="col-md-7 text-left p-0 m-0 pl-1">
+                    <p>{{dataItem.hseNotifiable}}</p>
+
+                  </div>
+                </div>
+
+
+              </div>
+            </div>
+
+
+
+          </div>
+
+          <div class="asbestosDetailsDiv mt-2" *ngIf="materialAssessment">
+            <div class="col-md-12 detailDiv">
+              Material Assessment
+            </div>
+
+            <div class="fullDetailDiv row text-center mt-1">
+              <div class="col-md-6">
+                <div class="row">
+                  <div class="col-md-5 text-right p-0 m-0">
+                    <p><span>Product:</span></p>
+                    <p><span>Surface:</span></p>
+                  </div>
+                  <div class="col-md-7 text-left p-0 m-0 pl-1">
+                    <p>{{dataItem.apsproducttext}}</p>
+                    <p>{{dataItem.assctext}}</p>
+
+                  </div>
+                </div>
+
+
+              </div>
+
+              <div class="col-md-6">
+                <div class="row">
+                  <div class="col-md-5 text-right p-0 m-0">
+                    <p><span>Damage:</span></p>
+                    <p><span>Type:</span></p>
+                  </div>
+                  <div class="col-md-7 text-left p-0 m-0 pl-1">
+                    <p>{{dataItem.adstext}}</p>
+                    <p>{{dataItem.atstext}}</p>
+                  </div>
+                </div>
+
+
+              </div>
+            </div>
+
+
+
+          </div>
+
+          <div class="asbestosDetailsDiv mt-2" *ngIf="priorityAssessment">
+            <div class="col-md-12 detailDiv">
+              Priority Assessment
+            </div>
+
+
+            <div class="fullDetailDiv row text-center mt-1">
+              <div class="col-md-4">
+                <div class="row">
+                  <div class="col-md-5 text-right p-0 m-0">
+                    <p><span>Main Activity:</span></p>
+                    <p><span>Location:</span></p>
+                    <p><span>No. of Occupants:</span></p>
+                    <p><span>Maintenance:</span></p>
+                  </div>
+
+                  <div class="col-md-7 text-left p-0 m-0 pl-1">
+                    <p>{{dataItem.mainactivity}}</p>
+                    <p>{{dataItem.priorityLocation}}</p>
+                    <p>{{dataItem.priorityOccupants}}</p>
+                    <p>{{dataItem.priorityMaintenanceType}}</p>
+                  </div>
+
+                </div>
+
+              </div>
+
+              <div class="col-md-4">
+                <div class="row">
+                  <div class="col-md-5 text-right p-0 m-0">
+                    <p><span>Secondary Activity:</span></p>
+                    <p><span>Accessibility:</span></p>
+                    <p><span>Frequency of use:</span></p>
+                    <p><span>Maintenance Frequency:</span></p>
+                  </div>
+
+                  <div class="col-md-7 text-left p-0 m-0 pl-1">
+                    <p>{{dataItem.secondaryactivity}}</p>
+                    <p>{{dataItem.priorityAccess}}</p>
+                    <p>{{dataItem.priorityFrequency}}</p>
+                    <p>{{dataItem.priorityMaintenanceFrequency}}</p>
+                  </div>
+                </div>
+
+
+              </div>
+
+              <div class="col-md-4">
+                <div class="row">
+                  <div class="col-md-5 text-right p-0 m-0">
+                    <p><span>Extent/Amount:</span></p>
+                    <p><span>Time in use:</span></p>
+                  </div>
+
+                  <div class="col-md-7 text-left p-0 m-0 pl-1">
+                    <p>{{dataItem.priorityExtent}}</p>
+                    <p>{{dataItem.priorityTimeInUse}}</p>
+
+                  </div>
+                </div>
+
+
+              </div>
+
+            </div>
+
+          </div>
+
+          <div class="asbestosDetailsDiv  mt-2" *ngIf="managementActions">
+            <div class="col-md-12 detailDiv">
+              Management Actions
+            </div>
+
+            <div class="fullDetailDiv row text-center mt-1">
+              <div class="col-md-3">
+                <div class="row">
+                  <div class="col-md-6 text-right p-0 m-0">
+                    <p><span>Initial:</span></p>
+                    <p><span>Subsequent:</span></p>
+                    <p><span>Review Timeframe:</span></p>
+                    <p><span>Reinspection Timeframe:</span></p>
+                  </div>
+
+                  <div class="col-md-6 text-left p-0 m-0 pl-1">
+                    <p>{{dataItem.initialAction}}</p>
+                    <p>{{dataItem.subsequentAction}}</p>
+                    <p>{{dataItem.reviewTimeframe}}</p>
+                    <p>{{dataItem.reinspectionTimeframe}}</p>
+                  </div>
+
+                </div>
+                <!-- <p><span>Initial:</span> {{dataItem.initialAction}}</p>
+                <p><span>Subsequent:</span> {{dataItem.subsequentAction}}</p>
+                <p><span>Review Timeframe:</span> {{dataItem.reviewTimeframe}}</p>
+                <p><span>Reinspection Timeframe:</span> {{dataItem.reinspectionTimeframe}}</p> -->
+              </div>
+
+              <div class="col-md-3">
+                <div class="row">
+                  <div class="col-md-5 text-right p-0 m-0">
+                    <p><span>TimeFrame:</span></p>
+                    <p><span>TimeFrame:</span></p>
+                    <p><span>Review Date:</span></p>
+                    <p><span>Reinspection Date:</span></p>
+                  </div>
+
+
+                  <div class="col-md-7 text-left p-0 m-0 pl-1">
+                    <p>{{dataItem.initialTimeframe}}</p>
+                    <p>{{dataItem.subsequentTimeframe}}</p>
+                    <p>{{dataItem.reviewDate | dateFormat : 'DD-MMM-YYYY'}}</p>
+                    <p>{{dataItem.reinspectionDate | dateFormat : 'DD-MMM-YYYY'}}</p>
+                  </div>
+                </div>
+                <!-- <p><span>TimeFrame:</span> {{dataItem.initialTimeframe}}</p>
+                <p><span>TimeFrame:</span> {{dataItem.subsequentTimeframe}}</p>
+                <p><span>Review Date:</span> {{dataItem.reviewDate | dateFormat : 'DD-MMM-YYYY'}}</p>
+                <p><span>Reinspection Date:</span> {{dataItem.reinspectionDate | dateFormat : 'DD-MMM-YYYY'}}</p> -->
+
+              </div>
+
+              <div class="col-md-3">
+                <div class="row">
+                  <div class="col-md-5 text-right p-0 m-0">
+                    <p><span>Status:</span></p>
+                    <p><span>Status:</span></p>
+                  </div>
+
+                  <div class="col-md-7 text-left p-0 m-0 pl-1">
+                    <p>
+                      {{dataItem.initialStatus == 'O' ? 'Outstanding' : dataItem.initialStatus == 'C' ? 'Complete' : dataItem.initialStatus.trim() == '' ? 'No' : dataItem.initialStatus == 'N' ? '' : ''}}
+                    </p>
+                    <p>
+                      {{dataItem.subsequentStatus == 'O' ? 'Outstanding' : dataItem.subsequentStatus == 'C' ? 'Complete' : dataItem.subsequentStatus.trim() == '' ? 'No' : dataItem.subsequentStatus  == 'N' ? '' : ''}}
+                    </p>
+                  </div>
+
+                </div>
+                <!-- <p><span>Status:</span> {{dataItem.initialStatus == 'O' ? 'Outstanding' : dataItem.initialStatus}}</p>
+                <p><span>Status:</span>
+                  {{dataItem.subsequentStatus == 'O' ? 'Outstanding' : dataItem.subsequentStatus}}
+                </p> -->
+
+              </div>
+
+              <div class="col-md-3">
+                <div class="row">
+                  <div class="col-md-5 text-right p-0 m-0">
+                    <p><span>Deadline:</span></p>
+                    <p><span>Deadline:</span></p>
+                  </div>
+
+                  <div class="col-md-7 text-left p-0 m-0 pl-1">
+                    <p>{{dataItem.asmainitialdeadline | dateFormat : 'DD-MMM-YYYY'}}</p>
+                    <p>{{dataItem.asmasubseqdeadline | dateFormat : 'DD-MMM-YYYY'}}</p>
+                  </div>
+                </div>
+                <!-- <p><span>Deadline:</span> {{dataItem.asmainitialdeadline | dateFormat : 'DD-MMM-YYYY'}}</p>
+                <p><span>Deadline:</span> {{dataItem.asmasubseqdeadline | dateFormat : 'DD-MMM-YYYY'}}</p> -->
+
+              </div>
+            </div>
+
+
+
+          </div>
+
+          <div class="asbestosDetailsDiv  mt-2" *ngIf="samples">
+            <div class="col-md-12 detailDiv">
+              Samples
+            </div>
+
+            <div class="fullDetailDiv row text-center mt-1">
+              
+              <div class="col-md-12">
+               
+                <table class="table table-striped table-bordered sampleTable">
+                  <thead>
+                    <tr>
+                      <th style="width: 10%;">Sample Date</th>
+                      <th style="width: 7%;">Sample ID</th>
+                      <th>Reference</th>
+                      <th style="width: 10%;">Analysis Status</th>
+                      <th style="width: 8%;">Analysis Date</th>
+                      <th style="width: 7%;">Presence</th>
+                      <th>Type</th>
+                      <th>Laboratory</th>
+                      <th style="width: 12%;">Laboratory Reference</th>
+                      <th style="width: 7%;">Analyst</th>
+                      <th style="width: 11%;">Certificate Number</th>
+                      <th>Notes</th>
+
+                    </tr>
+                  </thead>
+
+                  <tbody *ngIf="getSample(dataItem) && dataItem.sampleList?.length > 0 ; else no_record">
+                    <tr class="odd gradeX" *ngFor="let listsample of dataItem.sampleList">
+                      <td>{{ helperService.dateFormat(listsample.dateTaken)  }}</td>
+                      <td>{{ listsample.sampleID }}</td>
+                      <td>{{ listsample.sampleReference }}</td>
+                      <td>{{ listsample.analysisStatusText }}</td>
+                      <td>{{ helperService.dateFormat(listsample.analysisDate) }}</td>
+                      <td>{{ listsample.presence }}</td>
+                      <td>{{ listsample.type }}</td>
+                      <td>{{ listsample.laboratory }}</td>
+                      <td>{{ listsample.reference }}</td>
+                      <td>{{ listsample.analyst }}</td>
+                      <td>{{ listsample.certificateNumber }}</td>
+                      <td>{{ listsample.sampleNotes }}</td>
+                    </tr>
+                  </tbody>
+                  <ng-template #no_record>
+                    <tbody>
+                      <tr>
+                        <td colspan="12"></td>
+                        <!-- <td colspan="12">No records available.</td> -->
+                      </tr>
+                    </tbody>
+                  </ng-template>
+
+                </table>
+
+              </div>
+            </div>
+
+          </div>
+          <!-- <p><strong>In Stock:</strong> {{dataItem.UnitsInStock}} units</p>
+      <p><strong>On Order:</strong> {{dataItem.UnitsOnOrder}} units</p>
+      <p><strong>Reorder Level:</strong> {{dataItem.ReorderLevel}} units</p>
+      <p><strong>Discontinued:</strong> {{dataItem.Discontinued}}</p>
+      <p><strong>Category:</strong> {{dataItem.Category?.CategoryName}} - {{dataItem.Category?.Description}}</p> -->
+        </section>
+      </ng-template>
+    </kendo-grid>
+
+  </div>
+
+  <div class="charBlur"></div>
+
+  <kendo-window title="{{notesTitle}}" *ngIf="notesDetails" (close)="closeNotesDetails()" [top]="15" [minWidth]="250"
+    [width]="800" [height]="680">
+    <div class="row">
+      <div class="col-md-12" *ngIf="notesTitle != 'Attribute Image' && selectedNotes.type == 'N'">
+        <textarea style="height: 500px;" class="form-control" [readonly]="true">{{selectedNotes.text}}</textarea>
+      </div>
+
+      <div class="col-md-12" *ngIf="notesTitle == 'Attribute Image' && selectedNotes.type == 'P'">
+        <img [src]="notesImagePath" alt="{{selectedNotes.text}}" width="auto"
+          style="position: relative; height: 500px;">
+        <p class="mt-2 m-0 p-0">{{selectedNotes.link}}</p>
+        <p class="p-0 mt-1">{{selectedNotes.text}}</p>
+      </div>
+
+      <div class="col-md-12 text-right mt-2 noteBtn">
+        <button class="btn btn-sm" (click)="closeNotesDetails()">Close</button>
+      </div>
+    </div>
+  </kendo-window>
+
+  <app-req-further-info [selectedAsset]="selectedAsset" [requestFurtherinf]="requestFurtherinf"
+    (closeRequestFurtherInf)="closeRequestFurtherInf($event)" *ngIf="requestFurtherinf"></app-req-further-info>
+
+  <app-asbestos-manage-request [manageAsbestosRequestMode]="manageAsbestosRequestMode" [manageAsbestos]="manageAsbestos"
+    [selectedAsbestos]="selectedAsbestos" [selectedAsbestosIndex]="selectedAsbestosIndex"
+    (closeMangeRequest)=closeMangeRequest($event) *ngIf="manageAsbestos">
+  </app-asbestos-manage-request>
+
+  <app-work-status [openWorkStatus]="openWorkStatus" (closeWorkStatus)="closeWorkStatus($event)" *ngIf="openWorkStatus">
+  </app-work-status>
+
+  <app-print-acm [printAcm]="printAcm" [selectedAsbestos]="selectedAsbestos" (closePrintAcm)=closePrintAcm($event)
+    *ngIf="printAcm"></app-print-acm>
+
+
+
+
+  <kendo-window title="Please provide additional data" *ngIf="asbestosStatusWarning"
+    (close)="closeAsbestosStatusWarning()" [minWidth]="250" [width]="450">
+
+    <form class="k-form">
+      <fieldset>
+        <legend>User Details</legend>
+        <label class="k-form-field">
+          <span>First Name</span>
+          <input class="k-textbox" placeholder="Your Name" />
+        </label>
+        <label class="k-form-field">
+          <span>Last Name</span>
+          <input class="k-textbox" placeholder="Your Last Name" />
+        </label>
+      </fieldset>
+
+      <div class="text-right">
+        <button type="button" class="k-button" (click)="closeAsbestosStatusWarning()">Cancel</button>
+        <button type="button" class="k-button k-primary" (click)="submit()">Submit</button>
+      </div>
+    </form>
+
+  </kendo-window>
+</div>

@@ -1,0 +1,24 @@
+<kendo-window title="" *ngIf="openActionPopup" (close)="closePopupMethod()" [top]="50" [minWidth]="400"
+  [width]="400" [height]="auto" [minHeight]="300">
+  <form [formGroup]="templateActionForm" (ngSubmit)="onSubmit()" autocomplete="off">
+    <div class="row">
+      <div class="col-md-12">
+        <label class="col-form-label">{{labelText}}</label>
+      </div>
+
+      <div class="col-md-12">
+        <textarea #firstInp class="form-control" rows="5" formControlName="action"
+          [ngClass]="{ 'is-invalid': submitted && formErrors.action }"></textarea>
+        <div *ngIf="submitted && formErrors.action" class="invalid-feedback">
+          <div *ngIf="formErrors.action">{{ formErrors.action }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="row mt-2">
+      <div class="col-md-12 text-right actionArea">
+        <button type="submit" class="btn btn-sm themeButton">OK</button>
+        <button type="button" class="btn btn-sm themeButton" (click)="closePopupMethod()">Cancel</button>
+      </div>
+    </div>
+  </form>
+</kendo-window>

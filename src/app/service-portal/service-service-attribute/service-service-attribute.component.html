@@ -1,0 +1,215 @@
+<div class="row">
+  <div class="col-md-12">
+    <div class="row">
+      <div class="col-md-2">
+        <label class="col-form-label">Asset:</label>
+      </div>
+      <div class="col-md-3 form-group">
+        <input type="text" [readonly]="readonly" value="{{servicingDetails?.assid}}" class="form-control">
+      </div>
+      <div class="col-md-7 form-group">
+        <input type="text" [readonly]="readonly" value="{{servicingDetails?.address}}" class="form-control">
+      </div>
+    </div>
+  </div>
+  <div class="col-md-12">
+    <div class="row">
+      <div class="col-md-2">
+        <label class="col-form-label">Contractor:</label>
+      </div>
+      <div class="col-md-3 form-group">
+        <input type="text" [readonly]="readonly" value="{{servicingDetails?.contractor_Code}}" class="form-control">
+      </div>
+      <div class="col-md-7 form-group">
+        <input type="text" [readonly]="readonly" value="{{servicingDetails?.contractor}}" class="form-control">
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-12">
+    <div class="row">
+      <div class="col-md-2">
+        <label class="col-form-label">Service Contract:</label>
+      </div>
+      <div class="col-md-3 form-group">
+        <input type="text" [readonly]="readonly" value="{{servicingDetails?.service_Contract_Code}}"
+          class="form-control">
+      </div>
+      <div class="col-md-7 form-group">
+        <input type="text" [readonly]="readonly" value="{{servicingDetails?.service_Contract}}" class="form-control">
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-12">
+    <div class="row">
+      <div class="col-md-2">
+        <label class="col-form-label">Service Type:</label>
+      </div>
+      <div class="col-md-3 form-group">
+        <input type="text" [readonly]="readonly" value="{{servicingDetails?.service_Type_Code}}" class="form-control">
+      </div>
+      <div class="col-md-7 form-group">
+        <input type="text" [readonly]="readonly" value="{{servicingDetails?.service_Type}}" class="form-control">
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-12">
+    <div class="row">
+      <div class="col-md-2">
+        <label class="col-form-label">Job No:</label>
+      </div>
+      <div class="col-md-3 form-group">
+        <input type="text" [readonly]="readonly" value="{{servicingDetails?.job_Number}}" class="form-control">
+      </div>
+
+      <div class="col-md-7 form-group radioBtnDiv">
+        <label class="radio-inline ml-1">Included </label> <input type="radio" value="1"
+          [(ngModel)]="serviceAttrProp.Switch" (change)="filterGrid()" name="gridFilter">
+        &nbsp;<label class="radio-inline ml-1 allLabelSerAttr">All </label> <input type="radio" value="0"
+          [(ngModel)]="serviceAttrProp.Switch" (change)="filterGrid()" name="gridFilter">
+      </div>
+
+    </div>
+  </div>
+
+
+</div>
+
+<div class="row mt-3">
+  <!-- <div class="attachmentDiv">
+    <div class="col-md-12 attachmentTableHeader">
+      <h5>Attachments</h5>
+    </div>
+  </div> -->
+  <div class="col-md-12">
+    <kendo-grid [data]="gridView" [resizable]="true" [skip]="state.skip" [sort]="state.sort" [sortable]="{
+        allowUnsort: allowUnsort,
+        mode: multiple ? 'multiple' : 'single'
+        }" (sortChange)="sortChange($event)" [selectable]="{mode: 'single'}" (cellClick)="cellClickHandler($event)"
+      [height]="280">
+      <!-- <kendo-grid-checkbox-column></kendo-grid-checkbox-column> -->
+      <kendo-grid-column field="code1" title="Code 1" width="80">
+        <ng-template kendoGridCellTemplate let-dataItem>
+          <span [style.color]="dataItem.textColour">
+            {{ dataItem.code1 }}
+          </span>
+        </ng-template>
+      </kendo-grid-column>
+      <kendo-grid-column field="code2" title="Code 2" width="80">
+        <ng-template kendoGridCellTemplate let-dataItem>
+          <span [style.color]="dataItem.textColour">
+            {{ dataItem.code2 }}
+          </span>
+        </ng-template>
+      </kendo-grid-column>
+      <kendo-grid-column field="code3" title="Code 3" width="80">
+        <ng-template kendoGridCellTemplate let-dataItem>
+          <span [style.color]="dataItem.textColour">
+            {{ dataItem.code3 }}
+          </span>
+        </ng-template>
+      </kendo-grid-column>
+      <kendo-grid-column field="code4" title="Code 4" width="80">
+        <ng-template kendoGridCellTemplate let-dataItem>
+          <span [style.color]="dataItem.textColour">
+            {{ dataItem.code4 }}
+          </span>
+        </ng-template>
+      </kendo-grid-column>
+      <kendo-grid-column field="ataid" title="Attribute" width="90">
+        <ng-template kendoGridCellTemplate let-dataItem>
+          <span [style.color]="dataItem.textColour">
+            {{ dataItem.ataid }}
+          </span>
+        </ng-template>
+      </kendo-grid-column>
+      <kendo-grid-column field="attribute" title="Description" width="140">
+        <ng-template kendoGridCellTemplate let-dataItem>
+          <span [style.color]="dataItem.textColour">
+            {{ dataItem.attribute }}
+          </span>
+        </ng-template>
+      </kendo-grid-column>
+      <kendo-grid-column field="statusDesc" title="Status" width="150">
+        <ng-template kendoGridCellTemplate let-dataItem>
+          <span [style.color]="dataItem.textColour">
+            {{ dataItem.statusDesc }}
+          </span>
+        </ng-template>
+      </kendo-grid-column>
+      <kendo-grid-column field="installationDate" title="Installation Date" width="150">
+        <ng-template kendoGridCellTemplate let-dataItem>
+          <span [style.color]="dataItem.textColour">{{ dataItem.installationDate | dateFormat : 'DD-MMM-YYYY' }}</span>
+        </ng-template>
+      </kendo-grid-column>
+      <kendo-grid-column field="lastServiceDate" title="Last Service Date" width="150">
+        <ng-template kendoGridCellTemplate let-dataItem>
+          <span [style.color]="dataItem.textColour"> {{ dataItem.lastServiceDate | dateFormat : 'DD-MMM-YYYY' }}</span>
+        </ng-template>
+      </kendo-grid-column>
+      <kendo-grid-column field="surveyDate" title="Survey Date" width="140">
+        <ng-template kendoGridCellTemplate let-dataItem>
+          <span [style.color]="dataItem.textColour">{{ dataItem.surveyDate | dateFormat : 'DD-MMM-YYYY' }}</span>
+        </ng-template>
+      </kendo-grid-column>
+      <kendo-grid-column field="attrInfoCount" title="Info" width="80">
+        <ng-template kendoGridCellTemplate let-dataItem>
+          <span [style.color]="dataItem.textColour">
+            <i style="font-size: 19px;" *ngIf="dataItem.attrInfoCount > 0" class="fa fa-info-circle" aria-hidden="true"></i>
+          </span>
+        </ng-template>
+      </kendo-grid-column>
+      <kendo-grid-column field="createdBy" title="Created By" width="100">
+        <ng-template kendoGridCellTemplate let-dataItem>
+          <span [style.color]="dataItem.textColour">
+            {{ dataItem.createdBy }}
+          </span>
+        </ng-template>
+      </kendo-grid-column>
+      <kendo-grid-column field="createdOn" title="Created Date" width="120">
+        <ng-template kendoGridCellTemplate let-dataItem>
+          <span [style.color]="dataItem.textColour">{{ dataItem.createdOn | dateFormat : 'DD-MMM-YYYY' }}</span>
+        </ng-template>
+      </kendo-grid-column>
+      <kendo-grid-column field="updatedBy" title="Updated By" width="100">
+        <ng-template kendoGridCellTemplate let-dataItem>
+          <span [style.color]="dataItem.textColour">
+            {{ dataItem.updatedBy }}
+          </span>
+        </ng-template>
+      </kendo-grid-column>
+      <kendo-grid-column field="updatedOn" title="Upadated Date" width="120">
+        <ng-template kendoGridCellTemplate let-dataItem>
+          <span [style.color]="dataItem.textColour">{{ dataItem.updatedOn | dateFormat : 'DD-MMM-YYYY' }}</span>
+        </ng-template>
+      </kendo-grid-column>
+
+    </kendo-grid>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-3 mt-2">
+    <button type="button" [disabled]="infoBtn" (click)="openServiceAttrInfo()" class="btn btn-sm themeButton">Service Info</button>
+  </div>
+
+  <div class="col-md-9 mt-2 text-right serviceAttrActionBtn">
+    <button type="button" [disabled]="ignoreBtn" class="btn btn-sm themeButton"
+      (click)="updateServiceAttrStatus(1)">Ignore</button>
+    <button type="button" [disabled]="inactiveBtn" class="btn btn-sm themeButton"
+      (click)="updateServiceAttrStatus(2)">{{inactiveBtnName}}</button>
+    <button type="button" [disabled]="deleteBtn" class="btn btn-sm themeButton" (click)="updateServiceAttrStatus(3)">Set
+      to Delete</button>
+    <button type="button" [disabled]="addUpdateBtn" class="btn btn-sm themeButton"
+      (click)="updateServiceAttrStatus(4)">Set to Add/Update</button>
+
+      <button type="button" (click)="closeServiceDetailWindow()" class="btn btn-sm">Close</button>
+  </div>
+</div>
+
+
+<div class="serviceAttrCharBlur"></div>
+
+<app-service-service-attr-info *ngIf="serviceAttrInfo" [serviceAttrInfo]="serviceAttrInfo" [selectedServiceAttr]="selectedServiceAttr" [servicingDetails]="servicingDetails" (closeServiceAttrInfo)="closeServiceAttrInfo($event)"></app-service-service-attr-info>

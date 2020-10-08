@@ -1,0 +1,18 @@
+.k-window-wrapper{
+    position: fixed !important;
+}
+
+.assetDetail{
+    background-color: #cecece;
+    padding: 5px 0px 12px 10px;
+    border-radius: 2px;
+    margin-top:-8px;
+}
+
+.buttonDiv button{
+    margin-left: 5px;
+}
+
+.assetDetail p{
+    font-weight: 600;
+}

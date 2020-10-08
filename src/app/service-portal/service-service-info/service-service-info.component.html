@@ -1,0 +1,94 @@
+<div class="row">
+  <div class="col-md-12">
+    <div class="row">
+      <div class="col-md-2">
+        <label class="col-form-label">Asset:</label>
+      </div>
+      <div class="col-md-3 form-group">
+        <input type="text" [readonly]="readonly" value="{{servicingDetails?.assid}}" class="form-control">
+      </div>
+      <div class="col-md-7 form-group">
+        <input type="text" [readonly]="readonly" value="{{servicingDetails?.address}}" class="form-control">
+      </div>
+    </div>
+  </div>
+
+
+  <div class="col-md-12">
+    <div class="row">
+      <div class="col-md-2">
+        <label class="col-form-label">Service Type:</label>
+      </div>
+      <div class="col-md-3 form-group">
+        <input type="text" [readonly]="readonly" value="{{servicingDetails?.service_Type_Code}}" class="form-control">
+      </div>
+      <div class="col-md-7 form-group">
+        <input type="text" [readonly]="readonly" value="{{servicingDetails?.service_Type}}" class="form-control">
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row mt-3">
+  <div class="col-md-12">
+    <kendo-grid [data]="gridView" [resizable]="true" [skip]="state.skip" [sort]="state.sort" [sortable]="{
+        allowUnsort: allowUnsort,
+        mode: multiple ? 'multiple' : 'single'
+        }" (sortChange)="sortChange($event)" [selectable]="{mode: 'single'}" (filterChange)="filterChange($event)"
+      [filter]="state.filter" filterable="menu" (cellClick)="cellClickHandler($event)" [height]="430">
+      <!-- <kendo-grid-checkbox-column></kendo-grid-checkbox-column> -->
+      <kendo-grid-column field="itemExists" title="Item Exists" width="100" [filterable]="false"
+        [style]="{'text-align': 'center'}">
+        <ng-template kendoGridCellTemplate let-dataItem>
+          <i *ngIf="dataItem.itemExists == 'Y'" style="color: green;" class="fa fa-check" aria-hidden="true"></i>
+          <i *ngIf="dataItem.itemExists != 'Y'" style="color: red; font-size: 16px;" class="fa fa-times"></i>
+        </ng-template>
+      </kendo-grid-column>
+      <kendo-grid-column field="service_Info" title="Service Info" width="150" [filterable]="true"></kendo-grid-column>
+      <kendo-grid-column field="service_Info_name" title="Service Info Name" width="250" [filterable]="false">
+      </kendo-grid-column>
+      <kendo-grid-column field="characteristic" title="Characteristic" width="210" [filterable]="false">
+      </kendo-grid-column>
+      <kendo-grid-column field="value" title="Value" width="140" [filterable]="false">
+      </kendo-grid-column>
+      <kendo-grid-column field="note" title="Note" width="250" [filterable]="false">
+      </kendo-grid-column>
+      <kendo-grid-column field="created_By" title="Created By" width="110" [filterable]="false"></kendo-grid-column>
+      <kendo-grid-column field="created_on" title="Created On" width="120" [filterable]="false">
+        <ng-template kendoGridCellTemplate let-dataItem>
+          {{ dataItem.created_on | dateFormat : 'DD-MMM-YYYY' }}
+        </ng-template>
+      </kendo-grid-column>
+      <kendo-grid-column field="updated_By" title="Updated By" width="130" [filterable]="false">
+      </kendo-grid-column>
+      <kendo-grid-column field="updated_On" title="Updated On" width="130" [filterable]="false">
+        <ng-template kendoGridCellTemplate let-dataItem>
+          {{ dataItem.updated_On | dateFormat : 'DD-MMM-YYYY' }}
+        </ng-template>
+      </kendo-grid-column>
+      <kendo-grid-column field="status" title="Status" width="100" [filterable]="false">
+        <ng-template kendoGridCellTemplate let-dataItem>
+          {{ dataItem.status == 'A' ? 'Active' : 'Inactive' }}
+        </ng-template>
+      </kendo-grid-column>
+      <kendo-grid-column field="asset_Type" title="Asset Type" width="110" [filterable]="false">
+      </kendo-grid-column>
+      <kendo-grid-column field="char_Code" title="Char Code" width="110" [filterable]="false">
+      </kendo-grid-column>
+    </kendo-grid>
+  </div>
+
+  <div class="col-md-12 mt-2">
+    <div class="actionBtn">
+      <button type="button" [disabled]="editBtnDisabled"  class="btn btn-sm themeButton"
+        (click)="openAddEditInfoMethod()">Add/Edit</button>
+      <button type="button" [disabled]="deleteBtnDisabled" class="btn btn-sm themeButton ml-1"
+        (click)="openConfirmationDialog()">Delete</button>
+        <button type="button" (click)="closeServiceDetailWindow()" class="btn btn-sm pull-right">Close</button>
+    </div>
+  </div>
+</div>
+
+<div class="editServiceInfo"></div>
+
+<app-service-service-info-edit *ngIf="openAddEditInfo" [openAddEditInfo]="openAddEditInfo" [servicingDetails]="servicingDetails" [selectedServiceInfo]="selectedServiceInfo" (closeAddEditInfo)="closeAddEditInfo($event)"></app-service-service-info-edit>

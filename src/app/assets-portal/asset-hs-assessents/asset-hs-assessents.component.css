@@ -1,0 +1,21 @@
+.filterAttrdiv select{
+    height: calc(1.5rem + 2px);
+    background-position: right .625rem center;
+    font-size: .75rem;
+    line-height: 1.5;
+    background-clip: padding-box;
+    border: 1px solid rgba(24,28,33,0.1);
+    position: sticky;
+    top:1px;
+    margin-bottom: 6px;
+    width: 95%;
+    
+}
+
+.dropdown.list-unstyled{
+    position: absolute !important;
+}
+
+.k-window-wrapper{
+    position: fixed !important;
+}

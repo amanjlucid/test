@@ -1,0 +1,482 @@
+
+<!-- <h1>User logout in:  {{ (minutesDisplay) }}:{{ (secondsDisplay) && (secondsDisplay <=59) ? secondsDisplay : '00' }}
+</h1> -->
+
+<div class="layout-wrapper layout-2" *ngIf="loadComp; else otherContent">
+    <div class="layout-inner">
+
+        <!-- Layout sidenav -->
+        <div id="layout-sidenav" class="layout-sidenav sidenav sidenav-vertical sidbarDiv">
+
+            <!-- Brand demo (see assets/css/demo/demo.css) -->
+            <div class="app-brand demo">
+                <img class="brand-logo" src="assets/img/icons/logo-dashboard.svg"
+                    style="display:inline-block; max-height: 50px;" />
+
+                <a href="#" class="app-brand-text demo sidenav-text font-weight-normal ml-2">Apex</a>
+                <a href="javascript:void(0)" class="layout-sidenav-toggle sidenav-link text-large ml-auto">
+                    <i class="ion ion-md-menu align-middle"></i>
+                </a>
+            </div>
+
+            <div class="sidenav-divider mt-0"></div>
+
+            <!-- Links -->
+            <ul class="sidenav-inner py-1">
+
+                <!-- Dashboards -->
+
+                <li class="sidenav-item" [routerLinkActive]="['active']">
+                    <a [routerLink]="['/dashboard']" class="sidenav-link">
+                        <!-- <i class="sidenav-icon ion ion-md-quote"></i> -->
+                        <img class="sidenav-icon ion" src="assets/img/icons/dashboard.svg">
+                        <div class="active">Dashboard</div>
+                    </a>
+                </li>
+
+                <li *ngIf="checkGroupPermission('Asset Portal Access')" class="sidenav-item" [routerLinkActive]="['active']">
+                    <!-- <a [routerLink]="['/AssetPortal']" class="sidenav-link" target="_blank"> -->
+                    <a [routerLink]="['/assets-portal/assets']" class="sidenav-link">
+                        <!-- <i class="sidenav-icon ion ion-md-speedometer"></i> -->
+                        <img class="sidenav-icon ion" src="assets/img/icons/assets.svg">
+                        <div>Assets</div>
+                    </a>
+
+                </li>
+
+
+                <!-- <li *ngIf="checkGroupPermission('Asset Portal Access')" class="sidenav-item">
+                   
+                    <a href="http://104.40.138.8/Rowanwood/AssetPortal" class="sidenav-link" target="_blank">
+                       
+                        <img class="sidenav-icon ion" src="assets/img/icons/assets.svg">
+                        <div>Assets</div>
+                    </a>
+
+                </li> -->
+
+                <li *ngIf="checkGroupPermission('Asbestos Portal Access')" class="sidenav-item">
+                    <a href="http://104.40.138.8/Rowanwood/AsbestosPortal" class="sidenav-link" target="_blank">
+                        <!-- <i class="sidenav-icon ion ion-md-speedometer"></i> -->
+                        <img class="sidenav-icon ion" src="assets/img/icons/asbestos.svg">
+                        <div>Asbestos</div>
+                    </a>
+
+                    <!-- <ul class="sidenav-menu">
+                        <li class="sidenav-item">
+                            <a href="index.html" class="sidenav-link">
+                                <div>Dashboard 1</div>
+                            </a>
+                        </li>
+
+                    </ul> -->
+                </li>
+
+                <!-- <li *ngIf="checkGroupPermission('Asbestos Lite Access')" class="sidenav-item">
+                        <a href="http://104.40.138.8/Rowanwood/AsbestosLite" class="sidenav-link" target="_blank">
+                           
+                            <img class="sidenav-icon ion" src="assets/img/icons/asbestos.svg">
+                            <div>Asbestos Lite</div>
+                        </a>
+    
+                        
+                    </li> -->
+
+                <li *ngIf="checkGroupPermission('Energy Portal Access')" class="sidenav-item">
+                    <a href="http://104.40.138.8/Rowanwood/EnergyPortal" class="sidenav-link" target="_blank">
+                        <!-- <i class="sidenav-icon ion ion-md-speedometer"></i> -->
+                        <img class="sidenav-icon ion" src="assets/img/icons/energy.svg">
+                        <div>Energy</div>
+                    </a>
+
+                    <!-- <ul class="sidenav-menu">
+                        <li class="sidenav-item">
+                            <a href="index.html" class="sidenav-link">
+                                <div>Dashboard 1</div>
+                            </a>
+                        </li>
+
+                    </ul> -->
+                </li>
+
+                <li *ngIf="checkGroupPermission('BA_EventManager')" class="sidenav-item">
+                    <a href="http://104.40.138.8/Rowanwood/EventManager" class="sidenav-link" target="_blank">
+                        <!-- <i class="sidenav-icon ion ion-md-speedometer"></i> -->
+                        <img class="sidenav-icon ion" src="assets/img/icons/event-manager.svg">
+                        <div>Event Manager</div>
+                    </a>
+
+                    <!-- <ul class="sidenav-menu">
+                        <li class="sidenav-item">
+                            <a href="index.html" class="sidenav-link">
+                                <div>Dashboard 1</div>
+                            </a>
+                        </li>
+
+                    </ul> -->
+                </li>
+
+
+                <li *ngIf="checkGroupPermission('Health And Safety Portal Access')" class="sidenav-item">
+                    <a href="http://104.40.138.8/Rowanwood/HealthAndSafety" class="sidenav-link" target="_blank">
+                        <!-- <i class="sidenav-icon ion ion-md-speedometer"></i> -->
+                        <img class="sidenav-icon ion" src="assets/img/icons/healthnsafety.svg">
+                        <div>Health & Safety</div>
+                    </a>
+
+                    <!-- <ul class="sidenav-menu">
+                        <li class="sidenav-item">
+                            <a href="index.html" class="sidenav-link">
+                                <div>Dashboard 1</div>
+                            </a>
+                        </li>
+
+                    </ul> -->
+                </li>
+
+                <li *ngIf="checkGroupPermission('Works Order Mobile Portal Access')" class="sidenav-item">
+                    <a href="http://104.40.138.8/Rowanwood/WorksOrders" class="sidenav-link" target="_blank">
+                        <!-- <i class="sidenav-icon ion ion-md-speedometer"></i> -->
+                        <img class="sidenav-icon ion" src="assets/img/icons/workorders.svg">
+                        <div>Work Orders</div>
+                    </a>
+
+                    <!-- <ul class="sidenav-menu">
+                        <li class="sidenav-item">
+                            <a href="index.html" class="sidenav-link">
+                                <div>Dashboard 1</div>
+                            </a>
+                        </li>
+
+                    </ul> -->
+                </li>
+
+                <li class="sidenav-item" [routerLinkActive]="['open']" *ngIf="this.currentUser?.admin == 'Y'">
+                    <a href="javascript:void(0)" class="sidenav-link sidenav-toggle">
+                        <!-- <i class="sidenav-icon ion ion-md-speedometer"></i> -->
+                        <img class="sidenav-icon ion" src="assets/img/icons/security.svg">
+                        <div>Security</div>
+                    </a>
+
+                    <ul class="sidenav-menu">
+                        <li class="sidenav-item" [routerLinkActive]="['active']">
+                            <a [routerLink]="['/security-portal/users']" class="sidenav-link">
+                                <div>Users</div>
+                            </a>
+
+                        </li>
+                        <li class="sidenav-item" [routerLinkActive]="['active']">
+                            <a [routerLink]="['/security-portal/groups']" class="sidenav-link">
+                                <div>Groups</div>
+                            </a>
+                        </li>
+
+                    </ul>
+                </li>
+
+                <li *ngIf="checkGroupPermission('Servicing Portal Access')" class="sidenav-item">
+                    <a href="http://104.40.138.8/Rowanwood/SIM_Portal" class="sidenav-link" target="_blank">
+                        <!-- <i class="sidenav-icon ion ion-md-speedometer"></i> -->
+                        <img class="sidenav-icon ion" src="assets/img/icons/servicing.svg">
+                        <div>Servicing</div>
+                    </a>
+
+                    <!-- <ul class="sidenav-menu">
+                        <li class="sidenav-item">
+                            <a [routerLink]="['/dashboard']" class="sidenav-link">
+                                <div>Dashboard 1</div>
+                            </a>
+                        </li>
+
+                    </ul> -->
+                </li>
+
+                <li *ngIf="checkGroupPermission('Survey Portal Access')" class="sidenav-item">
+                    <a href="http://104.40.138.8/Rowanwood/SurveyPortal" class="sidenav-link" target="_blank">
+                        <!-- <i class="sidenav-icon ion ion-md-speedometer"></i> -->
+                        <img class="sidenav-icon ion" src="assets/img/icons/Surveying.svg">
+                        <div>Surveying</div>
+                    </a>
+
+                    <!-- <ul class="sidenav-menu">
+                        <li class="sidenav-item">
+                            <a href="index.html" class="sidenav-link">
+                                <div>Dashboard 1</div>
+                            </a>
+                        </li>
+
+                    </ul> -->
+                </li>
+
+                <li *ngIf="checkGroupPermission('Web Reporter Portal Access')" class="sidenav-item">
+                    <a href="http://104.40.138.8/Rowanwood/WebReporter" class="sidenav-link" target="_blank">
+                        <!-- <i class="sidenav-icon ion ion-md-speedometer"></i> -->
+                        <img class="sidenav-icon ion" src="assets/img/icons/reports.svg">
+                        <div>Reporter</div>
+                    </a>
+
+                    <!-- <ul class="sidenav-menu">
+                        <li class="sidenav-item">
+                            <a href="index.html" class="sidenav-link">
+                                <div>Dashboard 1</div>
+                            </a>
+                        </li>
+
+                    </ul> -->
+                </li>
+
+
+
+
+
+            </ul>
+        </div>
+        <!-- / Layout sidenav -->
+
+        <!-- Layout container -->
+        <div class="layout-container">
+            <!-- Layout navbar -->
+            <nav class="layout-navbar navbar navbar-expand-lg align-items-lg-center bg-white container-p-x"
+                id="layout-navbar">
+
+                <!-- Brand demo (see assets/css/demo/demo.css) -->
+                <a href="index.html" class="navbar-brand app-brand demo d-lg-none py-0 mr-4">
+                    <img class="app-brand-logo" src="assets/img/icons/logo.svg"
+                        style="display:inline-block; max-height: 50px;" />
+                    <span class="app-brand-text demo font-weight-normal ml-2">Apex</span>
+                </a>
+
+                <!-- Sidenav toggle (see assets/css/demo/demo.css) -->
+                <div class="layout-sidenav-toggle navbar-nav d-lg-none align-items-lg-center mr-auto">
+                    <a class="nav-item nav-link px-0 mr-lg-4" href="javascript:void(0)">
+                        <i class="ion ion-md-menu text-large align-middle"></i>
+                    </a>
+                </div>
+
+                <button class="navbar-toggler" type="button" data-toggle="collapse"
+                    data-target="#layout-navbar-collapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="navbar-collapse collapse" id="layout-navbar-collapse">
+                    <!-- Divider -->
+                    <hr class="d-lg-none w-100 my-2">
+
+                    <div class="navbar-nav align-items-lg-center">
+                        <h5 class="align-middle" style="position:absolute;">{{currentUser?.environmentName}}</h5>
+                        <!-- <label class="nav-item navbar-text navbar-search-box p-0 active">
+                            <i class="ion ion-ios-search navbar-icon align-middle"></i>
+                            <span class="navbar-search-input pl-2">
+                                <input type="text" class="form-control navbar-text mx-2" placeholder="Search..." style="width:200px">
+                                <p>sdfs</p>
+                            </span>
+                        </label> -->
+                    </div>
+
+                    <div class="navbar-nav align-items-lg-center ml-auto">
+                        <div class="demo-navbar-notifications nav-item dropdown mr-lg-3">
+                            <a class="nav-link dropdown-toggle hide-arrow" href="#" data-toggle="dropdown">
+                                <i class="ion ion-md-notifications-outline navbar-icon align-middle"></i>
+                                <span *ngIf="notifications?.length > 0 && checkGroupPermission('BA_EventManager')"
+                                    class="badge badge-primary badge-dot indicator"></span>
+                                <span class="d-lg-none align-middle">&nbsp; Notifications</span>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right"
+                                *ngIf="checkGroupPermission('BA_EventManager') ; else notificationDiv">
+                                <div class="bg-primary text-center text-white font-weight-bold p-3">
+                                    {{ (notifications?.length ) ? notifications?.length : 0 }} New Notifications
+                                </div>
+                                <div class="list-group list-group-flush">
+
+                                    <ng-container *ngFor="let notification of notifications; let i = index;">
+                                        <a href="javascript:void(0)" *ngIf="i < 5"
+                                            class="list-group-item list-group-item-action media d-flex align-items-center">
+                                            <div
+                                                class="ui-icon ui-icon-sm ion ion-md-home bg-secondary border-0 text-white">
+                                            </div>
+                                            <div class="media-body line-height-condenced ml-3">
+                                                <div class="text-dark">{{ notification?.eventName }}</div>
+                                                <div class="text-light small mt-1">
+
+                                                </div>
+                                                <div class="text-light small mt-1">
+                                                    {{ notification?.createdDate | dateFormat : 'DD-MMM-YYYY' }}</div>
+                                            </div>
+                                        </a>
+                                    </ng-container>
+
+
+                                </div>
+
+                                <a class="list-group-item list-group-item-action media d-flex align-items-center"
+                                    href="{{unreadMsgPage}}" target="_blank">
+                                    <div class="media-body ml-3">
+                                        <div class="text-dark line-height-condenced">
+                                            Show all notifications </div>
+
+                                    </div>
+                                </a>
+
+                            </div>
+
+                            <ng-template #notificationDiv>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <div class="bg-primary text-center text-white font-weight-bold p-3">
+                                        0 New Notifications
+                                    </div>
+                                    
+
+                                </div>
+                            </ng-template>
+                        </div>
+
+                        <div class="demo-navbar-messages nav-item dropdown mr-lg-3">
+                            <a class="nav-link dropdown-toggle hide-arrow" href="#" data-toggle="dropdown">
+                                <i class="ion ion-ios-mail navbar-icon align-middle"></i>
+                                <!-- <span *ngIf="unreadMsg != '0 Unread Event(s)' && checkGroupPermission('BA_EventManager')"
+                                    class="badge badge-primary badge-dot indicator"></span> -->
+                                <span class="d-lg-none align-middle">&nbsp; Messages</span>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right" *ngIf="checkGroupPermission('BA_EventManager') ; else eventDiv">
+                                <div class="bg-primary text-center text-white font-weight-bold p-3">
+                                    <!-- {{unreadMsg}} -->
+                                    0 Unread Message
+                                </div>
+                                <div class="list-group list-group-flush">
+                                    <!-- <ng-container *ngFor="let eventList of eventLists; let i = index;">
+                                        <a ng-if="i < 5" href="javascript:void(0)" class="list-group-item list-group-item-action media d-flex align-items-center" >
+                                               
+                                                <div class="media-body ml-3">
+                                                    <div class="text-dark line-height-condenced">{{eventList?.title}}</div>
+                                                   
+                                                </div>
+                                            </a> 
+
+                                            
+                                            </ng-container> -->
+                                    <a class="list-group-item list-group-item-action media d-flex align-items-center"
+                                        href="{{unreadMsgPage}}" target="_blank">
+                                        <div class="media-body ml-3">
+                                            <div class="text-dark line-height-condenced">
+                                                Click here to read message </div>
+
+                                        </div>
+                                    </a>
+                                    
+                                </div>
+
+                               
+                            </div>
+                            <ng-template #eventDiv>
+                                    <div class="dropdown-menu dropdown-menu-right">
+                                        <div class="bg-primary text-center text-white font-weight-bold p-3">
+                                                0 Unread Message
+                                        </div>
+    
+                                    </div>
+                                </ng-template>
+                        </div>
+
+                        <!-- Divider -->
+                        <div
+                            class="nav-item d-none d-lg-block text-big font-weight-light line-height-1 opacity-25 mr-3 ml-1">
+                            |</div>
+
+                        <div class="demo-navbar-user nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">
+                                <span class="d-inline-flex flex-lg-row-reverse align-items-center align-middle">
+                                    <img src="assets/img/avatars/user-image.png" alt
+                                        class="d-block ui-w-30 rounded-circle">
+                                    <span
+                                        class="px-1 mr-lg-2 ml-2 ml-lg-0">{{currentUser?.userName | titlecase  }}</span>
+                                </span>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <a [routerLink]="['/my-profile']" class="dropdown-item"><i
+                                        class="ion ion-ios-person text-lightest"></i>
+                                    &nbsp; My profile</a>
+                                <!-- <a href="javascript:void(0)" class="dropdown-item"><i class="ion ion-ios-mail text-lightest"></i>
+                                    &nbsp; Messages</a>
+                                <a href="javascript:void(0)" class="dropdown-item"><i class="ion ion-md-settings text-lightest"></i>
+                                    &nbsp; Account settings</a> -->
+                                <div class="dropdown-divider"></div>
+                                <a [routerLink]="['/login']" class="dropdown-item"><i
+                                        class="ion ion-ios-log-out text-danger"></i>
+                                    &nbsp; Log Out</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+            <!-- / Layout navbar -->
+
+            <!-- Layout content -->
+            <div class="layout-content">
+
+                <!-- cop-->
+
+                <!-- Content -->
+                <div class="contentDiv">
+                    <app-assets *ngIf="validationObj?.validated" [validationObj]="validationObj"></app-assets>
+                </div>
+                <!-- / Content -->
+
+                <!-- Layout footer -->
+                <nav class="layout-footer footer bg-footer-theme">
+                    <div
+                        class="container-fluid d-flex flex-wrap justify-content-between text-center container-p-x pb-3">
+                        <div class="pt-3">
+                            <span class="footer-text font-weight-bolder">Rowanwood Professional Services Limited</span>
+                            ©
+                        </div>
+                        <!-- <div>
+                            <a href="javascript:void(0)" class="footer-link pt-3">About Us</a>
+                            <a href="javascript:void(0)" class="footer-link pt-3 ml-4">Help</a>
+                            <a href="javascript:void(0)" class="footer-link pt-3 ml-4">Contact</a>
+                            <a href="javascript:void(0)" class="footer-link pt-3 ml-4">Terms &amp; Conditions</a>
+                        </div> -->
+                    </div>
+                </nav>
+                <!-- / Layout footer -->
+
+            </div>
+            <!-- Layout content -->
+
+        </div>
+        <!-- / Layout container -->
+
+    </div>
+
+    <!-- Overlay -->
+    <!-- <div class="layout-overlay layout-sidenav-toggle"></div> -->
+</div>
+
+<ng-template #otherContent>
+    <div class="modal fade show" id="modals-default" style="display: block; padding-right: 16px;" *ngIf="validationObj?.validated == false">
+        <div class="modal-dialog">
+          <form class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">
+              
+                <span class="font-weight-light">{{validationObj?.errorCode}}</span>
+                <!-- <br>
+                <small class="text-muted">We need payment information to process your order.</small> -->
+              </h5>
+              <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">×</button> -->
+            </div>
+            <div class="modal-body">
+              <div class="form-row">
+                <div class="form-group col">
+                  {{validationObj?.errorMessage}}
+                </div>
+              </div>
+              
+            </div>
+            <div class="modal-footer">
+              <button type="button" (click)="closeTabds()" class="btn btn-default" data-dismiss="modal">Close</button>
+            
+            </div>
+          </form>
+        </div>
+      </div>
+</ng-template>

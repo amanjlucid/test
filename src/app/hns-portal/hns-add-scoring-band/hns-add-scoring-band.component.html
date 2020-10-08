@@ -1,0 +1,80 @@
+<kendo-window title="{{title}}" *ngIf="openAddScoringBand" (close)="closeaddScoringBandMethod()" [top]="30" [minWidth]="400"
+  [width]="550" [height]="auto" [minHeight]="200">
+  <form class="difinitionForm" [formGroup]="formGrp" (ngSubmit)="onSubmit()" autocomplete="off">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-md-3 text-right">
+            <label class="col-form-label">Band Name</label>
+          </div>
+
+          <div class="col-md-9">
+            <div class="wrapdiv">
+              <input #firstInp type="text" [ngClass]="{ 'is-invalid': submitted && formErrors.hasscorebandname }"
+                class="form-control" formControlName="hasscorebandname"
+                [ngClass]="{ 'is-invalid': submitted && formErrors.hasscorebandname }">
+            </div>
+
+            <div *ngIf="submitted && formErrors.hasscorebandname" class="invalid-feedback">
+              <div *ngIf="formErrors.hasscorebandname">{{ formErrors.hasscorebandname }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-1">
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-md-3 text-right">
+            <label class="col-form-label">Lower Limit</label>
+          </div>
+          <div class="col-md-9">
+            <div class="wrapdiv">
+              <input  type="text" (keypress)="numberOnly($event)" class="form-control" formControlName="hasscorebandlow"
+                [ngClass]="{ 'is-invalid': submitted && formErrors.hasscorebandlow }">
+            </div>
+
+            <div *ngIf="submitted && formErrors.hasscorebandlow" class="invalid-feedback">
+              <div *ngIf="formErrors.hasscorebandlow">{{ formErrors.hasscorebandlow }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="row mt-1">
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-md-3 text-right">
+            <label class="col-form-label">Upper Limit</label>
+          </div>
+          <div class="col-md-9">
+            <div class="wrapdiv">
+              <input type="text" (keypress)="numberOnly($event)" class="form-control" formControlName="hasscorebandhigh"
+                [ngClass]="{ 'is-invalid': submitted && formErrors.hasscorebandhigh }">
+            </div>
+
+            <div *ngIf="submitted && formErrors.hasscorebandhigh" class="invalid-feedback">
+              <div *ngIf="formErrors.hasscorebandhigh">{{ formErrors.hasscorebandhigh }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+
+    <div class="row mt-3">
+      <div class="col-md-12 text-right actionArea">
+        <button type="submit" class="btn btn-sm themeButton">OK</button>
+        <button type="button" class="btn btn-sm themeButton" (click)="closeaddScoringBandMethod()">Cancel</button>
+
+      </div>
+    </div>
+
+  </form>
+
+
+</kendo-window>

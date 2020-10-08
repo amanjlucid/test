@@ -1,0 +1,71 @@
+.asbestosDetailsDiv{
+    border: 1px solid #cccccc;
+    background-color:  #fcfcfc;
+}
+
+.detailDiv{
+    background-color: #d7d7d7;
+    font-weight: 600;
+    padding: 2px;
+}
+
+.fullDetailDiv span{
+    font-weight: 600;
+}
+
+
+.dropdown.list-unstyled{
+    position: absolute !important;
+}
+
+.k-window-wrapper{
+    position: fixed !important;
+}
+
+.noteBtn{
+    bottom: 10px;
+    position: absolute;
+    right: 6px;
+}
+
+.sampleTable thead th{
+    border-left: 2px solid #f1f1f2 !important;
+}
+
+.asbestosReqBtn .btn{
+    margin-left: 4px;
+}
+
+.demo-inline-spacing > *, .demo-paragraph-spacing > p > * {
+    margin: 0 .375rem 0 0 !important;
+}
+
+p{
+    height: 20px;
+}
+
+
+/*########*/
+
+.fullDetailDiv{
+    height: auto;
+}
+
+.spanCl{
+    font-weight: normal !important;
+}
+
+.fullDetailDiv p{
+    margin-bottom: 9px !important;
+}
+
+.refRed{
+    color: red;
+    font-weight: 600;
+    font-size: 15px;
+}
+
+.refRedlight{
+    font-weight: normal !important;
+    color: red;
+}

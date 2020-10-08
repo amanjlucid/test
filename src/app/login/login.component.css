@@ -1,0 +1,42 @@
+.loginForm{
+    text-align: left;
+    margin-top: 90px;
+}
+
+.loginForm input{
+    text-align: left;
+}
+
+.logo{
+    height: 70px;
+    margin: 0 auto;
+}
+
+.loginButton{
+    width: 100%;
+    background-color: #e4287e;
+    margin-top: 10px;
+}
+
+.loginForm label {
+    color: #e7e7ed;
+    font-size: 15px;
+}
+
+.leftDiv{
+    background-color: #070627;
+}
+
+.changePassword{
+    text-decoration: none;
+    color: #e7e7ed;
+}
+
+.changePassword:hover{
+    text-decoration: none;
+    color: #7f7c80;
+}
+
+/* .loginDiv{
+    top:-60px;
+} */

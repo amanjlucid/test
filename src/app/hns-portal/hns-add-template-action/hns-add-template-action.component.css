@@ -1,0 +1,7 @@
+.k-window-wrapper {
+    position: fixed !important;
+}
+
+.actionArea button{
+    margin-left: 5px;
+}

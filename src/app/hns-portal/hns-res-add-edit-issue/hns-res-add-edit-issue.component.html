@@ -1,0 +1,468 @@
+<kendo-window title="{{title}}" *ngIf="showIssue" (close)="closeIssue()" [top]="5" [minWidth]="700" [width]="1090"
+  [height]="auto" [minHeight]="300">
+  <div class="row editAnswerHeader" *ngIf="probability || severity; else mulitPleLine">
+    <div class="col-md-2">
+      <span>Group:</span>
+    </div>
+
+    <div class="col-md-4">
+      <span>{{headingValues?.hasgroupname}} - {{headingValues?.hasheadingname}}</span>
+    </div>
+
+    <div class="col-md-2">
+      <span>Question Code:</span>
+    </div>
+
+    <div class="col-md-4">
+      <span>{{selectedAction?.hasquestioncode}}</span>
+    </div>
+
+    <div class="col-md-2">
+      <span>Question:</span>
+    </div>
+
+    <div class="col-md-10">
+      <span>{{selectedAction?.hasquestiontext}}</span>
+    </div>
+  </div>
+
+  <ng-template #mulitPleLine>
+    <div class="row editAnswerHeader">
+      <div class="col-md-2">
+        <span>Group:</span>
+      </div>
+
+      <div class="col-md-10">
+        <span>{{headingValues?.hasgroupname}} - {{headingValues?.hasheadingname}}</span>
+      </div>
+
+      <div class="col-md-2">
+        <span>Question Code:</span>
+      </div>
+
+      <div class="col-md-10">
+        <span>{{selectedAction?.hasquestioncode}}</span>
+      </div>
+
+      <div class="col-md-2">
+        <span>Question:</span>
+      </div>
+
+      <div class="col-md-10">
+        <span>{{selectedAction?.hasquestiontext}}</span>
+      </div>
+    </div>
+  </ng-template>
+
+
+
+
+  <form [formGroup]="editIssueForm" (ngSubmit)="onSubmit()" autocomplete="off">
+    <div class="row mt-2 formDiv">
+      <div class="col-md-12">
+        <div class="row group1">
+          <div class="col-md-2 text-right">
+            <label class="col-form-label">Location</label>
+          </div>
+          <div class="col-md-10">
+            <div class="row">
+              <div class="col-md-5 displayInherit">
+                <input type="text" class="form-control locationInp" formControlName="location">
+                <i title="The location of this issue." class="fas fa-info-circle d-block inputI"></i>
+                <span class="fa-stack spellChecker" (click)="openSpellingCheck('location')">
+                    <i class="fa fa-check fa-stack-1x rightCheck"></i>
+                    <i class="fa fa-stack-1x spellTxt">ABC</i>
+                </span>
+              </div>
+
+              <div class="col-md-6 displayInherit">
+                <label for="" class="col-form-label foorLbl flLbl">Floor</label>
+                <select class="form-control flSelect" formControlName="floor">
+                  <option *ngFor="let fl of floorDrp; let i = index" value="{{floorDrp[i]}}">{{floorDrp[i]}}</option>
+                </select>
+                <i title="The floor level of this issue." class="fas fa-info-circle d-block inputI"></i>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-2 text-right mt-2">
+            <label class="col-form-label">Issue</label>
+          </div>
+          <div class="col-md-10 displayInherit mt-2">
+            <input type="text" [ngClass]="{ 'is-invalid': formErrors.issue }" class="form-control issueInp"
+              formControlName="issue">
+            <button type="button" (click)="openTemplateIssue()" class="btn btn-sm">...</button>
+            <i title="Description of a problem or matter of concern." class="fas fa-info-circle d-block inputI"></i>
+            <span class="fa-stack spellChecker" (click)="openSpellingCheck('issue')">
+                <i class="fa fa-check fa-stack-1x rightCheck"></i>
+                <i class="fa fa-stack-1x spellTxt">ABC</i>
+            </span>
+
+          </div>
+
+          <div *ngIf="formErrors.issue" class="invalid-feedback col-md-10 offset-md-2">
+            <div *ngIf="formErrors.issue">{{ formErrors.issue }}</div>
+          </div>
+
+          <div class="col-md-2 text-right mt-2">
+            <label class="col-form-label">Proposed Action</label>
+          </div>
+          <div class="col-md-10 displayInherit mt-2">
+            <input type="text" [ngClass]="{ 'is-invalid': formErrors.proposedAction }" class="form-control paInp"
+              formControlName="proposedAction">
+            <button type="button" (click)="openTemplateAction()" class="btn btn-sm postponedBtn">...</button>
+
+            <span class="fa-stack spellChecker" (click)="openSpellingCheck('proposedAction')">
+                <i class="fa fa-check fa-stack-1x rightCheck"></i>
+                <i class="fa fa-stack-1x spellTxt">ABC</i>
+            </span>
+          </div>
+          <div *ngIf="formErrors.proposedAction" class="invalid-feedback col-md-10 offset-md-2">
+            <div *ngIf="formErrors.proposedAction">{{ formErrors.proposedAction }}</div>
+          </div>
+
+
+          <div class="col-md-2 text-right mt-2" *ngIf="probability || severity">
+            <label class="col-form-label">Severity</label>
+          </div>
+          <div class="col-md-10 mt-2" *ngIf="probability || severity">
+            <div class="row">
+              <div class="col-md-4 displayInherit">
+                <select [ngClass]="{ 'is-invalid': formErrors.severity }" (change)="changeSeverity($event)"
+                  class="form-control" formControlName="severity">
+                  <option *ngFor="let sev of severity" value="{{sev.hasseverityscore}}">{{sev.severitydisplaymember}}
+                  </option>
+
+                </select>
+
+              </div>
+
+              <div class="col-md-1"></div>
+              <div class="col-md-6  displayInherit">
+                <label for="" class="col-form-label foorLbl fixLbl">Probability</label>
+                <select [ngClass]="{ 'is-invalid': formErrors.probability }" (change)="changeProbability($event)"
+                  class="form-control probSelect" formControlName="probability">
+                  <option *ngFor="let prob of probability" value="{{prob.hasprobabilityscore}}">
+                    {{prob.probabilitydisplaymember}}</option>
+
+                </select>
+              </div>
+
+
+            </div>
+            <div class="row" *ngIf="formErrors.probability || formErrors.severity">
+              <div class="col-md-6">
+                <div *ngIf="formErrors.severity" class="invalid-feedback col-md-12 p-0">
+                  <div *ngIf="formErrors.severity">{{ formErrors.severity }}</div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div *ngIf="formErrors.probability" class="invalid-feedback col-md-12 ml-5">
+                  <div *ngIf="formErrors.probability">{{ formErrors.probability }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+
+
+          <div class="col-md-2 text-right mt-2">
+            <label class="col-form-label">Priority</label>
+          </div>
+          <div class="col-md-10 mt-2">
+            <div class="row">
+              <div class="col-md-4  displayInherit">
+                <select (change)="setTargetDate($event)" class="form-control" formControlName="priority"
+                  *ngIf="probability == undefined || severity == undefined">
+                  <option *ngFor="let pr of priority" value="{{pr.haspriority}}">{{pr.hasprioritydescription}}</option>
+                </select>
+                <input [readonly]="readonly" type="text" class="form-control issueInp" formControlName="priority"
+                  *ngIf="probability || severity">
+
+                <i title="How soon is Action requird?" class="fas fa-info-circle d-block inputI"></i>
+                <!-- <span class="fa-stack spellChecker" (click)="openSpellingCheck('priority')">
+                    <i class="fa fa-check fa-stack-1x rightCheck"></i>
+                    <i class="fa fa-stack-1x spellTxt">ABC</i>
+                </span> -->
+              </div>
+              <div class="col-md-1"></div>
+              <div class="col-md-6  displayInherit">
+                <label for="" class="col-form-label foorLbl fixLbl">Target Date</label>
+                <input type="text" [ngClass]="{ 'is-invalid': formErrors.targetDate }" class="form-control locationInp"
+                  formControlName="targetDate" (click)="openCalendar(t)" [minDate]="{year: 1800, month: 1, day: 1}"
+                  ngbDatepicker #t="ngbDatepicker" autocomplete="off">
+                <i title="When the issue must be resolved." class="fas fa-info-circle d-block inputI"></i>
+              </div>
+            </div>
+          </div>
+
+          
+          <div class="col-md-10 offset-md-2" *ngIf="formErrors.priority || formErrors.targetDate">
+            <div class="row">
+              <div class="col-md-6">
+                <div *ngIf="formErrors.priority" class="invalid-feedback col-md-12 p-0">
+                  <div *ngIf="formErrors.priority">{{ formErrors.priority }}</div>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div *ngIf="formErrors.targetDate" class="invalid-feedback col-md-12 ml-5">
+                  <div *ngIf="formErrors.targetDate">{{ formErrors.targetDate }}</div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+
+        <div class="row group2 mt-3">
+
+          <div class="col-md-2 text-right">
+            <label class="col-form-label">Status</label>
+          </div>
+          <div class="col-md-10">
+            <div class="row">
+              <div class="col-md-4 displayInherit">
+                <select class="form-control" formControlName="status" (change)="onStatusChange($event)">
+                  <option value="O">Outstanding</option>
+                  <option value="R">Resolved</option>
+                </select>
+
+              </div>
+
+              <div class="col-md-1"></div>
+              <div class="col-md-6  displayInherit">
+                <label for="" class="col-form-label foorLbl fixLbl">Resolution Date</label>
+                <input [ngClass]="{ 'is-invalid': formErrors.resDate }" placeholder="Enter Date"
+                  [readonly]="ifNotResolved" type="text" class="form-control locationInp" formControlName="resDate"
+                  (click)="openCalendar(r, 'rsDate')" [minDate]="{year: 1800, month: 1, day: 1}" ngbDatepicker
+                  #r="ngbDatepicker" autocomplete="off" [maxDate]="maxTodayDate">
+                <i title="When the issue was resolved." class="fas fa-info-circle d-block inputI"></i>
+              </div>
+
+              <div *ngIf="formErrors.resDate" class="invalid-feedback col-md-5 offset-md-7">
+                <div *ngIf="formErrors.resDate">{{ formErrors.resDate }}</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-2 text-right mt-2">
+            <label class="col-form-label">Resolution</label>
+          </div>
+          <div class="col-md-10 displayInherit mt-2">
+            <input [ngClass]="{ 'is-invalid': formErrors.resolution }" [readonly]="ifNotResolved" type="text"
+              class="form-control issueInp" formControlName="resolution">
+
+            <i title="How issue was resolved." class="fas fa-info-circle d-block inputI"></i>
+            <span class="fa-stack spellChecker" (click)="openSpellingCheck('resolution')">
+                <i class="fa fa-check fa-stack-1x rightCheck"></i>
+                <i class="fa fa-stack-1x spellTxt">ABC</i>
+            </span>
+          </div>
+          <div *ngIf="formErrors.resolution" class="invalid-feedback col-md-5 offset-md-2">
+            <div *ngIf="formErrors.resolution">{{ formErrors.resolution }}</div>
+          </div>
+
+
+          <div class="col-md-2 text-right mt-2">
+            <label class="col-form-label">Budget</label>
+          </div>
+          <div class="col-md-10 mt-2">
+            <div class="row">
+              <div class="col-md-4 displayInherit">
+                <select class="form-control" formControlName="budget" *ngIf="budget">
+                  <option *ngFor="let bd of budget" value="{{bd.hasbudgetcode}}">{{bd.hasbudgetdesc}}</option>
+
+                </select>
+                <i title="Which budget to fund requird work." class="fas fa-info-circle d-block inputI"></i>
+              </div>
+              <div class="col-md-1"></div>
+              <div class="col-md-6  displayInherit">
+                <label for="" class="col-form-label foorLbl fixLbl">Remedial Cost</label>
+                <input type="text" class="form-control locationInp" (keypress)="ValidateNumberOnly($event)"
+                  formControlName="remedialCost">
+                <i title="Cost of resolving issue." class="fas fa-info-circle d-block inputI"></i>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+        <div class="row mt-2">
+          <div class="col-md-2 text-right ">
+            <label class="col-form-label">Comments</label>
+          </div>
+          <div class="col-md-10 displayInherit">
+            <input type="text" class="form-control issueInp" formControlName="comments">
+
+            <i title="Additional information/comments." class="fas fa-info-circle d-block inputI"></i>
+            <span class="fa-stack spellChecker" (click)="openSpellingCheck('comments')">
+                <i class="fa fa-check fa-stack-1x rightCheck"></i>
+                <i class="fa fa-stack-1x spellTxt">ABC</i>
+            </span>
+          </div>
+        </div>
+
+        <div class="row mt-2 group3">
+
+          <div class="col-md-2 text-right mt-2">
+            <label class="col-form-label">Assessor</label>
+          </div>
+          <div class="col-md-10 mt-2">
+            <div class="row">
+              <div class="col-md-4 displayInherit">
+                <input type="text" class="form-control issueInp" [readonly]="readonly" formControlName="assessor">
+              </div>
+              <div class="col-md-1"></div>
+              <div class="col-md-6 displayInherit">
+                <label for="" class="col-form-label foorLbl fixLbl">Date</label>
+                <input [ngClass]="{ 'is-invalid': formErrors.date }" type="text" class="form-control locationInp" formControlName="date" placeholder="Enter Date"
+                  (click)="openCalendar(d)" [minDate]="{year: 1800, month: 1, day: 1}" ngbDatepicker #d="ngbDatepicker"
+                  autocomplete="off">
+                <i title="Cost of resolving issue." class="fas fa-info-circle d-block inputI"></i>
+              </div>
+
+            </div>
+          </div>
+          <div *ngIf="formErrors.date" class="invalid-feedback col-md-5 offset-md-7 errorAssDate">
+            <div *ngIf="formErrors.date">{{ formErrors.date }}</div>
+          </div>
+        </div>
+
+        <div class="row mt-2 group4">
+
+          <div class="col-md-2 text-right mt-1">
+            <label class="col-form-label">Work Status:</label>
+          </div>
+          <div class="col-md-10 mt-1">
+            <div class="row">
+              <div class="col-md-4 displayInherit">
+                <select class="form-control" formControlName="workStatus">
+                  <option value="U">Work not Authorised</option>
+                  <option value="A">Work Authorised</option>
+                  <option value="C">Work Complete</option>
+                </select>
+              </div>
+
+              <div class="col-md-8 displayInherit">
+                <label for="" class="col-form-label foorLbl workLbl">Work Reference:</label>
+                <input type="text" class="form-control locationInp" formControlName="workRef">
+              </div>
+
+            </div>
+          </div>
+
+          <div class="col-md-2 text-right mt-1">
+            <label class="col-form-label">Work Authorised Date:</label>
+          </div>
+          <div class="col-md-10 mt-1">
+            <div class="row">
+              <div class="col-md-4 displayInherit">
+                <input placeholder="Enter Date" type="text" class="form-control inpFull" formControlName="workAuthDate"
+                  (click)="openCalendar(wd)" [minDate]="{year: 1800, month: 1, day: 1}" ngbDatepicker
+                  #wd="ngbDatepicker" autocomplete="off">
+              </div>
+
+              <div class="col-md-8 displayInherit">
+                <label for="" class="col-form-label foorLbl workLbl">Work Authorised User:</label>
+                <input type="text" class="form-control locationInp" formControlName="workAuthUser">
+              </div>
+
+            </div>
+          </div>
+
+          <div class="col-md-2 text-right mt-1">
+            <label class="col-form-label">Work Scheduled Date:</label>
+          </div>
+          <div class="col-md-10 mt-1">
+            <div class="row">
+              <div class="col-md-4 displayInherit">
+                <input placeholder="Enter Date" type="text" class="form-control inpFull" formControlName="workSchedDate"
+                  (click)="openCalendar(ws)" [minDate]="{year: 1800, month: 1, day: 1}" ngbDatepicker
+                  #ws="ngbDatepicker" autocomplete="off">
+              </div>
+
+              <div class="col-md-8 displayInherit">
+                <label for="" class="col-form-label foorLbl workLbl">Work Completion Date:</label>
+                <input placeholder="Enter Date" type="text" class="form-control locationInp"
+                  formControlName="workCompDate" (click)="openCalendar(wc)" [minDate]="{year: 1800, month: 1, day: 1}"
+                  ngbDatepicker #wc="ngbDatepicker" autocomplete="off">
+              </div>
+
+            </div>
+          </div>
+
+          <div class="col-md-2 text-right mt-1">
+            <label class="col-form-label">Work Notes(s):</label>
+          </div>
+          <div class="col-md-10 mt-1">
+            <div class="row">
+              <div class="col-md-12 displayInherit">
+                <input type="text" class="form-control inpFull" formControlName="workNotes">
+                <span class="fa-stack spellChecker" (click)="openSpellingCheck('workNotes')">
+                    <i class="fa fa-check fa-stack-1x rightCheck"></i>
+                    <i class="fa fa-stack-1x spellTxt">ABC</i>
+                </span>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <div class="row mt-1 group4">
+          <div class="col-md-12 modifiedDetail mt-2">
+            <label class="col-form-label">Created By</label>
+            <input type="text" [readonly]="readonly" class="form-control input-sm" [value]="editIssueData?.createdby">
+
+            <label class="col-form-label">Created Date</label>
+            <input type="text" [readonly]="readonly" class="form-control input-sm"
+              [value]="editIssueData?.createddate | dateFormat : 'DD-MMM-YYYY'">
+
+            <label class="col-form-label">Modified By</label>
+            <input type="text" [readonly]="readonly" class="form-control input-sm" [value]="editIssueData?.modifiedby">
+
+            <label class="col-form-label">Modified Date</label>
+            <input type="text" [readonly]="readonly" class="form-control input-sm"
+              [value]="editIssueData?.modifieddate | dateFormat : 'DD-MMM-YYYY'">
+          </div>
+        </div>
+
+
+
+      </div>
+    </div>
+
+    <div class="row mt-2" *ngIf="pageLoaded">
+      <div class="col-md-5 text-left">
+        <button type="button" *ngIf="hnsPermission.indexOf('Images') != -1" class="btn btn-sm themeButton"
+          (click)="viewImage()">Issue Image(s)</button>
+      </div>
+      <div class="col-md-7 actionBtn text-right">
+        <button type="submit" class="btn btn-sm themeButton" [disabled]="viewOnly">Ok</button>
+        <button type="button" class="btn btn-sm themeButton" (click)="closeIssue()">Cancel</button>
+      </div>
+    </div>
+  </form>
+
+  <div class="editIssOvrlay"></div>
+  <app-hns-res-ans-image *ngIf="showImage" [showImage]="showImage" [isAssessment]="isAssessment"
+    [selectedAction]="selectedAction" [selectedIssue]="selectedIssue" [rootAction]="rootAssessment" [imageFor]="'iss'"
+    (closerImage)="closerImage($event)"></app-hns-res-ans-image>
+
+
+  <app-hns-res-template-issue *ngIf="templateIssueOpen" [selectedAction]="selectedAction"
+    [templateIssueOpen]="templateIssueOpen" (closeTemplateIssue)="closeTemplateIssue($event)"
+    (selectRowIss)="selectTempIssue($event)"></app-hns-res-template-issue>
+
+  <app-hns-res-template-action *ngIf="templateActionOpen" [templateActionOpen]="templateActionOpen"
+    [selectedAction]="selectedAction" (closeTemplateAction)="closeTemplateAction($event)"
+    (selectedRow)="selectAction($event)"></app-hns-res-template-action>
+
+  <app-spell-checker *ngIf="openSpellChecker" [openSpellChecker]="openSpellChecker" [textId]="textId"
+    [textString]="textString" (closeSpellChecker)="closeSpellChecker($event)"
+    (textStringReturn)="textStringReturn($event)"></app-spell-checker>
+</kendo-window>

@@ -1,0 +1,33 @@
+.k-window-wrapper {
+    position: fixed !important;
+}
+
+.detailDiv {
+    margin-top: -12px;
+    padding: 0px 10px;
+}
+
+.detailHeadingDiv {
+    width: 100%;
+    /* text-align: center; */
+    background: #d7d7d7;
+    position: relative;
+    padding: 5px;
+}
+
+.detailHeadingDiv p {
+    margin: 0px;
+    padding-bottom: 4px;
+}
+
+.boldSpan {
+    font-weight: 700;
+}
+
+.actionAreaBtnleft button{
+    margin-right: 5px;
+}
+
+.actionAreaBtnright{
+    text-align: right;
+}

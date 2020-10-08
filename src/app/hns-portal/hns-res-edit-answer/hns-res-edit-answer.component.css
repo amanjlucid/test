@@ -1,0 +1,124 @@
+.k-window-wrapper {
+    position: fixed !important;
+}
+
+.editAnswerHeader {
+    background: gainsboro;
+    /* font-size: 15px; */
+    font-weight: 600;
+    line-height: 1.6;
+    margin-top: -17px;
+    padding-top: 6px;
+    padding-bottom: 9px;
+    line-height: 1.6;
+}
+
+.radioFilterDiv {
+    /* text-align: right; */
+    /* padding: 0px !important; */
+    display: inherit;
+}
+
+label.radio-inline {
+    padding: 0px 8px;
+}
+
+.radioDiv .radio-inline input[type=radio] {
+    margin-right: 3px;
+}
+
+.radioDiv {
+    padding-right: 6px;
+    margin-left: 11px;
+}
+
+.detailDiv {
+    padding: 20px 0px;
+    font-size: 15px;
+    border: 1px solid #cccccc;
+    padding: 12px;
+}
+
+.detailDiv label {
+    font-weight: 600;
+}
+
+.colsix {
+    display: inherit;
+}
+
+.colsix .form-control {
+    margin-left: 8px;
+}
+
+.fa-info-circle {
+    margin-left: 10px;
+    height: 20px;
+    font-size: 20px;
+    margin-top: 7px;
+}
+
+.spellChecker {
+    margin-left: 8px;
+    border: 1px solid #a59f9f;
+    width: 45px;
+    margin-top: 2px;
+    min-width: 45px;
+    cursor: pointer !important;
+}
+
+.spellTxt {
+    font-family: Arial, sans-serif;
+    font-size: 0.8em;
+    top: -6px;
+    left: 1px;
+    cursor: pointer;
+}
+
+.rightCheck {
+    margin-top: 6px;
+    color: green;
+}
+
+.floorDiv, .accessorDiv, .modifiedDetail {
+    display: inherit;
+}
+
+.accessorDiv input {
+    width: 70%;
+}
+
+.accessorDiv, .modifiedDetail{
+    border: 1px solid #dfdfdf;
+    padding: 8px;
+}
+
+.accessorDiv input, .accessorDiv label , .modifiedDetail input, .modifiedDetail label {
+    margin-right: 10px;
+}
+
+.modifiedDetail label{
+    width: 80%;
+}
+
+.floorDiv textarea {
+    margin-left: 20px;
+    margin-right: 25px;
+}
+
+.issueBtns button{
+    margin-right: 5px;
+}
+
+.actionBtn button{
+    margin-left: 5px;
+}
+
+.gridRow{
+    border: 1px solid #dfdfdf;
+    padding: 7px 0px;
+}
+
+.fa-exclamation-circle{
+    font-size: 14px;
+}

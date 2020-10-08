@@ -1,0 +1,135 @@
+.k-window-content{
+    padding-top: 5px !important;
+}
+
+.headingDiv{
+    /* width: 50%; */
+    margin: auto;
+}
+
+.leftHheadingDiv, .rightHheadingDiv{
+    display: inline-block;
+}
+
+.rightHheadingDiv{
+    margin-left: 34px;
+}
+
+.leftHheadingDiv{
+    float: left;
+}
+
+.headingDiv{
+    background: #dddddd;
+    padding: 5px;
+    border-radius: 6px;
+    font-size: 17px;
+}
+
+.lbl{
+    font-weight: 600;
+}
+
+.headingDetail{
+    margin-top: -14px;
+}
+
+.radioFilterDiv {
+    /* text-align: right; */
+    padding: 0px !important;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid rgba(24,28,33,0.1);
+    border-radius: .25rem;
+}
+
+label.radio-inline {
+    padding: 0px 8px;
+}
+
+
+.radioDiv .radio-inline input[type=radio] {
+    margin-right: 3px;
+}
+
+.radioDiv{
+    padding-right: 6px;
+    margin-top: 8px;
+}
+
+.inpCl{
+    /* width: 70%; */
+    margin-left: 11px;
+}
+
+.col-md-7{
+    padding-right: 27px !important;
+    padding-left: 0px !important;
+}
+
+.form-control{
+    padding: 0px !important;
+    padding-left: 5px !important;
+}
+
+.inpLbl{
+    margin-top: 10px;
+    position: absolute;
+}
+
+.col-md-9{
+    padding-right: 0px !important;
+}
+
+.actionArea{
+    text-align: left;
+}
+
+.actionArea button{
+    margin-right: 5px;
+}
+
+.clsBtn{
+    margin-right: 0px !important;
+}
+
+.red {
+    color: red !important;
+}
+
+.blue {
+    color: #7777dd !important;
+}
+
+.green{
+    color: green !important;
+}
+
+.fa-check-circle, .fa-exclamation-circle{
+    font-size: 17px;
+    margin-top: 3px;
+}
+
+.fa-camera, .fa-question{
+    font-size: 17px !important;
+}
+
+.infoDiv{
+    display: inherit;
+}
+
+.infoDiv label, .infoDiv input{
+    margin-right: 6px !important;
+}
+
+/* .leftDiv{
+    display: block;
+}
+
+.inpLbl, .inpCl{
+    display: inline-block;
+} */
+
+.bandName, .bandDate{
+    width: 100px !important;
+}

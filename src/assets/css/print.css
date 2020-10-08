@@ -1,0 +1,6 @@
+@import "assets/vendor/css/rtl/bootstrap.css";
+
+
+#print-section label{
+  border:solid 1px;
+}

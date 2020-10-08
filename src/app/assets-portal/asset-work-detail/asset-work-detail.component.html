@@ -1,0 +1,911 @@
+<!-- <kendo-window title="Work Detail Summary" [(state)]="windowState" [top]="10" [(width)]="windowWidth" [minWidth]="250"
+  *ngIf="assetWorkDetailWindow" (close)="closeAssetWorkDetailWin()">
+  <div class="flex-grow-1 workDetailDiv">
+
+    <form autocomplete="off">
+      <div class="assetDetail">
+          <div class="form-row m-0 p-0">
+              <p class="col-md-2 m-0 p-0">Asset ID : </p>
+              <p class="col-md-10 m-0 p-0">{{selectedAsset.assetId}}</p>
+            </div>
+            <div class="form-row m-0 p-0">
+              <p class="col-md-2 m-0 p-0"> Adderss : </p>
+              <p class="col-md-10 m-0 p-0">{{selectedAsset.address}}</p>
+            </div>
+            <div class="form-row m-0 p-0">
+              <p class="col-md-2 m-0 p-0"> Attribute : </p>
+              <p class="col-md-10 m-0 p-0">{{selectedAttribute.attribute}}</p>
+            </div>
+      </div>
+
+      <div class="form-row mt-2">
+
+        <h6 class="workHeading col-md-12">WORK</h6>
+        <div class="underline col-md-12"></div>
+
+        <label class="col-form-label col-md-2 text-sm-left">Work Status</label>
+        <div class="col-md-4">
+          <input type="text" value="{{workDetails?.wlworkstatus}}" [readonly]=readonly class="form-control input-sm">
+        </div>
+        <label class="col-form-label col-md-2 text-sm-right">External Reference</label>
+        <div class="col-md-4">
+          <input type="text" value="{{workDetails?.wlextref}}" [readonly]=readonly class="form-control input-sm">
+        </div>
+
+      </div>
+
+
+      <div class="form-row mt-2">
+
+        <h6 class="workHeading col-md-12">CONTRACT</h6>
+        <div class="underline col-md-12"></div>
+
+        <label class="col-form-label col-md-2 text-sm-left">Contractor</label>
+        <div class="col-md-5">
+          <input type="text" value="{{workDetails?.concode}}" [readonly]=readonly class="form-control input-sm">
+        </div>
+
+        <div class="col-md-5">
+          <input type="text" value="{{workDetails?.conname}}" [readonly]=readonly class="form-control input-sm">
+        </div>
+
+
+        <label class="col-form-label col-md-2 text-sm-left mt-2">Contract</label>
+        <div class="col-md-5 mt-2">
+          <input type="text" value="{{workDetails?.cttcode}}" [readonly]=readonly class="form-control input-sm">
+        </div>
+
+        <div class="col-md-5 mt-2">
+          <input type="text" value="{{workDetails?.cttcode}}" [readonly]=readonly class="form-control input-sm">
+        </div>
+
+        <label class="col-form-label col-md-2 text-sm-left mt-2">Work Package</label>
+        <div class="col-md-5 mt-2">
+          <input type="text" value="{{workDetails?.wlcomppackage}}" [readonly]=readonly class="form-control input-sm">
+        </div>
+
+        <div class="col-md-5 mt-2">
+          <input type="text" value="{{workDetails?.wphname}}" [readonly]=readonly class="form-control input-sm">
+        </div>
+
+      </div>
+
+
+      <div class="form-row mt-2">
+
+        <h6 class="workHeading col-md-12">DATES</h6>
+        <div class="underline col-md-12"></div>
+
+        <label class="col-form-label col-md-2 text-sm-left">Transfer</label>
+        <div class="col-md-4">
+          <input type="text" value="{{helperService.dateFormat(workDetails?.transfer_Date) }}" [readonly]=readonly class="form-control input-sm">
+        </div>
+
+        <label class="col-form-label col-md-2 text-sm-right">Completed</label>
+        <div class="col-md-4">
+          <input type="text" value="{{workDetails?.completed_Date | dateFormat : 'DD-MMM-YYYY'}}" [readonly]=readonly class="form-control input-sm">
+        </div>
+
+
+        <label class="col-form-label col-md-2 text-sm-left mt-2">Planned Start</label>
+        <div class="col-md-4 mt-2">
+          <input type="text" value="{{workDetails?.plan_Start_Date | dateFormat : 'DD-MMM-YYYY'}}" [readonly]=readonly class="form-control input-sm">
+        </div>
+
+        <label class="col-form-label col-md-2 text-sm-right mt-2">Planned End</label>
+        <div class="col-md-4 mt-2 mt-2">
+          <input type="text" value="{{workDetails?.plan_End_Date | dateFormat : 'DD-MMM-YYYY'}}" [readonly]=readonly class="form-control input-sm">
+        </div>
+
+      </div>
+
+      <div class="form-row mt-2">
+
+        <label class="col-form-label col-md-2 text-sm-left">User Notes</label>
+        <div class="col-md-10">
+          <textarea class="form-control input-sm" [readonly]=readonly></textarea>
+        </div>
+
+      </div>
+
+      <div class="form-row mt-2">
+        <label class="col-form-label col-md-2 text-sm-left">Created By</label>
+        <div class="col-md-2">
+          <input type="text" value="{{ helperService.dateFormat(workDetails?.create_Date) }}" [readonly]=readonly class="form-control input-sm">
+        </div>
+
+        <div class="col-md-2">
+          <input type="text" value="{{workDetails?.created_By}}" [readonly]=readonly class="form-control input-sm">
+        </div>
+
+
+        <label class="col-form-label col-md-2 text-sm-right">Updated By</label>
+        <div class="col-md-2">
+          <input type="text" value="{{helperService.dateFormat(workDetails?.update_Date)}}" [readonly]=readonly class="form-control input-sm">
+        </div>
+
+        <div class="col-md-2">
+          <input type="text" value="{{workDetails?.updated_By}}" [readonly]=readonly class="form-control input-sm">
+        </div>
+
+      </div>
+
+      <div class="buttonDiv pull-right">
+        <button type="button" (click)="openWorkDetailFull()" class="btn btn-sm">Work Detail</button>
+
+        <button type="button" (click)="printDiv()" class="btn btn-sm">Print</button>
+        <button type="button" (click)="closeAssetWorkDetailWin()" class="btn btn-sm">Close</button>
+      </div>
+    </form>
+    <div class="workDetailHalf"></div>
+  </div>
+
+
+  
+
+
+</kendo-window> -->
+
+<kendo-window title="Work Detail" [(state)]="workDetailsWindowState" [top]="0" [width]="1064"
+  [(height)]="workDetailWindowHeight" [minWidth]="250" *ngIf="workDetailFull" (close)="closeWorkDetailFull()">
+  <div id="workDetailDivFull" class="flex-grow-1 workDetailDivFull" *ngIf="workDetails">
+
+    <form autocomplete="off">
+      <div class="assetDetail">
+        <div class="form-row m-0 p-0">
+          <p class="col-md-2 m-0 p-0">Asset ID : </p>
+          <p class="col-md-10 m-0 p-0">{{selectedAsset.assetId}}</p>
+        </div>
+        <div class="form-row m-0 p-0">
+          <p class="col-md-2 m-0 p-0"> Address : </p>
+          <p class="col-md-10 m-0 p-0">{{selectedAsset.address}}</p>
+        </div>
+        <div class="form-row m-0 p-0">
+          <p class="col-md-2 m-0 p-0"> Attribute : </p>
+          <p class="col-md-10 m-0 p-0">{{selectedAttribute.attribute}}</p>
+        </div>
+      </div>
+
+
+      <!-- form row start -->
+      <div class="row mt-1">
+        <h6 class="workHeading col-md-12">WORK</h6>
+        <div class="underline col-md-12"></div>
+        <div class="col-md-6">
+          <div class="row">
+            <label class="col-form-label col-md-3 col-sm-3 text-sm-left">Element</label>
+            <div class="col-md-3 col-sm-3">
+              <input type="text" name="elecode" value="{{workDetails.elecode}}" [(ngModel)]="workDetails.elecode"
+                [readonly]=readonly class="form-control input-sm">
+            </div>
+
+
+            <div class="col-md-6 col-sm-6">
+              <input type="text" value="{{workDetails?.elename}}" [readonly]=readonly class="form-control input-sm">
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="row">
+            <label class="col-form-label col-md-3 col-sm-6 text-sm-right">Planned Year</label>
+            <div class="col-md-2 col-sm-6">
+              <input type="text" value="{{workDetails?.wlplanyear}}" [readonly]=readonly class="form-control input-sm">
+            </div>
+
+            <label class="col-form-label col-md-3 col-sm-2 text-sm-right">Work Status</label>
+            <div class="col-md-4 col-sm-6">
+              <input type="text" value="{{workDetails?.wlworkstatus}}" [readonly]=readonly
+                class="form-control input-sm">
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="row">
+            <label class="col-form-label col-md-3 col-sm-6 text-sm-left pr-0">Hierarchy Owner</label>
+            <div class="col-md-9 col-sm-6">
+              <input type="text" value="{{workDetails?.wlhierassid}}" [readonly]=readonly class="form-control input-sm">
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="row">
+            <div class="col-md-12 col-sm-6">
+              <input type="text" value="{{workDetails?.wlhierassiD_ADDRESS}}" [readonly]=readonly
+                class="form-control input-sm">
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="row">
+            <label class="col-form-label col-md-3 col-sm-6 text-sm-left">Contract Cost</label>
+            <div class="col-md-3 col-sm-6">
+              <input type="text" value="£{{ helperService.moneyFormat(workDetails?.wlcontcost) }}" [readonly]=readonly
+                class="form-control input-sm">
+            </div>
+
+            <label class="col-form-label col-md-3 col-sm-6 text-sm-right">Actual Cost</label>
+            <div class="col-md-3 col-sm-6">
+              <input type="text" value="£{{helperService.moneyFormat(workDetails?.wlactcost)}}" [readonly]=readonly
+                class="form-control input-sm">
+            </div>
+
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="row">
+            <label class="col-form-label col-md-3 col-sm-6 text-sm-right">Quantity</label>
+            <div class="col-md-2 col-sm-6">
+              <input type="text" value="{{workDetails?.wlasaquantity}}" [readonly]=readonly
+                class="form-control input-sm">
+            </div>
+
+            <label class="col-form-label col-md-3 col-sm-6 text-sm-right">Ext Ref</label>
+            <div class="col-md-4 col-sm-6">
+              <input type="text" value="{{workDetails?.wlextref}}" [readonly]=readonly class="form-control input-sm">
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+      <div class="row mt-2">
+        <h6 class="workHeading col-md-12">CONTRACT</h6>
+        <div class="underline col-md-12"></div>
+
+        <div class="col-md-6">
+          <div class="row">
+            <label class="col-form-label col-md-3 col-sm-6 text-sm-left">Contractor</label>
+            <div class="col-md-4 col-sm-6">
+              <input type="text" value="{{workDetails?.concode}}" [readonly]=readonly class="form-control input-sm">
+            </div>
+
+            <div class="col-md-5 col-sm-6">
+              <input type="text" value="{{workDetails?.conname}}" [readonly]=readonly class="form-control input-sm">
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="row">
+            <label class="col-form-label col-md-3 text-sm-right col-sm-6">Contract</label>
+            <div class="col-md-4 mt-1 col-sm-6">
+              <input type="text" value="{{workDetails?.cttcode}}" [readonly]=readonly class="form-control input-sm">
+            </div>
+
+            <div class="col-md-5 col-sm-6 mt-1">
+              <input type="text" value="{{workDetails?.cttname}}" [readonly]=readonly class="form-control input-sm">
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="row">
+            <label class="col-form-label col-md-3 col-sm-6 text-sm-left mt-1">Work Package</label>
+            <div class="col-md-9 col-sm-6 mt-1">
+              <input type="text" value="{{workDetails?.wlcomppackage}}" [readonly]=readonly
+                class="form-control input-sm">
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="row">
+            <div class="col-md-12 col-sm-6 mt-1">
+              <input type="text" value="{{workDetails?.wphname}}" [readonly]=readonly class="form-control input-sm">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mt-2">
+        <h6 class="workHeading col-md-12">REQUIREMENT EXTRACT</h6>
+        <div class="underline col-md-12"></div>
+
+        <div class="col-md-6">
+          <div class="row">
+            <label class="col-form-label col-md-3 col-sm-6 text-sm-left ">Extract</label>
+            <div class="col-md-3 col-sm-6">
+              <input type="text" value="{{workDetails?.reeid}}" [readonly]=readonly class="form-control input-sm">
+            </div>
+
+            <div class="col-md-6 col-sm-6">
+              <input type="text" value="{{workDetails?.reename}}" [readonly]=readonly class="form-control input-sm">
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="row">
+            <label class="col-form-label col-md-3 col-sm-6 text-sm-right">Subset</label>
+            <div class="col-md-3 col-sm-6 mt-1">
+              <input type="text" value="{{workDetails?.rescode}}" [readonly]=readonly class="form-control input-sm">
+            </div>
+
+            <div class="col-md-6 col-sm-6 mt-1">
+              <input type="text" value="{{workDetails?.resname}}" [readonly]=readonly class="form-control input-sm">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mt-2">
+        <h6 class="workHeading col-md-12">DATES</h6>
+        <div class="underline col-md-12"></div>
+        <div class="col-md-6">
+          <div class="row">
+            <label class="col-form-label col-md-3 col-sm-6 text-sm-left">Transfer</label>
+            <div class="col-md-3 col-sm-6">
+              <input type="text" value="{{ helperService.dateFormat(workDetails?.transfer_Date) }}" [readonly]=readonly
+                class="form-control input-sm">
+            </div>
+
+            <label class="col-form-label col-md-2 col-sm-6 text-sm-right">Completed</label>
+            <div class="col-md-4 col-sm-6">
+              <input type="text" value="{{workDetails?.completed_Date | dateFormat : 'DD-MMM-YYYY'}}"
+                [readonly]=readonly class="form-control input-sm">
+            </div>
+          </div>
+        </div>
+
+
+        <div class="col-md-6">
+          <div class="row">
+            <label class="col-form-label col-md-3 col-sm-6 text-sm-right mt-1">Planned Start</label>
+            <div class="col-md-3 col-sm-6 mt-1">
+              <input type="text" value="{{workDetails?.plan_Start_Date | dateFormat : 'DD-MMM-YYYY'}}"
+                [readonly]=readonly class="form-control input-sm">
+            </div>
+
+            <label class="col-form-label col-md-3 col-sm-6 text-sm-right mt-1">Planned End</label>
+            <div class="col-md-3 col-sm-6 mt-1 mt-1">
+              <input type="text" value="{{workDetails?.plan_End_Date | dateFormat : 'DD-MMM-YYYY'}}" [readonly]=readonly
+                class="form-control input-sm">
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="row mt-2">
+
+        <h6 class="workHeading col-md-12">WARRANTY/GUARANTEE</h6>
+        <div class="underline col-md-12"></div>
+        <div class="col-md-8">
+          <div class="row">
+            <label class="col-form-label col-md-2 col-sm-6 text-sm-left">Type</label>
+            <div class="col-md-3 col-sm-6 wagInput">
+              <input type="text" value="{{(workDetails.waG_Type_Text == 'undefined' ||workDetails.waG_Type_Text == 'Unknown' ) ? '' : workDetails.waG_Type_Text}}"
+                [readonly]=readonly class="form-control input-sm">
+            </div>
+
+            <label class="col-form-label col-md-2 col-sm-6 pl-0 pr-0">Start/Expiry Dates</label>
+            <div class="col-md-4 col-sm-6">
+              <div class="row">
+                  <input type="text" value="{{workDetails?.waG_Start_Date | dateFormat : 'DD-MMM-YYYY'}}"
+                  [readonly]=readonly class="form-control input-sm col-md-6">
+                  <input type="text" value="{{workDetails?.waG_Expiry_Date | dateFormat : 'DD-MMM-YYYY'}}"
+                  [readonly]=readonly class="form-control input-sm col-md-6">
+                </div>
+              
+            </div>
+
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="row">
+            <label class="col-form-label col-md-3 col-sm-6 text-sm-right">Manufacturer</label>
+            <div class="col-md-9 col-sm-6 mt-1">
+              <input type="text" value="{{workDetails?.aswmanufacturer}}" [readonly]=readonly
+                class="form-control input-sm">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="row">
+            <label class="col-form-label col-md-3 text-sm-left mt-1">Contractor</label>
+            <div class="col-md-9 col-sm-6 mt-1">
+              <input type="text" value="{{workDetails?.aswcontractor}}" [readonly]=readonly
+                class="form-control input-sm">
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="row">
+            <label class="col-form-label col-md-3 text-sm-right mt-1">Contractor Ref</label>
+            <div class="col-md-9 col-sm-6 mt-1">
+              <input type="text" value="{{workDetails?.aswcontractref}}" [readonly]=readonly
+                class="form-control input-sm">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+
+        <div class="col-md-6">
+          <div class="row">
+            <label class="col-form-label col-md-3 text-sm-left mt-1">Reference</label>
+            <div class="col-md-9 col-sm-6 mt-1 ">
+              <input type="text" value="{{workDetails?.aswreference}}" [readonly]=readonly
+                class="form-control input-sm">
+            </div>
+          </div>
+        </div>
+
+
+        <div class="col-md-6">
+          <div class="row">
+            <label class="col-form-label col-md-3 text-sm-right mt-1">Provider</label>
+            <div class="col-md-9 col-sm-6 mt-1">
+              <input type="text" value="{{workDetails?.aswprovider}}" [readonly]=readonly class="form-control input-sm">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mt-3">
+        <div class="underline col-md-12"></div>
+        <div class="col-md-12">
+          <div class="row">
+            <label class="col-form-label col-md-2 col-sm-6 text-sm-left" style="max-width: 12.4%;">User Notes</label>
+            <div class="col-md-10 col-sm-6">
+              <textarea class="form-control" rows="1" [readonly]=readonly></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mt-1">
+        <div class="col-md-12">
+          <div class="row">
+            <label class="col-form-label col-md-2 col-sm-6 text-sm-left" style="max-width: 12.4%;">Last Action</label>
+            <div class="col-md-10 col-sm-6">
+              <input type="text" class="form-control input-sm" value="{{workDetails?.wlsystemnote}}"
+                [readonly]=readonly>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="row">
+            <label class="col-form-label col-md-3 col-sm-6 text-sm-left">Created By</label>
+            <div class="col-md-4 col-sm-6">
+              <input type="text" value="{{ helperService.dateFormat(workDetails?.create_Date) }}" [readonly]=readonly
+                class="form-control input-sm">
+            </div>
+
+            <div class="col-md-5 col-sm-6">
+              <input type="text" value="{{workDetails?.created_By}}" [readonly]=readonly class="form-control input-sm">
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="row">
+            <label class="col-form-label col-md-3 col-sm-6 text-sm-right">Updated By</label>
+            <div class="col-md-4 col-sm-6">
+              <input type="text" value="{{ helperService.dateFormat(workDetails?.update_Date)}}" [readonly]=readonly
+                class="form-control input-sm">
+            </div>
+
+            <div class="col-md-5 col-sm-6">
+              <input type="text" value="{{workDetails?.updated_By}}" [readonly]=readonly class="form-control input-sm">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- form row end -->
+
+
+    </form>
+
+    <div class="buttonDiv pull-right">
+      <button type="button" (click)="printpage()" class="btn btn-sm">Print</button>
+      <button type="button" (click)="closeWorkDetailFull()" class="btn btn-sm">Close</button>
+    </div>
+
+
+    <!-- Print page start -->
+
+    <form autocomplete="off" id="print-area" style="display: none;">
+      <div class="assetDetail">
+        <div class="form-row m-0 p-0">
+          <p class="col-md-2 m-0 p-0">Asset ID : </p>
+          <p class="col-md-10 m-0 p-0">{{selectedAsset.assetId}}</p>
+        </div>
+        <div class="form-row m-0 p-0">
+          <p class="col-md-2 m-0 p-0"> Adderss : </p>
+          <p class="col-md-10 m-0 p-0">{{selectedAsset.address}}</p>
+        </div>
+        <div class="form-row m-0 p-0">
+          <p class="col-md-2 m-0 p-0"> Attribute : </p>
+          <p class="col-md-10 m-0 p-0">{{selectedAttribute.attribute}}</p>
+        </div>
+      </div>
+
+      <div class="row mt-1">
+        <h6 class="workHeading col-md-12">WORK</h6>
+        <div class="underline col-md-12"></div>
+        <div class="col-md-6">
+          <div class="row">
+            <label class="col-form-label col-md-3 col-sm-3 text-sm-left">Element</label>
+            <div class="col-md-3 col-sm-3">
+              <p class="form-control input-sm">{{workDetails?.elecode}}</p>
+            </div>
+
+
+            <div class="col-md-6 col-sm-6">
+              <p class="form-control input-sm">{{workDetails?.elename}}</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="row">
+            <label class="col-form-label col-md-3 col-sm-6 text-sm-right">Planned Year</label>
+            <div class="col-md-2 col-sm-6">
+              <p class="form-control input-sm">{{workDetails?.wlplanyear}}</p>
+            </div>
+
+            <label class="col-form-label col-md-3 col-sm-2 text-sm-right">Work Status</label>
+            <div class="col-md-4 col-sm-6">
+              <p class="form-control input-sm">{{workDetails?.wlworkstatus}}</p>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="row">
+            <label class="col-form-label col-md-3 col-sm-6 text-sm-left pr-0">Hierarchy Owner</label>
+            <div class="col-md-9 col-sm-6">
+              <p class="form-control input-sm">{{workDetails?.wlhierassid}}</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="row">
+            <div class="col-md-12 col-sm-6">
+              <p class="form-control input-sm">{{workDetails?.wlhierassiD_ADDRESS}}</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="row">
+            <label class="col-form-label col-md-3 col-sm-6 text-sm-left">Contract Cost</label>
+            <div class="col-md-3 col-sm-6">
+
+              <p class="form-control input-sm">{{'£'}}{{helperService.moneyFormat(workDetails?.wlcontcost)}}</p>
+            </div>
+
+            <label class="col-form-label col-md-3 col-sm-6 text-sm-right">Actual Cost</label>
+            <div class="col-md-3 col-sm-6">
+              <p class="form-control input-sm">{{'£'}}{{helperService.moneyFormat(workDetails?.wlactcost)}}</p>
+
+            </div>
+
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="row">
+            <label class="col-form-label col-md-3 col-sm-6 text-sm-right">Quantity</label>
+            <div class="col-md-2 col-sm-6">
+              <p class="form-control input-sm">{{workDetails?.wlasaquantity}}</p>
+            </div>
+
+            <label class="col-form-label col-md-3 col-sm-6 text-sm-right">Ext Ref</label>
+            <div class="col-md-4 col-sm-6">
+              <p class="form-control input-sm">{{workDetails?.wlextref}}</p>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+      <div class="row mt-2">
+        <h6 class="workHeading col-md-12">CONTRACT</h6>
+        <div class="underline col-md-12"></div>
+
+        <div class="col-md-6">
+          <div class="row">
+            <label class="col-form-label col-md-3 col-sm-6 text-sm-left">Contractor</label>
+            <div class="col-md-4 col-sm-6">
+              <p class="form-control input-sm">{{workDetails?.concode}}</p>
+            </div>
+
+            <div class="col-md-5 col-sm-6">
+              <p class="form-control input-sm">{{workDetails?.conname}}</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="row">
+            <label class="col-form-label col-md-3 text-sm-right col-sm-6">Contract</label>
+            <div class="col-md-4 mt-1 col-sm-6">
+              <p class="form-control input-sm">{{workDetails?.cttcode}}</p>
+            </div>
+
+            <div class="col-md-5 col-sm-6 mt-1">
+              <p class="form-control input-sm">{{workDetails?.cttname}}</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="row">
+            <label class="col-form-label col-md-3 col-sm-6 text-sm-left mt-1">Work Package</label>
+            <div class="col-md-9 col-sm-6 mt-1">
+              <p class="form-control input-sm">{{workDetails?.wlcomppackage}}</p>
+
+
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="row">
+            <div class="col-md-12 col-sm-6 mt-1">
+              <p class="form-control input-sm">{{workDetails?.wphname}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mt-2">
+        <h6 class="workHeading col-md-12">REQUIREMENT EXTRACT</h6>
+        <div class="underline col-md-12"></div>
+
+        <div class="col-md-6">
+          <div class="row">
+            <label class="col-form-label col-md-3 col-sm-6 text-sm-left ">Extract</label>
+            <div class="col-md-3 col-sm-6">
+              <p class="form-control input-sm">{{workDetails?.reeid}}</p>
+            </div>
+
+            <div class="col-md-6 col-sm-6">
+              <p class="form-control input-sm">{{workDetails?.reename}}</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="row">
+            <label class="col-form-label col-md-3 col-sm-6 text-sm-right">Subset</label>
+            <div class="col-md-3 col-sm-6 mt-1">
+              <p class="form-control input-sm">{{workDetails?.rescode}}</p>
+            </div>
+
+            <div class="col-md-6 col-sm-6 mt-1">
+              <p class="form-control input-sm">{{workDetails?.resname}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mt-2">
+        <h6 class="workHeading col-md-12">DATES</h6>
+        <div class="underline col-md-12"></div>
+        <div class="col-md-6">
+          <div class="row">
+            <label class="col-form-label col-md-3 col-sm-6 text-sm-left">Transfer</label>
+            <div class="col-md-3 col-sm-6">
+
+              <p class="form-control input-sm">{{ helperService.dateFormat(workDetails?.transfer_Date) }}</p>
+            </div>
+
+            <label class="col-form-label col-md-2 col-sm-6 text-sm-right">Completed</label>
+            <div class="col-md-4 col-sm-6">
+              <p class="form-control input-sm">{{workDetails?.completed_Date | dateFormat : 'DD-MMM-YYYY'}}</p>
+
+            </div>
+          </div>
+        </div>
+
+
+        <div class="col-md-6">
+          <div class="row">
+            <label class="col-form-label col-md-3 col-sm-6 text-sm-right mt-1">Planned Start</label>
+            <div class="col-md-3 col-sm-6 mt-1">
+              <p class="form-control input-sm">{{workDetails?.plan_Start_Date | dateFormat : 'DD-MMM-YYYY'}}</p>
+
+            </div>
+
+            <label class="col-form-label col-md-3 col-sm-6 text-sm-right mt-1">Planned End</label>
+            <div class="col-md-3 col-sm-6 mt-1 mt-1">
+              <p class="form-control input-sm">{{workDetails?.plan_End_Date | dateFormat : 'DD-MMM-YYYY'}}</p>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="row mt-2">
+
+        <h6 class="workHeading col-md-12">WARRANTY/GUARANTEE</h6>
+        <div class="underline col-md-12"></div>
+
+        <div class="col-md-8">
+            <div class="row">
+              <label class="col-form-label col-md-2 col-sm-6 text-sm-left">Type</label>
+              <div class="col-md-3 col-sm-6 wagInput">
+                  <p class="form-control input-sm">{{(workDetails.waG_Type_Text == 'undefined' ||workDetails.waG_Type_Text == 'Unknown' ) ? '' : workDetails.waG_Type_Text}}</p>
+              </div>
+  
+              <label class="col-form-label col-md-2 col-sm-6 pl-0 pr-0">Start/Expiry Dates</label>
+              <div class="col-md-4 col-sm-6">
+                <div class="row">
+                    <!-- <input type="text" value="{{workDetails?.waG_Start_Date | dateFormat : 'DD-MMM-YYYY'}}"
+                    [readonly]=readonly class="form-control input-sm col-md-6">
+                    <input type="text" value="{{workDetails?.waG_Expiry_Date | dateFormat : 'DD-MMM-YYYY'}}"
+                    [readonly]=readonly class="form-control input-sm col-md-6"> -->
+
+                    <p class="form-control input-sm">{{workDetails?.waG_Start_Date | dateFormat : 'DD-MMM-YYYY'}}</p>
+
+                    <p class="form-control input-sm">{{workDetails?.waG_Expiry_Date | dateFormat : 'DD-MMM-YYYY'}}</p>
+                  </div>
+                
+              </div>
+  
+            </div>
+          </div>
+
+        <!-- <div class="col-md-6">
+          <div class="row">
+            <label class="col-form-label col-md-3 col-sm-6 text-sm-left">Type</label>
+            <div class="col-md-3 col-sm-6">
+              {{(workDetails.waG_Type_Text == 'undefined' ||workDetails.waG_Type_Text == 'Unknown' ) ? '' : workDetails.waG_Type_Text}}
+
+            </div>
+
+            <label class="col-form-label col-md-3 col-sm-6 text-sm-right">Start/Expiry Dates</label>
+            <div class="col-md-3 col-sm-6">
+              <p class="form-control input-sm">{{workDetails?.waG_Expiry_Date | dateFormat : 'DD-MMM-YYYY'}}</p>
+
+            </div>
+
+          </div>
+        </div> -->
+
+        <div class="col-md-4">
+          <div class="row">
+            <label class="col-form-label col-md-3 col-sm-6 text-sm-right">Manufacturer</label>
+            <div class="col-md-9 col-sm-6 mt-1">
+              <p class="form-control input-sm">{{workDetails?.aswmanufacturer}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="row">
+            <label class="col-form-label col-md-3 text-sm-left mt-1">Contractor</label>
+            <div class="col-md-9 col-sm-6 mt-1">
+              <p class="form-control input-sm">{{workDetails?.aswcontractor}}</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="row">
+            <label class="col-form-label col-md-3 text-sm-right mt-1">Contractor Ref</label>
+            <div class="col-md-9 col-sm-6 mt-1">
+              <p class="form-control input-sm">{{workDetails?.aswcontractref}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+
+        <div class="col-md-6">
+          <div class="row">
+            <label class="col-form-label col-md-3 text-sm-left mt-1">Reference</label>
+            <div class="col-md-9 col-sm-6 mt-1 ">
+              <p class="form-control input-sm">{{workDetails?.aswreference}}</p>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="col-md-6">
+          <div class="row">
+            <label class="col-form-label col-md-3 text-sm-right mt-1">Provider</label>
+            <div class="col-md-9 col-sm-6 mt-1">
+              <p class="form-control input-sm">{{workDetails?.aswprovider}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mt-3">
+        <div class="underline col-md-12"></div>
+        <div class="col-md-12">
+          <div class="row">
+            <label class="col-form-label col-md-2 col-sm-6 text-sm-left" style="max-width: 12.4%;">User Notes</label>
+            <div class="col-md-10 col-sm-6">
+              <textarea class="form-control" rows="1" [readonly]=readonly></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mt-1">
+        <div class="col-md-12">
+          <div class="row">
+            <label class="col-form-label col-md-2 col-sm-6 text-sm-left" style="max-width: 12.4%;">Last Action</label>
+            <div class="col-md-10 col-sm-6">
+              <p class="form-control input-sm">{{workDetails?.wlsystemnote}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="row">
+            <label class="col-form-label col-md-3 col-sm-6 text-sm-left">Created By</label>
+            <div class="col-md-4 col-sm-6">
+              <p class="form-control input-sm">{{helperService.dateFormat(workDetails?.create_Date) }}</p>
+
+            </div>
+
+            <div class="col-md-5 col-sm-6">
+              <p class="form-control input-sm">{{workDetails?.created_By}}</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="row">
+            <label class="col-form-label col-md-3 col-sm-6 text-sm-right">Updated By</label>
+            <div class="col-md-4 col-sm-6">
+              <p class="form-control input-sm">{{helperService.dateFormat(workDetails?.update_Date)}}</p>
+
+            </div>
+
+            <div class="col-md-5 col-sm-6">
+              <p class="form-control input-sm">{{workDetails?.updated_By}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </form>
+
+  </div>
+</kendo-window>

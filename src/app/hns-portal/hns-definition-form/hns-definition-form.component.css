@@ -1,0 +1,114 @@
+.k-window-wrapper {
+    position: fixed !important;
+}
+
+/* .rightSide {
+    display: inline-flex;
+} */
+
+.rightSide .inUserLabel {
+    width: 33%;
+}
+
+.checkboxCl {
+    width: 18px;
+}
+
+.rightSide .rightSidelbl {
+    width: 50%;
+}
+
+.changedBy {
+    /* width: 65%; */
+    margin-top: 26px;
+    border: 2px solid #e5e3e3;
+    padding: 20px 45px;
+}
+
+.difinitionFormActionArea .btn {
+    margin-left: 5px;
+}
+
+.difinitionForm .col-md-4, .difinitionForm .col-md-10, .difinitionForm .col-md-3, .difinitionForm .col-md-7 {
+    margin: 0px !important;
+    padding: 0px !important;
+    /* display: inline-flex; */
+}
+
+.fa-info-circle {
+    margin-left: 10px;
+    margin-top: 10px;
+    font-size: 16px;
+    display: inline-block !important;
+}
+
+.wrapdiv, .wrapdivName, .wrapdivchk, .wrapdivSelect, .wrapdivSt {
+    width: 100%;
+    display: block;
+}
+
+.wrapdiv input {
+    width: 77%;
+    display: inline-block;
+}
+
+.wrapdivName input {
+    width: 91%;
+    display: inline-block;
+}
+
+.wrapdivchk input {
+    width: 12%;
+    display: inline-block;
+}
+
+.wrapdivchk .fa-info-circle {
+    margin-top: -28px !important;
+    position: absolute;
+}
+
+.icircle {
+    display: inline-block;
+}
+
+.wrapdivSelect select {
+    width: 86%;
+    display: inline-block;
+}
+
+.wrapdivSt input {
+    width: 42%;
+    display: inline-block;
+    margin-right: 2px;
+}
+
+.wrapdivSt button {
+    display: inline-block;
+    height: 37px;
+    margin-top: -4px;
+}
+
+.wrapdivSt .fa-info-circle {
+    margin-left: 6px !important;
+}
+
+.rightRow {
+    width: 100%;
+    margin-left: 22px;
+}
+
+.difinitionForm {
+    padding: 0px 25px;
+}
+
+.invalid-feedback {
+    display: block !important;
+}
+
+/* .readOnlycl{
+    background-color: #fcfcfc !important;
+} */
+
+/* .stBtn {
+    margin-left: 3px;
+} */

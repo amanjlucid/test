@@ -1,0 +1,333 @@
+<div class="container-fluid flex-grow-1 container-p-y">
+  <div class="row">
+    <div class="col-md-8 col-sm-12">
+      <h4 class="font-weight-bold py-3 mb-1">
+        Management
+      </h4>
+    </div>
+
+    <div class="col-md-4 text-right">
+      <!-- <button class="btn btn-sm exportMgmtBtn themeButton">Export to CSV</button> -->
+      <div class="dropdown exportDiv" id="nesting-dropdown-demo">
+        <button type="button" class="btn exportMgmtBtn btn-sm dropdown-toggle" data-toggle="dropdown"
+          aria-expanded="false">Export</button>
+        <div class="dropdown-menu" x-placement="bottom-start"
+          style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
+          <a class="dropdown-item" (click)="exportToExcel('xlsx')" href="javascript:void(0)">Export Grid</a>
+          <a class="dropdown-item" (click)="exportView()" href="javascript:void(0)">Export
+            View</a>
+
+        </div>
+      </div>
+
+      <button id="showFilePanel" (click)="openSearchBar()" class="btn btn-sm themeButton"><i class="fa fa-search"></i>
+      </button>
+    </div>
+
+  </div>
+
+  <div class="row">
+    <div class="dateFilterInpDiv">
+      <div class="row">
+        <label for="sort" class="col-form-label"> Start Date </label>
+        <div class="ml-2 inpDiv">
+          <input type="text" [(ngModel)]="managementFilterParam.startDate" (click)="s.toggle()"
+            [placement]="calendarPosition" [minDate]="{year: 1800, month: 1, day: 1}" ngbDatepicker #s="ngbDatepicker"
+            class="managementDateFilter" (keydown)="keyDownFunction($event)">
+        </div>
+
+        <label for="sort" class="col-form-label ml-2"> End Date </label>
+        <div class="ml-2 inpDiv">
+          <input type="text" [(ngModel)]="managementFilterParam.endDate" (click)="e.toggle()"
+            [placement]="calendarPosition" [minDate]="{year: 1800, month: 1, day: 1}" ngbDatepicker #e="ngbDatepicker"
+            class="managementDateFilter" (keydown)="keyDownFunction($event)">
+        </div>
+
+        <button class="btn ml-3 themeButton mgmtSearchBtn" (click)="filterMgmtTblBydate()"> Update </button>
+        <button class="btn ml-2 mgmtSearchBtn" (click)="clearDateFilter()"> {{clearBtn}} </button>
+      </div>
+    </div>
+
+    <div class="displayLvlMainDiv">
+      <div class="col-md-12 displayLvlDiv">
+        <label class="radio-inline"> Display level: </label>
+        <label class="radio-inline ml-1"><input type="radio" value="Summary" (change)="setDisplayLevelForManagement(1)"
+            [(ngModel)]="managementFilterParam.displayLevel" name="optradio">Summary</label>
+        <label class="radio-inline ml-1"><input type="radio" value="Contractor"
+            (change)="setDisplayLevelForManagement(2)" [(ngModel)]="managementFilterParam.displayLevel"
+            name="optradio">Contractor</label>
+        <label class="radio-inline ml-1"><input type="radio" value="Service Contract"
+            (change)="setDisplayLevelForManagement(3)" [(ngModel)]="managementFilterParam.displayLevel"
+            name="optradio">Service Contract</label>
+        <label class="radio-inline ml-1"><input type="radio" value="Service Type"
+            (change)="setDisplayLevelForManagement(4)" [(ngModel)]="managementFilterParam.displayLevel"
+            name="optradio">Service Type</label>
+        <label class="radio-inline ml-1"><input type="radio" value="Service Stage"
+            (change)="setDisplayLevelForManagement(5)" [(ngModel)]="managementFilterParam.displayLevel"
+            name="optradio">Service Stage</label>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- table-responsive -->
+  <div class="row mt-3 mgmtTblDiv" *ngIf="mgmtData?.length > 1; else emptyTable">
+    <table id="mgmtTable" class="controller table table-striped table-bordered">
+      <thead class="fixedHeader">
+        <tr data-level="header" class="header">
+          <td style="width: 2%;"></td>
+          <td style="z-index: 1;" class="smallCol"></td>
+          <td style="width: 2%;" class="longCol">Contractor</td>
+          <td style="width: 3%;" class="longCol">Service Contract</td>
+          <td style="width: 2%;" class="exlargeCol">Service Type</td>
+          <!-- <td style="width: 3%;" class="longCol">Service Type Start Date</td>
+          <td style="width: 3%;" class="longCol">Service Type End Date</td> -->
+          <td style="width: 2%;" class="midCol">Service Stage</td>
+          <td style="width: 2%;" class="midSm">Total Jobs</td>
+          <td style="width:3%;" class="longCol">Primary Not Serviced</td>
+          <td style="width:3%;" class="longCol">Service Not Completed</td>
+          <td style="width:2%;" class="midSm">Completed</td>
+          <td style="width:2%;" class="midSm">Cancelled</td>
+          <td style="width:2%;" class="midSm">Overdue</td>
+          <td style="width:3%;" class="longCol">Deadline Overdue</td>
+          <td style="width:3%;" class="longCol">Deadline Due This Week</td>
+          <td style="width:3%;" class="longCol">Deadline Due This Month</td>
+          <td style="width:2%;" class="longCol">Due This Week</td>
+          <td style="width:3%;" class="longCol">Due This Week Serviced</td>
+          <td style="width:3%;" class="largeCol">Due This Week Completed</td>
+          <td style="width:2%;" class="longCol">Due This Month</td>
+          <td style="width:3%;" class="longCol">Due This Month Serviced</td>
+          <td style="width:4%;" class="largeCol">Due This Month Completed</td>
+          <td style="width:3%;" class="longCol">Due Next Month</td>
+          <td style="width:4%;" class="longCol">Due Next Month Serviced</td>
+          <td style="width:4%;" class="largeCol">Due Next Month Completed</td>
+          <td style="width:3%;" class="longCol">Due Next 30 Days</td>
+          <td style="width:4%;" class="largeCol">Due Next 30 Days Serviced</td>
+          <td style="width:4%;" class="largeCol">Due Next 30 Days Completed</td>
+          <td style="width:2%;" class="longCol">Serviced On Time</td>
+          <td style="width:2%;" class="longCol">Serviced Late</td>
+          <td style="width:3%;" class="largeCol">Serviced On Time - Deadline</td>
+          <td style="width:3%;" class="longCol">Serviced Late - Deadline</td>
+          <td style="width:3%;" class="largeCol">Serviced On Time Percent</td>
+          <td style="width:3%;" class="largeCol">Deadline On Time Percent</td>
+
+        </tr>
+      </thead>
+
+      <tbody class="fixTbody mgmTbody" *ngIf="mgmtData?.length > 1">
+        <tr data-level="1" id="level_1_a" *ngFor="let item of mgmtData; let i = index; trackBy:trackByFunction" #refEl
+          [attr.data-level]="getlevel(item.levelName)" [attr.id]="getlevelId(item, i, refEl)" [attr.data-index]="i"
+          [ngStyle]="setStyles(item.levelName, refEl)" class="lvl{{item.levelName}}">
+          <td style="width: 2%;" class="data">
+            <div style="display: inline-flex;">
+              <div class="expander expanderLvl" [ngClass]="{
+              'expander': getClass(item.levelName) === true,
+              'closeExpander': !getClass(item.levelName)
+            }" [ngStyle]="getExpanderStyle(item.levelName)" (click)=expandChild(refEl)></div>
+              <!-- <div class="label">{{item.level}}</div> -->
+            </div>
+          </td>
+
+          <td class="smallCol">
+            <li style="display: block;" class="nav-item dropdown list-unstyled"
+              *ngIf="item.levelName == 4 && servicePortalAccess.indexOf('Asset Search Tab') !== -1">
+              <i data-toggle="dropdown" aria-expanded="false" class="fa fa-bars"></i>
+              <div class="dropdown-menu">
+                <a class="dropdown-item" (click)="gotoAsset(item)" href="javascript:void(0)">Asset Search</a>
+              </div>
+            </li>
+          </td>
+
+          <td style="width: 2%;" class="data longCol">{{item.contractor}}</td>
+          <td style="width: 3%;" class="data longCol">{{item.contract}}</td>
+          <td style="width: 2%;" class="data exlargeCol">{{item.serviceType}}</td>
+          <!-- <td style="width: 3%;" class="data longCol">{{item.serviceTypeStartDate}}</td>
+          <td style="width: 3%;" class="data longCol">{{item.serviceTypeEndDate}}</td> -->
+
+          <td style="width: 2%;" class="data midCol">{{item.serviceStage}}</td>
+          <td style="width: 2%;" class="data midSm">{{item.totalJobs | numberFormat}}</td>
+          <td style="width: 3%;" class="data longCol">{{item.primaryNotServiced | numberFormat}}</td>
+          <td style="width: 3%;" class="data longCol">{{item.servicedNotCompleted | numberFormat}}
+          </td>
+          <td style="width: 2%;" class="data midSm">{{item.completed | numberFormat}}</td>
+          <td style="width: 2%;" class="data midSm">{{item.cancelled | numberFormat}}</td>
+          <td style="width:2%;" class="data midSm">{{item.overDue | numberFormat}}</td>
+          <td style="width:3%;" class="data longCol">{{item.deadlineOverDue | numberFormat}}</td>
+          <td style="width:3%;" class="data longCol">{{item.deadlineOverDueThisWeek | numberFormat}}
+          </td>
+          <td style="width:3%;" class="data longCol">{{item.deadlineOverDueThisMonth | numberFormat}}
+          </td>
+          <td style="width:2%;" class="data longCol">{{item.dueThisWeek | numberFormat}}</td>
+          <td style="width:3%;" class="data longCol">{{item.dueThisWeekServiced | numberFormat}}</td>
+          <td style="width:3%;" class="data largeCol">{{item.dueThisWeekCompleted | numberFormat}}</td>
+          <td style="width:2%;" class="data longCol">{{item.dueThisMonth | numberFormat}}</td>
+          <td style="width:3%;" class="data longCol">{{item.dueThisMonthServiced | numberFormat}}</td>
+          <td style="width:4%;" class="data largeCol">{{item.dueThisMonthCompleted | numberFormat}}
+          </td>
+          <td style="width:3%;" class="data longCol">{{item.dueNextMonth | numberFormat}}</td>
+          <td style="width:4%;" class="data longCol">{{item.dueNextMonthServiced | numberFormat}}</td>
+          <td style="width:4%;" class="data largeCol">{{item.dueNextMonthCompleted | numberFormat}}
+          </td>
+          <td style="width:3%;" class="data longCol">{{item.dueNext30Days | numberFormat}}</td>
+          <td style="width:4%;" class="data largeCol">{{item.dueNext30DaysServiced | numberFormat}}
+          </td>
+          <td style="width:4%;" class="data largeCol">{{item.dueNext30DaysCompleted | numberFormat}}
+          </td>
+          <td style="width:2%;" class="data longCol">{{item.servicedOnTime | numberFormat}}</td>
+          <td style="width:2%;" class="data longCol">{{item.servicedLate | numberFormat}}</td>
+          <td style="width:3%;" class="data largeCol">{{item.servicedOnTimeDeadline | numberFormat}}
+          </td>
+          <td style="width:3%;" class="data longCol">{{item.servicedLateDeadline | numberFormat}}</td>
+          <td style="width:3%;" class="data largeCol">{{item.servicedOnTimePercent | numberFormat}}
+          </td>
+          <td style="width:3%;" class="data largeCol">{{item.deadlineOnTimePercent | numberFormat}}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+
+  <!-- Check if table is empty table-responsive-->
+  <ng-template #emptyTable>
+    <div class="row mt-3 mgmtTblDiv">
+      <table id="emptyTable" class="controller table table-striped table-bordered">
+        <thead class="fixedHeader">
+          <tr data-level="header" class="header">
+            <td style="width: 2%;"></td>
+            <td style="z-index: 1;" class="smallCol"></td>
+            <td style="width: 2%;" class="longCol">Contractor</td>
+            <td style="width: 3%;" class="longCol">Service Contract</td>
+            <td style="width: 2%;" class="exlargeCol">Service Type</td>
+            <!-- <td style="width: 3%;" class="longCol">Service Type Start Date</td>
+            <td style="width: 3%;" class="longCol">Service Type End Date</td> -->
+            <td style="width: 2%;" class="midSm">Service Stage</td>
+            <td style="width: 2%;" class="midSm">Total Jobs</td>
+            <td style="width:3%;" class="longCol">Primary Not Serviced</td>
+            <td style="width:3%;" class="longCol">Service Not Completed</td>
+            <td style="width:2%;" class="midSm">Completed</td>
+            <td style="width:2%;" class="midSm">Cancelled</td>
+            <td style="width:2%;" class="midSm">Overdue</td>
+            <td style="width:3%;" class="longCol">Deadline Overdue</td>
+            <td style="width:3%;" class="longCol">Deadline Due This Week</td>
+            <td style="width:3%;" class="longCol">Deadline Due This Month</td>
+            <td style="width:2%;" class="longCol">Due This Week</td>
+            <td style="width:3%;" class="longCol">Due This Week Serviced</td>
+            <td style="width:3%;" class="largeCol">Due This Week Completed</td>
+            <td style="width:2%;" class="longCol">Due This Month</td>
+            <td style="width:3%;" class="longCol">Due This Month Serviced</td>
+            <td style="width:4%;" class="largeCol">Due This Month Completed</td>
+            <td style="width:3%;" class="longCol">Due Next Month</td>
+            <td style="width:4%;" class="longCol">Due Next Month Serviced</td>
+            <td style="width:4%;" class="largeCol">Due Next Month Completed</td>
+            <td style="width:3%;" class="longCol">Due Next 30 Days</td>
+            <td style="width:4%;" class="largeCol">Due Next 30 Days Serviced</td>
+            <td style="width:4%;" class="largeCol">Due Next 30 Days Completed</td>
+            <td style="width:2%;" class="longCol">Serviced On Time</td>
+            <td style="width:2%;" class="longCol">Serviced Late</td>
+            <td style="width:3%;" class="largeCol">Serviced On Time - Deadline</td>
+            <td style="width:3%;" class="longCol">Serviced Late - Deadline</td>
+            <td style="width:3%;" class="largeCol">Serviced On Time Percent</td>
+            <td style="width:3%;" class="largeCol">Deadline On Time Percent</td>
+
+          </tr>
+        </thead>
+        <tbody class="fixTbody">
+          <tr *ngIf="loadEmptyTable">
+            <td colspan="12">No Record Found</td>
+          </tr>
+        </tbody>
+
+      </table>
+    </div>
+  </ng-template>
+
+
+
+
+
+  <!-- Search bar -->
+  <div class="search-container dismiss">
+
+    <h5 style="color:white" class="p-4 m-0 line-height-1 font-weight-bolder bg-light theme-settings-header"> Filters
+      <a href="javascript:void(0)" (click)="closeSearchBar()"
+        class="theme-settings-close-btn font-weight-light px-4 py-2" style="color:#ffffff;" tabindex="-1">×</a> </h5>
+
+    <div class="searchDiv">
+      <form id="mgmGridFiter">
+        <div class="filtersection">
+          <span class="filterHead">Management</span>
+          <div class="form-group mt-3" *ngIf="mgmFilters.contractorObj.length > 0">
+            <!-- <label class="form-label form-label-sm">Contractor</label> -->
+            <!-- <input [(ngModel)]="mgmFltrCol.contractor" (keyup)="filterInputValueChange($event)" name="contractor" type="text" class="form-control form-control-sm" placeholder="Search By Contractor"> -->
+            <!-- <select name="contractor" [(ngModel)]="mgmFltrCol.contractor" class="form-control form-control-sm"
+              (change)="filterInputValueChange($event)">
+              <option *ngFor="let contractor of mgmFilters.contractor" [ngValue]="contractor">{{contractor}}
+              </option>
+            </select> -->
+            <ng-multiselect-dropdown [placeholder]="'Contractor'" [data]="mgmFilters.contractorObj"
+              [(ngModel)]="mgmFltrCol.contractor" name="contractor" [settings]="dropdownSettings"
+              (onSelect)="onItemSelect($event)" (onSelectAll)="onSelectAll($event)">
+            </ng-multiselect-dropdown>
+
+          </div>
+
+          <div class="form-group mt-3" *ngIf="mgmFilters.contractObj.length > 0">
+            <!-- <label class="form-label form-label-sm">Service Contract</label> -->
+            <!-- <input [(ngModel)]="mgmFltrCol.contract" (keyup)="filterInputValueChange($event)" name="contract" type="text" class="form-control form-control-sm" placeholder="Search By Service Contract"> -->
+            <!-- <select name="contract" [(ngModel)]="mgmFltrCol.contract" class="form-control form-control-sm"
+              (change)="filterInputValueChange($event)">
+              <option *ngFor="let contract of mgmFilters.contract" [ngValue]="contract">{{contract}}
+              </option>
+            </select> -->
+            <ng-multiselect-dropdown [placeholder]="'Service Contract'" [data]="mgmFilters.contractObj"
+              [(ngModel)]="mgmFltrCol.contract" name="contractor" [settings]="dropdownSettings"
+              (onSelect)="onItemSelect($event)" (onSelectAll)="onSelectAll($event)">
+            </ng-multiselect-dropdown>
+
+          </div>
+
+          <div class="form-group mt-3" *ngIf="mgmFilters.serviceTypeObj.length > 0">
+            <!-- <label class="form-label form-label-sm">Service Type</label> -->
+            <!-- <input [(ngModel)]="mgmFltrCol.serviceType" (keyup)="filterInputValueChange($event)" name="serviceType" type="text" class="form-control form-control-sm" placeholder="Search By Service Type"> -->
+            <!-- <select name="serviceType" [(ngModel)]="mgmFltrCol.serviceType" class="form-control form-control-sm"
+              (change)="filterInputValueChange($event)">
+              <option *ngFor="let serviceType of mgmFilters.serviceType" [ngValue]="serviceType">{{serviceType}}
+              </option>
+            </select> -->
+
+            <ng-multiselect-dropdown [placeholder]="'Service Type'" [data]="mgmFilters.serviceTypeObj"
+              [(ngModel)]="mgmFltrCol.serviceType" name="serviceType" [settings]="dropdownSettings"
+              (onSelect)="onItemSelect($event)" (onSelectAll)="onSelectAll($event)">
+            </ng-multiselect-dropdown>
+          </div>
+
+
+          <!-- <div class="form-group mt-3">
+          <label class="form-label form-label-sm">Total Jobs</label>
+          <input [(ngModel)]="mgmFltrCol.totalJobs" (keyup)="filterInputValueChange($event)" name="totalJobs" type="text" class="form-control form-control-sm" placeholder="Search By Total Jobs">
+        </div>
+
+        <div class="form-group mt-3">
+          <label class="form-label form-label-sm">Jobs Due To Date</label>
+          <input [(ngModel)]="mgmFltrCol.overDue" (keyup)="filterInputValueChange($event)" name="overDue" type="text" class="form-control form-control-sm" placeholder="Search By Jobs Due To Date">
+        </div> -->
+
+
+        </div>
+
+
+
+
+        <div class="filtersection">
+          <div class="form-group">
+            <button id="searchBtn" (click)="search($event)" class="btn btn-sm themeButton mr-1">Search
+            </button>
+            <button id="clearBtn" (click)="clearFilter()" class="btn btn-sm themeButton">Clear
+            </button>
+          </div>
+        </div>
+      </form>
+
+    </div>
+  </div>

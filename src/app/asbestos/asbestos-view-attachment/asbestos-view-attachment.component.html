@@ -1,0 +1,16 @@
+<kendo-window title="View Attachment" *ngIf="viewAttachment && openPopup" (close)="closeViewAttacmentWin()"
+    [minWidth]="250" [width]="800" [height]="685" [top]="40">
+
+
+    <div class="col-md-12" *ngIf="imagePath">
+        <img [src]="imagePath" alt="attachment" class="imgTag">
+        
+    </div>
+
+    <div class="text-right col-md-12 mt-3 cancelBtn">
+        <button type="button" class="btn btn-sm" (click)="closeViewAttacmentWin()">Cancel</button>
+
+    </div>
+
+
+</kendo-window>

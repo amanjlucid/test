@@ -1,0 +1,405 @@
+label.radio-inline {
+  padding-left: 11px;
+  margin-bottom: 0;
+  font-weight: 400;
+  vertical-align: middle;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1.42857143;
+}
+
+.radio-inline input[type=radio] {
+  margin-right: 6px;
+  font-size: inherit;
+}
+
+.managementDateFilter {
+  height: 10px;
+  font-size: 14px;
+  line-height: 1.54;
+  color: #4E5155;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid rgba(24, 28, 33, 0.1);
+  border-radius: .25rem;
+  padding-left: 6px;
+}
+
+.mgmtSearchBtn {
+  height: 29px;
+  padding: 0px 12px;
+}
+
+.dateFilterInpDiv {
+  padding-left: 13px;
+  width: 40%;
+}
+
+.dateFilterInpDiv .inpDiv {
+  width: 20%;
+}
+
+.dateFilterInpDiv .inpDiv input {
+  width: 100%;
+  height: 30px;
+}
+
+.displayLvlMainDiv {
+  width: 60%;
+  padding-right: 13px;
+}
+
+label.radio-inline {
+  font-size: 14px;
+}
+
+.multiselect-dropdown {
+  background-color: white !important;
+  color: black !important;
+}
+
+/** css for scroll at the end of the table start **/
+
+/* #mgmtTable, #emptyTable {
+  width: 406%;
+}
+
+.fixTbody {
+  height: 580px;
+  display: block;
+  overflow-y: scroll;
+}
+
+#mgmtTable tbody tr, thead {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+
+table.controller tr.hidden {
+  display: none !important;
+}
+
+.fixedHeader {
+  width: calc(100% - 21px) !important;
+} */
+
+/** css for scroll at the end of the table end **/
+
+/** css for scroll on window right start **/
+
+table {
+  border-collapse: collapse;
+  width: 440%;
+  overflow-x: scroll;
+  display: block;
+}
+
+thead, tbody {
+  display: block;
+}
+
+tbody {
+  overflow-y: scroll;
+  overflow-x: hidden;
+  height: 580px;
+}
+
+td, th {
+  /* min-width: 100px; */
+  /* height: 25px; */
+  /* overflow: hidden; */
+  text-overflow: ellipsis;
+  /* max-width: 100px; */
+}
+
+td.longCol {
+  min-width: 184px;
+  max-width: 184px;
+}
+
+td.midCol {
+  min-width: 159px;
+  max-width: 159px;
+}
+
+td.smallCol {
+  min-width: 40px;
+  max-width: 40px;
+}
+
+td.largeCol {
+  min-width: 214px;
+  max-width: 214px;
+}
+
+td.exlargeCol {
+  min-width: 290px;
+  max-width: 290px;
+}
+
+td.midSm {
+  min-width: 130px;
+  max-width: 130px;
+}
+
+/* .barIcon {
+  background: url('../../../assets/img/icons/bar-icon.png') no-repeat;
+  width: 13px;
+  height: 15px;
+  background-size: 100% auto;
+  display: block !important;
+  opacity: 1 !important;
+  backface-visibility: visible !important;
+}
+
+li.nav-item.dropdown.list-unstyled {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+} */
+
+/* 
+.fixedHeader {
+  min-width: calc(100% - 23px) !important;
+} */
+
+/* table.controller[_ngcontent-c5] td[_ngcontent-c5] {
+border: 1px solid #484852 !important;
+} */
+
+/* td.longCol {
+width: 237px;
+}
+
+td.midCol {
+width: 155px;
+} */
+
+/* .mgmtTblDiv {
+  height: 650px;
+  overflow-y: auto;
+}
+
+.mgmtTblDiv thead td {
+  position: sticky;
+  top: -1px;
+  background: #fff;
+}
+
+#mgmtTable, #emptyTable {
+  width: 440%;
+} */
+
+/* .list-unstyled{z-index: -1;} */
+
+/* 
+.mgmtTable tbody tr, thead {
+display: table;
+width: 100%;
+table-layout: fixed;
+}
+
+
+.fixTbody {
+height: 580px;
+display: block;
+overflow-y: scroll;
+}
+
+
+.fixedHeader {
+width: calc(100% - 23px) !important;
+}
+
+tbody tr td, thead tr td {
+width: 145px;
+min-width: 145px;
+max-width: 150px;
+word-break: break-all;
+}
+
+
+thead tr .longCol, tbody tr .longCol{width: 240px !important;min-width: 240px !important; max-width: 300px !important;} */
+
+/** css for scroll on window right end **/
+
+/* table common css start */
+
+thead tr td:first-child, tbody tr td:first-child {
+  /* width: 400px;*/
+  min-width: 170px;
+  max-width: 170px;
+  word-break: break-all;
+}
+
+#mgmtTable td {
+  text-align: left!important;
+}
+
+#mgmtTable .header, #emptyTable .header {
+  font-weight: 600;
+  background-color: #fff;
+}
+
+tbody tr td {
+  padding: 0px;
+}
+
+tbody tr td:not(:first-child) {
+  padding-left: .625rem;
+}
+
+table.controller thead td {
+  padding: .625rem !important;
+}
+
+table.controller tbody td {
+  padding-top: 6px;
+}
+
+table.controller td {
+  border: 1px solid #f1f1f2 !important;
+}
+
+/* table.controller td {
+  padding: .625rem !important;
+} */
+
+/* table css end */
+
+.displayLvlDiv {
+  margin-top: 6px;
+  text-align: right;
+}
+
+.exportMgmtBtn {
+  margin-top: 15px;
+  margin-right: 10px;
+}
+
+.exportDiv {
+  display: inline-block;
+}
+
+#showFilePanel {
+  margin-top: 15px;
+  margin-right: 10px;
+}
+
+.search-container {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 245px;
+  display: none;
+  height: 100%;
+  overflow: hidden;
+  background: #070627;
+  z-index: 999;
+  /* transform: translateX(100%); */
+  -webkit-transform: translateX(100%);
+}
+
+.selectedcs {
+  animation: slide-in 0.5s forwards;
+  -webkit-animation: slide-in 0.5s forwards;
+}
+
+.dismiss {
+  animation: slide-out 0.5s forwards;
+  -webkit-animation: slide-out 0.5s forwards;
+}
+
+.searchDiv {
+  padding: 7px;
+  color: white;
+}
+
+.filtersection {
+  padding: 10px 0px;
+  border-top: 1px solid gray;
+}
+
+.filterHead {
+  color: #b0acac;
+  font-size: 18px;
+}
+
+.assetTbl td {
+  word-break: break-all;
+}
+
+.expander {
+  width: 10px;
+  margin-right: 7px;
+  height: 30px;
+  background-position: 0 5px;
+  background-repeat: no-repeat;
+  background-size: 10px 10px;
+  cursor: pointer;
+  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyFpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNS1jMDE0IDc5LjE1MTQ4MSwgMjAxMy8wMy8xMy0xMjowOToxNSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIChXaW5kb3dzKSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDpFRTRGQzMxRDlGQzExMUUzODBEOEVDQTdCODg2NDBDNSIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDpFRTRGQzMxRTlGQzExMUUzODBEOEVDQTdCODg2NDBDNSI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkVFNEZDMzFCOUZDMTExRTM4MEQ4RUNBN0I4ODY0MEM1IiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOkVFNEZDMzFDOUZDMTExRTM4MEQ4RUNBN0I4ODY0MEM1Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+I8q8PAAAAQxJREFUeNpi/P//PwM1ARMDlQHVDWRpbGycB6RNqGEYMPiusgBpHSBDlxoGMjIy/mL6+/dvMpDxnQqGfQealcjU3Nx8GcjPo4ID80BmMcJ49fX1E8k1GOi6jQ0NDQEosQwULAdSl8gw79GPHz8SMZIN0IYfwDAIAzK/kGDYn3///kV0dHS8x5oOW1pabgJjPIuEZFIDDLfjKN7HppDI8NwETMOgcPtPMKd8+vSpAhiml/FEwmMgTkQ3DKeB/f39oHQZBtT0FVu4AXEEMMzfkZSXgRpuAKksLK5rBcodI6twAGpcBDRgNZJhIHYT3sKBUEx++/YtmYuLC+TNf0B2ZldX1z+8iXzkFbAAAQYATlZraA/C4aUAAAAASUVORK5CYII=);
+}
+
+.closeExpander {
+  cursor: pointer;
+  width: 10px;
+  margin-right: 7px;
+  height: 30px;
+  background-position: 0 5px;
+  background-repeat: no-repeat;
+  background-size: 10px 10px;
+  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABmJLR0QA/wD/AP+gvaeTAAABMUlEQVQ4ja2VPUvDUBSG3zctBAMOuuvm5Ogg+iN0spOLKAgdHNss6T00HdwCXXXSQcGlf0E3waHYRX9GQFMRLsfBBuJHaJLm2c7Hfc653OESGYwxNyQ3rLVHYRhOUAEnG5DcVNWtRqPxKCInCwtTVHVJVS9EZOT7/srCwox433XdcRAEO7UIZ6w7jvPQ6/W6AFiHEACaJM+NMSMRWa1DmLIHYCwiu3UJoaprqnov3/w5X1o4o6mqBsBtp9NZ/lGoKAQAqOqB53mfAA7TXNUNszi5QVlI3iVJcprNVboyyXcAbRG5+l0rLSQ5AdASkZf/6mWFwziO/SiKpnkNRYVvqtru9/vX8xqLCJ+tta3BYPBaZPK8Vx6S3C4qA3I2JDkFcCYil0VFecInkh/W2uOqX8AXLgNp5aJbT/cAAAAASUVORK5CYII=);
+}
+
+@keyframes slide-in {
+  0% {
+    -webkit-transform: translateX(100%);
+  }
+  100% {
+    -webkit-transform: translateX(0%);
+  }
+}
+
+@-webkit-keyframes slide-in {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(0%);
+  }
+}
+
+@keyframes slide-out {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@-webkit-keyframes slide-out {
+  0% {
+    -webkit-transform: translateX(0%);
+  }
+  100% {
+    -webkit-transform: translateX(100%);
+  }
+}
+
+@media screen and (max-width: 1190px) {
+  .dateFilterInpDiv {
+    width: 100%;
+  }
+  .displayLvlMainDiv {
+    width: 100%;
+  }
+  .displayLvlDiv {
+    text-align: left;
+    padding: 0px;
+  }
+  .dateFilterInpDiv label:first-of-type {
+    padding-left: 10px;
+  }
+}

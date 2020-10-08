@@ -1,0 +1,55 @@
+.radioFilterDiv {
+    text-align: right;
+    padding: 0px !important;
+}
+
+label.radio-inline {
+    padding: 0px 8px;
+}
+
+.searchBox {
+    height: 27px;
+    font-size: .894rem;
+    line-height: 1.54;
+    color: #4E5155;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid rgba(24, 28, 33, 0.1);
+    border-radius: .25rem;
+    width: 100% !important;
+    padding: 5px;
+}
+
+.radioDiv .radio-inline input[type=radio] {
+    margin-right: 3px;
+}
+
+.radioDiv{
+    padding-right: 6px;
+}
+
+.dropdown.list-unstyled {
+    position: absolute !important;
+}
+
+.filterArea label {
+    margin-bottom: 0px !important;
+    margin-top: 5px !important;
+}
+
+.disabled {
+    pointer-events: none;
+}
+
+.k-i-loading {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    font-size: 64px;
+    background-color: rgba(255, 255, 255, .3);
+    color: #ff6757;
+}
+
+/* 9414740001 sukhdev jahangir */

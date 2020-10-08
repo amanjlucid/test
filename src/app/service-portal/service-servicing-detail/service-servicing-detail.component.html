@@ -1,0 +1,226 @@
+<kendo-window title="Servicing Detail For Asset" [(state)]="windowState" [(top)]="windowTop" [minWidth]="900"
+  [width]="1224" *ngIf="serviceServicingDetailWindow" (close)="closeServicingDetailWin()" [resizable]="true">
+  <div class="row">
+    <div class="col-md-12 col-sm-12">
+      <div class="nav-responsive-lg">
+        <ul class="nav nav-tabs tabs-alt">
+          <li class="nav-item" *ngIf="servicePortalAccess.indexOf('Service Details Tab') !== -1">
+            <a class="nav-link" [ngClass]="{'active': tabName=='servicedetail'}" (click)="showTab('servicedetail')"
+              href="javascript:void(0)">Service Details</a>
+          </li>
+          <li class="nav-item" *ngIf="servicePortalAccess.indexOf('Service Attribute Tab') !== -1">
+            <a class="nav-link" [ngClass]="{'active': tabName=='serviceattribute'}"
+              (click)="showTab('serviceattribute')" href="javascript:void(0)">Service Attribute</a>
+          </li>
+          <li class="nav-item" *ngIf="servicePortalAccess.indexOf('Service History Tab') !== -1">
+            <a class="nav-link" [ngClass]="{'active': tabName=='servicehistory'}" (click)="showTab('servicehistory')"
+              href="javascript:void(0)">Service History</a>
+          </li>
+          <li class="nav-item" *ngIf="servicePortalAccess.indexOf('Service Info Tab') !== -1">
+            <a class="nav-link" [ngClass]="{'active': tabName=='serviceinfo'}" (click)="showTab('serviceinfo')"
+              href="javascript:void(0)">Service Info</a>
+          </li>
+          <li class="nav-item" *ngIf="servicePortalAccess.indexOf('Service Notepads Tab') !== -1">
+            <a class="nav-link" [ngClass]="{'active': tabName=='servicenotepads'}" (click)="showTab('servicenotepads')"
+              href="javascript:void(0)">Service Notepads</a>
+          </li>
+          <li class="nav-item" *ngIf="servicePortalAccess.indexOf('Resident Contacts Tab') !== -1">
+            <a class="nav-link" [ngClass]="{'active': tabName=='residentcontacts'}"
+              (click)="showTab('residentcontacts')" href="javascript:void(0)">Resident Contacts</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-2">
+    <div class="col-md-12 mt-2">
+      <div class="flex-grow-1 assetService" *ngIf="tabName == 'servicedetail'">
+        <form autocomplete="off" id="print-section">
+          <div class="assetDetail">
+            <div class="form-row m-0 p-0">
+              <p class="col-md-2 m-0 p-0"> Asset ID: </p>
+              <p class="col-md-3 m-0 p-0">{{servicingDetails?.assid}}</p>
+              <p class="col-md-7 m-0 p-0">{{servicingDetails?.address}}</p>
+            </div>
+            <div class="form-row m-0 p-0">
+              <p class="col-md-2 m-0 p-0"> Contractor: </p>
+              <p class="col-md-3 m-0 p-0">{{servicingDetails?.contractor_Code}}</p>
+              <p class="col-md-7 m-0 p-0">{{servicingDetails?.contractor}}</p>
+            </div>
+            <div class="form-row m-0 p-0">
+              <p class="col-md-2 m-0 p-0"> Service Contract: </p>
+              <p class="col-md-3 m-0 p-0">{{servicingDetails?.service_Type_Code}}</p>
+              <p class="col-md-7 m-0 p-0">{{servicingDetails?.service_Type}}</p>
+            </div>
+          </div>
+
+          <div class="form-row mt-3">
+            <label class="col-form-label col-md-2 text-sm-left">Job Number</label>
+            <div class="col-md-4">
+              <p class="form-control input-sm">{{servicingDetails?.job_Number}} </p>
+            </div>
+          </div>
+
+          <div class="form-row ">
+            <label class="col-form-label col-md-2 text-sm-left">Servicing Type</label>
+            <div class="col-md-5">
+              <p class="form-control input-sm">{{servicingDetails?.service_Type_Code}} </p>
+              <!-- <input type="text" class="form-control" value="{{servicingDetails?.service_Type_Code}}"
+                > -->
+            </div>
+            <div class="col-md-5">
+              <p class="form-control input-sm">{{servicingDetails?.service_Type}} </p>
+              <!-- <input type="text" class="form-control" value="{{servicingDetails?.service_Type}}" > -->
+            </div>
+          </div>
+
+
+          <div class="form-row ">
+            <label class="col-form-label col-md-2 text-sm-left">Service Stage</label>
+            <div class="col-md-5">
+              <p class="form-control input-sm">{{servicingDetails?.service_Stage_Code}} </p>
+              <!-- <input type="text" class="form-control" value="{{servicingDetails?.service_Stage_Code}}"
+                > -->
+            </div>
+            <div class="col-md-5">
+              <p class="form-control input-sm">{{servicingDetails?.service_Stage}} </p>
+              <!-- <input type="text" class="form-control" value="{{servicingDetails?.service_Stage}}" > -->
+            </div>
+          </div>
+
+          <div class="form-row ">
+            <label class="col-form-label col-md-2 text-sm-left">Stage Complete</label>
+            <div class="col-md-4">
+              <p class="form-control input-sm">
+                {{servicingDetails?.stage_Complete == 'N' ? 'No' : servicingDetails?.stage_Complete == 'Y' ? 'Yes' : ''}}
+              </p>
+              <!-- <input type="text" class="form-control"
+                value="{{servicingDetails?.stage_Complete == 'N' ? 'No' : servicingDetails?.stage_Complete == 'Y' ? 'Yes' : ''}}"
+                > -->
+            </div>
+
+            <label class="col-form-label col-md-2 text-sm-left">Due Date</label>
+            <div class="col-md-4">
+              <p class="form-control input-sm">{{servicingDetails?.due_Date | dateFormat : 'DD-MMM-YYYY'}} </p>
+              <!-- <input type="text" class="form-control"
+                value="{{servicingDetails?.due_Date | dateFormat : 'DD-MMM-YYYY'}}" > -->
+            </div>
+          </div>
+
+          <div class="form-row ">
+            <label class="col-form-label col-md-2 text-sm-left">Planned Date</label>
+            <div class="col-md-4">
+              <p class="form-control input-sm">{{servicingDetails?.planned_Date | dateFormat : 'DD-MMM-YYYY'}} </p>
+
+              <!-- <input type="text" class="form-control"
+                value="{{servicingDetails?.planned_Date | dateFormat : 'DD-MMM-YYYY'}}" > -->
+            </div>
+            <label class="col-form-label col-md-2 text-sm-left">Job Type</label>
+            <div class="col-md-4">
+              <p class="form-control input-sm">{{servicingDetails?.job_Type}} </p>
+              <!-- <input type="text" class="form-control" value="{{servicingDetails?.job_Type }}" > -->
+            </div>
+          </div>
+
+          <div class="form-row ">
+            <label class="col-form-label col-md-2 text-sm-left">Review Date</label>
+            <div class="col-md-4">
+              <p class="form-control input-sm">{{servicingDetails?.review_Date | dateFormat : 'DD-MMM-YYYY'}} </p>
+              <!-- <input type="text" class="form-control"
+                value="{{servicingDetails?.review_Date | dateFormat : 'DD-MMM-YYYY'}}" > -->
+            </div>
+            <label class="col-form-label col-md-2 text-sm-left">Planned Time</label>
+            <div class="col-md-4">
+              <p class="form-control input-sm">{{servicingDetails?.planned_Time | dateFormat : 'DD-MMM-YYYY' }} </p>
+
+              <!-- <input type="text" class="form-control"
+                value="{{servicingDetails?.planned_Time | dateFormat : 'DD-MMM-YYYY' }}" > -->
+            </div>
+          </div>
+
+
+          <div class="form-row ">
+            <label class="col-form-label col-md-2 text-sm-left">Service Cost</label>
+            <div class="col-md-4">
+              <p class="form-control input-sm">{{helper.moneyFormat(servicingDetails?.service_Cost) }} </p>
+
+              <!-- <input type="text" class="form-control" value="{{ helper.moneyFormat(servicingDetails?.service_Cost)}}"
+                > -->
+            </div>
+            <label class="col-form-label col-md-2 text-sm-left">Service Date</label>
+            <div class="col-md-4">
+              <p class="form-control input-sm">{{servicingDetails?.service_Date | dateFormat : 'DD-MMM-YYYY'}} </p>
+
+              <!-- <input type="text" class="form-control"
+                value="{{servicingDetails?.service_Date | dateFormat : 'DD-MMM-YYYY'}}" > -->
+            </div>
+          </div>
+
+          <div class="form-row ">
+            <label class="col-form-label col-md-2 text-sm-left">Planned Time Text</label>
+            <div class="col-md-4">
+              <p class="form-control input-sm">{{servicingDetails?.planned_Time_Text}} </p>
+
+              <!-- <input type="text" class="form-control" value="{{servicingDetails?.planned_Time_Text}}"
+                > -->
+            </div>
+            <label class="col-form-label col-md-2 text-sm-left">Completion Date</label>
+            <div class="col-md-4">
+              <p class="form-control input-sm">{{servicingDetails?.completion_Date | dateFormat : 'DD-MMM-YYYY'}} </p>
+
+              <!-- <input type="text" class="form-control"
+                value="{{servicingDetails?.completion_Date | dateFormat : 'DD-MMM-YYYY'}}" > -->
+            </div>
+          </div>
+
+
+          <div class="form-row ">
+            <label class="col-form-label col-md-2 text-sm-left">Last Transaction Type</label>
+            <div class="col-md-3">
+              <p class="form-control input-sm">{{servicingDetails?.transaction_Type}} </p>
+
+              <!-- <input type="text" class="form-control" value="{{servicingDetails?.transaction_Type}}"
+                > -->
+            </div>
+            <label class="col-form-label col-md-2 text-sm-left">Last Updated By/Date</label>
+            <div class="col-md-3">
+              <p class="form-control input-sm">{{servicingDetails?.last_Updated_By}}</p>
+
+              <!-- <input type="text" class="form-control" value="{{servicingDetails?.last_Updated_By}}" > -->
+            </div>
+            <div class="col-md-2">
+              <p class="form-control input-sm" style="background-color: #f1f1f2;">
+                {{servicingDetails?.last_Updated_Date | dateFormat : 'DD-MMM-YYYY'}}</p>
+
+              <!-- <input type="text" class="form-control"
+                value="{{servicingDetails?.last_Updated_Date | dateFormat : 'DD-MMM-YYYY'}}" > -->
+            </div>
+          </div>
+          <div class="form-row ">
+            <label class="col-form-label col-md-2 text-sm-left">Notes</label>
+            <div class="col-md-10">
+              <textarea class="form-control input-sm"></textarea>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- start other 5 tabs html  -->
+      <app-service-service-attribute *ngIf="tabName == 'serviceattribute'" [servicingDetails]="servicingDetails" (closeServiceDetailsWin)= closeServiceDetailsWin($event)></app-service-service-attribute>
+      <app-service-service-history *ngIf="tabName == 'servicehistory'" [servicingDetails]="servicingDetails"></app-service-service-history>
+      <app-service-service-info *ngIf="tabName == 'serviceinfo'" [servicingDetails]="servicingDetails" (closeServiceDetailsWin)= closeServiceDetailsWin($event)></app-service-service-info>
+      <app-service-service-notepads *ngIf="tabName == 'servicenotepads'" [servicingDetails]="servicingDetails" (closeServiceDetailsWin)= closeServiceDetailsWin($event)></app-service-service-notepads>
+      <app-service-resident-contacts *ngIf="tabName == 'residentcontacts'" [servicingDetails]="servicingDetails" (closeServiceDetailsWin)= closeServiceDetailsWin($event)></app-service-resident-contacts>
+
+      <!-- start other 5 tabs html end  -->
+      
+      <div class="buttonDiv pull-right">
+        <button type="button" *ngIf="tabName == 'servicedetail'" (click)="printDiv()" printSectionId="print-section" class="btn btn-sm">Print</button>
+        <button type="button" (click)="closeServicingDetailWin()" *ngIf="hideCloseBtn" class="btn btn-sm">Close</button>
+      </div>
+    </div>
+  </div>
+
+
+</kendo-window>

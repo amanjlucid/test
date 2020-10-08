@@ -1,0 +1,63 @@
+<kendo-window title="Edit Attachment" *ngIf="editAttachmentDetails" (close)="closeEditAttachmentWin()" [top]="10"
+  [minWidth]="400" [width]="800" [height]="auto" [minHeight]="200">
+  <form #editAttachmentForm="ngForm" (ngSubmit)="updateAttachmentDetail(editAttachmentForm)">
+    <div class="row mt-2">
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-md-3">
+            <label class="col-form-label">Description</label>
+          </div>
+          <div class="col-md-9 form-group">
+            <textarea name="description" [ngClass]="{ 'is-invalid': formErrors.description?.maxLength }" id="" #description="ngModel" [(ngModel)]="formModelValue.description" rows="4"
+              class="form-control"></textarea>
+            <div *ngIf="formErrors.description?.maxLength" class="invalid-feedback">
+              Description can be max 1024 characters long.
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-md-3">
+            <label class="col-form-label">Note:</label>
+          </div>
+          <div class="col-md-9 form-group">
+            <input name="note" [ngClass]="{ 'is-invalid': formErrors.note?.maxLength }" type="text" #note="ngModel" [(ngModel)]="formModelValue.note" class="form-control">
+            <div *ngIf="formErrors.note?.maxLength" class="invalid-feedback">
+              Note can be max 1024 characters long.
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-md-3">
+            <label class="col-form-label">Status:</label>
+          </div>
+          <div class="col-md-9 form-group">
+            <!-- <input name="status" type="text" class="form-control"> -->
+            <select name="status" class="form-control" [(ngModel)]="formModelValue.status">
+              <option value="Edit">Edit</option>
+              <option value="Review">Review</option>
+            </select>
+
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+
+
+
+    <div class="row mt-3">
+      <div class="col-md-12 text-right editAttachmentActionArea">
+        <button type="button" class="btn btn-sm themeButton" (click)="closeEditAttachmentWin()">Close</button>
+        <button type="submit" class="btn btn-sm themeButton" [disabled]="!editAttachmentForm.form.valid">Save</button>
+      </div>
+    </div>
+
+  </form>
+</kendo-window>

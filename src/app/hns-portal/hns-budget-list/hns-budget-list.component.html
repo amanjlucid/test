@@ -1,0 +1,61 @@
+<kendo-window title="{{title}}" *ngIf="openBudgetList" (close)="closeWindowMethod()" [top]="5" [minWidth]="400"
+  [width]="780" [height]="auto" [minHeight]="300">
+
+  <div class="row detailDiv">
+    <div class="detailHeadingDiv">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="row">
+            <div class="col-md-2">
+              <span>Definition:</span>
+            </div>
+            <div class="col-md-10">
+              <span class="boldSpan">{{selectedDefinition.hascode }} ({{selectedDefinition.hasversion}})
+                {{selectedDefinition.hasname}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-2">
+    <div class="col-md-12">
+      <kendo-grid [data]="gridView" [height]="410" [selectable]="{
+        mode: 'single'
+      }" [filterable]="false" [resizable]="true" [sortable]="false" [skip]="state.skip" [sort]="state.sort"
+        [filter]="state.filter" (sortChange)="sortChange($event)" (filterChange)="filterChange($event)"
+        (cellClick)="cellClickHandler($event)" [navigable]="true">
+
+        <kendo-grid-column field="hasbudgetcode" title="Budget" width="90">
+        </kendo-grid-column>
+        <kendo-grid-column field="hasbudgetdesc" title="Description" width="150">
+        </kendo-grid-column>
+      </kendo-grid>
+    </div>
+  </div>
+
+  <div class="row mt-2">
+    <div class="col-md-8 actionAreaBtnleft">
+      <button type="button" class="btn btn-sm themeButton"
+        (click)="addBudget('add')" *ngIf="hnsPermission.indexOf('Add Budget List') != -1">Add</button>
+      <button type="button" [disabled]="disableBtn" class="btn btn-sm themeButton" (click)="addBudget('view')"
+        *ngIf="selectedDefinition.hasinuse == 'Y'">View</button>
+      <button type="button" class="btn btn-sm themeButton" (click)="addBudget('edit')"
+        *ngIf="hnsPermission.indexOf('Edit Budget List') != -1">Edit</button>
+      <button type="button" *ngIf="hnsPermission.indexOf('Delete Budget List') != -1" class="btn btn-sm themeButton"
+        (click)="openConfirmationDialog()">Delete</button>
+    </div>
+    <div class="col-md-4 actionAreaBtnright">
+      <button type="button" class="btn btn-sm themeButton" (click)="closeWindowMethod()">Cancel</button>
+    </div>
+  </div>
+
+  <div class="budgetOverlay"></div>
+
+  <app-hns-add-budget *ngIf="openAddBudget" [openAddBudget]="openAddBudget" [formMode]="formMode"
+    [selectedDefinition]="selectedDefinition" [selectedBudget]="selectedData"
+    (closeAddbudget)="closeAddbudget($event)" (successFullSubmit)="successFullSubmit($event)">
+  </app-hns-add-budget>
+
+</kendo-window>

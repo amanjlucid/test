@@ -1,0 +1,39 @@
+<kendo-window title="Information Request..." *ngIf="requestFurtherinf" (close)="closeReqFurtherInf()" [top]="80"
+  [minWidth]="500" [width]="630" [height]="auto" [minHeight]="500">
+
+  <form [formGroup]="requestFurtherInfoForm" (ngSubmit)="onSubmit()" autocomplete="off">
+
+    <div class="row mt-2">
+      <div class="col-md-12">
+        <p>Asset:  {{selectedAsset.address}}</p>
+      </div>
+    </div>
+
+    <div class="row mt-2">
+      <div class="col-md-12 desLabel">
+        <label class="col-form-label">Please enter details of the information request below:</label>
+      </div>
+      <div class="col-md-12 form-group desTextArea">
+        <textarea rows="12" class="form-control" formControlName="furtherInf"
+          [ngClass]="{ 'is-invalid': submitted && formErrors.furtherInf }"></textarea>
+        <div *ngIf="submitted && formErrors.furtherInf" class="invalid-feedback">
+          <div *ngIf="formErrors.furtherInf">{{ formErrors.furtherInf }}</div>
+        </div>
+      </div>
+
+    </div>
+
+
+    <div class="row mt-2">
+      <div class="col-md-12 requestActionArea text-right">
+        <button type="button" class="btn btn-sm themeButton mr-1" (click)="closeReqFurtherInf()">Cancel</button>
+        <button type="submit" [disabled]="!requestFurtherInfoForm.valid" class="btn btn-sm themeButton">Ok</button>
+      </div>
+    </div>
+  </form>
+
+  <div class="reqFurtherInfo"></div>
+
+
+
+</kendo-window>

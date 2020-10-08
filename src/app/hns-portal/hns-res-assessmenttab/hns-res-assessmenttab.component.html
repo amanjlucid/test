@@ -1,0 +1,419 @@
+<div class="container-fluid flex-grow-1 mt-2">
+  <div class="row filterArea">
+
+    <div class="col-sm-12 col-md-1">
+      <!-- <label class="">Text Search:</label> -->
+    </div>
+    <div class="col-sm-12 col-md-7 pl-0">
+      <!-- <input type="text" [(ngModel)]="headerFilters.Textstring" class="searchBox"> -->
+    </div>
+
+    <div class="col-sm-12 col-md-2 radioFilterDiv">
+      <div class="radioDiv">
+        <label class="radio-inline">
+          <input (ngModelChange)="onChange($event)" value="Y" [(ngModel)]="gridStat" type="radio" name="gridStat">Latest
+        </label>
+        <label class="radio-inline">
+          <input (ngModelChange)="onChange($event)" value="N" [(ngModel)]="gridStat" type="radio" name="gridStat"
+            checked>All History
+        </label>
+
+      </div>
+    </div>
+
+    <div class="col-md-2 text-center">
+      <button class="btn btn-sm" [disabled]="loading" (click)="searchActionGrid()">Search</button>
+      <button *ngIf="hnsPermission.indexOf('Export Data') != -1" class="btn btn-sm ml-3 themeButton"
+        (click)="exportToExcelTop()">Export</button>
+    </div>
+  </div>
+
+
+  <div class="row mt-3">
+    <div class="col-md-12 actionGrid">
+      <kendo-grid [data]="query | async" [loading]="loading" [skip]="headerFilters.CurrentPage"
+        [pageSize]="headerFilters.PageSize" [selectable]="{
+        mode: 'multiple'
+      }" filterable="menu" [resizable]="true" [sortable]="{
+        allowUnsort: allowUnsort,
+        mode: multiple ? 'multiple' : 'single'
+        }" [sort]="state.sort" (sortChange)="sortChange($event)" (filterChange)="filterChange($event)"
+        (cellClick)="cellClickHandler($event)" [filter]="state.filter" scrollable="virtual" [rowHeight]="36"
+        [height]="600" (pageChange)="pageChange($event)" [navigable]="true" [rowClass]="rowCallback">
+
+
+        <kendo-grid-column title=" " width="37" [filterable]="false">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <li class="nav-item dropdown list-unstyled" style="margin-top: -7px;">
+              <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars barClas"></i>
+              <div class="dropdown-menu">
+
+                <a class="dropdown-item" *ngIf="hnsPermission.indexOf('View Assessment') != -1"
+                  href="javascript:void(0)" (click)="openAssessment(dataItem)">View
+                  Assessment</a>
+                <a class="dropdown-item" *ngIf="hnsPermission.indexOf('View/Edit Asset Text') != -1"
+                  href="javascript:void(0)" (click)="viewEditAssetText(dataItem)">View/Edit Asset
+                  Text</a>
+                <!-- <a class="dropdown-item" *ngIf="hnsPermission.indexOf('Edit Budget List') != -1" (click)="budgetList()"
+                  href="javascript:void(0)">Edit
+                  Budget List</a> -->
+                <a class="dropdown-item" *ngIf="hnsPermission.indexOf('Documents') != -1" href="javascript:void(0)"
+                  (click)="opneDocList(dataItem)">Documents</a>
+                <!-- <a class="dropdown-item" *ngIf="hnsPermission.indexOf('Documents') != -1" href="javascript:void(0)" (click)="exportToExcelTop()">Export Data</a> -->
+
+
+                <div class="dropdown-toggle" *ngIf="hnsPermission.indexOf('Report') != -1">
+                  <div class="dropdown-item">Reports</div>
+
+
+                  <div class="dropdown-menu">
+                    <div class="dropdown-toggle">
+                      <div class="dropdown-item">Standard Assessment Report</div>
+                      <div class="dropdown-menu">
+                        <a class="dropdown-item" (click)="report(dataItem, 'stCD')" href="javascript:void(0)">Current
+                          Data</a>
+                        <a class="dropdown-item" (click)="report(dataItem, 'stCDR')" href="javascript:void(0)">Current
+                          Data
+                          (Recalculate Score)</a>
+                        <a class="dropdown-item" (click)="report(dataItem, 'stOD')" href="javascript:void(0)">Original
+                          Data</a>
+
+                      </div>
+                    </div>
+
+                    <div class="dropdown-toggle">
+                      <div class="dropdown-item">Published Assessment Report</div>
+                      <div class="dropdown-menu">
+                        <a class="dropdown-item" (click)="report(dataItem, 'paCd')" href="javascript:void(0)">Current
+                          Data</a>
+                        <!-- <a class="dropdown-item" (click)="report(true)" href="javascript:void(0)">Current Data
+                          (Recalculate Score)</a> -->
+                        <a class="dropdown-item" (click)="report(dataItem, 'paOD')" href="javascript:void(0)">Original
+                          Data</a>
+
+                      </div>
+                    </div>
+
+                    <div class="dropdown-toggle">
+                      <div class="dropdown-item">Published Assessment Report (Redacted)</div>
+                      <div class="dropdown-menu">
+                        <a class="dropdown-item" (click)="report(dataItem, 'parCD')" href="javascript:void(0)">Current
+                          Data</a>
+                        <!-- <a class="dropdown-item" (click)="report(true)" href="javascript:void(0)">Current Data
+                          (Recalculate Score)</a> -->
+                        <a class="dropdown-item" (click)="report(dataItem, 'parOD')" href="javascript:void(0)">Original
+                          Data</a>
+
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+
+                <a *ngIf="hnsPermission.indexOf('Recalculate Scores') != -1" class="dropdown-item"
+                  href="javascript:void(0)" (click)="recalculateScore()">Recalculate Score</a>
+
+
+              </div>
+            </li>
+
+          </ng-template>
+        </kendo-grid-column>
+
+
+
+        <kendo-grid-column field="notepadCount" title="" width="50" [filterable]="false">
+          <ng-template kendoGridHeaderTemplate>
+            <img style="height:14px; width:16px;" src="assets/img/icons/attach.png" />
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <img data-toggle="dropdown" *ngIf="dataItem.notepadCount > 0" aria-expanded="true"
+              style="height:14px; width:16px;" class="attachmentIcon" src="assets/img/icons/attach.png" />
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column field="assid" title="Asset ID" width="130">
+          <ng-template kendoGridFilterMenuTemplate let-filter="filter" let-column="column"
+            let-filterService="filterService">
+            <simple-text-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
+            </simple-text-filter>
+
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span
+              [ngClass]="{'red': dataItem.hasiactionstatus === 'O' || dataItem.hasiactionstatus === 'Y', 'green':dataItem.hasiactionstatus === 'R' || dataItem.hasiactionstatus === 'I'   }">
+              {{ dataItem.assid }}
+            </span>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column field="astconcataddress" title="Address" width="300">
+          <ng-template kendoGridFilterMenuTemplate let-filter="filter" let-column="column"
+            let-filterService="filterService">
+
+            <simple-text-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
+            </simple-text-filter>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span
+              [ngClass]="{'red': dataItem.hasiactionstatus === 'O' || dataItem.hasiactionstatus === 'Y', 'green':dataItem.hasiactionstatus === 'R' || dataItem.hasiactionstatus === 'I'   }">
+              {{ dataItem.astconcataddress }}
+            </span>
+          </ng-template>
+        </kendo-grid-column>
+
+
+        <kendo-grid-column field="asspostcode" title="PostCode" width="150">
+          <ng-template kendoGridFilterMenuTemplate let-filter let-column="column" let-filterService="filterService">
+            <simple-text-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
+            </simple-text-filter>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span
+              [ngClass]="{'red': dataItem.hasiactionstatus === 'O' || dataItem.hasiactionstatus === 'Y', 'green':dataItem.hasiactionstatus === 'R' || dataItem.hasiactionstatus === 'I'   }">
+              {{ dataItem.asspostcode }}
+            </span>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column field="hascode" title="Definition" width="150">
+          <ng-template kendoGridFilterMenuTemplate let-filter let-column="column" let-filterService="filterService">
+            <simple-text-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
+            </simple-text-filter>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span
+              [ngClass]="{'red': dataItem.hasiactionstatus === 'O' || dataItem.hasiactionstatus === 'Y', 'green':dataItem.hasiactionstatus === 'R' || dataItem.hasiactionstatus === 'I'   }">
+              {{ dataItem.hascode }}
+            </span>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column field="hasversion" title="Vers" width="80">
+          <ng-template kendoGridFilterMenuTemplate let-filter let-column="column" let-filterService="filterService">
+            <range-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
+            </range-filter>
+          </ng-template>
+
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span
+              [ngClass]="{'red': dataItem.hasiactionstatus === 'O' || dataItem.hasiactionstatus === 'Y', 'green':dataItem.hasiactionstatus === 'R' || dataItem.hasiactionstatus === 'I'   }">
+              {{ dataItem.hasversion }}
+            </span>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column field="hasassessmentref" title="Assessment Ref" width="180">
+          <ng-template kendoGridFilterMenuTemplate let-filter let-column="column" let-filterService="filterService">
+            <simple-text-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
+            </simple-text-filter>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span
+              [ngClass]="{'red': dataItem.hasiactionstatus === 'O' || dataItem.hasiactionstatus === 'Y', 'green':dataItem.hasiactionstatus === 'R' || dataItem.hasiactionstatus === 'I'   }">
+              {{ dataItem.hasassessmentref  }}
+            </span>
+          </ng-template>
+        </kendo-grid-column>
+
+
+        <kendo-grid-column field="hasassessmentdate" title="Assessment Date" width="180">
+          <ng-template kendoGridFilterMenuTemplate let-filter let-column="column" let-filterService="filterService">
+            <date-range-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
+            </date-range-filter>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span
+              [ngClass]="{'red': dataItem.hasiactionstatus === 'O' || dataItem.hasiactionstatus === 'Y', 'green':dataItem.hasiactionstatus === 'R' || dataItem.hasiactionstatus === 'I'   }">
+              {{ dataItem.hasassessmentdate | dateFormat : 'DD-MMM-YYYY' }}
+            </span>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column field="hasassessor" title="Assessor" width="160">
+          <ng-template kendoGridFilterMenuTemplate let-filter let-column="column" let-filterService="filterService">
+            <simple-text-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
+            </simple-text-filter>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span
+              [ngClass]="{'red': dataItem.hasiactionstatus === 'O' || dataItem.hasiactionstatus === 'Y', 'green':dataItem.hasiactionstatus === 'R' || dataItem.hasiactionstatus === 'I'   }">
+              {{ dataItem.hasassessor  }}
+            </span>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column field="customerstatus" title="Customer Status" width="180" *ngIf="displayCustCol == 'True'">
+          <ng-template kendoGridFilterMenuTemplate let-filter let-column="column" let-filterService="filterService">
+            <simple-text-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
+            </simple-text-filter>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span
+              [ngClass]="{'red': dataItem.hasiactionstatus === 'O' || dataItem.hasiactionstatus === 'Y', 'green':dataItem.hasiactionstatus === 'R' || dataItem.hasiactionstatus === 'I'   }">
+              {{ dataItem.customerstatus  }}
+            </span>
+          </ng-template>
+        </kendo-grid-column>
+
+
+        <kendo-grid-column field="customerriskrating" title="Customer Risk Rating" width="200"
+          *ngIf="displayCustCol == 'True'">
+          <ng-template kendoGridFilterMenuTemplate let-filter let-column="column" let-filterService="filterService">
+            <simple-text-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
+            </simple-text-filter>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span
+              [ngClass]="{'red': dataItem.hasiactionstatus === 'O' || dataItem.hasiactionstatus === 'Y', 'green':dataItem.hasiactionstatus === 'R' || dataItem.hasiactionstatus === 'I'   }">
+              {{ dataItem.customerriskrating  }}
+            </span>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column field="customerreviewyear" title="Customer Review Year" width="200"
+          *ngIf="displayCustCol == 'True'">
+          <ng-template kendoGridFilterMenuTemplate let-filter let-column="column" let-filterService="filterService">
+            <simple-text-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
+            </simple-text-filter>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span
+              [ngClass]="{'red': dataItem.hasiactionstatus === 'O' || dataItem.hasiactionstatus === 'Y', 'green':dataItem.hasiactionstatus === 'R' || dataItem.hasiactionstatus === 'I'   }">
+              {{ dataItem.customerreviewyear  }}
+            </span>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column field="hasasource" title="Source" width="150">
+          <ng-template kendoGridFilterMenuTemplate let-filter let-column="column" let-filterService="filterService">
+            <simple-text-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
+            </simple-text-filter>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span
+              [ngClass]="{'red': dataItem.hasiactionstatus === 'O' || dataItem.hasiactionstatus === 'Y', 'green':dataItem.hasiactionstatus === 'R' || dataItem.hasiactionstatus === 'I'   }">
+              {{ dataItem.hasasource == "I" ? "Interface" : dataItem.hasasource == "S" ? "Survey" : dataItem.hasasource }}
+            </span>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column field="supcode" title="Project" width="150">
+          <ng-template kendoGridFilterMenuTemplate let-filter let-column="column" let-filterService="filterService">
+            <simple-text-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
+            </simple-text-filter>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span
+              [ngClass]="{'red': dataItem.hasiactionstatus === 'O' || dataItem.hasiactionstatus === 'Y', 'green':dataItem.hasiactionstatus === 'R' || dataItem.hasiactionstatus === 'I'   }">
+              {{ dataItem.supcode  }}
+            </span>
+          </ng-template>
+        </kendo-grid-column>
+
+
+
+
+        <kendo-grid-column field="hasscoreactual" title="Risk Score" width="130">
+          <ng-template kendoGridFilterMenuTemplate let-filter let-column="column" let-filterService="filterService">
+            <range-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
+            </range-filter>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span
+              [ngClass]="{'red': dataItem.hasiactionstatus === 'O' || dataItem.hasiactionstatus === 'Y', 'green':dataItem.hasiactionstatus === 'R' || dataItem.hasiactionstatus === 'I'   }">
+              {{ dataItem.hasscoreactual }}
+            </span>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column field="hasscoremax" title="Max Score" width="150">
+          <ng-template kendoGridFilterMenuTemplate let-filter let-column="column" let-filterService="filterService">
+            <range-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
+            </range-filter>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span
+              [ngClass]="{'red': dataItem.hasiactionstatus === 'O' || dataItem.hasiactionstatus === 'Y', 'green':dataItem.hasiactionstatus === 'R' || dataItem.hasiactionstatus === 'I'   }">
+              {{ dataItem.hasscoremax  }}
+            </span>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column field="hasscoreperc" title="Score %" width="150">
+          <ng-template kendoGridFilterMenuTemplate let-filter let-column="column" let-filterService="filterService">
+            <range-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
+            </range-filter>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span
+              [ngClass]="{'red': dataItem.hasiactionstatus === 'O' || dataItem.hasiactionstatus === 'Y', 'green':dataItem.hasiactionstatus === 'R' || dataItem.hasiactionstatus === 'I'   }">
+              <!-- {{ (dataItem.hasscoreactual / dataItem.hasscoremax) | riskScore  }} -->
+              {{dataItem.hasscoreperc}}
+            </span>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column field="hasscorebandname" title="Risk Band" width="150">
+          <ng-template kendoGridFilterMenuTemplate let-filter let-column="column" let-filterService="filterService">
+            <simple-text-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
+            </simple-text-filter>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span
+              [ngClass]="{'red': dataItem.hasiactionstatus === 'O' || dataItem.hasiactionstatus === 'Y', 'green':dataItem.hasiactionstatus === 'R' || dataItem.hasiactionstatus === 'I'   }">
+              {{ dataItem.hasscorebandname  }}
+            </span>
+          </ng-template>
+        </kendo-grid-column>
+
+
+
+      </kendo-grid>
+    </div>
+
+  </div>
+</div>
+
+<div class="actionOverlay"></div>
+
+<app-hns-res-assessment *ngIf="showAssessment" [fromAssessment]="true" [showAssessment]="showAssessment"
+  [selectedAction]="selectedAction" (closeAssessment)="closeAssessment($event)"></app-hns-res-assessment>
+
+<app-hns-res-edit-answer *ngIf="showEditAnswer" [isAssessment]="false" [showEditAnswer]="showEditAnswer"
+  [selectedAction]="selectedAction" [rootAssessment]="selectedAction" (closeEditAnswer)="closeEditAnswer($event)">
+</app-hns-res-edit-answer>
+
+<app-hns-res-add-edit-issue *ngIf="showIssue" [issueFormMode]="issueFormMode" [isAssessment]="false"
+  [showIssue]="showIssue" [selectedAction]="selectedAction" [rootAssessment]="selectedAction"
+  (closeIssueEvt)="closeIssue($event)"></app-hns-res-add-edit-issue>
+
+<app-hns-res-ans-image *ngIf="showImage" [showImage]="showImage" [isAssessment]="false"
+  [selectedAction]="selectedAction" [rootAction]="selectedAction" [imageFor]="'both'"
+  (closerImage)="closerImage($event)"></app-hns-res-ans-image>
+
+<app-hns-res-document *ngIf="showDoc" [showDoc]="showDoc" [selectedAction]="selectedAction"
+  (closeDocList)="closeDocList($event)"></app-hns-res-document>
+
+<app-hns-res-edit-asset-text *ngIf="showEditAssetText" [showEditAssetText]="showEditAssetText"
+  (closeEditAssetText)="closeEditAssetText($event)" [selectedAction]="selectedAction"></app-hns-res-edit-asset-text>
+
+<app-assessment-budget-code *ngIf="openBudgetList" [openBudgetList]="openBudgetList"
+  [selectedDefinition]="selectedAction" (closeBudgetList)="closeBudgetList($event)"></app-assessment-budget-code>
+
+<kendo-dialog title="Missing Redaction End Qualifier ($$$) in the following fields" *ngIf="dialogOpened"
+  (close)="closeDialog()" [minWidth]="250" [width]="670">
+
+  <div class="row">
+    <div class="col-md-12">
+      <p style="margin: 30px; text-align: center;">{{validatReportString}}</p>
+    </div>
+  </div>
+
+  <div class="row" style="margin-top: 20px;">
+    <div class="col-md-12 text-right">
+      <button type="button" class="btn btn-sm themeButton" (click)="closeDialog()">Ok</button>
+    </div>
+  </div>
+
+</kendo-dialog>

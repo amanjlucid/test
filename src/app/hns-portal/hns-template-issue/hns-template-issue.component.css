@@ -1,0 +1,25 @@
+.k-window-wrapper {
+    position: fixed !important;
+}
+
+.searchField{
+    height: 30px;
+    min-height: 30px !important;
+}
+
+.detailDiv {
+    margin-top: -17px;
+}
+.detailHeadingDiv {
+    width: 100%;
+    /* text-align: center; */
+    background: #d7d7d7;
+    position: relative;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+.detailHeadingDiv p {
+    margin: 0px;
+    /* padding-bottom: 4px; */
+}

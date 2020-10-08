@@ -1,0 +1,80 @@
+<div class="container-fluid flex-grow-1 container-p-y" style="padding-bottom: 4.5rem !important;" *ngIf="checkLoaded">
+
+  <div class="row">
+    <h4 class="font-weight-bold py-3 mb-2 col-md-8">
+      Welcome back, {{currentUser.userName | titlecase}}
+      <div class="text-muted MuseoSansRounded-300 mt-1">Today is {{weekday[today.getDay()] }},
+        {{ today.getDate()  + " " +months[today.getMonth()] +" "+ today.getFullYear()}}</div>
+    </h4>
+
+    <!-- <div class="col-md-4">
+      <button type="button" class="btn btn-primary" data-toggle="tooltip" data-placement="top" title=""
+        data-original-title="Tooltip Example">Tooltip Example</button>
+    </div> -->
+
+  </div>
+  <!-- <p  data-toggle="tooltip" data-placement="top" title="Hooray!" class="">Tool Tip Example</p> -->
+
+
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card eventDiv">
+        <div class="card-body">
+          <div class="col-md-4 eventChartDiv">
+            <p style="font-size:18px; color:#333333;">Events assigned to you </p>
+            <div id="calendar"></div>
+          </div>
+
+          <div class="col-md-4 eventChartDiv">
+            <div id="eventByStatus" class="pieChartContainer"></div>
+          </div>
+
+          <div class="col-md-4 eventChartDiv">
+            <div id="businessAreaEvent" class="pieChartContainer"></div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card eventDiv">
+        <div class="card-body">
+          <div class="col-md-6 eventChartDiv">
+            <div id="eventAssignedUser" class="pieChartContainer"></div>
+          </div>
+          <!-- <div class="col-md-2 eventChartDiv"></div> -->
+          <div class="col-md-6 eventChartDiv">
+            <div id="eventBySeverity" class="pieChartContainer"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+</div>
+
+<div class="example-wrapper">
+  <kendo-dialog title="Event(s)" *ngIf="notificationDialogOpened" (close)="closeNotificationDialog()" [minWidth]="250"
+    [width]="450">
+    <ul *ngIf="selectedCalendarEvents">
+      <li *ngFor="let selectedCalendarEvent of selectedCalendarEvents" style="margin-bottom:10px;">
+        <h4 style="margin:0px;">{{selectedCalendarEvent.title}}</h4>
+        <span style="display:block; margin-top: 3px;"><b>Records</b>: {{ selectedCalendarEvent.processedrecords }} of
+          {{selectedCalendarEvent.recordcount}} processed ( {{ selectedCalendarEvent.percentagecomplete }}% )</span>
+        <b>Created By: </b> {{ selectedCalendarEvent.createdby }} <b> Severity: </b> {{ selectedCalendarEvent.severity}}
+        <br>
+
+      </li>
+    </ul>
+    <kendo-dialog-actions>
+
+    </kendo-dialog-actions>
+  </kendo-dialog>
+</div>

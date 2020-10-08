@@ -1,0 +1,57 @@
+<kendo-window title="Edit Template Actions" *ngIf="templateActionOpen" (close)="closeTemplateActionMethod()" [top]="15"
+  [minWidth]="400" [width]="600" [height]="auto" [minHeight]="300">
+
+  <div class="row detailDiv">
+    <div class="col-md-12">
+      <div class="detailHeadingDiv">
+        <p>Question<span class="boldSpan">: {{selectedNode?.sqstr}} ({{selectedNode?.hasquestiontext}})
+          </span></p>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-2">
+    <div class="col-md-12">
+      <div class="row">
+        <div class="col-md-2">
+          <label class="col-form-label">Text Search:</label>
+        </div>
+        <div class="col-md-10">
+          <input type="text" (keyup)="search($event)" class="form-control searchField">
+        </div>
+      </div>
+
+      <div class="row mt-1">
+        <div class="col-md-12">
+          <kendo-grid #grid [data]="gridView" [height]="410" [selectable]="{
+            mode: 'single'
+          }" filterable="menu" [resizable]="false" [sortable]="{
+            allowUnsort: allowUnsort,
+            mode: multiple ? 'multiple' : 'single'
+            }" [skip]="state.skip" [pageSize]="pageSize" [rowHeight]="36" (pageChange)="pageChange($event)"
+            scrollable="virtual" [sort]="state.sort" [filter]="state.filter" (sortChange)="sortChange($event)"
+            (filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)" [navigable]="true">
+            <kendo-grid-column field="hasactiontext" title="Template Action">
+            </kendo-grid-column>
+          </kendo-grid>
+        </div>
+
+        <div class="col-md-12 mt-2 actionAreaBtn">
+          <button type="button" class="btn btn-sm themeButton mr-1" (click)="addUpdateAction('new')">Add</button>
+          <button type="button" class="btn btn-sm themeButton mr-1" (click)="addUpdateAction('edit')">Edit</button>
+          <button type="button" class="btn btn-sm themeButton mr-1" (click)="openConfirmationDialog()">Delete</button>
+          <button type="button" class="btn btn-sm themeButton pull-right" (click)="closeTemplateActionMethod()">Close</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="actionOverlay"></div>
+
+  <app-hns-add-template-action *ngIf="openActionPopup" [openActionPopup]="openActionPopup" [actionMode]="actionMode"
+    [selectedTemplateAction]="selectedTemplateAction" [selectedNode]="selectedNode"
+    (isSuccessFullSubmit)="isSuccessFullSubmit($event)" (closeActionPopup)="closeActionPopup($event)"></app-hns-add-template-action>
+
+</kendo-window>

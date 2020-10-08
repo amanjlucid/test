@@ -1,0 +1,396 @@
+<kendo-window title="{{title}}" *ngIf="definitionFormOpen" (close)="closeForm()" [top]="10" [minWidth]="400"
+  [width]="900" [height]="auto" [minHeight]="200">
+  <form class="difinitionForm" [formGroup]="definitionForm" (ngSubmit)="onSubmit()" autocomplete="off">
+    <div class="row">
+      <div class="col-md-7">
+        <div class="row">
+          <div class="col-md-2">
+            <label class="col-form-label">Code</label>
+          </div>
+
+          <div class="col-md-4">
+            <div class="wrapdiv">
+              <input #firstInp [readonly]="definitionFormMode == 'view' || definitionFormMode == 'edit'"
+                onkeyup="this.value = this.value.toUpperCase();" type="text"
+                [ngClass]="(definitionFormMode == 'view' || definitionFormMode == 'edit')?'readOnlycl':''"
+                class="form-control" formControlName="code" [ngClass]="{ 'is-invalid': submitted && formErrors.code }">
+              <i title="10 character long code representing specific Health and Safety Definition."
+                class="fas fa-info-circle d-block"></i>
+            </div>
+
+            <div *ngIf="submitted && formErrors.code" class="invalid-feedback">
+              <div *ngIf="formErrors.code">{{ formErrors.code }}</div>
+            </div>
+          </div>
+
+          <div class="col-md-2">
+            <label class="col-form-label">Version</label>
+          </div>
+
+          <div class="col-md-4">
+            <div class="wrapdiv">
+              <input type="text" [readonly]="isReadOnly" class="form-control readOnlycl" formControlName="version"
+                [ngClass]="{ 'is-invalid': submitted && formErrors.version }">
+              <i title="Version number of Health and Safety Definition." class="fas fa-info-circle d-block"></i>
+            </div>
+            <div *ngIf="submitted && formErrors.version" class="invalid-feedback">
+              <div *ngIf="formErrors.version">{{ formErrors.version }}</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="col-md-5">
+        <div class="row">
+          <div class="col-md-4 text-right">
+            <label class="col-form-label inUserLabel">In Use?</label>
+          </div>
+          <div class="col-md-8">
+            <div class="wrapdivchk">
+              <input type="checkbox" class="form-control checkboxCl" formControlName="inUse"
+                [ngClass]="{ 'is-invalid': submitted && formErrors.inUse }">
+                <div class="icircle"><i class="fas fa-info-circle d-block" title="In Use"></i></div>
+              <div *ngIf="submitted && formErrors.inUse" class="invalid-feedback">
+                <div *ngIf="formErrors.inUse">{{ formErrors.inUse }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+
+    <div class="row mt-1">
+      <div class="col-md-7">
+        <div class="row">
+          <div class="col-md-2">
+            <label class="col-form-label">Name</label>
+          </div>
+          <div class="col-md-10">
+            <div class="wrapdivName">
+              <input #secondInp [readonly]="definitionFormMode == 'view'" type="text" class="form-control" formControlName="name"
+                [ngClass]="{ 'is-invalid': submitted && formErrors.name }"><i title="35 character long text field."
+                class="fas fa-info-circle d-block"></i>
+            </div>
+
+            <div *ngIf="submitted && formErrors.name" class="invalid-feedback">
+              <div *ngIf="formErrors.name">{{ formErrors.name }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-5">
+        <div class="row">
+          <div class="col-md-4 text-right">
+            <label class="col-form-label inUserLabel">Status</label>
+          </div>
+
+          <div class="col-md-8">
+            <div class="wrapdivSelect">
+              <select class="form-control" formControlName="status"
+                [ngClass]="{ 'is-invalid': submitted && formErrors.status }">
+                <option value="A">Active</option>
+                <option value="I">Inactive</option>
+              </select>
+              <i title="Active or Inactive indicates whether the Health and Safety definition is available for selection."
+                class="fas fa-info-circle d-block"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="row mt-2">
+      <div class="col-md-7">
+        <div class="row">
+          <div class="col-md-2 p-0">
+            <label class="col-form-label">Survey Type</label>
+          </div>
+          <div class="col-md-10">
+            <div class="wrapdivSt">
+              <input type="text" [readonly]="isReadOnly" class="form-control readOnlycl" formControlName="surveyType1"
+                [ngClass]="{ 'is-invalid': submitted && formErrors.surveyType1 }">
+              <input type="text" [readonly]="isReadOnly" class="form-control readOnlycl" formControlName="surveyType2"
+                [ngClass]="{ 'is-invalid': submitted && formErrors.surveyType2 }">
+              <button (click)="openServiceType()" [disabled]="definitionFormMode == 'view'" type="button"
+                class="btn-sm btn stBtn">...</button>
+              <i title="Select a Survey Type to validate asset selection against surveys."
+                class="fas fa-info-circle d-block"></i>
+            </div>
+            <div *ngIf="submitted && formErrors.surveyType1" class="invalid-feedback">
+              <div *ngIf="formErrors.surveyType1">Survey Type is required</div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-5">
+        <div class="row">
+          <div class="col-md-4 text-right">
+            <label class="col-form-label inUserLabel">Scoring Method</label>
+          </div>
+
+          <div class="col-md-8">
+            <div class="wrapdivSelect">
+              <select class="form-control" formControlName="scoringMethod"
+                [ngClass]="{ 'is-invalid': submitted && formErrors.scoringMethod }">
+                <option value="0">No Risk Rating Method</option>
+                <option value="1">Scoring Rules & Bands</option>
+                <option value="2">Probability & Severity</option>
+              </select>
+              <i title="Indicates the type of scoring method required (if required)."
+                class="fas fa-info-circle d-block"></i>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+
+    <!-- <div class="row mt-2">
+      <div class="col-md-8">
+        <div class="row">
+          <div class="col-md-2">
+            <label class="col-form-label">Code</label>
+          </div>
+          <div class="col-md-4">
+            <div class="wrapdiv">
+              <input [readonly]="definitionFormMode == 'view' || definitionFormMode == 'edit'"
+                onkeyup="this.value = this.value.toUpperCase();" type="text"
+                [ngClass]="(definitionFormMode == 'view' || definitionFormMode == 'edit')?'readOnlycl':''"
+                class="form-control" formControlName="code" [ngClass]="{ 'is-invalid': submitted && formErrors.code }">
+              <i title="10 character long code representing specific Health and Safety Definition."
+                class="fas fa-info-circle d-block"></i>
+            </div>
+
+            <div *ngIf="submitted && formErrors.code" class="invalid-feedback">
+              <div *ngIf="formErrors.code">{{ formErrors.code }}</div>
+            </div>
+          </div>
+
+          <div class="col-md-2">
+            <label class="col-form-label">Version</label>
+          </div>
+          <div class="col-md-4">
+            <div class="wrapdiv">
+              <input type="text" [readonly]="isReadOnly" class="form-control readOnlycl" formControlName="version"
+                [ngClass]="{ 'is-invalid': submitted && formErrors.version }"><i
+                title="Version number of Health and Safety Definition." class="fas fa-info-circle d-block"></i>
+            </div>
+            <div *ngIf="submitted && formErrors.version" class="invalid-feedback">
+              <div *ngIf="formErrors.version">{{ formErrors.version }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="row rightRow">
+          <div class="col-md-12 rightSide">
+            <label class="col-form-label inUserLabel">In Use?</label>
+            <input type="checkbox" class="form-control checkboxCl" formControlName="inUse"
+              [ngClass]="{ 'is-invalid': submitted && formErrors.inUse }"><i class="fas fa-info-circle d-block"></i>
+            <div *ngIf="submitted && formErrors.inUse" class="invalid-feedback">
+              <div *ngIf="formErrors.inUse">{{ formErrors.inUse }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div> -->
+
+
+    <!-- <div class="row mt-2">
+      <div class="col-md-8">
+        <div class="row">
+          <div class="col-md-2">
+            <label class="col-form-label">Name</label>
+          </div>
+          <div class="col-md-10">
+            <div class="wrapdiv">
+              <input [readonly]="definitionFormMode == 'view'" type="text" class="form-control" formControlName="name"
+                [ngClass]="{ 'is-invalid': submitted && formErrors.name }"><i title="35 character long text field."
+                class="fas fa-info-circle d-block"></i>
+            </div>
+            <div *ngIf="submitted && formErrors.name" class="invalid-feedback">
+              <div *ngIf="formErrors.name">{{ formErrors.name }}</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="row rightRow">
+          <div class="col-md-12 rightSide">
+            <label class="col-form-label rightSidelbl">Status</label>
+            <select class="form-control" formControlName="status"
+              [ngClass]="{ 'is-invalid': submitted && formErrors.status }">
+              <option value="A">Active</option>
+              <option value="I">Inactive</option>
+            </select>
+            <i title="Active or Inactive indicates whether the Health and Safety definition is available for selection."
+              class="fas fa-info-circle d-block"></i>
+            
+          </div>
+        </div>
+      </div>
+    </div> -->
+
+    <!-- <div class="row mt-2">
+      <div class="col-md-8">
+        <div class="row">
+          <div class="col-md-2">
+            <label class="col-form-label">Survey Type</label>
+          </div>
+          <div class="col-md-3">
+            <input type="text" [readonly]="isReadOnly" class="form-control readOnlycl" formControlName="surveyType1"
+              [ngClass]="{ 'is-invalid': submitted && formErrors.surveyType1 }">
+
+          </div>
+          <div class="col-md-7">
+            <div class="wrapdiv">
+              <input type="text" [readonly]="isReadOnly" class="form-control readOnlycl" formControlName="surveyType2"
+                [ngClass]="{ 'is-invalid': submitted && formErrors.surveyType2 }">
+              <button (click)="openServiceType()" [disabled]="definitionFormMode == 'view'" type="button"
+                class="btn-sm btn stBtn">...</button>
+              <i title="Select a Survey Type to validate asset selection against surveys."
+                class="fas fa-info-circle d-block"></i>
+            </div>
+          </div>
+          <div class="col-md-2"></div>
+          <div *ngIf="submitted && formErrors.surveyType1" class="invalid-feedback">
+            <div *ngIf="formErrors.surveyType1">Survey Type is required</div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="row rightRow">
+          <div class="col-md-12 rightSide">
+            <label class="col-form-label rightSidelbl">Scoring Method</label>
+            <select class="form-control" formControlName="scoringMethod"
+              [ngClass]="{ 'is-invalid': submitted && formErrors.scoringMethod }">
+              <option value="0">No Risk Rating Method</option>
+              <option value="1">Scoring Rules & Bands</option>
+              <option value="2">Probabilit & Severity</option>
+
+            </select>
+            <i title="Indicates the type of scoring method required (if required)."
+              class="fas fa-info-circle d-block"></i>
+          </div>
+        </div>
+      </div>
+    </div> -->
+
+
+    <div class="changedBy" *ngIf='definitionFormMode == "edit" || definitionFormMode == "view"'>
+      <div class="row">
+        <div class="col-md-2">
+          <label class="col-form-label">Created By</label>
+        </div>
+        <div class="col-md-4">
+          <input [readonly]="isReadOnly" type="text" class="form-control" formControlName="createdBy"
+            [ngClass]="{ 'is-invalid': submitted && formErrors.createdBy }">
+        </div>
+        <div class="col-md-2">
+          <label class="col-form-label">Modified By</label>
+        </div>
+        <div class="col-md-4">
+          <input [readonly]="isReadOnly" type="text" class="form-control" formControlName="modifiedBy"
+            [ngClass]="{ 'is-invalid': submitted && formErrors.modifiedBy }">
+        </div>
+
+      </div>
+
+      <div class="row mt-2">
+        <div class="col-md-2">
+          <label class="col-form-label">Created Date</label>
+        </div>
+        <div class="col-md-4">
+          <input [readonly]="isReadOnly" type="text" class="form-control" formControlName="createdDate"
+          [ngClass]="{ 'is-invalid': submitted && formErrors.createdDate }">
+        </div>
+
+        <div class="col-md-2">
+          <label class="col-form-label">Modified Date</label>
+        </div>
+        <div class="col-md-4">
+          <input [readonly]="isReadOnly" type="text" class="form-control" formControlName="modifiedDate"
+          [ngClass]="{ 'is-invalid': submitted && formErrors.modifiedDate }">
+        </div>
+      </div>
+
+    </div>
+
+
+    <!-- <div class="changedBy" *ngIf='definitionFormMode == "edit" || definitionFormMode == "view"'>
+      <div class="row mt-2">
+        <div class="col-md-12">
+          <div class="row">
+            <div class="col-md-2">
+              <label class="col-form-label">Created By</label>
+            </div>
+            <div class="col-md-4">
+              <input [readonly]="isReadOnly" type="text" class="form-control" formControlName="createdBy"
+                [ngClass]="{ 'is-invalid': submitted && formErrors.createdBy }">
+            </div>
+
+            <div class="col-md-2">
+              <label class="col-form-label">Modified By</label>
+            </div>
+            <div class="col-md-4">
+              <input [readonly]="isReadOnly" type="text" class="form-control" formControlName="modifiedBy"
+                [ngClass]="{ 'is-invalid': submitted && formErrors.modifiedBy }">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mt-2">
+        <div class="col-md-12">
+          <div class="row">
+            <div class="col-md-2">
+              <label class="col-form-label">Created Date</label>
+            </div>
+            <div class="col-md-4">
+              <input [readonly]="isReadOnly" type="text" class="form-control" formControlName="createdDate"
+                [ngClass]="{ 'is-invalid': submitted && formErrors.createdDate }">
+            </div>
+
+            <div class="col-md-2">
+              <label class="col-form-label">Modified Date</label>
+            </div>
+            <div class="col-md-4">
+              <input [readonly]="isReadOnly" type="text" class="form-control" formControlName="modifiedDate"
+                [ngClass]="{ 'is-invalid': submitted && formErrors.modifiedDate }">
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div> -->
+
+
+    <div class="row mt-3">
+      <div class="col-md-12 text-right difinitionFormActionArea">
+        <button type="button" class="btn btn-sm themeButton" (click)="closeForm()">Cancel</button>
+        <button type="submit" class="btn btn-sm themeButton">OK</button>
+      </div>
+    </div>
+
+  </form>
+
+  <div class="defiFormOverlay"></div>
+
+  <app-hns-survey-type-list [surveyTypeOpen]="surveyTypeOpen" *ngIf="surveyTypeOpen"
+    (selectedSurveyTypeEvent)="setSurveyType($event)" (closeSurveyType)="closeSurveyType($event)">
+  </app-hns-survey-type-list>
+</kendo-window>

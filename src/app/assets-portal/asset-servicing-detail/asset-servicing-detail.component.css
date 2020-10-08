@@ -1,0 +1,42 @@
+.k-window-wrapper{
+    position: fixed !important;
+}
+
+.assetService{
+    width:100%;
+    height: 100%;
+}
+
+.assetDetail{
+    background-color: #eaeaea;
+    padding: 5px 0px 12px 10px;
+    border-radius: 2px;
+    margin-top:-8px;
+}
+
+.assetDetail p{
+    font-weight: 600;
+}
+
+.buttonDiv button{
+    margin-left: 5px;
+    margin-top: 15px;
+}
+
+
+@media print {
+    body * {
+      visibility: hidden;
+    }
+    #print-section, #print-section * {
+      visibility: visible;
+    }
+    #print-section {
+      position: absolute;
+      left: 0;
+      top: 0;
+      
+    }
+  }
+  
+  

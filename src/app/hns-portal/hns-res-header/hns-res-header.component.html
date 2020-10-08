@@ -1,0 +1,157 @@
+<div class="container-fluid flex-grow-1">
+  <div class="row">
+    <div class="col-md-2 col-sm-3">
+      <h4 class="font-weight-bold py-3 mb-1">
+        <!-- <span class="text-muted font-weight-light">Assets/</span> Assets -->
+        {{pageName}}
+      </h4>
+    </div>
+
+
+
+    <div class="col-md-9 col-sm-9">
+
+    </div>
+
+    <div class="col-md-1 col-sm-12"></div>
+
+  </div>
+
+
+  <div class="row mt-2 hiearchyDiv">
+    <label class="col-sm-12 col-md-1">Hierarchy</label>
+    <div class="col-sm-12 col-md-10 pl-0 hiearchyTree">
+      <ul id="myUL">
+        <ng-template #recursiveList let-printHiearchy>
+          <li *ngFor="let item of printHiearchy">
+            <span><span style="color:red;">({{ item?.assetName }})</span> {{ item?.assetId }} -
+              {{ item?.address }}</span>
+            <ul *ngIf="item.childLayers.length > 0">
+              <ng-container *ngTemplateOutlet="recursiveList; context:{ $implicit: item.childLayers }"></ng-container>
+            </ul>
+          </li>
+        </ng-template>
+        <ng-container *ngTemplateOutlet="recursiveList; context:{ $implicit: printHiearchy }"></ng-container>
+
+      </ul>
+    </div>
+
+    <div class="hiearchyBtn col-md-1 p-0">
+      <button type="button" (click)="openHiearchyWindow()" class="btn btn-sm">...</button>
+      <button type="button" (click)="clearPropSec()" class="btn btn-sm">Clear</button>
+    </div>
+
+
+  </div>
+
+  <div class="row">
+    <label class="col-sm-12 col-md-1">Asset ID:</label>
+    <input type="text" (keyup)="setAssetId($event)" [(ngModel)]="filterValues.assId"
+      class="col-sm-12 col-md-1 assetInpBox">
+
+    <label class="col-sm-12 col-md-2 addr_search">Address Search:</label>
+    <input type="text" (keyup)="setAddress($event)" [(ngModel)]="filterValues.addressSearch"
+      class="col-sm-12 col-md-4 assetInpBox">
+    <div class="col-sm-12 col-md-3">
+      <div class="radioDiv">
+        <!-- <div class="gridStateDiv" *ngIf="pageName == 'Assessments'">
+          <label class="radio-inline">
+            <input (ngModelChange)="onGridStateChange($event)" value="Y" [(ngModel)]="gridStat" type="radio"
+              name="gridStat">Latest
+          </label>
+          <label class="radio-inline">
+            <input (ngModelChange)="onGridStateChange($event)" value="N" [(ngModel)]="gridStat" type="radio"
+              name="gridStat" checked>All History
+          </label>
+          &nbsp;&nbsp;
+        </div> -->
+
+        <label class="radio-inline">
+          <input (ngModelChange)="onChange($event)" [(ngModel)]="filterValues.status" value="X" name="status"
+            type="radio">All
+        </label>
+        <label class="radio-inline" >
+          <input (ngModelChange)="onChange($event)" [(ngModel)]="filterValues.status" value="A" name="status"
+            type="radio">Active
+        </label>
+        <label class="radio-inline" >
+          <input (ngModelChange)="onChange($event)" [(ngModel)]="filterValues.status" value="I" name="status"
+            type="radio">Inactive
+        </label>
+
+      </div>
+
+
+    </div>
+
+    <div class="goBtnDiv col-sm-12 col-md-1 ">
+      <button class="btn btn-sm" (click)="clearAssetAndAddress()">Clear</button>
+    </div>
+
+  </div>
+
+</div>
+
+
+
+<!-- window for add new hiearchy starts -->
+<kendo-window [height]="640" [top]="15" [width]="700" title="Select Hierarchy..." *ngIf="hiearchyWindow"
+  (close)="closeHiearchyWindow()">
+  <div class="row hiearchyDiv">
+    <div class="col-md-12">
+      <div class="form-group">
+        <select class="form-control" id="sel1" (change)="getHiearchyTree()" [(ngModel)]="selectedHiearchyType">
+          <option *ngFor="let hiearchyTypeList of hiearchyTypeLists" [ngValue]="hiearchyTypeList.hierarchyTypeCode">
+            {{hiearchyTypeList.hierarchyTypeName}}</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="col-md-12">
+      <ul class="tree" *ngIf="hierarchyLevels">
+        <ng-template #recursiveList let-hierarchyLevels>
+          <li *ngFor="let item of hierarchyLevels" class="{{item?.assetId}}">
+            <!-- <input *ngIf="item.childLayers.length > 0" type="checkbox" id="{{item?.assetId}}" /> -->
+
+            <!-- <label  [class.tree_label]="item.childLayers.length > 0" for="{{item?.assetId}}">({{ item?.assetName }}) {{ item?.assetId }} - {{ item?.address }}</label> -->
+
+            <ng-container *ngIf="item.childLayers.length > 0; then someContent else otherContent"></ng-container>
+            <ng-template #someContent>
+              <input type="checkbox" [checked]="visitedHierarchy[item?.assetId] != undefined" id="{{item?.assetId}}"
+                class="chkBox" />
+              <label
+                [className]="selectedhierarchyLevel != undefined ? ( selectedhierarchyLevel.assetId == item.assetId ? 'tree_label selected' : 'tree_label') : 'tree_label'"
+                (click)="selectHiearchy($event, item)" for="{{item?.assetId}}"><span
+                  style="color:red;">({{ item?.assetName }})</span>
+                {{ item?.assetId }} - {{ item?.address }}</label>
+            </ng-template>
+            <ng-template #otherContent>
+              <label (click)="selectHiearchy($event, item)"> <span
+                  [className]="selectedhierarchyLevel != undefined ? ( selectedhierarchyLevel.assetId == item.assetId ? 'tree_label selected' : 'tree_label') : 'tree_label'"><span
+                    style="color:red;">({{ item?.assetName }})</span> {{ item?.assetId }} -
+                  {{ item?.address }}</span></label>
+            </ng-template>
+
+            <ul *ngIf="item.childLayers.length > 0">
+              <ng-container *ngTemplateOutlet="recursiveList; context:{ $implicit: item.childLayers }"></ng-container>
+            </ul>
+          </li>
+        </ng-template>
+        <ng-container *ngTemplateOutlet="recursiveList; context:{ $implicit: hierarchyLevels }"></ng-container>
+      </ul>
+
+
+      <div class="pull-right footerButton footerSec">
+        <button (click)="closeHiearchyWindow()" class="btn btn-sm">Cancel</button>
+        <button class="btn btn-sm btn-default themeButton" (click)="setHiearchyValues()">Ok</button>
+
+      </div>
+
+
+    </div>
+
+  </div>
+
+</kendo-window>
+<!-- window for add new hiearchy ends -->
+<div class="portalwBlurtab"></div>

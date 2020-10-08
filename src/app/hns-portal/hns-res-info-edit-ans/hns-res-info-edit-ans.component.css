@@ -1,0 +1,71 @@
+.k-window-wrapper {
+    position: fixed !important;
+}
+
+span .left{
+    font-weight: 600;
+}
+
+.spellChecker {
+    margin-left: 16px;
+    border: 1px solid #a59f9f;
+    width: 40px;
+    margin-top: 3px;
+    min-width: 40px;
+    cursor: pointer !important;
+}
+
+.spellTxt {
+    font-family: Arial, sans-serif;
+    font-size: 0.8em;
+    top: -6px;
+    left: 1px;
+}
+
+
+.rightCheck {
+    margin-top: 6px;
+    color: green;
+}
+
+.editAnswerHeader {
+    background: gainsboro;
+    /* font-size: 15px; */
+    font-weight: 600;
+    line-height: 1.6;
+    margin-top: -17px;
+    padding-top: 6px;
+    padding-bottom: 9px;
+    line-height: 1.6;
+}
+
+
+.disInherit {
+    display: inherit;
+}
+
+.fa-info-circle {
+    margin-left: 10px;
+    height: 20px;
+    font-size: 20px;
+    margin-top: 7px;
+}
+
+.chCol1{
+    width: 30%;
+}
+
+.chCol2{
+    width: 60%;
+    margin-left: 2px;
+}
+
+.sepSec{
+    border: 1px solid #dfdfdf;
+    padding: 7px 12px;
+    margin: 5px 0px;
+}
+
+.fnwieght{
+    font-weight: 600;
+}

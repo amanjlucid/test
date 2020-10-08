@@ -1,0 +1,164 @@
+<div class="row" *ngIf="qualityData?.length > 0">
+    
+      <div class="col-md-2">
+          <div class="dropdown" id="nesting-dropdown-demo">
+              <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Export</button>
+              <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
+    
+                  <a class="dropdown-item" (click)="exportToExcel(grid,'xlsx')" href="javascript:void(0)">Export Grid</a>
+                  <a class="dropdown-item" (click)="exportToExcel(grid,'xlsx','selected')" href="javascript:void(0)">Export
+                      Selected</a>
+                <!-- <div class="dropdown-toggle">
+                  <div class="dropdown-item">Export Grid</div>
+                  <div class="dropdown-menu">
+                      <a class="dropdown-item" (click)="exportToExcel(grid,'xlsx')" href="javascript:void(0)">Export Excel</a>
+                      <a class="dropdown-item" (click)="exportToExcel(grid,'csv')" href="javascript:void(0)">Export Csv</a>
+                      <a class="dropdown-item" (click)="exportToExcel(grid,'txt')" href="javascript:void(0)">Export Text</a>
+                      <a class="dropdown-item" (click)="exportToExcel(grid,'html')" href="javascript:void(0)">Export Html</a>
+                  </div>
+                </div>
+               
+               
+                <div class="dropdown-toggle">
+                  <div class="dropdown-item">Export Selected</div>
+                  <div class="dropdown-menu">
+                      <a class="dropdown-item" (click)="exportToExcel(grid,'xlsx','selected')" href="javascript:void(0)">Export Excel</a>
+                      <a class="dropdown-item" (click)="exportToExcel(grid,'csv','selected')" href="javascript:void(0)">Export Csv</a>
+                      <a class="dropdown-item" (click)="exportToExcel(grid,'txt','selected')" href="javascript:void(0)">Export Text</a>
+                      <a class="dropdown-item" (click)="exportToExcel(grid,'html','selected')" href="javascript:void(0)">Export Html</a>
+                  </div>
+                </div> -->
+              </div>
+            </div>
+        </div>
+  </div>
+
+<div class="row mt-2">
+    <div class="col-md-12 qualityDiv">
+      <kendo-grid 
+      #grid="kendoGrid"
+      [data]="gridView"
+      [selectable]="{
+        mode: 'multiple'
+      }" 
+      [kendoGridSelectBy]="mySelectionKey"
+      [selectedKeys]="mySelection"
+      [groupable]="true" 
+      (groupChange)="groupChange($event)"
+      [group]="state.group"
+      [skip]="state.skip" 
+      [sort]="state.sort" 
+      [filter]="state.filter"
+      filterable="menu" 
+      [resizable]="true"
+      [sortable]="{
+            allowUnsort: allowUnsort,
+            mode: multiple ? 'multiple' : 'single'
+            }" 
+      (sortChange)="sortChange($event)" 
+      (filterChange)="filterChange($event)" 
+      [height]="610"
+      
+      >
+        <kendo-grid-column field="pass_or_Fail" title="" width="30" [filterable]="true" [style]="{'padding': '8px'}" [headerStyle]="{'margin-left': '8px'}">
+            <ng-template kendoGridCellTemplate let-dataItem>
+                <!-- <i data-toggle="dropdown" aria-expanded="true" style="color: green;" *ngIf="dataItem.pass_or_Fail == 'Pass'" class="fas fa-check d-block"></i> -->
+                <!-- <i data-toggle="dropdown" aria-expanded="true" style="color: red; margin-left: 2px;" *ngIf="dataItem.pass_or_Fail == 'Fail'" class="fas fa-times d-block"></i>
+                <i data-toggle="dropdown" aria-expanded="true" style="color: rgb(89, 91, 179);" *ngIf="dataItem.pass_or_Fail == 'Error'" class="fas fa-exclamation-triangle d-block"></i> -->
+
+
+
+                <!-- <i *ngIf="dataItem.Discontinued" class="fas fa-sticky-note d-block"></i> -->
+
+                <img style="height: 14px;" *ngIf="dataItem.pass_or_Fail == 'Pass'" src="assets/img/icons/tick.png" />
+                <img style="height: 14px;" *ngIf="dataItem.pass_or_Fail == 'Fail'" src="assets/img/icons/cross.png" />
+                <img style="height: 14px;" *ngIf="dataItem.pass_or_Fail == 'Error'" src="assets/img/icons/warning.png" />
+            
+            
+              </ng-template>
+
+
+        </kendo-grid-column>
+        <kendo-grid-column field="run_Date" title="Run Date" width="152">
+            <ng-template kendoGridCellTemplate let-dataItem>
+                <span [style.color]="dataItem.pass_or_Fail == 'Fail' ? 'red' : 'black'" >
+                  {{ dataItem.run_Date }}
+                </span>
+              </ng-template>
+         
+        </kendo-grid-column>
+        <kendo-grid-column field="run_ID" title="Run ID" width="110" filter="numeric">
+            <ng-template kendoGridCellTemplate let-dataItem>
+                <span [style.color]="dataItem.pass_or_Fail == 'Fail' ? 'red' : 'black'" >
+                  {{ dataItem.run_ID }}
+                </span>
+              </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column field="quality_Standard" title="Quality Standard" width="160">
+            <ng-template kendoGridCellTemplate let-dataItem>
+                <span [style.color]="dataItem.pass_or_Fail == 'Fail' ? 'red' : 'black'" >
+                  {{ dataItem.quality_Standard }}
+                </span>
+              </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column field="quality_Standard_name" title="Quality Standard Name" width="190">
+            <ng-template kendoGridCellTemplate let-dataItem>
+                <span [style.color]="dataItem.pass_or_Fail == 'Fail' ? 'red' : 'black'" >
+                  {{ dataItem.quality_Standard_name }}
+                </span>
+              </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column field="quality_Run_Name" title="Quality Run Name" width="190">
+            <ng-template kendoGridCellTemplate let-dataItem>
+                <span [style.color]="dataItem.pass_or_Fail == 'Fail' ? 'red' : 'black'" >
+                  {{ dataItem.quality_Run_Name }}
+                </span>
+              </ng-template>
+        </kendo-grid-column>
+        
+        <kendo-grid-column field="run_Type" title="Run Type" width="110">
+            <ng-template kendoGridCellTemplate let-dataItem>
+                <span [style.color]="dataItem.pass_or_Fail == 'Fail' ? 'red' : 'black'" >
+                  {{ dataItem.run_Type == 'REQUIREMNT' ? 'REQUIREMENT' : dataItem.run_Type }}
+                </span>
+              </ng-template>
+          </kendo-grid-column>
+          <kendo-grid-column field="cost_Horizon" title="Cost Horizon" width="140" filter="numeric">
+              <ng-template kendoGridCellTemplate let-dataItem>
+                  <span [style.color]="dataItem.pass_or_Fail == 'Fail' ? 'red' : 'black'" >
+                    {{ dataItem.cost_Horizon }}
+                  </span>
+                </ng-template>
+            </kendo-grid-column>
+            <kendo-grid-column field="current_Fail_Cost" title="Current Fail Cost" width="160" filter="numeric">
+                <ng-template kendoGridCellTemplate let-dataItem>
+                    <span [style.color]="dataItem.pass_or_Fail == 'Fail' ? 'red' : 'black'" >
+                      {{'£'}}{{ helper.moneyFormat(dataItem.current_Fail_Cost) }}
+                    </span>
+                  </ng-template>
+              </kendo-grid-column>
+              <kendo-grid-column field="future_Failure_Cost" title="Future Failure Cost" width="180" filter="numeric">
+                  <ng-template kendoGridCellTemplate let-dataItem>
+                      <span [style.color]="dataItem.pass_or_Fail == 'Fail' ? 'red' : 'black'" >
+                          {{'£'}}{{ helper.moneyFormat(dataItem.future_Failure_Cost) }}
+                      </span>
+                    </ng-template>
+                </kendo-grid-column>
+                <kendo-grid-column field="financial_Year" title="Financial Year" width="140" filter="numeric">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span [style.color]="dataItem.pass_or_Fail == 'Fail' ? 'red' : 'black'" >
+                          {{ dataItem.financial_Year }}
+                        </span>
+                      </ng-template>
+                  </kendo-grid-column>
+        <kendo-grid-excel fileName="{{fileName}}">
+        </kendo-grid-excel>
+        
+  
+      </kendo-grid>
+  
+    </div>
+    
+  </div>
+
+  

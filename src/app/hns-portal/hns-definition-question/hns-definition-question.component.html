@@ -1,0 +1,330 @@
+<kendo-window title="{{title}}" *ngIf="isQuestionOpen" (close)="closeDefQuesForm()" [top]="5" [minWidth]="400"
+  [width]="840" [(height)]="windowHeight" [minHeight]="500">
+
+  <div class="row detailDiv">
+    <div class="detailHeadingDiv">
+      <p>Definition<span class="boldSpan">: {{selectedDefinition?.hascode}} ({{selectedDefinition?.hasversion}})
+          {{selectedDefinition?.hasname}}</span></p>
+      <p>Group<span class="boldSpan">: {{nodeMap?.parentGroup}}</span></p>
+      <p>Heading<span class="boldSpan">: {{nodeMap?.parentHeading}}</span></p>
+    </div>
+  </div>
+
+
+  <form class="difinitionQuestionForm mt-3" [formGroup]="definitionQuesForm" (ngSubmit)="onSubmit()" autocomplete="off">
+    <div class="row">
+      <div class="col-md-2">
+        <label class="col-form-label">Question</label>
+      </div>
+      <div class="col-md-10">
+        <div class="divwrap">
+          <textarea #firstInp formControlName="question" rows="1" [ngClass]="{ 'is-invalid': submitted && formErrors.question }"
+            class="form-control"></textarea>
+          <i title="Text for Health and Safety Question" class="fas fa-info-circle d-block inputI"></i>
+        </div>
+
+        <div *ngIf="submitted && formErrors.question" class="invalid-feedback">
+          <div *ngIf="formErrors.question">{{ formErrors.question }}</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="row mt-1">
+      <div class="col-md-2">
+        <label class="col-form-label">Question Code</label>
+      </div>
+      <div class="col-md-10">
+        <div class="divwrap">
+          <input type="text" formControlName="questionCode"
+            [ngClass]="{ 'is-invalid': submitted && formErrors.questionCode }" class="form-control input-sm">
+          <i title="Text for Health and Safety Question" class="fas fa-info-circle d-block inputI"></i>
+        </div>
+
+        <div *ngIf="submitted && formErrors.questionCode" class="invalid-feedback">
+          <div *ngIf="formErrors.questionCode">{{ formErrors.questionCode }}</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="row">
+      <div class="col-md-2">
+        <label class="col-form-label">Question Type</label>
+      </div>
+      <div class="col-md-10">
+        <div class="questionType">
+          <div class="radioDiv">
+            <input type="radio" class="chk" id="questionTypeY" value="1" formControlName="questionType" checked>
+            <label class="" for="questionTypeY">Yes or No </label>
+          </div>
+          <div class="radioDiv">
+            <input type="radio" id="questionTypeYN" class="chk" value="2" formControlName="questionType">
+            <label class="" for="questionTypeYN">Yes, No or NA</label>
+          </div>
+          <div class="radioDiv">
+            <input type="radio" id="questionTypeYNA" class="chk" value="3" formControlName="questionType">
+            <label class="" for="questionTypeYNA">Information</label>
+          </div>
+          <i title="What type of question is being asked (Information or a required response of Yes,No or Not Applicable.)"
+            class="fas fa-info-circle d-block radioI"></i>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="row mt-2">
+      <span class="col-md-12">{{scoringRule}}</span>
+    </div>
+
+    <div class="row" *ngIf="quesType != 3">
+      <div class="noScoringRules">
+        <div class="col-md-12">
+          <div class="row">
+            <div class="col-md-4"></div>
+            <div class="col-md-2"><label class="col-form-label">Yes</label></div>
+            <div class="col-md-2"><label class="col-form-label">No</label></div>
+            <div class="col-md-2"><label class="col-form-label">N/A</label></div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-4"><label class="col-form-label">Action Mandatory for answer of: </label></div>
+            <div class="col-md-2 chkDiv">
+              <input formControlName="actionYes" type="checkbox">
+              <i title="Is an Action required when the answer is Yes?" class="fas fa-info-circle d-block"></i>
+            </div>
+            <div class="col-md-2 chkDiv">
+              <input formControlName="actionNo" type="checkbox">
+              <i title="Is an Action required when the answer is No?" class="fas fa-info-circle d-block"></i>
+            </div>
+            <div class="col-md-2"></div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-4"><label class="col-form-label">Comments Mandatory for answer of: </label></div>
+            <div class="col-md-2 chkDiv">
+              <input formControlName="commentYes" type="checkbox">
+              <i title="Is an comment required when the answer is Yes?" class="fas fa-info-circle d-block"></i>
+            </div>
+            <div class="col-md-2 chkDiv">
+              <input formControlName="commentNo" type="checkbox">
+              <i title="Is an comment required when the answer is No?" class="fas fa-info-circle d-block"></i>
+            </div>
+            <div class="col-md-2 chkDiv">
+              <input formControlName="commentNA" type="checkbox">
+              <i title="Is an comment required when the answer is N/A?" class="fas fa-info-circle d-block"></i>
+            </div>
+          </div>
+
+
+          <div class="row">
+            <div class="col-md-4"><label class="col-form-label">Photo Mandatory for answer of: </label></div>
+            <div class="col-md-2 chkDiv">
+              <input formControlName="photoYes" type="checkbox">
+              <i title="Is an Photo required when the answer is Yes?" class="fas fa-info-circle d-block"></i>
+            </div>
+            <div class="col-md-2 chkDiv">
+              <input formControlName="photoNo" type="checkbox">
+              <i title="Is an Photo required when the answer is No?" class="fas fa-info-circle d-block"></i>
+            </div>
+            <div class="col-md-2">
+
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="col-md-12">
+        <div class="row mt-1">
+          <div class="col-md-2">
+            <label class="col-form-label">Yes</label>
+          </div>
+          <div class="col-md-10">
+            <div class="divwrap">
+              <input type="text" formControlName="promptYes" class="form-control input-sm"
+                [ngClass]="{ 'is-invalid': submitted && formErrors.promptYes }">
+              <i class="fas fa-info-circle d-block inputI" title="Textual prompt for a comment when the answer is Yes."></i>
+            </div>
+            <div *ngIf="submitted && formErrors.promptYes" class="invalid-feedback">
+              <div *ngIf="formErrors.promptYes">{{ formErrors.promptYes }}</div>
+            </div>
+          </div>
+          
+        </div>
+
+        <div class="row mt-1">
+          <div class="col-md-2">
+            <label class="col-form-label">No</label>
+          </div>
+          <div class="col-md-10">
+            <div class="divwrap">
+              <input type="text" formControlName="promptNo" class="form-control input-sm"
+                [ngClass]="{ 'is-invalid': submitted && formErrors.promptNo }">
+              <i class="fas fa-info-circle d-block inputI" title="Textual prompt for a comment when the answer is No."></i>
+            </div>
+            <div *ngIf="submitted && formErrors.promptNo" class="invalid-feedback">
+              <div *ngIf="formErrors.promptNo">{{ formErrors.promptNo }}</div>
+            </div>
+          </div>
+          
+        </div>
+
+        <div class="row mt-1">
+          <div class="col-md-2">
+            <label class="col-form-label">N/A</label>
+          </div>
+          <div class="col-md-10">
+            <div class="divwrap">
+              <input type="text" formControlName="promptNA" class="form-control input-sm"
+                [ngClass]="{ 'is-invalid': submitted && formErrors.promptNA }">
+              <i class="fas fa-info-circle d-block inputI" title="Textual prompt for a comment when the answer is N/A."></i>
+            </div>
+            <div *ngIf="submitted && formErrors.promptNA" class="invalid-feedback">
+              <div *ngIf="formErrors.promptNA">{{ formErrors.promptNA }}</div>
+            </div>
+          </div>
+         
+        </div>
+      </div>
+
+
+    </div>
+
+    <div class="row" *ngIf="quesType == 3">
+      <div class="quesTypeDiv">
+        <div class="col-md-12">
+          <div class="row">
+            <div class="col-md-2">
+              <label class="col-form-label">Information Type</label>
+            </div>
+            <div class="col-md-10">
+              <div class="questionType">
+                <div class="radioDiv">
+                  <input type="radio" id="textt" class="chk" value="C" formControlName="infoType" checked>
+                  <label class="" for="textt">Text </label>
+                </div>
+                <div class="radioDiv">
+                  <input type="radio" id="integer" class="chk" value="I" formControlName="infoType">
+                  <label class="" for="integer">Integer</label>
+                </div>
+                <div class="radioDiv">
+                  <input type="radio" id="decimal" class="chk" value="E" formControlName="infoType">
+                  <label class="" for="decimal">Decimal</label>
+                </div>
+                <div class="radioDiv">
+                  <input type="radio" id="dateInfotype" class="chk" value="D" formControlName="infoType">
+                  <label class="" for="dateInfotype">Date</label>
+                </div>
+                <i title="What type of data is being gathered?" class="fas fa-info-circle d-block"></i>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+      <div class="col-md-12 mt-1">
+        <div class="row">
+          <div class="col-md-2">
+            <label class="col-form-label">Characteristic</label>
+          </div>
+          <div class="col-md-10 characteristicInfo">
+            <input type="text" [readonly]="isReadOnly" [ngClass]="{ 'is-invalid': submitted && formErrors.charCode }"
+              formControlName="charCode" class="form-control chCode input-sm">
+            <input type="text" [readonly]="isReadOnly" formControlName="charName" class="form-control chName input-sm">
+            <button type="button" (click)="openCharacteristic()" [disabled]="disableActins"
+              class="btn btn-sm characteristicOpnBtn">...</button>
+            <button type="button" (click)="clearCharacteristic()" [disabled]="disableActins"
+              class="btn btn-sm characteristicClrBtn">Clear</button>
+            <i title="Select a characteristic to store the information answer."
+              class="fas fa-info-circle d-block inputI"></i>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+
+
+    <div class="row mt-1">
+      <div class="col-md-2">
+        <label class="col-form-label">Status</label>
+      </div>
+      <div class="col-md-4">
+        <div class="divwrap">
+          <select class="form-control" formControlName="status"
+            [ngClass]="{ 'is-invalid': submitted && formErrors.status }">
+            <option value="A">Active</option>
+            <option value="I">Inactive</option>
+          </select>
+          <i title="Active or Inactive indicates whether the Health and Safety definition is available for selection."
+            class="fas fa-info-circle d-block inputI"></i>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="changedBy mt-1" *ngIf='defGrpFormMode == "change" || defGrpFormMode == "view"'>
+      <div class="row">
+        <div class="col-md-2">
+          <label class="col-form-label">Created By</label>
+        </div>
+        <div class="col-md-4">
+          <input [readonly]="isReadOnly" type="text" class="form-control input-sm" formControlName="createdBy"
+            [ngClass]="{ 'is-invalid': submitted && formErrors.createdBy }">
+        </div>
+
+        <div class="col-md-2">
+          <label class="col-form-label">Modified By</label>
+        </div>
+        <div class="col-md-4">
+          <input [readonly]="isReadOnly" type="text" class="form-control input-sm" formControlName="modifiedBy"
+            [ngClass]="{ 'is-invalid': submitted && formErrors.modifiedBy }">
+        </div>
+      </div>
+
+      <div class="row mt-1">
+        <div class="col-md-2">
+          <label class="col-form-label">Created Date</label>
+        </div>
+        <div class="col-md-4">
+          <input [readonly]="isReadOnly" type="text" class="input-sm form-control" formControlName="createdDate"
+            [ngClass]="{ 'is-invalid': submitted && formErrors.createdDate }">
+        </div>
+
+        <div class="col-md-2">
+          <label class="col-form-label">Modified Date</label>
+        </div>
+        <div class="col-md-4">
+          <input [readonly]="isReadOnly" type="text" class="input-sm form-control" formControlName="modifiedDate"
+            [ngClass]="{ 'is-invalid': submitted && formErrors.modifiedDate }">
+        </div>
+      </div>
+    </div>
+
+
+    <div class="row mt-2">
+      <div class="col-md-12 text-right actionAreaBtn">
+        <button type="button" class="btn btn-sm themeButton" *ngIf="!disableActins && defGrpFormMode =='new' && hnsPermission.indexOf('Create Another Question') != -1" (click)="onSubmit('create')">Create
+          Another</button>
+        <button type="submit" [disabled]="disableActins" class="btn btn-sm themeButton">OK</button>
+        <button type="button" class="btn btn-sm themeButton" (click)="closeDefQuesForm()">Cancel</button>
+
+      </div>
+    </div>
+
+  </form>
+
+  <div class="questionOverlay"></div>
+
+  <app-hns-characteristic *ngIf="isOpenCharacteristic" [isOpenCharacteristic]="isOpenCharacteristic"
+    (closeCharacteristic)="closeCharacteristic($event)" [datatype]="datatype"
+    (selectedCharOutput)=selectedCharOutput($event)></app-hns-characteristic>
+
+
+</kendo-window>

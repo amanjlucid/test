@@ -1,0 +1,164 @@
+<div class="row">
+  <div class="col-md-12">
+    <div class="row">
+      <div class="col-md-2">
+        <label class="col-form-label">Asset:</label>
+      </div>
+      <div class="col-md-3 form-group">
+        <input type="text" [readonly]="readonly" value="{{residentContact?.assid}}" class="form-control">
+      </div>
+      <div class="col-md-7 form-group">
+        <input type="text" [readonly]="readonly" value="{{residentContact?.astconcataddress}}" class="form-control">
+      </div>
+    </div>
+  </div>
+  <div class="col-md-12">
+    <div class="row">
+      <div class="col-md-2">
+        <label class="col-form-label">Property Status:</label>
+      </div>
+      <div class="col-md-3 form-group">
+        <input type="text" [readonly]="readonly" value="{{residentContact?.propstatus}}" class="form-control">
+      </div>
+      <div class="col-md-3 form-group">
+        <label class="col-form-label">RTB Status:</label>
+      </div>
+
+      <div class="col-md-4 form-group">
+        <input type="text" [readonly]="readonly" value="{{residentContact?.rtbstatus}}" class="form-control">
+      </div>
+    </div>
+  </div>
+
+  <div class="residentDiv row">
+    <div class="col-md-12">
+      <div class="row">
+        <div class="col-md-2">
+          <label class="col-form-label">Resident Name:</label>
+        </div>
+        <div class="col-md-10 form-group">
+          <input type="text" [readonly]="readonly" value="{{residentContact?.residenT_FULL_NAME}}" class="form-control">
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-12">
+      <div class="row">
+        <div class="col-md-2">
+          <label class="col-form-label">Telephone 1:</label>
+        </div>
+        <div class="col-md-2 form-group">
+          <input type="text" [readonly]="readonly" value="{{residentContact?.asrtelnumbeR1}}" class="form-control">
+        </div>
+
+        <div class="col-md-2">
+          <label class="col-form-label">Telephone 2:</label>
+        </div>
+        <div class="col-md-2 form-group">
+          <input type="text" [readonly]="readonly" value="{{residentContact?.asrtelnumbeR2}}" class="form-control">
+        </div>
+
+        <div class="col-md-2">
+          <label class="col-form-label">Mobile Number:</label>
+        </div>
+        <div class="col-md-2 form-group">
+          <input type="text" [readonly]="readonly" value="{{residentContact?.asrmobilenumber}}" class="form-control">
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-12">
+      <div class="row">
+        <div class="col-md-2">
+          <label class="col-form-label">Email Address:</label>
+        </div>
+        <div class="col-md-10 form-group">
+          <input type="text" [readonly]="readonly" value="{{residentContact?.asremailaddress}}" class="form-control">
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-12">
+      <div class="row">
+        <div class="col-md-2">
+          <label class="col-form-label">Preferred Contact Method:</label>
+        </div>
+        <div class="col-md-4 form-group">
+          <input type="text" [readonly]="readonly" value="{{residentContact?.asrprecontactmethod}}" class="form-control">
+        </div>
+      </div>
+    </div>
+
+
+    <div class="col-md-12">
+      <div class="row">
+        <div class="col-md-2">
+          <label class="col-form-label">Tenancy Start Date:</label>
+        </div>
+        <div class="col-md-4 form-group">
+          <input type="text" [readonly]="readonly" value="{{residentContact?.asrtenancystartdate | dateFormat : 'DD-MMM-YYYY'}}" class="form-control">
+        </div>
+      </div>
+    </div>
+
+
+    <div class="col-md-12">
+      <div class="row">
+        <div class="col-md-2">
+          <label class="col-form-label">Access Risk Code:</label>
+        </div>
+        <div class="col-md-4 form-group">
+          <input type="text" [readonly]="readonly" value="{{residentContact?.asraccessriskcode}}" class="form-control">
+        </div>
+      </div>
+    </div>
+
+
+    <div class="col-md-12">
+      <div class="row">
+        <div class="col-md-2">
+          <label class="col-form-label">Special Contract Instructions:</label>
+        </div>
+        <div class="col-md-10 form-group">
+          <input type="text" [readonly]="readonly" value="{{residentContact?.asrspecialcontactinst}}" class="form-control">
+        </div>
+      </div>
+    </div>
+
+
+    <div class="col-md-12">
+      <div class="row">
+        <div class="col-md-2">
+          <label class="col-form-label">Special Access Instructions:</label>
+        </div>
+        <div class="col-md-10 form-group">
+          <input type="text" [readonly]="readonly" value="{{residentContact?.asrspecialaccessinst}}" class="form-control">
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-12">
+      <div class="row">
+        <div class="col-md-2">
+          <label class="col-form-label">Updated By:</label>
+        </div>
+        <div class="col-md-4 form-group">
+          <input type="text" [readonly]="readonly" value="{{residentContact?.updatedby}}" class="form-control">
+        </div>
+
+        <div class="col-md-2">
+          <label class="col-form-label">Updated On:</label>
+        </div>
+        <div class="col-md-4 form-group">
+          <input type="text" [readonly]="readonly" value="{{residentContact?.updatedon | dateFormat : 'DD-MMM-YYYY'}}" class="form-control">
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+
+
+
+
+</div>

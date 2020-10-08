@@ -1,0 +1,29 @@
+<kendo-window title="Select Survey Type" *ngIf="surveyTypeOpen" (close)="closeSurveyTypeList()" [top]="10"
+  [minWidth]="400" [width]="700" [height]="auto" [minHeight]="200">
+
+  <div class="row">
+    <div class="col-md-12">
+      <kendo-grid [data]="gridView" [height]="450" [selectable]="{
+        mode: 'multiple'
+      }" filterable="false" [resizable]="true" [sortable]="{
+        allowUnsort: allowUnsort,
+        mode: multiple ? 'multiple' : 'single'
+        }" [skip]="state.skip" [sort]="state.sort" (sortChange)="sortChange($event)"
+        (filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)" [navigable]="true">
+
+        <kendo-grid-column field="srtcode" title="Code" width="120">
+        </kendo-grid-column>
+        <kendo-grid-column field="srtname" title="Name" width="100">
+        </kendo-grid-column>
+        <kendo-grid-column field="srtdescription" title="Description" width="120">
+        </kendo-grid-column>
+      </kendo-grid>
+    </div>
+
+    <div class="col-md-12 surveyTypeActonBtn mt-3">
+      <button type="button" class="btn btn-sm themeButton" (click)="selectSurvey()">Select</button>
+      <button type="button" class="btn btn-sm themeButton" (click)="closeSurveyTypeList()">Cancel</button>
+    </div>
+  </div>
+
+</kendo-window>

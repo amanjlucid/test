@@ -1,0 +1,68 @@
+.assetAttr{
+    width:100%;
+}
+
+.assetDetail{
+    background-color: #cecece;
+    padding: 5px 0px 12px 10px;
+    border-radius: 2px;
+    margin-top:-8px;
+}
+
+.k-window-wrapper{
+    position: fixed !important;
+}
+
+.buttonDiv button{
+    margin-left: 5px;
+}
+
+.buttonDiv{
+    position: absolute;
+    bottom: 15px;
+    right: 13px;
+}
+
+.createAttrDivBtn .buttonDiv{
+    position: relative;
+    bottom: 15px;
+    right: 13px;
+    margin-top: 20px;
+}
+
+.assetAttrBtn.buttonDiv{
+    position: inherit !important;
+}
+
+.assetDetail p{
+    font-weight: 600;
+}
+
+/* .repairDiv{
+    width: 100%;
+    height: 600px;
+    
+} */
+
+.repairDiv th:nth-child(1), .attributeTbl td:nth-child(1){
+    max-width: 50px !important;
+}
+
+.newBtnRpr{
+    position: absolute;
+    z-index: 999;
+}
+
+
+.reapirGrid th, .reapirGrid td { min-width: 70px!important; }
+.reapirGrid th:first-child, .reapirGrid td:first-child { min-width: 10px!important; }
+
+/* .reapirGrid table.dataTable {  width: max-content!important;} */
+
+@media screen and (max-width: 769px) {
+    .createAttrHeader{
+        position: relative!important;
+    }
+}
+
+

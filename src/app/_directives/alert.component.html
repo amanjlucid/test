@@ -1,0 +1,4 @@
+<div id="snackbar" *ngIf="message" class="alert alert-dismissible fade show" [ngClass]="{ 'alert': message, 'alert-dark-success': message.type === 'success', 'alert-dark-danger': message.type === 'error' }">
+  <span>{{message.text}}</span>
+  <button (click)="close()" type="button" class="close">×</button>
+</div>

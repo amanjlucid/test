@@ -1,0 +1,71 @@
+.k-window-content{
+    padding-top: 5px !important;
+}
+
+.k-window-wrapper {
+    position: fixed !important;
+}
+
+.headingDiv{
+    /* width: 50%; */
+    margin: auto;
+}
+
+.leftHheadingDiv, .rightHheadingDiv{
+    display: inline-block;
+}
+
+/* .rightHheadingDiv{
+    margin-left: 34px;
+} */
+
+.leftHheadingDiv{
+    float: left;
+}
+
+.headingDiv{
+    background: #dddddd;
+    padding: 5px;
+    border-radius: 6px;
+    font-size: 17px;
+}
+
+.lbl{
+    font-weight: 600;
+}
+
+.headingDetail{
+    margin-top: -14px;
+}
+
+.leftHheadingDiv .tp, .leftHheadingDiv .bt{
+    /* display: block; */
+    display: flex;
+}
+
+/* .rightHheadingDiv, .rightHheadingDiv .tp{
+    display: flex;
+}
+
+.rightHheadingDiv .tp span, .rightHheadingDiv .bt span{
+    max-width: 278px;
+    word-break: break-all;
+} */
+
+.leftHheadingDiv .lbl{
+    /* display: inline-block; */
+    width: 135px;
+}
+
+.imageListDiv{
+    min-height: 400px;
+}
+
+.actoonBtn button{
+    margin-left: 5px;
+}
+
+.imgCl{
+    height: 78px;
+    border-radius: 5px;
+}

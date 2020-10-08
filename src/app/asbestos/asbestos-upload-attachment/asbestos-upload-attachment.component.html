@@ -1,0 +1,71 @@
+<kendo-window title="Upload Attachments" *ngIf="uploadAttachment" (close)="closeUploadAttachmentWin()" [top]="30"
+  [minWidth]="400" [width]="500" [height]="auto" [minHeight]="330">
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="col-md-12 p-0">
+        <div class="selecteFIle">
+          <h5 class="uploadHeader">Select files to upload</h5>
+          <!-- <form [formGroup]="form" (ngSubmit)="onSubmit()"> -->
+            <!-- <div class="upload-btn-wrapper">
+              <button class="btn">Upload a file</button>
+              <input type="file" name="image" (change)="onFileChange($event)" multiple accept="image/*,.pdf" />
+            </div> -->
+            
+              <div draggable="true" ngClass="{{dragAreaClass}}">
+                <div class="row">
+                  <div class="col-md-12 text-center">
+                    <a href="javascript:void(0)" (click)="file.click()">
+                      Click to browse
+                    </a>
+                    Or Drag & Drop to upload your files
+                    <input type="file" #file [multiple]="(maxFiles > 1)" (change)="onFileChange($event)"
+                      style="display:none" />
+                  </div>
+                </div>
+
+              </div>
+              <div class="row error mt-2" *ngIf="errors.length > 0">
+                <ul>
+                  <li *ngFor="let err of errors">{{err}}</li>
+                </ul>
+              </div>
+            
+          <!-- </form> -->
+        </div>
+      </div>
+      <div class="col-md-12 uploadedContentArea">
+        <div *ngIf="uploadObj.image.length > 0; else blankArea">
+          <div class="uploadImgDiv">
+            <!-- <div class="row mt-2">
+              <div class="col-md-6"><span>{{uploadObjs.name}}</span></div>
+              <div class="col-md-6 text-right"><span>{{helper.getFileSizeUnit(uploadObjs.size)}}</span></div>
+            </div> -->
+            <div class="row mt-2">
+              <div class="col-md-6"><span>{{uploadObj.message}}</span></div>
+              <!-- <div class="col-md-6 text-right"><span>{{helper.getFileSizeUnit(uploadObjs.size)}}</span></div> -->
+            </div>
+            <div class="progress mt-1">
+              <div class="progress-bar" [style.width.%]="uploadResponse.message"></div>
+            </div>
+          </div>
+        </div>
+
+        <ng-template #blankArea>
+          <div class="blankArea">
+
+          </div>
+        </ng-template>
+
+      </div>
+
+
+      <div class="col-md-12 mt-3 attachmentActionArea">
+        <button type="button" class="btn btn-sm themeButton" (click)="closeUploadAttachmentWin()">Close</button>
+      </div>
+
+    </div>
+  </div>
+
+
+</kendo-window>

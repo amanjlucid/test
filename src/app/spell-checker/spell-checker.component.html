@@ -1,0 +1,95 @@
+<kendo-window title="{{title}}" *ngIf="openSpellChecker" (close)="closeSpellCheckerMethod()" [top]="10" [minWidth]="400"
+  [width]="width" [height]="auto" [minHeight]="200">
+  <div *ngIf="!isCompleted">
+    <div class="row">
+      <div class="col-md-12 text-center mt-2 mb-2" *ngIf="ignoreAll">
+        <p class="spellCheckComp">The spelling check is complete.</p>
+      </div>
+      <div class="col-md-9">
+        <span>Not in Dictionary:</span>
+      </div>
+      <div class="col-md-3"></div>
+      <div class="col-md-9">
+        <div class="spellingToCheck contentDiv" id="spellingToCheck">
+          {{textString}}
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="row">
+          <div class="col-md-12">
+            <button class="btn btn-sm themeButton" [disabled]="ignoreAll" (click)="ignoreAllMethod()">Ignore
+              All</button>
+
+          </div>
+          <div class="col-md-12 mt-2">
+            <!-- <button class="btn btn-sm themeButton">Add to Dictionary</button> -->
+            <button class="btn btn-sm themeButton" (click)="skipIndMethod()">Skip</button>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="row mt-2">
+      <div class="col-md-9">
+        <span>Change To:</span>
+      </div>
+      <div class="col-md-3"></div>
+      <div class="col-md-9">
+        <input type="text" [(ngModel)]="changeTo" class="changedTO">
+        <!-- <div class="changedTO">{{changeTo}}</div> -->
+      </div>
+      <div class="col-md-3">
+        <button class="btn btn-sm themeButton" [disabled]="ignoreAll" (click)="changeString()">Change</button>
+      </div>
+    </div>
+
+    <div class="row mt-2">
+      <div class="col-md-9">
+        <span>Suggestions:</span>
+      </div>
+      <div class="col-md-3"></div>
+      <div class="col-md-9">
+        <div class="suggestion contentDiv">
+          <ul *ngIf="!ignoreAll">
+            <li *ngFor="let wordSugg of wordSuggestion; let i = index" (click)="selecteSuggestion(wordSuggestion[i])"
+              [ngClass]="{'selectedSeuggestion':wordSuggestion[i] === changeTo }">{{wordSuggestion[i]}}</li>
+          </ul>
+          <!-- <p ></p> -->
+        </div>
+      </div>
+
+      <div class="col-md-3">
+
+      </div>
+
+    </div>
+
+    <div class="row mt-2">
+      <div class="col-md-12">
+        <button class="btn btn-sm themeButton" (click)="returnString()">Ok </button>
+        <button class="btn btn-sm themeButton ml-1" (click)="closeSpellCheckerMethod()">Cancel</button>
+      </div>
+
+    </div>
+  </div>
+
+  <div *ngIf="isCompleted">
+    <div class="row">
+      <div class="col-md-3">
+        <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+      </div>
+      <div class="col-md-9">
+        <p class="comp">The spelling check is complete.</p>
+      </div>
+    </div>
+
+    <div class="row mt-3 actionRow">
+      <div class="col-md-12 text-right">
+        <button type="button" class="btn btn-sm themeButton ml-1" (click)="closeSpellCheckerMethod()">Ok</button>
+      </div>
+    </div>
+  </div>
+</kendo-window>
