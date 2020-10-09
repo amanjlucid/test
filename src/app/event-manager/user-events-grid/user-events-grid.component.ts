@@ -14,6 +14,7 @@ import { AlertService, EventManagerDashboardService, HelperService } from '../..
 export class UserEventsGridComponent implements OnInit {
   subs = new SubSink();
   @Input() userEvents: boolean = false;
+  @Input() selectedBarChartXasis: any;
   usereventData: any;
   userEventTempData: any;
   selectedEvent: any;
@@ -51,13 +52,38 @@ export class UserEventsGridComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.getEventData();
+    this.getEventData(this.selectedBarChartXasis);
   }
 
   ngOnDestroy() {
     this.subs.unsubscribe();
   }
 
+
+  getEventData(params) {
+    this.subs.add(
+      this.dashboardService.getListOfUserEventByCriteria(params).subscribe(
+        data => {
+          if (data.isSuccess) {
+            // console.log(data);
+            this.usereventData = data.data;
+            this.userEventTempData = Object.assign([], data.data);
+            if (this.userEventTempData.length > 0) {
+              this.userEventTempData.map(x => {
+                x.eventCreatedDate = this.helperService.checkValidDateR(x.eventCreatedDate)
+                x.eventPlannedDate = this.helperService.checkValidDateR(x.eventPlannedDate)
+                x.eventUpdateDate = this.helperService.checkValidDateR(x.eventUpdateDate)
+              })
+            }
+            this.gridView = process(this.usereventData, this.state);
+            this.chRef.detectChanges();
+          }
+        }
+      )
+    )
+  }
+
+  
   public groupChange(groups: GroupDescriptor[]): void {
     this.resetGrid()
     this.state.group = groups;
@@ -123,40 +149,6 @@ export class UserEventsGridComponent implements OnInit {
   closeGrid() {
     this.userEvents = false;
     this.closeUserEvents.emit(this.userEvents)
-  }
-
-  getEventData() {
-    let params = {
-      ReportType: "A",
-      BusareaName: "",
-      IncludeCompleted: false,
-      EventEscStatusName: "",
-      EventSevTypeName: "",
-      EventStatusName: "",
-      EventAssignUser: "",
-      ActionOnly: true,
-      DueDays: "Jun 2019"
-    }
-
-    this.subs.add(
-      this.dashboardService.getListOfUserEventByCriteria(params).subscribe(
-        data => {
-          if (data.isSuccess) {
-            this.usereventData = data.data;
-            this.userEventTempData = Object.assign([], data.data);
-            if (this.userEventTempData.length > 0) {
-              this.userEventTempData.map(x => {
-                x.eventCreatedDate = this.helperService.checkValidDateR(x.eventCreatedDate)
-                x.eventPlannedDate = this.helperService.checkValidDateR(x.eventPlannedDate)
-                x.eventUpdateDate = this.helperService.checkValidDateR(x.eventUpdateDate)
-              })
-            }
-            this.gridView = process(this.usereventData, this.state);
-            this.chRef.detectChanges();
-          }
-        }
-      )
-    )
   }
 
 

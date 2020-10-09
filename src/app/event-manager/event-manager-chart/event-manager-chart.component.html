@@ -11,11 +11,11 @@
     </div>
 
     <div class="col-md-7 col-sm-4 p-2 text-right">
-      <button id="chartBtn" (click)="openGrid()" class="btn btn-sm themeButton mr-1">Grid
-      </button>
-
-      <!-- <button id="chartBtn" (click)="saveChartsState()" class="btn btn-sm themeButton mr-1">Save Chart State
+      <!-- <button id="chartBtn" (click)="openGrid()" class="btn btn-sm themeButton mr-1">Grid
       </button> -->
+
+      <button id="chartBtn" (click)="saveChartsState()" class="btn btn-sm themeButton mr-1">Save Chart State
+      </button>
 
       <button id="chartBtn" (click)="openChartList()" class="btn btn-sm themeButton">Charts
       </button>
@@ -55,4 +55,5 @@
 
 <div class="eventdashboardovrlay"></div>
 
-<app-user-events-grid *ngIf="userEvents" [userEvents]="userEvents" (closeUserEvents)="closeUserEvents($event)"></app-user-events-grid>
+<app-user-events-grid *ngIf="userEvents" [userEvents]="userEvents" [selectedBarChartXasis]="selectedBarChartXasis"
+  (closeUserEvents)="closeUserEvents($event)"></app-user-events-grid>

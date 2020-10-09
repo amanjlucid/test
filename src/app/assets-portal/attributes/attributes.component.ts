@@ -757,7 +757,7 @@ export class AttributesComponent implements OnInit, OnDestroy {
           if (data.isSuccess) {
             this.helper.setAssetManagementSecurity(data.data);
             if (this.checkAssetAttributeAccess('Attribute Delete')) {
-              $('.k-window-wrapper').css({ 'z-index': 1000 });
+              $('.k-window').css({ 'z-index': 1000 });
               this.confirmationDialogService.confirm('Please confirm..', 'Do you really want to delete this record ?')
                 .then((confirmed) => (confirmed) ? this.deleteAttribute(attrObj) : console.log(confirmed))
                 .catch(() => console.log('Attribute dismissed the dialog.'));
@@ -778,13 +778,13 @@ export class AttributesComponent implements OnInit, OnDestroy {
     obj.AttributeID = attrObj.ataId;
     obj.UserId = this.currentUser.userId;
 
-    $('.k-window-wrapper').css({ 'z-index': 1000 });
+    $('.k-window').css({ 'z-index': 1000 });
     this.assetAttributeService.apexDeleteAssetAttribute(obj).subscribe(
       data => {
         this.getAssetAttribute(this.assetId);
         this.getAttributeFilterList(this.assetId);
         this.alertService.success('Attribute deleted successfully.')
-        $('.k-window-wrapper').css({ 'z-index': 10002 });
+        $('.k-window').css({ 'z-index': 10002 });
       }
     )
 

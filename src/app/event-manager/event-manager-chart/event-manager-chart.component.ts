@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AlertService, HelperService, SharedService, HnsPortalService, EventManagerDashboardService } from '../../_services'
 import { SubSink } from 'subsink';
 import { Router } from "@angular/router"
-import { appConfig } from '../../app.config';
+
 declare var $: any;
 declare var GoldenLayout: any;
 declare var Highcharts: any;
@@ -48,11 +48,6 @@ export class EventManagerChartComponent implements OnInit {
           componentState: { text: 'Component3' },
           title: 'Component 3',
 
-        }, {
-          type: 'component',
-          componentName: 'testComponent',
-          componentState: { text: 'Component4' },
-          title: 'Component 4',
         }]
       }]
     }]
@@ -62,9 +57,10 @@ export class EventManagerChartComponent implements OnInit {
   pageload: boolean = true;
   //allChartDropdownVlaues: any;
   dashboardName: string;
-  portalName: string = "HNS";
+  portalName: string = "EventManager";
   defaultFilterVal: string = "0_OPTIVO:CONTRACT1:OPTGAS2";
   userEvents = false
+  selectedBarChartXasis: any;
 
 
   constructor(
@@ -103,7 +99,6 @@ export class EventManagerChartComponent implements OnInit {
                 data => {
                   if (data.isSuccess) {
                     this.chartNames = data.data;
-                    console.log(this.chartNames)
                     const comp = this;
                     let createDefaultCharts = function (container: any, state: any) {
                       if (comp.drawChartObj == null && comp.savedState == null) {
@@ -113,11 +108,23 @@ export class EventManagerChartComponent implements OnInit {
                           comp.renderChartTypes(comp.chartNames[0], comp, container, state, cl);
                         } else if (state.text == "Component2") {
                           let cl = "pi22"; // default chart class start string
-                          container.setTitle(comp.chartNames[1].chartName)
-                          comp.renderChartTypes(comp.chartNames[1], comp, container, state, cl);
+                          if (comp.chartNames[1] == undefined) {
+                            container.setTitle(comp.chartNames[0].chartName)
+                            comp.renderChartTypes(comp.chartNames[0], comp, container, state, cl);
+                          } else {
+                            container.setTitle(comp.chartNames[1].chartName)
+                            comp.renderChartTypes(comp.chartNames[1], comp, container, state, cl);
+                          }
+
                         } else if (state.text == "Component3") {
-                          // container.setTitle(comp.chartNames[2].chartName)
-                          // comp.renderChartTypes(comp.chartNames[2], comp, container, state);
+                          if (comp.chartNames[2] == undefined) {
+                            container.setTitle(comp.chartNames[0].chartName)
+                            comp.renderChartTypes(comp.chartNames[0], comp, container, state);
+                          } else {
+                            container.setTitle(comp.chartNames[2].chartName)
+                            comp.renderChartTypes(comp.chartNames[2], comp, container, state);
+                          }
+
                         } else if (state.text == "Component4") {
                           // container.setTitle(comp.chartNames[3].chartName)
                           // comp.renderChartTypes(comp.chartNames[3], comp, container, state);
@@ -133,6 +140,7 @@ export class EventManagerChartComponent implements OnInit {
                       this.myLayout.registerComponent('testComponent', createDefaultCharts);
                       this.myLayout.init();
                     }
+
                     this.pageload = false;
 
                   } else {
@@ -544,7 +552,7 @@ export class EventManagerChartComponent implements OnInit {
               dynamicCss = { parentDiv: 95, childDiv: 100, childDivMt: 6 };
             }
             container.getElement().html(`<div class="row" style="width:100%; height:${dynamicCss.parentDiv}%;"><input type="hidden" value="${chartObj.chartName}" class="line${className}"><div class="col-md-12"><div class="${filterDivCl}"></div><div id="${className}" style="width:100%; height: ${dynamicCss.childDiv}%; position:absolute;  margin-top:${dynamicCss.childDivMt}px;"></div> </div></div>`);
-            this.pieChartInit(null, null, true, className, tempArr);
+            this.pieChartInit(null, null, true, className, tempArr, chartObj);
 
             container.setState({
               text: state.text,
@@ -590,6 +598,7 @@ export class EventManagerChartComponent implements OnInit {
         data => {
           if (data.isSuccess) {
             let pieChartData = data.data.pieChartModel;
+            // console.log(pieChartData);
             let tempArr = [];
             pieChartData.map((x) => {
               // if (x.name == "Service Overdue") {
@@ -612,7 +621,8 @@ export class EventManagerChartComponent implements OnInit {
               dynamicCss = { parentDiv: 95, childDiv: 100, childDivMt: 6 };
             }
             container.getElement().html(`<div class="row" style="width:100%; height:${dynamicCss.parentDiv}%;"><input type="hidden" value="${chartObj.chartName}" class="line${className}"><div class="col-md-12"><div class="${filterDivCl}"></div><div id="${className}" style="width:100%; height: ${dynamicCss.childDiv}%; position:absolute;  margin-top:${dynamicCss.childDivMt}px;"></div> </div></div>`);
-            this.pieChartInit(null, null, true, className, tempArr);
+            // console.log(tempArr);
+            this.pieChartInit(null, null, true, className, tempArr, chartObj);
 
             container.setState({
               text: state.text,
@@ -673,7 +683,8 @@ export class EventManagerChartComponent implements OnInit {
               //filters: (pieChartFilterData != null) ? 'filterString' : null,
               selectedFilter: dataForChart.ChartParameterValue
             });
-            this.pieChartInit(null, null, true, className, tempArr);
+
+            this.pieChartInit(null, null, true, className, tempArr, chartObj);
           } else {
             this.alertService.error(data.message);
           }
@@ -683,7 +694,7 @@ export class EventManagerChartComponent implements OnInit {
     )
   }
 
-  pieChartInit(titleText: any = null, yAxisTitle: string = null, allowPointSelect: boolean = true, selector: any, data: any) {
+  pieChartInit(titleText: any = null, yAxisTitle: string = null, allowPointSelect: boolean = true, selector: any, data: any, chartObj = null) {
     if (data.length > 0) {
       Highcharts.chart(
         this.pieChartConfiguration(
@@ -691,7 +702,8 @@ export class EventManagerChartComponent implements OnInit {
           yAxisTitle,
           allowPointSelect,
           selector,
-          data
+          data,
+          chartObj
         )
       );
     } else {
@@ -701,7 +713,8 @@ export class EventManagerChartComponent implements OnInit {
   }
 
 
-  pieChartConfiguration(titleText: any, seriesName: string, allowPointSelect: boolean = true, selector: any, data: any) {
+  pieChartConfiguration(titleText: any, seriesName: string, allowPointSelect: boolean = true, selector: any, data: any, chartObj = null) {
+    let comp = this
     return {
       title: {
         text: titleText
@@ -722,7 +735,15 @@ export class EventManagerChartComponent implements OnInit {
       series: [{
         name: seriesName,
         colorByPoint: true,
-        data: data
+        data: data,
+        point: {
+          events: {
+            click: function (event) {
+              comp.openDrillDownchart(this, chartObj)
+              // console.log(this.x + " " + this.y);
+            }
+          }
+        }
       }],
       chart: {
         plotShadow: false,
@@ -743,8 +764,15 @@ export class EventManagerChartComponent implements OnInit {
     let chartObj = state.containerChartObj;
     chartObj.ChartParameterValue = (state.selectedFilter != null && state.selectedFilter != "") ? state.selectedFilter : classRefer.defaultFilterVal;
 
+    let getChartData;
+    if (chartObj.ddChartId != undefined) {
+      getChartData = this.eventMangerDashboardService.drillDownStackedBarChartData(chartObj)
+    } else {
+      getChartData = this.hnsPortalService.getChartData(chartObj);
+    }
+
     this.subs.add(
-      this.hnsPortalService.getChartData(chartObj).subscribe(
+      getChartData.subscribe(
         data => {
           if (data.isSuccess) {
             let barChartData = data.data;
@@ -763,7 +791,7 @@ export class EventManagerChartComponent implements OnInit {
             }
             container.getElement().html(`<div class="row" style="width:100%; height:${dynamicCss.parentDiv}%;"><input type="hidden" value="${chartObj.chartName}" class="line${className}"><div class="col-md-12"><div class="${filterDivCl}"></div><div id="${className}" style="width:100%; height: ${dynamicCss.childDiv}%; position:absolute;  margin-top:${dynamicCss.childDivMt}px;"></div> </div></div>`);
 
-            this.barChartInit(null, null, true, className, barChartData);
+            this.barChartInit(null, null, true, className, barChartData, chartObj);
 
             container.setState({
               text: state.text,
@@ -808,8 +836,16 @@ export class EventManagerChartComponent implements OnInit {
     let className = `bar${new Date().getMilliseconds()}${Math.random()}${cl}`;
     className = this.helper.replaceAll(className, ".", "");
     let filterDivCl = "filterbar" + className;
+
+    let getChartData;
+    if (chartObj.ddChartId != undefined) {
+      getChartData = this.eventMangerDashboardService.drillDownStackedBarChartData(chartObj)
+    } else {
+      getChartData = this.hnsPortalService.getChartData(chartObj);
+    }
+
     this.subs.add(
-      this.hnsPortalService.getChartData(chartObj).subscribe(
+      getChartData.subscribe(
         data => {
           if (data.isSuccess) {
             let barChartData = data.data;
@@ -827,7 +863,7 @@ export class EventManagerChartComponent implements OnInit {
             }
             container.getElement().html(`<div class="row" style="width:100%; height:${dynamicCss.parentDiv}%;"><input type="hidden" value="${chartObj.chartName}" class="line${className}"><div class="col-md-12"><div class="${filterDivCl}"></div><div id="${className}" style="width:100%; height: ${dynamicCss.childDiv}%; position:absolute;  margin-top:${dynamicCss.childDivMt}px;"></div> </div></div>`);
 
-            this.barChartInit(null, null, true, className, barChartData);
+            this.barChartInit(null, null, true, className, barChartData, chartObj);
 
             container.setState({
               text: state.text,
@@ -878,7 +914,7 @@ export class EventManagerChartComponent implements OnInit {
               //filters: (barChartFilterData != null) ? 'filterString' : null,
               selectedFilter: dataForChart.ChartParameterValue
             });
-            this.barChartInit(null, null, true, className, barChartData);
+            this.barChartInit(null, null, true, className, barChartData, dataForChart);
           } else {
             this.alertService.error(data.message);
           }
@@ -887,7 +923,7 @@ export class EventManagerChartComponent implements OnInit {
     )
   }
 
-  barChartInit(titleText: any = null, yAxisTitle: string = null, allowPointSelect: boolean = true, selector: any, data: any) {
+  barChartInit(titleText: any = null, yAxisTitle: string = null, allowPointSelect: boolean = true, selector: any, data: any, barChartParams: any = null) {
     if (data.categories != null) {
       Highcharts.chart(
         this.barChartConfiguration(
@@ -895,7 +931,8 @@ export class EventManagerChartComponent implements OnInit {
           yAxisTitle,
           allowPointSelect,
           selector,
-          data
+          data,
+          barChartParams
         )
       );
     } else {
@@ -906,7 +943,8 @@ export class EventManagerChartComponent implements OnInit {
   }
 
 
-  barChartConfiguration(titleText: any, seriesName: string, allowPointSelect: boolean = true, selector: any, data: any) {
+  barChartConfiguration(titleText: any, seriesName: string, allowPointSelect: boolean = true, selector: any, data: any, barChartParams: any = null) {
+    let comp = this;
     return {
       chart: {
         type: 'column',
@@ -936,9 +974,20 @@ export class EventManagerChartComponent implements OnInit {
       plotOptions: {
         column: {
           stacking: 'normal'
+        },
+        series: {
+          cursor: 'pointer',
+          point: {
+            events: {
+              click: function (event) {
+                comp.openGridOnClickOfBarChart(this, barChartParams)
+              }
+            }
+          }
         }
       },
-      series: data.stackedBarChartViewModelList
+      series: data.stackedBarChartViewModelList,
+
     }
 
   }
@@ -1244,13 +1293,60 @@ export class EventManagerChartComponent implements OnInit {
   }
 
 
-  getChart() {
-    this.subs.add(
-      this.eventMangerDashboardService.getEventManagerChartsList().subscribe(
-        data => {
-          console.log(data);
+  openDrillDownchart(chartEvent, parentChartObj) {
+    
+    if (parentChartObj != null && parentChartObj.ddChartID != undefined) {
+      if (parentChartObj.ddChartID != 0) {
+        const params = {
+          "chartName": `${parentChartObj.chartName} (${chartEvent.options.name})`,
+          "chartType": 4,
+          "chartParameterValue": "string",
+          "ddChartId": parentChartObj.ddChartID,
+          "parantChartId": parentChartObj.chartID,
+          "xAxisValue": chartEvent.options.name,
+          "seriesId": chartEvent.options.seriesId
         }
-      )
-    )
+
+        this.renderDrillDownChart(chartEvent, params)
+
+      }
+
+    }
   }
+
+
+  openGridOnClickOfBarChart(chartEvent, parentChartObj) {
+    this.selectedBarChartXasis = {
+      "ddChartId": parentChartObj.ddChartId,
+      "parantChartId": parentChartObj.parantChartId,
+      "xAxisValue": chartEvent.category,
+      "seriesId": parentChartObj.seriesId
+    }
+
+    this.openGrid();
+  }
+
+
+
+  renderDrillDownChart($event: any, chartData: any) {
+    this.drawChartObj = chartData;
+    let cl = Math.random();
+    let compNo = `line${new Date().getMilliseconds()}${Math.random()}${cl}`;
+    let thisContainer = $($event.series.chart.container);
+
+    let newItemConfig = {
+      title: chartData.chartName,
+      type: 'component',
+      componentName: 'testComponent',
+      componentState: { text: 'Component' + compNo }
+    };
+
+    thisContainer.closest(".lm_stack").find('.lm_selectable').click();
+    this.myLayout.selectedItem.addChild(newItemConfig);
+
+  };
+
+
+
+
 }

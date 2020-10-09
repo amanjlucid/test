@@ -46,14 +46,13 @@ import { HnsResActionComponent } from './hns-res-action/hns-res-action.component
 import { HnsResHeaderComponent } from './hns-res-header/hns-res-header.component';
 import { HnsResAssessmentComponent } from './hns-res-assessment/hns-res-assessment.component';
 import { HnsResEditAnswerComponent } from './hns-res-edit-answer/hns-res-edit-answer.component';
-import { TextFilterComponent} from '../kendo-component/text-filter.component'
+import { TextFilterComponent } from '../kendo-component/text-filter.component'
 import { AssessmentHeaderPipe } from '../_pipes/hns-res-assessment-header.pipe';
-import { MultiCheckFilterComponent} from '../kendo-component/multicheck-filter.component';
-import { DateRangeFilterComponent} from '../kendo-component/date-range-filter.component';
-import { RangeFilterComponent} from '../kendo-component/range-filter.component';
+import { MultiCheckFilterComponent } from '../kendo-component/multicheck-filter.component';
+import { RangeFilterComponent } from '../kendo-component/range-filter.component';
 import { NgbDate, NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { HnsResAddEditIssueComponent} from './hns-res-add-edit-issue/hns-res-add-edit-issue.component';
-import { HnsResAnsImageComponent} from './hns-res-ans-image/hns-res-ans-image.component';
+import { HnsResAddEditIssueComponent } from './hns-res-add-edit-issue/hns-res-add-edit-issue.component';
+import { HnsResAnsImageComponent } from './hns-res-ans-image/hns-res-ans-image.component';
 import { HnsResUploadAnsImageComponent } from './hns-res-upload-ans-image/hns-res-upload-ans-image.component';
 import { HnsResDocumentComponent } from './hns-res-document/hns-res-document.component';
 import { HnsResEditDocumentComponent } from './hns-res-edit-document/hns-res-edit-document.component';
@@ -68,7 +67,7 @@ import { SpellCheckerComponent } from '../spell-checker/spell-checker.component'
 import { AssessmentBudgetCodeComponent } from './assessment-budget-code/assessment-budget-code.component';
 import { ResViewImageComponent } from './res-view-image/res-view-image.component';
 import { RiskScorePipe } from '../_pipes/risk-score.pipe';
-import { SimpleTextFilterComponent} from '../kendo-component/simple-text-filter.component';
+// import { SimpleTextFilterComponent } from '../kendo-component/simple-text-filter.component';
 // import { DateRangeFilterComponent} from '../kendo-component/date-range-filter.component'
 
 
@@ -132,7 +131,6 @@ import { SimpleTextFilterComponent} from '../kendo-component/simple-text-filter.
     TextFilterComponent,
     AssessmentHeaderPipe,
     MultiCheckFilterComponent,
-    DateRangeFilterComponent,
     RangeFilterComponent,
     HnsResAddEditIssueComponent,
     HnsResAnsImageComponent,
@@ -150,11 +148,15 @@ import { SimpleTextFilterComponent} from '../kendo-component/simple-text-filter.
     AssessmentBudgetCodeComponent,
     ResViewImageComponent,
     RiskScorePipe,
-    SimpleTextFilterComponent
-    
+    // SimpleTextFilterComponent,
+    // DateRangeFilterComponent,
+
 
     // DateRangeFilterComponent
-  ]
+  ],
+
+ 
+
 })
 
 export class HnsModule { }

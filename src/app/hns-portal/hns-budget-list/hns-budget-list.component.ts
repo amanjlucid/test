@@ -123,7 +123,7 @@ export class HnsBudgetListComponent implements OnInit {
 
   public openConfirmationDialog() {
     if (this.selectedData != undefined) {
-      $('.k-window-wrapper').css({ 'z-index': 1000 });
+      $('.k-window').css({ 'z-index': 1000 });
       this.confirmationDialogService.confirm('Please confirm..', 'Do you really want to delete this record ?')
         .then((confirmed) => (confirmed) ? this.delete() : console.log(confirmed))
         .catch(() => console.log('Attribute dismissed the dialog.'));

@@ -442,7 +442,7 @@ export class AssetAttributeComponent implements OnInit, OnDestroy, OnChanges {
           if (data.isSuccess) {
             this.helperService.setAssetManagementSecurity(data.data);
             if (this.checkAssetAttributeAccess('Attribute Delete')) {
-              $('.k-window-wrapper').css({ 'z-index': 1000 });
+              $('.k-window').css({ 'z-index': 1000 });
               this.confirmationDialogService.confirm('Please confirm..', 'Do you really want to delete this record ?')
                 .then((confirmed) => (confirmed) ? this.deleteRepair(rprOb) : console.log(confirmed))
                 .catch(() => console.log('Attribute dismissed the dialog.'));
@@ -466,7 +466,7 @@ export class AssetAttributeComponent implements OnInit, OnDestroy, OnChanges {
       data => {
         this.getrepair();
         this.alertService.success('Attribute Repair deleted successfully.')
-        $('.k-window-wrapper').css({ 'z-index': 10004 });
+        $('.k-window').css({ 'z-index': 10004 });
       }
     )
 

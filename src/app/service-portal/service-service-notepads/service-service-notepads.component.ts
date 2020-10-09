@@ -128,7 +128,7 @@ export class ServiceServiceNotepadsComponent implements OnInit {
 
   openConfirmationDialog() {
     if (this.selectedNotepad != undefined) {
-      $('.k-window-wrapper').css({ 'z-index': 1000 });
+      $('.k-window').css({ 'z-index': 1000 });
       this.confirmationDialogService.confirm('Please confirm..', 'Delete notepad item ?')
         .then((confirmed) => (confirmed) ? this.removeNotepadAttachment() : console.log(confirmed))
         .catch(() => console.log('Attribute dismissed the dialog.'));

@@ -4,7 +4,7 @@ import { PageChangeEvent } from '@progress/kendo-angular-grid';
 import { SubSink } from 'subsink';
 import { HnsDefinitionModel } from '../../_models'
 import { HnsPortalService, AlertService, ConfirmationDialogService, SharedService } from 'src/app/_services';
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { appConfig } from '../../app.config';
@@ -312,7 +312,7 @@ export class HnsDefinitionsComponent implements OnInit, OnDestroy {
       return
     }
 
-    $('.k-window-wrapper').css({ 'z-index': 1000 });
+    $('.k-window').css({ 'z-index': 1000 });
     this.confirmationDialogService.confirm('Please confirm..', 'Do you really want to delete this record ?')
       .then((confirmed) => (confirmed) ? this.deleteDefinition(obj) : console.log(confirmed))
       .catch(() => console.log('Attribute dismissed the dialog.'));

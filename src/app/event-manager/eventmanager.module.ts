@@ -33,7 +33,9 @@ import { DatePickerModule } from '@progress/kendo-angular-dateinputs';
     UserEventsGridComponent,
     // SimpleTextFilterComponent,
     // DateRangeFilterComponent
-  ]
+  ],
+
+  
 
 })
 

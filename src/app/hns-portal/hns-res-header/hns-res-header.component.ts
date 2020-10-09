@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { PropertySecurityGroupService, SharedService, LoaderService } from '../../_services';
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 import { SubSink } from 'subsink';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 

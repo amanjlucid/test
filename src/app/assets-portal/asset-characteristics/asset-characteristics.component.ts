@@ -624,7 +624,7 @@ export class AssetCharacteristicsComponent implements OnInit, OnDestroy {
         if (data.isSuccess) {
           this.helper.setAssetManagementSecurity(data.data);
           if (this.checkAssetCharAccess('Characteristic Delete')) {
-            $('.k-window-wrapper').css({ 'z-index': 1000 });
+            $('.k-window').css({ 'z-index': 1000 });
             this.confirmationDialogService.confirm('Please confirm..', 'Do you really want to delete this record ?')
               .then((confirmed) => (confirmed) ? this.deleteChar(charObj) : console.log(confirmed))
               .catch(() => console.log('Attribute dismissed the dialog.'));
@@ -646,13 +646,13 @@ export class AssetCharacteristicsComponent implements OnInit, OnDestroy {
     obj.CharacteristicCode = charObj.characteristic;
     obj.UserId = this.currentUser.userId;
 
-    $('.k-window-wrapper').css({ 'z-index': 1000 });
+    $('.k-window').css({ 'z-index': 1000 });
     this.assetAttributeService.apexDeleteAssetCharacteristic(obj).subscribe(
       data => {
         this.alertService.success('Characteristic deleted successfully.')
         this.getAssetCharacteristicFilters(this.assetId, this.currentUser.userId);
         this.getAssetCharacteristicList(this.assetId, this.currentUser.userId);
-        $('.k-window-wrapper').css({ 'z-index': 10002 });
+        $('.k-window').css({ 'z-index': 10002 });
       }
     )
   }

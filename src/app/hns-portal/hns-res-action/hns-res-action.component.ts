@@ -8,7 +8,7 @@ import { BehaviorSubject } from 'rxjs';
 import { HnsAction } from '../../_models'
 import { TextFilterComponent } from '../../kendo-component/text-filter.component';
 import { filter } from '@progress/kendo-data-query/dist/npm/transducers';
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({

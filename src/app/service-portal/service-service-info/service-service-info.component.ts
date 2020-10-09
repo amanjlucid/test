@@ -122,7 +122,7 @@ export class ServiceServiceInfoComponent implements OnInit {
 
   openConfirmationDialog() {
     if (this.selectedServiceInfo != undefined) {
-      $('.k-window-wrapper').css({ 'z-index': 1000 });
+      $('.k-window').css({ 'z-index': 1000 });
       this.confirmationDialogService.confirm('Please confirm..', 'Delete service info item ?')
         .then((confirmed) => (confirmed) ? this.deleteInfo() : console.log(confirmed))
         .catch(() => console.log('Attribute dismissed the dialog.'));

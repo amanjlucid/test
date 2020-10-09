@@ -3,7 +3,7 @@ import { SubSink } from 'subsink';
 import { DataResult, process, State, CompositeFilterDescriptor, SortDescriptor, GroupDescriptor } from '@progress/kendo-data-query';
 import { PageChangeEvent } from '@progress/kendo-angular-grid';
 import { HnsPortalService, AlertService, ConfirmationDialogService } from '../../_services'
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
@@ -149,7 +149,7 @@ export class HnsTemplateIssueComponent implements OnInit {
     this.confirmationDialogService.confirm('Please confirm..', 'Do you really want to delete this record ?')
       .then((confirmed) => (confirmed) ? this.delete() : console.log(confirmed))
       .catch(() => console.log('Attribute dismissed the dialog.'));
-    $('.k-window-wrapper').css({ 'z-index': 1000 });
+    $('.k-window').css({ 'z-index': 1000 });
   }
 
   delete() {

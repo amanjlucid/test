@@ -3,7 +3,7 @@ import { SubSink } from 'subsink';
 import { GroupDescriptor, DataResult, process, State, CompositeFilterDescriptor, SortDescriptor } from '@progress/kendo-data-query';
 import { GridComponent, DataStateChangeEvent } from '@progress/kendo-angular-grid';
 import { HnsResultsService, HelperService, SharedService } from '../../_services';
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({

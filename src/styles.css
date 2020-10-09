@@ -427,8 +427,7 @@ app-dropdown+.k-action-buttons .k-button.k-primary {
     color: #e4287e;
 }
 
-
-.historyRow{
+.historyRow {
     background-color: #b2adad !important;
 }
 
@@ -522,6 +521,10 @@ app-dropdown+.k-action-buttons .k-button.k-primary {
     white-space: nowrap !important;
 }
 
+.k-grid-norecords td {
+    text-align: left;
+}
+
 @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
     .table-responsive {
         /* display: block !important;
@@ -561,7 +564,7 @@ app-dropdown+.k-action-buttons .k-button.k-primary {
 }
 
 @media screen and (max-width: 769px) {
-    .k-window-wrapper {
+    .k-window {
         left: 0px;
     }
 }

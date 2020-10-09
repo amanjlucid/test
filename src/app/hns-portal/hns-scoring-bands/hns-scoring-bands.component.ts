@@ -139,7 +139,7 @@ export class HnsScoringBandsComponent implements OnInit {
 
   public openConfirmationDialog() {
     if (this.selectedData != undefined) {
-      $('.k-window-wrapper').css({ 'z-index': 1000 });
+      $('.k-window').css({ 'z-index': 1000 });
       this.confirmationDialogService.confirm('Please confirm..', 'Do you really want to delete this record ?')
         .then((confirmed) => (confirmed) ? this.delete() : console.log(confirmed))
         .catch(() => console.log('Attribute dismissed the dialog.'));
@@ -183,7 +183,7 @@ export class HnsScoringBandsComponent implements OnInit {
     if (this.range.max != this.updatedRange.max) {
       const maxRowInd = this.updatedRange.maxRowInd;
       if (this.listData[maxRowInd] != undefined) {
-        $('.k-window-wrapper').css({ 'z-index': 1000 });
+        $('.k-window').css({ 'z-index': 1000 });
         this.confirmationDialogService.confirm('', `Highest Band (${this.listData[maxRowInd].hasscorebandlow}...${this.listData[maxRowInd].hasscorebandhigh}) did not reach 100%. Updated to (${this.listData[maxRowInd].hasscorebandlow}...${this.range.max})`, false)
           .then((confirmed) => (confirmed) ? this.saveBands() : console.log(confirmed))
           .catch(() => console.log('Attribute dismissed the dialog.'));

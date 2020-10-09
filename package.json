@@ -12,6 +12,8 @@
   },
   "private": true,
   "dependencies": {
+    "rxjs": "~6.6.0",
+    "rxjs-compat": "^6.6.3",
     "@angular/animations": "~10.1.4",
     "@angular/common": "~10.1.4",
     "@angular/compiler": "~10.1.4",
@@ -53,8 +55,6 @@
     "ng-multiselect-dropdown": "^0.2.3",
     "ngx-spellchecker": "^1.0.5",
     "pdfmake": "^0.1.56",
-    "rxjs": "~6.6.0",
-    "rxjs-compat": "^6.6.3",
     "subsink": "^1.0.0",
     "tslib": "^2.0.0",
     "web-animations-js": "^2.3.1",

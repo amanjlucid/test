@@ -4,11 +4,10 @@ import { PageChangeEvent, RowClassArgs, BaseFilterCellComponent, FilterService }
 import { SharedService, HnsResultsService, HelperService } from '../../_services';
 import { SubSink } from 'subsink';
 import { tap, switchMap } from 'rxjs/operators';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { HnsInfo } from '../../_models'
 import { TextFilterComponent } from '../../kendo-component/text-filter.component';
 import { filter } from '@progress/kendo-data-query/dist/npm/transducers';
-import { Subject } from 'rxjs/Subject';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({

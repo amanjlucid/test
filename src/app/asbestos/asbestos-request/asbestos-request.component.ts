@@ -144,7 +144,7 @@ export class AsbestosRequestComponent implements OnInit {
 
   public openConfirmationDialog() {
     if (this.selectedAttachment != undefined) {
-      $('.k-window-wrapper').css({ 'z-index': 1000 });
+      $('.k-window').css({ 'z-index': 1000 });
       this.confirmationDialogService.confirm('Please confirm..', 'Do you really want to delete this record ?')
         .then((confirmed) => (confirmed) ? this.removeAttachment() : console.log(confirmed))
         .catch(() => console.log('Attribute dismissed the dialog.'));
