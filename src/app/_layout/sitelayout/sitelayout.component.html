@@ -81,12 +81,18 @@
                     *ngIf="checkAngularGrpPermission('Event Manager', 'BA_EventManager',0)">
                     <a href="javascript:void(0)" class="sidenav-link sidenav-toggle">
                         <img class="sidenav-icon ion" src="assets/img/icons/event-manager.svg">
-                        <div>Event Manager</div>
+                        <div>Tasks</div>
                     </a>
                     <ul class="sidenav-menu">
                         <li class="sidenav-item" [routerLinkActive]="['active']">
-                            <a [routerLink]="['/event-manager/dashboard']" class="sidenav-link">
+                            <a [routerLink]="['/tasks/dashboard']" class="sidenav-link">
                                 <div>Dashboard</div>
+                            </a>
+                        </li>
+
+                        <li class="sidenav-item" [routerLinkActive]="['active']">
+                            <a [routerLink]="['/tasks/task-details']" class="sidenav-link">
+                                <div>Task Details</div>
                             </a>
                         </li>
                         <!-- <li class="sidenav-item" [routerLinkActive]="['active']"
@@ -134,7 +140,7 @@
                 <li *ngIf="checkAngularGrpPermission('Event Manager', 'BA_EventManager',0)" class="sidenav-item">
                     <a href="http://104.40.138.8/Rowanwood/EventManager" class="sidenav-link" target="_blank">
                         <img class="sidenav-icon ion" src="assets/img/icons/event-manager.svg">
-                        <div>Event Manager old</div>
+                        <div>Event Manager</div>
                     </a>
 
                 </li>

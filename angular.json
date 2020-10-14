@@ -22,7 +22,12 @@
             "allowedCommonJsDependencies": [
               "ngx-spellchecker",
               "file-saver",
-              "xlsx"
+              "xlsx",
+              "subsink",
+              "datatables.net",
+              "datatables.net-dt",
+              "datatables.net-buttons",
+              "jquery"
             ],
             "assets": [
               "src/favicon.ico",

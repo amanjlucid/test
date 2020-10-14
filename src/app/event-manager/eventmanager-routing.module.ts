@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { EventManagerChartComponent } from '../event-manager/event-manager-chart/event-manager-chart.component';
 import { EventManagerComponent } from './event-manager.component';
+import { TaskDetailsComponent } from './task-details/task-details.component';
 
 const routes: Routes = [
   {
@@ -10,6 +11,7 @@ const routes: Routes = [
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', component: EventManagerChartComponent },
+      { path: 'task-details', component: TaskDetailsComponent },
 
 
     ]

@@ -12,6 +12,7 @@ import { SharedModule } from '../shared.module';
 // import { SimpleTextFilterComponent} from '../kendo-component/simple-text-filter.component';
 // import { DateRangeFilterComponent} from '../kendo-component/date-range-filter.component';
 import { DatePickerModule } from '@progress/kendo-angular-dateinputs';
+import { TaskDetailsComponent } from './task-details/task-details.component';
 
 @NgModule({
   imports: [
@@ -31,6 +32,7 @@ import { DatePickerModule } from '@progress/kendo-angular-dateinputs';
     EventManagerComponent,
     EventManagerChartComponent,
     UserEventsGridComponent,
+    TaskDetailsComponent
     // SimpleTextFilterComponent,
     // DateRangeFilterComponent
   ],

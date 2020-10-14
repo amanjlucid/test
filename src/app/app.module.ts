@@ -10,7 +10,7 @@ import { LoginComponent } from './login';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { AuthGuard } from './_guards';
 import { JwtInterceptor, ErrorInterceptor, LoaderInterceptorService, NgbDateCustomParserFormatter } from './_helpers';
-import { AlertService, AuthenticationService, UserService, LoaderService, GroupService, CharacteristicGroupService, ElementGroupService, AttributeGroupService, PortalGroupService, FunctionSecurityService, PropertySecurityGroupService, ReportingGroupService, ConfirmationDialogService, EventService, AssetAttributeService, SharedService, ServicePortalService, SettingsService, HnsPortalService, HnsResultsService, EventManagerDashboardService } from './_services';
+import { AlertService, AuthenticationService, UserService, LoaderService, GroupService, CharacteristicGroupService, ElementGroupService, AttributeGroupService, PortalGroupService, FunctionSecurityService, PropertySecurityGroupService, ReportingGroupService, ConfirmationDialogService, EventService, AssetAttributeService, SharedService, ServicePortalService, SettingsService, HnsPortalService, HnsResultsService, EventManagerDashboardService, EventManagerService } from './_services';
 import { AlertComponent, LoaderComponent, KendoGridColor, KendoZindex, MyDatePicker, DecimalValidation } from './_directives';
 import { GridModule, ExcelModule } from '@progress/kendo-angular-grid';
 import { InputsModule } from '@progress/kendo-angular-inputs';
@@ -83,6 +83,8 @@ import { SharedModule } from './shared.module';
 import { HnsSettingsComponent } from './hns-settings/hns-settings.component';
 import { SpellCheckerModule } from 'ngx-spellchecker';
 import { HnsReportImagesComponent } from './hns-report-images/hns-report-images.component';
+import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
+
 
 
 
@@ -183,6 +185,7 @@ import { HnsReportImagesComponent } from './hns-report-images/hns-report-images.
     NgbModule.forRoot(),
     SharedModule,
     SpellCheckerModule.forRoot(),
+    DateInputsModule,
 
 
   ],
@@ -210,6 +213,7 @@ import { HnsReportImagesComponent } from './hns-report-images/hns-report-images.
     SharedService,
     ConfirmationDialogService,
     EventService,
+    EventManagerService,
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptorService, multi: true },

@@ -57,7 +57,7 @@ export class EventManagerChartComponent implements OnInit {
   pageload: boolean = true;
   //allChartDropdownVlaues: any;
   dashboardName: string;
-  portalName: string = "EventManager";
+  portalName: string = "Tasks";
   defaultFilterVal: string = "0_OPTIVO:CONTRACT1:OPTGAS2";
   userEvents = false
   selectedBarChartXasis: any;
@@ -944,6 +944,7 @@ export class EventManagerChartComponent implements OnInit {
 
 
   barChartConfiguration(titleText: any, seriesName: string, allowPointSelect: boolean = true, selector: any, data: any, barChartParams: any = null) {
+    let color = barChartParams != null ? barChartParams.color : '';
     let comp = this;
     return {
       chart: {
@@ -971,9 +972,13 @@ export class EventManagerChartComponent implements OnInit {
         pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b><br/>',
         shared: true
       },
+      legend: { enabled: false },
       plotOptions: {
         column: {
-          stacking: 'normal'
+          stacking: 'normal',
+          'zones': [{
+            color: color,
+          }]
         },
         series: {
           cursor: 'pointer',
@@ -983,7 +988,8 @@ export class EventManagerChartComponent implements OnInit {
                 comp.openGridOnClickOfBarChart(this, barChartParams)
               }
             }
-          }
+          },
+
         }
       },
       series: data.stackedBarChartViewModelList,
@@ -1294,7 +1300,6 @@ export class EventManagerChartComponent implements OnInit {
 
 
   openDrillDownchart(chartEvent, parentChartObj) {
-    
     if (parentChartObj != null && parentChartObj.ddChartID != undefined) {
       if (parentChartObj.ddChartID != 0) {
         const params = {
@@ -1304,7 +1309,8 @@ export class EventManagerChartComponent implements OnInit {
           "ddChartId": parentChartObj.ddChartID,
           "parantChartId": parentChartObj.chartID,
           "xAxisValue": chartEvent.options.name,
-          "seriesId": chartEvent.options.seriesId
+          "seriesId": chartEvent.options.seriesId,
+          "color" : chartEvent.color
         }
 
         this.renderDrillDownChart(chartEvent, params)
@@ -1318,7 +1324,7 @@ export class EventManagerChartComponent implements OnInit {
   openGridOnClickOfBarChart(chartEvent, parentChartObj) {
     this.selectedBarChartXasis = {
       "ddChartId": parentChartObj.ddChartId,
-      "parantChartId": parentChartObj.parantChartId,
+      "parantChartId": parentChartObj.parantChartId != undefined ? parentChartObj.parantChartId : parentChartObj.chartID,
       "xAxisValue": chartEvent.category,
       "seriesId": parentChartObj.seriesId
     }

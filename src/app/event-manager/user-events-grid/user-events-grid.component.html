@@ -3,8 +3,20 @@
 
   <div class="row">
     <div class="col-md-12 text-right">
-      <button id="viewEvent" [disabled]="!selectedEvent" class="btn btn-sm themeButton mr-1">View Event
-      </button>
+      <!-- <button id="viewEvent" [disabled]="!selectedEvent" class="btn btn-sm themeButton mr-1">View Task
+      </button> -->
+      <div class="dropdown" id="nesting-dropdown-demo">
+        <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown"
+          aria-expanded="false">View Task</button>
+        <div class="dropdown-menu" x-placement="bottom-start"
+          style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
+          <a class="dropdown-item" href="javascript:void(0)">View Task</a>
+          <a class="dropdown-item" href="javascript:void(0)">View Selected Task</a>
+
+        </div>
+      </div>
+
+
       <button id="exportEvents" [disabled]="!usereventData" (click)="export()" class="btn btn-sm themeButton">Export
       </button>
     </div>
@@ -23,14 +35,13 @@
         (pageChange)="pageChange($event)" (sortChange)="sortChange($event)" (filterChange)="filterChange($event)"
         (cellClick)="cellClickHandler($event)" [navigable]="true">
 
-        <kendo-grid-column field="pictureCount" title="" width="50" [filterable]="false">
-
+        <!-- <kendo-grid-column field="pictureCount" title="" width="50" [filterable]="false">
           <ng-template kendoGridCellTemplate let-dataItem>
             <span>
               <img src="assets/img/icons/camera.png" style="height:17px; margin-top: -2px;">
             </span>
           </ng-template>
-        </kendo-grid-column>
+        </kendo-grid-column> -->
 
 
         <kendo-grid-column field="eventSequence" title="Seq" width="120" filter="numeric" format="{0:b}">

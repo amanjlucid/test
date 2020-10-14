@@ -1,0 +1,145 @@
+<div class="container-fluid flex-grow-1 container-p-y">
+
+    <div class="row">
+        <div class="col-md-2 col-sm-3">
+            <h4 class="font-weight-bold py-3 mb-1">
+                Task Details
+            </h4>
+        </div>
+    </div>
+
+
+    <div class="row mt-2">
+        <div class="col-md-12">
+
+            <kendo-grid (groupChange)="groupChange($event)" [group]="state.group" [groupable]="true" [data]="gridView"
+                [height]="650" filterable="menu" [resizable]="true" [sortable]="{
+        allowUnsort: allowUnsort,
+        mode: multiple ? 'multiple' : 'single'
+        }" [skip]="state.skip" [sort]="state.sort" [selectable]="{
+          mode: 'multiple'
+        }" [filter]="state.filter" [pageSize]="pageSize" [rowHeight]="36" scrollable="virtual"
+                (pageChange)="pageChange($event)" (sortChange)="sortChange($event)"
+                (filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)" [navigable]="true">
+
+                <kendo-grid-column field="pictureCount" title="" width="50" [filterable]="false" [groupable]="true">
+
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            <img style="height: 14px;" *ngIf="dataItem.pass_or_Fail == 'Pass'" src="assets/img/icons/tick.png" />
+                            <img style="height: 14px;" *ngIf="dataItem.pass_or_Fail == 'Fail'" src="assets/img/icons/cross.png" />
+                            <!-- <img src="assets/img/icons/camera.png" style="height:17px; margin-top: -2px;"> -->
+                        </span>
+                    </ng-template>
+                </kendo-grid-column>
+
+                <kendo-grid-column field="pictureCount" title="" width="50" [filterable]="false" [groupable]="true">
+
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            <img style="height: 14px;" *ngIf="dataItem.pass_or_Fail == 'Pass'" src="assets/img/icons/tick.png" />
+                            <img style="height: 14px;" *ngIf="dataItem.pass_or_Fail == 'Fail'" src="assets/img/icons/cross.png" />
+                            <!-- <img src="assets/img/icons/camera.png" style="height:17px; margin-top: -2px;"> -->
+                        </span>
+                    </ng-template>
+                </kendo-grid-column>
+
+
+
+                <kendo-grid-column field="eventTypeCode" title="Code" width="120">
+                </kendo-grid-column>
+                <kendo-grid-column field="busAreaDesc" title="Bus Area" width="170">
+                </kendo-grid-column>
+                <kendo-grid-column field="busAreaOwnerName" title="Owner" width="170">
+                </kendo-grid-column>
+                <kendo-grid-column field="eventTypeName" title="Name" width="330">
+                </kendo-grid-column>
+                <kendo-grid-column field="eventTypeDesc" title="Desc" width="400">
+                </kendo-grid-column>
+                <kendo-grid-column field="eventTypeCategory" title="Category" width="120" [filterable]="false">
+                </kendo-grid-column>
+
+                <kendo-grid-column field="eventTaskTypeName" title="Task Type" width="120">
+                </kendo-grid-column>
+                <kendo-grid-column field="eventSevTypeName" title="Severity" width="130">
+                </kendo-grid-column>
+                <kendo-grid-column field="eventTypeStatusName" title="Status" width="170">
+                </kendo-grid-column>
+                <kendo-grid-column field="eventTypeDueDays" title="Complete Within (days)" width="120" filter="numeric" format="{0:b}">
+                </kendo-grid-column>
+                <kendo-grid-column field="eventESCToDays1" title="Esc Days 1" width="120" filter="numeric" format="{0:b}">
+                </kendo-grid-column>
+
+                <kendo-grid-column field="eventESCUser1Name" title="Esc User 1" width="150">
+                </kendo-grid-column>
+
+                <kendo-grid-column field="eventESCToDays2" title="Esc Days 2" width="120" filter="numeric" format="{0:b}"> 
+                </kendo-grid-column>
+                <kendo-grid-column field="eventESCUser2Name" title="Esc User 2" width="150">
+                </kendo-grid-column>
+
+                <kendo-grid-column field="eventESCToDays3" title="Esc Days 3" width="130" filter="numeric" format="{0:b}">
+                </kendo-grid-column>
+                <kendo-grid-column field="eventESCUser3Name" title="Esc User 3" width="150">
+                </kendo-grid-column>
+
+                <kendo-grid-column field="eventPeriodType" title="Event Period Type" width="140" filter="numeric" format="{0:b}">
+                </kendo-grid-column>
+                <kendo-grid-column field="eventPeriod" title="Event Period Frequency" width="160" filter="numeric" format="{0:b}">
+                </kendo-grid-column>
+
+                <kendo-grid-column field="eventLastRunDate" title="Last Run Date" width="120" filter="date"
+                    format="{0:dd-MM-yyyy}">
+                    <ng-template kendoGridFilterMenuTemplate let-filter let-column="column"
+                        let-filterService="filterService">
+                        <date-range-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
+                        </date-range-filter>
+                    </ng-template>
+
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.eventLastRunDate | dateFormat : 'DD-MMM-YYYY' }}
+                        </span>
+                    </ng-template>
+                </kendo-grid-column>
+
+                <kendo-grid-column field="eventNextRunDate" title="Next Run Date" width="120" filter="date"
+                    format="{0:dd-MM-yyyy}">
+                    <ng-template kendoGridFilterMenuTemplate let-filter let-column="column"
+                        let-filterService="filterService">
+                        <date-range-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
+                        </date-range-filter>
+                    </ng-template>
+
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.eventNextRunDate | dateFormat : 'DD-MMM-YYYY' }}
+                        </span>
+                    </ng-template>
+                </kendo-grid-column>
+
+                <kendo-grid-column field="eventTypeCreatedBy" title="Created By" width="120">
+
+                </kendo-grid-column>
+                <kendo-grid-column field="eventTypeCreatedDate" title="Created" width="120" filter="date"
+                    format="{0:dd-MM-yyyy}">
+                    <ng-template kendoGridFilterMenuTemplate let-filter let-column="column"
+                        let-filterService="filterService">
+                        <date-range-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
+                        </date-range-filter>
+                    </ng-template>
+
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.eventTypeCreatedDate | dateFormat : 'DD-MMM-YYYY' }}
+                        </span>
+                    </ng-template>
+                </kendo-grid-column>
+
+
+
+            </kendo-grid>
+
+        </div>
+    </div>
+</div>

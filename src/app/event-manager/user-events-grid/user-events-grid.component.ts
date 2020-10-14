@@ -13,6 +13,8 @@ import { AlertService, EventManagerDashboardService, HelperService } from '../..
 })
 export class UserEventsGridComponent implements OnInit {
   subs = new SubSink();
+  allowUnsort = true;
+  multiple = false;
   @Input() userEvents: boolean = false;
   @Input() selectedBarChartXasis: any;
   usereventData: any;
@@ -52,6 +54,7 @@ export class UserEventsGridComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    console.log(this.selectedBarChartXasis)
     this.getEventData(this.selectedBarChartXasis);
   }
 
@@ -65,7 +68,7 @@ export class UserEventsGridComponent implements OnInit {
       this.dashboardService.getListOfUserEventByCriteria(params).subscribe(
         data => {
           if (data.isSuccess) {
-            // console.log(data);
+            console.log(data);
             this.usereventData = data.data;
             this.userEventTempData = Object.assign([], data.data);
             if (this.userEventTempData.length > 0) {
@@ -87,11 +90,18 @@ export class UserEventsGridComponent implements OnInit {
   public groupChange(groups: GroupDescriptor[]): void {
     this.resetGrid()
     this.state.group = groups;
-    this.tempstate.group = groups
+    this.tempstate.group = groups;
+   
     setTimeout(() => {
-      let tempData = process(this.userEventTempData, this.tempstate);
-      this.usereventData = tempData.data;
-      this.renderGrid(tempData, 200);
+      this.gridView = process(this.userEventTempData, this.tempstate);
+      this.usereventData = this.gridView.data;
+      this.gridView.total = this.gridView.data.length;
+      this.chRef.detectChanges();
+
+      // let tempData = process(this.userEventTempData, this.tempstate);
+      // console.log(tempData);
+      // this.usereventData = tempData.data;
+      // this.renderGrid(tempData, 200);
     }, 100);
 
   }
@@ -100,23 +110,52 @@ export class UserEventsGridComponent implements OnInit {
   public sortChange(sort: SortDescriptor[]): void {
     this.tempstate.sort = sort;
     this.tempstate.skip = 0;
+    this.tempstate.group = []
     let tempData = process(this.userEventTempData, this.tempstate);
-    this.usereventData = tempData.data;
+    //this.usereventData = tempData.data;
 
     this.state.sort = sort;
     this.state.skip = 0;
-    this.gridView = process(this.usereventData, this.state);
+
+    if (this.state.group.length > 0) {
+      this.tempstate.group = this.state.group;
+      this.gridView = process(tempData.data, this.tempstate);
+      this.usereventData = this.gridView.data;
+      this.gridView.total = this.gridView.data.length
+    } else {
+      this.gridView = process(tempData.data, this.state);
+      this.usereventData = tempData.data;
+      this.gridView.total = tempData.total
+    }
+
+
+   // this.gridView = process(this.usereventData, this.state);
 
   }
 
   public filterChange(filter: any): void {
     this.resetGrid()
     this.tempstate.filter = filter;
+    this.tempstate.group = [];
     let tempData = process(this.userEventTempData, this.tempstate);
-
-    this.usereventData = tempData.data;
+    
     this.state.filter = filter;
-    this.renderGrid(tempData, 200)
+    if (this.state.group.length > 0) {
+      this.tempstate.group = this.state.group;
+      setTimeout(() => {
+        this.gridView = process(tempData.data, this.tempstate);
+        this.usereventData = this.gridView.data;
+        this.gridView.total = this.gridView.data.length
+        this.chRef.detectChanges();
+      }, 30);
+    } else {
+      setTimeout(() => {
+        this.gridView = process(tempData.data, this.state);
+        this.usereventData = tempData.data;
+        this.gridView.total = tempData.total
+        this.chRef.detectChanges();
+      }, 30);
+    }
 
   }
 

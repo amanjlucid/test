@@ -65,7 +65,7 @@ const appRoutes: Routes = [
             // { path: 'event-manager', loadChildren: './event-manager/eventmanager.module#EventManagerModule' },
 
             { path: 'health&safety', loadChildren: () => import('./hns-portal/hns.module').then(m => m.HnsModule) },
-            { path: 'event-manager', loadChildren: () => import('./event-manager/eventmanager.module').then(m => m.EventManagerModule) },
+            { path: 'tasks', loadChildren: () => import('./event-manager/eventmanager.module').then(m => m.EventManagerModule) },
 
             // { path: 'my-profile', loadChildren: './my-profile/my-profile.module#MyProfileModule' },
             { path: 'my-profile', loadChildren: () => import('./my-profile/my-profile.module').then(m => m.MyProfileModule) },
