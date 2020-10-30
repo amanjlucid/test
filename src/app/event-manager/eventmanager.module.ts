@@ -9,10 +9,14 @@ import { GridModule, ExcelModule } from '@progress/kendo-angular-grid';
 import { InputsModule } from '@progress/kendo-angular-inputs';
 import { DialogsModule } from '@progress/kendo-angular-dialog';
 import { SharedModule } from '../shared.module';
-// import { SimpleTextFilterComponent} from '../kendo-component/simple-text-filter.component';
-// import { DateRangeFilterComponent} from '../kendo-component/date-range-filter.component';
 import { DatePickerModule } from '@progress/kendo-angular-dateinputs';
 import { TaskDetailsComponent } from './task-details/task-details.component';
+import { EventParametersComponent } from './event-parameters/event-parameters.component';
+import { EditService } from '../_services'
+import { EventParametersListComponent } from './event-parameters-list/event-parameters-list.component';
+import { NotifyComponent } from './notify/notify.component';
+import { ManageEventNotifierComponent } from './manage-event-notifier/manage-event-notifier.component';
+import { EditEventComponent } from './edit-event/edit-event.component';
 
 @NgModule({
   imports: [
@@ -32,12 +36,20 @@ import { TaskDetailsComponent } from './task-details/task-details.component';
     EventManagerComponent,
     EventManagerChartComponent,
     UserEventsGridComponent,
-    TaskDetailsComponent
-    // SimpleTextFilterComponent,
-    // DateRangeFilterComponent
+    TaskDetailsComponent,
+    EventParametersComponent,
+    EventParametersListComponent,
+    NotifyComponent,
+    ManageEventNotifierComponent,
+    EditEventComponent
+   
   ],
 
-  
+  providers: [
+    EditService
+  ]
+
+
 
 })
 

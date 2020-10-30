@@ -3,9 +3,16 @@
     <div class="row">
         <div class="col-md-2 col-sm-3">
             <h4 class="font-weight-bold py-3 mb-1">
-                Task Details
+                Configuration
             </h4>
         </div>
+
+        <div class="col-md-10 text-right" *ngIf="selectedEvent.length > 1">
+            <button type="button" class="btn btn-sm themeButton mr-1" (click)="runEvent()">Run</button>
+            <button type="button" class="btn btn-sm themeButton mr-1" (click)="copyEvent()">Copy</button>
+            <button type="button" class="btn btn-sm themeButton" (click)="deleteEvent()">Delete</button>
+        </div>
+
     </div>
 
 
@@ -16,19 +23,49 @@
                 [height]="650" filterable="menu" [resizable]="true" [sortable]="{
         allowUnsort: allowUnsort,
         mode: multiple ? 'multiple' : 'single'
-        }" [skip]="state.skip" [sort]="state.sort" [selectable]="{
-          mode: 'multiple'
-        }" [filter]="state.filter" [pageSize]="pageSize" [rowHeight]="36" scrollable="virtual"
-                (pageChange)="pageChange($event)" (sortChange)="sortChange($event)"
-                (filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)" [navigable]="true">
+        }" [skip]="state.skip" [sort]="state.sort" [selectable]="selectableSettings" kendoGridSelectBy="eventTypeCode"
+                [selectedKeys]="mySelection" (selectedKeysChange)="onSelectedKeysChange($event)" [filter]="state.filter"
+                (sortChange)="sortChange($event)" (filterChange)="filterChange($event)"
+                (cellClick)="cellClickHandler($event)" [navigable]="true">
 
-                <kendo-grid-column field="pictureCount" title="" width="50" [filterable]="false" [groupable]="true">
+                <kendo-grid-column title=" " width="37" [filterable]="false">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <li [ngClass]="{'disabled' : selectedEvent.length > 1}" class="nav-item dropdown list-unstyled" style="margin-top: -7px;">
+                            <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="javascript:void(0)" (click)="editEventMethod()">Edit</a>
+                                <a class="dropdown-item" href="javascript:void(0)"
+                                    (click)="opneNotifyWindow()">Notify</a>
+                                <a [ngClass]="{'disabled' : (dataItem.eventParamCount <= 0 &&  dataItem.eventParamEmptyCount != 0) || (dataItem.eventParamCount <= 0 &&  dataItem.eventParamEmptyCount <= 0) }"
+                                    class="dropdown-item" href="javascript:void(0)"
+                                    (click)="openParamsWindow()">Parameter(s)</a>
+
+                                <a class="dropdown-item" href="javascript:void(0)" (click)="runEvent()">Run</a>
+                                <a class="dropdown-item" href="javascript:void(0)" (click)="copyEvent()">Copy</a>
+                                <a [ngClass]="{'disabled' : dataItem.eventTypeUpdatedBy != currentUser.userId}"
+                                    class="dropdown-item" href="javascript:void(0)" (click)="deleteEvent()">Delete</a>
+
+                            </div>
+                        </li>
+
+                    </ng-template>
+                </kendo-grid-column>
+
+
+
+
+                <kendo-grid-column field="eventTypeNotifyCount" title="" width="50" [filterable]="false"
+                    [groupable]="true">
 
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <span>
-                            <img style="height: 14px;" *ngIf="dataItem.pass_or_Fail == 'Pass'" src="assets/img/icons/tick.png" />
-                            <img style="height: 14px;" *ngIf="dataItem.pass_or_Fail == 'Fail'" src="assets/img/icons/cross.png" />
-                            <!-- <img src="assets/img/icons/camera.png" style="height:17px; margin-top: -2px;"> -->
+                            <img style="height: 14px;"
+                                *ngIf="dataItem.eventParamCount > 0 &&  dataItem.eventParamEmptyCount == 0"
+                                src="assets/img/icons/tick.png" />
+                            <img style="height: 14px;"
+                                *ngIf="dataItem.eventParamCount > 0 &&  dataItem.eventParamEmptyCount > 0"
+                                src="assets/img/icons/cross.png" />
+
                         </span>
                     </ng-template>
                 </kendo-grid-column>
@@ -37,9 +74,11 @@
 
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <span>
-                            <img style="height: 14px;" *ngIf="dataItem.pass_or_Fail == 'Pass'" src="assets/img/icons/tick.png" />
-                            <img style="height: 14px;" *ngIf="dataItem.pass_or_Fail == 'Fail'" src="assets/img/icons/cross.png" />
-                            <!-- <img src="assets/img/icons/camera.png" style="height:17px; margin-top: -2px;"> -->
+                            <img style="height: 14px;" *ngIf="dataItem.eventTypeNotifyCount > 0"
+                                src="assets/img/icons/tick.png" />
+                            <img style="height: 14px;" *ngIf="dataItem.eventTypeNotifyCount == 0"
+                                src="assets/img/icons/cross.png" />
+
                         </span>
                     </ng-template>
                 </kendo-grid-column>
@@ -65,27 +104,33 @@
                 </kendo-grid-column>
                 <kendo-grid-column field="eventTypeStatusName" title="Status" width="170">
                 </kendo-grid-column>
-                <kendo-grid-column field="eventTypeDueDays" title="Complete Within (days)" width="120" filter="numeric" format="{0:b}">
+                <kendo-grid-column field="eventTypeDueDays" title="Complete Within (days)" width="120" filter="numeric"
+                    format="{0:b}">
                 </kendo-grid-column>
-                <kendo-grid-column field="eventESCToDays1" title="Esc Days 1" width="120" filter="numeric" format="{0:b}">
+                <kendo-grid-column field="eventESCToDays1" title="Esc Days 1" width="120" filter="numeric"
+                    format="{0:b}">
                 </kendo-grid-column>
 
                 <kendo-grid-column field="eventESCUser1Name" title="Esc User 1" width="150">
                 </kendo-grid-column>
 
-                <kendo-grid-column field="eventESCToDays2" title="Esc Days 2" width="120" filter="numeric" format="{0:b}"> 
+                <kendo-grid-column field="eventESCToDays2" title="Esc Days 2" width="120" filter="numeric"
+                    format="{0:b}">
                 </kendo-grid-column>
                 <kendo-grid-column field="eventESCUser2Name" title="Esc User 2" width="150">
                 </kendo-grid-column>
 
-                <kendo-grid-column field="eventESCToDays3" title="Esc Days 3" width="130" filter="numeric" format="{0:b}">
+                <kendo-grid-column field="eventESCToDays3" title="Esc Days 3" width="130" filter="numeric"
+                    format="{0:b}">
                 </kendo-grid-column>
                 <kendo-grid-column field="eventESCUser3Name" title="Esc User 3" width="150">
                 </kendo-grid-column>
 
-                <kendo-grid-column field="eventPeriodType" title="Event Period Type" width="140" filter="numeric" format="{0:b}">
+                <kendo-grid-column field="eventPeriodType" title="Event Period Type" width="140" filter="numeric"
+                    format="{0:b}">
                 </kendo-grid-column>
-                <kendo-grid-column field="eventPeriod" title="Event Period Frequency" width="160" filter="numeric" format="{0:b}">
+                <kendo-grid-column field="eventPeriod" title="Event Period Frequency" width="160" filter="numeric"
+                    format="{0:b}">
                 </kendo-grid-column>
 
                 <kendo-grid-column field="eventLastRunDate" title="Last Run Date" width="120" filter="date"
@@ -143,3 +188,13 @@
         </div>
     </div>
 </div>
+
+<div class="taskDetails"></div>
+
+<app-event-parameters *ngIf="paramsWindow" [selectedEvent]="selectedEvent" [paramsWindow]="paramsWindow"
+    (closeEventparamWindow)="closeEventparamWindow($event)"></app-event-parameters>
+
+<app-notify *ngIf="notifyWindow" [notifyWindow]="notifyWindow" [selectedEvent]="selectedEvent"
+    (closeNotifyWindow)="closeNotifyWindow($event)"></app-notify>
+
+<app-edit-event *ngIf="editEvent" [editEvent]="editEvent" [selectedEvent]="selectedEvent" (closeEditEvent)="closeEditEvent($event)"></app-edit-event>

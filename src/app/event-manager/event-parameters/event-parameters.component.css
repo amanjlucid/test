@@ -1,0 +1,25 @@
+.k-window {
+    position: fixed !important;
+}
+
+.eventParamsHeading{
+    background: #dbdbdb;
+    padding: 4px;
+    font-weight: 600;
+}
+
+.valueDiv{
+    display: block;
+    width: 100%;
+}
+
+.valueDiv span{
+    width: 67%;
+    display: inline;
+}
+
+.valueDiv button{
+    display: inline;
+    width: 28%;
+    float: right;
+}

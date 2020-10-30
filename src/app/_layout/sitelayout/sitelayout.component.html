@@ -79,6 +79,8 @@
 
                 <li class="sidenav-item" [routerLinkActive]="['open']"
                     *ngIf="checkAngularGrpPermission('Event Manager', 'BA_EventManager',0)">
+                    <!-- <li class="sidenav-item" [routerLinkActive]="['open']"
+                    > -->
                     <a href="javascript:void(0)" class="sidenav-link sidenav-toggle">
                         <img class="sidenav-icon ion" src="assets/img/icons/event-manager.svg">
                         <div>Tasks</div>
@@ -91,8 +93,8 @@
                         </li>
 
                         <li class="sidenav-item" [routerLinkActive]="['active']">
-                            <a [routerLink]="['/tasks/task-details']" class="sidenav-link">
-                                <div>Task Details</div>
+                            <a [routerLink]="['/tasks/configuration']" class="sidenav-link">
+                                <div>Configuration</div>
                             </a>
                         </li>
                         <!-- <li class="sidenav-item" [routerLinkActive]="['active']"

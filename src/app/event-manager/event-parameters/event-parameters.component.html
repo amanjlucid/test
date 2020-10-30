@@ -1,0 +1,76 @@
+<kendo-window title="{{title}}" *ngIf="paramsWindow" (close)="closeEventParamWin()" [top]="20" [minWidth]="700"
+    [width]="840" [height]="auto" [minHeight]="350">
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="eventParamsHeading"> <span>{{ eventParamHeading }}</span> </div>
+        </div>
+    </div>
+
+    <div class="row mt-1">
+        <div class="col-md-12">
+            <form novalidate #myForm="ngForm">
+                <kendo-grid [data]="gridView" [height]="400" filterable="menu" [resizable]="true" [sortable]="{
+            allowUnsort: allowUnsort,
+            mode: multiple ? 'multiple' : 'single'
+            }" [skip]="state.skip" [sort]="state.sort" [selectable]="{
+              mode: 'multiple'
+            }" [filter]="state.filter" (dataStateChange)="onStateChange($event)" (sortChange)="sortChange($event)"
+                    (filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)" [navigable]="true">
+
+                    <kendo-grid-column field="eventTypeParamTextName" title="Parameter" width="120">
+                    </kendo-grid-column>
+
+                    <kendo-grid-column field="eventTypeParamType" title="Type" width="100">
+                        <ng-template kendoGridCellTemplate let-dataItem>
+                            <span>
+                                {{ dataItem.eventTypeParamType == 'N' ? 'Numeric' : dataItem.eventTypeParamType == 'P' ? 'Select Parameter' : dataItem.eventTypeParamType == 'I' ? 'Select List' : dataItem.eventTypeParamType   }}
+                            </span>
+                        </ng-template>
+                    </kendo-grid-column>
+
+                    <kendo-grid-column field="eventTypeParamSqlValue" title="Values(s)" width="230"
+                        [filterable]="false">
+
+                        <ng-template kendoGridEditTemplate let-dataItem="dataItem">
+                            <input *ngIf="dataItem.eventTypeParamType == 'N'"
+                                [(ngModel)]="dataItem.eventTypeParamSqlValue" kendoGridFocusable
+                                name="eventTypeParamSqlValue" class="k-textbox" required />
+                        </ng-template>
+
+                        <ng-template kendoGridCellTemplate let-dataItem>
+                            <div class="valueDiv">
+                                <span class="valueSpan">{{dataItem.eventTypeParamSqlValue}}</span>
+                                <button class="btn btn-sm" (click)="openParameterOptions(dataItem)"
+                                    *ngIf="dataItem.eventTypeParamType == 'P'" type="button">Select Value...</button>
+
+                                <button class="btn btn-sm" (click)="openParameterOptions(dataItem)"
+                                    *ngIf="dataItem.eventTypeParamType == 'I'" type="button">Select List...</button>
+                            </div>
+
+                        </ng-template>
+
+
+                    </kendo-grid-column>
+
+
+                </kendo-grid>
+            </form>
+
+        </div>
+    </div>
+
+    <div class="row mt-2">
+        <div class="col-md-12 text-right">
+            <button type="submit" class="btn btn-sm themeButton mr-2" (click)="saveParameters()">OK</button>
+            <button type="button" class="btn btn-sm themeButton" (click)="closeEventParamWin()">Cancel</button>
+
+        </div>
+
+    </div>
+
+    <div class="eventParamList"></div>
+    <app-event-parameters-list *ngIf="eventParamList" [eventParamList]="eventParamList" [selectedEvent]="selectedEvent"
+        [selectedParam]="selectedParam" (closeEventParamList)="closeEventParamList($event)" (changeSelectedParams)="changeSelectedParams($event)"></app-event-parameters-list>
+
+</kendo-window>

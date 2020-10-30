@@ -1,0 +1,88 @@
+<kendo-window title="{{title}}" *ngIf="notifyWindow" (close)="closeNotifyWindowMethod()" [top]="20" [minWidth]="700"
+    [width]="880" [height]="auto" [minHeight]="350">
+
+
+    <div class="row">
+
+        <div class="col-md-3 col-sm-12 col-xs-12">
+
+            <div class="table-responsive mt-2">
+                <kendo-grid [data]="availableGridView" [height]="400" filterable="menu" [resizable]="false" [sortable]="{
+                    allowUnsort: allowUnsort,
+                    mode: multiple ? 'multiple' : 'single'
+                    }" [skip]="state.skip" [sort]="state.sort" [selectable]="selectableSettings"
+                    kendoGridSelectBy="mpusid" [selectedKeys]="mySelection"
+                    (selectedKeysChange)="onSelectedKeysChange($event)" [filter]="state.filter"
+                    (dataStateChange)="dataStateChangeForAssignUser($event)" (cellClick)="cellClickHandler($event)"
+                    [navigable]="true">
+
+                    <kendo-grid-column field="m_UerName" title="User" width="120">
+                    </kendo-grid-column>
+
+                </kendo-grid>
+
+
+            </div>
+        </div>
+
+        <div class="col-md-2 col-sm-12 col-xs-12">
+            <div class="btn-group-vertical btn_grp mt-4">
+                <button (click)="add()" class="btn btn-sm btn-secondary"
+                    [disabled]="selectedAvailableUser?.length == 0">Add &gt;</button>
+                <button [disabled]="selectedAssignedUser?.length == 0" (click)="removeNotifyUser()"
+                    class="btn btn-sm btn-secondary mt-2">&lt;&lt; Remove</button>
+            </div>
+        </div>
+
+        <div class="col-md-7 col-sm-12 col-xs-12">
+
+            <div class="table-responsive mt-2">
+                <kendo-grid [data]="assignGridView" [height]="400" filterable="menu" [resizable]="false" [sortable]="{
+                    allowUnsort: allowUnsort,
+                    mode: multiple ? 'multiple' : 'single'
+                    }" [skip]="statetwo.skip" [sort]="statetwo.sort" [selectable]="{
+                        checkboxOnly: false,
+                        mode: 'single'
+                    }" [filter]="statetwo.filter" (dataStateChange)="dataStateChangeForAvailableUser($event)"
+                    (cellClick)="cellClickHandlerForAssign($event)">
+
+                    <kendo-grid-column field="eventRecipientName" title="Recipient" width="120">
+                    </kendo-grid-column>
+                    <kendo-grid-column field="eventNotifyTypeName" title="Notify Type" width="120">
+                    </kendo-grid-column>
+                    <kendo-grid-column field="eventSendEmailText" title="Email?" width="100">
+                    </kendo-grid-column>
+                    <kendo-grid-column field="eventMSGText" title="Message Text" width="120">
+                    </kendo-grid-column>
+
+                </kendo-grid>
+
+            </div>
+
+        </div>
+    </div>
+
+    <div class="row mt-2">
+        <div class="col-md-12 text-right">
+            <button type="submit" class="btn btn-sm themeButton mr-2" (click)="details()">Details</button>
+        </div>
+
+    </div>
+
+
+    <div class="row mt-2">
+        <div class="col-md-12 text-right">
+            <button type="submit" class="btn btn-sm themeButton mr-2" (click)="saveParameters()">OK</button>
+            <button type="button" class="btn btn-sm themeButton" (click)="closeNotifyWindowMethod()">Cancel</button>
+        </div>
+
+    </div>
+
+    <div class="manageNotifier"> </div>
+
+    <app-manage-event-notifier *ngIf="managenotifier" [managenotifier]="managenotifier" [selectedEvent]="selectedEvent"
+        [selectedAvailableUser]="selectedAvailableUser" [selectedAssignedUser]="selectedAssignedUser"
+        [manageEventFormMode]="manageEventFormMode" (closeManageNotifier)="closeManageNotifier($event)">
+    </app-manage-event-notifier>
+
+</kendo-window>

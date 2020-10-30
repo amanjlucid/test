@@ -1,0 +1,50 @@
+<kendo-window title="{{title}}" *ngIf="managenotifier" (close)="closeManageNotifierWin()" [top]="40" [minWidth]="400"
+    [width]="600" [height]="auto" [minHeight]="350">
+
+    <div class="row">
+        <form [formGroup]="manageNotifierForm" id="manageNotificationForm" (ngSubmit)="onSubmit()" autocomplete="off">
+            <div class="col-md-12">
+
+                <div class="form-group row">
+                    <label for="notifyType" class="col-sm-3 col-form-label">Notify Type</label>
+                    <div class="col-sm-9">
+                        <select class="form-control" id="notifyType" formControlName="notifyType"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.notifyType }">
+                            <option value="">Please Select</option>
+                            <option value="A">Action</option>
+                            <option value="I">Information</option>
+                        </select>
+
+
+                        <div *ngIf="submitted && formErrors.notifyType" class="invalid-feedback">
+                            <div *ngIf="formErrors.notifyType">{{ formErrors.notifyType }}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <label for="sendEmail" class="col-sm-3 col-form-label">Send Email</label>
+                    <div class="col-sm-9 mt-2">
+                        <input type="checkbox" formControlName="sendEmail" class="" id="sendEmail">
+                    </div>
+                </div>
+
+                <div class="form-group row mt-2">
+                    <label for="messageText" class="col-sm-3 col-form-label">Message Text</label>
+                    <div class="col-sm-9">
+                        <textarea id="messageText" rows="5" formControlName="text"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.text }"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12 mt-2 text-right">
+                <button type="submit" class="btn btn-sm themeButton mr-2">OK</button>
+                <button type="button" class="btn btn-sm themeButton" (click)="closeManageNotifierWin()">Cancel</button>
+            </div>
+
+
+        </form>
+    </div>
+
+
+</kendo-window>

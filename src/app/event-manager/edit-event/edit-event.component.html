@@ -1,0 +1,165 @@
+<kendo-window title="{{title}}" *ngIf="editEvent" (close)="closeEditEventMethod()" [top]="10" [minWidth]="600"
+    [width]="700" [height]="auto" [minHeight]="350">
+
+    <form id="editEventForm">
+        <div class="row">
+            <div class="col-md-3">
+                <label class="control-label" for="severity">Severity</label>
+            </div>
+            <div class="col-md-9">
+                <select id="severity" class="form-control">
+                    <option class="low">Low</option>
+                    <option class="medium">Medium</option>
+                    <option class="high">High</option>
+                </select>
+            </div>
+
+        </div>
+
+        <div class="row mt-2">
+            <div class="col-md-3">
+                <label class="control-label" for="completeWithinDays">Complete Within (days)</label>
+            </div>
+            <div class="col-md-9">
+                <input type="text" class="form-control input-sm">
+            </div>
+
+        </div>
+
+        <!-- <div class="row">
+            <div class="col-md-3">
+                <label class="control-label" for="completeWithinDays">Complete Within (days)</label>
+            </div>
+            <div class="col-md-9">
+                <input type="text" class="form-control">
+            </div>
+
+        </div> -->
+
+        <div class="row mt-2">
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-12 mt-2">
+                        <label class="control-label col-md-12">Escalation Level One</label>
+                        <div class="escalationGrp1">
+                            <div class="numberOfDays">
+                                <div class="labelDiv">
+                                    <label class="nod">Number of Days</label>
+                                </div>
+
+                                <div class="inputDiv">
+                                    <input type="text" class="form-control nodv input-sm">
+                                </div>
+
+                            </div>
+
+                            <div class="escalationGrp">
+                                <div class="labelDiv">
+                                    <label class="nod">Escalation User / Group</label>
+                                </div>
+                                <div class="inputDiv">
+                                    <input type="text" class="form-control nodv input-sm">
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-1 mt-2"></div>
+                    <div class="col-md-11 mt-2">
+                        <label class="control-label col-md-12">Escalation Level Two</label>
+                        <div class="escalationGrp2">
+                            <div class="numberOfDays">
+                                <div class="labelDiv">
+                                    <label class="nod">Number of Days</label>
+                                </div>
+
+                                <div class="inputDiv">
+                                    <input type="text" class="form-control nodv input-sm">
+                                </div>
+
+                            </div>
+
+                            <div class="escalationGrp">
+                                <div class="labelDiv">
+                                    <label class="nod">Escalation User / Group</label>
+                                </div>
+                                <div class="inputDiv">
+                                    <input type="text" class="form-control nodv input-sm">
+                                </div>
+                            </div>
+
+                        </div>
+
+
+
+                    </div>
+
+                    <div class="col-md-3 mt-2"></div>
+                    <div class="col-md-9 mt-2">
+                        <label class="control-label col-md-12">Escalation Level Three</label>
+                        <div class="escalationGrp3">
+                            <div class="numberOfDays">
+                                <div class="labelDiv">
+                                    <label class="nod">Number of Days</label>
+                                </div>
+
+                                <div class="inputDiv">
+                                    <input type="text" class="form-control input-sm nodv">
+                                </div>
+
+                            </div>
+
+                            <div class="escalationGrp">
+                                <div class="labelDiv">
+                                    <label class="nod">Escalation User / Group</label>
+                                </div>
+                                <div class="inputDiv">
+                                    <input type="text" class="form-control input-sm nodv">
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row mt-2">
+            <div class="col-md-3">
+                <label class="control-label">Event Status</label>
+            </div>
+
+            <div class="col-md-9">
+                <select id="severity" class="form-control input-sm">
+                    <option class="automatic">Automatic</option>
+                    <option class="medium">Automatic & Process</option>
+                    <option class="high">Manual</option>
+                    <option class="high">In-Active</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="row mt-1">
+            <div class="col-md-3">
+                <label class="control-label">Event Schedule</label>
+            </div>
+
+            <div class="col-md-9">
+                <button type="button" class="btn btn-sm">Amend</button>
+            </div>
+        </div>
+
+
+
+        <div class="row mt-1">
+            <div class="col-md-12 text-right">
+                <button type="submit" class="btn btn-sm themeButton mr-1">Ok</button>
+                <button type="button" (click)="closeEditEventMethod()" class="btn btn-sm themeButton">Cancel</button>
+            </div>
+        </div>
+
+    </form>
+</kendo-window>

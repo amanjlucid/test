@@ -1,0 +1,13 @@
+#messageText {
+    width: 100%;
+    border: 1px solid #eae9e9 !important;
+}
+
+.k-window {
+    position: fixed !important;
+}
+
+
+#manageNotificationForm{
+    width: 100%;
+}
