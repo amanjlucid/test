@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { SubSink } from 'subsink';
 import { GroupDescriptor, DataResult, process, State, CompositeFilterDescriptor, SortDescriptor } from '@progress/kendo-data-query';
 import { PageChangeEvent, SelectableSettings } from '@progress/kendo-angular-grid';
-import { AlertService, EventManagerDashboardService, EventManagerService, HelperService } from '../../_services'
+import { AlertService, EventManagerService, HelperService, ConfirmationDialogService } from '../../_services'
 import { forkJoin } from 'rxjs';
 
 @Component({
@@ -47,10 +47,12 @@ export class TaskDetailsComponent implements OnInit {
   public selectableSettings: SelectableSettings;
   currentUser: any;
   editEvent: boolean = false;
+  eventPeriod = ['Daily', 'Weekly', 'Monthly'];
 
   constructor(
     private eventManagerService: EventManagerService,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private confirmationDialogService: ConfirmationDialogService,
   ) { }
 
   ngOnInit(): void {
@@ -83,7 +85,7 @@ export class TaskDetailsComponent implements OnInit {
 
             // console.log(this.taskDetails)
 
-            this.taskDetailsTemp = data.data.slice(this.state.skip, 50) // remove it
+            this.taskDetailsTemp = data.data.slice(this.state.skip, 30) // remove it
             // this.taskDetailsTemp =  Object.assign([], this.taskDetails);  // remove it
 
             this.gridView = process(this.taskDetailsTemp, this.state);
@@ -163,6 +165,7 @@ export class TaskDetailsComponent implements OnInit {
   }
 
   public cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
+    console.log(dataItem);
     if (this.mySelection.length > 0) {
       this.selectedEvent = this.taskDetails.filter(x => this.mySelection.indexOf(x.eventTypeCode) !== -1);
 
@@ -253,7 +256,7 @@ export class TaskDetailsComponent implements OnInit {
 
   runEvent() {
     if (this.selectedEvent.length > 0) {
-      
+
     }
   }
 
@@ -275,26 +278,42 @@ export class TaskDetailsComponent implements OnInit {
         }
       )
 
-
     }
   }
+
+  public openConfirmationDialog() {
+    if (this.selectedEvent.length > 0) {
+      $('.k-window').css({ 'z-index': 1000 });
+      this.confirmationDialogService.confirm('Please confirm..', 'Are you sure you want to delete the event ?')
+        .then((confirmed) => (confirmed) ? this.deleteEvent() : console.log(confirmed))
+        .catch(() => console.log('Attribute dismissed the dialog.'));
+    } else {
+      this.alertService.error('Please select one record');
+    }
+
+  }
+  
 
   deleteEvent() {
     if (this.selectedEvent.length > 0) {
       let req: any = [];
       for (let selectedEve of this.selectedEvent) {
-        req.push(this.eventManagerService.deleteEvent(selectedEve.eventTypeSequence, this.currentUser.userId));
+        if (selectedEve.eventTypeUpdatedBy == this.currentUser.userId) {
+          req.push(this.eventManagerService.deleteEvent(selectedEve.eventTypeSequence, this.currentUser.userId));
+        }
       }
 
-      forkJoin(req).subscribe(
-        res => {
-          console.log(res);
-          this.getEventData();
-          this.alertService.success("Event Deleted Successfully.")
-        },
-        err => {
-          this.alertService.error(err);
-        }
+      this.subs.add(
+        forkJoin(req).subscribe(
+          res => {
+            console.log(res);
+            this.getEventData();
+            this.alertService.success("Event Deleted Successfully.")
+          },
+          err => {
+            this.alertService.error(err);
+          }
+        )
       )
 
 

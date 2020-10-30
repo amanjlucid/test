@@ -1,16 +1,18 @@
 <kendo-window title="{{title}}" *ngIf="editEvent" (close)="closeEditEventMethod()" [top]="10" [minWidth]="600"
     [width]="700" [height]="auto" [minHeight]="350">
 
-    <form id="editEventForm">
+    <form [formGroup]="editEventForm" id="editEventForm" (ngSubmit)="onSubmit()" autocomplete="off">
         <div class="row">
             <div class="col-md-3">
                 <label class="control-label" for="severity">Severity</label>
             </div>
             <div class="col-md-9">
-                <select id="severity" class="form-control">
-                    <option class="low">Low</option>
-                    <option class="medium">Medium</option>
-                    <option class="high">High</option>
+                <select id="severity" class="form-control" formControlName="severity"
+                    [ngClass]="{ 'is-invalid': submitted && formErrors.severity }">
+                    <option value="">Please Select</option>
+                    <option value="L">Low</option>
+                    <option value="M">Medium</option>
+                    <option value="H">High</option>
                 </select>
             </div>
 
@@ -21,7 +23,8 @@
                 <label class="control-label" for="completeWithinDays">Complete Within (days)</label>
             </div>
             <div class="col-md-9">
-                <input type="text" class="form-control input-sm">
+                <input type="number" min="0" class="form-control input-sm" formControlName="completedays"
+                    [ngClass]="{ 'is-invalid': submitted && formErrors.completedays }">
             </div>
 
         </div>
@@ -48,7 +51,9 @@
                                 </div>
 
                                 <div class="inputDiv">
-                                    <input type="text" class="form-control nodv input-sm">
+                                    <input type="number" min="0" class="form-control nodv input-sm"
+                                        formControlName="numberofdays1"
+                                        [ngClass]="{ 'is-invalid': submitted && formErrors.numberofdays1 }">
                                 </div>
 
                             </div>
@@ -58,7 +63,14 @@
                                     <label class="nod">Escalation User / Group</label>
                                 </div>
                                 <div class="inputDiv">
-                                    <input type="text" class="form-control nodv input-sm">
+                                    <select class="form-control nodv input-sm" formControlName="escalationgrp1"
+                                        [ngClass]="{ 'is-invalid': submitted && formErrors.escalationgrp1 }">
+                                        <option *ngFor="let user of userList"
+                                            value="{{user.mpusid}}">{{user.m_UerName}}
+                                        </option>
+                                    </select>
+
+
                                 </div>
 
                             </div>
@@ -75,7 +87,9 @@
                                 </div>
 
                                 <div class="inputDiv">
-                                    <input type="text" class="form-control nodv input-sm">
+                                    <input type="number" min="0" class="form-control nodv input-sm"
+                                        formControlName="numberofdays2"
+                                        [ngClass]="{ 'is-invalid': submitted && formErrors.numberofdays2 }">
                                 </div>
 
                             </div>
@@ -85,7 +99,12 @@
                                     <label class="nod">Escalation User / Group</label>
                                 </div>
                                 <div class="inputDiv">
-                                    <input type="text" class="form-control nodv input-sm">
+                                    <select class="form-control nodv input-sm" formControlName="escalationgrp2"
+                                        [ngClass]="{ 'is-invalid': submitted && formErrors.escalationgrp2 }">
+                                        <option *ngFor="let user of userList"
+                                            value="{{user.mpusid}}">{{user.m_UerName}}
+                                        </option>
+                                    </select>
                                 </div>
                             </div>
 
@@ -105,7 +124,9 @@
                                 </div>
 
                                 <div class="inputDiv">
-                                    <input type="text" class="form-control input-sm nodv">
+                                    <input type="number" min="0" class="form-control input-sm nodv"
+                                        formControlName="numberofdays3"
+                                        [ngClass]="{ 'is-invalid': submitted && formErrors.numberofdays3 }">
                                 </div>
 
                             </div>
@@ -115,7 +136,12 @@
                                     <label class="nod">Escalation User / Group</label>
                                 </div>
                                 <div class="inputDiv">
-                                    <input type="text" class="form-control input-sm nodv">
+                                    <select class="form-control nodv input-sm" formControlName="escalationgrp3"
+                                        [ngClass]="{ 'is-invalid': submitted && formErrors.escalationgrp3 }">
+                                        <option *ngFor="let user of userList"
+                                            value="{{user.mpusid}}">{{user.m_UerName}}
+                                        </option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -132,23 +158,27 @@
                 <label class="control-label">Event Status</label>
             </div>
 
-            <div class="col-md-9">
-                <select id="severity" class="form-control input-sm">
-                    <option class="automatic">Automatic</option>
-                    <option class="medium">Automatic & Process</option>
-                    <option class="high">Manual</option>
-                    <option class="high">In-Active</option>
+            <div class="col-md-9" *ngIf="checkEventStatus">
+                <select id="eventStatus" class="form-control input-sm" formControlName="eventstatus"
+                    [ngClass]="{ 'is-invalid': submitted && formErrors.eventstatus }">
+                    <option value="">Please Select</option>
+                    <option value="A">Automatic</option>
+                    <option value="Q">Automatic & Process</option>
+                    <option value="M">Manual</option>
+                    <option value="I">In-Active</option>
                 </select>
             </div>
         </div>
 
-        <div class="row mt-1">
+        <div class="row mt-1" *ngIf="checkEventStatus">
             <div class="col-md-3">
                 <label class="control-label">Event Schedule</label>
             </div>
 
             <div class="col-md-9">
-                <button type="button" class="btn btn-sm">Amend</button>
+                <button type="button" (click)="addEvent()" class="btn btn-sm">Amend</button>
+                <span class="eventScheduled green ml-4" [ngClass]="{'green' : eventScheduled != 'Not Scheduled', 'red' : eventScheduled == 'Not Scheduled'}">{{eventScheduled}}</span>
+                <!-- <span class="eventScheduled red ml-4" *ngIf="!eventScheduled">Not Scheduled</span> -->
             </div>
         </div>
 
@@ -162,4 +192,9 @@
         </div>
 
     </form>
+
+    <div class="addEvent"></div>
+    <app-add-event *ngIf="addEventWin" [addEventWin]="addEventWin" [selectedEvent]="selectedEvent"
+        (closeAddEvent)="closeAddEvent($event)" (modifiedSelectedEvent)="modifiedSelectedEvent($event)"></app-add-event>
+
 </kendo-window>

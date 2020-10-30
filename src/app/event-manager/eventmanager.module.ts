@@ -9,6 +9,7 @@ import { GridModule, ExcelModule } from '@progress/kendo-angular-grid';
 import { InputsModule } from '@progress/kendo-angular-inputs';
 import { DialogsModule } from '@progress/kendo-angular-dialog';
 import { SharedModule } from '../shared.module';
+import { NgbDate, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { DatePickerModule } from '@progress/kendo-angular-dateinputs';
 import { TaskDetailsComponent } from './task-details/task-details.component';
 import { EventParametersComponent } from './event-parameters/event-parameters.component';
@@ -17,6 +18,7 @@ import { EventParametersListComponent } from './event-parameters-list/event-para
 import { NotifyComponent } from './notify/notify.component';
 import { ManageEventNotifierComponent } from './manage-event-notifier/manage-event-notifier.component';
 import { EditEventComponent } from './edit-event/edit-event.component';
+import { AddEventComponent } from './add-event/add-event.component';
 
 @NgModule({
   imports: [
@@ -29,7 +31,8 @@ import { EditEventComponent } from './edit-event/edit-event.component';
     InputsModule,
     DialogsModule,
     SharedModule,
-    DatePickerModule
+    DatePickerModule,
+    NgbModule
   ],
 
   declarations: [
@@ -41,7 +44,8 @@ import { EditEventComponent } from './edit-event/edit-event.component';
     EventParametersListComponent,
     NotifyComponent,
     ManageEventNotifierComponent,
-    EditEventComponent
+    EditEventComponent,
+    AddEventComponent
    
   ],
 

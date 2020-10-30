@@ -525,6 +525,8 @@ app-dropdown+.k-action-buttons .k-button.k-primary {
     text-align: left;
 }
 
+app-add-event .k-window-content{overflow: inherit !important;}
+
 @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
     .table-responsive {
         /* display: block !important;

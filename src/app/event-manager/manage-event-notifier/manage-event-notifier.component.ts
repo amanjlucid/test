@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy
 import { SubSink } from 'subsink';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AlertService, EventManagerService } from 'src/app/_services';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-manage-event-notifier',
@@ -100,38 +101,42 @@ export class ManageEventNotifierComponent implements OnInit {
     }
 
     let formRawVal = this.manageNotifierForm.getRawValue();
-    console.log(formRawVal)
+    // console.log(formRawVal)
+    // console.log(this.manageEventFormMode)
+    // console.log(this.selectedAvailableUser)
+    // console.log(this.selectedEvent)
 
     if (this.manageEventFormMode == "add") {
-      if (this.selectedEvent.length > 0) {
-        // let addNotifyUser = () => {
-        //   return new Promise((resolve, reject) => {
-        //     for (let availableUser of this.selectedAvailableUser) {
-        //       const params = {
-        //         EventTypeSequence: this.selectedEvent.eventTypeSequence,
-        //         ETRSequence: this.selectedEvent.eventTypeSequence,
-        //         EventRecipient: availableUser.m_UerName,
-        //         EventNotifyType: formRawVal.notifyType,
-        //         EventSendMail: formRawVal.sendEmail ? "Y" : "N",
-        //         EventMSGText: formRawVal.text,
-        //       }
+      if (this.selectedEvent) {
+        let req: any = [];
+        for (let availableUser of this.selectedAvailableUser) {
+          const params = {
+            EventTypeSequence: this.selectedEvent.eventTypeSequence,
+            ETRSequence: '',
+            EventRecipient: availableUser.mpusid,
+            EventNotifyType: formRawVal.notifyType,
+            EventSendMail: formRawVal.sendEmail ? "Y" : "N",
+            EventMSGText: formRawVal.text,
+          }
 
-        //       this.eventService.addListOfEventTypeNotify(params).subscribe(
-        //         async data => {
-        //           await console.log(data)
-        //         }
-        //       )
+          req.push(this.eventService.addListOfEventTypeNotify(params));
 
-        //     }
+        }
 
-        //     resolve(true);
 
-        //   })
-        // }
+        this.subs.add(
+          forkJoin(req).subscribe(
+            res => {
+              console.log(res);
+              // this.alertService.success("Event Deleted Successfully.")
+              this.closeManageNotifierWin();
 
-        // addNotifyUser().then(async x => {
-        //   console.log(x);
-        // })
+            },
+            err => {
+              this.alertService.error(err);
+            }
+          )
+        )
 
       }
     } else {
@@ -147,7 +152,7 @@ export class ManageEventNotifierComponent implements OnInit {
       this.subs.add(
         this.eventService.updateListOfEventTypeNotify(params).subscribe(
           data => {
-            console.log(data)
+            // console.log(data)
             if (data.isSuccess) {
               // this.alertService.success("")
               this.closeManageNotifierWin();

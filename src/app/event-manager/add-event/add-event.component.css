@@ -1,0 +1,10 @@
+.k-window {
+    position: fixed !important;
+}
+
+.is-invalid-cl {
+    border: 1px solid #d9534f !important;
+    border-radius: 5px;
+    padding-top: 3px;
+}
+

@@ -76,6 +76,14 @@ export class EventManagerService {
         return this.http.get<any>(`${appConfig.apiUrl}/api/EventType/DeleteEventType?eventTypeSequence=${eventTypeSequence}&userId=${userId}`, this.httpOptions);
     }
 
+    GetListOfSecurityUserAndGroup() {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/EventType/GetListOfSecurityUserAndGroup`, this.httpOptions);
+    }
+
+    deleteSchedule(lstEventTypeSequences, strUserId) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/EventType/RunEventManagerProcessAsync?lstEventTypeSequences=${lstEventTypeSequences}&strUserId=${strUserId}`, this.httpOptions);
+    }
+
     // drillDownStackedBarChartData(params) {
     //     let body = JSON.stringify(params);
     //     return this.http.post<any>(`${appConfig.apiUrl}/api/Manager/DrillDownStackedBarChartData`, body, this.httpOptions);

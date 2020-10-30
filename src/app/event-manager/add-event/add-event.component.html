@@ -1,0 +1,82 @@
+<kendo-window title="{{title}}" *ngIf="addEventWin" (close)="closeAddEventMethod()" [top]="10" [minWidth]="500"
+    [width]="600" [height]="270" [minHeight]="270">
+    <form [formGroup]="editEvform" id="editEvform" (ngSubmit)="onSubmit()" autocomplete="off">
+        <div class="row">
+            <div class="col-md-3">
+                <label>Period Type</label>
+            </div>
+
+            <div class="col-md-9" [ngClass]="{ 'is-invalid-cl': submitted && formErrors.periodType }">
+                <div class="form-check-inline">
+                    <label class="form-check-label">
+                        <input type="radio" class="form-check-input" value="0" formControlName="periodType">Daily
+                    </label>
+                </div>
+                <div class="form-check-inline">
+                    <label class="form-check-label">
+                        <input type="radio" class="form-check-input" value="1" formControlName="periodType">Weekly
+                    </label>
+                </div>
+                <div class="form-check-inline">
+                    <label class="form-check-label">
+                        <input type="radio" class="form-check-input" value="2" formControlName="periodType">Monthly
+                    </label>
+                </div>
+
+                <div *ngIf="submitted && formErrors.periodType" class="invalid-feedback">
+                    <div *ngIf="formErrors.periodType">{{ formErrors.periodType }}</div>
+                </div>
+            </div>
+
+
+        </div>
+
+        <div class="row mt-2">
+            <div class="col-md-3">
+                <label>Period Interval</label>
+            </div>
+
+            <div class="col-md-9">
+                <input type="number" min="0" class="form-control" formControlName="periodInterval"
+                    [ngClass]="{ 'is-invalid': submitted && formErrors.periodInterval }">
+                    <div *ngIf="submitted && formErrors.periodInterval" class="invalid-feedback">
+                        <div *ngIf="formErrors.periodInterval">{{ formErrors.periodInterval }}</div>
+                    </div>
+            </div>
+
+
+        </div>
+
+        <div class="row mt-2">
+            <div class="col-md-3">
+                <label>Next Run Date</label>
+            </div>
+
+            <div class="col-md-9">
+                <input type="text" class="form-control" [minDate]="{year: 1800, month: 1, day: 1}" ngbDatepicker
+                    #i="ngbDatepicker" (click)="openCalendar(i)" formControlName="nextRunDate"
+                    [ngClass]="{ 'is-invalid': submitted && formErrors.nextRunDate }">
+                <div *ngIf="submitted && formErrors.nextRunDate" class="invalid-feedback">
+                    <div *ngIf="formErrors.nextRunDate">{{ formErrors.nextRunDate }}</div>
+                </div>
+            </div>
+
+
+        </div>
+
+        <div class="row mt-2">
+            <div class="col-md-3 text-left">
+                <button type="button" class="btn btn-sm themeButton" (click)="openConfirmationDialog()"> Delete </button>
+            </div>
+
+            <div class="col-md-9 text-right">
+                <button type="button" class="btn btn-sm themeButton mr-1" (click)="closeAddEventMethod()"> Cancel
+                </button>
+                <button type="submit" class="btn btn-sm themeButton"> Ok </button>
+            </div>
+
+
+        </div>
+    </form>
+
+</kendo-window>

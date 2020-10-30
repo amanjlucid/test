@@ -37,6 +37,7 @@ export class NotifyComponent implements OnInit {
       filters: []
     }
   }
+
   public checkboxOnly = false;
   public mode: any = 'multiple';
   public mySelection: number[] = [];
@@ -62,7 +63,7 @@ export class NotifyComponent implements OnInit {
 
   ngOnInit(): void {
     this.setSelectableSettings();
-    console.log(this.selectedEvent);
+    // console.log(this.selectedEvent);
     this.selectedEvent = this.selectedEvent[0];
     this.title = this.selectedEvent.eventTypeName;
     this.getGridData();
@@ -74,7 +75,7 @@ export class NotifyComponent implements OnInit {
 
 
   public onSelectedKeysChange(e) {
-    console.log(this.mySelection)
+    // console.log(this.mySelection)
     const len = this.mySelection.length;
   }
 
@@ -90,15 +91,34 @@ export class NotifyComponent implements OnInit {
       forkJoin([this.eventmanagerService.getAvailableUser(), this.eventmanagerService.getAssignUser(this.selectedEvent.eventTypeSequence)]).subscribe(
         res => {
           console.log(res);
+          let tempAvailableuser: any;
+          let tempAssignuser: any
           if (res[0].isSuccess) {
-            this.availableUser = res[0].data;
-            this.availableGridView = process(this.availableUser, this.state);
+            tempAvailableuser = res[0].data;
+            // this.availableUser = res[0].data;
+            // this.availableGridView = process(this.availableUser, this.state);
           }
 
           if (res[1].isSuccess) {
+            tempAssignuser = res[1].data
             this.assignUser = res[1].data;
             this.assignGridView = process(this.assignUser, this.statetwo);
           }
+
+          let tempUser = [];
+          for (let tauser of tempAssignuser) {
+            tempUser.push(tauser.eventRecipient);
+          }
+
+          let tempAvlbluser = [];
+          for (let tavlUser of tempAvailableuser) {
+            if (tempUser.indexOf(tavlUser.mpusid) == -1)
+              tempAvlbluser.push(tavlUser);
+          }
+
+          this.availableUser = tempAvlbluser;
+          this.availableGridView = process(this.availableUser, this.state);
+          // console.log(tempAvlbluser);
 
           this.chRef.detectChanges();
 
@@ -124,7 +144,7 @@ export class NotifyComponent implements OnInit {
 
   cellClickHandlerForAssign(eve) {
     this.selectedAssignedUser = eve.dataItem
-    console.log(this.selectedAssignedUser);
+    // console.log(this.selectedAssignedUser);
     this.chRef.detectChanges();
   }
 
@@ -135,7 +155,7 @@ export class NotifyComponent implements OnInit {
   }
 
   add() {
-    console.log(this.mySelection);
+    // console.log(this.mySelection);
     if (this.selectedAvailableUser.length > 0) {
       this.manageEventFormMode = 'add';
       $('.manageNotifier').addClass('ovrlay');
@@ -158,7 +178,7 @@ export class NotifyComponent implements OnInit {
       this.subs.add(
         this.eventmanagerService.deleteListOfEventTypeNotify(params).subscribe(
           data => {
-            console.log(data);
+            // console.log(data);
             if (data.isSuccess) {
               this.getGridData();
             } else {
