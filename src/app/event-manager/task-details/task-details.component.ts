@@ -210,6 +210,7 @@ export class TaskDetailsComponent implements OnInit {
   }
 
   closeEventparamWindow($event) {
+    this.getEventData();
     $('.taskDetails').removeClass('ovrlay');
     this.paramsWindow = $event;
   }
@@ -239,6 +240,7 @@ export class TaskDetailsComponent implements OnInit {
   }
 
   closeNotifyWindow($event) {
+    this.getEventData();
     $('.taskDetails').removeClass('ovrlay');
     this.notifyWindow = $event;
   }
@@ -326,8 +328,10 @@ export class TaskDetailsComponent implements OnInit {
   }
 
   closeEditEvent($event) {
+    this.getEventData();
     $('.taskDetails').removeClass('ovrlay');
     this.editEvent = $event;
+    this.getEventData();
   }
 
 

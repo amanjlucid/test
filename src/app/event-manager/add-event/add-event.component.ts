@@ -110,9 +110,28 @@ export class AddEventComponent implements OnInit {
     }
 
     let formRawVal = this.editEvform.getRawValue();
+    let modifiedEvent = [];
+    
+    for (let eve of this.selectedEvent) {
+      eve.eventPeriod = formRawVal.periodInterval;
+      eve.eventPeriodType = formRawVal.periodType;
+      eve.eventNextRunDate = this.dateFormate2(formRawVal.nextRunDate);
+      modifiedEvent.push(eve);
+    }
+
+    this.modifiedSelectedEvent.emit(modifiedEvent);
+    this.closeAddEventMethod();
 
   }
 
+  dateFormate2(value) {
+    if (value) {
+      return `${value.year}-${value.month}-${value.day}`
+    } else {
+      return '1753-01-01 00:00:00.000';
+    }
+
+  }
 
   closeAddEventMethod() {
     this.addEventWin = false
@@ -126,8 +145,12 @@ export class AddEventComponent implements OnInit {
 
   public openConfirmationDialog() {
     if (this.selectedEvent.length > 0) {
+      let deleteMsg = 'Are you sure you want to delete the schedule for the selected event type ?';
+      if (this.selectedEvent.length > 1) {
+        deleteMsg = `Are you sure you want to delete the schedule for all ${this.selectedEvent.length} selected event types ?`;
+      }
       $('.k-window').css({ 'z-index': 1000 });
-      this.confirmationDialogService.confirm('Please confirm..', 'Are you sure you want to delete the schedule for the selected event type ?')
+      this.confirmationDialogService.confirm('Please confirm..', deleteMsg)
         .then((confirmed) => (confirmed) ? this.deleteSchedule() : console.log(confirmed))
         .catch(() => console.log('Attribute dismissed the dialog.'));
     } else {
@@ -147,10 +170,10 @@ export class AddEventComponent implements OnInit {
       req.push(eve.eventTypeSequence);
     }
 
+    
     this.subs.add(
-      this.eventmanagerService.deleteSchedule(req, this.currentUser.userId).subscribe(
+      this.eventmanagerService.deleteSchedule(req.join(), this.currentUser.userId).subscribe(
         data => {
-          console.log(data);
           if (data.isSuccess) {
             this.modifiedSelectedEvent.emit(modifiedEvent);
             this.closeAddEventMethod();

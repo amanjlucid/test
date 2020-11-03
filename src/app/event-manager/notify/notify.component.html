@@ -3,7 +3,42 @@
 
 
     <div class="row">
+        <div class="col-md-12 userSettingDiv">
+            <div class="form-group mt-1">
+                <!-- <label class="form-label form-label-sm">Append User</label> -->
+                <label class="switcher switcher-secondary filterLabel">
+                    <input type="checkbox" (change)="changeUserSetting($event.target.value, 'append')"
+                        [checked]="appendUser" value="{{appendUser}}" class="switcher-input">
+                    <span class="switcher-indicator colSwitch">
+                        <span class="switcher-yes">
+                            <span class="ion ion-md-checkmark"></span>
+                        </span>
+                        <span class="switcher-no">
+                            <span class="ion ion-md-close"></span>
+                        </span>
+                    </span>
+                    <span class="switcher-label">Append User</span>
+                </label>
+            </div>
 
+            <div class="form-group mt-1">
+                <!-- <label class="form-label form-label-sm">Append User</label> -->
+                <label class="switcher switcher-secondary filterLabel">
+                    <input type="checkbox" (change)="changeUserSetting($event.target.value, 'replace')"
+                        [checked]="replaceUser" value="{{replaceUser}}" class="switcher-input">
+                    <span class="switcher-indicator colSwitch">
+                        <span class="switcher-yes">
+                            <span class="ion ion-md-checkmark"></span>
+                        </span>
+                        <span class="switcher-no">
+                            <span class="ion ion-md-close"></span>
+                        </span>
+                    </span>
+                    <span class="switcher-label">Replace User</span>
+                </label>
+            </div>
+
+        </div>
         <div class="col-md-3 col-sm-12 col-xs-12">
 
             <div class="table-responsive mt-2">
@@ -82,7 +117,8 @@
 
     <app-manage-event-notifier *ngIf="managenotifier" [managenotifier]="managenotifier" [selectedEvent]="selectedEvent"
         [selectedAvailableUser]="selectedAvailableUser" [selectedAssignedUser]="selectedAssignedUser"
-        [manageEventFormMode]="manageEventFormMode" (closeManageNotifier)="closeManageNotifier($event)">
+        [manageEventFormMode]="manageEventFormMode" [assignUser]="assignUser" [appendUser]="appendUser"
+        [replaceUser]="replaceUser" (closeManageNotifier)="closeManageNotifier($event)">
     </app-manage-event-notifier>
 
 </kendo-window>

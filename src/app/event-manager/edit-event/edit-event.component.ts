@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy
 import { SubSink } from 'subsink';
 import { AlertService, EventManagerService, HelperService } from '../../_services'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { forkJoin } from 'rxjs';
 
 
 @Component({
@@ -120,6 +121,47 @@ export class EditEventComponent implements OnInit {
     }
 
     let formRawVal = this.editEventForm.getRawValue();
+    let req = [];
+    for (let selectedEve of this.selectedEvent) {
+      const params = {
+        EventTypeSequence: selectedEve.eventTypeSequence,
+        BusAreaCode: selectedEve.busAreaCode,
+        EventTypeCode: selectedEve.eventTypeCode,
+        EventTypeName: selectedEve.eventTypeName,
+        EventTypeDesc: selectedEve.eventTypeDesc,
+        EventTypeCategory: selectedEve.eventTypeCategory,
+        EventTaskType: selectedEve.eventTaskType,
+
+        EventSevType: formRawVal.severity,
+        EventSqlExt: selectedEve.eventSqlExt,
+
+        EventESCUser1: formRawVal.escalationgrp1,
+        EventESCToDays1: formRawVal.numberofdays1 == "" ? 0 : formRawVal.numberofdays1,
+        EventESCUser2: formRawVal.escalationgrp2,
+        EventESCToDays2: formRawVal.numberofdays2 == "" ? 0 : formRawVal.numberofdays2,
+        EventESCUser3: formRawVal.escalationgrp3,
+        EventESCToDays3: formRawVal.numberofdays3 == "" ? 0 : formRawVal.numberofdays3,
+        EventTypeStatus: formRawVal.eventstatus,
+        EventTypeDueDays: selectedEve.eventTypeDueDays,
+        EventPeriodType: selectedEve.eventPeriodType,
+        EventPeriod: selectedEve.eventPeriod,
+        EventNextRunDate: selectedEve.eventNextRunDate
+
+      }
+
+      console.log(params);
+      req.push(this.eventmanagerService.updateEventList(params))
+    }
+
+
+    this.subs.add(
+      forkJoin(req).subscribe(
+        data => {
+          console.log(data);
+          this.closeEditEventMethod();
+        }
+      )
+    )
 
   }
 

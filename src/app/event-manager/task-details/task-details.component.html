@@ -9,6 +9,7 @@
 
         <div class="col-md-10 text-right" *ngIf="selectedEvent.length > 1">
             <button type="button" class="btn btn-sm themeButton mr-1" (click)="editEventMethod()">Edit</button>
+            <button type="button" class="btn btn-sm themeButton mr-1" (click)="opneNotifyWindow()">Notify</button>
             <button type="button" class="btn btn-sm themeButton mr-1" (click)="runEvent()">Run</button>
             <button type="button" class="btn btn-sm themeButton mr-1" (click)="copyEvent()">Copy</button>
             <button type="button" class="btn btn-sm themeButton" (click)="openConfirmationDialog()">Delete</button>
@@ -45,7 +46,8 @@
                                 <a class="dropdown-item" href="javascript:void(0)" (click)="runEvent()">Run</a>
                                 <a class="dropdown-item" href="javascript:void(0)" (click)="copyEvent()">Copy</a>
                                 <a [ngClass]="{'disabled' : dataItem.eventTypeUpdatedBy != currentUser.userId}"
-                                    class="dropdown-item" href="javascript:void(0)" (click)="openConfirmationDialog()">Delete</a>
+                                    class="dropdown-item" href="javascript:void(0)"
+                                    (click)="openConfirmationDialog()">Delete</a>
 
                             </div>
                         </li>
@@ -137,7 +139,7 @@
                     format="{0:b}">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <span *ngIf="dataItem.eventPeriod != 0">
-                            {{ eventPeriod[dataItem.eventPeriodType] }} 
+                            {{ eventPeriod[dataItem.eventPeriodType] }}
                         </span>
                     </ng-template>
                 </kendo-grid-column>
@@ -189,6 +191,24 @@
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <span>
                             {{ dataItem.eventTypeCreatedDate | dateFormat : 'DD-MMM-YYYY' }}
+                        </span>
+                    </ng-template>
+                </kendo-grid-column>
+
+                <kendo-grid-column field="eventTypeUpdatedBy" title="Updated By" width="120">
+
+                </kendo-grid-column>
+                <kendo-grid-column field="eventTypeUpdatedDate" title="Updated" width="120" filter="date"
+                    format="{0:dd-MM-yyyy}">
+                    <ng-template kendoGridFilterMenuTemplate let-filter let-column="column"
+                        let-filterService="filterService">
+                        <date-range-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
+                        </date-range-filter>
+                    </ng-template>
+
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.eventTypeUpdatedDate | dateFormat : 'DD-MMM-YYYY' }}
                         </span>
                     </ng-template>
                 </kendo-grid-column>

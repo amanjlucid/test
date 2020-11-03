@@ -81,7 +81,16 @@ export class EventManagerService {
     }
 
     deleteSchedule(lstEventTypeSequences, strUserId) {
-        return this.http.get<any>(`${appConfig.apiUrl}/api/EventType/RunEventManagerProcessAsync?lstEventTypeSequences=${lstEventTypeSequences}&strUserId=${strUserId}`, this.httpOptions);
+        return this.http.get<any>(`${appConfig.apiUrl}/api/EventType/DeleteEventTypeSchedule?lstEventTypeSequences=${lstEventTypeSequences}&strUserId=${strUserId}`, this.httpOptions);
+    }
+
+    updateEventList(params){
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/EventType/UpdateListOfEventType`, body, this.httpOptions);
+    }
+
+    deleteListOfEventTypeNotifyBySequenceNumber(eventTypeSequence) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/EventType/DeleteListOfEventTypeNotifyBySequenceNumber?eventTypeSequence=${eventTypeSequence}`, this.httpOptions);
     }
 
     // drillDownStackedBarChartData(params) {
@@ -89,6 +98,12 @@ export class EventManagerService {
     //     return this.http.post<any>(`${appConfig.apiUrl}/api/Manager/DrillDownStackedBarChartData`, body, this.httpOptions);
 
     // }
+
+
+    // Post api/EventType/UpdateListOfEventType
+// Parameter:- EventTypeSequence, BusAreaCode, EventTypeCode, EventTypeName, EventTypeDesc, EventTypeCategory, EventTaskType
+// EventSevType, EventSqlExt, EventESCUser1, EventESCToDays1, EventESCUser2, EventESCToDays2, EventESCUser3, EventESCToDays3, EventTypeStatus
+// EventTypeDueDays, EventPeriodType, EventPeriod, EventNextRunDate
 
 
 
