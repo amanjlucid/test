@@ -130,7 +130,7 @@ import { RiskScorePipe } from '../_pipes/risk-score.pipe';
     HnsResEditAnswerComponent,
     TextFilterComponent,
     AssessmentHeaderPipe,
-    MultiCheckFilterComponent,
+    // MultiCheckFilterComponent,
     RangeFilterComponent,
     HnsResAddEditIssueComponent,
     HnsResAnsImageComponent,

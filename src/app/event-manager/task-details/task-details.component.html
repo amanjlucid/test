@@ -44,7 +44,8 @@
                                     (click)="openParamsWindow()">Parameter(s)</a>
 
                                 <a class="dropdown-item" href="javascript:void(0)" (click)="runEvent()">Run</a>
-                                <a class="dropdown-item" href="javascript:void(0)" (click)="copyEvent()">Copy</a>
+                                <a [ngClass]="{'disabled' : dataItem.eventTypeStatus == 'S' && validRundate(dataItem.eventNextRunDate)  }"
+                                    class="dropdown-item" href="javascript:void(0)" (click)="copyEvent()">Copy</a>
                                 <a [ngClass]="{'disabled' : dataItem.eventTypeUpdatedBy != currentUser.userId}"
                                     class="dropdown-item" href="javascript:void(0)"
                                     (click)="openConfirmationDialog()">Delete</a>
@@ -99,19 +100,41 @@
                 </kendo-grid-column>
                 <kendo-grid-column field="eventTypeDesc" title="Desc" width="400">
                 </kendo-grid-column>
-                <kendo-grid-column field="eventTypeCategory" title="Category" width="120">
-                    <ng-template kendoGridCellTemplate let-dataItem>
+                <kendo-grid-column field="eventTypeCategoryName" title="Category" width="120">
+                    <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
+                        let-filterService="filterService">
+                        <multicheck-filter [isPrimitive]="false" [field]="column.field" [currentFilter]="filter"
+                            [filterService]="filterService" textField="text" valueField="val"
+                            [data]="distinctPrimitive(column.field)">
+                        </multicheck-filter>
+                    </ng-template>
+                    <!-- <ng-template kendoGridCellTemplate let-dataItem>
                         <span>
                             {{ dataItem.eventTypeCategory == "P" ? "Process" : dataItem.eventTypeCategory }}
                         </span>
-                    </ng-template>
+                    </ng-template> -->
                 </kendo-grid-column>
 
                 <kendo-grid-column field="eventTaskTypeName" title="Task Type" width="120">
                 </kendo-grid-column>
                 <kendo-grid-column field="eventSevTypeName" title="Severity" width="130">
+                    <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
+                        let-filterService="filterService">
+                        <multicheck-filter [isPrimitive]="false" [field]="column.field" [currentFilter]="filter"
+                            [filterService]="filterService" textField="text" valueField="val"
+                            [data]="distinctPrimitive(column.field)">
+                        </multicheck-filter>
+                    </ng-template>
                 </kendo-grid-column>
                 <kendo-grid-column field="eventTypeStatusName" title="Status" width="170">
+                    <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
+                        let-filterService="filterService">
+                        <multicheck-filter [isPrimitive]="false" [field]="column.field" [currentFilter]="filter"
+                            [filterService]="filterService" textField="text" valueField="val"
+                            [data]="distinctPrimitive(column.field)">
+                        </multicheck-filter>
+                    </ng-template>
+
                 </kendo-grid-column>
                 <kendo-grid-column field="eventTypeDueDays" title="Complete Within (days)" width="120" filter="numeric"
                     format="{0:b}">

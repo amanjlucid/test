@@ -13,21 +13,31 @@ import { AlertService } from '../_services';
 export class AlertComponent implements OnInit, OnDestroy {
     private subscription: Subscription;
     message: any;
+    timeout: any;
 
     constructor(private alertService: AlertService) { }
 
     ngOnInit() {
         this.subscription = this.alertService.getMessage().subscribe(message => {
             this.message = message;
-            setTimeout(() => this.close(), 10000);
+            if (this.message != undefined) {
+                if (this.message.type != 'destroy') {
+                    this.timeout = setTimeout(() => this.close(), this.message.time);
+                } else {
+                    this.close()
+                }
+
+            }
+
         });
     }
-    
+
     ngOnDestroy() {
         this.subscription.unsubscribe();
     }
-   
+
     close() {
+        clearTimeout(this.timeout);
         this.message = "";
     }
 }

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { SubSink } from 'subsink';
-import { GroupDescriptor, DataResult, process, State, CompositeFilterDescriptor, SortDescriptor } from '@progress/kendo-data-query';
+import { GroupDescriptor, DataResult, process, State, CompositeFilterDescriptor, SortDescriptor, distinct } from '@progress/kendo-data-query';
 import { PageChangeEvent, SelectableSettings } from '@progress/kendo-angular-grid';
 import { AlertService, EventManagerService, HelperService, ConfirmationDialogService } from '../../_services'
 import { forkJoin } from 'rxjs';
@@ -49,6 +49,7 @@ export class TaskDetailsComponent implements OnInit {
   editEvent: boolean = false;
   eventPeriod = ['Daily', 'Weekly', 'Monthly'];
 
+
   constructor(
     private eventManagerService: EventManagerService,
     private alertService: AlertService,
@@ -66,6 +67,12 @@ export class TaskDetailsComponent implements OnInit {
   }
 
 
+  distinctPrimitive(fieldName: string): any {
+    return distinct(this.taskDetails, fieldName).map(item => {
+      return { val: item[fieldName], text: item[fieldName] }
+    });
+  }
+
   getEventData() {
     this.subs.add(
       this.eventManagerService.getEventTypeList().subscribe(
@@ -73,7 +80,6 @@ export class TaskDetailsComponent implements OnInit {
           if (data.isSuccess) {
             this.taskDetails = data.data;
             this.taskDetailsTemp = Object.assign([], data.data);
-
 
             // if (this.taskDetailsTemp.length > 0) {
             //   this.taskDetailsTemp.map(x => {
@@ -184,7 +190,7 @@ export class TaskDetailsComponent implements OnInit {
             } else if (columnIndex == 2) {
               this.opneNotifyWindow();
             } else {
-
+              this.editEventMethod();
             }
 
             this.touchtime = 0;
@@ -256,9 +262,38 @@ export class TaskDetailsComponent implements OnInit {
     const len = this.mySelection.length;
   }
 
+
   runEvent() {
     if (this.selectedEvent.length > 0) {
+      let req = [];
+      for (let eve of this.selectedEvent) {
+        req.push(this.eventManagerService.runEvent(eve.eventTypeSequence, this.currentUser.userId));
+      }
 
+      this.alertService.success(`${this.selectedEvent.length} event(s) running in background.`);
+
+      forkJoin(req).subscribe(
+        data => {
+          this.alertService.destroyAlert();
+          console.log(data);
+          console.log(this.selectedEvent)
+          if (data.length > 0) {
+            let runevents: any = data;
+            let successStr = '';
+            for (let runevent in runevents) {
+              if (runevents[runevent].isSuccess && runevents[runevent].data >= 0) {
+                successStr += `${this.selectedEvent[runevent].eventTypeCode} : ${this.selectedEvent[runevent].eventTypeName}   ${runevents[runevent].data} rows,`;
+              }
+            }
+
+            setTimeout(() => {
+              this.alertService.success(successStr, true, 1000000);
+            }, 1000);
+
+          }
+
+        }
+      )
     }
   }
 
@@ -266,7 +301,10 @@ export class TaskDetailsComponent implements OnInit {
     if (this.selectedEvent.length > 0) {
       let req: any = [];
       for (let selectedEve of this.selectedEvent) {
-        req.push(this.eventManagerService.copyEvent(selectedEve.eventTypeSequence, this.currentUser.userId));
+        if ((selectedEve.eventTypeStatus != "S") || (selectedEve.eventTypeStatus == "S" && !this.validRundate(selectedEve.eventNextRunDate))) {
+          req.push(this.eventManagerService.copyEvent(selectedEve.eventTypeSequence, this.currentUser.userId));
+        }
+
       }
 
       forkJoin(req).subscribe(
@@ -294,7 +332,7 @@ export class TaskDetailsComponent implements OnInit {
     }
 
   }
-  
+
 
   deleteEvent() {
     if (this.selectedEvent.length > 0) {
@@ -317,9 +355,8 @@ export class TaskDetailsComponent implements OnInit {
           }
         )
       )
-
-
     }
+
   }
 
   editEventMethod() {
@@ -332,6 +369,19 @@ export class TaskDetailsComponent implements OnInit {
     $('.taskDetails').removeClass('ovrlay');
     this.editEvent = $event;
     this.getEventData();
+  }
+
+  validRundate(dateStr) {
+    if (dateStr == "") {
+      return false;
+    }
+
+    let date = new Date(dateStr);
+    if (date.getFullYear() < 1900) {
+      return false
+    }
+
+    return true;
   }
 
 
