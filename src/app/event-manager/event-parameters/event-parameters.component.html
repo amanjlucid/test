@@ -33,7 +33,11 @@
                         [filterable]="false">
 
                         <ng-template kendoGridEditTemplate let-dataItem="dataItem">
-                            <input *ngIf="dataItem.eventTypeParamType == 'N'"
+                            <input type="number" min="0" *ngIf="dataItem.eventTypeParamType == 'N'"
+                                [(ngModel)]="dataItem.eventTypeParamSqlValue" kendoGridFocusable
+                                name="eventTypeParamSqlValue" class="k-textbox" required />
+
+                            <input *ngIf="dataItem.eventTypeParamType == 'A'"
                                 [(ngModel)]="dataItem.eventTypeParamSqlValue" kendoGridFocusable
                                 name="eventTypeParamSqlValue" class="k-textbox" required />
                         </ng-template>
@@ -71,6 +75,7 @@
 
     <div class="eventParamList"></div>
     <app-event-parameters-list *ngIf="eventParamList" [eventParamList]="eventParamList" [selectedEvent]="selectedEvent"
-        [selectedParam]="selectedParam" (closeEventParamList)="closeEventParamList($event)" (changeSelectedParams)="changeSelectedParams($event)"></app-event-parameters-list>
+        [selectedParam]="selectedParam" (closeEventParamList)="closeEventParamList($event)"
+        (changeSelectedParams)="changeSelectedParams($event)"></app-event-parameters-list>
 
 </kendo-window>
