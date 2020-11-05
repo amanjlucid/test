@@ -1,9 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { SubSink } from 'subsink';
-import { GroupDescriptor, DataResult, process, State, CompositeFilterDescriptor, SortDescriptor } from '@progress/kendo-data-query';
-import { PageChangeEvent } from '@progress/kendo-angular-grid';
+import { GroupDescriptor, DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { AlertService, EventManagerDashboardService, HelperService } from '../../_services'
-
 
 @Component({
   selector: 'app-user-events-grid',
@@ -25,36 +23,26 @@ export class UserEventsGridComponent implements OnInit {
   state: State = {
     skip: 0,
     sort: [],
-    take: 25,
     group: [],
     filter: {
       logic: "or",
       filters: []
     }
   }
-
-  tempstate: State = {
-    skip: 0,
-    sort: [],
-    group: [],
-    filter: {
-      logic: "or",
-      filters: []
-    }
-  }
-
-  public gridView: DataResult;
-  pageSize = 25;
+  mySelection: number[] = [];
+  gridView: DataResult;
+  columnName = [];
 
   constructor(
     private chRef: ChangeDetectorRef,
     private dashboardService: EventManagerDashboardService,
     private helperService: HelperService,
-    private alertService: AlertService
+    private alertService: AlertService,
+
   ) { }
 
   ngOnInit() {
-    console.log(this.selectedBarChartXasis)
+
     this.getEventData(this.selectedBarChartXasis);
   }
 
@@ -68,121 +56,57 @@ export class UserEventsGridComponent implements OnInit {
       this.dashboardService.getListOfUserEventByCriteria(params).subscribe(
         data => {
           if (data.isSuccess) {
-            console.log(data);
-            this.usereventData = data.data;
-            this.userEventTempData = Object.assign([], data.data);
-            if (this.userEventTempData.length > 0) {
-              this.userEventTempData.map(x => {
-                x.eventCreatedDate = this.helperService.checkValidDateR(x.eventCreatedDate)
-                x.eventPlannedDate = this.helperService.checkValidDateR(x.eventPlannedDate)
-                x.eventUpdateDate = this.helperService.checkValidDateR(x.eventUpdateDate)
-              })
+            let userEventTempData = Object.assign([], data.data);
+            let col = data.data[0];
+
+            for (let cl in col) {
+              if (col[cl] != '')
+                this.columnName.push({ 'key': `col${cl}`, 'val': col[cl] })
             }
-            this.gridView = process(this.usereventData, this.state);
-            this.chRef.detectChanges();
+
+            userEventTempData.shift();
+            for (let tmpData of userEventTempData) {
+              for (let tindex in tmpData) {
+                tmpData[`col${tindex}`] = tmpData[tindex]
+                delete tmpData[tindex];
+              }
+            }
+
+            this.usereventData = Object.assign([], userEventTempData);
+            this.renderGrid();
+
           }
         }
       )
     )
   }
 
-  
-  public groupChange(groups: GroupDescriptor[]): void {
-    this.resetGrid()
+
+  groupChange(groups: GroupDescriptor[]): void {
     this.state.group = groups;
-    this.tempstate.group = groups;
-   
-    setTimeout(() => {
-      this.gridView = process(this.userEventTempData, this.tempstate);
-      this.usereventData = this.gridView.data;
-      this.gridView.total = this.gridView.data.length;
-      this.chRef.detectChanges();
-
-      // let tempData = process(this.userEventTempData, this.tempstate);
-      // console.log(tempData);
-      // this.usereventData = tempData.data;
-      // this.renderGrid(tempData, 200);
-    }, 100);
-
+    this.renderGrid();
   }
 
-
-  public sortChange(sort: SortDescriptor[]): void {
-    this.tempstate.sort = sort;
-    this.tempstate.skip = 0;
-    this.tempstate.group = []
-    let tempData = process(this.userEventTempData, this.tempstate);
-    //this.usereventData = tempData.data;
-
+  sortChange(sort: SortDescriptor[]): void {
     this.state.sort = sort;
-    this.state.skip = 0;
-
-    if (this.state.group.length > 0) {
-      this.tempstate.group = this.state.group;
-      this.gridView = process(tempData.data, this.tempstate);
-      this.usereventData = this.gridView.data;
-      this.gridView.total = this.gridView.data.length
-    } else {
-      this.gridView = process(tempData.data, this.state);
-      this.usereventData = tempData.data;
-      this.gridView.total = tempData.total
-    }
-
-
-   // this.gridView = process(this.usereventData, this.state);
-
+    this.renderGrid();
   }
 
-  public filterChange(filter: any): void {
-    this.resetGrid()
-    this.tempstate.filter = filter;
-    this.tempstate.group = [];
-    let tempData = process(this.userEventTempData, this.tempstate);
-    
+  filterChange(filter: any): void {
     this.state.filter = filter;
-    if (this.state.group.length > 0) {
-      this.tempstate.group = this.state.group;
-      setTimeout(() => {
-        this.gridView = process(tempData.data, this.tempstate);
-        this.usereventData = this.gridView.data;
-        this.gridView.total = this.gridView.data.length
-        this.chRef.detectChanges();
-      }, 30);
-    } else {
-      setTimeout(() => {
-        this.gridView = process(tempData.data, this.state);
-        this.usereventData = tempData.data;
-        this.gridView.total = tempData.total
-        this.chRef.detectChanges();
-      }, 30);
-    }
-
+    this.renderGrid();
   }
 
-  public cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
+  cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
     this.selectedEvent = dataItem;
     if (columnIndex > 1) {
 
     }
   }
 
-  pageChange(event: PageChangeEvent): void {
-    this.state.skip = event.skip;
-    this.gridView = {
-      data: this.usereventData.slice(this.state.skip, this.state.skip + this.pageSize),
-      total: this.usereventData.length
-    };
-  }
-
-  resetGrid() {
-    this.state.skip = 0;
-  }
-
-  renderGrid(tempGrid: any, timer = 20) {
-    setTimeout(() => {
-      this.gridView = process(tempGrid.data, this.state)
-      this.chRef.detectChanges();
-    }, timer);
+  renderGrid() {
+    this.gridView = process(this.usereventData, this.state);
+    this.chRef.detectChanges();
   }
 
   closeGrid() {
@@ -191,8 +115,42 @@ export class UserEventsGridComponent implements OnInit {
   }
 
 
+  redirectToUserEevnt(val) {
+    const host = window.location.hostname;
+    let siteUrl = "";
+    if (host == "localhost") {
+      siteUrl = "http://localhost:4200"
+    } else {
+      siteUrl = "http://104.40.138.8/rowanwood"
+    }
+
+
+    if (val == "all") {
+      siteUrl = `${siteUrl}/tasks/tasks`
+    } else {
+      if (this.mySelection.length > 0) {
+        let seqArr = [];
+        let seqCol = this.columnName.find(x => x.val == "Task No.")
+
+        if (seqCol) {
+          for (let rowSelected of this.mySelection) {
+            seqArr.push(this.usereventData[rowSelected][seqCol.key]);
+          }
+          siteUrl = `${siteUrl}/tasks/tasks?seq=${seqArr.toString()}`
+        } else {
+          this.alertService.error('Seq column not found.')
+        }
+      } else {
+        this.alertService.error("No record selected.")
+      }
+
+    }
+
+    window.open(siteUrl, "_blank");
+  }
+
+
   export() {
-    // console.log(this.usereventData)
     let label = {
       'eventSequence': 'Seq',
       'busareaName': 'Bus Area',
@@ -210,7 +168,6 @@ export class UserEventsGridComponent implements OnInit {
       'eventCreatedBy': 'Created By',
       'eventUpdatedBy': 'Updated By',
       'eventUpdateDate': 'Updated',
-
     }
 
     if (this.usereventData) {

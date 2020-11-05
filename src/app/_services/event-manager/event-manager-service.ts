@@ -93,18 +93,11 @@ export class EventManagerService {
         return this.http.get<any>(`${appConfig.apiUrl}/api/EventType/DeleteListOfEventTypeNotifyBySequenceNumber?eventTypeSequence=${eventTypeSequence}`, this.httpOptions);
     }
 
-    // drillDownStackedBarChartData(params) {
-    //     let body = JSON.stringify(params);
-    //     return this.http.post<any>(`${appConfig.apiUrl}/api/Manager/DrillDownStackedBarChartData`, body, this.httpOptions);
+    getListOfUserEventByUserId(userId, hideComplete) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/UserEvents/GetListOfUserEventByUserId?userId=${userId}&hideComplete=${hideComplete}`, this.httpOptions);
+    }
 
-    // }
-
-
-    // Post api/EventType/UpdateListOfEventType
-// Parameter:- EventTypeSequence, BusAreaCode, EventTypeCode, EventTypeName, EventTypeDesc, EventTypeCategory, EventTaskType
-// EventSevType, EventSqlExt, EventESCUser1, EventESCToDays1, EventESCUser2, EventESCToDays2, EventESCUser3, EventESCToDays3, EventTypeStatus
-// EventTypeDueDays, EventPeriodType, EventPeriod, EventNextRunDate
-
+    
 
 
 }

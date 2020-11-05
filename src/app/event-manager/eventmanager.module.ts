@@ -20,6 +20,7 @@ import { ManageEventNotifierComponent } from './manage-event-notifier/manage-eve
 import { EditEventComponent } from './edit-event/edit-event.component';
 import { AddEventComponent } from './add-event/add-event.component';
 import { MultiCheckFilterComponent } from '../kendo-component/multicheck-filter.component';
+import { TasksComponent } from './tasks/tasks.component';
 
 @NgModule({
   imports: [
@@ -47,7 +48,7 @@ import { MultiCheckFilterComponent } from '../kendo-component/multicheck-filter.
     ManageEventNotifierComponent,
     EditEventComponent,
     AddEventComponent,
-    
+    TasksComponent
    
   ],
 

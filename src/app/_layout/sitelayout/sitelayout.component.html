@@ -97,6 +97,13 @@
                                 <div>Configuration</div>
                             </a>
                         </li>
+
+                        <li class="sidenav-item" [routerLinkActive]="['active']">
+                            <a [routerLink]="['/tasks/tasks']" class="sidenav-link">
+                                <div>Tasks</div>
+                            </a>
+                        </li>
+
                         <!-- <li class="sidenav-item" [routerLinkActive]="['active']"
                         *ngIf="hnsPortalPermissions.indexOf('Definitions') != -1">
                         <a [routerLink]="['/health&safety/definitions']" class="sidenav-link">

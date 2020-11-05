@@ -91,7 +91,7 @@ export class TaskDetailsComponent implements OnInit {
 
             // console.log(this.taskDetails)
 
-            this.taskDetailsTemp = data.data.slice(this.state.skip, 30) // remove it
+            // this.taskDetailsTemp = data.data.slice(this.state.skip, 30) // remove it
             // this.taskDetailsTemp =  Object.assign([], this.taskDetails);  // remove it
 
             this.gridView = process(this.taskDetailsTemp, this.state);
@@ -171,7 +171,6 @@ export class TaskDetailsComponent implements OnInit {
   }
 
   public cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
-    console.log(dataItem);
     if (this.mySelection.length > 0) {
       this.selectedEvent = this.taskDetails.filter(x => this.mySelection.indexOf(x.eventTypeCode) !== -1);
 
@@ -275,8 +274,6 @@ export class TaskDetailsComponent implements OnInit {
       forkJoin(req).subscribe(
         data => {
           this.alertService.destroyAlert();
-          console.log(data);
-          console.log(this.selectedEvent)
           if (data.length > 0) {
             let runevents: any = data;
             let successStr = '';
@@ -309,7 +306,6 @@ export class TaskDetailsComponent implements OnInit {
 
       forkJoin(req).subscribe(
         res => {
-          console.log(res);
           this.getEventData();
           this.alertService.success("Event Copied Successfully.")
         },
@@ -346,7 +342,6 @@ export class TaskDetailsComponent implements OnInit {
       this.subs.add(
         forkJoin(req).subscribe(
           res => {
-            console.log(res);
             this.getEventData();
             this.alertService.success("Event Deleted Successfully.")
           },

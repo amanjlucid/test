@@ -99,7 +99,8 @@
 
     <div class="row mt-2">
         <div class="col-md-12 text-right">
-            <button type="submit" class="btn btn-sm themeButton mr-2" (click)="details()">Details</button>
+            <button type="submit" class="btn btn-sm themeButton mr-2" [disabled]="selectedAssignedUser.length == 0"
+                (click)="details()">Details</button>
         </div>
 
     </div>

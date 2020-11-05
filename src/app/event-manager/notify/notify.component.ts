@@ -65,7 +65,7 @@ export class NotifyComponent implements OnInit {
   ngOnInit(): void {
     this.setSelectableSettings();
     this.title = `${this.selectedEvent.length} Tasks Selected`//this.selectedEvent.eventTypeName;
-    
+
 
     // this.selectedEvent = this.selectedEvent[0];
 
@@ -239,7 +239,7 @@ export class NotifyComponent implements OnInit {
   }
 
   details() {
-    if (this.selectedAssignedUser) {
+    if (this.selectedAssignedUser.length > 0) {
       this.manageEventFormMode = "edit";
       $('.manageNotifier').addClass('ovrlay');
       this.managenotifier = true;
@@ -248,7 +248,7 @@ export class NotifyComponent implements OnInit {
 
   removeNotifyUser() {
     if (this.selectedEvent.length > 0) {
-      if (this.selectedAssignedUser) {
+      if (this.selectedAssignedUser.length > 0) {
         let req = [];
         for (let eve of this.selectedEvent) {
           const params = { EventTypeSequence: eve.eventTypeSequence, ETRSequence: this.selectedAssignedUser.etrSequence };
