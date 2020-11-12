@@ -80,7 +80,7 @@ export class TaskDetailsComponent implements OnInit {
           if (data.isSuccess) {
             this.taskDetails = data.data;
             this.taskDetailsTemp = Object.assign([], data.data);
-
+            console.log(data.data)
             // if (this.taskDetailsTemp.length > 0) {
             //   this.taskDetailsTemp.map(x => {
             //     x.eventCreatedDate = this.helperService.checkValidDateR(x.eventCreatedDate)

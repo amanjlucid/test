@@ -21,6 +21,10 @@ import { EditEventComponent } from './edit-event/edit-event.component';
 import { AddEventComponent } from './add-event/add-event.component';
 import { MultiCheckFilterComponent } from '../kendo-component/multicheck-filter.component';
 import { TasksComponent } from './tasks/tasks.component';
+import { UserEventTaskDetailsComponent } from './user-event-task-details/user-event-task-details.component';
+import { NgCircleProgressModule } from 'ng-circle-progress';
+import { UserTaskDataComponent } from './user-task-data/user-task-data.component';
+import { AssigntoOtherComponent } from './assignto-other/assignto-other.component';
 
 @NgModule({
   imports: [
@@ -34,7 +38,8 @@ import { TasksComponent } from './tasks/tasks.component';
     DialogsModule,
     SharedModule,
     DatePickerModule,
-    NgbModule
+    NgbModule,
+    NgCircleProgressModule.forRoot()
   ],
 
   declarations: [
@@ -48,7 +53,10 @@ import { TasksComponent } from './tasks/tasks.component';
     ManageEventNotifierComponent,
     EditEventComponent,
     AddEventComponent,
-    TasksComponent
+    TasksComponent,
+    UserEventTaskDetailsComponent,
+    UserTaskDataComponent,
+    AssigntoOtherComponent
    
   ],
 

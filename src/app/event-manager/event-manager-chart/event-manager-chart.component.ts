@@ -85,6 +85,7 @@ export class EventManagerChartComponent implements OnInit {
         // get chart data and render in template
         this.hnsPortalService.getUserChartData(this.currentUser.userId, this.portalName).subscribe(
           data => {
+
             if (data.data.chartData != null) {
               this.dashboardName = data.data.dashboard;
               this.savedState = data.data.chartData.chartData
@@ -98,6 +99,7 @@ export class EventManagerChartComponent implements OnInit {
               this.eventMangerDashboardService.getEventManagerChartsList().subscribe(
                 data => {
                   if (data.isSuccess) {
+                    // console.log(data);
                     this.chartNames = data.data;
                     const comp = this;
                     let createDefaultCharts = function (container: any, state: any) {
@@ -771,6 +773,8 @@ export class EventManagerChartComponent implements OnInit {
       getChartData = this.hnsPortalService.getChartData(chartObj);
     }
 
+
+
     this.subs.add(
       getChartData.subscribe(
         data => {
@@ -844,10 +848,13 @@ export class EventManagerChartComponent implements OnInit {
       getChartData = this.hnsPortalService.getChartData(chartObj);
     }
 
+
+
     this.subs.add(
       getChartData.subscribe(
         data => {
           if (data.isSuccess) {
+
             let barChartData = data.data;
             let barChartFilterData = data.data.chartFilterModel;
             let selectElm = $(`<select style="margin-right: -24px;background-color: #fff;background-clip: padding-box;border: 1px solid #ced4da; margin-top: 3px; margin-left: 2px;" class="${className}">`);
@@ -945,6 +952,11 @@ export class EventManagerChartComponent implements OnInit {
 
   barChartConfiguration(titleText: any, seriesName: string, allowPointSelect: boolean = true, selector: any, data: any, barChartParams: any = null) {
     let color = barChartParams != null ? barChartParams.color : '';
+    //let chartParams =  Object.assign([], barChartParams); 
+    if (barChartParams.ddChartID != undefined) {
+      barChartParams.seriesId = data.stackedBarChartViewModelList[0].seriesId
+    }
+
     let comp = this;
     return {
       chart: {
@@ -1310,7 +1322,7 @@ export class EventManagerChartComponent implements OnInit {
           "parantChartId": parentChartObj.chartID,
           "xAxisValue": chartEvent.options.name,
           "seriesId": chartEvent.options.seriesId,
-          "color" : chartEvent.color
+          "color": chartEvent.color
         }
 
         this.renderDrillDownChart(chartEvent, params)
@@ -1322,13 +1334,16 @@ export class EventManagerChartComponent implements OnInit {
 
 
   openGridOnClickOfBarChart(chartEvent, parentChartObj) {
+    // console.log(chartEvent)
+    
     this.selectedBarChartXasis = {
-      "ddChartId": parentChartObj.ddChartId,
+      "ddChartId": parentChartObj.ddChartId != undefined ? parentChartObj.ddChartId : parentChartObj.ddChartID,
       "parantChartId": parentChartObj.parantChartId != undefined ? parentChartObj.parantChartId : parentChartObj.chartID,
       "xAxisValue": chartEvent.category,
-      "seriesId": parentChartObj.seriesId
+      "seriesId": parentChartObj.seriesId,
+      "chartName": parentChartObj.chartName
     }
-
+    
     this.openGrid();
   }
 

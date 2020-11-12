@@ -1,0 +1,127 @@
+<kendo-window title="{{title}}" *ngIf="taskDetails" (close)="closeWindow()" [top]="20" [minWidth]="700" [width]="750"
+    [height]="auto" [minHeight]="350">
+
+    <div class="row taskDetailsDiv">
+        <div class="col-md-12 headingDiv">
+            <span class="heading">Task {{selectedEvent.eventSequence}} : {{selectedEvent.eventTypeCode}}</span>
+        </div>
+        <div class="col-md-12 text-center mt-2">
+            <span class="heading2">{{selectedEvent.eventTypeName}}</span>
+        </div>
+
+        <div class="col-md-12 mt-2">
+            <div class="row">
+                <div class="col-md-12 statusDiv">
+                    <div class="leftdiv">
+                        <div class="lblDiv">
+                            <label>Status : </label> <span> {{selectedEvent.eventStatusName}}</span>
+                        </div>
+                        <div class="lblDiv">
+                            <label>Severity : </label> <span [ngClass]="{'highColor': selectedEvent.eventSevType == 'H',
+                            'mediumColor':  selectedEvent.eventSevType == 'M', 
+                            'lowColor': selectedEvent.eventSevType == 'L'}"> {{selectedEvent.eventSevTypeName}}</span>
+                        </div>
+
+                    </div>
+                    <div class="middlediv">
+                        <div class="innerLeft">
+                            <div class="lblDiv">
+                                <label>Records : </label> <span> {{selectedEvent.eventRowCount}}</span>
+                            </div>
+                            <div class="lblDiv">
+                                <label>Processed : </label> <span> {{selectedEvent.eventProcessedCount}}</span>
+                            </div>
+                        </div>
+
+                        <div class="innerRight">
+
+                            <circle-progress [percent]="processedEvent(selectedEvent)" [radius]="50"
+                                [outerStrokeWidth]="8" [innerStrokeWidth]="8" [outerStrokeColor]="'#78C000'"
+                                [innerStrokeColor]="'#C7E596'" [animation]="true" [animationDuration]="10"
+                                [showSubtitle]="false" [showInnerStroke]="false">
+                            </circle-progress>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-md-5">
+                    <label>Created : </label>
+                    <span> {{selectedEvent.eventCreatedDate | dateFormat : 'DD-MMM-YYYY HH:mm:ss'}}</span>
+
+                </div>
+                <div class="col-md-7">
+                    <label>Viewed : </label>
+                    <span> {{selectedEvent.eventViewDate | dateFormat : 'DD-MMM-YYYY HH:mm:ss' }}</span>
+
+                </div>
+                <div class="col-md-5">
+                    <label>Assigned : </label>
+                    <span> {{selectedEvent.eventAssignDate | dateFormat : 'DD-MMM-YYYY HH:mm:ss'}}</span>
+
+                </div>
+                <div class="col-md-7">
+                    <label>Assigned To : </label>
+                    <span> {{selectedEvent.eventAssignUserName}}</span>
+
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-5">
+                    <label>Planned : </label>
+                    <span> {{selectedEvent.eventPlannedDate | dateFormat : 'DD-MMM-YYYY HH:mm:ss'}}</span>
+
+                </div>
+                <div class="col-md-7">
+                    <label>Completed : </label>
+                    <span> {{selectedEvent.eventCompletedDate | dateFormat : 'DD-MMM-YYYY HH:mm:ss'}}</span>
+
+                </div>
+
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-md-12">
+                    <label>Comment</label>
+                    <textarea rows="6" class="form-control" [(ngModel)]="comments"></textarea>
+
+                </div>
+                <div class="col-md-12 text-right mt-2">
+                    <button type="button" class="btn btn-sm themeButton" (click)="saveComment()">Comment</button>
+
+                </div>
+            </div>
+
+        </div>
+
+
+    </div>
+
+    <div class="row mt-2">
+        <div class="col-md-6 text-left">
+            <button type="submit" class="btn btn-sm themeButton mr-2" (click)="openTaskData()">View Data</button>
+            <button type="button" class="btn btn-sm themeButton" (click)="exportData()">Export
+                Data</button>
+        </div>
+
+        <div class="col-md-6 text-right">
+            <button type="submit" class="btn btn-sm themeButton mr-2" (click)="closeWindow()">Cancel</button>
+
+        </div>
+
+
+
+    </div>
+
+    <div class="eventtaskDetail"></div>
+
+    <app-user-task-data *ngIf="taskData" [taskData]="taskData" [selectedEvent]="selectedEventList"
+        (closeTaskData)="closeTaskData($event)"></app-user-task-data>
+
+</kendo-window>

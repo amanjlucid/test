@@ -1,0 +1,58 @@
+.k-window {
+    position: fixed !important;
+}
+
+.taskDetailsDiv {
+    font-size: 16px;
+    margin-top: -14px;
+}
+
+.heading, .taskDetailsDiv label {
+    font-weight: 600;
+}
+
+.headingDiv {
+    background-color: #dbdbdb;
+    padding: 3px;
+}
+
+.statusDiv, .lblDiv {
+    display: block;
+}
+
+.leftdiv, .middlediv, .rightdiv {
+    display: inline-block !important;
+}
+
+.innerLeft, .innerRight {
+    display: inherit;
+}
+
+.leftdiv {
+    width: 43%;
+}
+
+.middlediv {
+    width: 55%;
+}
+
+.innerLeft {
+    width: 60%;
+}
+
+.heading2 {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.mediumColor {
+    color: #e6e617 !important;
+}
+
+.highColor {
+    color: red !important;
+}
+
+.lowColor {
+    color: green !important;
+}

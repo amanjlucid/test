@@ -517,6 +517,10 @@ app-dropdown+.k-action-buttons .k-button.k-primary {
     color: green !important;
 }
 
+.yellow{
+    color: yellow !important;
+}
+
 .actionGrid .k-grid td, .resAssessment .k-grid td {
     white-space: nowrap !important;
 }

@@ -1,0 +1,63 @@
+<kendo-window title="{{title}}" *ngIf="taskData" (close)="closeWin()" [top]="20" [minWidth]="700" [width]="900"
+    [height]="auto" [minHeight]="350">
+    <div class="row taskDetailsDiv">
+        <div class="col-md-12 headingDiv">
+            <span class="eventHeading"> Event : {{selectedEvent.eventSequence}} {{selectedEvent.eventTypeName}} </span>
+
+        </div>
+
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-sm-12 col-md-12 radioFilterDiv">
+            <div class="radioDiv">
+                <label class="radio-inline">
+                    <input [disabled]="selectedEvent.eventProcessedCount == selectedEvent.eventRowCount" (ngModelChange)="onChange($event)" value="P" [(ngModel)]="headerFilters.EventDataStatus"
+                        type="radio" name="processed">Processed ({{selectedEvent.eventProcessedCount}})
+                </label>
+                <label class="radio-inline">
+                    <input [disabled]="selectedEvent.eventProcessedCount == selectedEvent.eventRowCount" (ngModelChange)="onChange($event)" value="U" [(ngModel)]="headerFilters.EventDataStatus"
+                        type="radio" name="processed" checked>Un Processed
+                    ({{selectedEvent.eventRowCount - selectedEvent.eventProcessedCount}})
+                </label>
+                <label class="radio-inline">
+                    <input [disabled]="selectedEvent.eventProcessedCount == selectedEvent.eventRowCount" (ngModelChange)="onChange($event)" value="A" [(ngModel)]="headerFilters.EventDataStatus"
+                        type="radio" name="processed">All ({{selectedEvent.eventRowCount}})
+                </label>
+
+            </div>
+
+            <button type="submit" class="btn btn-sm themeButton pull-right" (click)="export()">Export</button>
+        </div>
+
+        <div class="col-md-12">
+            <kendo-grid [data]="query | async" [loading]="loading" [skip]="headerFilters.CurrentPage"
+                [pageSize]="headerFilters.PageSize" [selectable]="{
+        mode: 'multiple'
+      }" filterable="menu" [resizable]="true" [sortable]="{
+        allowUnsort: allowUnsort,
+        mode: multiple ? 'multiple' : 'single'
+        }" [sort]="state.sort" (sortChange)="sortChange($event)" (filterChange)="filterChange($event)"
+                (cellClick)="cellClickHandler($event)" [filter]="state.filter" scrollable="virtual" [rowHeight]="36"
+                [height]="600" (pageChange)="pageChange($event)" [navigable]="true" [selectedKeys]="mySelection"
+                kendoGridSelectBy>
+
+                <kendo-grid-column *ngFor="let col of columns" field="{{col.key}}" title="{{col.val}}" width="170">
+
+                </kendo-grid-column>
+
+
+            </kendo-grid>
+
+        </div>
+
+        <div class="col-md-12 mt-2 text-left">
+            <button [disabled]="selectedEvent.eventProcessedCount == selectedEvent.eventRowCount || selectedEvent.eventAssignUser != currentUser.userId" type="submit" class="btn btn-sm themeButton mr-2" (click)="updateEvent('P')">Set to
+                Processed</button>
+            <button [disabled]="selectedEvent.eventProcessedCount == selectedEvent.eventRowCount || selectedEvent.eventAssignUser != currentUser.userId" type="submit" class="btn btn-sm themeButton mr-2" (click)="updateEvent('U')">Set to
+                Unprocessed</button>
+            <button type="submit" class="btn btn-sm themeButton mr-2 pull-right" (click)="closeWin()">Cancel</button>
+        </div>
+    </div>
+
+</kendo-window>

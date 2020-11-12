@@ -29,7 +29,7 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
   moduleAccess: any;
   servicePortalAccess: any = [];
   hnsPortalMenuList: any = [];
-  hnsPortalPermissions:any = [];
+  hnsPortalPermissions: any = [];
   // underDevelopment: boolean = true;
   silverLightMenus: any = [
     {

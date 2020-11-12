@@ -1,16 +1,22 @@
 import { Component, OnInit } from '@angular/core';
 import { SubSink } from 'subsink';
-import { GroupDescriptor, DataResult, process, State, CompositeFilterDescriptor, SortDescriptor, distinct } from '@progress/kendo-data-query';
-import { PageChangeEvent, SelectableSettings } from '@progress/kendo-angular-grid';
-import { AlertService, EventManagerService, HelperService, ConfirmationDialogService } from '../../_services'
+import { GroupDescriptor, DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
+import { SelectableSettings } from '@progress/kendo-angular-grid';
+import { AlertService, EventManagerService, HelperService } from '../../_services'
 import { forkJoin } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
+import { NgbDateStruct, NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-tasks',
   templateUrl: './tasks.component.html',
   styleUrls: ['./tasks.component.css']
 })
+
 export class TasksComponent implements OnInit {
+  plannedDateModel: NgbDateStruct;
+  plannedDate: { year: number, month: number };
+
   subs = new SubSink();
   state: State = {
     skip: 0,
@@ -34,18 +40,47 @@ export class TasksComponent implements OnInit {
   hideComplete = true;
   assignedTome = false;
   userEventList: any
+  seqIds = "";
+  taskDetails: boolean = false;
+  taskData: boolean = false;
+  loading = true
+  assignedToOther = false;
+  plannedDatewindow = false;
 
   constructor(
-    private eveneManagerService: EventManagerService
+    private eveneManagerService: EventManagerService,
+    private activeRoute: ActivatedRoute,
+    private alertService: AlertService,
+    private helperService: HelperService,
+    private calendar: NgbCalendar
   ) { }
 
   ngOnInit(): void {
+
+    this.setSelectableSettings();
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    this.getUserEventsList(this.currentUser.userId, this.hideComplete);
+    this.subs.add(
+      this.activeRoute.queryParams.subscribe(params => {
+        if (params.seq != undefined) {
+          this.seqIds = params.seq;
+        }
+        console.log(this.seqIds);
+        this.getUserEventsList(this.currentUser.userId, this.hideComplete);
+
+      })
+    )
+
   }
 
   ngOnDestroy() {
     this.subs.unsubscribe();
+  }
+
+  public setSelectableSettings(): void {
+    this.selectableSettings = {
+      checkboxOnly: this.checkboxOnly,
+      mode: this.mode
+    };
   }
 
   groupChange(groups: GroupDescriptor[]): void {
@@ -67,7 +102,32 @@ export class TasksComponent implements OnInit {
   }
 
   cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
+    if (this.mySelection.length > 0) {
+      this.selectedEvent = this.userEventList.filter(x => this.mySelection.indexOf(x.eventSequence) !== -1);
 
+      if (this.selectedEvent.length == 1) {
+        if (this.touchtime == 0) {
+          // set first click
+          this.touchtime = new Date().getTime();
+        } else {
+          // compare first click to this click and see if they occurred within double click threshold
+          if (((new Date().getTime()) - this.touchtime) < 400) {
+            if (columnIndex > 1) {
+              this.openTaskData()
+            }
+
+            this.touchtime = 0;
+          } else {
+            // not a double click so set as a new first click
+            this.touchtime = new Date().getTime();
+          }
+        }
+      }
+    }
+  }
+
+  onSelectedKeysChange($event) {
+    // console.log(this.mySelection)
   }
 
   getUserEventsList(userId, hideComplete) {
@@ -77,7 +137,14 @@ export class TasksComponent implements OnInit {
           console.log(data);
           if (data.isSuccess) {
             this.userEventList = data.data;
+            if (this.seqIds != "") {
+              let seqArr = this.seqIds.split(",");
+              if (seqArr.length > 0) {
+                this.userEventList = this.userEventList.filter(x => seqArr.indexOf(x.eventSequence.toString()) !== -1)
+              }
+            }
             this.gridView = process(this.userEventList, this.state);
+            this.loading = false;
           }
         }
       )
@@ -91,6 +158,244 @@ export class TasksComponent implements OnInit {
 
   assignedTomeFilter($event) {
     this.assignedTome = !this.assignedTome;
+    if (this.assignedTome) {
+      this.userEventList = this.userEventList.filter(x => {
+        if (x.eventAssignUser == this.currentUser.userId || x.eventStatus == "A") {
+          return x;
+        }
+      })
+
+      this.gridView = process(this.userEventList, this.state);
+
+    } else {
+      this.getUserEventsList(this.currentUser.userId, this.hideComplete);
+    }
+
   }
+
+
+  openSearchBar() {
+    let scrollTop = $('.layout-container').height();
+    $('.search-container').show();
+    $('.search-container').css('height', scrollTop);
+    if ($('.search-container').hasClass('dismiss')) {
+      $('.search-container').removeClass('dismiss').addClass('selectedcs').show();
+    }
+  }
+
+  closeSearchBar() {
+    if ($('.search-container').hasClass('selectedcs')) {
+      $('.search-container').removeClass('selectedcs').addClass('dismiss');
+      $('.search-container').animate({ width: 'toggle' });
+    }
+  }
+
+  clearFilter() {
+    this.seqIds = "";
+    this.getUserEventsList(this.currentUser.userId, this.hideComplete);
+  }
+
+  openTaskDetails() {
+    if (this.selectedEvent.length > 0) {
+      $('.taskOvrlay').addClass('ovrlay');
+      this.taskDetails = true;
+    } else {
+      this.alertService.error("Please select atleast one row first.")
+    }
+
+  }
+
+  closeTaskDetails(eve) {
+    $('.taskOvrlay').removeClass('ovrlay');
+    this.taskDetails = eve;
+    this.resetSelection();
+    this.getUserEventsList(this.currentUser.userId, this.hideComplete);
+  }
+
+  resetSelection() {
+    this.mySelection = [];
+    this.selectedEvent = [];
+  }
+
+
+  openTaskData() {
+    if (this.selectedEvent.length > 0) {
+      $('.taskOvrlay').addClass('ovrlay');
+      this.taskData = true;
+    } else {
+      this.alertService.error("Please select atleast one row first.")
+    }
+  }
+
+  closeTaskData(eve) {
+    $('.taskOvrlay').removeClass('ovrlay');
+    this.taskData = eve;
+    this.resetSelection();
+    this.getUserEventsList(this.currentUser.userId, this.hideComplete);
+  }
+
+
+  setToComplete() {
+    if (this.selectedEvent.length > 0) {
+      if (this.selectedEvent.length == 1) {
+        if (this.selectedEvent[0].eventProcessedCount != this.selectedEvent[0].eventRowCount) {
+          return
+        }
+      }
+
+      let failsData = [];
+      let successData = [];
+      let req = [];
+      for (let userevent of this.selectedEvent) {
+        if (userevent.eventAssignUser == this.currentUser.userId) {
+          if (userevent.eventProcessedCount == userevent.eventRowCount) {
+            successData.push(userevent.eventSequence);
+            req.push(this.eveneManagerService.markComplete(userevent.eventSequence, this.currentUser.userId));
+          } else {
+            failsData.push(`Event number: ${userevent.eventSequence} has unprocessed data records and can not be completed \n`)
+          }
+        } else {
+          if (userevent.eventAssignUser == "") {
+            failsData.push(`Event number: ${userevent.eventSequence} must have been assigned before being set to complete \n`)
+          } else {
+            failsData.push(`Event number: ${userevent.eventSequence} can only be completed by user ${userevent.eventAssignUserName} \n`)
+          }
+        }
+      }
+
+      if (successData.length > 0) {
+        this.subs.add(
+          forkJoin(req).subscribe(
+            data => {
+              console.log(data);
+              this.resetSelection()
+              this.alertService.success(`Event number ${successData.join(",")} updated successfully.`)
+              this.getUserEventsList(this.currentUser.userId, this.hideComplete);
+            }
+          )
+        )
+      } else {
+        this.alertService.error(failsData.join("\n"));
+      }
+
+    }
+  }
+
+
+
+  export() {
+    if (this.userEventList.length != undefined && this.userEventList.length > 0) {
+      let tempData = this.userEventList;
+      let label = {
+        'eventSequence': 'Seq',
+        'busareaName': 'Business Area',
+        'eventTypeCode': 'Code',
+        'eventTypeDesc': 'Event',
+        'eventRowCount': 'Record(s)',
+        'eventCreatedDate': 'Created',
+        'eventStatusName': 'Status',
+        'eventEscStatusName': 'Esc',
+        'eventSevTypeName': 'Severity',
+        'eventAskTypeName': 'Action',
+        'eventAssignUserName': 'Assigned To',
+        'eventPlannedDate': 'Planned',
+        'eventCreatedBy': 'Created By',
+        'eventUpdatedBy': 'Updated By',
+        'eventUpdateDate': 'Updated',
+
+      }
+
+      this.helperService.exportAsExcelFile(tempData, 'Tasks', label)
+
+    } else {
+      alert('There is no record to import');
+    }
+  }
+
+
+  assignToMe() {
+    if (this.selectedEvent.length > 0) {
+      let failsData = [];
+      let successData = [];
+      let req = [];
+      for (let userEvent of this.selectedEvent) {
+        if (userEvent.eventAssignUser == "") {
+          successData.push(userEvent.eventSequence);
+          req.push(this.eveneManagerService.assignToMe(userEvent.eventSequence, this.currentUser.userId))
+        } else {
+          if (userEvent.eventAssignUser != "" && userEvent.eventAssignUser == this.currentUser.userId) {
+            failsData.push(`Event number: ${userEvent.eventSequence} is already assigned to me \n`)
+          } else if (userEvent.eventAssignUser != "" && userEvent.eventAssignUser == this.currentUser.userId) {
+            failsData.push(`Event number: ${userEvent.eventSequence} has already been assigned to another user: ${userEvent.eventAssignUserName} \n`)
+          }
+        }
+      }
+
+      if (successData.length > 0) {
+        this.subs.add(
+          forkJoin(req).subscribe(
+            data => {
+              // console.log(data);
+              this.resetSelection()
+              this.alertService.success(`Event number ${successData.join(",")} updated successfully.`)
+              this.getUserEventsList(this.currentUser.userId, this.hideComplete);
+            }
+          )
+        )
+      } else {
+        this.alertService.error(failsData.join("\n"));
+      }
+    }
+
+  }
+
+
+  assignToOther() {
+    if (this.selectedEvent.length > 0) {
+      this.assignedToOther = true;
+      $('.taskOvrlay').addClass('ovrlay');
+    } else {
+      this.alertService.error("Please select atleast one row first.")
+    }
+  }
+
+
+  closeAssignedTo($event) {
+    this.assignedToOther = $event;
+    $('.taskOvrlay').removeClass('ovrlay');
+  }
+
+
+  reloadTasks($event) {
+    this.resetSelection();
+    this.getUserEventsList(this.currentUser.userId, this.hideComplete);
+  }
+
+  setPlanned() {
+    if (this.selectedEvent.length > 0) {
+      this.plannedDatewindow = true
+      this.plannedDateModel = this.calendar.getToday();
+      $('.taskOvrlay').addClass('ovrlay');
+    }
+  }
+
+  closePlaneedDate() {
+    this.plannedDatewindow = false;
+    $('.taskOvrlay').removeClass('ovrlay');
+  }
+
+  savePlannedDate() {
+    console.log(this.plannedDateModel);
+  }
+
+  clearPlanned() {
+    if (this.selectedEvent.length > 0) {
+
+    }
+  }
+
+
+
+
 
 }

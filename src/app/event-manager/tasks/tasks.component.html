@@ -7,95 +7,107 @@
             </h4>
         </div>
 
-        <div class="col-md-10 text-right" *ngIf="selectedEvent.length > 1">
-            <button type="button" class="btn btn-sm themeButton mr-1" (click)="editEventMethod()">Edit</button>
-            <button type="button" class="btn btn-sm themeButton mr-1" (click)="opneNotifyWindow()">Notify</button>
-            <button type="button" class="btn btn-sm themeButton mr-1" (click)="runEvent()">Run</button>
-            <button type="button" class="btn btn-sm themeButton mr-1" (click)="copyEvent()">Copy</button>
-            <button type="button" class="btn btn-sm themeButton" (click)="openConfirmationDialog()">Delete</button>
+        <div class="col-md-10 text-right">
+            <div class="actionDiv" *ngIf="selectedEvent.length > 1">
+                <button type="button" class="btn btn-sm themeButton mr-1" (click)="setToComplete()">Set to
+                    Completed</button>
+                <button type="button" class="btn btn-sm themeButton mr-1" (click)="assignToMe()">Assign
+                    to Me</button>
+                <button type="button" class="btn btn-sm themeButton mr-1" (click)="assignToOther()">Assign
+                    to Other user</button>
+                <button type="button" class="btn btn-sm themeButton mr-1" (click)="setToComplete()">Set
+                    Planned To</button>
+                <button type="button" class="btn btn-sm themeButton mr-1" (click)="setToComplete()">Clear
+                    Planned</button>
+            </div>
+
+            <button type="button" class="btn btn-sm themeButton mr-1" (click)="export()">Export Data</button>
+
+            <button id="showFilePanel" (click)="openSearchBar()" class="btn btn-sm themeButton"><i
+                    class="fa fa-search"></i>
+            </button>
         </div>
 
     </div>
 
     <div class="row mt-2">
-        <div class="col-md-12 filterCheckBox">
-            <div class="form-group mt-1">
-                <label class="switcher switcher-secondary filterLabel">
-                    <input type="checkbox" (change)="hideCompletedFilter($event.target.value)"
-                        [checked]="hideComplete" value="{{hideComplete}}" class="switcher-input">
-                    <span class="switcher-indicator colSwitch">
-                        <span class="switcher-yes">
-                            <span class="ion ion-md-checkmark"></span>
-                        </span>
-                        <span class="switcher-no">
-                            <span class="ion ion-md-close"></span>
-                        </span>
-                    </span>
-                    <span class="switcher-label">Hide Completed</span>
-                </label>
-            </div>
 
-            <div class="form-group mt-1">
-                <label class="switcher switcher-secondary filterLabel">
-                    <input type="checkbox" (change)="assignedTomeFilter($event.target.value)"
-                        [checked]="assignedTome" value="{{assignedTome}}" class="switcher-input">
-                    <span class="switcher-indicator colSwitch">
-                        <span class="switcher-yes">
-                            <span class="ion ion-md-checkmark"></span>
-                        </span>
-                        <span class="switcher-no">
-                            <span class="ion ion-md-close"></span>
-                        </span>
-                    </span>
-                    <span class="switcher-label">Assigned to me</span>
-                </label>
-            </div>
-
-        </div>
         <div class="col-md-12">
             <kendo-grid (groupChange)="groupChange($event)" [group]="state.group" [groupable]="true" [data]="gridView"
-                [height]="650" filterable="menu" [resizable]="true" [sortable]="{
+                [height]="650" [loading]="loading" filterable="menu" [resizable]="true" [sortable]="{
     allowUnsort: allowUnsort,
     mode: multiple ? 'multiple' : 'single'
-    }" [skip]="state.skip" [sort]="state.sort" [selectable]="selectableSettings" kendoGridSelectBy="eventTypeCode"
+    }" [skip]="state.skip" [sort]="state.sort" [selectable]="selectableSettings" kendoGridSelectBy="eventSequence"
                 [selectedKeys]="mySelection" (selectedKeysChange)="onSelectedKeysChange($event)" [filter]="state.filter"
                 (sortChange)="sortChange($event)" (filterChange)="filterChange($event)"
                 (cellClick)="cellClickHandler($event)" [navigable]="true">
 
                 <kendo-grid-column title=" " width="37" [filterable]="false">
-                    <!-- <ng-template kendoGridCellTemplate let-dataItem>
+                    <ng-template kendoGridCellTemplate let-dataItem>
                         <li [ngClass]="{'disabled' : selectedEvent.length > 1}" class="nav-item dropdown list-unstyled"
                             style="margin-top: -7px;">
                             <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" href="javascript:void(0)" (click)="editEventMethod()">Edit</a>
-                                <a class="dropdown-item" href="javascript:void(0)"
-                                    (click)="opneNotifyWindow()">Notify</a>
-                                <a [ngClass]="{'disabled' : (dataItem.eventParamCount <= 0 &&  dataItem.eventParamEmptyCount != 0) || (dataItem.eventParamCount <= 0 &&  dataItem.eventParamEmptyCount <= 0) }"
-                                    class="dropdown-item" href="javascript:void(0)"
-                                    (click)="openParamsWindow()">Parameter(s)</a>
+                                <a class="dropdown-item" href="javascript:void(0)" (click)="openTaskDetails()">Task
+                                    Details</a>
+                                <a class="dropdown-item" href="javascript:void(0)" (click)="openTaskData()">Task
+                                    Data</a>
 
-                                <a class="dropdown-item" href="javascript:void(0)" (click)="runEvent()">Run</a>
-                                <a [ngClass]="{'disabled' : dataItem.eventTypeStatus == 'S' && validRundate(dataItem.eventNextRunDate)  }"
-                                    class="dropdown-item" href="javascript:void(0)" (click)="copyEvent()">Copy</a>
-                                <a [ngClass]="{'disabled' : dataItem.eventTypeUpdatedBy != currentUser.userId}"
-                                    class="dropdown-item" href="javascript:void(0)"
-                                    (click)="openConfirmationDialog()">Delete</a>
+                                <div class="dropdown-toggle">
+                                    <div class="dropdown-item">Assign</div>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item" (click)="assignToMe()" href="javascript:void(0)">Assign
+                                            to Me</a>
+                                        <a class="dropdown-item" (click)="assignToOther()"
+                                            href="javascript:void(0)">Assign
+                                            to Other user</a>
+
+                                    </div>
+                                </div>
+
+
+                                <div class="dropdown-toggle">
+                                    <div class="dropdown-item">Dates</div>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item" (click)="setPlanned()" href="javascript:void(0)">Set
+                                            Planned Date</a>
+                                        <a class="dropdown-item" (click)="clearPlanned()"
+                                            href="javascript:void(0)">Clear Planned Date</a>
+
+                                    </div>
+                                </div>
+
+                                <a [ngClass]="{'disabled' : dataItem.eventProcessedCount != dataItem.eventRowCount}"
+                                    class="dropdown-item" href="javascript:void(0)" (click)="setToComplete()">Set to
+                                    Completed</a>
 
                             </div>
                         </li>
 
-                    </ng-template> -->
+                    </ng-template>
                 </kendo-grid-column>
 
-                <kendo-grid-column field="eventTypeNotifyCount" title="" width="50" [filterable]="false"
-                    [groupable]="true">
-
+                <kendo-grid-column field="eventSevType" title="" width="50" [filterable]="false" [groupable]="true">
+                    <!-- <ng-template kendoGridHeaderTemplate>
+                        <i class="fa fa-circle" aria-hidden="true"></i>
+                    </ng-template> -->
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <span>
-                            <img style="height: 14px;"
-                                *ngIf="dataItem.eventParamCount > 0 &&  dataItem.eventParamEmptyCount == 0"
-                                src="assets/img/icons/tick.png" />
+                            <i class="fa fa-circle" aria-hidden="true" [ngClass]="{'highColor': dataItem.eventSevType == 'H',
+                            'mediumColor':  dataItem.eventSevType == 'M', 
+                            'lowColor': dataItem.eventSevType == 'L'}"></i>
+                        </span>
+                    </ng-template>
+                </kendo-grid-column>
+
+                <kendo-grid-column field="eventSevType" title="" width="50" [filterable]="false" [groupable]="true">
+
+                </kendo-grid-column>
+
+                <kendo-grid-column field="eventSevType" title="" width="50" [filterable]="false" [groupable]="true">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            <img style="height: 14px;" src="assets/img/icons/tick.png" />
                             <img style="height: 14px;"
                                 *ngIf="dataItem.eventParamCount > 0 &&  dataItem.eventParamEmptyCount > 0"
                                 src="assets/img/icons/cross.png" />
@@ -115,8 +127,27 @@
                 <kendo-grid-column field="eventRowCount" title="Record(s)" width="120">
                 </kendo-grid-column>
                 <kendo-grid-column field="eventProcessedCount" title="Processed" width="120">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span class="processedRecord">
+                            {{ ((dataItem.eventProcessedCount/dataItem.eventRowCount) * 100) | roundOff }}%
+                        </span>
+
+                        <!-- <div class="progress">
+                            <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="roundOff(dataItem.eventProcessedCount,dataItem.eventRowCount)"
+                                aria-valuemin="0" aria-valuemax="100" [ngStyle]="{'width': roundOff(dataItem.eventProcessedCount,dataItem.eventRowCount)}">
+                                {{ ((dataItem.eventProcessedCount/dataItem.eventRowCount) * 100) | roundOff }}%
+                            </div>
+                        </div> -->
+                    </ng-template>
                 </kendo-grid-column>
-                <kendo-grid-column field="eventCreatedDate" title="Created" width="160">
+                <kendo-grid-column field="eventCreatedDate" title="Created" width="160" filter="date"
+                    format="{0:dd-MM-yyyy}">
+                    <ng-template kendoGridFilterMenuTemplate let-filter let-column="column"
+                        let-filterService="filterService">
+                        <date-range-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
+                        </date-range-filter>
+                    </ng-template>
+
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <span>
                             {{ dataItem.eventCreatedDate | dateFormat : 'DD-MMM-YYYY HH:mm:ss' }}
@@ -125,7 +156,7 @@
                 </kendo-grid-column>
                 <kendo-grid-column field="eventStatusName" title="Status" width="120">
                 </kendo-grid-column>
-                <kendo-grid-column field="eventAssignUserName" title="Assigned To" width="220">
+                <kendo-grid-column field="eventAssignUserName" title="Assigned To" width="210">
                 </kendo-grid-column>
                 <kendo-grid-column field="eventEscStatusName" title="Esc" width="120">
                 </kendo-grid-column>
@@ -133,7 +164,14 @@
                 </kendo-grid-column>
                 <kendo-grid-column field="eventAskTypeName" title="Action" width="120">
                 </kendo-grid-column>
-                <kendo-grid-column field="eventPlannedDate" title="Planned" width="160">
+                <kendo-grid-column field="eventPlannedDate" title="Planned" width="160" filter="date"
+                    format="{0:dd-MM-yyyy}">
+                    <ng-template kendoGridFilterMenuTemplate let-filter let-column="column"
+                        let-filterService="filterService">
+                        <date-range-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
+                        </date-range-filter>
+                    </ng-template>
+
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <span>
                             {{ dataItem.eventPlannedDate | dateFormat : 'DD-MMM-YYYY HH:mm:ss' }}
@@ -144,7 +182,14 @@
                 </kendo-grid-column>
                 <kendo-grid-column field="eventUpdatedBy" title="Updated By" width="120">
                 </kendo-grid-column>
-                <kendo-grid-column field="eventUpdateDate" title="Updated" width="160">
+                <kendo-grid-column field="eventUpdateDate" title="Updated" width="240" filter="date"
+                    format="{0:dd-MM-yyyy}">
+                    <ng-template kendoGridFilterMenuTemplate let-filter let-column="column"
+                        let-filterService="filterService">
+                        <date-range-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
+                        </date-range-filter>
+                    </ng-template>
+
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <span>
                             {{ dataItem.eventUpdateDate | dateFormat : 'DD-MMM-YYYY HH:mm:ss' }}
@@ -161,3 +206,98 @@
 
 
 </div>
+
+
+
+
+<!-- Search bar -->
+<div class="search-container dismiss">
+
+    <h5 style="color:white" class="p-4 m-0 line-height-1 font-weight-bolder bg-light theme-settings-header"> Filters
+        <a href="javascript:void(0)" (click)="closeSearchBar()"
+            class="theme-settings-close-btn font-weight-light px-4 py-2" style="color:#ffffff;" tabindex="-1">×</a>
+    </h5>
+
+    <div class="searchDiv">
+        <form id="mgmGridFiter">
+            <div class="filtersection">
+                <span class="filterHead">Tasks</span>
+            </div>
+
+
+            <div class="form-group mt-1">
+                <label class="form-label form-label-sm mr-4">Hide Completed</label>
+                <label class="switcher switcher-secondary filterLabel">
+                    <input type="checkbox" (change)="hideCompletedFilter($event.target.value)" [checked]="hideComplete"
+                        value="{{hideComplete}}" class="switcher-input">
+                    <span class="switcher-indicator colSwitch">
+                        <span class="switcher-yes">
+                            <span class="ion ion-md-checkmark"></span>
+                        </span>
+                        <span class="switcher-no">
+                            <span class="ion ion-md-close"></span>
+                        </span>
+                    </span>
+                    <!-- <span class="switcher-label">Hide Completed</span> -->
+                </label>
+            </div>
+
+            <div class="form-group mt-1">
+                <label class="form-label form-label-sm mr-4">Assigned to me</label>
+                <label class="switcher switcher-secondary filterLabel">
+                    <input type="checkbox" (change)="assignedTomeFilter($event.target.value)" [checked]="assignedTome"
+                        value="{{assignedTome}}" class="switcher-input">
+                    <span class="switcher-indicator colSwitch">
+                        <span class="switcher-yes">
+                            <span class="ion ion-md-checkmark"></span>
+                        </span>
+                        <span class="switcher-no">
+                            <span class="ion ion-md-close"></span>
+                        </span>
+                    </span>
+                    <!-- <span class="switcher-label">Assigned to me</span> -->
+                </label>
+            </div>
+
+            <div class="filtersection">
+                <div class="form-group">
+                    <!-- <button id="searchBtn" (click)="search($event)" class="btn btn-sm themeButton mr-1">Search
+                    </button> -->
+                    <button id="clearBtn" (click)="clearFilter()" class="btn btn-sm themeButton">Clear
+                    </button>
+                </div>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+<div class="taskOvrlay"></div>
+
+<app-user-event-task-details *ngIf="taskDetails" [taskDetails]="taskDetails" [selectedEvent]="selectedEvent"
+    (closeTaskDetails)="closeTaskDetails($event)"> </app-user-event-task-details>
+
+<app-user-task-data *ngIf="taskData" [taskData]="taskData" [selectedEvent]="selectedEvent"
+    (closeTaskData)="closeTaskData($event)"></app-user-task-data>
+
+
+<app-assignto-other *ngIf="assignedToOther" [assignedToOther]="assignedToOther" [selectedEvent]="selectedEvent"
+    (closeAssignedTo)="closeAssignedTo($event)" (reloadTasks)="reloadTasks($event)"></app-assignto-other>
+
+
+<kendo-window title="Select Planned Date" *ngIf="plannedDatewindow" (close)="closePlaneedDate()" [top]="20"
+    [minWidth]="350" [width]="350" [height]="auto" [minHeight]="350">
+
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <ngb-datepicker #dp [(ngModel)]="plannedDateModel" [minDate]="{year: 1800, month: 1, day: 1}" (navigate)="date = $event.next"></ngb-datepicker>
+        </div>
+
+        <div class="col-md-12 text-right mt-4">
+            <button type="button" class="btn btn-sm themeButton mr-2" (click)="savePlannedDate()">Ok</button>
+            <button type="button" class="btn btn-sm themeButton" (click)="closePlaneedDate()">Cancel</button>
+
+        </div>
+    </div>
+
+</kendo-window>

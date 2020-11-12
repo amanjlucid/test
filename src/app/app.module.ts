@@ -33,6 +33,7 @@ import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-
 import { DateFormatPipe } from './_pipes/date-format.pipe';
 import { AsbestosRefDetailPipe } from './_pipes/asbestos-ref-detail.pipe'
 import { NumberFormatPipe } from './_pipes/number-format.pipe';
+import { RoundOffPipe } from './_pipes/round-off.pipe';
 import { UserFormComponent } from './security-portal/users/user-form/user-form.component';
 import { AssetsPortalComponent } from './assets-portal/assets-portal.component';
 import { AssetsComponent } from './assets-portal/assets/assets.component';

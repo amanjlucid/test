@@ -25,7 +25,7 @@ export class DateFormatPipe extends DatePipe implements PipeTransform {
 
     const tempDate = '01-Jan-1753';//new Date('01-Jan-1753');
     const mmDate = momentDate.format(args);
-    if (tempDate == mmDate) {
+    if (mmDate.indexOf("1753") != -1) {
       return ' ';
     } else {
       return mmDate;

@@ -1,0 +1,29 @@
+.k-window {
+    position: fixed !important;
+}
+
+label.radio-inline {
+    padding: 5px;
+}
+
+.radio-inline input[type="radio"]{
+    margin-right: 5px;
+}
+
+.radioDiv{
+    display: inline;
+}
+
+.taskDetailsDiv {
+    font-size: 16px;
+    margin-top: -14px;
+}
+
+.heading, .taskDetailsDiv label {
+    font-weight: 600;
+}
+
+.headingDiv {
+    background-color: #dbdbdb;
+    padding: 3px;
+}

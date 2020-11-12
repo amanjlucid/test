@@ -104,55 +104,17 @@
                             </a>
                         </li>
 
-                        <!-- <li class="sidenav-item" [routerLinkActive]="['active']"
-                        *ngIf="hnsPortalPermissions.indexOf('Definitions') != -1">
-                        <a [routerLink]="['/health&safety/definitions']" class="sidenav-link">
-                            <div>Definitions</div>
-                        </a>
-                    </li> -->
-                        <!-- <li class="sidenav-item" [routerLinkActive]="['open']"
-                        *ngIf="hnsPortalPermissions.indexOf('Results') != -1">
-                        <a href="javascript:void(0)" class="sidenav-link sidenav-toggle">
-                            <div>Results</div>
-                        </a>
 
-                        <ul class="sidenav-menu">
-                            <li class="sidenav-item" [routerLinkActive]="['active']"
-                                *ngIf="hnsPortalPermissions.indexOf('Actions Tab') != -1">
-                                <a [routerLink]="['/health&safety/results/actions']" class="sidenav-link">
-                                    <div>Actions</div>
-                                </a>
-                            </li>
-                            <li class="sidenav-item" [routerLinkActive]="['active']"
-                                *ngIf="hnsPortalPermissions.indexOf('Information Tab') != -1">
-                                <a [routerLink]="['/health&safety/results/information']" class="sidenav-link">
-                                    <div>Information</div>
-                                </a>
-                            </li>
-                            <li class="sidenav-item" [routerLinkActive]="['active']"
-                                *ngIf="hnsPortalPermissions.indexOf('Summary Tab') != -1">
-                                <a [routerLink]="['/health&safety/results/summary']" class="sidenav-link">
-                                    <div>Summary</div>
-                                </a>
-                            </li>
-                            <li class="sidenav-item" [routerLinkActive]="['active']"
-                                *ngIf="hnsPortalPermissions.indexOf('Assessments Tab') != -1">
-                                <a [routerLink]="['/health&safety/results/assessment']" class="sidenav-link">
-                                    <div>Assessments</div>
-                                </a>
-                            </li>
-                        </ul>
-                    </li> -->
                     </ul>
                 </li>
 
-                <li *ngIf="checkAngularGrpPermission('Event Manager', 'BA_EventManager',0)" class="sidenav-item">
+                <!-- <li *ngIf="checkAngularGrpPermission('Event Manager', 'BA_EventManager',0)" class="sidenav-item">
                     <a href="http://104.40.138.8/Rowanwood/EventManager" class="sidenav-link" target="_blank">
                         <img class="sidenav-icon ion" src="assets/img/icons/event-manager.svg">
                         <div>Event Manager</div>
                     </a>
 
-                </li>
+                </li> -->
 
 
                 <li *ngIf="checkAngularGrpPermission('Health & Safety','Health And Safety Portal Access',0)"
@@ -375,6 +337,36 @@
                         </li>
 
 
+                        <li class="sidenav-item" [routerLinkActive]="['open']"
+                            *ngIf="checkGroupPermission('BA_EventManager')">
+                           
+                            <a href="javascript:void(0)" class="sidenav-link sidenav-toggle">
+                                <div>Tasks</div>
+                            </a>
+                            <ul class="sidenav-menu">
+                                <li class="sidenav-item" [routerLinkActive]="['active']">
+                                    <a [routerLink]="['/tasks/dashboard']" class="sidenav-link">
+                                        <div>Dashboard</div>
+                                    </a>
+                                </li>
+
+                                <li class="sidenav-item" [routerLinkActive]="['active']">
+                                    <a [routerLink]="['/tasks/configuration']" class="sidenav-link">
+                                        <div>Configuration</div>
+                                    </a>
+                                </li>
+
+                                <li class="sidenav-item" [routerLinkActive]="['active']">
+                                    <a [routerLink]="['/tasks/tasks']" class="sidenav-link">
+                                        <div>Tasks</div>
+                                    </a>
+                                </li>
+
+
+                            </ul>
+                        </li>
+
+
                         <li class="sidenav-item" [routerLinkActive]="['open']" [routerLinkActiveOptions]="{exact:true}"
                             *ngIf="checkGroupPermission('Health And Safety Portal Access') && checkHnsLeftSideMenu()">
                             <a href="javascript:void(0)" class="sidenav-link sidenav-toggle">
@@ -433,38 +425,6 @@
                     </ul>
                 </li>
 
-
-
-
-                <!-- <li class="sidenav-item" *ngIf="this.currentUser?.admin == 'Y'">
-                    <a href="javascript:void(0)" class="sidenav-link sidenav-toggle">
-                        <img class="sidenav-icon ion" src="assets/img/icons/servicing.svg">
-                        <div>Settings</div>
-
-                    </a>
-                    <ul class="sidenav-menu">
-                        <li class="sidenav-item">
-                            <a href="javascript:void(0)" class="sidenav-link sidenav-toggle">
-                                <div>Servicing & Inspection</div>
-                            </a>
-
-                            <ul class="sidenav-menu">
-                                <li class="sidenav-item">
-                                    <a href="javascript:void(0)" class="sidenav-link">
-                                        <div>Management Panel Default Dates</div>
-                                    </a>
-                                </li>
-                                <li class="sidenav-item">
-                                    <a href="javascript:void(0)" class="sidenav-link">
-                                        <div>Servicing Notepad Document Location</div>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li> -->
-
-
             </ul>
         </div>
         <!-- / Layout sidenav -->
@@ -500,13 +460,7 @@
 
                     <div class="navbar-nav align-items-lg-center">
                         <h5 class="align-middle" style="position:absolute;">{{currentUser?.environmentName}}</h5>
-                        <!-- <label class="nav-item navbar-text navbar-search-box p-0 active">
-                            <i class="ion ion-ios-search navbar-icon align-middle"></i>
-                            <span class="navbar-search-input pl-2">
-                                <input type="text" class="form-control navbar-text mx-2" placeholder="Search..." style="width:200px">
-                                <p>sdfs</p>
-                            </span>
-                        </label> -->
+
                     </div>
 
                     <div class="navbar-nav align-items-lg-center ml-auto">

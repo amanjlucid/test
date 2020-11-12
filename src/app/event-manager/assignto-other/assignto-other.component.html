@@ -1,0 +1,24 @@
+<kendo-window title="{{title}}" *ngIf="assignedToOther" (close)="closeWin()" [top]="20" [minWidth]="700" [width]="840"
+    [height]="auto" [minHeight]="350">
+
+    <div class="row">
+        <div class="col-md-12">
+            <kendo-grid [data]="gridView" [loading]="loading" filterable="menu" [resizable]="true" [sortable]="{
+                allowUnsort: allowUnsort,
+                mode: 'single'
+                }" [skip]="state.skip" [selectable]="{mode:'single'}" [pageSize]="pageSize" [rowHeight]="36"
+                scrollable="virtual" [sort]="state.sort" [filter]="state.filter" (sortChange)="sortChange($event)"
+                (filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)"
+                (pageChange)="pageChange($event)" [navigable]="true" [height]="500">
+                <kendo-grid-column field="m_UerName" title="Name" width="150"></kendo-grid-column>
+                <kendo-grid-column field="seceMail" title="Email" width="250"></kendo-grid-column>
+            </kendo-grid>
+        </div>
+
+        <div class="col-md-12 mt-2  text-right">
+            <button type="submit" class="btn btn-sm themeButton mr-2" (click)="assignOther()">OK</button>
+            <button type="button" class="btn btn-sm themeButton" (click)="closeWin()">Cancel</button>
+        </div>
+    </div>
+
+</kendo-window>

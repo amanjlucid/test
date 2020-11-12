@@ -77,7 +77,7 @@ export class HnsResActionComponent implements OnInit {
       }),
       switchMap(state => this.hnsResultService.getActionGrid(state)),
       tap((res) => {
-        //console.log(res);
+        console.log(res);
         this.totalCount = (res.total != undefined) ? res.total : 0;
         this.loading = false;
       })
