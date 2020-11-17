@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { SubSink } from 'subsink';
 import { GroupDescriptor, DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
-import { SelectableSettings } from '@progress/kendo-angular-grid';
+import { SelectableSettings, RowClassArgs } from '@progress/kendo-angular-grid';
 import { AlertService, EventManagerService, HelperService } from '../../_services'
 import { forkJoin } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
@@ -384,17 +384,62 @@ export class TasksComponent implements OnInit {
     $('.taskOvrlay').removeClass('ovrlay');
   }
 
-  savePlannedDate() {
-    console.log(this.plannedDateModel);
+  savePlannedDate(set = true) {
+    if (this.selectedEvent.length > 0) {
+      let plannedDate = '1753-01-01';
+      if (set) {
+        plannedDate = `${this.plannedDateModel.year}-${this.plannedDateModel.month}-${this.plannedDateModel.day}`;
+      }
+
+      let req = [];
+      let successRecord = [];
+      for (let userEvent of this.selectedEvent) {
+        successRecord.push(userEvent.eventSequence)
+        req.push(this.eveneManagerService.plannedDate(userEvent.eventSequence, plannedDate, this.currentUser.userId));
+      }
+
+      if (req.length > 0) {
+        this.subs.add(
+          forkJoin(req).subscribe(
+            data => {
+              console.log(data);
+              let msg = '';
+              if (successRecord.length > 1) {
+                msg = `Event Number ${successRecord.toString()} are updated.`;
+              } else {
+                msg = `Event Number ${successRecord.toString()} is updated.`;
+              }
+
+              this.alertService.success(msg);
+              this.closePlaneedDate();
+              this.reloadTasks(true)
+            }
+          )
+        )
+      }
+    }
+
   }
 
-  clearPlanned() {
-    if (this.selectedEvent.length > 0) {
 
+  roundoff(dataItem) {
+    //((dataItem.eventProcessedCount/dataItem.eventRowCount) * 100)
+    let input = ((dataItem.eventProcessedCount / dataItem.eventRowCount) * 100);
+    return Math.round(input);
+  }
+
+
+  rowCallback(context: RowClassArgs) {
+    if (context.dataItem.eventNotifyStatus == "N") {
+      return {
+        taskUnreadRow: true,
+      }
+    } else {
+      return {
+        taskUnreadRow: false,
+      }
     }
   }
-
-
 
 
 

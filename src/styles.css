@@ -529,6 +529,10 @@ app-dropdown+.k-action-buttons .k-button.k-primary {
     text-align: left;
 }
 
+.taskUnreadRow{
+    background-color: #f2e1e1 !important;
+}
+
 app-add-event .k-window-content{overflow: inherit !important;}
 
 @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {

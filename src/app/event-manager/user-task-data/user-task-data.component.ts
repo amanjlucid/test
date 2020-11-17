@@ -55,7 +55,7 @@ export class UserTaskDataComponent implements OnInit {
     this.headerFilters.EventSequence = this.selectedEvent.eventSequence;
     //console.log(this.headerFilters);
 
-    if (this.selectedEvent.eventProcessedCount == this.selectedEvent.eventRowCount) {
+    if (this.selectedEvent.unprocessedCount == 0) {
       this.headerFilters.EventDataStatus = "P";
     }
 
@@ -79,6 +79,7 @@ export class UserTaskDataComponent implements OnInit {
               }
             }
 
+            console.log(this.columns)
 
             this.query = this.stateChange.pipe(
               tap(state => {
@@ -238,9 +239,16 @@ export class UserTaskDataComponent implements OnInit {
   }
 
   public cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
-    this.pushClickedData.push({ row: rowIndex, data: dataItem });
-    this.selectedData = this.pushClickedData.filter(x => this.mySelection.indexOf(x.row) != -1).map(y => y.data)
 
+    this.selectedData = [];
+    this.pushClickedData.push({ row: rowIndex, data: dataItem });
+
+    for (let ind of this.mySelection) {
+      let findVal = this.pushClickedData.find(x => x.row == ind)
+      if (findVal) {
+        this.selectedData.push(findVal.data)
+      }
+    }
 
   }
 
@@ -355,6 +363,35 @@ export class UserTaskDataComponent implements OnInit {
       )
 
     )
+
+  }
+
+  checkShowAssetBtn() {
+    let findAssetKey = this.columns.find(x => x.val == "Asset");
+    if (findAssetKey) {
+      return true
+    }
+    return false
+
+  }
+
+  showAssets() {
+    const host = window.location.hostname;
+    let siteUrl = "";
+    if (host == "localhost") {
+      siteUrl = "http://localhost:4200"
+    } else {
+      siteUrl = "http://104.40.138.8/rowanwood"
+    }
+
+    if (this.selectedData.length == 1) {
+      let findAssetKey = this.columns.find(x => x.val == "Asset");
+      siteUrl = `${siteUrl}/asset-list?assetid=${this.selectedData[0][findAssetKey.key]}`
+    } else {
+      return
+    }
+
+    window.open(siteUrl, "_blank");
 
   }
 

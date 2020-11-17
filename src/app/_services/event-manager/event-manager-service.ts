@@ -154,5 +154,8 @@ export class EventManagerService {
         return this.http.get<any>(`${appConfig.apiUrl}/api/UserEvents/TransferTo?eventSequence=${eventSequence}&assignUserId=${assignUserId}&userId=${userId}`, this.httpOptions);
     }
 
+    plannedDate(eventSequence, dtPlannedDate, userId){
+        return this.http.get<any>(`${appConfig.apiUrl}/api/Manager/SetPlannedDate?eventSequence=${eventSequence}&dtPlannedDate=${dtPlannedDate}&userId=${userId}`, this.httpOptions);
+    }
 
 }

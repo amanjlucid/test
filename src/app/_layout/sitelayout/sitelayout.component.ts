@@ -265,6 +265,7 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
         data => {
           if (data.isSuccess) {
             this.notifications = data.data
+            // console.log(this.notifications);
           }
         }
       )
@@ -387,6 +388,23 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
         }
       )
     )
+  }
+
+
+  redirectToUserEevnt(val) {
+    const host = window.location.hostname;
+    let siteUrl = "";
+    if (host == "localhost") {
+      siteUrl = "http://localhost:4200"
+    } else {
+      siteUrl = "http://104.40.138.8/rowanwood"
+    }
+
+    siteUrl = `${siteUrl}/tasks/tasks?seq=${val.eventId}`
+
+    let win: any = window;
+    win.location = siteUrl
+    //    window.open(siteUrl);
   }
 
 

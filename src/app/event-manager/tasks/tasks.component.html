@@ -15,9 +15,9 @@
                     to Me</button>
                 <button type="button" class="btn btn-sm themeButton mr-1" (click)="assignToOther()">Assign
                     to Other user</button>
-                <button type="button" class="btn btn-sm themeButton mr-1" (click)="setToComplete()">Set
+                <button type="button" class="btn btn-sm themeButton mr-1" (click)="setPlanned()">Set
                     Planned To</button>
-                <button type="button" class="btn btn-sm themeButton mr-1" (click)="setToComplete()">Clear
+                <button type="button" class="btn btn-sm themeButton mr-1" (click)="savePlannedDate(false)">Clear
                     Planned</button>
             </div>
 
@@ -34,13 +34,13 @@
 
         <div class="col-md-12">
             <kendo-grid (groupChange)="groupChange($event)" [group]="state.group" [groupable]="true" [data]="gridView"
-                [height]="650" [loading]="loading" filterable="menu" [resizable]="true" [sortable]="{
+                [height]="700" [loading]="loading" filterable="menu" [resizable]="true" [sortable]="{
     allowUnsort: allowUnsort,
     mode: multiple ? 'multiple' : 'single'
     }" [skip]="state.skip" [sort]="state.sort" [selectable]="selectableSettings" kendoGridSelectBy="eventSequence"
                 [selectedKeys]="mySelection" (selectedKeysChange)="onSelectedKeysChange($event)" [filter]="state.filter"
                 (sortChange)="sortChange($event)" (filterChange)="filterChange($event)"
-                (cellClick)="cellClickHandler($event)" [navigable]="true">
+                (cellClick)="cellClickHandler($event)" [navigable]="true" [rowClass]="rowCallback">
 
                 <kendo-grid-column title=" " width="37" [filterable]="false">
                     <ng-template kendoGridCellTemplate let-dataItem>
@@ -71,7 +71,7 @@
                                     <div class="dropdown-menu">
                                         <a class="dropdown-item" (click)="setPlanned()" href="javascript:void(0)">Set
                                             Planned Date</a>
-                                        <a class="dropdown-item" (click)="clearPlanned()"
+                                        <a class="dropdown-item" (click)="savePlannedDate(false)"
                                             href="javascript:void(0)">Clear Planned Date</a>
 
                                     </div>
@@ -100,9 +100,9 @@
                     </ng-template>
                 </kendo-grid-column>
 
-                <kendo-grid-column field="eventSevType" title="" width="50" [filterable]="false" [groupable]="true">
+                <!-- <kendo-grid-column field="eventSevType" title="" width="50" [filterable]="false" [groupable]="true">
 
-                </kendo-grid-column>
+                </kendo-grid-column> -->
 
                 <kendo-grid-column field="eventSevType" title="" width="50" [filterable]="false" [groupable]="true">
                     <ng-template kendoGridCellTemplate let-dataItem>
@@ -128,16 +128,17 @@
                 </kendo-grid-column>
                 <kendo-grid-column field="eventProcessedCount" title="Processed" width="120">
                     <ng-template kendoGridCellTemplate let-dataItem>
-                        <span class="processedRecord">
+                        <!-- <span class="processedRecord">
                             {{ ((dataItem.eventProcessedCount/dataItem.eventRowCount) * 100) | roundOff }}%
-                        </span>
+                        </span> -->
 
-                        <!-- <div class="progress">
-                            <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="roundOff(dataItem.eventProcessedCount,dataItem.eventRowCount)"
-                                aria-valuemin="0" aria-valuemax="100" [ngStyle]="{'width': roundOff(dataItem.eventProcessedCount,dataItem.eventRowCount)}">
-                                {{ ((dataItem.eventProcessedCount/dataItem.eventRowCount) * 100) | roundOff }}%
-                            </div>
-                        </div> -->
+                        <div id="progress">
+                            <span id="percent">
+                                {{ ((dataItem.eventProcessedCount/dataItem.eventRowCount) * 100) | roundOff }}%</span>
+                            <div id="bar" [ngStyle]="{'width':roundoff(dataItem)+'%'}"></div>
+                        </div>
+
+
                     </ng-template>
                 </kendo-grid-column>
                 <kendo-grid-column field="eventCreatedDate" title="Created" width="160" filter="date"
@@ -174,7 +175,7 @@
 
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <span>
-                            {{ dataItem.eventPlannedDate | dateFormat : 'DD-MMM-YYYY HH:mm:ss' }}
+                            {{ dataItem.eventPlannedDate | dateFormat : 'DD-MMM-YYYY' }}
                         </span>
                     </ng-template>
                 </kendo-grid-column>
@@ -290,7 +291,8 @@
 
     <div class="row">
         <div class="col-md-12 text-center">
-            <ngb-datepicker #dp [(ngModel)]="plannedDateModel" [minDate]="{year: 1800, month: 1, day: 1}" (navigate)="date = $event.next"></ngb-datepicker>
+            <ngb-datepicker #dp [(ngModel)]="plannedDateModel" [minDate]="{year: 1800, month: 1, day: 1}"
+                (navigate)="date = $event.next"></ngb-datepicker>
         </div>
 
         <div class="col-md-12 text-right mt-4">

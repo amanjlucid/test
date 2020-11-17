@@ -12,22 +12,31 @@
         <div class="col-sm-12 col-md-12 radioFilterDiv">
             <div class="radioDiv">
                 <label class="radio-inline">
-                    <input [disabled]="selectedEvent.eventProcessedCount == selectedEvent.eventRowCount" (ngModelChange)="onChange($event)" value="P" [(ngModel)]="headerFilters.EventDataStatus"
+                    <input [disabled]="selectedEvent.eventProcessedCount == selectedEvent.eventRowCount"
+                        (ngModelChange)="onChange($event)" value="P" [(ngModel)]="headerFilters.EventDataStatus"
                         type="radio" name="processed">Processed ({{selectedEvent.eventProcessedCount}})
                 </label>
                 <label class="radio-inline">
-                    <input [disabled]="selectedEvent.eventProcessedCount == selectedEvent.eventRowCount" (ngModelChange)="onChange($event)" value="U" [(ngModel)]="headerFilters.EventDataStatus"
+                    <input [disabled]="selectedEvent.eventProcessedCount == selectedEvent.eventRowCount"
+                        (ngModelChange)="onChange($event)" value="U" [(ngModel)]="headerFilters.EventDataStatus"
                         type="radio" name="processed" checked>Un Processed
-                    ({{selectedEvent.eventRowCount - selectedEvent.eventProcessedCount}})
+                    ({{selectedEvent.unprocessedCount}})
                 </label>
                 <label class="radio-inline">
-                    <input [disabled]="selectedEvent.eventProcessedCount == selectedEvent.eventRowCount" (ngModelChange)="onChange($event)" value="A" [(ngModel)]="headerFilters.EventDataStatus"
+                    <input [disabled]="selectedEvent.eventProcessedCount == selectedEvent.eventRowCount"
+                        (ngModelChange)="onChange($event)" value="A" [(ngModel)]="headerFilters.EventDataStatus"
                         type="radio" name="processed">All ({{selectedEvent.eventRowCount}})
                 </label>
 
             </div>
 
-            <button type="submit" class="btn btn-sm themeButton pull-right" (click)="export()">Export</button>
+            <div class="butnDiv">
+                <button type="button" *ngIf="checkShowAssetBtn() && selectedData.length == 1" class="btn btn-sm themeButton mr-2" (click)="showAssets()">Show Assets</button>
+                <button type="button" class="btn btn-sm themeButton" (click)="export()">Export</button>
+
+            </div>
+
+
         </div>
 
         <div class="col-md-12">
@@ -52,11 +61,15 @@
         </div>
 
         <div class="col-md-12 mt-2 text-left">
-            <button [disabled]="selectedEvent.eventProcessedCount == selectedEvent.eventRowCount || selectedEvent.eventAssignUser != currentUser.userId" type="submit" class="btn btn-sm themeButton mr-2" (click)="updateEvent('P')">Set to
+            <button
+                [disabled]="selectedEvent.eventProcessedCount == selectedEvent.eventRowCount || selectedEvent.eventAssignUser != currentUser.userId"
+                type="button" class="btn btn-sm themeButton mr-2" (click)="updateEvent('P')">Set to
                 Processed</button>
-            <button [disabled]="selectedEvent.eventProcessedCount == selectedEvent.eventRowCount || selectedEvent.eventAssignUser != currentUser.userId" type="submit" class="btn btn-sm themeButton mr-2" (click)="updateEvent('U')">Set to
+            <button
+                [disabled]="selectedEvent.eventProcessedCount == selectedEvent.eventRowCount || selectedEvent.eventAssignUser != currentUser.userId"
+                type="button" class="btn btn-sm themeButton mr-2" (click)="updateEvent('U')">Set to
                 Unprocessed</button>
-            <button type="submit" class="btn btn-sm themeButton mr-2 pull-right" (click)="closeWin()">Cancel</button>
+            <button type="button" class="btn btn-sm themeButton mr-2 pull-right" (click)="closeWin()">Cancel</button>
         </div>
     </div>
 

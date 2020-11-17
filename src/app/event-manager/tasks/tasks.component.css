@@ -2,7 +2,39 @@
     display: inherit;
 }
 
-.actionDiv{display: inline;}
+/* .progress {
+    height: 1rem !important;
+    background-color: gainsboro !important;
+    font-size: 11px !important;
+}
+
+.progress-bar {
+    padding-left: 3px !important;
+} */ 
+
+
+
+#progress {
+    border-radius: 5px;
+    border: 1px solid #b4b4b4;
+    position: relative;
+    padding: 3px;
+}
+
+#percent {
+    position: absolute;
+    left: 40%;
+}
+
+#bar {
+    height: 20px;
+    background-color: #f4c7dc;
+  
+}
+
+.actionDiv {
+    display: inline;
+}
 
 .asbestosColumnSwitch, .colSwitch {
     border: 1px solid #847d7d;
@@ -24,7 +56,7 @@
     color: green !important;
 }
 
-.processedRecord{
+.processedRecord {
     border: 1px solid gainsboro;
     border-radius: 5px;
     padding: 4px 16px;

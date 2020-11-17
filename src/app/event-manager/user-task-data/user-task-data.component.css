@@ -6,11 +6,11 @@ label.radio-inline {
     padding: 5px;
 }
 
-.radio-inline input[type="radio"]{
+.radio-inline input[type="radio"] {
     margin-right: 5px;
 }
 
-.radioDiv{
+.radioDiv {
     display: inline;
 }
 
@@ -26,4 +26,10 @@ label.radio-inline {
 .headingDiv {
     background-color: #dbdbdb;
     padding: 3px;
+}
+
+.butnDiv {
+    display: inline-block;
+    width: 64%;
+    text-align: right;
 }

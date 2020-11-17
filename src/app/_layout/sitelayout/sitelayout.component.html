@@ -339,7 +339,7 @@
 
                         <li class="sidenav-item" [routerLinkActive]="['open']"
                             *ngIf="checkGroupPermission('BA_EventManager')">
-                           
+
                             <a href="javascript:void(0)" class="sidenav-link sidenav-toggle">
                                 <div>Tasks</div>
                             </a>
@@ -479,7 +479,7 @@
                                 <div class="list-group list-group-flush">
 
                                     <ng-container *ngFor="let notification of notifications; let i = index;">
-                                        <a href="javascript:void(0)" *ngIf="i < 5"
+                                        <a (click)="redirectToUserEevnt(notification)" href="javascript:void(0)" *ngIf="i < 5"
                                             class="list-group-item list-group-item-action media d-flex align-items-center">
                                             <div
                                                 class="ui-icon ui-icon-sm ion ion-md-home bg-secondary border-0 text-white">
@@ -499,10 +499,11 @@
                                 </div>
 
 
+                               
                                 <!-- <a class="list-group-item list-group-item-action media d-flex align-items-center"
-                                    href="{{unreadMsgPage}}" target="_blank"> -->
+                                    href="http://104.40.138.8/Rowanwood/EventManager" target="_blank"> -->
                                 <a class="list-group-item list-group-item-action media d-flex align-items-center"
-                                    href="http://104.40.138.8/Rowanwood/EventManager" target="_blank">
+                                    [routerLink]="['/tasks/tasks']">
                                     <div class="media-body ml-3">
                                         <div class="text-dark line-height-condenced">
                                             Show all notifications </div>
