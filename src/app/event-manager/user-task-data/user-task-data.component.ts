@@ -51,13 +51,15 @@ export class UserTaskDataComponent implements OnInit {
   ngOnInit(): void {
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.selectedEvent = this.selectedEvent[0]
-    // console.log(this.selectedEvent);
+    console.log(this.selectedEvent);
     this.headerFilters.EventSequence = this.selectedEvent.eventSequence;
-    //console.log(this.headerFilters);
+   
 
     if (this.selectedEvent.unprocessedCount == 0) {
       this.headerFilters.EventDataStatus = "P";
     }
+
+    console.log(this.headerFilters);
 
     this.getUsereventList(this.selectedEvent.eventSequence)
     this.markViewd(this.selectedEvent.eventSequence, this.currentUser.userId);
@@ -79,7 +81,7 @@ export class UserTaskDataComponent implements OnInit {
               }
             }
 
-            console.log(this.columns)
+            // console.log(this.columns)
 
             this.query = this.stateChange.pipe(
               tap(state => {
@@ -293,7 +295,7 @@ export class UserTaskDataComponent implements OnInit {
           this.subs.add(
             forkJoin(req).subscribe(
               data => {
-                console.log(data);
+                // console.log(data);
                 msg = `Event Number ${this.selectedEvent.eventSequence}, data item ${successRecord.toString()} status request is updated.`
                 this.alertService.success(msg);
                 this.mySelection = []
@@ -319,6 +321,7 @@ export class UserTaskDataComponent implements OnInit {
     this.subs.add(
       this.eveneManagerService.getListOfUserEventBySequence(seq, userId).subscribe(
         data => {
+          // console.log(data.data[0]);
           this.selectedEvent = data.data[0]
         }
       )
@@ -378,11 +381,13 @@ export class UserTaskDataComponent implements OnInit {
   showAssets() {
     const host = window.location.hostname;
     let siteUrl = "";
-    if (host == "localhost") {
-      siteUrl = "http://localhost:4200"
-    } else {
-      siteUrl = "http://104.40.138.8/rowanwood"
-    }
+    // if (host == "localhost") {
+    //   siteUrl = "http://localhost:4200"
+    // } else {
+    //   siteUrl = "http://104.40.138.8/rowanwood"
+    // }
+
+    siteUrl = "http://104.40.138.8/rowanwood"
 
     if (this.selectedData.length == 1) {
       let findAssetKey = this.columns.find(x => x.val == "Asset");

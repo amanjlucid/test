@@ -55,7 +55,7 @@ export class SettingsService {
         return this.http.post<any>(`${appConfig.apiUrl}/api/HealthSafetyResult/HaSUpdateSystemDefaultConfigurationValues`, params);
     }
 
-    GetHaSSettingImages(filePath, pageNumber, numberOfRecord){
+    GetHaSSettingImages(filePath, pageNumber, numberOfRecord) {
         let httpOptions = {
             headers: new HttpHeaders({
                 'Content-Type': 'application/json'
@@ -64,8 +64,31 @@ export class SettingsService {
         return this.http.get<any>(`${appConfig.apiUrl}/api/HealthSafetyResult/GetHaSSettingImages?filePath=${filePath}&pageNumber=${pageNumber}&numberOfRecord=${numberOfRecord}`, httpOptions);
     }
 
-    uploadSettingImage(params){
+    uploadSettingImage(params) {
         return this.http.post<any>(`${appConfig.apiUrl}/api/HealthSafetyResult/UploadSettingImage`, params);
+    }
+
+
+    // Business area api 
+
+    getBusinessAreaList() {
+        let httpOptions = {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json'
+            }),
+        };
+
+        return this.http.get<any>(`${appConfig.apiUrl}/api/BusinessArea/GetListOfEventBusinessArea`, httpOptions);
+    }
+
+    updateListOfEventBusinessArea(params) {
+        let httpOptions = {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json'
+            }),
+        };
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/BusinessArea/UpdateListOfEventBusinessArea`, body, httpOptions);
     }
 
 }

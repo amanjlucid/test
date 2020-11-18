@@ -11,7 +11,8 @@ label.radio-inline {
 }
 
 .radioDiv {
-    display: inline;
+    display: inline-block;
+    width: 50%;
 }
 
 .taskDetailsDiv {
@@ -30,6 +31,6 @@ label.radio-inline {
 
 .butnDiv {
     display: inline-block;
-    width: 64%;
+    width: 49%;
     text-align: right;
 }

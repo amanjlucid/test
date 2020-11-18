@@ -5,3 +5,4 @@ export * from './kendo-zindex.directive';
 export * from './datepicker.directive';
 export * from './decimal-field.directive';
 export * from './kendo-treenode-colo.directive';
+export * from './popup.anchor-target.directive';

@@ -394,12 +394,13 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
   redirectToUserEevnt(val) {
     const host = window.location.hostname;
     let siteUrl = "";
-    if (host == "localhost") {
-      siteUrl = "http://localhost:4200"
-    } else {
-      siteUrl = "http://104.40.138.8/rowanwood"
-    }
+    // if (host == "localhost") {
+    //   siteUrl = "http://localhost:4200"
+    // } else {
+    //   siteUrl = "http://104.40.138.8/rowanwood"
+    // }
 
+    siteUrl = "http://104.40.138.8/rowanwood"
     siteUrl = `${siteUrl}/tasks/tasks?seq=${val.eventId}`
 
     let win: any = window;

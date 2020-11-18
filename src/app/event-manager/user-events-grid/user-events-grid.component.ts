@@ -118,12 +118,13 @@ export class UserEventsGridComponent implements OnInit {
   redirectToUserEevnt(val) {
     const host = window.location.hostname;
     let siteUrl = "";
-    if (host == "localhost") {
-      siteUrl = "http://localhost:4200"
-    } else {
-      siteUrl = "http://104.40.138.8/rowanwood"
-    }
+    // if (host == "localhost") {
+    //   siteUrl = "http://localhost:4200"
+    // } else {
+    //   siteUrl = "http://104.40.138.8/rowanwood"
+    // }
 
+    siteUrl = "http://104.40.138.8/rowanwood"
 
     if (val == "all") {
       siteUrl = `${siteUrl}/tasks/tasks`

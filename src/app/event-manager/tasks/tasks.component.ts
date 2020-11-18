@@ -64,7 +64,7 @@ export class TasksComponent implements OnInit {
         if (params.seq != undefined) {
           this.seqIds = params.seq;
         }
-        console.log(this.seqIds);
+        // console.log(this.seqIds);
         this.getUserEventsList(this.currentUser.userId, this.hideComplete);
 
       })
@@ -267,7 +267,7 @@ export class TasksComponent implements OnInit {
         this.subs.add(
           forkJoin(req).subscribe(
             data => {
-              console.log(data);
+              // console.log(data);
               this.resetSelection()
               this.alertService.success(`Event number ${successData.join(",")} updated successfully.`)
               this.getUserEventsList(this.currentUser.userId, this.hideComplete);
@@ -325,7 +325,7 @@ export class TasksComponent implements OnInit {
         } else {
           if (userEvent.eventAssignUser != "" && userEvent.eventAssignUser == this.currentUser.userId) {
             failsData.push(`Event number: ${userEvent.eventSequence} is already assigned to me \n`)
-          } else if (userEvent.eventAssignUser != "" && userEvent.eventAssignUser == this.currentUser.userId) {
+          } else if (userEvent.eventAssignUser != "" && userEvent.eventAssignUser != this.currentUser.userId) {
             failsData.push(`Event number: ${userEvent.eventSequence} has already been assigned to another user: ${userEvent.eventAssignUserName} \n`)
           }
         }
@@ -402,7 +402,7 @@ export class TasksComponent implements OnInit {
         this.subs.add(
           forkJoin(req).subscribe(
             data => {
-              console.log(data);
+              // console.log(data);
               let msg = '';
               if (successRecord.length > 1) {
                 msg = `Event Number ${successRecord.toString()} are updated.`;

@@ -71,6 +71,7 @@ const appRoutes: Routes = [
             { path: 'my-profile', loadChildren: () => import('./my-profile/my-profile.module').then(m => m.MyProfileModule) },
             { path: 'service-settings', component: ServiceSettingsComponent, canActivate: [AuthGuard] },
             { path: 'hns-settings', component: HnsSettingsComponent, canActivate: [AuthGuard] },
+            { path: 'business-areas', loadChildren: () => import('./setting/business-area/business-area.module').then(m => m.BusinessModule) },
 
         ]
     },

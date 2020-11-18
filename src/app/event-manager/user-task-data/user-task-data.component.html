@@ -20,7 +20,7 @@
                     <input [disabled]="selectedEvent.eventProcessedCount == selectedEvent.eventRowCount"
                         (ngModelChange)="onChange($event)" value="U" [(ngModel)]="headerFilters.EventDataStatus"
                         type="radio" name="processed" checked>Un Processed
-                    ({{selectedEvent.unprocessedCount}})
+                    ({{selectedEvent.eventRowCount - selectedEvent.eventProcessedCount}})
                 </label>
                 <label class="radio-inline">
                     <input [disabled]="selectedEvent.eventProcessedCount == selectedEvent.eventRowCount"
