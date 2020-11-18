@@ -90,6 +90,7 @@ import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
 
 
 
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -162,10 +163,8 @@ import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
     ServiceResidentContactsComponent,
     ServiceSettingsComponent,
     HnsSettingsComponent,
-    HnsReportImagesComponent
-
-
-
+    HnsReportImagesComponent,
+    
   ],
 
   imports: [
