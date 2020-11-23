@@ -91,4 +91,37 @@ export class SettingsService {
         return this.http.post<any>(`${appConfig.apiUrl}/api/BusinessArea/UpdateListOfEventBusinessArea`, body, httpOptions);
     }
 
+    // notificaiton
+
+    getNotificationList() {
+        let httpOptions = {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json'
+            }),
+        };
+
+        return this.http.get<any>(`${appConfig.apiUrl}/api/Notification/GetListOfNotificationGroups`, httpOptions);
+    }
+
+    validateAddNotificationGroup(groupID, userID){
+        let httpOptions = {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json'
+            }),
+        };
+
+        return this.http.get<any>(`${appConfig.apiUrl}/api/Notification/ValidateAddNotificationGroup?groupID=${groupID}&userID=${userID}`, httpOptions);
+    }
+
+
+    loadNotificationGroupUser(groupID){
+        let httpOptions = {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json'
+            }),
+        };
+
+        return this.http.get<any>(`${appConfig.apiUrl}/api/Notification/LoadNotificationGroupUsers?groupID=${groupID}`, httpOptions);
+    }
+
 }

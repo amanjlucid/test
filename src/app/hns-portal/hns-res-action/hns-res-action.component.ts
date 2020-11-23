@@ -143,19 +143,7 @@ export class HnsResActionComponent implements OnInit {
     this.subs.unsubscribe();
   }
 
-  // ngAfterContentChecked(){
-  //   $('.k-i-filter').click(function(){
-  //     console.log($('.k-primary').length);
-  //     console.dir($('.k-primary'));
-  //     console.log('sdfs');
-  //   })
-  // }
 
-  //   public dataStateChange(state: DataStateChangeEvent): void {
-  //     // this.state = state;
-  //     // this.gridData = process(sampleProducts, this.state);
-  //     console.log(state)
-  // }
   setTextSearch($event) {
     this.textSearch$.next($event.target.value);
   }
@@ -724,8 +712,7 @@ export class HnsResActionComponent implements OnInit {
                 x.hasiworkauthoriseddate = this.helperService.formatDateWithoutTime(x.hasiworkauthoriseddate)
                 x.hasiworkscheduledate = this.helperService.formatDateWithoutTime(x.hasiworkscheduledate)
               })
-              //console.log(this.gridView)
-              // let ignore = [];
+              
               let label = {
                 'assid': 'Asset',
                 'astconcataddress': 'Address',

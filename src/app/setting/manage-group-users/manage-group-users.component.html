@@ -1,0 +1,92 @@
+<kendo-window title="{{title}}" *ngIf="editWin" (close)="closeEditWindow()" [top]="20" [minWidth]="700" [width]="980"
+    [height]="auto" [minHeight]="350">
+
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-2">
+                    <label for="groupName">Group Name:</label>
+                </div>
+
+                <div class="col-md-10">
+                    <input type="groupName" [(ngModel)]="groupName" class="form-control" id="groupName">
+                </div>
+
+            </div>
+        </div>
+
+        <div class="col-md-5 col-sm-12 col-xs-12 mt-3">
+            <span>Available:</span>
+            <div class="table-responsive mt-2">
+                <kendo-grid [data]="availableGridView" [height]="400" filterable="menu" [resizable]="false" [sortable]="{
+                    allowUnsort: allowUnsort,
+                    mode: multiple ? 'multiple' : 'single'
+                    }" [skip]="state.skip" [sort]="state.sort" [selectable]="selectableSettings"
+                    kendoGridSelectBy="mpusid" [selectedKeys]="mySelection"
+                    (selectedKeysChange)="onSelectedKeysChange($event)" [filter]="state.filter"
+                    (dataStateChange)="dataStateChangeForAvailableUser($event)" (cellClick)="cellClickHandler($event)"
+                    [navigable]="true">
+
+                    <kendo-grid-column field="m_UerName" title="User Name" width="120">
+                    </kendo-grid-column>
+                    <kendo-grid-column field="m_UerName" title="Email" width="120">
+                    </kendo-grid-column>
+                    <kendo-grid-column field="m_UerName" title="Apex User" width="120">
+                    </kendo-grid-column>
+
+
+                </kendo-grid>
+
+
+            </div>
+        </div>
+
+        <div class="col-md-2 col-sm-12 col-xs-12 mt-3 text-center">
+
+            <div class="btn-group-vertical btn_grp mt-4">
+                <button (click)="add()" class="btn btn-sm btn-secondary"
+                    [disabled]="selectedAvailableUser?.length == 0">Add &gt;&gt;</button>
+                <button [disabled]="selectedAssignedUser?.length == 0" (click)="removeNotifyUser()"
+                    class="btn btn-sm btn-secondary mt-2">&lt;&lt; Remove</button>
+            </div>
+        </div>
+
+        <div class="col-md-5 col-sm-12 col-xs-12 mt-3">
+            <span>Included:</span>
+            <div class="table-responsive mt-2">
+                <kendo-grid [data]="assignGridView" [height]="400" filterable="menu" [resizable]="true" [sortable]="{
+                    allowUnsort: allowUnsort,
+                    mode: multiple ? 'multiple' : 'single'
+                    }" [skip]="statetwo.skip" [sort]="statetwo.sort" [selectable]="{
+                        checkboxOnly: false,
+                        mode: 'single'
+                    }" [filter]="statetwo.filter" (dataStateChange)="dataStateChangeForAssignUser($event)"
+                    (cellClick)="cellClickHandlerForAssign($event)">
+
+                    <kendo-grid-column field="m_UerName" title="User Name" width="120">
+                    </kendo-grid-column>
+                    <kendo-grid-column field="m_UerName" title="Email" width="120">
+                    </kendo-grid-column>
+                    <kendo-grid-column field="m_UerName" title="Apex User" width="120">
+                    </kendo-grid-column>
+
+                </kendo-grid>
+
+            </div>
+
+        </div>
+    </div>
+
+
+    <div class="row mt-2">
+        <div class="col-md-12 text-right">
+            <button type="button" class="btn btn-sm themeButton mr-2" (click)="saveGroup()">OK</button>
+            <button type="button" class="btn btn-sm themeButton" (click)="closeEditWindow()">Cancel</button>
+        </div>
+
+    </div>
+
+
+
+</kendo-window>

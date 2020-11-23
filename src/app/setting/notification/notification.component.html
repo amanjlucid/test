@@ -1,0 +1,94 @@
+<div class="container-fluid flex-grow-1 container-p-y">
+
+    <div class="row">
+        <div class="col-md-2 col-sm-3">
+            <h4 class="font-weight-bold py-3 mb-1">
+                Notification
+            </h4>
+        </div>
+
+        <div class="col-md-10 text-right">
+            <button type="button" class="btn btn-sm themeButton mr-1" (click)="add()">Add</button>
+            <!-- <button type="button" class="btn btn-sm themeButton mr-1" (click)="manageEmails()">Manage Emails</button> -->
+
+            <div class="dropdown" id="nesting-dropdown-demo">
+                <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown"
+                    aria-expanded="false">Manage Emails</button>
+                <div class="dropdown-menu" x-placement="bottom-start"
+                    style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
+                    <a class="dropdown-item" (click)="manageEmails('apex')" href="javascript:void(0)">Apex Users</a>
+                    <a class="dropdown-item" (click)="manageEmails('nonApex')" href="javascript:void(0)">Non-Apex
+                        Users</a>
+                </div>
+            </div>
+
+
+        </div>
+
+    </div>
+
+    <div class="row mt-2">
+
+        <div class="col-md-12">
+            <kendo-grid [group]="state.group" [groupable]="false" [data]="gridView" [height]="700" [loading]="loading"
+                filterable="menu" [resizable]="true" [sortable]="{
+    allowUnsort: allowUnsort,
+    mode: multiple ? 'multiple' : 'single'
+    }" [skip]="state.skip" [sort]="state.sort" [selectable]="selectableSettings" [filter]="state.filter"
+                (sortChange)="sortChange($event)" (filterChange)="filterChange($event)"
+                (cellClick)="cellClickHandler($event)" [navigable]="true">
+
+
+                <kendo-grid-column title=" " width="18" [filterable]="false" [class]="{'text-center': true}">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <li class="nav-item dropdown list-unstyled" style="margin-top: -7px;">
+                            <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="javascript:void(0)" (click)="edit()">Edit</a>
+                                <a [ngClass]="{'disabled' : dataItem.inUse == 'Y'}" class="dropdown-item"
+                                    href="javascript:void(0)" (click)="openConfirmationDialog(dataItem)">Delete</a>
+                            </div>
+                        </li>
+
+                    </ng-template>
+                </kendo-grid-column>
+
+
+                <kendo-grid-column field="notificationGroupUsersCount" title="Users/Email" width="50"
+                    [filterable]="false" [class]="{'text-center': true}">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            <img style="height: 14px;" *ngIf="dataItem.notificationGroupUsersCount > 0"
+                                src="assets/img/icons/tick.png" />
+                            <img style="height: 14px;" *ngIf="dataItem.notificationGroupUsersCount == 0"
+                                src="assets/img/icons/cross.png" />
+
+                        </span>
+                    </ng-template>
+                </kendo-grid-column>
+                <kendo-grid-column field="groupDesc" title="Notification Group Name" width="250">
+                </kendo-grid-column>
+                <kendo-grid-column field="inUse" title="In Use" width="80" [filterable]="false"
+                    [class]="{'text-center': false}">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            <img style="height: 14px;" *ngIf="dataItem.inUse == 'Y'" src="assets/img/icons/tick.png" />
+                            <img style="height: 14px;" *ngIf="dataItem.inUse == 'N'" src="assets/img/icons/cross.png" />
+
+                        </span>
+                    </ng-template>
+                </kendo-grid-column>
+            </kendo-grid>
+
+        </div>
+    </div>
+
+
+</div>
+
+<div class="notificationOverlay"></div>
+
+<app-add-notification *ngIf="addWin" [addWin]="addWin" (closeAddWin)="closeAddWin($event)"></app-add-notification>
+<app-manage-group-users *ngIf="editWin" [editWin]="editWin" [parentSelectedRow]="selectedItem"
+    (closeEditWin)="closeEditWin($event)"></app-manage-group-users>
+<app-manage-emails *ngIf="manageEmailsWIn" [manageEmailsWIn]="manageEmailsWIn" [manageEmailfor]="manageEmailfor"></app-manage-emails>

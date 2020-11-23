@@ -16,7 +16,7 @@
     <div class="row mt-2">
 
         <div class="col-md-12">
-            <kendo-grid (groupChange)="groupChange($event)" [group]="state.group" [groupable]="false" [data]="gridView"
+            <kendo-grid [group]="state.group" [groupable]="false" [data]="gridView"
                 [height]="700" [loading]="loading" filterable="menu" [resizable]="true" [sortable]="{
     allowUnsort: allowUnsort,
     mode: multiple ? 'multiple' : 'single'

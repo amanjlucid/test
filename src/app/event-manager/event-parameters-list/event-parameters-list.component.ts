@@ -17,7 +17,7 @@ export class EventParametersListComponent implements OnInit {
   @Input() selectedParam: any;
   @Output() closeEventParamList = new EventEmitter<boolean>();
   @Output() changeSelectedParams = new EventEmitter<any>();
-  title = 'Event Parameters...';
+  title = 'Task Parameters';
   state: State = {
     skip: 0,
     sort: [],
@@ -63,8 +63,6 @@ export class EventParametersListComponent implements OnInit {
 
     this.setSelectableSettings();
     console.log(this.selectedEvent)
-    console.log(this.selectedParam)
-
     this.getEventParameterList(this.selectedEvent.eventTypeSequence, this.selectedParam.eventTypeParamSequence)
   }
 
@@ -101,7 +99,7 @@ export class EventParametersListComponent implements OnInit {
 
   public onSelectedKeysChange(e) {
     const len = this.mySelection.length;
-
+    
     if (len === 0) {
       this.selectAllState = 'unchecked';
     } else if (len > 0 && len < this.parameterList.length) {
@@ -110,7 +108,8 @@ export class EventParametersListComponent implements OnInit {
       this.selectAllState = 'checked';
     }
 
-    // this.chRef.detectChanges();
+    // console.log(this.mySelection);
+    this.chRef.detectChanges();
   }
 
   public onSelectAllChange(checkedState: SelectAllCheckboxState) {
@@ -122,8 +121,8 @@ export class EventParametersListComponent implements OnInit {
       this.selectAllState = 'unchecked';
     }
 
-
-    // this.chRef.detectChanges();
+    // console.log(this.mySelection);
+    this.chRef.detectChanges();
   }
 
   closeParameterWindow() {
@@ -136,15 +135,16 @@ export class EventParametersListComponent implements OnInit {
     this.subs.add(
       this.eventManagerService.getListOfEventTypeParameterSelection(eSeq, epSeq).subscribe(
         data => {
-          console.log(data)
           if (data.isSuccess) {
             let col = data.data[0];
             this.parameterList = data.data;
+            // console.log(this.parameterList)
             for (let cl in col) {
               if (col[cl] != '' && col[cl] != 0 && cl != "selectionType")
                 this.columnName.push({ 'key': cl, 'val': col[cl] })
-
             }
+
+            // console.log(this.columnName);
 
             this.parameterList.shift();
             this.setDefaultSelectedValues(this.selectedParam.eventTypeParamSqlValue);
@@ -172,40 +172,58 @@ export class EventParametersListComponent implements OnInit {
   getSelectedData() {
     let paramlist = this.parameterList.filter((x: any) => this.mySelection.indexOf(x.selectionSeq) !== -1);
     let pstring = '';
+    let valArr = [];
     if (paramlist) {
-      if (this.selectedParam.eventTypeParamType == "P") {
-        for (let plist of paramlist) {
-          pstring += `${plist.selectionChar}`;
+      // console.log(paramlist)
+      // if (this.selectedParam.eventTypeParamType == "P") {
+      //   console.log('in')
+      //   for (let plist of paramlist) {
+      //     if (plist.selectiionNum != undefined) {
 
-        }
-      } else {
-        let paramLenght = paramlist.length
-        let i = 1;
-        for (let plist of paramlist) {
-          if (plist.selectiionNum != undefined) {
-            if (plist.selectionChar == "") {
-              if (i == paramLenght) {
-                pstring += `'${plist.selectiionNum}'`;
-              } else {
-                pstring += `'${plist.selectiionNum}',`;
+      //     } else {
 
-              }
-            }
+      //     }
+      //     pstring += `${plist.selectionChar}`;
+
+      //   }
+      // } else {
+      // console.log('o')
+
+      //let paramLenght = paramlist.length
+      //let i = 1;
+      for (let plist of paramlist) {
+        if (plist.selectiionNum != undefined) {
+          if (plist.selectionChar == "") {
+            // if (i == paramLenght) {
+            //   pstring += `${plist.selectiionNum}`;
+            // } else {
+              //pstring += `${plist.selectiionNum},`;
+              valArr.push(plist.selectiionNum);
+            // }
           } else {
-            if (i == paramLenght) {
-              pstring += `'${plist.selectionChar}'`;
-            } else {
-              pstring += `'${plist.selectionChar}',`;
-
-            }
+            // pstring += `'${plist.selectionChar}',`;
+            valArr.push(plist.selectionChar);
           }
+        } else {
+          // if (i == paramLenght) {
+          //   pstring += `${plist.selectionChar}`;
+          // } else {
+          //   pstring += `${plist.selectionChar},`;
 
-
-          i++;
+          // }
+          valArr.push(plist.selectionChar);
         }
+
+        // i++;
+
+      }
+      // }
+
+      if(valArr.length > 0){
+        pstring = valArr.toString();
       }
 
-      
+
       this.subs.add(
         this.eventManagerService.updateListOfEventTypeParameter(this.selectedEvent.eventTypeSequence, this.selectedParam.eventTypeParamSequence, pstring).subscribe(
           data => {

@@ -22,7 +22,7 @@
         <div class="col-md-12">
 
             <kendo-grid (groupChange)="groupChange($event)" [group]="state.group" [groupable]="true" [data]="gridView"
-                [height]="650" filterable="menu" [resizable]="true" [sortable]="{
+                [height]="720" filterable="menu" [loading]="loading" [resizable]="true" [sortable]="{
         allowUnsort: allowUnsort,
         mode: multiple ? 'multiple' : 'single'
         }" [skip]="state.skip" [sort]="state.sort" [selectable]="selectableSettings" kendoGridSelectBy="eventTypeCode"
@@ -59,7 +59,7 @@
 
 
 
-                <kendo-grid-column field="eventTypeNotifyCount" title="" width="50" [filterable]="false"
+                <kendo-grid-column field="eventParamEmptyCount" title="Parameters" width="50" [filterable]="false"
                     [groupable]="true">
 
                     <ng-template kendoGridCellTemplate let-dataItem>
@@ -75,7 +75,7 @@
                     </ng-template>
                 </kendo-grid-column>
 
-                <kendo-grid-column field="pictureCount" title="" width="50" [filterable]="false" [groupable]="true">
+                <kendo-grid-column field="eventTypeNotifyCount" title="Notification" width="50" [filterable]="false" [groupable]="true">
 
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <span>
@@ -92,7 +92,7 @@
 
                 <kendo-grid-column field="eventTypeCode" title="Code" width="120">
                 </kendo-grid-column>
-                <kendo-grid-column field="busAreaDesc" title="Bus Area" width="170">
+                <kendo-grid-column field="busAreaDesc" title="Business Area" width="170">
                 </kendo-grid-column>
                 <kendo-grid-column field="busAreaOwnerName" title="Owner" width="170">
                 </kendo-grid-column>
@@ -158,7 +158,7 @@
                 <kendo-grid-column field="eventESCUser3Name" title="Esc User 3" width="150">
                 </kendo-grid-column>
 
-                <kendo-grid-column field="eventPeriodType" title="Event Period Type" width="140" filter="numeric"
+                <kendo-grid-column field="eventPeriodType" title="Schedule Type" width="140" filter="numeric"
                     format="{0:b}">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <span *ngIf="dataItem.eventPeriod != 0">
@@ -166,7 +166,7 @@
                         </span>
                     </ng-template>
                 </kendo-grid-column>
-                <kendo-grid-column field="eventPeriod" title="Event Period Frequency" width="160" filter="numeric"
+                <kendo-grid-column field="eventPeriod" title="Schedule Frequency" width="160" filter="numeric"
                     format="{0:b}">
                 </kendo-grid-column>
 

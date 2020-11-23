@@ -48,7 +48,7 @@ export class TaskDetailsComponent implements OnInit {
   currentUser: any;
   editEvent: boolean = false;
   eventPeriod = ['Daily', 'Weekly', 'Monthly'];
-
+  loading = true
 
   constructor(
     private eventManagerService: EventManagerService,
@@ -80,7 +80,7 @@ export class TaskDetailsComponent implements OnInit {
           if (data.isSuccess) {
             this.taskDetails = data.data;
             this.taskDetailsTemp = Object.assign([], data.data);
-            console.log(data.data)
+            // console.log(data.data)
             // if (this.taskDetailsTemp.length > 0) {
             //   this.taskDetailsTemp.map(x => {
             //     x.eventCreatedDate = this.helperService.checkValidDateR(x.eventCreatedDate)
@@ -95,6 +95,7 @@ export class TaskDetailsComponent implements OnInit {
             // this.taskDetailsTemp =  Object.assign([], this.taskDetails);  // remove it
 
             this.gridView = process(this.taskDetailsTemp, this.state);
+            this.loading = false;
             // this.gridView.total = this.gridView.data.length
             // console.log(this.gridView)
 

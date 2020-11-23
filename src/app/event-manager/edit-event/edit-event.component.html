@@ -155,13 +155,12 @@
 
         <div class="row mt-2">
             <div class="col-md-3">
-                <label class="control-label">Event Status</label>
+                <label class="control-label">Task Status</label>
             </div>
 
             <div class="col-md-9" *ngIf="checkEventStatus">
                 <select id="eventStatus" class="form-control input-sm" formControlName="eventstatus"
                     [ngClass]="{ 'is-invalid': submitted && formErrors.eventstatus }">
-                    <option value="">Please Select</option>
                     <option value="A">Automatic</option>
                     <option value="Q">Automatic & Process</option>
                     <option value="M">Manual</option>
@@ -172,7 +171,7 @@
 
         <div class="row mt-1" *ngIf="checkEventStatus">
             <div class="col-md-3">
-                <label class="control-label">Event Schedule</label>
+                <label class="control-label">Task Schedule</label>
             </div>
 
             <div class="col-md-9">

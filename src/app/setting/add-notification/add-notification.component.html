@@ -1,0 +1,28 @@
+<kendo-window title="Add Notification Group" *ngIf="addWin" (close)="closeWindow()" [top]="20" [minWidth]="600"
+    [width]="780" [height]="auto" [minHeight]="150">
+
+
+    <div class="row">
+        <div class="col-md-12 addNotificationDiv">
+            <form (ngSubmit)="onSubmit()" #notificationGrpForm="ngForm">
+                <div class="form-group">
+                    <label for="name">Enter the Notification Group Name:</label>
+                    <input type="text" class="form-control" id="name" required [(ngModel)]="notificationGrpName"
+                        name="name" #name="ngModel" [ngClass]="{ 'is-invalid': !name.valid && submitted }">
+                    <div *ngIf="!name.valid && submitted" class="invalid-feedback">
+                        Notification Group Name is required
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12 mt-2 text-right">
+                        <button type="submit" class="btn btn-sm themeButton mr-2">OK</button>
+                        <button type="button" class="btn btn-sm themeButton" (click)="closeWindow()">Cancel</button>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+</kendo-window>

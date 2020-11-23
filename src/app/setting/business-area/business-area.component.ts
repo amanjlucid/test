@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { SubSink } from 'subsink';
-import { GroupDescriptor, DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
+import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { SelectableSettings } from '@progress/kendo-angular-grid';
 import { AlertService, EventManagerService, HelperService, SettingsService } from '../../_services'
 import { tap, switchMap } from 'rxjs/operators';

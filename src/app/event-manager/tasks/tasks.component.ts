@@ -56,7 +56,6 @@ export class TasksComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-
     this.setSelectableSettings();
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.subs.add(
@@ -134,7 +133,7 @@ export class TasksComponent implements OnInit {
     this.subs.add(
       this.eveneManagerService.getListOfUserEventByUserId(userId, hideComplete).subscribe(
         data => {
-          console.log(data);
+          // console.log(data);
           if (data.isSuccess) {
             this.userEventList = data.data;
             if (this.seqIds != "") {

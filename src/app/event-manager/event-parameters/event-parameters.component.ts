@@ -15,7 +15,7 @@ export class EventParametersComponent implements OnInit {
   @Input() paramsWindow = false;
   @Input() selectedEvent: any;
   @Output() closeEventparamWindow = new EventEmitter<boolean>();
-  title = 'Event Parameters...';
+  title = 'Task Parameters';
   state: State = {
     skip: 0,
     sort: [],
@@ -44,7 +44,7 @@ export class EventParametersComponent implements OnInit {
   ngOnInit(): void {
     // console.log(this.selectedEvent)
     this.selectedEvent = this.selectedEvent[0];
-    this.eventParamHeading = `Event Type ${this.selectedEvent.eventTypeName} (${this.selectedEvent.eventTypeCode})`
+    this.eventParamHeading = `Task Type: ${this.selectedEvent.eventTypeName} (${this.selectedEvent.eventTypeCode})`
     this.getEventParameterList(this.selectedEvent.eventTypeSequence);
     
   }
@@ -133,7 +133,7 @@ export class EventParametersComponent implements OnInit {
 
     let paramLength = this.parameterList.length;
     let i = 1
-    console.log(this.parameterList);
+    // console.log(this.parameterList);
     // for (let param of this.parameterList) {
     //   if (param.eventTypeParamType == "N") {
     //     this.subs.add(
@@ -167,7 +167,7 @@ export class EventParametersComponent implements OnInit {
             this.subs.add(
               this.eventmanagerService.updateListOfEventTypeParameter(this.selectedEvent.eventTypeSequence, this.selectedParam.eventTypeParamSequence, param.eventTypeParamSqlValue).subscribe(
                 data => {
-                  console.log(data);
+                  // console.log(data);
                 }
               )
             )

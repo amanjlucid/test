@@ -65,10 +65,6 @@ export class NotifyComponent implements OnInit {
   ngOnInit(): void {
     this.setSelectableSettings();
     this.title = `${this.selectedEvent.length} Tasks Selected`//this.selectedEvent.eventTypeName;
-
-
-    // this.selectedEvent = this.selectedEvent[0];
-
     this.getGridData();
   }
 

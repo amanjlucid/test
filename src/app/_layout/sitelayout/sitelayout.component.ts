@@ -384,6 +384,7 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
         data => {
           if (data.isSuccess) {
             this.developedModuleList = data.data;
+            // console.log(this.developedModuleList)
           }
         }
       )

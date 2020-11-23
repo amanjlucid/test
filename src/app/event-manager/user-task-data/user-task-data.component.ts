@@ -51,15 +51,11 @@ export class UserTaskDataComponent implements OnInit {
   ngOnInit(): void {
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.selectedEvent = this.selectedEvent[0]
-    console.log(this.selectedEvent);
     this.headerFilters.EventSequence = this.selectedEvent.eventSequence;
-   
 
     if (this.selectedEvent.unprocessedCount == 0) {
       this.headerFilters.EventDataStatus = "P";
     }
-
-    console.log(this.headerFilters);
 
     this.getUsereventList(this.selectedEvent.eventSequence)
     this.markViewd(this.selectedEvent.eventSequence, this.currentUser.userId);
@@ -188,8 +184,6 @@ export class UserTaskDataComponent implements OnInit {
   }
 
 
-
-
   setGridFilter(obj) {
     if (this.headerFilters[obj.field] != undefined) {
       this.headerFilters[obj.field] = obj.value
@@ -197,7 +191,7 @@ export class UserTaskDataComponent implements OnInit {
   }
 
 
-  public sortChange(sort: SortDescriptor[]): void {
+  sortChange(sort: SortDescriptor[]): void {
     if (sort.length > 0) {
       if (sort[0].dir == undefined) {
         sort[0].dir = "asc";

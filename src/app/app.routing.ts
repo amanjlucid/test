@@ -15,15 +15,12 @@ import { ServiceChartComponent } from './service-portal/service-chart/service-ch
 import { ManagementComponent } from './service-portal/management/management.component';
 import { ServiceSettingsComponent } from './setting/service-settings/service-settings.component';
 import { HnsSettingsComponent } from './hns-settings/hns-settings.component';
-// import { HnsChartComponent } from './hns-portal/hns-chart/hns-chart.component';
-//import { MyProfileComponent } from './my-profile/my-profile.component';
 
 
 const appRoutes: Routes = [
 
     { path: '', redirectTo: '/login', pathMatch: 'full' },
     { path: 'login', component: LoginComponent },
-    // { path: 'change-password', loadChildren: './change-password/change-password.module#ChangePasswordModule' },
     { path: 'change-password', loadChildren: () => import('./change-password/change-password.module').then(m => m.ChangePasswordModule) },
     { path: 'default', component: DefaultComponent },
     {
@@ -45,8 +42,7 @@ const appRoutes: Routes = [
                 component: AssetsPortalComponent,
                 pathMatch: 'full',
                 children: [
-                    // { path: '', redirectTo: 'assets', pathMatch: 'full' },
-                    // {path: 'assets', loadChildren:'./assets-portal/assets/assets.module#AssetsModule'}
+
                     { path: '', component: AssetsComponent, canActivate: [AuthGuard], }
 
                 ]
@@ -61,17 +57,15 @@ const appRoutes: Routes = [
 
                 ]
             },
-            // { path: 'health&safety', loadChildren: './hns-portal/hns.module#HnsModule' },
-            // { path: 'event-manager', loadChildren: './event-manager/eventmanager.module#EventManagerModule' },
+
 
             { path: 'health&safety', loadChildren: () => import('./hns-portal/hns.module').then(m => m.HnsModule) },
             { path: 'tasks', loadChildren: () => import('./event-manager/eventmanager.module').then(m => m.EventManagerModule) },
-
-            // { path: 'my-profile', loadChildren: './my-profile/my-profile.module#MyProfileModule' },
             { path: 'my-profile', loadChildren: () => import('./my-profile/my-profile.module').then(m => m.MyProfileModule) },
             { path: 'service-settings', component: ServiceSettingsComponent, canActivate: [AuthGuard] },
             { path: 'hns-settings', component: HnsSettingsComponent, canActivate: [AuthGuard] },
             { path: 'business-areas', loadChildren: () => import('./setting/business-area/business-area.module').then(m => m.BusinessModule) },
+            { path: 'notification', loadChildren: () => import('./setting/notification/notification.module').then(m => m.NotificationModule) },
 
         ]
     },

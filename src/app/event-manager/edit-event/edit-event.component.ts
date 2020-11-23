@@ -39,13 +39,7 @@ export class EditEventComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    console.log(this.selectedEvent);
-    if (this.selectedEvent.length > 1) {
-      this.title = `Multiple Event Types (${this.selectedEvent.length})`;
-    } else {
-      this.title = `${this.selectedEvent[0].eventTypeName} (${this.selectedEvent[0].eventTypeCode})`;
-    }
-
+    // console.log(this.selectedEvent);
     this.editEventForm = this.fb.group({
       severity: ['', [Validators.required]],
       completedays: ['', []],
@@ -55,9 +49,20 @@ export class EditEventComponent implements OnInit {
       escalationgrp2: ['', []],
       numberofdays3: ['', []],
       escalationgrp3: ['', []],
-      eventstatus: ['', []],
+      eventstatus: ['', [Validators.required]],
       eventschedule: ['', []]
     })
+
+    if (this.selectedEvent.length > 1) {
+      this.title = `Multiple Event Types (${this.selectedEvent.length})`;
+    } else {
+      this.editEventForm.patchValue({
+        eventstatus: this.selectedEvent[0].eventTypeStatus
+      })
+      this.title = `${this.selectedEvent[0].eventTypeName} (${this.selectedEvent[0].eventTypeCode})`;
+    }
+
+
 
 
     this.subs.add(
