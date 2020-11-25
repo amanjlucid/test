@@ -3,7 +3,7 @@
     <div class="row">
         <div class="col-md-2 col-sm-3">
             <h4 class="font-weight-bold py-3 mb-1">
-                Notification
+                Notification Groups
             </h4>
         </div>
 
@@ -88,7 +88,8 @@
 
 <div class="notificationOverlay"></div>
 
-<app-add-notification *ngIf="addWin" [addWin]="addWin" (closeAddWin)="closeAddWin($event)"></app-add-notification>
+<app-add-notification *ngIf="addWin" [addWin]="addWin" (closeAddWin)="closeAddWin($event)" (reloadParentGrid)="reloadGrid($event)"></app-add-notification>
 <app-manage-group-users *ngIf="editWin" [editWin]="editWin" [parentSelectedRow]="selectedItem"
-    (closeEditWin)="closeEditWin($event)"></app-manage-group-users>
-<app-manage-emails *ngIf="manageEmailsWIn" [manageEmailsWIn]="manageEmailsWIn" [manageEmailfor]="manageEmailfor"></app-manage-emails>
+    (closeEditWin)="closeEditWin($event)" (reloadParentGrid)="reloadGrid($event)"></app-manage-group-users>
+
+<app-manage-emails *ngIf="manageEmailsWIn" [manageEmailsWIn]="manageEmailsWIn" [manageEmailfor]="manageEmailfor" (closeManageEmailWin)="closeManageEmailWin($event)"></app-manage-emails>

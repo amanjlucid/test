@@ -957,6 +957,8 @@ export class EventManagerChartComponent implements OnInit {
       barChartParams.seriesId = data.stackedBarChartViewModelList[0].seriesId
     }
 
+    // console.log(data);
+
     let comp = this;
     return {
       chart: {

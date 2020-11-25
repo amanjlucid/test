@@ -103,7 +103,7 @@ export class SettingsService {
         return this.http.get<any>(`${appConfig.apiUrl}/api/Notification/GetListOfNotificationGroups`, httpOptions);
     }
 
-    validateAddNotificationGroup(groupID, userID){
+    validateAddNotificationGroup(groupID, userID) {
         let httpOptions = {
             headers: new HttpHeaders({
                 'Content-Type': 'application/json'
@@ -114,7 +114,7 @@ export class SettingsService {
     }
 
 
-    loadNotificationGroupUser(groupID){
+    loadNotificationGroupUser(groupID) {
         let httpOptions = {
             headers: new HttpHeaders({
                 'Content-Type': 'application/json'
@@ -123,5 +123,86 @@ export class SettingsService {
 
         return this.http.get<any>(`${appConfig.apiUrl}/api/Notification/LoadNotificationGroupUsers?groupID=${groupID}`, httpOptions);
     }
+
+    loadApexUsers() {
+        let httpOptions = {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json'
+            }),
+        };
+
+        return this.http.get<any>(`${appConfig.apiUrl}/api/Notification/LoadApexUsers`, httpOptions);
+    }
+
+    validateDeleteNotificationGroup(groupID, userID) {
+        let httpOptions = {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json'
+            }),
+        };
+
+        return this.http.get<any>(`${appConfig.apiUrl}/api/Notification/ValidateDeleteNotificationGroup?groupID=${groupID}&userID=${userID}`, httpOptions);
+    }
+
+    ValidateUpdateNotificationGroupDesc(groupID, groupDesc) {
+        let httpOptions = {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json'
+            }),
+        };
+
+        return this.http.get<any>(`${appConfig.apiUrl}/api/Notification/ValidateUpdateNotificationGroupDesc?groupID=${groupID}&groupDesc=${groupDesc}`, httpOptions);
+    }
+
+    validateSaveGroupWithNoUsers(groupID) {
+        let httpOptions = {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json'
+            }),
+        };
+
+        return this.http.get<any>(`${appConfig.apiUrl}/api/Notification/ValidateSaveGroupWithNoUsers?groupID=${groupID}`, httpOptions);
+    }
+
+    UpdateGroupUserList(params) {
+        let httpOptions = {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json'
+            }),
+        };
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/Notification/UpdateGroupUserList`, body, httpOptions);
+    }
+
+    updateApexUserEmail(apexUserID, userEmail, userID) {
+        let httpOptions = {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json'
+            }),
+        };
+
+        return this.http.get<any>(`${appConfig.apiUrl}/api/Notification/UpdateApexUserEmail?apexUserID=${apexUserID}&userEmail=${userEmail}&userID=${userID}`, httpOptions);
+    }
+
+    ValidateAddNonSecurityUserEmail(userName, userEmail, userID) {
+        let httpOptions = {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json'
+            }),
+        };
+
+        return this.http.get<any>(`${appConfig.apiUrl}/api/Notification/ValidateAddNonSecurityUserEmail?userName=${userName}&userEmail=${userEmail}&userID=${userID}`, httpOptions);
+    }
+
+    validateDeleteNonSecurityUserEmail(nonSecUserID, userID) {
+        let httpOptions = {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json'
+            }),
+        };
+
+        return this.http.get<any>(`${appConfig.apiUrl}/api/Notification/ValidateDeleteNonSecurityUserEmail?nonSecUserID=${nonSecUserID}&userID=${userID}`, httpOptions);
+    }
+
 
 }

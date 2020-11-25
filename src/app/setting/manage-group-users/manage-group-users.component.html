@@ -1,6 +1,5 @@
-<kendo-window title="{{title}}" *ngIf="editWin" (close)="closeEditWindow()" [top]="20" [minWidth]="700" [width]="980"
+<kendo-window title="{{title}}" *ngIf="editWin" (close)="closeEditWindow()" [top]="20" [minWidth]="700" [width]="1180"
     [height]="auto" [minHeight]="350">
-
 
     <div class="row">
         <div class="col-md-12">
@@ -19,20 +18,23 @@
         <div class="col-md-5 col-sm-12 col-xs-12 mt-3">
             <span>Available:</span>
             <div class="table-responsive mt-2">
-                <kendo-grid [data]="availableGridView" [height]="400" filterable="menu" [resizable]="false" [sortable]="{
+                <kendo-grid [data]="availableGridView" [height]="400" filterable="menu" [resizable]="true" [sortable]="{
                     allowUnsort: allowUnsort,
                     mode: multiple ? 'multiple' : 'single'
-                    }" [skip]="state.skip" [sort]="state.sort" [selectable]="selectableSettings"
-                    kendoGridSelectBy="mpusid" [selectedKeys]="mySelection"
-                    (selectedKeysChange)="onSelectedKeysChange($event)" [filter]="state.filter"
-                    (dataStateChange)="dataStateChangeForAvailableUser($event)" (cellClick)="cellClickHandler($event)"
-                    [navigable]="true">
+                    }" [skip]="state.skip" [loading]="loading1"  [sort]="state.sort" [selectable]="selectableSettings"
+                    kendoGridSelectBy [selectedKeys]="mySelection" (selectedKeysChange)="onSelectedKeysChange($event)"
+                    [filter]="state.filter" (sortChange)="sortChange($event)" (filterChange)="filterChange($event)"
+                    (cellClick)="cellClickHandler($event)" [navigable]="true" [pageSize]="pageSize" [rowHeight]="36"
+                    (pageChange)="pageChange($event)" scrollable="virtual">
 
-                    <kendo-grid-column field="m_UerName" title="User Name" width="120">
+                    <kendo-grid-column field="userName" title="User Name" width="120">
                     </kendo-grid-column>
-                    <kendo-grid-column field="m_UerName" title="Email" width="120">
+                    <kendo-grid-column field="email" title="Email" width="120">
                     </kendo-grid-column>
-                    <kendo-grid-column field="m_UerName" title="Apex User" width="120">
+                    <kendo-grid-column field="nonSec" title="Apex User" width="70">
+                        <ng-template kendoGridCellTemplate let-dataItem>
+                            {{(dataItem.nonSec) ? 'No' : 'Yes'}}
+                        </ng-template>
                     </kendo-grid-column>
 
 
@@ -47,7 +49,7 @@
             <div class="btn-group-vertical btn_grp mt-4">
                 <button (click)="add()" class="btn btn-sm btn-secondary"
                     [disabled]="selectedAvailableUser?.length == 0">Add &gt;&gt;</button>
-                <button [disabled]="selectedAssignedUser?.length == 0" (click)="removeNotifyUser()"
+                <button [disabled]="selectedIncUser?.length == 0" (click)="remove()"
                     class="btn btn-sm btn-secondary mt-2">&lt;&lt; Remove</button>
             </div>
         </div>
@@ -55,20 +57,24 @@
         <div class="col-md-5 col-sm-12 col-xs-12 mt-3">
             <span>Included:</span>
             <div class="table-responsive mt-2">
-                <kendo-grid [data]="assignGridView" [height]="400" filterable="menu" [resizable]="true" [sortable]="{
+                <kendo-grid [data]="incluedeGridView" [height]="400" filterable="menu" [resizable]="true" [sortable]="{
                     allowUnsort: allowUnsort,
                     mode: multiple ? 'multiple' : 'single'
                     }" [skip]="statetwo.skip" [sort]="statetwo.sort" [selectable]="{
                         checkboxOnly: false,
                         mode: 'single'
                     }" [filter]="statetwo.filter" (dataStateChange)="dataStateChangeForAssignUser($event)"
-                    (cellClick)="cellClickHandlerForAssign($event)">
+                    (cellClick)="cellClickHandlerForInclude($event)" [pageSize]="pageSize2" [rowHeight]="36"
+                    (pageChange)="pageChange2($event)" scrollable="virtual" [loading]="loading2">
 
-                    <kendo-grid-column field="m_UerName" title="User Name" width="120">
+                    <kendo-grid-column field="userName" title="User Name" width="120">
                     </kendo-grid-column>
-                    <kendo-grid-column field="m_UerName" title="Email" width="120">
+                    <kendo-grid-column field="email" title="Email" width="120">
                     </kendo-grid-column>
-                    <kendo-grid-column field="m_UerName" title="Apex User" width="120">
+                    <kendo-grid-column field="nonSec" title="Apex User" width="70">
+                        <ng-template kendoGridCellTemplate let-dataItem>
+                            {{(dataItem.nonSec) ? 'No' : 'Yes'}}
+                        </ng-template>
                     </kendo-grid-column>
 
                 </kendo-grid>

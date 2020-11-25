@@ -15,14 +15,16 @@ export class AddNotificationComponent implements OnInit {
   subs = new SubSink();
   @Input() addWin = false
   @Output() closeAddWin = new EventEmitter<boolean>();
+  @Output() reloadParentGrid = new EventEmitter<boolean>();
   submitted = false;
   notificationGrpName = '';
-  currentUser:any;
+  currentUser: any;
 
   constructor(
     private chRef: ChangeDetectorRef,
     private settingService: SettingsService,
-   
+    private alertService: AlertService
+
   ) { }
 
   ngOnInit(): void {
@@ -40,16 +42,32 @@ export class AddNotificationComponent implements OnInit {
 
   onSubmit() {
     this.submitted = true;
-    console.log(this.form);
+    // console.log(this.form);
     if (this.form.valid) {
       this.subs.add(
-        // this.settingService.validateAddNotificationGroup()
+        this.settingService.validateAddNotificationGroup(this.notificationGrpName, this.currentUser.userId).subscribe(
+          data => {
+            // console.log(data);
+            if (data.isSuccess) {
+              this.alertService.success(data.message);
+              this.reloadParentGrid.emit(true);
+              this.closeWindow();
+            } else {
+              this.alertService.error(data.message)
+            }
+          },
+          err => {
+            this.alertService.error(err);
+          }
+        )
       )
     }
-    console.log(this.notificationGrpName)
+    // console.log(this.notificationGrpName)
   }
 
   
+
+
 
 
 

@@ -78,7 +78,7 @@
                 </li>
 
                 <li class="sidenav-item" [routerLinkActive]="['open']"
-                    *ngIf="checkAngularGrpPermission('Event Manager', 'BA_EventManager',0)">
+                    *ngIf="checkAngularGrpPermission('Event Manager', 'BA_EventManager',1) || checkAngularGrpPermission('Event Manager', 'Event Manager Portal Access',1)">
                     <!-- <li class="sidenav-item" [routerLinkActive]="['open']"
                     > -->
                     <a href="javascript:void(0)" class="sidenav-link sidenav-toggle">
@@ -108,13 +108,13 @@
                     </ul>
                 </li>
 
-                <!-- <li *ngIf="checkAngularGrpPermission('Event Manager', 'BA_EventManager',0)" class="sidenav-item">
+                <li *ngIf="checkAngularGrpPermission('Event Manager', 'BA_EventManager',0)" class="sidenav-item">
                     <a href="http://104.40.138.8/Rowanwood/EventManager" class="sidenav-link" target="_blank">
                         <img class="sidenav-icon ion" src="assets/img/icons/event-manager.svg">
                         <div>Event Manager</div>
                     </a>
 
-                </li> -->
+                </li>
 
 
                 <li *ngIf="checkAngularGrpPermission('Health & Safety','Health And Safety Portal Access',0)"
@@ -279,17 +279,17 @@
                             </a>
                         </li>
 
-                        <!-- <li class="sidenav-item" [routerLinkActive]="['active']">
+                        <li class="sidenav-item" [routerLinkActive]="['active']">
                             <a [routerLink]="['/business-areas']" class="sidenav-link">
                                 <div>Business Area Settings</div>
                             </a>
-                        </li> -->
+                        </li>
 
-                        <!-- <li class="sidenav-item" [routerLinkActive]="['active']">
+                        <li class="sidenav-item" [routerLinkActive]="['active']">
                             <a [routerLink]="['/notification']" class="sidenav-link">
-                                <div>Notification</div>
+                                <div>Notification Groups</div>
                             </a>
-                        </li> -->
+                        </li>
 
                     </ul>
                 </li>
@@ -351,7 +351,7 @@
 
 
                         <li class="sidenav-item" [routerLinkActive]="['open']"
-                            *ngIf="checkGroupPermission('BA_EventManager')">
+                            *ngIf="checkGroupPermission('BA_EventManager') || checkGroupPermission('Event Manager Portal Access')">
 
                             <a href="javascript:void(0)" class="sidenav-link sidenav-toggle">
                                 <div>Tasks</div>

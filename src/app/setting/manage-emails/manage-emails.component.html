@@ -1,1 +1,76 @@
-<p>manage-emails works!</p>
+<kendo-window title="{{title}}" *ngIf="manageEmailsWIn" (close)="closeWin()" [top]="20" [minWidth]="600" [width]="780"
+    [height]="auto" [minHeight]="150">
+
+
+    <div class="row">
+        <div class="col-md-12 addNotificationDiv">
+            <kendo-grid [group]="state.group" [groupable]="false" [data]="gridView" [height]="570" [loading]="loading"
+                filterable="menu" [resizable]="true"
+                [sortable]="{ allowUnsort: allowUnsort, mode: multiple ? 'multiple' : 'single'}" [skip]="state.skip"
+                [sort]="state.sort" [selectable]="{checkboxOnly: false, mode: 'single'}" [filter]="state.filter"
+                (sortChange)="sortChange($event)" (filterChange)="filterChange($event)"
+                (cellClick)="cellClickHandler($event)" [navigable]="true" [pageSize]="pageSize" [rowHeight]="36"
+                (pageChange)="pageChange($event)" scrollable="virtual">
+
+                <kendo-grid-column field="userName" title="User Name" width="170">
+                </kendo-grid-column>
+                <kendo-grid-column field="email" title="Email" width="180">
+
+                </kendo-grid-column>
+            </kendo-grid>
+        </div>
+
+        <form [formGroup]="userNotificationForm" (ngSubmit)="onSubmit()" id="userNotificationForm">
+            <div class="col-md-12 mt-3">
+                <div class="row" *ngIf="manageEmailfor != 'apex'">
+                    <div class="col-md-2">
+                        <label class="mt-2">Name :</label>
+                    </div>
+
+                    <div class="col-md-10">
+                        <input type="text" class="form-control" formControlName="name"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.name }">
+                        <div *ngIf="submitted && formErrors.name" class="invalid-feedback">
+                            <div *ngIf="formErrors.name">{{ formErrors.name }}</div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row mt-2">
+                    <div class="col-md-2">
+                        <label class="mt-2"> Email Address :</label>
+                    </div>
+
+                    <div class="col-md-10">
+                        <input type="text" class="form-control" formControlName="email"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.email }">
+                        <div *ngIf="submitted && formErrors.email" class="invalid-feedback">
+                            <div *ngIf="formErrors.email">{{ formErrors.email }}</div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-md-12 mt-3">
+                <div class="leftSideBtn" *ngIf="manageEmailfor != 'apex'">
+                    <button type="button" class="btn btn-sm themeButton mr-2" (click)="createNew()">New</button>
+                    <button type="button" class="btn btn-sm themeButton" [disabled]="!selectedItem"
+                        (click)="openConfirmationDialog(selectedItem)">Delete</button>
+                </div>
+
+                <div class="rightSideBtn text-right" [ngStyle]="{'width': (manageEmailfor != 'apex') ? '50%' : '100%'}">
+                    <button type="submit" class="btn btn-sm themeButton mr-2">Save</button>
+                    <button type="button" class="btn btn-sm themeButton" (click)="closeWin()">Cancel</button>
+                </div>
+
+
+            </div>
+
+        </form>
+
+    </div>
+
+</kendo-window>

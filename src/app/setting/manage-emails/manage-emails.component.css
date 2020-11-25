@@ -1,0 +1,16 @@
+#userNotificationForm {
+    width: 100%;
+}
+
+.k-window {
+    position: fixed !important;
+}
+
+.leftSideBtn {
+    display: inline-block;
+    width: 50%;
+}
+
+.rightSideBtn{
+    display: inline-block;
+}

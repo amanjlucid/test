@@ -33,6 +33,7 @@ export class NotificationComponent implements OnInit {
   editWin = false;
   manageEmailsWIn = false;
   manageEmailfor = 'apex'
+  currentUser: any;
 
   constructor(
     private settingService: SettingsService,
@@ -44,8 +45,10 @@ export class NotificationComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.getNotificationList();
   }
+
 
   ngOnDestroy() {
     this.subs.unsubscribe();
@@ -96,12 +99,26 @@ export class NotificationComponent implements OnInit {
   closeAddWin($eve) {
     this.addWin = $eve;
     $('.notificationOverlay').removeClass('ovrlay');
+
+  }
+
+
+  reloadGrid(eve) {
+    if (eve) {
+      this.selectedItem = undefined
+      this.getNotificationList();
+    }
   }
 
 
   edit() {
-    this.editWin = true;
-    $('.notificationOverlay').addClass('ovrlay');
+    if (this.selectedItem) {
+      this.editWin = true;
+      $('.notificationOverlay').addClass('ovrlay');
+    } else {
+      this.alertService.error("Please select a record first.")
+    }
+
   }
 
   closeEditWin($eve) {
@@ -123,16 +140,35 @@ export class NotificationComponent implements OnInit {
   }
 
   delete(obj) {
-    console.log(obj)
+    this.subs.add(
+      this.settingService.validateDeleteNotificationGroup(obj.groupId, this.currentUser.userId).subscribe(
+        data => {
+          if (data.isSuccess) {
+            this.alertService.success(data.message);
+            this.reloadGrid(true)
+          } else {
+            this.alertService.error(data.message);
+          }
+        },
+        err => {
+          this.alertService.error(err)
+        }
+      )
+    )
+
   }
 
 
-  manageEmails(manageFor){
+  manageEmails(manageFor) {
     this.manageEmailfor = manageFor;
     this.manageEmailsWIn = true;
     $('.notificationOverlay').addClass('ovrlay');
   }
 
+  closeManageEmailWin(event) {
+    this.manageEmailsWIn = event;
+    $('.notificationOverlay').removeClass('ovrlay');
+  }
 
 
 }

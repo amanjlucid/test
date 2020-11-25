@@ -110,7 +110,7 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
-
+    // console.log(this.currentUser.userId);
     this.eventUnreadMessageCount();
     this.eventSummary();
     this.endTime = this.currentUser.inactivityTimeOut;
@@ -133,6 +133,7 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
     this.checkModulePermission();
     this.checkServiceTabAccess();
     this.hnsPortalAccess();
+    this.eventPortalAccess();
 
     this.subs.add(
       this.sharedServie.servicePortalObs.subscribe(data => { this.servicePortalAccess = data; })
@@ -162,6 +163,7 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
     this.subs.add(
       this.authService.checkModulePermission(this.currentUser.userId).subscribe(
         data => {
+          // console.log(data)
           this.moduleAccess = data;
           this.sharedServie.changeModulePermission(data);
         }
@@ -198,6 +200,10 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
     if (this.moduleAccess != undefined) {
       if (name == "Security") {
         return this.developedModuleList.some(x => x.menuName == name && x.linkType == forAngular && this.currentUser.admin == "Y")
+      }
+
+      if (name == "Event Manager") {
+        return  (this.moduleAccess.includes(accessName) || this.moduleAccess.includes('Event Manager Portal Access')) && this.developedModuleList.some(x => x.menuName == name && x.linkType == forAngular);
       }
 
       return this.moduleAccess.includes(accessName) && this.developedModuleList.some(x => x.menuName == name && x.linkType == forAngular);
@@ -317,6 +323,17 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
       )
     )
   }
+
+  eventPortalAccess() {
+    this.subs.add(
+      this.assetService.apexGetAssetManagementSecurity(this.currentUser.userId, 'Event Manager').subscribe(
+        data => {
+         console.log(data);
+        }
+      )
+    )
+  }
+
 
 
 
