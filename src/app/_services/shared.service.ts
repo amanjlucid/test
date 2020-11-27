@@ -94,6 +94,13 @@ export class SharedService {
     this.hnsPortalSecurityListSrc.next(data)
   }
 
+  private tasksPortalSecuritySrc = new BehaviorSubject<any>([]);
+  taskPortalSecList = this.tasksPortalSecuritySrc.asObservable();
+
+  changeTaskPortalSecurityList(data) {
+    this.tasksPortalSecuritySrc.next(data)
+  }
+
 
   private resultHeaderFilters = new BehaviorSubject<any>([]);
   resultHeaderFiltersList = this.resultHeaderFilters.asObservable();

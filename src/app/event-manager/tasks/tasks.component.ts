@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { SubSink } from 'subsink';
 import { GroupDescriptor, DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { SelectableSettings, RowClassArgs } from '@progress/kendo-angular-grid';
-import { AlertService, EventManagerService, HelperService } from '../../_services'
+import { AlertService, EventManagerService, HelperService, SharedService } from '../../_services'
 import { forkJoin } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { NgbDateStruct, NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
@@ -46,13 +46,15 @@ export class TasksComponent implements OnInit {
   loading = true
   assignedToOther = false;
   plannedDatewindow = false;
+  taskSecurityList:any = [];
 
   constructor(
     private eveneManagerService: EventManagerService,
     private activeRoute: ActivatedRoute,
     private alertService: AlertService,
     private helperService: HelperService,
-    private calendar: NgbCalendar
+    private calendar: NgbCalendar,
+    private sharedService: SharedService
   ) { }
 
   ngOnInit(): void {
@@ -67,6 +69,15 @@ export class TasksComponent implements OnInit {
         this.getUserEventsList(this.currentUser.userId, this.hideComplete);
 
       })
+    )
+
+    this.subs.add(
+      this.sharedService.taskPortalSecList.subscribe(
+        data => {
+          this.taskSecurityList = data;
+          // console.log(this.taskSecurityList);
+        }
+      )
     )
 
   }

@@ -46,7 +46,6 @@ export class BusinessAreaComponent implements OnInit {
     this.subs.add(
       this.eventManagerService.getAvailableUser().subscribe(
         data => {
-          console.log(data)
           if (data.isSuccess) {
             this.userList = data.data;
             this.getbusinessAreaList();
@@ -101,7 +100,6 @@ export class BusinessAreaComponent implements OnInit {
     this.subs.add(
       this.settingService.getBusinessAreaList().subscribe(
         data => {
-          console.log(data);
           if (data.isSuccess) {
             this.businessAreaList = data.data
             this.gridView = process(this.businessAreaList, this.state);

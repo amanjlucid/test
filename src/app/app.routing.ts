@@ -66,6 +66,7 @@ const appRoutes: Routes = [
             { path: 'hns-settings', component: HnsSettingsComponent, canActivate: [AuthGuard] },
             { path: 'business-areas', loadChildren: () => import('./setting/business-area/business-area.module').then(m => m.BusinessModule) },
             { path: 'notification', loadChildren: () => import('./setting/notification/notification.module').then(m => m.NotificationModule) },
+            { path: 'tasks-settings', loadChildren: () => import('./setting/event-manager-setting/event-manager-setting.module').then(m => m.EventManagerSettingModule) },
 
         ]
     },

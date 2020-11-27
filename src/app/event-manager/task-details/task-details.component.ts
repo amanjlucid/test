@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { SubSink } from 'subsink';
 import { GroupDescriptor, DataResult, process, State, CompositeFilterDescriptor, SortDescriptor, distinct } from '@progress/kendo-data-query';
 import { PageChangeEvent, SelectableSettings } from '@progress/kendo-angular-grid';
-import { AlertService, EventManagerService, HelperService, ConfirmationDialogService } from '../../_services'
+import { AlertService, EventManagerService, HelperService, ConfirmationDialogService, SharedService } from '../../_services'
 import { forkJoin } from 'rxjs';
 
 @Component({
@@ -49,17 +49,28 @@ export class TaskDetailsComponent implements OnInit {
   editEvent: boolean = false;
   eventPeriod = ['Daily', 'Weekly', 'Monthly'];
   loading = true
+  taskSecurityList: any = [];
 
   constructor(
     private eventManagerService: EventManagerService,
     private alertService: AlertService,
     private confirmationDialogService: ConfirmationDialogService,
+    private sharedService: SharedService
   ) { }
 
   ngOnInit(): void {
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.setSelectableSettings();
     this.getEventData();
+
+    this.subs.add(
+      this.sharedService.taskPortalSecList.subscribe(
+        data => {
+          this.taskSecurityList = data;
+          // console.log(this.taskSecurityList);
+        }
+      )
+    )
   }
 
   ngOnDestroy() {
@@ -380,5 +391,7 @@ export class TaskDetailsComponent implements OnInit {
     return true;
   }
 
+
+  
 
 }

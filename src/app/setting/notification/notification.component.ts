@@ -80,7 +80,6 @@ export class NotificationComponent implements OnInit {
     this.subs.add(
       this.settingService.getNotificationList().subscribe(
         data => {
-          console.log(data);
           if (data.isSuccess) {
             this.notificationList = data.data
             this.gridView = process(this.notificationList, this.state);

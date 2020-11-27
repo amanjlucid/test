@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { SubSink } from 'subsink';
-import { AlertService, ConfirmationDialogService, EventManagerService, HelperService, SettingsService } from '../../_services'
+import { AlertService, SettingsService } from '../../_services'
 
 
 

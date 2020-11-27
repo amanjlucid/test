@@ -1,0 +1,140 @@
+<div class="layout-content">
+
+    <!-- Content -->
+    <div class="container-fluid flex-grow-1 container-p-y">
+
+        <h4 class="font-weight-bold py-3 mb-4">
+            <span class="text-muted font-weight-light">Tasks Settings</span>
+        </h4>
+
+        <div class="card mb-4">
+
+            <div class="card-body">
+                <form [formGroup]="taskSettingForm" (ngSubmit)="onSubmit()" autocomplete="off">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="form-label">Event Manager Url</label>
+                                <input type="text" class="form-control" formControlName="eventManagerUrl"
+                                    placeholder="Event Manager Url"
+                                    [ngClass]="{ 'is-invalid': submitted && formErrors.eventManagerUrl }"
+                                    autocomplete="off">
+
+                                <div *ngIf="submitted && formErrors.eventManagerUrl" class="invalid-feedback">
+                                    <div *ngIf="formErrors.eventManagerUrl">{{ formErrors.eventManagerUrl }}</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="switcher switcher-secondary">
+                                    <input type="checkbox" class="switcher-input" formControlName="taskAutoComplete">
+                                    <span class="switcher-indicator">
+                                        <span class="switcher-yes">
+                                            <span class="ion ion-md-checkmark"></span>
+                                        </span>
+                                        <span class="switcher-no">
+                                            <span class="ion ion-md-close"></span>
+                                        </span>
+                                    </span>
+                                    <span class="switcher-label">Task AutoComplete</span>
+                                </label>
+                                <div *ngIf="submitted && formErrors.taskAutoComplete" class="invalid-feedback">
+                                    <div *ngIf="formErrors.taskAutoComplete">{{ formErrors.taskAutoComplete }}</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="switcher switcher-secondary">
+                                    <input type="checkbox" class="switcher-input" formControlName="deleteCompleteTask">
+                                    <span class="switcher-indicator">
+                                        <span class="switcher-yes">
+                                            <span class="ion ion-md-checkmark"></span>
+                                        </span>
+                                        <span class="switcher-no">
+                                            <span class="ion ion-md-close"></span>
+                                        </span>
+                                    </span>
+                                    <span class="switcher-label">Delete Completed Task</span>
+                                </label>
+                                <div *ngIf="submitted && formErrors.deleteCompleteTask" class="invalid-feedback">
+                                    <div *ngIf="formErrors.deleteCompleteTask">{{ formErrors.deleteCompleteTask }}</div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-8">
+                            <div class="form-group row">
+                                <label class="form-label col-md-5">Completed Task Retention Period</label>
+                                <div class="col-md-7">
+                                    <input type="number" min="0" class="form-control numberField"
+                                        formControlName="retentionPeriod"
+                                        [ngClass]="{ 'is-invalid': submitted && formErrors.retentionPeriod }"
+                                        autocomplete="off">
+                                    <div *ngIf="submitted && formErrors.retentionPeriod" class="invalid-feedback">
+                                        <div *ngIf="formErrors.retentionPeriod">{{ formErrors.retentionPeriod }}</div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+
+
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="switcher switcher-secondary">
+                                    <input type="checkbox" class="switcher-input"
+                                        formControlName="infoTaskAutoComplete">
+                                    <span class="switcher-indicator">
+                                        <span class="switcher-yes">
+                                            <span class="ion ion-md-checkmark"></span>
+                                        </span>
+                                        <span class="switcher-no">
+                                            <span class="ion ion-md-close"></span>
+                                        </span>
+                                    </span>
+                                    <span class="switcher-label">Info Task AutoComplete</span>
+                                </label>
+                                <div *ngIf="submitted && formErrors.infoTaskAutoComplete" class="invalid-feedback">
+                                    <div *ngIf="formErrors.infoTaskAutoComplete">{{ formErrors.infoTaskAutoComplete }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-8">
+                            <div class="form-group row">
+                                <label class="form-label col-md-5">Completion Period</label>
+                                <div class="col-md-7">
+                                    <input type="number" min="0" class="form-control numberField"
+                                        formControlName="completionPeriod"
+                                        [ngClass]="{ 'is-invalid': submitted && formErrors.completionPeriod }"
+                                        autocomplete="off">
+                                    <div *ngIf="submitted && formErrors.completionPeriod" class="invalid-feedback">
+                                        <div *ngIf="formErrors.completionPeriod">{{ formErrors.completionPeriod }}</div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+
+                    </div>
+                    <button type="submit" class="btn btn-default themeButton mt-2">Submit</button>
+                </form>
+            </div>
+        </div>
+
+
+
+    </div>
+
+
+</div>

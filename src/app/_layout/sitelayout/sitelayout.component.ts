@@ -30,6 +30,7 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
   servicePortalAccess: any = [];
   hnsPortalMenuList: any = [];
   hnsPortalPermissions: any = [];
+  tasksPortalPermissions: any = [];
   // underDevelopment: boolean = true;
   silverLightMenus: any = [
     {
@@ -63,7 +64,7 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
       grpPermissionName: "Energy Portal Access",
     },
     {
-      menuName: "Event Manager",
+      menuName: "Tasks",
       silverLightLink: "http://104.40.138.8/Rowanwood/EventManager",
       grpPermissionName: "BA_EventManager",
     },
@@ -202,8 +203,8 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
         return this.developedModuleList.some(x => x.menuName == name && x.linkType == forAngular && this.currentUser.admin == "Y")
       }
 
-      if (name == "Event Manager") {
-        return  (this.moduleAccess.includes(accessName) || this.moduleAccess.includes('Event Manager Portal Access')) && this.developedModuleList.some(x => x.menuName == name && x.linkType == forAngular);
+      if (name == "Tasks") {
+        return (this.moduleAccess.includes(accessName) || this.moduleAccess.includes('Event Manager Portal Access')) && this.developedModuleList.some(x => x.menuName == name && x.linkType == forAngular);
       }
 
       return this.moduleAccess.includes(accessName) && this.developedModuleList.some(x => x.menuName == name && x.linkType == forAngular);
@@ -328,7 +329,11 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
     this.subs.add(
       this.assetService.apexGetAssetManagementSecurity(this.currentUser.userId, 'Event Manager').subscribe(
         data => {
-         console.log(data);
+          // console.log(data);
+          if (data.isSuccess) {
+            this.tasksPortalPermissions = data.data;
+          }
+          this.sharedServie.changeTaskPortalSecurityList(this.tasksPortalPermissions);
         }
       )
     )

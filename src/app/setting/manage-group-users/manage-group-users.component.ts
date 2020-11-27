@@ -1,12 +1,9 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
-import { AlertService, EventManagerService, HelperService, SettingsService } from '../../_services'
-import { DataStateChangeEvent, RowArgs, SelectableSettings } from '@progress/kendo-angular-grid';
-import { forkJoin } from 'rxjs';
-import { PageChangeEvent } from '@progress/kendo-angular-dropdowns/dist/es2015/common/page-change-event';
+import { AlertService, EventManagerService, SettingsService } from '../../_services'
+import { DataStateChangeEvent, SelectableSettings, PageChangeEvent } from '@progress/kendo-angular-grid';
 import { trim } from 'jquery';
-
 
 @Component({
   selector: 'app-manage-group-users',
@@ -14,8 +11,8 @@ import { trim } from 'jquery';
   styleUrls: ['./manage-group-users.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ManageGroupUsersComponent implements OnInit {
 
+export class ManageGroupUsersComponent implements OnInit {
   subs = new SubSink();
   @Input() parentSelectedRow: any;
   @Output() closeEditWin = new EventEmitter<boolean>();

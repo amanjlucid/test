@@ -8,8 +8,8 @@
         </div>
 
         <div class="col-md-10 text-right" *ngIf="selectedEvent.length > 1">
-            <button type="button" class="btn btn-sm themeButton mr-1" (click)="editEventMethod()">Edit</button>
-            <button type="button" class="btn btn-sm themeButton mr-1" (click)="opneNotifyWindow()">Notify</button>
+            <button *ngIf="taskSecurityList.indexOf('Edit') != -1" type="button" class="btn btn-sm themeButton mr-1" (click)="editEventMethod()">Edit</button>
+            <button *ngIf="taskSecurityList.indexOf('Notify') != -1" type="button" class="btn btn-sm themeButton mr-1" (click)="opneNotifyWindow()">Notify</button>
             <button type="button" class="btn btn-sm themeButton mr-1" (click)="runEvent()">Run</button>
             <button type="button" class="btn btn-sm themeButton mr-1" (click)="copyEvent()">Copy</button>
             <button type="button" class="btn btn-sm themeButton" (click)="openConfirmationDialog()">Delete</button>
@@ -36,10 +36,10 @@
                             style="margin-top: -7px;">
                             <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" href="javascript:void(0)" (click)="editEventMethod()">Edit</a>
-                                <a class="dropdown-item" href="javascript:void(0)"
+                                <a  *ngIf="taskSecurityList.indexOf('Edit') != -1" class="dropdown-item" href="javascript:void(0)" (click)="editEventMethod()">Edit</a>
+                                <a *ngIf="taskSecurityList.indexOf('Notify') != -1" class="dropdown-item" href="javascript:void(0)"
                                     (click)="opneNotifyWindow()">Notify</a>
-                                <a [ngClass]="{'disabled' : (dataItem.eventParamCount <= 0 &&  dataItem.eventParamEmptyCount != 0) || (dataItem.eventParamCount <= 0 &&  dataItem.eventParamEmptyCount <= 0) }"
+                                <a *ngIf="taskSecurityList.indexOf('Parameters') != -1" [ngClass]="{'disabled' : (dataItem.eventParamCount <= 0 &&  dataItem.eventParamEmptyCount != 0) || (dataItem.eventParamCount <= 0 &&  dataItem.eventParamEmptyCount <= 0) }"
                                     class="dropdown-item" href="javascript:void(0)"
                                     (click)="openParamsWindow()">Parameter(s)</a>
 

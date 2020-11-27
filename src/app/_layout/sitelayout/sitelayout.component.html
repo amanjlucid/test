@@ -78,7 +78,7 @@
                 </li>
 
                 <li class="sidenav-item" [routerLinkActive]="['open']"
-                    *ngIf="checkAngularGrpPermission('Event Manager', 'BA_EventManager',1) || checkAngularGrpPermission('Event Manager', 'Event Manager Portal Access',1)">
+                    *ngIf="checkAngularGrpPermission('Tasks', 'BA_EventManager',1) || checkAngularGrpPermission('Tasks', 'Event Manager Portal Access',1)">
                     <!-- <li class="sidenav-item" [routerLinkActive]="['open']"
                     > -->
                     <a href="javascript:void(0)" class="sidenav-link sidenav-toggle">
@@ -86,19 +86,19 @@
                         <div>Tasks</div>
                     </a>
                     <ul class="sidenav-menu">
-                        <li class="sidenav-item" [routerLinkActive]="['active']">
+                        <li class="sidenav-item" [routerLinkActive]="['active']" *ngIf="tasksPortalPermissions.indexOf('Event Dashboard') != -1">
                             <a [routerLink]="['/tasks/dashboard']" class="sidenav-link">
                                 <div>Dashboard</div>
                             </a>
                         </li>
 
-                        <li class="sidenav-item" [routerLinkActive]="['active']">
+                        <li class="sidenav-item" [routerLinkActive]="['active']" *ngIf="tasksPortalPermissions.indexOf('Manage Event Types') != -1">
                             <a [routerLink]="['/tasks/configuration']" class="sidenav-link">
                                 <div>Configuration</div>
                             </a>
                         </li>
 
-                        <li class="sidenav-item" [routerLinkActive]="['active']">
+                        <li class="sidenav-item" [routerLinkActive]="['active']" *ngIf="tasksPortalPermissions.indexOf('Manage User Events') != -1">
                             <a [routerLink]="['/tasks/tasks']" class="sidenav-link">
                                 <div>Tasks</div>
                             </a>
@@ -276,6 +276,12 @@
                         <li class="sidenav-item" [routerLinkActive]="['active']">
                             <a [routerLink]="['/hns-settings']" class="sidenav-link">
                                 <div>Health & Safety Settings</div>
+                            </a>
+                        </li>
+
+                        <li class="sidenav-item" [routerLinkActive]="['active']">
+                            <a [routerLink]="['/tasks-settings']" class="sidenav-link">
+                                <div>Tasks Settings</div>
                             </a>
                         </li>
 

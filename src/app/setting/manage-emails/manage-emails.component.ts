@@ -1,9 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
-import { AlertService, ConfirmationDialogService, EventManagerService, HelperService, SettingsService } from '../../_services'
-import { DataStateChangeEvent, RowArgs, SelectableSettings } from '@progress/kendo-angular-grid';
-import { forkJoin } from 'rxjs';
+import { AlertService, ConfirmationDialogService, SettingsService } from '../../_services'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PageChangeEvent } from '@progress/kendo-angular-dropdowns/dist/es2015/common/page-change-event';
 
@@ -98,8 +96,9 @@ export class ManageEmailsComponent implements OnInit {
   }
 
   cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
-    this.selectedItem = dataItem
-    this.userNotificationForm.get('email').enable();
+    this.selectedItem = dataItem;
+    this.userNotificationForm.enable();
+    //this.userNotificationForm.get('email').enable();
 
     if (this.manageEmailfor == "apex") {
       this.userNotificationForm.patchValue({
@@ -111,12 +110,10 @@ export class ManageEmailsComponent implements OnInit {
         email: this.selectedItem.email
       })
 
-      this.userNotificationForm.get('name').disable();
+      // this.userNotificationForm.get('name').disable();
       this.createNewEntry = false;
     }
-
-
-    console.log(this.selectedItem)
+  
 
   }
 
@@ -139,7 +136,6 @@ export class ManageEmailsComponent implements OnInit {
     this.subs.add(
       this.settingService.loadApexUsers().subscribe(
         data => {
-          console.log(data);
           if (data.isSuccess) {
             if (this.manageEmailfor == "apex") {
               this.usreLists = data.data.filter(x => x.nonSec == false)
@@ -207,7 +203,6 @@ export class ManageEmailsComponent implements OnInit {
     this.subs.add(
       this.settingService.updateApexUserEmail(this.selectedItem.userId, formRawVal.email, this.currentUser.userId).subscribe(
         data => {
-          console.log(data);
           if (data.isSuccess) {
             if (data.data == 'S') {
               this.alertService.success("Email updated successfully.");
@@ -228,36 +223,36 @@ export class ManageEmailsComponent implements OnInit {
 
 
   updateNonApexUserEmailAndName(formRawVal) {
-    console.log(this.createNewEntry)
+    let apiCall: any;
+    let msg = '';
+
     if (this.createNewEntry == false) {
-      if (formRawVal.name == this.selectedItem.userName) {
-        this.updateApexUserEmail(formRawVal);
-      } else {
-        this.alertService.error("Username cannot be changed");
-        return
-      }
+      msg = "Record updated successfully.";
+      apiCall = this.settingService.ValidateUpdateNonSecurityUserEmail(formRawVal.name, formRawVal.email, this.currentUser.userId, this.selectedItem.userId)
     } else {
-      this.subs.add(
-        this.settingService.ValidateAddNonSecurityUserEmail(formRawVal.name, formRawVal.email, this.currentUser.userId).subscribe(
-          data => {
-            console.log(data);
-            if (data.isSuccess) {
-              if (data.data == 'S') {
-                this.alertService.success("Email updated successfully.");
-                this.resetDisableAndLoadFormAndGrid()
-              } else {
-                this.alertService.error(data.message);
-              }
-            } else {
-              this.alertService.error(data.message)
-            }
-          },
-          err => {
-            this.alertService.error(err);
-          }
-        )
-      )
+      msg = "Record created successfully."
+      apiCall = this.settingService.ValidateAddNonSecurityUserEmail(formRawVal.name, formRawVal.email, this.currentUser.userId)
     }
+
+    this.subs.add(
+      apiCall.subscribe(
+        data => {
+          if (data.isSuccess) {
+            if (data.data == 'S') {
+              this.alertService.success(msg);
+              this.resetDisableAndLoadFormAndGrid()
+            } else {
+              this.alertService.error(data.message);
+            }
+          } else {
+            this.alertService.error(data.message)
+          }
+        },
+        err => {
+          this.alertService.error(err);
+        }
+      )
+    )
 
 
   }

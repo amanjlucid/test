@@ -194,6 +194,16 @@ export class SettingsService {
         return this.http.get<any>(`${appConfig.apiUrl}/api/Notification/ValidateAddNonSecurityUserEmail?userName=${userName}&userEmail=${userEmail}&userID=${userID}`, httpOptions);
     }
 
+    ValidateUpdateNonSecurityUserEmail(userName, userEmail, userID, nonSecUserId) {
+        let httpOptions = {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json'
+            }),
+        };
+
+        return this.http.get<any>(`${appConfig.apiUrl}/api/Notification/ValidateUpdateNonSecurityUserEmail?userName=${userName}&userEmail=${userEmail}&userID=${userID}&nonSecUserId=${nonSecUserId}`, httpOptions);
+    }
+
     validateDeleteNonSecurityUserEmail(nonSecUserID, userID) {
         let httpOptions = {
             headers: new HttpHeaders({
@@ -204,5 +214,26 @@ export class SettingsService {
         return this.http.get<any>(`${appConfig.apiUrl}/api/Notification/ValidateDeleteNonSecurityUserEmail?nonSecUserID=${nonSecUserID}&userID=${userID}`, httpOptions);
     }
 
+
+    // event portal settings api
+    eventPortalGetSystemDefaultConfigurationValues(){
+        let httpOptions = {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json'
+            }),
+        };
+
+        return this.http.get<any>(`${appConfig.apiUrl}/api/UserEvents/EventPortalGetSystemDefaultConfigurationValues`, httpOptions);
+    }
+
+    eventPortalSettingDefaultValueUpdate(params) {
+        let httpOptions = {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json'
+            }),
+        };
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/UserEvents/EventPortalUpdateSystemDefaultConfigurationValues`, body, httpOptions);
+    }
 
 }
