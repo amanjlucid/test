@@ -23,6 +23,9 @@ export class EditEventComponent implements OnInit {
     'severity': {
       'required': 'Severity is required.',
     },
+    'eventstatus': {
+      'required': 'Task Status is required.',
+    },
 
   };
   submitted = false;
@@ -39,7 +42,7 @@ export class EditEventComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    // console.log(this.selectedEvent);
+    console.log(this.selectedEvent);
     this.editEventForm = this.fb.group({
       severity: ['', [Validators.required]],
       completedays: ['', []],
@@ -53,12 +56,15 @@ export class EditEventComponent implements OnInit {
       eventschedule: ['', []]
     })
 
+
     if (this.selectedEvent.length > 1) {
       this.title = `Multiple Event Types (${this.selectedEvent.length})`;
+
+
     } else {
-      this.editEventForm.patchValue({
-        eventstatus: this.selectedEvent[0].eventTypeStatus
-      })
+      // this.editEventForm.patchValue({
+      //   eventstatus: this.selectedEvent[0].eventTypeStatus
+      // })
       this.title = `${this.selectedEvent[0].eventTypeName} (${this.selectedEvent[0].eventTypeCode})`;
     }
 
@@ -108,6 +114,7 @@ export class EditEventComponent implements OnInit {
   formErrorObject() {
     this.formErrors = {
       'severity': '',
+      'eventstatus': ''
 
     }
   }
@@ -187,6 +194,10 @@ export class EditEventComponent implements OnInit {
 
     if (this.selectedEvent.length > 1) {
       let i = 0;
+      let sev = this.selectedEvent[0].eventSevType;
+      let status = this.selectedEvent[0].eventTypeStatus;
+      let setStatus = true
+      let setSev = true
       for (let eve of this.selectedEvent) {
         i++;
         if (eve.eventPeriod != 0) {
@@ -199,12 +210,33 @@ export class EditEventComponent implements OnInit {
           }
         }
 
+        if (status != eve.eventTypeStatus) {
+          setStatus = false
+        }
+
+        if (sev != eve.eventSevType) {
+          setSev = false
+        }
+
       }
 
-      this.editEventForm.patchValue({
-        severity: '',
-        eventstatus: '',
-      })
+      if (setSev) {
+        this.editEventForm.patchValue({
+          severity: this.selectedEvent[0].eventSevType
+        })
+      }
+
+      if (setStatus) {
+       this.editEventForm.patchValue({
+          eventstatus: this.selectedEvent[0].eventTypeStatus
+        })
+
+      }
+
+      // this.editEventForm.patchValue({
+      //   severity: '',
+      //   eventstatus: '',
+      // })
 
 
     } else {

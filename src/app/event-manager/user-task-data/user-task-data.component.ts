@@ -290,7 +290,7 @@ export class UserTaskDataComponent implements OnInit {
             forkJoin(req).subscribe(
               data => {
                 // console.log(data);
-                msg = `Event Number ${this.selectedEvent.eventSequence}, data item ${successRecord.toString()} status request is updated.`
+                msg = `Task Number ${this.selectedEvent.eventSequence}, data item ${successRecord.toString()} status request is updated.`
                 this.alertService.success(msg);
                 this.mySelection = []
                 this.selectedData = [];
@@ -300,7 +300,7 @@ export class UserTaskDataComponent implements OnInit {
             )
           )
         } else {
-          msg = `Event Number ${this.selectedEvent.eventSequence}, data item ${failsRecord.toString()} status request is the same as current ${type}`
+          msg = `Task Number ${this.selectedEvent.eventSequence}, data item ${failsRecord.toString()} status request is the same as current ${type}`
           this.alertService.error(msg);
         }
 

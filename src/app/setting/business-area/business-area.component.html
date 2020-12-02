@@ -31,7 +31,7 @@
                 <kendo-grid-column field="busAreaDesc" title="Description" width="250">
                     <ng-template kendoGridEditTemplate let-dataItem="dataItem">
                         <input [(ngModel)]="dataItem.busAreaDesc" kendoGridFocusable name="busAreaDesc"
-                            class="k-textbox" required (ngModelChange)="changeedRowData($event)" />
+                            class="k-textbox" required (focusout)="changeedRowData($event, 'inp')" />
                     </ng-template>
 
                 </kendo-grid-column>

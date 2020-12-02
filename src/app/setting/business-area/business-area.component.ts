@@ -32,6 +32,7 @@ export class BusinessAreaComponent implements OnInit {
   selectedRow: any;
   rowIndex: any
   userList: any
+  actualSelectedRowState: any;
 
 
   constructor(
@@ -79,6 +80,7 @@ export class BusinessAreaComponent implements OnInit {
   cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
     this.closeEditor(sender, rowIndex);
     this.selectedRow = dataItem;
+    this.actualSelectedRowState = Object.assign({}, dataItem);
     this.rowIndex = rowIndex
     // console.log(this.selectedParam)
     if (columnIndex > 0) {
@@ -111,7 +113,13 @@ export class BusinessAreaComponent implements OnInit {
   }
 
 
-  changeedRowData($event) {
+  changeedRowData($event, option = null) {
+    if (option == "inp") {
+      if (JSON.stringify(this.selectedRow) == JSON.stringify(this.actualSelectedRowState)) {
+        return
+      }
+    }
+
     setTimeout(() => {
       const userObj = this.getUserName(this.selectedRow.busAreaOwner);
       let params = {

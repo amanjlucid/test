@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { SubSink } from 'subsink';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AlertService, EventManagerService } from 'src/app/_services';
+import { AlertService, EventManagerService, SharedService } from 'src/app/_services';
 import { forkJoin } from 'rxjs';
 import { of } from 'rxjs';
 import { max } from 'rxjs/operators';
@@ -16,11 +16,13 @@ export class ManageEventNotifierComponent implements OnInit {
   subs = new SubSink();
   @Input() selectedEvent: any;
   @Output() closeManageNotifier = new EventEmitter<boolean>();
+  @Output() appendUserEvent = new EventEmitter<any>();
   @Input() managenotifier: any = false;
   @Input() selectedAssignedUser: any;
   @Input() selectedAvailableUser: any;
   @Input() manageEventFormMode: any;
   @Input() assignUser: any;
+  @Input() availableUser: any;
   @Input() appendUser: boolean;
   @Input() replaceUser: boolean;
   title = 'Manage Event Notify User';
@@ -38,10 +40,13 @@ export class ManageEventNotifierComponent implements OnInit {
     private fb: FormBuilder,
     private eventService: EventManagerService,
     private chRef: ChangeDetectorRef,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private sharedService: SharedService
   ) { }
 
   ngOnInit(): void {
+    // console.log(this.selectedEvent)
+    // console.log(this.selectedAvailableUser)
     this.manageNotifierForm = this.fb.group({
       notifyType: ['', [Validators.required]],
       sendEmail: ['', []],
@@ -105,103 +110,143 @@ export class ManageEventNotifierComponent implements OnInit {
     }
 
     let formRawVal = this.manageNotifierForm.getRawValue();
-   
-    // console.log(this.selectedEvent)
+    let userToAppend = [];
     if (this.manageEventFormMode == "add") {
-      if (this.replaceUser && this.appendUser == false) {
-        let delReq = [];
-        for (let event of this.selectedEvent) {
-          delReq.push(this.eventService.deleteListOfEventTypeNotifyBySequenceNumber(event.eventTypeSequence))
+      for (let avlblUser of this.selectedAvailableUser) {
+        let newAssignUser = {
+          etrSequence: "0",
+          eventMSGNote: "",
+          eventMSGText: formRawVal.text,
+          eventNotifyType: formRawVal.notifyType,
+          eventNotifyTypeName: formRawVal.notifyType == "A" ? "Action" : "Information",
+          eventRecipient: avlblUser.mpusid,
+          eventRecipientName: avlblUser.m_UerName,
+          eventSendEmailText: formRawVal.sendEmail ? "Yes" : "No",
+          eventSendMail: formRawVal.sendEmail ? "Y" : "N",
+          eventTypeSequence: 0
         }
-
-        this.subs.add(
-          forkJoin(delReq).subscribe(
-            data => {
-              this.addAssignUser(formRawVal);
-            }
-          )
-        )
-
-      } else {
-       
-        this.addAssignUser(formRawVal);
+        this.assignUser.push(newAssignUser);
+        userToAppend.push(newAssignUser);
       }
+
     } else {
-      const params = {
-        EventTypeSequence: this.selectedAssignedUser.eventTypeSequence,
-        ETRSequence: this.selectedAssignedUser.etrSequence,
-        EventRecipient: this.selectedAssignedUser.eventRecipient,
-        EventNotifyType: formRawVal.notifyType,
-        EventSendMail: formRawVal.sendEmail ? "Y" : "N",
-        EventMSGText: formRawVal.text,
-      }
+      this.selectedAssignedUser.eventMSGText = formRawVal.text
+      this.selectedAssignedUser.eventNotifyType = formRawVal.notifyType
+      this.selectedAssignedUser.eventNotifyTypeName = formRawVal.notifyType == "A" ? "Action" : "Information"
+      this.selectedAssignedUser.eventSendMail = formRawVal.sendEmail ? "Y" : "N"
+      this.selectedAssignedUser.eventSendEmailText = formRawVal.sendEmail ? "Yes" : "No"
 
-      this.subs.add(
-        this.eventService.updateListOfEventTypeNotify(params).subscribe(
-          data => {
-            // console.log(data)
-            if (data.isSuccess) {
-              // this.alertService.success("")
-              this.closeManageNotifierWin();
-            } else {
-              this.alertService.error(data.message);
-            }
-          },
-          err => {
-            this.alertService.error(err);
-          }
-        )
-      )
+      this.assignUser = this.assignUser.map(x => {
+        if (x.eventRecipient == this.selectedAssignedUser.eventRecipient) {
+          return this.selectedAssignedUser
+        } else {
+          return x
+        }
+      })
     }
+
+    this.appendUserEvent.emit(userToAppend);
+
+    this.sharedService.changeNotifyUserList([this.availableUser, this.assignUser])
+
+    this.closeManageNotifierWin();
+
+    // console.log(this.selectedEvent)
+    // if (this.manageEventFormMode == "add") {
+    //   if (this.replaceUser && this.appendUser == false) {
+    //     let delReq = [];
+    //     for (let event of this.selectedEvent) {
+    //       delReq.push(this.eventService.deleteListOfEventTypeNotifyBySequenceNumber(event.eventTypeSequence))
+    //     }
+
+    //     this.subs.add(
+    //       forkJoin(delReq).subscribe(
+    //         data => {
+    //           this.addAssignUser(formRawVal);
+    //         }
+    //       )
+    //     )
+
+    //   } else {
+
+    //     this.addAssignUser(formRawVal);
+    //   }
+    // } else {
+    //   const params = {
+    //     EventTypeSequence: this.selectedAssignedUser.eventTypeSequence,
+    //     ETRSequence: this.selectedAssignedUser.etrSequence,
+    //     EventRecipient: this.selectedAssignedUser.eventRecipient,
+    //     EventNotifyType: formRawVal.notifyType,
+    //     EventSendMail: formRawVal.sendEmail ? "Y" : "N",
+    //     EventMSGText: formRawVal.text,
+    //   }
+
+    //   this.subs.add(
+    //     this.eventService.updateListOfEventTypeNotify(params).subscribe(
+    //       data => {
+    //         // console.log(data)
+    //         if (data.isSuccess) {
+    //           // this.alertService.success("")
+    //           this.closeManageNotifierWin();
+    //         } else {
+    //           this.alertService.error(data.message);
+    //         }
+    //       },
+    //       err => {
+    //         this.alertService.error(err);
+    //       }
+    //     )
+    //   )
+    // }
 
 
   }
 
-  addAssignUser(formRawVal) {
-    let maxValue = 0;
-    let req: any = [];
+  // addAssignUser(formRawVal) {
+  //   let maxValue = 0;
+  //   let req: any = [];
 
-    for (let event of this.selectedEvent) {
-      let findAssignUserBySeq = this.assignUser.filter(x => x.eventTypeSequence == event.eventTypeSequence);
-     
-      if (findAssignUserBySeq.length > 0) {
-        maxValue = Math.max.apply(Math, findAssignUserBySeq.map(function (o) { return o.etrSequence; }))
-      }
+  //   for (let event of this.selectedEvent) {
+  //     let findAssignUserBySeq = this.assignUser.filter(x => x.eventTypeSequence == event.eventTypeSequence);
 
-      let i = maxValue;
-      for (let availableUser of this.selectedAvailableUser) {
-        i = i + 1;
-        const params = {
-          EventTypeSequence: event.eventTypeSequence,
-          ETRSequence: i,
-          EventRecipient: availableUser.mpusid,
-          EventNotifyType: formRawVal.notifyType,
-          EventSendMail: formRawVal.sendEmail ? "Y" : "N",
-          EventMSGText: formRawVal.text,
-        }
+  //     if (findAssignUserBySeq.length > 0) {
+  //       maxValue = Math.max.apply(Math, findAssignUserBySeq.map(function (o) { return o.etrSequence; }))
+  //     }
 
-        req.push(this.eventService.addListOfEventTypeNotify(params));
+  //     let i = maxValue;
+  //     for (let availableUser of this.selectedAvailableUser) {
+  //       i = i + 1;
+  //       const params = {
+  //         EventTypeSequence: event.eventTypeSequence,
+  //         ETRSequence: i,
+  //         EventRecipient: availableUser.mpusid,
+  //         EventNotifyType: formRawVal.notifyType,
+  //         EventSendMail: formRawVal.sendEmail ? "Y" : "N",
+  //         EventMSGText: formRawVal.text,
+  //       }
 
-      }
-     
-    }
+  //       req.push(this.eventService.addListOfEventTypeNotify(params));
 
-    this.subs.add(
-      forkJoin(req).subscribe(
-        res => {
-          // console.log(res);
-          // this.alertService.success("Event Deleted Successfully.")
-          this.closeManageNotifierWin();
+  //     }
 
-        },
-        err => {
-          this.alertService.error(err);
-        }
-      )
-    )
+  //   }
+
+  //   this.subs.add(
+  //     forkJoin(req).subscribe(
+  //       res => {
+  //         // console.log(res);
+  //         // this.alertService.success("Event Deleted Successfully.")
+  //         this.closeManageNotifierWin();
+
+  //       },
+  //       err => {
+  //         this.alertService.error(err);
+  //       }
+  //     )
+  //   )
 
 
-  }
+  // }
 
 
 }

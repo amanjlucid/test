@@ -137,5 +137,12 @@ export class SharedService {
     this.refreshEditAnsIssue.next(data);
   }
 
+  private notifyuserListOnTaskSrc = new BehaviorSubject<any>([]);
+  notifyUserList = this.notifyuserListOnTaskSrc.asObservable();
+
+  changeNotifyUserList(data) {
+    this.notifyuserListOnTaskSrc.next(data)
+  }
+
 
 }

@@ -44,7 +44,7 @@
                         <li class="nav-item dropdown list-unstyled" style="margin-top: -7px;">
                             <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" href="javascript:void(0)" (click)="edit()">Edit</a>
+                                <a class="dropdown-item" href="javascript:void(0)" (click)="edit(dataItem)">Edit</a>
                                 <a [ngClass]="{'disabled' : dataItem.inUse == 'Y'}" class="dropdown-item"
                                     href="javascript:void(0)" (click)="openConfirmationDialog(dataItem)">Delete</a>
                             </div>

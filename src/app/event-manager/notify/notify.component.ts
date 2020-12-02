@@ -1,9 +1,10 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
-import { AlertService, EventManagerService, HelperService } from '../../_services'
+import { AlertService, EventManagerService, HelperService, SharedService } from '../../_services'
 import { DataStateChangeEvent, RowArgs, SelectableSettings } from '@progress/kendo-angular-grid';
 import { forkJoin } from 'rxjs';
+
 
 
 @Component({
@@ -54,18 +55,30 @@ export class NotifyComponent implements OnInit {
   manageEventFormMode = 'add';
   appendUser = true;
   replaceUser = false;
+  actualAvailabelUser: any = [];
+  userToRemove: any = [];
+  userToAppend: any = [];
 
 
   constructor(
     private chRef: ChangeDetectorRef,
     private eventmanagerService: EventManagerService,
-    private alert: AlertService
+    private alert: AlertService,
+    private sharedService: SharedService
   ) { }
 
   ngOnInit(): void {
     this.setSelectableSettings();
     this.title = `${this.selectedEvent.length} Tasks Selected`//this.selectedEvent.eventTypeName;
+    this.subs.add(
+      this.sharedService.notifyUserList.subscribe(
+        data => {
+          this.setAvailaleAndAssignGrid(data)
+        }
+      )
+    )
     this.getGridData();
+
   }
 
   ngOnDestroy() {
@@ -86,13 +99,13 @@ export class NotifyComponent implements OnInit {
   }
 
   getGridData() {
-
     this.subs.add(
       this.eventmanagerService.getAvailableUser().subscribe(
         avlblUserData => {
           let tempAvailableuser: any;
           let tempAssignuser: any = [];
           if (avlblUserData.isSuccess) {
+            this.actualAvailabelUser = avlblUserData.data
             tempAvailableuser = avlblUserData.data;
 
             let req = [];
@@ -105,26 +118,30 @@ export class NotifyComponent implements OnInit {
                 assigneUserData => {
                   let assignedUser: any = assigneUserData
                   tempAssignuser = this.flatten(assignedUser)
-                  const distinctAssineUser = tempAssignuser.filter(
-                    (thing, i, arr) => arr.findIndex(t => t.eventRecipient === thing.eventRecipient) === i
-                  );
-                  this.assignUser = distinctAssineUser;
-                  this.assignGridView = process(this.assignUser, this.statetwo);
+                  this.sharedService.changeNotifyUserList([tempAvailableuser, tempAssignuser])
 
-                  let tempUser = [];
-                  for (let tauser of distinctAssineUser) {
-                    tempUser.push(tauser.eventRecipient);
-                  }
+                  //this.setAvailaleAndAssignGrid([tempAvailableuser, tempAssignuser])
+                  //this.setAvailaleAndAssignGrid(tempAvailableuser, tempAssignuser)
+                  // const distinctAssineUser = tempAssignuser.filter(
+                  //   (thing, i, arr) => arr.findIndex(t => t.eventRecipient === thing.eventRecipient) === i
+                  // );
+                  // this.assignUser = distinctAssineUser;
+                  // this.assignGridView = process(this.assignUser, this.statetwo);
 
-                  let tempAvlbluser = [];
-                  for (let tavlUser of tempAvailableuser) {
-                    if (tempUser.indexOf(tavlUser.mpusid) == -1)
-                      tempAvlbluser.push(tavlUser);
-                  }
+                  // let tempUser = [];
+                  // for (let tauser of distinctAssineUser) {
+                  //   tempUser.push(tauser.eventRecipient);
+                  // }
 
-                  this.availableUser = tempAvlbluser;
-                  this.availableGridView = process(this.availableUser, this.state);
-                  this.chRef.detectChanges();
+                  // let tempAvlbluser = [];
+                  // for (let tavlUser of tempAvailableuser) {
+                  //   if (tempUser.indexOf(tavlUser.mpusid) == -1)
+                  //     tempAvlbluser.push(tavlUser);
+                  // }
+
+                  // this.availableUser = tempAvlbluser;
+                  // this.availableGridView = process(this.availableUser, this.state);
+                  // this.chRef.detectChanges();
 
                 }
               )
@@ -136,49 +153,45 @@ export class NotifyComponent implements OnInit {
     )
 
 
-
-    // this.subs.add(
-    //   forkJoin([this.eventmanagerService.getAvailableUser(), this.eventmanagerService.getAssignUser(this.selectedEvent.eventTypeSequence)]).subscribe(
-    //     res => {
-
-    //       let tempAvailableuser: any;
-    //       let tempAssignuser: any
-    //       if (res[0].isSuccess) {
-    //         tempAvailableuser = res[0].data;
-
-    //       }
-
-    //       if (res[1].isSuccess) {
-    //         tempAssignuser = res[1].data
-    //         this.assignUser = res[1].data;
-    //         this.assignGridView = process(this.assignUser, this.statetwo);
-    //       }
-
-    //       let tempUser = [];
-    //       for (let tauser of tempAssignuser) {
-    //         tempUser.push(tauser.eventRecipient);
-    //       }
-
-    //       let tempAvlbluser = [];
-    //       for (let tavlUser of tempAvailableuser) {
-    //         if (tempUser.indexOf(tavlUser.mpusid) == -1)
-    //           tempAvlbluser.push(tavlUser);
-    //       }
-
-    //       this.availableUser = tempAvlbluser;
-    //       this.availableGridView = process(this.availableUser, this.state);
-
-
-    //       this.chRef.detectChanges();
-
-    //     }
-    //   )
-    // )
-
-
-
-
   }
+
+
+  setAvailaleAndAssignGrid(data) {
+    let availabelUser = [];
+    let assignUser = [];
+    if (data.length > 0) {
+      availabelUser = data[0]
+      assignUser = data[1]
+    }
+
+    if (assignUser.length > 0) {
+      const distinctAssineUser = assignUser.filter(
+        (thing, i, arr) => arr.findIndex(t => t.eventRecipient === thing.eventRecipient) === i
+      );
+      this.assignUser = distinctAssineUser;
+    } else {
+      this.assignUser = assignUser;
+    }
+
+    this.assignGridView = process(this.assignUser, this.statetwo);
+
+    let tempUser = [];
+    for (let tauser of this.assignUser) {
+      tempUser.push(tauser.eventRecipient);
+    }
+
+    let tempAvlbluser = [];
+    for (let tavlUser of availabelUser) {
+      if (tempUser.indexOf(tavlUser.mpusid) == -1)
+        tempAvlbluser.push(tavlUser);
+    }
+
+    this.availableUser = tempAvlbluser;
+    this.availableGridView = process(this.availableUser, this.state);
+    this.chRef.detectChanges();
+  }
+
+
 
   flatten(arr) {
     let flat = [];
@@ -207,7 +220,6 @@ export class NotifyComponent implements OnInit {
 
   cellClickHandlerForAssign(eve) {
     this.selectedAssignedUser = eve.dataItem
-    // console.log(this.selectedAssignedUser);
     this.chRef.detectChanges();
   }
 
@@ -215,10 +227,12 @@ export class NotifyComponent implements OnInit {
   closeNotifyWindowMethod() {
     this.notifyWindow = false;
     this.closeNotifyWindow.emit(this.notifyWindow);
+    setTimeout(() => {
+      this.sharedService.changeNotifyUserList([])
+    }, 200);
   }
 
   add() {
-    // console.log(this.mySelection);
     if (this.selectedAvailableUser.length > 0) {
       if (this.selectedAvailableUser.length > 1) {
         if (this.appendUser == false && this.replaceUser == false) {
@@ -235,7 +249,7 @@ export class NotifyComponent implements OnInit {
   }
 
   details() {
-    if (this.selectedAssignedUser.length > 0) {
+    if (this.selectedAssignedUser) {
       this.manageEventFormMode = "edit";
       $('.manageNotifier').addClass('ovrlay');
       this.managenotifier = true;
@@ -244,21 +258,25 @@ export class NotifyComponent implements OnInit {
 
   removeNotifyUser() {
     if (this.selectedEvent.length > 0) {
-      if (this.selectedAssignedUser.length > 0) {
-        let req = [];
-        for (let eve of this.selectedEvent) {
-          const params = { EventTypeSequence: eve.eventTypeSequence, ETRSequence: this.selectedAssignedUser.etrSequence };
-          req.push(this.eventmanagerService.deleteListOfEventTypeNotify(params));
-        }
+      if (this.selectedAssignedUser) {
+        this.userToRemove.push(this.selectedAssignedUser);
+        let assignedUser = this.assignUser.filter(x => x.eventRecipient != this.selectedAssignedUser.eventRecipient)
+        this.sharedService.changeNotifyUserList([this.actualAvailabelUser, assignedUser]);
+        this.resetAllGridSelection()
+        // let req = [];
+        // for (let eve of this.selectedEvent) {
+        //   const params = { EventTypeSequence: eve.eventTypeSequence, ETRSequence: this.selectedAssignedUser.etrSequence };
+        //   req.push(this.eventmanagerService.deleteListOfEventTypeNotify(params));
+        // }
 
-        this.subs.add(
-          forkJoin(req).subscribe(
-            data => {
-              console.log(data);
-              this.getGridData();
-            }
-          )
-        )
+        // this.subs.add(
+        //   forkJoin(req).subscribe(
+        //     data => {
+        //       console.log(data);
+        //       this.getGridData();
+        //     }
+        //   )
+        // )
 
       }
     }
@@ -268,20 +286,105 @@ export class NotifyComponent implements OnInit {
   closeManageNotifier(eve) {
     $('.manageNotifier').removeClass('ovrlay');
     this.managenotifier = eve;
-    this.getGridData();
+    this.resetAllGridSelection()
+    // this.getGridData();
   }
 
-  changeUserSetting($event, val) {
-    if (val == "replace") {
-      this.replaceUser = !this.replaceUser;
-      this.appendUser = false;
-    } else {
-      this.appendUser = !this.appendUser;
-      this.replaceUser = false;
+  resetAllGridSelection() {
+    this.selectedAvailableUser = [];
+    this.selectedAssignedUser = [];
+    this.mySelection = [];
+    this.chRef.detectChanges();
+  }
+
+  changeUserSetting() {
+    this.replaceUser = !this.replaceUser;
+    this.appendUser = !this.appendUser;
+    this.chRef.detectChanges();
+  }
+
+
+  appendUserEvent(eve) {
+    this.userToAppend = this.userToAppend.concat(eve)
+  }
+
+
+  saveParameters() {
+    let onlyUpdate = true;
+
+    if (this.userToAppend.length > 0) {
+      onlyUpdate = false;
     }
 
-    this.chRef.detectChanges();
+    let params = {
+      selectedTasks: this.selectedEvent.map(x => {
+        return { "seq": x.eventTypeSequence }
+      }),
+      assignuser: this.assignUser,
+      replace: this.replaceUser ? true : false,
+      usertoRemove: this.checkBlanckUserRmvAndAppend("remove", this.userToRemove),
+      userToAppend: this.checkBlanckUserRmvAndAppend("append", this.userToAppend),
+      onlyUpdate: onlyUpdate
+    }
+    
+    this.subs.add(
+      this.eventmanagerService.updateAssignUser(params).subscribe(
+        data => {
+          // console.log(data);
+          if (data.isSuccess) {
+            this.userToRemove = [];
+            this.userToAppend = [];
+            this.getGridData();
+          } else {
+            this.alert.error(data.message)
+          }
+        }
+      )
+    )
 
+    
+  }
+
+  checkBlanckUserRmvAndAppend(type, data) {
+    if (type == "append") {
+      if (data.length == 0) {
+        return [
+          {
+            "etrSequence": "",
+            "eventMSGNote": "",
+            "eventMSGText": "",
+            "eventNotifyType": "",
+            "eventNotifyTypeName": "",
+            "eventRecipient": "",
+            "eventRecipientName": "",
+            "eventSendEmailText": "",
+            "eventSendMail": "",
+            "eventTypeSequence": ""
+          }
+        ]
+      } else {
+        return data
+      }
+    } else {
+      if (data.length == 0) {
+        return [
+          {
+            "eventTypeSequence": "",
+            "etrSequence": "",
+            "eventRecipient": "",
+            "eventNotifyType": "",
+            "eventSendMail": "",
+            "eventMSGText": "",
+            "eventMSGNote": "",
+            "eventRecipientName": "",
+            "eventSendEmailText": "",
+            "eventNotifyTypeName": ""
+          }
+        ]
+      } else {
+        return data
+      }
+    }
   }
 
 }

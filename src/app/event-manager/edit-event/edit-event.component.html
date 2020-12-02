@@ -9,11 +9,14 @@
             <div class="col-md-9">
                 <select id="severity" class="form-control" formControlName="severity"
                     [ngClass]="{ 'is-invalid': submitted && formErrors.severity }">
-                    <option value="">Please Select</option>
                     <option value="L">Low</option>
                     <option value="M">Medium</option>
                     <option value="H">High</option>
                 </select>
+
+                <div *ngIf="submitted && formErrors.severity" class="invalid-feedback">
+                    <div *ngIf="formErrors.severity">{{ formErrors.severity }}</div>
+                </div>
             </div>
 
         </div>
@@ -65,8 +68,7 @@
                                 <div class="inputDiv">
                                     <select class="form-control nodv input-sm" formControlName="escalationgrp1"
                                         [ngClass]="{ 'is-invalid': submitted && formErrors.escalationgrp1 }">
-                                        <option *ngFor="let user of userList"
-                                            value="{{user.mpusid}}">{{user.m_UerName}}
+                                        <option *ngFor="let user of userList" value="{{user.mpusid}}">{{user.m_UerName}}
                                         </option>
                                     </select>
 
@@ -101,8 +103,7 @@
                                 <div class="inputDiv">
                                     <select class="form-control nodv input-sm" formControlName="escalationgrp2"
                                         [ngClass]="{ 'is-invalid': submitted && formErrors.escalationgrp2 }">
-                                        <option *ngFor="let user of userList"
-                                            value="{{user.mpusid}}">{{user.m_UerName}}
+                                        <option *ngFor="let user of userList" value="{{user.mpusid}}">{{user.m_UerName}}
                                         </option>
                                     </select>
                                 </div>
@@ -138,8 +139,7 @@
                                 <div class="inputDiv">
                                     <select class="form-control nodv input-sm" formControlName="escalationgrp3"
                                         [ngClass]="{ 'is-invalid': submitted && formErrors.escalationgrp3 }">
-                                        <option *ngFor="let user of userList"
-                                            value="{{user.mpusid}}">{{user.m_UerName}}
+                                        <option *ngFor="let user of userList" value="{{user.mpusid}}">{{user.m_UerName}}
                                         </option>
                                     </select>
                                 </div>
@@ -166,6 +166,9 @@
                     <option value="M">Manual</option>
                     <option value="I">In-Active</option>
                 </select>
+                <div *ngIf="submitted && formErrors.eventstatus" class="invalid-feedback">
+                    <div *ngIf="formErrors.eventstatus">{{ formErrors.eventstatus }}</div>
+                </div>
             </div>
         </div>
 
@@ -176,7 +179,8 @@
 
             <div class="col-md-9">
                 <button type="button" (click)="addEvent()" class="btn btn-sm">Amend</button>
-                <span class="eventScheduled green ml-4" [ngClass]="{'green' : eventScheduled != 'Not Scheduled', 'red' : eventScheduled == 'Not Scheduled'}">{{eventScheduled}}</span>
+                <span class="eventScheduled green ml-4"
+                    [ngClass]="{'green' : eventScheduled != 'Not Scheduled', 'red' : eventScheduled == 'Not Scheduled'}">{{eventScheduled}}</span>
                 <!-- <span class="eventScheduled red ml-4" *ngIf="!eventScheduled">Not Scheduled</span> -->
             </div>
         </div>

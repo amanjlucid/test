@@ -66,7 +66,7 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
     {
       menuName: "Tasks",
       silverLightLink: "http://104.40.138.8/Rowanwood/EventManager",
-      grpPermissionName: "BA_EventManager",
+      grpPermissionName: "Event Manager Portal Access",
     },
     {
       menuName: "Reporter",
@@ -111,7 +111,7 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    // console.log(this.currentUser.userId);
+    // console.log(this.currentUser);
     this.eventUnreadMessageCount();
     this.eventSummary();
     this.endTime = this.currentUser.inactivityTimeOut;
@@ -203,9 +203,9 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
         return this.developedModuleList.some(x => x.menuName == name && x.linkType == forAngular && this.currentUser.admin == "Y")
       }
 
-      if (name == "Tasks") {
-        return (this.moduleAccess.includes(accessName) || this.moduleAccess.includes('Event Manager Portal Access')) && this.developedModuleList.some(x => x.menuName == name && x.linkType == forAngular);
-      }
+      // if (name == "Tasks") {
+      //   return (this.moduleAccess.includes(accessName) || this.moduleAccess.includes('Event Manager Portal Access')) && this.developedModuleList.some(x => x.menuName == name && x.linkType == forAngular);
+      // }
 
       return this.moduleAccess.includes(accessName) && this.developedModuleList.some(x => x.menuName == name && x.linkType == forAngular);
     }

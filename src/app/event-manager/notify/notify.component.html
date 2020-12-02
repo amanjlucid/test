@@ -7,7 +7,7 @@
             <div class="form-group mt-1">
                 <!-- <label class="form-label form-label-sm">Append User</label> -->
                 <label class="switcher switcher-secondary filterLabel">
-                    <input type="checkbox" (change)="changeUserSetting($event.target.value, 'append')"
+                    <input type="checkbox" (change)="changeUserSetting()"
                         [checked]="appendUser" value="{{appendUser}}" class="switcher-input">
                     <span class="switcher-indicator colSwitch">
                         <span class="switcher-yes">
@@ -24,7 +24,7 @@
             <div class="form-group mt-1">
                 <!-- <label class="form-label form-label-sm">Append User</label> -->
                 <label class="switcher switcher-secondary filterLabel">
-                    <input type="checkbox" (change)="changeUserSetting($event.target.value, 'replace')"
+                    <input type="checkbox" (change)="changeUserSetting()"
                         [checked]="replaceUser" value="{{replaceUser}}" class="switcher-input">
                     <span class="switcher-indicator colSwitch">
                         <span class="switcher-yes">
@@ -118,8 +118,8 @@
 
     <app-manage-event-notifier *ngIf="managenotifier" [managenotifier]="managenotifier" [selectedEvent]="selectedEvent"
         [selectedAvailableUser]="selectedAvailableUser" [selectedAssignedUser]="selectedAssignedUser"
-        [manageEventFormMode]="manageEventFormMode" [assignUser]="assignUser" [appendUser]="appendUser"
-        [replaceUser]="replaceUser" (closeManageNotifier)="closeManageNotifier($event)">
+        [manageEventFormMode]="manageEventFormMode" [assignUser]="assignUser" [availableUser]="availableUser" [appendUser]="appendUser"
+        [replaceUser]="replaceUser" (appendUserEvent)="appendUserEvent($event)" (closeManageNotifier)="closeManageNotifier($event)" >
     </app-manage-event-notifier>
 
 </kendo-window>

@@ -109,7 +109,7 @@ export class AssigntoOtherComponent implements OnInit {
 
         forkJoin(req).subscribe(
           data => {
-            this.alertService.success(`Event number ${successData.join(",")} updated successfully.`);
+            this.alertService.success(`Task number ${successData.join(",")} updated successfully.`);
             this.reloadTasks.emit(true);
             this.closeWin()
             //this.getUserEventsList(this.currentUser.userId, this.hideComplete);

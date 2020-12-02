@@ -4,7 +4,7 @@ import { GroupDescriptor, DataResult, process, State, SortDescriptor } from '@pr
 import { SelectableSettings, RowClassArgs } from '@progress/kendo-angular-grid';
 import { AlertService, EventManagerService, HelperService, SharedService } from '../../_services'
 import { forkJoin } from 'rxjs';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NgbDateStruct, NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
@@ -54,7 +54,8 @@ export class TasksComponent implements OnInit {
     private alertService: AlertService,
     private helperService: HelperService,
     private calendar: NgbCalendar,
-    private sharedService: SharedService
+    private sharedService: SharedService,
+    private router: Router,
   ) { }
 
   ngOnInit(): void {
@@ -71,15 +72,39 @@ export class TasksComponent implements OnInit {
       })
     )
 
+    // this.subs.add(
+    //   this.sharedService.taskPortalSecList.subscribe(
+    //     data => {
+    //       this.taskSecurityList = data;
+    //       // console.log(this.taskSecurityList);
+    //     }
+    //   )
+    // )
+
+  }
+
+
+  ngAfterViewInit() {
     this.subs.add(
       this.sharedService.taskPortalSecList.subscribe(
         data => {
           this.taskSecurityList = data;
-          // console.log(this.taskSecurityList);
+          if (this.taskSecurityList.length > 0) {
+            this.sharedService.modulePermission.subscribe(
+              modules => {
+                if (modules.length > 0) {
+                  if (this.taskSecurityList.indexOf("Manage User Events") == -1 || modules.indexOf("Event Manager Portal Access") == -1) {
+                    //this.alertService.error("You have no access to configuration")
+                    this.router.navigate(['/dashboard']);
+                  }
+                }
+              }
+            )
+          }
+         
         }
       )
     )
-
   }
 
   ngOnDestroy() {
@@ -279,7 +304,7 @@ export class TasksComponent implements OnInit {
             data => {
               // console.log(data);
               this.resetSelection()
-              this.alertService.success(`Event number ${successData.join(",")} updated successfully.`)
+              this.alertService.success(`Task number ${successData.join(",")} updated successfully.`)
               this.getUserEventsList(this.currentUser.userId, this.hideComplete);
             }
           )
@@ -347,7 +372,7 @@ export class TasksComponent implements OnInit {
             data => {
               // console.log(data);
               this.resetSelection()
-              this.alertService.success(`Event number ${successData.join(",")} updated successfully.`)
+              this.alertService.success(`Task number ${successData.join(",")} updated successfully.`)
               this.getUserEventsList(this.currentUser.userId, this.hideComplete);
             }
           )

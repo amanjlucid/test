@@ -78,7 +78,7 @@
                 </li>
 
                 <li class="sidenav-item" [routerLinkActive]="['open']"
-                    *ngIf="checkAngularGrpPermission('Tasks', 'BA_EventManager',1) || checkAngularGrpPermission('Tasks', 'Event Manager Portal Access',1)">
+                    *ngIf="checkAngularGrpPermission('Tasks', 'Event Manager Portal Access',1)">
                     <!-- <li class="sidenav-item" [routerLinkActive]="['open']"
                     > -->
                     <a href="javascript:void(0)" class="sidenav-link sidenav-toggle">
@@ -108,7 +108,7 @@
                     </ul>
                 </li>
 
-                <li *ngIf="checkAngularGrpPermission('Event Manager', 'BA_EventManager',0)" class="sidenav-item">
+                <li *ngIf="checkAngularGrpPermission('Event Manager', 'Event Manager Portal Access',0)" class="sidenav-item">
                     <a href="http://104.40.138.8/Rowanwood/EventManager" class="sidenav-link" target="_blank">
                         <img class="sidenav-icon ion" src="assets/img/icons/event-manager.svg">
                         <div>Event Manager</div>
@@ -357,30 +357,29 @@
 
 
                         <li class="sidenav-item" [routerLinkActive]="['open']"
-                            *ngIf="checkGroupPermission('BA_EventManager') || checkGroupPermission('Event Manager Portal Access')">
+                            *ngIf="checkGroupPermission('Event Manager Portal Access')">
 
                             <a href="javascript:void(0)" class="sidenav-link sidenav-toggle">
                                 <div>Tasks</div>
                             </a>
                             <ul class="sidenav-menu">
-                                <li class="sidenav-item" [routerLinkActive]="['active']">
+                                <li class="sidenav-item" [routerLinkActive]="['active']" *ngIf="tasksPortalPermissions.indexOf('Event Dashboard') != -1">
                                     <a [routerLink]="['/tasks/dashboard']" class="sidenav-link">
                                         <div>Dashboard</div>
                                     </a>
                                 </li>
-
-                                <li class="sidenav-item" [routerLinkActive]="['active']">
+        
+                                <li class="sidenav-item" [routerLinkActive]="['active']" *ngIf="tasksPortalPermissions.indexOf('Manage Event Types') != -1">
                                     <a [routerLink]="['/tasks/configuration']" class="sidenav-link">
                                         <div>Configuration</div>
                                     </a>
                                 </li>
-
-                                <li class="sidenav-item" [routerLinkActive]="['active']">
+        
+                                <li class="sidenav-item" [routerLinkActive]="['active']" *ngIf="tasksPortalPermissions.indexOf('Manage User Events') != -1">
                                     <a [routerLink]="['/tasks/tasks']" class="sidenav-link">
                                         <div>Tasks</div>
                                     </a>
                                 </li>
-
 
                             </ul>
                         </li>
@@ -486,12 +485,12 @@
                         <div class="demo-navbar-notifications nav-item dropdown mr-lg-3">
                             <a class="nav-link dropdown-toggle hide-arrow" href="#" data-toggle="dropdown">
                                 <i class="ion ion-md-notifications-outline navbar-icon align-middle"></i>
-                                <span *ngIf="notifications?.length > 0 && checkGroupPermission('BA_EventManager')"
+                                <span *ngIf="notifications?.length > 0 && checkGroupPermission('Event Manager Portal Access')"
                                     class="badge badge-primary badge-dot indicator"></span>
                                 <span class="d-lg-none align-middle">&nbsp; Notifications</span>
                             </a>
                             <div class="dropdown-menu dropdown-menu-right"
-                                *ngIf="checkGroupPermission('BA_EventManager') ; else notificationDiv">
+                                *ngIf="checkGroupPermission('Event Manager Portal Access') ; else notificationDiv">
                                 <div class="bg-primary text-center text-white font-weight-bold p-3">
                                     {{ (notifications?.length ) ? notifications?.length : 0 }} New Notifications
                                 </div>
@@ -546,12 +545,12 @@
                         <div class="demo-navbar-messages nav-item dropdown mr-lg-3">
                             <a class="nav-link dropdown-toggle hide-arrow" href="#" data-toggle="dropdown">
                                 <i class="ion ion-ios-mail navbar-icon align-middle"></i>
-                                <!-- <span *ngIf="unreadMsg != '0 Unread Event(s)' && checkGroupPermission('BA_EventManager')"
+                                <!-- <span *ngIf="unreadMsg != '0 Unread Event(s)' && checkGroupPermission('Event Manager Portal Access')"
                                     class="badge badge-primary badge-dot indicator"></span> -->
                                 <span class="d-lg-none align-middle">&nbsp; Messages</span>
                             </a>
                             <div class="dropdown-menu dropdown-menu-right"
-                                *ngIf="checkGroupPermission('BA_EventManager') ; else eventDiv">
+                                *ngIf="checkGroupPermission('Event Manager Portal Access') ; else eventDiv">
                                 <div class="bg-primary text-center text-white font-weight-bold p-3">
                                     <!-- {{unreadMsg}} -->
                                     0 Unread Message

@@ -158,4 +158,10 @@ export class EventManagerService {
         return this.http.get<any>(`${appConfig.apiUrl}/api/Manager/SetPlannedDate?eventSequence=${eventSequence}&dtPlannedDate=${dtPlannedDate}&userId=${userId}`, this.httpOptions);
     }
 
+    updateAssignUser(params){
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/EventType/AddListOfEventTypeNotifyDummy111`, params, this.httpOptions);
+    }
+
+
 }

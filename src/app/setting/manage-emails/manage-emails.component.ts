@@ -65,13 +65,13 @@ export class ManageEmailsComponent implements OnInit {
     if (this.manageEmailfor == "apex") {
       this.title = "Manage Email Address - Apex Users";
       this.userNotificationForm = this.fb.group({
-        email: ['', [Validators.required, Validators.email, Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$")]],
+        email: ['', [Validators.required, Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$")]],
       });
     } else {
       this.title = "Manage Email Address - Non-Apex Users";
       this.userNotificationForm = this.fb.group({
         name: ['', [Validators.required]],
-        email: ['', [Validators.required, Validators.email, Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$")]],
+        email: ['', [Validators.required, Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$")]],
       });
     }
 

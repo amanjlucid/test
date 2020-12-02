@@ -61,7 +61,7 @@ export class EventManagerChartComponent implements OnInit {
   defaultFilterVal: string = "0_OPTIVO:CONTRACT1:OPTGAS2";
   userEvents = false
   selectedBarChartXasis: any;
-
+  taskSecurityList: any = [];
 
   constructor(
     private hnsPortalService: HnsPortalService,
@@ -76,9 +76,34 @@ export class EventManagerChartComponent implements OnInit {
     this.subs.unsubscribe();
   }
 
+  ngAfterViewInit() {
+    this.subs.add(
+      this.sharedServie.taskPortalSecList.subscribe(
+        data => {
+          this.taskSecurityList = data;
+          if (this.taskSecurityList.length > 0) {
+            this.sharedServie.modulePermission.subscribe(
+              modules => {
+                if (modules.length > 0) {
+                  if (this.taskSecurityList.indexOf("Event Dashboard") == -1 || modules.indexOf("Event Manager Portal Access") == -1) {
+                    this.alertService.error("You have no access to configuration")
+                    this.router.navigate(['/dashboard']);
+                  }
+                }
+              }
+            )
+          }
+         
+        }
+      )
+    )
+  }
+
   ngOnInit() {
     //this.getChart()
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+
+
 
     setTimeout(() => {
       this.subs.add(
@@ -1337,7 +1362,7 @@ export class EventManagerChartComponent implements OnInit {
 
   openGridOnClickOfBarChart(chartEvent, parentChartObj) {
     // console.log(chartEvent)
-    
+
     this.selectedBarChartXasis = {
       "ddChartId": parentChartObj.ddChartId != undefined ? parentChartObj.ddChartId : parentChartObj.ddChartID,
       "parantChartId": parentChartObj.parantChartId != undefined ? parentChartObj.parantChartId : parentChartObj.chartID,
@@ -1345,7 +1370,7 @@ export class EventManagerChartComponent implements OnInit {
       "seriesId": parentChartObj.seriesId,
       "chartName": parentChartObj.chartName
     }
-    
+
     this.openGrid();
   }
 

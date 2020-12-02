@@ -15,7 +15,7 @@ export class EventManagerSettingComponent implements OnInit {
   submitted = false;
   validationMessage = {
     'eventManagerUrl': {
-      'required': 'Event Manager Url is required.',
+      'required': 'Task Url is required.',
     },
     'taskAutoComplete': {
       'required': 'Task AutoComplete is required.',

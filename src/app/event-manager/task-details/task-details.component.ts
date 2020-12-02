@@ -4,6 +4,7 @@ import { GroupDescriptor, DataResult, process, State, CompositeFilterDescriptor,
 import { PageChangeEvent, SelectableSettings } from '@progress/kendo-angular-grid';
 import { AlertService, EventManagerService, HelperService, ConfirmationDialogService, SharedService } from '../../_services'
 import { forkJoin } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-task-details',
@@ -55,7 +56,8 @@ export class TaskDetailsComponent implements OnInit {
     private eventManagerService: EventManagerService,
     private alertService: AlertService,
     private confirmationDialogService: ConfirmationDialogService,
-    private sharedService: SharedService
+    private sharedService: SharedService,
+    private router: Router,
   ) { }
 
   ngOnInit(): void {
@@ -63,18 +65,33 @@ export class TaskDetailsComponent implements OnInit {
     this.setSelectableSettings();
     this.getEventData();
 
-    this.subs.add(
-      this.sharedService.taskPortalSecList.subscribe(
-        data => {
-          this.taskSecurityList = data;
-          // console.log(this.taskSecurityList);
-        }
-      )
-    )
   }
 
   ngOnDestroy() {
     this.subs.unsubscribe();
+  }
+
+  ngAfterViewInit() {
+    this.subs.add(
+      this.sharedService.taskPortalSecList.subscribe(
+        data => {
+          this.taskSecurityList = data;
+          if (this.taskSecurityList.length > 0) {
+            this.sharedService.modulePermission.subscribe(
+              modules => {
+                if (modules.length > 0) {
+                  if (this.taskSecurityList.indexOf("Manage Event Types") == -1 || modules.indexOf("Event Manager Portal Access") == -1) {
+                    //this.alertService.error("You have no access to configuration")
+                    this.router.navigate(['/dashboard']);
+                  }
+                }
+              }
+            )
+          }
+          // let moduleList = ["Edit","Event Dashboard","Event Manager Portal Access","Manage Business Areas","Manage Emails","Manage Event Types","Manage Notification Groups","Manage User Events","Notify","Parameters"];
+        }
+      )
+    )
   }
 
 
@@ -91,17 +108,7 @@ export class TaskDetailsComponent implements OnInit {
           if (data.isSuccess) {
             this.taskDetails = data.data;
             this.taskDetailsTemp = Object.assign([], data.data);
-            // console.log(data.data)
-            // if (this.taskDetailsTemp.length > 0) {
-            //   this.taskDetailsTemp.map(x => {
-            //     x.eventCreatedDate = this.helperService.checkValidDateR(x.eventCreatedDate)
-            //     x.eventPlannedDate = this.helperService.checkValidDateR(x.eventPlannedDate)
-            //     x.eventUpdateDate = this.helperService.checkValidDateR(x.eventUpdateDate)
-            //   })
-            // }
-
-            // console.log(this.taskDetails)
-
+            
             // this.taskDetailsTemp = data.data.slice(this.state.skip, 30) // remove it
             // this.taskDetailsTemp =  Object.assign([], this.taskDetails);  // remove it
 
@@ -277,26 +284,41 @@ export class TaskDetailsComponent implements OnInit {
   runEvent() {
     if (this.selectedEvent.length > 0) {
       let req = [];
+      let checkManual = false;
       for (let eve of this.selectedEvent) {
-        req.push(this.eventManagerService.runEvent(eve.eventTypeSequence, this.currentUser.userId));
+        if (eve.eventTypeStatus == "S") {
+          checkManual = true
+        } else {
+          req.push(this.eventManagerService.runEvent(eve.eventTypeSequence, this.currentUser.userId));
+        }
+
       }
 
-      this.alertService.success(`${this.selectedEvent.length} event(s) running in background.`);
+      if (checkManual) {
+        this.alertService.error("System events cannot run manually.")
+        return
+      }
+
+
+      this.alertService.success(`${this.selectedEvent.length} task(s) running in background.`);
 
       forkJoin(req).subscribe(
         data => {
           this.alertService.destroyAlert();
           if (data.length > 0) {
             let runevents: any = data;
-            let successStr = '';
+            // console.log(runevents);
+            let successStr = [];
             for (let runevent in runevents) {
-              if (runevents[runevent].isSuccess && runevents[runevent].data >= 0) {
-                successStr += `${this.selectedEvent[runevent].eventTypeCode} : ${this.selectedEvent[runevent].eventTypeName}   ${runevents[runevent].data} rows,`;
-              }
+              let rowStr = runevents[runevent].data > 1 ? "rows" : "row";
+              successStr.push(` ${this.selectedEvent[runevent].eventTypeCode} : ${this.selectedEvent[runevent].eventTypeName} : ${runevents[runevent].data} ${rowStr} identified.`);
+              // if (runevents[runevent].isSuccess && runevents[runevent].data >= 0) {
+              //   // successStr += `${this.selectedEvent[runevent].eventTypeCode} : ${this.selectedEvent[runevent].eventTypeName}   ${runevents[runevent].data} rows identified.,`;
+              // }
             }
 
             setTimeout(() => {
-              this.alertService.success(successStr, true, 1000000);
+              this.alertService.success(successStr.toString(), true, 1000000);
             }, 1000);
 
           }
@@ -319,7 +341,7 @@ export class TaskDetailsComponent implements OnInit {
       forkJoin(req).subscribe(
         res => {
           this.getEventData();
-          this.alertService.success("Event Copied Successfully.")
+          this.alertService.success("Task Copied Successfully.")
         },
         err => {
           this.alertService.error(err);
@@ -355,7 +377,7 @@ export class TaskDetailsComponent implements OnInit {
         forkJoin(req).subscribe(
           res => {
             this.getEventData();
-            this.alertService.success("Event Deleted Successfully.")
+            this.alertService.success("Task Deleted Successfully.")
           },
           err => {
             this.alertService.error(err);
@@ -392,6 +414,6 @@ export class TaskDetailsComponent implements OnInit {
   }
 
 
-  
+
 
 }

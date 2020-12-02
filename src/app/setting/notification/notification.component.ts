@@ -34,6 +34,7 @@ export class NotificationComponent implements OnInit {
   manageEmailsWIn = false;
   manageEmailfor = 'apex'
   currentUser: any;
+  touchtime = 0;
 
   constructor(
     private settingService: SettingsService,
@@ -67,6 +68,22 @@ export class NotificationComponent implements OnInit {
 
   cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
     this.selectedItem = dataItem
+    if (columnIndex > 1) {
+      if (this.touchtime == 0) {
+        // set first click
+        this.touchtime = new Date().getTime();
+      } else {
+        // compare first click to this click and see if they occurred within double click threshold
+        if (((new Date().getTime()) - this.touchtime) < 400) {
+          // double click occurred
+          this.edit(dataItem)
+          this.touchtime = 0;
+        } else {
+          // not a double click so set as a new first click
+          this.touchtime = new Date().getTime();
+        }
+      }
+    }
   }
 
   setSelectableSettings(): void {
@@ -110,13 +127,11 @@ export class NotificationComponent implements OnInit {
   }
 
 
-  edit() {
-    if (this.selectedItem) {
-      this.editWin = true;
-      $('.notificationOverlay').addClass('ovrlay');
-    } else {
-      this.alertService.error("Please select a record first.")
-    }
+  edit(item) {
+    this.selectedItem = item
+    this.editWin = true;
+    $('.notificationOverlay').addClass('ovrlay');
+
 
   }
 
