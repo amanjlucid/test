@@ -31,7 +31,7 @@
                 <kendo-grid-column field="busAreaDesc" title="Description" width="250">
                     <ng-template kendoGridEditTemplate let-dataItem="dataItem">
                         <input [(ngModel)]="dataItem.busAreaDesc" kendoGridFocusable name="busAreaDesc"
-                            class="k-textbox" required (focusout)="changeedRowData($event, 'inp')" />
+                            class="k-textbox" required (keydown.enter)="keydownevent($event)" (focusout)="changedRowData($event, 'inp')" />
                     </ng-template>
 
                 </kendo-grid-column>
@@ -45,7 +45,7 @@
                         let-formGroup="formGroup">
                         <kendo-dropdownlist #ddl="popupAnchor" popupAnchor [data]="userList" textField="m_UerName"
                             valueField="mpusid" [valuePrimitive]="true" [value]="dataItem.busAreaOwner"
-                            [(ngModel)]="dataItem.busAreaOwner" (ngModelChange)="changeedRowData($event)">
+                            [(ngModel)]="dataItem.busAreaOwner" (ngModelChange)="changedRowData($event)">
                         </kendo-dropdownlist>
 
                     </ng-template>

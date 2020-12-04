@@ -4,6 +4,7 @@ import { AlertService, EventManagerService, HelperService, ConfirmationDialogSer
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { JsonPipe } from '@angular/common';
 import { MustbeTodayOrGreater } from 'src/app/_helpers';
+import { forkJoin } from 'rxjs';
 
 
 @Component({
@@ -17,8 +18,7 @@ export class AddEventComponent implements OnInit {
   @Input() addEventWin: boolean = false;
   @Input() selectedEvent: any;
   @Output() closeAddEvent = new EventEmitter<boolean>();
-  @Output() modifiedSelectedEvent = new EventEmitter<any>();
-  title = "Add Event Schedule";
+  title = "Add Task Schedule";
   editEvform: FormGroup;
   formErrors: any;
   validationMessage = {
@@ -56,7 +56,6 @@ export class AddEventComponent implements OnInit {
 
     })
 
-    console.log(this.selectedEvent[0].eventPeriodType);
     if (this.selectedEvent.length == 1) {
       this.editEvform.patchValue({
         periodType: JSON.stringify(this.selectedEvent[0].eventPeriodType),
@@ -110,17 +109,30 @@ export class AddEventComponent implements OnInit {
     }
 
     let formRawVal = this.editEvform.getRawValue();
-    let modifiedEvent = [];
-    
-    for (let eve of this.selectedEvent) {
-      eve.eventPeriod = formRawVal.periodInterval;
-      eve.eventPeriodType = formRawVal.periodType;
-      eve.eventNextRunDate = this.dateFormate2(formRawVal.nextRunDate);
-      modifiedEvent.push(eve);
+    let req = [];
+
+    for (let selectedEve of this.selectedEvent) {
+      let params = {
+        EventTypeSequence: selectedEve.eventTypeSequence,
+        EventPeriod: formRawVal.periodInterval,
+        EventPeriodType: formRawVal.periodType,
+        EventNextRunDate: this.dateFormate2(formRawVal.nextRunDate),
+        EventTypeUpdatedBy: this.currentUser.userId
+      }
+      req.push(this.eventmanagerService.updateEventSchedule(params))
     }
 
-    this.modifiedSelectedEvent.emit(modifiedEvent);
-    this.closeAddEventMethod();
+    if (req.length > 0) {
+      this.subs.add(
+        forkJoin(req).subscribe(
+          data => {
+            console.log(data);
+            this.closeAddEventMethod();
+          }
+        )
+      )
+    }
+
 
   }
 
@@ -170,12 +182,12 @@ export class AddEventComponent implements OnInit {
       req.push(eve.eventTypeSequence);
     }
 
-    
+
     this.subs.add(
       this.eventmanagerService.deleteSchedule(req.join(), this.currentUser.userId).subscribe(
         data => {
           if (data.isSuccess) {
-            this.modifiedSelectedEvent.emit(modifiedEvent);
+            // this.modifiedSelectedEvent.emit(modifiedEvent);
             this.closeAddEventMethod();
           }
         }

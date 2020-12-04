@@ -51,6 +51,8 @@ export class TaskDetailsComponent implements OnInit {
   eventPeriod = ['Daily', 'Weekly', 'Monthly'];
   loading = true
   taskSecurityList: any = [];
+  editType = 'edit';
+  addEventWin = false
 
   constructor(
     private eventManagerService: EventManagerService,
@@ -81,14 +83,13 @@ export class TaskDetailsComponent implements OnInit {
               modules => {
                 if (modules.length > 0) {
                   if (this.taskSecurityList.indexOf("Manage Event Types") == -1 || modules.indexOf("Event Manager Portal Access") == -1) {
-                    //this.alertService.error("You have no access to configuration")
                     this.router.navigate(['/dashboard']);
                   }
                 }
               }
             )
           }
-          // let moduleList = ["Edit","Event Dashboard","Event Manager Portal Access","Manage Business Areas","Manage Emails","Manage Event Types","Manage Notification Groups","Manage User Events","Notify","Parameters"];
+
         }
       )
     )
@@ -108,14 +109,13 @@ export class TaskDetailsComponent implements OnInit {
           if (data.isSuccess) {
             this.taskDetails = data.data;
             this.taskDetailsTemp = Object.assign([], data.data);
-            
+
             // this.taskDetailsTemp = data.data.slice(this.state.skip, 30) // remove it
             // this.taskDetailsTemp =  Object.assign([], this.taskDetails);  // remove it
 
             this.gridView = process(this.taskDetailsTemp, this.state);
             this.loading = false;
-            // this.gridView.total = this.gridView.data.length
-            // console.log(this.gridView)
+
 
           }
         }
@@ -124,13 +124,9 @@ export class TaskDetailsComponent implements OnInit {
   }
 
   public groupChange(groups: GroupDescriptor[]): void {
-    // this.resetGrid()
     this.state.group = groups;
-    // this.tempstate.group = groups
     setTimeout(() => {
       this.gridView = process(this.taskDetailsTemp, this.state);
-      // this.taskDetails = this.gridView.data;
-      // this.gridView.total = this.gridView.data.length
     }, 100);
   }
 
@@ -138,55 +134,12 @@ export class TaskDetailsComponent implements OnInit {
   public sortChange(sort: SortDescriptor[]): void {
     this.state.sort = sort;
     this.gridView = process(this.taskDetailsTemp, this.state);
-    // this.tempstate.sort = sort;
-    // this.tempstate.skip = 0;
-    // this.tempstate.group = []
-    // let tempData: any = process(this.taskDetailsTemp, this.tempstate);
-
-
-    // this.state.sort = sort;
-    // this.state.skip = 0;
-
-    // if (this.state.group.length > 0) {
-    //   this.tempstate.group = this.state.group;
-    //   this.gridView = process(tempData.data, this.tempstate);
-    //   this.taskDetails = this.gridView.data;
-    //   this.gridView.total = this.gridView.data.length
-    // } else {
-    //   this.gridView = process(tempData.data, this.state);
-    //   this.taskDetails = tempData.data;
-    //   this.gridView.total = tempData.total
-    // }
-
   }
 
   public filterChange(filter: any): void {
     this.state.filter = filter;
     this.gridView = process(this.taskDetailsTemp, this.state);
 
-    // this.resetGrid()
-    // this.tempstate.filter = filter;
-    // this.tempstate.group = [];
-    // let tempData = process(this.taskDetailsTemp, this.tempstate);
-
-    // this.state.filter = filter;
-    // if (this.state.group.length > 0) {
-    //   this.tempstate.group = this.state.group;
-    //   setTimeout(() => {
-    //     this.gridView = process(tempData.data, this.tempstate);
-    //     this.taskDetails = this.gridView.data;
-    //     this.gridView.total = this.gridView.data.length
-    //   }, 200);
-    // } else {
-    //   setTimeout(() => {
-    //     this.gridView = process(tempData.data, this.state);
-    //     this.taskDetails = tempData.data;
-    //     this.gridView.total = tempData.total
-    //   }, 200);
-    // }
-
-    // this.taskDetails = tempData.data;
-    // this.renderGrid(tempData, 200)
   }
 
   public cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
@@ -202,9 +155,6 @@ export class TaskDetailsComponent implements OnInit {
           if (((new Date().getTime()) - this.touchtime) < 400) {
             if (columnIndex == 1) {
               this.openParamsWindow();
-              // if ((this.selectedEvent.eventParamCount > 0 && this.selectedEvent.eventParamEmptyCount == 0) || (this.selectedEvent.eventParamCount > 0 && this.selectedEvent.eventParamEmptyCount > 0)) {
-
-              // }
             } else if (columnIndex == 2) {
               this.opneNotifyWindow();
             } else {
@@ -221,10 +171,6 @@ export class TaskDetailsComponent implements OnInit {
 
 
     }
-
-
-
-
 
   }
 
@@ -311,10 +257,12 @@ export class TaskDetailsComponent implements OnInit {
             let successStr = [];
             for (let runevent in runevents) {
               let rowStr = runevents[runevent].data > 1 ? "rows" : "row";
-              successStr.push(` ${this.selectedEvent[runevent].eventTypeCode} : ${this.selectedEvent[runevent].eventTypeName} : ${runevents[runevent].data} ${rowStr} identified.`);
-              // if (runevents[runevent].isSuccess && runevents[runevent].data >= 0) {
-              //   // successStr += `${this.selectedEvent[runevent].eventTypeCode} : ${this.selectedEvent[runevent].eventTypeName}   ${runevents[runevent].data} rows identified.,`;
-              // }
+              if (runevents[runevent].data < 0) {
+                successStr.push(` ${this.selectedEvent[runevent].eventTypeCode} : Event failed to run, check the process log for details.`);
+              } else {
+                successStr.push(` ${this.selectedEvent[runevent].eventTypeCode} : ${this.selectedEvent[runevent].eventTypeName} : ${runevents[runevent].data} ${rowStr} identified.`);
+              }
+
             }
 
             setTimeout(() => {
@@ -367,10 +315,18 @@ export class TaskDetailsComponent implements OnInit {
   deleteEvent() {
     if (this.selectedEvent.length > 0) {
       let req: any = [];
+      let checkCurrentUser = false;
       for (let selectedEve of this.selectedEvent) {
         if (selectedEve.eventTypeUpdatedBy == this.currentUser.userId) {
           req.push(this.eventManagerService.deleteEvent(selectedEve.eventTypeSequence, this.currentUser.userId));
+        } else {
+          checkCurrentUser = true;
         }
+      }
+
+      if (checkCurrentUser) {
+        this.alertService.error("Please select your task to delete.")
+        return
       }
 
       this.subs.add(
@@ -388,15 +344,20 @@ export class TaskDetailsComponent implements OnInit {
 
   }
 
-  editEventMethod() {
-    $('.taskDetails').addClass('ovrlay');
-    this.editEvent = true;
+  editEventMethod(editType = 'edit') {
+    if (this.selectedEvent.length > 0) {
+      this.editType = editType
+      $('.taskDetails').addClass('ovrlay');
+      this.editEvent = true;
+    }
+
   }
 
   closeEditEvent($event) {
-    this.getEventData();
     $('.taskDetails').removeClass('ovrlay');
     this.editEvent = $event;
+    this.mySelection = []
+    this.selectedEvent = []
     this.getEventData();
   }
 
@@ -413,7 +374,26 @@ export class TaskDetailsComponent implements OnInit {
     return true;
   }
 
+  setSeletedRow(dataItem) {
+    this.mySelection = [];
+    this.selectedEvent = [];
+    this.mySelection.push(dataItem.eventTypeCode)
+    this.selectedEvent.push(dataItem)
+  }
 
+
+  addEvent() {
+    this.addEventWin = true;
+    $('.taskDetails').addClass('ovrlay');
+  }
+
+  closeAddEvent(event) {
+    $('.taskDetails').removeClass('ovrlay');
+    this.addEventWin = event;
+    this.mySelection = []
+    this.selectedEvent = []
+    this.getEventData();
+  }
 
 
 }

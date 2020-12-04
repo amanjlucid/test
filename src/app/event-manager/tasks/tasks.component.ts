@@ -46,7 +46,7 @@ export class TasksComponent implements OnInit {
   loading = true
   assignedToOther = false;
   plannedDatewindow = false;
-  taskSecurityList:any = [];
+  taskSecurityList: any = [];
 
   constructor(
     private eveneManagerService: EventManagerService,
@@ -101,7 +101,7 @@ export class TasksComponent implements OnInit {
               }
             )
           }
-         
+
         }
       )
     )
@@ -230,7 +230,12 @@ export class TasksComponent implements OnInit {
     this.getUserEventsList(this.currentUser.userId, this.hideComplete);
   }
 
-  openTaskDetails() {
+  openTaskDetails(item = null, single = null) {
+    if (single == "single") {
+      this.selectedEvent = [];
+      this.selectedEvent.push(item)
+    }
+
     if (this.selectedEvent.length > 0) {
       $('.taskOvrlay').addClass('ovrlay');
       this.taskDetails = true;
@@ -253,7 +258,12 @@ export class TasksComponent implements OnInit {
   }
 
 
-  openTaskData() {
+  openTaskData(item = null, single = null) {
+    if (single = "single") {
+      this.selectedEvent = [];
+      this.selectedEvent.push(item);
+    }
+
     if (this.selectedEvent.length > 0) {
       $('.taskOvrlay').addClass('ovrlay');
       this.taskData = true;
@@ -348,7 +358,12 @@ export class TasksComponent implements OnInit {
   }
 
 
-  assignToMe() {
+  assignToMe(item = null, single = null) {
+    if (single == "single") {
+      this.selectedEvent = [];
+      this.selectedEvent.push(item)
+    }
+
     if (this.selectedEvent.length > 0) {
       let failsData = [];
       let successData = [];
@@ -385,7 +400,12 @@ export class TasksComponent implements OnInit {
   }
 
 
-  assignToOther() {
+  assignToOther(item = null, single = null) {
+    if (single = "single") {
+      this.selectedEvent = [];
+      this.selectedEvent.push(item);
+    }
+
     if (this.selectedEvent.length > 0) {
       this.assignedToOther = true;
       $('.taskOvrlay').addClass('ovrlay');

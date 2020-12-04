@@ -1,5 +1,5 @@
 <kendo-window title="{{title}}" *ngIf="addEventWin" (close)="closeAddEventMethod()" [top]="10" [minWidth]="500"
-    [width]="600" [height]="270" [minHeight]="270">
+    [width]="600" [height]="auto" [minHeight]="230">
     <form [formGroup]="editEvform" id="editEvform" (ngSubmit)="onSubmit()" autocomplete="off">
         <div class="row">
             <div class="col-md-3">

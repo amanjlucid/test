@@ -8,8 +8,14 @@
         </div>
 
         <div class="col-md-10 text-right" *ngIf="selectedEvent.length > 1">
-            <button *ngIf="taskSecurityList.indexOf('Edit') != -1" type="button" class="btn btn-sm themeButton mr-1" (click)="editEventMethod()">Edit</button>
-            <button *ngIf="taskSecurityList.indexOf('Notify') != -1" type="button" class="btn btn-sm themeButton mr-1" (click)="opneNotifyWindow()">Notify</button>
+            <button *ngIf="taskSecurityList.indexOf('Edit') != -1" type="button" class="btn btn-sm themeButton mr-1"
+                (click)="editEventMethod('edit')">Edit</button>
+            <button *ngIf="taskSecurityList.indexOf('Edit') != -1" type="button" class="btn btn-sm themeButton mr-1"
+                (click)="editEventMethod('escalation')">Escalation</button>
+                <button *ngIf="taskSecurityList.indexOf('Edit') != -1" type="button" class="btn btn-sm themeButton mr-1"
+                (click)="addEvent()">Schedule</button>
+            <button *ngIf="taskSecurityList.indexOf('Notify') != -1" type="button" class="btn btn-sm themeButton mr-1"
+                (click)="opneNotifyWindow()">Notify</button>
             <button type="button" class="btn btn-sm themeButton mr-1" (click)="runEvent()">Run</button>
             <button type="button" class="btn btn-sm themeButton mr-1" (click)="copyEvent()">Copy</button>
             <button type="button" class="btn btn-sm themeButton" (click)="openConfirmationDialog()">Delete</button>
@@ -34,12 +40,19 @@
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <li [ngClass]="{'disabled' : selectedEvent.length > 1}" class="nav-item dropdown list-unstyled"
                             style="margin-top: -7px;">
-                            <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
+                            <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"
+                                (click)="setSeletedRow(dataItem)"></i>
                             <div class="dropdown-menu">
-                                <a  *ngIf="taskSecurityList.indexOf('Edit') != -1" class="dropdown-item" href="javascript:void(0)" (click)="editEventMethod()">Edit</a>
-                                <a *ngIf="taskSecurityList.indexOf('Notify') != -1" class="dropdown-item" href="javascript:void(0)"
-                                    (click)="opneNotifyWindow()">Notify</a>
-                                <a *ngIf="taskSecurityList.indexOf('Parameters') != -1" [ngClass]="{'disabled' : (dataItem.eventParamCount <= 0 &&  dataItem.eventParamEmptyCount != 0) || (dataItem.eventParamCount <= 0 &&  dataItem.eventParamEmptyCount <= 0) }"
+                                <a *ngIf="taskSecurityList.indexOf('Edit') != -1" class="dropdown-item"
+                                    href="javascript:void(0)" (click)="editEventMethod('edit')">Edit</a>
+                                <a *ngIf="taskSecurityList.indexOf('Edit') != -1" class="dropdown-item"
+                                    href="javascript:void(0)" (click)="editEventMethod('escalation')">Escalation</a>
+                                <a *ngIf="taskSecurityList.indexOf('Edit') != -1" class="dropdown-item"
+                                    href="javascript:void(0)" (click)="addEvent()">Schedule</a>
+                                <a *ngIf="taskSecurityList.indexOf('Notify') != -1" class="dropdown-item"
+                                    href="javascript:void(0)" (click)="opneNotifyWindow()">Notify</a>
+                                <a *ngIf="taskSecurityList.indexOf('Parameters') != -1"
+                                    [ngClass]="{'disabled' : (dataItem.eventParamCount <= 0 &&  dataItem.eventParamEmptyCount != 0) || (dataItem.eventParamCount <= 0 &&  dataItem.eventParamEmptyCount <= 0) }"
                                     class="dropdown-item" href="javascript:void(0)"
                                     (click)="openParamsWindow()">Parameter(s)</a>
 
@@ -75,7 +88,8 @@
                     </ng-template>
                 </kendo-grid-column>
 
-                <kendo-grid-column field="eventTypeNotifyCount" title="Notification" width="50" [filterable]="false" [groupable]="true">
+                <kendo-grid-column field="eventTypeNotifyCount" title="Notification" width="50" [filterable]="false"
+                    [groupable]="true">
 
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <span>
@@ -252,5 +266,8 @@
 <app-notify *ngIf="notifyWindow" [notifyWindow]="notifyWindow" [selectedEvent]="selectedEvent"
     (closeNotifyWindow)="closeNotifyWindow($event)"></app-notify>
 
-<app-edit-event *ngIf="editEvent" [editEvent]="editEvent" [selectedEvent]="selectedEvent"
+<app-edit-event *ngIf="editEvent" [editEvent]="editEvent" [editType]="editType" [selectedEvent]="selectedEvent"
     (closeEditEvent)="closeEditEvent($event)"></app-edit-event>
+
+<app-add-event *ngIf="addEventWin" [addEventWin]="addEventWin" [selectedEvent]="selectedEvent"
+    (closeAddEvent)="closeAddEvent($event)"></app-add-event>

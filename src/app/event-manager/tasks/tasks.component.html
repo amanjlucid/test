@@ -48,17 +48,19 @@
                             style="margin-top: -7px;">
                             <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" href="javascript:void(0)" (click)="openTaskDetails()">Task
+                                <a class="dropdown-item" href="javascript:void(0)"
+                                    (click)="openTaskDetails(dataItem, 'single')">Task
                                     Details</a>
-                                <a class="dropdown-item" href="javascript:void(0)" (click)="openTaskData()">Task
+                                <a class="dropdown-item" href="javascript:void(0)"
+                                    (click)="openTaskData(dataItem,'single')">Task
                                     Data</a>
 
                                 <div class="dropdown-toggle">
                                     <div class="dropdown-item">Assign</div>
                                     <div class="dropdown-menu">
-                                        <a class="dropdown-item" (click)="assignToMe()" href="javascript:void(0)">Assign
+                                        <a class="dropdown-item" (click)="assignToMe(dataItem,'single')" href="javascript:void(0)">Assign
                                             to Me</a>
-                                        <a class="dropdown-item" (click)="assignToOther()"
+                                        <a class="dropdown-item" (click)="assignToOther(dataItem,'single')"
                                             href="javascript:void(0)">Assign
                                             to Other user</a>
 
@@ -118,7 +120,7 @@
 
                 <kendo-grid-column field="eventSequence" title="Seq" width="100">
                 </kendo-grid-column>
-                <kendo-grid-column field="busareaName" title="Bus Area" width="160">
+                <kendo-grid-column field="busareaName" title="Business Area" width="160">
                 </kendo-grid-column>
                 <kendo-grid-column field="eventTypeCode" title="Code" width="120">
                 </kendo-grid-column>
@@ -159,7 +161,7 @@
                 </kendo-grid-column>
                 <kendo-grid-column field="eventAssignUserName" title="Assigned To" width="210">
                 </kendo-grid-column>
-                <kendo-grid-column field="eventEscStatusName" title="Esc" width="120">
+                <kendo-grid-column field="eventEscStatusName" title="Escalation" width="120">
                 </kendo-grid-column>
                 <kendo-grid-column field="eventSevTypeName" title="Severity" width="120">
                 </kendo-grid-column>

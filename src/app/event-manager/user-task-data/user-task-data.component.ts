@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { SubSink } from 'subsink';
-import { GroupDescriptor, DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
+import { GroupDescriptor, State, SortDescriptor } from '@progress/kendo-data-query';
 import { SelectableSettings, PageChangeEvent } from '@progress/kendo-angular-grid';
 
 import { AlertService, EventManagerService, HelperService } from '../../_services'
@@ -113,7 +113,6 @@ export class UserTaskDataComponent implements OnInit {
   }
 
   filterChange(filter: any): void {
-    //this.headerFilters.IsFilter = false;
     this.state.filter = filter;
 
     // this.filters = [];
@@ -235,10 +234,8 @@ export class UserTaskDataComponent implements OnInit {
   }
 
   public cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
-
     this.selectedData = [];
     this.pushClickedData.push({ row: rowIndex, data: dataItem });
-
     for (let ind of this.mySelection) {
       let findVal = this.pushClickedData.find(x => x.row == ind)
       if (findVal) {
@@ -292,8 +289,9 @@ export class UserTaskDataComponent implements OnInit {
                 // console.log(data);
                 msg = `Task Number ${this.selectedEvent.eventSequence}, data item ${successRecord.toString()} status request is updated.`
                 this.alertService.success(msg);
-                this.mySelection = []
+                this.mySelection = [];
                 this.selectedData = [];
+                this.pushClickedData = [];
                 this.userEventByseq(this.selectedEvent.eventSequence, this.currentUser.userId);
                 this.searchGrid()
               }
@@ -307,6 +305,8 @@ export class UserTaskDataComponent implements OnInit {
       } else {
         this.alertService.error("The is no record to update")
       }
+    } else {
+      this.alertService.error("Please select a record.")
     }
   }
 

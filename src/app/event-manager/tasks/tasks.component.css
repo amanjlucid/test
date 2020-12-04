@@ -45,15 +45,15 @@
 }
 
 .mediumColor {
-    color: #e6e617 !important;
+    color: #F39C12 !important;
 }
 
 .highColor {
-    color: red !important;
+    color: #C0392B !important;
 }
 
 .lowColor {
-    color: green !important;
+    color: #27AE60 !important;
 }
 
 .processedRecord {

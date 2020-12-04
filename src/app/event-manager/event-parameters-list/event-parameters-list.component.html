@@ -10,62 +10,38 @@
     <div class="row mt-1">
         <div class="col-md-12">
 
-            <form novalidate #myForm="ngForm">
-                <kendo-grid 
-                [data]="gridView" 
-                [skip]="state.skip" 
-                [sort]="state.sort"  
-                [height]="500" 
-                [selectable]="selectableSettings" 
-                filterable="menu"
-                [filter]="state.filter" 
-                [pageSize]="pageSize" 
-                [rowHeight]="36" 
-                scrollable="virtual"
-                (pageChange)="pageChange($event)" 
-                (sortChange)="sortChange($event)" 
-                (filterChange)="filterChange($event)"
-                kendoGridSelectBy="selectionSeq" 
-                [selectedKeys]="mySelection"
+            <!-- <form novalidate #myForm="ngForm"> -->
+            <kendo-grid [data]="query | async" [loading]="loading" [skip]="headerFilters.currentPage"
+                [pageSize]="headerFilters.pageSize" [selectable]="selectableSettings" filterable="menu"
+                [resizable]="true" [sortable]="{
+        allowUnsort: allowUnsort,
+        mode: multiple ? 'multiple' : 'single'
+        }" [sort]="state.sort" (sortChange)="sortChange($event)" (filterChange)="filterChange($event)"
+                (cellClick)="cellClickHandler($event)" [filter]="state.filter" scrollable="virtual" [rowHeight]="36"
+                [height]="600" (pageChange)="pageChange($event)" [navigable]="true" [selectedKeys]="mySelection"
+                [selectable]="selectableSettings" [kendoGridSelectBy]="mySelectionKey"
                 (selectedKeysChange)="onSelectedKeysChange($event)">
 
+                <kendo-grid-checkbox-column width="50">
+                    <ng-template kendoGridHeaderTemplate *ngIf="selectableSettings.mode == 'multiple'">
+                        <input class="k-checkbox" id="selectAllCheckboxId" kendoGridSelectAllCheckbox
+                            [state]="selectAllState" (selectAllChange)="onSelectAllChange($event)">
+                        <label class="k-checkbox-label" for="selectAllCheckboxId"></label>
+                    </ng-template>
+                </kendo-grid-checkbox-column>
 
-                    <kendo-grid-checkbox-column width="60" >
-                        <ng-template kendoGridHeaderTemplate *ngIf="selectableSettings.mode == 'multiple'">
-                            <input class="k-checkbox" id="selectAllCheckboxId" kendoGridSelectAllCheckbox
-                                [state]="selectAllState" (selectAllChange)="onSelectAllChange($event)">
-                            <label class="k-checkbox-label" for="selectAllCheckboxId"></label>
-                        </ng-template>
-                    </kendo-grid-checkbox-column>
+                <kendo-grid-column *ngFor="let col of columnName" field="{{col.key}}" title="{{col.val}}" width="170">
 
-                    <kendo-grid-column *ngFor="let col of columnName" field="{{col.key}}" title="{{col.val}}"
-                        width="170">
-                        
-                        <ng-template kendoGridCellTemplate let-dataItem *ngIf="col.key == 'selectionChar'">
-                            <span class="valueSpan" *ngIf="dataItem.selectionChar == ''">{{dataItem.selectiionNum}}</span>
-                            <span class="valueSpan" *ngIf="dataItem.selectionChar != ''">{{dataItem.selectionChar}}</span>
+                    <ng-template kendoGridCellTemplate let-dataItem *ngIf="col.key == 'selectionChar'">
+                        <span class="valueSpan" *ngIf="dataItem.selectionChar == ''">{{dataItem.selectiionNum}}</span>
+                        <span class="valueSpan" *ngIf="dataItem.selectionChar != ''">{{dataItem.selectionChar}}</span>
 
-                        </ng-template>
-                    </kendo-grid-column>
+                    </ng-template>
+                </kendo-grid-column>
 
 
-
-
-                    <!-- 
-
-                    <kendo-grid-column field="eventTypeParamType" title="Type" width="100">
-
-                    </kendo-grid-column>
-
-                    <kendo-grid-column field="eventTypeParamSqlValue" title="Values(s)" width="230"
-                        [filterable]="false">
-                    </kendo-grid-column> -->
-
-
-
-
-                </kendo-grid>
-            </form>
+            </kendo-grid>
+            <!-- </form> -->
 
         </div>
     </div>

@@ -1,8 +1,11 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { AlertService, EventManagerService, HelperService } from '../../_services'
-import { SelectableSettings, SelectAllCheckboxState, PageChangeEvent } from '@progress/kendo-angular-grid';
+import { SelectableSettings, SelectAllCheckboxState, PageChangeEvent, GridComponent, RowArgs } from '@progress/kendo-angular-grid';
+import { BehaviorSubject } from 'rxjs';
+import { EventParameterList } from 'src/app/_models/event-parameter-list.model';
+import { tap, switchMap, debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'app-event-parameters-list',
@@ -21,15 +24,13 @@ export class EventParametersListComponent implements OnInit {
   state: State = {
     skip: 0,
     sort: [],
-    take: 25,
     group: [],
     filter: {
       logic: "or",
       filters: []
     }
   }
-  public gridView: DataResult;
-  pageSize = 25;
+  // public gridView: DataResult;
   allowUnsort = true;
   multiple = false;
   eventParamHeading = '';
@@ -37,11 +38,21 @@ export class EventParametersListComponent implements OnInit {
   columnName = [];
   eventParameters: any;
 
+  totalCount: any = 0;
+  loading: boolean = true;
+  query: any;
+  headerFilters: EventParameterList = new EventParameterList();
+  stateChange = new BehaviorSubject<any>(this.headerFilters);
+  filters: any = [];
+
   public checkboxOnly = false;
   public mode: any = 'multiple';
   public mySelection: number[] = [];
   public selectableSettings: SelectableSettings;
   public selectAllState: SelectAllCheckboxState = 'unchecked';
+  @ViewChild(GridComponent) public grid: GridComponent;
+  allColumnName: any;
+  selectedParamCopy: any;
 
   constructor(
     private eventManagerService: EventManagerService,
@@ -62,7 +73,9 @@ export class EventParametersListComponent implements OnInit {
     }
 
     this.setSelectableSettings();
-    console.log(this.selectedEvent)
+    this.selectedParamCopy = Object.assign({}, this.selectedParam);
+    this.headerFilters.eventTypeSequence = this.selectedEvent.eventTypeSequence;
+    this.headerFilters.eventTypeParmSequence = this.selectedParam.eventTypeParamSequence;
     this.getEventParameterList(this.selectedEvent.eventTypeSequence, this.selectedParam.eventTypeParamSequence)
   }
 
@@ -70,22 +83,158 @@ export class EventParametersListComponent implements OnInit {
     this.subs.unsubscribe();
   }
 
+  getEventParameterList(eSeq, epSeq) {
+    this.subs.add(
+      this.eventManagerService.GetListOfEventTypeParameterSelectionFirstRow(eSeq, epSeq).subscribe(
+        data => {
+          if (data.isSuccess) {
+            // console.log(data);
+            let col = data.data;
+            this.allColumnName = data.data
+            for (let cl in col) {
+              if (col[cl] != '' && col[cl] != 0 && cl != "selectionType" && cl != null && cl != "currentPage" && cl != "isFilter" && cl != "orderBy" && cl != "orderType" && cl != "pageSize")
+                this.columnName.push({ 'key': cl, 'val': col[cl] })
+            }
+
+            this.query = this.stateChange.pipe(
+              debounceTime(400),
+              tap(state => {
+                this.headerFilters = state;
+                this.loading = true;
+              }),
+              switchMap(state => this.eventManagerService.GetListOfEventTypeParameterSelectionPagination(state)),
+              tap((res) => {
+                // console.log(res)
+                this.totalCount = (res.total != undefined) ? res.total : 0;
+                this.loading = false;
+                this.setDefaultSelectedValues(this.selectedParam.eventTypeParamSqlValue);
+                this.chRef.detectChanges();
+              })
+            );
+
+            this.chRef.detectChanges();
+          }
+        },
+        err => {
+          this.alertService.error(err);
+        }
+      )
+    )
+  }
+
   public sortChange(sort: SortDescriptor[]): void {
-    this.state.sort = sort;
-    this.renderGrid();
+    this.mySelection = [];
+    if (sort.length > 0) {
+      if (sort[0].dir == undefined) {
+        sort[0].dir = "asc";
+      }
+
+      if (sort[0].dir == "asc") {
+        this.headerFilters.orderType = "Ascending";
+      } else {
+        this.headerFilters.orderType = "descending";
+      }
+
+      if (this.allColumnName.selectionType == "NUM" && sort[0].field == "selectionChar") {
+        this.headerFilters.orderBy = "selectiionNum";
+      } else {
+        this.headerFilters.orderBy = sort[0].field;
+      }
+
+
+      this.state.sort = sort;
+      this.searchGrid()
+    }
+
   }
 
-  public filterChange(filter: any): void {
+  filterChange(filter: any): void {
     this.state.filter = filter;
-    this.renderGrid();
+    this.mySelection = [];
+
+    if (this.state.filter) {
+      this.headerFilters.isFilter = true;
+      if (this.state.filter.filters.length > 0) {
+        let distincFitler = this.changeFilterState(this.state.filter.filters);
+        distincFitler.then(filter => {
+          if (filter.length > 0) {
+            this.resetGridFilter()
+            for (let ob of filter) {
+              this.setGridFilter(ob);
+            }
+            setTimeout(() => {
+              this.searchGrid()
+            }, 500);
+          }
+        })
+      } else {
+        this.headerFilters.isFilter = false;
+        this.resetGridFilter()
+        this.searchGrid()
+      }
+    } else {
+      this.headerFilters.isFilter = false;
+      this.resetGridFilter()
+      this.searchGrid()
+    }
+
   }
 
-  pageChange(event: PageChangeEvent): void {
-    this.state.skip = event.skip;
-    this.gridView = {
-      data: this.parameterList.slice(this.state.skip, this.state.skip + this.pageSize),
-      total: this.parameterList.length
-    };
+
+  changeFilterState(obj) {
+    return Promise.resolve().then(x => {
+      for (let f of obj) {
+        if (f.hasOwnProperty("field")) {
+          if (this.containsObject(f, this.filters) == false) {
+            this.filters.push(f);
+          }
+
+        } else if (f.hasOwnProperty("filters")) {
+          this.changeFilterState(f.filters)
+        }
+      }
+      return this.filters
+    })
+  }
+
+  containsFilterObject(obj, list) {
+    let i;
+    for (i = 0; i < list.length; i++) {
+      if (list[i].field === obj.field && list[i].operator === obj.operator) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  containsObject(obj, list) {
+    let i;
+    for (i = 0; i < list.length; i++) {
+      if (list[i] === obj) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+
+  setGridFilter(obj) {
+    if (this.headerFilters[obj.field] != undefined) {
+      if (this.allColumnName.selectionType == "NUM" && obj.field == "selectionChar") {
+        this.headerFilters['selectiionNum'] = obj.value
+      } else {
+        this.headerFilters[obj.field] = obj.value
+      }
+    }
+  }
+
+  pageChange(state: PageChangeEvent): void {
+    // console.log(state);
+    this.headerFilters.currentPage = state.skip;
+    this.headerFilters.pageSize = state.take;
+    this.stateChange.next(this.headerFilters);
   }
 
 
@@ -97,191 +246,205 @@ export class EventParametersListComponent implements OnInit {
   }
 
 
+  resetGridFilter() {
+    this.headerFilters.selectionChar = '';
+    this.headerFilters.selectiionNum = 0;
+    this.headerFilters.selectionString1 = '';
+    this.headerFilters.selectionString2 = '';
+    this.headerFilters.selectionString3 = '';
+    this.headerFilters.selectionString4 = '';
+    this.headerFilters.selectionString5 = '';
+    this.headerFilters.selectionString6 = '';
+    this.headerFilters.selectionString7 = '';
+    this.headerFilters.selectionString8 = '';
+    this.headerFilters.selectionString9 = '';
+    this.headerFilters.selectionString10 = '';
+
+  }
+
+  searchGrid() {
+    this.headerFilters.currentPage = 0;
+    this.state.skip = 0;
+    this.stateChange.next(this.headerFilters);
+  }
+
+
+
+
+  mySelectionKey(context: RowArgs): string {
+    return context.dataItem.selectionSeq;
+  }
+
+
+  public cellClickHandler(eve) {
+    if (this.mode == "single") {
+      // this.mySelection = []; // reset grid selection
+      this.selectedParam.eventTypeParamSqlValue = ''; // reset parent component selection
+      // this.mySelection.push(eve.dataItem.selectionSeq);
+    } else {
+      if (eve.originalEvent.ctrlKey == false) {
+        if (this.mySelection.length > 0) {
+          this.mySelection = []; // reset grid selection
+          this.selectedParam.eventTypeParamSqlValue = ''; // reset parent component selection
+          this.mySelection.push(eve.dataItem.selectionSeq);
+        }
+      }
+    }
+
+  }
+
   public onSelectedKeysChange(e) {
     const len = this.mySelection.length;
-    
     if (len === 0) {
       this.selectAllState = 'unchecked';
-    } else if (len > 0 && len < this.parameterList.length) {
+    } else if (len > 0 && len < this.totalCount) {
       this.selectAllState = 'indeterminate';
     } else {
       this.selectAllState = 'checked';
     }
 
-    // console.log(this.mySelection);
     this.chRef.detectChanges();
   }
 
   public onSelectAllChange(checkedState: SelectAllCheckboxState) {
     if (checkedState === 'checked') {
-      this.mySelection = this.parameterList.map((item) => item.selectionSeq);
+      this.mySelection = [];
+      let filterModel = Object.assign({}, this.headerFilters);
+      filterModel.isPagination = false;
+      this.subs.add(
+        this.eventManagerService.GetListOfEventTypeParameterSelectionPagination(filterModel).subscribe(
+          data => {
+            this.mySelection = [];
+            if (data.total > 0) {
+              this.selectAllState = 'checked';
+              this.mySelection = data.data.map(x => x.selectionSeq)
+            }
+          }
+        )
+      )
+
       this.selectAllState = 'checked';
     } else {
       this.mySelection = [];
       this.selectAllState = 'unchecked';
     }
 
-    // console.log(this.mySelection);
     this.chRef.detectChanges();
   }
 
   closeParameterWindow() {
     this.eventParamList = false
+    if (this.selectedParam.eventTypeParamSqlValue == "") {
+      this.selectedParam.eventTypeParamSqlValue = this.selectedParamCopy.eventTypeParamSqlValue
+    }
     this.closeEventParamList.emit(this.eventParamList);
   }
 
 
-  getEventParameterList(eSeq, epSeq) {
+  getSelectedData() {
+    if (this.mySelection.length == 0) {
+      this.alertService.error("No record selected");
+      return
+    }
+
+    this.mySelection = this.mySelection.filter((val, ind, self) => self.indexOf(val) == ind)//get unique value
+
+    const params = {
+      eventTypeSequence: this.selectedEvent.eventTypeSequence,
+      eventTypeParmSequence: this.selectedParam.eventTypeParamSequence,
+      selectedSeq: this.mySelection
+    }
+
     this.subs.add(
-      this.eventManagerService.getListOfEventTypeParameterSelection(eSeq, epSeq).subscribe(
+      this.eventManagerService.getSelectedTaskData(params).subscribe(
         data => {
           if (data.isSuccess) {
-            let col = data.data[0];
-            this.parameterList = data.data;
-            // console.log(this.parameterList)
-            for (let cl in col) {
-              if (col[cl] != '' && col[cl] != 0 && cl != "selectionType")
-                this.columnName.push({ 'key': cl, 'val': col[cl] })
+            const paramlist = data.data
+            let pstring = '';
+            let valArr = [];
+            if (paramlist) {
+              for (let plist of paramlist) {
+                if (plist.selectiionNum != undefined) {
+                  if (plist.selectionChar == "") {
+                    valArr.push(plist.selectiionNum);
+                  } else {
+                    valArr.push(plist.selectionChar);
+                  }
+                } else {
+                  valArr.push(plist.selectionChar);
+                }
+              }
+
+
+              if (valArr.length > 0) {
+                pstring = valArr.toString();
+              }
+
+
+              this.subs.add(
+                this.eventManagerService.updateListOfEventTypeParameter(this.selectedEvent.eventTypeSequence, this.selectedParam.eventTypeParamSequence, pstring).subscribe(
+                  data => {
+                    if (data.isSuccess) {
+                      this.selectedParam.eventTypeParamSqlValue = pstring;
+                      this.changeParams()
+                      this.closeParameterWindow()
+                    } else {
+                      this.alertService.error(data.message)
+                    }
+                  },
+                  err => {
+                    this.alertService.error(err);
+                  }
+                )
+              )
+
             }
 
-            // console.log(this.columnName);
-
-            this.parameterList.shift();
-            this.setDefaultSelectedValues(this.selectedParam.eventTypeParamSqlValue);
-            // if (this.parameterList.lenght > 0) {
-            //   this.parameterList = this.parameterList.shift();
-            // }
-            this.renderGrid();
-            this.chRef.detectChanges();
+          } else {
+            this.alertService.error("Something went wrong.")
           }
         },
         err => {
-          this.alertService.error(err);
+          this.alertService.error(err)
         }
       )
     )
-  }
-
-  renderGrid() {
-    this.gridView = process(this.parameterList, this.state);
-    this.chRef.detectChanges();
-  }
-
-
-
-  getSelectedData() {
-    let paramlist = this.parameterList.filter((x: any) => this.mySelection.indexOf(x.selectionSeq) !== -1);
-    let pstring = '';
-    let valArr = [];
-    if (paramlist) {
-      // console.log(paramlist)
-      // if (this.selectedParam.eventTypeParamType == "P") {
-      //   console.log('in')
-      //   for (let plist of paramlist) {
-      //     if (plist.selectiionNum != undefined) {
-
-      //     } else {
-
-      //     }
-      //     pstring += `${plist.selectionChar}`;
-
-      //   }
-      // } else {
-      // console.log('o')
-
-      //let paramLenght = paramlist.length
-      //let i = 1;
-      for (let plist of paramlist) {
-        if (plist.selectiionNum != undefined) {
-          if (plist.selectionChar == "") {
-            // if (i == paramLenght) {
-            //   pstring += `${plist.selectiionNum}`;
-            // } else {
-              //pstring += `${plist.selectiionNum},`;
-              valArr.push(plist.selectiionNum);
-            // }
-          } else {
-            // pstring += `'${plist.selectionChar}',`;
-            valArr.push(plist.selectionChar);
-          }
-        } else {
-          // if (i == paramLenght) {
-          //   pstring += `${plist.selectionChar}`;
-          // } else {
-          //   pstring += `${plist.selectionChar},`;
-
-          // }
-          valArr.push(plist.selectionChar);
-        }
-
-        // i++;
-
-      }
-      // }
-
-      if(valArr.length > 0){
-        pstring = valArr.toString();
-      }
-
-
-      this.subs.add(
-        this.eventManagerService.updateListOfEventTypeParameter(this.selectedEvent.eventTypeSequence, this.selectedParam.eventTypeParamSequence, pstring).subscribe(
-          data => {
-            if (data.isSuccess) {
-              this.selectedParam.eventTypeParamSqlValue = pstring;
-              this.changeParams()
-              this.closeParameterWindow()
-            } else {
-              this.alertService.error(data.message)
-            }
-          },
-          err => {
-            this.alertService.error(err);
-          }
-        )
-      )
-
-    }
 
   }
 
 
 
-  public cellClickHandler(eve) {
-    console.log(eve);
-    // this.selectedParam = dataItem;
-    // console.log(this.selectedParam)
-    // if (columnIndex == 2) {
-    //   if (!isEdited && this.selectedParam.eventTypeParamType == 'N') {
-    //     sender.editCell(rowIndex, columnIndex);
-    //   }
-    // }
-  }
 
   setDefaultSelectedValues(string) {
-    if (string != "") {
-      let splitStr = string.split(",");
-      if (splitStr) {
-        splitStr = splitStr.map(x => this.helperService.replaceAll(x, "'", "").toUpperCase());
-      }
+    setTimeout(() => {
+      if (string != "") {
+        let splitStr = string.split(",");
+        if (splitStr) {
+          splitStr = splitStr.map(x => this.helperService.replaceAll(x, "'", "").toUpperCase());
+        }
 
+        let list: any = this.grid.data;//current grid data
 
-      if (this.parameterList.length > 0) {
-        for (let plist of this.parameterList) {
+        // if (list.data.lenght > 0) {
+        for (let plist of list.data) {
           if (plist.selectiionNum != undefined && plist.selectionChar == "") {
             if (splitStr.indexOf(plist.selectiionNum.toString()) !== -1) {
-              this.mySelection.push(plist.selectionSeq)
+              if (this.mySelection.indexOf(plist.selectionSeq) == -1) {
+                this.mySelection.push(plist.selectionSeq)
+              }
             }
           } else {
             if (splitStr.indexOf(plist.selectionChar) !== -1) {
-              this.mySelection.push(plist.selectionSeq)
+              if (this.mySelection.indexOf(plist.selectionSeq) == -1) {
+                this.mySelection.push(plist.selectionSeq)
+              }
             }
           }
         }
       }
-
-
-    }
+      this.chRef.detectChanges();
+      // }
+    }, 300);
 
   }
 

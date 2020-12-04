@@ -72,3 +72,7 @@
     min-height: 34px !important;
     height: 34px !important;
 }
+
+.escalationForm, .statusForm {
+    width: 100%;
+}

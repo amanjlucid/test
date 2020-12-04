@@ -56,6 +56,7 @@ export class NotifyComponent implements OnInit {
   appendUser = true;
   replaceUser = false;
   actualAvailabelUser: any = [];
+  actualAssignUser: any = [];
   userToRemove: any = [];
   userToAppend: any = [];
 
@@ -87,7 +88,6 @@ export class NotifyComponent implements OnInit {
 
 
   public onSelectedKeysChange(e) {
-    // console.log(this.mySelection)
     const len = this.mySelection.length;
   }
 
@@ -172,6 +172,8 @@ export class NotifyComponent implements OnInit {
     } else {
       this.assignUser = assignUser;
     }
+
+    this.actualAssignUser = Object.assign([], this.assignUser);
 
     this.assignGridView = process(this.assignUser, this.statetwo);
 
@@ -262,6 +264,7 @@ export class NotifyComponent implements OnInit {
         this.userToRemove.push(this.selectedAssignedUser);
         let assignedUser = this.assignUser.filter(x => x.eventRecipient != this.selectedAssignedUser.eventRecipient)
         this.sharedService.changeNotifyUserList([this.actualAvailabelUser, assignedUser]);
+        this.userToAppend = this.userToAppend.filter(x => x.eventRecipient != this.selectedAssignedUser.eventRecipient)
         this.resetAllGridSelection()
         // let req = [];
         // for (let eve of this.selectedEvent) {
@@ -300,6 +303,17 @@ export class NotifyComponent implements OnInit {
   changeUserSetting() {
     this.replaceUser = !this.replaceUser;
     this.appendUser = !this.appendUser;
+
+    if (this.replaceUser) {
+      const tempAssignUser = Object.assign([], this.assignUser);
+      this.userToRemove = this.userToRemove.concat(tempAssignUser)
+      this.assignUser = [];
+      //this.assignGridView = process(this.assignUser, this.statetwo);
+    } else {
+      //this.assignUser = this.actualAssignUser
+      // this.assignGridView = process(this.assignUser, this.statetwo);
+    }
+    this.sharedService.changeNotifyUserList([this.actualAvailabelUser, this.assignUser]);
     this.chRef.detectChanges();
   }
 
@@ -326,7 +340,7 @@ export class NotifyComponent implements OnInit {
       userToAppend: this.checkBlanckUserRmvAndAppend("append", this.userToAppend),
       onlyUpdate: onlyUpdate
     }
-    
+
     this.subs.add(
       this.eventmanagerService.updateAssignUser(params).subscribe(
         data => {
@@ -335,6 +349,7 @@ export class NotifyComponent implements OnInit {
             this.userToRemove = [];
             this.userToAppend = [];
             this.getGridData();
+            this.closeNotifyWindowMethod();
           } else {
             this.alert.error(data.message)
           }
@@ -342,7 +357,7 @@ export class NotifyComponent implements OnInit {
       )
     )
 
-    
+
   }
 
   checkBlanckUserRmvAndAppend(type, data) {

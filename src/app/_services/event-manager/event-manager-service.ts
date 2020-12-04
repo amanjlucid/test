@@ -30,6 +30,27 @@ export class EventManagerService {
 
     }
 
+    getSelectedTaskData(params) {
+        // let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/EventType/GetSelectedTaskData`, params, this.httpOptions);
+
+    }
+
+    GetListOfEventTypeParameterSelectionFirstRow(EventTypeSequence, EventTypeParamSequence) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/EventType/GetListOfEventTypeParameterSelectionFirstRow?eventTypeSequence=${EventTypeSequence}&eventTypeParmSequence=${EventTypeParamSequence}`, this.httpOptions);
+
+    }
+
+    GetListOfEventTypeParameterSelectionPagination(params): Observable<any> {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/EventType/GetListOfEventTypeParameterSelectionPagination`, body, this.httpOptions).pipe(
+            map(response => (<any>{
+                data: (response.data != null) ? response.data.eventTypeParameterSelectionViewModelsList : [],
+                total: (response.data != null) ? response.data.totalCount : 0
+            }))
+        );
+    }
+
     updateListOfEventTypeParameter(EventTypeSequence, EventTypeParamSequence, EventTypeParamSqlValue) {
         let body = JSON.stringify({
             EventTypeSequence: EventTypeSequence,
@@ -88,6 +109,21 @@ export class EventManagerService {
     updateEventList(params) {
         let body = JSON.stringify(params);
         return this.http.post<any>(`${appConfig.apiUrl}/api/EventType/UpdateListOfEventType`, body, this.httpOptions);
+    }
+
+    updateEventStatus(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/EventType/UpdateEventStatus`, body, this.httpOptions);
+    }
+
+    updateEventEscalationLevel(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/EventType/UpdateEventEscalationLevel`, body, this.httpOptions);
+    }
+
+    updateEventSchedule(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/EventType/UpdateEventSchedule`, body, this.httpOptions);
     }
 
     deleteListOfEventTypeNotifyBySequenceNumber(eventTypeSequence) {
@@ -154,11 +190,11 @@ export class EventManagerService {
         return this.http.get<any>(`${appConfig.apiUrl}/api/UserEvents/TransferTo?eventSequence=${eventSequence}&assignUserId=${assignUserId}&userId=${userId}`, this.httpOptions);
     }
 
-    plannedDate(eventSequence, dtPlannedDate, userId){
+    plannedDate(eventSequence, dtPlannedDate, userId) {
         return this.http.get<any>(`${appConfig.apiUrl}/api/Manager/SetPlannedDate?eventSequence=${eventSequence}&dtPlannedDate=${dtPlannedDate}&userId=${userId}`, this.httpOptions);
     }
 
-    updateAssignUser(params){
+    updateAssignUser(params) {
         let body = JSON.stringify(params);
         return this.http.post<any>(`${appConfig.apiUrl}/api/EventType/AddListOfEventTypeNotifyDummy111`, params, this.httpOptions);
     }
