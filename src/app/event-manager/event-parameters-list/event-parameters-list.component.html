@@ -8,7 +8,7 @@
     </div>
 
     <div class="row mt-1">
-        <div class="col-md-12">
+        <div class="col-md-12 paramListGrid">
 
             <!-- <form novalidate #myForm="ngForm"> -->
             <kendo-grid [data]="query | async" [loading]="loading" [skip]="headerFilters.currentPage"
@@ -20,7 +20,7 @@
                 (cellClick)="cellClickHandler($event)" [filter]="state.filter" scrollable="virtual" [rowHeight]="36"
                 [height]="600" (pageChange)="pageChange($event)" [navigable]="true" [selectedKeys]="mySelection"
                 [selectable]="selectableSettings" [kendoGridSelectBy]="mySelectionKey"
-                (selectedKeysChange)="onSelectedKeysChange($event)">
+                (selectedKeysChange)="onSelectedKeysChange($event)" [groupable]="false">
 
                 <kendo-grid-checkbox-column width="50">
                     <ng-template kendoGridHeaderTemplate *ngIf="selectableSettings.mode == 'multiple'">

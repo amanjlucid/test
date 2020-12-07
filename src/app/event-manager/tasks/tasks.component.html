@@ -46,7 +46,7 @@
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <li [ngClass]="{'disabled' : selectedEvent.length > 1}" class="nav-item dropdown list-unstyled"
                             style="margin-top: -7px;">
-                            <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
+                            <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars" (click)="setSeletedRow(dataItem)"></i>
                             <div class="dropdown-menu">
                                 <a class="dropdown-item" href="javascript:void(0)"
                                     (click)="openTaskDetails(dataItem, 'single')">Task
@@ -106,7 +106,7 @@
 
                 </kendo-grid-column> -->
 
-                <kendo-grid-column field="eventSevType" title="" width="50" [filterable]="false" [groupable]="true">
+                <!-- <kendo-grid-column field="eventSevType" title="" width="50" [filterable]="false" [groupable]="true">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <span>
                             <img style="height: 14px;" src="assets/img/icons/tick.png" />
@@ -116,7 +116,7 @@
 
                         </span>
                     </ng-template>
-                </kendo-grid-column>
+                </kendo-grid-column> -->
 
                 <kendo-grid-column field="eventSequence" title="Seq" width="100">
                 </kendo-grid-column>
@@ -124,7 +124,7 @@
                 </kendo-grid-column>
                 <kendo-grid-column field="eventTypeCode" title="Code" width="120">
                 </kendo-grid-column>
-                <kendo-grid-column field="eventName" title="Event" width="270">
+                <kendo-grid-column field="eventName" title="Task" width="270">
                 </kendo-grid-column>
                 <kendo-grid-column field="eventRowCount" title="Record(s)" width="120">
                 </kendo-grid-column>

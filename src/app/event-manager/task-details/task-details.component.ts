@@ -52,7 +52,8 @@ export class TaskDetailsComponent implements OnInit {
   loading = true
   taskSecurityList: any = [];
   editType = 'edit';
-  addEventWin = false
+  addEventWin = false;
+  checkUserEvents: boolean = true;
 
   constructor(
     private eventManagerService: EventManagerService,
@@ -110,7 +111,7 @@ export class TaskDetailsComponent implements OnInit {
             this.taskDetails = data.data;
             this.taskDetailsTemp = Object.assign([], data.data);
 
-            // this.taskDetailsTemp = data.data.slice(this.state.skip, 30) // remove it
+            this.taskDetailsTemp = data.data.slice(this.state.skip, 30) // remove it
             // this.taskDetailsTemp =  Object.assign([], this.taskDetails);  // remove it
 
             this.gridView = process(this.taskDetailsTemp, this.state);
@@ -143,8 +144,14 @@ export class TaskDetailsComponent implements OnInit {
   }
 
   public cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
+    this.checkUserEvents = true;
     if (this.mySelection.length > 0) {
       this.selectedEvent = this.taskDetails.filter(x => this.mySelection.indexOf(x.eventTypeCode) !== -1);
+      for (let selectedEve of this.selectedEvent) {
+        if (selectedEve.eventTypeUpdatedBy != this.currentUser.userId) {
+          this.checkUserEvents = false;
+        }
+      }
 
       if (this.selectedEvent.length == 1) {
         if (this.touchtime == 0) {
@@ -315,16 +322,14 @@ export class TaskDetailsComponent implements OnInit {
   deleteEvent() {
     if (this.selectedEvent.length > 0) {
       let req: any = [];
-      let checkCurrentUser = false;
+      // let checkCurrentUser = false;
       for (let selectedEve of this.selectedEvent) {
         if (selectedEve.eventTypeUpdatedBy == this.currentUser.userId) {
           req.push(this.eventManagerService.deleteEvent(selectedEve.eventTypeSequence, this.currentUser.userId));
-        } else {
-          checkCurrentUser = true;
         }
       }
 
-      if (checkCurrentUser) {
+      if (!this.checkUserEvents) {
         this.alertService.error("Please select your task to delete.")
         return
       }

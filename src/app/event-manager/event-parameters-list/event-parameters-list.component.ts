@@ -97,7 +97,7 @@ export class EventParametersListComponent implements OnInit {
             }
 
             this.query = this.stateChange.pipe(
-              debounceTime(400),
+              debounceTime(20),
               tap(state => {
                 this.headerFilters = state;
                 this.loading = true;
@@ -277,20 +277,24 @@ export class EventParametersListComponent implements OnInit {
 
 
   public cellClickHandler(eve) {
+    // console.log(eve)
+    this.selectedParam.eventTypeParamSqlValue
     if (this.mode == "single") {
       // this.mySelection = []; // reset grid selection
-      this.selectedParam.eventTypeParamSqlValue = ''; // reset parent component selection
+      // this.selectedParam.eventTypeParamSqlValue = ''; // reset parent component selection
       // this.mySelection.push(eve.dataItem.selectionSeq);
     } else {
       if (eve.originalEvent.ctrlKey == false) {
         if (this.mySelection.length > 0) {
           this.mySelection = []; // reset grid selection
-          this.selectedParam.eventTypeParamSqlValue = ''; // reset parent component selection
+          // this.selectedParam.eventTypeParamSqlValue = ''; // reset parent component selection
           this.mySelection.push(eve.dataItem.selectionSeq);
         }
       }
     }
 
+    this.chRef.detectChanges();
+    // console.log({'cell' : this.mySelection})
   }
 
   public onSelectedKeysChange(e) {
@@ -308,9 +312,11 @@ export class EventParametersListComponent implements OnInit {
 
   public onSelectAllChange(checkedState: SelectAllCheckboxState) {
     if (checkedState === 'checked') {
+      this.selectAllState = 'checked';
       this.mySelection = [];
       let filterModel = Object.assign({}, this.headerFilters);
       filterModel.isPagination = false;
+      this.chRef.detectChanges();
       this.subs.add(
         this.eventManagerService.GetListOfEventTypeParameterSelectionPagination(filterModel).subscribe(
           data => {
@@ -318,18 +324,18 @@ export class EventParametersListComponent implements OnInit {
             if (data.total > 0) {
               this.selectAllState = 'checked';
               this.mySelection = data.data.map(x => x.selectionSeq)
+              this.chRef.detectChanges();
             }
           }
         )
       )
-
-      this.selectAllState = 'checked';
     } else {
       this.mySelection = [];
       this.selectAllState = 'unchecked';
+      this.chRef.detectChanges();
     }
+    // console.log({'sel':this.mySelection})
 
-    this.chRef.detectChanges();
   }
 
   closeParameterWindow() {
@@ -368,10 +374,19 @@ export class EventParametersListComponent implements OnInit {
                   if (plist.selectionChar == "") {
                     valArr.push(plist.selectiionNum);
                   } else {
-                    valArr.push(plist.selectionChar);
+                    if (this.selectedParam.eventTypeParamType == "I") {
+                      valArr.push(`'${plist.selectionChar}'`);
+                    } else {
+                      valArr.push(plist.selectionChar);
+                    }
                   }
                 } else {
-                  valArr.push(plist.selectionChar);
+                  if (this.selectedParam.eventTypeParamType == "I") {
+                    valArr.push(`'${plist.selectionChar}'`);
+                  } else {
+                    valArr.push(plist.selectionChar);
+                  }
+
                 }
               }
 
@@ -425,6 +440,7 @@ export class EventParametersListComponent implements OnInit {
 
         let list: any = this.grid.data;//current grid data
 
+       
         // if (list.data.lenght > 0) {
         for (let plist of list.data) {
           if (plist.selectiionNum != undefined && plist.selectionChar == "") {
@@ -437,6 +453,12 @@ export class EventParametersListComponent implements OnInit {
             if (splitStr.indexOf(plist.selectionChar) !== -1) {
               if (this.mySelection.indexOf(plist.selectionSeq) == -1) {
                 this.mySelection.push(plist.selectionSeq)
+              }
+            } else {
+              if (this.selectedParam.eventTypeParamSqlValue.indexOf(plist.selectionChar) !== -1) {
+                if (this.mySelection.indexOf(plist.selectionSeq) == -1) {
+                  this.mySelection.push(plist.selectionSeq)
+                }
               }
             }
           }

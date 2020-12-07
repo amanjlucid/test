@@ -148,7 +148,8 @@ export class TasksComponent implements OnInit {
           // compare first click to this click and see if they occurred within double click threshold
           if (((new Date().getTime()) - this.touchtime) < 400) {
             if (columnIndex > 1) {
-              this.openTaskData()
+              console.log('dfd')
+              this.openTaskData(dataItem,'single')
             }
 
             this.touchtime = 0;
@@ -169,7 +170,7 @@ export class TasksComponent implements OnInit {
     this.subs.add(
       this.eveneManagerService.getListOfUserEventByUserId(userId, hideComplete).subscribe(
         data => {
-          // console.log(data);
+          console.log(data);
           if (data.isSuccess) {
             this.userEventList = data.data;
             if (this.seqIds != "") {
@@ -495,6 +496,15 @@ export class TasksComponent implements OnInit {
       }
     }
   }
+
+
+  setSeletedRow(dataItem) {
+    this.mySelection = [];
+    this.selectedEvent = [];
+    this.mySelection.push(dataItem.eventSequence)
+    this.selectedEvent.push(dataItem)
+  }
+
 
 
 

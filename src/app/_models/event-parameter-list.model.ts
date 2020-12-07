@@ -4,7 +4,7 @@ export class EventParameterList {
     orderType: any = 'Ascending';
     isPagination:boolean = true;
     currentPage: any = 0;
-    pageSize: any = 80;
+    pageSize: any = 50;
     isFilter: any = false;
     isExport: any = false;
     selectionChar: any = '';

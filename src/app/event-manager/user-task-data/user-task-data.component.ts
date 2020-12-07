@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { SubSink } from 'subsink';
 import { GroupDescriptor, State, SortDescriptor } from '@progress/kendo-data-query';
-import { SelectableSettings, PageChangeEvent } from '@progress/kendo-angular-grid';
+import { SelectableSettings, PageChangeEvent, SelectAllCheckboxState } from '@progress/kendo-angular-grid';
 
 import { AlertService, EventManagerService, HelperService } from '../../_services'
 import { tap, switchMap } from 'rxjs/operators';
@@ -19,7 +19,7 @@ export class UserTaskDataComponent implements OnInit {
   @Input() taskData: boolean = false;
   @Input() selectedEvent: any;
   headerFilters: EventTask = new EventTask();
-  title = 'Event Tasks';
+  title = 'Task Data';
   subs = new SubSink();
   state: State = {
     skip: 0,
@@ -33,6 +33,7 @@ export class UserTaskDataComponent implements OnInit {
   public loading: boolean;
   public query: any;
   private stateChange = new BehaviorSubject<any>(this.headerFilters);
+  public selectAllState: SelectAllCheckboxState = 'unchecked';
   totalCount: any = 0;
   columns: any = [];
   filters: any = [];
@@ -52,6 +53,8 @@ export class UserTaskDataComponent implements OnInit {
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.selectedEvent = this.selectedEvent[0]
     this.headerFilters.EventSequence = this.selectedEvent.eventSequence;
+
+    console.log(this.selectedEvent);
 
     if (this.selectedEvent.unprocessedCount == 0) {
       this.headerFilters.EventDataStatus = "P";
@@ -245,6 +248,52 @@ export class UserTaskDataComponent implements OnInit {
 
   }
 
+  public onSelectedKeysChange(e) {
+    const len = this.mySelection.length;
+    if (len === 0) {
+      this.selectAllState = 'unchecked';
+    } else if (len > 0 && len < this.totalCount) {
+      this.selectAllState = 'indeterminate';
+    } else {
+      this.selectAllState = 'checked';
+    }
+
+    this.chRef.detectChanges();
+  }
+
+  public onSelectAllChange(checkedState: SelectAllCheckboxState) {
+    if (checkedState === 'checked') {
+      this.selectAllState = 'checked';
+      // this.mySelection = [];
+      // let filterModel = Object.assign({}, this.headerFilters);
+      // filterModel.isPagination = false;
+      // this.chRef.detectChanges();
+      // this.subs.add(
+      //   this.eventManagerService.GetListOfEventTypeParameterSelectionPagination(filterModel).subscribe(
+      //     data => {
+      //       this.mySelection = [];
+      //       if (data.total > 0) {
+      //         this.selectAllState = 'checked';
+      //         this.mySelection = data.data.map(x => x.selectionSeq)
+      //         this.chRef.detectChanges();
+      //       }
+      //     }
+      //   )
+      // )
+    } else {
+     // this.mySelection = [];
+      this.selectAllState = 'unchecked';
+     
+    }
+    // console.log({'sel':this.mySelection})
+    this.chRef.detectChanges();
+  }
+
+  dummy(){
+    console.log(this.mySelection);
+    console.log(this.pushClickedData);
+  }
+
   searchGrid() {
     this.headerFilters.CurrentPage = 0;
     this.state.skip = 0;
@@ -259,6 +308,7 @@ export class UserTaskDataComponent implements OnInit {
     }
     this.headerFilters.EventDataStatus = eve
     this.searchGrid()
+    this.resetGridSelection()
   }
 
   closeWin() {
@@ -289,9 +339,7 @@ export class UserTaskDataComponent implements OnInit {
                 // console.log(data);
                 msg = `Task Number ${this.selectedEvent.eventSequence}, data item ${successRecord.toString()} status request is updated.`
                 this.alertService.success(msg);
-                this.mySelection = [];
-                this.selectedData = [];
-                this.pushClickedData = [];
+                this.resetGridSelection()
                 this.userEventByseq(this.selectedEvent.eventSequence, this.currentUser.userId);
                 this.searchGrid()
               }
@@ -315,7 +363,6 @@ export class UserTaskDataComponent implements OnInit {
     this.subs.add(
       this.eveneManagerService.getListOfUserEventBySequence(seq, userId).subscribe(
         data => {
-          // console.log(data.data[0]);
           this.selectedEvent = data.data[0]
         }
       )
@@ -348,7 +395,7 @@ export class UserTaskDataComponent implements OnInit {
                 for (let cl of this.columns) {
                   label[cl.key] = cl.val
                 }
-                this.helperService.exportAsExcelFile(tempdata, 'Event Tasks', label)
+                this.helperService.exportAsExcelFile(tempdata, 'Task Data', label)
               } else {
                 this.alertService.error("There is no record to import")
 
@@ -370,6 +417,12 @@ export class UserTaskDataComponent implements OnInit {
     }
     return false
 
+  }
+
+  resetGridSelection() {
+    this.mySelection = [];
+    this.selectedData = [];
+    this.pushClickedData = [];
   }
 
   showAssets() {

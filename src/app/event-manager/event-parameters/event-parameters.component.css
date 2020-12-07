@@ -23,3 +23,7 @@
     width: 28%;
     float: right;
 }
+
+.parmaBtn:hover{
+    background: #dcdada;
+}

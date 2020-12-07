@@ -152,29 +152,15 @@ export class UserEventsGridComponent implements OnInit {
 
 
   export() {
-    let label = {
-      'eventSequence': 'Seq',
-      'busareaName': 'Bus Area',
-      'eventTypeCode': 'Code',
-      'eventName': 'Event',
-      'eventParamCount': 'Record(s)',
-      'eventProcessedCount': 'Processed',
-      'eventCreatedDate': 'Created',
-      'eventNotifyStatusName': 'Status',
-      'eventAssignUser': 'Assigned To',
-      'eventEscStatusName': 'Esc',
-      'eventSevTypeName': 'Severity',
-      'eventAskTypeName': 'Action',
-      'eventPlannedDate': 'Planned',
-      'eventCreatedBy': 'Created By',
-      'eventUpdatedBy': 'Updated By',
-      'eventUpdateDate': 'Updated',
+    let label = {};
+    for (let col of this.columnName) {
+      label[col.key] = col.val
     }
 
     if (this.usereventData) {
-      this.helperService.exportAsExcelFile(this.usereventData, 'Events', label)
+      this.helperService.exportAsExcelFile(this.usereventData, 'Tasks', label)
     } else {
-
+      this.alertService.error("There is no record to export.")
     }
 
   }

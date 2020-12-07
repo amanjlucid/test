@@ -13,7 +13,7 @@
                 <kendo-grid [data]="gridView" [height]="400" filterable="menu" [resizable]="true" [sortable]="{
             allowUnsort: allowUnsort,
             mode: multiple ? 'multiple' : 'single'
-            }" [skip]="state.skip" [sort]="state.sort" [selectable]="{
+            }" [skip]="state.skip" [groupable]="false" [sort]="state.sort" [selectable]="{
               mode: 'multiple'
             }" [filter]="state.filter" (dataStateChange)="onStateChange($event)" (sortChange)="sortChange($event)"
                     (filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)" [navigable]="false">
@@ -45,10 +45,10 @@
                         <ng-template kendoGridCellTemplate let-dataItem>
                             <div class="valueDiv">
                                 <span class="valueSpan">{{dataItem.eventTypeParamSqlValue}}</span>
-                                <button class="btn btn-sm" (click)="openParameterOptions(dataItem)"
+                                <button class="btn btn-sm parmaBtn" (click)="openParameterOptions(dataItem)"
                                     *ngIf="dataItem.eventTypeParamType == 'P'" type="button">Select Value...</button>
 
-                                <button class="btn btn-sm" (click)="openParameterOptions(dataItem)"
+                                <button class="btn btn-sm parmaBtn" (click)="openParameterOptions(dataItem)"
                                     *ngIf="dataItem.eventTypeParamType == 'I'" type="button">Select List...</button>
                             </div>
 

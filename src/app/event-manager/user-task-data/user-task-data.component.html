@@ -2,7 +2,7 @@
     [height]="auto" [minHeight]="350">
     <div class="row taskDetailsDiv">
         <div class="col-md-12 headingDiv">
-            <span class="eventHeading"> Event : {{selectedEvent.eventSequence}} {{selectedEvent.eventTypeName}} </span>
+            <span class="eventHeading"> Task : {{selectedEvent.eventSequence}} {{selectedEvent.eventTypeName}} </span>
 
         </div>
 
@@ -19,7 +19,7 @@
                 <label class="radio-inline">
                     <input [disabled]="selectedEvent.eventProcessedCount == selectedEvent.eventRowCount"
                         (ngModelChange)="onChange($event)" value="U" [(ngModel)]="headerFilters.EventDataStatus"
-                        type="radio" name="processed" checked>Un Processed
+                        type="radio" name="processed" checked>Unprocessed
                     ({{selectedEvent.eventRowCount - selectedEvent.eventProcessedCount}})
                 </label>
                 <label class="radio-inline">
@@ -31,7 +31,8 @@
             </div>
 
             <div class="butnDiv">
-                <button type="button" *ngIf="checkShowAssetBtn() && selectedData.length == 1" class="btn btn-sm themeButton mr-2" (click)="showAssets()">Show Assets</button>
+                <button type="button" *ngIf="checkShowAssetBtn() && selectedData.length == 1"
+                    class="btn btn-sm themeButton mr-2" (click)="showAssets()">Show Assets</button>
                 <button type="button" class="btn btn-sm themeButton" (click)="export()">Export</button>
 
             </div>
@@ -39,7 +40,7 @@
 
         </div>
 
-        <div class="col-md-12">
+        <div class="col-md-12 userTaskData">
             <kendo-grid [data]="query | async" [loading]="loading" [skip]="headerFilters.CurrentPage"
                 [pageSize]="headerFilters.PageSize" [selectable]="{
         mode: 'multiple'
@@ -50,6 +51,13 @@
                 (cellClick)="cellClickHandler($event)" [filter]="state.filter" scrollable="virtual" [rowHeight]="36"
                 [height]="600" (pageChange)="pageChange($event)" [navigable]="true" [selectedKeys]="mySelection"
                 kendoGridSelectBy>
+                <kendo-grid-checkbox-column width="50">
+                    <ng-template kendoGridHeaderTemplate>
+                        <input class="k-checkbox" id="selectAllCheckboxId" kendoGridSelectAllCheckbox
+                            [state]="selectAllState" (selectAllChange)="onSelectAllChange($event)">
+                        <label class="k-checkbox-label" for="selectAllCheckboxId"></label>
+                    </ng-template>
+                </kendo-grid-checkbox-column>
 
                 <kendo-grid-column *ngFor="let col of columns" field="{{col.key}}" title="{{col.val}}" width="170">
 
@@ -69,6 +77,7 @@
                 [disabled]="selectedEvent.eventProcessedCount == selectedEvent.eventRowCount || selectedEvent.eventAssignUser != currentUser.userId"
                 type="button" class="btn btn-sm themeButton mr-2" (click)="updateEvent('U')">Set to
                 Unprocessed</button>
+            <!-- <button type="button" class="btn btn-sm themeButton mr-2" (click)="dummy()">dummy</button> -->
             <button type="button" class="btn btn-sm themeButton mr-2 pull-right" (click)="closeWin()">Cancel</button>
         </div>
     </div>
