@@ -157,6 +157,10 @@ export class EventManagerService {
         return this.http.get<any>(`${appConfig.apiUrl}/api/Manager/GetFirstRecordOfEventData?eventSequence=${eventSequence}`, this.httpOptions);
     }
 
+    getListOfEventDataByEventDataSequence(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/Manager/GetListOfEventDataByEventDataSequence`, body, this.httpOptions);
+    }
 
     getListOfEventData(params): Observable<any> {
         let body = JSON.stringify(params);

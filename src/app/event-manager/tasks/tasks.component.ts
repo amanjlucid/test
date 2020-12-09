@@ -148,8 +148,7 @@ export class TasksComponent implements OnInit {
           // compare first click to this click and see if they occurred within double click threshold
           if (((new Date().getTime()) - this.touchtime) < 400) {
             if (columnIndex > 1) {
-              console.log('dfd')
-              this.openTaskData(dataItem,'single')
+              this.openTaskData(dataItem, 'single')
             }
 
             this.touchtime = 0;
@@ -170,8 +169,8 @@ export class TasksComponent implements OnInit {
     this.subs.add(
       this.eveneManagerService.getListOfUserEventByUserId(userId, hideComplete).subscribe(
         data => {
-          console.log(data);
           if (data.isSuccess) {
+            // console.log(data)
             this.userEventList = data.data;
             if (this.seqIds != "") {
               let seqArr = this.seqIds.split(",");
@@ -338,6 +337,7 @@ export class TasksComponent implements OnInit {
         'eventTypeCode': 'Code',
         'eventTypeDesc': 'Event',
         'eventRowCount': 'Record(s)',
+        'eventProcessedCount': 'Processed %',
         'eventCreatedDate': 'Created',
         'eventStatusName': 'Status',
         'eventEscStatusName': 'Esc',
@@ -478,11 +478,11 @@ export class TasksComponent implements OnInit {
   }
 
 
-  roundoff(dataItem) {
-    //((dataItem.eventProcessedCount/dataItem.eventRowCount) * 100)
-    let input = ((dataItem.eventProcessedCount / dataItem.eventRowCount) * 100);
-    return Math.round(input);
-  }
+  // roundoff(dataItem) {
+  //   //((dataItem.eventProcessedCount/dataItem.eventRowCount) * 100)
+  //   let input = ((dataItem.eventProcessedCount / dataItem.eventRowCount) * 100);
+  //   return Math.round(input);
+  // }
 
 
   rowCallback(context: RowClassArgs) {

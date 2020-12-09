@@ -111,7 +111,7 @@ export class TaskDetailsComponent implements OnInit {
             this.taskDetails = data.data;
             this.taskDetailsTemp = Object.assign([], data.data);
 
-            this.taskDetailsTemp = data.data.slice(this.state.skip, 30) // remove it
+            // this.taskDetailsTemp = data.data.slice(this.state.skip, 30) // remove it
             // this.taskDetailsTemp =  Object.assign([], this.taskDetails);  // remove it
 
             this.gridView = process(this.taskDetailsTemp, this.state);

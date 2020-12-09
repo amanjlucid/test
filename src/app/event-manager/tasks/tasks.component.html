@@ -34,7 +34,7 @@
 
         <div class="col-md-12">
             <kendo-grid (groupChange)="groupChange($event)" [group]="state.group" [groupable]="true" [data]="gridView"
-                [height]="700" [loading]="loading" filterable="menu" [resizable]="true" [sortable]="{
+                [height]="720" [loading]="loading" filterable="menu" [resizable]="true" [sortable]="{
     allowUnsort: allowUnsort,
     mode: multiple ? 'multiple' : 'single'
     }" [skip]="state.skip" [sort]="state.sort" [selectable]="selectableSettings" kendoGridSelectBy="eventSequence"
@@ -46,7 +46,8 @@
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <li [ngClass]="{'disabled' : selectedEvent.length > 1}" class="nav-item dropdown list-unstyled"
                             style="margin-top: -7px;">
-                            <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars" (click)="setSeletedRow(dataItem)"></i>
+                            <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"
+                                (click)="setSeletedRow(dataItem)"></i>
                             <div class="dropdown-menu">
                                 <a class="dropdown-item" href="javascript:void(0)"
                                     (click)="openTaskDetails(dataItem, 'single')">Task
@@ -58,7 +59,8 @@
                                 <div class="dropdown-toggle">
                                     <div class="dropdown-item">Assign</div>
                                     <div class="dropdown-menu">
-                                        <a class="dropdown-item" (click)="assignToMe(dataItem,'single')" href="javascript:void(0)">Assign
+                                        <a class="dropdown-item" (click)="assignToMe(dataItem,'single')"
+                                            href="javascript:void(0)">Assign
                                             to Me</a>
                                         <a class="dropdown-item" (click)="assignToOther(dataItem,'single')"
                                             href="javascript:void(0)">Assign
@@ -124,7 +126,7 @@
                 </kendo-grid-column>
                 <kendo-grid-column field="eventTypeCode" title="Code" width="120">
                 </kendo-grid-column>
-                <kendo-grid-column field="eventName" title="Task" width="270">
+                <kendo-grid-column field="eventName" title="Task" width="410">
                 </kendo-grid-column>
                 <kendo-grid-column field="eventRowCount" title="Record(s)" width="120">
                 </kendo-grid-column>
@@ -136,14 +138,14 @@
 
                         <div id="progress">
                             <span id="percent">
-                                {{ ((dataItem.eventProcessedCount/dataItem.eventRowCount) * 100) | roundOff }}%</span>
-                            <div id="bar" [ngStyle]="{'width':roundoff(dataItem)+'%'}"></div>
+                                {{ dataItem.processedPercentage }}%</span>
+                            <div id="bar" [ngStyle]="{'width':dataItem.processedPercentage+'%'}"></div>
                         </div>
 
 
                     </ng-template>
                 </kendo-grid-column>
-                <kendo-grid-column field="eventCreatedDate" title="Created" width="160" filter="date"
+                <kendo-grid-column field="eventCreatedDate" title="Created" width="190" filter="date"
                     format="{0:dd-MM-yyyy}">
                     <ng-template kendoGridFilterMenuTemplate let-filter let-column="column"
                         let-filterService="filterService">
@@ -167,7 +169,7 @@
                 </kendo-grid-column>
                 <kendo-grid-column field="eventAskTypeName" title="Action" width="120">
                 </kendo-grid-column>
-                <kendo-grid-column field="eventPlannedDate" title="Planned" width="160" filter="date"
+                <kendo-grid-column field="eventPlannedDate" title="Planned" width="190" filter="date"
                     format="{0:dd-MM-yyyy}">
                     <ng-template kendoGridFilterMenuTemplate let-filter let-column="column"
                         let-filterService="filterService">

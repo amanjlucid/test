@@ -12,26 +12,25 @@
         <div class="col-sm-12 col-md-12 radioFilterDiv">
             <div class="radioDiv">
                 <label class="radio-inline">
-                    <input [disabled]="selectedEvent.eventProcessedCount == selectedEvent.eventRowCount"
-                        (ngModelChange)="onChange($event)" value="P" [(ngModel)]="headerFilters.EventDataStatus"
-                        type="radio" name="processed">Processed ({{selectedEvent.eventProcessedCount}})
+                    <input [disabled]="selectedEvent.eventAskType == 'I'" (ngModelChange)="onChange($event)" value="P"
+                        [(ngModel)]="headerFilters.EventDataStatus" type="radio" name="processed">Processed
+                    ({{selectedEvent.eventProcessedCount}})
                 </label>
                 <label class="radio-inline">
-                    <input [disabled]="selectedEvent.eventProcessedCount == selectedEvent.eventRowCount"
-                        (ngModelChange)="onChange($event)" value="U" [(ngModel)]="headerFilters.EventDataStatus"
-                        type="radio" name="processed" checked>Unprocessed
+                    <input [disabled]="selectedEvent.eventAskType == 'I'" (ngModelChange)="onChange($event)" value="U"
+                        [(ngModel)]="headerFilters.EventDataStatus" type="radio" name="processed" checked>Unprocessed
                     ({{selectedEvent.eventRowCount - selectedEvent.eventProcessedCount}})
                 </label>
                 <label class="radio-inline">
-                    <input [disabled]="selectedEvent.eventProcessedCount == selectedEvent.eventRowCount"
-                        (ngModelChange)="onChange($event)" value="A" [(ngModel)]="headerFilters.EventDataStatus"
-                        type="radio" name="processed">All ({{selectedEvent.eventRowCount}})
+                    <input [disabled]="selectedEvent.eventAskType == 'I'" (ngModelChange)="onChange($event)" value="A"
+                        [(ngModel)]="headerFilters.EventDataStatus" type="radio" name="processed">All
+                    ({{selectedEvent.eventRowCount}})
                 </label>
 
             </div>
 
             <div class="butnDiv">
-                <button type="button" *ngIf="checkShowAssetBtn() && selectedData.length == 1"
+                <button type="button" *ngIf="checkShowAssetBtn() && mySelection.length == 1"
                     class="btn btn-sm themeButton mr-2" (click)="showAssets()">Show Assets</button>
                 <button type="button" class="btn btn-sm themeButton" (click)="export()">Export</button>
 
@@ -42,15 +41,15 @@
 
         <div class="col-md-12 userTaskData">
             <kendo-grid [data]="query | async" [loading]="loading" [skip]="headerFilters.CurrentPage"
-                [pageSize]="headerFilters.PageSize" [selectable]="{
-        mode: 'multiple'
-      }" filterable="menu" [resizable]="true" [sortable]="{
+                [pageSize]="headerFilters.PageSize" [selectable]="selectableSettings" filterable="menu"
+                [resizable]="true" [sortable]="{
         allowUnsort: allowUnsort,
         mode: multiple ? 'multiple' : 'single'
         }" [sort]="state.sort" (sortChange)="sortChange($event)" (filterChange)="filterChange($event)"
                 (cellClick)="cellClickHandler($event)" [filter]="state.filter" scrollable="virtual" [rowHeight]="36"
                 [height]="600" (pageChange)="pageChange($event)" [navigable]="true" [selectedKeys]="mySelection"
-                kendoGridSelectBy>
+                [kendoGridSelectBy]="mySelectionKey" (selectedKeysChange)="onSelectedKeysChange($event)">
+
                 <kendo-grid-checkbox-column width="50">
                     <ng-template kendoGridHeaderTemplate>
                         <input class="k-checkbox" id="selectAllCheckboxId" kendoGridSelectAllCheckbox
@@ -59,7 +58,22 @@
                     </ng-template>
                 </kendo-grid-checkbox-column>
 
-                <kendo-grid-column *ngFor="let col of columns" field="{{col.key}}" title="{{col.val}}" width="170">
+                <kendo-grid-column field="eventDataStatus" title="" width="50" [sortable]="false" [filterable]="false"
+                    [groupable]="true">
+
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            <img style="height: 14px;" *ngIf="dataItem.eventDataStatus == 'P'"
+                                src="assets/img/icons/tick.png" />
+                            <img style="height: 14px;" *ngIf="dataItem.eventDataStatus == 'U'"
+                                src="assets/img/icons/cross.png" />
+
+                        </span>
+                    </ng-template>
+                </kendo-grid-column>
+
+                <kendo-grid-column *ngFor="let col of columns" field="{{col.key}}" title="{{col.val}}"
+                    width="{{col.width}}">
 
                 </kendo-grid-column>
 
@@ -70,14 +84,13 @@
 
         <div class="col-md-12 mt-2 text-left">
             <button
-                [disabled]="selectedEvent.eventProcessedCount == selectedEvent.eventRowCount || selectedEvent.eventAssignUser != currentUser.userId"
+                [disabled]="selectedEvent.eventAskType == 'I' || selectedEvent.eventAssignUser != currentUser.userId"
                 type="button" class="btn btn-sm themeButton mr-2" (click)="updateEvent('P')">Set to
                 Processed</button>
             <button
-                [disabled]="selectedEvent.eventProcessedCount == selectedEvent.eventRowCount || selectedEvent.eventAssignUser != currentUser.userId"
+                [disabled]="selectedEvent.eventAskType == 'I' || selectedEvent.eventAssignUser != currentUser.userId"
                 type="button" class="btn btn-sm themeButton mr-2" (click)="updateEvent('U')">Set to
                 Unprocessed</button>
-            <!-- <button type="button" class="btn btn-sm themeButton mr-2" (click)="dummy()">dummy</button> -->
             <button type="button" class="btn btn-sm themeButton mr-2 pull-right" (click)="closeWin()">Cancel</button>
         </div>
     </div>

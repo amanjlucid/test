@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { SubSink } from 'subsink';
-import { GroupDescriptor, State, SortDescriptor } from '@progress/kendo-data-query';
-import { SelectableSettings, PageChangeEvent, SelectAllCheckboxState } from '@progress/kendo-angular-grid';
+import { State, SortDescriptor } from '@progress/kendo-data-query';
+import { SelectableSettings, PageChangeEvent, SelectAllCheckboxState, RowArgs } from '@progress/kendo-angular-grid';
 
 import { AlertService, EventManagerService, HelperService } from '../../_services'
 import { tap, switchMap } from 'rxjs/operators';
@@ -38,23 +38,26 @@ export class UserTaskDataComponent implements OnInit {
   columns: any = [];
   filters: any = [];
   mySelection: number[] = [];
-  pushClickedData: any = [];
-  selectedData: any = [];
+  // pushClickedData: any = [];
+  // selectedData: any = [];
   currentUser: any;
+  loadedData: any = [];
+  public selectableSettings: SelectableSettings;
 
   constructor(
     private eveneManagerService: EventManagerService,
     private alertService: AlertService,
     private chRef: ChangeDetectorRef,
     private helperService: HelperService
-  ) { }
+  ) {
+    this.setSelectableSettings();
+  }
 
   ngOnInit(): void {
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.selectedEvent = this.selectedEvent[0]
+    // console.log(this.selectedEvent);
     this.headerFilters.EventSequence = this.selectedEvent.eventSequence;
-
-    console.log(this.selectedEvent);
 
     if (this.selectedEvent.unprocessedCount == 0) {
       this.headerFilters.EventDataStatus = "P";
@@ -65,22 +68,36 @@ export class UserTaskDataComponent implements OnInit {
     this.userEventByseq(this.selectedEvent.eventSequence, this.currentUser.userId);
   }
 
+  ngOnDestroy() {
+    this.subs.unsubscribe();
+  }
+
+  public setSelectableSettings(): void {
+    this.selectableSettings = {
+      checkboxOnly: true,
+      mode: 'multiple'
+    };
+  }
+
   getUsereventList(seq) {
     this.subs.add(
       this.eveneManagerService.getFirstRecordOfEventData(seq).subscribe(
         data => {
           if (data.isSuccess) {
             let columns = data.data[0];
+            // console.log(columns);
             for (let cl in columns) {
               if (columns[cl] != "#!" && cl != "eventdatastatus" && cl != "eventsequence" && cl != "eventdatastatusname") {
                 if (cl == "eventdatasequence") {
                   columns[cl] = "Sequence"
                 }
-                this.columns.push({ key: cl, val: columns[cl] });
+                let width = 170;
+                if (cl == "eventdatasequence") {
+                  width = 90
+                }
+                this.columns.push({ key: cl, val: columns[cl], width: width });
               }
             }
-
-            // console.log(this.columns)
 
             this.query = this.stateChange.pipe(
               tap(state => {
@@ -90,8 +107,10 @@ export class UserTaskDataComponent implements OnInit {
               switchMap(state => this.eveneManagerService.getListOfEventData(state)),
               tap((res) => {
                 // console.log(res)
+                this.loadedData = res.data
                 this.totalCount = (res.total != undefined) ? res.total : 0;
                 this.loading = false;
+                this.chRef.detectChanges();
               })
             );
 
@@ -236,16 +255,26 @@ export class UserTaskDataComponent implements OnInit {
 
   }
 
-  public cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
-    this.selectedData = [];
-    this.pushClickedData.push({ row: rowIndex, data: dataItem });
-    for (let ind of this.mySelection) {
-      let findVal = this.pushClickedData.find(x => x.row == ind)
-      if (findVal) {
-        this.selectedData.push(findVal.data)
-      }
+  mySelectionKey(context: RowArgs): string {
+    return context.dataItem.eventdatasequence;
+  }
+
+
+  public cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited, originalEvent }) {
+    // if (originalEvent.ctrlKey == false) {
+    //   if (this.mySelection.length > 0) {
+    //     this.mySelection = []; // reset grid selection
+    //     this.mySelection.push(dataItem.eventdatasequence);
+    //   }
+    // }
+
+    if (this.mySelection.indexOf(dataItem.eventdatasequence) == -1) {
+      this.mySelection.push(dataItem.eventdatasequence)
+    } else {
+      this.mySelection = this.mySelection.filter(x => x != dataItem.eventdatasequence)
     }
 
+    this.chRef.detectChanges();
   }
 
   public onSelectedKeysChange(e) {
@@ -264,35 +293,31 @@ export class UserTaskDataComponent implements OnInit {
   public onSelectAllChange(checkedState: SelectAllCheckboxState) {
     if (checkedState === 'checked') {
       this.selectAllState = 'checked';
-      // this.mySelection = [];
-      // let filterModel = Object.assign({}, this.headerFilters);
-      // filterModel.isPagination = false;
-      // this.chRef.detectChanges();
-      // this.subs.add(
-      //   this.eventManagerService.GetListOfEventTypeParameterSelectionPagination(filterModel).subscribe(
-      //     data => {
-      //       this.mySelection = [];
-      //       if (data.total > 0) {
-      //         this.selectAllState = 'checked';
-      //         this.mySelection = data.data.map(x => x.selectionSeq)
-      //         this.chRef.detectChanges();
-      //       }
-      //     }
-      //   )
-      // )
+      this.mySelection = [];
+      let filterModel = Object.assign({}, this.headerFilters);
+      filterModel.IsExport = true;
+      this.chRef.detectChanges();
+      this.subs.add(
+        this.eveneManagerService.getListOfEventData(filterModel).subscribe(
+          data => {
+            this.mySelection = [];
+            if (data.total > 0) {
+              this.selectAllState = 'checked';
+              this.mySelection = data.data.map(x => x.eventdatasequence)
+              this.chRef.detectChanges();
+            }
+          }
+        )
+      )
     } else {
-     // this.mySelection = [];
+      this.mySelection = [];
       this.selectAllState = 'unchecked';
-     
+      this.chRef.detectChanges();
     }
-    // console.log({'sel':this.mySelection})
-    this.chRef.detectChanges();
+
+
   }
 
-  dummy(){
-    console.log(this.mySelection);
-    console.log(this.pushClickedData);
-  }
 
   searchGrid() {
     this.headerFilters.CurrentPage = 0;
@@ -317,45 +342,70 @@ export class UserTaskDataComponent implements OnInit {
   }
 
   updateEvent(type) {
-    if (this.selectedData.length > 0) {
-      if ((this.selectedEvent.eventProcessedCount != this.selectedEvent.eventRowCount) && (this.selectedEvent.eventAssignUser == this.currentUser.userId)) {
-        let req = [];
-        let failsRecord = [];
-        let successRecord = [];
-        for (let eventData of this.selectedData) {
-          if (eventData.eventDataStatus != type) {
-            req.push(this.eveneManagerService.UpdateProcessed(this.selectedEvent.eventSequence, eventData.eventdatasequence, type, this.currentUser.userId));
-            successRecord.push(eventData.eventdatasequence)
-          } else {
-            failsRecord.push(eventData.eventdatasequence)
-          }
-        }
-
-        let msg = '';
-        if (req.length > 0) {
-          this.subs.add(
-            forkJoin(req).subscribe(
-              data => {
-                // console.log(data);
-                msg = `Task Number ${this.selectedEvent.eventSequence}, data item ${successRecord.toString()} status request is updated.`
-                this.alertService.success(msg);
-                this.resetGridSelection()
-                this.userEventByseq(this.selectedEvent.eventSequence, this.currentUser.userId);
-                this.searchGrid()
-              }
-            )
-          )
-        } else {
-          msg = `Task Number ${this.selectedEvent.eventSequence}, data item ${failsRecord.toString()} status request is the same as current ${type}`
-          this.alertService.error(msg);
-        }
-
-      } else {
-        this.alertService.error("The is no record to update")
-      }
-    } else {
-      this.alertService.error("Please select a record.")
+    if (this.mySelection.length == 0) {
+      this.alertService.error("No record selected");
+      return
     }
+
+    this.mySelection = this.mySelection.filter((val, ind, self) => self.indexOf(val) == ind)//get unique value
+    const params = {
+      EventSequence: this.selectedEvent.eventSequence,
+      EventDataSequence: this.mySelection
+    }
+
+    this.subs.add(
+      this.eveneManagerService.getListOfEventDataByEventDataSequence(params).subscribe(
+        selectData => {
+          console.log(selectData)
+          if (selectData.isSuccess) {
+            let selectedData = selectData.data
+            if (selectedData.length > 0) {
+              if ((this.selectedEvent.eventAskType != 'I') && (this.selectedEvent.eventAssignUser == this.currentUser.userId)) {
+                let req = [];
+                let failsRecord = [];
+                let successRecord = [];
+                for (let eventData of selectedData) {
+                  if (eventData.eventDataStatus != type) {
+                    req.push(this.eveneManagerService.UpdateProcessed(this.selectedEvent.eventSequence, eventData.eventdatasequence, type, this.currentUser.userId));
+                    successRecord.push(eventData.eventdatasequence)
+                  } else {
+                    failsRecord.push(eventData.eventdatasequence)
+                  }
+                }
+
+                let msg = '';
+                if (req.length > 0) {
+                  this.subs.add(
+                    forkJoin(req).subscribe(
+                      data => {
+                        // console.log(data);
+                        msg = `Task Number ${this.selectedEvent.eventSequence}, data item ${successRecord.toString()} status request is updated.`
+                        this.alertService.success(msg);
+                        this.resetGridSelection()
+                        this.userEventByseq(this.selectedEvent.eventSequence, this.currentUser.userId);
+                        this.searchGrid()
+                      }
+                    )
+                  )
+                } else {
+                  msg = `Task Number ${this.selectedEvent.eventSequence}, data item ${failsRecord.toString()} status request is the same as current ${type}`
+                  this.alertService.error(msg);
+                }
+
+              } else {
+                this.alertService.error("There is no record to update")
+              }
+            } else {
+              this.alertService.error("Please select a record.")
+            }
+          } else {
+            this.alertService.error(selectData.message)
+          }
+
+        }
+      )
+    )
+
   }
 
 
@@ -363,7 +413,8 @@ export class UserTaskDataComponent implements OnInit {
     this.subs.add(
       this.eveneManagerService.getListOfUserEventBySequence(seq, userId).subscribe(
         data => {
-          this.selectedEvent = data.data[0]
+          this.selectedEvent = data.data[0];
+          this.chRef.detectChanges();
         }
       )
     )
@@ -398,7 +449,6 @@ export class UserTaskDataComponent implements OnInit {
                 this.helperService.exportAsExcelFile(tempdata, 'Task Data', label)
               } else {
                 this.alertService.error("There is no record to import")
-
               }
             }
 
@@ -421,8 +471,9 @@ export class UserTaskDataComponent implements OnInit {
 
   resetGridSelection() {
     this.mySelection = [];
-    this.selectedData = [];
-    this.pushClickedData = [];
+    this.selectAllState = 'unchecked';
+    // this.selectedData = [];
+    // this.pushClickedData = [];
   }
 
   showAssets() {
@@ -435,10 +486,12 @@ export class UserTaskDataComponent implements OnInit {
     // }
 
     siteUrl = "http://104.40.138.8/rowanwood"
-
-    if (this.selectedData.length == 1) {
+    if (this.mySelection.length == 1) {
+      let findRow = this.loadedData.find(x => x.eventsequence == this.selectedEvent.eventSequence && this.mySelection.indexOf(x.eventdatasequence) !== -1)
       let findAssetKey = this.columns.find(x => x.val == "Asset");
-      siteUrl = `${siteUrl}/asset-list?assetid=${this.selectedData[0][findAssetKey.key]}`
+      if (findRow) {
+        siteUrl = `${siteUrl}/asset-list?assetid=${findRow[findAssetKey.key]}`
+      }
     } else {
       return
     }

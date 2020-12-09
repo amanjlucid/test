@@ -45,7 +45,7 @@ export class EventParametersListComponent implements OnInit {
   stateChange = new BehaviorSubject<any>(this.headerFilters);
   filters: any = [];
 
-  public checkboxOnly = false;
+  public checkboxOnly = true;
   public mode: any = 'multiple';
   public mySelection: number[] = [];
   public selectableSettings: SelectableSettings;
@@ -53,6 +53,7 @@ export class EventParametersListComponent implements OnInit {
   @ViewChild(GridComponent) public grid: GridComponent;
   allColumnName: any;
   selectedParamCopy: any;
+  // holdMySeletion: any = [];
 
   constructor(
     private eventManagerService: EventManagerService,
@@ -66,6 +67,7 @@ export class EventParametersListComponent implements OnInit {
 
   ngOnInit(): void {
     this.eventParamHeading = '';
+    // console.log(this.selectedParam);
     if (this.selectedParam.eventTypeParamType == "P") {
       this.mode = "single"
     } else {
@@ -277,24 +279,21 @@ export class EventParametersListComponent implements OnInit {
 
 
   public cellClickHandler(eve) {
-    // console.log(eve)
-    this.selectedParam.eventTypeParamSqlValue
+    this.selectedParam.eventTypeParamSqlValue = '';// reset parent component selection
     if (this.mode == "single") {
-      // this.mySelection = []; // reset grid selection
-      // this.selectedParam.eventTypeParamSqlValue = ''; // reset parent component selection
-      // this.mySelection.push(eve.dataItem.selectionSeq);
+      this.mySelection = []; // reset grid selection
+      this.mySelection.push(eve.dataItem.selectionSeq);
     } else {
-      if (eve.originalEvent.ctrlKey == false) {
-        if (this.mySelection.length > 0) {
-          this.mySelection = []; // reset grid selection
-          // this.selectedParam.eventTypeParamSqlValue = ''; // reset parent component selection
-          this.mySelection.push(eve.dataItem.selectionSeq);
-        }
+      if (this.mySelection.indexOf(eve.dataItem.selectionSeq) == -1) {
+        this.mySelection.push(eve.dataItem.selectionSeq)
+      } else {
+        this.mySelection = this.mySelection.filter(x => x != eve.dataItem.selectionSeq)
       }
+
     }
 
     this.chRef.detectChanges();
-    // console.log({'cell' : this.mySelection})
+
   }
 
   public onSelectedKeysChange(e) {
@@ -440,7 +439,7 @@ export class EventParametersListComponent implements OnInit {
 
         let list: any = this.grid.data;//current grid data
 
-       
+
         // if (list.data.lenght > 0) {
         for (let plist of list.data) {
           if (plist.selectiionNum != undefined && plist.selectionChar == "") {
@@ -463,7 +462,10 @@ export class EventParametersListComponent implements OnInit {
             }
           }
         }
+
       }
+
+
       this.chRef.detectChanges();
       // }
     }, 300);

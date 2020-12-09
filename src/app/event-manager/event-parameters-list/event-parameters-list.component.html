@@ -12,7 +12,7 @@
 
             <!-- <form novalidate #myForm="ngForm"> -->
             <kendo-grid [data]="query | async" [loading]="loading" [skip]="headerFilters.currentPage"
-                [pageSize]="headerFilters.pageSize" [selectable]="selectableSettings" filterable="menu"
+                [pageSize]="headerFilters.pageSize" filterable="menu"
                 [resizable]="true" [sortable]="{
         allowUnsort: allowUnsort,
         mode: multiple ? 'multiple' : 'single'

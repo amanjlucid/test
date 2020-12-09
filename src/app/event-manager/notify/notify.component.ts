@@ -348,7 +348,7 @@ export class NotifyComponent implements OnInit {
           if (data.isSuccess) {
             this.userToRemove = [];
             this.userToAppend = [];
-            this.getGridData();
+            // this.getGridData();
             this.closeNotifyWindowMethod();
           } else {
             this.alert.error(data.message)
