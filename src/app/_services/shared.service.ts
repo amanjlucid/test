@@ -145,4 +145,12 @@ export class SharedService {
   }
 
 
+  private notificationSrc = new BehaviorSubject<any>([]);
+  userNotification = this.notificationSrc.asObservable();
+
+  changeUserNotification(data) {
+    this.notificationSrc.next(data)
+  }
+
+
 }

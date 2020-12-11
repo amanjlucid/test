@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { UserService, AlertService, LoaderService, ConfirmationDialogService } from '../../_services'
+import { UserService, AlertService, LoaderService, ConfirmationDialogService, HelperService } from '../../_services'
 import { DataTablesModule } from 'angular-datatables';
 import { User, UserGroup } from '../../_models'
 import 'datatables.net';
@@ -79,12 +79,13 @@ export class UsersComponent implements OnInit {
     private loaderService: LoaderService,
     private chRef: ChangeDetectorRef,
     private confirmationDialogService: ConfirmationDialogService,
+    private helper: HelperService
   ) { }
 
 
   ngOnInit() {
-    // let isIEOrEdge = /msie\s|trident\/|edge\//i.test(window.navigator.userAgent);
-    // console.log(isIEOrEdge)
+    //update notification on top
+    this.helper.updateNotificationOnTop();
     this.getUserList();
 
   }

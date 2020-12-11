@@ -66,6 +66,8 @@ export class HnsResAssessmenttabComponent implements OnInit {
   }
 
   ngOnInit() {
+    //update notification on top
+    this.helperService.updateNotificationOnTop();
     this.sharedService.changeResPageName("Assessments");
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.headerFilters.UserId = this.currentUser.userId;

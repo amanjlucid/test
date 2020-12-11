@@ -3,7 +3,7 @@ import { DataResult, process, State, CompositeFilterDescriptor, SortDescriptor, 
 import { PageChangeEvent } from '@progress/kendo-angular-grid';
 import { SubSink } from 'subsink';
 import { HnsDefinitionModel } from '../../_models'
-import { HnsPortalService, AlertService, ConfirmationDialogService, SharedService } from 'src/app/_services';
+import { HnsPortalService, AlertService, ConfirmationDialogService, SharedService, HelperService } from 'src/app/_services';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
@@ -82,11 +82,14 @@ export class HnsDefinitionsComponent implements OnInit, OnDestroy {
     private alertService: AlertService,
     private confirmationDialogService: ConfirmationDialogService,
     private http: HttpClient,
-    private sharedService: SharedService
+    private sharedService: SharedService,
+    private helper: HelperService
   ) { }
 
   ngOnInit() {
 
+    //update notification on top
+    this.helper.updateNotificationOnTop();
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
 
     this.subs.add(
@@ -106,11 +109,11 @@ export class HnsDefinitionsComponent implements OnInit, OnDestroy {
       this.sharedService.hnsPortalSecurityList.subscribe(
         data => {
           this.hnsPermission = data;
-          if(this.hnsPermission.indexOf("Inactivate") !== -1){
+          if (this.hnsPermission.indexOf("Inactivate") !== -1) {
             this.contextMenus.splice(0, 0, "Inactivate");
           }
 
-          if(this.hnsPermission.indexOf("Activate") !== -1){
+          if (this.hnsPermission.indexOf("Activate") !== -1) {
             this.contextMenus.splice(0, 0, "Activate");
           }
 
@@ -125,7 +128,7 @@ export class HnsDefinitionsComponent implements OnInit, OnDestroy {
           // if (this.hnsPermission.includes("Inactivate") == false && this.hnsPermission.includes("Activate") == false) {
           //   this.contextMenus = ['Copy']
           // }
-          
+
         }
       )
     )

@@ -72,6 +72,8 @@ export class ServiceChartComponent implements OnInit {
   }
 
   ngOnInit() {
+    //update notification on top
+    this.helper.updateNotificationOnTop();
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
 
     setTimeout(() => {

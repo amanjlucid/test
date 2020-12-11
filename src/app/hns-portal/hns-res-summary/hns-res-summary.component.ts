@@ -60,6 +60,8 @@ export class HnsResSummaryComponent implements OnInit {
   }
 
   ngOnInit() {
+    //update notification on top
+    this.helperService.updateNotificationOnTop();
     this.sharedService.changeResPageName("Summary");
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.headerFilters.UserId = this.currentUser.userId;

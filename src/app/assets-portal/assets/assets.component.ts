@@ -105,6 +105,8 @@ export class AssetsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    //update notification on top
+    this.helper.updateNotificationOnTop();
     this.loaderService.pageShow();
     this.getSystemDefaultDate();
     this.subs.add(this.sharedService.modulePermission.subscribe(data => { this.moduleAccess = data }));

@@ -42,7 +42,7 @@ export class EventParametersComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    // console.log(this.selectedEvent)
+    
     this.selectedEvent = this.selectedEvent[0];
     this.eventParamHeading = `Task Type: ${this.selectedEvent.eventTypeName} (${this.selectedEvent.eventTypeCode})`
     this.getEventParameterList(this.selectedEvent.eventTypeSequence);

@@ -64,6 +64,8 @@ export class HnsSettingsComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    //update notification on top
+    this.helper.updateNotificationOnTop();
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.settingsForm = this.fb.group({
       hsdoclocn: ['', [Validators.required]],
@@ -166,9 +168,9 @@ export class HnsSettingsComponent implements OnInit {
     if (this.settingsForm.invalid) {
       return;
     }
-    
+
     let formRawVal = this.settingsForm.getRawValue();
-    
+
     const formData = new FormData();
     //formData.append('postedFile', this.imgToUpload[0], this.imgToUpload[0].name);
 

@@ -102,12 +102,12 @@ export class ManageEmailsComponent implements OnInit {
 
     if (this.manageEmailfor == "apex") {
       this.userNotificationForm.patchValue({
-        email: this.selectedItem.email
+        email: this.selectedItem.email.trim()
       })
     } else {
       this.userNotificationForm.patchValue({
         name: this.selectedItem.userName,
-        email: this.selectedItem.email
+        email: this.selectedItem.email.trim()
       })
 
       // this.userNotificationForm.get('name').disable();
@@ -201,7 +201,7 @@ export class ManageEmailsComponent implements OnInit {
 
   updateApexUserEmail(formRawVal) {
     this.subs.add(
-      this.settingService.updateApexUserEmail(this.selectedItem.userId, formRawVal.email, this.currentUser.userId).subscribe(
+      this.settingService.updateApexUserEmail(this.selectedItem.userId, formRawVal.email.trim(), this.currentUser.userId).subscribe(
         data => {
           if (data.isSuccess) {
             if (data.data == 'S') {
@@ -228,10 +228,10 @@ export class ManageEmailsComponent implements OnInit {
 
     if (this.createNewEntry == false) {
       msg = "Record updated successfully.";
-      apiCall = this.settingService.ValidateUpdateNonSecurityUserEmail(formRawVal.name, formRawVal.email, this.currentUser.userId, this.selectedItem.userId)
+      apiCall = this.settingService.ValidateUpdateNonSecurityUserEmail(formRawVal.name, formRawVal.email.trim(), this.currentUser.userId, this.selectedItem.userId)
     } else {
       msg = "Record created successfully."
-      apiCall = this.settingService.ValidateAddNonSecurityUserEmail(formRawVal.name, formRawVal.email, this.currentUser.userId)
+      apiCall = this.settingService.ValidateAddNonSecurityUserEmail(formRawVal.name, formRawVal.email.trim(), this.currentUser.userId)
     }
 
     this.subs.add(

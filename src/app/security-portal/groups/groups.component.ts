@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Group } from '../../_models'
-import { GroupService, AlertService, LoaderService, ConfirmationDialogService } from '../../_services'
+import { GroupService, AlertService, LoaderService, ConfirmationDialogService, HelperService } from '../../_services'
 import { DataTablesModule } from 'angular-datatables';
 import 'datatables.net';
 import 'datatables.net-dt';
@@ -68,14 +68,17 @@ export class GroupsComponent implements OnInit {
     private loaderService: LoaderService,
     private chRef: ChangeDetectorRef,
     private confirmationDialogService: ConfirmationDialogService,
+    private helper: HelperService
   ) { }
 
   ngOnInit() {
+    //update notification on top
+    this.helper.updateNotificationOnTop();
     this.getAllGroups();
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
   }
 
-  ngOnDestroy(){
+  ngOnDestroy() {
     $('.bgblur').removeClass('ovrlay');
   }
 
@@ -212,7 +215,7 @@ export class GroupsComponent implements OnInit {
             if (searchVal != "" && searchVal != undefined && this.securityFormType != "new") {
               this.groupDataTable.search(searchVal).draw();
             }
-            
+
             let comp = this;
             $('.searchDiv input').each(function () {
               if ($(this).val() != "") {
@@ -393,9 +396,9 @@ export class GroupsComponent implements OnInit {
 
   };
 
-  clearGroupSearchForm(){
+  clearGroupSearchForm() {
     $("#groupSearch").trigger("reset");
-    this.groupDataTable.search( '' ).columns().search( '' ).draw();
+    this.groupDataTable.search('').columns().search('').draw();
   }
 
 

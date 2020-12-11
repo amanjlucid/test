@@ -42,6 +42,8 @@ export class ServiceSettingsComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    //update notification on top
+    this.helper.updateNotificationOnTop();
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.settingsForm = this.fb.group({
       startDate: ['', [Validators.required, SimpleDateValidator()]],

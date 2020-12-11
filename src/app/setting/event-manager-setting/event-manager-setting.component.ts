@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SubSink } from 'subsink';
-import { SettingsService, AlertService } from 'src/app/_services';
+import { SettingsService, AlertService, HelperService } from 'src/app/_services';
 
 @Component({
   selector: 'app-event-manager-setting',
@@ -46,9 +46,12 @@ export class EventManagerSettingComponent implements OnInit {
     private fb: FormBuilder,
     private alertService: AlertService,
     private settingService: SettingsService,
+    private helper: HelperService
   ) { }
 
   ngOnInit(): void {
+    //update notification on top
+    this.helper.updateNotificationOnTop();
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.taskSettingForm = this.fb.group({
       eventManagerUrl: ['', [Validators.required]],
@@ -153,9 +156,9 @@ export class EventManagerSettingComponent implements OnInit {
     this.subs.add(
       this.settingService.eventPortalSettingDefaultValueUpdate(params).subscribe(
         data => {
-          if(data.isSuccess){
+          if (data.isSuccess) {
             this.alertService.success("Tasks setting updated successfully.");
-            this.getTaskSettingData();  
+            this.getTaskSettingData();
           } else {
             this.alertService.error(data.message);
           }
@@ -165,7 +168,7 @@ export class EventManagerSettingComponent implements OnInit {
         }
       )
     )
-   
+
 
   }
 

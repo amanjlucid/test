@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { SubSink } from 'subsink';
-import { GroupDescriptor, DataResult, process, State, CompositeFilterDescriptor, SortDescriptor, distinct } from '@progress/kendo-data-query';
+import { GroupDescriptor, DataResult, process, State, SortDescriptor, distinct } from '@progress/kendo-data-query';
 import { PageChangeEvent, SelectableSettings } from '@progress/kendo-angular-grid';
-import { AlertService, EventManagerService, HelperService, ConfirmationDialogService, SharedService } from '../../_services'
+import { AlertService, EventManagerService, HelperService, ConfirmationDialogService, SharedService, EventService } from '../../_services'
 import { forkJoin } from 'rxjs';
 import { Router } from '@angular/router';
 
@@ -61,13 +61,15 @@ export class TaskDetailsComponent implements OnInit {
     private confirmationDialogService: ConfirmationDialogService,
     private sharedService: SharedService,
     private router: Router,
+    private helper: HelperService
   ) { }
 
   ngOnInit(): void {
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.setSelectableSettings();
     this.getEventData();
-
+    //update notification on top
+    this.helper.updateNotificationOnTop();
   }
 
   ngOnDestroy() {
@@ -148,7 +150,9 @@ export class TaskDetailsComponent implements OnInit {
     if (this.mySelection.length > 0) {
       this.selectedEvent = this.taskDetails.filter(x => this.mySelection.indexOf(x.eventTypeCode) !== -1);
       for (let selectedEve of this.selectedEvent) {
-        if (selectedEve.eventTypeUpdatedBy != this.currentUser.userId) {
+        if (selectedEve.eventTypeUpdatedBy == this.currentUser.userId || selectedEve.busAreaCode == "USER EVENT") {
+          this.checkUserEvents = true;
+        } else {
           this.checkUserEvents = false;
         }
       }
@@ -273,6 +277,17 @@ export class TaskDetailsComponent implements OnInit {
             }
 
             setTimeout(() => {
+              //update notification on top
+              this.helper.updateNotificationOnTop();
+              // this.subs.add(
+              //   this.notificationService.eventSummary(this.currentUser.userId).subscribe(
+              //     notification => {
+              //       this.sharedService.changeUserNotification(notification.data)
+              //     }
+              //   )
+              // )
+
+              // alert message after task run
               this.alertService.success(successStr.toString(), true, 1000000);
             }, 1000);
 

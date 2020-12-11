@@ -131,8 +131,13 @@ export class EventManagerService {
     }
 
     getListOfUserEventByUserId(userId, hideComplete) {
-        return this.http.get<any>(`${appConfig.apiUrl}/api/UserEvents/GetListOfUserEventByUserId?userId=${userId}&hideComplete=${hideComplete}`, this.httpOptions);
+        //return this.http.get<any>(`${appConfig.apiUrl}/api/UserEvents/GetListOfUserEventByUserId?userId=${userId}&hideComplete=${hideComplete}`, this.httpOptions);
+        return this.http.get<any>(`${appConfig.apiUrl}/api/UserEvents/GetListOfUserEventByUserIdForAdminUsers?userId=${userId}&hideComplete=${hideComplete}`, this.httpOptions);
     }
+
+    // getListOfUserEventByUserIdForAdminUsers(userId, hideComplete) {
+    //     return this.http.get<any>(`${appConfig.apiUrl}/api/UserEvents/GetListOfUserEventByUserIdForAdminUsers?userId=${userId}&hideComplete=${hideComplete}`, this.httpOptions);
+    // }
 
     markViewed(eventSequence, userId) {
         return this.http.get<any>(`${appConfig.apiUrl}/api/UserEvents/MarkViewed?eventSequence=${eventSequence}&userId=${userId}`, this.httpOptions);

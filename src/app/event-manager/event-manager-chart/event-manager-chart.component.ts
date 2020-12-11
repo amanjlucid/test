@@ -69,7 +69,8 @@ export class EventManagerChartComponent implements OnInit {
     private helper: HelperService,
     private sharedServie: SharedService,
     private router: Router,
-    private eventMangerDashboardService: EventManagerDashboardService
+    private eventMangerDashboardService: EventManagerDashboardService,
+    
   ) { }
 
   ngOnDestroy() {
@@ -93,7 +94,7 @@ export class EventManagerChartComponent implements OnInit {
               }
             )
           }
-         
+
         }
       )
     )
@@ -103,8 +104,9 @@ export class EventManagerChartComponent implements OnInit {
     //this.getChart()
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
 
-
-
+    //update notification on top
+    this.helper.updateNotificationOnTop();
+   
     setTimeout(() => {
       this.subs.add(
         // get chart data and render in template

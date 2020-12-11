@@ -36,13 +36,17 @@ export class BusinessAreaComponent implements OnInit {
 
   constructor(
     private settingService: SettingsService,
-    private eventManagerService: EventManagerService
+    private eventManagerService: EventManagerService,
+    private helper: HelperService
   ) {
 
     this.setSelectableSettings();
   }
 
   ngOnInit(): void {
+    //update notification on top
+    this.helper.updateNotificationOnTop();
+
     this.subs.add(
       this.eventManagerService.getAvailableUser().subscribe(
         data => {

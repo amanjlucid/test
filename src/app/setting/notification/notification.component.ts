@@ -41,11 +41,14 @@ export class NotificationComponent implements OnInit {
     private eventManagerService: EventManagerService,
     private confirmationDialogService: ConfirmationDialogService,
     private alertService: AlertService,
+    private helper: HelperService
   ) {
     this.setSelectableSettings();
   }
 
   ngOnInit(): void {
+    //update notification on top
+    this.helper.updateNotificationOnTop();
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.getNotificationList();
   }

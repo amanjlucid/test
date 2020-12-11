@@ -78,6 +78,7 @@ export class EventParametersListComponent implements OnInit {
     this.selectedParamCopy = Object.assign({}, this.selectedParam);
     this.headerFilters.eventTypeSequence = this.selectedEvent.eventTypeSequence;
     this.headerFilters.eventTypeParmSequence = this.selectedParam.eventTypeParamSequence;
+
     this.getEventParameterList(this.selectedEvent.eventTypeSequence, this.selectedParam.eventTypeParamSequence)
   }
 
@@ -353,7 +354,7 @@ export class EventParametersListComponent implements OnInit {
     }
 
     this.mySelection = this.mySelection.filter((val, ind, self) => self.indexOf(val) == ind)//get unique value
-
+   
     const params = {
       eventTypeSequence: this.selectedEvent.eventTypeSequence,
       eventTypeParmSequence: this.selectedParam.eventTypeParamSequence,
@@ -453,18 +454,18 @@ export class EventParametersListComponent implements OnInit {
               if (this.mySelection.indexOf(plist.selectionSeq) == -1) {
                 this.mySelection.push(plist.selectionSeq)
               }
-            } else {
-              if (this.selectedParam.eventTypeParamSqlValue.indexOf(plist.selectionChar) !== -1) {
-                if (this.mySelection.indexOf(plist.selectionSeq) == -1) {
-                  this.mySelection.push(plist.selectionSeq)
-                }
-              }
-            }
+            } 
+            // else {
+            //   if (this.selectedParam.eventTypeParamSqlValue.indexOf(plist.selectionChar) !== -1) {
+            //     if (this.mySelection.indexOf(plist.selectionSeq) == -1) {
+            //       this.mySelection.push(plist.selectionSeq)
+            //     }
+            //   }
+            // }
           }
         }
 
       }
-
 
       this.chRef.detectChanges();
       // }

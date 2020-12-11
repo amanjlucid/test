@@ -56,8 +56,7 @@ export class HnsResActionComponent implements OnInit {
   constructor(
     private sharedService: SharedService,
     private hnsResultService: HnsResultsService,
-    private helperService: HelperService
-
+    private helperService: HelperService,
   ) { }
 
   public distinctPrimitive(fieldName: string, arr): any {
@@ -65,6 +64,8 @@ export class HnsResActionComponent implements OnInit {
   }
 
   ngOnInit() {
+    //update notification on top
+    this.helperService.updateNotificationOnTop();
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.headerFilters.UserId = this.currentUser.userId;
     this.sharedService.changeResPageName("Actions");
@@ -712,7 +713,7 @@ export class HnsResActionComponent implements OnInit {
                 x.hasiworkauthoriseddate = this.helperService.formatDateWithoutTime(x.hasiworkauthoriseddate)
                 x.hasiworkscheduledate = this.helperService.formatDateWithoutTime(x.hasiworkscheduledate)
               })
-              
+
               let label = {
                 'assid': 'Asset',
                 'astconcataddress': 'Address',

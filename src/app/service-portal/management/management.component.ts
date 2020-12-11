@@ -114,6 +114,8 @@ export class ManagementComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
+    //update notification on top
+    this.helperService.updateNotificationOnTop();
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.getMgmDateMethod();
     setTimeout(() => {

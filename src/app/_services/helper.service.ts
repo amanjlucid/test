@@ -6,8 +6,8 @@ const EXCEL_EXTENSION = '.xlsx';
 import { Observable, Subject } from 'rxjs';
 import { SharedService } from '../_services/shared.service';
 import * as moment from "moment";
-import { anyChanged } from '@progress/kendo-angular-grid/dist/es2015/utils';
-
+import { SubSink } from 'subsink';
+import { EventService } from './event.service';
 
 
 
@@ -16,6 +16,7 @@ import { anyChanged } from '@progress/kendo-angular-grid/dist/es2015/utils';
 })
 
 export class HelperService {
+    subs = new SubSink();
     assetData: any;
     month_names = ["Jan", "Feb", "Mar",
         "Apr", "May", "Jun",
@@ -23,7 +24,8 @@ export class HelperService {
         "Oct", "Nov", "Dec"];
 
     constructor(
-        private sharedService: SharedService
+        private sharedService: SharedService,
+        private notificationService: EventService
     ) { }
 
     public exportAsExcelFile(json: any[], excelFileName: string, labels): void {
@@ -646,6 +648,18 @@ export class HelperService {
         }
 
         return date
+    }
+
+
+    updateNotificationOnTop() {
+        let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        this.subs.add(
+            this.notificationService.eventSummary(currentUser.userId).subscribe(
+                notification => {
+                    this.sharedService.changeUserNotification(notification.data)
+                }
+            )
+        )
     }
 
 }

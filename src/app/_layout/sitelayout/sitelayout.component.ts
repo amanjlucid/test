@@ -111,6 +111,9 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    this.subs.add(
+      this.sharedServie.userNotification.subscribe(data => this.notifications = data)
+    )
     // console.log(this.currentUser);
     this.eventUnreadMessageCount();
     this.eventSummary();
@@ -143,6 +146,8 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
     this.subs.add(
       this.sharedServie.hnsPortalSecurityList.subscribe(data => this.hnsPortalMenuList = data)
     )
+
+
 
     // this.route.queryParams.subscribe(params => {
     //   const servicePortal = params['servicing'];
@@ -271,7 +276,8 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
       this.notificationService.eventSummary(this.currentUser.userId).subscribe(
         data => {
           if (data.isSuccess) {
-            this.notifications = data.data
+            // this.notifications = data.data
+            this.sharedServie.changeUserNotification(data.data)
             // console.log(this.notifications);
           }
         }

@@ -3,7 +3,7 @@ import { SubSink } from 'subsink';
 import { State, SortDescriptor } from '@progress/kendo-data-query';
 import { SelectableSettings, PageChangeEvent, SelectAllCheckboxState, RowArgs } from '@progress/kendo-angular-grid';
 
-import { AlertService, EventManagerService, HelperService } from '../../_services'
+import { AlertService, EventManagerService, HelperService, LoaderService } from '../../_services'
 import { tap, switchMap } from 'rxjs/operators';
 import { BehaviorSubject, Subject, forkJoin } from 'rxjs';
 import { EventTask } from 'src/app/_models/event-task.model';
@@ -38,8 +38,6 @@ export class UserTaskDataComponent implements OnInit {
   columns: any = [];
   filters: any = [];
   mySelection: number[] = [];
-  // pushClickedData: any = [];
-  // selectedData: any = [];
   currentUser: any;
   loadedData: any = [];
   public selectableSettings: SelectableSettings;
@@ -48,7 +46,8 @@ export class UserTaskDataComponent implements OnInit {
     private eveneManagerService: EventManagerService,
     private alertService: AlertService,
     private chRef: ChangeDetectorRef,
-    private helperService: HelperService
+    private helperService: HelperService,
+    private loaderService: LoaderService
   ) {
     this.setSelectableSettings();
   }
@@ -342,6 +341,8 @@ export class UserTaskDataComponent implements OnInit {
   }
 
   updateEvent(type) {
+    this.alertService.destroyAlert();
+
     if (this.mySelection.length == 0) {
       this.alertService.error("No record selected");
       return
@@ -353,10 +354,10 @@ export class UserTaskDataComponent implements OnInit {
       EventDataSequence: this.mySelection
     }
 
+    this.loaderService.pageShow()
     this.subs.add(
       this.eveneManagerService.getListOfEventDataByEventDataSequence(params).subscribe(
         selectData => {
-          console.log(selectData)
           if (selectData.isSuccess) {
             let selectedData = selectData.data
             if (selectedData.length > 0) {
@@ -379,26 +380,35 @@ export class UserTaskDataComponent implements OnInit {
                     forkJoin(req).subscribe(
                       data => {
                         // console.log(data);
-                        msg = `Task Number ${this.selectedEvent.eventSequence}, data item ${successRecord.toString()} status request is updated.`
+                        // msg = `Task Number ${this.selectedEvent.eventSequence}, data item ${successRecord.toString()} status request is updated.`
+                        const row = req.length > 1 ? 'Rows' : 'Row';
+                        const status = type == 'P' ? 'Processed' : 'Unprocessed';
+                        msg = `${req.length} ${row} Set To ${status}`
                         this.alertService.success(msg);
+
                         this.resetGridSelection()
                         this.userEventByseq(this.selectedEvent.eventSequence, this.currentUser.userId);
                         this.searchGrid()
+                        this.loaderService.pageHide()
                       }
                     )
                   )
                 } else {
+                  this.loaderService.pageHide()
                   msg = `Task Number ${this.selectedEvent.eventSequence}, data item ${failsRecord.toString()} status request is the same as current ${type}`
                   this.alertService.error(msg);
                 }
 
               } else {
+                this.loaderService.pageHide()
                 this.alertService.error("There is no record to update")
               }
             } else {
+              this.loaderService.pageHide()
               this.alertService.error("Please select a record.")
             }
           } else {
+            this.loaderService.pageHide()
             this.alertService.error(selectData.message)
           }
 
@@ -477,12 +487,44 @@ export class UserTaskDataComponent implements OnInit {
   }
 
   showAssets() {
-    const host = window.location.hostname;
+    // if (this.mySelection.length == 0) {
+    //   this.alertService.error("No record selected");
+    //   return
+    // }
+
+    // this.mySelection = this.mySelection.filter((val, ind, self) => self.indexOf(val) == ind)//get unique value
+    // const params = {
+    //   EventSequence: this.selectedEvent.eventSequence,
+    //   EventDataSequence: this.mySelection
+    // }
+
+    // const host = window.location.hostname;
     let siteUrl = "";
     // if (host == "localhost") {
     //   siteUrl = "http://localhost:4200"
     // } else {
     //   siteUrl = "http://104.40.138.8/rowanwood"
+    // }
+
+    // let findAssetKey = this.columns.find(x => x.val == "Asset");
+    // if (findAssetKey) {
+    //   this.subs.add(
+    //     this.eveneManagerService.getListOfEventDataByEventDataSequence(params).subscribe(
+    //       selectData => {
+    //         if (selectData.isSuccess) {
+    //           let selectedData = selectData.data;
+    //           if (selectedData.length > 0) {
+    //             let assetIds = selectedData.map(x => x[findAssetKey.key])
+    //             localStorage.setItem('assetList', btoa(assetIds.toString()));
+    //             siteUrl = `${siteUrl}/asset-list?taskData=true`
+    //             // window.open(siteUrl, "_blank");
+    //             console.log(assetIds);
+    //           }
+    //         }
+    //       }
+    //     )
+    //   )
+
     // }
 
     siteUrl = "http://104.40.138.8/rowanwood"

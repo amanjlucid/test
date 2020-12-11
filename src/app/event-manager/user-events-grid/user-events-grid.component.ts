@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy
 import { SubSink } from 'subsink';
 import { GroupDescriptor, DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { AlertService, EventManagerDashboardService, HelperService } from '../../_services'
+import { encode } from 'punycode';
 
 @Component({
   selector: 'app-user-events-grid',
@@ -16,7 +17,7 @@ export class UserEventsGridComponent implements OnInit {
   @Input() userEvents: boolean = false;
   @Input() selectedBarChartXasis: any;
   usereventData: any;
-  userEventTempData: any;
+  // userEventTempData: any;
   selectedEvent: any;
   @Output() closeUserEvents = new EventEmitter<boolean>();
   title: any = 'User Events';
@@ -126,28 +127,36 @@ export class UserEventsGridComponent implements OnInit {
 
     siteUrl = "http://104.40.138.8/rowanwood"
 
-    if (val == "all") {
-      siteUrl = `${siteUrl}/tasks/tasks`
-    } else {
-      if (this.mySelection.length > 0) {
-        let seqArr = [];
-        let seqCol = this.columnName.find(x => x.val == "Task No.")
-
-        if (seqCol) {
+    const seqCol = this.columnName.find(x => x.val == "Task No.")
+    if (seqCol) {
+      let seqArr = [];
+      if (val == "all") {
+        if (this.usereventData.length > 0) {
+          seqArr = this.usereventData.map(x => x[seqCol.key])
+        } else {
+          this.alertService.error("No record selected.")
+          return
+        }
+      } else {
+        if (this.mySelection.length > 0) {
           for (let rowSelected of this.mySelection) {
             seqArr.push(this.usereventData[rowSelected][seqCol.key]);
           }
-          siteUrl = `${siteUrl}/tasks/tasks?seq=${seqArr.toString()}`
         } else {
-          this.alertService.error('Seq column not found.')
+          this.alertService.error("No record selected.")
+          return
         }
-      } else {
-        this.alertService.error("No record selected.")
       }
 
+      siteUrl = `${siteUrl}/tasks/tasks?seq=true`
+      localStorage.setItem('taskslist', btoa(seqArr.toString()));
+      window.open(siteUrl, "_blank");
+
+    } else {
+      this.alertService.error('Seq column not found.')
+      return
     }
 
-    window.open(siteUrl, "_blank");
   }
 
 

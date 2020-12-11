@@ -13,11 +13,12 @@ export class EventManagerComponent implements OnInit {
 
   constructor(
     private sharedService: SharedService,
-    private alertService : AlertService,
-    private router : Router
+    private alertService: AlertService,
+    private router: Router
   ) { }
 
   ngOnInit() {
+    
     // this.subs.add(
     //   this.sharedService.modulePermission.subscribe(
     //     data => {

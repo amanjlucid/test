@@ -56,17 +56,28 @@ export class TasksComponent implements OnInit {
     private calendar: NgbCalendar,
     private sharedService: SharedService,
     private router: Router,
+    private helper: HelperService
   ) { }
 
   ngOnInit(): void {
+    //update notification on top
+    this.helper.updateNotificationOnTop();
     this.setSelectableSettings();
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.subs.add(
       this.activeRoute.queryParams.subscribe(params => {
         if (params.seq != undefined) {
-          this.seqIds = params.seq;
+          // this.seqIds = params.seq;
+
+          if (params.seq == 'true') {
+            let encodedTasks = localStorage.getItem("taskslist");
+            if (encodedTasks != null) {
+              this.seqIds = atob(encodedTasks);//Decode tasks
+            }
+          }
+
         }
-        // console.log(this.seqIds);
+
         this.getUserEventsList(this.currentUser.userId, this.hideComplete);
 
       })
@@ -108,6 +119,7 @@ export class TasksComponent implements OnInit {
   }
 
   ngOnDestroy() {
+    localStorage.removeItem('taskslist');
     this.subs.unsubscribe();
   }
 
@@ -337,7 +349,7 @@ export class TasksComponent implements OnInit {
         'eventTypeCode': 'Code',
         'eventTypeDesc': 'Event',
         'eventRowCount': 'Record(s)',
-        'eventProcessedCount': 'Processed %',
+        'processedPercentage': 'Processed(%)',
         'eventCreatedDate': 'Created',
         'eventStatusName': 'Status',
         'eventEscStatusName': 'Esc',

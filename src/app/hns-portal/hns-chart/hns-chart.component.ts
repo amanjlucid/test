@@ -61,8 +61,8 @@ export class HnsChartComponent implements OnInit {
   pageload: boolean = true;
   //allChartDropdownVlaues: any;
   dashboardName: string;
-  portalName:string = "HNS";
-  defaultFilterVal:string = "0_OPTIVO:CONTRACT1:OPTGAS2";
+  portalName: string = "HNS";
+  defaultFilterVal: string = "0_OPTIVO:CONTRACT1:OPTGAS2";
 
 
   constructor(
@@ -78,6 +78,8 @@ export class HnsChartComponent implements OnInit {
   }
 
   ngOnInit() {
+    //update notification on top
+    this.helper.updateNotificationOnTop();
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
 
     setTimeout(() => {
@@ -922,7 +924,7 @@ export class HnsChartComponent implements OnInit {
       xAxis: {
         categories: data.categories,
         min: 0,
-        max: data.categories.length-1,
+        max: data.categories.length - 1,
         labels: {
           rotation: 90,
         }
@@ -1123,7 +1125,7 @@ export class HnsChartComponent implements OnInit {
 
 
   groupBarChartConfiguration(titleText: any, seriesName: string, allowPointSelect: boolean = true, selector: any, data: any) {
-    
+
     return {
       chart: {
         type: 'column',
@@ -1136,7 +1138,7 @@ export class HnsChartComponent implements OnInit {
         categories: data.categories,
         crosshair: true,
         min: 0,
-        max: data.categories.length-1,
+        max: data.categories.length - 1,
         labels: {
           rotation: 90,
         }

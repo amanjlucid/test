@@ -43,7 +43,7 @@
                     </div>
 
                     <div class="col-md-10">
-                        <input type="text" class="form-control" formControlName="email"
+                        <input oninput="this.value = this.value.trim()" type="text" class="form-control" formControlName="email"
                             [ngClass]="{ 'is-invalid': submitted && formErrors.email }">
                         <div *ngIf="submitted && formErrors.email" class="invalid-feedback">
                             <div *ngIf="formErrors.email">{{ formErrors.email }}</div>
