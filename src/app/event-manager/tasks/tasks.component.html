@@ -32,7 +32,8 @@
 
     <div class="row mt-2">
 
-        <div class="col-md-12">
+        <div class="col-md-12" kendoTooltip position="right" showOn="none" [tooltipTemplate]="template"
+            filter=".k-grid td" (mouseover)="showTooltip($event)" tooltipClass="tooltip-class">
             <kendo-grid (groupChange)="groupChange($event)" [group]="state.group" [groupable]="true" [data]="gridView"
                 [height]="720" [loading]="loading" filterable="menu" [resizable]="true" [sortable]="{
     allowUnsort: allowUnsort,
@@ -97,7 +98,7 @@
                     </ng-template> -->
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <span>
-                            <i class="fa fa-circle" aria-hidden="true" [ngClass]="{'highColor': dataItem.eventSevType == 'H',
+                            <i [attr.seq]="dataItem.eventSequence" class="fa fa-circle" aria-hidden="true" [ngClass]="{'highColor': dataItem.eventSevType == 'H',
                             'mediumColor':  dataItem.eventSevType == 'M', 
                             'lowColor': dataItem.eventSevType == 'L'}"></i>
                         </span>
@@ -210,6 +211,62 @@
     </div>
 
 
+    <ng-template #template let-anchor>
+        <div class="hoverLoader" *ngIf="!toolTipData.dataLoaded"><i class="fas fa-spinner fa-pulse"></i></div>
+        <div class="row" *ngIf="toolTipData.dataLoaded && toolTipData.data.eventTypeNotifyViewModels != undefined">
+
+            <div class="col-md-12" *ngIf='toolTipData.data.eventTypeNotifyViewModels.length > 0'>
+                <div class="tooltipHeading">
+                    <span>Notify</span>
+                </div>
+
+                <table class="table notifyDataTable table-bordered mt-1">
+                    <tr>
+                        <th>Recipient</th>
+                        <th>Notification</th>
+                        <th>Date/Time</th>
+                        <th>Assignment</th>
+                    </tr>
+
+                    <tr *ngFor="let nootify of toolTipData.data.eventTypeNotifyViewModels; trackBy: trackByFn">
+                        <td>{{nootify?.eventRecipientName}}</td>
+                        <td>{{nootify?.eventNotifyStatusName}}</td>
+                        <td>{{nootify?.eventViewDate | dateFormat : 'DD-MMM-YYYY HH:mm:ss'}}</td>
+                        <td>{{nootify?.eventAssignedInidicatior}}</td>
+                    </tr>
+
+
+                </table>
+            </div>
+
+            <div class="col-md-12" *ngIf="toolTipData.data.eventTypeParameterViewModels.length > 0">
+                <div class="tooltipHeading">
+                    <span>Parameters</span>
+                </div>
+
+
+                <table class="table notifyDataTable table-bordered mt-1">
+                    <tr
+                        *ngFor="let taskParam of toolTipData.data.eventTypeParameterViewModels; trackBy: trackByParamSeq">
+                        <td>{{taskParam?.selectionParamsDesc}}</td>
+                        <td>{{taskParam?.selectionChar != '' ? taskParam?.selectionChar : taskParam?.selectiionNum}}
+                        </td>
+                        <td>{{taskParam?.selectionString1}}</td>
+                        <td>{{taskParam?.selectionString2}}</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="noTooltipData"
+            *ngIf="toolTipData.dataLoaded && toolTipData.data.eventTypeNotifyViewModels == undefined && toolTipData.data.eventTypeParameterViewModels == undefined">
+            No Data</div>
+
+    </ng-template>
+
 </div>
 
 
@@ -282,7 +339,7 @@
 <app-user-event-task-details *ngIf="taskDetails" [taskDetails]="taskDetails" [selectedEvent]="selectedEvent"
     (closeTaskDetails)="closeTaskDetails($event)"> </app-user-event-task-details>
 
-<app-user-task-data *ngIf="taskData" [taskData]="taskData" [selectedEvent]="selectedEvent"
+<app-user-task-data *ngIf="taskData" [taskData]="taskData" [hideComplete]="hideComplete" [selectedEvent]="selectedEvent"
     (closeTaskData)="closeTaskData($event)"></app-user-task-data>
 
 

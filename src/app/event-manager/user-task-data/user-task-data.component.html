@@ -12,17 +12,17 @@
         <div class="col-sm-12 col-md-12 radioFilterDiv">
             <div class="radioDiv">
                 <label class="radio-inline">
-                    <input [disabled]="selectedEvent.eventAskType == 'I'" (ngModelChange)="onChange($event)" value="P"
+                    <input [disabled]="selectedEvent?.eventAskType == 'I'" (ngModelChange)="onChange($event)" value="P"
                         [(ngModel)]="headerFilters.EventDataStatus" type="radio" name="processed">Processed
                     ({{selectedEvent.eventProcessedCount}})
                 </label>
                 <label class="radio-inline">
-                    <input [disabled]="selectedEvent.eventAskType == 'I'" (ngModelChange)="onChange($event)" value="U"
+                    <input [disabled]="selectedEvent?.eventAskType == 'I'" (ngModelChange)="onChange($event)" value="U"
                         [(ngModel)]="headerFilters.EventDataStatus" type="radio" name="processed" checked>Unprocessed
                     ({{selectedEvent.eventRowCount - selectedEvent.eventProcessedCount}})
                 </label>
                 <label class="radio-inline">
-                    <input [disabled]="selectedEvent.eventAskType == 'I'" (ngModelChange)="onChange($event)" value="A"
+                    <input [disabled]="selectedEvent?.eventAskType == 'I'" (ngModelChange)="onChange($event)" value="A"
                         [(ngModel)]="headerFilters.EventDataStatus" type="radio" name="processed">All
                     ({{selectedEvent.eventRowCount}})
                 </label>
@@ -84,11 +84,11 @@
 
         <div class="col-md-12 mt-2 text-left">
             <button
-                [disabled]="selectedEvent.eventAskType == 'I' || selectedEvent.eventAssignUser != currentUser.userId"
+                [disabled]="disableProcessBtn()"
                 type="button" class="btn btn-sm themeButton mr-2" (click)="updateEvent('P')">Set to
                 Processed</button>
             <button
-                [disabled]="selectedEvent.eventAskType == 'I' || selectedEvent.eventAssignUser != currentUser.userId"
+                [disabled]="disableProcessBtn()"
                 type="button" class="btn btn-sm themeButton mr-2" (click)="updateEvent('U')">Set to
                 Unprocessed</button>
             <button type="button" class="btn btn-sm themeButton mr-2 pull-right" (click)="closeWin()">Cancel</button>

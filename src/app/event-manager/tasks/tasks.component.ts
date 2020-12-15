@@ -1,19 +1,23 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { SubSink } from 'subsink';
 import { GroupDescriptor, DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { SelectableSettings, RowClassArgs } from '@progress/kendo-angular-grid';
 import { AlertService, EventManagerService, HelperService, SharedService } from '../../_services'
-import { forkJoin } from 'rxjs';
+import { BehaviorSubject, forkJoin } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbDateStruct, NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
+import { TooltipDirective } from '@progress/kendo-angular-tooltip';
+import { debounceTime, switchMap, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-tasks',
   templateUrl: './tasks.component.html',
-  styleUrls: ['./tasks.component.css']
+  styleUrls: ['./tasks.component.css'],
+  encapsulation: ViewEncapsulation.None
 })
 
 export class TasksComponent implements OnInit {
+  @ViewChild(TooltipDirective) public tooltipDir: TooltipDirective;
   plannedDateModel: NgbDateStruct;
   plannedDate: { year: number, month: number };
 
@@ -47,6 +51,8 @@ export class TasksComponent implements OnInit {
   assignedToOther = false;
   plannedDatewindow = false;
   taskSecurityList: any = [];
+  toolTipData = { data: [], hoverSeq: '', dataLoaded: false };
+  seqChange = new BehaviorSubject<any>(this.toolTipData);
 
   constructor(
     private eveneManagerService: EventManagerService,
@@ -68,12 +74,13 @@ export class TasksComponent implements OnInit {
       this.activeRoute.queryParams.subscribe(params => {
         if (params.seq != undefined) {
           // this.seqIds = params.seq;
-
           if (params.seq == 'true') {
             let encodedTasks = localStorage.getItem("taskslist");
             if (encodedTasks != null) {
               this.seqIds = atob(encodedTasks);//Decode tasks
             }
+          } else {
+            this.seqIds = params.seq;
           }
 
         }
@@ -82,15 +89,6 @@ export class TasksComponent implements OnInit {
 
       })
     )
-
-    // this.subs.add(
-    //   this.sharedService.taskPortalSecList.subscribe(
-    //     data => {
-    //       this.taskSecurityList = data;
-    //       // console.log(this.taskSecurityList);
-    //     }
-    //   )
-    // )
 
   }
 
@@ -105,7 +103,6 @@ export class TasksComponent implements OnInit {
               modules => {
                 if (modules.length > 0) {
                   if (this.taskSecurityList.indexOf("Manage User Events") == -1 || modules.indexOf("Event Manager Portal Access") == -1) {
-                    //this.alertService.error("You have no access to configuration")
                     this.router.navigate(['/dashboard']);
                   }
                 }
@@ -118,9 +115,68 @@ export class TasksComponent implements OnInit {
     )
   }
 
+
   ngOnDestroy() {
     localStorage.removeItem('taskslist');
     this.subs.unsubscribe();
+  }
+
+  trackByFn(index: number, item) {
+    return item.eventNotifySequence
+  }
+
+  trackByParamSeq(index: number, item) {
+    return item.selectionSeq
+  }
+
+  showTooltip(e: MouseEvent): void {
+    const element = e.target as HTMLElement;
+    if (element.className.indexOf('fa fa-circle') != -1) {
+      const seq = element.getAttribute('seq');
+      this.tooltipDir.toggle(element);
+      if (this.toolTipData.hoverSeq != seq) {
+        this.toolTipData.hoverSeq = seq;
+        this.seqChange.pipe(
+          debounceTime(50),
+          switchMap(state => this.eveneManagerService.getEventTypeParameterAndNotify(state.hoverSeq)),
+          tap(data => {
+            // console.log(data);
+            if (data.isSuccess) {
+              this.toolTipData.data = data.data;
+            } else {
+              this.toolTipData.data = [];
+            }
+            this.toolTipData.dataLoaded = true;
+          })
+        ).subscribe()
+
+        // this.subs.add(
+        //   // this.eveneManagerService.getEventTypeParameterAndNotify(seq).subscribe(
+        //   //   data => {
+        //   //     console.log(data);
+        //   //     if (data.isSuccess) {
+        //   //       this.toolTipData.data = data.data;
+        //   //     } else {
+        //   //       this.toolTipData.data = [];
+        //   //     }
+        //   //     this.toolTipData.dataLoaded = true;
+        //   //   }
+        //   // )
+        // )
+      } else {
+        this.toolTipData.dataLoaded = true;
+      }
+    } else {
+      this.toolTipData.dataLoaded = false;
+      this.tooltipDir.hide();
+    }
+
+    // if ((element.nodeName === 'TD' || element.nodeName === 'TH')
+    //   && element.offsetWidth < element.scrollWidth) {
+    //   this.tooltipDir.toggle(element);
+    // } else {
+    //   this.tooltipDir.hide();
+    // }
   }
 
   public setSelectableSettings(): void {
@@ -190,6 +246,28 @@ export class TasksComponent implements OnInit {
                 this.userEventList = this.userEventList.filter(x => seqArr.indexOf(x.eventSequence.toString()) !== -1)
               }
             }
+
+            //retain assign to me filter
+            if (this.assignedTome) {
+              this.userEventList = this.userEventList.filter(x => {
+                if (x.eventAssignUser == this.currentUser.userId || x.eventStatus == "A") {
+                  return x;
+                }
+              })
+            }
+
+            // if (this.currentUser.admin == "Y") {
+            //   let unique = [];
+            //   let distinct = [];
+            //   for (let i = 0; i < this.userEventList.length; i++) {
+            //     if (!unique[this.userEventList[i].eventSequence]) {
+            //       distinct.push(this.userEventList[i]);
+            //       unique[this.userEventList[i].eventSequence] = 1;
+            //     }
+            //   }
+            //   this.userEventList = distinct;
+            // }
+
             this.gridView = process(this.userEventList, this.state);
             this.loading = false;
           }
@@ -382,16 +460,22 @@ export class TasksComponent implements OnInit {
       let successData = [];
       let req = [];
       for (let userEvent of this.selectedEvent) {
-        if (userEvent.eventAssignUser == "") {
+        if (this.currentUser.admin == 'Y') {
           successData.push(userEvent.eventSequence);
-          req.push(this.eveneManagerService.assignToMe(userEvent.eventSequence, this.currentUser.userId))
+          req.push(this.eveneManagerService.transferTo(userEvent.eventSequence, this.currentUser.userId, this.currentUser.userId))
         } else {
-          if (userEvent.eventAssignUser != "" && userEvent.eventAssignUser == this.currentUser.userId) {
-            failsData.push(`Event number: ${userEvent.eventSequence} is already assigned to me \n`)
-          } else if (userEvent.eventAssignUser != "" && userEvent.eventAssignUser != this.currentUser.userId) {
-            failsData.push(`Event number: ${userEvent.eventSequence} has already been assigned to another user: ${userEvent.eventAssignUserName} \n`)
+          if (userEvent.eventAssignUser == "") {
+            successData.push(userEvent.eventSequence);
+            req.push(this.eveneManagerService.assignToMe(userEvent.eventSequence, this.currentUser.userId))
+          } else {
+            if (userEvent.eventAssignUser != "" && userEvent.eventAssignUser == this.currentUser.userId) {
+              failsData.push(`Event number: ${userEvent.eventSequence} is already assigned to me \n`)
+            } else if (userEvent.eventAssignUser != "" && userEvent.eventAssignUser != this.currentUser.userId) {
+              failsData.push(`Event number: ${userEvent.eventSequence} has already been assigned to another user: ${userEvent.eventAssignUserName} \n`)
+            }
           }
         }
+
       }
 
       if (successData.length > 0) {
@@ -498,6 +582,14 @@ export class TasksComponent implements OnInit {
 
 
   rowCallback(context: RowClassArgs) {
+    let currentuser = JSON.parse(localStorage.getItem('currentUser'));
+    //console.log(cuser)
+    if (currentuser.admin == 'Y') {
+      return {
+        taskUnreadRow: false,
+      }
+    }
+
     if (context.dataItem.eventNotifyStatus == "N") {
       return {
         taskUnreadRow: true,

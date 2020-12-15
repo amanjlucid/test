@@ -12,9 +12,8 @@ export class LoaderInterceptorService implements HttpInterceptor {
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
     if (req.url != undefined) {
-      if (req.url.indexOf("RunEventManagerProcessAsync") !== -1) {
+      if (req.url.indexOf("RunEventManagerProcessAsync") !== -1 || req.url.indexOf("GetEventTypeParameterAndNotify") !== -1) {
         return next.handle(req)
-
       }
     }
 

@@ -130,6 +130,10 @@ export class EventManagerService {
         return this.http.get<any>(`${appConfig.apiUrl}/api/EventType/DeleteListOfEventTypeNotifyBySequenceNumber?eventTypeSequence=${eventTypeSequence}`, this.httpOptions);
     }
 
+    getListOfSpecificUserEvent(userId, hideComplete, eventTypeSequence) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/UserEvents/GetListOfSpecificUserEvent?userId=${userId}&hideComplete=${hideComplete}&eventTypeSequence=${eventTypeSequence}`, this.httpOptions);
+    }
+
     getListOfUserEventByUserId(userId, hideComplete) {
         //return this.http.get<any>(`${appConfig.apiUrl}/api/UserEvents/GetListOfUserEventByUserId?userId=${userId}&hideComplete=${hideComplete}`, this.httpOptions);
         return this.http.get<any>(`${appConfig.apiUrl}/api/UserEvents/GetListOfUserEventByUserIdForAdminUsers?userId=${userId}&hideComplete=${hideComplete}`, this.httpOptions);
@@ -150,6 +154,10 @@ export class EventManagerService {
 
     getListOfUserEventBySequence(eventSequence, userId) {
         return this.http.get<any>(`${appConfig.apiUrl}/api/UserEvents/GetListOfUserEventBySequence?eventSequence=${eventSequence}&userId=${userId}`, this.httpOptions);
+    }
+
+    GetListOfUserEventByUserIdForAdminUsersSpecificRow(userId, hideComplete, rowIndex) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/UserEvents/GetListOfUserEventByUserIdForAdminUsersSpecificRow?userId=${userId}&hideComplete=${hideComplete}&rowIndex=${rowIndex}`, this.httpOptions);
     }
 
 
@@ -187,6 +195,11 @@ export class EventManagerService {
         return this.http.get<any>(`${appConfig.apiUrl}/api/UserEvents/UpdateProcessed?eventSequence=${eventSequence}&eventDataSequence=${eventDataSequence}&eventDataStatus=${eventDataStatus}&userId=${userId}`, this.httpOptions);
     }
 
+    updateMultipleProcessed(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/UserEvents/UpdateMultipleProcessed`, body, this.httpOptions);
+    }
+
     markComplete(eventSequence, userId) {
         return this.http.get<any>(`${appConfig.apiUrl}/api/UserEvents/MarkComplete?eventSequence=${eventSequence}&userId=${userId}`, this.httpOptions);
     }
@@ -206,6 +219,10 @@ export class EventManagerService {
     updateAssignUser(params) {
         let body = JSON.stringify(params);
         return this.http.post<any>(`${appConfig.apiUrl}/api/EventType/AddListOfEventTypeNotifyDummy111`, params, this.httpOptions);
+    }
+
+    getEventTypeParameterAndNotify(eventTypeSequence) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/EventType/GetEventTypeParameterAndNotify?eventTypeSequence=${eventTypeSequence}`, this.httpOptions);
     }
 
 

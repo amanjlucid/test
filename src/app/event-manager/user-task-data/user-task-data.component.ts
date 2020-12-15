@@ -18,6 +18,7 @@ export class UserTaskDataComponent implements OnInit {
   @Output() closeTaskData = new EventEmitter<boolean>();
   @Input() taskData: boolean = false;
   @Input() selectedEvent: any;
+  @Input() hideComplete: any;
   headerFilters: EventTask = new EventTask();
   title = 'Task Data';
   subs = new SubSink();
@@ -349,6 +350,7 @@ export class UserTaskDataComponent implements OnInit {
     }
 
     this.mySelection = this.mySelection.filter((val, ind, self) => self.indexOf(val) == ind)//get unique value
+
     const params = {
       EventSequence: this.selectedEvent.eventSequence,
       EventDataSequence: this.mySelection
@@ -362,41 +364,80 @@ export class UserTaskDataComponent implements OnInit {
             let selectedData = selectData.data
             if (selectedData.length > 0) {
               if ((this.selectedEvent.eventAskType != 'I') && (this.selectedEvent.eventAssignUser == this.currentUser.userId)) {
-                let req = [];
+                //let req = [];
                 let failsRecord = [];
                 let successRecord = [];
+                let msg = '';
+
                 for (let eventData of selectedData) {
                   if (eventData.eventDataStatus != type) {
-                    req.push(this.eveneManagerService.UpdateProcessed(this.selectedEvent.eventSequence, eventData.eventdatasequence, type, this.currentUser.userId));
+                    // req.push(this.eveneManagerService.UpdateProcessed(this.selectedEvent.eventSequence, eventData.eventdatasequence, type, this.currentUser.userId));
                     successRecord.push(eventData.eventdatasequence)
                   } else {
                     failsRecord.push(eventData.eventdatasequence)
                   }
                 }
 
-                let msg = '';
-                if (req.length > 0) {
+                //Check if any data sequence has same status
+                if (failsRecord.length > 0) {
+                  this.loaderService.pageHide();
+                  msg = `${failsRecord.length} data item status request is the same as current ${type}`
+                  // msg = `Task Number ${this.selectedEvent.eventSequence}, data item ${failsRecord.toString()} status request is the same as current ${type}`
+                  this.alertService.error(msg);
+                  return
+                }
+
+                //If data sequence is not same then update status
+                if (successRecord.length > 0) {
+                  const dataSeqParams = {
+                    eventSequence: this.selectedEvent.eventSequence,
+                    eventDataSequence: successRecord,
+                    eventDataStatus: type,
+                    userId: this.currentUser.userId
+                  }
                   this.subs.add(
-                    forkJoin(req).subscribe(
+                    this.eveneManagerService.updateMultipleProcessed(dataSeqParams).subscribe(
                       data => {
                         // console.log(data);
-                        // msg = `Task Number ${this.selectedEvent.eventSequence}, data item ${successRecord.toString()} status request is updated.`
-                        const row = req.length > 1 ? 'Rows' : 'Row';
-                        const status = type == 'P' ? 'Processed' : 'Unprocessed';
-                        msg = `${req.length} ${row} Set To ${status}`
-                        this.alertService.success(msg);
-
-                        this.resetGridSelection()
-                        this.userEventByseq(this.selectedEvent.eventSequence, this.currentUser.userId);
-                        this.searchGrid()
-                        this.loaderService.pageHide()
+                        if (data.isSuccess) {
+                          const row = successRecord.length > 1 ? 'Rows' : 'Row';
+                          const status = type == 'P' ? 'Processed' : 'Unprocessed';
+                          msg = `${successRecord.length} ${row} Set To ${status}`
+                          this.alertService.success(msg);
+                          this.resetGridSelection()
+                          this.userEventByseq(this.selectedEvent.eventSequence, this.currentUser.userId);
+                          this.searchGrid()
+                          this.loaderService.pageHide();
+                          this.chRef.detectChanges();
+                        } else {
+                          this.loaderService.pageHide();
+                          this.alertService.error(data.message);
+                        }
+                      },
+                      err => {
+                        this.alertService.error(err);
+                        this.loaderService.pageHide();
                       }
                     )
                   )
-                } else {
-                  this.loaderService.pageHide()
-                  msg = `Task Number ${this.selectedEvent.eventSequence}, data item ${failsRecord.toString()} status request is the same as current ${type}`
-                  this.alertService.error(msg);
+
+                  // this.subs.add(
+                  //   forkJoin(req).subscribe(
+                  //     data => {
+                  //       // console.log(data);
+                  //       // msg = `Task Number ${this.selectedEvent.eventSequence}, data item ${successRecord.toString()} status request is updated.`
+                  //       const row = req.length > 1 ? 'Rows' : 'Row';
+                  //       const status = type == 'P' ? 'Processed' : 'Unprocessed';
+                  //       msg = `${req.length} ${row} Set To ${status}`
+                  //       this.alertService.success(msg);
+
+                  //       this.resetGridSelection()
+                  //       this.userEventByseq(this.selectedEvent.eventSequence, this.currentUser.userId);
+                  //       this.searchGrid()
+                  //       this.loaderService.pageHide()
+                  //     }
+                  //   )
+                  // )
                 }
 
               } else {
@@ -421,13 +462,38 @@ export class UserTaskDataComponent implements OnInit {
 
   userEventByseq(seq, userId) {
     this.subs.add(
-      this.eveneManagerService.getListOfUserEventBySequence(seq, userId).subscribe(
+      this.eveneManagerService.getListOfSpecificUserEvent(userId, this.hideComplete, seq).subscribe(
         data => {
+          // console.log(data)
           this.selectedEvent = data.data[0];
+          // console.log(this.selectedEvent);
           this.chRef.detectChanges();
         }
       )
     )
+
+    // if (this.currentUser.admin == "Y") {
+    //   this.subs.add(
+    //     this.eveneManagerService.GetListOfUserEventByUserIdForAdminUsersSpecificRow(userId, this.hideComplete, this.selectedEvent.rowIndex).subscribe(
+    //       data => {
+    //         this.selectedEvent = data.data[0];
+    //         // console.log(data);
+    //         this.chRef.detectChanges();
+    //       }
+    //     )
+    //   )
+    // } else {
+    //   this.subs.add(
+    //     this.eveneManagerService.getListOfUserEventBySequence(seq, userId).subscribe(
+    //       data => {
+    //         this.selectedEvent = data.data[0];
+    //         // console.log(this.selectedEvent);
+    //         this.chRef.detectChanges();
+    //       }
+    //     )
+    //   )
+    // }
+
   }
 
   markViewd(seq, userId) {
@@ -484,6 +550,22 @@ export class UserTaskDataComponent implements OnInit {
     this.selectAllState = 'unchecked';
     // this.selectedData = [];
     // this.pushClickedData = [];
+  }
+
+  disableProcessBtn() {
+    if (this.selectedEvent.eventAskType == "I") {
+      return true;
+    }
+
+    // if (this.currentUser.admin != 'Y') {
+    if ((this.currentUser.userId != this.selectedEvent.eventAssignUser)) {
+      return true
+    }
+    // }
+
+
+    return false;
+
   }
 
   showAssets() {

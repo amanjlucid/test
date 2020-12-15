@@ -10,9 +10,7 @@
 
 .progress-bar {
     padding-left: 3px !important;
-} */ 
-
-
+} */
 
 #progress {
     border-radius: 5px;
@@ -29,7 +27,6 @@
 #bar {
     height: 20px;
     background-color: #f4c7dc;
-  
 }
 
 .actionDiv {
@@ -134,4 +131,28 @@
     100% {
         -webkit-transform: translateX(100%);
     }
+}
+
+/** param and notify area on hover  */
+
+.tooltipHeading {
+    width: 100%;
+    text-align: center;
+    font-size: 17px;
+    font-weight: 600;
+}
+
+.notifyDataTable th {
+    font-weight: 600;
+}
+
+.tooltip-class * {
+    background: white !important;
+    color: black !important;
+    z-index: 99999 !important;
+}
+
+.tooltip-class .k-callout {
+    background-color: transparent !important;
+    color: white !important;
 }

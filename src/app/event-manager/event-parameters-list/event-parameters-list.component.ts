@@ -354,7 +354,7 @@ export class EventParametersListComponent implements OnInit {
     }
 
     this.mySelection = this.mySelection.filter((val, ind, self) => self.indexOf(val) == ind)//get unique value
-   
+
     const params = {
       eventTypeSequence: this.selectedEvent.eventTypeSequence,
       eventTypeParmSequence: this.selectedParam.eventTypeParamSequence,
@@ -395,7 +395,9 @@ export class EventParametersListComponent implements OnInit {
                 pstring = valArr.toString();
               }
 
-
+              // this.selectedParam.eventTypeParamSqlValue = pstring;
+              // this.changeParams();
+              // this.closeParameterWindow();
               this.subs.add(
                 this.eventManagerService.updateListOfEventTypeParameter(this.selectedEvent.eventTypeSequence, this.selectedParam.eventTypeParamSequence, pstring).subscribe(
                   data => {
@@ -454,7 +456,7 @@ export class EventParametersListComponent implements OnInit {
               if (this.mySelection.indexOf(plist.selectionSeq) == -1) {
                 this.mySelection.push(plist.selectionSeq)
               }
-            } 
+            }
             // else {
             //   if (this.selectedParam.eventTypeParamSqlValue.indexOf(plist.selectionChar) !== -1) {
             //     if (this.mySelection.indexOf(plist.selectionSeq) == -1) {

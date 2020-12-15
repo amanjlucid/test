@@ -85,6 +85,8 @@ import { HnsSettingsComponent } from './hns-settings/hns-settings.component';
 import { SpellCheckerModule } from 'ngx-spellchecker';
 import { HnsReportImagesComponent } from './hns-report-images/hns-report-images.component';
 import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
+import { TooltipModule } from '@progress/kendo-angular-tooltip';
+
 
 
 
@@ -186,6 +188,7 @@ import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
     SharedModule,
     SpellCheckerModule.forRoot(),
     DateInputsModule,
+    TooltipModule,
 
 
   ],

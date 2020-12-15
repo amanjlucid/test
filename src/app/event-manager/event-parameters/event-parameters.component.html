@@ -16,7 +16,7 @@
             }" [skip]="state.skip" [groupable]="false" [sort]="state.sort" [selectable]="{
               mode: 'multiple'
             }" [filter]="state.filter" (dataStateChange)="onStateChange($event)" (sortChange)="sortChange($event)"
-                    (filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)" [navigable]="false">
+                    (filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)" [navigable]="true">
 
                     <kendo-grid-column field="eventTypeParamTextName" title="Parameter" width="120">
                     </kendo-grid-column>
@@ -66,7 +66,8 @@
 
     <div class="row mt-2">
         <div class="col-md-12 text-right">
-            <button type="submit" class="btn btn-sm themeButton mr-2" (click)="saveParameters()">OK</button>
+            <button [disabled]='!myForm.valid' type="submit" class="btn btn-sm themeButton mr-2"
+                (click)="saveParameters()">OK</button>
             <button type="button" class="btn btn-sm themeButton" (click)="closeEventParamWin()">Cancel</button>
 
         </div>

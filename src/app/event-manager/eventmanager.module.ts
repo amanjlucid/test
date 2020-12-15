@@ -8,6 +8,7 @@ import { UserEventsGridComponent } from './user-events-grid/user-events-grid.com
 import { GridModule, ExcelModule } from '@progress/kendo-angular-grid';
 import { InputsModule } from '@progress/kendo-angular-inputs';
 import { DialogsModule } from '@progress/kendo-angular-dialog';
+import { TooltipModule } from '@progress/kendo-angular-tooltip';
 import { SharedModule } from '../shared.module';
 import { NgbDate, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { DatePickerModule } from '@progress/kendo-angular-dateinputs';
@@ -33,6 +34,7 @@ import { AssigntoOtherComponent } from './assignto-other/assignto-other.componen
     EventManagerRoutingModule,
     ReactiveFormsModule,
     GridModule,
+    TooltipModule,
     ExcelModule,
     InputsModule,
     DialogsModule,
@@ -57,7 +59,7 @@ import { AssigntoOtherComponent } from './assignto-other/assignto-other.componen
     UserEventTaskDetailsComponent,
     UserTaskDataComponent,
     AssigntoOtherComponent
-   
+
   ],
 
   providers: [

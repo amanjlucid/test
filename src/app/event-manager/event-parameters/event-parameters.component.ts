@@ -1,7 +1,8 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { AlertService, EventManagerService, HelperService } from '../../_services'
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-event-parameters',
@@ -11,6 +12,7 @@ import { AlertService, EventManagerService, HelperService } from '../../_service
 })
 
 export class EventParametersComponent implements OnInit {
+  @ViewChild('myForm') form: any;
   subs = new SubSink();
   @Input() paramsWindow = false;
   @Input() selectedEvent: any;
@@ -29,6 +31,7 @@ export class EventParametersComponent implements OnInit {
   allowUnsort = true;
   multiple = false;
   parameterList: any
+  actualParametreList: any;
   eventParamHeading = '';
   selectedParam: any;
   eventParamList = false;
@@ -42,11 +45,10 @@ export class EventParametersComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    
     this.selectedEvent = this.selectedEvent[0];
     this.eventParamHeading = `Task Type: ${this.selectedEvent.eventTypeName} (${this.selectedEvent.eventTypeCode})`
     this.getEventParameterList(this.selectedEvent.eventTypeSequence);
-    
+    this.setEventParameterActualList(this.selectedEvent.eventTypeSequence);
   }
 
   ngOnDestroy() {
@@ -110,6 +112,23 @@ export class EventParametersComponent implements OnInit {
     )
   }
 
+  setEventParameterActualList(seq) {
+    this.subs.add(
+      this.eventmanagerService.getListOfEventTypeParameter(seq).subscribe(
+        data => {
+          if (data.isSuccess) {
+            this.actualParametreList = data.data;
+          } else {
+            this.alert.error(data.message);
+          }
+        },
+        error => {
+          this.alert.error(error);
+        }
+      )
+    )
+  }
+
 
   renderGrid() {
     this.gridView = process(this.parameterList, this.state);
@@ -129,63 +148,69 @@ export class EventParametersComponent implements OnInit {
   }
 
   saveParameters() {
-    this.parameterList = this.gridView.data;
-
-    let paramLength = this.parameterList.length;
-    let i = 1
-    // console.log(this.parameterList);
-    // for (let param of this.parameterList) {
-    //   if (param.eventTypeParamType == "N") {
-    //     this.subs.add(
-    //       this.eventmanagerService.updateListOfEventTypeParameter(this.selectedEvent.eventTypeSequence, this.selectedParam.eventTypeParamSequence, param.eventTypeParamSqlValue).subscribe(
-    //         data => {
-    //           console.log(data);
-    //           if (data.isSuccess == false) {
-    //             this.alert.error(data.message);
-    //             return;
-    //           }
-    //           console.log(paramLength)
-    //           console.log(i)
-
-    //         }
-    //       )
-    //     )
-    //   } 
-    //     if (paramLength == i) {
-    //       this.closeEventParamWin();
-    //     }
-
-
-    //   i++;
-    // }
-
-
-    const saveParams = () => {
-      return new Promise((resolve, reject) => {
-        for (let param of this.parameterList) {
-          if (param.eventTypeParamType == "N") {
-            this.subs.add(
-              this.eventmanagerService.updateListOfEventTypeParameter(this.selectedEvent.eventTypeSequence, this.selectedParam.eventTypeParamSequence, param.eventTypeParamSqlValue).subscribe(
-                data => {
-                  // console.log(data);
-                }
-              )
-            )
-          }
-          i++;
-        }
-        resolve(i)
-      })
+    if (this.form.invalid) {
+      return
     }
 
-    saveParams().then((x: any) => {
-     // console.log(x)
-      setTimeout(() => {
-        this.closeEventParamWin();
-      }, 2000);
-    
-    })
-    
+    let recordToUpdate = [];
+    for (let ind in this.parameterList) {
+      // if (this.parameterList[ind].eventTypeParamSqlValue != this.actualParametreList[ind].eventTypeParamSqlValue) {
+      //   recordToUpdate.push(this.parameterList[ind]);
+      // }
+      if (this.parameterList[ind].eventTypeParamType != 'P' && this.parameterList[ind].eventTypeParamType != 'I') {
+        recordToUpdate.push(this.parameterList[ind]);
+      }
+    }
+
+    if (recordToUpdate.length == 0) {
+      this.closeEventParamWin();
+      //this.alert.error("No Changes found");
+      return
+    }
+
+    let req = [];
+    for (let updateParam of recordToUpdate) {
+      req.push(this.eventmanagerService.updateListOfEventTypeParameter(this.selectedEvent.eventTypeSequence, updateParam.eventTypeParamSequence, updateParam.eventTypeParamSqlValue))
+    }
+
+    if (req.length > 0) {
+      this.subs.add(
+        forkJoin(req).subscribe(
+          data => {
+            this.closeEventParamWin();
+          }
+        )
+      )
+    }
+
+    // let paramLength = this.parameterList.length;
+    // let i = 1
+    // const saveParams = () => {
+    //   return new Promise((resolve, reject) => {
+    //     for (let param of this.parameterList) {
+    //       if (param.eventTypeParamType == "N") {
+    //         this.subs.add(
+    //           this.eventmanagerService.updateListOfEventTypeParameter(this.selectedEvent.eventTypeSequence, this.selectedParam.eventTypeParamSequence, param.eventTypeParamSqlValue).subscribe(
+    //             data => {
+    //               // console.log(data);
+    //             }
+    //           )
+    //         )
+    //       }
+    //       i++;
+    //     }
+    //     resolve(i)
+    //   })
+    // }
+
+    // saveParams().then((x: any) => {
+    //   // console.log(x)
+    //   setTimeout(() => {
+    //     this.closeEventParamWin();
+    //   }, 2000);
+
+    // })
+
   }
 
   changeSelectedParams(event) {

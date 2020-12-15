@@ -16,8 +16,8 @@
     <div class="row mt-2">
 
         <div class="col-md-12">
-            <kendo-grid [group]="state.group" [groupable]="false" [data]="gridView"
-                [height]="700" [loading]="loading" filterable="menu" [resizable]="true" [sortable]="{
+            <kendo-grid [group]="state.group" [groupable]="false" [data]="gridView" [height]="700" [loading]="loading"
+                filterable="menu" [resizable]="true" [sortable]="{
     allowUnsort: allowUnsort,
     mode: multiple ? 'multiple' : 'single'
     }" [skip]="state.skip" [sort]="state.sort" [selectable]="selectableSettings" [filter]="state.filter"
@@ -28,29 +28,26 @@
 
                 <kendo-grid-column field="busAreaCode" title="Code" width="120">
                 </kendo-grid-column>
+
                 <kendo-grid-column field="busAreaDesc" title="Description" width="250">
                     <ng-template kendoGridEditTemplate let-dataItem="dataItem">
                         <input [(ngModel)]="dataItem.busAreaDesc" kendoGridFocusable name="busAreaDesc"
-                            class="k-textbox" required (keydown.enter)="keydownevent($event)" (focusout)="changedRowData($event, 'inp')" />
+                            class="k-textbox" required (keydown.enter)="keydownevent($event)"
+                            (focusout)="changedRowData($event, 'inp')" />
                     </ng-template>
-
                 </kendo-grid-column>
-                <kendo-grid-column field="busAreaOwner" title="Owner" width="180">
 
+                <kendo-grid-column field="busAreaOwner" title="Owner" width="180">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         {{getUserName(dataItem.busAreaOwner)?.m_UerName}}
                     </ng-template>
-
                     <ng-template kendoGridEditTemplate let-dataItem="dataItem" let-column="column"
                         let-formGroup="formGroup">
                         <kendo-dropdownlist #ddl="popupAnchor" popupAnchor [data]="userList" textField="m_UerName"
                             valueField="mpusid" [valuePrimitive]="true" [value]="dataItem.busAreaOwner"
                             [(ngModel)]="dataItem.busAreaOwner" (ngModelChange)="changedRowData($event)">
                         </kendo-dropdownlist>
-
                     </ng-template>
-
-
                 </kendo-grid-column>
 
 
