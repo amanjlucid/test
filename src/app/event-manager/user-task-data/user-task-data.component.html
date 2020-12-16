@@ -2,7 +2,7 @@
     [height]="auto" [minHeight]="350">
     <div class="row taskDetailsDiv">
         <div class="col-md-12 headingDiv">
-            <span class="eventHeading"> Task : {{selectedEvent.eventSequence}} {{selectedEvent.eventTypeName}} </span>
+            <span class="eventHeading"> Task : {{selectedEvent?.eventSequence}} {{selectedEvent?.eventTypeName}} </span>
 
         </div>
 
@@ -14,23 +14,23 @@
                 <label class="radio-inline">
                     <input [disabled]="selectedEvent?.eventAskType == 'I'" (ngModelChange)="onChange($event)" value="P"
                         [(ngModel)]="headerFilters.EventDataStatus" type="radio" name="processed">Processed
-                    ({{selectedEvent.eventProcessedCount}})
+                    ({{selectedEvent?.eventProcessedCount}})
                 </label>
                 <label class="radio-inline">
                     <input [disabled]="selectedEvent?.eventAskType == 'I'" (ngModelChange)="onChange($event)" value="U"
                         [(ngModel)]="headerFilters.EventDataStatus" type="radio" name="processed" checked>Unprocessed
-                    ({{selectedEvent.eventRowCount - selectedEvent.eventProcessedCount}})
+                    ({{selectedEvent?.eventRowCount - selectedEvent?.eventProcessedCount}})
                 </label>
                 <label class="radio-inline">
                     <input [disabled]="selectedEvent?.eventAskType == 'I'" (ngModelChange)="onChange($event)" value="A"
                         [(ngModel)]="headerFilters.EventDataStatus" type="radio" name="processed">All
-                    ({{selectedEvent.eventRowCount}})
+                    ({{selectedEvent?.eventRowCount}})
                 </label>
 
             </div>
 
             <div class="butnDiv">
-                <button type="button" *ngIf="checkShowAssetBtn() && mySelection.length == 1" class="btn btn-sm themeButton mr-2"
+                <button type="button" *ngIf="checkShowAssetBtn()" class="btn btn-sm themeButton mr-2"
                     (click)="showAssets()">Show Assets</button>
                 <button type="button" class="btn btn-sm themeButton" (click)="export()">Export</button>
 
@@ -83,13 +83,11 @@
         </div>
 
         <div class="col-md-12 mt-2 text-left">
-            <button
-                [disabled]="disableProcessBtn()"
-                type="button" class="btn btn-sm themeButton mr-2" (click)="updateEvent('P')">Set to
+            <button [disabled]="disableProcessBtn()" type="button" class="btn btn-sm themeButton mr-2"
+                (click)="updateEvent('P')">Set to
                 Processed</button>
-            <button
-                [disabled]="disableProcessBtn()"
-                type="button" class="btn btn-sm themeButton mr-2" (click)="updateEvent('U')">Set to
+            <button [disabled]="disableProcessBtn()" type="button" class="btn btn-sm themeButton mr-2"
+                (click)="updateEvent('U')">Set to
                 Unprocessed</button>
             <button type="button" class="btn btn-sm themeButton mr-2 pull-right" (click)="closeWin()">Cancel</button>
         </div>

@@ -54,7 +54,9 @@ export class AssetsComponent implements OnInit, OnDestroy {
     'Sescode': '',
     'SimCompliance': '',
     'StartDate': '',
-    'EndDate': ''
+    'EndDate': '',
+    'TaskAsset': false,
+    'TaskAssets': []
 
   }
   visitedHierarchy: any[] = [];
@@ -101,6 +103,7 @@ export class AssetsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    localStorage.removeItem('assetList');
     this.subs.unsubscribe();
   }
 
@@ -123,6 +126,7 @@ export class AssetsComponent implements OnInit, OnDestroy {
       this.route.queryParams.subscribe(params => {
         const assetid = params['assetid'];
         const servicePortal = params['servicing'];
+        const taskData = params['taskData'];
         if (assetid != undefined) {
           this.autService.validateAssetIDDeepLinkParameters(this.currentUser.userId, assetid).subscribe(
             data => {
@@ -135,6 +139,16 @@ export class AssetsComponent implements OnInit, OnDestroy {
               }
             }
           )
+        } else if (taskData != undefined && taskData == "true") {
+          let encodedTasksAssets = localStorage.getItem("assetList");
+          if (encodedTasksAssets != null) {
+            let assetIdstring = atob(encodedTasksAssets);//Decode tasks assets
+            this.assetList.TaskAsset = true;
+            this.assetList.TaskAssets = assetIdstring.split(',');
+          }
+
+          this.getAllAssets(this.assetList);
+
         } else if (servicePortal != undefined && servicePortal == "true") {
           this.subs.add(
             this.authService.checkModulePermission(this.currentUser.userId).subscribe(data => {
@@ -531,6 +545,8 @@ export class AssetsComponent implements OnInit, OnDestroy {
     this.assetList.PostCode = '';
     this.assetList.AssetStatus = 'A';
     this.assetList.Auth = false;
+    this.assetList.TaskAsset = false;
+    this.assetList.TaskAssets = [];
     this.resetAssetList();
 
     this.getAllAssets(this.assetList);
@@ -831,44 +847,44 @@ export class AssetsComponent implements OnInit, OnDestroy {
 
 
   checkRendartable() {
-   let ua = window.navigator.userAgent;
-   let IExplorerAgent = ua.indexOf("MSIE") > -1 || ua.indexOf("rv:") > -1; 
-   console.log(IExplorerAgent);
-   // console.log(ua);
-   if(!IExplorerAgent){
-    setTimeout(() => {
-      $('#assetTbl').on('scroll', () => {
-        $("#assetTbl tbody").css({ 'overflow-y': 'hidden' });
-        setTimeout(() => {
-          $("#assetTbl tbody").css({ 'overflow-y': 'scroll' });
-        }, 1000);
+    let ua = window.navigator.userAgent;
+    let IExplorerAgent = ua.indexOf("MSIE") > -1 || ua.indexOf("rv:") > -1;
+    // console.log(IExplorerAgent);
+    // console.log(ua);
+    if (!IExplorerAgent) {
+      setTimeout(() => {
+        $('#assetTbl').on('scroll', () => {
+          $("#assetTbl tbody").css({ 'overflow-y': 'hidden' });
+          setTimeout(() => {
+            $("#assetTbl tbody").css({ 'overflow-y': 'scroll' });
+          }, 1000);
 
-        $("#assetTbl > *").width($("#assetTbl").width() + $("#assetTbl").scrollLeft());
-        this.chRef.markForCheck();
-      });
-    }, 5);
-    this.chRef.markForCheck();
-   } else {
-
-
-    setTimeout(() => {
-      $(".assetGrid").css( "maxWidth", "100%" );
-      $(".assetGrid").css( { 'overflow-x': 'auto' } );
-      $('#assetTbl').on('scroll', () => {
-        $("#assetTbl tbody").css({ 'overflow-y': 'hidden' });
-        setTimeout(() => {
-          $("#assetTbl tbody").css({ 'overflow-y': 'scroll' });
+          $("#assetTbl > *").width($("#assetTbl").width() + $("#assetTbl").scrollLeft());
           this.chRef.markForCheck();
-        }, 1000);
-     
-
-        $("#assetTbl > *").width($("#assetTbl").width() + $("#assetTbl").scrollLeft());
-        this.chRef.markForCheck();
-      });
-    }, 5);
+        });
+      }, 5);
+      this.chRef.markForCheck();
+    } else {
 
 
-   }
+      setTimeout(() => {
+        $(".assetGrid").css("maxWidth", "100%");
+        $(".assetGrid").css({ 'overflow-x': 'auto' });
+        $('#assetTbl').on('scroll', () => {
+          $("#assetTbl tbody").css({ 'overflow-y': 'hidden' });
+          setTimeout(() => {
+            $("#assetTbl tbody").css({ 'overflow-y': 'scroll' });
+            this.chRef.markForCheck();
+          }, 1000);
+
+
+          $("#assetTbl > *").width($("#assetTbl").width() + $("#assetTbl").scrollLeft());
+          this.chRef.markForCheck();
+        });
+      }, 5);
+
+
+    }
 
   }
 

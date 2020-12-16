@@ -569,10 +569,50 @@ export class UserTaskDataComponent implements OnInit {
   }
 
   showAssets() {
-    // if (this.mySelection.length == 0) {
-    //   this.alertService.error("No record selected");
-    //   return
-    // }
+    let findAssetKey = this.columns.find(x => x.val == "Asset");
+    if (findAssetKey) {
+      const host = window.location.hostname;
+      let siteUrl = "";
+      if (host == "localhost") {
+        siteUrl = "http://localhost:4200"
+      } else {
+        siteUrl = "http://104.40.138.8/rowanwood"
+      }
+      let filterModel = Object.assign({}, this.headerFilters);
+      filterModel.IsExport = true;
+
+      this.subs.add(
+        this.eveneManagerService.getListOfEventData(filterModel).subscribe(
+          selectData => {
+            console.log(selectData);
+            if (selectData.total > 0) {
+              let selectedData = selectData.data;
+              if (selectedData.length > 0) {
+                let assetIds = selectedData.map(x => x[findAssetKey.key])
+                localStorage.setItem('assetList', btoa(assetIds.toString()));
+                siteUrl = `${siteUrl}/asset-list?taskData=true`
+                window.open(siteUrl, "_blank");
+              }
+            }
+          }
+        )
+        // this.eveneManagerService.getListOfEventDataByEventDataSequence(params).subscribe(
+        //   selectData => {
+        //     if (selectData.isSuccess) {
+        //       let selectedData = selectData.data;
+        //       if (selectedData.length > 0) {
+        //         let assetIds = selectedData.map(x => x[findAssetKey.key])
+        //         localStorage.setItem('assetList', btoa(assetIds.toString()));
+        //         siteUrl = `${siteUrl}/asset-list?taskData=true`
+        //         // window.open(siteUrl, "_blank");
+        //         console.log(assetIds);
+        //       }
+        //     }
+        //   }
+        // )
+      )
+
+    }
 
     // this.mySelection = this.mySelection.filter((val, ind, self) => self.indexOf(val) == ind)//get unique value
     // const params = {
@@ -580,47 +620,23 @@ export class UserTaskDataComponent implements OnInit {
     //   EventDataSequence: this.mySelection
     // }
 
-    // const host = window.location.hostname;
-    let siteUrl = "";
-    // if (host == "localhost") {
-    //   siteUrl = "http://localhost:4200"
+
+
+
+
+
+    // siteUrl = "http://104.40.138.8/rowanwood"
+    // if (this.mySelection.length == 1) {
+    //   let findRow = this.loadedData.find(x => x.eventsequence == this.selectedEvent.eventSequence && this.mySelection.indexOf(x.eventdatasequence) !== -1)
+    //   let findAssetKey = this.columns.find(x => x.val == "Asset");
+    //   if (findRow) {
+    //     siteUrl = `${siteUrl}/asset-list?assetid=${findRow[findAssetKey.key]}`
+    //   }
     // } else {
-    //   siteUrl = "http://104.40.138.8/rowanwood"
+    //   return
     // }
 
-    // let findAssetKey = this.columns.find(x => x.val == "Asset");
-    // if (findAssetKey) {
-    //   this.subs.add(
-    //     this.eveneManagerService.getListOfEventDataByEventDataSequence(params).subscribe(
-    //       selectData => {
-    //         if (selectData.isSuccess) {
-    //           let selectedData = selectData.data;
-    //           if (selectedData.length > 0) {
-    //             let assetIds = selectedData.map(x => x[findAssetKey.key])
-    //             localStorage.setItem('assetList', btoa(assetIds.toString()));
-    //             siteUrl = `${siteUrl}/asset-list?taskData=true`
-    //             // window.open(siteUrl, "_blank");
-    //             console.log(assetIds);
-    //           }
-    //         }
-    //       }
-    //     )
-    //   )
-
-    // }
-
-    siteUrl = "http://104.40.138.8/rowanwood"
-    if (this.mySelection.length == 1) {
-      let findRow = this.loadedData.find(x => x.eventsequence == this.selectedEvent.eventSequence && this.mySelection.indexOf(x.eventdatasequence) !== -1)
-      let findAssetKey = this.columns.find(x => x.val == "Asset");
-      if (findRow) {
-        siteUrl = `${siteUrl}/asset-list?assetid=${findRow[findAssetKey.key]}`
-      }
-    } else {
-      return
-    }
-
-    window.open(siteUrl, "_blank");
+    // window.open(siteUrl, "_blank");
 
   }
 

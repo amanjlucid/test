@@ -26,4 +26,6 @@ export class AssetListModel {
     SimCompliance:string;
     StartDate:string;
     EndDate:string;
+    TaskAsset:boolean;
+    TaskAssets:any;
 }
