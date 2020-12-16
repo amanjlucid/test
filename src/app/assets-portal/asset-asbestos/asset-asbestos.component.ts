@@ -107,13 +107,9 @@ export class AssetAsbestosComponent implements OnInit, OnDestroy {
         data => {
           if (data && data.isSuccess) {
             let tempAsbestos = Object.assign({}, data.data);
-           // console.log(tempAsbestos)
-            // tempAsbestos.forEach(element => {
 
-            // });
             this.asbestosData = data.data;
             this.shareData.changeAsbestos(data.data);
-            //console.log(this.asbestosData);
             this.gridView = process(this.asbestosData, this.state);
           }
         }
@@ -338,7 +334,7 @@ export class AssetAsbestosComponent implements OnInit, OnDestroy {
       let asbestos = Object.assign([], this.asbestosData);
       let acm = asbestos.filter(x => x.auctext == dataItem.auctext && x.audtext == dataItem.audtext);
       let ref = acm.filter(x => x.asasadditionalnotes.includes('SAMPLEXREF'));
-     // console.log({ ref: ref, acm: acm });
+      // console.log({ ref: ref, acm: acm });
       if (ref.length > 0) {
         const refName = ref[0].asasadditionalnotes.split(":");
         let sampleList = dataItem.sampleList.filter(x => x.sampleReference == refName[1] && x.sequence == dataItem.asassequence);
@@ -371,6 +367,31 @@ export class AssetAsbestosComponent implements OnInit, OnDestroy {
     }, {});
   }
 
+
+  export() {
+
+    if (this.asbestosData && this.asbestosData.length > 0) {
+      let label = {
+        'auctext': 'ACM Category',
+        'audtext': 'ACM Detail',
+        'location': 'Location',
+        'floor': 'Floor',
+        'position': 'Position',
+        'presence': 'Presence',
+        'type': 'Type',
+        'materialRisk': 'Material Risk',
+        'priorityRisk': 'Priority Risk',
+        'totalRisk': 'Total Risk',
+        'pendingChangeYN': 'Pending Request?',
+      }
+
+      this.helperService.exportToexcelWithAssetDetails(this.asbestosData, 'Asset-Asbestos', label)
+    } else {
+      this.alertService.error("There is no record to export.")
+    }
+
+
+  }
 
 
 

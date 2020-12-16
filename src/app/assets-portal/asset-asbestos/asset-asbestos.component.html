@@ -53,10 +53,16 @@
         </span>
         <span class="switcher-label">Samples</span>
       </label>
+    
     </div>
-  </div>
-  <div class="col-md-6 text-right asbestosReqBtn">
 
+    
+
+  </div>
+
+
+  <div class="col-md-6 text-right asbestosReqBtn">
+    <button type="button" class="btn btn-sm themeButton" (click)="export()">Export</button>
     <button (click)="openManageAsbestosRequestPopup('request')" [disabled]="checkAsbestosPropAccess()"
       class="btn btn-sm themeButton">Requests</button>
     <!-- <button (click)="openManageAsbestosRequestPopup('auth')" class="btn btn-sm themeButton">Auth</button> -->
