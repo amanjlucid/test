@@ -468,7 +468,6 @@ export class ManagementComponent implements OnInit, OnDestroy {
         let index = $row.data('index');
         if (index === 0) {
           if (comp.mgmtData[parseInt(index)] != undefined) {
-            console.log(2)
             tempArr.push(comp.mgmtData[parseInt(index)]);
           }
         } else {

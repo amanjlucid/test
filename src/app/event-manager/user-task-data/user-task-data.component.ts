@@ -584,7 +584,6 @@ export class UserTaskDataComponent implements OnInit {
       this.subs.add(
         this.eveneManagerService.getListOfEventData(filterModel).subscribe(
           selectData => {
-            console.log(selectData);
             if (selectData.total > 0) {
               let selectedData = selectData.data;
               if (selectedData.length > 0) {
