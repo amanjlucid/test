@@ -537,7 +537,7 @@ export class UserTaskDataComponent implements OnInit {
   }
 
   checkShowAssetBtn() {
-    let findAssetKey = this.columns.find(x => x.val == "Asset");
+    let findAssetKey = this.columns.find(x => x.val.toLowerCase() == "asset");
     if (findAssetKey) {
       return true
     }
@@ -569,7 +569,7 @@ export class UserTaskDataComponent implements OnInit {
   }
 
   showAssets() {
-    let findAssetKey = this.columns.find(x => x.val == "Asset");
+    let findAssetKey = this.columns.find(x => x.val.toLowerCase() == "asset");
     if (findAssetKey) {
       const host = window.location.hostname;
       let siteUrl = "";
@@ -584,7 +584,7 @@ export class UserTaskDataComponent implements OnInit {
       this.subs.add(
         this.eveneManagerService.getListOfEventData(filterModel).subscribe(
           selectData => {
-            console.log(selectData);
+            // console.log(selectData);
             if (selectData.total > 0) {
               let selectedData = selectData.data;
               if (selectedData.length > 0) {
