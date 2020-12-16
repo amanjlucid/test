@@ -20,7 +20,7 @@ export class UserEventsGridComponent implements OnInit {
   // userEventTempData: any;
   selectedEvent: any;
   @Output() closeUserEvents = new EventEmitter<boolean>();
-  title: any = 'User Events';
+  title: any = 'Tasks';
   state: State = {
     skip: 0,
     sort: [],
