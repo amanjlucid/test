@@ -428,6 +428,12 @@ export class ServiceChartComponent implements OnInit {
               dataForChart.ChartParameterValue = val;
               comp.getLineChartData(dataForChart, className, container, state, chartObj);
             });
+
+            //trigger change event
+            if (lineChartFilterData != null && lineChartData.length == 0) {
+              $('.' + className).trigger('change');
+            }
+
           } else {
             this.alertService.error(data.message);
           }
@@ -586,6 +592,7 @@ export class ServiceChartComponent implements OnInit {
               dataForChart.ChartParameterValue = val;
               classRefer.getPieChartData(dataForChart, className, container, state, chartObj);
             })
+
           } else {
             this.alertService.error(data.message);
           }
@@ -694,6 +701,14 @@ export class ServiceChartComponent implements OnInit {
               dataForChart.ChartParameterValue = val;
               comp.getPieChartData(dataForChart, className, container, state, chartObj);
             })
+
+           
+            //trigger change event
+           
+            if (pieChartFilterData != null && tempArr.length == 0) {
+              $('.' + className).trigger('change');
+            }
+
           } else {
             this.alertService.error(data.message);
           }
@@ -941,6 +956,12 @@ export class ServiceChartComponent implements OnInit {
               dataForChart.ChartParameterValue = val;
               comp.getBarChartData(dataForChart, className, container, state, chartObj);
             })
+
+            //trigger change event
+            if (barChartFilterData != null && barChartData.stackedBarChartViewModelList.length == 0) {
+              $('.' + className).trigger('change');
+            }
+
           } else {
             this.alertService.error(data.message);
           }

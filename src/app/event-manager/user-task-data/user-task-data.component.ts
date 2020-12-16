@@ -595,48 +595,10 @@ export class UserTaskDataComponent implements OnInit {
             }
           }
         )
-        // this.eveneManagerService.getListOfEventDataByEventDataSequence(params).subscribe(
-        //   selectData => {
-        //     if (selectData.isSuccess) {
-        //       let selectedData = selectData.data;
-        //       if (selectedData.length > 0) {
-        //         let assetIds = selectedData.map(x => x[findAssetKey.key])
-        //         localStorage.setItem('assetList', btoa(assetIds.toString()));
-        //         siteUrl = `${siteUrl}/asset-list?taskData=true`
-        //         // window.open(siteUrl, "_blank");
-        //         console.log(assetIds);
-        //       }
-        //     }
-        //   }
-        // )
+   
       )
 
     }
-
-    // this.mySelection = this.mySelection.filter((val, ind, self) => self.indexOf(val) == ind)//get unique value
-    // const params = {
-    //   EventSequence: this.selectedEvent.eventSequence,
-    //   EventDataSequence: this.mySelection
-    // }
-
-
-
-
-
-
-    // siteUrl = "http://104.40.138.8/rowanwood"
-    // if (this.mySelection.length == 1) {
-    //   let findRow = this.loadedData.find(x => x.eventsequence == this.selectedEvent.eventSequence && this.mySelection.indexOf(x.eventdatasequence) !== -1)
-    //   let findAssetKey = this.columns.find(x => x.val == "Asset");
-    //   if (findRow) {
-    //     siteUrl = `${siteUrl}/asset-list?assetid=${findRow[findAssetKey.key]}`
-    //   }
-    // } else {
-    //   return
-    // }
-
-    // window.open(siteUrl, "_blank");
-
   }
 
 }
