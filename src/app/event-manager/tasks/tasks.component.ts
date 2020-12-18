@@ -187,10 +187,16 @@ export class TasksComponent implements OnInit {
   }
 
   groupChange(groups: GroupDescriptor[]): void {
-    this.state.group = groups;
-    setTimeout(() => {
-      this.gridView = process(this.userEventList, this.state);
-    }, 100);
+    const newGroups = groups.map(gr => {
+      return gr;
+    });
+
+    this.state.group = newGroups;
+
+    // this.state.group = groups;
+    // setTimeout(() => {
+    //   this.gridView = process(this.userEventList, this.state);
+    // }, 100);
   }
 
 
@@ -255,20 +261,9 @@ export class TasksComponent implements OnInit {
                 }
               })
             }
+          
 
-            // if (this.currentUser.admin == "Y") {
-            //   let unique = [];
-            //   let distinct = [];
-            //   for (let i = 0; i < this.userEventList.length; i++) {
-            //     if (!unique[this.userEventList[i].eventSequence]) {
-            //       distinct.push(this.userEventList[i]);
-            //       unique[this.userEventList[i].eventSequence] = 1;
-            //     }
-            //   }
-            //   this.userEventList = distinct;
-            // }
-
-            this.gridView = process(this.userEventList, this.state);
+            //this.gridView = process(this.userEventList, this.state);
             this.loading = false;
           }
         }

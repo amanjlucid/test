@@ -34,14 +34,34 @@
 
         <div class="col-md-12" kendoTooltip position="right" showOn="none" [tooltipTemplate]="template"
             filter=".k-grid td" (mouseover)="showTooltip($event)" tooltipClass="tooltip-class">
-            <kendo-grid (groupChange)="groupChange($event)" [group]="state.group" [groupable]="true" [data]="gridView"
-                [height]="720" [loading]="loading" filterable="menu" [resizable]="true" [sortable]="{
-    allowUnsort: allowUnsort,
-    mode: multiple ? 'multiple' : 'single'
-    }" [skip]="state.skip" [sort]="state.sort" [selectable]="selectableSettings" kendoGridSelectBy="eventSequence"
-                [selectedKeys]="mySelection" (selectedKeysChange)="onSelectedKeysChange($event)" [filter]="state.filter"
-                (sortChange)="sortChange($event)" (filterChange)="filterChange($event)"
-                (cellClick)="cellClickHandler($event)" [navigable]="true" [rowClass]="rowCallback">
+            <kendo-grid 
+            (groupChange)="groupChange($event)" 
+            [group]="state.group" 
+            [groupable]="true" 
+            [kendoGridGroupBinding]="userEventList"
+            [height]="720" 
+            [loading]="loading" 
+            filterable="menu" 
+            [resizable]="true" 
+            [sortable]="{
+                    allowUnsort: allowUnsort,
+                    mode: multiple ? 'multiple' : 'single'
+                }" 
+            [skip]="state.skip" 
+            [sort]="state.sort" 
+            [selectable]="selectableSettings" 
+            kendoGridSelectBy="eventSequence"
+            [selectedKeys]="mySelection" 
+            (selectedKeysChange)="onSelectedKeysChange($event)" 
+            [filter]="state.filter"
+            (sortChange)="sortChange($event)" 
+            (filterChange)="filterChange($event)"
+            (cellClick)="cellClickHandler($event)" 
+            [navigable]="true" 
+            [rowClass]="rowCallback"
+            [pageSize]="20"
+            scrollable="virtual"
+            [rowHeight]="36">
 
                 <kendo-grid-column title=" " width="37" [filterable]="false">
                     <ng-template kendoGridCellTemplate let-dataItem>
@@ -105,21 +125,7 @@
                     </ng-template>
                 </kendo-grid-column>
 
-                <!-- <kendo-grid-column field="eventSevType" title="" width="50" [filterable]="false" [groupable]="true">
-
-                </kendo-grid-column> -->
-
-                <!-- <kendo-grid-column field="eventSevType" title="" width="50" [filterable]="false" [groupable]="true">
-                    <ng-template kendoGridCellTemplate let-dataItem>
-                        <span>
-                            <img style="height: 14px;" src="assets/img/icons/tick.png" />
-                            <img style="height: 14px;"
-                                *ngIf="dataItem.eventParamCount > 0 &&  dataItem.eventParamEmptyCount > 0"
-                                src="assets/img/icons/cross.png" />
-
-                        </span>
-                    </ng-template>
-                </kendo-grid-column> -->
+              
 
                 <kendo-grid-column field="eventSequence" title="Seq" width="100">
                 </kendo-grid-column>

@@ -22,15 +22,7 @@ export class TaskDetailsComponent implements OnInit {
       filters: []
     }
   }
-  tempstate: State = {
-    skip: 0,
-    sort: [],
-    group: [{ field: 'busAreaDesc' }],
-    filter: {
-      logic: "or",
-      filters: []
-    }
-  }
+
 
   allowUnsort = true;
   multiple = false;
@@ -127,10 +119,16 @@ export class TaskDetailsComponent implements OnInit {
   }
 
   public groupChange(groups: GroupDescriptor[]): void {
-    this.state.group = groups;
-    setTimeout(() => {
-      this.gridView = process(this.taskDetailsTemp, this.state);
-    }, 100);
+    const newGroups = groups.map(gr => {
+      return gr;
+    });
+
+    this.state.group = newGroups;
+   
+    // this.state.group = groups;
+    // setTimeout(() => {
+    //   this.gridView = process(this.taskDetailsTemp, this.state);
+    // }, 100);
   }
 
 
