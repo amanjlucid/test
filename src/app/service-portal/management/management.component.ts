@@ -381,7 +381,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
             const element = this.mgmDataByLvl[key];
             if ((this.mgmFltrCol.contractor != null && this.mgmFltrCol.contractor.some(x => x.item_id == element.data.contractor))
               || (this.mgmFltrCol.contract != null && this.mgmFltrCol.contract.some(x => x.item_id == element.data.contract))
-              || (this.mgmFltrCol.serviceType != null && this.mgmFltrCol.serviceType.indexOf(x => x.item_id == element.data.serviceType))
+              || (this.mgmFltrCol.serviceType != null && this.mgmFltrCol.serviceType.some(x => x.item_id == element.data.serviceType))
             ) {
               tempArr.push(element);
               continue;
