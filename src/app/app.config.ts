@@ -11,3 +11,5 @@ export const appConfig = {
     //apiUrl: 'http://192.168.1.10'
     apiUrl: `http://${host}/${apiFolder}`//'http://104.40.138.8/RowanwoodWebAPI'
 };
+
+export const mainSiteUrl = 'http://104.40.138.8/rowanwood';

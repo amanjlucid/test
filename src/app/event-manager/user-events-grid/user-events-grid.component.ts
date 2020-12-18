@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy
 import { SubSink } from 'subsink';
 import { GroupDescriptor, DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { AlertService, EventManagerDashboardService, HelperService } from '../../_services'
-import { encode } from 'punycode';
+import { mainSiteUrl } from '../../app.config';
 
 @Component({
   selector: 'app-user-events-grid',
@@ -125,7 +125,7 @@ export class UserEventsGridComponent implements OnInit {
     //   siteUrl = "http://104.40.138.8/rowanwood"
     // }
 
-    siteUrl = "http://104.40.138.8/rowanwood"
+    siteUrl = mainSiteUrl;
 
     const seqCol = this.columnName.find(x => x.val == "Task No.")
     if (seqCol) {
