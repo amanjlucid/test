@@ -1,0 +1,392 @@
+<div class="container-fluid flex-grow-1 container-p-y">
+    <div class="row">
+        <div class="col-md-2 col-sm-3">
+            <h4 class="font-weight-bold">
+                Reports
+            </h4>
+        </div>
+
+        <div class="col-md-10 col-sm-9 text-right">
+            <button type="button" class="btn btn-sm themeButton mr-1">Preview</button>
+            <button type="button" class="btn btn-sm themeButton mr-1">Run</button>
+
+            <button id="showFilePanel" (click)="openSearchBar()" class="btn btn-sm themeButton"><i
+                    class="fa fa-search"></i>
+            </button>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-inline">
+                <label>Categories</label>
+                <select>
+                    <option>dfd</option>
+                </select>
+
+                <label>Category</label>
+                <select>
+                    <option>dfd</option>
+                </select>
+            </div>
+
+        </div>
+    </div>
+
+
+    <div class="row mt-2">
+        <div class="col-md-12">
+            <kendo-grid (groupChange)="groupChange($event)" [group]="state.group" [groupable]="true" [data]="gridView"
+                [height]="720" [loading]="loading" filterable="menu" [resizable]="true" [sortable]="{
+    allowUnsort: allowUnsort,
+    mode: multiple ? 'multiple' : 'single'
+    }" [skip]="state.skip" [sort]="state.sort" [selectable]="selectableSettings" kendoGridSelectBy="eventSequence"
+                [selectedKeys]="mySelection" (selectedKeysChange)="onSelectedKeysChange($event)" [filter]="state.filter"
+                (sortChange)="sortChange($event)" (filterChange)="filterChange($event)"
+                (cellClick)="cellClickHandler($event)" [navigable]="true">
+
+                <kendo-grid-column title=" " width="37" [filterable]="false">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <li [ngClass]="{'disabled' : selectedEvent.length > 1}" class="nav-item dropdown list-unstyled"
+                            style="margin-top: -7px;">
+                            <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"
+                                (click)="setSeletedRow(dataItem)"></i>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="javascript:void(0)"
+                                    (click)="openTaskDetails(dataItem, 'single')">Task
+                                    Details</a>
+                                <a class="dropdown-item" href="javascript:void(0)"
+                                    (click)="openTaskData(dataItem,'single')">Task
+                                    Data</a>
+
+                                <div class="dropdown-toggle">
+                                    <div class="dropdown-item">Assign</div>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item" (click)="assignToMe(dataItem,'single')"
+                                            href="javascript:void(0)">Assign
+                                            to Me</a>
+                                        <a class="dropdown-item" (click)="assignToOther(dataItem,'single')"
+                                            href="javascript:void(0)">Assign
+                                            to Other user</a>
+
+                                    </div>
+                                </div>
+
+
+                                <div class="dropdown-toggle">
+                                    <div class="dropdown-item">Dates</div>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item" (click)="setPlanned()" href="javascript:void(0)">Set
+                                            Planned Date</a>
+                                        <a class="dropdown-item" (click)="savePlannedDate(false)"
+                                            href="javascript:void(0)">Clear Planned Date</a>
+
+                                    </div>
+                                </div>
+
+                                <a [ngClass]="{'disabled' : dataItem.eventProcessedCount != dataItem.eventRowCount}"
+                                    class="dropdown-item" href="javascript:void(0)" (click)="setToComplete()">Set to
+                                    Completed</a>
+
+                            </div>
+                        </li>
+
+                    </ng-template>
+                </kendo-grid-column>
+
+          
+                <kendo-grid-column field="eventSequence" title="Seq" width="100">
+                </kendo-grid-column>
+                <kendo-grid-column field="busareaName" title="Business Area" width="160">
+                </kendo-grid-column>
+                <kendo-grid-column field="eventTypeCode" title="Code" width="120">
+                </kendo-grid-column>
+                <kendo-grid-column field="eventName" title="Task" width="410">
+                </kendo-grid-column>
+                <kendo-grid-column field="eventRowCount" title="Record(s)" width="120">
+                </kendo-grid-column>
+           
+          
+                <kendo-grid-column field="eventStatusName" title="Status" width="120">
+                </kendo-grid-column>
+                <kendo-grid-column field="eventAssignUserName" title="Assigned To" width="210">
+                </kendo-grid-column>
+                <kendo-grid-column field="eventEscStatusName" title="Escalation" width="120">
+                </kendo-grid-column>
+                <kendo-grid-column field="eventSevTypeName" title="Severity" width="120">
+                </kendo-grid-column>
+                <kendo-grid-column field="eventAskTypeName" title="Action" width="120">
+                </kendo-grid-column>
+         
+                <kendo-grid-column field="eventCreatedBy" title="Created By" width="120">
+                </kendo-grid-column>
+                <kendo-grid-column field="eventUpdatedBy" title="Updated By" width="120">
+                </kendo-grid-column>
+         
+
+
+
+            </kendo-grid>
+
+        </div>
+    </div>
+
+
+
+</div>
+
+
+
+
+<!-- Search bar -->
+<div class="search-container dismiss">
+
+    <h5 style="color:white" class="p-4 m-0 line-height-1 font-weight-bolder bg-light theme-settings-header"> Filters
+        <a href="javascript:void(0)" (click)="closeSearchBar()"
+            class="theme-settings-close-btn font-weight-light px-4 py-2" style="color:#ffffff;" tabindex="-1">×</a>
+    </h5>
+
+    <div class="searchDiv">
+        <div class="searchArea">
+            <div class="filtersection">
+                <span class="filterHead">Search</span>
+            </div>
+
+            <div class="form-group mt-1 inlineInp">
+                <label class="form-label form-label-sm">Number</label>
+                <input type="text" class="form-control form-control-sm">
+            </div>
+
+            <div class="form-group inlineInp">
+                <label class="form-label form-label-sm">Name</label>
+                <input type="text" class="form-control form-control-sm">
+            </div>
+
+            <div class="row mt-2">
+                <div class="col-md-6">
+                    <label class="switcher switcher-secondary">
+                        <input type="checkbox" value="0" class="switcher-input">
+                        <span class="switcher-indicator colSwitch">
+                            <span class="switcher-yes">
+                                <span class="ion ion-md-checkmark"></span>
+                            </span>
+                            <span class="switcher-no">
+                                <span class="ion ion-md-close"></span>
+                            </span>
+                        </span>
+                        <span class="switcher-label">Match All</span>
+                    </label>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="switcher switcher-secondary">
+                        <input type="checkbox" value="0" class="switcher-input">
+                        <span class="switcher-indicator colSwitch">
+                            <span class="switcher-yes">
+                                <span class="ion ion-md-checkmark"></span>
+                            </span>
+                            <span class="switcher-no">
+                                <span class="ion ion-md-close"></span>
+                            </span>
+                        </span>
+                        <span class="switcher-label">Match Any</span>
+                    </label>
+                </div>
+
+            </div>
+
+            <div class="form-group inlineInp mt-2">
+                <label class="form-label form-label-sm">Column</label>
+                <input type="text" class="form-control form-control-sm">
+            </div>
+
+            <div class="row mt-1">
+                <div class="col-md-6">
+                    <label class="switcher switcher-secondary">
+                        <input type="checkbox" value="0" class="switcher-input">
+                        <span class="switcher-indicator colSwitch">
+                            <span class="switcher-yes">
+                                <span class="ion ion-md-checkmark"></span>
+                            </span>
+                            <span class="switcher-no">
+                                <span class="ion ion-md-close"></span>
+                            </span>
+                        </span>
+                        <span class="switcher-label">Match All</span>
+                    </label>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="switcher switcher-secondary">
+                        <input type="checkbox" value="0" class="switcher-input">
+                        <span class="switcher-indicator colSwitch">
+                            <span class="switcher-yes">
+                                <span class="ion ion-md-checkmark"></span>
+                            </span>
+                            <span class="switcher-no">
+                                <span class="ion ion-md-close"></span>
+                            </span>
+                        </span>
+                        <span class="switcher-label">Match Any</span>
+                    </label>
+                </div>
+
+            </div>
+
+            <div class="row mt-1">
+                <div class="col-md-6">
+                    <label class="switcher switcher-secondary">
+                        <input type="checkbox" value="0" class="switcher-input">
+                        <span class="switcher-indicator colSwitch">
+                            <span class="switcher-yes">
+                                <span class="ion ion-md-checkmark"></span>
+                            </span>
+                            <span class="switcher-no">
+                                <span class="ion ion-md-close"></span>
+                            </span>
+                        </span>
+                        <span class="switcher-label">Exact Match</span>
+                    </label>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="switcher switcher-secondary">
+                        <input type="checkbox" value="0" class="switcher-input">
+                        <span class="switcher-indicator colSwitch">
+                            <span class="switcher-yes">
+                                <span class="ion ion-md-checkmark"></span>
+                            </span>
+                            <span class="switcher-no">
+                                <span class="ion ion-md-close"></span>
+                            </span>
+                        </span>
+                        <span class="switcher-label">Show Columns</span>
+                    </label>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="viewArea">
+            <div class="">
+                <span class="filterHead">View</span>
+            </div>
+
+            <div class="row mt-1">
+                <div class="col-md-12">
+                    <label class="switcher switcher-secondary">
+                        <input type="checkbox" value="0" class="switcher-input">
+                        <span class="switcher-indicator colSwitch">
+                            <span class="switcher-yes">
+                                <span class="ion ion-md-checkmark"></span>
+                            </span>
+                            <span class="switcher-no">
+                                <span class="ion ion-md-close"></span>
+                            </span>
+                        </span>
+                        <span class="switcher-label">Show Favourites</span>
+                    </label>
+                </div>
+
+                <div class="col-md-12 mt-1">
+                    <label class="switcher switcher-secondary">
+                        <input type="checkbox" value="0" class="switcher-input">
+                        <span class="switcher-indicator colSwitch">
+                            <span class="switcher-yes">
+                                <span class="ion ion-md-checkmark"></span>
+                            </span>
+                            <span class="switcher-no">
+                                <span class="ion ion-md-close"></span>
+                            </span>
+                        </span>
+                        <span class="switcher-label">Show Scheduled</span>
+                    </label>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="recentFilterArea">
+            <div class="">
+                <span class="filterHead">Recent</span>
+            </div>
+
+            <div class="row mt-1">
+                <div class="col-md-6">
+                    <label class="switcher switcher-secondary">
+                        <input type="checkbox" value="0" class="switcher-input">
+                        <span class="switcher-indicator colSwitch">
+                            <span class="switcher-yes">
+                                <span class="ion ion-md-checkmark"></span>
+                            </span>
+                            <span class="switcher-no">
+                                <span class="ion ion-md-close"></span>
+                            </span>
+                        </span>
+                        <span class="switcher-label">All</span>
+                    </label>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="switcher switcher-secondary">
+                        <input type="checkbox" value="0" class="switcher-input">
+                        <span class="switcher-indicator colSwitch">
+                            <span class="switcher-yes">
+                                <span class="ion ion-md-checkmark"></span>
+                            </span>
+                            <span class="switcher-no">
+                                <span class="ion ion-md-close"></span>
+                            </span>
+                        </span>
+                        <span class="switcher-label">Last Month</span>
+                    </label>
+                </div>
+
+            </div>
+
+            <div class="row mt-1">
+                <div class="col-md-6">
+                    <label class="switcher switcher-secondary">
+                        <input type="checkbox" value="0" class="switcher-input">
+                        <span class="switcher-indicator colSwitch">
+                            <span class="switcher-yes">
+                                <span class="ion ion-md-checkmark"></span>
+                            </span>
+                            <span class="switcher-no">
+                                <span class="ion ion-md-close"></span>
+                            </span>
+                        </span>
+                        <span class="switcher-label">Last 3 Months</span>
+                    </label>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="switcher switcher-secondary">
+                        <input type="checkbox" value="0" class="switcher-input">
+                        <span class="switcher-indicator colSwitch">
+                            <span class="switcher-yes">
+                                <span class="ion ion-md-checkmark"></span>
+                            </span>
+                            <span class="switcher-no">
+                                <span class="ion ion-md-close"></span>
+                            </span>
+                        </span>
+                        <span class="switcher-label">Last 12 Month</span>
+                    </label>
+                </div>
+
+            </div>
+        </div>
+
+
+        <div class="footerArea">
+            <button id="clearBtn" (click)="clearFilter()" class="btn btn-sm themeButton">Clear
+            </button>
+        </div>
+
+
+    </div>
+</div>

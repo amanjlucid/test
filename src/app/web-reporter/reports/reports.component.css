@@ -1,0 +1,134 @@
+.filterCheckBox {
+    display: inherit;
+}
+
+.form-inline label {
+    margin-right: .500rem;
+}
+
+.form-inline select {
+    margin-right: 2rem;
+    height: calc(1.5rem + 2px);
+    background-position: right .625rem center;
+    font-size: .75rem;
+    line-height: 1.5;
+    background-clip: padding-box;
+    border: 1px solid rgba(24, 28, 33, 0.1);
+}
+
+.inlineInp label {
+    display: inline-block;
+    margin-right: 3px;
+    width: 28%;
+}
+
+.inlineInp input {
+    display: inline-block;
+    width: 70%;
+}
+
+.colSwitch {
+    border: 1px solid #847d7d;
+}
+
+.dropdown.list-unstyled {
+    position: absolute !important;
+}
+
+
+
+.viewArea, .recentFilterArea {
+    margin-top: 2rem;
+}
+
+.selectedcs {
+    animation: slide-in 0.5s forwards;
+    -webkit-animation: slide-in 0.5s forwards;
+}
+
+.searchDiv .filterLabel {
+    float: right;
+}
+
+.dismiss {
+    animation: slide-out 0.5s forwards;
+    -webkit-animation: slide-out 0.5s forwards;
+}
+
+.searchDiv {
+    padding: 7px;
+    color: white;
+}
+
+.searchDiv .switcher-label {
+    color: white;
+    font-size: .75rem !important;
+    line-height: 1.5;
+    font-weight: 500;
+}
+
+.filtersection {
+    padding: 10px 0px;
+    border-top: 1px solid gray;
+}
+
+.footerArea {
+    border-top: 1px solid gray;
+    margin-top: 2rem;
+    padding-top: 1rem;
+}
+
+
+.searchDiv .form-group {
+    margin-bottom: 0px !important;
+}
+
+.search-container {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 325px;
+    display: none;
+    height: 100%;
+    overflow: hidden;
+    background: #070627;
+    z-index: 999;
+    /* transform: translateX(100%); */
+    -webkit-transform: translateX(100%);
+}
+
+@keyframes slide-in {
+    0% {
+        -webkit-transform: translateX(100%);
+    }
+    100% {
+        -webkit-transform: translateX(0%);
+    }
+}
+
+@-webkit-keyframes slide-in {
+    0% {
+        transform: translateX(100%);
+    }
+    100% {
+        transform: translateX(0%);
+    }
+}
+
+@keyframes slide-out {
+    0% {
+        transform: translateX(0%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+@-webkit-keyframes slide-out {
+    0% {
+        -webkit-transform: translateX(0%);
+    }
+    100% {
+        -webkit-transform: translateX(100%);
+    }
+}

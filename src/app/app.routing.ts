@@ -61,6 +61,7 @@ const appRoutes: Routes = [
 
             { path: 'health&safety', loadChildren: () => import('./hns-portal/hns.module').then(m => m.HnsModule) },
             { path: 'tasks', loadChildren: () => import('./event-manager/eventmanager.module').then(m => m.EventManagerModule) },
+            { path: 'web-reporter', loadChildren: () => import('./web-reporter/web-reporter.module').then(m => m.WebReporterModule) },
             { path: 'my-profile', loadChildren: () => import('./my-profile/my-profile.module').then(m => m.MyProfileModule) },
             { path: 'service-settings', component: ServiceSettingsComponent, canActivate: [AuthGuard] },
             { path: 'hns-settings', component: HnsSettingsComponent, canActivate: [AuthGuard] },

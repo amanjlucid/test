@@ -86,19 +86,22 @@
                         <div>Tasks</div>
                     </a>
                     <ul class="sidenav-menu">
-                        <li class="sidenav-item" [routerLinkActive]="['active']" *ngIf="tasksPortalPermissions.indexOf('Event Dashboard') != -1">
+                        <li class="sidenav-item" [routerLinkActive]="['active']"
+                            *ngIf="tasksPortalPermissions.indexOf('Event Dashboard') != -1">
                             <a [routerLink]="['/tasks/dashboard']" class="sidenav-link">
                                 <div>Dashboard</div>
                             </a>
                         </li>
 
-                        <li class="sidenav-item" [routerLinkActive]="['active']" *ngIf="tasksPortalPermissions.indexOf('Manage Event Types') != -1">
+                        <li class="sidenav-item" [routerLinkActive]="['active']"
+                            *ngIf="tasksPortalPermissions.indexOf('Manage Event Types') != -1">
                             <a [routerLink]="['/tasks/configuration']" class="sidenav-link">
                                 <div>Configuration</div>
                             </a>
                         </li>
 
-                        <li class="sidenav-item" [routerLinkActive]="['active']" *ngIf="tasksPortalPermissions.indexOf('Manage User Events') != -1">
+                        <li class="sidenav-item" [routerLinkActive]="['active']"
+                            *ngIf="tasksPortalPermissions.indexOf('Manage User Events') != -1">
                             <a [routerLink]="['/tasks/tasks']" class="sidenav-link">
                                 <div>Tasks</div>
                             </a>
@@ -108,7 +111,8 @@
                     </ul>
                 </li>
 
-                <li *ngIf="checkAngularGrpPermission('Event Manager', 'Event Manager Portal Access',0)" class="sidenav-item">
+                <li *ngIf="checkAngularGrpPermission('Event Manager', 'Event Manager Portal Access',0)"
+                    class="sidenav-item">
                     <a href="http://104.40.138.8/Rowanwood/EventManager" class="sidenav-link" target="_blank">
                         <img class="sidenav-icon ion" src="assets/img/icons/event-manager.svg">
                         <div>Event Manager</div>
@@ -260,6 +264,28 @@
                     </a>
                 </li>
 
+                <li class="sidenav-item" [routerLinkActive]="['open']"
+                    *ngIf="checkAngularGrpPermission('Reporter','Web Reporter Portal Access',1)">
+                    <a href="javascript:void(0)" class="sidenav-link sidenav-toggle">
+                        <img class="sidenav-icon ion" src="assets/img/icons/reports.svg">
+                        <div>Reporting</div>
+                    </a>
+
+                    <ul class="sidenav-menu">
+                        <li class="sidenav-item" [routerLinkActive]="['active']">
+                            <a [routerLink]="['/web-reporter/reports']" class="sidenav-link">
+                                <div>Reports</div>
+                            </a>
+                        </li>
+                        <!-- <li class="sidenav-item" [routerLinkActive]="['active']"
+                            *ngIf="checkValueInArray('Management Tab')">
+                            <a [routerLink]="['/servicing/management']" class="sidenav-link">
+                                <div>Management</div>
+                            </a>
+                        </li> -->
+                    </ul>
+                </li>
+
                 <li class="sidenav-item" [routerLinkActive]="['open']" *ngIf="this.currentUser?.admin == 'Y'">
                     <a href="javascript:void(0)" class="sidenav-link sidenav-toggle">
                         <img class="sidenav-icon ion" src="assets/img/icons/servicing.svg">
@@ -363,19 +389,22 @@
                                 <div>Tasks</div>
                             </a>
                             <ul class="sidenav-menu">
-                                <li class="sidenav-item" [routerLinkActive]="['active']" *ngIf="tasksPortalPermissions.indexOf('Event Dashboard') != -1">
+                                <li class="sidenav-item" [routerLinkActive]="['active']"
+                                    *ngIf="tasksPortalPermissions.indexOf('Event Dashboard') != -1">
                                     <a [routerLink]="['/tasks/dashboard']" class="sidenav-link">
                                         <div>Dashboard</div>
                                     </a>
                                 </li>
-        
-                                <li class="sidenav-item" [routerLinkActive]="['active']" *ngIf="tasksPortalPermissions.indexOf('Manage Event Types') != -1">
+
+                                <li class="sidenav-item" [routerLinkActive]="['active']"
+                                    *ngIf="tasksPortalPermissions.indexOf('Manage Event Types') != -1">
                                     <a [routerLink]="['/tasks/configuration']" class="sidenav-link">
                                         <div>Configuration</div>
                                     </a>
                                 </li>
-        
-                                <li class="sidenav-item" [routerLinkActive]="['active']" *ngIf="tasksPortalPermissions.indexOf('Manage User Events') != -1">
+
+                                <li class="sidenav-item" [routerLinkActive]="['active']"
+                                    *ngIf="tasksPortalPermissions.indexOf('Manage User Events') != -1">
                                     <a [routerLink]="['/tasks/tasks']" class="sidenav-link">
                                         <div>Tasks</div>
                                     </a>
@@ -383,6 +412,7 @@
 
                             </ul>
                         </li>
+
 
 
                         <li class="sidenav-item" [routerLinkActive]="['open']" [routerLinkActiveOptions]="{exact:true}"
@@ -440,6 +470,28 @@
 
                             </ul>
                         </li>
+
+                        
+                        <li class="sidenav-item" [routerLinkActive]="['open']"
+                            *ngIf="checkGroupPermission('Web Reporter Portal Access')">
+                            <a href="javascript:void(0)" class="sidenav-link sidenav-toggle">
+                                <div>Reporting</div>
+                            </a>
+
+                            <ul class="sidenav-menu">
+                                <li class="sidenav-item" [routerLinkActive]="['active']">
+                                    <a [routerLink]="['/web-reporter/reports']" class="sidenav-link">
+                                        <div>Reports</div>
+                                    </a>
+                                </li>
+                                <!-- <li class="sidenav-item" [routerLinkActive]="['active']"
+                                    *ngIf="checkValueInArray('Management Tab')">
+                                    <a [routerLink]="['/servicing/management']" class="sidenav-link">
+                                        <div>Management</div>
+                                    </a>
+                                </li> -->
+                            </ul>
+                        </li>
                     </ul>
                 </li>
 
@@ -485,7 +537,8 @@
                         <div class="demo-navbar-notifications nav-item dropdown mr-lg-3">
                             <a class="nav-link dropdown-toggle hide-arrow" href="#" data-toggle="dropdown">
                                 <i class="ion ion-md-notifications-outline navbar-icon align-middle"></i>
-                                <span *ngIf="notifications?.length > 0 && checkGroupPermission('Event Manager Portal Access')"
+                                <span
+                                    *ngIf="notifications?.length > 0 && checkGroupPermission('Event Manager Portal Access')"
                                     class="badge badge-primary badge-dot indicator"></span>
                                 <span class="d-lg-none align-middle">&nbsp; Notifications</span>
                             </a>
@@ -497,7 +550,8 @@
                                 <div class="list-group list-group-flush">
 
                                     <ng-container *ngFor="let notification of notifications; let i = index;">
-                                        <a (click)="redirectToUserEevnt(notification)" href="javascript:void(0)" *ngIf="i < 5"
+                                        <a (click)="redirectToUserEevnt(notification)" href="javascript:void(0)"
+                                            *ngIf="i < 5"
                                             class="list-group-item list-group-item-action media d-flex align-items-center">
                                             <div
                                                 class="ui-icon ui-icon-sm ion ion-md-home bg-secondary border-0 text-white">
@@ -517,7 +571,7 @@
                                 </div>
 
 
-                               
+
                                 <!-- <a class="list-group-item list-group-item-action media d-flex align-items-center"
                                     href="http://104.40.138.8/Rowanwood/EventManager" target="_blank"> -->
                                 <a class="list-group-item list-group-item-action media d-flex align-items-center"
@@ -600,8 +654,8 @@
                                 <span class="d-inline-flex flex-lg-row-reverse align-items-center align-middle">
                                     <img src="assets/img/avatars/user-image.png" alt
                                         class="d-block ui-w-30 rounded-circle">
-                                    <span
-                                        class="px-1 mr-lg-2 ml-2 ml-lg-0">{{currentUser?.userName | titlecase  }}</span>
+                                    <span class="px-1 mr-lg-2 ml-2 ml-lg-0">{{currentUser?.userName | titlecase
+                                        }}</span>
                                 </span>
                             </a>
                             <div class="dropdown-menu dropdown-menu-right">
