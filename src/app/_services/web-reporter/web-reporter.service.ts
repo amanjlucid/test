@@ -12,7 +12,7 @@ export class WebReporterService {
     };
 
     constructor(private http: HttpClient) { }
-
+    //643292953
     // getEventTypeList() {
     //     return this.http.get<any>(`${appConfig.apiUrl}/api/EventType/GetListOfEventType`, this.httpOptions);
     // }
@@ -22,5 +22,23 @@ export class WebReporterService {
     //     return this.http.post<any>(`${appConfig.apiUrl}/api/EventType/GetSelectedTaskData`, params, this.httpOptions);
 
     // }
+
+    getCategories() {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/WebReportSearch/GetCategoryList`, this.httpOptions);
+    }
+
+    getUserCategory() {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/WebReportSearch/ListXportUserCategories`, this.httpOptions);
+    }
+
+    getColumns() {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/WebReportSearch/GetXportOutputColumnsSelection`, this.httpOptions);
+    }
+
+    getReportList(params) {
+        // return this.http.get<any>(`${appConfig.apiUrl}/api/WebReportSearch/GetListOfReports`, this.httpOptions);
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/WebReportSearch/GetReportDataList`, body, this.httpOptions);
+    }
 
 }

@@ -21,14 +21,22 @@
         <div class="col-md-12">
             <div class="form-inline">
                 <label>Categories</label>
-                <select>
-                    <option>dfd</option>
-                </select>
+                <ng-multiselect-dropdown [placeholder]="'Select Categories'" [data]="categories"
+                    [settings]="mulitSelectDropdownSettings" [disabled]="false"
+                    (onSelect)="onCategoriesSelectionChange($event)" (onDeSelect)="onCategoriesSelectionChange($event)"
+                    (onSelectAll)="onCategoriesSelectionChange($event)"
+                    (onDeSelectAll)="onCategoriesSelectionChange($event)" [(ngModel)]="selectedCategories"
+                    #categoriesMultiSelect>
+                </ng-multiselect-dropdown>
 
-                <label>Category</label>
-                <select>
-                    <option>dfd</option>
-                </select>
+                <label class="categoryLbl">Category</label>
+
+                <ng-multiselect-dropdown [placeholder]="'Select Category'" [data]="userCategory"
+                    [settings]="mulitSelectDropdownSettings" [disabled]="false"
+                    (onSelect)="onCategorySelectionChange($event)" (onDeSelect)="onCategorySelectionChange($event)"
+                    (onSelectAll)="onCategorySelectionChange($event)"
+                    (onDeSelectAll)="onCategorySelectionChange($event)">
+                </ng-multiselect-dropdown>
             </div>
 
         </div>
@@ -37,19 +45,26 @@
 
     <div class="row mt-2">
         <div class="col-md-12">
-            <kendo-grid (groupChange)="groupChange($event)" [group]="state.group" [groupable]="true" [data]="gridView"
-                [height]="720" [loading]="loading" filterable="menu" [resizable]="true" [sortable]="{
+            <kendo-grid [kendoGridGroupBinding]="reportList" [groupable]="true" (groupChange)="groupChange($event)"
+                [group]="state.group" [height]="720" [loading]="loading" filterable="menu" [resizable]="true"
+                [sortable]="{
     allowUnsort: allowUnsort,
     mode: multiple ? 'multiple' : 'single'
-    }" [skip]="state.skip" [sort]="state.sort" [selectable]="selectableSettings" kendoGridSelectBy="eventSequence"
-                [selectedKeys]="mySelection" (selectedKeysChange)="onSelectedKeysChange($event)" [filter]="state.filter"
-                (sortChange)="sortChange($event)" (filterChange)="filterChange($event)"
-                (cellClick)="cellClickHandler($event)" [navigable]="true">
+    }" [skip]="state.skip" [pageSize]="80" scrollable="virtual" [rowHeight]="rowheight" [sort]="state.sort"
+                [selectable]="selectableSettings" [filter]="state.filter" (cellClick)="cellClickHandler($event)"
+                [navigable]="true">
 
-                <kendo-grid-column title=" " width="37" [filterable]="false">
+                <kendo-grid-column field="favourite" title="" width="30" [filterable]="false" [groupable]="false">
                     <ng-template kendoGridCellTemplate let-dataItem>
-                        <li [ngClass]="{'disabled' : selectedEvent.length > 1}" class="nav-item dropdown list-unstyled"
-                            style="margin-top: -7px;">
+                        <i (click)="setFavourite(dataItem)" [ngClass]="{'favourite': dataItem.favourite === 1}"
+                            class="fa fa-star" aria-hidden="true"></i>
+                    </ng-template>
+
+                </kendo-grid-column>
+
+                <kendo-grid-column title=" " width="30" [filterable]="false">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <li class="nav-item dropdown list-unstyled" style="margin-top: -7px;">
                             <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"
                                 (click)="setSeletedRow(dataItem)"></i>
                             <div class="dropdown-menu">
@@ -60,7 +75,7 @@
                                     (click)="openTaskData(dataItem,'single')">Task
                                     Data</a>
 
-                                <div class="dropdown-toggle">
+                                <!-- <div class="dropdown-toggle">
                                     <div class="dropdown-item">Assign</div>
                                     <div class="dropdown-menu">
                                         <a class="dropdown-item" (click)="assignToMe(dataItem,'single')"
@@ -71,59 +86,28 @@
                                             to Other user</a>
 
                                     </div>
-                                </div>
-
-
-                                <div class="dropdown-toggle">
-                                    <div class="dropdown-item">Dates</div>
-                                    <div class="dropdown-menu">
-                                        <a class="dropdown-item" (click)="setPlanned()" href="javascript:void(0)">Set
-                                            Planned Date</a>
-                                        <a class="dropdown-item" (click)="savePlannedDate(false)"
-                                            href="javascript:void(0)">Clear Planned Date</a>
-
-                                    </div>
-                                </div>
-
-                                <a [ngClass]="{'disabled' : dataItem.eventProcessedCount != dataItem.eventRowCount}"
-                                    class="dropdown-item" href="javascript:void(0)" (click)="setToComplete()">Set to
-                                    Completed</a>
-
+                                </div> -->
                             </div>
                         </li>
 
                     </ng-template>
                 </kendo-grid-column>
 
-          
-                <kendo-grid-column field="eventSequence" title="Seq" width="100">
+
+                <kendo-grid-column field="reportId" title="Report ID" width="70">
                 </kendo-grid-column>
-                <kendo-grid-column field="busareaName" title="Business Area" width="160">
+                <kendo-grid-column field="reportName" title="Report Name" width="260">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        {{dataItem.reportName}}
+                        <span *ngIf="showColumns" class="showCol">{{dataItem.xport_Col}}</span>
+                    </ng-template>
                 </kendo-grid-column>
-                <kendo-grid-column field="eventTypeCode" title="Code" width="120">
+                <kendo-grid-column field="reportDescription" title="Report Description" width="160">
                 </kendo-grid-column>
-                <kendo-grid-column field="eventName" title="Task" width="410">
+                <kendo-grid-column field="category" title="Category" width="100">
                 </kendo-grid-column>
-                <kendo-grid-column field="eventRowCount" title="Record(s)" width="120">
+                <kendo-grid-column field="count" title="Run History" width="100">
                 </kendo-grid-column>
-           
-          
-                <kendo-grid-column field="eventStatusName" title="Status" width="120">
-                </kendo-grid-column>
-                <kendo-grid-column field="eventAssignUserName" title="Assigned To" width="210">
-                </kendo-grid-column>
-                <kendo-grid-column field="eventEscStatusName" title="Escalation" width="120">
-                </kendo-grid-column>
-                <kendo-grid-column field="eventSevTypeName" title="Severity" width="120">
-                </kendo-grid-column>
-                <kendo-grid-column field="eventAskTypeName" title="Action" width="120">
-                </kendo-grid-column>
-         
-                <kendo-grid-column field="eventCreatedBy" title="Created By" width="120">
-                </kendo-grid-column>
-                <kendo-grid-column field="eventUpdatedBy" title="Updated By" width="120">
-                </kendo-grid-column>
-         
 
 
 
@@ -155,18 +139,28 @@
 
             <div class="form-group mt-1 inlineInp">
                 <label class="form-label form-label-sm">Number</label>
-                <input type="text" class="form-control form-control-sm">
+                <input (keyup)="triggerFilter($event, 'num')" [(ngModel)]="reportListFilters.number" type="text"
+                    class="form-control form-control-sm">
             </div>
 
             <div class="form-group inlineInp">
                 <label class="form-label form-label-sm">Name</label>
-                <input type="text" class="form-control form-control-sm">
+                <input (keyup)="triggerFilter($event, 'name')" [(ngModel)]="reportListFilters.name" type="text"
+                    class="form-control form-control-sm">
             </div>
 
             <div class="row mt-2">
                 <div class="col-md-6">
-                    <label class="switcher switcher-secondary">
-                        <input type="checkbox" value="0" class="switcher-input">
+                    <label class="form-check form-check-inline">
+                        <input (change)="triggerFilter($event)" [(ngModel)]="reportListFilters.nameMatch"
+                            class="form-check-input" type="radio" name="nameMatch" [value]="true">
+                        <span class="form-check-label">
+                            Match All
+                        </span>
+                    </label>
+
+                    <!-- <label class="switcher switcher-secondary">
+                        <input [(ngModel)]="reportListFilters.name" type="checkbox" class="switcher-input">
                         <span class="switcher-indicator colSwitch">
                             <span class="switcher-yes">
                                 <span class="ion ion-md-checkmark"></span>
@@ -176,12 +170,19 @@
                             </span>
                         </span>
                         <span class="switcher-label">Match All</span>
-                    </label>
+                    </label> -->
                 </div>
 
                 <div class="col-md-6">
-                    <label class="switcher switcher-secondary">
-                        <input type="checkbox" value="0" class="switcher-input">
+                    <label class="form-check form-check-inline">
+                        <input (change)="triggerFilter($event)" [(ngModel)]="reportListFilters.nameMatch"
+                            class="form-check-input" type="radio" name="nameMatch" [value]="false">
+                        <span class="form-check-label">
+                            Match Any
+                        </span>
+                    </label>
+                    <!-- <label class="switcher switcher-secondary">
+                        <input type="checkbox" [(ngModel)]="reportListFilters.name" class="switcher-input">
                         <span class="switcher-indicator colSwitch">
                             <span class="switcher-yes">
                                 <span class="ion ion-md-checkmark"></span>
@@ -191,17 +192,21 @@
                             </span>
                         </span>
                         <span class="switcher-label">Match Any</span>
-                    </label>
+                    </label> -->
                 </div>
 
             </div>
 
-            <div class="form-group inlineInp mt-2">
+            <div class="form-group inlineInp mt-3">
                 <label class="form-label form-label-sm">Column</label>
-                <input type="text" class="form-control form-control-sm">
+                <kendo-multiselect [data]="outputColumns" [value]="selectedOutputColumns" [allowCustom]="true"
+                    (valueChange)="onOutPutColumnChange($event)" [valueNormalizer]="normalizer"
+                    [virtual]="outputColumnvirtual">
+                </kendo-multiselect>
+                <!-- <input type="text" class="form-control form-control-sm"> -->
             </div>
 
-            <div class="row mt-1">
+            <div class="row mt-2">
                 <div class="col-md-6">
                     <label class="switcher switcher-secondary">
                         <input type="checkbox" value="0" class="switcher-input">
@@ -252,7 +257,7 @@
 
                 <div class="col-md-6">
                     <label class="switcher switcher-secondary">
-                        <input type="checkbox" value="0" class="switcher-input">
+                        <input (change)="showColFn()" type="checkbox" value="{{showColumns}}" class="switcher-input">
                         <span class="switcher-indicator colSwitch">
                             <span class="switcher-yes">
                                 <span class="ion ion-md-checkmark"></span>
@@ -278,7 +283,8 @@
             <div class="row mt-1">
                 <div class="col-md-12">
                     <label class="switcher switcher-secondary">
-                        <input type="checkbox" value="0" class="switcher-input">
+                        <input type="checkbox" (change)="reqGridSearch($event)"
+                            [(ngModel)]="reportQueryModel.FavouritesOnly" class="switcher-input">
                         <span class="switcher-indicator colSwitch">
                             <span class="switcher-yes">
                                 <span class="ion ion-md-checkmark"></span>
@@ -293,7 +299,8 @@
 
                 <div class="col-md-12 mt-1">
                     <label class="switcher switcher-secondary">
-                        <input type="checkbox" value="0" class="switcher-input">
+                        <input (change)="reqGridSearch($event)" [(ngModel)]="reportQueryModel.IsShceduled"
+                            type="checkbox" class="switcher-input">
                         <span class="switcher-indicator colSwitch">
                             <span class="switcher-yes">
                                 <span class="ion ion-md-checkmark"></span>
@@ -315,9 +322,11 @@
             </div>
 
             <div class="row mt-1">
+
                 <div class="col-md-6">
                     <label class="switcher switcher-secondary">
-                        <input type="checkbox" value="0" class="switcher-input">
+                        <input (change)="reqGridSearch2($event, 0)" [(ngModel)]="reportListFilters.all" type="checkbox"
+                            class="switcher-input">
                         <span class="switcher-indicator colSwitch">
                             <span class="switcher-yes">
                                 <span class="ion ion-md-checkmark"></span>
@@ -332,7 +341,8 @@
 
                 <div class="col-md-6">
                     <label class="switcher switcher-secondary">
-                        <input type="checkbox" value="0" class="switcher-input">
+                        <input (change)="reqGridSearch2($event, 1)" [(ngModel)]="reportListFilters.lastMonth"
+                            type="checkbox" class="switcher-input">
                         <span class="switcher-indicator colSwitch">
                             <span class="switcher-yes">
                                 <span class="ion ion-md-checkmark"></span>
@@ -350,7 +360,8 @@
             <div class="row mt-1">
                 <div class="col-md-6">
                     <label class="switcher switcher-secondary">
-                        <input type="checkbox" value="0" class="switcher-input">
+                        <input (change)="reqGridSearch2($event, 2)" [(ngModel)]="reportListFilters.last3Month"
+                            type="checkbox" class="switcher-input">
                         <span class="switcher-indicator colSwitch">
                             <span class="switcher-yes">
                                 <span class="ion ion-md-checkmark"></span>
@@ -365,7 +376,8 @@
 
                 <div class="col-md-6">
                     <label class="switcher switcher-secondary">
-                        <input type="checkbox" value="0" class="switcher-input">
+                        <input (change)="reqGridSearch2($event, 3)" [(ngModel)]="reportListFilters.last12Month"
+                            type="checkbox" class="switcher-input">
                         <span class="switcher-indicator colSwitch">
                             <span class="switcher-yes">
                                 <span class="ion ion-md-checkmark"></span>

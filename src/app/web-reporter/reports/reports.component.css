@@ -35,8 +35,6 @@
     position: absolute !important;
 }
 
-
-
 .viewArea, .recentFilterArea {
     margin-top: 2rem;
 }
@@ -78,6 +76,38 @@
     padding-top: 1rem;
 }
 
+.categoryLbl {
+    margin-left: 20px;
+}
+
+.showCol {
+    font-weight: 600;
+    font-size: 12px;
+    display: block;
+}
+
+ng-multiselect-dropdown {
+    background-color: white;
+    min-width: 130px;
+}
+
+ng-multiselect-dropdown .dropdown-btn span:nth-child(2) {
+    margin-left: 6px;
+}
+
+.favourite {
+    color: #e4d73f;
+}
+
+.fa-star {
+    cursor: pointer;
+}
+
+.k-grid tbody td {
+    white-space: nowrap;
+    line-height: 20px;
+    padding: 8px 12px;
+}
 
 .searchDiv .form-group {
     margin-bottom: 0px !important;
