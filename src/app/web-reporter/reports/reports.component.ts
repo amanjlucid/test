@@ -170,7 +170,7 @@ export class ReportsComponent implements OnInit {
       this.textSearch$
         .pipe(
           debounceTime(1000),
-          distinctUntilChanged()
+          // distinctUntilChanged()
         ).subscribe((val) => this.filterGrid())
     );
 
@@ -271,6 +271,7 @@ export class ReportsComponent implements OnInit {
   }
 
   filterGrid() {
+    console.log(this.reportListFilters);
     if ((this.reportListFilters.frontFilter == false) || (this.reportListFilters.number == "" && this.reportListFilters.name == "" && this.reportListFilters.selectedOutputColumns.length == 0)) {
       this.reportList = this.actualReportList;
       setTimeout(() => { this.loading = false }, 500);
@@ -323,7 +324,6 @@ export class ReportsComponent implements OnInit {
   }
 
   reqGridSearch2(event, month) {
-    this.loading = true;//start grid loader
     this.reportQueryModel.value = month;
     if (month == 0) {
       if (this.reportListFilters.all == false) {
@@ -442,6 +442,7 @@ export class ReportsComponent implements OnInit {
     //   return
     // }
 
+    // console.log(this.reportListFilters);
     this.textSearch$.next(this.reportListFilters);
   }
 
