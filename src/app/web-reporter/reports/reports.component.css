@@ -95,6 +95,11 @@ ng-multiselect-dropdown .dropdown-btn span:nth-child(2) {
     margin-left: 6px;
 }
 
+/* .multiselect-dropdown .dropdown-btn .selected-item{
+    border: 1px solid #E4287E !important;
+    background: #E4287E !important;
+} */
+
 .favourite {
     color: #e4d73f;
 }

@@ -23,9 +23,10 @@
                 <label>Categories</label>
                 <ng-multiselect-dropdown [placeholder]="'Select Categories'" [data]="categories"
                     [settings]="mulitSelectDropdownSettings" [disabled]="false"
-                    (onSelect)="onCategoriesSelectionChange($event)" (onDeSelect)="onCategoriesSelectionChange($event)"
-                    (onSelectAll)="onCategoriesSelectionChange($event)"
-                    (onDeSelectAll)="onCategoriesSelectionChange($event)" [(ngModel)]="selectedCategories"
+                    (onSelect)="onCategoriesSingleSelectionChange($event)"
+                    (onDeSelect)="onCategoriesSingleSelectionChange($event)"
+                    (onSelectAll)="onCategoriesSelectionAllChange($event)"
+                    (onDeSelectAll)="onCategoriesSelectionAllChange($event)" [(ngModel)]="selectedCategories"
                     #categoriesMultiSelect>
                 </ng-multiselect-dropdown>
 
@@ -33,9 +34,10 @@
 
                 <ng-multiselect-dropdown [placeholder]="'Select Category'" [data]="userCategory"
                     [settings]="mulitSelectDropdownSettings" [disabled]="false"
-                    (onSelect)="onCategorySelectionChange($event)" (onDeSelect)="onCategorySelectionChange($event)"
-                    (onSelectAll)="onCategorySelectionChange($event)"
-                    (onDeSelectAll)="onCategorySelectionChange($event)">
+                    (onSelect)="onCategorySingleSelectionChange($event)"
+                    (onDeSelect)="onCategorySingleSelectionChange($event)"
+                    (onSelectAll)="onCategorySelectionAllChange($event)"
+                    (onDeSelectAll)="onCategorySelectionAllChange($event)" [(ngModel)]="selectedCategory">
                 </ng-multiselect-dropdown>
             </div>
 
@@ -151,16 +153,17 @@
 
             <div class="row mt-2">
                 <div class="col-md-6">
-                    <label class="form-check form-check-inline">
+                    <!-- <label class="form-check form-check-inline">
                         <input (change)="triggerFilter($event)" [(ngModel)]="reportListFilters.nameMatch"
                             class="form-check-input" type="radio" name="nameMatch" [value]="true">
                         <span class="form-check-label">
                             Match All
                         </span>
-                    </label>
+                    </label> -->
 
-                    <!-- <label class="switcher switcher-secondary">
-                        <input [(ngModel)]="reportListFilters.name" type="checkbox" class="switcher-input">
+                    <label class="switcher switcher-secondary">
+                        <input (change)="triggerFilter($event, 'nameall')" [checked]="reportListFilters.nameMatchAll"
+                            value="{{reportListFilters.nameMatchAll}}" type="checkbox" class="switcher-input">
                         <span class="switcher-indicator colSwitch">
                             <span class="switcher-yes">
                                 <span class="ion ion-md-checkmark"></span>
@@ -170,19 +173,20 @@
                             </span>
                         </span>
                         <span class="switcher-label">Match All</span>
-                    </label> -->
+                    </label>
                 </div>
 
                 <div class="col-md-6">
-                    <label class="form-check form-check-inline">
+                    <!-- <label class="form-check form-check-inline">
                         <input (change)="triggerFilter($event)" [(ngModel)]="reportListFilters.nameMatch"
                             class="form-check-input" type="radio" name="nameMatch" [value]="false">
                         <span class="form-check-label">
                             Match Any
                         </span>
-                    </label>
-                    <!-- <label class="switcher switcher-secondary">
-                        <input type="checkbox" [(ngModel)]="reportListFilters.name" class="switcher-input">
+                    </label> -->
+                    <label class="switcher switcher-secondary">
+                        <input (change)="triggerFilter($event, 'nameany')" [checked]="reportListFilters.nameMatchAny"
+                            value="{{reportListFilters.nameMatchAny}}" type="checkbox" class="switcher-input">
                         <span class="switcher-indicator colSwitch">
                             <span class="switcher-yes">
                                 <span class="ion ion-md-checkmark"></span>
@@ -192,15 +196,15 @@
                             </span>
                         </span>
                         <span class="switcher-label">Match Any</span>
-                    </label> -->
+                    </label>
                 </div>
 
             </div>
 
             <div class="form-group inlineInp mt-3">
                 <label class="form-label form-label-sm">Column</label>
-                <kendo-multiselect [data]="outputColumns" [value]="selectedOutputColumns" [allowCustom]="true"
-                    (valueChange)="onOutPutColumnChange($event)" [valueNormalizer]="normalizer"
+                <kendo-multiselect [data]="outputColumns" [value]="reportListFilters?.selectedOutputColumns"
+                    [allowCustom]="true" (valueChange)="onOutPutColumnChange($event)" [valueNormalizer]="normalizer"
                     [virtual]="outputColumnvirtual">
                 </kendo-multiselect>
                 <!-- <input type="text" class="form-control form-control-sm"> -->
@@ -209,7 +213,9 @@
             <div class="row mt-2">
                 <div class="col-md-6">
                     <label class="switcher switcher-secondary">
-                        <input type="checkbox" value="0" class="switcher-input">
+                        <input type="checkbox" (change)="triggerFilter($event, 'columnall')"
+                            [checked]="reportListFilters.columnMatchAll" value="{{reportListFilters.columnMatchAll}}"
+                            class="switcher-input">
                         <span class="switcher-indicator colSwitch">
                             <span class="switcher-yes">
                                 <span class="ion ion-md-checkmark"></span>
@@ -224,7 +230,9 @@
 
                 <div class="col-md-6">
                     <label class="switcher switcher-secondary">
-                        <input type="checkbox" value="0" class="switcher-input">
+                        <input type="checkbox" (change)="triggerFilter($event, 'columnany')"
+                            [checked]="reportListFilters.columnMatchAny" value="{{reportListFilters.columnMatchAny}}"
+                            class="switcher-input">
                         <span class="switcher-indicator colSwitch">
                             <span class="switcher-yes">
                                 <span class="ion ion-md-checkmark"></span>
@@ -242,7 +250,8 @@
             <div class="row mt-1">
                 <div class="col-md-6">
                     <label class="switcher switcher-secondary">
-                        <input type="checkbox" value="0" class="switcher-input">
+                        <input (change)="triggerFilter($event)" [(ngModel)]="reportListFilters.columnExactMatch"
+                            type="checkbox" class="switcher-input">
                         <span class="switcher-indicator colSwitch">
                             <span class="switcher-yes">
                                 <span class="ion ion-md-checkmark"></span>

@@ -1,10 +1,11 @@
 import { Component, OnInit, ViewEncapsulation, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { SubSink } from 'subsink';
 import { GroupDescriptor, DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
-import { SelectableSettings, RowClassArgs } from '@progress/kendo-angular-grid';
-import { forkJoin, Observable, Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
+import { SelectableSettings } from '@progress/kendo-angular-grid';
+import { forkJoin, Observable, Subject, of } from 'rxjs';
+import { debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 import { AlertService, WebReporterService } from 'src/app/_services';
+
 
 @Component({
   selector: 'app-reports',
@@ -65,20 +66,11 @@ export class ReportsComponent implements OnInit {
     showSelectedItemsAtTop: false,
     defaultOpen: false
   }
-  selectedCategories: any;
+  selectedCategories: any = [];
+  selectedCategory: any = [];
   outputColumns: any;
-  selectedOutputColumns: Array<string> = [];
-  normalizer = (text$: Observable<string>): any => text$.pipe(
-    map((userInput: string) => {
-      const comparer = (item: string) => userInput.toLowerCase() === item.toLowerCase();
-      const matchingValue = this.selectedOutputColumns.find(comparer);
-      if (matchingValue) {
-        return null;
-      }
-      const matchingItem = this.outputColumns.find(comparer);
-      return matchingItem ? matchingItem : userInput;
-    })
-  )
+
+
   outputColumnvirtual: any = {
     itemHeight: 28
   };
@@ -88,24 +80,39 @@ export class ReportsComponent implements OnInit {
   reportListFilters = {
     number: '',
     name: '',
-    nameMatch: false,
-    column: '',
-    columnMatch: false,
+    nameMatchAll: false,
+    nameMatchAny: true,
+    selectedOutputColumns: [],
+    columnMatchAll: false,
+    columnMatchAny: true,
     columnExactMatch: false,
     all: true,
     lastMonth: false,
     last3Month: false,
     last12Month: false,
-    defaultFilter: false
+    frontFilter: false
   }
   reportQueryModel = {
     userId: '',
     value: 0,
     Categories: '',
     IsShceduled: false,
-    FavouritesOnly: false
+    FavouritesOnly: false,
+    XportCategory: ''
   }
+  normalizer = (text$: Observable<string>): any => text$.pipe(
+    map((userInput: string) => {
+      const comparer = (item: string) => userInput.toLowerCase() === item.toLowerCase();
+      const matchingValue = this.reportListFilters.selectedOutputColumns.find(comparer);
+      if (matchingValue) {
+        return null;
+      }
+      const matchingItem = this.outputColumns.find(comparer);
+      return matchingItem ? matchingItem : userInput;
+    })
+  )
   textSearch$ = new Subject<any>();
+  waitForApiSearch$ = new Subject<any>();
 
 
   constructor(
@@ -122,7 +129,7 @@ export class ReportsComponent implements OnInit {
     this.subs.add(
       forkJoin([this.reportService.getCategories(), this.reportService.getUserCategory(), this.reportService.getColumns()]).subscribe(
         res => {
-          console.log(res);
+          // console.log(res);
           const categoriesData = res[0];
           const userCategoryData = res[1];
           const outputColumnsData = res[2];
@@ -158,25 +165,30 @@ export class ReportsComponent implements OnInit {
       )
     )
 
-    // triggr filter on text search
+    // triggr filter on right side bar search
     this.subs.add(
       this.textSearch$
         .pipe(
           debounceTime(1000),
-        ).subscribe((searchTerm) => {
-          console.log(this.reportListFilters);
-          this.filterGrid();
-          // this.headerFilters.Textstring = searchTerm;
-          // this.searchActionGrid();
-        })
-    )
+          distinctUntilChanged()
+        ).subscribe((val) => this.filterGrid())
+    );
+
+    // subscribe for grid filter with api
+    this.subs.add(
+      this.waitForApiSearch$.pipe(
+        debounceTime(1000),
+        distinctUntilChanged()
+      ).subscribe(val => this.getReportList(this.reportQueryModel))
+    );
+
   }
 
   ngOnDestroy() {
     this.subs.unsubscribe();
   }
 
-  getReportList(params) {
+  getReportList(params): any {
     this.subs.add(
       this.reportService.getReportList(params).subscribe(
         data => {
@@ -184,12 +196,19 @@ export class ReportsComponent implements OnInit {
           if (data.isSuccess) {
             this.actualReportList = [...data.data];
             this.filterGrid();
-            // this.gridView = process(this.reportList, this.state);
-            //this.loading = false;
+          } else {
+            this.alertService.error(data.message);
+            this.loading = false;
           }
-        }
+        },
+        err => this.alertService.error(err)
       )
     )
+  }
+
+  showColFn() {
+    this.showColumns = !this.showColumns;
+    this.rowheight = this.showColumns ? 70 : 36; // change virtual row height according to show columns
   }
 
   setSelectableSettings(): void {
@@ -211,20 +230,100 @@ export class ReportsComponent implements OnInit {
     this.selectedReport = dataItem;
   }
 
-  onCategoriesSelectionChange(item: any) {
+  onCategoriesSingleSelectionChange(item: any) {
+    this.loading = true;//start grid loader
     this.reportQueryModel.Categories = this.selectedCategories.map(x => x.item_id).toString();
-    this.getReportList(this.reportQueryModel);
+    this.waitForApiSearch$.next(this.reportQueryModel.Categories)
   }
 
-  onCategorySelectionChange(items: any) {
-    console.log(items);
+  onCategoriesSelectionAllChange(items: any) {
+    this.loading = true;//start grid loader
+    this.selectedCategories = items;
+    this.reportQueryModel.Categories = this.selectedCategories.map(x => x.item_id).toString();
+    this.waitForApiSearch$.next(this.reportQueryModel.Categories)
+  }
+
+  onCategorySingleSelectionChange(item: any) {
+    this.loading = true;//start grid loader
+    this.reportQueryModel.XportCategory = this.selectedCategory.map(x => x.item_id).toString();
+    this.waitForApiSearch$.next(this.reportQueryModel.XportCategory)
+  }
+
+  onCategorySelectionAllChange(items: any) {
+    this.loading = true;//start grid loader
+    this.selectedCategory = items;
+    this.reportQueryModel.XportCategory = this.selectedCategory.map(x => x.item_id).toString();
+    this.waitForApiSearch$.next(this.reportQueryModel.XportCategory)
   }
 
   reqGridSearch(event) {
+    this.loading = true;//start grid loader
     this.getReportList(this.reportQueryModel);
   }
 
+  onOutPutColumnChange(value) {
+    this.loading = true;//start grid loader
+    if (!this.reportListFilters.frontFilter) {
+      this.reportListFilters.frontFilter = true;
+    }
+    this.reportListFilters.selectedOutputColumns = value;
+    this.textSearch$.next(this.reportListFilters);
+  }
+
+  filterGrid() {
+    if ((this.reportListFilters.frontFilter == false) || (this.reportListFilters.number == "" && this.reportListFilters.name == "" && this.reportListFilters.selectedOutputColumns.length == 0)) {
+      this.reportList = this.actualReportList;
+      setTimeout(() => { this.loading = false }, 500);
+      return
+    }
+
+    let gridData = [];
+    if (this.actualReportList) {
+      gridData = this.actualReportList.filter(element => {
+        if (this.reportListFilters.number != "") {
+          if (JSON.stringify(element.reportId).indexOf(this.reportListFilters.number) !== -1) return true
+        }
+
+        if (this.reportListFilters.name !== "") {
+          if (this.reportListFilters.nameMatchAll) {
+            if (element.reportName == this.reportListFilters.name) return true
+          } else {
+            if (element.reportName.indexOf(this.reportListFilters.name) !== -1) return true
+          }
+        }
+
+        if (this.reportListFilters.selectedOutputColumns.length > 0) {
+          if (this.reportListFilters.columnExactMatch) {
+            if (element.xport_Col.trim() != "")
+              return element.xport_Col.trim() == this.reportListFilters.selectedOutputColumns.toString();
+          } else {
+            const splitColumns = element.xport_Col.trim() != "" ? element.xport_Col.split(',') : [];
+            if (this.reportListFilters.columnMatchAll) {
+              if (splitColumns.length > 0) {
+                const checkColAllExist = this.reportListFilters.selectedOutputColumns.every(x => splitColumns.includes(x))
+                if (checkColAllExist) return true;
+              }
+            } else {
+              if (splitColumns.length > 0) {
+                const checkColAnyExist = splitColumns.some(x => this.reportListFilters.selectedOutputColumns.some(y => x.toLowerCase().indexOf(y.toLocaleLowerCase()) !== -1))
+                if (checkColAnyExist) return true;
+              }
+            }
+          }
+
+        }
+        return false
+      })
+
+    }
+
+    this.reportList = gridData;
+    setTimeout(() => { this.loading = false }, 500);
+
+  }
+
   reqGridSearch2(event, month) {
+    this.loading = true;//start grid loader
     this.reportQueryModel.value = month;
     if (month == 0) {
       if (this.reportListFilters.all == false) {
@@ -271,51 +370,78 @@ export class ReportsComponent implements OnInit {
     this.getReportList(this.reportQueryModel);
   }
 
-  onOutPutColumnChange(value) {
-    this.selectedOutputColumns = value;
-    console.log(this.selectedOutputColumns);
-  }
-
-  filterGrid() {
-    this.loading = true;
-    if (this.reportListFilters.defaultFilter == false) {
-      this.reportList = this.actualReportList;
-      this.loading = false;
-      return
-    }
-
-    let gridData: any = [];
-    if (this.actualReportList) {
-      // for (const element of this.actualReportList) {
-
-      //   if (JSON.stringify(element.reportId).indexOf(this.reportListFilters.number) !== -1) {
-      //     gridData.push(element);
-      //     break;
-      //   }
-
-      //   if (this.reportListFilters.nameMatch) {
-      //     if (element.reportName == this.reportListFilters.name) {
-      //       gridData.push(element);
-      //       break;
-      //     }
-      //   } else {
-      //     if (element.reportName.indexOf(this.reportListFilters.name) !== -1) {
-      //       gridData.push(element);
-      //       break;
-      //     }
-      //   }
-      // }
-
-    }
-
-    this.reportList = gridData;
-    this.loading = false;
-  }
 
   triggerFilter($event, searchType = null) {
-    if (!this.reportListFilters.defaultFilter) {
-      this.reportListFilters.defaultFilter = true;
+    this.loading = true;//start grid loader
+    if (!this.reportListFilters.frontFilter) {
+      this.reportListFilters.frontFilter = true;
     }
+
+    if (searchType == 'nameall' || searchType == 'nameany') {
+      this.reportListFilters.nameMatchAll = !this.reportListFilters.nameMatchAll;
+      this.reportListFilters.nameMatchAny = !this.reportListFilters.nameMatchAny;
+    }
+
+    if (searchType == 'columnall' || searchType == 'columnany') {
+      this.reportListFilters.columnMatchAll = !this.reportListFilters.columnMatchAll;
+      this.reportListFilters.columnMatchAny = !this.reportListFilters.columnMatchAny;
+    }
+
+
+    // if (searchType == 'nameall') {
+    //   const checkColumnMatch = new Promise((resolve, reject) => {
+    //     setTimeout(() => {
+    //       if (!this.reportListFilters.nameMatchAll) {
+    //         this.reportListFilters.nameMatchAny = true;
+    //       } else {
+    //         this.reportListFilters.nameMatchAny = false;
+    //       }
+    //       resolve(true);
+    //     }, 20);
+    //   })
+    //   checkColumnMatch.then(x => this.textSearch$.next(this.reportListFilters))
+    //   return
+    // } else if (searchType == 'nameany') {
+    //   const checkColumnMatch = new Promise((resolve, reject) => {
+    //     setTimeout(() => {
+    //       if (!this.reportListFilters.nameMatchAny) {
+    //         this.reportListFilters.nameMatchAll = true;
+    //       } else {
+    //         this.reportListFilters.nameMatchAll = false;
+    //       }
+    //       resolve(true);
+    //     }, 20);
+    //   })
+    //   checkColumnMatch.then(x => this.textSearch$.next(this.reportListFilters))
+    //   return
+    // } else if (searchType == 'columnall') {
+    //   const checkColumnMatch = new Promise((resolve, reject) => {
+    //     setTimeout(() => {
+    //       if (!this.reportListFilters.columnMatchAll) {
+    //         this.reportListFilters.columnMatchAny = true;
+    //       } else {
+    //         this.reportListFilters.columnMatchAny = false;
+    //       }
+    //       resolve(true);
+    //     }, 20);
+    //   })
+    //   checkColumnMatch.then(x => this.textSearch$.next(this.reportListFilters))
+    //   return
+    // } else if (searchType == 'columnany') {
+    //   const checkColumnMatch = new Promise((resolve, reject) => {
+    //     setTimeout(() => {
+    //       if (!this.reportListFilters.columnMatchAny) {
+    //         this.reportListFilters.columnMatchAll = true;
+    //       } else {
+    //         this.reportListFilters.columnMatchAll = false;
+    //       }
+    //       resolve(true);
+    //     }, 20);
+    //   })
+    //   checkColumnMatch.then(x => this.textSearch$.next(this.reportListFilters))
+    //   return
+    // }
+
     this.textSearch$.next(this.reportListFilters);
   }
 
@@ -326,10 +452,7 @@ export class ReportsComponent implements OnInit {
     // this.getReportList()
   }
 
-  showColFn() {
-    this.showColumns = !this.showColumns;
-    this.rowheight = this.showColumns ? 70 : 36; // change virtual row height according to show columns
-  }
+
 
 
   // ####################### Right sidebar functions start ###################// 
@@ -354,15 +477,17 @@ export class ReportsComponent implements OnInit {
     this.reportListFilters = {
       number: '',
       name: '',
-      nameMatch: false,
-      column: '',
-      columnMatch: false,
+      nameMatchAll: false,
+      nameMatchAny: false,
+      selectedOutputColumns: [],
+      columnMatchAll: false,
+      columnMatchAny: false,
       columnExactMatch: false,
       all: true,
       lastMonth: false,
       last3Month: false,
       last12Month: false,
-      defaultFilter: false
+      frontFilter: false
     }
 
     this.showColumns = false;
