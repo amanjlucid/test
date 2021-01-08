@@ -1,9 +1,9 @@
 import { Component, OnInit, ViewEncapsulation, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { SubSink } from 'subsink';
-import { GroupDescriptor, DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
+import { GroupDescriptor, DataResult, State } from '@progress/kendo-data-query';
 import { SelectableSettings } from '@progress/kendo-angular-grid';
 import { forkJoin, Observable, Subject, of } from 'rxjs';
-import { debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 import { AlertService, WebReporterService } from 'src/app/_services';
 
 
@@ -69,8 +69,6 @@ export class ReportsComponent implements OnInit {
   selectedCategories: any = [];
   selectedCategory: any = [];
   outputColumns: any;
-
-
   outputColumnvirtual: any = {
     itemHeight: 28
   };
@@ -113,6 +111,8 @@ export class ReportsComponent implements OnInit {
   )
   textSearch$ = new Subject<any>();
   waitForApiSearch$ = new Subject<any>();
+  openReportParameter: boolean = false;
+  openSetUserCategory: boolean = false;
 
 
   constructor(
@@ -138,23 +138,17 @@ export class ReportsComponent implements OnInit {
               return { item_id: x.item_text, item_text: x.item_text }
             });
             this.selectedCategories = [...this.categories];//default select all categories
-          } else {
-            this.alertService.error(categoriesData.message);
-          }
+          } else this.alertService.error(categoriesData.message);
 
           if (userCategoryData.isSuccess) {
             this.userCategory = userCategoryData.data.map((x: any) => {
               return { item_id: x.name, item_text: x.name }
             });
-          } else {
-            this.alertService.error(userCategoryData.message);
-          }
+          } else this.alertService.error(userCategoryData.message);
 
           if (outputColumnsData.isSuccess) {
             this.outputColumns = outputColumnsData.data.map(x => x.columnName)
-          } else {
-            this.alertService.error(outputColumnsData.message);
-          }
+          } else this.alertService.error(outputColumnsData.message);
 
           //set default model value to get report data
           this.reportQueryModel.userId = this.currentUser.userId;
@@ -170,8 +164,11 @@ export class ReportsComponent implements OnInit {
       this.textSearch$
         .pipe(
           debounceTime(1000),
-          // distinctUntilChanged()
-        ).subscribe((val) => this.filterGrid())
+          distinctUntilChanged()
+        ).subscribe((val) => {
+          this.loading = true;
+          this.filterGrid();
+        })
     );
 
     // subscribe for grid filter with api
@@ -179,7 +176,10 @@ export class ReportsComponent implements OnInit {
       this.waitForApiSearch$.pipe(
         debounceTime(1000),
         distinctUntilChanged()
-      ).subscribe(val => this.getReportList(this.reportQueryModel))
+      ).subscribe(val => {
+        this.loading = true;
+        this.getReportList(this.reportQueryModel)
+      })
     );
 
   }
@@ -231,26 +231,26 @@ export class ReportsComponent implements OnInit {
   }
 
   onCategoriesSingleSelectionChange(item: any) {
-    this.loading = true;//start grid loader
+    // this.loading = true;//start grid loader
     this.reportQueryModel.Categories = this.selectedCategories.map(x => x.item_id).toString();
     this.waitForApiSearch$.next(this.reportQueryModel.Categories)
   }
 
   onCategoriesSelectionAllChange(items: any) {
-    this.loading = true;//start grid loader
+    // this.loading = true;//start grid loader
     this.selectedCategories = items;
     this.reportQueryModel.Categories = this.selectedCategories.map(x => x.item_id).toString();
     this.waitForApiSearch$.next(this.reportQueryModel.Categories)
   }
 
   onCategorySingleSelectionChange(item: any) {
-    this.loading = true;//start grid loader
+    // this.loading = true;//start grid loader
     this.reportQueryModel.XportCategory = this.selectedCategory.map(x => x.item_id).toString();
     this.waitForApiSearch$.next(this.reportQueryModel.XportCategory)
   }
 
   onCategorySelectionAllChange(items: any) {
-    this.loading = true;//start grid loader
+    // this.loading = true;//start grid loader
     this.selectedCategory = items;
     this.reportQueryModel.XportCategory = this.selectedCategory.map(x => x.item_id).toString();
     this.waitForApiSearch$.next(this.reportQueryModel.XportCategory)
@@ -261,17 +261,33 @@ export class ReportsComponent implements OnInit {
     this.getReportList(this.reportQueryModel);
   }
 
-  onOutPutColumnChange(value) {
-    this.loading = true;//start grid loader
-    if (!this.reportListFilters.frontFilter) {
-      this.reportListFilters.frontFilter = true;
+  triggerFilter($event, searchType = null) {
+    // this.loading = true;//start grid loader
+    if (!this.reportListFilters.frontFilter) this.reportListFilters.frontFilter = true;
+    if (searchType == 'nameall' || searchType == 'nameany') {
+      this.reportListFilters.nameMatchAll = !this.reportListFilters.nameMatchAll;
+      this.reportListFilters.nameMatchAny = !this.reportListFilters.nameMatchAny;
     }
+
+    if (searchType == 'columnall' || searchType == 'columnany') {
+      this.reportListFilters.columnMatchAll = !this.reportListFilters.columnMatchAll;
+      this.reportListFilters.columnMatchAny = !this.reportListFilters.columnMatchAny;
+    }
+
+    const objectStr = JSON.stringify(this.reportListFilters);//pass object string just to check object has changed
+    this.textSearch$.next(objectStr);
+
+  }
+
+  onOutPutColumnChange(value) {
+    // this.loading = true;//start grid loader
+    if (!this.reportListFilters.frontFilter) this.reportListFilters.frontFilter = true;
     this.reportListFilters.selectedOutputColumns = value;
-    this.textSearch$.next(this.reportListFilters);
+    const objectStr = JSON.stringify(this.reportListFilters);//pass object string just to check object has changed
+    this.textSearch$.next(objectStr);
   }
 
   filterGrid() {
-    console.log(this.reportListFilters);
     if ((this.reportListFilters.frontFilter == false) || (this.reportListFilters.number == "" && this.reportListFilters.name == "" && this.reportListFilters.selectedOutputColumns.length == 0)) {
       this.reportList = this.actualReportList;
       setTimeout(() => { this.loading = false }, 500);
@@ -371,92 +387,53 @@ export class ReportsComponent implements OnInit {
   }
 
 
-  triggerFilter($event, searchType = null) {
-    this.loading = true;//start grid loader
-    if (!this.reportListFilters.frontFilter) {
-      this.reportListFilters.frontFilter = true;
-    }
-
-    if (searchType == 'nameall' || searchType == 'nameany') {
-      this.reportListFilters.nameMatchAll = !this.reportListFilters.nameMatchAll;
-      this.reportListFilters.nameMatchAny = !this.reportListFilters.nameMatchAny;
-    }
-
-    if (searchType == 'columnall' || searchType == 'columnany') {
-      this.reportListFilters.columnMatchAll = !this.reportListFilters.columnMatchAll;
-      this.reportListFilters.columnMatchAny = !this.reportListFilters.columnMatchAny;
-    }
-
-
-    // if (searchType == 'nameall') {
-    //   const checkColumnMatch = new Promise((resolve, reject) => {
-    //     setTimeout(() => {
-    //       if (!this.reportListFilters.nameMatchAll) {
-    //         this.reportListFilters.nameMatchAny = true;
-    //       } else {
-    //         this.reportListFilters.nameMatchAny = false;
-    //       }
-    //       resolve(true);
-    //     }, 20);
-    //   })
-    //   checkColumnMatch.then(x => this.textSearch$.next(this.reportListFilters))
-    //   return
-    // } else if (searchType == 'nameany') {
-    //   const checkColumnMatch = new Promise((resolve, reject) => {
-    //     setTimeout(() => {
-    //       if (!this.reportListFilters.nameMatchAny) {
-    //         this.reportListFilters.nameMatchAll = true;
-    //       } else {
-    //         this.reportListFilters.nameMatchAll = false;
-    //       }
-    //       resolve(true);
-    //     }, 20);
-    //   })
-    //   checkColumnMatch.then(x => this.textSearch$.next(this.reportListFilters))
-    //   return
-    // } else if (searchType == 'columnall') {
-    //   const checkColumnMatch = new Promise((resolve, reject) => {
-    //     setTimeout(() => {
-    //       if (!this.reportListFilters.columnMatchAll) {
-    //         this.reportListFilters.columnMatchAny = true;
-    //       } else {
-    //         this.reportListFilters.columnMatchAny = false;
-    //       }
-    //       resolve(true);
-    //     }, 20);
-    //   })
-    //   checkColumnMatch.then(x => this.textSearch$.next(this.reportListFilters))
-    //   return
-    // } else if (searchType == 'columnany') {
-    //   const checkColumnMatch = new Promise((resolve, reject) => {
-    //     setTimeout(() => {
-    //       if (!this.reportListFilters.columnMatchAny) {
-    //         this.reportListFilters.columnMatchAll = true;
-    //       } else {
-    //         this.reportListFilters.columnMatchAll = false;
-    //       }
-    //       resolve(true);
-    //     }, 20);
-    //   })
-    //   checkColumnMatch.then(x => this.textSearch$.next(this.reportListFilters))
-    //   return
-    // }
-
-    // console.log(this.reportListFilters);
-    this.textSearch$.next(this.reportListFilters);
-  }
-
   setFavourite(dataItem) {
     this.selectedReport = dataItem;
-    this.selectedReport.favourite = !this.selectedReport.favourite;
-    console.log(this.selectedReport.favourite);
-    // this.getReportList()
+    const fav = dataItem.favourite == 0 ? true : false;
+    this.subs.add(
+      this.reportService.setFavourite(dataItem.reportId, this.currentUser.userId, fav).subscribe(
+        data => {
+          if (data.isSuccess) {
+            this.selectedReport.favourite = fav;
+            this.getReportList(this.reportQueryModel);
+          } else this.alertService.error(data.message);
+        },
+        err => this.alertService.error(err)
+      )
+    )
   }
 
 
+  //####################### Parameter window functions start ##########################
+  openParameterWindow(item) {
+    this.selectedReport = item;
+    this.openReportParameter = true;
+    $('.reportParamOverlay').addClass('ovrlay');
+  }
+
+  closeRportparamWindow(eve) {
+    this.openReportParameter = eve;
+    $('.reportParamOverlay').removeClass('ovrlay');
+  }
+
+  //####################### Parameter window functions end ##########################
 
 
-  // ####################### Right sidebar functions start ###################// 
+  //####################### Set User Categroy window functions start ##########################
+  openSetUserCategoryWindow(item) {
+    this.selectedReport = item;
+    this.openSetUserCategory = true;
+    $('.reportParamOverlay').addClass('ovrlay');
+  }
+
+  closeSetUserCategoryWindow(eve) {
+    this.openSetUserCategory = eve;
+    $('.reportParamOverlay').removeClass('ovrlay');
+  }
+
+  //####################### Set User Categroy functions end ##########################
+
+  // ####################### Right sidebar functions start##########################
 
   openSearchBar() {
     let scrollTop = $('.layout-container').height();
@@ -492,8 +469,9 @@ export class ReportsComponent implements OnInit {
     }
 
     this.showColumns = false;
-    this.textSearch$.next(this.reportListFilters);
+    const objectStr = JSON.stringify(this.reportListFilters);//pass object string just to check object has changed
+    this.textSearch$.next(objectStr);
   }
 
-  // ####################### Right sidebar functions end ###################// 
+  // ####################### Right sidebar functions end ##########################
 }

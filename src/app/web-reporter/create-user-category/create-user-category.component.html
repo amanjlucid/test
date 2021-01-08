@@ -1,0 +1,28 @@
+<kendo-window title="{{title}}" *ngIf="openCreateUserCategory" (close)="closeCreateUserCategory()" [top]="40"
+    [minWidth]="500" [width]="660" [height]="auto" [minHeight]="150">
+
+    <div class="row mt-1">
+        <div class="col-md-12">
+            <form (ngSubmit)="onSubmit()" #userCategoryForm="ngForm">
+                <div class="form-group">
+                    <label for="name">Name:</label>
+                    <input type="text" class="form-control" id="name" required [(ngModel)]="categoryName" name="name"
+                    #name="ngModel" [ngClass]="{ 'is-invalid': !name.valid && submitted }">
+                    <div *ngIf="!name.valid && submitted" class="invalid-feedback">
+                        Name is required
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12 mt-2 text-right">
+                        <button type="submit" class="btn btn-sm themeButton mr-2">OK</button>
+                        <button type="button" class="btn btn-sm themeButton" (click)="closeCreateUserCategory()">Cancel</button>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+
+</kendo-window>

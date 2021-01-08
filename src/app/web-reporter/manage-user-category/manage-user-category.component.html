@@ -1,0 +1,42 @@
+<kendo-window title="{{title}}" *ngIf="openManageUserCategory" (close)="closeManageUserCategory()" [top]="20"
+    [minWidth]="500" [width]="660" [height]="auto" [minHeight]="350">
+
+    <div class="row mt-1">
+        <div class="col-md-12">
+            <kendo-grid [data]="gridView" [loading]="loading" [height]="600" filterable="menu" [resizable]="true"
+                [sortable]="{
+                allowUnsort: allowUnsort,
+                mode: multiple ? 'multiple' : 'single'
+                }" [skip]="state.skip" [sort]="state.sort" [selectable]="selectableSettings"
+                kendoGridSelectBy="reportId" [selectedKeys]="mySelection"
+                (selectedKeysChange)="onSelectedKeysChange($event)" [filter]="state.filter"
+                (sortChange)="sortChange($event)" (filterChange)="filterChange($event)"
+                (cellClick)="cellClickHandler($event)" [rowHeight]="36" scrollable="virtual" [pageSize]="pageSize"
+                (pageChange)="pageChange($event)" [navigable]="true">
+
+                <kendo-grid-column field="reportId" title=" " width="15">
+                </kendo-grid-column>
+
+                <kendo-grid-column field="reportName" title="Name" width="145">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span title="{{dataItem.reportName}}">{{dataItem.reportName}}</span>
+                    </ng-template>
+                </kendo-grid-column>
+
+            </kendo-grid>
+        </div>
+    </div>
+
+    <div class="row mt-2">
+        <div class="col-md-12 text-right">
+            <button type="button" class="btn btn-sm themeButton mr-2" (click)="saveReportCategory()"
+                [disabled]="!selectedReportList">Save</button>
+            <button type="button" class="btn btn-sm themeButton" (click)="closeManageUserCategory()">Cancel</button>
+        </div>
+    </div>
+
+    <!-- <div class="userCatOvrlay"></div>
+    <app-manage-user-category *ngIf="openManageUserCategory" [openManageUserCategory]="openManageUserCategory"
+        [selectedUserCategory]="selectedUserCategory" (closeManageUserCategoryWindow)="closeManageUserCategoryWindow($event)"></app-manage-user-category> -->
+
+</kendo-window>

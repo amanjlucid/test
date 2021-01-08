@@ -1,0 +1,65 @@
+<kendo-window title="{{title}}" *ngIf="openSetUserCategory" (close)="closeUserCategories()" [top]="20" [minWidth]="500"
+    [width]="700" [height]="auto" [minHeight]="350">
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="windowHeading"> <span>{{ templateHeading }}</span> </div>
+        </div>
+    </div>
+
+    <div class="row mt-2">
+        <div class="col-md-12 text-right">
+            <button type="button" class="btn btn-sm themeButton mr-2" (click)="createNewUserCategory('edit')"
+                [disabled]="!selectedUserCategory">Rename</button>
+            <button type="button" class="btn btn-sm themeButton" (click)="createNewUserCategory()">New</button>
+        </div>
+    </div>
+
+    <div class="row mt-2">
+        <div class="col-md-12">
+            <kendo-grid [data]="gridView" [loading]="loading" [height]="600" filterable="menu" [resizable]="true"
+                [sortable]="{
+                allowUnsort: allowUnsort,
+                mode: multiple ? 'multiple' : 'single'
+                }" [skip]="state.skip" [sort]="state.sort" [selectable]="selectableSettings" kendoGridSelectBy="name"
+                [selectedKeys]="mySelection" (selectedKeysChange)="onSelectedKeysChange($event)" [filter]="state.filter"
+                (sortChange)="sortChange($event)" (filterChange)="filterChange($event)"
+                (cellClick)="cellClickHandler($event)" [navigable]="true">
+
+                <kendo-grid-column title=" " width="10" [filterable]="false">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <li class="nav-item dropdown list-unstyled" style="margin-top: -7px;">
+                            <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="javascript:void(0)"
+                                    (click)="openConfirmationDialog(dataItem)">
+                                    Delete</a>
+                                <a class="dropdown-item" href="javascript:void(0)" (click)="manage(dataItem)">Manage</a>
+                            </div>
+                        </li>
+                    </ng-template>
+                </kendo-grid-column>
+
+                <kendo-grid-column field="name" title="Name" width="130">
+                </kendo-grid-column>
+
+            </kendo-grid>
+        </div>
+    </div>
+
+    <div class="row mt-2">
+        <div class="col-md-12 text-right">
+            <button type="button" class="btn btn-sm themeButton" (click)="closeUserCategories()">Cancel</button>
+        </div>
+    </div>
+
+    <div class="userCatOvrlay"></div>
+    <app-manage-user-category *ngIf="openManageUserCategory" [openManageUserCategory]="openManageUserCategory"
+        [selectedUserCategory]="selectedUserCategory" [selectedReport]="selectedReport"
+        (closeManageUserCategoryWindow)="closeManageUserCategoryWindow($event)"></app-manage-user-category>
+
+    <app-create-user-category *ngIf="openCreateUserCategory" [openCreateUserCategory]="openCreateUserCategory"
+        [selectedUserCategory]="selectedUserCategory" [mode]="mode"
+        (closeCreateUserCategoryWindow)="closeCreateUserCategoryWindow($event)"
+        (refresSetCategoryWindow)="refresSetCategoryWindow($event)"> </app-create-user-category>
+</kendo-window>

@@ -33,7 +33,7 @@
                 <label class="categoryLbl">Category</label>
 
                 <ng-multiselect-dropdown [placeholder]="'Select Category'" [data]="userCategory"
-                    [settings]="mulitSelectDropdownSettings" [disabled]="false"
+                    [settings]="categoryDropdownSettings" [disabled]="false"
                     (onSelect)="onCategorySingleSelectionChange($event)"
                     (onDeSelect)="onCategorySingleSelectionChange($event)"
                     (onSelectAll)="onCategorySelectionAllChange($event)"
@@ -56,7 +56,7 @@
                 [selectable]="selectableSettings" [filter]="state.filter" (cellClick)="cellClickHandler($event)"
                 [navigable]="true">
 
-                <kendo-grid-column field="favourite" title="" width="30" [filterable]="false" [groupable]="false">
+                <kendo-grid-column field="favourite" title="" width="25" [filterable]="false" [groupable]="false">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <i (click)="setFavourite(dataItem)" [ngClass]="{'favourite': dataItem.favourite === 1}"
                             class="fa fa-star" aria-hidden="true"></i>
@@ -64,39 +64,32 @@
 
                 </kendo-grid-column>
 
-                <kendo-grid-column title=" " width="30" [filterable]="false">
+                <kendo-grid-column title=" " width="25" [filterable]="false">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <li class="nav-item dropdown list-unstyled" style="margin-top: -7px;">
                             <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"
                                 (click)="setSeletedRow(dataItem)"></i>
                             <div class="dropdown-menu">
                                 <a class="dropdown-item" href="javascript:void(0)"
-                                    (click)="openTaskDetails(dataItem, 'single')">Task
-                                    Details</a>
+                                    (click)="openSetUserCategoryWindow(dataItem)">
+                                    User Categories</a>
                                 <a class="dropdown-item" href="javascript:void(0)"
-                                    (click)="openTaskData(dataItem,'single')">Task
-                                    Data</a>
-
-                                <!-- <div class="dropdown-toggle">
-                                    <div class="dropdown-item">Assign</div>
-                                    <div class="dropdown-menu">
-                                        <a class="dropdown-item" (click)="assignToMe(dataItem,'single')"
-                                            href="javascript:void(0)">Assign
-                                            to Me</a>
-                                        <a class="dropdown-item" (click)="assignToOther(dataItem,'single')"
-                                            href="javascript:void(0)">Assign
-                                            to Other user</a>
-
-                                    </div>
-                                </div> -->
+                                    (click)="openTaskData(dataItem,'single')">Scheduling</a>
+                                <a class="dropdown-item" href="javascript:void(0)"
+                                    (click)="openParameterWindow(dataItem)">Parameters</a>
+                                <a class="dropdown-item" href="javascript:void(0)"
+                                    (click)="openTaskData(dataItem,'single')">Preview</a>
+                                <a class="dropdown-item" href="javascript:void(0)"
+                                    (click)="openTaskData(dataItem,'single')">Run</a>
                             </div>
                         </li>
 
                     </ng-template>
                 </kendo-grid-column>
 
-
-                <kendo-grid-column field="reportId" title="Report ID" width="70">
+                <kendo-grid-column field="category" title="Category" width="80">
+                </kendo-grid-column>
+                <kendo-grid-column field="reportId" title="Report ID" width="60">
                 </kendo-grid-column>
                 <kendo-grid-column field="reportName" title="Report Name" width="260">
                     <ng-template kendoGridCellTemplate let-dataItem>
@@ -106,9 +99,8 @@
                 </kendo-grid-column>
                 <kendo-grid-column field="reportDescription" title="Report Description" width="160">
                 </kendo-grid-column>
-                <kendo-grid-column field="category" title="Category" width="100">
-                </kendo-grid-column>
-                <kendo-grid-column field="count" title="Run History" width="100">
+
+                <kendo-grid-column field="count" title="Run History" width="90">
                 </kendo-grid-column>
 
 
@@ -411,3 +403,8 @@
 
     </div>
 </div>
+
+<div class="reportParamOverlay"></div>
+<app-report-parameter *ngIf="openReportParameter" [openReportParameter]="openReportParameter" [selectedReport]="selectedReport" (closeRportparamWindow)="closeRportparamWindow($event)"></app-report-parameter>
+
+<app-set-user-category *ngIf="openSetUserCategory" [openSetUserCategory]="openSetUserCategory" [selectedReport]="selectedReport" (closeSetUserCategoryWindow)="closeSetUserCategoryWindow($event)"></app-set-user-category>

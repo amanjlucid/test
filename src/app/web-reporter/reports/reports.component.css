@@ -88,7 +88,7 @@
 
 ng-multiselect-dropdown {
     background-color: white;
-    min-width: 130px;
+    min-width: 168px;
 }
 
 ng-multiselect-dropdown .dropdown-btn span:nth-child(2) {
@@ -101,7 +101,7 @@ ng-multiselect-dropdown .dropdown-btn span:nth-child(2) {
 } */
 
 .favourite {
-    color: #e4d73f;
+    color: #E4287E;
 }
 
 .fa-star {
