@@ -75,10 +75,27 @@ export class WebReporterService {
         return this.http.get<any>(`${appConfig.apiUrl}/api/WebReportSearch/DeleteUserCategory?userName=${userName}&categoryName=${categoryName}`, this.httpOptions);
     }
 
-    // GET api/WebReportSearch/CheckIfUserCategoryExists(string userName, string newCategoryName)
-    // GET api/WebReportSearch/InsertUserCategory(string userName, string newCategoryName)
-    // GET api/WebReportSearch/RenameUserCategory(string userName, string originalCategoryName, string newCategoryName)
-    // GET api/WebReportSearch/DeleteUserCategory(string userName, string categoryName)
+    getListOfScheduledParameters(intXportID: number) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/WebReportSearch/GetListOfScheduledParameters?intXportID=${intXportID}`, this.httpOptions);
+    }
+
+    getReportParamList(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/WebReportSearch/GetXportParameterSelectionColumns`, body, this.httpOptions);
+        //return this.http.get<any>(`${appConfig.apiUrl}/api/WebReportSearch/GetXportParameterSelectionColumns?intXportID=${intXportId}&strXportIntField=${strXportIntField}`, this.httpOptions);
+    }
+
+
+    allUsersNGroupReport(preview) {
+        let lstParamNameValue: string[] = [''];
+        let postData = {
+            intXportId: 536,
+            lstParamNameValue: lstParamNameValue,
+            lngMaxRows: preview
+        };
+        let body = JSON.stringify(postData);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/Report/CreateXportOutput`, body, this.httpOptions);
+    }
 
 
 }

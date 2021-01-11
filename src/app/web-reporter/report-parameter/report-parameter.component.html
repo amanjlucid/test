@@ -9,51 +9,50 @@
 
     <div class="row mt-1">
         <div class="col-md-12">
-            <form novalidate #myForm="ngForm">
-                <kendo-grid [data]="gridView" [height]="400" filterable="menu" [resizable]="true" [sortable]="{
+
+            <kendo-grid [data]="gridView" [height]="400" filterable="menu" [resizable]="true" [sortable]="{
             allowUnsort: allowUnsort,
             mode: multiple ? 'multiple' : 'single'
             }" [skip]="state.skip" [groupable]="false" [sort]="state.sort" [selectable]="{
               mode: 'multiple'
             }" [filter]="state.filter" (dataStateChange)="onStateChange($event)" (sortChange)="sortChange($event)"
-                    (filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)" [navigable]="true">
+                (filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)" [navigable]="true">
 
-                    <kendo-grid-column field="eventTypeParamTextName" title="Name" width="120">
-                    </kendo-grid-column>
-                    <kendo-grid-column field="eventTypeParamTextName" title="Value" width="120">
-                    </kendo-grid-column>
-                    <kendo-grid-column field="eventTypeParamSqlValue" title="Select" width="230" [filterable]="false">
-                        <ng-template kendoGridCellTemplate let-dataItem>
-                            <div class="valueDiv">
-                                <button class="btn btn-sm parmaBtn" (click)="openParameterOptions(dataItem)"
-                                    type="button">Select Value...</button>
-                            </div>
+                <kendo-grid-column field="extfield" title="Name" width="120">
+                </kendo-grid-column>
+                <kendo-grid-column field="paramvalue" title="Value" width="120">
+                </kendo-grid-column>
+                <kendo-grid-column field="eventTypeParamSqlValue" title="Select" width="230" [filterable]="false">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <div class="valueDiv">
+                            <button class="btn btn-sm parmaBtn" (click)="openReportParameterList(dataItem)"
+                                type="button">Select Value...</button>
+                        </div>
+                    </ng-template>
+                </kendo-grid-column>
+            </kendo-grid>
 
-                        </ng-template>
-
-
-                    </kendo-grid-column>
-
-
-                </kendo-grid>
-            </form>
 
         </div>
     </div>
 
     <div class="row mt-2">
         <div class="col-md-12 text-right">
-            <button [disabled]='!myForm.valid' type="submit" class="btn btn-sm themeButton mr-2"
-                (click)="saveParameters()">OK</button>
+            <button type="button" class="btn btn-sm themeButton mr-2" (click)="saveParameters()">Save
+                Parameters</button>
+            <button type="button" class="btn btn-sm themeButton mr-2" (click)="restoreAndClearParams('clear')">Clear
+                Parameters</button>
+            <button type="button" class="btn btn-sm themeButton mr-2" (click)="restoreAndClearParams('restore')">Restore
+                Parameters</button>
             <button type="button" class="btn btn-sm themeButton" (click)="closeReportParameter()">Cancel</button>
 
         </div>
 
     </div>
 
-    <!-- <div class="eventParamList"></div>
-    <app-event-parameters-list *ngIf="eventParamList" [eventParamList]="eventParamList" [selectedEvent]="selectedEvent"
-        [selectedParam]="selectedParam" (closeEventParamList)="closeEventParamList($event)"
-        (changeSelectedParams)="changeSelectedParams($event)"></app-event-parameters-list> -->
+    <div class="reportParamList"></div>
+    <app-report-parameter-list *ngIf="openReportParamlist" [openReportParamlist]="openReportParamlist"
+        [selectedReportParam]="selectedReportParam" [selectedReport]="selectedReport"
+        (closeReportParamListWindow)="closeReportParamListWindow($event)"></app-report-parameter-list>
 
 </kendo-window>

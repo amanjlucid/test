@@ -113,7 +113,7 @@ export class ReportsComponent implements OnInit {
   waitForApiSearch$ = new Subject<any>();
   openReportParameter: boolean = false;
   openSetUserCategory: boolean = false;
-
+  openPreviewReport:boolean = false;  
 
   constructor(
     private reportService: WebReporterService,
@@ -432,6 +432,14 @@ export class ReportsComponent implements OnInit {
   }
 
   //####################### Set User Categroy functions end ##########################
+
+  //####################### Preview Report functions start ##########################
+  previewReport(){
+    this.previewReport
+  }
+
+  //####################### Preview Report functions end ##########################
+
 
   // ####################### Right sidebar functions start##########################
 

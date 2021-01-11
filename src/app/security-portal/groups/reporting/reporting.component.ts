@@ -95,6 +95,8 @@ export class ReportingComponent implements OnInit {
   formErrors: any;
 
   ngOnInit() {
+    console.log(this.selectedGroup)
+    console.log(this.openReports)
     this.getReport();
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
 
