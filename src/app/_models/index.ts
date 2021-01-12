@@ -13,5 +13,6 @@ export * from './hns-action.model'
 export * from './hns-info.model'
 export * from './hns-summary.model'
 export * from './hns-assessment.model'
+export * from './report-parameter-list.model'
 
 

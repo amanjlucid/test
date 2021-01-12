@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { AlertService, WebReporterService } from '../../_services'
+import { forkJoin } from 'rxjs';
 
 
 @Component({
@@ -31,8 +32,10 @@ export class ReportParameterComponent implements OnInit {
   reportParameters: any;
   reportParamHeading = '';
   parameterData: any;
+  actualParamData: any;
   openReportParamlist: boolean = false;
   selectedReportParam: any;
+  currentUser: any;
 
   constructor(
     private reportService: WebReporterService,
@@ -41,6 +44,7 @@ export class ReportParameterComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.reportParamHeading = this.selectedReport.reportId + " " + this.selectedReport.reportName;
     this.getReportParameter(this.selectedReport.reportId);
   }
@@ -53,13 +57,21 @@ export class ReportParameterComponent implements OnInit {
     this.subs.add(
       this.reportService.getListOfScheduledParameters(reportId).subscribe(
         data => {
-          console.log(data);
           if (data.isSuccess) {
             this.parameterData = data.data;
             this.renderGrid();
           } else this.alertService.error(data.message);
         },
         err => this.alertService.error(err)
+      )
+    )
+
+    // set actual parameter value
+    this.subs.add(
+      this.reportService.getListOfScheduledParameters(reportId).subscribe(
+        data => {
+          if (data.isSuccess) this.actualParamData = [...data.data];
+        }
       )
     )
   }
@@ -85,15 +97,7 @@ export class ReportParameterComponent implements OnInit {
   }
 
   cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
-    // this.closeEditor(sender, rowIndex);
-    // this.selectedParam = dataItem;
-    // this.rowIndex = rowIndex
-    // // console.log(this.selectedParam)
-    // if (columnIndex == 2) {
-    //   if (!isEdited && this.selectedParam.eventTypeParamType == 'N') {
-    //     sender.editCell(rowIndex, columnIndex);
-    //   }
-    // }
+    this.selectedReportParam = dataItem;
   }
 
   restoreAndClearParams(type) {
@@ -104,6 +108,41 @@ export class ReportParameterComponent implements OnInit {
       });
       this.renderGrid();
     } else this.getReportParameter(this.selectedReport.reportId);
+  }
+
+  changeSelectedParam(eve) {
+    if (this.selectedReportParam.paramvalue != eve.string) {
+      this.selectedReportParam.paramvalue = eve.string;
+      this.selectedReportParam.changed = true;
+    }
+  }
+
+  saveParameters() {
+    if (JSON.stringify(this.actualParamData) == JSON.stringify(this.parameterData)) {
+      this.alertService.error("There is no change to update.");
+      return
+    }
+
+    let req = [];
+    for (let griddata of this.parameterData) {
+      if (griddata.changed != undefined) {
+        const params = { userName: this.currentUser.userId, xportId: this.selectedReport.reportId, xportParameterDefinitions: [{ xport_ext_field: '', xport_int_field: griddata.intfield, SavedValue: griddata.paramvalue }] }
+        req.push(this.reportService.updateReportParameter(params));
+      }
+    }
+
+    if (req.length > 0) {
+      this.subs.add(
+        forkJoin(req).subscribe(
+          data => {
+            this.alertService.success("Parameter updated successfully.");
+            this.getReportParameter(this.selectedReport.reportId);
+          },
+          err => this.alertService.error(err)
+        )
+      )
+    }
+
   }
 
   closeReportParameter() {
@@ -120,6 +159,6 @@ export class ReportParameterComponent implements OnInit {
   closeReportParamListWindow(eve) {
     this.openReportParamlist = eve;
     $('.reportParamList').removeClass('ovrlay');
-
   }
+
 }

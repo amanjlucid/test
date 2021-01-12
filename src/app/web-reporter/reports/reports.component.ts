@@ -113,7 +113,8 @@ export class ReportsComponent implements OnInit {
   waitForApiSearch$ = new Subject<any>();
   openReportParameter: boolean = false;
   openSetUserCategory: boolean = false;
-  openPreviewReport:boolean = false;  
+  openPreviewReport: boolean = false;
+  reportCount = 0;
 
   constructor(
     private reportService: WebReporterService,
@@ -154,6 +155,7 @@ export class ReportsComponent implements OnInit {
           this.reportQueryModel.userId = this.currentUser.userId;
           this.reportQueryModel.Categories = this.selectedCategories.map(x => x.item_id).toString();
           this.getReportList(this.reportQueryModel);
+          this.getRportCount(this.reportQueryModel);
 
         }
       )
@@ -188,11 +190,17 @@ export class ReportsComponent implements OnInit {
     this.subs.unsubscribe();
   }
 
+  getRportCount(params) {
+    this.subs.add(
+      this.reportService.reportCount(params).subscribe(res => this.reportCount = res.data)
+    )
+  }
+
   getReportList(params): any {
     this.subs.add(
       this.reportService.getReportList(params).subscribe(
         data => {
-          console.log(data);
+          // console.log(data);
           if (data.isSuccess) {
             this.actualReportList = [...data.data];
             this.filterGrid();
@@ -434,7 +442,7 @@ export class ReportsComponent implements OnInit {
   //####################### Set User Categroy functions end ##########################
 
   //####################### Preview Report functions start ##########################
-  previewReport(){
+  previewReport() {
     this.previewReport
   }
 

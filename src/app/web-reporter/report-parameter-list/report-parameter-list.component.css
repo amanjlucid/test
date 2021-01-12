@@ -1,3 +1,9 @@
 .k-window {
     position: fixed !important;
 }
+
+.paramsHeading{
+    background: #dbdbdb;
+    padding: 4px;
+    font-weight: 600;
+}

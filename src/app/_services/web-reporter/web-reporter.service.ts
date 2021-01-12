@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { appConfig } from '../../app.config';
-
+import { Observable, BehaviorSubject } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Injectable()
 export class WebReporterService {
@@ -36,9 +37,13 @@ export class WebReporterService {
     }
 
     getReportList(params) {
-        // return this.http.get<any>(`${appConfig.apiUrl}/api/WebReportSearch/GetListOfReports`, this.httpOptions);
         let body = JSON.stringify(params);
         return this.http.post<any>(`${appConfig.apiUrl}/api/WebReportSearch/GetReportDataList`, body, this.httpOptions);
+    }
+
+    reportCount(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/WebReportSearch/GetReportDataListCount`, body, this.httpOptions);
     }
 
     setFavourite(xportId: number, userName: string, favourite: boolean) {
@@ -79,10 +84,19 @@ export class WebReporterService {
         return this.http.get<any>(`${appConfig.apiUrl}/api/WebReportSearch/GetListOfScheduledParameters?intXportID=${intXportID}`, this.httpOptions);
     }
 
-    getReportParamList(params) {
+    getReportParamList(params): Observable<any> {
         let body = JSON.stringify(params);
-        return this.http.post<any>(`${appConfig.apiUrl}/api/WebReportSearch/GetXportParameterSelectionColumns`, body, this.httpOptions);
-        //return this.http.get<any>(`${appConfig.apiUrl}/api/WebReportSearch/GetXportParameterSelectionColumns?intXportID=${intXportId}&strXportIntField=${strXportIntField}`, this.httpOptions);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/WebReportSearch/GetXportParameterSelectionColumns`, body, this.httpOptions).pipe(
+            map(response => (<any>{
+                data: (response.data != null) ? response.data.dataTable : [],
+                total: (response.data != null) ? response.data.totalCount : 0
+            }))
+        );;
+    }
+
+    updateReportParameter(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/WebReportSearch/UpdateSavedParameters`, body, this.httpOptions);
     }
 
 

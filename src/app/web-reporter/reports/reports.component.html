@@ -7,8 +7,9 @@
         </div>
 
         <div class="col-md-10 col-sm-9 text-right">
-            <button type="button" class="btn btn-sm themeButton mr-1" (click)="previewReport()" [disabled]="!selectedReport">Preview</button>
-            <button type="button" class="btn btn-sm themeButton mr-1">Run</button>
+            <button type="button" class="btn btn-sm themeButton mr-1" (click)="previewReport()"
+                [disabled]="!selectedReport">Preview</button>
+            <button type="button" class="btn btn-sm themeButton mr-1" [disabled]="!selectedReport">Run</button>
 
             <button id="showFilePanel" (click)="openSearchBar()" class="btn btn-sm themeButton"><i
                     class="fa fa-search"></i>
@@ -44,7 +45,7 @@
         </div>
 
         <div class="col-md-2">
-            <span>Reports: Filtered {{reportList ? reportList.length : 0}}/{{actualReportList ? actualReportList.length : 0}}</span>
+            <span>Reports: Filtered {{reportList ? reportList.length : 0}}/{{reportCount ? reportCount : 0}}</span>
         </div>
     </div>
 
@@ -409,6 +410,9 @@
 </div>
 
 <div class="reportParamOverlay"></div>
-<app-report-parameter *ngIf="openReportParameter" [openReportParameter]="openReportParameter" [selectedReport]="selectedReport" (closeRportparamWindow)="closeRportparamWindow($event)"></app-report-parameter>
+<app-report-parameter *ngIf="openReportParameter" [openReportParameter]="openReportParameter"
+    [selectedReport]="selectedReport" (closeRportparamWindow)="closeRportparamWindow($event)"></app-report-parameter>
 
-<app-set-user-category *ngIf="openSetUserCategory" [openSetUserCategory]="openSetUserCategory" [selectedReport]="selectedReport" (closeSetUserCategoryWindow)="closeSetUserCategoryWindow($event)"></app-set-user-category>
+<app-set-user-category *ngIf="openSetUserCategory" [openSetUserCategory]="openSetUserCategory"
+    [selectedReport]="selectedReport" (closeSetUserCategoryWindow)="closeSetUserCategoryWindow($event)">
+</app-set-user-category>

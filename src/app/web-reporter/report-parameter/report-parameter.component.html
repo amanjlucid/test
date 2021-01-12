@@ -22,7 +22,8 @@
                 </kendo-grid-column>
                 <kendo-grid-column field="paramvalue" title="Value" width="120">
                 </kendo-grid-column>
-                <kendo-grid-column field="eventTypeParamSqlValue" title="Select" width="230" [filterable]="false">
+                <kendo-grid-column field="eventTypeParamSqlValue" title="Select" width="230" [filterable]="false"
+                    [sortable]="false">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <div class="valueDiv">
                             <button class="btn btn-sm parmaBtn" (click)="openReportParameterList(dataItem)"
@@ -38,11 +39,14 @@
 
     <div class="row mt-2">
         <div class="col-md-12 text-right">
-            <button type="button" class="btn btn-sm themeButton mr-2" (click)="saveParameters()">Save
+            <button type="button" class="btn btn-sm themeButton mr-2" (click)="saveParameters()"
+                [disabled]="!parameterData">Save
                 Parameters</button>
-            <button type="button" class="btn btn-sm themeButton mr-2" (click)="restoreAndClearParams('clear')">Clear
+            <button type="button" class="btn btn-sm themeButton mr-2" (click)="restoreAndClearParams('clear')"
+                [disabled]="!parameterData">Clear
                 Parameters</button>
-            <button type="button" class="btn btn-sm themeButton mr-2" (click)="restoreAndClearParams('restore')">Restore
+            <button type="button" class="btn btn-sm themeButton mr-2" (click)="restoreAndClearParams('restore')"
+                [disabled]="!parameterData">Restore
                 Parameters</button>
             <button type="button" class="btn btn-sm themeButton" (click)="closeReportParameter()">Cancel</button>
 
@@ -53,6 +57,7 @@
     <div class="reportParamList"></div>
     <app-report-parameter-list *ngIf="openReportParamlist" [openReportParamlist]="openReportParamlist"
         [selectedReportParam]="selectedReportParam" [selectedReport]="selectedReport"
-        (closeReportParamListWindow)="closeReportParamListWindow($event)"></app-report-parameter-list>
+        (closeReportParamListWindow)="closeReportParamListWindow($event)"
+        (changeSelectedParam)="changeSelectedParam($event)"></app-report-parameter-list>
 
 </kendo-window>
