@@ -100,14 +100,15 @@ export class WebReporterService {
     }
 
 
-    allUsersNGroupReport(preview) {
-        let lstParamNameValue: string[] = [''];
-        let postData = {
-            intXportId: 536,
-            lstParamNameValue: lstParamNameValue,
-            lngMaxRows: preview
-        };
-        let body = JSON.stringify(postData);
+    //preview report
+    previewReport(preview) {
+        // let lstParamNameValue: string[] = [''];
+        // let postData = {
+        //     intXportId: 536,
+        //     lstParamNameValue: lstParamNameValue,
+        //     lngMaxRows: preview
+        // };
+        let body = JSON.stringify(preview);
         return this.http.post<any>(`${appConfig.apiUrl}/api/Report/CreateXportOutput`, body, this.httpOptions);
     }
 

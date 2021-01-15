@@ -1,0 +1,9 @@
+.k-window {
+    position: fixed !important;
+}
+
+.windowHeading{
+    background: #dbdbdb;
+    padding: 4px;
+    font-weight: 600;
+}

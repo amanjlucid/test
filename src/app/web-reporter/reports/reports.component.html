@@ -9,7 +9,8 @@
         <div class="col-md-10 col-sm-9 text-right">
             <button type="button" class="btn btn-sm themeButton mr-1" (click)="previewReport()"
                 [disabled]="!selectedReport">Preview</button>
-            <button type="button" class="btn btn-sm themeButton mr-1" [disabled]="!selectedReport">Run</button>
+            <button type="button" class="btn btn-sm themeButton mr-1" (click)="runReport()"
+                [disabled]="!selectedReport">Run</button>
 
             <button id="showFilePanel" (click)="openSearchBar()" class="btn btn-sm themeButton"><i
                     class="fa fa-search"></i>
@@ -79,13 +80,11 @@
                                     (click)="openSetUserCategoryWindow(dataItem)">
                                     User Categories</a>
                                 <a class="dropdown-item" href="javascript:void(0)"
-                                    (click)="openTaskData(dataItem,'single')">Scheduling</a>
-                                <a class="dropdown-item" href="javascript:void(0)"
-                                    (click)="openParameterWindow(dataItem)">Parameters</a>
-                                <a class="dropdown-item" href="javascript:void(0)"
-                                    (click)="openTaskData(dataItem,'single')">Preview</a>
-                                <a class="dropdown-item" href="javascript:void(0)"
-                                    (click)="openTaskData(dataItem,'single')">Run</a>
+                                    (click)="scheduleReport(dataItem)">Scheduling</a>
+                                <a [ngClass]="{'disabled' : dataItem.parameterExists == false}" class="dropdown-item"
+                                    href="javascript:void(0)" (click)="openParameterWindow(dataItem)">Parameters</a>
+                                <a class="dropdown-item" href="javascript:void(0)" (click)="previewReport()">Preview</a>
+                                <a class="dropdown-item" href="javascript:void(0)" (click)="runReport()">Run</a>
                             </div>
                         </li>
 
@@ -416,3 +415,10 @@
 <app-set-user-category *ngIf="openSetUserCategory" [openSetUserCategory]="openSetUserCategory"
     [selectedReport]="selectedReport" (closeSetUserCategoryWindow)="closeSetUserCategoryWindow($event)">
 </app-set-user-category>
+
+<app-preview-report *ngIf="openPreviewReport" [openPreviewReport]="openPreviewReport" [selectedReport]="selectedReport"
+    (closePreviewReport)="closePreviewReport($event)"></app-preview-report>
+
+<app-schedule-report *ngIf="openScheduleReport" [openScheduleReport]="openScheduleReport"
+    [selectedReport]="selectedReport" (closeScheduleReportWindow)="closeScheduleReportWindow($event)">
+</app-schedule-report>

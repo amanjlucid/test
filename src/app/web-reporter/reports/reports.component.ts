@@ -4,7 +4,7 @@ import { GroupDescriptor, DataResult, State } from '@progress/kendo-data-query';
 import { SelectableSettings } from '@progress/kendo-angular-grid';
 import { forkJoin, Observable, Subject, of } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
-import { AlertService, WebReporterService } from 'src/app/_services';
+import { AlertService, ReportingGroupService, WebReporterService } from 'src/app/_services';
 
 
 @Component({
@@ -110,14 +110,17 @@ export class ReportsComponent implements OnInit {
     })
   )
   textSearch$ = new Subject<any>();
+  reportCount = 0;
   waitForApiSearch$ = new Subject<any>();
   openReportParameter: boolean = false;
   openSetUserCategory: boolean = false;
   openPreviewReport: boolean = false;
-  reportCount = 0;
+  openScheduleReport: boolean = false;
+
 
   constructor(
     private reportService: WebReporterService,
+    private reportingGrpService: ReportingGroupService,
     private alertService: AlertService,
     private chRef: ChangeDetectorRef,
   ) {
@@ -200,7 +203,7 @@ export class ReportsComponent implements OnInit {
     this.subs.add(
       this.reportService.getReportList(params).subscribe(
         data => {
-          // console.log(data);
+          console.log(data);
           if (data.isSuccess) {
             this.actualReportList = [...data.data];
             this.filterGrid();
@@ -414,6 +417,7 @@ export class ReportsComponent implements OnInit {
 
   //####################### Parameter window functions start ##########################
   openParameterWindow(item) {
+    if (!item.parameterExists) return;
     this.selectedReport = item;
     this.openReportParameter = true;
     $('.reportParamOverlay').addClass('ovrlay');
@@ -443,11 +447,49 @@ export class ReportsComponent implements OnInit {
 
   //####################### Preview Report functions start ##########################
   previewReport() {
-    this.previewReport
+    this.openPreviewReport = true;
+    $('.reportParamOverlay').addClass('ovrlay');
+  }
+
+  closePreviewReport(eve) {
+    this.openPreviewReport = eve;
+    $('.reportParamOverlay').removeClass('ovrlay');
+  }
+
+  runReport() {
+    let lstParamNameValue: string[] = [''];
+    const exportId = this.selectedReport.reportId
+    this.subs.add(
+      this.reportingGrpService.runReport(exportId, lstParamNameValue, this.currentUser.userId, "EXCEL", false).subscribe(
+        data => {
+          const linkSource = 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' + data;
+          const downloadLink = document.createElement("a");
+          const fileName = `Xport_${exportId}.xlsx`;
+          downloadLink.href = linkSource;
+          downloadLink.download = fileName;
+          downloadLink.click();
+        },
+        err => this.alertService.error(err)
+      )
+    )
   }
 
   //####################### Preview Report functions end ##########################
 
+  //####################### Schedule Report functions start ##########################
+  scheduleReport(item) {
+    this.selectedReport = item;
+    this.openScheduleReport = true;
+    $('.reportParamOverlay').addClass('ovrlay');
+  }
+
+  closeScheduleReportWindow(eve) {
+    this.openScheduleReport = eve;
+    $('.reportParamOverlay').removeClass('ovrlay');
+  }
+
+
+  //####################### Schedule Report functions end ##########################
 
   // ####################### Right sidebar functions start##########################
 

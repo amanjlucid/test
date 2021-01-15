@@ -1,0 +1,80 @@
+.k-window {
+    position: fixed !important;
+}
+
+.reportingTable {
+    font-size: 12px;
+}
+
+.reportingPrevBtn button {
+    margin-right: 4px;
+}
+
+.reportingDiv {
+    position: relative;
+    padding: 0px 5px !important;
+}
+
+.repotingHeading span {
+    font-weight: bold;
+}
+
+/* .reportingDiv .rowCount{ 7rem
+    margin-bottom: -11px;
+    padding-top: 12px;
+    font-weight: bold;
+    text-align: right;
+    width: 100%;
+} */
+
+.invalid-f {
+    margin-top: .25rem;
+    color: #d9534f;
+}
+
+.reportingDiv th, .reportingDiv td {
+    min-width: 120px !important;
+    width: 120px !important;
+    max-width: 120px !important;
+    word-break: break-all;
+}
+
+.dataDiv {
+    border: 1px solid rgba(24, 28, 33, 0.1);
+    position: relative;
+    padding-top: 10px;
+    padding-left: 5px;
+    margin-bottom: 12px;
+}
+
+.dataDiv p {
+    line-height: 5px;
+}
+
+.sendEmailDiv {
+    overflow: hidden !important;
+}
+
+.sendEmailDiv label, .sendEmailWithReportDiv label {
+    font-weight: bold;
+}
+
+/* .k-window-content {
+    overflow: inherit !important;
+} */
+
+/* .overlay {
+    background: none repeat scroll 0 0 black;
+    position: fixed;
+    display: block;
+    opacity: 0.5;
+    z-index: 999;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+} */
+
+.pointerEvent {
+    pointer-events: none;
+}
