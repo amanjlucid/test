@@ -22,6 +22,7 @@ declare var $: any;
 export class PreviewReportComponent implements OnInit {
   @Input() openPreviewReport: boolean = false;
   @Input() selectedReport: any;
+  @Input() previewFrom: string = 'Report';
   @Output() closePreviewReport = new EventEmitter<boolean>();
   subs = new SubSink();
   currentUser: any;
@@ -97,8 +98,14 @@ export class PreviewReportComponent implements OnInit {
 
   ngOnInit(): void {
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    this.parameterForPreviewReport.intXportId = this.exportId = this.selectedReport.reportId;
-    this.reportingType = `${this.exportId} ${this.selectedReport.reportName}`;
+    if (this.previewFrom == 'Report') {
+      this.parameterForPreviewReport.intXportId = this.exportId = this.selectedReport.reportId;
+      this.reportingType = `${this.exportId} ${this.selectedReport.reportName}`;
+    } else {
+      this.parameterForPreviewReport.intXportId = this.exportId = this.selectedReport.xportIdentifier;
+      this.reportingType = `${this.exportId} ${this.selectedReport.xportName}`;
+    }
+
 
     this.subs.add(
       this.reportService.getListOfScheduledParameters(this.exportId).subscribe(

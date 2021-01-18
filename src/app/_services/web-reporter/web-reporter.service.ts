@@ -112,5 +112,13 @@ export class WebReporterService {
         return this.http.post<any>(`${appConfig.apiUrl}/api/Report/CreateXportOutput`, body, this.httpOptions);
     }
 
+    getPublishedReport(intReportId){
+        return this.http.get<any>(`${appConfig.apiUrl}/api/WebReportSearch/GetListOfPublishedReports?intReportId=${intReportId}`, this.httpOptions);
+    }
+
+    deletePublishedReport(xportIdentifier){
+        return this.http.get<any>(`${appConfig.apiUrl}/api/WebReportSearch/DeletePublishedReport?xportIdentifier=${xportIdentifier}`, this.httpOptions);
+    }
+
 
 }

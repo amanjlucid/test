@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col-md-4 col-sm-4">
             <h4 class="font-weight-bold">
-               Published Reports
+                Published Reports
             </h4>
         </div>
 
@@ -18,19 +18,11 @@
                 allowUnsort: allowUnsort,
                 mode: multiple ? 'multiple' : 'single'
                 }" [skip]="state.skip" [sort]="state.sort" [selectable]="selectableSettings"
-                kendoGridSelectBy="reportId" [selectedKeys]="mySelection"
+                kendoGridSelectBy="xportIdentifier" [selectedKeys]="mySelection"
                 (selectedKeysChange)="onSelectedKeysChange($event)" [filter]="state.filter"
                 (sortChange)="sortChange($event)" (filterChange)="filterChange($event)"
                 (cellClick)="cellClickHandler($event)" [rowHeight]="36" scrollable="virtual" [pageSize]="pageSize"
                 (pageChange)="pageChange($event)" [navigable]="true">
-
-                <kendo-grid-column field="favourite" title="" width="25" [filterable]="false" [groupable]="false">
-                    <ng-template kendoGridCellTemplate let-dataItem>
-                        <i (click)="setFavourite(dataItem)" [ngClass]="{'favourite': dataItem.favourite === 1}"
-                            class="fa fa-star" aria-hidden="true"></i>
-                    </ng-template>
-
-                </kendo-grid-column>
 
                 <kendo-grid-column title=" " width="25" [filterable]="false">
                     <ng-template kendoGridCellTemplate let-dataItem>
@@ -38,31 +30,38 @@
                             <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"
                                 (click)="setSeletedRow(dataItem)"></i>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" href="javascript:void(0)" (click)="previewReport()">Preview</a>
-                                <a class="dropdown-item" href="javascript:void(0)" (click)="runReport()">Delete</a>
+                                <a class="dropdown-item" href="javascript:void(0)"
+                                    (click)="previewReport(dataItem)">Preview</a>
+                                <a class="dropdown-item" href="javascript:void(0)"
+                                    (click)="openConfirmationDialog(dataItem)">Delete</a>
                             </div>
                         </li>
 
                     </ng-template>
                 </kendo-grid-column>
 
-                <kendo-grid-column field="category" title="Category" width="80">
+                <kendo-grid-column field="xportIdentifier" title="Published Number" width="100">
                 </kendo-grid-column>
-                <kendo-grid-column field="reportId" title="Report ID" width="60">
+                <kendo-grid-column field="xportName" title="Published Name" width="100">
                 </kendo-grid-column>
-                <kendo-grid-column field="reportName" title="Report Name" width="260">
+                <kendo-grid-column field="publishedModule" title="Published Module" width="80">
+
+                </kendo-grid-column>
+                <kendo-grid-column field="publishedBy" title="Published By" width="90">
+                </kendo-grid-column>
+
+                <kendo-grid-column field="publishedDate" title="Published Date" width="130">
                     <ng-template kendoGridCellTemplate let-dataItem>
-                        {{dataItem.reportName}}
-                        <span *ngIf="showColumns" class="showCol">{{dataItem.xport_Col}}</span>
+                        <span>
+                            {{ dataItem.publishedDate | dateFormat : 'DD-MMM-YYYY HH:mm:ss' }}
+                        </span>
                     </ng-template>
                 </kendo-grid-column>
-                <kendo-grid-column field="reportDescription" title="Report Description" width="160">
+                <kendo-grid-column field="reportName" title="Report Name" width="270">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span title="{{dataItem.reportName}}">{{dataItem.reportName}}</span>
+                    </ng-template>
                 </kendo-grid-column>
-
-                <kendo-grid-column field="count" title="Run History" width="90">
-                </kendo-grid-column>
-
-
 
             </kendo-grid>
 
@@ -70,3 +69,7 @@
     </div>
 
 </div>
+
+<div class="reportpublishedOverlay"></div>
+<app-preview-report *ngIf="openPreviewReport" [openPreviewReport]="openPreviewReport" [previewFrom]="'publishedReport'"
+    [selectedReport]="selectedReport" (closePreviewReport)="closePreviewReport($event)"></app-preview-report>
