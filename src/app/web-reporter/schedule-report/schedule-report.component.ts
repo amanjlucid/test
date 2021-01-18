@@ -16,8 +16,26 @@ export class ScheduleReportComponent implements OnInit {
   @Output() closeScheduleReportWindow = new EventEmitter<boolean>();
   currentUser: any;
   title = 'Report Schedule';
+  state: State = {
+    skip: 0,
+    sort: [],
+    group: [],
+    filter: {
+      logic: "or",
+      filters: []
+    }
+  }
+  gridView: DataResult;
+  allowUnsort = true;
+  multiple = false;
+  loading = false;
+  selectableSettings: SelectableSettings;
+  mySelection: number[] = [];
+  reportScheduleList:any;
 
-  constructor() { }
+  constructor() { 
+    this.setSelectableSettings();
+  }
 
   ngOnInit(): void {
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
@@ -25,6 +43,27 @@ export class ScheduleReportComponent implements OnInit {
 
   ngOnDestroy() {
     this.subs.unsubscribe();
+  }
+
+  setSelectableSettings(): void {
+    this.selectableSettings = {
+      checkboxOnly: false,
+      mode: 'single'
+    };
+  }
+
+  sortChange(sort: SortDescriptor[]): void {
+    this.state.sort = sort;
+    this.gridView = process(this.reportScheduleList, this.state);
+  }
+
+  filterChange(filter: any): void {
+    this.state.filter = filter;
+    this.gridView = process(this.reportScheduleList, this.state);
+  }
+
+  cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
+    //this.selectedUserCategory = dataItem;
   }
 
   closeScheduleReport(){

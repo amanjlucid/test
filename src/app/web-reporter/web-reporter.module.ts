@@ -20,10 +20,11 @@ import { ManageUserCategoryComponent } from './manage-user-category/manage-user-
 import { CreateUserCategoryComponent } from './create-user-category/create-user-category.component';
 import { PreviewReportComponent } from './preview-report/preview-report.component';
 import { ScheduleReportComponent } from './schedule-report/schedule-report.component';
+import { PublishedReportComponent } from './published-report/published-report.component';
 
 
 @NgModule({
-  declarations: [WebReporterComponent, ReportsComponent, ReportParameterComponent, ReportParameterListComponent, SetUserCategoryComponent, ManageUserCategoryComponent, CreateUserCategoryComponent, PreviewReportComponent, ScheduleReportComponent],
+  declarations: [WebReporterComponent, ReportsComponent, ReportParameterComponent, ReportParameterListComponent, SetUserCategoryComponent, ManageUserCategoryComponent, CreateUserCategoryComponent, PreviewReportComponent, ScheduleReportComponent, PublishedReportComponent],
   imports: [
     CommonModule,
     FormsModule,

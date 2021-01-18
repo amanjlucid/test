@@ -1,0 +1,72 @@
+<div class="container-fluid flex-grow-1 container-p-y">
+    <div class="row">
+        <div class="col-md-4 col-sm-4">
+            <h4 class="font-weight-bold">
+               Published Reports
+            </h4>
+        </div>
+
+        <div class="col-md-8 col-sm-8 text-right">
+
+        </div>
+    </div>
+
+    <div class="row mt-2">
+        <div class="col-md-12">
+            <kendo-grid [data]="gridView" [loading]="loading" [height]="720" filterable="menu" [resizable]="true"
+                [sortable]="{
+                allowUnsort: allowUnsort,
+                mode: multiple ? 'multiple' : 'single'
+                }" [skip]="state.skip" [sort]="state.sort" [selectable]="selectableSettings"
+                kendoGridSelectBy="reportId" [selectedKeys]="mySelection"
+                (selectedKeysChange)="onSelectedKeysChange($event)" [filter]="state.filter"
+                (sortChange)="sortChange($event)" (filterChange)="filterChange($event)"
+                (cellClick)="cellClickHandler($event)" [rowHeight]="36" scrollable="virtual" [pageSize]="pageSize"
+                (pageChange)="pageChange($event)" [navigable]="true">
+
+                <kendo-grid-column field="favourite" title="" width="25" [filterable]="false" [groupable]="false">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <i (click)="setFavourite(dataItem)" [ngClass]="{'favourite': dataItem.favourite === 1}"
+                            class="fa fa-star" aria-hidden="true"></i>
+                    </ng-template>
+
+                </kendo-grid-column>
+
+                <kendo-grid-column title=" " width="25" [filterable]="false">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <li class="nav-item dropdown list-unstyled" style="margin-top: -7px;">
+                            <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"
+                                (click)="setSeletedRow(dataItem)"></i>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="javascript:void(0)" (click)="previewReport()">Preview</a>
+                                <a class="dropdown-item" href="javascript:void(0)" (click)="runReport()">Delete</a>
+                            </div>
+                        </li>
+
+                    </ng-template>
+                </kendo-grid-column>
+
+                <kendo-grid-column field="category" title="Category" width="80">
+                </kendo-grid-column>
+                <kendo-grid-column field="reportId" title="Report ID" width="60">
+                </kendo-grid-column>
+                <kendo-grid-column field="reportName" title="Report Name" width="260">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        {{dataItem.reportName}}
+                        <span *ngIf="showColumns" class="showCol">{{dataItem.xport_Col}}</span>
+                    </ng-template>
+                </kendo-grid-column>
+                <kendo-grid-column field="reportDescription" title="Report Description" width="160">
+                </kendo-grid-column>
+
+                <kendo-grid-column field="count" title="Run History" width="90">
+                </kendo-grid-column>
+
+
+
+            </kendo-grid>
+
+        </div>
+    </div>
+
+</div>

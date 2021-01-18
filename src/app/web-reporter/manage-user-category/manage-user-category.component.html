@@ -1,8 +1,11 @@
 <kendo-window title="{{title}}" *ngIf="openManageUserCategory" (close)="closeManageUserCategory()" [top]="20"
     [minWidth]="500" [width]="660" [height]="auto" [minHeight]="350">
 
-    <div class="row mt-1">
+    <div class="row">
         <div class="col-md-12">
+            <span style="font-weight: 600;">Reports</span>
+        </div>
+        <div class="col-md-12 mt-2">
             <kendo-grid [data]="gridView" [loading]="loading" [height]="600" filterable="menu" [resizable]="true"
                 [sortable]="{
                 allowUnsort: allowUnsort,
@@ -34,9 +37,5 @@
             <button type="button" class="btn btn-sm themeButton" (click)="closeManageUserCategory()">Cancel</button>
         </div>
     </div>
-
-    <!-- <div class="userCatOvrlay"></div>
-    <app-manage-user-category *ngIf="openManageUserCategory" [openManageUserCategory]="openManageUserCategory"
-        [selectedUserCategory]="selectedUserCategory" (closeManageUserCategoryWindow)="closeManageUserCategoryWindow($event)"></app-manage-user-category> -->
 
 </kendo-window>

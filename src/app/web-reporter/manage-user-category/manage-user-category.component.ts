@@ -30,7 +30,8 @@ export class ManageUserCategoryComponent implements OnInit {
   title = 'Manage User Categories';
   selectableSettings: SelectableSettings;
   mySelection: number[] = [];
-
+  allowUnsort = true;
+  multiple = false;
   reportList: any;
   reportQueryModel = {
     userId: '',
@@ -46,6 +47,7 @@ export class ManageUserCategoryComponent implements OnInit {
   pageSize = 25;
   actualSelectedReport: Array<any>;
   selectedReportList: any;
+  loading = true;
 
   constructor(
     private alertService: AlertService,
@@ -88,6 +90,7 @@ export class ManageUserCategoryComponent implements OnInit {
           if (data.isSuccess) {
             this.reportList = data.data;
             this.gridView = process(this.reportList, this.state);
+            this.loading = false;
             this.chRef.detectChanges();
           } else this.alertService.error(data.message)
         },
