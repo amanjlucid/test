@@ -1,4 +1,4 @@
-import { FormGroup, AbstractControl } from '@angular/forms';
+import { FormGroup, AbstractControl, ValidatorFn } from '@angular/forms';
 import * as moment from "moment";
 import { FormControl } from "@angular/forms";
 import { retry } from 'rxjs/operators';
@@ -216,6 +216,20 @@ export function MustbeTodayOrGreater(format = "DD/MM/YYYY"): any {
 
     };
 }
+
+export function isNumberCheck(): ValidatorFn {
+    return (control: FormControl): { [key: string]: boolean } | null => {
+        if (control.value != null && control.value != "") {
+            let number = /^[.\d]+$/.test(control.value) ? +control.value : NaN;
+            if (number !== number) {
+                return { 'isNotNumber': true };
+            }
+        }
+
+        return null;
+    };
+}
+
 
 
 

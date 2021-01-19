@@ -38,7 +38,7 @@ export class ServiceSettingsComponent implements OnInit {
     private fb: FormBuilder,
     private alertService: AlertService,
     private settingService: SettingsService,
-    private helper : HelperService
+    private helper: HelperService
   ) { }
 
   ngOnInit() {
@@ -55,6 +55,10 @@ export class ServiceSettingsComponent implements OnInit {
     );
 
     this.getSettings();
+  }
+
+  ngOnDestroy() {
+    this.subs.unsubscribe();
   }
 
 
@@ -141,7 +145,7 @@ export class ServiceSettingsComponent implements OnInit {
   }
 
   todayDate(givenDate = null) {
-    const date = givenDate == null ? new Date() : new Date(givenDate.replace( /(\d{2})-(\d{2})-(\d{4})/, "$2/$1/$3"));
+    const date = givenDate == null ? new Date() : new Date(givenDate.replace(/(\d{2})-(\d{2})-(\d{4})/, "$2/$1/$3"));
     return {
       "day": date.getDate(),
       "year": date.getFullYear(),

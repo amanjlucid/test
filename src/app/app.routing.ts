@@ -15,6 +15,7 @@ import { ServiceChartComponent } from './service-portal/service-chart/service-ch
 import { ManagementComponent } from './service-portal/management/management.component';
 import { ServiceSettingsComponent } from './setting/service-settings/service-settings.component';
 import { HnsSettingsComponent } from './hns-settings/hns-settings.component';
+import { WebReporterSettingComponent } from './setting/web-reporter-setting/web-reporter-setting.component';
 
 
 const appRoutes: Routes = [
@@ -68,6 +69,7 @@ const appRoutes: Routes = [
             { path: 'business-areas', loadChildren: () => import('./setting/business-area/business-area.module').then(m => m.BusinessModule) },
             { path: 'notification', loadChildren: () => import('./setting/notification/notification.module').then(m => m.NotificationModule) },
             { path: 'tasks-settings', loadChildren: () => import('./setting/event-manager-setting/event-manager-setting.module').then(m => m.EventManagerSettingModule) },
+            { path: 'web-reporter-settings', component: WebReporterSettingComponent, canActivate: [AuthGuard] },
 
         ]
     },

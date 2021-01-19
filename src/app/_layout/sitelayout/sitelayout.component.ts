@@ -138,6 +138,7 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
     this.checkServiceTabAccess();
     this.hnsPortalAccess();
     this.eventPortalAccess();
+    this.reporterPortalAccess();
 
     this.subs.add(
       this.sharedServie.servicePortalObs.subscribe(data => { this.servicePortalAccess = data; })
@@ -340,6 +341,20 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
             this.tasksPortalPermissions = data.data;
           }
           this.sharedServie.changeTaskPortalSecurityList(this.tasksPortalPermissions);
+        }
+      )
+    )
+  }
+
+  reporterPortalAccess() {
+    this.subs.add(
+      this.assetService.apexGetAssetManagementSecurity(this.currentUser.userId, 'Web Reporter').subscribe(
+        data => {
+          console.log(data);
+          // if (data.isSuccess) {
+          //   this.tasksPortalPermissions = data.data;
+          // }
+          // this.sharedServie.changeTaskPortalSecurityList(this.tasksPortalPermissions);
         }
       )
     )

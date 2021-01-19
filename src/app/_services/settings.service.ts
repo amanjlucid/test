@@ -236,4 +236,23 @@ export class SettingsService {
         return this.http.post<any>(`${appConfig.apiUrl}/api/UserEvents/EventPortalUpdateSystemDefaultConfigurationValues`, body, httpOptions);
     }
 
+    getWebReporterSystemDefaultConfigurationValues(){
+        let httpOptions = {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json'
+            }),
+        };
+
+        return this.http.get<any>(`${appConfig.apiUrl}/api/WebReportSearch/GetWebReporterSystemDefaultConfigurationValues`, httpOptions);
+    }
+
+    updateWebReporterSystemDefaultConfigurationValues(params) {
+        let httpOptions = {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json'
+            }),
+        };
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/WebReportSearch/UpdateWebReporterSystemDefaultConfigurationValues`, body, httpOptions);
+    }
 }
