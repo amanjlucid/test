@@ -4,6 +4,7 @@ import { takeUntil, take } from 'rxjs/operators';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { SubSink } from 'subsink';
 import { AuthenticationService, EventService, AssetAttributeService, SharedService, FunctionSecurityService, SettingsService } from '../../_services';
+import { appConfig } from '../../app.config';
 declare var $: any;
 
 
@@ -35,12 +36,12 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
   silverLightMenus: any = [
     {
       menuName: "Assets",
-      silverLightLink: "http://104.40.138.8/Rowanwood/AssetPortal",
+      silverLightLink: `${appConfig.silverLightUrl}/AssetPortal`,
       grpPermissionName: "Asset Portal Access",
     },
     {
       menuName: "Asbestos",
-      silverLightLink: "http://104.40.138.8/Rowanwood/AsbestosPortal",
+      silverLightLink: `${appConfig.silverLightUrl}/AsbestosPortal`, 
       grpPermissionName: "Asbestos Portal Access",
     },
     {
@@ -50,37 +51,37 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
     },
     {
       menuName: "Servicing",
-      silverLightLink: "http://104.40.138.8/Rowanwood/SIM_Portal",
+      silverLightLink: `${appConfig.silverLightUrl}/SIM_Portal`,
       grpPermissionName: "Servicing Portal Access",
     },
     {
       menuName: "Health & Safety",
-      silverLightLink: "http://104.40.138.8/Rowanwood/HealthAndSafety",
+      silverLightLink: `${appConfig.silverLightUrl}/HealthAndSafety`,
       grpPermissionName: "Health And Safety Portal Access",
     },
     {
       menuName: "Energy",
-      silverLightLink: "http://104.40.138.8/Rowanwood/EnergyPortal",
+      silverLightLink: `${appConfig.silverLightUrl}/EnergyPortal`,
       grpPermissionName: "Energy Portal Access",
     },
     {
       menuName: "Tasks",
-      silverLightLink: "http://104.40.138.8/Rowanwood/EventManager",
+      silverLightLink: `${appConfig.silverLightUrl}/EventManager`,
       grpPermissionName: "Event Manager Portal Access",
     },
     {
       menuName: "Reporter",
-      silverLightLink: "http://104.40.138.8/Rowanwood/WebReporter",
+      silverLightLink: `${appConfig.silverLightUrl}/WebReporter`,
       grpPermissionName: "Web Reporter Portal Access",
     },
     {
       menuName: "Surveying",
-      silverLightLink: "http://104.40.138.8/Rowanwood/SurveyPortal",
+      silverLightLink: `${appConfig.silverLightUrl}/SurveyPortal`,
       grpPermissionName: "Survey Portal Access",
     },
     {
       menuName: "Works Orders",
-      silverLightLink: "http://104.40.138.8/Rowanwood/WorksOrders",
+      silverLightLink: `${appConfig.silverLightUrl}/WorksOrders`,
       grpPermissionName: "Works Order Mobile Portal Access",
     }
   ];
@@ -148,23 +149,8 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
       this.sharedServie.hnsPortalSecurityList.subscribe(data => this.hnsPortalMenuList = data)
     )
 
-
-
-    // this.route.queryParams.subscribe(params => {
-    //   const servicePortal = params['servicing'];
-    //   if (servicePortal != undefined && servicePortal == "true") {
-    //     console.log('sitel')
-    //   } else {
-    //     console.log('sitesdfsl')
-    //   }
-    // });
   }
 
-  // ngAfterContentChecked() {
-  //   //$('.sidbarDiv').removeClass('bg-sidenav-theme');
-  //   //$('#theme-settings').hide();
-
-  // }
 
   checkModulePermission() {
     this.subs.add(
@@ -208,11 +194,6 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
       if (name == "Security") {
         return this.developedModuleList.some(x => x.menuName == name && x.linkType == forAngular && this.currentUser.admin == "Y")
       }
-
-      // if (name == "Tasks") {
-      //   return (this.moduleAccess.includes(accessName) || this.moduleAccess.includes('Event Manager Portal Access')) && this.developedModuleList.some(x => x.menuName == name && x.linkType == forAngular);
-      // }
-
       return this.moduleAccess.includes(accessName) && this.developedModuleList.some(x => x.menuName == name && x.linkType == forAngular);
     }
   }
@@ -279,7 +260,6 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
           if (data.isSuccess) {
             // this.notifications = data.data
             this.sharedServie.changeUserNotification(data.data)
-            // console.log(this.notifications);
           }
         }
       )
@@ -348,7 +328,7 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
 
   reporterPortalAccess() {
     this.subs.add(
-      this.assetService.apexGetAssetManagementSecurity(this.currentUser.userId, 'Web Reporter').subscribe(
+      this.assetService.apexGetAssetManagementSecurity(this.currentUser.userId, 'Web Reporter Portal').subscribe(
         data => {
           console.log(data);
           // if (data.isSuccess) {
@@ -374,21 +354,6 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
       )
     )
   }
-
-
-
-  // dashboardCalanderEvents() {
-  //   let userId = this.currentUser.userId 
-  //   this.notificationService.dashboardCalanderEvents(userId).subscribe(
-  //     data => {
-
-  //       if(data.isSuccess){
-  //         this.eventLists = data.data;
-  //         //console.log(this.eventLists)
-  //       }
-  //     }
-  //   )
-  // }
 
 
   checkValueInArray(val: string) {
@@ -437,18 +402,11 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
 
   redirectToUserEevnt(val) {
     const host = window.location.hostname;
-    let siteUrl = "";
-    // if (host == "localhost") {
-    //   siteUrl = "http://localhost:4200"
-    // } else {
-    //   siteUrl = "http://104.40.138.8/rowanwood"
-    // }
-
-    siteUrl = "http://104.40.138.8/rowanwood"
-    siteUrl = `${siteUrl}/tasks/tasks?seq=${val.eventId}`
+    //let siteUrl = "";
+    let siteUrl = `${appConfig.appUrl}/tasks/tasks?seq=${val.eventId}`
 
     let win: any = window;
-    win.location = siteUrl
+    win.location = siteUrl;
     //    window.open(siteUrl);
   }
 

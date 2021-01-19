@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy
 import { SubSink } from 'subsink';
 import { GroupDescriptor, DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { AlertService, EventManagerDashboardService, HelperService } from '../../_services'
-
+import { appConfig } from '../../app.config';
 
 @Component({
   selector: 'app-user-events-grid',
@@ -10,6 +10,7 @@ import { AlertService, EventManagerDashboardService, HelperService } from '../..
   styleUrls: ['./user-events-grid.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
+
 export class UserEventsGridComponent implements OnInit {
   subs = new SubSink();
   allowUnsort = true;
@@ -118,14 +119,7 @@ export class UserEventsGridComponent implements OnInit {
 
   redirectToUserEevnt(val) {
     const host = window.location.hostname;
-    let siteUrl = "";
-    // if (host == "localhost") {
-    //   siteUrl = "http://localhost:4200"
-    // } else {
-    //   siteUrl = "http://104.40.138.8/rowanwood"
-    // }
-
-    siteUrl = "http://104.40.138.8/rowanwood"
+    let siteUrl = `${appConfig.appUrl}`;
 
     const seqCol = this.columnName.find(x => x.val == "Task No.")
     if (seqCol) {

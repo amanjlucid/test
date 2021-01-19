@@ -7,6 +7,7 @@ import { AlertService, EventManagerService, HelperService, LoaderService } from 
 import { tap, switchMap } from 'rxjs/operators';
 import { BehaviorSubject, Subject, forkJoin } from 'rxjs';
 import { EventTask } from 'src/app/_models/event-task.model';
+import { appConfig } from '../../app.config';
 
 @Component({
   selector: 'app-user-task-data',
@@ -572,12 +573,12 @@ export class UserTaskDataComponent implements OnInit {
     let findAssetKey = this.columns.find(x => x.val.toLowerCase() == "asset");
     if (findAssetKey) {
       const host = window.location.hostname;
-      let siteUrl = "";
-      if (host == "localhost") {
-        siteUrl = "http://localhost:4200"
-      } else {
-        siteUrl = "http://104.40.138.8/rowanwood"
-      }
+      let siteUrl = `${appConfig.appUrl}`;
+      // if (host == "localhost") {
+      //   siteUrl = "http://localhost:4200"
+      // } else {
+      //   siteUrl = "http://104.40.138.8/rowanwood"
+      // }
       let filterModel = Object.assign({}, this.headerFilters);
       filterModel.IsExport = true;
 
