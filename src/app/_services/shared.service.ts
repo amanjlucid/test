@@ -152,5 +152,12 @@ export class SharedService {
     this.notificationSrc.next(data)
   }
 
+  private webReporterSrc = new BehaviorSubject<any>([]);
+  webReporterObs = this.webReporterSrc.asObservable();
+
+  changeWebReporterPermissionData(data) {
+    this.webReporterSrc.next(data);
+  }
+
 
 }

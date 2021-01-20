@@ -265,24 +265,25 @@
                 </li>
 
                 <li class="sidenav-item" [routerLinkActive]="['open']"
-                    *ngIf="checkAngularGrpPermission('Reporter','Web Reporter Portal Access',1)">
+                    *ngIf="checkAngularGrpPermission('Reporter','Web Reporter Portal Access',1) && reporterPortalPermissions.indexOf('Web Reporter Portal Access') != -1">
                     <a href="javascript:void(0)" class="sidenav-link sidenav-toggle">
                         <img class="sidenav-icon ion" src="assets/img/icons/reports.svg">
                         <div>Reporting</div>
                     </a>
 
                     <ul class="sidenav-menu">
-                        <li class="sidenav-item" [routerLinkActive]="['active']">
+                        <li *ngIf="reporterPortalPermissions.indexOf('Reports') != -1" class="sidenav-item"
+                            [routerLinkActive]="['active']">
                             <a [routerLink]="['/web-reporter/reports']" class="sidenav-link">
                                 <div>Reports</div>
                             </a>
                         </li>
-                        <li class="sidenav-item" [routerLinkActive]="['active']">
+                        <li *ngIf="reporterPortalPermissions.indexOf('Published') != -1" class="sidenav-item" [routerLinkActive]="['active']">
                             <a [routerLink]="['/web-reporter/published']" class="sidenav-link">
                                 <div>Published</div>
                             </a>
                         </li>
-                        
+
                     </ul>
                 </li>
 
@@ -477,25 +478,25 @@
                             </ul>
                         </li>
 
-                        
+
                         <li class="sidenav-item" [routerLinkActive]="['open']"
-                            *ngIf="checkGroupPermission('Web Reporter Portal Access')">
+                            *ngIf="checkGroupPermission('Web Reporter Portal Access') && reporterPortalPermissions.indexOf('Web Reporter Portal Access') != -1">
                             <a href="javascript:void(0)" class="sidenav-link sidenav-toggle">
                                 <div>Reporting</div>
                             </a>
 
                             <ul class="sidenav-menu">
-                                <li class="sidenav-item" [routerLinkActive]="['active']">
+                                <li *ngIf="reporterPortalPermissions.indexOf('Reports') != -1" class="sidenav-item" [routerLinkActive]="['active']">
                                     <a [routerLink]="['/web-reporter/reports']" class="sidenav-link">
                                         <div>Reports</div>
                                     </a>
                                 </li>
-                                <li class="sidenav-item" [routerLinkActive]="['active']">
+                                <li *ngIf="reporterPortalPermissions.indexOf('Published') != -1" class="sidenav-item" [routerLinkActive]="['active']">
                                     <a [routerLink]="['/web-reporter/published']" class="sidenav-link">
                                         <div>Published</div>
                                     </a>
                                 </li>
-                                
+
                             </ul>
                         </li>
                     </ul>

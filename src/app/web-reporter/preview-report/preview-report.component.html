@@ -30,7 +30,7 @@
       <div class="cui-example-paragraph-spacing reportingPrevBtnDiv">
 
         <span class="reportingPrevBtn">
-          <div class="btn-group">
+          <div class="btn-group" *ngIf="reporterPortalPermission.indexOf('Preview User Report') != -1">
             <button [disabled]="reports?.rows?.length == 0" type="button"
               class="btn btn-sm btn-outline-secondary dropdown-toggle" data-toggle="dropdown" data-trigger="hover"
               aria-expanded="false">Preview</button>
@@ -44,9 +44,8 @@
             </div>
           </div>
 
-          <!-- <button [disabled]="reports?.rows?.length == 0" type="button" class="btn btn-sm btn-outline-secondary">Save
-              Preview As</button> -->
-          <div class="btn-group ml-2">
+
+          <div class="btn-group ml-2" *ngIf="reporterPortalPermission.indexOf('Save Preview As') != -1">
             <button [disabled]="reports?.rows?.length == 0" type="button"
               class="btn btn-sm btn-outline-secondary dropdown-toggle" data-toggle="dropdown" data-trigger="hover"
               aria-expanded="false">Preview As</button>
@@ -58,25 +57,21 @@
             </div>
           </div>
 
-          <div class="btn-group ml-2">
+          <div class="btn-group ml-2" *ngIf="reporterPortalPermission.indexOf('Email Preview') != -1">
             <button [disabled]="reports?.rows?.length == 0" type="button"
               class="btn btn-sm btn-outline-secondary dropdown-toggle" data-toggle="dropdown" data-trigger="hover"
-              aria-expanded="false">Email
-              Preview</button>
+              aria-expanded="false">Email Preview</button>
             <div class="dropdown-menu" x-placement="top-start"
               style="position: absolute; will-change: top, left; top: -175px; left: 0px; font-size: 13px;">
               <a class="dropdown-item" (click)="openEmailWindow()" href="javascript:void(0)">Selected Rows</a>
-              <!-- <a class="dropdown-item" (click)="opneEmailAllRecords()" href="javascript:void(0)">All Rows</a> -->
-
             </div>
           </div>
 
 
 
-          <button [disabled]="reports?.rows?.length == 0" type="button" class="btn btn-sm btn-outline-secondary"
-            (click)="runReport()">Run
-            Report</button>
-          <button [disabled]="reports?.rows?.length == 0" type="button" (click)="openEmailWithReportWindow()"
+          <button *ngIf="reporterPortalPermission.indexOf('Run Report') != -1" [disabled]="reports?.rows?.length == 0" type="button" class="btn btn-sm btn-outline-secondary"
+            (click)="runReport()">Run Report</button>
+          <button *ngIf="reporterPortalPermission.indexOf('Email Report') != -1" [disabled]="reports?.rows?.length == 0" type="button" (click)="openEmailWithReportWindow()"
             class="btn btn-sm btn-outline-secondary">Email Report</button>
           <span class="" style="margin-left:10px;">
             <label class="custom-control custom-control-inline custom-radio">
@@ -193,7 +188,7 @@
               <button type="submit" class="btn btn-sm btn-default themeButton">Ok</button>
             </div>
           </div>
-          
+
         </form>
       </div>
     </div>

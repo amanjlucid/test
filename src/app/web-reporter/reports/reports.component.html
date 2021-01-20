@@ -7,9 +7,9 @@
         </div>
 
         <div class="col-md-10 col-sm-9 text-right">
-            <button type="button" class="btn btn-sm themeButton mr-1" (click)="previewReport()"
+            <button *ngIf="reporterPortalPermission.indexOf('Preview') != -1" type="button" class="btn btn-sm themeButton mr-1" (click)="previewReport()"
                 [disabled]="!selectedReport">Preview</button>
-            <button type="button" class="btn btn-sm themeButton mr-1" (click)="runReport()"
+            <button *ngIf="reporterPortalPermission.indexOf('Run Report') != -1" type="button" class="btn btn-sm themeButton mr-1" (click)="runReport()"
                 [disabled]="!selectedReport">Run</button>
 
             <button id="showFilePanel" (click)="openSearchBar()" class="btn btn-sm themeButton"><i
@@ -76,15 +76,15 @@
                             <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"
                                 (click)="setSeletedRow(dataItem)"></i>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" href="javascript:void(0)"
+                                <a *ngIf="reporterPortalPermission.indexOf('User Categories') != -1" class="dropdown-item" href="javascript:void(0)"
                                     (click)="openSetUserCategoryWindow(dataItem)">
                                     User Categories</a>
-                                <a class="dropdown-item" href="javascript:void(0)"
+                                <a *ngIf="reporterPortalPermission.indexOf('User Categories') != -1" class="dropdown-item" href="javascript:void(0)"
                                     (click)="scheduleReport(dataItem)">Scheduling</a>
-                                <a [ngClass]="{'disabled' : dataItem.parameterExists == false}" class="dropdown-item"
+                                <a *ngIf="reporterPortalPermission.indexOf('Parameters') != -1" [ngClass]="{'disabled' : dataItem.parameterExists == false}" class="dropdown-item"
                                     href="javascript:void(0)" (click)="openParameterWindow(dataItem)">Parameters</a>
-                                <a class="dropdown-item" href="javascript:void(0)" (click)="previewReport()">Preview</a>
-                                <a class="dropdown-item" href="javascript:void(0)" (click)="runReport()">Run</a>
+                                <a *ngIf="reporterPortalPermission.indexOf('Preview') != -1" class="dropdown-item" href="javascript:void(0)" (click)="previewReport()">Preview</a>
+                                <a *ngIf="reporterPortalPermission.indexOf('Run Report') != -1" class="dropdown-item" href="javascript:void(0)" (click)="runReport()">Run</a>
                             </div>
                         </li>
 

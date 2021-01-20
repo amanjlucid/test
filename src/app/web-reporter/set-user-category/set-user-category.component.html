@@ -9,9 +9,9 @@
 
     <div class="row mt-2">
         <div class="col-md-12 text-right">
-            <button type="button" class="btn btn-sm themeButton mr-2" (click)="createNewUserCategory('edit')"
+            <button *ngIf="reporterPortalPermission.indexOf('Rename Category') != -1" type="button" class="btn btn-sm themeButton mr-2" (click)="createNewUserCategory('edit')"
                 [disabled]="!selectedUserCategory">Rename</button>
-            <button type="button" class="btn btn-sm themeButton" (click)="createNewUserCategory()">New</button>
+            <button *ngIf="reporterPortalPermission.indexOf('New Category') != -1" type="button" class="btn btn-sm themeButton" (click)="createNewUserCategory()">New</button>
         </div>
     </div>
 
@@ -31,7 +31,7 @@
                         <li class="nav-item dropdown list-unstyled" style="margin-top: -7px;">
                             <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" href="javascript:void(0)"
+                                <a *ngIf="reporterPortalPermission.indexOf('Delete Category') != -1" class="dropdown-item" href="javascript:void(0)"
                                     (click)="openConfirmationDialog(dataItem)">
                                     Delete</a>
                                 <a class="dropdown-item" href="javascript:void(0)" (click)="manage(dataItem)">Manage</a>

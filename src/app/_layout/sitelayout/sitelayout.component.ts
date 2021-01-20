@@ -14,7 +14,6 @@ declare var $: any;
   styleUrls: ['./sitelayout.component.css']
 })
 export class SitelayoutComponent implements OnInit, OnDestroy {
-
   currentUser;
   timeoutID;
   unreadMsg;
@@ -32,6 +31,7 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
   hnsPortalMenuList: any = [];
   hnsPortalPermissions: any = [];
   tasksPortalPermissions: any = [];
+  reporterPortalPermissions: any = [];
   // underDevelopment: boolean = true;
   silverLightMenus: any = [
     {
@@ -41,7 +41,7 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
     },
     {
       menuName: "Asbestos",
-      silverLightLink: `${appConfig.silverLightUrl}/AsbestosPortal`, 
+      silverLightLink: `${appConfig.silverLightUrl}/AsbestosPortal`,
       grpPermissionName: "Asbestos Portal Access",
     },
     {
@@ -330,11 +330,11 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
     this.subs.add(
       this.assetService.apexGetAssetManagementSecurity(this.currentUser.userId, 'Web Reporter Portal').subscribe(
         data => {
-          console.log(data);
-          // if (data.isSuccess) {
-          //   this.tasksPortalPermissions = data.data;
-          // }
-          // this.sharedServie.changeTaskPortalSecurityList(this.tasksPortalPermissions);
+          // console.log(data);
+          if (data.isSuccess) {
+            this.reporterPortalPermissions = data.data;
+          }
+          this.sharedServie.changeWebReporterPermissionData(this.reporterPortalPermissions);
         }
       )
     )

@@ -8,7 +8,7 @@ import saveAs from 'file-saver';
 import 'datatables.net';
 import 'datatables.net-dt';
 import { EmailValidator } from '@angular/forms';
-import { AlertService, LoaderService, ReportingGroupService, WebReporterService } from '../../_services';
+import { AlertService, LoaderService, ReportingGroupService, SharedService, WebReporterService } from '../../_services';
 declare var $: any;
 
 @Component({
@@ -86,6 +86,7 @@ export class PreviewReportComponent implements OnInit {
 
   formErrors: any;
   parameterForPreviewReport: any = { intXportId: '', lstParamNameValue: [''], lngMaxRows: 1000 };
+  reporterPortalPermission = [];
 
   constructor(
     private fb: FormBuilder,
@@ -93,7 +94,8 @@ export class PreviewReportComponent implements OnInit {
     private alertService: AlertService,
     private loaderService: LoaderService,
     private chRef: ChangeDetectorRef,
-    private reportService: WebReporterService
+    private reportService: WebReporterService,
+    private sharedService: SharedService
   ) { }
 
   ngOnInit(): void {
@@ -110,7 +112,6 @@ export class PreviewReportComponent implements OnInit {
     this.subs.add(
       this.reportService.getListOfScheduledParameters(this.exportId).subscribe(
         data => {
-          console.log(data);
           if (data.isSuccess) {
             const parameters = data.data;
             if (parameters.length > 0) {
@@ -143,6 +144,12 @@ export class PreviewReportComponent implements OnInit {
       emailText: ['', Validators.required],
       userlist: [''],
     });
+
+    this.subs.add(
+      this.sharedService.webReporterObs.subscribe(
+        data => this.reporterPortalPermission = data
+      )
+    )
 
   }
 

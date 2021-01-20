@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { SelectableSettings } from '@progress/kendo-angular-grid';
-import { AlertService, ConfirmationDialogService, HelperService, WebReporterService } from '../../_services'
+import { AlertService, ConfirmationDialogService, HelperService, SharedService, WebReporterService } from '../../_services'
 
 
 @Component({
@@ -39,12 +39,14 @@ export class SetUserCategoryComponent implements OnInit {
   openCreateUserCategory: boolean = false;
   mode = 'new';
   currentUser: any;
+  reporterPortalPermission = [];
 
   constructor(
     private reportService: WebReporterService,
     private alertService: AlertService,
     private chRef: ChangeDetectorRef,
     private confirmationDialogService: ConfirmationDialogService,
+    private sharedService : SharedService
   ) {
     this.setSelectableSettings();
   }
@@ -53,6 +55,12 @@ export class SetUserCategoryComponent implements OnInit {
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.templateHeading = this.selectedReport.reportId + " " + this.selectedReport.reportName;
     this.getUserCategories();
+
+    this.subs.add(
+      this.sharedService.webReporterObs.subscribe(
+        data => this.reporterPortalPermission = data
+      )
+    )
   }
 
   ngOnDestroy() {

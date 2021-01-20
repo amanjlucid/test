@@ -2,7 +2,8 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { SelectableSettings, PageChangeEvent } from '@progress/kendo-angular-grid';
-import { AlertService, ConfirmationDialogService, HelperService, WebReporterService } from '../../_services'
+import { AlertService, ConfirmationDialogService, HelperService, SharedService, WebReporterService } from '../../_services'
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-published-report',
@@ -35,17 +36,39 @@ export class PublishedReportComponent implements OnInit {
   loading = true;
   selectedReport: any;
   openPreviewReport = false;
+  reporterPortalPermission = [];
 
   constructor(
     private reporterService: WebReporterService,
     private alertService: AlertService,
     private confirmationDialogService: ConfirmationDialogService,
+    private sharedService : SharedService,
+    private router: Router,
   ) {
     this.setSelectableSettings();
   }
 
   ngOnInit(): void {
     this.getPublishedReport();
+
+    this.subs.add(
+      this.sharedService.webReporterObs.subscribe(
+        data => {
+          this.reporterPortalPermission = data;
+          if (this.reporterPortalPermission.length > 0) {
+            this.sharedService.modulePermission.subscribe(
+              modules => {
+                if (modules.length > 0) {
+                  if (this.reporterPortalPermission.indexOf("Published") == -1 || modules.indexOf("Web Reporter Portal Access") == -1) {
+                    this.router.navigate(['/dashboard']);
+                  }
+                }
+              }
+            )
+          }
+        }
+      )
+    )
   }
 
   ngOnDestroy() {

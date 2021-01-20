@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
-import { AlertService, WebReporterService } from '../../_services'
+import { AlertService, SharedService, WebReporterService } from '../../_services'
 import { forkJoin } from 'rxjs';
 
 
@@ -36,17 +36,25 @@ export class ReportParameterComponent implements OnInit {
   openReportParamlist: boolean = false;
   selectedReportParam: any;
   currentUser: any;
+  reporterPortalPermission = [];
 
   constructor(
     private reportService: WebReporterService,
     private alertService: AlertService,
     private chRef: ChangeDetectorRef,
+    private sharedService: SharedService
   ) { }
 
   ngOnInit(): void {
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.reportParamHeading = this.selectedReport.reportId + " " + this.selectedReport.reportName;
     this.getReportParameter(this.selectedReport.reportId);
+
+    this.subs.add(
+      this.sharedService.webReporterObs.subscribe(
+        data => this.reporterPortalPermission = data
+      )
+    )
   }
 
   ngOnDestroy() {

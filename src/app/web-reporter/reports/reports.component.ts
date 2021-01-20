@@ -4,8 +4,8 @@ import { GroupDescriptor, DataResult, State } from '@progress/kendo-data-query';
 import { SelectableSettings } from '@progress/kendo-angular-grid';
 import { forkJoin, Observable, Subject, of } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
-import { AlertService, ReportingGroupService, WebReporterService } from 'src/app/_services';
-
+import { AlertService, ReportingGroupService, SharedService, WebReporterService } from 'src/app/_services';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-reports',
@@ -116,13 +116,15 @@ export class ReportsComponent implements OnInit {
   openSetUserCategory: boolean = false;
   openPreviewReport: boolean = false;
   openScheduleReport: boolean = false;
+  reporterPortalPermission = [];
 
 
   constructor(
     private reportService: WebReporterService,
     private reportingGrpService: ReportingGroupService,
     private alertService: AlertService,
-    private chRef: ChangeDetectorRef,
+    private sharedService: SharedService,
+    private router: Router,
   ) {
     this.setSelectableSettings();
   }
@@ -186,6 +188,25 @@ export class ReportsComponent implements OnInit {
         this.getReportList(this.reportQueryModel)
       })
     );
+
+    this.subs.add(
+      this.sharedService.webReporterObs.subscribe(
+        data => {
+          this.reporterPortalPermission = data;
+          if (this.reporterPortalPermission.length > 0) {
+            this.sharedService.modulePermission.subscribe(
+              modules => {
+                if (modules.length > 0) {
+                  if (this.reporterPortalPermission.indexOf("Reports") == -1 || modules.indexOf("Web Reporter Portal Access") == -1) {
+                    this.router.navigate(['/dashboard']);
+                  }
+                }
+              }
+            )
+          }
+        }
+      )
+    )
 
   }
 

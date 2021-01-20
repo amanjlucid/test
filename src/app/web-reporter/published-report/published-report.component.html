@@ -30,9 +30,9 @@
                             <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"
                                 (click)="setSeletedRow(dataItem)"></i>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" href="javascript:void(0)"
+                                <a *ngIf="reporterPortalPermission.indexOf('Preview') != -1" class="dropdown-item" href="javascript:void(0)"
                                     (click)="previewReport(dataItem)">Preview</a>
-                                <a class="dropdown-item" href="javascript:void(0)"
+                                <a *ngIf="reporterPortalPermission.indexOf('Delete Published Report') != -1" class="dropdown-item" href="javascript:void(0)"
                                     (click)="openConfirmationDialog(dataItem)">Delete</a>
                             </div>
                         </li>
