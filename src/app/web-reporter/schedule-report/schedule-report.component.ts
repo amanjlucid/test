@@ -7,8 +7,10 @@ import { AlertService, ConfirmationDialogService, HelperService, WebReporterServ
 @Component({
   selector: 'app-schedule-report',
   templateUrl: './schedule-report.component.html',
-  styleUrls: ['./schedule-report.component.css']
+  styleUrls: ['./schedule-report.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
+
 export class ScheduleReportComponent implements OnInit {
   subs = new SubSink();
   @Input() openScheduleReport: boolean = false;
@@ -31,9 +33,11 @@ export class ScheduleReportComponent implements OnInit {
   loading = false;
   selectableSettings: SelectableSettings;
   mySelection: number[] = [];
-  reportScheduleList:any;
+  reportScheduleList: any;
+  openAddScheduleReport: boolean = false;
+  mode = 'new';
 
-  constructor() { 
+  constructor() {
     this.setSelectableSettings();
   }
 
@@ -66,9 +70,22 @@ export class ScheduleReportComponent implements OnInit {
     //this.selectedUserCategory = dataItem;
   }
 
-  closeScheduleReport(){
+  closeScheduleReport() {
     this.openScheduleReport = false;
     this.closeScheduleReportWindow.emit(this.openScheduleReport);
   }
+
+  openAddSchedule(mode) {
+    this.mode = mode;
+    this.openAddScheduleReport = true;
+    $('.addScheduleOvrlay').addClass('ovrlay');
+  }
+
+  closeAddScheduleReport(eve) {
+    this.openAddScheduleReport = eve;
+    $('.addScheduleOvrlay').removeClass('ovrlay');
+  }
+
+
 
 }

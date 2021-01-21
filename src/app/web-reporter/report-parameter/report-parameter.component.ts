@@ -29,7 +29,7 @@ export class ReportParameterComponent implements OnInit {
   gridView: DataResult;
   allowUnsort = true;
   multiple = false;
-  reportParameters: any;
+  // reportParameters: any;
   reportParamHeading = '';
   parameterData: any;
   actualParamData: any;

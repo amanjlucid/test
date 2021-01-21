@@ -8,7 +8,7 @@ import { DialogsModule } from '@progress/kendo-angular-dialog';
 import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
 import { SharedModule } from '../shared.module';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
-
+import { NgbDate, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { WebReporterRoutingModule } from './web-reporter-routing.module';
 import { WebReporterComponent } from './web-reporter.component';
@@ -21,10 +21,11 @@ import { CreateUserCategoryComponent } from './create-user-category/create-user-
 import { PreviewReportComponent } from './preview-report/preview-report.component';
 import { ScheduleReportComponent } from './schedule-report/schedule-report.component';
 import { PublishedReportComponent } from './published-report/published-report.component';
+import { AddScheduleReportComponent } from './add-schedule-report/add-schedule-report.component';
 
 
 @NgModule({
-  declarations: [WebReporterComponent, ReportsComponent, ReportParameterComponent, ReportParameterListComponent, SetUserCategoryComponent, ManageUserCategoryComponent, CreateUserCategoryComponent, PreviewReportComponent, ScheduleReportComponent, PublishedReportComponent],
+  declarations: [WebReporterComponent, ReportsComponent, ReportParameterComponent, ReportParameterListComponent, SetUserCategoryComponent, ManageUserCategoryComponent, CreateUserCategoryComponent, PreviewReportComponent, ScheduleReportComponent, PublishedReportComponent, AddScheduleReportComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -36,7 +37,8 @@ import { PublishedReportComponent } from './published-report/published-report.co
     SharedModule,
     GridModule,
     NgMultiSelectDropDownModule,
-    WebReporterRoutingModule
+    WebReporterRoutingModule,
+    NgbModule
   ]
 })
 export class WebReporterModule { }

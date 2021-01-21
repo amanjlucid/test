@@ -1,0 +1,131 @@
+<kendo-window title="{{title}}" *ngIf="openAddScheduleReport" (close)="close()" [top]="25" [minWidth]="500"
+    [width]="740" [height]="auto" [minHeight]="350">
+
+    <form [formGroup]="editEvform" id="editEvform" (ngSubmit)="onSubmit()" autocomplete="off">
+        <div class="row">
+            <div class="col-md-3">
+                <label>Period Type</label>
+            </div>
+
+            <div class="col-md-9" [ngClass]="{ 'is-invalid-cl': submitted && formErrors.periodType }">
+                <div class="form-check-inline">
+                    <label class="form-check-label">
+                        <input type="radio" class="form-check-input" value="0" formControlName="periodType">Daily
+                    </label>
+                </div>
+                <div class="form-check-inline">
+                    <label class="form-check-label">
+                        <input type="radio" class="form-check-input" value="1" formControlName="periodType">Weekly
+                    </label>
+                </div>
+                <div class="form-check-inline">
+                    <label class="form-check-label">
+                        <input type="radio" class="form-check-input" value="2" formControlName="periodType">Monthly
+                    </label>
+                </div>
+
+                <div *ngIf="submitted && formErrors.periodType" class="invalid-feedback">
+                    <div *ngIf="formErrors.periodType">{{ formErrors.periodType }}</div>
+                </div>
+            </div>
+
+
+        </div>
+
+        <div class="row mt-2">
+            <div class="col-md-3">
+                <label>Period Interval</label>
+            </div>
+
+            <div class="col-md-9">
+                <input type="number" min="0" class="form-control" formControlName="periodInterval"
+                    [ngClass]="{ 'is-invalid': submitted && formErrors.periodInterval }">
+                <div *ngIf="submitted && formErrors.periodInterval" class="invalid-feedback">
+                    <div *ngIf="formErrors.periodInterval">{{ formErrors.periodInterval }}</div>
+                </div>
+            </div>
+
+
+        </div>
+
+        <div class="row mt-2">
+            <div class="col-md-3">
+                <label>Next Run Date</label>
+            </div>
+
+            <div class="col-md-9">
+                <input type="text" class="form-control" [minDate]="{year: 1800, month: 1, day: 1}" ngbDatepicker
+                    #i="ngbDatepicker" (click)="openCalendar(i)" formControlName="nextRunDate"
+                    [ngClass]="{ 'is-invalid': submitted && formErrors.nextRunDate }">
+                <div *ngIf="submitted && formErrors.nextRunDate" class="invalid-feedback">
+                    <div *ngIf="formErrors.nextRunDate">{{ formErrors.nextRunDate }}</div>
+                </div>
+            </div>
+
+
+        </div>
+
+        <div class="row mt-2">
+            <div class="col-md-12">
+                <span>Parameters</span>
+            </div>
+            <div class="col-md-12">
+                <kendo-grid [data]="gridView" [height]="250" filterable="menu" [resizable]="true" [sortable]="{
+                allowUnsort: allowUnsort,
+                mode: multiple ? 'multiple' : 'single'
+                }" [skip]="state.skip" [groupable]="false" [sort]="state.sort" [selectable]="{
+                  mode: 'multiple'
+                }" [filter]="state.filter" (dataStateChange)="onStateChange($event)" (sortChange)="sortChange($event)"
+                    (filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)" [navigable]="true">
+
+                    <kendo-grid-column field="extfield" title="Name" width="120">
+                    </kendo-grid-column>
+                    <kendo-grid-column field="paramvalue" title="Value" width="120">
+                    </kendo-grid-column>
+                    <kendo-grid-column field="eventTypeParamSqlValue" title="Select" width="230" [filterable]="false"
+                        [sortable]="false">
+                        <ng-template kendoGridCellTemplate let-dataItem>
+                            <div class="valueDiv"
+                                *ngIf="reporterPortalPermission.indexOf('Show Paramter Prompt') != -1">
+                                <button class="btn btn-sm parmaBtn" (click)="openReportParameterList(dataItem)"
+                                    type="button">Select Value...</button>
+                            </div>
+                        </ng-template>
+                    </kendo-grid-column>
+                </kendo-grid>
+            </div>
+
+            <div class="col-md-12 mt-2">
+                <kendo-grid [group]="notificationState.group" [groupable]="false" [data]="notificationGridView"
+                    [height]="250" [loading]="notificationLoading" filterable="menu" [resizable]="true" [sortable]="{
+        allowUnsort: allowUnsort,
+        mode: multiple ? 'multiple' : 'single'
+        }" [skip]="notificationState.skip" [sort]="notificationState.sort" [selectable]="selectableSettings"
+                    [filter]="notificationState.filter" (sortChange)="notificationSortChange($event)"
+                    (filterChange)="notificationFilterChange($event)" (cellClick)="notificationCellClickHandler($event)"
+                    [navigable]="true">
+
+                    <kendo-grid-column field="groupDesc" title="Notification Group Name" width="250">
+                    </kendo-grid-column>
+
+                </kendo-grid>
+
+            </div>
+        </div>
+
+        <div class="row mt-2">
+            <div class="col-md-3 text-left">
+                <button type="button" class="btn btn-sm themeButton"> Delete </button>
+            </div>
+
+            <div class="col-md-9 text-right">
+                <button type="button" class="btn btn-sm themeButton mr-1" (click)="close()"> Cancel
+                </button>
+                <button type="submit" class="btn btn-sm themeButton"> Ok </button>
+            </div>
+
+
+        </div>
+    </form>
+
+</kendo-window>
