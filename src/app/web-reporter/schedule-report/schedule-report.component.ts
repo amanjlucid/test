@@ -36,17 +36,32 @@ export class ScheduleReportComponent implements OnInit {
   reportScheduleList: any;
   openAddScheduleReport: boolean = false;
   mode = 'new';
+  selectedScheduleReport: any;
 
-  constructor() {
+  constructor(
+    private alertService: AlertService,
+    private reporterService: WebReporterService
+  ) {
     this.setSelectableSettings();
   }
 
   ngOnInit(): void {
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    this.getScheduleReport();
   }
 
   ngOnDestroy() {
     this.subs.unsubscribe();
+  }
+
+  getScheduleReport() {
+    this.subs.add(
+      this.reporterService.getAllSchedulingDataByReportId(this.selectedReport.reportId).subscribe(
+        data => {
+          console.log(data);
+        }
+      )
+    )
   }
 
   setSelectableSettings(): void {
@@ -67,7 +82,7 @@ export class ScheduleReportComponent implements OnInit {
   }
 
   cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
-    //this.selectedUserCategory = dataItem;
+    this.selectedScheduleReport = dataItem;
   }
 
   closeScheduleReport() {
@@ -77,6 +92,10 @@ export class ScheduleReportComponent implements OnInit {
 
   openAddSchedule(mode) {
     this.mode = mode;
+    if (this.mode == 'edit') {
+      if (!this.selectedScheduleReport) return;
+    }
+
     this.openAddScheduleReport = true;
     $('.addScheduleOvrlay').addClass('ovrlay');
   }

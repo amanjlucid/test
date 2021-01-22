@@ -12,9 +12,11 @@ import { MustbeTodayOrGreater } from 'src/app/_helpers';
   styleUrls: ['./add-schedule-report.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
+
 export class AddScheduleReportComponent implements OnInit {
   subs = new SubSink();
   @Input() selectedReport: any;
+  @Input() mode: any;
   @Input() openAddScheduleReport = false
   @Output() closeAddScheduleReport = new EventEmitter<boolean>();
   title = 'Schedule';
@@ -42,6 +44,9 @@ export class AddScheduleReportComponent implements OnInit {
       filters: []
     }
   }
+  gridView: DataResult;
+  parameterData: any;
+  actualParamData: any;
   notificationState: State = {
     skip: 0,
     sort: [],
@@ -51,20 +56,19 @@ export class AddScheduleReportComponent implements OnInit {
       filters: []
     }
   }
-  gridView: DataResult;
-  notificationGridView:DataResult;
+
+  notificationGridView: DataResult;
   selectableSettings: SelectableSettings;
   notificationList: any;
   allowUnsort = true;
   multiple = false;
-  parameterData: any;
-  actualParamData: any;
   openReportParamlist: boolean = false;
   selectedReportParam: any;
   currentUser: any;
   submitted = false;
   reporterPortalPermission = [];
   notificationLoading = true;
+  mySelection: number[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -73,7 +77,7 @@ export class AddScheduleReportComponent implements OnInit {
     private reportService: WebReporterService,
     private sharedService: SharedService,
     private settingService: SettingsService,
-  ) { 
+  ) {
     this.setSelectableSettings();
   }
 
@@ -101,7 +105,7 @@ export class AddScheduleReportComponent implements OnInit {
   setSelectableSettings(): void {
     this.selectableSettings = {
       checkboxOnly: false,
-      mode: 'single'
+      mode: 'multiple'
     };
   }
 
@@ -109,11 +113,13 @@ export class AddScheduleReportComponent implements OnInit {
     this.subs.add(
       this.settingService.getNotificationList().subscribe(
         data => {
+          console.log(data);
           if (data.isSuccess) {
             this.notificationList = data.data
             this.notificationGridView = process(this.notificationList, this.notificationState);
           }
           this.notificationLoading = false;
+          this.chRef.detectChanges();
         }
       )
     )
@@ -123,6 +129,7 @@ export class AddScheduleReportComponent implements OnInit {
     this.subs.add(
       this.reportService.getListOfScheduledParameters(reportId).subscribe(
         data => {
+          console.log(data);
           if (data.isSuccess) {
             this.parameterData = data.data;
             this.renderGrid();
@@ -204,17 +211,29 @@ export class AddScheduleReportComponent implements OnInit {
       'periodType': '',
       'periodInterval': '',
       'nextRunDate': '',
-
     }
   }
 
   onSubmit() {
+    console.log(this.mySelection)
     this.submitted = true;
     this.formErrorObject(); // empty form error 
     this.logValidationErrors(this.editEvform);
     if (this.editEvform.invalid) {
       return;
     }
+
+    if (this.mySelection.length == 0) {
+      this.alertService.error("Please select at least one recipient.");
+      return
+    }
+
+    if (this.parameterData && this.parameterData.length == 0) {
+      this.alertService.error("Please select values of all required parameters.");
+      return
+    }
+
+
   }
 
   dateFormate2(value) {
@@ -234,5 +253,8 @@ export class AddScheduleReportComponent implements OnInit {
     this.closeAddScheduleReport.emit(this.openAddScheduleReport);
   }
 
+  onSelectedKeysChange($event) {
+    // console.log(this.mySelection)
+  }
 
 }

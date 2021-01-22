@@ -112,12 +112,25 @@ export class WebReporterService {
         return this.http.post<any>(`${appConfig.apiUrl}/api/Report/CreateXportOutput`, body, this.httpOptions);
     }
 
-    getPublishedReport(intReportId){
+    getPublishedReport(intReportId) {
         return this.http.get<any>(`${appConfig.apiUrl}/api/WebReportSearch/GetListOfPublishedReports?intReportId=${intReportId}`, this.httpOptions);
     }
 
-    deletePublishedReport(xportIdentifier){
+    deletePublishedReport(xportIdentifier) {
         return this.http.get<any>(`${appConfig.apiUrl}/api/WebReportSearch/DeletePublishedReport?xportIdentifier=${xportIdentifier}`, this.httpOptions);
+    }
+
+    GetSchedulingDataByReportId(reportId) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/WebReportSearch/GetSchedulingDataByReportId?reportId=${reportId}`, this.httpOptions);
+    }
+
+    getAllSchedulingDataByReportId(reportId) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/WebReportSearch/GetAllSchedulingDataByReportId?reportId=${reportId}`, this.httpOptions);
+    }
+
+    insertSchedulingReport(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/WebReportSearch/InsertSchedulingReport`, body, this.httpOptions);
     }
 
 

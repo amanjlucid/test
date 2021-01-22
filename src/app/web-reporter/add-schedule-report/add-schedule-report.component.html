@@ -1,5 +1,5 @@
 <kendo-window title="{{title}}" *ngIf="openAddScheduleReport" (close)="close()" [top]="25" [minWidth]="500"
-    [width]="740" [height]="auto" [minHeight]="350">
+    [width]="740" [height]="auto" [minHeight]="500">
 
     <form [formGroup]="editEvform" id="editEvform" (ngSubmit)="onSubmit()" autocomplete="off">
         <div class="row">
@@ -65,7 +65,7 @@
 
         </div>
 
-        <div class="row mt-2">
+        <div class="row mt-2" *ngIf="parameterData && parameterData.length > 0">
             <div class="col-md-12">
                 <span>Parameters</span>
             </div>
@@ -95,7 +95,10 @@
                 </kendo-grid>
             </div>
 
-            <div class="col-md-12 mt-2">
+        </div>
+
+        <div class="row mt-2">
+            <div class="col-md-12">
                 <kendo-grid [group]="notificationState.group" [groupable]="false" [data]="notificationGridView"
                     [height]="250" [loading]="notificationLoading" filterable="menu" [resizable]="true" [sortable]="{
         allowUnsort: allowUnsort,
@@ -103,7 +106,8 @@
         }" [skip]="notificationState.skip" [sort]="notificationState.sort" [selectable]="selectableSettings"
                     [filter]="notificationState.filter" (sortChange)="notificationSortChange($event)"
                     (filterChange)="notificationFilterChange($event)" (cellClick)="notificationCellClickHandler($event)"
-                    [navigable]="true">
+                    [navigable]="true" kendoGridSelectBy="groupId" [selectedKeys]="mySelection"
+                    (selectedKeysChange)="onSelectedKeysChange($event)">
 
                     <kendo-grid-column field="groupDesc" title="Notification Group Name" width="250">
                     </kendo-grid-column>
