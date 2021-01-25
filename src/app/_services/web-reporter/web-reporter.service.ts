@@ -120,7 +120,7 @@ export class WebReporterService {
         return this.http.get<any>(`${appConfig.apiUrl}/api/WebReportSearch/DeletePublishedReport?xportIdentifier=${xportIdentifier}`, this.httpOptions);
     }
 
-    GetSchedulingDataByReportId(reportId) {
+    getSchedulingDataByReportId(reportId) {
         return this.http.get<any>(`${appConfig.apiUrl}/api/WebReportSearch/GetSchedulingDataByReportId?reportId=${reportId}`, this.httpOptions);
     }
 

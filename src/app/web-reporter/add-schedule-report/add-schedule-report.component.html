@@ -1,4 +1,4 @@
-<kendo-window title="{{title}}" *ngIf="openAddScheduleReport" (close)="close()" [top]="25" [minWidth]="500"
+<kendo-window title="{{title}}" *ngIf="openAddScheduleReport" (close)="close()" [top]="15" [minWidth]="500"
     [width]="740" [height]="auto" [minHeight]="500">
 
     <form [formGroup]="editEvform" id="editEvform" (ngSubmit)="onSubmit()" autocomplete="off">
@@ -65,11 +65,50 @@
 
         </div>
 
-        <div class="row mt-2" *ngIf="parameterData && parameterData.length > 0">
-            <div class="col-md-12">
-                <span>Parameters</span>
+        <div class="row mt-2">
+            <div class="form-group">
+
             </div>
-            <div class="col-md-12">
+
+
+            <div class="col-md-3">
+                <label>Pivot</label>
+            </div>
+
+            <div class="col-md-9">
+                <label class="switcher switcher-secondary">
+                    <input type="checkbox" class="switcher-input" formControlName="pivot">
+                    <span class="switcher-indicator">
+                        <span class="switcher-yes">
+                            <span class="ion ion-md-checkmark"></span>
+                        </span>
+                        <span class="switcher-no">
+                            <span class="ion ion-md-close"></span>
+                        </span>
+                    </span>
+                </label>
+                <div *ngIf="submitted && formErrors.pivot" class="invalid-feedback">
+                    <div *ngIf="formErrors.pivot">{{ formErrors.pivot }}</div>
+                </div>
+                <!-- <input value="false" type="checkbox" class="" formControlName="pivot"
+                    [ngClass]="{ 'is-invalid': submitted && formErrors.pivot }">
+                <div *ngIf="submitted && formErrors.pivot" class="invalid-feedback">
+                    <div *ngIf="formErrors.pivot">{{ formErrors.pivot }}</div>
+                </div> -->
+            </div>
+
+
+        </div>
+
+        <hr>
+        <div class="row mt-2" *ngIf="parameterData && parameterData.length > 0">
+            <div class="col-md-6">
+                <span style="font-weight: 600;">Parameters</span>
+            </div>
+            <div class="col-md-6 text-right">
+                <button type="button" (click)="clearParameter()" class="btn btn-sm">Clear Parameters</button>
+            </div>
+            <div class="col-md-12 mt-2">
                 <kendo-grid [data]="gridView" [height]="250" filterable="menu" [resizable]="true" [sortable]="{
                 allowUnsort: allowUnsort,
                 mode: multiple ? 'multiple' : 'single'
@@ -118,11 +157,7 @@
         </div>
 
         <div class="row mt-2">
-            <div class="col-md-3 text-left">
-                <button type="button" class="btn btn-sm themeButton"> Delete </button>
-            </div>
-
-            <div class="col-md-9 text-right">
+            <div class="col-md-12 text-right">
                 <button type="button" class="btn btn-sm themeButton mr-1" (click)="close()"> Cancel
                 </button>
                 <button type="submit" class="btn btn-sm themeButton"> Ok </button>
@@ -132,4 +167,9 @@
         </div>
     </form>
 
+    <div class="reportSchedule"></div>
+    <app-report-parameter-list *ngIf="openReportParamlist" [openReportParamlist]="openReportParamlist"
+        [selectedReportParam]="selectedReportParam" [selectedReport]="selectedReport"
+        (closeReportParamListWindow)="closeReportParamListWindow($event)"
+        (changeSelectedParam)="changeSelectedParam($event)"></app-report-parameter-list>
 </kendo-window>
