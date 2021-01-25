@@ -1,10 +1,11 @@
 <kendo-window title="{{title}}" *ngIf="openScheduleReport" (close)="closeScheduleReport()" [top]="20" [minWidth]="500"
-    [width]="760" [height]="auto" [minHeight]="350">
+    [width]="860" [height]="auto" [minHeight]="350">
     <div class="row">
         <div class="col-md-12 text-right">
             <button type="button" class="btn btn-sm themeButton mr-2"
                 [disabled]="!selectedScheduleReport">Delete</button>
-            <button type="button" class="btn btn-sm themeButton mr-2" (click)="openAddSchedule('edit')" [disabled]="!selectedScheduleReport">Edit</button>
+            <button type="button" class="btn btn-sm themeButton mr-2" (click)="openAddSchedule('edit')"
+                [disabled]="!selectedScheduleReport">Edit</button>
             <button type="button" class="btn btn-sm themeButton" (click)="openAddSchedule('new')">New</button>
         </div>
 
@@ -20,15 +21,25 @@
 
                 <kendo-grid-column field="name" title="Sequence" width="110">
                 </kendo-grid-column>
-                <kendo-grid-column field="parameters" title="Parameters" width="130">
+                <kendo-grid-column field="params" title="Parameters" width="130">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>{{dataItem.params != undefined ? dataItem.params.toString() : ''}}</span>
+                    </ng-template>
                 </kendo-grid-column>
-                <kendo-grid-column field="parameters" title="Period" width="110">
+                <kendo-grid-column field="xport_period" title="Period" width="110">
                 </kendo-grid-column>
-                <kendo-grid-column field="parameters" title="Frequency" width="130">
+                <kendo-grid-column field="xport_period_type" title="Frequency" width="130">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>{{dataItem.xport_period_type == 0 ? 'Daily' : dataItem.xport_period_type == 1 ? 'Weekly' :
+                            'Monthly'}}</span>
+                    </ng-template>
                 </kendo-grid-column>
-                <kendo-grid-column field="parameters" title="Next Run Date" width="130">
+                <kendo-grid-column field="xport_next_run_date" title="Next Run Date" width="130">
                 </kendo-grid-column>
-                <kendo-grid-column field="parameters" title="Notification Group" width="130">
+                <kendo-grid-column field="userGroups" title="Notification Group" width="130">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>{{dataItem.userGroups != undefined ? dataItem.userGroups.toString() : ''}}</span>
+                    </ng-template>
                 </kendo-grid-column>
 
             </kendo-grid>
@@ -39,6 +50,7 @@
     <div class="addScheduleOvrlay"></div>
 
     <app-add-schedule-report *ngIf="openAddScheduleReport" [mode]="mode" [openAddScheduleReport]="openAddScheduleReport"
-        [selectedReport]="selectedReport" (closeAddScheduleReport)="closeAddScheduleReport($event)">
+        [selectedReport]="selectedReport" (closeAddScheduleReport)="closeAddScheduleReport($event)"
+        (reloadScheduleGrid)="reloadScheduleGrid($event)">
     </app-add-schedule-report>
 </kendo-window>

@@ -3,6 +3,7 @@ import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { SelectableSettings } from '@progress/kendo-angular-grid';
 import { AlertService, ConfirmationDialogService, HelperService, WebReporterService } from '../../_services'
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-schedule-report',
@@ -40,28 +41,80 @@ export class ScheduleReportComponent implements OnInit {
 
   constructor(
     private alertService: AlertService,
-    private reporterService: WebReporterService
+    private reporterService: WebReporterService,
+    private chRef: ChangeDetectorRef,
   ) {
     this.setSelectableSettings();
   }
 
   ngOnInit(): void {
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    this.getScheduleReport();
+
+    this.getScheduleReport(this.selectedReport.reportId);
   }
 
   ngOnDestroy() {
     this.subs.unsubscribe();
   }
 
-  getScheduleReport() {
+  getScheduleReport(reportId) {
     this.subs.add(
-      this.reporterService.getAllSchedulingDataByReportId(this.selectedReport.reportId).subscribe(
-        data => {
-          console.log(data);
+      forkJoin([this.reporterService.getSchedulingDataByReportId(reportId), this.reporterService.getSchedulingList(reportId)]).subscribe(
+        res => {
+          console.log(res);
+          let savedScheduleData = res[0];
+          let parameters = [];
+          let userGroups = [];
+          if (savedScheduleData.isSuccess) {
+            for (let pr of savedScheduleData.data[0].parametersViewModels) {
+              if (parameters[pr.scheduleId] == undefined) {
+                parameters[pr.scheduleId] = [];
+              }
+              parameters[pr.scheduleId].push(pr.intfield)
+            }
+
+            for (let pr of savedScheduleData.data[0].scheduledNotifications) {
+              if (userGroups[pr.scheduleId] == undefined) {
+                userGroups[pr.scheduleId] = [];
+              }
+              userGroups[pr.scheduleId].push(pr.notifyUserGroup)
+            }
+          }
+
+
+          let tempScheduleData = [];
+          let scheduleData = res[1];
+          if (scheduleData.isSuccess) {
+            if (scheduleData.data.length > 0) {
+              tempScheduleData = scheduleData.data.map(x => {
+                // let parameters = savedScheduleData.data.parametersViewModels.filter(s => )
+                x.params = (parameters[x.xport_schedule_id] != undefined) ? parameters[x.xport_schedule_id] : [];
+                x.userGroups = (userGroups[x.xport_schedule_id] != undefined) ? userGroups[x.xport_schedule_id] : [];
+                return x;
+              });
+
+            }
+
+
+            this.reportScheduleList = tempScheduleData;
+            this.gridView = process(this.reportScheduleList, this.state);
+            this.chRef.detectChanges();
+          }
         }
       )
     )
+    // this.subs.add(
+    //   this.reporterService.getSchedulingList(reportId).subscribe(
+    //     data => {
+    //       console.log(data);
+    //       if (data.isSuccess) {
+    //         this.reportScheduleList = data.data;
+    //         this.gridView = process(this.reportScheduleList, this.state);
+    //         this.chRef.detectChanges();
+    //       }
+    //     }
+    //   )
+    // )
   }
 
   setSelectableSettings(): void {
@@ -103,6 +156,12 @@ export class ScheduleReportComponent implements OnInit {
   closeAddScheduleReport(eve) {
     this.openAddScheduleReport = eve;
     $('.addScheduleOvrlay').removeClass('ovrlay');
+  }
+
+  reloadScheduleGrid(eve) {
+    if (eve) {
+      this.getScheduleReport(this.selectedReport.reportId);
+    }
   }
 
 

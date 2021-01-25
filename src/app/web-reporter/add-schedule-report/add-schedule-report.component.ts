@@ -20,6 +20,7 @@ export class AddScheduleReportComponent implements OnInit {
   @Input() mode: any;
   @Input() openAddScheduleReport = false
   @Output() closeAddScheduleReport = new EventEmitter<boolean>();
+  @Output() reloadScheduleGrid = new EventEmitter<boolean>();
   title = 'Schedule';
   editEvform: FormGroup;
   formErrors: any;
@@ -143,7 +144,7 @@ export class AddScheduleReportComponent implements OnInit {
   setSelectableSettings(): void {
     this.selectableSettings = {
       checkboxOnly: false,
-      mode: 'multiple'
+      mode: 'single'
     };
   }
 
@@ -288,19 +289,33 @@ export class AddScheduleReportComponent implements OnInit {
       return { intfield: x.intfield, paramvalue: x.paramvalue }
     });
 
+    const userGroup = this.mySelection.map(x => {
+      return { NotifyUserGroup: x }
+    });
+
+    console.log(formRawVal);
     let params = {
       reportId: this.selectedReport.reportId,
       period: formRawVal.periodInterval,
       periodType: formRawVal.periodType,
-      pivot: formRawVal.pivot,
+      pivot: formRawVal.pivot == '' ? 0 : 1,
       nextRunDate: this.dateFormate2(formRawVal.nextRunDate),
       // updatedBy: this.currentUser.userId,
       parameters: modifiedParameter,
-      notification: this.mySelection
+      notification: userGroup
     }
 
-    console.log(params)
+    this.reportService.insertSchedulingReport(params).subscribe(
+      data => {
+        console.log(data);
+        if (data.isSuccess) {
+          this.alertService.success('Report scheduled');
+        } else this.alertService.error(data.message)
+      },
+      err => this.alertService.error(err)
+    )
 
+    console.log(params)
 
   }
 
