@@ -1,5 +1,5 @@
 <kendo-window title="{{title}}" *ngIf="openAddScheduleReport" (close)="close()" [top]="15" [minWidth]="500"
-    [width]="740" [height]="auto" [minHeight]="500">
+    [width]="840" [height]="auto" [minHeight]="500">
 
     <form [formGroup]="editEvform" id="editEvform" (ngSubmit)="onSubmit()" autocomplete="off">
         <div class="row">
@@ -106,7 +106,7 @@
                 <span style="font-weight: 600;">Parameters</span>
             </div>
             <div class="col-md-6 text-right">
-                <button type="button" (click)="clearParameter()" class="btn btn-sm">Clear Parameters</button>
+                <button type="button" (click)="clearParameterValue()" class="btn btn-sm">Clear Parameters</button>
             </div>
             <div class="col-md-12 mt-2">
                 <kendo-grid [data]="gridView" [height]="250" filterable="menu" [resizable]="true" [sortable]="{
@@ -158,12 +158,10 @@
 
         <div class="row mt-2">
             <div class="col-md-12 text-right">
+                <button type="submit" class="btn btn-sm themeButton"> Ok </button>
                 <button type="button" class="btn btn-sm themeButton mr-1" (click)="close()"> Cancel
                 </button>
-                <button type="submit" class="btn btn-sm themeButton"> Ok </button>
             </div>
-
-
         </div>
     </form>
 

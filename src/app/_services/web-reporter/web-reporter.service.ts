@@ -133,8 +133,17 @@ export class WebReporterService {
         return this.http.post<any>(`${appConfig.apiUrl}/api/WebReportSearch/InsertSchedulingReport`, body, this.httpOptions);
     }
 
-    getSchedulingList(reportId){
+    updateSchedulingReport(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/WebReportSearch/UpdateSchedulingReport`, body, this.httpOptions);
+    }
+
+    getSchedulingList(reportId) {
         return this.http.get<any>(`${appConfig.apiUrl}/api/WebReportSearch/GetSchedulingList?reportId=${reportId}`, this.httpOptions);
+    }
+
+    deleteSchedulingReport(reportId, scheduleId) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/WebReportSearch/DeleteSchedulingReport?reportId=${reportId}&scheduleId=${scheduleId}`, this.httpOptions);
     }
 
 

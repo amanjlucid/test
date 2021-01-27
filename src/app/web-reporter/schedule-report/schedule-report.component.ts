@@ -2,8 +2,9 @@ import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { SelectableSettings } from '@progress/kendo-angular-grid';
-import { AlertService, ConfirmationDialogService, HelperService, WebReporterService } from '../../_services'
-import { forkJoin } from 'rxjs';
+import { AlertService, ConfirmationDialogService, HelperService, SettingsService, WebReporterService } from '../../_services'
+import { forkJoin, from } from 'rxjs';
+import { map, toArray } from 'rxjs/operators';
 
 @Component({
   selector: 'app-schedule-report',
@@ -31,7 +32,7 @@ export class ScheduleReportComponent implements OnInit {
   gridView: DataResult;
   allowUnsort = true;
   multiple = false;
-  loading = false;
+  loading = true;
   selectableSettings: SelectableSettings;
   mySelection: number[] = [];
   reportScheduleList: any;
@@ -43,13 +44,14 @@ export class ScheduleReportComponent implements OnInit {
     private alertService: AlertService,
     private reporterService: WebReporterService,
     private chRef: ChangeDetectorRef,
+    private confirmationDialogService: ConfirmationDialogService,
+    private settingService: SettingsService
   ) {
     this.setSelectableSettings();
   }
 
   ngOnInit(): void {
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
-
     this.getScheduleReport(this.selectedReport.reportId);
   }
 
@@ -59,62 +61,100 @@ export class ScheduleReportComponent implements OnInit {
 
   getScheduleReport(reportId) {
     this.subs.add(
-      forkJoin([this.reporterService.getSchedulingDataByReportId(reportId), this.reporterService.getSchedulingList(reportId)]).subscribe(
+      forkJoin([this.reporterService.getSchedulingDataByReportId(reportId), this.settingService.getNotificationList()]).subscribe(
         res => {
           console.log(res);
+          this.reportScheduleList = []; // reset reportScheduleList
           let savedScheduleData = res[0];
-          let parameters = [];
-          let userGroups = [];
+          //let scheduleData = res[1]; //this.reporterService.getSchedulingList(reportId), 
+          let allNotificationUsrGrp = res[1];
+
           if (savedScheduleData.isSuccess) {
-            for (let pr of savedScheduleData.data[0].parametersViewModels) {
-              if (parameters[pr.scheduleId] == undefined) {
-                parameters[pr.scheduleId] = [];
-              }
-              parameters[pr.scheduleId].push(pr.intfield)
+            const { parametersViewModels, scheduledNotifications, xportScheduleViewModel } = savedScheduleData.data[0];
+            if (xportScheduleViewModel.length != undefined && xportScheduleViewModel.length > 0) {
+              const filterByReportIdAndSchedulId = (currentObj, objToMatch) => currentObj.scheduleId == objToMatch.scheduleId && currentObj.reportId == objToMatch.reportId;
+              const findInAllNotifyUser = (currentObj) => allNotificationUsrGrp.data.find(x => x.groupId == currentObj.notifyUserGroup);
+
+              const scheduleRprtListSrc$ = from(xportScheduleViewModel);
+              const modifySchedulRprtList = scheduleRprtListSrc$.pipe(
+                map((scheduleObj: any) => {
+                  const filterParamByRprtAndScheduleId = parametersViewModels
+                    .filter(paramObj => filterByReportIdAndSchedulId(paramObj, scheduleObj))
+                    .map(afterfilterParam => afterfilterParam.paramvalue);
+
+                  const filterNotifyGrpByRprtAndSchdeduleId = scheduledNotifications
+                    .filter(paramObj => filterByReportIdAndSchedulId(paramObj, scheduleObj))
+                    .map(savedGrp => findInAllNotifyUser(savedGrp).groupDesc)
+
+                  return {
+                    xport_identifier: scheduleObj.reportId,
+                    xport_last_run_date: scheduleObj.lastRunDate,
+                    xport_next_run_date: scheduleObj.nextRunDate,
+                    xport_period: scheduleObj.period,
+                    xport_period_type: scheduleObj.periodType,
+                    xport_pivot: scheduleObj.pivot,
+                    xport_schedule_id: scheduleObj.scheduleId,
+                    params: filterParamByRprtAndScheduleId.toString(),
+                    userGroups: filterNotifyGrpByRprtAndSchdeduleId.toString()
+                  }
+                }),
+                toArray()
+              );
+
+              modifySchedulRprtList.subscribe(sechduleList => this.reportScheduleList = sechduleList);
             }
 
-            for (let pr of savedScheduleData.data[0].scheduledNotifications) {
-              if (userGroups[pr.scheduleId] == undefined) {
-                userGroups[pr.scheduleId] = [];
-              }
-              userGroups[pr.scheduleId].push(pr.notifyUserGroup)
-            }
-          }
-
-
-          let tempScheduleData = [];
-          let scheduleData = res[1];
-          if (scheduleData.isSuccess) {
-            if (scheduleData.data.length > 0) {
-              tempScheduleData = scheduleData.data.map(x => {
-                // let parameters = savedScheduleData.data.parametersViewModels.filter(s => )
-                x.params = (parameters[x.xport_schedule_id] != undefined) ? parameters[x.xport_schedule_id] : [];
-                x.userGroups = (userGroups[x.xport_schedule_id] != undefined) ? userGroups[x.xport_schedule_id] : [];
-                return x;
-              });
-
-            }
-
-
-            this.reportScheduleList = tempScheduleData;
             this.gridView = process(this.reportScheduleList, this.state);
+            this.loading = false;
             this.chRef.detectChanges();
+
+
           }
-        }
+
+
+
+          //##################//
+
+          // let parameters = [];
+          // let userGroups = [];
+          // if (savedScheduleData.isSuccess) {
+          //   for (let pr of savedScheduleData.data[0].parametersViewModels) {
+          //     if (parameters[pr.scheduleId] == undefined) {
+          //       parameters[pr.scheduleId] = [];
+          //     }
+          //     parameters[pr.scheduleId].push(pr.paramvalue) //group parameter data according to schedule id
+          //   }
+
+          //   for (let pr of savedScheduleData.data[0].scheduledNotifications) {
+          //     if (userGroups[pr.scheduleId] == undefined) {
+          //       userGroups[pr.scheduleId] = [];
+          //     }
+          //     userGroups[pr.scheduleId].push(pr.notifyUserGroup) //group notification user data according to schedule id
+          //   }
+          // }
+
+          // //check if prameter and notification user group exist in schedule report list
+          // let tempScheduleData = [];
+
+          // if (scheduleData.isSuccess) {
+          //   // if (scheduleData.data.length > 0) {
+          //   //   tempScheduleData = scheduleData.data.map(x => {
+          //   //     // let parameters = savedScheduleData.data.parametersViewModels.filter(s => )
+          //   //     x.params = (parameters[x.xport_schedule_id] != undefined) ? parameters[x.xport_schedule_id] : [];
+          //   //     x.userGroups = (userGroups[x.xport_schedule_id] != undefined) ? userGroups[x.xport_schedule_id] : [];
+          //   //     return x;
+          //   //   });
+          //   // }
+
+          //   // this.reportScheduleList = scheduleData.data;
+          //   this.gridView = process(this.reportScheduleList, this.state);
+          //   this.chRef.detectChanges();
+          // } else this.alertService.error(scheduleData.message);
+        },
+        err => this.alertService.error(err)
       )
     )
-    // this.subs.add(
-    //   this.reporterService.getSchedulingList(reportId).subscribe(
-    //     data => {
-    //       console.log(data);
-    //       if (data.isSuccess) {
-    //         this.reportScheduleList = data.data;
-    //         this.gridView = process(this.reportScheduleList, this.state);
-    //         this.chRef.detectChanges();
-    //       }
-    //     }
-    //   )
-    // )
+
   }
 
   setSelectableSettings(): void {
@@ -160,8 +200,41 @@ export class ScheduleReportComponent implements OnInit {
 
   reloadScheduleGrid(eve) {
     if (eve) {
+      this.selectedScheduleReport = undefined;
       this.getScheduleReport(this.selectedReport.reportId);
     }
+  }
+
+  onSelectedKeysChange($event) {
+    // console.log(this.mySelection)
+  }
+
+  openConfirmationDialog() {
+    if (this.selectedScheduleReport == undefined) {
+      this.alertService.error('Please select one attachment');
+      return;
+    }
+
+    $('.k-window').css({ 'z-index': 1000 });
+    this.confirmationDialogService.confirm('Please confirm..', 'Do you really want to delete this record ?')
+      .then((confirmed) => (confirmed) ? this.deleteScheduleReport() : console.log(confirmed))
+      .catch(() => console.log('Attribute dismissed the dialog.'));
+  }
+
+  deleteScheduleReport() {
+    const { xport_schedule_id, xport_identifier } = this.selectedScheduleReport;
+    this.subs.add(
+      this.reporterService.deleteSchedulingReport(xport_identifier, xport_schedule_id).subscribe(
+        data => {
+          if (data.isSuccess) {
+            this.alertService.success("Record deleted successfully.")
+            this.reloadScheduleGrid(true);
+          }
+          else this.alertService.error(data.message);
+        },
+        err => this.alertService.error(err)
+      )
+    )
   }
 
 

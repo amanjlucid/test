@@ -5,7 +5,8 @@ import { SelectableSettings } from '@progress/kendo-angular-grid';
 import { AlertService, ConfirmationDialogService, HelperService, SettingsService, SharedService, WebReporterService } from '../../_services'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MustbeTodayOrGreater } from 'src/app/_helpers';
-import { forkJoin } from 'rxjs';
+import { forkJoin, from } from 'rxjs';
+import { filter, map, toArray } from 'rxjs/operators';
 
 @Component({
   selector: 'app-add-schedule-report',
@@ -17,6 +18,7 @@ import { forkJoin } from 'rxjs';
 export class AddScheduleReportComponent implements OnInit {
   subs = new SubSink();
   @Input() selectedReport: any;
+  @Input() selectedScheduleReport: any;
   @Input() mode: any;
   @Input() openAddScheduleReport = false
   @Output() closeAddScheduleReport = new EventEmitter<boolean>();
@@ -79,6 +81,7 @@ export class AddScheduleReportComponent implements OnInit {
     private reportService: WebReporterService,
     private sharedService: SharedService,
     private settingService: SettingsService,
+    private helperService: HelperService
   ) {
     this.setSelectableSettings();
   }
@@ -109,10 +112,19 @@ export class AddScheduleReportComponent implements OnInit {
     this.subs.add(
       forkJoin([this.reportService.getSchedulingDataByReportId(reportId), this.reportService.getListOfScheduledParameters(reportId), this.settingService.getNotificationList()]).subscribe(
         res => {
-          console.log(res);
           const savedScheduleData = res[0];
           const scheduleParam = res[1];
           const notificationUser = res[2];
+
+          // set value if form is being edited
+          if (this.mode == "edit") {
+            this.editEvform.patchValue({
+              periodType: JSON.stringify(this.selectedScheduleReport.xport_period_type),
+              periodInterval: this.selectedScheduleReport.xport_period,
+              nextRunDate: this.helperService.ngbDatepickerFormat(this.selectedScheduleReport.xport_next_run_date),
+              pivot: this.selectedScheduleReport.xport_pivot,
+            });
+          }
 
           // set parameter grid
           if (scheduleParam.isSuccess) {
@@ -121,18 +133,43 @@ export class AddScheduleReportComponent implements OnInit {
               if (this.parameterData.length > 0) {
                 this.parameterData = this.clearParameterValue();
               }
+            } else {
+              if (savedScheduleData.isSuccess) {
+                const { xport_identifier, xport_schedule_id } = this.selectedScheduleReport;
+                // find and set saved schedule parameter value
+                const savedParameterSrc$ = from(savedScheduleData.data[0].parametersViewModels);
+                savedParameterSrc$.pipe(
+                  filter((findParam: any) => findParam.reportId == xport_identifier && findParam.scheduleId == xport_schedule_id),
+                  map(x => {
+                    const extfield = this.parameterData.find(y => y.intfield == x.intfield);
+                    return { extfield: extfield.extfield, intfield: x.intfield, paramvalue: x.paramvalue, parmset: extfield.parmset };
+                  }),
+                  toArray()
+                ).subscribe(x => this.parameterData = x);
+              }
             }
             this.gridView = process(this.parameterData, this.state);
           } else this.alertService.error(scheduleParam.message);
 
           // set notification grid
           if (notificationUser.isSuccess) {
+            if (this.mode == "edit") {
+              if (savedScheduleData.isSuccess) {
+                const { xport_identifier, xport_schedule_id } = this.selectedScheduleReport;
+                // find and set saved notification user group
+                const savedNoficationGrp$ = from(savedScheduleData.data[0].scheduledNotifications);
+                savedNoficationGrp$.pipe(
+                  filter((x: any) => x.reportId === xport_identifier && x.scheduleId === xport_schedule_id),
+                  map(filterUserGrp => filterUserGrp.notifyUserGroup),
+                ).subscribe(grpId => this.mySelection.push(grpId))
+              }
+            }
+
             this.notificationList = notificationUser.data
-            console.log(this.notificationList)
             this.notificationGridView = process(this.notificationList, this.notificationState);
           } else this.alertService.error(notificationUser.message)
-          this.notificationLoading = false;
 
+          this.notificationLoading = false;
           this.chRef.detectChanges();
 
         },
@@ -147,54 +184,6 @@ export class AddScheduleReportComponent implements OnInit {
       mode: 'single'
     };
   }
-
-  // getNotificationList() {
-  //   this.subs.add(
-  //     this.settingService.getNotificationList().subscribe(
-  //       data => {
-  //         console.log(data);
-  //         if (data.isSuccess) {
-  //           this.notificationList = data.data
-  //           this.notificationGridView = process(this.notificationList, this.notificationState);
-  //         }
-  //         this.notificationLoading = false;
-  //         this.chRef.detectChanges();
-  //       }
-  //     )
-  //   )
-  // }
-
-  // getReportParameter(reportId) {
-  //   this.subs.add(
-  //     this.reportService.getListOfScheduledParameters(reportId).subscribe(
-  //       data => {
-  //         console.log(data);
-  //         if (data.isSuccess) {
-  //           this.parameterData = data.data;
-  //           if (this.mode == "new") {
-  //             if (this.parameterData.length > 0) {
-  //               this.parameterData = this.parameterData.map(prm => {
-  //                 prm.paramvalue = "";
-  //                 return prm
-  //               })
-  //             }
-  //           }
-  //           this.renderGrid();
-  //         } else this.alertService.error(data.message);
-  //       },
-  //       err => this.alertService.error(err)
-  //     )
-  //   )
-
-  //   // set actual parameter value
-  //   this.subs.add(
-  //     this.reportService.getListOfScheduledParameters(reportId).subscribe(
-  //       data => {
-  //         if (data.isSuccess) this.actualParamData = [...data.data];
-  //       }
-  //     )
-  //   )
-  // }
 
   sortChange(sort: SortDescriptor[]): void {
     this.state.sort = sort;
@@ -262,8 +251,6 @@ export class AddScheduleReportComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log(this.parameterData)
-    console.log(this.mySelection)
     this.submitted = true;
     this.formErrorObject(); // empty form error 
     this.logValidationErrors(this.editEvform);
@@ -293,29 +280,40 @@ export class AddScheduleReportComponent implements OnInit {
       return { NotifyUserGroup: x }
     });
 
-    console.log(formRawVal);
     let params = {
       reportId: this.selectedReport.reportId,
       period: formRawVal.periodInterval,
       periodType: formRawVal.periodType,
       pivot: formRawVal.pivot == '' ? 0 : 1,
       nextRunDate: this.dateFormate2(formRawVal.nextRunDate),
-      // updatedBy: this.currentUser.userId,
       parameters: modifiedParameter,
       notification: userGroup
     }
 
-    this.reportService.insertSchedulingReport(params).subscribe(
+    let saveReportSchedule;
+    let successMsg = 'Schedule report created successfully';
+    if (this.mode == 'new') {
+      saveReportSchedule = this.reportService.insertSchedulingReport(params);
+    } else {
+      successMsg = 'Schedule report updated successfully';
+      const scheduleId = { ScheduleId: this.selectedScheduleReport.xport_schedule_id }
+      params = { ...params, ...scheduleId }
+      saveReportSchedule = this.reportService.updateSchedulingReport(params);
+
+    }
+
+    saveReportSchedule.subscribe(
       data => {
-        console.log(data);
         if (data.isSuccess) {
-          this.alertService.success('Report scheduled');
+          this.reloadScheduleGrid.emit(true);
+          this.alertService.success(successMsg);
+          this.close();
         } else this.alertService.error(data.message)
       },
       err => this.alertService.error(err)
     )
 
-    console.log(params)
+
 
   }
 
