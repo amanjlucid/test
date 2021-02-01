@@ -66,11 +66,6 @@
         </div>
 
         <div class="row mt-2">
-            <div class="form-group">
-
-            </div>
-
-
             <div class="col-md-3">
                 <label>Pivot</label>
             </div>
@@ -90,11 +85,7 @@
                 <div *ngIf="submitted && formErrors.pivot" class="invalid-feedback">
                     <div *ngIf="formErrors.pivot">{{ formErrors.pivot }}</div>
                 </div>
-                <!-- <input value="false" type="checkbox" class="" formControlName="pivot"
-                    [ngClass]="{ 'is-invalid': submitted && formErrors.pivot }">
-                <div *ngIf="submitted && formErrors.pivot" class="invalid-feedback">
-                    <div *ngIf="formErrors.pivot">{{ formErrors.pivot }}</div>
-                </div> -->
+
             </div>
 
 
@@ -158,8 +149,8 @@
 
         <div class="row mt-2">
             <div class="col-md-12 text-right">
-                <button type="submit" class="btn btn-sm themeButton"> Ok </button>
-                <button type="button" class="btn btn-sm themeButton mr-1" (click)="close()"> Cancel
+                <button type="submit" class="btn btn-sm themeButton mr-1"> Ok </button>
+                <button type="button" class="btn btn-sm themeButton" (click)="close()"> Cancel
                 </button>
             </div>
         </div>

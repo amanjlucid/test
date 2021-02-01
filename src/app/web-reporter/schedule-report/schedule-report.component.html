@@ -24,9 +24,9 @@
                 </kendo-grid-column>
                 <kendo-grid-column field="params" title="Parameters" width="130">
                 </kendo-grid-column>
-                <kendo-grid-column field="xport_period" title="Period" width="90">
+                <kendo-grid-column field="xport_period" title="Period" width="80">
                 </kendo-grid-column>
-                <kendo-grid-column field="xport_period_type" title="Frequency" width="100">
+                <kendo-grid-column field="xport_period_type" title="Frequency" width="90">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <span>{{dataItem.xport_period_type == 0 ? 'Daily' : dataItem.xport_period_type == 1 ? 'Weekly' :
                             'Monthly'}}</span>

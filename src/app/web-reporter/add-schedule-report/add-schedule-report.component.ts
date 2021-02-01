@@ -299,7 +299,6 @@ export class AddScheduleReportComponent implements OnInit {
       const scheduleId = { ScheduleId: this.selectedScheduleReport.xport_schedule_id }
       params = { ...params, ...scheduleId }
       saveReportSchedule = this.reportService.updateSchedulingReport(params);
-
     }
 
     saveReportSchedule.subscribe(

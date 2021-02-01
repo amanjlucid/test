@@ -63,7 +63,6 @@ export class ScheduleReportComponent implements OnInit {
     this.subs.add(
       forkJoin([this.reporterService.getSchedulingDataByReportId(reportId), this.settingService.getNotificationList()]).subscribe(
         res => {
-          console.log(res);
           this.reportScheduleList = []; // reset reportScheduleList
           let savedScheduleData = res[0];
           //let scheduleData = res[1]; //this.reporterService.getSchedulingList(reportId), 
@@ -100,56 +99,13 @@ export class ScheduleReportComponent implements OnInit {
                 }),
                 toArray()
               );
-
               modifySchedulRprtList.subscribe(sechduleList => this.reportScheduleList = sechduleList);
             }
 
             this.gridView = process(this.reportScheduleList, this.state);
             this.loading = false;
             this.chRef.detectChanges();
-
-
-          }
-
-
-
-          //##################//
-
-          // let parameters = [];
-          // let userGroups = [];
-          // if (savedScheduleData.isSuccess) {
-          //   for (let pr of savedScheduleData.data[0].parametersViewModels) {
-          //     if (parameters[pr.scheduleId] == undefined) {
-          //       parameters[pr.scheduleId] = [];
-          //     }
-          //     parameters[pr.scheduleId].push(pr.paramvalue) //group parameter data according to schedule id
-          //   }
-
-          //   for (let pr of savedScheduleData.data[0].scheduledNotifications) {
-          //     if (userGroups[pr.scheduleId] == undefined) {
-          //       userGroups[pr.scheduleId] = [];
-          //     }
-          //     userGroups[pr.scheduleId].push(pr.notifyUserGroup) //group notification user data according to schedule id
-          //   }
-          // }
-
-          // //check if prameter and notification user group exist in schedule report list
-          // let tempScheduleData = [];
-
-          // if (scheduleData.isSuccess) {
-          //   // if (scheduleData.data.length > 0) {
-          //   //   tempScheduleData = scheduleData.data.map(x => {
-          //   //     // let parameters = savedScheduleData.data.parametersViewModels.filter(s => )
-          //   //     x.params = (parameters[x.xport_schedule_id] != undefined) ? parameters[x.xport_schedule_id] : [];
-          //   //     x.userGroups = (userGroups[x.xport_schedule_id] != undefined) ? userGroups[x.xport_schedule_id] : [];
-          //   //     return x;
-          //   //   });
-          //   // }
-
-          //   // this.reportScheduleList = scheduleData.data;
-          //   this.gridView = process(this.reportScheduleList, this.state);
-          //   this.chRef.detectChanges();
-          // } else this.alertService.error(scheduleData.message);
+          } else this.alertService.error(savedScheduleData.message)
         },
         err => this.alertService.error(err)
       )

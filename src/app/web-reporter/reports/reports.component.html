@@ -103,13 +103,13 @@
                 </kendo-grid-column>
                 <kendo-grid-column field="reportName" title="Report Name" width="260">
                     <ng-template kendoGridCellTemplate let-dataItem>
-                        {{dataItem.reportName}}
+                        <span title="{{dataItem.reportName}}">{{dataItem.reportName}}</span>
                         <span *ngIf="showColumns" class="showCol">{{dataItem.xport_Col}}</span>
                     </ng-template>
                 </kendo-grid-column>
-                <kendo-grid-column field="isShceduled" title="" width="40" [filterable]="false" [sortable]="false">
+                <kendo-grid-column field="isShceduled" title="" width="30" [filterable]="false" [sortable]="false">
                     <ng-template kendoGridCellTemplate let-dataItem>
-                        <i *ngIf="dataItem.isShceduled" class="fas fa-clock" style="color: #e4287e;"></i>
+                        <i *ngIf="dataItem.isShceduled" class="fas fa-clock" style="color: #e4287e; font-size: 16px;"></i>
                     </ng-template>
                 </kendo-grid-column>
 
