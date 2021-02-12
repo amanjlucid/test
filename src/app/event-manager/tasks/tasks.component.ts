@@ -188,20 +188,20 @@ export class TasksComponent implements OnInit {
 
   groupChange(groups: GroupDescriptor[]): void {
     this.state.group = groups;
-    setTimeout(() => {
-      this.gridView = process(this.userEventList, this.state);
-    }, 100);
+    // setTimeout(() => {
+    //   this.gridView = process(this.userEventList, this.state);
+    // }, 100);
   }
 
 
   sortChange(sort: SortDescriptor[]): void {
     this.state.sort = sort;
-    this.gridView = process(this.userEventList, this.state);
+    // this.gridView = process(this.userEventList, this.state);
   }
 
   filterChange(filter: any): void {
     this.state.filter = filter;
-    this.gridView = process(this.userEventList, this.state);
+    // this.gridView = process(this.userEventList, this.state);
   }
 
   cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
@@ -268,7 +268,7 @@ export class TasksComponent implements OnInit {
             //   this.userEventList = distinct;
             // }
 
-            this.gridView = process(this.userEventList, this.state);
+            // this.gridView = process(this.userEventList, this.state);
             this.loading = false;
           }
         }

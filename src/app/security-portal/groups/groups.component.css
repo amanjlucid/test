@@ -8,6 +8,13 @@
     margin-left:5px;
     
 } */
+.k-window {
+  position: fixed !important;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+  background-color: white !important;
+}
 
 .actionBtn button { margin-left: 5px;}
 

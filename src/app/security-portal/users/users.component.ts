@@ -286,7 +286,6 @@ export class UsersComponent implements OnInit {
       $('.search-container').removeClass('dismiss').addClass('selectedcs').show();
     }
 
-
   }
 
   closeSearchBar() {
@@ -315,6 +314,10 @@ export class UsersComponent implements OnInit {
 
   exportData() {
     $(".buttons-excel").trigger("click");
+  }
+
+  toggleGroupClass($event, userGroup){
+
   }
 
 }

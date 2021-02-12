@@ -4,10 +4,7 @@ import { GroupService, AlertService, LoaderService, ConfirmationDialogService, H
 import { DataTablesModule } from 'angular-datatables';
 import 'datatables.net';
 import 'datatables.net-dt';
-
-
 declare var $: any;
-
 
 @Component({
   selector: 'app-groups',

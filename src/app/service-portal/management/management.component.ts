@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, OnDestroy, ChangeDetectionStrategy, ViewEncapsulation } from '@angular/core';
 import { AlertService, HelperService, ServicePortalService, LoaderService, SharedService } from '../../_services'
 import { SubSink } from 'subsink';
 import { Router } from "@angular/router"
@@ -12,7 +12,7 @@ declare var tabelize: any;
   selector: 'app-management',
   templateUrl: './management.component.html',
   styleUrls: ['./management.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 
 export class ManagementComponent implements OnInit, OnDestroy {

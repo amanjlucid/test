@@ -143,7 +143,7 @@
 
 <div class="example-wrapper">
 
-  <kendo-window title="{{windowTitle}}" [(width)]="windowWidth" [minWidth]="250" *ngIf="dialogOpened"
+  <kendo-window title="{{windowTitle}}" [(width)]="windowWidth" [top]="20" [minWidth]="250" *ngIf="dialogOpened"
     (close)="closePopup()">
     <div class="groupPopup">
       <form (ngSubmit)="onSubmit()" #securityGroupForm="ngForm">

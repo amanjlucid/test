@@ -224,7 +224,7 @@ export class ReportsComponent implements OnInit {
     this.subs.add(
       this.reportService.getReportList(params).subscribe(
         data => {
-          console.log(data);
+          // console.log(data);
           if (data.isSuccess) {
             this.actualReportList = [...data.data];
             this.filterGrid();

@@ -3,6 +3,14 @@
     /* height: 583px; */
 }
 
+.k-window {
+  position: fixed !important;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+  background-color: white !important;
+}
+
 .container-fluid{padding-bottom: 1px !important;}
 
 .userTbl th, .userTbl td {  white-space: nowrap;}

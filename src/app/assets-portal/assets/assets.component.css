@@ -2,6 +2,18 @@
   max-width: 10.60%;
 }
 
+.k-window {
+  position: fixed !important;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+  background-color: white !important;
+}
+
+.dropdown.list-unstyled {
+  position: relative !important;
+}
+
 .hiearchyBtn button {
   margin-left: 5px;
 }
