@@ -114,6 +114,7 @@ export class PreviewReportComponent implements OnInit {
         data => {
           if (data.isSuccess) {
             const parameters = data.data;
+            // console.log(parameters);
             if (parameters.length > 0) {
               let paramArr: string[] = [];
               let checkValueSet = '';

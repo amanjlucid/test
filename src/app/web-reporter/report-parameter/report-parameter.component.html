@@ -48,6 +48,8 @@
             <button type="button" class="btn btn-sm themeButton mr-2" (click)="restoreAndClearParams('restore')"
                 [disabled]="!parameterData">Restore
                 Parameters</button>
+            <button *ngIf="reporterPortalPermission.indexOf('Run Report') != -1" type="button"
+                class="btn btn-sm themeButton mr-1" (click)="runReport()" [disabled]="!parameterData">Run Report</button>
             <button type="button" class="btn btn-sm themeButton" (click)="closeReportParameter()">Cancel</button>
 
         </div>

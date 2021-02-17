@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
-import { AlertService, SharedService, WebReporterService } from '../../_services'
+import { AlertService, ReportingGroupService, SharedService, WebReporterService } from '../../_services'
 import { forkJoin } from 'rxjs';
 
 
@@ -42,7 +42,8 @@ export class ReportParameterComponent implements OnInit {
     private reportService: WebReporterService,
     private alertService: AlertService,
     private chRef: ChangeDetectorRef,
-    private sharedService: SharedService
+    private sharedService: SharedService,
+    private reportingGrpService: ReportingGroupService,
   ) { }
 
   ngOnInit(): void {
@@ -167,6 +168,42 @@ export class ReportParameterComponent implements OnInit {
   closeReportParamListWindow(eve) {
     this.openReportParamlist = eve;
     $('.reportParamList').removeClass('ovrlay');
+  }
+
+  runReport() {
+    if (this.parameterData != undefined && this.parameterData.length > 0) {
+      let parameters = [...this.parameterData];
+      let lstParamNameValue: string[] = [''];
+      let paramArr: string[] = [];
+      let checkValueSet = '';
+      parameters.forEach(element => {
+        if (checkValueSet == '' && element.paramvalue == "") {
+          checkValueSet = element.extfield;
+        }
+        paramArr.push(element.extfield)
+        paramArr.push(element.paramvalue)
+      });
+      lstParamNameValue = [paramArr.toString()];
+      if (checkValueSet != '') {
+        this.alertService.error(`Missing Parameters: ${checkValueSet}`);
+        return;
+      }
+
+      // run report 
+      const exportId = this.selectedReport.reportId
+      this.reportingGrpService.runReport(exportId, lstParamNameValue, this.currentUser.userId, "EXCEL", false).subscribe(
+        data => {
+          const linkSource = 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' + data;
+          const downloadLink = document.createElement("a");
+          const fileName = `Xport_${exportId}.xlsx`;
+          downloadLink.href = linkSource;
+          downloadLink.download = fileName;
+          downloadLink.click();
+        },
+        err => this.alertService.error(err)
+      )
+    }
+
   }
 
 }

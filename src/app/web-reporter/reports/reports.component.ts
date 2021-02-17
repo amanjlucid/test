@@ -43,7 +43,7 @@ export class ReportsComponent implements OnInit {
     textField: 'item_text',
     enableCheckAll: true,
     selectAllText: 'Select All',
-    unSelectAllText: 'UnSelect All',
+    unSelectAllText: 'Unselect All',
     allowSearchFilter: true,
     limitSelection: -1,
     clearSearchFilter: true,
@@ -131,7 +131,6 @@ export class ReportsComponent implements OnInit {
 
   ngOnInit(): void {
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
-
     this.subs.add(
       forkJoin([this.reportService.getCategories(), this.reportService.getUserCategory(), this.reportService.getColumns()]).subscribe(
         res => {
@@ -477,22 +476,58 @@ export class ReportsComponent implements OnInit {
     $('.reportParamOverlay').removeClass('ovrlay');
   }
 
+
+
   runReport() {
     let lstParamNameValue: string[] = [''];
     const exportId = this.selectedReport.reportId
     this.subs.add(
-      this.reportingGrpService.runReport(exportId, lstParamNameValue, this.currentUser.userId, "EXCEL", false).subscribe(
+      this.reportService.getListOfScheduledParameters(exportId).subscribe(
         data => {
-          const linkSource = 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' + data;
-          const downloadLink = document.createElement("a");
-          const fileName = `Xport_${exportId}.xlsx`;
-          downloadLink.href = linkSource;
-          downloadLink.download = fileName;
-          downloadLink.click();
+          if (data.isSuccess) {
+            const parameters = data.data;
+            // console.log(parameters);
+            if (parameters.length > 0) {
+              let paramArr: string[] = [];
+              let checkValueSet = '';
+              parameters.forEach(element => {
+                if (checkValueSet == '' && element.paramvalue == "") {
+                  checkValueSet = element.extfield;
+                }
+                paramArr.push(element.extfield)
+                paramArr.push(element.paramvalue)
+              });
+              lstParamNameValue = [paramArr.toString()];
+
+              if (checkValueSet != '') {
+                this.alertService.error(`Missing Parameters: ${checkValueSet}`);
+                this.openParameterWindow(this.selectedReport);
+                return;
+              }
+            }
+
+            // run report 
+            this.reportingGrpService.runReport(exportId, lstParamNameValue, this.currentUser.userId, "EXCEL", false).subscribe(
+              data => {
+                const linkSource = 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' + data;
+                const downloadLink = document.createElement("a");
+                const fileName = `Xport_${exportId}.xlsx`;
+                downloadLink.href = linkSource;
+                downloadLink.download = fileName;
+                downloadLink.click();
+              },
+              err => {
+                this.alertService.error(`Parameters are not set`);
+                this.openParameterWindow(this.selectedReport);
+              }
+            )
+          } else this.alertService.error(data.message);
         },
         err => this.alertService.error(err)
       )
     )
+
+
   }
 
   //####################### Preview Report functions end ##########################

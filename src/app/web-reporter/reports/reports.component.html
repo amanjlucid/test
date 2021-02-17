@@ -63,7 +63,7 @@
                 [selectable]="selectableSettings" [filter]="state.filter" (cellClick)="cellClickHandler($event)"
                 [navigable]="true">
 
-                <kendo-grid-column field="favourite" title="" width="25" [filterable]="false" [groupable]="false">
+                <kendo-grid-column field="favourite" title="" width="20" [filterable]="false" [groupable]="false" [style]="{'padding': '0','text-align': 'center'}">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <i (click)="setFavourite(dataItem)" [ngClass]="{'favourite': dataItem.favourite === 1}"
                             class="fa fa-star" aria-hidden="true"></i>
@@ -71,7 +71,14 @@
 
                 </kendo-grid-column>
 
-                <kendo-grid-column title=" " width="25" [filterable]="false">
+                <kendo-grid-column field="isShceduled" title="" width="20" [filterable]="false" [sortable]="false" [style]="{'padding': '0','text-align': 'center'}">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <i *ngIf="dataItem.isShceduled" class="fas fa-clock"
+                            style="color: #e4287e; font-size: 14px;"></i>
+                    </ng-template>
+                </kendo-grid-column>
+
+                <kendo-grid-column title=" " width="20" [filterable]="false">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <li class="nav-item dropdown list-unstyled" style="margin-top: -7px;">
                             <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"
@@ -101,23 +108,18 @@
                 </kendo-grid-column>
                 <kendo-grid-column field="reportId" title="Report ID" width="60">
                 </kendo-grid-column>
-                <kendo-grid-column field="reportName" title="Report Name" width="260">
+                <kendo-grid-column field="reportName" title="Report Name" width="265">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <span title="{{dataItem.reportName}}">{{dataItem.reportName}}</span>
                         <span *ngIf="showColumns" class="showCol">{{dataItem.xport_Col}}</span>
                     </ng-template>
                 </kendo-grid-column>
-                <kendo-grid-column field="isShceduled" title="" width="30" [filterable]="false" [sortable]="false">
-                    <ng-template kendoGridCellTemplate let-dataItem>
-                        <i *ngIf="dataItem.isShceduled" class="fas fa-clock"
-                            style="color: #e4287e; font-size: 16px;"></i>
-                    </ng-template>
+            
+
+                <kendo-grid-column field="reportDescription" title="Report Description" width="210">
                 </kendo-grid-column>
 
-                <kendo-grid-column field="reportDescription" title="Report Description" width="160">
-                </kendo-grid-column>
-
-                <kendo-grid-column field="count" title="Run History" width="90">
+                <kendo-grid-column field="monthYear" title="Run History" width="90">
                 </kendo-grid-column>
 
 
