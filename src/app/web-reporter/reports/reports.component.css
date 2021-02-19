@@ -112,6 +112,21 @@ ng-multiselect-dropdown .dropdown-btn span:nth-child(2) {
     white-space: nowrap;
     line-height: 20px;
     padding: 8px 12px;
+    /* text-overflow: ellipsis; */
+}
+
+/* .reportNameCol {
+    white-space: normal !important;
+}
+
+.reportNameCol .reportNameSpan {
+    white-space: nowrap !important;
+}
+*/
+
+span.showCol {
+    height: 20px;
+    /* word-break: break-all !important; */
 }
 
 .searchDiv .form-group {

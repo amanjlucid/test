@@ -274,12 +274,12 @@
                     <ul class="sidenav-menu">
                         <li *ngIf="reporterPortalPermissions.indexOf('Reports') != -1" class="sidenav-item"
                             [routerLinkActive]="['active']">
-                            <a [routerLink]="['/web-reporter/reports']" class="sidenav-link">
+                            <a [routerLink]="['/reporting/reports']" class="sidenav-link">
                                 <div>Reports</div>
                             </a>
                         </li>
                         <li *ngIf="reporterPortalPermissions.indexOf('Published') != -1" class="sidenav-item" [routerLinkActive]="['active']">
-                            <a [routerLink]="['/web-reporter/published']" class="sidenav-link">
+                            <a [routerLink]="['/reporting/published']" class="sidenav-link">
                                 <div>Published</div>
                             </a>
                         </li>
@@ -302,7 +302,7 @@
 
                         <li class="sidenav-item" [routerLinkActive]="['active']">
                             <a [routerLink]="['/hns-settings']" class="sidenav-link">
-                                <div>Health & Safety Settings</div>
+                                <div>Health & Safety</div>
                             </a>
                         </li>
 
@@ -314,7 +314,7 @@
 
                         <li class="sidenav-item" [routerLinkActive]="['active']">
                             <a [routerLink]="['/business-areas']" class="sidenav-link">
-                                <div>Business Area Settings</div>
+                                <div>Business Area</div>
                             </a>
                         </li>
 
@@ -326,7 +326,7 @@
 
                         <li class="sidenav-item" [routerLinkActive]="['active']">
                             <a [routerLink]="['/web-reporter-settings']" class="sidenav-link">
-                                <div>Web Reporter Setting</div>
+                                <div>Reporting</div>
                             </a>
                         </li>
 
@@ -487,12 +487,12 @@
 
                             <ul class="sidenav-menu">
                                 <li *ngIf="reporterPortalPermissions.indexOf('Reports') != -1" class="sidenav-item" [routerLinkActive]="['active']">
-                                    <a [routerLink]="['/web-reporter/reports']" class="sidenav-link">
+                                    <a [routerLink]="['/reporting/reports']" class="sidenav-link">
                                         <div>Reports</div>
                                     </a>
                                 </li>
                                 <li *ngIf="reporterPortalPermissions.indexOf('Published') != -1" class="sidenav-item" [routerLinkActive]="['active']">
-                                    <a [routerLink]="['/web-reporter/published']" class="sidenav-link">
+                                    <a [routerLink]="['/reporting/published']" class="sidenav-link">
                                         <div>Published</div>
                                     </a>
                                 </li>

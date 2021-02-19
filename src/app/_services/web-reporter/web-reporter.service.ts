@@ -64,8 +64,22 @@ export class WebReporterService {
         return this.http.post<any>(`${appConfig.apiUrl}/api/WebReportSearch/InsertExportCategory`, body, this.httpOptions);
     }
 
+    insertExportCategorySingleRecord(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/WebReportSearch/InsertExportCategorySingleRecord`, body, this.httpOptions);
+    }
+
+    deleteExportCategorySingleRecord(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/WebReportSearch/DeleteExportCategorySingleRecord`, body, this.httpOptions);
+    }
+
     checkIfUserCategoryExists(userName: string, newCategoryName: string) {
         return this.http.get<any>(`${appConfig.apiUrl}/api/WebReportSearch/CheckIfUserCategoryExists?userName=${userName}&newCategoryName=${newCategoryName}`, this.httpOptions);
+    }
+
+    listXportUserCategoriesCheckReportId(reportId: number, checkReportId: boolean) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/WebReportSearch/ListXportUserCategoriesCheckReportId?reportId=${reportId}&checkReportId=${checkReportId}`, this.httpOptions);
     }
 
     insertUserCategory(userName: string, newCategoryName: string) {
@@ -78,6 +92,10 @@ export class WebReporterService {
 
     deleteUserCategory(userName: string, categoryName: string) {
         return this.http.get<any>(`${appConfig.apiUrl}/api/WebReportSearch/DeleteUserCategory?userName=${userName}&categoryName=${categoryName}`, this.httpOptions);
+    }
+
+    listXportUserCategoriesByReportId(reportId: number) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/WebReportSearch/ListXportUserCategoriesByReportId?reportId=${reportId}`, this.httpOptions);
     }
 
     getListOfScheduledParameters(intXportID: number) {

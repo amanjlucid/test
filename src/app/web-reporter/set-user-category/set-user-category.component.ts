@@ -32,7 +32,6 @@ export class SetUserCategoryComponent implements OnInit {
   userCategoyList: Array<[]>;
   templateHeading = '';
   selectableSettings: SelectableSettings;
-  mySelection: number[] = [];
   loading = true;
   selectedUserCategory: any;
   openManageUserCategory: boolean = false;
@@ -40,13 +39,15 @@ export class SetUserCategoryComponent implements OnInit {
   mode = 'new';
   currentUser: any;
   reporterPortalPermission = [];
+  reportsUserCategory: any = [];
+  checkUserCategory: boolean = false;
 
   constructor(
     private reportService: WebReporterService,
     private alertService: AlertService,
     private chRef: ChangeDetectorRef,
     private confirmationDialogService: ConfirmationDialogService,
-    private sharedService : SharedService
+    private sharedService: SharedService
   ) {
     this.setSelectableSettings();
   }
@@ -54,7 +55,9 @@ export class SetUserCategoryComponent implements OnInit {
   ngOnInit(): void {
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.templateHeading = this.selectedReport.reportId + " " + this.selectedReport.reportName;
-    this.getUserCategories();
+    this.getUserCategoriesByReport();
+    this.getUserCategories(this.selectedReport.reportId, this.checkUserCategory);
+
 
     this.subs.add(
       this.sharedService.webReporterObs.subscribe(
@@ -77,9 +80,9 @@ export class SetUserCategoryComponent implements OnInit {
     this.gridView = process(this.userCategoyList, this.state);
   }
 
-  getUserCategories() {
+  getUserCategories(reportId, checkReport) {
     this.subs.add(
-      this.reportService.getUserCategory().subscribe(
+      this.reportService.listXportUserCategoriesCheckReportId(reportId, checkReport).subscribe(
         data => {
           if (data.isSuccess) {
             this.userCategoyList = data.data;
@@ -87,6 +90,19 @@ export class SetUserCategoryComponent implements OnInit {
             this.loading = false;
             this.chRef.detectChanges();
           } else this.alertService.error(data.message);
+        },
+        err => this.alertService.error(err)
+      )
+    )
+  }
+
+  getUserCategoriesByReport() {
+    this.subs.add(
+      this.reportService.listXportUserCategoriesByReportId(this.selectedReport.reportId).subscribe(
+        data => {
+          if (data.isSuccess) this.reportsUserCategory = data.data;
+          else this.alertService.error(data.message);
+          this.chRef.detectChanges();
         },
         err => this.alertService.error(err)
       )
@@ -105,9 +121,6 @@ export class SetUserCategoryComponent implements OnInit {
     };
   }
 
-  onSelectedKeysChange($event) {
-    // console.log(this.mySelection)
-  }
 
   cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
     this.selectedUserCategory = dataItem;
@@ -125,6 +138,10 @@ export class SetUserCategoryComponent implements OnInit {
   }
 
   createNewUserCategory(mode = 'new') {
+    if (mode == 'edit') {
+      if (!this.selectedUserCategory) return;
+    }
+    
     this.openCreateUserCategory = true;
     this.mode = mode;
     $('.userCatOvrlay').addClass('ovrlay');
@@ -136,11 +153,15 @@ export class SetUserCategoryComponent implements OnInit {
   }
 
   refresSetCategoryWindow(eve) {
-    if (eve) this.getUserCategories();
+    if (eve) this.getUserCategories(this.selectedReport.reportId, this.checkUserCategory);
   }
 
-  openConfirmationDialog(item) {
-    this.selectedUserCategory = item;
+  openConfirmationDialog() {
+    if (this.selectedUserCategory == undefined) {
+      this.alertService.error("Please select a category first.");
+      return
+    }
+
     $('.k-window').css({ 'z-index': 1000 });
     this.confirmationDialogService.confirm('Please confirm..', 'Do you really want to delete this record ?')
       .then((confirmed) => (confirmed) ? this.deleteUserCategory() : console.log(confirmed))
@@ -153,13 +174,47 @@ export class SetUserCategoryComponent implements OnInit {
         data => {
           if (data.isSuccess) {
             this.alertService.success('Category delete successfully.');
-            this.getUserCategories();
+            this.getUserCategories(this.selectedReport.reportId, this.checkUserCategory);
           } else this.alertService.error(data.message);
         },
         err => this.alertService.error(err)
       )
     )
   }
+
+  saveUserCategory(item) {
+    this.selectedUserCategory = item;
+    const params = { XportCategory: item.name, ReportId: this.selectedReport.reportId };
+    if (this.reportsUserCategory.includes(item.name)) {
+      this.insertOrDeleteUserCategory(params, false);
+    } else {
+      this.insertOrDeleteUserCategory(params);
+    }
+  }
+
+  insertOrDeleteUserCategory(params, type = true) {
+    let dbService;
+
+    if (type) dbService = this.reportService.insertExportCategorySingleRecord(params);
+    else dbService = this.reportService.deleteExportCategorySingleRecord(params);
+
+    this.subs.add(
+      dbService.subscribe(
+        data => {
+          if (data.isSuccess) this.getUserCategoriesByReport();
+          else this.alertService.error(data.message);
+        },
+        err => this.alertService.error(err)
+      )
+    )
+  }
+
+  filterReportCategory(event) {
+    this.checkUserCategory = event.target.checked;
+    this.getUserCategories(this.selectedReport.reportId, this.checkUserCategory);
+    this.selectedUserCategory = undefined; //clear selection
+  }
+
 
 
 }

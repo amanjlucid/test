@@ -3,7 +3,7 @@ import { SubSink } from 'subsink';
 import { GroupDescriptor, DataResult, State } from '@progress/kendo-data-query';
 import { SelectableSettings } from '@progress/kendo-angular-grid';
 import { forkJoin, Observable, Subject, of } from 'rxjs';
-import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, map, tap } from 'rxjs/operators';
 import { AlertService, ReportingGroupService, SharedService, WebReporterService } from 'src/app/_services';
 import { Router } from '@angular/router';
 
@@ -169,10 +169,10 @@ export class ReportsComponent implements OnInit {
     this.subs.add(
       this.textSearch$
         .pipe(
+          tap(x => this.loading = true),
           debounceTime(1000),
           distinctUntilChanged()
         ).subscribe((val) => {
-          this.loading = true;
           this.filterGrid();
         })
     );
@@ -180,10 +180,10 @@ export class ReportsComponent implements OnInit {
     // subscribe for grid filter with api
     this.subs.add(
       this.waitForApiSearch$.pipe(
+        tap(x => this.loading = true),
         debounceTime(1000),
         distinctUntilChanged()
       ).subscribe(val => {
-        this.loading = true;
         this.getReportList(this.reportQueryModel)
       })
     );
@@ -239,7 +239,7 @@ export class ReportsComponent implements OnInit {
 
   showColFn() {
     this.showColumns = !this.showColumns;
-    this.rowheight = this.showColumns ? 70 : 36; // change virtual row height according to show columns
+    this.rowheight = this.showColumns ? 56 : 36; // change virtual row height according to show columns
   }
 
   setSelectableSettings(): void {
@@ -262,26 +262,22 @@ export class ReportsComponent implements OnInit {
   }
 
   onCategoriesSingleSelectionChange(item: any) {
-    // this.loading = true;//start grid loader
     this.reportQueryModel.Categories = this.selectedCategories.map(x => x.item_id).toString();
     this.waitForApiSearch$.next(this.reportQueryModel.Categories)
   }
 
   onCategoriesSelectionAllChange(items: any) {
-    // this.loading = true;//start grid loader
     this.selectedCategories = items;
     this.reportQueryModel.Categories = this.selectedCategories.map(x => x.item_id).toString();
     this.waitForApiSearch$.next(this.reportQueryModel.Categories)
   }
 
   onCategorySingleSelectionChange(item: any) {
-    // this.loading = true;//start grid loader
     this.reportQueryModel.XportCategory = this.selectedCategory.map(x => x.item_id).toString();
     this.waitForApiSearch$.next(this.reportQueryModel.XportCategory)
   }
 
   onCategorySelectionAllChange(items: any) {
-    // this.loading = true;//start grid loader
     this.selectedCategory = items;
     this.reportQueryModel.XportCategory = this.selectedCategory.map(x => x.item_id).toString();
     this.waitForApiSearch$.next(this.reportQueryModel.XportCategory)
@@ -293,8 +289,8 @@ export class ReportsComponent implements OnInit {
   }
 
   triggerFilter($event, searchType = null) {
-    // this.loading = true;//start grid loader
     if (!this.reportListFilters.frontFilter) this.reportListFilters.frontFilter = true;
+
     if (searchType == 'nameall' || searchType == 'nameany') {
       this.reportListFilters.nameMatchAll = !this.reportListFilters.nameMatchAll;
       this.reportListFilters.nameMatchAny = !this.reportListFilters.nameMatchAny;
@@ -311,62 +307,75 @@ export class ReportsComponent implements OnInit {
   }
 
   onOutPutColumnChange(value) {
-    // this.loading = true;//start grid loader
     if (!this.reportListFilters.frontFilter) this.reportListFilters.frontFilter = true;
+
     this.reportListFilters.selectedOutputColumns = value;
     const objectStr = JSON.stringify(this.reportListFilters);//pass object string just to check object has changed
     this.textSearch$.next(objectStr);
   }
 
   filterGrid() {
+
     if ((this.reportListFilters.frontFilter == false) || (this.reportListFilters.number == "" && this.reportListFilters.name == "" && this.reportListFilters.selectedOutputColumns.length == 0)) {
       this.reportList = this.actualReportList;
-      setTimeout(() => { this.loading = false }, 500);
+      setTimeout(() => { this.loading = false }, 400);
       return
     }
 
     let gridData = [];
     if (this.actualReportList) {
+      let reportNumberFilter = true;
+      let reportNameFilter = true;
+      let reportColFilter = true;
       gridData = this.actualReportList.filter(element => {
+        //filter report number
         if (this.reportListFilters.number != "") {
-          if (JSON.stringify(element.reportId).indexOf(this.reportListFilters.number) !== -1) return true
+          reportNumberFilter = (JSON.stringify(element.reportId).indexOf(this.reportListFilters.number) !== -1);
         }
 
+        //filter report name
         if (this.reportListFilters.name !== "") {
-          if (this.reportListFilters.nameMatchAll) {
-            if (element.reportName == this.reportListFilters.name) return true
-          } else {
-            if (element.reportName.indexOf(this.reportListFilters.name) !== -1) return true
+          const enteredNamed = this.reportListFilters.name.toLowerCase();
+          const reportName = element.reportName.trim().toLowerCase();
+          const splitEnteredName = enteredNamed.split(',');
+
+          if (splitEnteredName.length > 0) {
+            if (this.reportListFilters.nameMatchAll) {
+              reportNameFilter = splitEnteredName.every(splitReport => reportName.includes(splitReport.trim()));
+            } else {
+              reportNameFilter = splitEnteredName.some(splitReport => reportName.includes(splitReport.trim()));
+            }
           }
         }
 
+        //filter report column
         if (this.reportListFilters.selectedOutputColumns.length > 0) {
           if (this.reportListFilters.columnExactMatch) {
             if (element.xport_Col.trim() != "")
-              return element.xport_Col.trim() == this.reportListFilters.selectedOutputColumns.toString();
+              reportColFilter = element.xport_Col.trim() == this.reportListFilters.selectedOutputColumns.toString();
           } else {
             const splitColumns = element.xport_Col.trim() != "" ? element.xport_Col.split(',') : [];
             if (this.reportListFilters.columnMatchAll) {
               if (splitColumns.length > 0) {
-                const checkColAllExist = this.reportListFilters.selectedOutputColumns.every(x => splitColumns.includes(x))
-                if (checkColAllExist) return true;
+                reportColFilter = this.reportListFilters.selectedOutputColumns.every(x => splitColumns.includes(x))
               }
             } else {
               if (splitColumns.length > 0) {
-                const checkColAnyExist = splitColumns.some(x => this.reportListFilters.selectedOutputColumns.some(y => x.toLowerCase().indexOf(y.toLocaleLowerCase()) !== -1))
-                if (checkColAnyExist) return true;
+                reportColFilter = splitColumns.some(x => this.reportListFilters.selectedOutputColumns.some(y => x.toLowerCase().indexOf(y.toLocaleLowerCase()) !== -1))
               }
             }
           }
 
         }
-        return false
+
+        return (reportNumberFilter && reportNameFilter && reportColFilter);
+
       })
 
     }
 
     this.reportList = gridData;
-    setTimeout(() => { this.loading = false }, 500);
+    setTimeout(() => { this.loading = false }, 400);
 
   }
 
@@ -452,8 +461,8 @@ export class ReportsComponent implements OnInit {
 
 
   //####################### Set User Categroy window functions start ##########################
-  openSetUserCategoryWindow(item) {
-    this.selectedReport = item;
+  openSetUserCategoryWindow() {
+    // this.selectedReport = item;
     this.openSetUserCategory = true;
     $('.reportParamOverlay').addClass('ovrlay');
   }
@@ -475,8 +484,6 @@ export class ReportsComponent implements OnInit {
     this.openPreviewReport = eve;
     $('.reportParamOverlay').removeClass('ovrlay');
   }
-
-
 
   runReport() {
     let lstParamNameValue: string[] = [''];
@@ -570,10 +577,10 @@ export class ReportsComponent implements OnInit {
       number: '',
       name: '',
       nameMatchAll: false,
-      nameMatchAny: false,
+      nameMatchAny: true,
       selectedOutputColumns: [],
       columnMatchAll: false,
-      columnMatchAny: false,
+      columnMatchAny: true,
       columnExactMatch: false,
       all: true,
       lastMonth: false,
