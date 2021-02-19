@@ -101,9 +101,11 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
     this.router.events.subscribe((ev) => {
       if (ev instanceof NavigationEnd) {
         let currentUser = JSON.parse(localStorage.getItem('currentUser'));
-        this.authService.formAuthentication(currentUser.userId).subscribe(data => {
-          //console.log(data);
-        })
+        if(currentUser){
+          this.authService.formAuthentication(currentUser.userId).subscribe(data => {
+            //console.log(data);
+          })
+        }
       }
     });
   }
@@ -205,6 +207,7 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
     this.timerSubscription = timer(0, interval).pipe(
       take(duration)
     ).subscribe(value =>
+      
       this.render((duration - +value) * interval),
       err => { },
       () => {
@@ -222,6 +225,7 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
   }
 
   private render(count) {
+    console.log(count);
     this.secondsDisplay = this.getSeconds(count);
     this.minutesDisplay = this.getMinutes(count);
   }
