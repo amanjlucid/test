@@ -225,7 +225,7 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
   }
 
   private render(count) {
-    console.log(count);
+    // console.log(count);
     this.secondsDisplay = this.getSeconds(count);
     this.minutesDisplay = this.getMinutes(count);
   }
