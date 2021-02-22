@@ -9,6 +9,7 @@ import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
 import { SharedModule } from '../shared.module';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { NgbDate, NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { TooltipModule } from '@progress/kendo-angular-tooltip';
 
 import { WebReporterRoutingModule } from './web-reporter-routing.module';
 import { WebReporterComponent } from './web-reporter.component';
@@ -29,6 +30,7 @@ import { AddScheduleReportComponent } from './add-schedule-report/add-schedule-r
   imports: [
     CommonModule,
     FormsModule,
+    TooltipModule,
     ReactiveFormsModule,
     ExcelModule,
     DropDownsModule,

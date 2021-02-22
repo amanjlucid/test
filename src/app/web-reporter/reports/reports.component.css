@@ -115,6 +115,23 @@ ng-multiselect-dropdown .dropdown-btn span:nth-child(2) {
     /* text-overflow: ellipsis; */
 }
 
+.tooltipRow {
+    max-width: 773px;
+    font-weight: 600;
+    padding: 16px;
+}
+
+.tooltip-class * {
+    background: white !important;
+    color: black !important;
+    z-index: 99999 !important;
+}
+
+.tooltip-class .k-callout {
+    background-color: transparent !important;
+    color: white !important;
+}
+
 /* .reportNameCol {
     white-space: normal !important;
 }

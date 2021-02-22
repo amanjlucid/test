@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation, ChangeDetectorRef, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, ChangeDetectorRef, ViewChild, HostListener } from '@angular/core';
 import { SubSink } from 'subsink';
 import { GroupDescriptor, DataResult, State } from '@progress/kendo-data-query';
 import { SelectableSettings } from '@progress/kendo-angular-grid';
@@ -6,6 +6,7 @@ import { forkJoin, Observable, Subject, of } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map, tap } from 'rxjs/operators';
 import { AlertService, ReportingGroupService, SharedService, WebReporterService } from 'src/app/_services';
 import { Router } from '@angular/router';
+import { TooltipDirective } from '@progress/kendo-angular-tooltip';
 
 @Component({
   selector: 'app-reports',
@@ -15,6 +16,7 @@ import { Router } from '@angular/router';
 })
 
 export class ReportsComponent implements OnInit {
+  @ViewChild(TooltipDirective) public tooltipDir: TooltipDirective;
   @ViewChild('categoriesMultiSelect') categoriesMultiSelect;
   subs = new SubSink();
   state: State = {
@@ -118,6 +120,12 @@ export class ReportsComponent implements OnInit {
   openScheduleReport: boolean = false;
   reporterPortalPermission = [];
   manageUsrCategory = false;
+  toolTipData = { innerText: '', dataLoaded: false };
+  @HostListener("click")
+  clicked() {
+    this.toolTipData.dataLoaded = false;
+    this.tooltipDir.hide();
+  }
 
 
   constructor(
@@ -599,4 +607,22 @@ export class ReportsComponent implements OnInit {
   }
 
   // ####################### Right sidebar functions end ##########################
+
+  showTooltip(e: MouseEvent): void {
+    const element = e.target as HTMLElement;
+    if (element.className.indexOf('showCol') != -1) {
+      const innerTxt = element.innerHTML;
+      this.tooltipDir.toggle(element);
+      this.toolTipData.dataLoaded = true;
+      if (this.toolTipData.innerText != innerTxt) {
+        this.toolTipData.innerText = innerTxt
+      }
+    } 
+    // else {
+    //   // this.toolTipData.dataLoaded = false;
+    //   // this.tooltipDir.hide();
+    // }
+
+
+  }
 }
