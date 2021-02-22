@@ -31,7 +31,7 @@ export class PreviewReportComponent implements OnInit {
   public windowHeight = 'auto';
   public windowTop = '10';
   public emailPreviewWindowTop = '35';
-  public emailReportWindowTop = '200';
+  public emailReportWindowTop = '20';
   public emailWindowWidth = 835;
   public windowLeft = 'auto';
   reportingTable: any;
@@ -168,7 +168,7 @@ export class PreviewReportComponent implements OnInit {
     this.subs.add(
       this.reportService.previewReport(params).subscribe(
         data => {
-          console.log(data)
+          // console.log(data)
           this.renderTable(data);
         },
         err => this.alertService.error(err)

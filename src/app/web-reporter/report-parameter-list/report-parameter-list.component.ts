@@ -48,7 +48,7 @@ export class ReportParameterListComponent implements OnInit {
   public mySelection: number[] = [];
   public selectableSettings: SelectableSettings;
   public selectAllState: SelectAllCheckboxState = 'unchecked';
-  
+
   constructor(
     private reportService: WebReporterService,
     private alertService: AlertService,
@@ -62,6 +62,8 @@ export class ReportParameterListComponent implements OnInit {
     this.headerFilters.intXportId = this.selectedReport.reportId;
     this.headerFilters.strXportIntField = this.selectedReportParam.intfield;
     this.parameterInpValue = this.selectedReportParam.paramvalue;
+
+    // console.log(this.selectedReportParam);
 
     this.query = this.stateChange.pipe(
       debounceTime(20),
@@ -203,7 +205,17 @@ export class ReportParameterListComponent implements OnInit {
 
   cellClickHandler(eve) {
     this.selectedParamListValue = eve.dataItem;
-    let keyobj = this.columnName.find(x => x.col.toLowerCase() == this.selectedReportParam.intfield.toLowerCase())
+   
+    let keyobj;
+    if (this.columnName.length > 1) {
+      keyobj = this.columnName.find(x => x.col.toLowerCase() == this.selectedReportParam.intfield.toLowerCase())
+    } else {
+      keyobj = this.columnName.find(x => x.col.toLowerCase() == this.selectedReportParam.intfield.toLowerCase())
+      if (!keyobj) {
+        keyobj = this.columnName[0];
+      }
+    }
+   
     if (keyobj) this.parameterInpValue = this.selectedParamListValue[keyobj.col];
     else this.parameterInpValue = '';
     this.chRef.detectChanges();

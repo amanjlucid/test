@@ -455,6 +455,7 @@ export class ReportsComponent implements OnInit {
   closeRportparamWindow(eve) {
     this.openReportParameter = eve;
     $('.reportParamOverlay').removeClass('ovrlay');
+    this.getReportList(this.reportQueryModel)
   }
 
   //####################### Parameter window functions end ##########################
@@ -549,6 +550,7 @@ export class ReportsComponent implements OnInit {
   closeScheduleReportWindow(eve) {
     this.openScheduleReport = eve;
     $('.reportParamOverlay').removeClass('ovrlay');
+    this.getReportList(this.reportQueryModel)
   }
 
 
