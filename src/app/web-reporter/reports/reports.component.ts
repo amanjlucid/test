@@ -117,6 +117,7 @@ export class ReportsComponent implements OnInit {
   openPreviewReport: boolean = false;
   openScheduleReport: boolean = false;
   reporterPortalPermission = [];
+  manageUsrCategory = false;
 
 
   constructor(
@@ -462,8 +463,9 @@ export class ReportsComponent implements OnInit {
 
 
   //####################### Set User Categroy window functions start ##########################
-  openSetUserCategoryWindow() {
-    // this.selectedReport = item;
+  openSetUserCategoryWindow(item = null, manageUsrCategory) {
+    this.selectedReport = item;
+    this.manageUsrCategory = manageUsrCategory;
     this.openSetUserCategory = true;
     $('.reportParamOverlay').addClass('ovrlay');
   }

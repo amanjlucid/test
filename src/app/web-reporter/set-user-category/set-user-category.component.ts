@@ -15,6 +15,7 @@ export class SetUserCategoryComponent implements OnInit {
   subs = new SubSink();
   @Input() openSetUserCategory: boolean = false;
   @Input() selectedReport: any;
+  @Input() manageUsrCategory: boolean = false;
   @Output() closeSetUserCategoryWindow = new EventEmitter<boolean>();
   state: State = {
     skip: 0,
@@ -25,7 +26,7 @@ export class SetUserCategoryComponent implements OnInit {
       filters: []
     }
   }
-  title = 'Choose User Categories';
+  title = this.manageUsrCategory ? 'Manage User Categories' : 'Choose User Categories';
   gridView: DataResult;
   allowUnsort = true;
   multiple = false;
@@ -54,9 +55,13 @@ export class SetUserCategoryComponent implements OnInit {
 
   ngOnInit(): void {
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    this.templateHeading = this.selectedReport.reportId + " " + this.selectedReport.reportName;
-    this.getUserCategoriesByReport();
-    this.getUserCategories(this.selectedReport.reportId, this.checkUserCategory);
+    
+    if (this.manageUsrCategory) {
+      this.templateHeading = this.selectedReport.reportId + " " + this.selectedReport.reportName;
+      this.getUserCategoriesByReport();
+    }
+
+    this.getUserCategories();
 
 
     this.subs.add(
@@ -80,9 +85,17 @@ export class SetUserCategoryComponent implements OnInit {
     this.gridView = process(this.userCategoyList, this.state);
   }
 
-  getUserCategories(reportId, checkReport) {
+  getUserCategories() {
+    let usercategoryService: any;
+    
+    if (this.manageUsrCategory) {
+      usercategoryService = this.reportService.listXportUserCategoriesCheckReportId(this.selectedReport.reportId, this.checkUserCategory);
+    } else {
+      usercategoryService = this.reportService.getUserCategory()
+    }
+
     this.subs.add(
-      this.reportService.listXportUserCategoriesCheckReportId(reportId, checkReport).subscribe(
+      usercategoryService.subscribe(
         data => {
           if (data.isSuccess) {
             this.userCategoyList = data.data;
@@ -94,6 +107,7 @@ export class SetUserCategoryComponent implements OnInit {
         err => this.alertService.error(err)
       )
     )
+
   }
 
   getUserCategoriesByReport() {
@@ -141,7 +155,7 @@ export class SetUserCategoryComponent implements OnInit {
     if (mode == 'edit') {
       if (!this.selectedUserCategory) return;
     }
-    
+
     this.openCreateUserCategory = true;
     this.mode = mode;
     $('.userCatOvrlay').addClass('ovrlay');
@@ -153,7 +167,7 @@ export class SetUserCategoryComponent implements OnInit {
   }
 
   refresSetCategoryWindow(eve) {
-    if (eve) this.getUserCategories(this.selectedReport.reportId, this.checkUserCategory);
+    if (eve) this.getUserCategories();
   }
 
   openConfirmationDialog() {
@@ -174,7 +188,7 @@ export class SetUserCategoryComponent implements OnInit {
         data => {
           if (data.isSuccess) {
             this.alertService.success('Category delete successfully.');
-            this.getUserCategories(this.selectedReport.reportId, this.checkUserCategory);
+            this.getUserCategories();
           } else this.alertService.error(data.message);
         },
         err => this.alertService.error(err)
@@ -211,7 +225,7 @@ export class SetUserCategoryComponent implements OnInit {
 
   filterReportCategory(event) {
     this.checkUserCategory = event.target.checked;
-    this.getUserCategories(this.selectedReport.reportId, this.checkUserCategory);
+    this.getUserCategories();
     this.selectedUserCategory = undefined; //clear selection
   }
 

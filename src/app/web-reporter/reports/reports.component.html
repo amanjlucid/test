@@ -8,8 +8,8 @@
 
         <div class="col-md-10 col-sm-9 text-right">
             <button *ngIf="reporterPortalPermission.indexOf('User Categories') != -1" type="button"
-                class="btn btn-sm themeButton mr-1" (click)="openSetUserCategoryWindow()"
-                [disabled]="!selectedReport">User Categories</button>
+                class="btn btn-sm themeButton mr-1" (click)="openSetUserCategoryWindow(null, false)">User
+                Categories</button>
             <button *ngIf="reporterPortalPermission.indexOf('Preview') != -1" type="button"
                 class="btn btn-sm themeButton mr-1" (click)="previewReport()"
                 [disabled]="!selectedReport">Preview</button>
@@ -75,7 +75,8 @@
 
                 </kendo-grid-column>
 
-                <kendo-grid-column field="parameterCheck" title="Paramters" width="20" [filterable]="false" [groupable]="true">
+                <kendo-grid-column field="parameterCheck" title="Paramters" width="20" [filterable]="false"
+                    [groupable]="true">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <span>
                             <img *ngIf="dataItem.parameterCheck == 1" style="height: 14px;"
@@ -87,8 +88,8 @@
                     </ng-template>
                 </kendo-grid-column>
 
-                <kendo-grid-column field="isShceduled" title="Schedule" width="20" [filterable]="false" [sortable]="false"
-                    [style]="{'padding': '0','text-align': 'center'}">
+                <kendo-grid-column field="isShceduled" title="Schedule" width="20" [filterable]="false"
+                    [sortable]="false" [style]="{'padding': '0','text-align': 'center'}">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <i *ngIf="dataItem.isShceduled" class="fas fa-clock"
                             style="color: #e4287e; font-size: 14px;"></i>
@@ -101,10 +102,10 @@
                             <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"
                                 (click)="setSeletedRow(dataItem)"></i>
                             <div class="dropdown-menu">
-                                <!-- <a *ngIf="reporterPortalPermission.indexOf('User Categories') != -1"
+                                <a *ngIf="reporterPortalPermission.indexOf('User Categories') != -1"
                                     class="dropdown-item" href="javascript:void(0)"
-                                    (click)="openSetUserCategoryWindow(dataItem)">
-                                    User Categories</a> -->
+                                    (click)="openSetUserCategoryWindow(dataItem, true)">
+                                    Manage User Categories</a>
                                 <a *ngIf="reporterPortalPermission.indexOf('User Categories') != -1"
                                     class="dropdown-item" href="javascript:void(0)"
                                     (click)="scheduleReport(dataItem)">Scheduling</a>
@@ -128,7 +129,8 @@
                 <kendo-grid-column field="reportName" title="Report Name" width="265" [class]="{'reportNameCol': true}">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <span class="reportNameSpan" title="{{dataItem.reportName}}">{{dataItem.reportName}}</span>
-                        <span *ngIf="showColumns" title="{{dataItem.xport_Col}}" class="showCol">{{dataItem.xport_Col}}</span>
+                        <span *ngIf="showColumns" title="{{dataItem.xport_Col}}"
+                            class="showCol">{{dataItem.xport_Col}}</span>
                     </ng-template>
                 </kendo-grid-column>
 
@@ -448,7 +450,8 @@
     [selectedReport]="selectedReport" (closeRportparamWindow)="closeRportparamWindow($event)"></app-report-parameter>
 
 <app-set-user-category *ngIf="openSetUserCategory" [openSetUserCategory]="openSetUserCategory"
-    [selectedReport]="selectedReport" (closeSetUserCategoryWindow)="closeSetUserCategoryWindow($event)">
+    [selectedReport]="selectedReport" (closeSetUserCategoryWindow)="closeSetUserCategoryWindow($event)"
+    [manageUsrCategory]="manageUsrCategory">
 </app-set-user-category>
 
 <app-preview-report *ngIf="openPreviewReport" [openPreviewReport]="openPreviewReport" [selectedReport]="selectedReport"

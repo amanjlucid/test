@@ -1,17 +1,18 @@
 <kendo-window title="{{title}}" *ngIf="openSetUserCategory" (close)="closeUserCategories()" [top]="20" [minWidth]="500"
     [width]="700" [height]="auto" [minHeight]="350">
 
-    <div class="row">
+    <div class="row" *ngIf="manageUsrCategory">
         <div class="col-md-12">
             <div class="windowHeading"> <span>{{ templateHeading }}</span> </div>
         </div>
     </div>
 
     <div class="row mt-2">
-        <div class="col-md-6 text-left">
-            <input value="false" type="checkbox" class="k-checkbox" (change)="filterReportCategory($event)">&nbsp; Included Only
+        <div class="col-md-6 text-left" *ngIf="manageUsrCategory">
+            <input value="false" type="checkbox" class="k-checkbox" (change)="filterReportCategory($event)">&nbsp;
+            Included Only
         </div>
-        <div class="col-md-6 text-right">
+        <div class="text-right" [ngClass]="{'col-md-6': manageUsrCategory, 'col-md-12': !manageUsrCategory }">
             <button *ngIf="reporterPortalPermission.indexOf('Rename Category') != -1" type="button"
                 class="btn btn-sm themeButton mr-1" (click)="createNewUserCategory('edit')"
                 [disabled]="!selectedUserCategory">Rename</button>
@@ -33,7 +34,7 @@
                 (sortChange)="sortChange($event)" (filterChange)="filterChange($event)"
                 (cellClick)="cellClickHandler($event)" [navigable]="true">
 
-                <kendo-grid-column title=" " width="12" [filterable]="false">
+                <kendo-grid-column title=" " width="12" [filterable]="false" *ngIf="manageUsrCategory">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <input [checked]="reportsUserCategory.includes(dataItem.name)" value="{{dataItem.name}}"
                             type="checkbox" id="chkboxonly" class="k-checkbox" (change)="saveUserCategory(dataItem)">
