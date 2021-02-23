@@ -193,6 +193,7 @@ export class ReportParameterComponent implements OnInit {
       }
 
       // run report 
+      this.alertService.success(`Report ${this.selectedReport.reportId} - ${this.selectedReport.reportName} has started.`);
       const exportId = this.selectedReport.reportId
       this.reportingGrpService.runReport(exportId, lstParamNameValue, this.currentUser.userId, "EXCEL", false).subscribe(
         data => {
