@@ -222,6 +222,21 @@ export class ReportsComponent implements OnInit {
     this.subs.unsubscribe();
   }
 
+  refreshUserCategory() {
+    this.subs.add(
+      this.reportService.getUserCategory().subscribe(
+        data => {
+          const userCategoryData = data;
+          if (userCategoryData.isSuccess) {
+            this.userCategory = userCategoryData.data.map((x: any) => {
+              return { item_id: x.name, item_text: x.name }
+            });
+          } else this.alertService.error(userCategoryData.message);
+        }
+      )
+    )
+  }
+
   getRportCount(params) {
     this.subs.add(
       this.reportService.reportCount(params).subscribe(res => this.reportCount = res.data)
@@ -482,6 +497,7 @@ export class ReportsComponent implements OnInit {
   closeSetUserCategoryWindow(eve) {
     this.openSetUserCategory = eve;
     $('.reportParamOverlay').removeClass('ovrlay');
+    this.refreshUserCategory();
   }
 
   //####################### Set User Categroy functions end ##########################

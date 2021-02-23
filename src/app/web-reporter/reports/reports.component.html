@@ -475,7 +475,7 @@
 
 <div class="reportParamOverlay"></div>
 <app-report-parameter *ngIf="openReportParameter" [openReportParameter]="openReportParameter"
-    [selectedReport]="selectedReport" (closeRportparamWindow)="closeRportparamWindow($event)"></app-report-parameter>
+    [selectedReport]="selectedReport" [pivot]="pivot" (closeRportparamWindow)="closeRportparamWindow($event)"></app-report-parameter>
 
 <app-set-user-category *ngIf="openSetUserCategory" [openSetUserCategory]="openSetUserCategory"
     [selectedReport]="selectedReport" (closeSetUserCategoryWindow)="closeSetUserCategoryWindow($event)"

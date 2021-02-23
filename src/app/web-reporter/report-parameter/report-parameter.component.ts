@@ -15,6 +15,7 @@ export class ReportParameterComponent implements OnInit {
   subs = new SubSink();
   @Input() openReportParameter: boolean = false;
   @Input() selectedReport: any;
+  @Input() pivot:boolean = false;
   @Output() closeRportparamWindow = new EventEmitter<boolean>();
   title = 'Report Parameters';
   state: State = {
@@ -195,7 +196,7 @@ export class ReportParameterComponent implements OnInit {
       // run report 
       this.alertService.success(`Report ${this.selectedReport.reportId} - ${this.selectedReport.reportName} has started.`);
       const exportId = this.selectedReport.reportId
-      this.reportingGrpService.runReport(exportId, lstParamNameValue, this.currentUser.userId, "EXCEL", false).subscribe(
+      this.reportingGrpService.runReport(exportId, lstParamNameValue, this.currentUser.userId, "EXCEL", this.pivot).subscribe(
         data => {
           const linkSource = 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' + data;
           const downloadLink = document.createElement("a");
