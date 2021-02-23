@@ -209,6 +209,7 @@ export class ReportingComponent implements OnInit {
   }
 
   runReport(saveAs = false) {
+    this.alertService.success(`Report ${this.exportId} has started.`);
     let pivotCheckBox = this.pivotCheckBox.nativeElement.checked;
 
     if (this.reportingAction == "allUserNGroup") {

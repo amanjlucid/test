@@ -87,6 +87,7 @@ export class PreviewReportComponent implements OnInit {
   formErrors: any;
   parameterForPreviewReport: any = { intXportId: '', lstParamNameValue: [''], lngMaxRows: 1000 };
   reporterPortalPermission = [];
+  reportName = '';
 
   constructor(
     private fb: FormBuilder,
@@ -103,9 +104,11 @@ export class PreviewReportComponent implements OnInit {
     if (this.previewFrom == 'Report') {
       this.parameterForPreviewReport.intXportId = this.exportId = this.selectedReport.reportId;
       this.reportingType = `${this.exportId} ${this.selectedReport.reportName}`;
+      this.reportName = this.selectedReport.reportName;
     } else {
       this.parameterForPreviewReport.intXportId = this.exportId = this.selectedReport.xportIdentifier;
       this.reportingType = `${this.exportId} ${this.selectedReport.xportName}`;
+      this.reportName = this.selectedReport.xportName;
     }
 
 
@@ -247,7 +250,6 @@ export class PreviewReportComponent implements OnInit {
           downloadLink.href = linkSource;
           downloadLink.download = fileName;
           downloadLink.click();
-
         },
         err => this.alertService.error(err)
       )
@@ -255,6 +257,7 @@ export class PreviewReportComponent implements OnInit {
   }
 
   runReport(saveAs = false) {
+    this.alertService.success(`Report ${this.exportId} - ${this.reportName} has started.`);
     let pivotCheckBox = this.pivotCheckBox.nativeElement.checked;
     let lstParamNameValue: string[] = this.parameterForPreviewReport.lstParamNameValue;
     if (this.reportFormat == "PDF") {

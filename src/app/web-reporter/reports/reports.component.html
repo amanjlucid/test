@@ -7,14 +7,28 @@
         </div>
 
         <div class="col-md-10 col-sm-9 text-right">
-            <button *ngIf="reporterPortalPermission.indexOf('User Categories') != -1" type="button"
+            <!-- <button *ngIf="reporterPortalPermission.indexOf('User Categories') != -1" type="button"
                 class="btn btn-sm themeButton mr-1" (click)="openSetUserCategoryWindow(null, false)">User
-                Categories</button>
+                Categories</button> -->
             <button *ngIf="reporterPortalPermission.indexOf('Preview') != -1" type="button"
                 class="btn btn-sm themeButton mr-1" (click)="previewReport()"
                 [disabled]="!selectedReport">Preview</button>
             <button *ngIf="reporterPortalPermission.indexOf('Run Report') != -1" type="button"
                 class="btn btn-sm themeButton mr-1" (click)="runReport()" [disabled]="!selectedReport">Run</button>
+
+            <label class="switcher switcher-secondary">
+                <input [checked]="pivot"
+                    [(ngModel)]="pivot" type="checkbox" class="switcher-input">
+                <span class="switcher-indicator colSwitch">
+                    <span class="switcher-yes">
+                        <span class="ion ion-md-checkmark"></span>
+                    </span>
+                    <span class="switcher-no">
+                        <span class="ion ion-md-close"></span>
+                    </span>
+                </span>
+                <span class="switcher-label">Pivot</span>
+            </label>
 
             <button id="showFilePanel" (click)="openSearchBar()" class="btn btn-sm themeButton"><i
                     class="fa fa-search"></i>
@@ -64,7 +78,7 @@
     allowUnsort: allowUnsort,
     mode: multiple ? 'multiple' : 'single'
     }" [skip]="state.skip" [pageSize]="70" scrollable="virtual" [rowHeight]="rowheight" [sort]="state.sort"
-                [selectable]="selectableSettings" [filter]="state.filter" (cellClick)="cellClickHandler($event)"
+                [selectable]="selectableSettings"  kendoGridSelectBy="reportId" [selectedKeys]="mySelection" [filter]="state.filter" (cellClick)="cellClickHandler($event)"
                 [navigable]="false">
 
                 <kendo-grid-column field="favourite" title="" width="20" [filterable]="false" [groupable]="false"
@@ -103,16 +117,16 @@
                             <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"
                                 (click)="setSeletedRow(dataItem)"></i>
                             <div class="dropdown-menu">
-                                <a *ngIf="reporterPortalPermission.indexOf('User Categories') != -1"
-                                    class="dropdown-item" href="javascript:void(0)"
-                                    (click)="openSetUserCategoryWindow(dataItem, true)">
-                                    Manage User Categories</a>
-                                <a *ngIf="reporterPortalPermission.indexOf('User Categories') != -1"
-                                    class="dropdown-item" href="javascript:void(0)"
-                                    (click)="scheduleReport(dataItem)">Scheduling</a>
+
+                                <a *ngIf="reporterPortalPermission.indexOf('Schedule') != -1" class="dropdown-item"
+                                    href="javascript:void(0)" (click)="scheduleReport(dataItem)">Scheduling</a>
                                 <a *ngIf="reporterPortalPermission.indexOf('Parameters') != -1"
                                     [ngClass]="{'disabled' : dataItem.parameterExists == false}" class="dropdown-item"
                                     href="javascript:void(0)" (click)="openParameterWindow(dataItem)">Parameters</a>
+                                <a *ngIf="reporterPortalPermission.indexOf('User Categories') != -1"
+                                    class="dropdown-item" href="javascript:void(0)"
+                                    (click)="openSetUserCategoryWindow(dataItem, true)">
+                                    User Categories</a>
                                 <a *ngIf="reporterPortalPermission.indexOf('Preview') != -1" class="dropdown-item"
                                     href="javascript:void(0)" (click)="previewReport()">Preview</a>
                                 <a *ngIf="reporterPortalPermission.indexOf('Run Report') != -1" class="dropdown-item"

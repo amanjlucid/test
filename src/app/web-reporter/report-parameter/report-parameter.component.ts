@@ -53,7 +53,10 @@ export class ReportParameterComponent implements OnInit {
 
     this.subs.add(
       this.sharedService.webReporterObs.subscribe(
-        data => this.reporterPortalPermission = data
+        data => {
+          // console.log(data);
+          this.reporterPortalPermission = data
+        }
       )
     )
   }

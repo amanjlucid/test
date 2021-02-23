@@ -32,7 +32,7 @@ export class ReportsComponent implements OnInit {
   multiple = false;
   gridView: DataResult;
   loading = true
-  // mySelection: number[] = [];
+  mySelection: number[] = [];
   selectableSettings: SelectableSettings;
   reportList: any;
   actualReportList: any;
@@ -121,12 +121,12 @@ export class ReportsComponent implements OnInit {
   reporterPortalPermission = [];
   manageUsrCategory = false;
   toolTipData = { innerText: '', dataLoaded: false };
+  pivot = false;
   @HostListener("click")
   clicked() {
     this.toolTipData.dataLoaded = false;
     this.tooltipDir.hide();
   }
-
 
   constructor(
     private reportService: WebReporterService,
@@ -267,6 +267,7 @@ export class ReportsComponent implements OnInit {
   }
 
   cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
+    console.log(this.mySelection)
     this.selectedReport = dataItem;
   }
 
@@ -525,7 +526,8 @@ export class ReportsComponent implements OnInit {
             }
 
             // run report 
-            this.reportingGrpService.runReport(exportId, lstParamNameValue, this.currentUser.userId, "EXCEL", false).subscribe(
+            this.alertService.success(`Report ${exportId} - ${this.selectedReport.reportName} has started.`);
+            this.reportingGrpService.runReport(exportId, lstParamNameValue, this.currentUser.userId, "EXCEL", this.pivot).subscribe(
               data => {
                 const linkSource = 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' + data;
                 const downloadLink = document.createElement("a");
@@ -615,9 +617,9 @@ export class ReportsComponent implements OnInit {
       this.tooltipDir.toggle(element);
       this.toolTipData.dataLoaded = true;
       if (this.toolTipData.innerText != innerTxt) {
-        this.toolTipData.innerText = innerTxt
+        this.toolTipData.innerText = innerTxt.replace(/,/g, ", ");
       }
-    } 
+    }
     // else {
     //   // this.toolTipData.dataLoaded = false;
     //   // this.tooltipDir.hide();

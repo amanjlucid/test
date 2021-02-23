@@ -26,7 +26,7 @@ export class SetUserCategoryComponent implements OnInit {
       filters: []
     }
   }
-  title = this.manageUsrCategory ? 'Manage User Categories' : 'Choose User Categories';
+  title = 'User Categories';
   gridView: DataResult;
   allowUnsort = true;
   multiple = false;

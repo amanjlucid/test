@@ -205,17 +205,21 @@ export class ReportParameterListComponent implements OnInit {
 
   cellClickHandler(eve) {
     this.selectedParamListValue = eve.dataItem;
-   
-    let keyobj;
-    if (this.columnName.length > 1) {
-      keyobj = this.columnName.find(x => x.col.toLowerCase() == this.selectedReportParam.intfield.toLowerCase())
-    } else {
-      keyobj = this.columnName.find(x => x.col.toLowerCase() == this.selectedReportParam.intfield.toLowerCase())
-      if (!keyobj) {
-        keyobj = this.columnName[0];
-      }
+    // console.log({ selectd: this.selectedReportParam, frmlist: this.selectedParamListValue })
+    // console.log(this.columnName);
+    let keyobj = this.columnName.find(x => x.col.toLowerCase() == this.selectedReportParam.intfield.toLowerCase());
+    if (!keyobj) {
+      keyobj = this.columnName[0];
     }
-   
+    // if (this.columnName.length > 1) {
+    //   keyobj = this.columnName.find(x => x.col.toLowerCase() == this.selectedReportParam.intfield.toLowerCase())
+    // } else {
+    //   keyobj = this.columnName.find(x => x.col.toLowerCase() == this.selectedReportParam.intfield.toLowerCase())
+    //   if (!keyobj) {
+    //     keyobj = this.columnName[0];
+    //   }
+    // }
+
     if (keyobj) this.parameterInpValue = this.selectedParamListValue[keyobj.col];
     else this.parameterInpValue = '';
     this.chRef.detectChanges();
