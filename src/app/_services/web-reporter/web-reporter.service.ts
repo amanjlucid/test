@@ -98,8 +98,13 @@ export class WebReporterService {
         return this.http.get<any>(`${appConfig.apiUrl}/api/WebReportSearch/ListXportUserCategoriesByReportId?reportId=${reportId}`, this.httpOptions);
     }
 
-    getListOfScheduledParameters(intXportID: number) {
-        return this.http.get<any>(`${appConfig.apiUrl}/api/WebReportSearch/GetListOfScheduledParameters?intXportID=${intXportID}`, this.httpOptions);
+    getListOfScheduledParameters(intXportID: number, runInBackground = false) {
+        if(!runInBackground){
+            return this.http.get<any>(`${appConfig.apiUrl}/api/WebReportSearch/GetListOfScheduledParameters?intXportID=${intXportID}`, this.httpOptions);
+        } else {
+            return this.http.get<any>(`${appConfig.apiUrl}/api/WebReportSearch/GetListOfScheduledParameters?intXportID=${intXportID}&runInBackground=${runInBackground}`, this.httpOptions);
+        }
+        
     }
 
     getReportParamList(params): Observable<any> {

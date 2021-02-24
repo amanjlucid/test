@@ -269,7 +269,7 @@ export class ReportsComponent implements OnInit {
   setSelectableSettings(): void {
     this.selectableSettings = {
       checkboxOnly: false,
-      mode: 'single'
+      mode: 'multiple'
     };
   }
 
@@ -282,7 +282,6 @@ export class ReportsComponent implements OnInit {
   }
 
   cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
-    console.log(this.mySelection)
     this.selectedReport = dataItem;
   }
 
@@ -514,55 +513,96 @@ export class ReportsComponent implements OnInit {
   }
 
   runReport() {
-    let lstParamNameValue: string[] = [''];
-    const exportId = this.selectedReport.reportId
-    this.subs.add(
-      this.reportService.getListOfScheduledParameters(exportId).subscribe(
-        data => {
-          if (data.isSuccess) {
-            const parameters = data.data;
-            // console.log(parameters);
-            if (parameters.length > 0) {
-              let paramArr: string[] = [];
-              let checkValueSet = '';
-              parameters.forEach(element => {
-                if (checkValueSet == '' && element.paramvalue == "") {
-                  checkValueSet = element.extfield;
+    if (this.mySelection.length > 1) {
+      this.runMultipleReport();
+    } else {
+      let lstParamNameValue: string[] = [''];
+      const exportId = this.selectedReport.reportId;
+      this.subs.add(
+        this.reportService.getListOfScheduledParameters(exportId).subscribe(
+          data => {
+            if (data.isSuccess) {
+              const parameters = data.data;
+              // console.log(parameters);
+              if (parameters.length > 0) {
+                let paramArr: string[] = [];
+                let checkValueSet = '';
+                parameters.forEach(element => {
+                  if (checkValueSet == '' && element.paramvalue == "") {
+                    checkValueSet = element.extfield;
+                  }
+                  paramArr.push(element.extfield)
+                  paramArr.push(element.paramvalue)
+                });
+                lstParamNameValue = [paramArr.toString()];
+
+                if (checkValueSet != '') {
+                  this.alertService.error(`Missing Parameters: ${checkValueSet}`);
+                  this.openParameterWindow(this.selectedReport);
+                  return;
                 }
-                paramArr.push(element.extfield)
-                paramArr.push(element.paramvalue)
-              });
-              lstParamNameValue = [paramArr.toString()];
-
-              if (checkValueSet != '') {
-                this.alertService.error(`Missing Parameters: ${checkValueSet}`);
-                this.openParameterWindow(this.selectedReport);
-                return;
               }
-            }
 
-            // run report 
-            this.alertService.success(`Report ${exportId} - ${this.selectedReport.reportName} has started.`);
-            this.reportingGrpService.runReport(exportId, lstParamNameValue, this.currentUser.userId, "EXCEL", this.pivot).subscribe(
-              data => {
-                const linkSource = 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' + data;
-                const downloadLink = document.createElement("a");
-                const fileName = `Xport_${exportId}.xlsx`;
-                downloadLink.href = linkSource;
-                downloadLink.download = fileName;
-                downloadLink.click();
-              },
-              err => {
-                this.alertService.error(`Parameters are not set`);
-                this.openParameterWindow(this.selectedReport);
-              }
-            )
-          } else this.alertService.error(data.message);
-        },
-        err => this.alertService.error(err)
+              // run report 
+              this.alertService.success(`Report ${exportId} - ${this.selectedReport.reportName} has started.`);
+              this.reportingGrpService.runReport(exportId, lstParamNameValue, this.currentUser.userId, "EXCEL", this.pivot).subscribe(
+                data => {
+                  const linkSource = 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' + data;
+                  const downloadLink = document.createElement("a");
+                  const fileName = `Xport_${exportId}.xlsx`;
+                  downloadLink.href = linkSource;
+                  downloadLink.download = fileName;
+                  downloadLink.click();
+                },
+                err => {
+                  this.alertService.error(`Parameters are not set`);
+                  this.openParameterWindow(this.selectedReport);
+                }
+              )
+            } else this.alertService.error(data.message);
+          },
+          err => this.alertService.error(err)
+        )
       )
-    )
+    }
 
+
+
+  }
+
+  async runMultipleReport() {
+    this.alertService.success(`Multiple report has started.`);
+    for (let exportId of this.mySelection) {
+      let lstParamNameValue: string[] = [''];
+      const data = await this.reportService.getListOfScheduledParameters(exportId, true).toPromise();
+      const parameters = data.data;
+      if (parameters.length > 0) {
+        let paramArr: string[] = [];
+        let checkValueSet = '';
+        parameters.forEach(element => {
+          if (checkValueSet == '' && element.paramvalue == "") {
+            checkValueSet = element.extfield;
+          }
+          paramArr.push(element.extfield)
+          paramArr.push(element.paramvalue)
+        });
+        lstParamNameValue = [paramArr.toString()];
+
+        if (checkValueSet != '') {
+          this.alertService.error(`${exportId} Report missing Parameters: ${checkValueSet}`);
+          continue;
+        }
+      }
+
+      let reportData = await this.reportingGrpService.runReport(exportId, lstParamNameValue, this.currentUser.userId, "EXCEL", this.pivot).toPromise();
+      const linkSource = 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' + reportData;
+      const downloadLink = document.createElement("a");
+      const fileName = `Xport_${exportId}.xlsx`;
+      downloadLink.href = linkSource;
+      downloadLink.download = fileName;
+      downloadLink.click();
+      // console.log(exportId);
+    }
 
   }
 

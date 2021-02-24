@@ -116,7 +116,7 @@
                         [sortable]="false">
                         <ng-template kendoGridCellTemplate let-dataItem>
                             <div class="valueDiv"
-                                *ngIf="reporterPortalPermission.indexOf('Show Paramter Prompt') != -1">
+                                *ngIf="reporterPortalPermission.indexOf('Parameters') != -1">
                                 <button class="btn btn-sm parmaBtn" (click)="openReportParameterList(dataItem)"
                                     type="button">Select Value...</button>
                             </div>

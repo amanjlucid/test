@@ -25,7 +25,7 @@
                 <kendo-grid-column field="eventTypeParamSqlValue" title="Select" width="230" [filterable]="false"
                     [sortable]="false">
                     <ng-template kendoGridCellTemplate let-dataItem>
-                        <div class="valueDiv" *ngIf="reporterPortalPermission.indexOf('Show Paramter Prompt') != -1">
+                        <div class="valueDiv" *ngIf="reporterPortalPermission.indexOf('Parameters') != -1">
                             <button class="btn btn-sm parmaBtn" (click)="openReportParameterList(dataItem)"
                                 type="button">Select Value...</button>
                         </div>
