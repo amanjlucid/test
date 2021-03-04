@@ -1,0 +1,19 @@
+.k-window{
+    position: fixed !important;
+    padding: 0 !important;
+
+}
+
+
+.buttonDiv button{
+    margin-left: 5px;
+}
+
+
+#addendagrid
+{ 
+    padding-top: 126px;
+    border-width: 1;
+    height: 100%; 
+}
+

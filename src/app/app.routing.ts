@@ -15,7 +15,14 @@ import { ServiceChartComponent } from './service-portal/service-chart/service-ch
 import { ManagementComponent } from './service-portal/management/management.component';
 import { ServiceSettingsComponent } from './setting/service-settings/service-settings.component';
 import { HnsSettingsComponent } from './hns-settings/hns-settings.component';
+import { EpcSettingsComponent } from './setting/epc-settings/epc-settings.component';
+// import { HnsChartComponent } from './hns-portal/hns-chart/hns-chart.component';
+//import { MyProfileComponent } from './my-profile/my-profile.component';
 import { WebReporterSettingComponent } from './setting/web-reporter-setting/web-reporter-setting.component';
+import {AssetEpcDashboardComponent} from './assets-portal/asset-energy/asset-epc-dashboard/asset-epc-dashboard.component';
+import {AssetEpcRouterComponent} from './assets-portal/asset-energy/asset-epc-router/asset-epc-router.component';
+import {WorksordersDashboardComponent} from './worksorders/worksorders-dashboard/worksorders-dashboard.component';
+import {WorksordersRouterComponent} from './worksorders/worksorders-router/worksorders-router.component';
 
 
 const appRoutes: Routes = [
@@ -58,14 +65,31 @@ const appRoutes: Routes = [
 
                 ]
             },
-
+            {
+                path: 'epc',
+                component: AssetEpcRouterComponent,
+                children: [
+                    { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+                    { path: 'dashboard', component: AssetEpcDashboardComponent, canActivate: [AuthGuard] },
+                ]
+            },
+            {
+                path: 'worksorders',
+                component: WorksordersRouterComponent,
+                children: [
+                    { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+                    { path: 'dashboard', component: WorksordersDashboardComponent, canActivate: [AuthGuard] },
+                ]
+            },
 
             { path: 'health&safety', loadChildren: () => import('./hns-portal/hns.module').then(m => m.HnsModule) },
             { path: 'tasks', loadChildren: () => import('./event-manager/eventmanager.module').then(m => m.EventManagerModule) },
+
             { path: 'reporting', loadChildren: () => import('./web-reporter/web-reporter.module').then(m => m.WebReporterModule) },
             { path: 'my-profile', loadChildren: () => import('./my-profile/my-profile.module').then(m => m.MyProfileModule) },
             { path: 'service-settings', component: ServiceSettingsComponent, canActivate: [AuthGuard] },
             { path: 'hns-settings', component: HnsSettingsComponent, canActivate: [AuthGuard] },
+            { path: 'epc-settings', component: EpcSettingsComponent, canActivate: [AuthGuard] },
             { path: 'business-areas', loadChildren: () => import('./setting/business-area/business-area.module').then(m => m.BusinessModule) },
             { path: 'notification', loadChildren: () => import('./setting/notification/notification.module').then(m => m.NotificationModule) },
             { path: 'tasks-settings', loadChildren: () => import('./setting/event-manager-setting/event-manager-setting.module').then(m => m.EventManagerSettingModule) },

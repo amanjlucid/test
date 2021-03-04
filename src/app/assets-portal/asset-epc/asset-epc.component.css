@@ -1,0 +1,216 @@
+.fixed {
+	position: fixed;
+	width: 250px;
+	top: 20px;
+	z-index: 2;
+  }
+
+  #wrapper {
+    float: left;
+	width: 461px;
+	height: 328px;
+	margin: 10px;
+}
+
+.epcGrid {
+	margin: 0;
+	padding: 0;
+	border-width: 0;
+	height: 100%;
+}
+
+
+.letter {
+	font-size: 30px;
+	font-family: sans-serif;
+	fill: 	#0b0c0c;
+	font-weight: bold;
+	}
+
+	.current-potential-number {
+	font-size: 18px;
+	font-family: sans-serif;
+	fill: #000;
+	line-height: 50px;
+	margin-top: 100px;
+	}
+
+	.small-letter {
+	font-size: 16px;
+	font-family: sans-serif;
+	fill: 	#0b0c0c;
+	font-weight: bold;
+	text-align: center;
+	}
+
+	.small {
+	font-size: 16px;
+	font-family: sans-serif;
+	fill: 	#0b0c0c;
+	line-height: 50px;
+	margin-top: 100px;
+	font-weight: bold;
+	}
+
+	.noRatingLetter {
+		font-size: 16px;
+		font-family: sans-serif;
+		fill: 	#ffffff;
+		line-height: 50px;
+		margin-top: 100px;
+		font-weight: bold;
+		}
+
+	.band-a{
+		fill: #008054
+	}
+	.band-b{
+		fill: #19b459
+	}
+	.band-c{
+		fill: #8dce46
+	}
+	.band-d{
+		fill: #ffd500
+	}
+	.band-e{
+		fill: #fcaa65
+	}
+	.band-f{
+		fill: #ef8023
+	}
+	.band-g{
+		fill: #e9153b
+	}
+	.band-a-score{
+	fill: #67A687
+	}
+	.band-b-score{
+	fill: #72CA8B
+	}
+	.band-c-score{
+	fill: #b4df86
+	}
+	.band-d-score{
+	fill: #ffe666
+	}
+	.band-e-score{
+	fill: #fdc79b
+	}
+	.band-f-score{
+	fill: #f4ac71
+	}
+	.band-g-score{
+	fill: #f2738a
+	}
+
+	                          
+	.eiband-a{
+		fill: #cde2f5
+	}
+	.eiband-b{
+		fill: #97c0e6
+	}
+	.eiband-c{
+		fill: #73a2d6
+	}
+	.eiband-d{
+		fill: #4e84c4
+	}
+	.eiband-e{
+		fill: #a5a6a9
+	}
+	.eiband-f{
+		fill: #919194
+	}
+	.eiband-g{
+		fill: #807f83
+	}
+	.eiband-a-score{
+	fill: #e1edf9
+	}
+	.eiband-b-score{
+	fill: #c0d9f0
+	}
+	.eiband-c-score{
+	fill: #abc7e6
+	}
+	.eiband-d-score{
+	fill: #94b5db
+	}
+	.eiband-e-score{
+	fill: #c9c9cb
+	}
+	.eiband-f-score{
+	fill: #bdbdbe
+	}
+	.eiband-g-score{
+	fill: #b2b2b4
+	}
+
+
+
+
+.dropdown.list-unstyled{
+  position: absolute !important;
+}
+
+
+
+.red {
+    color: red !important;
+}
+
+.green {
+    color: #2eb02e !important;
+}
+
+.barClas {
+    color: black !important;
+}
+
+.blue {
+	color: blue !important;
+	font-weight: 550;
+}
+
+
+
+
+.redCentre {
+	color: red !important;
+	text-align: center !important;
+	display: block;
+}
+
+.greenCentre {
+	color: #2eb02e !important;
+	text-align: center !important;
+	display: block;
+}
+
+
+.blueCentre {
+	color: blue !important;
+	font-weight: 550;
+	text-align: center !important;
+	display: block;
+}
+
+.blackCentre {
+	color: black !important;
+	text-align: center !important;
+	display: block;
+}
+/* .indicator{
+	position: absolute !important;
+  } */
+
+
+/* .kwindow .k-content{
+    overflow: visible !important;
+}  */
+
+.k-window .k-window-content {
+	padding: 0
+ }

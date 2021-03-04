@@ -1,0 +1,83 @@
+<kendo-window  title="EPC Addenda/Disclosure" [top]="10" [minWidth]="550" [height]="550"
+[width]="1150" (close)="closeAddendaWin()" style="padding: 0;" >
+
+
+<div style="height:100%;" class="col-md-12 m-0 p-0">
+
+  <kendo-grid id="addendagrid" #grid="kendoGrid"  [navigable]="true" [resizable]="true" [data]="addendaTableData" [selectable]="{
+    mode: 'multiple' }" >
+    <ng-template kendoGridNoRecordsTemplate>
+        No Addenda selected.
+     </ng-template>
+
+    <kendo-grid-column field="circumstances" title="Addenda" width="300" [kendoGridSelectBy]="mySelectionKey" [selectedKeys]="mySelection" >
+      <ng-template kendoGridCellTemplate let-dataItem>
+          <span > {{ dataItem.circumstances }}
+          </span>
+        </ng-template>
+  </kendo-grid-column>
+
+  <kendo-grid-column field="description" title="Description" width="400" >
+    <ng-template kendoGridCellTemplate let-dataItem>
+        <span > {{ dataItem.description }}
+        </span>
+      </ng-template>
+  </kendo-grid-column>
+
+
+
+    </kendo-grid>
+
+
+
+
+
+  <p style="position: absolute; top: 18px;background-color: white;  height: 108px;" class="col-md-12 m-0 p-0"></p>
+
+
+
+
+<div class="row" style="position: absolute; top:95px; left:12px ">
+      <div class="dropdown" id="nesting-dropdown-demo">
+          <button [disabled]="!checkEnergyPortalAccess('Export...')" type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Export</button>
+          <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
+                          <a class="dropdown-item" (click)="exportToExcel(grid,'xlsx')" href="javascript:void(0)">Export Grid</a>
+                          <a class="dropdown-item" (click)="exportToExcel(grid,'xlsx','selected')" href="javascript:void(0)">Export Selected</a>
+
+          </div>
+    </div>
+</div>
+
+<div style="position: absolute; top: 126px;width: 100%" >
+    <p style="background-color: #dcdcdc; height: 1px;" class="col-md-12 m-0 p-0"></p>
+</div>
+
+</div>
+
+<div style="background-color: #cecece;position: absolute; top: 0px; left:0px; width: 100%;" class=" m-0  p-0">
+  <div style="background-color: #cecece;" class="form-row m-0 p-0">
+    <p style="background-color: #cecece; margin: -1px; font-weight: 600;  text-overflow: ellipsis;white-space: nowrap;overflow: hidden;" class="col-md-12 m-0 px-3 pt-1 pb-1">
+      Asset ID:<span style="font-weight: 400;margin-left:10px">{{assetId}}</span>
+    <span style="background-color: #cecece; margin-left:30px; font-weight: 600;">Address:</span><span style="font-weight: 400;margin-left:10px">{{address}}</span></p>
+  </div>
+</div>
+
+<div style="background-color: #cecece;position: absolute; top: 25px; left:0px; width: 100%" class="m-0  p-0">
+  <div style="background-color: #cecece;" class="form-row m-0 p-0">
+    <p style="background-color: #cecece; margin: -1px;font-weight: 600;" class="col-md-12 m-0 px-3 pt-1 pb-1">RRN:<span style="font-weight: 400;margin-left:10px">{{rrn}}</span></p>
+  </div>
+</div>
+
+<div style="background-color: #cecece;position: absolute; top: 48px; height:49px; left:0px; width: 100%" class="m-0  p-0">
+  <div style="background-color: ivory;margin-left:0px;margin-right:0px;margin-top:2px;height:46px" class="form-row p-0">
+    <div style="position: absolute; top: 6px; left:-8px; width: 100%;" class="m-0  p-0">
+      <div class="form-row p-0" style="margin-left:11px">
+        <p style="font-weight: 600;text-overflow: ellipsis;white-space: nowrap;overflow: hidden;" class="col-md-12 ml-2 mt-2 pt-1 pb-1"><span style="width:200px">Disclosure: </span>
+        <span style="margin-top:5px; margin-left:30px; padding-top: 5px; padding-left: 5px; padding-right: 5px; padding-bottom: 4px; height:20px; min-width: 600px;" >{{disclosure}}</span></p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</kendo-window>

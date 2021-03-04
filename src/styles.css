@@ -585,4 +585,21 @@ app-add-event .k-window-content {
     .k-window {
         left: 0px;
     }
+
 }
+
+
+div .mat-expansion-panel-content .mat-expansion-panel-body {
+    padding:0px !important;
+    margin:0px !important;
+    font-family: 'MuseoSansRounded-300', sans-serif;
+    font-weight: 500;
+    font-size: .83125rem;
+  }
+
+  .mat-expansion-panel-content {
+    font-family: 'MuseoSansRounded-300', sans-serif;
+    font-weight: 500;
+    font-size: .83125rem;
+  }
+  

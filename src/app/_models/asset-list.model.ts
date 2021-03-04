@@ -26,6 +26,9 @@ export class AssetListModel {
     SimCompliance:string;
     StartDate:string;
     EndDate:string;
+    EPCOnly : boolean;
+    SAPBands : string;
+    EPCStatus : string;
     TaskAsset:boolean;
     TaskAssets:any;
 }

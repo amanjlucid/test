@@ -69,6 +69,27 @@ export class SettingsService {
     }
 
 
+    
+    getEPCSettings() {
+        let httpOptions = {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json'
+            }),
+        };
+        return this.http.get<any>(`${appConfig.apiUrl}/api/asset/GetEPCSystemValues`, httpOptions);
+    }
+
+    updateEPCSettings(params) {
+        // let httpOptions = {
+        //     headers: new HttpHeaders({
+        //         'Content-Type': 'application/json'
+        //     }),
+        // };
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/asset/UpdateEPCSystemValues`, params);
+    }
+
+
     // Business area api 
 
     getBusinessAreaList() {

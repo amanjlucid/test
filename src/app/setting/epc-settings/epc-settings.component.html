@@ -1,0 +1,63 @@
+<div class="layout-content">
+
+    <!-- Content -->
+    <div class="container-fluid flex-grow-1 container-p-y">
+  
+      <h4 class="font-weight-bold py-3 mb-4">
+        <span class="text-muted font-weight-light">EPC Settings</span>
+      </h4>
+  
+      <div class="card mb-4">
+        <!-- <h6 class="card-header">
+          Change Password
+        </h6> -->
+        <div class="card-body">
+          <form [formGroup]="settingsForm" (ngSubmit)="onSubmit()" autocomplete="off">
+            <div class="row">
+  
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label class="form-label">EPC Certificate Location</label>
+                  <input type="text" class="form-control" formControlName="epcLocation"
+                    placeholder="EPC Certificate Location"
+                    [ngClass]="{ 'is-invalid': submitted && formErrors.epcLocation }" autocomplete="off">
+                  <div *ngIf="submitted && formErrors.epcLocation" class="invalid-feedback">
+                    <div *ngIf="formErrors.epcLocation">{{ formErrors.epcLocation }}</div>
+                  </div>
+                </div>
+              </div>
+
+  
+              <div class="col-md-6 mt-2">
+                <div class="form-group">
+                  <label class="switcher switcher-secondary">
+                    <input type="checkbox" class="switcher-input" formControlName="live">
+                    <span class="switcher-indicator">
+                      <span class="switcher-yes">
+                        <span class="ion ion-md-checkmark"></span>
+                      </span>
+                      <span class="switcher-no">
+                        <span class="ion ion-md-close"></span>
+                      </span>
+                    </span>
+                    <span class="switcher-label">EPC Live Environment</span>
+                  </label>
+                  <div *ngIf="submitted && formErrors.live" class="invalid-feedback">
+                    <div *ngIf="formErrors.live">{{ formErrors.live }}</div>
+                  </div>
+                </div>
+              </div>
+  
+            </div>
+            <button class="btn btn-default themeButton">Submit</button>
+          </form>
+        </div>
+      </div>
+  
+  
+  
+    </div>
+  
+  
+  </div>
+  

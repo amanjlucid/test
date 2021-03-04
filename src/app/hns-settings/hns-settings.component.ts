@@ -168,9 +168,9 @@ export class HnsSettingsComponent implements OnInit {
     if (this.settingsForm.invalid) {
       return;
     }
-
+    
     let formRawVal = this.settingsForm.getRawValue();
-
+    
     const formData = new FormData();
     //formData.append('postedFile', this.imgToUpload[0], this.imgToUpload[0].name);
 

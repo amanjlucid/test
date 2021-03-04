@@ -32,13 +32,40 @@ export class IndividualAssetReportComponent implements OnInit, OnDestroy {
   generateReport() {
     this.subs.add(
       this.assetAttributeService.individualAssetReport(this.selectedAsset.assetId).subscribe(
-        data => {
-          const linkSource = 'data:application/pdf;base64,' + data;
-          const downloadLink = document.createElement("a");
-          const fileName = 'Report';
-          downloadLink.href = linkSource;
-          downloadLink.download = fileName;
-          downloadLink.click();
+        filedata => {
+          let fileExt = "pdf";
+          this.assetAttributeService.getMimeType(fileExt).subscribe(
+            mimedata => {
+              if (mimedata && mimedata.isSuccess && mimedata.data && mimedata.data.fileExtension) {
+                var linkSource = 'data:' + mimedata.data.mimeType1 + ';base64,';
+                  if (mimedata.data.openWindow)
+                  {
+                    var byteCharacters = atob(filedata);
+                    var byteNumbers = new Array(byteCharacters.length);
+                    for (var i = 0; i < byteCharacters.length; i++) {
+                      byteNumbers[i] = byteCharacters.charCodeAt(i);
+                    }
+                    var byteArray = new Uint8Array(byteNumbers);
+                    var file = new Blob([byteArray], { type: mimedata.data.mimeType1 + ';base64' });
+                    var fileURL = URL.createObjectURL(file);
+                    let newPdfWindow =window.open(fileURL);
+                  }
+                  else
+                  {
+                    linkSource = linkSource + filedata;
+                    const downloadLink = document.createElement("a");
+                    const fileName = 'Report';
+                    downloadLink.href = linkSource;
+                    downloadLink.download = fileName;
+                    downloadLink.click();
+                  }
+
+                }
+                else{
+                  this.alertService.error("This file format is not supported.");
+                }
+            }
+          )
         },
         error => {
           this.alertService.error(error);

@@ -1,0 +1,420 @@
+
+<div class="row">
+        <div class="col-md-6">
+            <div  class="dropdown" id="nesting-dropdown-demo">
+                <button [disabled]="!checkEnergyPortalAccess('Export...')" type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Export</button>
+                <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: top, left; top: 36px; left: 0px;">
+                                <a class="dropdown-item" (click)="exportToExcel(grid,'xlsx')" href="javascript:void(0)">Export Grid</a>
+                                <a class="dropdown-item" (click)="exportToExcel(grid,'xlsx','selected')" href="javascript:void(0)">Export Selected</a>
+
+                </div>
+          </div>
+          
+      </div>
+      <div class="col-md-6 text-right">
+        <button type="button" [disabled]="!checkEnergyPortalAccess('Retrieve EPC')" (click)="openRetrieveEPCWindow()" class="btn btn-sm themeButton">Retrieve EPC</button>
+      
+      </div>
+</div>
+
+<div class="row" >
+    <div id="wrapper" class="column" >
+
+            <svg width="461" height="330" viewBox="0 0 461 330" xmlns="http://www.w3.org/2000/svg"  aria-labelledby="svg-title" role="img" class="indicator">
+              <title id="svg-title">{{SAPChartText}}</title>
+              
+              <rect width="461" height="30" x="0" y="0" style="fill: cornflowerblue;">
+              </rect>
+
+
+              <line x1="54" y1="30" x2="54" y2="330" style="stroke:#b1b4b6;stroke-width:1"></line>
+              <line x1="307" y1="30" x2="307" y2="330" style="stroke:#b1b4b6;stroke-width:1"></line>
+              <line x1="382" y1="30" x2="382" y2="330" style="stroke:#b1b4b6;stroke-width:1"></line>
+              <line x1="0" y1="50" x2="461" y2="50" style="stroke:#b1b4b6;stroke-width:1"></line>
+              <line x1="0" y1="30" x2="461" y2="30" style="stroke:#b1b4b6;stroke-width:1"></line>
+              <line x1="0" y1="30" x2="461" y2="30" style="stroke:#b1b4b6;stroke-width:1"></line>
+              
+              <line x1="0" y1="0" x2="461" y2="0" style="stroke:#000000;stroke-width:2"></line>
+              <line x1="0" y1="0" x2="0" y2="330" style="stroke:#000000;stroke-width:2"></line>
+              <line x1="461" y1="330" x2="461" y2="0" style="stroke:#000000;stroke-width:2"></line>
+              <line x1="461" y1="330" x2="0" y2="330" style="stroke:#000000;stroke-width:2"></line>
+              
+                  <rect width="58" height="37" x="54" y="59" class="band-a">
+                  </rect>
+                  <rect width="88" height="37" x="54" y="96" class="band-b">
+                  </rect>
+                  <rect width="118" height="37" x="54" y="133" class="band-c">
+                  </rect>
+                  <rect width="148" height="37" x="54" y="170" class="band-d">
+                  </rect>
+                  <rect width="178" height="37" x="54" y="207" class="band-e">
+                  </rect>
+                  <rect width="208" height="37" x="54" y="244" class="band-f">
+                  </rect>
+                  <rect width="238" height="37" x="54" y="281" class="band-g">
+                  </rect>
+              
+                  <rect width="54" height="37" x="1" y="59" class="band-a-score">
+                  </rect>
+                  <rect width="54" height="37" x="1" y="96" class="band-b-score">
+                  </rect>
+                  <rect width="54" height="37" x="1" y="133" class="band-c-score">
+                  </rect>
+                  <rect width="54" height="37" x="1" y="170" class="band-d-score">
+                  </rect>
+                  <rect width="54" height="37" x="1" y="207" class="band-e-score">
+                  </rect>
+                  <rect width="54" height="37" x="1" y="244" class="band-f-score">
+                  </rect>
+                  <rect width="54" height="37" x="1" y="281" class="band-g-score">
+                  </rect>
+              
+              <text x="0" y="0" class="letter">
+                  <tspan x="80" y="87">A</tspan>
+                  <tspan x="110" y="124">B</tspan>
+                  <tspan x="140" y="162">C</tspan>
+                  <tspan x="170" y="199">D</tspan>
+                  <tspan x="200" y="237">E</tspan>
+                  <tspan x="230" y="274">F</tspan>
+                  <tspan x="260" y="311">G</tspan>
+              </text>
+              
+              <text x="0" y="30" class="small">
+                  <tspan x="6" y="80">92+</tspan>
+                  <tspan x="6" y="118">81-91</tspan>
+                  <tspan x="6" y="155">69-80</tspan>
+                  <tspan x="6" y="193">55-68</tspan>
+                  <tspan x="6" y="230">39-54</tspan>
+                  <tspan x="6" y="268">21-38</tspan>
+                  <tspan x="6" y="305">1-20</tspan>
+              </text>
+              
+              <text x="110" y="16" dominant-baseline="middle" style="fill: white; font-weight: bold; font-size: 22px;">
+                Energy Efficiency Rating
+            </text>
+
+              <text x="6" y="41" class="small" dominant-baseline="middle">
+                  Score
+              </text>
+              
+              <text x="64" y="41" class="small" dominant-baseline="middle">
+                  Band
+              </text>
+              
+              <text x="345" y="41" class="small" text-anchor="middle" dominant-baseline="middle">
+                  Current
+              </text>
+              
+              <text x="424" y="41" class="small" text-anchor="middle" dominant-baseline="middle">
+                  Potential
+              </text>
+
+                <g [@noRatingbounce]="noRatingState"  fill="Black" stroke="Black" font-size="20" font-family="Verdana" >
+                  <text x="340" y="190">No rating</text>
+                </g>
+
+              </svg>  
+  
+
+
+
+            <svg [@bounce]="bounceState" class="indicator" style="position: relative; bottom: 20px; right:-310px" width="62" height="36">
+              <rect width="44" height="36" [style.fill]="getSAPColor(SAPRating)" x="17"></rect>
+              <polygon points="0,18 18,36 18,0 0,18" [style.fill]="getSAPColor(SAPRating)"></polygon>
+              <text x="12" y="25" class="current-potential-number">{{SAPRating}} |</text>
+              <text x="46" y="25" class="small-letter">{{SAPBand}}</text>
+            </svg>
+          
+            <svg [@bounce]="bounceState2" style="position: relative; bottom: 20px; right:-326px" width="62" height="36">
+              <rect width="44" height="36" [style.fill]="getSAPColor(SAPPotentialRating)" x="17" ></rect>
+              <polygon points="0,18 18,36 18,0 0,18" [style.fill]="getSAPColor(SAPPotentialRating)"></polygon>
+              <text x="12" y="25" class="current-potential-number">{{SAPPotentialRating}} |</text>
+              <text x="46" y="25" class="small-letter">{{SAPPotentialBand}}</text>
+            </svg>
+
+           
+    </div>       
+ 
+    <div id="wrapper" class="column">
+
+
+            <svg width="461" height="330" viewBox="0 0 461 330" xmlns="http://www.w3.org/2000/svg"  aria-labelledby="svg-title" role="img">
+              <title id="svg-title">{{EIChartText}}</title>
+              
+              <rect width="461" height="30" x="0" y="0" style="fill: cornflowerblue;">
+              </rect>
+
+
+              <line x1="54" y1="30" x2="54" y2="330" style="stroke:#b1b4b6;stroke-width:1"></line>
+              <line x1="307" y1="30" x2="307" y2="330" style="stroke:#b1b4b6;stroke-width:1"></line>
+              <line x1="382" y1="30" x2="382" y2="330" style="stroke:#b1b4b6;stroke-width:1"></line>
+              <line x1="0" y1="50" x2="461" y2="50" style="stroke:#b1b4b6;stroke-width:1"></line>
+              <line x1="0" y1="30" x2="461" y2="30" style="stroke:#b1b4b6;stroke-width:1"></line>
+              <line x1="0" y1="30" x2="461" y2="30" style="stroke:#b1b4b6;stroke-width:1"></line>
+              
+              <line x1="0" y1="0" x2="461" y2="0" style="stroke:#000000;stroke-width:2"></line>
+              <line x1="0" y1="0" x2="0" y2="330" style="stroke:#000000;stroke-width:2"></line>
+              <line x1="461" y1="330" x2="461" y2="0" style="stroke:#000000;stroke-width:2"></line>
+              <line x1="461" y1="330" x2="0" y2="330" style="stroke:#000000;stroke-width:2"></line>
+              
+                  <rect width="58" height="37" x="54" y="59" class="eiband-a">
+                  </rect>
+                  <rect width="88" height="37" x="54" y="96" class="eiband-b">
+                  </rect>
+                  <rect width="118" height="37" x="54" y="133" class="eiband-c">
+                  </rect>
+                  <rect width="148" height="37" x="54" y="170" class="eiband-d">
+                  </rect>
+                  <rect width="178" height="37" x="54" y="207" class="eiband-e">
+                  </rect>
+                  <rect width="208" height="37" x="54" y="244" class="eiband-f">
+                  </rect>
+                  <rect width="238" height="37" x="54" y="281" class="eiband-g">
+                  </rect>
+              
+                  <rect width="54" height="37" x="1" y="59" class="eiband-a-score">
+                  </rect>
+                  <rect width="54" height="37" x="1" y="96" class="eiband-b-score">
+                  </rect>
+                  <rect width="54" height="37" x="1" y="133" class="eiband-c-score">
+                  </rect>
+                  <rect width="54" height="37" x="1" y="170" class="eiband-d-score">
+                  </rect>
+                  <rect width="54" height="37" x="1" y="207" class="eiband-e-score">
+                  </rect>
+                  <rect width="54" height="37" x="1" y="244" class="eiband-f-score">
+                  </rect>
+                  <rect width="54" height="37" x="1" y="281" class="eiband-g-score">
+                  </rect>
+              
+              <text x="0" y="0" class="letter">
+                  <tspan x="80" y="87">A</tspan>
+                  <tspan x="110" y="124">B</tspan>
+                  <tspan x="140" y="162">C</tspan>
+                  <tspan x="170" y="199">D</tspan>
+                  <tspan x="200" y="237">E</tspan>
+                  <tspan x="230" y="274">F</tspan>
+                  <tspan x="260" y="311">G</tspan>
+              </text>
+              
+              <text x="0" y="30" class="small">
+                  <tspan x="6" y="80">92+</tspan>
+                  <tspan x="6" y="118">81-91</tspan>
+                  <tspan x="6" y="155">69-80</tspan>
+                  <tspan x="6" y="193">55-68</tspan>
+                  <tspan x="6" y="230">39-54</tspan>
+                  <tspan x="6" y="268">21-38</tspan>
+                  <tspan x="6" y="305">1-20</tspan>
+              </text>
+              
+              <text x="50" y="16" dominant-baseline="middle" style="fill: white; font-weight: bold; font-size: 22px;">
+                Environmental Impact (CO2) Rating
+            </text>
+
+              <text x="6" y="41" class="small" dominant-baseline="middle">
+                  Score
+              </text>
+              
+              <text x="64" y="41" class="small" dominant-baseline="middle">
+                  Band
+              </text>
+              
+              <text x="345" y="41" class="small" text-anchor="middle" dominant-baseline="middle">
+                  Current
+              </text>
+              
+              <text x="424" y="41" class="small" text-anchor="middle" dominant-baseline="middle">
+                  Potential
+              </text>
+
+              <g  [@noRatingbounce]="noRatingState" fill="Black" stroke="Black" font-size="20" font-family="Verdana" >
+                <text x="340" y="190">No rating</text>
+              </g>
+              </svg>  
+  
+            <svg   [@bounce]="bounceState3" style="position: relative; bottom: 20px; right:-310px" width="62" height="36">
+              <rect width="44" height="36" [style.fill]="getEIColor(EIRating)" x="17"></rect>
+              <polygon points="0,18 18,36 18,0 0,18" [style.fill]="getEIColor(EIRating)"></polygon>
+              <text x="12" y="25" class="current-potential-number">{{EIRating}} |</text>
+              <text x="46" y="25" class="small-letter">{{EIBand}}</text>
+            </svg>
+          
+            <svg  [@bounce]="bounceState4" style="position: relative; bottom: 20px; right:-326px" width="62" height="36">
+              <rect width="44" height="36" [style.fill]="getEIColor(EIPotentialRating)" x="17"></rect>
+              <polygon points="0,18 18,36 18,0 0,18" [style.fill]="getEIColor(EIPotentialRating)"></polygon>
+              <text x="12" y="25" class="current-potential-number">{{EIPotentialRating}} |</text>
+              <text x="46" y="25" class="small-letter">{{EIPotentialBand}}</text>
+            </svg>
+
+    </div>
+  </div>
+
+  <kendo-grid #grid="kendoGrid" [data]="energyTableData"  [height]="340" [navigable]="true">
+
+    <kendo-grid-column field="menu" title=" " width="37" [filterable]="false" [groupable]="false" 
+    [kendoGridSelectBy]="mySelectionKey" [selectedKeys]="mySelection">
+      <ng-template kendoGridHeaderTemplate>
+
+      </ng-template>
+
+      <ng-template kendoGridCellTemplate let-dataItem>
+        <li class="nav-item dropdown list-unstyled" style="margin-top: -7px;">
+          <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
+          <div class="dropdown-menu" *ngIf="checkEnergyPortalAccess('View EPC Data') || checkEnergyPortalAccess('View History') || checkEnergyPortalAccess('View EPC Recommendations') || checkEnergyPortalAccess('View Addenda/Disclosure') || checkEnergyPortalAccess('View Certificate')" >
+            <a class="dropdown-item" *ngIf="checkEnergyPortalAccess('View EPC Data')" (click)="openEPCData(dataItem)" href="javascript:void(0)">EPC Data</a>
+            <a class="dropdown-item" *ngIf="checkEnergyPortalAccess('View History')" (click)="openEPCHistory(dataItem)" href="javascript:void(0)">History</a>
+            <a class="dropdown-item" *ngIf="checkEnergyPortalAccess('View EPC Recommendations')" (click)="openEPCRecommendations(dataItem)" href="javascript:void(0)">Recommendations</a>
+            <a class="dropdown-item" *ngIf="checkEnergyPortalAccess('View Addenda/Disclosure')" (click)="openEPCAddenda(dataItem)" href="javascript:void(0)">Addenda /Disclosure</a>
+            <a class="dropdown-item" *ngIf="checkEnergyPortalAccess('View Certificate')" (click)="getEPCCertificate(dataItem)" href="javascript:void(0)">Certificate</a>
+          </div>
+        </li>
+
+      </ng-template>
+
+    </kendo-grid-column>
+
+    <kendo-grid-column field="createdate" title="Create Date" width="125" >
+      <ng-template kendoGridCellTemplate let-dataItem>
+          <span *ngIf="dataItem.createdate!=null && getYear(dataItem.createdate) > 1900" 
+            [ngClass]="{'blue': dataItem.latestLodgedEPC, 'red': !dataItem.latestLodgedEPC && dataItem.latestRecord, 'black': !dataItem.latestLodgedEPC && !dataItem.latestRecord}">
+            {{ dataItem.createdate | date: 'dd-MMM-yyyy' }}
+          </span>
+        </ng-template>
+  </kendo-grid-column>
+
+    <kendo-grid-column field="prrn" title="PRRN" width="100">
+        <ng-template kendoGridCellTemplate let-dataItem>
+            <span  *ngIf="dataItem.prrn > 0" 
+            [ngClass]="{'blue': dataItem.latestLodgedEPC, 'red': !dataItem.latestLodgedEPC && dataItem.latestRecord, 'black': !dataItem.latestLodgedEPC && !dataItem.latestRecord}">
+              {{ dataItem.prrn }}
+            </span>
+          </ng-template>
+    </kendo-grid-column>
+    <kendo-grid-column field="rrn" title="RRN" width="230">
+        <ng-template kendoGridCellTemplate let-dataItem>
+            <span [ngClass]="{'blue': dataItem.latestLodgedEPC, 'red': !dataItem.latestLodgedEPC && dataItem.latestRecord, 'black': !dataItem.latestLodgedEPC && !dataItem.latestRecord}"
+            >
+              {{ dataItem.rrn }}
+            </span>
+          </ng-template>
+    </kendo-grid-column>
+    <kendo-grid-column field="epcstatus" title="EPC Stage" width="130">
+      <ng-template kendoGridCellTemplate let-dataItem>
+          <span [ngClass]="{'blue': dataItem.latestLodgedEPC, 'red': !dataItem.latestLodgedEPC && dataItem.latestRecord, 'black': !dataItem.latestLodgedEPC && !dataItem.latestRecord}">
+            {{ dataItem.epcstatus }}
+          </span>
+        </ng-template>
+  </kendo-grid-column>
+    <kendo-grid-column field="lodgedate" title="Lodge Date" width="125">
+        <ng-template kendoGridCellTemplate let-dataItem>
+            <span *ngIf="dataItem.lodgedate!=null && getYear(dataItem.lodgedate) > 1900" 
+              [ngClass]="{'blue': dataItem.latestLodgedEPC, 'red': !dataItem.latestLodgedEPC && dataItem.latestRecord, 'black': !dataItem.latestLodgedEPC && !dataItem.latestRecord}">
+              {{ dataItem.lodgedate | date: 'dd-MMM-yyyy' }}
+            </span>
+          </ng-template>
+    </kendo-grid-column>
+    <kendo-grid-column field="expirydate" title="Expiry Date" width="125">
+      <ng-template kendoGridCellTemplate let-dataItem>
+          <span *ngIf="dataItem.expirydate!=null && getYear(dataItem.expirydate) > 1900" 
+            [ngClass]="{'blue': dataItem.latestLodgedEPC, 'red': !dataItem.latestLodgedEPC && dataItem.latestRecord, 'black': !dataItem.latestLodgedEPC && !dataItem.latestRecord}" >
+            {{ dataItem.expirydate | date: 'dd-MMM-yyyy' }}
+          </span>
+        </ng-template>
+  </kendo-grid-column>
+  <kendo-grid-column field="sap" title="SAP" width="80">
+    <ng-template kendoGridCellTemplate let-dataItem>
+        <span *ngIf="dataItem.sap > 0" 
+          [ngClass]="{'blueCentre': dataItem.latestLodgedEPC, 'redCentre': !dataItem.latestLodgedEPC && dataItem.latestRecord, 'blackCentre': !dataItem.latestLodgedEPC && !dataItem.latestRecord}">
+          {{ dataItem.sap }}
+        </span>
+      </ng-template>
+</kendo-grid-column>
+
+    <kendo-grid-column field="sapband" title="SAP Band" width="90">
+        <ng-template kendoGridCellTemplate let-dataItem>
+            <span 
+            [ngClass]="{'blueCentre': dataItem.latestLodgedEPC, 'redCentre': !dataItem.latestLodgedEPC && dataItem.latestRecord, 'blackCentre': !dataItem.latestLodgedEPC && !dataItem.latestRecord}">
+              {{ dataItem.sapband }}
+            </span>
+          </ng-template>
+    </kendo-grid-column>
+    <kendo-grid-column field="ei" title="EI" width="80">
+      <ng-template kendoGridCellTemplate let-dataItem>
+          <span *ngIf="dataItem.ei > 0" 
+            [ngClass]="{'blueCentre': dataItem.latestLodgedEPC, 'redCentre': !dataItem.latestLodgedEPC && dataItem.latestRecord, 'blackCentre': !dataItem.latestLodgedEPC && !dataItem.latestRecord}" >
+            {{ dataItem.ei }}
+          </span>
+        </ng-template>
+  </kendo-grid-column>
+  
+      <kendo-grid-column field="eiband" title="EI Band" width="90">
+          <ng-template kendoGridCellTemplate let-dataItem>
+              <span 
+              [ngClass]="{'blueCentre': dataItem.latestLodgedEPC, 'redCentre': !dataItem.latestLodgedEPC && dataItem.latestRecord, 'blackCentre': !dataItem.latestLodgedEPC && !dataItem.latestRecord}" >
+                {{ dataItem.eiband }}
+              </span>
+            </ng-template>
+      </kendo-grid-column>
+
+      <kendo-grid-column field="scheduleddate" title="Scheduled Date" width="125">
+        <ng-template kendoGridCellTemplate let-dataItem>
+            <span *ngIf="dataItem.scheduledDate!=null && getYear(dataItem.scheduledDate) > 1900" 
+              [ngClass]="{'blue': dataItem.latestLodgedEPC, 'red': !dataItem.latestLodgedEPC && dataItem.latestRecord, 'black': !dataItem.latestLodgedEPC && !dataItem.latestRecord}">
+              {{ dataItem.scheduledDate | date: 'dd-MMM-yyyy' }}
+            </span>
+          </ng-template>
+    </kendo-grid-column>
+
+    <kendo-grid-column field="surveydate" title="Survey Date" width="125">
+      <ng-template kendoGridCellTemplate let-dataItem>
+          <span *ngIf="dataItem.surveydate!=null && getYear(dataItem.surveydate) > 1900" 
+            [ngClass]="{'blue': dataItem.latestLodgedEPC, 'red': !dataItem.latestLodgedEPC && dataItem.latestRecord, 'black': !dataItem.latestLodgedEPC && !dataItem.latestRecord}" >
+            {{ dataItem.surveydate | date: 'dd-MMM-yyyy' }}
+          </span>
+        </ng-template>
+  </kendo-grid-column>
+  
+  <kendo-grid-column field="surveyproject" title="Survey Project" width="150">
+    <ng-template kendoGridCellTemplate let-dataItem>
+        <span 
+        [ngClass]="{'blue': dataItem.latestLodgedEPC, 'red': !dataItem.latestLodgedEPC && dataItem.latestRecord, 'black': !dataItem.latestLodgedEPC && !dataItem.latestRecord}">
+          {{ dataItem.supname }}
+        </span>
+      </ng-template>
+</kendo-grid-column>
+
+<kendo-grid-column field="surveybatch" title="Survey Batch" width="150">
+  <ng-template kendoGridCellTemplate let-dataItem>
+      <span 
+      [ngClass]="{'blue': dataItem.latestLodgedEPC, 'red': !dataItem.latestLodgedEPC && dataItem.latestRecord, 'black': !dataItem.latestLodgedEPC && !dataItem.latestRecord}">
+        {{ dataItem.subname}}
+      </span>
+    </ng-template>
+</kendo-grid-column>
+
+
+ </kendo-grid>
+
+  <div class="portalwBlur"></div>
+
+  <div class="example-wrapper mt-1">
+
+  <app-asset-epc-history [assetId]="assetId" [address]="address" [rrn]="rrn"  [epcSequence]="epcSequence" *ngIf="historyWindow" [historyWindow]="historyWindow" (closehistoryWindow)="closehistoryWindow($event)">
+  </app-asset-epc-history>
+
+  <app-asset-epc-recommendations [assetId]="assetId" [address]="address" [rrn]="rrn"  [epcSequence]="epcSequence" *ngIf="recWindow" [recWindow]="recWindow" (closerecWindow)="closerecWindow($event)">
+  </app-asset-epc-recommendations>
+  
+  <app-asset-epc-addenda [assetId]="assetId" [address]="address" [rrn]="rrn"  [epcSequence]="epcSequence" *ngIf="addendaWindow" [addendaWindow]="addendaWindow" (closeAddendaWindow)="closeAddendaWindow($event)">
+  </app-asset-epc-addenda>
+
+
+  <app-asset-epc-data [assetId]="assetId" [address]="address" [rrn]="rrn"  [epcSequence]="epcSequence" *ngIf="dataWindow" [dataWindow]="dataWindow" (closeDataWindow)="closeDataWindow($event)">
+  </app-asset-epc-data>
+
+  <app-asset-epc-retrieve #RetrievePanel *ngIf="retrieveWindow" [retrieveWindow]="retrieveWindow" 
+    (closeRetrieveWindow)="closeRetrieveEPCWindow($event)" [assetId]="assetId" [epcStatus]="epcStatus">
+  </app-asset-epc-retrieve>
+
+  </div>
+

@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ViewChild, ChangeDetectorRef, ElementRef } from '@angular/core';
 import { SubSink } from 'subsink';
 import { DataResult, process, State, CompositeFilterDescriptor, SortDescriptor, GroupDescriptor } from '@progress/kendo-data-query';
-import { HnsResultsService, ConfirmationDialogService, AlertService, HelperService, SharedService, LoaderService } from '../../_services';
+import { AssetAttributeService, AlertService,  HnsResultsService, ConfirmationDialogService, HelperService, SharedService, LoaderService } from '../../_services';
 import { settings } from 'cluster';
 
 @Component({
@@ -39,10 +39,11 @@ export class HnsResDocumentComponent implements OnInit {
   hnsPermission: any = [];
 
   constructor(
+    private assetAttributeService: AssetAttributeService,
+    private alertService: AlertService,
     private resultSrevice: HnsResultsService,
     private chRef: ChangeDetectorRef,
     private confirmationDialogService: ConfirmationDialogService,
-    private alertService: AlertService,
     private helperServie: HelperService,
     private sharedService: SharedService,
     private loaderService: LoaderService
@@ -175,33 +176,48 @@ export class HnsResDocumentComponent implements OnInit {
         this.resultSrevice.viewDoc(param).subscribe(
           data => {
             this.loaderService.pageHide()
-            // console.log(data)
-            if (data.isSuccess && data.data) {
+
+            if (data.isSuccess && data.data && data.data.length > 0) {
               let baseStr = data.data;
               const fileName = `${this.selectedDoc.description}`;
-
-              if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-                // console.log('in')
-                let byteCharacters = atob(baseStr);
-                var byteNumbers = new Array(byteCharacters.length);
-                for (let i = 0; i < byteCharacters.length; i++) {
-                  byteNumbers[i] = byteCharacters.charCodeAt(i);
+              let fileExt = "pdf";
+              this.assetAttributeService.getMimeType(fileExt).subscribe(
+                mimedata => {
+                  if (mimedata && mimedata.isSuccess && mimedata.data && mimedata.data.fileExtension) {
+                      var linkSource = 'data:' + mimedata.data.mimeType1 + ';base64,';
+                          if (mimedata.data.openWindow)
+                          {
+                            var byteCharacters = atob(baseStr);
+                            var byteNumbers = new Array(byteCharacters.length);
+                            for (var i = 0; i < byteCharacters.length; i++) {
+                              byteNumbers[i] = byteCharacters.charCodeAt(i);
+                            }
+                            var byteArray = new Uint8Array(byteNumbers);
+                            var file = new Blob([byteArray], { type: mimedata.data.mimeType1 + ';base64' });
+                            var fileURL = URL.createObjectURL(file);
+                            let newPdfWindow =window.open(fileURL);
+        
+                            // let newPdfWindow = window.open("",this.selectedNotes.fileName);
+                            // let iframeStart = "<\iframe title='Notepad' width='100%' height='100%' src='data:" + mimedata.data.mimeType1 + ";base64, ";
+                            // let iframeEnd = "'><\/iframe>";
+                            // newPdfWindow.document.write(iframeStart + filedata + iframeEnd);
+                            // newPdfWindow.document.title = this.selectedNotes.fileName;
+                          }
+                          else
+                          {
+                            linkSource = linkSource + baseStr;
+                            const downloadLink = document.createElement("a");
+                            downloadLink.href = linkSource;
+                            downloadLink.download = fileName;
+                            downloadLink.click();
+                          }
+                    }
+                    else{
+                      this.alertService.error("This file format is not supported.");
+                    }
                 }
-                let byteArray = new Uint8Array(byteNumbers);
-                let blob = new Blob([byteArray], { type: 'application/pdf' });
-                window.navigator.msSaveOrOpenBlob(blob, fileName);
-                return;
-              } else {
-                // console.log('out')
-                const linkSource = 'data:application/pdf;base64,' + baseStr;
-                const downloadLink = document.createElement("a");
-                downloadLink.href = linkSource;
-                downloadLink.download = fileName;
-                downloadLink.click();
+              )
               }
-            } else {
-              this.alertService.error(data.message)
-            }
 
           },
           error => {

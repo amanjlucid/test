@@ -1,0 +1,37 @@
+.k-window{
+    position: fixed !important;
+    padding: 0 !important;
+
+}
+
+
+.buttonDiv button{
+    margin-left: 5px;
+}
+
+
+#oldRecGrid
+{ 
+    padding-top: 80px;
+    border-width: 1;
+    height: 100%; 
+}
+
+#newRecGrid
+{ 
+    padding-top: 80px;
+    border-width: 1;
+    height: 100%; 
+}
+
+
+    .breakWord20 {
+        word-break: break-all !important;
+        word-wrap: break-word !important;
+        vertical-align: top;
+    }
+
+    .k-grid-header .k-header {
+        overflow: visible !important;
+        white-space: normal !important;
+    }

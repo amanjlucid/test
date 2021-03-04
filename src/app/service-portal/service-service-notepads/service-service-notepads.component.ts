@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { DataResult, process, State, SortDescriptor, CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { SubSink } from 'subsink';
-import { SharedService, ServicePortalService, ConfirmationDialogService, AlertService, HelperService } from '../../_services'
+import { AssetAttributeService, AlertService, SharedService, ServicePortalService, ConfirmationDialogService, HelperService } from '../../_services'
 import { DateFormatPipe } from '../../_pipes/date-format.pipe';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
@@ -36,13 +36,15 @@ export class ServiceServiceNotepadsComponent implements OnInit {
   selectedNotepad: any;
   uploadAttachment: boolean = false;
   notesDetails: boolean = false;
+  notesTitle: string = "";
   notesImagePath: SafeResourceUrl;
   editNotePad: boolean = false;
 
   constructor(
+    private assetAttributeService: AssetAttributeService,
+    private alertService: AlertService,
     private servicePortalService: ServicePortalService,
     private helper: HelperService,// used in html
-    private alertService: AlertService,
     private sharedService: SharedService,
     private confirmationDialogService: ConfirmationDialogService,
     private _sanitizer: DomSanitizer,
@@ -139,33 +141,77 @@ export class ServiceServiceNotepadsComponent implements OnInit {
 
   viewNotepadAttachment() {
     if (this.selectedNotepad != undefined) {
-      $('.notepadOverlay').addClass('ovrlay');
-      let lnk = this.selectedNotepad.ntplink;
-      let fileExt = lnk.substring(lnk.lastIndexOf(".") + 1);
-      if (fileExt == 'jpg' || fileExt == 'png' || fileExt == 'gif') {
+      if (this.selectedNotepad.ntplinktype == 'P') {
+        $('.notepadOverlay').addClass('ovrlay');
+        let lnk = this.selectedNotepad.ntplink;
         this.subs.add(
-          this.servicePortalService.GetNotepadImage(this.selectedNotepad.ntplink).subscribe(
+          this.assetAttributeService.getNotepadImage(this.selectedNotepad.ntptype, this.selectedNotepad.assid, this.selectedNotepad.ntpgenericcodE2, this.selectedNotepad.ntpsequence).subscribe(
             data => {
               this.notesDetails = true;
+              this.notesTitle = "View Notepad Image...";
               this.notesImagePath = this._sanitizer.bypassSecurityTrustResourceUrl(
                 'data:image/jpg;base64,' + data);
             }
           )
         )
-      } else if (fileExt == 'pdf') {
-        this.subs.add(
-          this.servicePortalService.GetNotepadImage(this.selectedNotepad.ntplink).subscribe(
-            data => {
-              this.notesDetails = true;
-              const linkSource = 'data:application/pdf;base64,' + data;
-              const downloadLink = document.createElement("a");
-              const fileName = this.selectedNotepad.ntptexT1;
-              downloadLink.href = linkSource;
-              downloadLink.download = fileName;
-              downloadLink.click();
-            }
-          )
+
+      } else if (this.selectedNotepad.ntplinktype == 'N') {
+        $('.notepadOverlay').addClass('ovrlay');
+        this.notesTitle = "View Notepad Note...";
+        this.notesDetails = true;
+      } else if (this.selectedNotepad.ntplinktype == 'L') {
+        let lnk = this.selectedNotepad.ntplink;
+        
+        let fileExt = lnk.substring(lnk.lastIndexOf(".") + 1).toLowerCase();
+        this.assetAttributeService.getMimeType(fileExt).subscribe(
+          mimedata => {
+            if (mimedata && mimedata.isSuccess && mimedata.data && mimedata.data.fileExtension) {
+                var linkSource = 'data:' + mimedata.data.mimeType1 + ';base64,';
+                this.assetAttributeService.getNotepadFile(this.selectedNotepad.ntptype, this.selectedNotepad.assid, this.selectedNotepad.ntpgenericcodE2, this.selectedNotepad.ntpsequence).subscribe(
+                  filedata => {
+                    if (mimedata.data.openWindow)
+                    {
+                      var byteCharacters = atob(filedata);
+                      var byteNumbers = new Array(byteCharacters.length);
+                      for (var i = 0; i < byteCharacters.length; i++) {
+                        byteNumbers[i] = byteCharacters.charCodeAt(i);
+                      }
+                      var byteArray = new Uint8Array(byteNumbers);
+                      var file = new Blob([byteArray], { type: mimedata.data.mimeType1 + ';base64' });
+                      var fileURL = URL.createObjectURL(file);
+                      let newPdfWindow =window.open(fileURL);
+  
+                      // let newPdfWindow = window.open("",this.selectedNotes.fileName);
+                      // let iframeStart = "<\iframe title='Notepad' width='100%' height='100%' src='data:" + mimedata.data.mimeType1 + ";base64, ";
+                      // let iframeEnd = "'><\/iframe>";
+                      // newPdfWindow.document.write(iframeStart + filedata + iframeEnd);
+                      // newPdfWindow.document.title = this.selectedNotes.fileName;
+                    }
+                    else
+                    {
+                      linkSource = linkSource + filedata;
+                      const downloadLink = document.createElement("a");
+                      const fileName = this.selectedNotepad.ntptexT1;
+                      downloadLink.href = linkSource;
+                      downloadLink.download = fileName;
+                      downloadLink.click();
+                    }
+                  }
+                )
+              }
+              else{
+                this.alertService.error("This file format is not supported.");
+              }
+          }
         )
+    
+      } else if (this.selectedNotepad.ntplinktype == 'I') {
+        let url: string = '';
+        if (!/^http[s]?:\/\//.test(this.selectedNotepad.ntplink)) {
+          url += 'http://';
+        }
+        url += this.selectedNotepad.ntplink;
+        window.open(url, '_blank');
       }
 
     } else {

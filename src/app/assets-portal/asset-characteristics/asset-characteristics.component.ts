@@ -357,37 +357,67 @@ export class AssetCharacteristicsComponent implements OnInit, OnDestroy {
 
   openNotesDetails(notesDetails) {
     this.selectedNotes = notesDetails;
-    if (this.selectedNotes.type == 'P') {
+    if (this.selectedNotes.linkType == 'P') {
       $('.charBlur').addClass('ovrlay');
-      this.notesTitle = "Attribute Image";
-      this.assetAttributeService.getNotepadImage(this.selectedNotes.type, this.selectedNotes.ntpSequence, this.selectedNotes.ntpModifiedTime, this.selectedNotes.description).subscribe(
+      this.notesTitle = "Characteristic Image";
+      this.assetAttributeService.getNotepadImage(this.selectedNotes.ntpType, this.selectedNotes.ntpGenericCode1, this.selectedNotes.ntpGenericCode2, this.selectedNotes.ntpSequence).subscribe(
         data => {
           this.notesImagePath = this._sanitizer.bypassSecurityTrustResourceUrl(
             'data:image/jpg;base64,' + data);
           this.notesDetails = true;
         }
       )
-    } else if (this.selectedNotes.type == 'N') {
+    } else if (this.selectedNotes.linkType == 'N') {
       $('.charBlur').addClass('ovrlay');
       this.notesTitle = "View Notepad Note...";
       this.notesDetails = true;
     } else if (this.selectedNotes.linkType == 'L') {
       let lnk = this.selectedNotes.link;
-      let fileExt = lnk.substring(lnk.lastIndexOf(".") + 1)
-      if (fileExt == 'txt') {
+      
+      let fileExt = lnk.substring(lnk.lastIndexOf(".") + 1).toLowerCase();
+      this.assetAttributeService.getMimeType(fileExt).subscribe(
+        mimedata => {
+          if (mimedata && mimedata.isSuccess && mimedata.data && mimedata.data.fileExtension) {
+              var linkSource = 'data:' + mimedata.data.mimeType1 + ';base64,';
+              this.assetAttributeService.getNotepadFile(this.selectedNotes.ntpType, this.selectedNotes.ntpGenericCode1, this.selectedNotes.ntpGenericCode2, this.selectedNotes.ntpSequence).subscribe(
+                filedata => {
+                  if (mimedata.data.openWindow)
+                  {
+                    var byteCharacters = atob(filedata);
+                    var byteNumbers = new Array(byteCharacters.length);
+                    for (var i = 0; i < byteCharacters.length; i++) {
+                      byteNumbers[i] = byteCharacters.charCodeAt(i);
+                    }
+                    var byteArray = new Uint8Array(byteNumbers);
+                    var file = new Blob([byteArray], { type: mimedata.data.mimeType1 + ';base64' });
+                    var fileURL = URL.createObjectURL(file);
+                    let newPdfWindow =window.open(fileURL);
 
-      } else if (fileExt == 'pdf') {
-        this.assetAttributeService.getNotepadFile(this.selectedNotes.linkType, this.selectedNotes.ntpSequence, this.selectedNotes.modifiedDate, this.selectedNotes.text).subscribe(
-          data => {
-            const linkSource = 'data:application/pdf;base64,' + data;
-            const downloadLink = document.createElement("a");
-            const fileName = this.selectedNotes.fileName;
-            downloadLink.href = linkSource;
-            downloadLink.download = fileName;
-            downloadLink.click();
-          }
-        )
-      }
+                    // let newPdfWindow = window.open("",this.selectedNotes.fileName);
+                    // let iframeStart = "<\iframe title='Notepad' width='100%' height='100%' src='data:" + mimedata.data.mimeType1 + ";base64, ";
+                    // let iframeEnd = "'><\/iframe>";
+                    // newPdfWindow.document.write(iframeStart + filedata + iframeEnd);
+                    // newPdfWindow.document.title = this.selectedNotes.fileName;
+                  }
+                  else
+                  {
+                    linkSource = linkSource + filedata;
+                    const downloadLink = document.createElement("a");
+                    const fileName = this.selectedNotes.fileName;
+                    downloadLink.href = linkSource;
+                    downloadLink.download = fileName;
+                    downloadLink.click();
+                  }
+                }
+              )
+            }
+            else{
+              this.alertService.error("This file format is not supported.");
+            }
+        }
+      )
+
+
 
     } else if (this.selectedNotes.linkType == 'I') {
       let url: string = '';

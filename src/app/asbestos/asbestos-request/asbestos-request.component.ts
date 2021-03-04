@@ -184,10 +184,10 @@ export class AsbestosRequestComponent implements OnInit {
       NextSequence: -1,//this.selectedAsbestos.aausequence,
       RequestCompleted: 'N',
       RequestUserId: this.currentUser.userId,
-      RequestDate: new Date().toLocaleString(),
+      RequestDate: new Date().toJSON(),
       ASASSEQUENCE: this.selectedAsbestos.asassequence,
       ActionType: this.asbestosRequestForm.value.action,
-      CompletionDate: this.dateFormate(this.asbestosRequestForm.value.completionDate),
+      CompletionDate: this.dateISOFormat(this.asbestosRequestForm.value.completionDate),
       Description: this.asbestosRequestForm.value.description,
       AAUDREQSTATUS: 'P',
       AAUDAUTHUSERID: this.currentUser.userId,
@@ -313,8 +313,9 @@ export class AsbestosRequestComponent implements OnInit {
     }
   }
 
-  dateFormate(value) {
-    return `${value.month}-${value.day}-${value.year}`
+  dateISOFormat(value) {
+    var dateString   = `${value.year}-${value.month}-${value.day}`;
+    return new Date(dateString).toJSON();
   }
 
   openAttachment() {

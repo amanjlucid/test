@@ -168,7 +168,7 @@ export class AssetHSAssessentsComponent implements OnInit, OnDestroy {
   }
 
   openResult() {
-    window.open(`http://104.40.138.8/Rowanwood/HealthAndSafety/#/Results?ASSID=${this.assetId}&HSCODE=${this.resultData.hascode}&HSVERSION=${this.resultData.hasversion}&HSASSESSMENTREF=${this.resultData.hasassessmentref}`, "_blank");
+    window.open(`https://apexdevweb.rowanwood.ltd/dev/Rowanwood/HealthAndSafety/#/Results?ASSID=${this.assetId}&HSCODE=${this.resultData.hascode}&HSVERSION=${this.resultData.hasversion}&HSASSESSMENTREF=${this.resultData.hasassessmentref}`, "_blank");
   }
 
   public cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {

@@ -140,6 +140,15 @@ export class AuthenticationService {
         return this.http.post<any>(`${appConfig.apiUrl}/api/Account/ModuleList`,body, httpOptions);
     }
 
+    getRealModulesEnabledList(){
+        var httpOptions = {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json'
+            }),
+        };
+        return this.http.post<any>(`${appConfig.apiUrl}/api/Account/RealModulesEnabledList`, httpOptions);
+    }
+
     refresUserProp(accessArea:string, userId:string){
         var httpOptions = {
             headers: new HttpHeaders({

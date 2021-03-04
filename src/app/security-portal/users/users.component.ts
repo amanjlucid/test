@@ -286,6 +286,7 @@ export class UsersComponent implements OnInit {
       $('.search-container').removeClass('dismiss').addClass('selectedcs').show();
     }
 
+
   }
 
   closeSearchBar() {

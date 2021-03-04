@@ -15,3 +15,20 @@ export const appConfig = {
 };
 
 
+// let host = window.location.hostname;
+// let apiFolder = "RowanwoodWebAPI";
+
+// if(host == "localhost"){
+//     host = "localhost:50912";
+// }
+
+// export const appConfig = {
+//     //apiUrl: 'https://apexdemo.rowanwood.ltd/rowanwoodwebapi'
+//     apiUrl: `http://${host}`,
+//     //apiUrl: `http://${host}/${apiFolder}`//'https://apexdevweb.rowanwood.ltd/dev/RowanwoodWebAPI'
+//     // appUrl: `http://${host}/rowanwood`,
+
+//     appUrl: `http://localhost:4200`,
+
+//     silverLightUrl: `http://${host}/Rowanwood`,
+// };

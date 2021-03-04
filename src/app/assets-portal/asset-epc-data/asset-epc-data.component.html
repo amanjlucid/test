@@ -1,0 +1,121 @@
+<kendo-window  title="EPC Survey Data" [top]="10" [minWidth]="550" [height]="550"
+[width]="1150" (close)="closeDataWin()" style="padding: 0;" >
+
+
+<div style="height:100%;" class="col-md-12 m-0 p-0">
+
+  <kendo-grid id="datagrid" #grid="kendoGrid"  [navigable]="true" [resizable]="true" [data]="gridView" [selectable]="{
+    mode: 'multiple' }" 
+    [kendoGridSelectBy]="mySelectionKey"
+    [selectedKeys]="mySelection"
+    [sortable]="{
+            allowUnsort: allowUnsort,
+            mode: multiple ? 'multiple' : 'single'
+            }" 
+    [sort]="state.sort" 
+    [group]="state.group" 
+    [skip]="state.skip">
+
+    <kendo-grid-column field="edcname"  title="Energy Survey Question" [width]="200" [filterable]="false" [sortable]="false" >
+        <ng-template kendoGridGroupHeaderTemplate let-group let-field="edcname" let-value="value">
+            {{value}}
+        </ng-template>
+        <ng-template kendoGridCellTemplate let-dataItem>
+            <span [style.color]="'blue'" >
+              {{ dataItem.edqtext }}
+            </span>
+        </ng-template>
+    </kendo-grid-column>
+    <kendo-grid-column field="answer" title="Answer" [width]="160" [filterable]="false" [sortable]="false">
+        <ng-template kendoGridCellTemplate let-dataItem>
+            <span [style.color]="'blue'" >
+              {{ dataItem.answerOnly }}
+            </span>
+          </ng-template>
+    </kendo-grid-column>
+
+    <kendo-grid-column field="enadate" title="Date" [width]="70" [filterable]="false" [sortable]="false">
+        <ng-template kendoGridCellTemplate let-dataItem>
+            <span *ngIf="dataItem.enadate!=null && getYear(dataItem.enadate) > 1900" [style.color]="'blue'" >
+              {{ dataItem.enadate }}
+            </span>
+          </ng-template>
+    </kendo-grid-column>
+
+    <kendo-grid-column field="enatime" title="Time" [width]="50" [filterable]="false" [sortable]="false">
+        <ng-template kendoGridCellTemplate let-dataItem>
+            <span *ngIf="dataItem.enatime!=null && dataItem.enatime!='00:00:00'" [style.color]="'blue'" >
+              {{ dataItem.enatime }}
+            </span>
+          </ng-template>
+    </kendo-grid-column>
+
+  <kendo-grid-column field="enauser" title="User" [width]="50" [filterable]="false" [sortable]="false">
+    <ng-template kendoGridCellTemplate let-dataItem>
+        <span [style.color]=" 'blue'" >
+          {{ dataItem.enauser }}
+        </span>
+      </ng-template>
+</kendo-grid-column>
+
+</kendo-grid>
+
+
+
+  <p style="position: absolute; top: 28px;background-color: white;  height: 56px;" class="col-md-12 m-0 p-0"></p>
+
+
+
+
+
+
+
+  <div class="row" style="position: absolute; top:44px;width: 100%;margin-left:3px;">
+    <div class="col-md-6 m-0 p-0">
+      <div class="dropdown" id="nesting-dropdown-demo">
+        <button [disabled]="!checkEnergyPortalAccess('Export...')" type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Export</button>
+        <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
+                        <a class="dropdown-item" (click)="exportToExcel(grid,'xlsx')" href="javascript:void(0)">Export Grid</a>
+                        <a class="dropdown-item" (click)="exportToExcel(grid,'xlsx','selected')" href="javascript:void(0)">Export Selected</a>
+
+        </div>
+      </div>
+      
+    </div>
+  <div class="col-md-6 m-0 p-0 text-right">
+    <button type="button" [disabled]="!checkEnergyPortalAccess('Reporting...')" (click)="getEPCComponentsReport()" class="btn btn-sm themeButton">Data Report</button>
+      
+  </div>
+</div>
+
+
+
+
+
+
+
+
+<div style="position: absolute; top: 84px;width: 100%" >
+    <p style="background-color: #dcdcdc; height: 1px;" class="col-md-12 m-0 p-0"></p>
+</div>
+
+
+
+
+
+</div>
+
+<div style="background-color: #cecece;position: absolute; top: 0px; left:0px; width: 100%;" class=" m-0  p-0">
+  <div style="background-color: #cecece;" class="form-row m-0 p-0">
+    <p style="background-color: #cecece; margin: -1px; font-weight: 600;  text-overflow: ellipsis;white-space: nowrap;overflow: hidden;" class="col-md-12 m-0 px-3 pt-1 pb-1">
+      Asset ID:<span style="font-weight: 400;margin-left:10px">{{assetId}}</span>
+    <span style="background-color: #cecece; margin-left:30px; font-weight: 600;">Address:</span><span style="font-weight: 400;margin-left:10px">{{address}}</span></p>
+  </div>
+</div>
+
+<div style="background-color: #cecece;position: absolute; top: 25px; left:0px; width: 100%" class="m-0  p-0">
+  <div style="background-color: #cecece;" class="form-row m-0 p-0">
+    <p style="background-color: #cecece; margin: -1px;font-weight: 600;" class="col-md-12 m-0 px-3 pt-1 pb-1">RRN:<span style="font-weight: 400;margin-left:10px">{{rrn}}</span></p>
+  </div>
+</div>
+</kendo-window>

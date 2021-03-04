@@ -2,6 +2,7 @@ import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { GroupDescriptor, DataResult, process, State, CompositeFilterDescriptor, SortDescriptor } from '@progress/kendo-data-query';
 import { AssetAttributeService, HelperService, AlertService, SharedService, AsbestosService } from '../../_services'
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { DateFormatPipe } from 'src/app/_pipes/date-format.pipe';
 import { SubSink } from 'subsink';
 
 @Component({
@@ -146,38 +147,68 @@ export class AssetAsbestosComponent implements OnInit, OnDestroy {
 
   openNotesDetails(notesDetails) {
     this.selectedNotes = notesDetails;
-    if (this.selectedNotes.type == 'P') {
+    if (this.selectedNotes.linkType == 'P') {
       $('.charBlur').addClass('ovrlay');
-      this.notesTitle = "Attribute Image";
-      this.assetAttributeService.getNotepadImage(this.selectedNotes.type, this.selectedNotes.ntpSequence, this.selectedNotes.ntpModifiedTime, this.selectedNotes.description).subscribe(
+      this.notesTitle = "Asbestos Image";
+      this.assetAttributeService.getNotepadImage(this.selectedNotes.ntpType, this.selectedNotes.ntpGenericCode1, this.selectedNotes.ntpGenericCode2, this.selectedNotes.ntpSequence).subscribe(
         data => {
           this.notesImagePath = this._sanitizer.bypassSecurityTrustResourceUrl(
             'data:image/jpg;base64,' + data);
           this.notesDetails = true;
         }
       )
-    } else if (this.selectedNotes.type == 'N') {
+    } else if (this.selectedNotes.linkType == 'N') {
       $('.charBlur').addClass('ovrlay');
       this.notesTitle = "View Notepad Note...";
       this.notesDetails = true;
     } else if (this.selectedNotes.linkType == 'L') {
       let lnk = this.selectedNotes.link;
-      let fileExt = lnk.substring(lnk.lastIndexOf(".") + 1)
-      if (fileExt == 'txt') {
 
-      } else if (fileExt == 'pdf') {
-        this.assetAttributeService.getNotepadFile(this.selectedNotes.linkType, this.selectedNotes.ntpSequence, this.selectedNotes.modifiedDate, this.selectedNotes.text).subscribe(
-          data => {
-            const linkSource = 'data:application/pdf;base64,' + data;
-            const downloadLink = document.createElement("a");
-            const fileName = this.selectedNotes.fileName;
-            downloadLink.href = linkSource;
-            downloadLink.download = fileName;
-            downloadLink.click();
-            //this.notesDetails = true;
-          }
-        )
-      }
+
+      let fileExt = lnk.substring(lnk.lastIndexOf(".") + 1).toLowerCase();
+      this.assetAttributeService.getMimeType(fileExt).subscribe(
+        mimedata => {
+          if (mimedata && mimedata.isSuccess && mimedata.data && mimedata.data.fileExtension) {
+              var linkSource = 'data:' + mimedata.data.mimeType1 + ';base64,';
+              this.assetAttributeService.getNotepadFile(this.selectedNotes.ntpType, this.selectedNotes.ntpGenericCode1, this.selectedNotes.ntpGenericCode2, this.selectedNotes.ntpSequence).subscribe(
+                filedata => {
+                  if (mimedata.data.openWindow)
+                  {
+                    var byteCharacters = atob(filedata);
+                    var byteNumbers = new Array(byteCharacters.length);
+                    for (var i = 0; i < byteCharacters.length; i++) {
+                      byteNumbers[i] = byteCharacters.charCodeAt(i);
+                    }
+                    var byteArray = new Uint8Array(byteNumbers);
+                    var file = new Blob([byteArray], { type: mimedata.data.mimeType1 + ';base64' });
+                    var fileURL = URL.createObjectURL(file);
+                    let newPdfWindow =window.open(fileURL);
+
+                    // let newPdfWindow = window.open("",this.selectedNotes.fileName);
+                    // let iframeStart = "<\iframe title='Notepad' width='100%' height='100%' src='data:" + mimedata.data.mimeType1 + ";base64, ";
+                    // let iframeEnd = "'><\/iframe>";
+                    // newPdfWindow.document.write(iframeStart + filedata + iframeEnd);
+                    // newPdfWindow.document.title = this.selectedNotes.fileName;
+                  }
+                  else
+                  {
+                    linkSource = linkSource + filedata;
+                    const downloadLink = document.createElement("a");
+                    const fileName = this.selectedNotes.fileName;
+                    downloadLink.href = linkSource;
+                    downloadLink.download = fileName;
+                    downloadLink.click();
+                  }
+                }
+              )
+            }
+            else{
+              this.alertService.error("This file format is not supported.");
+            }
+        }
+      )
+
+
 
     } else if (this.selectedNotes.linkType == 'I') {
       let url: string = '';
@@ -289,6 +320,14 @@ export class AssetAsbestosComponent implements OnInit, OnDestroy {
     $('.charBlur').removeClass('ovrlay');
   }
 
+  checkFurtherInfoAccess() {
+    
+    if (!this.containsAll(['Request Further Information'], this.asbestosPropertySecurityAccess)) {
+      return true
+    }
+
+    return false;
+  }
 
   checkAsbestosPropAccess() {
     // if (this.currentUser.admin == "Y") {
@@ -369,6 +408,75 @@ export class AssetAsbestosComponent implements OnInit, OnDestroy {
       // Return the current iteration `result` value, this will be taken as next iteration `result` value and accumulate
       return result;
     }, {});
+  }
+
+  export() {
+
+    let tempData = this.asbestosData;
+    tempData.map(s => {
+      s.asassurveydate = (s.asassurveydate != "") ? DateFormatPipe.prototype.transform(s.asassurveydate, 'DD-MMM-YYYY') : s.asassurveydate;
+      s.asmainitialdeadline = (s.asmainitialdeadline != "") ? DateFormatPipe.prototype.transform(s.asmainitialdeadline, 'DD-MMM-YYYY') : s.asmainitialdeadline;
+      s.asmainitialcompdate = (s.asmainitialcompdate != "") ? DateFormatPipe.prototype.transform(s.asmainitialcompdate, 'DD-MMM-YYYY') : s.asmainitialcompdate;
+      s.asmasubseqdeadline = (s.asmasubseqdeadline != "") ? DateFormatPipe.prototype.transform(s.asmasubseqdeadline, 'DD-MMM-YYYY') : s.asmasubseqdeadline;
+      s.asmasubseqcompdate = (s.asmasubseqcompdate != "") ? DateFormatPipe.prototype.transform(s.asmasubseqcompdate, 'DD-MMM-YYYY') : s.asmasubseqcompdate;
+      s.reviewDate = (s.reviewDate != "") ? DateFormatPipe.prototype.transform(s.reviewDate, 'DD-MMM-YYYY') : s.reviewDate;
+      s.reinspectionDate = (s.reinspectionDate != "") ? DateFormatPipe.prototype.transform(s.reinspectionDate, 'DD-MMM-YYYY') : s.reinspectionDate;
+    });
+
+    if (this.asbestosData && this.asbestosData.length > 0) {
+      let label = {
+        'auctext': 'ACM Category',
+        'audtext': 'ACM Detail',
+        'location': 'Location',
+        'floor': 'Floor',
+        'position': 'Position',
+        'presence': 'Presence',
+        'type': 'Survey Type',
+        'materialRisk': 'Material Risk',
+        'priorityRisk': 'Priority Risk',
+        'totalRisk': 'Total Risk',
+        'pendingChangeYN': 'Pending Request?',
+        'hseNotifiable':'HSE Notifiable',
+        'asasextent':'Extent',
+        'uom': 'UOM',
+        'asassurveydate': 'Survey Date',
+        'svrname': 'Surveyor',
+        'asactext': 'Inspection Access',
+        'asasdescription': 'Description',
+        'asasadditionalnotes': 'Additional Notes',
+        'dataSource': 'Data Source',
+        'apsproducttext': 'Product',
+        'adstext': 'Damage',
+        'assctext': 'Surface',
+        'atstext': 'Type',
+        'mainactivity': 'Main Activity',
+        'secondaryactivity': 'Secondary Activity',
+        'priorityLocation': 'Priority Location',
+        'priorityAccess': 'Priority Access',
+        'priorityExtent': 'Priority Extent',
+        'priorityOccupants': 'Priority Occupants',
+        'priorityFrequency': 'Priority Frequency',
+        'priorityTimeInUse': 'Priority Time In Use',
+        'initialAction': 'Initial Action',
+        'initialTimeframe': 'Initial Timeframe',
+        'asmainitialdeadline': 'Initial Deadline',
+        'asmainitialcompdate': 'Initial Completion',
+        'subsequentAction': 'Subsequent Action',
+        'subsequentTimeframe': 'Subsequent Timeframe',
+        'asmasubseqdeadline': 'Subsequent Deadline',
+        'asmasubseqcompdate': 'Subsequent Completion',
+        'reviewTimeframe': 'Review Timeframe',
+        'reviewDate': 'Review Date',
+        'reinspectionTimeframe': 'Reinspection Timeframe',
+        'reinspectionDate': 'Reinspection Date'
+      }
+
+      this.helperService.exportToexcelWithAssetDetails(this.asbestosData, 'Asset-Asbestos', label)
+    } else {
+      this.alertService.error("There is no record to export.")
+    }
+
+
   }
 
 

@@ -3,7 +3,8 @@ import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { AlertService, ConfirmationDialogService, SettingsService } from '../../_services'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { PageChangeEvent } from '@progress/kendo-angular-dropdowns/dist/es2015/common/page-change-event';
+// import { PageChangeEvent } from '@progress/kendo-angular-dropdowns/dist/es2015/common/page-change-event';
+import { PageChangeEvent } from '@progress/kendo-angular-grid';
 
 @Component({
   selector: 'app-manage-emails',

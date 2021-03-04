@@ -27,6 +27,14 @@ export class SharedService {
     this.modulePermissionSource.next(data);
   }
 
+  private realModulesEnabledSource = new BehaviorSubject<any>([]);
+  realModulesEnabled = this.realModulesEnabledSource.asObservable();
+
+  changeRealModulesEnabled(data) {
+    this.realModulesEnabledSource.next(data);
+  }
+
+
   private asbestosAttachmetSource = new BehaviorSubject<any>([]);
   asbestosAttachmet = this.asbestosAttachmetSource.asObservable();
 
@@ -54,6 +62,20 @@ export class SharedService {
 
   changeAsbestosPortalAccess(data) {
     this.asbestosPortalAccessSource.next(data);
+  }
+
+  private energyPortalAccessSource = new BehaviorSubject<any>([]);
+  energyPortalAccess = this.energyPortalAccessSource.asObservable();
+
+  changeEnergyPortalAccess(data) {
+    this.energyPortalAccessSource.next(data);
+  }
+
+  private worksOrdersAccessSource = new BehaviorSubject<any>([]);
+  worksOrdersAccess = this.worksOrdersAccessSource.asObservable();
+
+  changeWorksOrdersAccess(data) {
+    this.worksOrdersAccessSource.next(data);
   }
 
   private asbestosPropertyAccessSource = new BehaviorSubject<any>([]);

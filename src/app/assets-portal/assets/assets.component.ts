@@ -1,8 +1,14 @@
-import { Component, OnInit, Input, OnDestroy, ChangeDetectorRef } from '@angular/core';
-import { AlertService, LoaderService, PropertySecurityGroupService, AssetAttributeService, AuthenticationService, HelperService, SharedService, ServicePortalService } from '../../_services';
+import { Component, OnInit, Input, OnDestroy, ChangeDetectorRef,ViewChild, ViewChildren, AfterViewInit } from '@angular/core';
+import { AlertService, LoaderService, PropertySecurityGroupService, AssetAttributeService, AuthenticationService, HelperService, SharedService, ServicePortalService,SettingsService } from '../../_services';
 import { AssetListModel } from '../../_models'
 import { Router, ActivatedRoute } from '@angular/router';
 import { SubSink } from 'subsink';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { FormControl } from '@angular/forms';
+import { QueryList } from '@angular/core';
+import { MultiSelectComponent } from '@progress/kendo-angular-dropdowns';
+
+
 declare var $: any;
 
 @Component({
@@ -10,7 +16,7 @@ declare var $: any;
   templateUrl: './assets.component.html',
   styleUrls: ['./assets.component.css']
 })
-export class AssetsComponent implements OnInit, OnDestroy {
+export class AssetsComponent implements OnInit, OnDestroy, AfterViewInit {
   myDateValue: Date;
   currentUser;
   printHiearchy: any;
@@ -55,9 +61,11 @@ export class AssetsComponent implements OnInit, OnDestroy {
     'SimCompliance': '',
     'StartDate': '',
     'EndDate': '',
+    'EPCOnly':false,
+    'SAPBands': '',
+    'EPCStatus': '',
     'TaskAsset': false,
     'TaskAssets': []
-
   }
   visitedHierarchy: any[] = [];
   totalAssetCount: number = 0;
@@ -73,14 +81,89 @@ export class AssetsComponent implements OnInit, OnDestroy {
   authOs: boolean = false;
   individualAssetReport: boolean = false;
   asbestosPortalAccess: any = [];
+  energyPortalAccess = [];
   asbestosPropertySecurityAccess: any;
   asbestosColumn: boolean = false;
   moduleAccess: any;
+  modulesEnabled = [];
   checkServicePortalRef: boolean = false;
   serviceColumn: boolean = false;
   serviceTypes: any;
   assetFilterObj: any;
-  //selectedServiceType: string = "";
+  epcOnly: boolean = false;
+  epcView: boolean = false;
+  retrieveWindow: boolean = false;
+  epcStatus: string = "";
+  filterEPCStatus: string = "";
+  // @ViewChild('sapMultiSelect', { static: true }) public sapMultiSelect: any;
+  public sapBands: Array<string> = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'Pending', 'No Rating'];
+  public selectedSAPBands;
+  // @ViewChild('multiselect') sapMultiSelect;
+  @ViewChildren(MultiSelectComponent) childrenComponent: QueryList<MultiSelectComponent>;
+  // @ViewChild('multiselect', { static: true }) public multiselect: any;
+  sapMultiSelect: any;
+  MultiSelectDetected: boolean = false;
+  EPCFilter: boolean = false;
+  AssetFilter: boolean = false;
+  AsbestosFilter: boolean = false;
+  ServicingFilter: boolean = false;
+  TaskFilter: boolean = false;
+
+
+  menuList: any = [];
+
+
+
+  categories: any;
+  userCategory: any;
+  mulitSelectDropdownSettings = {
+    singleSelection: false,
+    idField: 'item_id',
+    textField: 'item_text',
+    enableCheckAll: true,
+    selectAllText: 'Select All',
+    unSelectAllText: 'Unselect All',
+    allowSearchFilter: true,
+    limitSelection: -1,
+    clearSearchFilter: true,
+    maxHeight: 157,
+    itemsShowLimit: 10,
+    searchPlaceholderText: '',
+    noDataAvailablePlaceholderText: 'No Record',
+    closeDropDownOnSelection: false,
+    showSelectedItemsAtTop: false,
+    defaultOpen: false
+  }
+  categoryDropdownSettings = {
+    singleSelection: true,
+    idField: 'item_id',
+    textField: 'item_text',
+    allowSearchFilter: true,
+    clearSearchFilter: true,
+    maxHeight: 157,
+    closeDropDownOnSelection: false,
+    showSelectedItemsAtTop: false,
+    defaultOpen: false
+  }
+  selectedCategories: any = [];
+  selectedCategory: any = [];
+ /*  sapBands = [
+    {"item_id": "A","item_text": "A"},
+    {"item_id": "B","item_text": "B"},
+    {"item_id": "C","item_text": "C"},
+    {"item_id": "D","item_text": "D"},
+    {"item_id": "E","item_text": "E"},
+    {"item_id": "F","item_text": "F"},
+    {"item_id": "G","item_text": "G"},
+  ]; */
+
+// topping:string;
+
+
+
+
+
+
 
   constructor(
     private propSecGrpService: PropertySecurityGroupService,
@@ -94,27 +177,51 @@ export class AssetsComponent implements OnInit, OnDestroy {
     private authService: AuthenticationService,
     private servicePortalService: ServicePortalService,
     private chRef: ChangeDetectorRef,
+    private settingService: SettingsService,
   ) { }
 
-  onStartDateChange(date) {
-    this.myDateValue = new Date();
-    this.startDate = date;
-    this.startDate = new Date(this.startDate).toISOString();
+  ngAfterViewInit() {
+    this.childrenComponent.changes.subscribe((comps: QueryList<MultiSelectComponent>) =>
+    {
+      if (!this.MultiSelectDetected)
+      {
+        comps.forEach( (element) => {
+        if (element.placeholder == "    Select SAP Bands")
+        {
+          this.sapMultiSelect = element;
+          this.MultiSelectDetected = true;
+        }
+      });
+      }
+
+    });
   }
 
   ngOnDestroy() {
-    localStorage.removeItem('assetList');
     this.subs.unsubscribe();
   }
 
   ngOnInit() {
-    //update notification on top
-    this.helper.updateNotificationOnTop();
+    this.getMenus();
+    setTimeout(() => {
+      var ss = this.sapMultiSelect;
+    }, 0);
+    var ss = this.sapMultiSelect;
     this.loaderService.pageShow();
     this.getSystemDefaultDate();
-    this.subs.add(this.sharedService.modulePermission.subscribe(data => { this.moduleAccess = data }));
-    this.subs.add(this.sharedService.asbestosPortalAccess.subscribe(data => { this.asbestosPortalAccess = data; })) // set in sitelayout component
+    this.subs.add(this.sharedService.modulePermission.subscribe(data => { 
+      this.moduleAccess = data;
+    }));
+    this.subs.add(this.sharedService.realModulesEnabled.subscribe(data => { 
+      this.modulesEnabled = data;
+    }));
+    this.subs.add(this.sharedService.asbestosPortalAccess.subscribe(data => { 
+      this.asbestosPortalAccess = data; 
+    })) // set in sitelayout component
     // this.sharedService.asbestosPropertyAccess.subscribe(data => this.asbestosPropertySecurityAccess = data );
+    this.subs.add(this.sharedService.energyPortalAccess.subscribe(data => { 
+      this.energyPortalAccess = data;
+    })) 
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.assetList.UserId = this.currentUser.userId;
     this.assetList.IsAdmin = (this.currentUser.admin == "Y") ? true : false;
@@ -126,7 +233,9 @@ export class AssetsComponent implements OnInit, OnDestroy {
       this.route.queryParams.subscribe(params => {
         const assetid = params['assetid'];
         const servicePortal = params['servicing'];
-        const taskData = params['taskData'];
+		const taskData = params['taskData'];
+    const sapBand = params['sapBand'];
+    const epcStatus = params['epcStatus'];
         if (assetid != undefined) {
           this.autService.validateAssetIDDeepLinkParameters(this.currentUser.userId, assetid).subscribe(
             data => {
@@ -148,7 +257,6 @@ export class AssetsComponent implements OnInit, OnDestroy {
           }
 
           this.getAllAssets(this.assetList);
-
         } else if (servicePortal != undefined && servicePortal == "true") {
           this.subs.add(
             this.authService.checkModulePermission(this.currentUser.userId).subscribe(data => {
@@ -177,7 +285,21 @@ export class AssetsComponent implements OnInit, OnDestroy {
                 this.getAllAssets(this.assetList);
               }
             }));
-        } else {
+        } else if (sapBand != undefined && this.sapBands.some(x => x === sapBand)) {
+            this.epcView = true;
+            this.assetList.SAPBands = "'" + sapBand + "'";
+            var stringarray: string[] = [];
+            stringarray.push(sapBand);
+            this.selectedSAPBands = stringarray;
+          this.getAllAssets(this.assetList);
+        } else if (epcStatus != undefined && epcStatus != "") {
+        this.epcView = true;
+
+        this.filterEPCStatus = epcStatus;
+        this.assetList.EPCStatus = this.filterEPCStatus;
+        this.getAllAssets(this.assetList);
+    }
+        else {
           this.assetFilterObj = undefined;
           this.assetList.SimCompliance = '';
           this.assetList.Sescode = '';
@@ -189,6 +311,13 @@ export class AssetsComponent implements OnInit, OnDestroy {
       });
 
     }
+
+  }
+
+  onStartDateChange(date) {
+    this.myDateValue = new Date();
+    this.startDate = date;
+    this.startDate = new Date(this.startDate).toISOString();
   }
 
   onDateChange(newDate: Date) {
@@ -218,6 +347,9 @@ export class AssetsComponent implements OnInit, OnDestroy {
                 break;
               case 'Energy':
                 this.tabName = "energy";
+                break;
+              case 'EPC':
+                this.tabName = "epc";
                 break;
               case 'Health and Safety':
                 this.tabName = "assessments";
@@ -339,7 +471,7 @@ export class AssetsComponent implements OnInit, OnDestroy {
                   this.openTabWindow('attributes', asset);
                 }
               } else {
-                let tabs = ['Attributes', 'Characteristics', 'Asbestos', 'Energy', 'Surveys', 'Health and Safety', 'Servicing', 'HHSRS', 'Works Management', 'Quality', 'Notepad'];
+                let tabs = ['Attributes', 'Characteristics', 'Asbestos', 'Energy', 'EPC', 'Surveys', 'Health and Safety', 'Servicing', 'HHSRS', 'Works Management', 'Quality', 'Notepad'];
                 for (let tab of tabs) {
                   let tabName;
                   if (this.tabsData.includes(tab) && !this.checkServicePortalRef) {
@@ -418,7 +550,42 @@ export class AssetsComponent implements OnInit, OnDestroy {
     return true;
   }
 
+  
+  checkEnergyPortalAccess(val: string): Boolean {
+    if (this.energyPortalAccess != undefined) {
+      var ss = this.energyPortalAccess.includes(val);
+    return this.energyPortalAccess.includes(val);
+    }
+  }
+
   getAllAssets(assetList: AssetListModel) {
+
+if (!this.serviceColumn && this.assetList.Sescode == '' && this.assetList.Concode == '' && this.assetList.Secocode == '' && this.assetList.Setcode == '' && this.assetList.SimCompliance == '')
+{
+  this.ServicingFilter = false;
+}
+else {this.ServicingFilter = true; }
+
+ if (!this.asbestosColumn && this.assetList.AsbestosStatus == '' && !this.assetList.Auth) {
+  this.AsbestosFilter = false;
+ }
+ else {this.AsbestosFilter = true;  }
+
+ if (this.assetList.PostCode == '' && this.assetList.AssetStatus == 'A') {
+  this.AssetFilter = false;
+ }
+ else {this.AssetFilter = true;  }
+
+ if (!this.assetList.EPCOnly && !this.epcView && this.assetList.SAPBands == '' && this.assetList.EPCStatus == '') {
+  this.EPCFilter = false;
+ }
+ else {this.EPCFilter = true;  }
+
+ if (!this.assetList.TaskAsset && (this.assetList.TaskAssets == undefined || this.assetList.TaskAssets.length == 0) ) {
+  this.TaskFilter = false;
+ }
+ else {this.TaskFilter = true;  }
+
     this.attributeLists = [];
     this.assetAttributeService.getAssetCount(assetList).subscribe(
       datacount => {
@@ -514,17 +681,39 @@ export class AssetsComponent implements OnInit, OnDestroy {
     } else if (column == 'Service Compliance') {
       //this.assetList.SimCompliance = value;
       //console.log(this.assetList);
+    } else if (column == 'epc') {
+      this.assetList.EPCOnly = value;
+    } else if (column == 'epcView') {
+      this.epcView = value ;
+    } else if (column == 'sapBands') {
+      if (this.selectedSAPBands.length == 0) {
+        this.assetList.SAPBands = ""
+      }
+      else{
+            this.assetList.SAPBands = "'" + this.selectedSAPBands.join( "','" ) + "'";
+      }
+    } else if (column == 'EPCStatus') {
+      this.filterEPCStatus = value;
+      this.assetList.EPCStatus = this.filterEPCStatus;
     }
 
     this.getAllAssets(this.assetList);
   }
 
   getTableWidth() {
-    if (this.asbestosColumn && !this.serviceColumn) {
+    if (this.asbestosColumn && !this.serviceColumn && !this.epcView) {
       return '132%';
-    } else if (!this.asbestosColumn && this.serviceColumn) {
+    } else if (!this.asbestosColumn && this.serviceColumn && !this.epcView) {
       return '155%';
-    } else if (this.asbestosColumn && this.serviceColumn) {
+    } else if (this.asbestosColumn && this.serviceColumn && !this.epcView) {
+      return '210%';
+    } else if (this.asbestosColumn && this.serviceColumn && this.epcView) {
+      return '280%';
+    } else if (!this.asbestosColumn && !this.serviceColumn && this.epcView) {
+      return '155%';
+    } else if (!this.asbestosColumn && this.serviceColumn && this.epcView) {
+      return '210%';
+    } else if (this.asbestosColumn && !this.serviceColumn && this.epcView) {
       return '210%';
     } else {
       return '100%';
@@ -545,9 +734,18 @@ export class AssetsComponent implements OnInit, OnDestroy {
     this.assetList.PostCode = '';
     this.assetList.AssetStatus = 'A';
     this.assetList.Auth = false;
+    this.assetList.EPCOnly = false;
+    this.assetList.SAPBands = '';
+    this.assetList.EPCStatus = '';
     this.assetList.TaskAsset = false;
     this.assetList.TaskAssets = [];
     this.resetAssetList();
+    this.epcOnly = false;
+    this.epcView = false;
+    this.selectedSAPBands = '';
+    this.filterEPCStatus = "";
+
+    this.sapMultiSelect.reset();
 
     this.getAllAssets(this.assetList);
   }
@@ -746,6 +944,25 @@ export class AssetsComponent implements OnInit, OnDestroy {
       label = { ...label, ...servicePortalLbl };
     }
 
+    if (this.epcView) {
+      let energyPortalLbl: any = {
+        'epcStatus': 'EPC Status',
+        'sap': 'SAP',
+        'sapBand': 'SAP Band',
+        'ei': 'EI',
+        'eiBand': 'EI Band',
+        'lodgeDate': 'Lodged Date',
+        'expiryDate': 'Expiry Date',
+        'scheduledDate': 'Scheduled Date',
+        'surveyStatus': 'Survey Status',
+        'surveyDate': 'Survey Date',
+        'supName': 'Survey Project',
+        'subName': 'Survey Batch',
+      }
+      label = { ...label, ...energyPortalLbl };
+    }
+    
+
     if (this.assetList.SimCompliance != '') {
       let complianceLbl: any = {
         'compliance': 'Compliance'
@@ -807,6 +1024,12 @@ export class AssetsComponent implements OnInit, OnDestroy {
     }
   }
 
+  checkModuleEnabled(val: string): Boolean {
+    if (this.modulesEnabled != undefined) {
+      return this.modulesEnabled.includes(val);
+    }
+  }
+
   checkAssetStatus(val, key) {
     this.attributeLists[key].status = (val == 'A' || val == 'Active') ? 'Active' : 'Inactive';
     return this.attributeLists[key].status;
@@ -847,45 +1070,91 @@ export class AssetsComponent implements OnInit, OnDestroy {
 
 
   checkRendartable() {
-    let ua = window.navigator.userAgent;
-    let IExplorerAgent = ua.indexOf("MSIE") > -1 || ua.indexOf("rv:") > -1;
-    // console.log(IExplorerAgent);
-    // console.log(ua);
-    if (!IExplorerAgent) {
-      setTimeout(() => {
-        $('#assetTbl').on('scroll', () => {
-          $("#assetTbl tbody").css({ 'overflow-y': 'hidden' });
-          setTimeout(() => {
-            $("#assetTbl tbody").css({ 'overflow-y': 'scroll' });
-          }, 1000);
+   let ua = window.navigator.userAgent;
+   let IExplorerAgent = ua.indexOf("MSIE") > -1 || ua.indexOf("rv:") > -1; 
+   //console.log(IExplorerAgent);
+   // console.log(ua);
+   if(!IExplorerAgent){
+    setTimeout(() => {
+      $('#assetTbl').on('scroll', () => {
+        $("#assetTbl tbody").css({ 'overflow-y': 'hidden' });
+        setTimeout(() => {
+          $("#assetTbl tbody").css({ 'overflow-y': 'scroll' });
+        }, 1000);
 
-          $("#assetTbl > *").width($("#assetTbl").width() + $("#assetTbl").scrollLeft());
+        $("#assetTbl > *").width($("#assetTbl").width() + $("#assetTbl").scrollLeft());
+        this.chRef.markForCheck();
+      });
+    }, 5);
+    this.chRef.markForCheck();
+   } else {
+
+
+    setTimeout(() => {
+      $(".assetGrid").css( "maxWidth", "100%" );
+      $(".assetGrid").css( { 'overflow-x': 'auto' } );
+      $('#assetTbl').on('scroll', () => {
+        $("#assetTbl tbody").css({ 'overflow-y': 'hidden' });
+        setTimeout(() => {
+          $("#assetTbl tbody").css({ 'overflow-y': 'scroll' });
           this.chRef.markForCheck();
-        });
-      }, 5);
-      this.chRef.markForCheck();
-    } else {
+        }, 1000);
+     
+
+        $("#assetTbl > *").width($("#assetTbl").width() + $("#assetTbl").scrollLeft());
+        this.chRef.markForCheck();
+      });
+    }, 5);
 
 
-      setTimeout(() => {
-        $(".assetGrid").css("maxWidth", "100%");
-        $(".assetGrid").css({ 'overflow-x': 'auto' });
-        $('#assetTbl').on('scroll', () => {
-          $("#assetTbl tbody").css({ 'overflow-y': 'hidden' });
-          setTimeout(() => {
-            $("#assetTbl tbody").css({ 'overflow-y': 'scroll' });
-            this.chRef.markForCheck();
-          }, 1000);
-
-
-          $("#assetTbl > *").width($("#assetTbl").width() + $("#assetTbl").scrollLeft());
-          this.chRef.markForCheck();
-        });
-      }, 5);
-
-
-    }
+   }
 
   }
+
+
+  openRetrieveEPCWindow(asset) {
+    this.selectedAsset = asset;
+    $('.portalwBlur').addClass('ovrlay');    
+    this.epcStatus = asset.epcStatus;
+    this.assetId = asset.assetId;
+    this.retrieveWindow = true;
+  }
+
+  
+  closeRetrieveEPCWindow($event) {
+    this.retrieveWindow = false;
+     var isItRetrieved:boolean = $event;
+      $('.portalwBlur').removeClass('ovrlay');
+      if (isItRetrieved) {
+        this.selectedAsset.epcStatus = "Lodged EPC";
+        this.openTabWindow("epc", this.selectedAsset);
+      }
+  }
+
+  sapBandsChanged(currentValues) {
+    this.selectedSAPBands = currentValues;
+    this.filterAssetTable(currentValues, "sapBands");
+
+  }
+  
+  filterChange(filterValues) {
+
+  }
+
+  checkMenuAccess(name: string, forAngular: number): Boolean {
+      return this.menuList.some(x => x.menuName == name && x.linkType == forAngular && x.menuVisible == 1);
+    }
+
+    getMenus() {
+      this.subs.add(
+        this.settingService.getSilverLightMenu().subscribe(
+          data => {
+            if (data.isSuccess) {
+              this.menuList = data.data;
+            }
+          }
+        )
+      )
+    }
 
 }

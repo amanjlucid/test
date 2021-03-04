@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { AsbestosService} from '../../_services';
+import { AssetAttributeService, AlertService, AsbestosService} from '../../_services';
 import { SubSink } from 'subsink';
 import { DomSanitizer } from '@angular/platform-browser';
 
@@ -18,6 +18,8 @@ export class AsbestosViewAttachmentComponent implements OnInit {
   openPopup:boolean = false;
 
   constructor(
+    private assetAttributeService: AssetAttributeService,
+    private alertService: AlertService,
     private asbestosService: AsbestosService,
     private _sanitizer: DomSanitizer,
   ) { }
@@ -53,12 +55,48 @@ export class AsbestosViewAttachmentComponent implements OnInit {
               this.imagePath = this._sanitizer.bypassSecurityTrustResourceUrl(
                 'data:image/png;base64,' + data.data.aauaattachment);
             } else if (data.data.aauatype == 'PDF'){
-              const linkSource = 'data:application/pdf;base64,' + data.data.aauaattachment;
-              const downloadLink = document.createElement("a");
-              const fileName = this.selectedAttachment.aauaattachmentname;
-              downloadLink.href = linkSource;
-              downloadLink.download = fileName;
-              downloadLink.click();
+
+              let fileExt = "pdf";
+              this.assetAttributeService.getMimeType(fileExt).subscribe(
+                mimedata => {
+                  if (mimedata && mimedata.isSuccess && mimedata.data && mimedata.data.fileExtension) {
+                      var linkSource = 'data:' + mimedata.data.mimeType1 + ';base64,';
+                          if (mimedata.data.openWindow)
+                          {
+                            var byteCharacters = atob(data.data.aauaattachment);
+                            var byteNumbers = new Array(byteCharacters.length);
+                            for (var i = 0; i < byteCharacters.length; i++) {
+                              byteNumbers[i] = byteCharacters.charCodeAt(i);
+                            }
+                            var byteArray = new Uint8Array(byteNumbers);
+                            var file = new Blob([byteArray], { type: mimedata.data.mimeType1 + ';base64' });
+                            var fileURL = URL.createObjectURL(file);
+                            let newPdfWindow =window.open(fileURL);
+                            // let newPdfWindow = window.open("",this.selectedNotes.fileName);
+                            // let iframeStart = "<\iframe title='Notepad' width='100%' height='100%' src='data:" + mimedata.data.mimeType1 + ";base64, ";
+                            // let iframeEnd = "'><\/iframe>";
+                            // newPdfWindow.document.write(iframeStart + filedata + iframeEnd);
+                            // newPdfWindow.document.title = this.selectedNotes.fileName;
+                          }
+                          else
+                          {
+                            linkSource = linkSource + data.data.aauaattachment;
+                            const downloadLink = document.createElement("a");
+                            const fileName = this.selectedAttachment.aauaattachmentname;
+                            downloadLink.href = linkSource;
+                            downloadLink.download = fileName;
+                            downloadLink.click();
+                          }
+                        
+
+                    }
+                    else{
+                      this.alertService.error("This file format is not supported.");
+                    }
+                }
+                
+              )
+        
               this.closeViewAttacmentWin();
             }
           } 

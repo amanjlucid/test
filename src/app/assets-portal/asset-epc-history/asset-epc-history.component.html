@@ -1,0 +1,91 @@
+<kendo-window  title="EPC History" [top]="10" [minWidth]="550" [height]="550"
+[width]="1150" (close)="closeHistoryWin()" style="padding: 0;" >
+
+
+<div style="height:100%;" class="col-md-12 m-0 p-0">
+
+  <kendo-grid id="historygrid" #grid="kendoGrid"  [navigable]="true" [resizable]="true" [data]="energyTableData" [selectable]="{
+    mode: 'multiple' }">
+
+    <kendo-grid-column field="m_USERNAME" title="User" width="200" [kendoGridSelectBy]="mySelectionKey" [selectedKeys]="mySelection" >
+      <ng-template kendoGridCellTemplate let-dataItem>
+          <span > {{ dataItem.m_USERNAME }}
+          </span>
+        </ng-template>
+  </kendo-grid-column>
+
+  <kendo-grid-column field="process" title="Process" width="300" >
+    <ng-template kendoGridCellTemplate let-dataItem>
+        <span > {{ dataItem.process }}
+        </span>
+      </ng-template>
+  </kendo-grid-column>
+
+
+      <kendo-grid-column field="result" title="Result" width="180" >
+        <ng-template kendoGridCellTemplate let-dataItem>
+            <span > {{ dataItem.result }}
+            </span>
+          </ng-template>
+    </kendo-grid-column>
+
+      <kendo-grid-column field="logDate" title="Date" width="100" >
+      <ng-template kendoGridCellTemplate let-dataItem>
+          <span *ngIf="dataItem.logDate!=null && getYear(dataItem.logDate) > 1900">
+          {{ dataItem.logDate | date: 'dd-MMM-yyyy'  }}
+          </span>
+        </ng-template>
+  </kendo-grid-column>
+
+
+  <kendo-grid-column field="logTime" title="Time" width="80" >
+    <ng-template kendoGridCellTemplate let-dataItem>
+        <span *ngIf="dataItem.logTime!=null && getYear(dataItem.logTime) > 1900" >
+        {{ dataItem.logTime | date: 'hh:mm:ss' }}
+        </span>
+      </ng-template>
+  </kendo-grid-column>
+
+
+    </kendo-grid>
+
+
+  <p style="position: absolute; top: 0px;background-color: white;  height: 80px;" class="col-md-12 m-0 p-0"></p>
+
+
+<div class="row" style="position: absolute; top:44px; left:12px ">
+
+      <div class="dropdown" id="nesting-dropdown-demo">
+          <button [disabled]="!checkEnergyPortalAccess('Export...')" type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Export</button>
+          <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
+                          <a class="dropdown-item" (click)="exportToExcel(grid,'xlsx')" href="javascript:void(0)">Export Grid</a>
+                          <a class="dropdown-item" (click)="exportToExcel(grid,'xlsx','selected')" href="javascript:void(0)">Export Selected</a>
+
+          </div>
+    </div>
+
+</div>
+
+<div style="position: absolute; top: 80px;width: 100%" >
+    <p style="background-color: #dcdcdc; height: 1px;" class="col-md-12 m-0 p-0"></p>
+</div>
+
+
+</div>
+
+<div style="background-color: #cecece;position: absolute; top: 0px; left:0px; width: 100%;" class=" m-0  p-0">
+  <div style="background-color: #cecece;" class="form-row m-0 p-0">
+    <p style="background-color: #cecece; margin: -1px; font-weight: 600;  text-overflow: ellipsis;white-space: nowrap;overflow: hidden;" class="col-md-12 m-0 px-3 pt-1 pb-1">
+      Asset ID:<span style="font-weight: 400;margin-left:10px">{{assetId}}</span>
+    <span style="background-color: #cecece; margin-left:30px; font-weight: 600;">Address:</span><span style="font-weight: 400;margin-left:10px">{{address}}</span></p>
+  </div>
+</div>
+
+<div style="background-color: #cecece;position: absolute; top: 25px; left:0px; width: 100%" class="m-0  p-0">
+  <div style="background-color: #cecece;" class="form-row m-0 p-0">
+    <p style="background-color: #cecece; margin: -1px;font-weight: 600;" class="col-md-12 m-0 px-3 pt-1 pb-1">RRN:<span style="font-weight: 400;margin-left:10px">{{rrn}}</span></p>
+  </div>
+</div>
+
+
+</kendo-window>

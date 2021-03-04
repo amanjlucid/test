@@ -112,7 +112,6 @@ export class EventManagerChartComponent implements OnInit {
         // get chart data and render in template
         this.hnsPortalService.getUserChartData(this.currentUser.userId, this.portalName).subscribe(
           data => {
-
             if (data.data.chartData != null) {
               this.dashboardName = data.data.dashboard;
               this.savedState = data.data.chartData.chartData
@@ -442,6 +441,13 @@ export class EventManagerChartComponent implements OnInit {
               dataForChart.ChartParameterValue = val;
               comp.getLineChartData(dataForChart, className, container, state, chartObj);
             });
+
+            
+            //trigger change event
+            if (lineChartFilterData != null && lineChartData.length == 0) {
+              $('.' + className).trigger('change');
+            }
+
           } else {
             this.alertService.error(data.message);
           }
@@ -672,6 +678,13 @@ export class EventManagerChartComponent implements OnInit {
               dataForChart.ChartParameterValue = val;
               comp.getPieChartData(dataForChart, className, container, state, chartObj);
             })
+
+             //trigger change event
+             if (pieChartFilterData != null && tempArr.length == 0) {
+              $('.' + className).trigger('change');
+            }
+
+
           } else {
             this.alertService.error(data.message);
           }
@@ -800,8 +813,6 @@ export class EventManagerChartComponent implements OnInit {
       getChartData = this.hnsPortalService.getChartData(chartObj);
     }
 
-
-
     this.subs.add(
       getChartData.subscribe(
         data => {
@@ -875,13 +886,10 @@ export class EventManagerChartComponent implements OnInit {
       getChartData = this.hnsPortalService.getChartData(chartObj);
     }
 
-
-
     this.subs.add(
       getChartData.subscribe(
         data => {
           if (data.isSuccess) {
-
             let barChartData = data.data;
             let barChartFilterData = data.data.chartFilterModel;
             let selectElm = $(`<select style="margin-right: -24px;background-color: #fff;background-clip: padding-box;border: 1px solid #ced4da; margin-top: 3px; margin-left: 2px;" class="${className}">`);
@@ -918,6 +926,14 @@ export class EventManagerChartComponent implements OnInit {
               dataForChart.ChartParameterValue = val;
               comp.getBarChartData(dataForChart, className, container, state, chartObj);
             })
+
+
+            //trigger change event
+            if (barChartFilterData != null && barChartData.stackedBarChartViewModelList.length == 0) {
+              $('.' + className).trigger('change');
+            }
+
+
           } else {
             this.alertService.error(data.message);
           }
@@ -1157,6 +1173,14 @@ export class EventManagerChartComponent implements OnInit {
               dataForChart.ChartParameterValue = val;
               comp.getGroupBarChartData(dataForChart, className, container, state, chartObj);
             })
+
+           //trigger change event
+           if (chartFilterData != null && chartData.length == 0) {
+            $('.' + className).trigger('change');
+          }
+
+
+
           } else {
             this.alertService.error(data.message);
           }

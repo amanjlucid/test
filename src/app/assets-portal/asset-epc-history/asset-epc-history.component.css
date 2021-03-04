@@ -1,0 +1,19 @@
+.k-window{
+    position: fixed !important;
+    padding: 0 !important;
+
+}
+
+
+.buttonDiv button{
+    margin-left: 5px;
+}
+
+
+#historygrid
+{ 
+    padding-top: 80px;
+    border-width: 1;
+    height: 100%; 
+}
+

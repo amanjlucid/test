@@ -20,6 +20,8 @@ export class TabWindowComponent implements OnInit {
   message:any;
   asbestosPortalAccess:any = [];
   moduleAccess: any;
+  energyPortalAccess = [];
+  modulesEnabled = [];
 
   constructor(
     private assetAttributeService: AssetAttributeService,
@@ -31,6 +33,12 @@ export class TabWindowComponent implements OnInit {
   ngOnInit() {
     this.dataShareService.sharedAsset.subscribe();
     this.dataShareService.modulePermission.subscribe(data => {this.moduleAccess = data});
+    this.dataShareService.realModulesEnabled.subscribe(data => { 
+      this.modulesEnabled = data;
+    });
+    this.dataShareService.energyPortalAccess.subscribe(data => { 
+      this.energyPortalAccess = data;
+    });
     this.dataShareService.changeSelectedAsset(this.selectedAsset);
     this.dataShareService.asbestosPortalAccess.subscribe(data => this.asbestosPortalAccess = data) // set in sitelayout component
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
@@ -81,6 +89,20 @@ export class TabWindowComponent implements OnInit {
       return this.moduleAccess.includes(val);
     }
   }
+
+  checkModuleEnabled(val: string): Boolean {
+    if (this.modulesEnabled != undefined) {
+      return this.modulesEnabled.includes(val);
+    }
+  }
+
+    
+  checkEnergyPortalAccess(val: string): Boolean {
+    if (this.energyPortalAccess != undefined) {
+    return this.energyPortalAccess.includes(val);
+    }
+  }
+
 
   
 }

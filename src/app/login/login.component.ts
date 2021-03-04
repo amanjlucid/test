@@ -61,15 +61,13 @@ export class LoginComponent implements OnInit, AfterContentChecked {
                     if (data && data.access_token) {
                         this.RefreshUserProperties(data.userId)
                         // this.router.navigate([this.returnUrl]);
-                    } else if (data.isSuccess && data.data == "WRONGPASS") {
+                    } else if (data.data == "EXPIRED") {
+                        this.loading = false;
+                        this.router.navigate(['/change-password']);
                         this.alertService.error(data.message);
-                        this.loading = false;
                     } else {
-                        this.loading = false;
-                        if (data.data == "EXPIRED") {
-                            this.router.navigate(['/change-password']);
-                            this.alertService.error(data.message);
-                        }
+                            this.loading = false;
+                            this.alertService.error("Login failed. There is something wrong with your account or password.");
                     }
                 },
                 error => {

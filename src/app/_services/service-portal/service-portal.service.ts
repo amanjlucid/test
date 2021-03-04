@@ -162,10 +162,6 @@ export class ServicePortalService {
         return this.http.get<any>(`${appConfig.apiUrl}/api/AssetServicing/RemoveNotepadAttachment?assid=${assid}&jobNumber=${jobNumber}&sequenceNumber=${sequenceNumber}`);
     }
 
-    GetNotepadImage(filePath) {
-        return this.http.get<any>(`${appConfig.apiUrl}/api/AssetServicing/GetNotepadImage?filePath=${filePath}`);
-    }
-
     UpdateServiceNotepadAttachmentDescription(params: any) {
         let httpOptions = {
             headers: new HttpHeaders({

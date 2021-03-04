@@ -1,0 +1,55 @@
+
+.confirmButton {
+    width: 80px;
+}
+
+label {
+    display: block;
+    }
+
+input[type=text], select {
+    width: 100%;
+    display: block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    }
+
+textarea {
+    resize: none;
+    min-height: 60px;
+}
+
+legend {
+    display: inline-block;
+   	vertical-align: middle;
+    width:100%;
+}
+.green {
+    color:mediumseagreen;
+}
+.red {
+    color:crimson;
+}
+.black {
+    color: black;
+    font-weight: bolder;
+}
+/* 
+.input,
+.textarea {
+  border: 1px solid #ccc;
+  font-family: inherit;
+  font-size: inherit;
+  padding: 1px 6px;
+}
+
+.textarea {
+    resize: none;
+    display: block;
+    width: 100%;
+    overflow: hidden;
+    resize: both;
+    min-height: 40px;
+    line-height: 20px;
+  } */

@@ -3,7 +3,7 @@ import { DataResult, process, State, CompositeFilterDescriptor, SortDescriptor, 
 import { PageChangeEvent } from '@progress/kendo-angular-grid';
 import { SubSink } from 'subsink';
 import { HnsDefinitionModel } from '../../_models'
-import { HnsPortalService, AlertService, ConfirmationDialogService, SharedService, HelperService } from 'src/app/_services';
+import { AssetAttributeService, AlertService, HnsPortalService, ConfirmationDialogService, SharedService, HelperService } from 'src/app/_services';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
@@ -78,8 +78,9 @@ export class HnsDefinitionsComponent implements OnInit, OnDestroy {
   contextMenus = ['Copy'];
 
   constructor(
-    private hnsService: HnsPortalService,
+    private assetAttributeService: AssetAttributeService,
     private alertService: AlertService,
+    private hnsService: HnsPortalService,
     private confirmationDialogService: ConfirmationDialogService,
     private http: HttpClient,
     private sharedService: SharedService,
@@ -128,7 +129,7 @@ export class HnsDefinitionsComponent implements OnInit, OnDestroy {
           // if (this.hnsPermission.includes("Inactivate") == false && this.hnsPermission.includes("Activate") == false) {
           //   this.contextMenus = ['Copy']
           // }
-
+          
         }
       )
     )
@@ -471,13 +472,46 @@ export class HnsDefinitionsComponent implements OnInit, OnDestroy {
       const params = { hasCode: this.selectedDefinition.hascode, hasVersion: this.selectedDefinition.hasversion, Dependency: dependencies };
       this.subs.add(
         this.hnsService.report(params).subscribe(
-          data => {
-            const linkSource = 'data:application/pdf;base64,' + data;
-            const downloadLink = document.createElement("a");
-            const fileName = 'Report';
-            downloadLink.href = linkSource;
-            downloadLink.download = fileName;
-            downloadLink.click();
+          filedata => {
+
+            let fileExt = "pdf";
+            this.assetAttributeService.getMimeType(fileExt).subscribe(
+              mimedata => {
+                if (mimedata && mimedata.isSuccess && mimedata.data && mimedata.data.fileExtension) {
+                    var linkSource = 'data:' + mimedata.data.mimeType1 + ';base64,';
+                        if (mimedata.data.openWindow)
+                        {
+                          var byteCharacters = atob(filedata);
+                          var byteNumbers = new Array(byteCharacters.length);
+                          for (var i = 0; i < byteCharacters.length; i++) {
+                            byteNumbers[i] = byteCharacters.charCodeAt(i);
+                          }
+                          var byteArray = new Uint8Array(byteNumbers);
+                          var file = new Blob([byteArray], { type: mimedata.data.mimeType1 + ';base64' });
+                          var fileURL = URL.createObjectURL(file);
+                          let newPdfWindow =window.open(fileURL);
+      
+                          // let newPdfWindow = window.open("",this.selectedNotes.fileName);
+                          // let iframeStart = "<\iframe title='Notepad' width='100%' height='100%' src='data:" + mimedata.data.mimeType1 + ";base64, ";
+                          // let iframeEnd = "'><\/iframe>";
+                          // newPdfWindow.document.write(iframeStart + filedata + iframeEnd);
+                          // newPdfWindow.document.title = this.selectedNotes.fileName;
+                        }
+                        else
+                        {
+                          linkSource = linkSource + filedata;
+                          const downloadLink = document.createElement("a");
+                          const fileName = "Report";
+                          downloadLink.href = linkSource;
+                          downloadLink.download = fileName;
+                          downloadLink.click();
+                        }
+                  }
+                  else{
+                    this.alertService.error("This file format is not supported.");
+                  }
+              }
+            )
           },
           error => {
             this.alertService.error(error);

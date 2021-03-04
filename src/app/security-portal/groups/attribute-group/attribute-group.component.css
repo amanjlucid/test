@@ -1,32 +1,32 @@
-.attrGrpDiv {
+.attrGrpDiv{
     /* width: 800px; */
     height: 600px;
 }
-
+    
 .k-window {
     position: fixed !important;
 }
 
-.incChek {
+.incChek{
     position: absolute;
     margin-left: 270px;
     margin-top: 2px
 }
 
-.incChek input[type='checkbox'] {
+.incChek input[type='checkbox']{
     margin-top: 5px;
     float: left;
 }
 
-.selectionDiv {
+.selectionDiv{
     float: left;
 }
 
 /* Ipad device  */
-
 @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
-    /* .attrGrpDiv{
+  /* .attrGrpDiv{
       width: 700px;
       height: 620px;
   } */
+
 }

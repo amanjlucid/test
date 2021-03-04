@@ -389,7 +389,7 @@ td, th {
   padding: 7px;
   color: white;
   overflow-y: scroll;
-  height: 829px;
+  height: 100%;
 }
 
 .searchDiv::-webkit-scrollbar {
@@ -515,6 +515,37 @@ td, th {
     text-align: left;
     margin-bottom: 3px;
   }
+  .k-searchbar {
+    display: none !important;
+  }
 
-  
+  div .k-multiselect .k-multiselect-wrap .k-searchbar .k-input {
+    height: 1.125em !important;
+  }
+
+/* Style the button that is used to open and close the collapsible content */
+.collapsible {
+  background-color: #eee;
+  color: #444;
+  cursor: pointer;
+  padding: 18px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 15px;
+}
+
+
+
+
+ng-multiselect-dropdown {
+  background-color: white;
+  min-width: 168px;
+}
+
+ng-multiselect-dropdown .dropdown-btn span:nth-child(2) {
+  margin-left: 6px;
+}
+
 }

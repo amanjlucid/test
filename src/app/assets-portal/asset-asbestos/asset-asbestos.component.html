@@ -56,7 +56,7 @@
     </div>
   </div>
   <div class="col-md-6 text-right asbestosReqBtn">
-
+    <button type="button" class="btn btn-sm themeButton" (click)="export()">Export</button>
     <button (click)="openManageAsbestosRequestPopup('request')" [disabled]="checkAsbestosPropAccess()"
       class="btn btn-sm themeButton">Requests</button>
     <!-- <button (click)="openManageAsbestosRequestPopup('auth')" class="btn btn-sm themeButton">Auth</button> -->
@@ -64,7 +64,7 @@
     <button (click)="openWorkStatusFunction()" class="btn btn-sm themeButton">Work Status</button>
     <app-individual-asset-report style="margin-left: 4px;"> </app-individual-asset-report>
 
-    <button type="button" (click)="requestFurtherInfo()" [disabled]="!selectedAsset"
+    <button type="button" (click)="requestFurtherInfo()" [disabled]="checkFurtherInfoAccess()"
       class="btn btn-sm themeButton">Request Further Information
     </button>
   </div>
@@ -554,11 +554,11 @@
   <kendo-window title="{{notesTitle}}" *ngIf="notesDetails" (close)="closeNotesDetails()" [top]="15" [minWidth]="250"
     [width]="800" [height]="680">
     <div class="row">
-      <div class="col-md-12" *ngIf="notesTitle != 'Attribute Image' && selectedNotes.type == 'N'">
+      <div class="col-md-12" *ngIf="notesTitle != 'Asbestos Image' && selectedNotes.linkType == 'N'">
         <textarea style="height: 500px;" class="form-control" [readonly]="true">{{selectedNotes.text}}</textarea>
       </div>
 
-      <div class="col-md-12" *ngIf="notesTitle == 'Attribute Image' && selectedNotes.type == 'P'">
+      <div class="col-md-12" *ngIf="notesTitle == 'Asbestos Image' && selectedNotes.linkType == 'P'">
         <img [src]="notesImagePath" alt="{{selectedNotes.text}}" width="auto"
           style="position: relative; height: 500px;">
         <p class="mt-2 m-0 p-0">{{selectedNotes.link}}</p>

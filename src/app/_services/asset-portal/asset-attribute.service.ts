@@ -163,31 +163,22 @@ export class AssetAttributeService {
         return this.http.get<any>(`${appConfig.apiUrl}/api/Asset/GetLatestRDSAPExtractAssetDetail?assetId=${encodeURIComponent(assetId)}`, httpOptions);
     }
 
-    getNotepadImage(type: string, ntpSequence, ntpModifiedTime, description) {
+    getNotepadImage(ntpType: string, ntpGenericCode1: string, ntpGenericCode2: string, ntpSequence) {
         var httpOptions = {
             headers: new HttpHeaders({
                 'Content-Type': 'application/json'
             }),
         };
-        return this.http.get<any>(`${appConfig.apiUrl}/api/Asset/getNotepadImage?type=${type}&ntpSequence=${ntpSequence}&ntpModifiedTime=${ntpModifiedTime}&description=${description}`, httpOptions);
+        return this.http.get<any>(`${appConfig.apiUrl}/api/Asset/getNotepadImage?ntpType=${ntpType}&ntpGenericCode1=${ntpGenericCode1}&ntpGenericCode2=${ntpGenericCode2}&ntpSequence=${ntpSequence}`, httpOptions);
     }
 
-    getAssettNotepadImage(ntpSequence, ntpType, ntpGencode1, ntpGencode2) {
+    getNotepadFile(ntpType: string, ntpGenericCode1: string, ntpGenericCode2: string, ntpSequence) {
         var httpOptions = {
             headers: new HttpHeaders({
                 'Content-Type': 'application/json'
             }),
         };
-        return this.http.get<any>(`${appConfig.apiUrl}/api/Asset/getNotepadImage?ntpSequence=${ntpSequence}&ntpType=${ntpType}&ntpGencode1=${ntpGencode1}&ntpGencode2=${ntpGencode2}`, httpOptions);
-    }
-
-    getNotepadFile(type: string, ntpSequence, ntpModifiedTime, description) {
-        var httpOptions = {
-            headers: new HttpHeaders({
-                'Content-Type': 'application/json'
-            }),
-        };
-        return this.http.get<any>(`${appConfig.apiUrl}/api/Asset/GetNotepadFile?type=${type}&ntpSequence=${ntpSequence}&ntpModifiedTime=${ntpModifiedTime}&description=${description}`, httpOptions);
+        return this.http.get<any>(`${appConfig.apiUrl}/api/Asset/GetNotepadFile?ntpType=${ntpType}&ntpGenericCode1=${ntpGenericCode1}&ntpGenericCode2=${ntpGenericCode2}&ntpSequence=${ntpSequence}`, httpOptions);
     }
 
     getAssetSurveysFilters(assetId: string) {
@@ -476,6 +467,158 @@ export class AssetAttributeService {
 
 
 
+    getMimeType(fileExtension){
+        let httpOptions = {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json'
+            }),
+        };
+        
+        return this.http.get<any>(`${appConfig.apiUrl}/api/Asset/GetMimeType?fileExtension=${encodeURIComponent(fileExtension)}`, httpOptions);
+    }
+
+
+
+
+    getAssetEPCList(assetId: string) {
+        var httpOptions = {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json'
+            }),
+        };
+        return this.http.get<any>(`${appConfig.apiUrl}/api/Asset/GetAssetEPCList?assetId=${encodeURIComponent(assetId)}`, httpOptions);
+    }
+
+
+
+    getAssetEPCHistoryList(assetId: string, epcSequence: string) {
+        var httpOptions = {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json'
+            }),
+        };
+        return this.http.get<any>(`${appConfig.apiUrl}/api/Asset/GetAssetEPCHistoryList?assetId=${encodeURIComponent(assetId)}&epcSequence=${encodeURIComponent(epcSequence)}`, httpOptions);
+    }
+
+
+
+
+    isNewRecommendationsFormat(assetId: string, epcSequence: string) {
+        var httpOptions = {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json'
+            }),
+        };
+        return this.http.get<any>(`${appConfig.apiUrl}/api/Asset/IsNewRecommendationsFormat?assetId=${encodeURIComponent(assetId)}&epcSequence=${encodeURIComponent(epcSequence)}`, httpOptions);
+    }
+
+
+
+    getOldRecommendations(assetId: string, epcSequence: string) {
+        var httpOptions = {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json'
+            }),
+        };
+        return this.http.get<any>(`${appConfig.apiUrl}/api/Asset/GetOldRecommendations?assetId=${encodeURIComponent(assetId)}&epcSequence=${encodeURIComponent(epcSequence)}`, httpOptions);
+    }
+
+
+
+    getNewRecommendations(assetId: string, epcSequence: string) {
+        var httpOptions = {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json'
+            }),
+        };
+        return this.http.get<any>(`${appConfig.apiUrl}/api/Asset/GetNewRecommendations?assetId=${encodeURIComponent(assetId)}&epcSequence=${encodeURIComponent(epcSequence)}`, httpOptions);
+    }
+
+
+
+    getAddendaDisclosure(assetId: string, epcSequence: string) {
+        var httpOptions = {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json'
+            }),
+        };
+        return this.http.get<any>(`${appConfig.apiUrl}/api/Asset/GetAddendaDisclosure?assetId=${encodeURIComponent(assetId)}&epcSequence=${encodeURIComponent(epcSequence)}`, httpOptions);
+    }
+
+
+    getEPCData(assetId: string, epcSequence: string) {
+        var httpOptions = {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json'
+            }),
+        };
+        return this.http.get<any>(`${appConfig.apiUrl}/api/Asset/GetEPCData?assetId=${encodeURIComponent(assetId)}&epcSequence=${encodeURIComponent(epcSequence)}`, httpOptions);
+    }
+
+
+
+    checkEPC(assetId: string, rrn: string) {
+        var httpOptions = {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json'
+            }),
+        };
+        return this.http.get<any>(`${appConfig.apiUrl}/api/Asset/CheckEPC?assetId=${encodeURIComponent(assetId)}&rrn=${encodeURIComponent(rrn)}`, httpOptions);
+    }
+
+
+    returnRetrievedEPC(assetId: string, rrn: string, userID: string) {
+        var httpOptions = {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json'
+            }),
+        };
+        return this.http.get<any>(`${appConfig.apiUrl}/api/Asset/ReturnRetrievedEPC?assetId=${encodeURIComponent(assetId)}&rrn=${encodeURIComponent(rrn)}&userID=${encodeURIComponent(userID)}`, httpOptions);
+    }
+
+    getEPCCertificate(assetId: string, epcSequence) {
+        var httpOptions = {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json'
+            }),
+        };
+        return this.http.get<any>(`${appConfig.apiUrl}/api/Asset/GetEPCCertificate?assetId=${encodeURIComponent(assetId)}&epcSequence=${encodeURIComponent(epcSequence)}`, httpOptions);
+    }
+
+
+    getEPCChartsList() {
+        var httpOptions = {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json'
+            }),
+        };
+        return this.http.get<any>(`${appConfig.apiUrl}/api/Asset/GetEPCChartsList`, httpOptions);
+        
+    }
+
+    getEPCComponentsReport(assetId: string, epcSequence) {
+        var httpOptions = {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json'
+            }),
+        };
+        return this.http.get<any>(`${appConfig.apiUrl}/api/Asset/GetEPCComponentsReport?assetId=${encodeURIComponent(assetId)}&epcSequence=${encodeURIComponent(epcSequence)}`, httpOptions);
+        
+    }
+
+
+    getRetrievedEPCs(monthText: string) {
+        var httpOptions = {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json'
+            }),
+        };
+        return this.http.get<any>(`${appConfig.apiUrl}/api/Asset/GetRetrievedEPCs?monthText=${encodeURIComponent(monthText)}`, httpOptions);
+        
+    }
+
+
+    GetRetrievedEPCs
     /** remove these */
 
     getAssetCountd(assetList: AssetListModel) {

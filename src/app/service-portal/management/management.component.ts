@@ -377,9 +377,9 @@ export class ManagementComponent implements OnInit, OnDestroy {
         for (const key in this.mgmDataByLvl) {
           if (this.mgmDataByLvl.hasOwnProperty(key)) {
             const element = this.mgmDataByLvl[key];
-            if ((this.mgmFltrCol.contractor != null && this.mgmFltrCol.contractor.indexOf(element.data.contractor) !== -1)
-              || (this.mgmFltrCol.contract != null && this.mgmFltrCol.contract.indexOf(element.data.contract) !== -1)
-              || (this.mgmFltrCol.serviceType != null && this.mgmFltrCol.serviceType.indexOf(element.data.serviceType) !== -1)
+            if ((this.mgmFltrCol.contractor != null && this.mgmFltrCol.contractor.some(x => x.item_id == element.data.contractor))
+              || (this.mgmFltrCol.contract != null && this.mgmFltrCol.contract.some(x => x.item_id == element.data.contract))
+              || (this.mgmFltrCol.serviceType != null && this.mgmFltrCol.serviceType.some(x => x.item_id == element.data.serviceType))
             ) {
               tempArr.push(element);
               continue;
@@ -388,9 +388,9 @@ export class ManagementComponent implements OnInit, OnDestroy {
                 for (const childrenKey in element.children) {
                   if (element.children.hasOwnProperty(childrenKey)) {
                     const childElement = element.children[childrenKey];
-                    if ((this.mgmFltrCol.contractor != null && this.mgmFltrCol.contractor.indexOf(childElement.contractor) !== -1)
-                      || (this.mgmFltrCol.contract != null && this.mgmFltrCol.contract.indexOf(childElement.contract) !== -1)
-                      || (this.mgmFltrCol.serviceType != null && this.mgmFltrCol.serviceType.indexOf(childElement.serviceType) !== -1)
+                    if ((this.mgmFltrCol.contractor != null && this.mgmFltrCol.contractor.some(x => x.item_id == childElement.contractor))
+                      || (this.mgmFltrCol.contract != null && this.mgmFltrCol.contract.some(x => x.item_id == childElement.contract))
+                      || (this.mgmFltrCol.serviceType != null && this.mgmFltrCol.serviceType.some(x => x.item_id == childElement.serviceType))
                     ) {
                       tempArr.push(element);
                       break;
@@ -401,6 +401,9 @@ export class ManagementComponent implements OnInit, OnDestroy {
             }
           }
         }
+
+
+
 
         if (tempArr.length > 0) {
           concateArr.push(this.actualMgmtData[0]);
@@ -466,7 +469,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
             tempArr.push(comp.mgmtData[parseInt(index)]);
           }
         } else {
-          if ($row.css('display') == 'table') {
+          if ($row.css('display') != 'none') {
             tempArr.push(comp.mgmtData[parseInt(index)]);
           }
         }

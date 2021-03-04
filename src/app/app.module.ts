@@ -85,8 +85,24 @@ import { HnsSettingsComponent } from './hns-settings/hns-settings.component';
 import { SpellCheckerModule } from 'ngx-spellchecker';
 import { HnsReportImagesComponent } from './hns-report-images/hns-report-images.component';
 import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
+import { AssetEpcComponent } from './assets-portal/asset-epc/asset-epc.component';
+import { AssetEpcHistoryComponent } from './assets-portal/asset-epc-history/asset-epc-history.component';
+import { AssetEpcRecommendationsComponent } from './assets-portal/asset-epc-recommendations/asset-epc-recommendations.component';
+import { AssetEpcAddendaComponent } from './assets-portal/asset-epc-addenda/asset-epc-addenda.component';
+import { AssetEpcDataComponent } from './assets-portal/asset-epc-data/asset-epc-data.component';
+import { AssetEpcRetrieveComponent } from './assets-portal/asset-epc-retrieve/asset-epc-retrieve.component';
+import { EpcSettingsComponent } from './setting/epc-settings/epc-settings.component';
+import { MatCheckboxModule, } from '@angular/material/checkbox';
+import {MatSelectModule} from '@angular/material/select';
 import { TooltipModule } from '@progress/kendo-angular-tooltip';
 import { WebReporterSettingComponent } from './setting/web-reporter-setting/web-reporter-setting.component';
+import {MatExpansionModule} from '@angular/material/expansion';
+import { AssetEpcDashboardComponent } from './assets-portal/asset-energy/asset-epc-dashboard/asset-epc-dashboard.component';
+import { AssetEpcRouterComponent } from './assets-portal/asset-energy/asset-epc-router/asset-epc-router.component';
+import { RetrievedEpcGridComponent } from './assets-portal/asset-energy/retrieved-epc-grid/retrieved-epc-grid.component';
+import { WorksordersDashboardComponent } from './worksorders/worksorders-dashboard/worksorders-dashboard.component';
+import { WorksordersRouterComponent } from './worksorders/worksorders-router/worksorders-router.component';
+
 
 
 
@@ -165,7 +181,20 @@ import { WebReporterSettingComponent } from './setting/web-reporter-setting/web-
     ServiceSettingsComponent,
     HnsSettingsComponent,
     HnsReportImagesComponent,
-    WebReporterSettingComponent
+    AssetEpcComponent,
+    AssetEpcHistoryComponent,
+    AssetEpcRecommendationsComponent,
+    AssetEpcAddendaComponent,
+    AssetEpcDataComponent,
+    AssetEpcRetrieveComponent,
+    EpcSettingsComponent,
+    WebReporterSettingComponent,
+    AssetEpcDashboardComponent,
+    AssetEpcRouterComponent,
+    RetrievedEpcGridComponent,
+    WorksordersDashboardComponent,
+    WorksordersRouterComponent,
+
 
   ],
 
@@ -188,9 +217,10 @@ import { WebReporterSettingComponent } from './setting/web-reporter-setting/web-
     SharedModule,
     SpellCheckerModule.forRoot(),
     DateInputsModule,
+    MatCheckboxModule,
+    MatSelectModule,
     TooltipModule,
-
-
+    MatExpansionModule,
   ],
 
   providers: [

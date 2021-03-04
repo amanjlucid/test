@@ -1,0 +1,205 @@
+<kendo-window  title="EPC Recommendations" [top]="10" [minWidth]="550" [height]="550"
+[width]="1150" (close)="closeRecWin()" style="padding: 0;" >
+
+<!-- Old Recommendations Div -->
+<div style="height:100%;" class="col-md-12 m-0 p-0" *ngIf="showOld">
+
+  <kendo-grid id="oldRecGrid" #grid="kendoGrid"  [navigable]="true" [resizable]="true" [data]="oldrecommendationsTableData" [selectable]="{
+    mode: 'multiple' }">
+
+    <kendo-grid-column field="improveTo" title="Improvement" width="250" [kendoGridSelectBy]="mySelectionKey" [selectedKeys]="mySelection" >
+        <ng-template kendoGridCellTemplate let-dataItem>
+            <span > {{ dataItem.improveTo }}
+            </span>
+          </ng-template>
+    </kendo-grid-column>
+  
+    <kendo-grid-column field="resultingSAP" title="SAP" width="50" >
+      <ng-template kendoGridCellTemplate let-dataItem>
+          <span > {{ dataItem.resultingSAP }}
+          </span>
+        </ng-template>
+    </kendo-grid-column>
+  
+        <kendo-grid-column field="resultingEI" title="EI" width="50" >
+          <ng-template kendoGridCellTemplate let-dataItem>
+              <span > {{ dataItem.resultingEI }}
+              </span>
+            </ng-template>
+      </kendo-grid-column>
+  
+        <kendo-grid-column field="moneySaved" title="Saving" width="75"  >
+        <ng-template kendoGridCellTemplate let-dataItem>
+            <span *ngIf="dataItem.moneySaved!=null && dataItem.moneySaved!=''">
+            {{ dataItem.moneySaved}}
+            </span>
+          </ng-template>
+    </kendo-grid-column>
+  
+    <kendo-grid-column field="cO2Saved" title="CO2 Saved" width="150" >
+      <ng-template kendoGridCellTemplate let-dataItem>
+          <span >
+          {{ dataItem.cO2Saved}}
+          </span>
+        </ng-template>
+    </kendo-grid-column>
+    
+    <kendo-grid-column field="costBracketName" title="Cost Bracket" width="250" >
+        <ng-template kendoGridCellTemplate let-dataItem>
+            <span >
+            {{ dataItem.costBracketName}}
+            </span>
+          </ng-template>
+      </kendo-grid-column>
+      
+      <kendo-grid-column field="reasonRemovedNote" title="Reason Removed" width="300" >
+        <ng-template kendoGridCellTemplate let-dataItem>
+            <span >
+            {{ dataItem.reasonRemovedNote}}
+            </span>
+          </ng-template>
+      </kendo-grid-column>
+
+
+    </kendo-grid>
+
+  <p style="position: absolute; top: 0px;background-color: white;  height: 80px;" class="col-md-12 m-0 p-0"></p>
+
+<div class="row" style="position: absolute; top:48px; left:12px ">
+
+      <div class="dropdown" id="nesting-dropdown-demo">
+          <button [disabled]="!checkEnergyPortalAccess('Export...')" type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Export</button>
+          <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
+                          <a class="dropdown-item" (click)="exportOldToExcel(grid,'xlsx')" href="javascript:void(0)">Export Grid</a>
+                          <a class="dropdown-item" (click)="exportOldToExcel(grid,'xlsx','selected')" href="javascript:void(0)">Export Selected</a>
+
+          </div>
+    </div>
+</div>
+
+<div style="position: absolute; top: 80px;width: 100%" >
+    <p style="background-color: #dcdcdc; height: 1px;" class="col-md-12 m-0 p-0"></p>
+</div>
+
+
+
+
+
+</div>
+
+
+<!-- New Recommendations Div -->
+<div style="height:100%;" class="col-md-12 m-0 p-0" *ngIf="showNew">
+
+    <kendo-grid id="newRecGrid" #grid="kendoGrid"  [navigable]="true" [resizable]="true" [data]="newrecommendationsTableData" [selectable]="{
+      mode: 'multiple' }">
+  
+      <kendo-grid-column field="improveTo" title="Improvement" width="250" [kendoGridSelectBy]="mySelectionKey" [selectedKeys]="mySelection" >
+        <ng-template kendoGridCellTemplate let-dataItem>
+            <span > {{ dataItem.improveTo }}
+            </span>
+          </ng-template>
+    </kendo-grid-column>
+  
+    <kendo-grid-column field="improvedSAP" title="SAP" width="55" >
+      <ng-template kendoGridCellTemplate let-dataItem>
+          <span > {{ dataItem.improvedSAP }}
+          </span>
+        </ng-template>
+    </kendo-grid-column>
+  
+  
+        <kendo-grid-column field="improvedEI" title="EI" width="55" >
+          <ng-template kendoGridCellTemplate let-dataItem>
+              <span > {{ dataItem.improvedEI }}
+              </span>
+            </ng-template>
+      </kendo-grid-column>
+  
+        <kendo-grid-column field="moneySaved" title="Saving" width="85" >
+        <ng-template kendoGridCellTemplate let-dataItem>
+            <span *ngIf="dataItem.moneySaved!=null && dataItem.moneySaved!=''">
+            {{ dataItem.moneySaved}}
+            </span>
+          </ng-template>
+    </kendo-grid-column>
+  
+  
+    <kendo-grid-column field="indicativeCost" title="Indicative Cost" width="160" >
+      <ng-template kendoGridCellTemplate let-dataItem>
+          <span >
+          {{ dataItem.indicativeCost}}
+          </span>
+        </ng-template>
+    </kendo-grid-column>
+    
+    <kendo-grid-column field="greenDeal" title="Green Deal" width="200" >
+        <ng-template kendoGridCellTemplate let-dataItem>
+            <span >
+            {{ dataItem.greenDeal}}
+            </span>
+          </ng-template>
+      </kendo-grid-column>
+      
+      <kendo-grid-column field="reasonRemovedNote" title="Reason Removed" width="300" >
+        <ng-template kendoGridCellTemplate let-dataItem>
+            <span >
+            {{ dataItem.reasonRemovedNote}}
+            </span>
+          </ng-template>
+      </kendo-grid-column>
+
+      </kendo-grid>
+  
+  
+  
+  
+  
+    <p style="position: absolute; top: 0px;background-color: white;  height: 80px;" class="col-md-12 m-0 p-0"></p>
+  
+  
+  
+  
+  <div class="row" style="position: absolute; top:44px; left:12px ">
+  
+        <div class="dropdown" id="nesting-dropdown-demo">
+            <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Export</button>
+            <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
+                            <a class="dropdown-item" (click)="exportNewToExcel(grid,'xlsx')" href="javascript:void(0)">Export Grid</a>
+                            <a class="dropdown-item" (click)="exportNewToExcel(grid,'xlsx','selected')" href="javascript:void(0)">Export Selected</a>
+  
+            </div>
+      </div>
+  
+  </div>
+  
+  <div style="position: absolute; top: 80px;width: 100%" >
+      <p style="background-color: #dcdcdc; height: 1px;" class="col-md-12 m-0 p-0"></p>
+  </div>
+  
+  
+  
+  
+  
+  </div>
+  
+
+
+
+
+
+
+  <div style="background-color: #cecece;position: absolute; top: 0px; left:0px; width: 100%;" class=" m-0  p-0">
+    <div style="background-color: #cecece;" class="form-row m-0 p-0">
+      <p style="background-color: #cecece; margin: -1px; font-weight: 600;  text-overflow: ellipsis;white-space: nowrap;overflow: hidden;" class="col-md-12 m-0 px-3 pt-1 pb-1">
+        Asset ID:<span style="font-weight: 400;margin-left:10px">{{assetId}}</span>
+      <span style="background-color: #cecece; margin-left:30px; font-weight: 600;">Address:</span><span style="font-weight: 400;margin-left:10px">{{address}}</span></p>
+    </div>
+  </div>
+  
+  <div style="background-color: #cecece;position: absolute; top: 25px; left:0px; width: 100%" class="m-0  p-0">
+    <div style="background-color: #cecece;" class="form-row m-0 p-0">
+      <p style="background-color: #cecece; margin: -1px;font-weight: 600;" class="col-md-12 m-0 px-3 pt-1 pb-1">RRN:<span style="font-weight: 400;margin-left:10px">{{rrn}}</span></p>
+    </div>
+  </div>
+</kendo-window>

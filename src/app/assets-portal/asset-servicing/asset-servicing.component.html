@@ -195,11 +195,11 @@
 <kendo-window title="{{notesTitle}}" *ngIf="notesDetails" (close)="closeNotesDetails()" [top]="15" [minWidth]="250"
   [width]="800" [height]="680">
   <div class="row">
-    <div class="col-md-12" *ngIf="notesTitle != 'Attribute Image' && selectedNotes.type == 'N'">
+    <div class="col-md-12" *ngIf="notesTitle != 'Servicing Image' && selectedNotes.linkType == 'N'">
       <textarea style="height: 500px;" class="form-control" [readonly]="true">{{selectedNotes.text}}</textarea>
     </div>
 
-    <div class="col-md-12" *ngIf="notesTitle == 'Attribute Image' && selectedNotes.type == 'P'">
+    <div class="col-md-12" *ngIf="notesTitle == 'Servicing Image' && selectedNotes.linkType == 'P'">
       <img [src]="notesImagePath" alt="{{selectedNotes.text}}" width="auto" style="position: relative; height: 500px;">
       <p class="mt-2 m-0 p-0">{{selectedNotes.link}}</p>
       <p class="p-0 mt-1">{{selectedNotes.text}}</p>

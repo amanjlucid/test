@@ -1,0 +1,98 @@
+
+<kendo-dialog  title="Retrieve EPC" *ngIf="dialogRRNRequest"   [height]="250" autoFocusedElement="#rRN" (close)="closeRetrieveWin()"
+[width]="400" style="padding: 0;" >
+
+    <legend>Enter RRN:</legend>
+
+    <div class=" row col-md-12 p-0 mx-0 my-4">
+        <div class="col-md-2"></div>
+        <kendo-maskedtextbox class="col-md-10 text-right p-0 m-0"  #rRN mask="0000-0000-0000-0000-0000" 
+            [(ngModel)]="rRNText" (valueChange)="onChange($event)" prompt="#" [includeLiterals]=true > </kendo-maskedtextbox>
+    </div>
+
+
+    <!-- </fieldset> -->
+    <div class="text-right mt-3">
+        <button class="btn btn-sm themeButton" (click)="closeRetrieveWin()">Cancel</button>
+        <button [disabled]="submitDisabled" class="btn btn-sm themeButton ml-1" (click)="checkEPC()">Submit</button>
+    </div>
+
+
+
+</kendo-dialog>
+
+<kendo-dialog title="Please confirm EPC Retrieval" *ngIf="dialogRetrievalConfirmation" (close)="closeRetrieveWin(false)" [minWidth]="250" [width]="450">
+    <!-- <div class="row"> -->
+    <legend><span class="green"><i class="fa fa-check-square green"></i></span> EPC is available</legend>
+<!-- </div> -->
+        <label class="m-0">RRN</label>
+        <input class="col-md-7 mb-2 p-1" [value]="rRNText" readonly>
+
+        <label class="mx-0 mt-2 mb-0">Address</label>
+        <textarea class="col-md-12 mb-2 p-1"  [value]="address" readonly></textarea>
+
+        <div class="text-left row col-md-12 m-0 p-0">
+            <div class="text-left column col-md-6 m-0 p-0">
+                <label class="m-0">Lodged</label>
+                <input class="col-md-9 mb-2 p-1" [value]="lodgedDate" readonly>
+            </div>
+
+            <div *ngIf="hasResults" class="text-left column col-md-6 m-0 p-0">
+                <label class="m-0">SAP Rating</label>
+                <input class="col-md-4 mb-2 p-1" [value]="sapRating" readonly>
+            </div>
+        </div>
+
+        <label *ngIf="hasWarning" class="mx-0 mt-2 mb-0">Warning</label>
+        <textarea *ngIf="hasWarning" class="col-md-12 mb-1 p-1 red"  [value]="warnings" readonly></textarea>
+
+        <p class="mt-2 black">Continue to retrieve EPC?</p>
+
+    <div class="text-right mt-3">
+        <button class="btn btn-sm themeButton confirmButton"  kendoButton (click)="closeRetrieveWin(false)">No</button>
+        <button class="btn btn-sm themeButton ml-1 confirmButton" kendoButton (click)="returnRetrievedEPC()">Yes</button>
+    </div>
+
+</kendo-dialog> 
+
+<kendo-dialog title="Please confirm" *ngIf="dialogReplaceEPCConfirmation" (close)="closeRetrieveWin(false)" [minWidth]="250"
+[width]="450">
+<p style="margin: 30px; text-align: left;">{{replaceMessage1}}</p>
+<p style="margin: 30px; text-align: left;"></p>
+<p style="margin: 30px; text-align: left;">{{replaceMessage2}}</p>
+<p style="margin: 30px; text-align: left;"></p>
+<p style="margin: 30px; text-align: left;">Continue?</p>
+<div class="row">
+  <div class="col-md-12">
+    <div class="actionBtn text-right">
+      <button class="btn btn-sm themeButton mr-1 confirmButton" (click)="closeRetrieveWin(false)">No</button>
+      <button class="btn btn-sm themeButton confirmButton" (click)="closeReplaceDialog('yes')">Yes</button>
+    </div>
+  </div>
+</div>
+</kendo-dialog>
+
+
+<kendo-dialog title="EPC unavailable warning" *ngIf="dialogUnavailableWarning" (close)="closeRetrieveWin(false)" [minWidth]="250" [width]="450">
+    <legend><span class="red"><i class="fa fa-times red"></i></span> EPC is not available</legend>
+        <label class="m-0">RRN</label>
+        <input class="col-md-7 mb-2 p-1" [value]="rRNText" readonly>
+
+        <label class="mx-0 mt-2 mb-0">Error</label>
+        <textarea class="col-md-12 mb-1 p-1 red"  [value]="warnings" readonly></textarea>
+        <div class="text-right mt-3">
+        <button class="btn btn-sm themeButton confirmButton"  kendoButton (click)="closeRetrieveWin(false)">OK</button>
+    </div>
+</kendo-dialog> 
+
+<kendo-dialog title="EPC Error" *ngIf="dialogError" (close)="closeRetrieveWin(false)" [minWidth]="250" [width]="450">
+    <legend><span class="red"><i class="fa fa-times red"></i></span> Error retrieving EPC</legend>
+        <label class="m-0">RRN</label>
+        <input class="col-md-7 mb-2 p-1" [value]="rRNText" readonly>
+
+        <label class="mx-0 mt-2 mb-0">Error</label>
+        <textarea class="col-md-12 mb-1 p-1 red"  [value]="warnings" readonly></textarea>
+        <div class="text-right mt-3">
+        <button class="btn btn-sm themeButton confirmButton"  kendoButton (click)="closeRetrieveWin(false)">OK</button>
+    </div>
+</kendo-dialog> 

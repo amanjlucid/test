@@ -20,6 +20,10 @@
             <a class="nav-link" [ngClass]="{'active': tabName=='energy'}" (click)="showTab('energy')"
               href="javascript:void(0)">Energy</a>
           </li>
+          <li class="nav-item" *ngIf="checkTabPermission('EPC') && checkModuleEnabled('EPC Module') && checkEnergyPortalAccess('Energy Portal Access')" >
+            <a class="nav-link" [ngClass]="{'active': tabName=='epc'}" (click)="showTab('epc')"
+              href="javascript:void(0)">EPC</a>
+          </li>
           <li class="nav-item" *ngIf="checkTabPermission('Surveys')">
             <a class="nav-link" [ngClass]="{'active': tabName=='surveys'}" (click)="showTab('surveys')"
               href="javascript:void(0)">Surveys</a>
@@ -63,6 +67,7 @@
       <app-asset-asbestos [selectedAsset]="selectedAsset" [assetId]="assetId" *ngIf="tabName == 'asbestos'">
       </app-asset-asbestos>
       <app-asset-energy [selectedAsset]="selectedAsset" [assetId]="assetId" *ngIf="tabName == 'energy'"></app-asset-energy>
+      <app-asset-epc [selectedAsset]="selectedAsset" [assetId]="assetId" *ngIf="tabName == 'epc'"></app-asset-epc>
       <app-asset-surveys [selectedAsset]="selectedAsset" [assetId]="assetId" *ngIf="tabName == 'surveys'"></app-asset-surveys>
       <app-asset-hs-assessents [selectedAsset]="selectedAsset" [assetId]="assetId" *ngIf="tabName == 'assessments'"></app-asset-hs-assessents>
       <app-asset-servicing [selectedAsset]="selectedAsset" [assetId]="assetId" *ngIf="tabName == 'servicing'"></app-asset-servicing>

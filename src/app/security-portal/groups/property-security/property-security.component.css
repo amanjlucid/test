@@ -6,234 +6,232 @@
   position: fixed !important;
 }
 
-.buttonDiv button {
-  margin: 0px 5px 5px 5px;
-  /* width: 63px; */
+.buttonDiv button{
+    margin: 0px 5px 5px 5px;
+    /* width: 63px; */
 }
 
-.hiearchyBtn {
-  height: 23px;
-  padding-left: 0px;
+.hiearchyBtn{
+    height: 23px;
+    padding-left:0px; 
 }
 
-.hiearchyBtn button {
-  height: 23px;
+.hiearchyBtn button{
+    height: 23px;
 }
 
-.hiearchyBtn button:nth-child(2) {
-  margin-left: 10px;
+.hiearchyBtn button:nth-child(2){
+    margin-left: 10px;
 }
 
 /* .hiearchyDiv{
     width: 700px;
 } */
 
-.footerButton {
-  margin-right: 40px;
-  margin-bottom: 10px;
+.footerButton{
+    margin-right: 40px;
+    margin-bottom: 10px;
 }
 
-.footerButton button {
-  margin-left: 8px;
+.footerButton button{
+    margin-left: 8px;
 }
 
-.footerSec {
-  right: 0;
-  position: absolute;
+.footerSec{
+    right: 0;
+    position: absolute;
 }
 
-.propsecDiv {
-  width: 800px;
-  height: 590px;
+.propsecDiv{
+    width: 800px;
+    height: 590px;
 }
 
 /*------------------   Heiarchy css             ------------------------- */
+
 
 /* ————————————————————–
   Tree core styles
 */
 
-.tree {
-  font-size: 13px;
-}
+  .tree{
+    font-size: 13px;
+  }
 
-.tree input {
-  position: absolute;
-  clip: rect(0, 0, 0, 0);
-}
-
+  .tree input {
+    position: absolute;
+    clip: rect(0, 0, 0, 0);
+    }
+  
 .tree input~ul {
   display: none;
 }
-
+  
 .tree input:checked~ul {
   display: block;
 }
-
-/* ————————————————————–
+  
+  /* ————————————————————–
     Tree rows
   */
-
-.tree li {
-  line-height: 1.2;
-  position: relative;
-  /* padding: 0 0 1em 1em; */
-  list-style: none;
-  padding-top: 10px !important;
-}
-
-.tree label {
-  margin: 0px;
-}
+  .tree li {
+    line-height: 1.2;
+    position: relative;
+    /* padding: 0 0 1em 1em; */
+    list-style: none;
+    padding-top: 10px !important;
+    }
+  
+   .tree label{
+      margin: 0px;
+    }
 
 .tree ul li {
   padding: 1em 0 0 1em;
 }
 
-.tree ul {
-  padding-left: 0;
-}
-
+  .tree ul{
+    padding-left: 0;
+  }
+  
 .tree>li:last-child {
   padding-bottom: 0;
 }
-
-/* ————————————————————–
+  
+  /* ————————————————————–
     Tree labels
   */
-
-.tree_label {
-  position: relative;
-  display: inline-block;
-  background: #fff;
-}
-
+  .tree_label {
+    position: relative;
+    display: inline-block;
+    background: #fff;
+    }
+  
 label.tree_label {
   cursor: pointer;
 }
-
+  
 label.tree_label:hover {
   color: #666;
 }
-
-/* ————————————————————–
+  
+  /* ————————————————————–
     Tree expanded icon
   */
-
-label.tree_label:before {
-  background: #b42a2a;
-  color: #fff;
-  position: relative;
-  z-index: 1;
-  float: left;
-  margin: 0 1em 0 -2em;
-  width: 16px;
-  height: 1em;
-  border-radius: 1em;
-  content: '+';
-  text-align: center;
-  padding-bottom: 16px;
-  /* line-height: 0.9em; */
-}
-
+  label.tree_label:before {
+    background :#b42a2a;
+    color: #fff;
+    position: relative;
+    z-index: 1;
+    float: left;
+    margin: 0 1em 0 -2em;
+    width: 16px;
+    height: 1em;
+    border-radius: 1em;
+    content: '+';
+    text-align: center;
+    padding-bottom: 16px;
+    /* line-height: 0.9em; */
+    }
+  
 :checked~label.tree_label:before {
   content: '–';
 }
-
-/* ————————————————————–
+  
+  /* ————————————————————–
     Tree branches
   */
-
-.tree li:before {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: -.5em;
-  /* left: -7.5px; */
-  display: block;
-  width: 0;
-  border-left: 1px solid #777;
-  content: "";
-}
-
-.tree_label:after {
-  position: absolute;
-  top: 0;
-  /* left: -1.5em; */
-  left: -19.5px;
-  display: block;
-  height: 0.5em;
-  width: 1em;
-  border-bottom: 1px solid #777;
-  border-left: 1px solid #777;
-  border-radius: 0 0 0 .3em;
-  content: '';
-}
-
+  .tree li:before {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -.5em;
+    /* left: -7.5px; */
+    display: block;
+    width: 0;
+    border-left: 1px solid #777;
+    content: "";
+    }
+  
+  .tree_label:after {
+    position: absolute;
+    top: 0;
+    /* left: -1.5em; */
+    left:-19.5px;
+    display: block;
+    height: 0.5em;
+    width: 1em;
+    border-bottom: 1px solid #777;
+    border-left: 1px solid #777;
+    border-radius: 0 0 0 .3em;
+    content: '';
+    }
+  
 label.tree_label:after {
   border-bottom: 0;
 }
-
-:checked~label.tree_label:after {
-  /* border-radius: 0 .3em 0 0; */
-  border-top: 1px solid #777;
-  /* border-right: 1px solid #777; */
-  border-bottom: 0;
-  border-left: 0;
-  bottom: 0;
-  top: 0.5em;
-  height: auto;
-  /* left: -20px; */
-  /* margin-left: 1px; */
-}
-
-.tree li:last-child:before {
-  height: 1em;
-  bottom: auto;
-}
-
+  
+  :checked ~ label.tree_label:after {
+    /* border-radius: 0 .3em 0 0; */
+    border-top: 1px solid #777;
+    /* border-right: 1px solid #777; */
+    border-bottom: 0;
+    border-left: 0;
+    bottom: 0;
+    top: 0.5em;
+    height: auto;
+    /* left: -20px; */
+    /* margin-left: 1px; */
+    }
+  
+  .tree li:last-child:before {
+    height: 1em;
+    bottom: auto;
+    }
+  
 .tree>li:last-child:before {
   display: none;
 }
 
-.selected {
-  background-color: #cacaca;
-}
-
-#myUL {
-  border: 1px solid #e2e2eb;
-  list-style: none;
-  font-size: 12px;
-  min-height: 27px;
-  max-height: 100px;
-  overflow-y: scroll;
-  border-radius: 5px;
-  padding: 2px 0px;
-}
-
-#myUL li {
-  list-style: none;
-  font-size: 12px;
-}
-
-#myUL, #myUL ul {
-  padding-left: 20px !important;
-}
-
-.createPropSecDiv {
-  min-width: 660px;
-  /* min-height: 300px; */
-}
-
-@media screen and (max-width: 769px) {
-  .createPropSecDiv {
-    min-width: 0px;
-    width: 100%;
+  .selected{
+    background-color: #cacaca;
   }
-  .hiearchyBtn {
-    display: inherit;
+
+  #myUL{
+    border: 1px solid #e2e2eb;
+    list-style: none;
+    font-size: 12px;
+    min-height: 27px;
+    max-height: 100px;
+    overflow-y: scroll;
+    border-radius: 5px;
+    padding: 2px 0px;
   }
-}
+
+  #myUL li {
+    list-style: none;
+    font-size: 12px;
+  }
+
+  #myUL,#myUL ul{
+    padding-left: 20px !important;
+  }
+
+  .createPropSecDiv{
+    min-width: 660px;
+    /* min-height: 300px; */
+  }
+
+  @media screen and (max-width: 769px) {
+    .createPropSecDiv{
+      min-width: 0px;
+      width: 100%;
+    } 
+
+    .hiearchyBtn{
+      display: inherit;
+    }
+  }
 
 .btn-default.disabled, .btn-default:disabled {
   background: #e4287e !important;

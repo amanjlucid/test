@@ -208,7 +208,9 @@ export class HnsDefinitionDetailComponent implements OnInit, OnDestroy {
   }
 
   onNodeClick(e: any): void {
-    let grpMenu, headMenu, quesMenu = [];
+    let grpMenu = [];
+    let headMenu = [];
+    let quesMenu = [];
     let scoringRule = [];
     if (this.disableActins) {
       grpMenu = ['View Group'];
@@ -220,7 +222,9 @@ export class HnsDefinitionDetailComponent implements OnInit, OnDestroy {
       quesMenu = [...['View Question', 'Edit Template Issues', 'Edit Template Actions'], ...scoringRule];
 
     } else {
-      let grp, ques, head = [];
+      let grp = [];
+      let ques = [];
+      let head = [];
       let cmnQuesMenu = ['Change Question', 'Delete Question', 'Edit Template Issues', 'Edit Template Actions']
 
       if (this.hnsPermission.indexOf("Add Group") !== -1) {

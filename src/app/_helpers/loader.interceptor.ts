@@ -11,7 +11,6 @@ export class LoaderInterceptorService implements HttpInterceptor {
   constructor(private loaderService: LoaderService) { }
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
-
     if (req.url != undefined) {
       if (req.url.indexOf("GetListOfScheduledParameters") !== -1 && req.url.indexOf("runInBackground") !== -1) {
         return next.handle(req);
@@ -33,15 +32,12 @@ export class LoaderInterceptorService implements HttpInterceptor {
         this.onEnd();
       }));
   }
-
   private onEnd(): void {
     this.hideLoader();
   }
-
   private showLoader(): void {
     this.loaderService.show();
   }
-
   private hideLoader(): void {
     this.loaderService.hide();
   }

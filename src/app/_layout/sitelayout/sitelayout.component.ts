@@ -14,6 +14,7 @@ declare var $: any;
   styleUrls: ['./sitelayout.component.css']
 })
 export class SitelayoutComponent implements OnInit, OnDestroy {
+
   currentUser;
   timeoutID;
   unreadMsg;
@@ -27,9 +28,12 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
   timerSubscription: Subscription;
   subs = new SubSink();
   moduleAccess: any;
+  realModulesEnabled: any;
   servicePortalAccess: any = [];
   hnsPortalMenuList: any = [];
   hnsPortalPermissions: any = [];
+  energyPortalPermissions: any = [];
+  WorksOrdersPermissions: any = [];
   tasksPortalPermissions: any = [];
   reporterPortalPermissions: any = [];
   // underDevelopment: boolean = true;
@@ -46,7 +50,7 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
     },
     {
       menuName: "Security",
-      silverLightLink: "http://104.40.138.8/apexcurrent/securityportal",
+      silverLightLink: `${appConfig.silverLightUrl}/securityportal`,
       grpPermissionName: "Security Access",
     },
     {
@@ -82,7 +86,7 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
     {
       menuName: "Works Orders",
       silverLightLink: `${appConfig.silverLightUrl}/WorksOrders`,
-      grpPermissionName: "Works Order Mobile Portal Access",
+      grpPermissionName: "Works Order Portal Access",
     }
   ];
 
@@ -102,10 +106,10 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
       if (ev instanceof NavigationEnd) {
         let currentUser = JSON.parse(localStorage.getItem('currentUser'));
         if(currentUser){
-          this.authService.formAuthentication(currentUser.userId).subscribe(data => {
-            //console.log(data);
-          })
-        }
+        this.authService.formAuthentication(currentUser.userId).subscribe(data => {
+          //console.log(data);
+        })
+      }
       }
     });
   }
@@ -138,10 +142,13 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
     this.checkPortalAccess();
     this.getAsbestosUserSecurity();
     this.checkModulePermission();
+    this.getRealModulesEnabledList();
     this.checkServiceTabAccess();
     this.hnsPortalAccess();
+    this.getEnergyPortalAccess();
     this.eventPortalAccess();
     this.reporterPortalAccess();
+    this.getWorksOrdersAccess();
 
     this.subs.add(
       this.sharedServie.servicePortalObs.subscribe(data => { this.servicePortalAccess = data; })
@@ -166,6 +173,24 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
     )
   }
 
+  getRealModulesEnabledList() {
+    this.subs.add(
+      this.authService.getRealModulesEnabledList().subscribe(
+        data => {
+          this.realModulesEnabled = data.data;
+          this.sharedServie.changeRealModulesEnabled(data.data);
+        }
+      )
+    )
+  }
+
+  checkModuleEnabled(val: string): Boolean {
+    if (this.realModulesEnabled != undefined) {
+      return this.realModulesEnabled.includes(val);
+    }
+  }
+
+
   checkGroupPermission(val: string): Boolean {
     if (this.moduleAccess != undefined) {
       return this.moduleAccess.includes(val);
@@ -186,6 +211,16 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
       }
 
       return this.moduleAccess.includes(accessName) && this.developedModuleList.some(x => x.menuName == name && x.linkType == forAngular && x.menuVisible == 1);
+    }
+  }
+
+  checkMenuAccess(name: string, forAngular: number): Boolean {
+    //forAngular params = 1 for angular menu and 0 for silverlight menu check
+    if (this.moduleAccess != undefined) {
+      if (name == "Security") {
+        return this.developedModuleList.some(x => x.menuName == name && x.linkType == forAngular && this.currentUser.admin == "Y")
+      }
+      return this.developedModuleList.some(x => x.menuName == name && x.linkType == forAngular && x.menuVisible == 1);
     }
   }
 
@@ -225,7 +260,6 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
   }
 
   private render(count) {
-    // console.log(count);
     this.secondsDisplay = this.getSeconds(count);
     this.minutesDisplay = this.getMinutes(count);
   }
@@ -280,6 +314,48 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
         }
       )
     )
+  }
+
+  
+  getEnergyPortalAccess() {
+    this.subs.add(
+      this.assetService.apexGetAssetManagementSecurity(this.currentUser.userId, 'Energy Portal').subscribe(
+        data => {
+          if (data && data.isSuccess) {
+            this.energyPortalPermissions = data.data;
+            this.sharedServie.changeEnergyPortalAccess(data.data);
+          }
+            
+        }
+      )
+    )
+  }
+
+  checkEnergyPortalAccess(val: string): Boolean {
+    if (this.energyPortalPermissions != undefined) {
+    return this.energyPortalPermissions.includes(val);
+    }
+  }
+
+  
+  getWorksOrdersAccess() {
+    this.subs.add(
+      this.assetService.apexGetAssetManagementSecurity(this.currentUser.userId, 'Programme Management').subscribe(
+        data => {
+          if (data && data.isSuccess) {
+            this.WorksOrdersPermissions = data.data;
+            this.sharedServie.changeWorksOrdersAccess(data.data);
+          }
+            
+        }
+      )
+    )
+  }
+
+  checkWorksOrdersAccess(val: string): Boolean {
+    if (this.WorksOrdersPermissions != undefined) {
+    return this.WorksOrdersPermissions.includes(val);
+    }
   }
 
   checkServiceTabAccess() {

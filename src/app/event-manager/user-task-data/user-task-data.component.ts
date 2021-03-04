@@ -578,7 +578,7 @@ export class UserTaskDataComponent implements OnInit {
       //   siteUrl = "http://localhost:4200"
       // } else {
       //   siteUrl = "http://104.40.138.8/rowanwood"
-      // }
+      //}
       let filterModel = Object.assign({}, this.headerFilters);
       filterModel.IsExport = true;
 

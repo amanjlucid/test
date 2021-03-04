@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, ViewEncapsulation } from '@angular/core';
 import { DataResult, process, State, CompositeFilterDescriptor, SortDescriptor, GroupDescriptor, distinct } from '@progress/kendo-data-query';
 import { PageChangeEvent, RowClassArgs, BaseFilterCellComponent, FilterService } from '@progress/kendo-angular-grid';
-import { SharedService, HnsResultsService, HelperService } from '../../_services';
+import { AssetAttributeService, AlertService, SharedService, HnsResultsService, HelperService } from '../../_services';
 import { SubSink } from 'subsink';
 import { tap, switchMap } from 'rxjs/operators';
 import { BehaviorSubject, Subject } from 'rxjs';
@@ -53,6 +53,8 @@ export class HnsResInformationComponent implements OnInit {
   validatReportString: string;
 
   constructor(
+    private assetAttributeService: AssetAttributeService,
+    private alertService: AlertService,
     private sharedService: SharedService,
     private hnsResultService: HnsResultsService,
     private helperService: HelperService
@@ -751,15 +753,48 @@ export class HnsResInformationComponent implements OnInit {
             this.subs.add(
               this.hnsResultService.runReport(reportParams).subscribe(
                 data => {
-                  if (data.isSuccess && data.data.length > 0) {
-                    let baseStr = data.data[0].pdFbyte;
-                    const linkSource = 'data:application/pdf;base64,' + baseStr;
-                    const downloadLink = document.createElement("a");
-                    const fileName = `PropertyReport_${this.selectedAction.hasaassessmentref}_${this.selectedAction.hasversion}_${this.selectedAction.assid}.pdf`;
-                    downloadLink.href = linkSource;
-                    downloadLink.download = fileName;
-                    downloadLink.click();
-                  }
+
+                  if (data.isSuccess && data.data && data.data.length > 0) {
+                    let fileExt = "pdf";
+                    this.assetAttributeService.getMimeType(fileExt).subscribe(
+                      mimedata => {
+                        if (mimedata && mimedata.isSuccess && mimedata.data && mimedata.data.fileExtension) {
+                            var linkSource = 'data:' + mimedata.data.mimeType1 + ';base64,';
+                                if (mimedata.data.openWindow)
+                                {
+                                  var byteCharacters = atob(data.data[0].pdFbyte);
+                                  var byteNumbers = new Array(byteCharacters.length);
+                                  for (var i = 0; i < byteCharacters.length; i++) {
+                                    byteNumbers[i] = byteCharacters.charCodeAt(i);
+                                  }
+                                  var byteArray = new Uint8Array(byteNumbers);
+                                  var file = new Blob([byteArray], { type: mimedata.data.mimeType1 + ';base64' });
+                                  var fileURL = URL.createObjectURL(file);
+                                  let newPdfWindow =window.open(fileURL);
+              
+                                  // let newPdfWindow = window.open("",this.selectedNotes.fileName);
+                                  // let iframeStart = "<\iframe title='Notepad' width='100%' height='100%' src='data:" + mimedata.data.mimeType1 + ";base64, ";
+                                  // let iframeEnd = "'><\/iframe>";
+                                  // newPdfWindow.document.write(iframeStart + filedata + iframeEnd);
+                                  // newPdfWindow.document.title = this.selectedNotes.fileName;
+                                }
+                                else
+                                {
+                                  linkSource = linkSource + data.data[0].pdFbyte;;
+                                  const downloadLink = document.createElement("a");
+                                  const fileName = `PropertyReport_${this.selectedAction.hasaassessmentref}_${this.selectedAction.hasversion}_${this.selectedAction.assid}.pdf`;
+                                  downloadLink.href = linkSource;
+                                  downloadLink.download = fileName;
+                                  downloadLink.click();
+                                }
+                          }
+                          else{
+                            this.alertService.error("This file format is not supported.");
+                          }
+                      }
+                    )
+                    }
+
                 }
               )
             )
@@ -770,15 +805,48 @@ export class HnsResInformationComponent implements OnInit {
       this.subs.add(
         this.hnsResultService.runReport(reportParams).subscribe(
           data => {
-            if (data.isSuccess && data.data.length > 0) {
-              let baseStr = data.data[0].pdFbyte;
-              const linkSource = 'data:application/pdf;base64,' + baseStr;
-              const downloadLink = document.createElement("a");
-              const fileName = `PropertyReport_${this.selectedAction.hasaassessmentref}_${this.selectedAction.hasversion}_${this.selectedAction.assid}.pdf`;
-              downloadLink.href = linkSource;
-              downloadLink.download = fileName;
-              downloadLink.click();
-            }
+            if (data.isSuccess && data.data && data.data.length > 0) {
+              let fileExt = "pdf";
+              this.assetAttributeService.getMimeType(fileExt).subscribe(
+                mimedata => {
+                  if (mimedata && mimedata.isSuccess && mimedata.data && mimedata.data.fileExtension) {
+                      var linkSource = 'data:' + mimedata.data.mimeType1 + ';base64,';
+                          if (mimedata.data.openWindow)
+                          {
+                            var byteCharacters = atob(data.data[0].pdFbyte);
+                            var byteNumbers = new Array(byteCharacters.length);
+                            for (var i = 0; i < byteCharacters.length; i++) {
+                              byteNumbers[i] = byteCharacters.charCodeAt(i);
+                            }
+                            var byteArray = new Uint8Array(byteNumbers);
+                            var file = new Blob([byteArray], { type: mimedata.data.mimeType1 + ';base64' });
+                            var fileURL = URL.createObjectURL(file);
+                            let newPdfWindow =window.open(fileURL);
+        
+                            // let newPdfWindow = window.open("",this.selectedNotes.fileName);
+                            // let iframeStart = "<\iframe title='Notepad' width='100%' height='100%' src='data:" + mimedata.data.mimeType1 + ";base64, ";
+                            // let iframeEnd = "'><\/iframe>";
+                            // newPdfWindow.document.write(iframeStart + filedata + iframeEnd);
+                            // newPdfWindow.document.title = this.selectedNotes.fileName;
+                          }
+                          else
+                          {
+                            linkSource = linkSource + data.data[0].pdFbyte;;
+                            const downloadLink = document.createElement("a");
+                            const fileName = `PropertyReport_${this.selectedAction.hasaassessmentref}_${this.selectedAction.hasversion}_${this.selectedAction.assid}. `;
+                            downloadLink.href = linkSource;
+                            downloadLink.download = fileName;
+                            downloadLink.click();
+                          }
+                    }
+                    else{
+                      this.alertService.error("This file format is not supported.");
+                    }
+                }
+              )
+              }
+
+
           }
         )
       )

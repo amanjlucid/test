@@ -4,7 +4,10 @@ import { GroupService, AlertService, LoaderService, ConfirmationDialogService, H
 import { DataTablesModule } from 'angular-datatables';
 import 'datatables.net';
 import 'datatables.net-dt';
+
+
 declare var $: any;
+
 
 @Component({
   selector: 'app-groups',
@@ -212,7 +215,7 @@ export class GroupsComponent implements OnInit {
             if (searchVal != "" && searchVal != undefined && this.securityFormType != "new") {
               this.groupDataTable.search(searchVal).draw();
             }
-
+            
             let comp = this;
             $('.searchDiv input').each(function () {
               if ($(this).val() != "") {
