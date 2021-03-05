@@ -1,16 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { EventService, AlertService, LoaderService } from '../_services'
-
+import { EventService, AlertService, LoaderService, SharedService } from '../_services'
+import { SubSink } from 'subsink';
+import { Router } from '@angular/router';
 declare var $: any;
 declare var Highcharts: any;
-
-
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
+
 export class DashboardComponent implements OnInit {
 
   today = new Date();
@@ -22,40 +22,42 @@ export class DashboardComponent implements OnInit {
   caledarEventsByDate;
   selectedCalendarEvents;
   checkLoaded: boolean = false;
-
+  subs = new SubSink();
+  dashboardPermission: any;
+  modulePermission: any;
 
   constructor(
     private dashboardEvent: EventService,
     private alertService: AlertService,
     private loaderService: LoaderService,
+    private sharedService: SharedService,
+    private router: Router,
   ) { }
 
+  ngOnDestroy() {
+    this.subs.unsubscribe();
+  }
 
   ngOnInit() {
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    //this.checkLoaded = true;
-    this.pageLoadOnDashBoard();
 
-    this.eventByStatus();
-    this.eventByBusinessArea();
-    this.eventAssignedUser();
-    this.eventBySeverity();
-    this.dashboardCalanderEvents();
+    this.subs.add(
+      this.sharedService.modulePermission.subscribe(async data => {
+        this.modulePermission = await data
+      })
+    )
 
-    const component = this;
-    $(document).on('click', '.a-date.event.focused', function () {
-      component.notificationDialogOpened = true;
-      let dateEvents = JSON.parse($(this).attr('data-event'));
-      
-      let dd = new Date(dateEvents.date).getDate();
-      let mm = new Date(dateEvents.date).getMonth()+1;
-      let yy = new Date(dateEvents.date).getFullYear();
+    //Check module permission
+    this.subs.add(
+      this.sharedService.apexPortalObs.subscribe(async data => {
+        this.dashboardPermission = await data
+        if (this.dashboardPermission != undefined) {
+          this.pageLoadOnDashBoard();
+        }
+      })
+    )
+    // this.checkLoaded = true;
 
-      component.selectedCalendarEvents = component.caledarEventsByDate[dd + "-" + mm + "-" + yy];
-      //console.log(component.selectedCalendarEvents);
-    });
-
-    //$('[data-toggle="tooltip"]').tooltip();   
   }
 
 
@@ -67,20 +69,46 @@ export class DashboardComponent implements OnInit {
       urlParams[p[0]] = p[1];
     });
 
-    if (urlParams["loaded"]) { 
-      this.checkLoaded = true
-     } else {
+    if (urlParams["loaded"]) {
+      setTimeout(() => {
+        this.checkLoaded = true
+        if (!this.dashboardPermission.includes('Dashboard')) {
+          if (this.modulePermission.includes('Asset Portal Access')) {
+            this.router.navigate(['asset-list']);
+          } else {
+            this.router.navigate(['my-profile']);
+          }
+          return
+        }
+        this.eventByStatus();
+        this.eventByBusinessArea();
+        this.eventAssignedUser();
+        this.eventBySeverity();
+        this.dashboardCalanderEvents();
+
+        const component = this;
+        $(document).on('click', '.a-date.event.focused', function () {
+          component.notificationDialogOpened = true;
+          let dateEvents = JSON.parse($(this).attr('data-event'));
+
+          let dd = new Date(dateEvents.date).getDate();
+          let mm = new Date(dateEvents.date).getMonth() + 1;
+          let yy = new Date(dateEvents.date).getFullYear();
+
+          component.selectedCalendarEvents = component.caledarEventsByDate[dd + "-" + mm + "-" + yy];
+        });
+      }, 1000);
+
+    } else {
       let win = (window as any);
-      //win.location.search = '?loaded=1';
       win.location = 'dashboard?loaded=1';
     }
   }
 
   dashboardCalanderEvents() {
-    let userId = this.currentUser.userId 
+    let userId = this.currentUser.userId
     this.dashboardEvent.dashboardCalanderEvents(userId).subscribe(
       data => {
-        //console.log(data)
         if (data.isSuccess) {
           this.calendarEvents = data.data.map(function (d) {
             return {
@@ -308,18 +336,18 @@ export class DashboardComponent implements OnInit {
     this.caledarEventsByDate = new Array;
     for (let i = 0; i < eventData.length; i++) {
       let dd = new Date(eventData[i].date).getDate()
-      let mm = new Date(eventData[i].date).getMonth()+1
+      let mm = new Date(eventData[i].date).getMonth() + 1
       let yy = new Date(eventData[i].date).getFullYear()
       if (!this.caledarEventsByDate[dd + "-" + mm + "-" + yy]) {
         this.caledarEventsByDate[dd + "-" + mm + "-" + yy] = [];
       }
       this.caledarEventsByDate[dd + "-" + mm + "-" + yy].push(eventData[i]);
     }
-   
+
   }
 
   closeNotificationDialog() {
     this.notificationDialogOpened = false;
-
   }
+
 }

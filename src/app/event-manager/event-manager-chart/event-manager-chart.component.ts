@@ -70,7 +70,7 @@ export class EventManagerChartComponent implements OnInit {
     private sharedServie: SharedService,
     private router: Router,
     private eventMangerDashboardService: EventManagerDashboardService,
-    
+
   ) { }
 
   ngOnDestroy() {
@@ -106,7 +106,7 @@ export class EventManagerChartComponent implements OnInit {
 
     //update notification on top
     this.helper.updateNotificationOnTop();
-   
+
     setTimeout(() => {
       this.subs.add(
         // get chart data and render in template
@@ -442,7 +442,7 @@ export class EventManagerChartComponent implements OnInit {
               comp.getLineChartData(dataForChart, className, container, state, chartObj);
             });
 
-            
+
             //trigger change event
             if (lineChartFilterData != null && lineChartData.length == 0) {
               $('.' + className).trigger('change');
@@ -679,8 +679,8 @@ export class EventManagerChartComponent implements OnInit {
               comp.getPieChartData(dataForChart, className, container, state, chartObj);
             })
 
-             //trigger change event
-             if (pieChartFilterData != null && tempArr.length == 0) {
+            //trigger change event
+            if (pieChartFilterData != null && tempArr.length == 0) {
               $('.' + className).trigger('change');
             }
 
@@ -994,6 +994,7 @@ export class EventManagerChartComponent implements OnInit {
 
 
   barChartConfiguration(titleText: any, seriesName: string, allowPointSelect: boolean = true, selector: any, data: any, barChartParams: any = null) {
+
     let color = barChartParams != null ? barChartParams.color : '';
     //let chartParams =  Object.assign([], barChartParams); 
     if (barChartParams.ddChartID != undefined) {
@@ -1174,10 +1175,10 @@ export class EventManagerChartComponent implements OnInit {
               comp.getGroupBarChartData(dataForChart, className, container, state, chartObj);
             })
 
-           //trigger change event
-           if (chartFilterData != null && chartData.length == 0) {
-            $('.' + className).trigger('change');
-          }
+            //trigger change event
+            if (chartFilterData != null && chartData.length == 0) {
+              $('.' + className).trigger('change');
+            }
 
 
 

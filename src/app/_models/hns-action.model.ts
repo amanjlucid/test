@@ -13,7 +13,7 @@ export class HnsAction {
     AddressSearch: string = '';
     UserId: string = '';
     ActiveInactive: string = 'A';
-    PageSize: any = 300;
+    PageSize: any = 20;
     CurrentPage: any = 0;
     OrderBy: string = 'ASSID';
     OrderType: string = 'Ascending';

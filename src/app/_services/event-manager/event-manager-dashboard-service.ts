@@ -14,15 +14,6 @@ export class EventManagerDashboardService {
 
     constructor(private http: HttpClient) { }
 
-    // getChartType() {
-    //     let httpOptions = {
-    //         headers: new HttpHeaders({
-    //             'Content-Type': 'application/json'
-    //         }),
-    //     };
-    //     return this.http.get<any>(`${appConfig.apiUrl}/api/HealthSafetyChart/GetHealtSafetyChartList`, httpOptions);
-    // }
-
     getListOfUserEventByCriteria(params) {
         let body = JSON.stringify(params);
         return this.http.post<any>(`${appConfig.apiUrl}/api/Manager/DrillDownChartGridData`, body, this.httpOptions);

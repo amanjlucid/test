@@ -1,20 +1,22 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AlertService, UserService } from '../../../_services';
 import { CustomValidators } from '../../../_helpers/custom.validator'
 import { User } from '../../../_models'
 declare var $: any;
 import * as moment from 'moment';
-
+import { SubSink } from 'subsink';
 
 
 @Component({
   selector: 'app-user-form',
   templateUrl: './user-form.component.html',
-  styleUrls: ['./user-form.component.css']
+  styleUrls: ['./user-form.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class UserFormComponent implements OnInit {
 
+export class UserFormComponent implements OnInit {
+  subs = new SubSink();
   userForm: FormGroup;
   @Input() userFormWindow: boolean = false
   @Input() selectedUser: User
@@ -100,9 +102,13 @@ export class UserFormComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private userService: UserService,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private chRef: ChangeDetectorRef,
   ) { }
 
+  ngOnDestroy() {
+    this.subs.unsubscribe();
+  }
 
   ngOnInit() {
     //  console.log(this.userFormType)
@@ -112,7 +118,7 @@ export class UserFormComponent implements OnInit {
       user: ['', [Validators.required, Validators.maxLength(20)]],
       name: ['', [Validators.required, Validators.maxLength(50)]],
       loginType: ['', Validators.required],
-      userType: ['', Validators.required],
+      userType: ['I', Validators.required],
       password: [''],
       contractor: [''],
       loginAllowed: ['', Validators.required],
@@ -140,7 +146,7 @@ export class UserFormComponent implements OnInit {
 
     this.formControlValueChanged();
     this.populateUser(this.selectedUser);
-
+    this.chRef.detectChanges();
   }
 
 
@@ -148,53 +154,79 @@ export class UserFormComponent implements OnInit {
     const passwordControl = this.userForm.get('password');
     const passwordDurationControl = this.userForm.get('passwordDuration');
     const maxLoginAttemptControl = this.userForm.get('maxLoginAttempt');
-    this.userForm.get('loginType').valueChanges.subscribe(
-      (mode: string) => {
-        if (mode === 'S') {
-          passwordControl.setValidators([Validators.required, Validators.maxLength(10)]);
-          passwordDurationControl.setValidators([Validators.required, Validators.pattern("^[0-9]*$"), Validators.maxLength(9999)]);
-          maxLoginAttemptControl.setValidators([Validators.required, Validators.pattern("^[0-9]*$"), Validators.maxLength(9999)]);
-        }
-        else {
-          passwordControl.clearValidators();
-          passwordDurationControl.clearValidators();
-          maxLoginAttemptControl.clearValidators();
-        }
-        passwordControl.updateValueAndValidity();
-        passwordDurationControl.updateValueAndValidity();
-        maxLoginAttemptControl.updateValueAndValidity();
-      });
+
+    this.subs.add(
+      this.userForm.get('loginType').valueChanges.subscribe(
+        (mode: string) => {
+          if (mode === 'S') {
+            passwordControl.enable();
+            passwordDurationControl.enable();
+            maxLoginAttemptControl.enable();
+            passwordControl.setValidators([Validators.required, Validators.maxLength(10)]);
+            passwordDurationControl.setValidators([Validators.required, Validators.pattern("^[0-9]*$"), Validators.maxLength(9999)]);
+            maxLoginAttemptControl.setValidators([Validators.required, Validators.pattern("^[0-9]*$"), Validators.maxLength(9999)]);
+          } else {
+            passwordControl.clearValidators();
+            passwordDurationControl.clearValidators();
+            maxLoginAttemptControl.clearValidators();
+            
+            let pwd = '';
+            let pwdExpiry: any = ''
+            let maxAttemp: any = ''
+            if (this.userFormType != "new") {
+              pwd = this.selectedUser.password;
+              pwdExpiry = this.selectedUser.passwordExpiry;
+              maxAttemp = this.selectedUser.maxLogin;
+            }
+            passwordControl.setValue(pwd)
+            passwordDurationControl.setValue(pwdExpiry)
+            maxLoginAttemptControl.setValue(maxAttemp)
+
+            passwordControl.disable();
+            passwordDurationControl.disable();
+            maxLoginAttemptControl.disable();
+          }
+
+          passwordControl.updateValueAndValidity();
+          passwordDurationControl.updateValueAndValidity();
+          maxLoginAttemptControl.updateValueAndValidity();
+        })
+    );
 
     const contractorControl = this.userForm.get('contractor');
 
-    this.userForm.get('userType').valueChanges.subscribe(
-      (mode: string) => {
-        if (mode === 'E') {
-          $('#contractorDiv').show();
-          contractorControl.setValidators([Validators.required, Validators.maxLength(10)]);
-        }
-        else {
-          $('#contractorDiv').hide();
-          contractorControl.clearValidators();
-        }
-        contractorControl.updateValueAndValidity();
-      });
+    this.subs.add(
+      this.userForm.get('userType').valueChanges.subscribe(
+        (mode: string) => {
+          if (mode === 'E') {
+            $('#contractorDiv').show();
+            contractorControl.setValidators([Validators.required, Validators.maxLength(10)]);
+          }
+          else {
+            $('#contractorDiv').hide();
+            contractorControl.clearValidators();
+          }
+          contractorControl.updateValueAndValidity();
+        })
+    );
 
 
     const accreditationNumberControl = this.userForm.get('accreditationNumber');
     const deaPasswordControl = this.userForm.get('deaPassword');
-    this.userForm.get('dea').valueChanges.subscribe(
-      (mode: any) => {
-        if (mode === true) {
-          accreditationNumberControl.setValidators([Validators.required, Validators.maxLength(255)]);
-          deaPasswordControl.setValidators([Validators.required, Validators.maxLength(35)]);
-        } else {
-          accreditationNumberControl.clearValidators();
-          deaPasswordControl.clearValidators();
-        }
-        accreditationNumberControl.updateValueAndValidity();
-        deaPasswordControl.updateValueAndValidity();
-      });
+    this.subs.add(
+      this.userForm.get('dea').valueChanges.subscribe(
+        (mode: any) => {
+          if (mode === true) {
+            accreditationNumberControl.setValidators([Validators.required, Validators.maxLength(255)]);
+            deaPasswordControl.setValidators([Validators.required, Validators.maxLength(35)]);
+          } else {
+            accreditationNumberControl.clearValidators();
+            deaPasswordControl.clearValidators();
+          }
+          accreditationNumberControl.updateValueAndValidity();
+          deaPasswordControl.updateValueAndValidity();
+        })
+    )
 
   }
 
@@ -206,7 +238,7 @@ export class UserFormComponent implements OnInit {
       user: (this.userFormType == "new") ? '' : user.userId,
       name: (this.userFormType == "new") ? '' : user.userName,
       loginType: (this.userFormType == "new") ? 'S' : (user.loginType == "Standard") ? "S" : "A",
-      userType: (this.userFormType == "new") ? 'E' : (user.userType == "Internal") ? "I" : "E",
+      userType: (this.userFormType == "new") ? 'I' : (user.userType == "Internal") ? "I" : "E",
       password: (this.userFormType == "new") ? '' : user.password,
       contractor: (this.userFormType == "new") ? '' : user.concode,
       loginAllowed: (this.userFormType == "new") ? 'Y' : user.logAllowed == "Change Password" ? "C" : user.logAllowed == "Yes" ? "Y" : "N",
@@ -220,6 +252,8 @@ export class UserFormComponent implements OnInit {
       deaPassword: (this.userFormType == "new") ? '' : user.deaPassword,
       status: (this.userFormType == "new") ? true : user.status == "Active" ? true : false,
     })
+
+
   }
 
   logValidationErrors(group: FormGroup): void {
@@ -298,40 +332,47 @@ export class UserFormComponent implements OnInit {
 
     //console.log(user);
     this.loading = true;
-    this.userService.manageUser(user)
-      .subscribe(
-        data => {
-          //console.log(data);
-          if (data.isSuccess) {
-            this.userForm.reset();
-            this.alertService.success(this.saveMsg);
+    this.subs.add(
+      this.userService.manageUser(user)
+        .subscribe(
+          data => {
+            //console.log(data);
+            if (data.isSuccess) {
+              this.userForm.reset();
+              this.alertService.success(this.saveMsg);
+              this.loading = false;
+              this.closeUserFormWindow();
+            } else {
+              this.loading = false;
+              this.alertService.error(data.message);
+            }
+            this.chRef.detectChanges();
+          },
+          error => {
+            //console.log(error);
+            this.alertService.error(error);
             this.loading = false;
-            this.closeUserFormWindow();
-          } else {
-            this.loading = false;
-            this.alertService.error(data.message);
-          }
-        },
-        error => {
-          //console.log(error);
-          this.alertService.error(error);
-          this.loading = false;
-        });
+          })
+    )
 
   }
 
 
   getContractor() {
-    this.userService.getContractors().subscribe(
-      (data) => {
-        // console.log(data)
-        this.contractorList = data.data;
-      },
-      error => {
-        //console.log(error);
-        this.alertService.error(error);
+    this.subs.add(
+      this.userService.getContractors().subscribe(
+        (data) => {
+          // console.log(data)
+          this.contractorList = data.data;
+          this.chRef.detectChanges();
+        },
+        error => {
+          //console.log(error);
+          this.alertService.error(error);
+          this.chRef.detectChanges();
 
-      }
+        }
+      )
     )
   }
 
@@ -340,6 +381,7 @@ export class UserFormComponent implements OnInit {
     // this.userFormType = "new";
     // this.populateUser(user);
     this.userForm.reset();
+    this.chRef.detectChanges();
   }
 
   closeUserFormWindow() {

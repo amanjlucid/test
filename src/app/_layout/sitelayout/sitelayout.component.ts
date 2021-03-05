@@ -36,6 +36,7 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
   WorksOrdersPermissions: any = [];
   tasksPortalPermissions: any = [];
   reporterPortalPermissions: any = [];
+  apexDashboardPermission: any = [];
   // underDevelopment: boolean = true;
   silverLightMenus: any = [
     {
@@ -105,11 +106,11 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
     this.router.events.subscribe((ev) => {
       if (ev instanceof NavigationEnd) {
         let currentUser = JSON.parse(localStorage.getItem('currentUser'));
-        if(currentUser){
-        this.authService.formAuthentication(currentUser.userId).subscribe(data => {
-          //console.log(data);
-        })
-      }
+        if (currentUser) {
+          this.authService.formAuthentication(currentUser.userId).subscribe(data => {
+            //console.log(data);
+          })
+        }
       }
     });
   }
@@ -138,6 +139,7 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
       })
     )
 
+    this.apexPortalAccess();
     this.getSilverLightMenu();
     this.checkPortalAccess();
     this.getAsbestosUserSecurity();
@@ -165,7 +167,6 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
     this.subs.add(
       this.authService.checkModulePermission(this.currentUser.userId).subscribe(
         data => {
-          // console.log(data)
           this.moduleAccess = data;
           this.sharedServie.changeModulePermission(data);
         }
@@ -242,7 +243,7 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
     this.timerSubscription = timer(0, interval).pipe(
       take(duration)
     ).subscribe(value =>
-      
+
       this.render((duration - +value) * interval),
       err => { },
       () => {
@@ -316,7 +317,7 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
     )
   }
 
-  
+
   getEnergyPortalAccess() {
     this.subs.add(
       this.assetService.apexGetAssetManagementSecurity(this.currentUser.userId, 'Energy Portal').subscribe(
@@ -325,7 +326,7 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
             this.energyPortalPermissions = data.data;
             this.sharedServie.changeEnergyPortalAccess(data.data);
           }
-            
+
         }
       )
     )
@@ -333,11 +334,11 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
 
   checkEnergyPortalAccess(val: string): Boolean {
     if (this.energyPortalPermissions != undefined) {
-    return this.energyPortalPermissions.includes(val);
+      return this.energyPortalPermissions.includes(val);
     }
   }
 
-  
+
   getWorksOrdersAccess() {
     this.subs.add(
       this.assetService.apexGetAssetManagementSecurity(this.currentUser.userId, 'Programme Management').subscribe(
@@ -346,7 +347,7 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
             this.WorksOrdersPermissions = data.data;
             this.sharedServie.changeWorksOrdersAccess(data.data);
           }
-            
+
         }
       )
     )
@@ -354,7 +355,7 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
 
   checkWorksOrdersAccess(val: string): Boolean {
     if (this.WorksOrdersPermissions != undefined) {
-    return this.WorksOrdersPermissions.includes(val);
+      return this.WorksOrdersPermissions.includes(val);
     }
   }
 
@@ -396,7 +397,6 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
     this.subs.add(
       this.assetService.apexGetAssetManagementSecurity(this.currentUser.userId, 'Event Manager').subscribe(
         data => {
-          // console.log(data);
           if (data.isSuccess) {
             this.tasksPortalPermissions = data.data;
           }
@@ -410,11 +410,24 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
     this.subs.add(
       this.assetService.apexGetAssetManagementSecurity(this.currentUser.userId, 'Web Reporter Portal').subscribe(
         data => {
-          // console.log(data);
           if (data.isSuccess) {
             this.reporterPortalPermissions = data.data;
           }
           this.sharedServie.changeWebReporterPermissionData(this.reporterPortalPermissions);
+        }
+      )
+    )
+  }
+
+
+  apexPortalAccess() {
+    this.subs.add(
+      this.assetService.apexGetAssetManagementSecurity(this.currentUser.userId, 'Apex').subscribe(
+        data => {
+          if (data.isSuccess) {
+            this.apexDashboardPermission = data.data;
+          }
+          this.sharedServie.changeApexPortalPermissionData(this.apexDashboardPermission);
         }
       )
     )
@@ -472,7 +485,6 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
         data => {
           if (data.isSuccess) {
             this.developedModuleList = data.data;
-            // console.log(this.developedModuleList)
           }
         }
       )

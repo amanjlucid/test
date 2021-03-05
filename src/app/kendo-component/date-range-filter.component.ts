@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnDestroy, ElementRef } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, ElementRef, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { FilterService, SinglePopupService, PopupCloseEvent } from '@progress/kendo-angular-grid';
 import { addDays } from '@progress/kendo-date-math';
@@ -18,13 +18,13 @@ const closest = (node: any, predicate: any): any => {
             <label class="k-form-field">
                 <span>From Date</span>
                 <kendo-datepicker (valueChange)="onStartChange($event)"
-                    [(ngModel)]="start" [max]="max" [popupSettings]="popupSettings" [format]="'dd-MMM-yyyy'">
+                    [(ngModel)]="start" [popupSettings]="popupSettings" [format]="'dd-MMM-yyyy'">
                 </kendo-datepicker>
             </label>
             <label class="k-form-field">
                 <span>To Date</span>
                 <kendo-datepicker (valueChange)="onEndChange($event)"
-                    [(ngModel)]="end" [min]="min" [popupSettings]="popupSettings" [format]="'dd-MMM-yyyy'">
+                    [(ngModel)]="end" [popupSettings]="popupSettings" [format]="'dd-MMM-yyyy'" #dateModel="ngModel">
                 </kendo-datepicker>
             </label>
         </div>
@@ -33,14 +33,14 @@ const closest = (node: any, predicate: any): any => {
         .k-form {
             padding: 5px;
         }
-   `]
+   `],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DateRangeFilterComponent implements OnInit, OnDestroy {
-
     @Input() public filter: CompositeFilterDescriptor;
     @Input() public filterService: FilterService;
     @Input() public field: string;
-
+   
     public start: any;
     public end: any;
 
@@ -58,8 +58,11 @@ export class DateRangeFilterComponent implements OnInit, OnDestroy {
 
     private popupSubscription: any;
 
-    constructor(private element: ElementRef,
-        private popupService: SinglePopupService) {
+    constructor(
+        private chRef: ChangeDetectorRef,
+        private element: ElementRef,
+        private popupService: SinglePopupService
+    ) {
 
         // Handle the service onClose event and prevent the menu from closing when the datepickers are still active.
         this.popupSubscription = popupService.onClose.subscribe((e: PopupCloseEvent) => {
@@ -73,7 +76,7 @@ export class DateRangeFilterComponent implements OnInit, OnDestroy {
     public ngOnInit(): void {
         this.start = this.findValue('gte');
         this.end = this.findValue('lte');
-
+        // this.chRef.detectChanges();
         // setTimeout(() => {
         //     let filterBtn = $('.k-form').closest('date-range-filter').next('.k-action-buttons').find('.k-button.k-primary');
         //     $(filterBtn).text("Set Filter")
@@ -100,7 +103,7 @@ export class DateRangeFilterComponent implements OnInit, OnDestroy {
 
     private filterRange(start, end) {
         const filters = [];
-
+       
         if (start && (!end || start < end)) {
             filters.push({
                 field: this.field,
@@ -123,6 +126,8 @@ export class DateRangeFilterComponent implements OnInit, OnDestroy {
             logic: "and",
             filters: filters
         });
+
+       
     }
 
     // inpChagne($event) {

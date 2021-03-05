@@ -265,7 +265,7 @@ export class AssetServicingComponent implements OnInit, OnDestroy {
   }
 
   public selectedRowChange(selectionEvent: SelectionEvent) {
-    console.log(selectionEvent)
+    // console.log(selectionEvent)
     //this.selectedService = this.gridView.data[selectionEvent.index];
     //console.log(this.selectedService);
   }

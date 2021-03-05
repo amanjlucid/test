@@ -76,11 +76,9 @@ export class HnsResInformationComponent implements OnInit {
       tap(state => {
         this.headerFilters = state;
         this.loading = true;
-        //console.log(this.state)
       }),
       switchMap(state => this.hnsResultService.getInformationGrid(state)),
       tap((res) => {
-        //console.log(res);
         this.totalCount = (res.total != undefined) ? res.total : 0;
         this.loading = false;
       })
@@ -91,7 +89,6 @@ export class HnsResInformationComponent implements OnInit {
     this.subs.add(
       this.sharedService.resultHeaderFiltersList.subscribe(
         data => {
-          // console.log(data)
           if (data.length != 0) {
             this.headerFilters.Hittypecode = data.hittypecode
             this.headerFilters.Hsownassid = data.hsownassid
@@ -107,7 +104,6 @@ export class HnsResInformationComponent implements OnInit {
     this.subs.add(
       this.sharedService.filterActionGridEvent.subscribe(
         data => {
-          // console.log(data)
           if (data) {
             this.searchActionGrid();
             setTimeout(() => {

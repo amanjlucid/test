@@ -25,7 +25,8 @@
 
                 <!-- Dashboards -->
 
-                <li class="sidenav-item" [routerLinkActive]="['active']">
+                <li *ngIf="apexDashboardPermission.indexOf('Dashboard') != -1" class="sidenav-item"
+                    [routerLinkActive]="['active']">
                     <a [routerLink]="['/dashboard']" class="sidenav-link">
                         <!-- <i class="sidenav-icon ion ion-md-quote"></i> -->
                         <img class="sidenav-icon ion" src="assets/img/icons/dashboard.svg">
@@ -63,7 +64,8 @@
                 </li>
 
                 <li *ngIf="checkAngularGrpPermission('Asbestos','Asbestos Portal Access',0)" class="sidenav-item">
-                    <a href="https://apexdevweb.rowanwood.ltd/dev/Rowanwood/AsbestosPortal" class="sidenav-link" target="_blank">
+                    <a href="https://apexdevweb.rowanwood.ltd/dev/Rowanwood/AsbestosPortal" class="sidenav-link"
+                        target="_blank">
                         <img class="sidenav-icon ion" src="assets/img/icons/asbestos.svg">
                         <div>Asbestos</div>
                     </a>
@@ -71,21 +73,22 @@
 
 
                 <li *ngIf="checkAngularGrpPermission('Energy','Energy Portal Access',0)" class="sidenav-item">
-                    <a href="https://apexdevweb.rowanwood.ltd/dev/Rowanwood/EnergyPortal" class="sidenav-link" target="_blank">
+                    <a href="https://apexdevweb.rowanwood.ltd/dev/Rowanwood/EnergyPortal" class="sidenav-link"
+                        target="_blank">
                         <img class="sidenav-icon ion" src="assets/img/icons/energy.svg">
                         <div>Energy</div>
                     </a>
                 </li>
 
                 <li class="sidenav-item" [routerLinkActive]="['open']"
-                *ngIf="checkMenuAccess('EPCs', 1) && checkEnergyPortalAccess('Energy Portal Access') && checkModuleEnabled('EPC Module') && checkEnergyPortalAccess('Dashboard')">
+                    *ngIf="checkMenuAccess('EPCs', 1) && checkEnergyPortalAccess('Energy Portal Access') && checkModuleEnabled('EPC Module') && checkEnergyPortalAccess('Dashboard')">
                     <a href="javascript:void(0)" class="sidenav-link sidenav-toggle">
                         <img class="sidenav-icon ion" src="assets/img/icons/event-manager.svg">
                         <div>EPC</div>
                     </a>
                     <ul class="sidenav-menu">
                         <li class="sidenav-item" [routerLinkActive]="['active']"
-                        *ngIf="checkMenuAccess('EPCs', 1) && checkEnergyPortalAccess('Dashboard') && checkModuleEnabled('EPC Module')">
+                            *ngIf="checkMenuAccess('EPCs', 1) && checkEnergyPortalAccess('Dashboard') && checkModuleEnabled('EPC Module')">
                             <a [routerLink]="['/epc/dashboard']" class="sidenav-link">
                                 <div>Dashboard</div>
                             </a>
@@ -94,7 +97,7 @@
                 </li>
 
 
-<li class="sidenav-item" [routerLinkActive]="['open']"
+                <li class="sidenav-item" [routerLinkActive]="['open']"
                     *ngIf="checkAngularGrpPermission('Tasks', 'Event Manager Portal Access',1)">
                     <!-- <li class="sidenav-item" [routerLinkActive]="['open']"
                     > -->
@@ -118,7 +121,7 @@
                         </li>
 
                         <li class="sidenav-item" [routerLinkActive]="['active']"
-                           *ngIf="tasksPortalPermissions.indexOf('Manage User Events') != -1">
+                            *ngIf="tasksPortalPermissions.indexOf('Manage User Events') != -1">
                             <a [routerLink]="['/tasks/tasks']" class="sidenav-link">
                                 <div>Tasks</div>
                             </a>
@@ -128,8 +131,10 @@
                     </ul>
                 </li>
 
-                <li *ngIf="checkAngularGrpPermission('Event Manager', 'Event Manager Portal Access',0)" class="sidenav-item">
-                    <a href="https://apexdevweb.rowanwood.ltd/dev/Rowanwood/EventManager" class="sidenav-link" target="_blank">
+                <li *ngIf="checkAngularGrpPermission('Event Manager', 'Event Manager Portal Access',0)"
+                    class="sidenav-item">
+                    <a href="https://apexdevweb.rowanwood.ltd/dev/Rowanwood/EventManager" class="sidenav-link"
+                        target="_blank">
                         <img class="sidenav-icon ion" src="assets/img/icons/event-manager.svg">
                         <div>Event Manager</div>
                     </a>
@@ -140,7 +145,8 @@
 
                 <li *ngIf="checkAngularGrpPermission('Health & Safety','Health And Safety Portal Access',0)"
                     class="sidenav-item">
-                    <a href="https://apexdevweb.rowanwood.ltd/dev/Rowanwood/HealthAndSafety" class="sidenav-link" target="_blank">
+                    <a href="https://apexdevweb.rowanwood.ltd/dev/Rowanwood/HealthAndSafety" class="sidenav-link"
+                        target="_blank">
                         <img class="sidenav-icon ion" src="assets/img/icons/healthnsafety.svg">
                         <div>Health & Safety</div>
                     </a>
@@ -206,23 +212,24 @@
 
                 <li *ngIf="checkAngularGrpPermission('Works Orders','Works Order Portal Access', 0)"
                     class="sidenav-item">
-                    <a href="https://apexdevweb.rowanwood.ltd/dev/Rowanwood/WorksOrders" class="sidenav-link" target="_blank">
+                    <a href="https://apexdevweb.rowanwood.ltd/dev/Rowanwood/WorksOrders" class="sidenav-link"
+                        target="_blank">
                         <img class="sidenav-icon ion" src="assets/img/icons/workorders.svg">
                         <div>Works Orders</div>
                     </a>
 
                 </li>
 
-                
+
                 <li class="sidenav-item" [routerLinkActive]="['open']"
-                *ngIf="checkMenuAccess('Works Orders', 1) && checkWorksOrdersAccess('Works Order Portal Access') && checkModuleEnabled('WOPM')">
+                    *ngIf="checkMenuAccess('Works Orders', 1) && checkWorksOrdersAccess('Works Order Portal Access') && checkModuleEnabled('WOPM')">
                     <a href="javascript:void(0)" class="sidenav-link sidenav-toggle">
                         <img class="sidenav-icon ion" src="assets/img/icons/workorders.svg">
                         <div>Works Orders</div>
                     </a>
                     <ul class="sidenav-menu">
                         <li class="sidenav-item" [routerLinkActive]="['active']"
-                        *ngIf="checkWorksOrdersAccess('Dashboard')">
+                            *ngIf="checkWorksOrdersAccess('Dashboard')">
                             <a [routerLink]="['/worksorders/dashboard']" class="sidenav-link">
                                 <div>Dashboard</div>
                             </a>
@@ -253,7 +260,8 @@
 
 
                 <li *ngIf="checkAngularGrpPermission('Servicing','Servicing Portal Access', 0)" class="sidenav-item">
-                    <a href="https://apexdevweb.rowanwood.ltd/dev/rowanwood/SIM_Portal" class="sidenav-link" target="_blank">
+                    <a href="https://apexdevweb.rowanwood.ltd/dev/rowanwood/SIM_Portal" class="sidenav-link"
+                        target="_blank">
                         <img class="sidenav-icon ion" src="assets/img/icons/servicing.svg">
                         <div>Servicing</div>
                     </a>
@@ -286,14 +294,16 @@
 
 
                 <li *ngIf="checkAngularGrpPermission('Surveying','Survey Portal Access',0)" class="sidenav-item">
-                    <a href="https://apexdevweb.rowanwood.ltd/dev/Rowanwood/SurveyPortal" class="sidenav-link" target="_blank">
+                    <a href="https://apexdevweb.rowanwood.ltd/dev/Rowanwood/SurveyPortal" class="sidenav-link"
+                        target="_blank">
                         <img class="sidenav-icon ion" src="assets/img/icons/Surveying.svg">
                         <div>Surveying</div>
                     </a>
                 </li>
 
                 <li *ngIf="checkAngularGrpPermission('Reporter','Web Reporter Portal Access',0)" class="sidenav-item">
-                    <a href="https://apexdevweb.rowanwood.ltd/dev/Rowanwood/WebReporter" class="sidenav-link" target="_blank">
+                    <a href="https://apexdevweb.rowanwood.ltd/dev/Rowanwood/WebReporter" class="sidenav-link"
+                        target="_blank">
                         <img class="sidenav-icon ion" src="assets/img/icons/reports.svg">
                         <div>Reporter</div>
                     </a>
@@ -313,7 +323,8 @@
                                 <div>Reports</div>
                             </a>
                         </li>
-                        <li *ngIf="reporterPortalPermissions.indexOf('Published') != -1" class="sidenav-item" [routerLinkActive]="['active']">
+                        <li *ngIf="reporterPortalPermissions.indexOf('Published') != -1" class="sidenav-item"
+                            [routerLinkActive]="['active']">
                             <a [routerLink]="['/reporting/published']" class="sidenav-link">
                                 <div>Published</div>
                             </a>
@@ -330,19 +341,21 @@
 
                     <ul class="sidenav-menu">
                         <li class="sidenav-item" [routerLinkActive]="['active']"
-                        *ngIf="checkMenuAccess('EPCs', 1) && checkEnergyPortalAccess('Energy Portal Access') && checkModuleEnabled('EPC Module')">
+                            *ngIf="checkMenuAccess('EPCs', 1) && checkEnergyPortalAccess('Energy Portal Access') && checkModuleEnabled('EPC Module')">
                             <a [routerLink]="['/epc-settings']" class="sidenav-link">
                                 <div>EPC</div>
                             </a>
                         </li>
 
-                        <li class="sidenav-item" [routerLinkActive]="['active']" *ngIf="checkAngularGrpPermission('Servicing','Servicing Portal Access',1) && checkServiceMenuAccess()">
+                        <li class="sidenav-item" [routerLinkActive]="['active']"
+                            *ngIf="checkAngularGrpPermission('Servicing','Servicing Portal Access',1) && checkServiceMenuAccess()">
                             <a [routerLink]="['/service-settings']" class="sidenav-link">
                                 <div>Servicing & Inspection</div>
                             </a>
                         </li>
 
-                        <li class="sidenav-item" [routerLinkActive]="['active']" *ngIf="checkAngularGrpPermission('Health & Safety','Health And Safety Portal Access',1)">
+                        <li class="sidenav-item" [routerLinkActive]="['active']"
+                            *ngIf="checkAngularGrpPermission('Health & Safety','Health And Safety Portal Access',1)">
                             <a [routerLink]="['/hns-settings']" class="sidenav-link">
                                 <div>Health & Safety</div>
                             </a>
@@ -445,14 +458,14 @@
                                         <div>Dashboard</div>
                                     </a>
                                 </li>
-        
+
                                 <li class="sidenav-item" [routerLinkActive]="['active']"
                                     *ngIf="tasksPortalPermissions.indexOf('Manage Event Types') != -1">
                                     <a [routerLink]="['/tasks/configuration']" class="sidenav-link">
                                         <div>Configuration</div>
                                     </a>
                                 </li>
-        
+
                                 <li class="sidenav-item" [routerLinkActive]="['active']"
                                     *ngIf="tasksPortalPermissions.indexOf('Manage User Events') != -1">
                                     <a [routerLink]="['/tasks/tasks']" class="sidenav-link">
@@ -523,17 +536,19 @@
 
                         <li class="sidenav-item" [routerLinkActive]="['open']"
                             *ngIf="checkGroupPermission('Web Reporter Portal Access') && reporterPortalPermissions.indexOf('Web Reporter Portal Access') != -1">
-                    <a href="javascript:void(0)" class="sidenav-link sidenav-toggle">
+                            <a href="javascript:void(0)" class="sidenav-link sidenav-toggle">
                                 <div>Reporting</div>
                             </a>
 
                             <ul class="sidenav-menu">
-                                <li *ngIf="reporterPortalPermissions.indexOf('Reports') != -1" class="sidenav-item" [routerLinkActive]="['active']">
+                                <li *ngIf="reporterPortalPermissions.indexOf('Reports') != -1" class="sidenav-item"
+                                    [routerLinkActive]="['active']">
                                     <a [routerLink]="['/reporting/reports']" class="sidenav-link">
                                         <div>Reports</div>
                                     </a>
                                 </li>
-                                <li *ngIf="reporterPortalPermissions.indexOf('Published') != -1" class="sidenav-item" [routerLinkActive]="['active']">
+                                <li *ngIf="reporterPortalPermissions.indexOf('Published') != -1" class="sidenav-item"
+                                    [routerLinkActive]="['active']">
                                     <a [routerLink]="['/reporting/published']" class="sidenav-link">
                                         <div>Published</div>
                                     </a>
@@ -619,7 +634,7 @@
                                 </div>
 
 
-                               
+
                                 <!-- <a class="list-group-item list-group-item-action media d-flex align-items-center"
                                     href="http://104.40.138.8/Rowanwood/EventManager" target="_blank"> -->
                                 <a class="list-group-item list-group-item-action media d-flex align-items-center"
@@ -702,8 +717,8 @@
                                 <span class="d-inline-flex flex-lg-row-reverse align-items-center align-middle">
                                     <img src="assets/img/avatars/user-image.png" alt
                                         class="d-block ui-w-30 rounded-circle">
-                                    <span
-                                        class="px-1 mr-lg-2 ml-2 ml-lg-0">{{currentUser?.userName | titlecase  }}</span>
+                                    <span class="px-1 mr-lg-2 ml-2 ml-lg-0">{{currentUser?.userName | titlecase
+                                        }}</span>
                                 </span>
                             </a>
                             <div class="dropdown-menu dropdown-menu-right">

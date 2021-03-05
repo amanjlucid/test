@@ -305,21 +305,25 @@
                     *ngIf="checkTabPermission('Asbestos') && checkAsbestosPortalAccess() && checkGroupPermission('Asbestos Portal Access')"
                     (click)="openTabWindow('asbestos',attributeList)" href="javascript:void(0)">Asbestos</a>
 
-                    <div class="dropdown-toggle">
-                      <div class="dropdown-item" *ngIf="((checkTabPermission('Energy') && checkModuleEnabled('Energy')) || (checkTabPermission('EPC') && checkModuleEnabled('EPC Module') && checkEnergyPortalAccess('Energy Portal Access')))" >Energy</div>
- 
-                      <!-- <div class="dropdown-item" *ngIf="EnableEnergyMenu()" >Energy</div> -->
+                  <div class="dropdown-toggle">
+                    <div class="dropdown-item"
+                      *ngIf="((checkTabPermission('Energy') && checkModuleEnabled('Energy')) || (checkTabPermission('EPC') && checkModuleEnabled('EPC Module') && checkEnergyPortalAccess('Energy Portal Access')))">
+                      Energy</div>
 
- 
-                      <div class="dropdown-menu">
-                          <a class="dropdown-item" *ngIf="checkTabPermission('Energy') && checkModuleEnabled('Energy')"
-                          (click)="openTabWindow('energy',attributeList)" href="javascript:void(0)">Rating</a>
-                          <a class="dropdown-item" *ngIf="checkTabPermission('EPC') && checkModuleEnabled('EPC Module') && checkEnergyPortalAccess('Energy Portal Access')"
-                          (click)="openTabWindow('epc',attributeList)" href="javascript:void(0)">EPC</a>
-                          <a class="dropdown-item" *ngIf="checkTabPermission('EPC') && checkModuleEnabled('EPC Module') && checkEnergyPortalAccess('Energy Portal Access') && checkEnergyPortalAccess('Retrieve EPC')"
-                          (click)="openRetrieveEPCWindow(attributeList)" href="javascript:void(0)">Retrieve EPC</a>
-                      </div>
+                    <!-- <div class="dropdown-item" *ngIf="EnableEnergyMenu()" >Energy</div> -->
+
+
+                    <div class="dropdown-menu">
+                      <a class="dropdown-item" *ngIf="checkTabPermission('Energy') && checkModuleEnabled('Energy')"
+                        (click)="openTabWindow('energy',attributeList)" href="javascript:void(0)">Rating</a>
+                      <a class="dropdown-item"
+                        *ngIf="checkTabPermission('EPC') && checkModuleEnabled('EPC Module') && checkEnergyPortalAccess('Energy Portal Access')"
+                        (click)="openTabWindow('epc',attributeList)" href="javascript:void(0)">EPC</a>
+                      <a class="dropdown-item"
+                        *ngIf="checkTabPermission('EPC') && checkModuleEnabled('EPC Module') && checkEnergyPortalAccess('Energy Portal Access') && checkEnergyPortalAccess('Retrieve EPC')"
+                        (click)="openRetrieveEPCWindow(attributeList)" href="javascript:void(0)">Retrieve EPC</a>
                     </div>
+                  </div>
 
 
                   <a class="dropdown-item" *ngIf="checkTabPermission('Surveys')"
@@ -389,9 +393,11 @@
 
                 <img title="New EPC" *ngIf="attributeList.epcStatus != '' && attributeList.epcStatus=='New'"
                   class="table-icon-wr" src="assets/img/icons/epc-new.png" />
-                  <img title="Incomplete EPC" *ngIf="attributeList.epcStatus != '' && (attributeList.epcStatus=='EPC Started' || attributeList.epcStatus=='Mapped Successfully' || attributeList.epcStatus=='Uploaded Successfully')"
+                <img title="Incomplete EPC"
+                  *ngIf="attributeList.epcStatus != '' && (attributeList.epcStatus=='EPC Started' || attributeList.epcStatus=='Mapped Successfully' || attributeList.epcStatus=='Uploaded Successfully')"
                   class="table-icon-wr" src="assets/img/icons/epc-edit.png" />
-                  <img title="EPC Error" *ngIf="attributeList.epcStatus != '' && (attributeList.epcStatus=='Uploading errors' || attributeList.epcStatus=='Mapping Errors')"
+                <img title="EPC Error"
+                  *ngIf="attributeList.epcStatus != '' && (attributeList.epcStatus=='Uploading errors' || attributeList.epcStatus=='Mapping Errors')"
                   class="table-icon-wr" src="assets/img/icons/epc-error.png" />
                 <img title="Lodged EPC" *ngIf="attributeList.epcStatus != '' && attributeList.epcStatus=='Lodged EPC'"
                   class="table-icon-wr" src="assets/img/icons/epc-logged.png" />
@@ -431,7 +437,8 @@
             <td class="bigCol" *ngIf="asbestosColumn">{{attributeList.highestPriorityRisk }}</td>
             <td class="bigCol" *ngIf="asbestosColumn">{{attributeList.highestTotalRisk }}</td>
             <td class="midCol" *ngIf="asbestosColumn">
-              {{attributeList.hsenotifiable == 'Y' ? 'Notifiable' : attributeList.hsenotifiable == 'N' ? 'Not Notifiable' : attributeList.hsenotifiable }}
+              {{attributeList.hsenotifiable == 'Y' ? 'Notifiable' : attributeList.hsenotifiable == 'N' ? 'Not
+              Notifiable' : attributeList.hsenotifiable }}
             </td>
 
             <!-- Service column -->
@@ -534,28 +541,28 @@
                 Compliance </th>
 
 
-                <th class="bigCol" style="cursor: pointer;" *ngIf="epcView">EPC Status
-                </th>
-                <th class="bigCol" style="cursor: pointer;" *ngIf="epcView">SAP
-                </th>
-                <th class="bigCol" style="cursor: pointer;" *ngIf="epcView">SAP Band
-                </th>
-                <th class="bigCol" style="cursor: pointer;" *ngIf="epcView">EI
-                </th>
-                <th class="bigCol" style="cursor: pointer;" *ngIf="epcView">Lodged Date
-                </th>
-                <th class="bigCol" style="cursor: pointer;" *ngIf="epcView">Expiry Date
-                </th>
-                <th class="bigCol" style="cursor: pointer;" *ngIf="epcView">Scheduled Date
-                </th>
-                <th class="bigCol" style="cursor: pointer;" *ngIf="epcView">Survey Status
-                </th>
-                <th class="bigCol" style="cursor: pointer;" *ngIf="epcView">Survey Date
-                </th>
-                <th class="bigCol" style="cursor: pointer;" *ngIf="epcView">Survey Project
-                </th>
-                <th class="bigCol" style="cursor: pointer;" *ngIf="epcView">Survey Batch
-                </th>
+              <th class="bigCol" style="cursor: pointer;" *ngIf="epcView">EPC Status
+              </th>
+              <th class="bigCol" style="cursor: pointer;" *ngIf="epcView">SAP
+              </th>
+              <th class="bigCol" style="cursor: pointer;" *ngIf="epcView">SAP Band
+              </th>
+              <th class="bigCol" style="cursor: pointer;" *ngIf="epcView">EI
+              </th>
+              <th class="bigCol" style="cursor: pointer;" *ngIf="epcView">Lodged Date
+              </th>
+              <th class="bigCol" style="cursor: pointer;" *ngIf="epcView">Expiry Date
+              </th>
+              <th class="bigCol" style="cursor: pointer;" *ngIf="epcView">Scheduled Date
+              </th>
+              <th class="bigCol" style="cursor: pointer;" *ngIf="epcView">Survey Status
+              </th>
+              <th class="bigCol" style="cursor: pointer;" *ngIf="epcView">Survey Date
+              </th>
+              <th class="bigCol" style="cursor: pointer;" *ngIf="epcView">Survey Project
+              </th>
+              <th class="bigCol" style="cursor: pointer;" *ngIf="epcView">Survey Batch
+              </th>
 
             </tr>
           </thead>
@@ -607,7 +614,6 @@
         <ng-template #recursiveList let-hierarchyLevels>
           <li *ngFor="let item of hierarchyLevels" class="{{item?.assetId}}">
             <!-- <input *ngIf="item.childLayers.length > 0" type="checkbox" id="{{item?.assetId}}" /> -->
-
             <!-- <label  [class.tree_label]="item.childLayers.length > 0" for="{{item?.assetId}}">({{ item?.assetName }}) {{ item?.assetId }} - {{ item?.address }}</label> -->
 
             <ng-container *ngIf="item.childLayers.length > 0; then someContent else otherContent"></ng-container>
@@ -616,8 +622,8 @@
                 class="chkBox" />
               <label
                 [className]="selectedhierarchyLevel != undefined ? ( selectedhierarchyLevel.assetId == item.assetId ? 'tree_label selected' : 'tree_label') : 'tree_label'"
-                (click)="selectHiearchy($event, item)" for="{{item?.assetId}}"><span
-                  style="color:red;">({{ item?.assetName }})</span>
+                (click)="selectHiearchy($event, item)" for="{{item?.assetId}}"><span style="color:red;">({{
+                  item?.assetName }})</span>
                 {{ item?.assetId }} - {{ item?.address }}</label>
             </ng-template>
             <ng-template #otherContent>
@@ -651,333 +657,344 @@
 <!-- window for add new hiearchy ends -->
 
 
-<app-asset-epc-retrieve #RetrievePanel *ngIf="retrieveWindow" [retrieveWindow]="retrieveWindow" 
-(closeRetrieveWindow)="closeRetrieveEPCWindow($event)" [assetId]="assetId" [epcStatus]="epcStatus">
+<app-asset-epc-retrieve #RetrievePanel *ngIf="retrieveWindow" [retrieveWindow]="retrieveWindow"
+  (closeRetrieveWindow)="closeRetrieveEPCWindow($event)" [assetId]="assetId" [epcStatus]="epcStatus">
 
 </app-asset-epc-retrieve>
 
 <!-- Search bar -->
 <div class="search-container dismiss">
 
-    <a href="javascript:void(0)" (click)="closeSearchBar()" class="theme-settings-close-btn font-weight-light p-0 m-0"
-      style="color:#ffffff;" tabindex="-1">
-      <div class="row">
-        <div class="col-md-3" >
-          <h5 style="color:white" class="p-4 m-0 line-height-1 font-weight-bolder bg-light theme-settings-header"> Filters</h5>
-        </div>
-      <div class="col-md-1" >
+  <a href="javascript:void(0)" (click)="closeSearchBar()" class="theme-settings-close-btn font-weight-light p-0 m-0"
+    style="color:#ffffff;" tabindex="-1">
+    <div class="row">
+      <div class="col-md-3">
+        <h5 style="color:white" class="p-4 m-0 line-height-1 font-weight-bolder bg-light theme-settings-header"> Filters
+        </h5>
+      </div>
+      <div class="col-md-1">
         <h5 style="color:white" class="p-4 m-0 line-height-1 font-weight-bolder bg-light theme-settings-header">x</h5>
       </div>
 
 
-      </div>
+    </div>
 
-      </a> 
+  </a>
 
 
   <div class="searchDiv">
     <form #assetSearch id="assetSearch">
       <mat-accordion>
-   
-      <div class="filtersection ml-0">
-        <mat-expansion-panel 
-        style="background-color: transparent; font-family: 'MuseoSansRounded-300', sans-serif;padding:1px; margin: 0px;">
-          <mat-expansion-panel-header style="margin: 0px;padding: 0px;">
-            <mat-panel-title>
-              <div class="row p-0 m-0" style="width: 100%;">
-                <div class="col-md-11 p-0 m-0">
-              <span style="margin: 0px;padding: 0px;font-family: 'MuseoSansRounded-300', sans-serif;" class="filterHead">Asset</span>
+
+        <div class="filtersection ml-0">
+          <mat-expansion-panel
+            style="background-color: transparent; font-family: 'MuseoSansRounded-300', sans-serif;padding:1px; margin: 0px;">
+            <mat-expansion-panel-header style="margin: 0px;padding: 0px;">
+              <mat-panel-title>
+                <div class="row p-0 m-0" style="width: 100%;">
+                  <div class="col-md-11 p-0 m-0">
+                    <span style="margin: 0px;padding: 0px;font-family: 'MuseoSansRounded-300', sans-serif;"
+                      class="filterHead">Asset</span>
+                  </div>
+                  <div class="col-md-1 p-0 m-0">
+                    <i class="fas fa-edit mt-1" style="color: #e4287e;" *ngIf="AssetFilter"></i>
+                  </div>
                 </div>
-                <div class="col-md-1 p-0 m-0">
-                  <i class="fas fa-edit mt-1" style="color: #e4287e;" *ngIf="AssetFilter"></i>      
-                </div>
-              </div>
-            </mat-panel-title>
-          </mat-expansion-panel-header>
-        <div class="form-group mt-1">
-          <label class="form-label form-label-sm">Postcode</label>
-          <input (keyup)="filterAssetTable($event.target.value, 'PostCode')" name="postcode" data-col="2" type="text"
-            class="form-control form-control-sm" placeholder="Search By Postcode">
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+            <div class="form-group mt-1">
+              <label class="form-label form-label-sm">Postcode</label>
+              <input (keyup)="triggerPostcodeSearch($event.target.value)" name="postcode" data-col="2"
+                type="text" class="form-control form-control-sm" placeholder="Search By Postcode">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label form-label-sm">Status</label>
+              <select data-col="9" class="form-control form-control-sm"
+                (change)="filterAssetTable($event.target.value, 'AssetStatus')">
+                <option [selected]="assetList.AssetStatus == ''" value="">All</option>
+                <option selected [selected]="assetList.AssetStatus == 'A'" value="A">Active</option>
+                <option [selected]="assetList.AssetStatus == 'I'" value="I">Inactive</option>
+              </select>
+
+            </div>
+
+          </mat-expansion-panel>
         </div>
 
-        <div class="form-group">
-          <label class="form-label form-label-sm">Status</label>
-          <select data-col="9" class="form-control form-control-sm"
-            (change)="filterAssetTable($event.target.value, 'AssetStatus')">
-            <option [selected]="assetList.AssetStatus == ''" value="">All</option>
-            <option selected [selected]="assetList.AssetStatus == 'A'" value="A">Active</option>
-            <option [selected]="assetList.AssetStatus == 'I'" value="I">Inactive</option>
-          </select>
 
+        <div class="filtersection ml-0"
+          *ngIf="checkTabPermission('Asbestos') && checkAsbestosPortalAccess() && checkGroupPermission('Asbestos Portal Access')">
+          <mat-expansion-panel
+            *ngIf="checkTabPermission('Asbestos') && checkAsbestosPortalAccess() && checkGroupPermission('Asbestos Portal Access')"
+            style="background-color: transparent; font-family: 'MuseoSansRounded-300', sans-serif;padding:1px; margin: 0px;">
+            <mat-expansion-panel-header style="margin: 0px;padding: 0px;">
+              <mat-panel-title>
+                <div class="row p-0 m-0" style="width: 100%;">
+                  <div class="col-md-11 p-0 m-0">
+                    <span style="margin: 0px;padding: 0px;font-family: 'MuseoSansRounded-300', sans-serif;"
+                      class="filterHead">Asbestos</span>
+                  </div>
+                  <div class="col-md-1 p-0 m-0">
+                    <i class="fas fa-edit mt-1" style="color: #e4287e;" *ngIf="AsbestosFilter"></i>
+                  </div>
+                </div>
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+
+
+            <div class="form-group mt-0">
+              <label class="form-label form-label-sm">Asbestos View</label>
+              <label class="switcher switcher-secondary osFilterLabel">
+                <input type="checkbox" value="{{asbestosColumn}}"
+                  (change)="filterAssetTable($event.target.value, 'Asbestos')" class="switcher-input">
+                <span class="switcher-indicator asbestosColumnSwitch">
+                  <span class="switcher-yes">
+                    <span class="ion ion-md-checkmark"></span>
+                  </span>
+                  <span class="switcher-no">
+                    <span class="ion ion-md-close"></span>
+                  </span>
+                </span>
+                <!-- <span class="switcher-label">Management Actions</span> -->
+              </label>
+            </div>
+
+
+            <div class="form-group mt-3">
+              <label class="form-label form-label-sm">Asbestos Status</label>
+              <select data-col="9" class="form-control form-control-sm"
+                (change)="filterAssetTable($event.target.value, 'AsbestosStatus')">
+                <option value="">Select Asbestos Status</option>
+                <option value="All">All</option>
+                <option value="High">High</option>
+                <option value="Low">Low</option>
+                <option value="None">None</option>
+              </select>
+            </div>
+
+            <div class="form-group mt-3">
+              <label class="form-label form-label-sm">Outstanding Request</label>
+              <label class="switcher switcher-secondary osFilterLabel">
+                <input type="checkbox" value="{{authOs}}" (change)="filterAssetTable($event.target.value, 'os')"
+                  class="switcher-input">
+                <span class="switcher-indicator osFilterSwitch">
+                  <span class="switcher-yes">
+                    <span class="ion ion-md-checkmark"></span>
+                  </span>
+                  <span class="switcher-no">
+                    <span class="ion ion-md-close"></span>
+                  </span>
+                </span>
+                <!-- <span class="switcher-label">Management Actions</span> -->
+              </label>
+            </div>
+
+
+          </mat-expansion-panel>
         </div>
 
-        </mat-expansion-panel>
-      </div>
-      
 
-      <div class="filtersection ml-0" *ngIf="checkTabPermission('Asbestos') && checkAsbestosPortalAccess() && checkGroupPermission('Asbestos Portal Access')">
-         <mat-expansion-panel *ngIf="checkTabPermission('Asbestos') && checkAsbestosPortalAccess() && checkGroupPermission('Asbestos Portal Access')"
-        style="background-color: transparent; font-family: 'MuseoSansRounded-300', sans-serif;padding:1px; margin: 0px;">
-          <mat-expansion-panel-header style="margin: 0px;padding: 0px;">
-            <mat-panel-title>
-              <div class="row p-0 m-0" style="width: 100%;">
-                <div class="col-md-11 p-0 m-0">
-              <span style="margin: 0px;padding: 0px;font-family: 'MuseoSansRounded-300', sans-serif;" class="filterHead">Asbestos</span>
+        <div class="filtersection ml-0"
+          *ngIf="checkTabPermission('EPC') && checkEnergyPortalAccess('Energy Portal Access') && checkModuleEnabled('EPC Module') && checkMenuAccess('EPCs', 1)">
+          <mat-expansion-panel
+            *ngIf="checkTabPermission('EPC') && checkEnergyPortalAccess('Energy Portal Access') && checkModuleEnabled('EPC Module') && checkMenuAccess('EPCs', 1)"
+            style="background-color: transparent; font-family: 'MuseoSansRounded-300', sans-serif;padding:1px; margin: 0px;">
+            <mat-expansion-panel-header style="margin: 0px;padding: 0px;">
+              <mat-panel-title>
+                <div class="row p-0 m-0" style="width: 100%;">
+                  <div class="col-md-11 p-0 m-0">
+                    <span style="margin: 0px;padding: 0px;font-family: 'MuseoSansRounded-300', sans-serif;"
+                      class="filterHead">EPC</span>
+                  </div>
+                  <div class="col-md-1 p-0 m-0">
+                    <i class="fas fa-edit mt-1" style="color: #e4287e;" *ngIf="EPCFilter"></i>
+                  </div>
                 </div>
-                <div class="col-md-1 p-0 m-0">
-                  <i class="fas fa-edit mt-1" style="color: #e4287e;" *ngIf="AsbestosFilter"></i>      
-                </div>
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+            <div class="form-group mt-1">
+
+
+              <div class="form-group mt-0">
+                <label class="form-label form-label-sm">EPC View</label>
+                <label class="switcher switcher-secondary osFilterLabel">
+                  <input #epcViewCheckBox id="epcViewCheckBox" type="checkbox" [checked]="epcView"
+                    (change)="filterAssetTable(epcViewCheckBox.checked, 'epcView')" class="switcher-input">
+                  <span class="switcher-indicator osFilterSwitch">
+                    <span class="switcher-yes">
+                      <span class="ion ion-md-checkmark"></span>
+                    </span>
+                    <span class="switcher-no">
+                      <span class="ion ion-md-close"></span>
+                    </span>
+                  </span>
+                  <!-- <span class="switcher-label">Management Actions</span> -->
+                </label>
               </div>
-            </mat-panel-title>
-          </mat-expansion-panel-header>
 
 
-          <div class="form-group mt-0">
-            <label class="form-label form-label-sm">Asbestos View</label>
-            <label class="switcher switcher-secondary osFilterLabel">
-              <input type="checkbox" value="{{asbestosColumn}}"
-                (change)="filterAssetTable($event.target.value, 'Asbestos')" class="switcher-input">
-              <span class="switcher-indicator asbestosColumnSwitch">
-                <span class="switcher-yes">
-                  <span class="ion ion-md-checkmark"></span>
-                </span>
-                <span class="switcher-no">
-                  <span class="ion ion-md-close"></span>
-                </span>
-              </span>
-              <!-- <span class="switcher-label">Management Actions</span> -->
-            </label>
-          </div>
-  
-  
-          <div class="form-group mt-3">
-            <label class="form-label form-label-sm">Asbestos Status</label>
-            <select data-col="9" class="form-control form-control-sm"
-              (change)="filterAssetTable($event.target.value, 'AsbestosStatus')">
-              <option value="">Select Asbestos Status</option>
-              <option value="All">All</option>
-              <option value="High">High</option>
-              <option value="Low">Low</option>
-              <option value="None">None</option>
-            </select>
-          </div>
-  
-          <div class="form-group mt-3">
-            <label class="form-label form-label-sm">Outstanding Request</label>
-            <label class="switcher switcher-secondary osFilterLabel">
-              <input type="checkbox" value="{{authOs}}" (change)="filterAssetTable($event.target.value, 'os')"
-                class="switcher-input">
-              <span class="switcher-indicator osFilterSwitch">
-                <span class="switcher-yes">
-                  <span class="ion ion-md-checkmark"></span>
-                </span>
-                <span class="switcher-no">
-                  <span class="ion ion-md-close"></span>
-                </span>
-              </span>
-              <!-- <span class="switcher-label">Management Actions</span> -->
-            </label>
-          </div>
-
-
-        </mat-expansion-panel>
-      </div>
-
-
-      <div class="filtersection ml-0" *ngIf="checkTabPermission('EPC') && checkEnergyPortalAccess('Energy Portal Access') && checkModuleEnabled('EPC Module') && checkMenuAccess('EPCs', 1)">
-        <mat-expansion-panel *ngIf="checkTabPermission('EPC') && checkEnergyPortalAccess('Energy Portal Access') && checkModuleEnabled('EPC Module') && checkMenuAccess('EPCs', 1)"
-        style="background-color: transparent; font-family: 'MuseoSansRounded-300', sans-serif;padding:1px; margin: 0px;">
-          <mat-expansion-panel-header style="margin: 0px;padding: 0px;">
-            <mat-panel-title>
-              <div class="row p-0 m-0" style="width: 100%;">
-                <div class="col-md-11 p-0 m-0">
-              <span style="margin: 0px;padding: 0px;font-family: 'MuseoSansRounded-300', sans-serif;" class="filterHead">EPC</span>
-                </div>
-                <div class="col-md-1 p-0 m-0">
-                  <i class="fas fa-edit mt-1" style="color: #e4287e;" *ngIf="EPCFilter"></i>      
-                </div>
+              <div class="form-group mt-3">
+                <label class="form-label form-label-sm">EPCs Only</label>
+                <label class="switcher switcher-secondary osFilterLabel">
+                  <input #epcOnlyCheckBox id="epcOnlyCheckBox" type="checkbox" [checked]="assetList.epcOnly"
+                    (change)="filterAssetTable(epcOnlyCheckBox.checked, 'epc')" class="switcher-input">
+                  <span class="switcher-indicator osFilterSwitch">
+                    <span class="switcher-yes">
+                      <span class="ion ion-md-checkmark"></span>
+                    </span>
+                    <span class="switcher-no">
+                      <span class="ion ion-md-close"></span>
+                    </span>
+                  </span>
+                  <!-- <span class="switcher-label">Management Actions</span> -->
+                </label>
               </div>
-            </mat-panel-title>
-          </mat-expansion-panel-header>
-        <div class="form-group mt-1">
 
 
-          <div class="form-group mt-0">
-            <label class="form-label form-label-sm">EPC View</label>
-            <label class="switcher switcher-secondary osFilterLabel">
-              <input #epcViewCheckBox id="epcViewCheckBox"  type="checkbox" [checked]="epcView" (change)="filterAssetTable(epcViewCheckBox.checked, 'epcView')"
-                class="switcher-input">
-              <span class="switcher-indicator osFilterSwitch">
-                <span class="switcher-yes">
-                  <span class="ion ion-md-checkmark"></span>
-                </span>
-                <span class="switcher-no">
-                  <span class="ion ion-md-close"></span>
-                </span>
-              </span>
-              <!-- <span class="switcher-label">Management Actions</span> -->
-            </label>
-          </div>
+              <div class="form-group mt-3">
+                <label class="form-label form-label-sm">EPC Status</label>
+                <select data-col="9" class="form-control form-control-sm" name="epcStatus"
+                  [(ngModel)]="assetList.EPCStatus" (change)="filterAssetTable($event.target.value, 'EPCStatus')">
+                  <option value="">Select EPC Status</option>
+                  <option value="New">New</option>
+                  <option value="EPC Started">EPC Started</option>
+                  <option value="Mapped Successfully">Mapped Successfully</option>
+                  <option value="Mapping Errors">Mapping Errors</option>
+                  <option value="Uploaded Successfully">Uploaded Successfully</option>
+                  <option value="Uploading errors">Uploading errors</option>
+                  <option value="Mapping Errors">Mapping Errors</option>
+                  <option value="Lodged EPC">Lodged EPC</option>
+                </select>
+              </div>
 
-
-          <div class="form-group mt-3">
-            <label class="form-label form-label-sm">EPCs Only</label>
-            <label class="switcher switcher-secondary osFilterLabel">
-              <input #epcOnlyCheckBox id="epcOnlyCheckBox" type="checkbox" [checked]="assetList.epcOnly" (change)="filterAssetTable(epcOnlyCheckBox.checked, 'epc')"
-                class="switcher-input">
-              <span class="switcher-indicator osFilterSwitch">
-                <span class="switcher-yes">
-                  <span class="ion ion-md-checkmark"></span>
-                </span>
-                <span class="switcher-no">
-                  <span class="ion ion-md-close"></span>
-                </span>
-              </span>
-              <!-- <span class="switcher-label">Management Actions</span> -->
-            </label>
-          </div>
-
-          
-        <div class="form-group mt-3">
-          <label class="form-label form-label-sm">EPC Status</label>
-          <select data-col="9" class="form-control form-control-sm"  name="epcStatus" [(ngModel)]="assetList.EPCStatus" 
-            (change)="filterAssetTable($event.target.value, 'EPCStatus')">
-            <option value="">Select EPC Status</option>
-            <option value="New">New</option>
-            <option value="EPC Started">EPC Started</option>
-            <option value="Mapped Successfully">Mapped Successfully</option>
-            <option value="Mapping Errors">Mapping Errors</option>
-            <option value="Uploaded Successfully">Uploaded Successfully</option>
-            <option value="Uploading errors">Uploading errors</option>
-            <option value="Mapping Errors">Mapping Errors</option>
-            <option value="Lodged EPC">Lodged EPC</option>
-          </select>
-        </div>
-
-<!--         <mat-form-field appearance="fill" >
+              <!--         <mat-form-field appearance="fill" >
           <mat-label>Toppings</mat-label>
           <mat-select [formControl]="toppings" multiple style="background-color: white;">
             <mat-option *ngFor="let topping of sapBands" [value]="topping">{{topping}}</mat-option>
           </mat-select>
         </mat-form-field>
  -->
-          <div data-col="9" class="row mt-1" style="width:100%">
-            <label class="form-label form-label-sm" style="margin-left: 13px">SAP Rating Bands</label>
-            <kendo-multiselect id="sapMultiSelect"  color="secondary"
-            style="margin-left: 13px;margin-right:-11px;padding-top: 0px;padding-bottom: 0px;padding-left: 10;"  
-            [placeholder]="'    Select SAP Bands'"   [value]="selectedSAPBands"
-            [data]="sapBands" [filterable]="true"  (filterChange)="filterChange($event)"
-            (valueChange)="sapBandsChanged($event)"
-            ></kendo-multiselect>
+              <div data-col="9" class="row mt-1" style="width:100%">
+                <label class="form-label form-label-sm" style="margin-left: 13px">SAP Rating Bands</label>
+                <kendo-multiselect id="sapMultiSelect" color="secondary"
+                  style="margin-left: 13px;margin-right:-11px;padding-top: 0px;padding-bottom: 0px;padding-left: 10;"
+                  [placeholder]="'    Select SAP Bands'" [value]="selectedSAPBands" [data]="sapBands"
+                  [filterable]="true" (filterChange)="filterChange($event)" (valueChange)="sapBandsChanged($event)">
+                </kendo-multiselect>
 
-          </div>
-
-
-        </div> 
-
-        </mat-expansion-panel>
-      </div>
-
-      <div class="filtersection ml-0"
-        *ngIf="checkTabPermission('Servicing') && checkGroupPermission('Servicing Portal Access')">
-        <mat-expansion-panel *ngIf="checkTabPermission('Servicing') && checkGroupPermission('Servicing Portal Access')"
-        style="background-color: transparent; font-family: 'MuseoSansRounded-300', sans-serif;padding:1px; margin: 0px;">
-          <mat-expansion-panel-header style="margin: 0px;padding: 0px;">
-            <mat-panel-title>
-              <div class="row p-0 m-0" style="width: 100%;">
-                <div class="col-md-11 p-0 m-0">
-              <span style="margin: 0px;padding: 0px;font-family: 'MuseoSansRounded-300', sans-serif;" class="filterHead">Servicing</span>
-                </div>
-                <div class="col-md-1 p-0 m-0">
-                  <i class="fas fa-edit mt-1" style="color: #e4287e;" *ngIf="ServicingFilter"></i>      
-                </div>
               </div>
-            </mat-panel-title>
-          </mat-expansion-panel-header>
 
 
-        <div class="form-group mt-0">
-          <label class="form-label form-label-sm">Service View</label>
-          <label class="switcher switcher-secondary osFilterLabel">
-            <input type="checkbox" value="{{serviceColumn}}" (change)="filterAssetTable($event.target.value, 'Service')"
-              class="switcher-input">
-            <span class="switcher-indicator osFilterSwitch">
-              <span class="switcher-yes">
-                <span class="ion ion-md-checkmark"></span>
-              </span>
-              <span class="switcher-no">
-                <span class="ion ion-md-close"></span>
-              </span>
-            </span>
-            <!-- <span class="switcher-label">Management Actions</span> -->
-          </label>
+            </div>
+
+          </mat-expansion-panel>
         </div>
 
+        <div class="filtersection ml-0"
+          *ngIf="checkTabPermission('Servicing') && checkGroupPermission('Servicing Portal Access')">
+          <mat-expansion-panel
+            *ngIf="checkTabPermission('Servicing') && checkGroupPermission('Servicing Portal Access')"
+            style="background-color: transparent; font-family: 'MuseoSansRounded-300', sans-serif;padding:1px; margin: 0px;">
+            <mat-expansion-panel-header style="margin: 0px;padding: 0px;">
+              <mat-panel-title>
+                <div class="row p-0 m-0" style="width: 100%;">
+                  <div class="col-md-11 p-0 m-0">
+                    <span style="margin: 0px;padding: 0px;font-family: 'MuseoSansRounded-300', sans-serif;"
+                      class="filterHead">Servicing</span>
+                  </div>
+                  <div class="col-md-1 p-0 m-0">
+                    <i class="fas fa-edit mt-1" style="color: #e4287e;" *ngIf="ServicingFilter"></i>
+                  </div>
+                </div>
+              </mat-panel-title>
+            </mat-expansion-panel-header>
 
 
-        <div class="form-group mt-3">
-          <label class="form-label form-label-sm">Service Type</label>
-          <select name="serviceType" [(ngModel)]="assetList.Setcode" class="form-control form-control-sm"
-            (change)="filterAssetTable($event.target.value, 'Service Type')">
-            <option *ngFor="let serviceType of serviceTypes" [selected]="serviceType.key == assetList.Setcode"
-              [ngValue]="serviceType.key">{{serviceType.value}}
-            </option>
-          </select>
+            <div class="form-group mt-0">
+              <label class="form-label form-label-sm">Service View</label>
+              <label class="switcher switcher-secondary osFilterLabel">
+                <input type="checkbox" value="{{serviceColumn}}"
+                  (change)="filterAssetTable($event.target.value, 'Service')" class="switcher-input">
+                <span class="switcher-indicator osFilterSwitch">
+                  <span class="switcher-yes">
+                    <span class="ion ion-md-checkmark"></span>
+                  </span>
+                  <span class="switcher-no">
+                    <span class="ion ion-md-close"></span>
+                  </span>
+                </span>
+                <!-- <span class="switcher-label">Management Actions</span> -->
+              </label>
+            </div>
+
+
+
+            <div class="form-group mt-3">
+              <label class="form-label form-label-sm">Service Type</label>
+              <select name="serviceType" [(ngModel)]="assetList.Setcode" class="form-control form-control-sm"
+                (change)="filterAssetTable($event.target.value, 'Service Type')">
+                <option *ngFor="let serviceType of serviceTypes" [selected]="serviceType.key == assetList.Setcode"
+                  [ngValue]="serviceType.key">{{serviceType.value}}
+                </option>
+              </select>
+            </div>
+
+            <div class="form-group mt-3">
+              <label class="form-label form-label-sm">Servicing Compliance</label>
+              <select name="serviceCompliance" [(ngModel)]="assetList.SimCompliance"
+                class="form-control form-control-sm"
+                (change)="filterAssetTable($event.target.value, 'Service Compliance')">
+                <option *ngFor="let stV of serviceTypes" [selected]="stV.key == assetList.SimCompliance"
+                  [ngValue]="stV.key">{{stV.value}}
+                </option>
+              </select>
+            </div>
+
+            <div class="" *ngIf="assetFilterObj != undefined">
+              <div class="form-group mt-3">
+                <label class="form-label form-label-sm">Contractor</label>
+                <input type="text" class="form-control form-control-sm readonlyCl"
+                  value="{{assetFilterObj?.contractor}}" readonly>
+              </div>
+
+              <div class="form-group mt-3">
+                <label class="form-label form-label-sm">Contract</label>
+                <input type="text" class="form-control form-control-sm readonlyCl" value="{{assetFilterObj?.contract}}"
+                  readonly>
+              </div>
+
+              <div class="form-group mt-3">
+                <label class="form-label form-label-sm">Service Type</label>
+                <input type="text" class="form-control form-control-sm readonlyCl"
+                  value="{{assetFilterObj?.serviceType}}" readonly>
+              </div>
+
+              <div class="form-group mt-3">
+                <label class="form-label form-label-sm">Service Stage</label>
+                <input type="text" class="form-control form-control-sm readonlyCl"
+                  value="{{assetFilterObj?.serviceStage}}" readonly>
+              </div>
+            </div>
+          </mat-expansion-panel>
         </div>
 
-        <div class="form-group mt-3">
-          <label class="form-label form-label-sm">Servicing Compliance</label>
-          <select name="serviceCompliance" [(ngModel)]="assetList.SimCompliance" class="form-control form-control-sm"
-            (change)="filterAssetTable($event.target.value, 'Service Compliance')">
-            <option *ngFor="let stV of serviceTypes" [selected]="stV.key == assetList.SimCompliance" [ngValue]="stV.key">{{stV.value}}
-            </option>
-          </select>
-        </div>
+      </mat-accordion>
 
-        <div class="" *ngIf="assetFilterObj != undefined">
-          <div class="form-group mt-3">
-            <label class="form-label form-label-sm">Contractor</label>
-            <input type="text" class="form-control form-control-sm readonlyCl" value="{{assetFilterObj?.contractor}}"
-              readonly>
+      <div class="filtersection">
+        <div class="row p-2 mt-3">
+          <div class="col">
+
           </div>
-
-          <div class="form-group mt-3">
-            <label class="form-label form-label-sm">Contract</label>
-            <input type="text" class="form-control form-control-sm readonlyCl" value="{{assetFilterObj?.contract}}"
-              readonly>
+          <div class="col">
+            <button id="" (click)="clearAssetTable()" class="btn btn-sm themeButton">Clear
+            </button>
           </div>
+          <div class="col">
 
-          <div class="form-group mt-3">
-            <label class="form-label form-label-sm">Service Type</label>
-            <input type="text" class="form-control form-control-sm readonlyCl" value="{{assetFilterObj?.serviceType}}"
-              readonly>
-          </div>
-
-          <div class="form-group mt-3">
-            <label class="form-label form-label-sm">Service Stage</label>
-            <input type="text" class="form-control form-control-sm readonlyCl" value="{{assetFilterObj?.serviceStage}}"
-              readonly>
           </div>
         </div>
-        </mat-expansion-panel>
       </div>
- 
-</mat-accordion>
-
-<div class="filtersection">
-  <div class="row p-2 mt-3">
-    <div class="col" >
-
-    </div>
-    <div class="col" >
-      <button id="" (click)="clearAssetTable()" class="btn btn-sm themeButton">Clear
-      </button>
-    </div>
-    <div class="col" >
-
-    </div>
-  </div>
-</div>
 
 
 
@@ -985,7 +1002,7 @@
 
 
     </form>
-  
+
   </div>
 
 </div>

@@ -1,4 +1,4 @@
-import { Component, Input, ChangeDetectorRef, Output, EventEmitter } from '@angular/core';
+import { Component, Input, ChangeDetectorRef, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { FilterService, BaseFilterCellComponent } from '@progress/kendo-angular-grid';
 import { Subject } from 'rxjs';
@@ -38,7 +38,8 @@ import { SubSink } from 'subsink';
       .k-multiselect-checkbox {
         pointer-events: none;
       }
-    `]
+    `],
+ 
 })
 export class SimpleTextFilterComponent extends BaseFilterCellComponent {
   @Input() public filter: CompositeFilterDescriptor;
@@ -51,20 +52,19 @@ export class SimpleTextFilterComponent extends BaseFilterCellComponent {
 
   constructor(filterService: FilterService, private chRef: ChangeDetectorRef) {
     super(filterService);
-
   }
 
 
   ngOnInit() {
     this.text = this.findValue('eq');
-
+   
     this.subs.add(
       this.searchTerm$
         .pipe(
           debounceTime(600),
           distinctUntilChanged()
         ).subscribe((searchTerm) => {
-
+          // console.log(this.text)
           const filters = [];
 
           filters.push({
@@ -79,10 +79,9 @@ export class SimpleTextFilterComponent extends BaseFilterCellComponent {
             logic: "and",
             filters: filters
           });
-
-
         })
     )
+   
   }
 
   private findValue(operator) {

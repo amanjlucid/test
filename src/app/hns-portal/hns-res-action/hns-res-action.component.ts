@@ -1,13 +1,13 @@
 import { Component, OnInit, OnDestroy, ViewEncapsulation } from '@angular/core';
 import { DataResult, process, State, CompositeFilterDescriptor, SortDescriptor, GroupDescriptor, distinct } from '@progress/kendo-data-query';
 import { PageChangeEvent, RowClassArgs, BaseFilterCellComponent, FilterService } from '@progress/kendo-angular-grid';
-import { AssetAttributeService, AlertService,  SharedService, HnsResultsService, HelperService } from '../../_services';
+import { AssetAttributeService, AlertService, SharedService, HnsResultsService, HelperService } from '../../_services';
 import { SubSink } from 'subsink';
 import { tap, switchMap, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { HnsAction } from '../../_models'
-import { TextFilterComponent } from '../../kendo-component/text-filter.component';
-import { filter } from '@progress/kendo-data-query/dist/npm/transducers';
+// import { TextFilterComponent } from '../../kendo-component/text-filter.component';
+// import { filter } from '@progress/kendo-data-query/dist/npm/transducers';
 
 
 @Component({
@@ -177,42 +177,48 @@ export class HnsResActionComponent implements OnInit {
   }
 
   public filterChange(filter: any): void {
-    // console.log(filter);
     this.headerFilters.IsFilter = false;
-
+    this.state.filter = filter;
     this.filters = [];
 
-    if (filter) {
-      if (filter.filters.length > 0) {
-        this.headerFilters.IsFilter = true;
 
-        this.state.filter.filters.push(...filter.filters);
-        if (this.state.filter) {
-          // console.log(this.state.filter)
-          if (this.state.filter.filters.length > 0) {
-            let distincFitler = this.changeFilterState(this.state.filter.filters);
-            //console.log(this.filters)
-            //console.log(distincFitler)
-            distincFitler.then(filter => {
-              if (filter.length > 0) {
-                this.resetGridFilter()
-                for (let ob of filter) {
-                  this.setGridFilter(ob);
-                }
-                setTimeout(() => {
-                  this.searchActionGrid()
-                }, 500);
+    if (filter) {
+      // if (filter.filters.length > 0) {
+      this.headerFilters.IsFilter = true;
+
+      // this.state.filter.filters.push(...filter.filters);
+      if (this.state.filter) {
+        // console.log(this.state.filter)
+        if (this.state.filter.filters.length > 0) {
+          let distincFitler = this.changeFilterState(this.state.filter.filters);
+          // console.log(this.filters)
+          // console.log(distincFitler)
+          distincFitler.then(filter => {
+            // console.log(filter)
+            if (filter.length > 0) {
+              this.resetGridFilter()
+              for (let ob of filter) {
+                this.setGridFilter(ob);
               }
-            })
-          }
-        } else {
-          this.resetGridFilter()
-          this.searchActionGrid()
+              setTimeout(() => {
+                this.searchActionGrid()
+              }, 500);
+              return
+            }
+          })
         }
-      } else {
-        this.resetGridFilter()
-        this.searchActionGrid()
       }
+      this.resetGridFilter()
+      this.searchActionGrid()
+      // else {
+      //   this.resetGridFilter()
+      //   this.searchActionGrid()
+      // }
+      // } else {
+      //   this.state.filter = filter;
+      //   this.resetGridFilter()
+      //   this.searchActionGrid()
+      // }
 
       setTimeout(() => {
         $('.k-clear-button-visible').hide();
@@ -423,6 +429,8 @@ export class HnsResActionComponent implements OnInit {
         this.headerFilters.Status = "I";
       } else if (obj.value.toLocaleLowerCase() == "overdue") {
         this.headerFilters.Status = "Y";
+      } else {
+        this.headerFilters.Status = obj.value.toLocaleLowerCase();
       }
 
     } else if (obj.field == "asspostcode") {
@@ -826,38 +834,36 @@ export class HnsResActionComponent implements OnInit {
                     this.assetAttributeService.getMimeType(fileExt).subscribe(
                       mimedata => {
                         if (mimedata && mimedata.isSuccess && mimedata.data && mimedata.data.fileExtension) {
-                            var linkSource = 'data:' + mimedata.data.mimeType1 + ';base64,';
-                                if (mimedata.data.openWindow)
-                                {
-                                  var byteCharacters = atob(data.data[0].pdFbyte);
-                                  var byteNumbers = new Array(byteCharacters.length);
-                                  for (var i = 0; i < byteCharacters.length; i++) {
-                                    byteNumbers[i] = byteCharacters.charCodeAt(i);
-                                  }
-                                  var byteArray = new Uint8Array(byteNumbers);
-                                  var file = new Blob([byteArray], { type: mimedata.data.mimeType1 + ';base64' });
-                                  var fileURL = URL.createObjectURL(file);
-                                  let newPdfWindow =window.open(fileURL);
-              
-                                  // let newPdfWindow = window.open("",this.selectedNotes.fileName);
-                                  // let iframeStart = "<\iframe title='Notepad' width='100%' height='100%' src='data:" + mimedata.data.mimeType1 + ";base64, ";
-                                  // let iframeEnd = "'><\/iframe>";
-                                  // newPdfWindow.document.write(iframeStart + filedata + iframeEnd);
-                                  // newPdfWindow.document.title = this.selectedNotes.fileName;
-                                }
-                                else
-                                {
-                                  linkSource = linkSource + data.data[0].pdFbyte;;
-                                  const downloadLink = document.createElement("a");
-                                  const fileName = `PropertyReport_${this.selectedAction.hasaassessmentref}_${this.selectedAction.hasversion}_${this.selectedAction.assid}.pdf`;
-                                  downloadLink.href = linkSource;
-                                  downloadLink.download = fileName;
-                                  downloadLink.click();
-                                }
+                          var linkSource = 'data:' + mimedata.data.mimeType1 + ';base64,';
+                          if (mimedata.data.openWindow) {
+                            var byteCharacters = atob(data.data[0].pdFbyte);
+                            var byteNumbers = new Array(byteCharacters.length);
+                            for (var i = 0; i < byteCharacters.length; i++) {
+                              byteNumbers[i] = byteCharacters.charCodeAt(i);
+                            }
+                            var byteArray = new Uint8Array(byteNumbers);
+                            var file = new Blob([byteArray], { type: mimedata.data.mimeType1 + ';base64' });
+                            var fileURL = URL.createObjectURL(file);
+                            let newPdfWindow = window.open(fileURL);
+
+                            // let newPdfWindow = window.open("",this.selectedNotes.fileName);
+                            // let iframeStart = "<\iframe title='Notepad' width='100%' height='100%' src='data:" + mimedata.data.mimeType1 + ";base64, ";
+                            // let iframeEnd = "'><\/iframe>";
+                            // newPdfWindow.document.write(iframeStart + filedata + iframeEnd);
+                            // newPdfWindow.document.title = this.selectedNotes.fileName;
                           }
-                          else{
-                            this.alertService.error("This file format is not supported.");
+                          else {
+                            linkSource = linkSource + data.data[0].pdFbyte;;
+                            const downloadLink = document.createElement("a");
+                            const fileName = `PropertyReport_${this.selectedAction.hasaassessmentref}_${this.selectedAction.hasversion}_${this.selectedAction.assid}.pdf`;
+                            downloadLink.href = linkSource;
+                            downloadLink.download = fileName;
+                            downloadLink.click();
                           }
+                        }
+                        else {
+                          this.alertService.error("This file format is not supported.");
+                        }
                       }
                     )
                   }
@@ -876,38 +882,36 @@ export class HnsResActionComponent implements OnInit {
               this.assetAttributeService.getMimeType(fileExt).subscribe(
                 mimedata => {
                   if (mimedata && mimedata.isSuccess && mimedata.data && mimedata.data.fileExtension) {
-                      var linkSource = 'data:' + mimedata.data.mimeType1 + ';base64,';
-                          if (mimedata.data.openWindow)
-                          {
-                            var byteCharacters = atob(data.data[0].pdFbyte);
-                            var byteNumbers = new Array(byteCharacters.length);
-                            for (var i = 0; i < byteCharacters.length; i++) {
-                              byteNumbers[i] = byteCharacters.charCodeAt(i);
-                            }
-                            var byteArray = new Uint8Array(byteNumbers);
-                            var file = new Blob([byteArray], { type: mimedata.data.mimeType1 + ';base64' });
-                            var fileURL = URL.createObjectURL(file);
-                            let newPdfWindow =window.open(fileURL);
-        
-                            // let newPdfWindow = window.open("",this.selectedNotes.fileName);
-                            // let iframeStart = "<\iframe title='Notepad' width='100%' height='100%' src='data:" + mimedata.data.mimeType1 + ";base64, ";
-                            // let iframeEnd = "'><\/iframe>";
-                            // newPdfWindow.document.write(iframeStart + filedata + iframeEnd);
-                            // newPdfWindow.document.title = this.selectedNotes.fileName;
-                          }
-                          else
-                          {
-                            linkSource = linkSource + data.data[0].pdFbyte;;
-                            const downloadLink = document.createElement("a");
-                            const fileName = `PropertyReport_${this.selectedAction.hasaassessmentref}_${this.selectedAction.hasversion}_${this.selectedAction.assid}.pdf`;
-                            downloadLink.href = linkSource;
-                            downloadLink.download = fileName;
-                            downloadLink.click();
-                          }
+                    var linkSource = 'data:' + mimedata.data.mimeType1 + ';base64,';
+                    if (mimedata.data.openWindow) {
+                      var byteCharacters = atob(data.data[0].pdFbyte);
+                      var byteNumbers = new Array(byteCharacters.length);
+                      for (var i = 0; i < byteCharacters.length; i++) {
+                        byteNumbers[i] = byteCharacters.charCodeAt(i);
+                      }
+                      var byteArray = new Uint8Array(byteNumbers);
+                      var file = new Blob([byteArray], { type: mimedata.data.mimeType1 + ';base64' });
+                      var fileURL = URL.createObjectURL(file);
+                      let newPdfWindow = window.open(fileURL);
+
+                      // let newPdfWindow = window.open("",this.selectedNotes.fileName);
+                      // let iframeStart = "<\iframe title='Notepad' width='100%' height='100%' src='data:" + mimedata.data.mimeType1 + ";base64, ";
+                      // let iframeEnd = "'><\/iframe>";
+                      // newPdfWindow.document.write(iframeStart + filedata + iframeEnd);
+                      // newPdfWindow.document.title = this.selectedNotes.fileName;
                     }
-                    else{
-                      this.alertService.error("This file format is not supported.");
+                    else {
+                      linkSource = linkSource + data.data[0].pdFbyte;;
+                      const downloadLink = document.createElement("a");
+                      const fileName = `PropertyReport_${this.selectedAction.hasaassessmentref}_${this.selectedAction.hasversion}_${this.selectedAction.assid}.pdf`;
+                      downloadLink.href = linkSource;
+                      downloadLink.download = fileName;
+                      downloadLink.click();
                     }
+                  }
+                  else {
+                    this.alertService.error("This file format is not supported.");
+                  }
                 }
               )
             }

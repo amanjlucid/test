@@ -14,7 +14,7 @@ import { RoundOffPipe } from './_pipes/round-off.pipe';
 
 
 @NgModule({
-  imports: [ FormsModule, ReactiveFormsModule, GridModule, DatePickerModule, CommonModule,],
+  imports: [ FormsModule, ReactiveFormsModule, GridModule, DatePickerModule, CommonModule],
   declarations: [DateFormatPipe, RoundOffPipe, SimpleTextFilterComponent, DateRangeFilterComponent, MultiCheckFilterComponent],
   exports: [DateFormatPipe,RoundOffPipe, SimpleTextFilterComponent, DateRangeFilterComponent, MultiCheckFilterComponent]
 })

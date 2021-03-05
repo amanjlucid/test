@@ -60,18 +60,24 @@
             <div class="col-md-4">
               <p class="form-control input-sm">{{servicingDetails?.job_Number}} </p>
             </div>
+
+            <label class="col-form-label col-md-2 text-sm-left">Job Type</label>
+            <div class="col-md-4">
+              <p class="form-control input-sm">{{servicingDetails?.job_Type}} </p>
+
+            </div>
+
           </div>
 
           <div class="form-row ">
             <label class="col-form-label col-md-2 text-sm-left">Servicing Type</label>
             <div class="col-md-5">
               <p class="form-control input-sm">{{servicingDetails?.service_Type_Code}} </p>
-              <!-- <input type="text" class="form-control" value="{{servicingDetails?.service_Type_Code}}"
-                > -->
+
             </div>
             <div class="col-md-5">
               <p class="form-control input-sm">{{servicingDetails?.service_Type}} </p>
-              <!-- <input type="text" class="form-control" value="{{servicingDetails?.service_Type}}" > -->
+
             </div>
           </div>
 
@@ -80,12 +86,11 @@
             <label class="col-form-label col-md-2 text-sm-left">Service Stage</label>
             <div class="col-md-5">
               <p class="form-control input-sm">{{servicingDetails?.service_Stage_Code}} </p>
-              <!-- <input type="text" class="form-control" value="{{servicingDetails?.service_Stage_Code}}"
-                > -->
+
             </div>
             <div class="col-md-5">
               <p class="form-control input-sm">{{servicingDetails?.service_Stage}} </p>
-              <!-- <input type="text" class="form-control" value="{{servicingDetails?.service_Stage}}" > -->
+
             </div>
           </div>
 
@@ -93,33 +98,32 @@
             <label class="col-form-label col-md-2 text-sm-left">Stage Complete</label>
             <div class="col-md-4">
               <p class="form-control input-sm">
-                {{servicingDetails?.stage_Complete == 'N' ? 'No' : servicingDetails?.stage_Complete == 'Y' ? 'Yes' : ''}}
+                {{servicingDetails?.stage_Complete == 'N' ? 'No' : servicingDetails?.stage_Complete == 'Y' ? 'Yes' :
+                ''}}
               </p>
-              <!-- <input type="text" class="form-control"
-                value="{{servicingDetails?.stage_Complete == 'N' ? 'No' : servicingDetails?.stage_Complete == 'Y' ? 'Yes' : ''}}"
-                > -->
+
             </div>
 
             <label class="col-form-label col-md-2 text-sm-left">Due Date</label>
             <div class="col-md-4">
               <p class="form-control input-sm">{{servicingDetails?.due_Date | dateFormat : 'DD-MMM-YYYY'}} </p>
-              <!-- <input type="text" class="form-control"
-                value="{{servicingDetails?.due_Date | dateFormat : 'DD-MMM-YYYY'}}" > -->
+
             </div>
           </div>
 
           <div class="form-row ">
+
+            <label class="col-form-label col-md-2 text-sm-left">Completion Date</label>
+            <div class="col-md-4">
+              <p class="form-control input-sm">{{servicingDetails?.completion_Date | dateFormat : 'DD-MMM-YYYY'}} </p>
+
+            </div>
+
             <label class="col-form-label col-md-2 text-sm-left">Planned Date</label>
             <div class="col-md-4">
               <p class="form-control input-sm">{{servicingDetails?.planned_Date | dateFormat : 'DD-MMM-YYYY'}} </p>
 
-              <!-- <input type="text" class="form-control"
-                value="{{servicingDetails?.planned_Date | dateFormat : 'DD-MMM-YYYY'}}" > -->
-            </div>
-            <label class="col-form-label col-md-2 text-sm-left">Job Type</label>
-            <div class="col-md-4">
-              <p class="form-control input-sm">{{servicingDetails?.job_Type}} </p>
-              <!-- <input type="text" class="form-control" value="{{servicingDetails?.job_Type }}" > -->
+
             </div>
           </div>
 
@@ -127,15 +131,12 @@
             <label class="col-form-label col-md-2 text-sm-left">Review Date</label>
             <div class="col-md-4">
               <p class="form-control input-sm">{{servicingDetails?.review_Date | dateFormat : 'DD-MMM-YYYY'}} </p>
-              <!-- <input type="text" class="form-control"
-                value="{{servicingDetails?.review_Date | dateFormat : 'DD-MMM-YYYY'}}" > -->
+
             </div>
             <label class="col-form-label col-md-2 text-sm-left">Planned Time</label>
             <div class="col-md-4">
-              <p class="form-control input-sm">{{servicingDetails?.planned_Time | dateFormat : 'DD-MMM-YYYY' }} </p>
+              <p class="form-control input-sm">{{servicingDetails?.planned_Time | dateFormat : 'HH:mm:ss' }} </p>
 
-              <!-- <input type="text" class="form-control"
-                value="{{servicingDetails?.planned_Time | dateFormat : 'DD-MMM-YYYY' }}" > -->
             </div>
           </div>
 
@@ -145,34 +146,30 @@
             <div class="col-md-4">
               <p class="form-control input-sm">{{helper.moneyFormat(servicingDetails?.service_Cost) }} </p>
 
-              <!-- <input type="text" class="form-control" value="{{ helper.moneyFormat(servicingDetails?.service_Cost)}}"
-                > -->
             </div>
-            <label class="col-form-label col-md-2 text-sm-left">Service Date</label>
-            <div class="col-md-4">
-              <p class="form-control input-sm">{{servicingDetails?.service_Date | dateFormat : 'DD-MMM-YYYY'}} </p>
 
-              <!-- <input type="text" class="form-control"
-                value="{{servicingDetails?.service_Date | dateFormat : 'DD-MMM-YYYY'}}" > -->
-            </div>
-          </div>
-
-          <div class="form-row ">
             <label class="col-form-label col-md-2 text-sm-left">Planned Time Text</label>
             <div class="col-md-4">
               <p class="form-control input-sm">{{servicingDetails?.planned_Time_Text}} </p>
 
-              <!-- <input type="text" class="form-control" value="{{servicingDetails?.planned_Time_Text}}"
-                > -->
-            </div>
-            <label class="col-form-label col-md-2 text-sm-left">Completion Date</label>
-            <div class="col-md-4">
-              <p class="form-control input-sm">{{servicingDetails?.completion_Date | dateFormat : 'DD-MMM-YYYY'}} </p>
-
-              <!-- <input type="text" class="form-control"
-                value="{{servicingDetails?.completion_Date | dateFormat : 'DD-MMM-YYYY'}}" > -->
             </div>
           </div>
+
+          <div class="form-row ">
+            <label class="col-form-label col-md-2 text-sm-left">Service Date</label>
+            <div class="col-md-4">
+              <p class="form-control input-sm">{{servicingDetails?.service_Date | dateFormat : 'DD-MMM-YYYY'}} </p>
+
+            </div>
+            <label class="col-form-label col-md-2 text-sm-left">Deadline Date</label>
+            <div class="col-md-4">
+              <p class="form-control input-sm">{{servicingDetails?.deadline_Date | dateFormat : 'DD-MMM-YYYY'}} </p>
+            </div>
+
+
+          </div>
+
+
 
 
           <div class="form-row ">
@@ -180,21 +177,16 @@
             <div class="col-md-3">
               <p class="form-control input-sm">{{servicingDetails?.transaction_Type}} </p>
 
-              <!-- <input type="text" class="form-control" value="{{servicingDetails?.transaction_Type}}"
-                > -->
             </div>
             <label class="col-form-label col-md-2 text-sm-left">Last Updated By/Date</label>
             <div class="col-md-3">
               <p class="form-control input-sm">{{servicingDetails?.last_Updated_By}}</p>
 
-              <!-- <input type="text" class="form-control" value="{{servicingDetails?.last_Updated_By}}" > -->
             </div>
             <div class="col-md-2">
               <p class="form-control input-sm" style="background-color: #f1f1f2;">
                 {{servicingDetails?.last_Updated_Date | dateFormat : 'DD-MMM-YYYY'}}</p>
 
-              <!-- <input type="text" class="form-control"
-                value="{{servicingDetails?.last_Updated_Date | dateFormat : 'DD-MMM-YYYY'}}" > -->
             </div>
           </div>
           <div class="form-row ">
@@ -207,16 +199,22 @@
       </div>
 
       <!-- start other 5 tabs html  -->
-      <app-service-service-attribute *ngIf="tabName == 'serviceattribute'" [servicingDetails]="servicingDetails" (closeServiceDetailsWin)= closeServiceDetailsWin($event)></app-service-service-attribute>
-      <app-service-service-history *ngIf="tabName == 'servicehistory'" [servicingDetails]="servicingDetails"></app-service-service-history>
-      <app-service-service-info *ngIf="tabName == 'serviceinfo'" [servicingDetails]="servicingDetails" (closeServiceDetailsWin)= closeServiceDetailsWin($event)></app-service-service-info>
-      <app-service-service-notepads *ngIf="tabName == 'servicenotepads'" [servicingDetails]="servicingDetails" (closeServiceDetailsWin)= closeServiceDetailsWin($event)></app-service-service-notepads>
-      <app-service-resident-contacts *ngIf="tabName == 'residentcontacts'" [servicingDetails]="servicingDetails" (closeServiceDetailsWin)= closeServiceDetailsWin($event)></app-service-resident-contacts>
+      <app-service-service-attribute *ngIf="tabName == 'serviceattribute'" [servicingDetails]="servicingDetails"
+        (closeServiceDetailsWin)=closeServiceDetailsWin($event)></app-service-service-attribute>
+      <app-service-service-history *ngIf="tabName == 'servicehistory'" [servicingDetails]="servicingDetails">
+      </app-service-service-history>
+      <app-service-service-info *ngIf="tabName == 'serviceinfo'" [servicingDetails]="servicingDetails"
+        (closeServiceDetailsWin)=closeServiceDetailsWin($event)></app-service-service-info>
+      <app-service-service-notepads *ngIf="tabName == 'servicenotepads'" [servicingDetails]="servicingDetails"
+        (closeServiceDetailsWin)=closeServiceDetailsWin($event)></app-service-service-notepads>
+      <app-service-resident-contacts *ngIf="tabName == 'residentcontacts'" [servicingDetails]="servicingDetails"
+        (closeServiceDetailsWin)=closeServiceDetailsWin($event)></app-service-resident-contacts>
 
       <!-- start other 5 tabs html end  -->
-      
+
       <div class="buttonDiv pull-right">
-        <button type="button" *ngIf="tabName == 'servicedetail'" (click)="printDiv()" printSectionId="print-section" class="btn btn-sm">Print</button>
+        <button type="button" *ngIf="tabName == 'servicedetail'" (click)="printDiv()" printSectionId="print-section"
+          class="btn btn-sm">Print</button>
         <button type="button" (click)="closeServicingDetailWin()" *ngIf="hideCloseBtn" class="btn btn-sm">Close</button>
       </div>
     </div>

@@ -182,4 +182,12 @@ export class SharedService {
   }
 
 
+  private apexPortalSrc = new BehaviorSubject<any>([]);
+  apexPortalObs = this.apexPortalSrc.asObservable();
+
+  changeApexPortalPermissionData(data) {
+    this.apexPortalSrc.next(data);
+  }
+
+
 }

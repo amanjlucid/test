@@ -67,6 +67,7 @@ import { SpellCheckerComponent } from '../spell-checker/spell-checker.component'
 import { AssessmentBudgetCodeComponent } from './assessment-budget-code/assessment-budget-code.component';
 import { ResViewImageComponent } from './res-view-image/res-view-image.component';
 import { RiskScorePipe } from '../_pipes/risk-score.pipe';
+
 // import { SimpleTextFilterComponent } from '../kendo-component/simple-text-filter.component';
 // import { DateRangeFilterComponent} from '../kendo-component/date-range-filter.component'
 
@@ -87,7 +88,8 @@ import { RiskScorePipe } from '../_pipes/risk-score.pipe';
     TreeViewModule,
     // ContextMenuModule
     DatePickerModule,
-    NgbModule
+    NgbModule,
+   
 
 
 
@@ -155,7 +157,7 @@ import { RiskScorePipe } from '../_pipes/risk-score.pipe';
     // DateRangeFilterComponent
   ],
 
- 
+
 
 })
 
