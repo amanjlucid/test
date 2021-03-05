@@ -175,31 +175,29 @@ export class HnsResInformationComponent implements OnInit {
 
   public filterChange(filter: any): void {
     this.headerFilters.IsFilter = false;
-
+    this.state.filter = filter;
     this.filters = [];
 
     if (filter) {
-      if (filter.filters.length > 0) {
-        this.headerFilters.IsFilter = true;
-        this.state.filter.filters.push(...filter.filters);
-        if (this.state.filter) {
-          // console.log(this.state.filter)
-          if (this.state.filter.filters.length > 0) {
-            let distincFitler = this.changeFilterState(this.state.filter.filters);
-            //console.log(this.filters)
-            //console.log(distincFitler)
-            distincFitler.then(filter => {
-              if (filter.length > 0) {
-                this.resetGridFilter()
-                for (let ob of filter) {
-                  this.setGridFilter(ob);
-                }
-                setTimeout(() => {
-                  this.searchActionGrid()
-                }, 500);
+      //if (filter.filters.length > 0) {
+      this.headerFilters.IsFilter = true;
+      // this.state.filter.filters.push(...filter.filters);
+
+      if (this.state.filter) {
+        if (this.state.filter.filters.length > 0) {
+          let distincFitler = this.changeFilterState(this.state.filter.filters);
+          distincFitler.then(filter => {
+            if (filter.length > 0) {
+              this.resetGridFilter()
+              for (let ob of filter) {
+                this.setGridFilter(ob);
               }
-            })
-          }
+              setTimeout(() => {
+                this.searchActionGrid()
+              }, 500);
+              return
+            }
+          })
         } else {
           this.resetGridFilter()
           this.searchActionGrid()
@@ -755,41 +753,39 @@ export class HnsResInformationComponent implements OnInit {
                     this.assetAttributeService.getMimeType(fileExt).subscribe(
                       mimedata => {
                         if (mimedata && mimedata.isSuccess && mimedata.data && mimedata.data.fileExtension) {
-                            var linkSource = 'data:' + mimedata.data.mimeType1 + ';base64,';
-                                if (mimedata.data.openWindow)
-                                {
-                                  var byteCharacters = atob(data.data[0].pdFbyte);
-                                  var byteNumbers = new Array(byteCharacters.length);
-                                  for (var i = 0; i < byteCharacters.length; i++) {
-                                    byteNumbers[i] = byteCharacters.charCodeAt(i);
-                                  }
-                                  var byteArray = new Uint8Array(byteNumbers);
-                                  var file = new Blob([byteArray], { type: mimedata.data.mimeType1 + ';base64' });
-                                  var fileURL = URL.createObjectURL(file);
-                                  let newPdfWindow =window.open(fileURL);
-              
-                                  // let newPdfWindow = window.open("",this.selectedNotes.fileName);
-                                  // let iframeStart = "<\iframe title='Notepad' width='100%' height='100%' src='data:" + mimedata.data.mimeType1 + ";base64, ";
-                                  // let iframeEnd = "'><\/iframe>";
-                                  // newPdfWindow.document.write(iframeStart + filedata + iframeEnd);
-                                  // newPdfWindow.document.title = this.selectedNotes.fileName;
-                                }
-                                else
-                                {
-                                  linkSource = linkSource + data.data[0].pdFbyte;;
-                                  const downloadLink = document.createElement("a");
-                                  const fileName = `PropertyReport_${this.selectedAction.hasaassessmentref}_${this.selectedAction.hasversion}_${this.selectedAction.assid}.pdf`;
-                                  downloadLink.href = linkSource;
-                                  downloadLink.download = fileName;
-                                  downloadLink.click();
-                                }
+                          var linkSource = 'data:' + mimedata.data.mimeType1 + ';base64,';
+                          if (mimedata.data.openWindow) {
+                            var byteCharacters = atob(data.data[0].pdFbyte);
+                            var byteNumbers = new Array(byteCharacters.length);
+                            for (var i = 0; i < byteCharacters.length; i++) {
+                              byteNumbers[i] = byteCharacters.charCodeAt(i);
+                            }
+                            var byteArray = new Uint8Array(byteNumbers);
+                            var file = new Blob([byteArray], { type: mimedata.data.mimeType1 + ';base64' });
+                            var fileURL = URL.createObjectURL(file);
+                            let newPdfWindow = window.open(fileURL);
+
+                            // let newPdfWindow = window.open("",this.selectedNotes.fileName);
+                            // let iframeStart = "<\iframe title='Notepad' width='100%' height='100%' src='data:" + mimedata.data.mimeType1 + ";base64, ";
+                            // let iframeEnd = "'><\/iframe>";
+                            // newPdfWindow.document.write(iframeStart + filedata + iframeEnd);
+                            // newPdfWindow.document.title = this.selectedNotes.fileName;
                           }
-                          else{
-                            this.alertService.error("This file format is not supported.");
+                          else {
+                            linkSource = linkSource + data.data[0].pdFbyte;;
+                            const downloadLink = document.createElement("a");
+                            const fileName = `PropertyReport_${this.selectedAction.hasaassessmentref}_${this.selectedAction.hasversion}_${this.selectedAction.assid}.pdf`;
+                            downloadLink.href = linkSource;
+                            downloadLink.download = fileName;
+                            downloadLink.click();
                           }
+                        }
+                        else {
+                          this.alertService.error("This file format is not supported.");
+                        }
                       }
                     )
-                    }
+                  }
 
                 }
               )
@@ -806,41 +802,39 @@ export class HnsResInformationComponent implements OnInit {
               this.assetAttributeService.getMimeType(fileExt).subscribe(
                 mimedata => {
                   if (mimedata && mimedata.isSuccess && mimedata.data && mimedata.data.fileExtension) {
-                      var linkSource = 'data:' + mimedata.data.mimeType1 + ';base64,';
-                          if (mimedata.data.openWindow)
-                          {
-                            var byteCharacters = atob(data.data[0].pdFbyte);
-                            var byteNumbers = new Array(byteCharacters.length);
-                            for (var i = 0; i < byteCharacters.length; i++) {
-                              byteNumbers[i] = byteCharacters.charCodeAt(i);
-                            }
-                            var byteArray = new Uint8Array(byteNumbers);
-                            var file = new Blob([byteArray], { type: mimedata.data.mimeType1 + ';base64' });
-                            var fileURL = URL.createObjectURL(file);
-                            let newPdfWindow =window.open(fileURL);
-        
-                            // let newPdfWindow = window.open("",this.selectedNotes.fileName);
-                            // let iframeStart = "<\iframe title='Notepad' width='100%' height='100%' src='data:" + mimedata.data.mimeType1 + ";base64, ";
-                            // let iframeEnd = "'><\/iframe>";
-                            // newPdfWindow.document.write(iframeStart + filedata + iframeEnd);
-                            // newPdfWindow.document.title = this.selectedNotes.fileName;
-                          }
-                          else
-                          {
-                            linkSource = linkSource + data.data[0].pdFbyte;;
-                            const downloadLink = document.createElement("a");
-                            const fileName = `PropertyReport_${this.selectedAction.hasaassessmentref}_${this.selectedAction.hasversion}_${this.selectedAction.assid}. `;
-                            downloadLink.href = linkSource;
-                            downloadLink.download = fileName;
-                            downloadLink.click();
-                          }
+                    var linkSource = 'data:' + mimedata.data.mimeType1 + ';base64,';
+                    if (mimedata.data.openWindow) {
+                      var byteCharacters = atob(data.data[0].pdFbyte);
+                      var byteNumbers = new Array(byteCharacters.length);
+                      for (var i = 0; i < byteCharacters.length; i++) {
+                        byteNumbers[i] = byteCharacters.charCodeAt(i);
+                      }
+                      var byteArray = new Uint8Array(byteNumbers);
+                      var file = new Blob([byteArray], { type: mimedata.data.mimeType1 + ';base64' });
+                      var fileURL = URL.createObjectURL(file);
+                      let newPdfWindow = window.open(fileURL);
+
+                      // let newPdfWindow = window.open("",this.selectedNotes.fileName);
+                      // let iframeStart = "<\iframe title='Notepad' width='100%' height='100%' src='data:" + mimedata.data.mimeType1 + ";base64, ";
+                      // let iframeEnd = "'><\/iframe>";
+                      // newPdfWindow.document.write(iframeStart + filedata + iframeEnd);
+                      // newPdfWindow.document.title = this.selectedNotes.fileName;
                     }
-                    else{
-                      this.alertService.error("This file format is not supported.");
+                    else {
+                      linkSource = linkSource + data.data[0].pdFbyte;;
+                      const downloadLink = document.createElement("a");
+                      const fileName = `PropertyReport_${this.selectedAction.hasaassessmentref}_${this.selectedAction.hasversion}_${this.selectedAction.assid}. `;
+                      downloadLink.href = linkSource;
+                      downloadLink.download = fileName;
+                      downloadLink.click();
                     }
+                  }
+                  else {
+                    this.alertService.error("This file format is not supported.");
+                  }
                 }
               )
-              }
+            }
 
 
           }

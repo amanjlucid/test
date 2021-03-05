@@ -51,6 +51,7 @@ export class HnsResActionComponent implements OnInit {
   textSearch$ = new Subject<string>();
   dialogOpened: boolean = false;
   validatReportString: string;
+  columnFiltersOpt: any = [];
 
   constructor(
     private assetAttributeService: AssetAttributeService,
@@ -135,6 +136,19 @@ export class HnsResActionComponent implements OnInit {
       this.sharedService.hnsPortalSecurityList.subscribe(
         data => {
           this.hnsPermission = data;
+        }
+      )
+    )
+
+    //Grid filter column values
+    this.subs.add(
+      this.hnsResultService.gridFilterColumn().subscribe(
+        data => {
+          console.log(data);
+          if (data.isSuccess) {
+            this.columnFiltersOpt = data.data
+          }
+          //columnFiltersOpt
         }
       )
     )

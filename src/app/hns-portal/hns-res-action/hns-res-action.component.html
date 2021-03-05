@@ -271,8 +271,15 @@
               [data]="statusArr"></multicheck-filter>
           </ng-template> -->
           <ng-template kendoGridFilterMenuTemplate let-filter let-column="column" let-filterService="filterService">
-            <simple-text-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
-            </simple-text-filter>
+            <!-- <simple-text-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
+            </simple-text-filter> -->
+             <multicheck-filter
+              [isPrimitive]="true"
+              [field]="column.field"
+              [filterService]="filterService"
+              [currentFilter]="filter"
+              [data]="columnFiltersOpt?.statusList">
+          </multicheck-filter>
           </ng-template>
 
           <ng-template kendoGridCellTemplate let-dataItem>
@@ -403,8 +410,16 @@
 
         <kendo-grid-column field="hasipriority" title="Priority" width="130">
           <ng-template kendoGridFilterMenuTemplate let-filter let-column="column" let-filterService="filterService">
-            <simple-text-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
-            </simple-text-filter>
+            <!-- <simple-text-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
+            </simple-text-filter> -->
+            <multicheck-filter
+              [isPrimitive]="true"
+              [field]="column.field"
+              [filterService]="filterService"
+              [currentFilter]="filter"
+              [data]="columnFiltersOpt?.prioriyList">
+          </multicheck-filter>
+
           </ng-template>
           <ng-template kendoGridCellTemplate let-dataItem>
             <span
@@ -416,8 +431,16 @@
 
         <kendo-grid-column field="hasibudgetcode" title="Budget" width="120">
           <ng-template kendoGridFilterMenuTemplate let-filter let-column="column" let-filterService="filterService">
-            <simple-text-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
-            </simple-text-filter>
+            <!-- <simple-text-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
+            </simple-text-filter> -->
+            <multicheck-filter
+              [isPrimitive]="true"
+              [field]="column.field"
+              [filterService]="filterService"
+              [currentFilter]="filter"
+              [data]="columnFiltersOpt?.budgetList">
+            </multicheck-filter>
+
           </ng-template>
           <ng-template kendoGridCellTemplate let-dataItem>
             <span
@@ -442,8 +465,16 @@
 
         <kendo-grid-column field="overduepending" title="Overdue?" width="120">
           <ng-template kendoGridFilterMenuTemplate let-filter let-column="column" let-filterService="filterService">
-            <simple-text-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
-            </simple-text-filter>
+            <!-- <simple-text-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
+            </simple-text-filter> -->
+            <multicheck-filter
+              [isPrimitive]="true"
+              [field]="column.field"
+              [filterService]="filterService"
+              [currentFilter]="filter"
+              [data]="columnFiltersOpt?.overdueList">
+            </multicheck-filter>
+
           </ng-template>
           <!-- <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
             let-filterService="filterService">
@@ -593,8 +624,18 @@
 
         <kendo-grid-column field="hasiworkstatus" title="Work Status" width="150">
           <ng-template kendoGridFilterMenuTemplate let-filter let-column="column" let-filterService="filterService">
-            <simple-text-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
-            </simple-text-filter>
+            <!-- <simple-text-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
+            </simple-text-filter> -->
+            <multicheck-filter
+            [isPrimitive]="false"
+            [field]="column.field"
+            [filterService]="filterService"
+            [currentFilter]="filter"
+            textField="key"
+            valueField="value"
+            [data]="columnFiltersOpt?.workOrderList">
+          </multicheck-filter>
+
           </ng-template>
           <ng-template kendoGridCellTemplate let-dataItem>
             <span

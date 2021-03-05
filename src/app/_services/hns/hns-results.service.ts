@@ -252,38 +252,14 @@ export class HnsResultsService {
         return this.http.get<any>(`${appConfig.apiUrl}/api/HealthSafetyResult/ValidateReportForRedaction?strAssid=${strAssid}&strHasCode=${strHasCode}&intHasVersion=${intHasVersion}&strAssessmentRef=${strAssessmentRef}&strLatest=${strLatest}`, this.httpOptions)
     }
 
+    //Grid filter column
+    gridFilterColumn(){
+        return this.http.get<any>(`${appConfig.apiUrl}/api/HealthSafetyResult/GetDistinctValuesForStringColumn`, this.httpOptions)
+    }
 
-    // (<any>{
-    //     data: response.data,
-    //     total: 200
-    // })
-
-    // private BASE_URL = 'https://odatasampleservices.azurewebsites.net/V4/Northwind/Northwind.svc/';
-
-
-
-    // public fetch(state: any): Observable<any> {
-    //     const queryStr = `${toODataString(state)}&$count=true`;
-
-    //     return this.http
-    //         .get(`${this.BASE_URL}${this.tableName}?${queryStr}`)
-    //         .pipe(
-    //             map(response => (<any>{
-    //                 data: response['value'],
-    //                 total: parseInt(response['@odata.count'], 10)
-    //             }))
-    //         );
-    // }
-
-
-    // getChartData(chartDetail) {
-    //     let body = JSON.stringify(chartDetail);
-    //     return this.http.post<any>(`${appConfig.apiUrl}/api/Chart/GetChartData`, body, this.httpOptions);
-    //     //return this.http.post<any>(`${appConfig.apiUrl}/api/HealthSafetyChart/GetHealtSafetyChartData`, body, httpOptions);
-    // }
-
-
-
+    definitionOrCharFilterCol(columnName = ' '){
+        return this.http.get<any>(`${appConfig.apiUrl}/api/HealthSafetyResult/GetDistinctValuesForDefinationAndChacode?columnName=${columnName}`, this.httpOptions);
+    }
 
 
 

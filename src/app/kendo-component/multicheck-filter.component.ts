@@ -10,7 +10,7 @@ import { FilterService } from '@progress/kendo-angular-grid';
         <input class="k-textbox" (input)="onInput($event)" />
       </li>
       <li #itemElement
-        *ngFor="let item of currentData; let i = index;"
+        *ngFor="let item of currentData; let i = index; trackBy: trackByIndex"
         (click)="onSelectionChange(valueAccessor(item), itemElement)"
         [ngClass]="{'k-state-selected': isItemSelected(item)}">
         <input
@@ -61,6 +61,10 @@ export class MultiCheckFilterComponent implements AfterViewInit {
   @Input() public field: string;
   @Output() public valueChange = new EventEmitter<number[]>();
 
+  trackByIndex(index:number, el:any): number {
+    return index;
+  }
+
   public currentData: any;
   public showFilter = true;
   private value: any[] = [];
@@ -71,7 +75,6 @@ export class MultiCheckFilterComponent implements AfterViewInit {
   public ngAfterViewInit() {
     this.currentData = this.data;
     this.value = this.currentFilter.filters.map((f: FilterDescriptor) => f.value);
-
     this.showFilter = typeof this.textAccessor(this.currentData[0]) === 'string';
   }
 

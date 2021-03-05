@@ -149,14 +149,37 @@
                 <kendo-grid-column field="hasversion" title="Version" width="100" filter="numeric">
                 </kendo-grid-column>
                 <kendo-grid-column field="hasname" title="Name" width="220">
+                    <ng-template kendoGridFilterMenuTemplate
+                    let-column="column"
+                    let-filter="filter"
+                    let-filterService="filterService"
+                    >
+                    <multicheck-filter
+                      [isPrimitive]="true"
+                      [field]="column.field"
+                      [filterService]="filterService"
+                      [currentFilter]="filter"
+                      [data]="distinctPrimitive(column.field)">
+                    </multicheck-filter>
+                </ng-template>
                 </kendo-grid-column>
 
                 <kendo-grid-column field="valid" title="Valid?" width="90" [style]="{'text-align': 'center'}">
                     <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
                         let-filterService="filterService">
-                        <app-dropdown (filterGrid)="filterGrid($event)" [filter]="state.filter" [data]="filterDropDown"
+                        <!-- <app-dropdown (filterGrid)="filterGrid($event)" [filter]="state.filter" [data]="filterDropDown"
                             field="valid" textField="val" valueField="valid">
-                        </app-dropdown>
+                        </app-dropdown> -->
+                     
+                        <multicheck-filter
+                            [isPrimitive]="false"
+                            [field]="column.field"
+                            [currentFilter]="filter"
+                            [filterService]="filterService"
+                            textField="val"
+                            valueField="valid"
+                            [data]="filterDropDown">
+                        </multicheck-filter>
                     </ng-template>
 
                     <ng-template kendoGridCellTemplate let-dataItem>
@@ -167,9 +190,18 @@
                 <kendo-grid-column field="hasinuse" title="In Use?" width="100" [style]="{'text-align': 'center'}">
                     <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
                         let-filterService="filterService">
-                        <app-dropdown (filterGrid)="filterGrid($event)" [filter]="state.filter"
+                        <!-- <app-dropdown (filterGrid)="filterGrid($event)" [filter]="state.filter"
                             [data]="inUserFilterDrpDwn" field="hasinuse" textField="val" valueField="hasinuse">
-                        </app-dropdown>
+                        </app-dropdown> -->
+                        <multicheck-filter
+                            [isPrimitive]="false"
+                            [field]="column.field"
+                            [currentFilter]="filter"
+                            [filterService]="filterService"
+                            textField="val"
+                            valueField="hasinuse"
+                            [data]="inUserFilterDrpDwn">
+                        </multicheck-filter>
                     </ng-template>
 
                     <ng-template kendoGridCellTemplate let-dataItem>
@@ -180,9 +212,19 @@
                 <kendo-grid-column field="hasstatus" title="Status" width="120">
                     <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
                         let-filterService="filterService">
-                        <app-dropdown (filterGrid)="filterGrid($event)" [filter]="state.filter"
+                        <!-- <app-dropdown (filterGrid)="filterGrid($event)" [filter]="state.filter"
                             [data]="statusFilterDrpDwn" field="hasstatus" textField="val" valueField="hasstatus">
-                        </app-dropdown>
+                        </app-dropdown> -->
+                        <multicheck-filter
+                            [isPrimitive]="false"
+                            [field]="column.field"
+                            [currentFilter]="filter"
+                            [filterService]="filterService"
+                            textField="val"
+                            valueField="hasstatus"
+                            [data]="statusFilterDrpDwn">
+                        </multicheck-filter>
+
                     </ng-template>
 
                     <ng-template kendoGridCellTemplate let-dataItem>
@@ -210,15 +252,39 @@
                         </span>
                     </ng-template>
                 </kendo-grid-column>
+                
                 <kendo-grid-column field="srtcode" title="Survey Type" width="130">
+                    <ng-template kendoGridFilterMenuTemplate
+                    let-column="column"
+                    let-filter="filter"
+                    let-filterService="filterService"
+                    >
+                    <multicheck-filter
+                      [isPrimitive]="true"
+                      [field]="column.field"
+                      [filterService]="filterService"
+                      [currentFilter]="filter"
+                      [data]="distinctPrimitive(column.field)">
+                    </multicheck-filter>
+                </ng-template>
                 </kendo-grid-column>
 
                 <kendo-grid-column field="bandsYN" title="Bands?" width="100" [style]="{'text-align': 'center'}">
                     <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
                         let-filterService="filterService">
-                        <app-dropdown (filterGrid)="filterGrid($event)" [filter]="state.filter"
+                        <!-- <app-dropdown (filterGrid)="filterGrid($event)" [filter]="state.filter"
                             [data]="bandsFilterDrpDwn" field="bandsYN" textField="val" valueField="bandsYN">
-                        </app-dropdown>
+                        </app-dropdown> -->
+                        <multicheck-filter
+                            [isPrimitive]="false"
+                            [field]="column.field"
+                            [currentFilter]="filter"
+                            [filterService]="filterService"
+                            textField="val"
+                            valueField="bandsYN"
+                            [data]="bandsFilterDrpDwn">
+                        </multicheck-filter>
+
                     </ng-template>
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <img style="height: 14px;" *ngIf="dataItem.bandsYN == 'Y'" src="assets/img/icons/tick.png" />
@@ -228,9 +294,18 @@
                 <kendo-grid-column field="hasscoring" title="Scoring Method" width="160">
                     <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
                         let-filterService="filterService">
-                        <app-dropdown (filterGrid)="filterGrid($event)" [filter]="state.filter"
+                        <!-- <app-dropdown (filterGrid)="filterGrid($event)" [filter]="state.filter"
                             [data]="scoringFilterDrpDwn" field="hasscoring" textField="val" valueField="hasscoring">
-                        </app-dropdown>
+                        </app-dropdown> -->
+                        <multicheck-filter
+                            [isPrimitive]="false"
+                            [field]="column.field"
+                            [currentFilter]="filter"
+                            [filterService]="filterService"
+                            textField="val"
+                            valueField="hasscoring"
+                            [data]="scoringFilterDrpDwn">
+                        </multicheck-filter>
                     </ng-template>
 
                     <ng-template kendoGridCellTemplate let-dataItem>

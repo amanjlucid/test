@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
-import { DataResult, process, State, CompositeFilterDescriptor, SortDescriptor, GroupDescriptor } from '@progress/kendo-data-query';
+import { DataResult, process, State, CompositeFilterDescriptor, SortDescriptor, GroupDescriptor, distinct } from '@progress/kendo-data-query';
 import { PageChangeEvent } from '@progress/kendo-angular-grid';
 import { SubSink } from 'subsink';
 import { HnsDefinitionModel } from '../../_models'
@@ -8,6 +8,7 @@ import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { appConfig } from '../../app.config';
+
 
 declare var $: any;
 
@@ -141,6 +142,10 @@ export class HnsDefinitionsComponent implements OnInit, OnDestroy {
     this.subs.unsubscribe();
   }
 
+  public distinctPrimitive(fieldName: string): any {
+    return distinct(this.definitionListsData, fieldName).map(item => item[fieldName]);
+  }
+
   public sortChange(sort: SortDescriptor[]): void {
     this.state.sort = sort;
     this.state.skip = 0;
@@ -163,7 +168,7 @@ export class HnsDefinitionsComponent implements OnInit, OnDestroy {
         this.renderGrid(tempGrid);
         //this.gridView = process(this.definitionListsData, this.state);
       } else {
-        console.log('no');
+        // console.log('no');
       }
     } else {
       tempGrid = process(this.definitionListsData, this.tempState);
