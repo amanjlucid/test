@@ -433,7 +433,9 @@ export class AssetsComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.selectedAssestsExport.find(x => x.assetId == asset.assetId) != undefined) {
       this.selectedAssestsExport = this.selectedAssestsExport.filter(x => x.assetId != asset.assetId);
       parent.style.backgroundColor = '';
+      console.log('in')
     } else {
+      console.log('out')
       parent.style.backgroundColor = '#cacaca';
       this.selectedAssestsExport.push(asset);
     }
@@ -672,7 +674,7 @@ export class AssetsComponent implements OnInit, OnDestroy, AfterViewInit {
     } else if (column == 'PostCode') {
       if (value.length >= 3) {
         this.assetList.PostCode = value;
-      } else if (value.length > 0 && value.length < 3) {
+      } else if (value.length < 3) {
         this.assetList.PostCode = '';
         // return false;
       }

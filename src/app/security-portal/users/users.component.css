@@ -8,7 +8,7 @@
 }
 
 .table-striped tbody tr:nth-of-type(odd) {
-  background-color: white !important;
+  background-color: white;
 }
 
 .container-fluid{padding-bottom: 1px !important;}
