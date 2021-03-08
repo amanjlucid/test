@@ -52,9 +52,9 @@ export class HnsResAssessmenttabComponent implements OnInit {
   touchtime = 0;
   dialogOpened: boolean = false;
   validatReportString: string;
-  customerStatusFilter = [{ "key": "(Blanks)", "value": " " }, { "key": "BAD", "value": "BAD" }, { "key": "GOOD", "value": "GOOD" }, { "key": "NO RISK", "value": "NO RISK" }];
-  customerRiskRatingFilter = [{ "key": "(Blanks)", "value": " " }, { "key": "LOW", "value": "LOW" }, { "key": "MEDIUM", "value": "MEDIUM" }, { "key": "TOLERABLE", "value": "TOLERABLE" }];
-  sourceFilter = [{ "key": "Survey", "value": "Survey" }, { "key": "Interface", "value": "Interface" }, { "key": "(blanks)", "value": " " }];
+  customerStatusFilter = [{ "key": "(Blanks)", "value": "Blank" }, { "key": "BAD", "value": "BAD" }, { "key": "GOOD", "value": "GOOD" }, { "key": "NO RISK", "value": "NO RISK" }];
+  customerRiskRatingFilter = [{ "key": "(Blanks)", "value": "Blank" }, { "key": "LOW", "value": "LOW" }, { "key": "MEDIUM", "value": "MEDIUM" }, { "key": "TOLERABLE", "value": "TOLERABLE" }];
+  sourceFilter = [{ "key": "Survey", "value": "S" }, { "key": "Interface", "value": "I" }, { "key": "(blanks)", "value": "Blank" }];
   apiColFilter: any = [];
 
   constructor(

@@ -197,6 +197,7 @@ export class HnsResInformationComponent implements OnInit {
 
       if (this.state.filter) {
         if (this.state.filter.filters.length > 0) {
+          console.log(this.state.filter);
           let distincFitler = this.changeFilterState(this.state.filter.filters);
           distincFitler.then(filter => {
             if (filter.length > 0) {
@@ -235,7 +236,7 @@ export class HnsResInformationComponent implements OnInit {
     if (this.headerFilters.Chacode != "") {
       this.headerFilters.Chacode = this.headerFilters.Chacode.replace(/,\s*$/, "");
     }
-   
+
   }
 
   changeFilterState(obj) {
@@ -408,11 +409,11 @@ export class HnsResInformationComponent implements OnInit {
     } else if (obj.field == "astconcataddress") {
       this.headerFilters.Address = obj.value;
     } else if (obj.field == "chacode") {
-      this.headerFilters.Chacode += obj.value+',';
+      this.headerFilters.Chacode += obj.value + ',';
     } else if (obj.field == "asspostcode") {
       this.headerFilters.Postcode = obj.value;
     } else if (obj.field == "hascode") {
-      this.headerFilters.Definition += obj.value+',';
+      this.headerFilters.Definition += obj.value + ',';
     } else if (obj.field == "hasversion") {
       let findObj = this.filters.filter(x => x.field == obj.field);
       if (findObj.length == 1) {
