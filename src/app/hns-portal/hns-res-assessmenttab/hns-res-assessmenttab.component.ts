@@ -148,7 +148,7 @@ export class HnsResAssessmenttabComponent implements OnInit {
 
   }
 
-  
+
   displayCustomerColOnAssessment() {
     this.subs.add(
       this.hnsResultService.displayCustomerColumnsOnAssessment().subscribe(
@@ -218,6 +218,7 @@ export class HnsResAssessmenttabComponent implements OnInit {
               for (let ob of filter) {
                 this.setGridFilter(ob);
               }
+              this.removeLastCommaFromString()// remove comma from some filters
               setTimeout(() => {
                 this.searchActionGrid()
               }, 500);
@@ -239,6 +240,22 @@ export class HnsResAssessmenttabComponent implements OnInit {
       }, 10);
     }
 
+
+  }
+
+  removeLastCommaFromString() {
+    if (this.headerFilters.Definition != "") {
+      this.headerFilters.Definition = this.headerFilters.Definition.replace(/,\s*$/, "");
+    }
+    if (this.headerFilters.CustomerStatus != "") {
+      this.headerFilters.CustomerStatus = this.headerFilters.CustomerStatus.replace(/,\s*$/, "");
+    }
+    if (this.headerFilters.CustomerRiskRating != "") {
+      this.headerFilters.CustomerRiskRating = this.headerFilters.CustomerRiskRating.replace(/,\s*$/, "");
+    }
+    if (this.headerFilters.Source != "") {
+      this.headerFilters.Source = this.headerFilters.Source.replace(/,\s*$/, "");
+    }
 
   }
 
@@ -399,7 +416,13 @@ export class HnsResAssessmenttabComponent implements OnInit {
     } else if (obj.field == "asspostcode") {
       this.headerFilters.Postcode = obj.value;
     } else if (obj.field == "hascode") {
-      this.headerFilters.Definition = obj.value;
+      this.headerFilters.Definition += obj.value + ',';
+    } else if (obj.field == "customerstatus") {
+      this.headerFilters.CustomerStatus += obj.value + ',';
+    } else if (obj.field == "customerriskrating") {
+      this.headerFilters.CustomerRiskRating += obj.value + ',';
+    } else if (obj.field == "hasasource") {
+      this.headerFilters.Source += obj.value + ',';
     } else if (obj.field == "hasversion") {
       let findObj = this.filters.filter(x => x.field == obj.field);
       if (findObj.length == 1) {

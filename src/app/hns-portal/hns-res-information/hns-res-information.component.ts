@@ -51,6 +51,7 @@ export class HnsResInformationComponent implements OnInit {
   touchtime = 0;
   dialogOpened: boolean = false;
   validatReportString: string;
+  apiColFilter: any = [];
 
   constructor(
     private assetAttributeService: AssetAttributeService,
@@ -133,6 +134,17 @@ export class HnsResInformationComponent implements OnInit {
         }
       )
     )
+
+    // Definition and Characteristic Column filter data
+    this.subs.add(
+      this.hnsResultService.definitionOrCharFilterCol().subscribe(
+        data => {
+          if (data.isSuccess) this.apiColFilter = data.data
+        }
+      )
+    )
+
+
   }
 
   ngOnDestroy() {
@@ -192,6 +204,7 @@ export class HnsResInformationComponent implements OnInit {
               for (let ob of filter) {
                 this.setGridFilter(ob);
               }
+              this.removeLastCommaFromString()// remove comma from some filters
               setTimeout(() => {
                 this.searchActionGrid()
               }, 500);
@@ -213,6 +226,16 @@ export class HnsResInformationComponent implements OnInit {
     }
 
 
+  }
+
+  removeLastCommaFromString() {
+    if (this.headerFilters.Definition != "") {
+      this.headerFilters.Definition = this.headerFilters.Definition.replace(/,\s*$/, "");
+    }
+    if (this.headerFilters.Chacode != "") {
+      this.headerFilters.Chacode = this.headerFilters.Chacode.replace(/,\s*$/, "");
+    }
+   
   }
 
   changeFilterState(obj) {
@@ -385,11 +408,11 @@ export class HnsResInformationComponent implements OnInit {
     } else if (obj.field == "astconcataddress") {
       this.headerFilters.Address = obj.value;
     } else if (obj.field == "chacode") {
-      this.headerFilters.Chacode = obj.value;
+      this.headerFilters.Chacode += obj.value+',';
     } else if (obj.field == "asspostcode") {
       this.headerFilters.Postcode = obj.value;
     } else if (obj.field == "hascode") {
-      this.headerFilters.Definition = obj.value;
+      this.headerFilters.Definition += obj.value+',';
     } else if (obj.field == "hasversion") {
       let findObj = this.filters.filter(x => x.field == obj.field);
       if (findObj.length == 1) {

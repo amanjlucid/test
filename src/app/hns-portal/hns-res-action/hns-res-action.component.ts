@@ -52,6 +52,7 @@ export class HnsResActionComponent implements OnInit {
   dialogOpened: boolean = false;
   validatReportString: string;
   columnFiltersOpt: any = [];
+  apiColFilter: any = [];
 
   constructor(
     private assetAttributeService: AssetAttributeService,
@@ -144,11 +145,20 @@ export class HnsResActionComponent implements OnInit {
     this.subs.add(
       this.hnsResultService.gridFilterColumn().subscribe(
         data => {
-          console.log(data);
           if (data.isSuccess) {
             this.columnFiltersOpt = data.data
           }
-          //columnFiltersOpt
+          
+        }
+      )
+    )
+
+    // Definition Column filter data
+    this.subs.add(
+      this.hnsResultService.definitionOrCharFilterCol('Definition').subscribe(
+        data => {
+          if (data.isSuccess) this.apiColFilter = data.data
+          //  console.log(data)
         }
       )
     )
@@ -194,26 +204,24 @@ export class HnsResActionComponent implements OnInit {
     this.headerFilters.IsFilter = false;
     this.state.filter = filter;
     this.filters = [];
-
-
+    
     if (filter) {
       // if (filter.filters.length > 0) {
       this.headerFilters.IsFilter = true;
 
       // this.state.filter.filters.push(...filter.filters);
       if (this.state.filter) {
-        // console.log(this.state.filter)
         if (this.state.filter.filters.length > 0) {
           let distincFitler = this.changeFilterState(this.state.filter.filters);
-          // console.log(this.filters)
-          // console.log(distincFitler)
+          
           distincFitler.then(filter => {
-            // console.log(filter)
             if (filter.length > 0) {
               this.resetGridFilter()
               for (let ob of filter) {
                 this.setGridFilter(ob);
               }
+
+              this.removeLastCommaFromString()// remove comma from some filters
               setTimeout(() => {
                 this.searchActionGrid()
               }, 500);
@@ -242,7 +250,26 @@ export class HnsResActionComponent implements OnInit {
 
   }
 
-
+  removeLastCommaFromString() {
+    if (this.headerFilters.Definition != "") {
+      this.headerFilters.Definition = this.headerFilters.Definition.replace(/,\s*$/, "");
+    }
+    if (this.headerFilters.Priority != "") {
+      this.headerFilters.Priority = this.headerFilters.Priority.replace(/,\s*$/, "");
+    }
+    if (this.headerFilters.Budget != "") {
+      this.headerFilters.Budget = this.headerFilters.Budget.replace(/,\s*$/, "");
+    }
+    if (this.headerFilters.OverdueFilter != "") {
+      this.headerFilters.OverdueFilter = this.headerFilters.OverdueFilter.replace(/,\s*$/, "");
+    }
+    if (this.headerFilters.Status != "") {
+      this.headerFilters.Status = this.headerFilters.Status.replace(/,\s*$/, "");
+    }
+    if (this.headerFilters.WorkStatus != "") {
+      this.headerFilters.WorkStatus = this.headerFilters.WorkStatus.replace(/,\s*$/, "");
+    }
+  }
 
   changeFilterState(obj) {
     return Promise.resolve().then(x => {
@@ -435,22 +462,25 @@ export class HnsResActionComponent implements OnInit {
     } else if (obj.field == "astconcataddress") {
       this.headerFilters.Address = obj.value;
     } else if (obj.field == "hasiactionstatus") {
+      let status = "O"
       if (obj.value.toLocaleLowerCase() == "outstanding") {
-        this.headerFilters.Status = "O";
+        status = "O";
       } else if (obj.value.toLocaleLowerCase() == "resolved") {
-        this.headerFilters.Status = "R";
+        status = "R";
       } else if (obj.value.toLocaleLowerCase() == "no issue") {
-        this.headerFilters.Status = "I";
+        status = "I";
       } else if (obj.value.toLocaleLowerCase() == "overdue") {
-        this.headerFilters.Status = "Y";
-      } else {
-        this.headerFilters.Status = obj.value.toLocaleLowerCase();
-      }
+        status = "Y";
+      } 
+      //else {
+      //   this.headerFilters.Status = obj.value.toLocaleLowerCase();
+      // }
+      this.headerFilters.Status += status+',';
 
     } else if (obj.field == "asspostcode") {
       this.headerFilters.Postcode = obj.value;
     } else if (obj.field == "hascode") {
-      this.headerFilters.Definition = obj.value;
+      this.headerFilters.Definition += obj.value + ',';
     } else if (obj.field == "hasversion") {
       let findObj = this.filters.filter(x => x.field == obj.field);
       if (findObj.length == 1) {
@@ -527,9 +557,9 @@ export class HnsResActionComponent implements OnInit {
       }
 
     } else if (obj.field == "hasipriority") {
-      this.headerFilters.Priority = obj.value;
+      this.headerFilters.Priority += obj.value + ',';
     } else if (obj.field == "hasibudgetcode") {
-      this.headerFilters.Budget = obj.value;
+      this.headerFilters.Budget += obj.value+',';
     } else if (obj.field == "hasitargetdate") {
       let findObj = this.filters.filter(x => x.field == obj.field);
       if (findObj.length == 1) {
@@ -544,7 +574,7 @@ export class HnsResActionComponent implements OnInit {
       }
 
     } else if (obj.field == "overduepending") {
-      this.headerFilters.OverdueFilter = obj.value;
+      this.headerFilters.OverdueFilter += obj.value+',';
     } else if (obj.field == "hasalocation") {
       this.headerFilters.Location = obj.value;
     } else if (obj.field == "hasafloor") {
@@ -586,7 +616,7 @@ export class HnsResActionComponent implements OnInit {
       }
 
     } else if (obj.field == "hasiworkstatus") {
-      this.headerFilters.WorkStatus = obj.value;
+      this.headerFilters.WorkStatus += obj.value+',';
     } else if (obj.field == "hasiworkauthoriseddate") {
       let findObj = this.filters.filter(x => x.field == obj.field);
       if (findObj.length == 1) {

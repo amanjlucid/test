@@ -237,10 +237,25 @@
         </kendo-grid-column>
 
         <kendo-grid-column field="hascode" title="Definition" width="150">
-          <ng-template kendoGridFilterMenuTemplate let-filter let-column="column" let-filterService="filterService">
+          <!-- <ng-template kendoGridFilterMenuTemplate let-filter let-column="column" let-filterService="filterService">
             <simple-text-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
             </simple-text-filter>
-          </ng-template>
+          </ng-template> -->
+          <ng-template kendoGridFilterMenuTemplate
+          let-column="column"
+          let-filter="filter"
+          let-filterService="filterService"
+          >
+          <multicheck-filter
+            [isPrimitive]="true"
+            [field]="column.field"
+            [filterService]="filterService"
+            [currentFilter]="filter"
+            [data]="apiColFilter?.definationList">
+          </multicheck-filter>
+        </ng-template>
+
+        
           <ng-template kendoGridCellTemplate let-dataItem>
             <span
               [ngClass]="{'red': dataItem.hasiactionstatus === 'O' || dataItem.hasiactionstatus === 'Y', 'green':dataItem.hasiactionstatus === 'R', 'black': dataItem.hasiactionstatus === 'I'   }">

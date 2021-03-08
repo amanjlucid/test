@@ -47,6 +47,7 @@ export class HnsResSummaryComponent implements OnInit {
   hnsPermission: any = [];
   dialogOpened: boolean = false;
   validatReportString: string;
+  apiColFilter:any = [];
 
   constructor(
     private assetAttributeService: AssetAttributeService,
@@ -123,6 +124,18 @@ export class HnsResSummaryComponent implements OnInit {
       )
     )
 
+    // Definition Column filter data
+    this.subs.add(
+      this.hnsResultService.definitionOrCharFilterCol('Definition').subscribe(
+        data => {
+          if (data.isSuccess) this.apiColFilter = data.data
+          //  console.log(data)
+        }
+      )
+    )
+
+
+
   }
 
   ngOnDestroy() {
@@ -181,6 +194,7 @@ export class HnsResSummaryComponent implements OnInit {
               for (let ob of filter) {
                 this.setGridFilter(ob);
               }
+              this.removeLastCommaFromString()// remove comma from some filters
               setTimeout(() => {
                 this.searchActionGrid()
               }, 500);
@@ -202,6 +216,13 @@ export class HnsResSummaryComponent implements OnInit {
     }
 
 
+  }
+
+  removeLastCommaFromString() {
+    if (this.headerFilters.Definition != "") {
+      this.headerFilters.Definition = this.headerFilters.Definition.replace(/,\s*$/, "");
+    }
+      
   }
 
   changeFilterState(obj) {
@@ -346,7 +367,7 @@ export class HnsResSummaryComponent implements OnInit {
     } else if (obj.field == "asspostcode") {
       this.headerFilters.Postcode = obj.value;
     } else if (obj.field == "hascode") {
-      this.headerFilters.Definition = obj.value;
+      this.headerFilters.Definition += obj.value+',';
     } else if (obj.field == "hasversion") {
       let findObj = this.filters.filter(x => x.field == obj.field);
       if (findObj.length == 1) {
