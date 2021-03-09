@@ -1,0 +1,530 @@
+.hiearchyBtn {
+  max-width: 10.60%;
+}
+
+.hiearchyBtn button {
+  margin-left: 5px;
+}
+
+.footerButton {
+  margin-right: 40px;
+  margin-bottom: 10px;
+}
+
+.footerButton button {
+  margin-left: 8px;
+}
+
+.footerSec {
+  right: 0;
+  position: absolute;
+}
+
+.propsecDiv {
+  width: 800px;
+  height: 590px;
+}
+
+.assetLabel {
+  max-width: 11%;
+}
+
+.isDisabled {
+  color: currentColor;
+  cursor: not-allowed;
+  opacity: 0.5;
+  text-decoration: none;
+}
+
+/*------------------   Heiarchy css             ------------------------- */
+
+/* ————————————————————–
+  Tree core styles
+*/
+
+.tree {
+  font-size: 13px;
+}
+
+.tree input {
+  position: absolute;
+  clip: rect(0, 0, 0, 0);
+}
+
+.tree input~ul {
+  display: none;
+}
+
+.tree input:checked~ul {
+  display: block;
+}
+
+/* ————————————————————–
+    Tree rows
+  */
+
+.tree li {
+  line-height: 1.2;
+  position: relative;
+  /* padding: 0 0 1em 1em; */
+  list-style: none;
+  padding-top: 10px !important;
+}
+
+.tree label {
+  margin: 0px;
+}
+
+.tree ul li {
+  padding: 1em 0 0 1em;
+}
+
+.tree ul {
+  padding-left: 0;
+}
+
+.tree>li:last-child {
+  padding-bottom: 0;
+}
+
+/* ————————————————————–
+    Tree labels
+  */
+
+.tree_label {
+  position: relative;
+  display: inline-block;
+  background: #fff;
+}
+
+label.tree_label {
+  cursor: pointer;
+}
+
+label.tree_label:hover {
+  color: #666;
+}
+
+/* ————————————————————–
+    Tree expanded icon
+  */
+
+label.tree_label:before {
+  background: #b42a2a;
+  color: #fff;
+  position: relative;
+  z-index: 1;
+  float: left;
+  margin: 0 1em 0 -2em;
+  width: 16px;
+  height: 1em;
+  border-radius: 1em;
+  content: '+';
+  text-align: center;
+  padding-bottom: 16px;
+  /* line-height: 0.9em; */
+}
+
+:checked~label.tree_label:before {
+  content: '–';
+}
+
+/* ————————————————————–
+    Tree branches
+  */
+
+.tree li:before {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -.5em;
+  /* left: -7.5px; */
+  display: block;
+  width: 0;
+  border-left: 1px solid #777;
+  content: "";
+}
+
+.tree_label:after {
+  position: absolute;
+  top: 0;
+  /* left: -1.5em; */
+  left: -19.5px;
+  display: block;
+  height: 0.5em;
+  width: 1em;
+  border-bottom: 1px solid #777;
+  border-left: 1px solid #777;
+  border-radius: 0 0 0 .3em;
+  content: '';
+}
+
+label.tree_label:after {
+  border-bottom: 0;
+}
+
+:checked~label.tree_label:after {
+  /* border-radius: 0 .3em 0 0; */
+  border-top: 1px solid #777;
+  /* border-right: 1px solid #777; */
+  border-bottom: 0;
+  border-left: 0;
+  bottom: 0;
+  top: 0.5em;
+  height: auto;
+  /* left: -20px; */
+  /* margin-left: 1px; */
+}
+
+.tree li:last-child:before {
+  height: 1em;
+  bottom: auto;
+}
+
+.tree>li:last-child:before {
+  display: none;
+}
+
+.selected {
+  background-color: #cacaca;
+}
+
+#myUL {
+  border: 1px solid #e2e2eb;
+  background-color: #fff;
+  list-style: none;
+  font-size: 12px;
+  min-height: 27px;
+  max-height: 58px;
+  overflow-y: scroll;
+  border-radius: 5px;
+  padding: 2px 0px;
+}
+
+#myUL li {
+  list-style: none;
+  font-size: 12px;
+}
+
+#myUL, #myUL ul {
+  padding-left: 20px !important;
+}
+
+.addr_search {
+  text-align: center;
+  margin-top: 3px;
+}
+
+.assetInpBox {
+  height: 27px;
+  font-size: .894rem;
+  line-height: 1.54;
+  color: #4E5155;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid rgba(24, 28, 33, 0.1);
+  border-radius: .25rem;
+}
+
+.assetSelect {
+  /* padding: .188rem 2.5rem .188rem .625rem; */
+  height: calc(1.5rem + 2px);
+  background-position: right .625rem center;
+  font-size: .75rem;
+  line-height: 1.5;
+  background-clip: padding-box;
+  border: 1px solid rgba(24, 28, 33, 0.1);
+}
+
+/* .assetTbl{
+  width: 132% !important;
+} */
+
+/* .projectsGrid{
+  max-width: 600px;
+} */
+
+.btnGrp button {
+  margin-left:3px;
+}
+
+/** scroll till window start  **/
+.batchesGrid {
+  display: block;
+  max-width: 100%;
+}
+
+table {
+  border-collapse: collapse;
+  /* width: 340%; */
+  overflow-x: scroll;
+  display: block;
+}
+
+thead, tbody {
+  display: block;
+}
+
+.fixTbody {
+  overflow-y: scroll;
+  overflow-x: hidden;
+  height: 580px;
+}
+
+.smallCol{
+  min-width: 38px;
+  max-width: 38px;
+  width: 38px;
+}
+
+.midSmallCol {
+  min-width: 80px;
+  max-width: 80px;
+}
+
+.midCol {
+  min-width: 120px;
+  max-width: 120px;
+}
+
+.bigCol{
+  min-width: 164px;
+  max-width: 164px;
+}
+
+.midBigCol{
+  min-width: 189px;
+  max-width: 189px;
+}
+
+.addressCol {
+  min-width: 800px;
+  max-width: 800px;
+}
+
+.midAddressCol{
+  min-width: 564px;
+  max-width: 564px;
+}
+
+.smallAddressCol{
+  min-width: 350px;
+  max-width: 350px;
+}
+
+td, th {
+  /* min-width: 100px; */
+  /* height: 25px; */
+  /* overflow: hidden; */
+  text-overflow: ellipsis;
+  /* max-width: 100px; */
+}
+
+/** scroll till window end ***/
+
+/* .projectsGrid{
+    height:580px;
+    overflow-y:scroll;
+  } */
+
+
+  /** ############ old css 18-2-20 #############**/
+/* .fixTbody {
+  height: 580px;
+  display: block;
+  overflow-y: scroll;
+}
+
+.assetTbl tbody tr, thead {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+
+.fixedHeader {
+  width: calc(100% - 20px);
+} */
+
+/** ############ old css 18-2-20 #############**/
+
+/* .assetTbl th {
+  position: sticky;
+  top: -1px;
+  background: #fafafa;
+  z-index: 1;
+} */
+
+.sortIcon {
+  font-size: 11px;
+}
+
+/* #showFilePanel{
+  margin-right: 48px;
+    margin-top: 18px;
+    float: right;
+} */
+
+/* sidebar search css */
+
+.search-container {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 255px;
+  display: none;
+  height: 100%;
+  overflow: hidden;
+  background: #070627;
+  z-index: 999;
+  /* transform: translateX(100%); */
+  -webkit-transform: translateX(100%);
+}
+
+.selectedcs {
+  animation: slide-in 0.5s forwards;
+  -webkit-animation: slide-in 0.5s forwards;
+}
+
+.dismiss {
+  animation: slide-out 0.5s forwards;
+  -webkit-animation: slide-out 0.5s forwards;
+}
+
+.searchDiv {
+  padding: 7px;
+  color: white;
+  overflow-y: scroll;
+  height: 829px;
+}
+
+.searchDiv::-webkit-scrollbar {
+  width: .5em;
+}
+
+.searchDiv::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+}
+
+.searchDiv::-webkit-scrollbar-thumb {
+  background-color: darkgrey;
+  outline: 1px solid slategrey;
+  border-radius: 10px;
+}
+
+.assetCount {
+  padding: 5px 5px 5px 0px;
+  color: #a3a4a6;
+  float: left;
+}
+
+.exportDiv {
+  text-align: right;
+}
+
+.iconDiv {
+  display: inline-block !important;
+}
+
+.iconDiv i {
+  display: inline-block !important;
+  margin: 0px 5px;
+}
+
+.osFilterSwitch, .asbestosColumnSwitch, .colSwitch {
+  border: 1px solid #847d7d;
+}
+
+.osFilterLabel, .filterLabel {
+  display: block;
+}
+
+.filtersection {
+  padding: 10px 0px;
+  border-top: 1px solid gray;
+}
+
+.filterHead {
+  color: #b0acac;
+  font-size: 18px;
+}
+
+.assetTbl td{
+  word-break: break-all;
+}
+
+.readonlyCl{
+  background: #eee2e2;
+}
+
+.filterBtn {
+  margin-top: 10px;
+  margin-bottom: 3px;
+}
+
+@keyframes slide-in {
+  0% {
+    -webkit-transform: translateX(100%);
+  }
+  100% {
+    -webkit-transform: translateX(0%);
+  }
+}
+
+@-webkit-keyframes slide-in {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(0%);
+  }
+}
+
+@keyframes slide-out {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@-webkit-keyframes slide-out {
+  0% {
+    -webkit-transform: translateX(0%);
+  }
+  100% {
+    -webkit-transform: translateX(100%);
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .hiearchyDiv label {
+    text-align: left !important;
+  }
+  .hiearchyBtn {
+    margin-bottom: 8px;
+    min-width: 16% !important;
+    max-width: 16% !important;
+  }
+  .typeDiv {
+    padding: 0px;
+    margin-bottom: 8px;
+  }
+  .typeDiv .assetSelect {
+    width: 100%;
+  }
+  .addr_search {
+    text-align: left;
+  }
+  .goBtnDiv {
+    padding: 2px;
+    margin-top: 7px;
+  }
+  .exportDiv {
+    text-align: left;
+    margin-bottom: 3px;
+  }
+
+
+}

@@ -1,0 +1,66 @@
+<kendo-window title="Select Image for Front Page" *ngIf="openCBCselectImage" (close)="closeImageWin()"
+[top]="5" [minWidth]="500" [width]="900" [height]="600"  [resizable]="false"  >
+
+  <div class="row">
+    <div class="col-md-12">
+      <h5 class="font-weight-normal">
+        Survey: {{surveyAssetLabel}}
+      </h5>
+    </div>
+  </div>
+
+
+  <div class="row mt-2">
+    <div class="col-md-12 imageListDiv">
+      <kendo-grid [data]="gridData" [selectable]="{
+        mode: 'single'
+      }" (cellClick)="cellClickHandler($event)" [resizable]="true" [height]="410">
+
+        <kendo-grid-column field="image" title="Image" width="100">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <img class="imgCl" [src]="getImg(dataItem.displayImage)"  >
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column field="ntptext1" title="Description" width="160">
+        </kendo-grid-column>
+        <kendo-grid-column field="shortfilename" title="Filename" width="140">
+        </kendo-grid-column>
+        <kendo-grid-column field="ntpmodifiedtime" title="Modified" width="150">
+        </kendo-grid-column>
+
+      </kendo-grid>
+    </div>
+  </div>
+
+  <div class="row mt-2">
+    <div class="col-md-11 col-sm-11">
+      <div class="row mt-3 pull-right btnGrp">
+        <div >
+          <button type="button" class="btn btn-sm themeButton mr-2" [disabled]="SelectBtnDisabled" (click)="selectImageMethod() "
+            aria-expanded="false">Select Image</button>
+        </div>
+        <button type="button" class="btn btn-sm themeButton" (click)="closeImageWin()">Cancel</button>
+
+
+      </div>
+    </div>
+  </div>
+
+  <div class="viewImageOverlay"></div>
+
+  <!--  <app-res-view-image *ngIf="viewImage" [viewImage]="viewImage" [imageData]="selectedImg" (closeViewImage)="closeViewImage($event)"></app-res-view-image>-->
+
+</kendo-window>
+
+<kendo-window title="Selected Image" *ngIf="openLargerImage" (close)="closeLargerImage()"
+[top]="30"  >
+
+<div class="row "  >
+<img class="imgClLarge" [src]="getImg(this.largerImageItem)"  >
+</div>
+<div class="row mt-2 pull-right mr-2"  >
+
+  <button type="button" class="btn btn-sm themeButton " (click)="selectImageMethod()"  >Select Image</button>
+</div>
+</kendo-window>
+

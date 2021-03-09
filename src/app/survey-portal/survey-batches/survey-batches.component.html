@@ -1,0 +1,269 @@
+<div class="layout-content">
+<div class="container-fluid flex-grow-1 container-p-y">
+  <div class="row">
+    <div class="col-md-2 col-sm-3">
+      <h4 class="font-weight-bold py-3 mb-1">
+        <!-- <span class="text-muted font-weight-light">Assets/</span> Assets -->
+        Batches
+      </h4>
+    </div>
+
+    <div class="col-md-9 col-sm-9">
+      <div class="row mt-3 pull-right btnGrp">
+        <div  *ngIf="checkGroupPermission('Batches Xport Grid')">
+          <button type="button" class="btn btn-sm themeButton" (click)="exportToExcel()"
+            aria-expanded="false">Export</button>
+        </div>
+        <button id="showFilePanel" (click)="openSearchBar()" class="btn btn-sm themeButton"><i class="fa fa-search"></i>
+        </button>
+
+      </div>
+    </div>
+
+    <div class="col-md-1 col-sm-12"></div>
+
+  </div>
+
+  <div class="row">
+    <div class="col-md-2 col-lg-6">
+      <h5 class="font-weight-normal">
+        Survey Project: {{surveyProjectLabel}}
+      </h5>
+    </div>
+  </div>
+
+  <div class="row" style="margin-top:13px;">
+    <!-- table-responsive -->
+    <div class="batchesGrid">
+      <!-- [ngStyle]="{'width': getTableWidth()}" -->
+      <table id="batchesTbl" class="table table-striped table-bordered batchesTbl"
+      *ngIf="batchesLists.length > 0; else no_record">
+        <thead class="fixedHeader">
+          <tr>
+            <!--Hamburger Item-->
+            <th class="smallCol"></th>
+            <!--Survey Batches-->
+            <th class="midBigCol" style="cursor: pointer;" (click)="orderBy('SurveyBatch')">Survey Batch
+              <i class="lnr lnr-arrow-up sortIcon" aria-hidden="true"
+                *ngIf="batchesListItem.OrderBy === 'SurveyBatch' && batchesListItem.OrderType === 'Asc'"></i>
+              <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
+                *ngIf="batchesListItem.OrderBy === 'SurveyBatch' && batchesListItem.OrderType === 'Desc'"></i>
+            </th>
+            <th class="midCol" style="cursor: pointer;" (click)="orderBy('SurveyorID')">Surveyor ID
+              <i class="lnr lnr-arrow-up sortIcon" aria-hidden="true"
+                *ngIf="batchesListItem.OrderBy === 'SurveyorID' && batchesListItem.OrderType === 'Asc'"></i>
+              <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
+                *ngIf="batchesListItem.OrderBy === 'SurveyorID' && batchesListItem.OrderType === 'Desc'"></i>
+            </th>
+            <th class="bigCol" style="cursor: pointer;" (click)="orderBy('SurveyorName')">Surveyor Name
+              <i class="lnr lnr-arrow-up sortIcon" aria-hidden="true"
+                *ngIf="batchesListItem.OrderBy === 'SurveyorName' && batchesListItem.OrderType === 'Asc'"></i>
+              <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
+                *ngIf="batchesListItem.OrderBy === 'SurveyorName' && batchesListItem.OrderType === 'Desc'"></i>
+            </th>
+            <th class="midBigCol" style="cursor: pointer;" (click)="orderBy('SurveyDownloadDateTime')">Download Date
+              <i class="lnr lnr-arrow-up sortIcon" aria-hidden="true"
+                *ngIf="batchesListItem.OrderBy === 'SurveyDownloadDateTime' && batchesListItem.OrderType === 'Asc'"></i>
+              <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
+                *ngIf="batchesListItem.OrderBy === 'SurveyDownloadDateTime' && batchesListItem.OrderType === 'Desc'"></i>
+            </th>
+            <th class="midBigCol" style="cursor: pointer;" (click)="orderBy('SurveyUploadDateTime')">Upload Date
+              <i class="lnr lnr-arrow-up sortIcon" aria-hidden="true"
+                *ngIf="batchesListItem.OrderBy === 'SurveyUploadDateTime' && batchesListItem.OrderType === 'Asc'"></i>
+              <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
+                *ngIf="batchesListItem.OrderBy === 'SurveyUploadDateTime' && batchesListItem.OrderType === 'Desc'"></i>
+            </th>
+            <th class="midCol" style="cursor: pointer;" (click)="orderBy('BatchStatus')">Status
+              <i class="lnr lnr-arrow-up sortIcon" aria-hidden="true"
+                *ngIf="batchesListItem.OrderBy === 'BatchStatus' && batchesListItem.OrderType === 'Asc'"></i>
+              <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
+                *ngIf="batchesListItem.OrderBy === 'BatchStatus' && batchesListItem.OrderType === 'Desc'"></i>
+            </th>
+            <th class="midCol" style="cursor: pointer;" (click)="orderBy('Exported')">Exported
+              <i class="lnr lnr-arrow-up sortIcon" aria-hidden="true"
+                *ngIf="batchesListItem.OrderBy === 'Exported' && batchesListItem.OrderType === 'Asc'"></i>
+              <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
+                *ngIf="batchesListItem.OrderBy === 'Exported' && batchesListItem.OrderType === 'Desc'"></i>
+            </th>
+            <th class="midCol" style="cursor: pointer;" (click)="orderBy('Complete')">Complete
+              <i class="lnr lnr-arrow-up sortIcon" aria-hidden="true"
+                *ngIf="batchesListItem.OrderBy === 'Complete' && batchesListItem.OrderType === 'Asc'"></i>
+              <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
+                *ngIf="batchesListItem.OrderBy === 'Complete' && batchesListItem.OrderType === 'Desc'"></i>
+            </th>
+            <th class="midCol" style="cursor: pointer;" (click)="orderBy('Downloaded')">Downloaded
+              <i class="lnr lnr-arrow-up sortIcon" aria-hidden="true"
+                *ngIf="batchesListItem.OrderBy === 'Downloaded' && batchesListItem.OrderType === 'Asc'"></i>
+              <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
+                *ngIf="batchesListItem.OrderBy === 'Downloaded' && batchesListItem.OrderType === 'Desc'"></i>
+            </th>
+            <th class="midCol" style="cursor: pointer;" (click)="orderBy('New')">New
+              <i class="lnr lnr-arrow-up sortIcon" aria-hidden="true"
+                *ngIf="batchesListItem.OrderBy === 'New' && batchesListItem.OrderType === 'Asc'"></i>
+              <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
+                *ngIf="batchesListItem.OrderBy === 'New' && batchesListItem.OrderType === 'Desc'"></i>
+            </th>
+            <th class="midCol" style="cursor: pointer;" (click)="orderBy('Active')">Active
+              <i class="lnr lnr-arrow-up sortIcon" aria-hidden="true"
+                *ngIf="batchesListItem.OrderBy === 'Active' && batchesListItem.OrderType === 'Asc'"></i>
+              <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
+                *ngIf="batchesListItem.OrderBy === 'Active' && batchesListItem.OrderType === 'Desc'"></i>
+            </th>
+          </tr>
+        </thead>
+        <tbody class="fixTbody" (scroll)="onScroll($event)"
+          [ngStyle]="{'overflow-y': batchesLists.length == 0 ? 'hidden' : 'scroll' }">
+
+          <tr class="odd gradeX" *ngFor="let batchList of batchesLists let i = index; trackBy:trackByFunction"
+            (click)="toggleClass($event, batchList)" (dblclick)="doubleclick(batchList)" >
+            <td class="smallCol">
+              <!--<i style="color: #dfdbdb;" class="fas fa-bars"></i>-->
+              <li class="nav-item dropdown list-unstyled" >
+                <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
+                <div class="dropdown-menu">
+                  <a class="dropdown-item" *ngIf="checkGroupPermission('Survey Batch Asset')"
+                    (click)="openTabWindow('BatchSurveys', batchList)" href="javascript:void(0)">Surveys</a>
+                    <div class="dropdown-toggle" *ngIf="checkGroupPermission('Batch Reports') ">
+                    <div class="dropdown-item">Reports...</div>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item"
+                          *ngIf="checkGroupPermission('Survey Batch Extract for Asbestos')"
+                          (click)="openReport(557, 'Survey Batch Extract for Asbestos')" href="javascript:void(0)">Asbestos...</a>
+                        <a class="dropdown-item"
+                          *ngIf="checkGroupPermission('Survey Batch Extract for Attributes')"
+                          (click)="openReport(559, 'Survey Batch Extract for Attributes and Characteristics')" href="javascript:void(0)">Attributes & Characteristics...</a>
+                        <a class="dropdown-item"
+                          *ngIf="checkGroupPermission('Survey Batch Extract for Health and Safety')"
+                          (click)="openReport(561, 'Survey Batch Extract for Health and Safety')" href="javascript:void(0)">Health & Safety...</a>
+                        <a class="dropdown-item"
+                          *ngIf="checkGroupPermission('Survey Batch Extract for Survey Notes')"
+                          (click)="openReport(563,'Survey Batch Extract for Survey Notes')" href="javascript:void(0)">Survey Notes...</a>
+                        <a class="dropdown-item"
+                          *ngIf="checkGroupPermission('Survey Batch Extract for HHSRS')"
+                          (click)="openReport(565,'Survey Batch Extract for HHSRS')" href="javascript:void(0)">HHSRS...</a>
+                        </div>
+                    </div>
+                </div>
+              </li>
+            </td>
+            <td class="midBigCol">{{batchList.surveyBatch}}</td>
+            <td class="midCol">{{batchList.surveyorID}}</td>
+            <td class="bigCol">{{batchList.surveyorName}}</td>
+            <td class="midBigCol">{{batchList.surveyDownloadDateTime}}</td>
+            <td class="midBigCol">{{batchList.surveyUploadDateTime}}</td>
+            <td class="midCol">{{batchList.batchStatus}}</td>
+            <td class="midCol">{{batchList.exported}}</td>
+            <td class="midCol">{{batchList.complete}}</td>
+            <td class="midCol">{{batchList.downloaded}}</td>
+            <td class="midCol">{{batchList.new}}</td>
+            <td class="midCol">{{batchList.active}}</td>
+
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- If table is empty -->
+
+      <ng-template #no_record>
+        <table id="batchesTbl" class="table table-striped table-bordered batchesTbl">
+          <thead class="fixedHeader">
+            <tr>
+              <th class="smallCol"></th>
+              <th class="midBigCol">Survey Batch</th>
+              <th class="midCol">Surveyor ID</th>
+              <th class="bigCol">Surveyor Name</th>
+              <th class="midBigCol">Download Date</th>
+              <th class="midBigCol">Upload Date</th>
+              <th class="midCol">Status</th>
+              <th class="midCol">Exported</th>
+              <th class="midCol">Complete</th>
+              <th class="midCol">Downloaded</th>
+              <th class="midCol">New</th>
+              <th class="midCol">Active</th>
+            </tr>
+          </thead>
+          <tbody style="overflow-y:hidden;">
+            <tr>
+              <td style="background:#f8f8f8; border: none;">
+                No records available.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </ng-template>
+
+    </div>
+  </div>
+
+
+
+  <div class="portalwBlurtab"></div>
+
+</div>
+
+
+<!-- Search bar -->
+<div class="search-container dismiss">
+
+  <h5 style="color:white" class="p-4 m-0 line-height-1 font-weight-bolder bg-light theme-settings-header"> Filters
+    <a href="javascript:void(0)" (click)="closeSearchBar()" class="theme-settings-close-btn font-weight-light px-4 py-2"
+      style="color:#ffffff;" tabindex="-1">×</a> </h5>
+
+  <div class="searchDiv">
+    <form id="filterSearch">
+      <div class="filtersection">
+        <span class="filterHead">Batches</span>
+
+        <div class="form-group">
+          <label class="form-label form-label-sm">Status</label>
+          <select data-col="2" class="form-control form-control-sm"
+            (change)="filterTable($event.target.value, 'Status')">
+            <option [selected]="batchesListItem.StatusFilter == 'All'" value="">All</option>
+            <option [selected]="batchesListItem.StatusFilter == 'Active'" value="Active">Active</option>
+            <option [selected]="batchesListItem.StatusFilter == 'Archived'" value="Archived">Archived</option>
+            <option [selected]="batchesListItem.StatusFilter == 'Complete'" value="Complete">Complete</option>
+            <option [selected]="batchesListItem.StatusFilter == 'Downloaded'" value="Downloaded">Downloaded</option>
+            <option [selected]="batchesListItem.StatusFilter == 'Exported'" value="Exported">Exported</option>
+            <option [selected]="batchesListItem.StatusFilter == 'New'" value="New">New</option>
+            <option [selected]="batchesListItem.StatusFilter == 'Pending'" value="Pending">Pending</option>
+          </select>
+        </div>
+
+        <div class="form-group mt-3">
+          <label class="form-label form-label-sm">Survey Batch</label>
+          <input (keyup)="filterTable($event.target.value, 'SurveyBatch')" name="surveybatch" data-col="0" type="text"
+            class="form-control form-control-sm" placeholder="Search By Survey Batch">
+        </div>
+
+
+        <div class="form-group mt-3">
+          <label class="form-label form-label-sm">Surveyor Name</label>
+          <input (keyup)="filterTable($event.target.value, 'SurveyorName')"  type="text"
+            class="form-control form-control-sm" placeholder="Search By Survey Name">
+        </div>
+
+      </div>
+
+      <div class="filtersection">
+        <div class="form-group">
+          <button id="" (click)="clearTable()" class="btn btn-sm themeButton">Clear
+          </button>
+        </div>
+      </div>
+    </form>
+
+  </div>
+</div>
+</div>
+
+<div class="example-wrapper">
+<!--  <app-tab-window [selectedAsset]="selectedAsset" [assetId]="assetId" [tabWindow]="tabWindow" [tabName]="tabName"
+    *ngIf="tabWindow" (closeWindow)="closeTabWindow($event)"></app-tab-window>-->
+
+  <!-- Reporting Section -->
+
+  <app-reporting [reportingAction]="reportingAction" [surveyPortalXport]="selectedXport" [openReports]="openReports"
+    *ngIf="openReports" (closeReportingWin)="closeReportingWin($event)"></app-reporting>
+
+</div>
+

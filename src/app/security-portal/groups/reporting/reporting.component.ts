@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
-import { Group, ElementGroupModel } from '../../../_models'
+import { Group, ElementGroupModel, SurveyPortalXports } from '../../../_models'
 import { AlertService, LoaderService, ReportingGroupService } from '../../../_services'
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { DataTablesModule } from 'angular-datatables';
@@ -31,6 +31,7 @@ export class ReportingComponent implements OnInit {
   @Input() selectedGroup: Group;
   @Input() openReports: boolean = false;
   @Output() closeReportingWin = new EventEmitter<boolean>();
+  @Input() surveyPortalXport: SurveyPortalXports;
 
   reports = [];
   public windowWidth = '900';
@@ -54,6 +55,7 @@ export class ReportingComponent implements OnInit {
   userListToMail: any;
   selectedUsersToMail: any = [];
   exportId: any;
+  reportParams: string[];
   @ViewChild('pivotCheckBox') pivotCheckBox: ElementRef;
   @ViewChild('emailPreview') emailPreview: any;
   tableSetting = {
@@ -128,6 +130,15 @@ export class ReportingComponent implements OnInit {
       this.exportId = 586;
       this.reportingType = "Group Details for All Groups";
       this.reportingGrpService.allGroupDetails(this.preview).subscribe(
+        data => {
+          this.renderTable(data);
+        }
+      )
+    } else if (this.reportingAction == "runSurveyPortalXports") {
+      this.exportId =  this.surveyPortalXport.XportID;
+      this.reportParams = this.surveyPortalXport.Params;
+      this.reportingType = this.surveyPortalXport.ReportTitle;
+      this.reportingGrpService.RunSurveyPortalXports(this.exportId, this.reportParams, this.preview).subscribe(
         data => {
           this.renderTable(data);
         }

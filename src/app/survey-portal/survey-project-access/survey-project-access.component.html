@@ -1,0 +1,221 @@
+<div class="layout-content">
+<div class="container-fluid flex-grow-1 container-p-y">
+  <div class="row">
+    <div class="col-md-2 col-sm-3">
+      <h4 class="font-weight-bold py-3 mb-1">
+        <!-- <span class="text-muted font-weight-light">Assets/</span> Assets -->
+        Contractor Access
+      </h4>
+    </div>
+
+    <div class="col-md-9 col-sm-9">
+      <div class="row mt-3 pull-right btnGrp">
+        <button id="showFilePanel" (click)="openSearchBar()" class="btn btn-sm themeButton"><i class="fa fa-search"></i>
+        </button>
+        <button type="button" class="btn btn-sm themeButton" (click)="closeWindow()"
+        aria-expanded="false">Close</button>
+      </div>
+      <div>
+
+      </div>
+    </div>
+
+    <div class="col-md-1 col-sm-12"></div>
+
+  </div>
+
+  <div class="row">
+    <div class="col-md-2 col-lg-6">
+      <h5 class="font-weight-normal">
+        Survey Project: {{surveyProjectLabel}}
+      </h5>
+    </div>
+  </div>
+
+  <div class="row" style="margin-top:13px;">
+    <!-- table-responsive -->
+    <div class="batchesGrid">
+      <!-- [ngStyle]="{'width': getTableWidth()}" -->
+      <table id="batchesTbl" class="table table-striped table-bordered batchesTbl"
+      *ngIf="projectAccessItemLists.length > 0; else no_record">
+        <thead class="fixedHeader">
+          <tr>
+
+            <th class="midCol" style="cursor: pointer;" (click)="orderBy('HasAccess')">Access
+              <i class="lnr lnr-arrow-up sortIcon" aria-hidden="true"
+                *ngIf="surveyProjectAccessItem.OrderBy === 'HasAccess' && surveyProjectAccessItem.OrderType === 'Asc'"></i>
+              <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
+                *ngIf="surveyProjectAccessItem.OrderBy === 'HasAccess' && surveyProjectAccessItem.OrderType === 'Desc'"></i>
+            </th>
+            <th class="midCol" style="cursor: pointer;" (click)="orderBy('UserID')">User
+              <i class="lnr lnr-arrow-up sortIcon" aria-hidden="true"
+                *ngIf="surveyProjectAccessItem.OrderBy === 'UserID' && surveyProjectAccessItem.OrderType === 'Asc'"></i>
+              <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
+                *ngIf="surveyProjectAccessItem.OrderBy === 'UserID' && surveyProjectAccessItem.OrderType === 'Desc'"></i>
+            </th>
+            <th class="bigCol" style="cursor: pointer;" (click)="orderBy('UserName')">User Name
+              <i class="lnr lnr-arrow-up sortIcon" aria-hidden="true"
+                *ngIf="surveyProjectAccessItem.OrderBy === 'UserName' && surveyProjectAccessItem.OrderType === 'Asc'"></i>
+              <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
+                *ngIf="surveyProjectAccessItem.OrderBy === 'UserName' && surveyProjectAccessItem.OrderType === 'Desc'"></i>
+            </th>
+            <th class="smallAddressCol" style="cursor: pointer;" (click)="orderBy('UserEmail')">Email
+              <i class="lnr lnr-arrow-up sortIcon" aria-hidden="true"
+                *ngIf="surveyProjectAccessItem.OrderBy === 'UserEmail' && surveyProjectAccessItem.OrderType === 'Asc'"></i>
+              <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
+                *ngIf="surveyProjectAccessItem.OrderBy === 'UserEmail' && surveyProjectAccessItem.OrderType === 'Desc'"></i>
+            </th>
+            <th class="bigCol" style="cursor: pointer;" (click)="orderBy('ConName')">Contractor Name
+              <i class="lnr lnr-arrow-up sortIcon" aria-hidden="true"
+                *ngIf="surveyProjectAccessItem.OrderBy === 'ConName' && surveyProjectAccessItem.OrderType === 'Asc'"></i>
+              <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
+                *ngIf="surveyProjectAccessItem.OrderBy === 'ConName' && surveyProjectAccessItem.OrderType === 'Desc'"></i>
+            </th>
+            <th class="midCol" style="cursor: pointer;" (click)="orderBy('UserStatus')">Status
+              <i class="lnr lnr-arrow-up sortIcon" aria-hidden="true"
+                *ngIf="surveyProjectAccessItem.OrderBy === 'UserStatus' && surveyProjectAccessItem.OrderType === 'Asc'"></i>
+              <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
+                *ngIf="surveyProjectAccessItem.OrderBy === 'UserStatus' && surveyProjectAccessItem.OrderType === 'Desc'"></i>
+            </th>
+            <th class="midCol" style="cursor: pointer;" (click)="orderBy('LoginAllowed')">Login Allowed
+              <i class="lnr lnr-arrow-up sortIcon" aria-hidden="true"
+                *ngIf="surveyProjectAccessItem.OrderBy === 'LoginAllowed' && surveyProjectAccessItem.OrderType === 'Asc'"></i>
+              <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
+                *ngIf="surveyProjectAccessItem.OrderBy === 'LoginAllowed' && surveyProjectAccessItem.OrderType === 'Desc'"></i>
+            </th>
+
+          </tr>
+        </thead>
+        <tbody class="fixTbody" (scroll)="onScroll($event)"
+          [ngStyle]="{'overflow-y': projectAccessItemLists.length == 0 ? 'hidden' : 'scroll' }">
+
+          <tr class="odd gradeX" *ngFor="let projectAccess of projectAccessItemLists let i = index; trackBy:trackByFunction"
+            (click)="toggleClass($event, projectAccess)">
+            <td class="midCol">
+              <input class="text-center" (change)="grantUserAccess($event, projectAccess)" [attr.checked]="projectAccess.hasAccess == 'Y' ? 'checked' : null" type="checkbox">
+            </td>
+            <td class="midCol">{{projectAccess.userID}}</td>
+            <td class="bigCol">{{projectAccess.userName}}</td>
+            <td class="smallAddressCol">{{projectAccess.userEmail}}</td>
+            <td class="bigCol">{{projectAccess.conName}}</td>
+            <td class="midCol">{{projectAccess.userStatus}}</td>
+            <td class="midCol">{{projectAccess.loginAllowed}}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- If table is empty -->
+
+      <ng-template #no_record>
+        <table id="batchesTbl" class="table table-striped table-bordered batchesTbl">
+          <thead class="fixedHeader">
+            <tr>
+              <th class="midCol">Has Access</th>
+              <th class="midCol">User</th>
+              <th class="bigCol">User Name</th>
+              <th class="smallAddressCol">Email</th>
+              <th class="bigCol">Contractor name</th>
+              <th class="midCol">Status</th>
+              <th class="midCol">Login Allowed</th>
+            </tr>
+          </thead>
+          <tbody style="overflow-y:hidden;">
+            <tr>
+              <td style="background:#f8f8f8; border: none;">
+                No records available.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </ng-template>
+
+    </div>
+  </div>
+
+
+
+  <div class="portalwBlurtab"></div>
+
+</div>
+
+
+<!-- Search bar -->
+<div class="search-container dismiss">
+
+  <h5 style="color:white" class="p-4 m-0 line-height-1 font-weight-bolder bg-light theme-settings-header"> Filters
+    <a href="javascript:void(0)" (click)="closeSearchBar()" class="theme-settings-close-btn font-weight-light px-4 py-2"
+      style="color:#ffffff;" tabindex="-1">×</a> </h5>
+
+  <div class="searchDiv">
+    <form id="filterSearch">
+      <div class="filtersection">
+        <span class="filterHead">Contractor Access</span>
+
+        <div class="form-group">
+          <label class="form-label form-label-sm">Included Only</label>
+          <label class="switcher switcher-secondary osFilterLabel">
+            <input type="checkbox" value="{{HasAccess}}" (change)="filterTable('Y', 'HasAccess')"
+              class="switcher-input">
+            <span class="switcher-indicator osFilterSwitch">
+              <span class="switcher-yes">
+                <span class="ion ion-md-checkmark"></span>
+              </span>
+              <span class="switcher-no">
+                <span class="ion ion-md-close"></span>
+              </span>
+            </span>
+          </label>
+        </div>
+
+        <div class="form-group mt-3">
+          <label class="form-label form-label-sm">User</label>
+          <input (keyup)="filterTable($event.target.value, 'UserID')" type="text"
+            class="form-control form-control-sm" placeholder="Search By Useer Name">
+        </div>
+
+        <div class="form-group mt-3">
+          <label class="form-label form-label-sm">User Name</label>
+          <input (keyup)="filterTable($event.target.value, 'UserName')" type="text"
+            class="form-control form-control-sm" >
+        </div>
+
+        <div class="form-group mt-3">
+          <label class="form-label form-label-sm">Email</label>
+          <input (keyup)="filterTable($event.target.value, 'UserEmail')" type="text"
+            class="form-control form-control-sm" >
+        </div>
+
+        <div class="form-group mt-3">
+          <label class="form-label form-label-sm">Contractor Name</label>
+          <input (keyup)="filterTable($event.target.value, 'ConName')" type="text"
+            class="form-control form-control-sm" >
+        </div>
+
+        <div class="form-group">
+          <label class="form-label form-label-sm">Status</label>
+          <select data-col="2" class="form-control form-control-sm"
+            (change)="filterTable($event.target.value, 'UserStatus')">
+            <option [selected]="surveyProjectAccessItem.UserStatus == ''" value="">All</option>
+            <option [selected]="surveyProjectAccessItem.UserStatus == 'Active'" value="Active">Active</option>
+            <option [selected]="surveyProjectAccessItem.UserStatus == 'Inactive'" value="Inactive">Inactive</option>
+          </select>
+        </div>
+
+
+      </div>
+
+
+      <div class="filtersection">
+        <div class="form-group">
+          <button id="" (click)="clearTable()" class="btn btn-sm themeButton">Clear
+          </button>
+        </div>
+      </div>
+    </form>
+
+  </div>
+</div>
+</div>
+
+
+

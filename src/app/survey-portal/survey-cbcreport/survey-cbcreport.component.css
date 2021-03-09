@@ -1,0 +1,30 @@
+.invalid-feedback{
+  display: block;
+}
+
+.imgCl{
+  height: 120px;
+  width: 120px;
+  border-radius: 5px;
+}
+
+.uploadBtn{
+  display: block;
+}
+
+.underline{
+  border-bottom: 1px solid #e7e5e6;
+  width: 100%;
+  display: block;
+}
+
+.iFrameDefault{
+  height: 120px;
+  width: 120px;
+  border-radius: 5px;
+}
+
+.minWidth80{
+  width: 80px;
+}
+

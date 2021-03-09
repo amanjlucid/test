@@ -44,6 +44,8 @@ export class AuthenticationService {
         localStorage.removeItem('assetFilterObj');
         //localStorage.removeItem('serviceTypes');
         //localStorage.removeItem('savedState');
+        sessionStorage.removeItem('SurvProj');
+        sessionStorage.removeItem('SurvBatch');
         //localStorage.removeItem('layoutCollapsed');
         if (localStorage.getItem('currentUser') != null) {
             var httpOptions = {

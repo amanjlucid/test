@@ -37,6 +37,11 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
   tasksPortalPermissions: any = [];
   reporterPortalPermissions: any = [];
   apexDashboardPermission: any = [];
+  SurveyPortalPermissions:any = [];
+  BatchesLink: string = '';
+  BatchSurveysLink: string = '';
+  BatchesLinkColor: string = 'Yellow';
+  ProjectSurveysLink: string = '';
   // underDevelopment: boolean = true;
   silverLightMenus: any = [
     {
@@ -151,7 +156,7 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
     this.eventPortalAccess();
     this.reporterPortalAccess();
     this.getWorksOrdersAccess();
-
+    this.SurveyPortalAccess();
     this.subs.add(
       this.sharedServie.servicePortalObs.subscribe(data => { this.servicePortalAccess = data; })
     )
@@ -160,6 +165,23 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
       this.sharedServie.hnsPortalSecurityList.subscribe(data => this.hnsPortalMenuList = data)
     )
 
+  }
+
+  checkLinkEnabled(divValue: string, linkValue: string): Boolean
+  {
+    let linkExists = false;
+    if (sessionStorage.getItem(linkValue))
+      {
+        linkExists = true;
+      }
+
+    if(divValue =='firstLink')
+    {
+        return linkExists;
+    }
+    else{
+      return !linkExists;
+    }
   }
 
 
@@ -388,6 +410,24 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
             }
           }
           this.sharedServie.changeHnsPortalSecurityList(hnsPortalAccess);
+        }
+      )
+    )
+  }
+
+  SurveyPortalAccess() {
+    this.subs.add(
+      this.assetService.apexGetAssetManagementSecurity(this.currentUser.userId, 'Survey Portal').subscribe(
+        data => {
+          let SurveyPortalAccess: any = [];
+          if (data.isSuccess) {
+            if (data.data.length > 0) {
+              SurveyPortalAccess = data.data;
+              this.SurveyPortalPermissions = SurveyPortalAccess
+              // console.log(SurveyPortalAccess)
+            }
+          }
+          this.sharedServie.changeSurveyPortalSecurityList(SurveyPortalAccess);
         }
       )
     )

@@ -1,0 +1,46 @@
+<kendo-window title="{{title}}" *ngIf="openCBCselectPDF" (close)="closeMethod()"
+[top]="5" [minWidth]="500" [width]="1200" [height]="600" >
+
+  <div class="row">
+    <div class="col-md-12">
+      <h5 class="font-weight-normal">
+        Survey: {{surveyAssetLabel}}
+      </h5>
+    </div>
+  </div>
+
+  <div class="row mt-2">
+    <div class="col-md-12">
+      <ng-template [ngIf]="showgrid1">
+        <kendo-grid [data]="gridView" [height]="410" [selectable]="{mode: 'single'}"  (dblClick)="doubleClick()"
+          filterable="menu" [resizable]="true" [sortable]="true" [skip]="state.skip" [sort]="state.sort"
+          [filter]="state.filter" (sortChange)="sortChange($event)" (filterChange)="filterChange($event)"
+        (cellClick)="cellClickHandler($event)" [navigable]="true">
+          <kendo-grid-column field="ntptext1" title="Description" width="160">
+          </kendo-grid-column>
+          <kendo-grid-column field="shortfilename" title="Filename" width="140">
+          </kendo-grid-column>
+          <kendo-grid-column field="ntpmodifiedtime" title="Modified" width="150">
+          </kendo-grid-column>
+        </kendo-grid>
+      </ng-template>
+      </div>
+  </div>
+
+  <div class="row mt-2">
+    <div class="col-md-11 col-sm-11">
+      <div class="row mt-3 pull-right btnGrp">
+        <div >
+          <button type="button" class="btn btn-sm themeButton mr-2" [disabled]="SelectBtnDisabled" (click)="selectMethod()"
+            aria-expanded="false">Select Document</button>
+        </div>
+        <button type="button" class="btn btn-sm themeButton" (click)="closeMethod()">Cancel</button>
+
+
+      </div>
+    </div>
+  </div>
+
+
+
+</kendo-window>

@@ -114,7 +114,7 @@ export class ManageEmailsComponent implements OnInit {
       // this.userNotificationForm.get('name').disable();
       this.createNewEntry = false;
     }
-  
+
 
   }
 
@@ -183,7 +183,7 @@ export class ManageEmailsComponent implements OnInit {
 
   onSubmit() {
     this.submitted = true;
-    this.formErrorObject(); // empty form error 
+    this.formErrorObject(); // empty form error
     this.logValidationErrors(this.userNotificationForm);
 
     if (this.userNotificationForm.invalid || this.userNotificationForm.status == "DISABLED") {

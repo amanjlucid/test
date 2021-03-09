@@ -1,0 +1,261 @@
+<div class="layout-content">
+<div class="container-fluid flex-grow-1 container-p-y">
+  <div class="row">
+    <div class="col-md-2 col-sm-3">
+      <h4 class="font-weight-bold py-3 mb-1">
+        <!-- <span class="text-muted font-weight-light">Assets/</span> Assets -->
+        Batch Surveys
+      </h4>
+    </div>
+
+    <div class="col-md-9 col-sm-9">
+      <div class="row mt-3 pull-right btnGrp">
+        <div  *ngIf="checkGroupPermission('Assets Xport Grid')">
+          <button type="button" class="btn btn-sm themeButton" (click)="exportToExcel()"
+            aria-expanded="false">Export</button>
+        </div>
+        <button id="showFilePanel" (click)="openSearchBar()" class="btn btn-sm themeButton"><i class="fa fa-search"></i>
+        </button>
+
+      </div>
+    </div>
+
+    <div class="col-md-1 col-sm-12"></div>
+
+  </div>
+
+  <div class="row">
+    <div class="col-md-2 col-lg-6">
+      <h5 class="font-weight-normal">
+        Survey Project: {{surveyProjectLabel}}
+      </h5>
+      <h5 class="font-weight-normal">
+        Survey Batch:  {{surveyBatchLabel}}
+      </h5>
+    </div>
+  </div>
+
+  <div class="row" style="margin-top:13px;">
+    <!-- table-responsive -->
+    <div class="batchesGrid">
+      <!-- [ngStyle]="{'width': getTableWidth()}" -->
+      <table id="batchesTbl" class="table table-striped table-bordered batchesTbl"
+      *ngIf="batchSurveysLists.length > 0; else no_record">
+        <thead class="fixedHeader">
+          <tr>
+            <!--Hamburger Item-->
+            <th class="smallCol"></th>
+            <!--Survey Batches-->
+            <th class="midCol" style="cursor: pointer;" (click)="orderBy('SurveyCode')">Survey Code
+              <i class="lnr lnr-arrow-up sortIcon" aria-hidden="true"
+                *ngIf="batchSurveysListItem.OrderBy === 'SurveyCode' && batchSurveysListItem.OrderType === 'Asc'"></i>
+              <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
+                *ngIf="batchSurveysListItem.OrderBy === 'SurveyCode' && batchSurveysListItem.OrderType === 'Desc'"></i>
+            </th>
+            <th class="bigCol" style="cursor: pointer;" (click)="orderBy('SurveyName')">Survey Name
+              <i class="lnr lnr-arrow-up sortIcon" aria-hidden="true"
+                *ngIf="batchSurveysListItem.OrderBy === 'SurveyName' && batchSurveysListItem.OrderType === 'Asc'"></i>
+              <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
+                *ngIf="batchSurveysListItem.OrderBy === 'SurveyName' && batchSurveysListItem.OrderType === 'Desc'"></i>
+            </th>
+            <th class="midSmallCol" style="cursor: pointer;" (click)="orderBy('Version')">Version
+              <i class="lnr lnr-arrow-up sortIcon" aria-hidden="true"
+                *ngIf="batchSurveysListItem.OrderBy === 'Version' && batchSurveysListItem.OrderType === 'Asc'"></i>
+              <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
+                *ngIf="batchSurveysListItem.OrderBy === 'Version' && batchSurveysListItem.OrderType === 'Desc'"></i>
+            </th>
+            <th class="midCol" style="cursor: pointer;" (click)="orderBy('Asset')">Asset
+              <i class="lnr lnr-arrow-up sortIcon" aria-hidden="true"
+                *ngIf="batchSurveysListItem.OrderBy === 'Asset' && batchSurveysListItem.OrderType === 'Asc'"></i>
+              <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
+                *ngIf="batchSurveysListItem.OrderBy === 'Asset' && batchSurveysListItem.OrderType === 'Desc'"></i>
+            </th>
+            <th class="smallAddressCol" style="cursor: pointer;" (click)="orderBy('Address')">Address
+              <i class="lnr lnr-arrow-up sortIcon" aria-hidden="true"
+                *ngIf="batchSurveysListItem.OrderBy === 'Address' && batchSurveysListItem.OrderType === 'Asc'"></i>
+              <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
+                *ngIf="batchSurveysListItem.OrderBy === 'Address' && batchSurveysListItem.OrderType === 'Desc'"></i>
+            </th>
+            <th class="midCol" style="cursor: pointer;" (click)="orderBy('SurveyDate')">Survey Date
+              <i class="lnr lnr-arrow-up sortIcon" aria-hidden="true"
+                *ngIf="batchSurveysListItem.OrderBy === 'SurveyDate' && batchSurveysListItem.OrderType === 'Asc'"></i>
+              <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
+                *ngIf="batchSurveysListItem.OrderBy === 'SurveyDate' && batchSurveysListItem.OrderType === 'Desc'"></i>
+            </th>
+            <th class="midCol" style="cursor: pointer;" (click)="orderBy('Status')">Status
+              <i class="lnr lnr-arrow-up sortIcon" aria-hidden="true"
+                *ngIf="batchSurveysListItem.OrderBy === 'Status' && batchSurveysListItem.OrderType === 'Asc'"></i>
+              <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
+                *ngIf="batchSurveysListItem.OrderBy === 'Status' && batchSurveysListItem.OrderType === 'Desc'"></i>
+            </th>
+            <th class="midCol" style="cursor: pointer;" (click)="orderBy('PictureCount')">Picture Count
+              <i class="lnr lnr-arrow-up sortIcon" aria-hidden="true"
+                *ngIf="batchSurveysListItem.OrderBy === 'PictureCount' && batchSurveysListItem.OrderType === 'Asc'"></i>
+              <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
+                *ngIf="batchSurveysListItem.OrderBy === 'PictureCount' && batchSurveysListItem.OrderType === 'Desc'"></i>
+            </th>
+          </tr>
+        </thead>
+        <tbody class="fixTbody" (scroll)="onScroll($event)"
+          [ngStyle]="{'overflow-y': batchSurveysLists.length == 0 ? 'hidden' : 'scroll' }">
+
+          <tr class="odd gradeX" *ngFor="let batchSurvey of batchSurveysLists let i = index; trackBy:trackByFunction"
+            (click)="toggleClass($event, batchSurvey)">
+            <td class="smallCol">
+              <!--<i style="color: #dfdbdb;" class="fas fa-bars"></i>-->
+              <li class="nav-item dropdown list-unstyled" >
+                <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
+                <div class="dropdown-menu">
+                    <div class="dropdown-toggle" *ngIf="checkGroupPermission('Batch Survey Reports') ">
+                    <div class="dropdown-item">Reports...</div>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item"
+                          *ngIf="checkGroupPermission('Batch Survey Reports Details')"
+                          (click)="openReport(0, 'Survey Batch Assets')" href="javascript:void(0)">Survey Details...</a>
+                        <a class="dropdown-item"
+                          *ngIf="checkGroupPermission('Batch Survey Reports Notes')"
+                          (click)="openReport(564, 'Survey Batch Assets for Survey Notes')" href="javascript:void(0)">Survey Notes...</a>
+                          <div *ngIf="checkGroupPermission('Batch Survey Reports Photos')">
+                            <div *ngIf="canRunPicturesReport; else disabled_Photos">
+                              <a class="dropdown-item" (click)="openPhotosReport()" href="javascript:void(0)">Photos...</a>
+                            </div>
+                            <ng-template #disabled_Photos>
+                              <a class="dropdown-item isDisabled" href="javascript:void(0)">Photos...</a>
+                            </ng-template>
+                          </div>
+                          <div *ngIf="checkGroupPermission('Batch Survey Reports CBC Asbestos')">
+                            <div *ngIf="canRunCBCReport; else disabled_CBC">
+                              <a class="dropdown-item" (click)="openCBCReport()" href="javascript:void(0)">CBC Asbestos Report...</a>
+                            </div>
+                            <ng-template #disabled_CBC>
+                              <a class="dropdown-item isDisabled" href="javascript:void(0)">CBC Asbestos Report...</a>
+                            </ng-template>
+                          </div>
+                        </div>
+                    </div>
+                </div>
+              </li>
+            </td>
+            <td class="midCol">{{batchSurvey.surveyCode}}</td>
+            <td class="bigCol">{{batchSurvey.surveyName}}</td>
+            <td class="midSmallCol">{{batchSurvey.version}}</td>
+            <td class="midCol">{{batchSurvey.asset}}</td>
+            <td class="smallAddressCol">{{batchSurvey.address}}</td>
+            <td class="midCol">{{batchSurvey.surveyDate}}</td>
+            <td class="midCol">{{batchSurvey.status}}</td>
+            <td class="midCol">{{batchSurvey.pictureCount}}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- If table is empty -->
+
+      <ng-template #no_record>
+        <table id="batchesTbl" class="table table-striped table-bordered batchesTbl">
+          <thead class="fixedHeader">
+            <tr>
+              <th class="smallCol"></th>
+              <th class="midCol">Survey Code</th>
+              <th class="bigCol">Survey Name</th>
+              <th class="midSmallCol">Version</th>
+              <th class="midCol">Asset</th>
+              <th class="smallAddressCol">Address</th>
+              <th class="midCol">Survey Date</th>
+              <th class="midCol">Status</th>
+              <th class="midCol">Picture Count</th>
+            </tr>
+          </thead>
+          <tbody style="overflow-y:hidden;">
+            <tr>
+              <td style="background:#f8f8f8; border: none;">
+                No records available.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </ng-template>
+
+    </div>
+  </div>
+
+
+
+  <div class="portalwBlurtab"></div>
+
+</div>
+
+
+<!-- Search bar -->
+<div class="search-container dismiss">
+
+  <h5 style="color:white" class="p-4 m-0 line-height-1 font-weight-bolder bg-light theme-settings-header"> Filters
+    <a href="javascript:void(0)" (click)="closeSearchBar()" class="theme-settings-close-btn font-weight-light px-4 py-2"
+      style="color:#ffffff;" tabindex="-1">×</a> </h5>
+
+  <div class="searchDiv">
+    <form id="filterSearch">
+      <div class="filtersection">
+        <span class="filterHead">Batch Surveys</span>
+
+        <div class="form-group">
+          <label class="form-label form-label-sm">Status</label>
+          <select data-col="2" class="form-control form-control-sm"
+            (change)="filterTable($event.target.value, 'Status')">
+            <option [selected]="batchSurveysListItem.StatusFilter == 'All'" value="">All</option>
+            <option [selected]="batchSurveysListItem.StatusFilter == 'Active'" value="Active">Active</option>
+            <option [selected]="batchSurveysListItem.StatusFilter == 'Archived'" value="Archived">Archived</option>
+            <option [selected]="batchSurveysListItem.StatusFilter == 'Complete'" value="Complete">Complete</option>
+            <option [selected]="batchSurveysListItem.StatusFilter == 'Cloned'" value="Cloned">Cloned</option>
+            <option [selected]="batchSurveysListItem.StatusFilter == 'Downloaded'" value="Downloaded">Downloaded</option>
+            <option [selected]="batchSurveysListItem.StatusFilter == 'Export'" value="Export">Export</option>
+            <option [selected]="batchSurveysListItem.StatusFilter == 'New'" value="New">New</option>
+            <option [selected]="batchSurveysListItem.StatusFilter == 'Partial'" value="Partial">Partial</option>
+            <option [selected]="batchSurveysListItem.StatusFilter == 'Reassigned'" value="Reassigned">Reassigned</option>
+          </select>
+        </div>
+
+        <div class="form-group mt-3">
+          <label class="form-label form-label-sm">Survey Date</label>
+          <div>
+            <label class="form-label form-label-sm">From:</label>
+            <input name="surveyFromDate" data-col="0" type="date" min="1900-01-01" max="{{todaysDate}}"
+            class="form-control form-control-sm" placeholder="From Date"
+            (change)="filterTable($event.target.value, 'StartDate')" >
+          </div>
+          <div>
+            <label class="form-label form-label-sm">To:</label>
+            <input name="surveyToDate" data-col="1" type="date" min="{{selectedSurveyDate}}" max="{{todaysDate}}"
+            class="form-control form-control-sm" placeholder="To Date"
+            (change)="filterTable($event.target.value, 'EndDate')" >
+          </div>
+          <div class="form-group filterBtn">
+            <button id="" (click)="filterTable('', 'SurveyDate')" class="btn btn-sm themeButton">Filter
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="filtersection">
+        <div class="form-group">
+          <button id="" (click)="clearTable()" class="btn btn-sm themeButton">Clear
+          </button>
+        </div>
+      </div>
+    </form>
+
+  </div>
+</div>
+</div>
+
+<div class="example-wrapper">
+<!--  <app-tab-window [selectedAsset]="selectedAsset" [assetId]="assetId" [tabWindow]="tabWindow" [tabName]="tabName"
+    *ngIf="tabWindow" (closeWindow)="closeTabWindow($event)"></app-tab-window>-->
+
+  <!-- Reporting Section -->
+
+  <app-reporting [reportingAction]="reportingAction" [surveyPortalXport]="selectedXport" [openReports]="openReports"
+    *ngIf="openReports" (closeReportingWin)="closeReportingWin($event)"></app-reporting>
+
+</div>
+

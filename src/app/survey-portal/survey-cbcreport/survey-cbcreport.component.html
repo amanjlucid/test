@@ -1,0 +1,240 @@
+<div class="layout-content">
+
+  <div class="container-fluid flex-grow-1 container-p-y">
+
+  <div class="row">
+    <div class="col-md-2 col-sm-3">
+      <h4 class="font-weight-bold py-3 mb-1">
+        <!-- <span class="text-muted font-weight-light">Assets/</span> Assets -->
+        CBC Asbestos Report
+      </h4>
+    </div>
+
+    <div class="col-md-9 col-sm-9">
+      <div class="row mt-3 pull-right btnGrp">
+        <button type="button" class="btn btn-sm themeButton" (click)="closeWindow()"
+        aria-expanded="false">Close</button>
+      </div>
+      <div>
+
+      </div>
+    </div>
+
+    <div class="col-md-1 col-sm-12"></div>
+
+  </div>
+
+  <div class="row">
+    <div class="col-md-2 col-lg-6">
+      <h5 class="font-weight-normal">
+        Project: {{surveyProjectLabel}}
+      </h5>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-4 col-lg-6">
+      <h5 class="font-weight-normal">
+        Survey: {{surveyAssetLabel}}
+      </h5>
+    </div>
+    <span class="col-md-4 " ></span>
+    <div class="col-md-2 ">
+      <h5 class="font-weight-normal">
+        Survey Date: {{surveyDateLabel}}
+      </h5>
+    </div>
+  </div>
+
+
+
+    <div class="card mb-4">
+
+      <div class="card-body">
+        <form [formGroup]="cbcReportForm" (ngSubmit)="onSubmit()" autocomplete="off">
+
+          <div class="col-md-12 mt-2"></div>
+
+          <div class="row">
+            <label class="col-md-2">Front Page Image:</label>
+            <div class="col-md-3" >
+              <input type="text" class="form-control" readonly="true" formControlName="frontPageText" >
+            </div>
+            <div class="col-md-1" >
+              <button type="button" class="btn btn-sm themeButton" (click)="selectFrontPage()"
+              aria-expanded="false">...</button>
+            </div>
+            <label class="col-md-2">Signature Image:</label>
+            <div class="col-md-3" >
+                <input type="text" class="form-control" readonly="true" formControlName="signatureText" >
+            </div>
+            <div class="col-md-1" >
+             <button type="button" class="btn btn-sm themeButton" (click)="openUploadImagePopup()"
+              aria-expanded="false">...</button>
+
+            </div>
+          </div>
+
+          <div class="row">
+              <span class="col-md-3"></span>
+              <div class="col-md-2">
+                <div class="form-group mt-3" *ngIf="FrontPageSelected else frontPage">
+                  <img class="imgCl" [src]="getImg(frontPageImage)" >
+                </div>
+                <ng-template #frontPage>
+                    <iframe class="iFrameDefault mt-3" ></iframe>
+                </ng-template>
+              </div>
+              <span class="col-md-1"></span>
+
+              <span class="col-md-3"></span>
+              <div class="col-md-2">
+                <div class="form-group mt-3"  *ngIf="SignatureSelected else signature">
+                  <img class="imgCl" [src]="getImg(signatureImage)" >
+                </div>
+                <ng-template #signature>
+                  <iframe class="iFrameDefault mt-3" ></iframe>
+                </ng-template>
+              </div>
+              <span class="col-md-1"></span>
+
+
+          </div>
+          <div class="col-md-12 mt-2"></div>
+
+          <div class="row">
+            <label class="col-md-2">Site Plan:</label>
+            <div class="col-md-3" >
+              <input type="text" class="form-control" readonly="true" formControlName="sitePlanText" >
+            </div>
+            <div class="col-md-1" >
+              <button type="button" class="btn btn-sm themeButton" (click)="selectSitePlan()"
+              aria-expanded="false">...</button>
+            </div>
+            <label class="col-md-2">Certificate:</label>
+            <div class="col-md-3" >
+                <input type="text" class="form-control" readonly="true" formControlName="certificateText" >
+            </div>
+            <div class="col-md-1" >
+              <button type="button" class="btn btn-sm themeButton" (click)="selectCertificate()"
+              aria-expanded="false">...</button>
+            </div>
+          </div>
+
+          <div class="col-md-12 mt-4"></div>
+
+          <div class="row">
+            <label class="col-md-2">Asbestos Selections:</label>
+            <label class="col-md-2">Cement:</label>
+            <div class="col-md-2">
+              <label class="switcher">
+                <input type="checkbox" class="switcher-input" formControlName="cement">
+                <span class="switcher-indicator">
+                  <span class="switcher-yes"><span class="ion ion-md-checkmark"></span></span>
+                  <span class="switcher-no"><span class="ion ion-md-close"></span></span>
+                </span>
+              </label>
+            </div>
+            <span class="col-md-6"></span>
+          </div>
+
+          <div class="col-md-12 mt-1"></div>
+
+          <div class="row">
+            <span class="col-md-2"></span>
+            <label class="col-md-2">Floor tiles and adhesives:</label>
+            <div class="col-md-2">
+              <label class="switcher">
+                <input type="checkbox" class="switcher-input" formControlName="tiles">
+                <span class="switcher-indicator">
+                  <span class="switcher-yes"><span class="ion ion-md-checkmark"></span></span>
+                  <span class="switcher-no"><span class="ion ion-md-close"></span></span>
+                </span>
+              </label>
+            </div>
+            <span class="col-md-6"></span>
+          </div>
+
+          <div class="col-md-12 mt-1"></div>
+
+          <div class="row">
+            <span class="col-md-2"></span>
+            <label class="col-md-2">Textured coatings:</label>
+            <div class="col-md-2">
+              <label class="switcher">
+                <input type="checkbox" class="switcher-input" formControlName="coatings">
+                <span class="switcher-indicator">
+                  <span class="switcher-yes"><span class="ion ion-md-checkmark"></span></span>
+                  <span class="switcher-no"><span class="ion ion-md-close"></span></span>
+                </span>
+              </label>
+            </div>
+            <span class="col-md-6"></span>
+          </div>
+
+          <div class="col-md-12 mt-1"></div>
+
+          <div class="row">
+            <span class="col-md-2"></span>
+            <label class="col-md-2">Composite material:</label>
+            <div class="col-md-2">
+              <label class="switcher">
+                <input type="checkbox" class="switcher-input" formControlName="material">
+                <span class="switcher-indicator">
+                  <span class="switcher-yes"><span class="ion ion-md-checkmark"></span></span>
+                  <span class="switcher-no"><span class="ion ion-md-close"></span></span>
+                </span>
+              </label>
+            </div>
+            <span class="col-md-5"></span>
+            <div class="col-md-1">
+              <button type="button" class="btn btn-sm themeButton minWidth80" (click)="runReport(true)" [disabled]="previewDisabled"
+              aria-expanded="false">Preview</button>
+            </div>
+          </div>
+          <div class="col-md-12 mt-1"></div>
+
+          <div class="row">
+            <span class="col-md-2"></span>
+            <label class="col-md-2">Insulating board:</label>
+            <div class="col-md-2">
+              <label class="switcher">
+                <input type="checkbox" class="switcher-input" formControlName="board">
+                <span class="switcher-indicator">
+                  <span class="switcher-yes"><span class="ion ion-md-checkmark"></span></span>
+                  <span class="switcher-no"><span class="ion ion-md-close"></span></span>
+                </span>
+              </label>
+            </div>
+            <span class="col-md-5"></span>
+            <div class="col-md-1">
+              <button type="button" class="btn btn-sm themeButton minWidth80" (click)="runReport(false)" [disabled]="generateDisabled"
+              aria-expanded="false">Generate</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+
+  </div>
+
+  <div class="portalwBlur"></div>
+</div>
+
+<app-survey-cbcreport-select-image *ngIf="openImageList" [openCBCselectImage]="openImageList"
+    [AssetID]="selectedAsset.Assid"  [surveyAssetLabel]="surveyAssetLabel"  (closeCBCImage)="closeCBCImage($event)">
+  </app-survey-cbcreport-select-image>
+
+
+<app-survey-cbcreport-select-pdf *ngIf="openPDFList" [openCBCselectPDF]="openPDFList"
+    [AssetID]="selectedAsset.Assid"  [surveyAssetLabel]="surveyAssetLabel" [selectType]="selectPDFType" (closeCBCselectPDF)="closeCBCselectPDF($event)">
+  </app-survey-cbcreport-select-pdf>
+
+
+<app-survey-cbcreport-signature-image *ngIf="openSignatureImage" [openSignatureImage]="openSignatureImage" (uploadedSuccessfull)="uploadedSuccessfull($event)"
+  (closeReportImages)="closeSignatureImage($event)"></app-survey-cbcreport-signature-image>
+
+
+
+

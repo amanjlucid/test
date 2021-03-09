@@ -10,7 +10,7 @@ import { LoginComponent } from './login';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { AuthGuard } from './_guards';
 import { JwtInterceptor, ErrorInterceptor, LoaderInterceptorService, NgbDateCustomParserFormatter } from './_helpers';
-import { AlertService, AuthenticationService, UserService, LoaderService, GroupService, CharacteristicGroupService, ElementGroupService, AttributeGroupService, PortalGroupService, FunctionSecurityService, PropertySecurityGroupService, ReportingGroupService, ConfirmationDialogService, EventService, AssetAttributeService, SharedService, ServicePortalService, SettingsService, HnsPortalService, HnsResultsService, EventManagerDashboardService, EventManagerService, WebReporterService } from './_services';
+import { AlertService, AuthenticationService, UserService, LoaderService, GroupService, CharacteristicGroupService, ElementGroupService, AttributeGroupService, PortalGroupService, FunctionSecurityService, PropertySecurityGroupService, ReportingGroupService, ConfirmationDialogService, EventService, AssetAttributeService, SharedService, ServicePortalService, SettingsService, HnsPortalService, HnsResultsService, EventManagerDashboardService, EventManagerService, WebReporterService, SurveyPortalService } from './_services';
 import { AlertComponent, LoaderComponent, KendoGridColor, KendoZindex, MyDatePicker, DecimalValidation } from './_directives';
 import { GridModule, ExcelModule } from '@progress/kendo-angular-grid';
 import { InputsModule } from '@progress/kendo-angular-inputs';
@@ -102,6 +102,17 @@ import { AssetEpcRouterComponent } from './assets-portal/asset-energy/asset-epc-
 import { RetrievedEpcGridComponent } from './assets-portal/asset-energy/retrieved-epc-grid/retrieved-epc-grid.component';
 import { WorksordersDashboardComponent } from './worksorders/worksorders-dashboard/worksorders-dashboard.component';
 import { WorksordersRouterComponent } from './worksorders/worksorders-router/worksorders-router.component';
+import { SurveyProjectsComponent } from './survey-portal/survey-projects/survey-projects.component';
+import { SurveyProjectSurveysComponent } from './survey-portal/survey-project-surveys/survey-project-surveys.component';
+import { SurveyBatchesComponent } from './survey-portal/survey-batches/survey-batches.component';
+import { SurveyBatchSurveysComponent } from './survey-portal/survey-batch-surveys/survey-batch-surveys.component';
+import { SurveyProjectAccessComponent } from './survey-portal/survey-project-access/survey-project-access.component';
+import { SurveyProjectSettingsComponent } from './survey-portal/survey-project-settings/survey-project-settings.component';
+import { SurveyDashboardComponent} from './survey-portal/survey-dashboard/survey-dashboard.component';
+import { SurveyCbcreportComponent } from './survey-portal/survey-cbcreport/survey-cbcreport.component';
+import { SurveyCbcreportSelectPDFComponent } from './survey-portal/survey-cbcreport-select-pdf/survey-cbcreport-select-pdf.component';
+import { SurveyCbcreportSelectImageComponent } from './survey-portal/survey-cbcreport-select-image/survey-cbcreport-select-image.component';
+import { SurveyCbcreportSignatureImageComponent } from './survey-portal/survey-cbcreport-signature-image/survey-cbcreport-signature-image.component';
 
 
 
@@ -194,7 +205,17 @@ import { WorksordersRouterComponent } from './worksorders/worksorders-router/wor
     RetrievedEpcGridComponent,
     WorksordersDashboardComponent,
     WorksordersRouterComponent,
-
+    SurveyProjectsComponent,
+    SurveyProjectSurveysComponent,
+    SurveyBatchesComponent,
+    SurveyBatchSurveysComponent,
+    SurveyProjectAccessComponent,
+    SurveyProjectSettingsComponent,
+    SurveyDashboardComponent,
+    SurveyCbcreportComponent,
+    SurveyCbcreportSelectImageComponent,
+    SurveyCbcreportSelectPDFComponent,
+    SurveyCbcreportSignatureImageComponent
 
   ],
 
@@ -248,6 +269,7 @@ import { WorksordersRouterComponent } from './worksorders/worksorders-router/wor
     EventService,
     EventManagerService,
     WebReporterService,
+    SurveyPortalService,
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptorService, multi: true },

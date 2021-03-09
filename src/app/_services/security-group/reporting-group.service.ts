@@ -138,4 +138,22 @@ export class ReportingGroupService {
         return this.http.post<any>(`${appConfig.apiUrl}/api/Report/EmailPreview`, body, httpOptions);
     }
 
+    RunSurveyPortalXports(xportID: number, Params: string[], preview)
+    {
+        var httpOptions = {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json'
+            }),
+        };
+
+        let lstParamNameValue: string[] = Params;
+        var postData = {
+            intXportId: xportID,
+            lstParamNameValue: lstParamNameValue,
+            lngMaxRows: preview
+        };
+        let body = JSON.stringify(postData);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/Report/CreateXportOutput`, body, httpOptions);
+    }
+
 }

@@ -1,0 +1,286 @@
+<div class="layout-content">
+<div class="container-fluid flex-grow-1 container-p-y">
+  <div class="row">
+    <div class="col-md-2 col-sm-3">
+      <h4 class="font-weight-bold py-3 mb-1">
+        <!-- <span class="text-muted font-weight-light">Assets/</span> Assets -->
+        Project Surveys
+      </h4>
+    </div>
+
+    <div class="col-md-9 col-sm-9">
+      <div class="row mt-3 pull-right btnGrp">
+        <div  *ngIf="checkGroupPermission('Project Surveys Xport Grid')">
+          <button type="button" class="btn btn-sm themeButton" (click)="exportToExcel()"
+            aria-expanded="false">Export</button>
+        </div>
+        <button id="showFilePanel" (click)="openSearchBar()" class="btn btn-sm themeButton"><i class="fa fa-search"></i>
+        </button>
+
+      </div>
+    </div>
+
+    <div class="col-md-1 col-sm-12"></div>
+
+  </div>
+
+  <div class="row">
+    <div class="col-md-2 col-lg-6">
+      <h5 class="font-weight-normal">
+        Survey Project: {{surveyProjectLabel}}
+      </h5>
+    </div>
+  </div>
+
+  <div class="row" style="margin-top:13px;">
+    <!-- table-responsive -->
+    <div class="batchesGrid">
+      <!-- [ngStyle]="{'width': getTableWidth()}" -->
+      <table id="batchesTbl" class="table table-striped table-bordered batchesTbl"
+      *ngIf="projectSurveysLists.length > 0; else no_record">
+        <thead class="fixedHeader">
+          <tr>
+            <!--Hamburger Item-->
+            <!--<th class="smallCol"></th>-->
+            <!--Survey Batches-->
+            <th class="midCol" style="cursor: pointer;" (click)="orderBy('InSurvey')">In Survey
+              <i class="lnr lnr-arrow-up sortIcon" aria-hidden="true"
+                *ngIf="projectSurveysListItem.OrderBy === 'InSurvey' && projectSurveysListItem.OrderType === 'Asc'"></i>
+              <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
+                *ngIf="projectSurveysListItem.OrderBy === 'InSurvey' && projectSurveysListItem.OrderType === 'Desc'"></i>
+            </th>
+            <th class="midCol" style="cursor: pointer;" (click)="orderBy('Asset')">Asset
+              <i class="lnr lnr-arrow-up sortIcon" aria-hidden="true"
+                *ngIf="projectSurveysListItem.OrderBy === 'Asset' && projectSurveysListItem.OrderType === 'Asc'"></i>
+              <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
+                *ngIf="projectSurveysListItem.OrderBy === 'Asset' && projectSurveysListItem.OrderType === 'Desc'"></i>
+            </th>
+            <th class="smallAddressCol" style="cursor: pointer;" (click)="orderBy('Address')">Address
+              <i class="lnr lnr-arrow-up sortIcon" aria-hidden="true"
+                *ngIf="projectSurveysListItem.OrderBy === 'Address' && projectSurveysListItem.OrderType === 'Asc'"></i>
+              <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
+                *ngIf="projectSurveysListItem.OrderBy === 'Address' && projectSurveysListItem.OrderType === 'Desc'"></i>
+            </th>
+            <th class="midCol" style="cursor: pointer;" (click)="orderBy('AssetType')">Asset Type
+              <i class="lnr lnr-arrow-up sortIcon" aria-hidden="true"
+                *ngIf="projectSurveysListItem.OrderBy === 'AssetType' && projectSurveysListItem.OrderType === 'Asc'"></i>
+              <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
+                *ngIf="projectSurveysListItem.OrderBy === 'AssetType' && projectSurveysListItem.OrderType === 'Desc'"></i>
+            </th>
+            <th class="midCol" style="cursor: pointer;" (click)="orderBy('Status')">Status
+              <i class="lnr lnr-arrow-up sortIcon" aria-hidden="true"
+                *ngIf="projectSurveysListItem.OrderBy === 'Status' && projectSurveysListItem.OrderType === 'Asc'"></i>
+              <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
+                *ngIf="projectSurveysListItem.OrderBy === 'Status' && projectSurveysListItem.OrderType === 'Desc'"></i>
+            </th>
+            <th class="midCol" style="cursor: pointer;" (click)="orderBy('SrvCode')">Survey Code
+              <i class="lnr lnr-arrow-up sortIcon" aria-hidden="true"
+                *ngIf="projectSurveysListItem.OrderBy === 'SrvCode' && projectSurveysListItem.OrderType === 'Asc'"></i>
+              <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
+                *ngIf="projectSurveysListItem.OrderBy === 'SrvCode' && projectSurveysListItem.OrderType === 'Desc'"></i>
+            </th>
+            <th class="midCol" style="cursor: pointer;" (click)="orderBy('SrvVersion')">Version
+              <i class="lnr lnr-arrow-up sortIcon" aria-hidden="true"
+                *ngIf="projectSurveysListItem.OrderBy === 'SrvVersion' && projectSurveysListItem.OrderType === 'Asc'"></i>
+              <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
+                *ngIf="projectSurveysListItem.OrderBy === 'SrvVersion' && projectSurveysListItem.OrderType === 'Desc'"></i>
+            </th>
+            <th class="bigCol" style="cursor: pointer;" (click)="orderBy('BatchName')">Batch
+              <i class="lnr lnr-arrow-up sortIcon" aria-hidden="true"
+                *ngIf="projectSurveysListItem.OrderBy === 'BatchName' && projectSurveysListItem.OrderType === 'Asc'"></i>
+              <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
+                *ngIf="projectSurveysListItem.OrderBy === 'SBatchName' && projectSurveysListItem.OrderType === 'Desc'"></i>
+            </th>
+            <th class="midCol" style="cursor: pointer;" (click)="orderBy('SurveyorID')">Surveyor ID
+              <i class="lnr lnr-arrow-up sortIcon" aria-hidden="true"
+                *ngIf="projectSurveysListItem.OrderBy === 'SurveyorID' && projectSurveysListItem.OrderType === 'Asc'"></i>
+              <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
+                *ngIf="projectSurveysListItem.OrderBy === 'SurveyorID' && projectSurveysListItem.OrderType === 'Desc'"></i>
+            </th>
+          </tr>
+        </thead>
+        <tbody class="fixTbody" (scroll)="onScroll($event)"
+          [ngStyle]="{'overflow-y': projectSurveysLists.length == 0 ? 'hidden' : 'scroll' }">
+
+          <tr class="odd gradeX" *ngFor="let projectSurvey of projectSurveysLists let i = index; trackBy:trackByFunction"
+            (click)="toggleClass($event, projectSurvey)">
+           <!-- <td class="smallCol">
+                <li class="nav-item dropdown list-unstyled" >
+                <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
+                <div class="dropdown-menu">
+                    <div class="dropdown-toggle" *ngIf="checkGroupPermission('Asset Reports') ">
+                    <div class="dropdown-item">Reports...</div>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item"
+                          *ngIf="checkGroupPermission('Asset Reports Details')"
+                          (click)="openReport(0, 'Survey Batch Assets')" href="javascript:void(0)">Survey Details...</a>
+                        <a class="dropdown-item"
+                          *ngIf="checkGroupPermission('Asset Reports Notes')"
+                          (click)="openReport(564, 'Survey Batch Assets for Survey Notes')" href="javascript:void(0)">Survey Notes...</a>
+                        <a class="dropdown-item"
+                          *ngIf="checkGroupPermission('Asset Reports Photos')"
+                          (click)="openPhotosReport()" href="javascript:void(0)">Photos...</a>
+                        <a class="dropdown-item"
+                          *ngIf="checkGroupPermission('Asset Reports CBC Asbestos')"
+                          (click)="openCBCReport()" href="javascript:void(0)">CBC Asbestos Report...</a>
+                        </div>
+                    </div>
+                </div>
+              </li>
+            </td>-->
+            <td class="midCol">
+              <div class="iconDiv">
+                </div>
+                <img title="SettingsExist" style="height: 14px;" *ngIf="projectSurvey.inSurvey == 'Y'"
+                  class="table-icon-wr" src="assets/img/icons/tick.png" />
+            </td>
+            <td class="midCol">{{projectSurvey.asset}}</td>
+            <td class="smallAddressCol">{{projectSurvey.address}}</td>
+            <td class="midCol">{{projectSurvey.assetType}}</td>
+            <td class="midCol">{{projectSurvey.status}}</td>
+            <td class="midCol">{{projectSurvey.srvCode}}</td>
+            <td class="midCol">{{projectSurvey.srvVersion}}</td>
+            <td class="bigCol">{{projectSurvey.batchName}}</td>
+            <td class="midCol">{{projectSurvey.surveyorID}}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- If table is empty -->
+
+      <ng-template #no_record>
+        <table id="batchesTbl" class="table table-striped table-bordered batchesTbl">
+          <thead class="fixedHeader">
+            <tr>
+              <th class="midCol">In Survey</th>
+              <th class="midCol">Asset</th>
+              <th class="smallAddressCol">Address</th>
+              <th class="midCol">Asset Type</th>
+              <th class="midCol">Status</th>
+              <th class="midCol">Survey Code</th>
+              <th class="midCol">Version</th>
+              <th class="bigCol">Batch Name</th>
+              <th class="midCol">Surveyor ID</th>
+            </tr>
+          </thead>
+          <tbody style="overflow-y:hidden;">
+            <tr>
+              <td style="background:#f8f8f8; border: none;">
+                No records available.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </ng-template>
+
+    </div>
+  </div>
+
+
+
+  <div class="portalwBlurtab"></div>
+
+</div>
+
+
+<!-- Search bar -->
+<div class="search-container dismiss">
+
+  <h5 style="color:white" class="p-4 m-0 line-height-1 font-weight-bolder bg-light theme-settings-header"> Filters
+    <a href="javascript:void(0)" (click)="closeSearchBar()" class="theme-settings-close-btn font-weight-light px-4 py-2"
+      style="color:#ffffff;" tabindex="-1">×</a> </h5>
+
+  <div class="searchDiv">
+    <form id="filterSearch">
+      <div class="filtersection">
+        <span class="filterHead">Project Surveys</span>
+
+        <div class="form-group mt-3">
+          <label class="form-label form-label-sm">Asset</label>
+          <input (keyup)="filterTable($event.target.value, 'Asset')" name="srvCode" data-col="0" type="text"
+            class="form-control form-control-sm" placeholder="Search By Asset">
+        </div>
+
+        <div class="form-group mt-3">
+          <label class="form-label form-label-sm">Address</label>
+          <input (keyup)="filterTable($event.target.value, 'Address')" name="srvCode" data-col="0" type="text"
+            class="form-control form-control-sm" placeholder="Search By Address">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label form-label-sm">Asset Type</label>
+          <select data-col="2" class="form-control form-control-sm"
+            (change)="filterTable($event.target.value, 'AssetType')">
+            <option selected value="">All Types</option>
+            <option *ngFor="let assetType of assetTypes" [value]="assetType">{{assetType}}</option>          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label form-label-sm">Status</label>
+          <select data-col="2" class="form-control form-control-sm"
+            (change)="filterTable($event.target.value, 'Status')">
+            <option [selected]="projectSurveysListItem.StatusFilter == ''" value="">All</option>
+            <option [selected]="projectSurveysListItem.StatusFilter == 'Active'" value="Active">Active</option>
+            <option [selected]="projectSurveysListItem.StatusFilter == 'Archived'" value="Archived">Archived</option>
+            <option [selected]="projectSurveysListItem.StatusFilter == 'Assigned'" value="Assigned">Assigned</option>
+            <option [selected]="projectSurveysListItem.StatusFilter == 'Cloned'" value="Cloned">Cloned</option>
+            <option [selected]="projectSurveysListItem.StatusFilter == 'Closed'" value="Closed">Closed</option>
+            <option [selected]="projectSurveysListItem.StatusFilter == 'Downloaded'" value="Downloaded">Downloaded</option>
+            <option [selected]="projectSurveysListItem.StatusFilter == 'Exported'" value="Exported">Exported</option>
+            <option [selected]="projectSurveysListItem.StatusFilter == 'New'" value="New">New</option>
+            <option [selected]="projectSurveysListItem.StatusFilter == 'Pending'" value="Pending">Pending</option>
+          </select>
+        </div>
+
+        <div class="form-group mt-3">
+          <label class="form-label form-label-sm">Survey Code</label>
+          <input (keyup)="filterTable($event.target.value, 'SrvCode')" name="srvCode" data-col="0" type="text"
+            class="form-control form-control-sm" placeholder="Search By Survey Code">
+        </div>
+
+        <div class="form-group mt-3">
+          <label class="form-label form-label-sm">Version</label>
+          <input  (change)="filterTable($event.target.value, 'SrvVersion')" name="srvVersion" data-col="0" type="number"
+          min="1" max="9999" class="form-control form-control-sm midSmallCol" placeholder="Search By Version">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label form-label-sm">Not In Survey</label>
+          <label class="switcher switcher-secondary osFilterLabel">
+            <input type="checkbox" value="{{InSurvey}}" (change)="filterTable('Change', 'InSurvey')"
+              class="switcher-input">
+            <span class="switcher-indicator osFilterSwitch">
+              <span class="switcher-yes">
+                <span class="ion ion-md-checkmark"></span>
+              </span>
+              <span class="switcher-no">
+                <span class="ion ion-md-close"></span>
+              </span>
+            </span>
+          </label>
+        </div>
+      </div>
+
+
+      <div class="filtersection">
+        <div class="form-group">
+          <button id="" (click)="clearTable()" class="btn btn-sm themeButton">Clear
+          </button>
+        </div>
+      </div>
+    </form>
+
+  </div>
+</div>
+</div>
+<div class="example-wrapper">
+<!--  <app-tab-window [selectedAsset]="selectedAsset" [assetId]="assetId" [tabWindow]="tabWindow" [tabName]="tabName"
+    *ngIf="tabWindow" (closeWindow)="closeTabWindow($event)"></app-tab-window>-->
+
+  <!-- Reporting Section -->
+
+  <app-reporting [reportingAction]="reportingAction" [surveyPortalXport]="selectedXport" [openReports]="openReports"
+    *ngIf="openReports" (closeReportingWin)="closeReportingWin($event)"></app-reporting>
+
+</div>
+

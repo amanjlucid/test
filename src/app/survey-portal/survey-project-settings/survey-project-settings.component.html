@@ -1,0 +1,190 @@
+<div class="layout-content">
+
+  <div class="container-fluid flex-grow-1 container-p-y">
+
+  <div class="row">
+    <div class="col-md-2 col-sm-3">
+      <h4 class="font-weight-bold py-3 mb-1">
+        <!-- <span class="text-muted font-weight-light">Assets/</span> Assets -->
+        Survey Settings
+      </h4>
+    </div>
+
+    <div class="col-md-9 col-sm-9">
+      <div class="row mt-3 pull-right btnGrp">
+        <button type="button" class="btn btn-sm themeButton" (click)="closeWindow()"
+        aria-expanded="false">Close</button>
+      </div>
+      <div>
+
+      </div>
+    </div>
+
+    <div class="col-md-1 col-sm-12"></div>
+
+  </div>
+
+  <div class="row">
+    <div class="col-md-2 col-lg-6">
+      <h5 class="font-weight-normal">
+        Survey Project: {{surveyProjectLabel}}
+      </h5>
+    </div>
+  </div>
+
+    <div class="card mb-4">
+
+      <div class="card-body">
+        <form [formGroup]="settingsForm" (ngSubmit)="onSubmit()" autocomplete="off">
+
+          <div class="row">
+            <label class="col-md-3">Survey Batch Recycling</label>
+            <div class="col-md-7">
+              <label class="switcher">
+                <input type="checkbox" class="switcher-input" formControlName="batchRecycling" (ngModelChange)="batchRecyclingChanged()" >
+                <span class="switcher-indicator">
+                  <span class="switcher-yes"><span class="ion ion-md-checkmark"></span></span>
+                  <span class="switcher-no"><span class="ion ion-md-close"></span></span>
+                </span>
+              </label>
+            </div>
+          </div>
+          <div class="col-md-12 mt-2"></div>
+
+          <div class="row">
+            <label class="col-md-3">Automatically Import Survey Batches</label>
+            <div class="col-md-7" >
+              <label class="switcher">
+                <input type="checkbox" class="switcher-input" formControlName="automaticImport">
+                <span class="switcher-indicator">
+                  <span class="switcher-yes"><span class="ion ion-md-checkmark"></span></span>
+                  <span class="switcher-no"><span class="ion ion-md-close"></span></span>
+                </span>
+              </label>
+            </div>
+
+          </div>
+
+          <div class="col-md-12 mt-2"></div>
+          <span class="underline"></span>
+          <div class="col-md-12 mt-4"></div>
+
+          <div class="row">
+            <label class="col-md-3">Search All Assets</label>
+            <div class="col-md-7">
+              <label class="switcher">
+                <input type="checkbox" class="switcher-input" formControlName="searchAllStock">
+                <span class="switcher-indicator">
+                  <span class="switcher-yes"><span class="ion ion-md-checkmark"></span></span>
+                  <span class="switcher-no"><span class="ion ion-md-close"></span></span>
+                </span>
+              </label>
+            </div>
+          </div>
+          <div class="col-md-12 mt-2"></div>
+
+          <div class="row">
+            <label class="col-md-3">Change Survey Lookup Mode</label>
+            <div class="col-md-7">
+              <label class="switcher">
+                <input type="checkbox" class="switcher-input" formControlName="changeLookupMode">
+                <span class="switcher-indicator">
+                  <span class="switcher-yes"><span class="ion ion-md-checkmark"></span></span>
+                  <span class="switcher-no"><span class="ion ion-md-close"></span></span>
+                </span>
+              </label>
+            </div>
+          </div>
+
+          <div class="col-md-12 mt-2"></div>
+
+          <div class="row">
+            <label class="col-md-3 mr-2">Default Survey Lookup</label>
+            <select data-col="2" class="col-md-3 form-control form-control-sm" formControlName="lookupMode">
+              <!--(change)="setLookupMode($event.target.value, 'Lookup')">-->
+              <option value="ALL">All Survey Definitions</option>
+              <option value="PROJECT">Pre-existing Survey Definitions in Project only</option>
+              <option value="PROJECTASSET">Pre-existing Surveys in Project only</option>
+            </select>
+            <span class="col-md-6"></span>
+          </div>
+
+          <div class="col-md-12 mt-2"></div>
+          <span class="underline"></span>
+          <div class="col-md-12 mt-4"></div>
+
+          <div class="row">
+            <label class="col-md-3">Survey Batch Archiving</label>
+            <div class="col-md-1">
+              <label class="switcher">
+                <input type="checkbox" class="switcher-input" formControlName="projectArchiving">
+                <span class="switcher-indicator">
+                  <span class="switcher-yes"><span class="ion ion-md-checkmark"></span></span>
+                  <span class="switcher-no"><span class="ion ion-md-close"></span></span>
+                </span>
+              </label>
+            </div>
+            <div class="col-md-2">
+              <label>Archive Period (days)</label>
+            </div>
+            <div class="col-md-1" *ngIf="this.settingsForm.controls.projectArchiving.value">
+              <input class="form-control form-control-sm" name="srvVersion" data-col="0" type="number"
+              min="0" max="9999" formControlName="projectArchivePeriod"  >
+            </div>
+            <div class="col-md-1" *ngIf="!this.settingsForm.controls.projectArchiving.value">
+              <input class="form-control form-control-sm" name="srvVersion" data-col="0" type="number"
+              min="0" max="0" value="0" readOnly="true" >
+            </div>
+            <span class="col-md-3"></span>
+          </div>
+          <div class="col-md-12 mt-2"></div>
+
+          <!--<div class="row">
+            <label class="col-md-3">Auto Batching</label>
+            <div class="col-md-7">
+              <label class="switcher">
+                <input type="checkbox" class="switcher-input" formControlName="autoBatch">
+                <span class="switcher-indicator">
+                  <span class="switcher-yes"><span class="ion ion-md-checkmark"></span></span>
+                  <span class="switcher-no"><span class="ion ion-md-close"></span></span>
+                </span>
+              </label>
+            </div>
+          </div>
+          <div class="col-md-12 mt-2"></div>
+
+          <div class="row">
+            <label class="col-md-3">Auto Batching on Archive</label>
+            <div class="col-md-7">
+              <label class="switcher">
+                <input type="checkbox" class="switcher-input" formControlName="autoBatchArchive">
+                <span class="switcher-indicator">
+                  <span class="switcher-yes"><span class="ion ion-md-checkmark"></span></span>
+                  <span class="switcher-no"><span class="ion ion-md-close"></span></span>
+                </span>
+              </label>
+            </div>
+          </div>
+
+          <div class="col-md-12 mt-2"></div>-->
+
+          <span class="underline"></span>
+          <div class="col-md-12 mt-4"></div>
+
+          <div class="row">
+
+            <button class="btn btn-sm themeButton ml-1">Save</button>
+            <span class="mr-2"></span>
+            <button class="btn btn-sm themeButton" (click)="openConfirmationDialog()">Delete</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+
+  </div>
+</div>
+
+
+
+

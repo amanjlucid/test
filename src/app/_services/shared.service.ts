@@ -124,6 +124,13 @@ export class SharedService {
   }
 
 
+  private surveyPortalSecurityListSrc = new BehaviorSubject<any>([]);
+  surveyPortalSecurityList = this.surveyPortalSecurityListSrc.asObservable();
+
+  changeSurveyPortalSecurityList(data) {
+    this.surveyPortalSecurityListSrc.next(data);
+  }
+
   private resultHeaderFilters = new BehaviorSubject<any>([]);
   resultHeaderFiltersList = this.resultHeaderFilters.asObservable();
 
