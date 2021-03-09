@@ -145,6 +145,19 @@
                 </kendo-grid-column>
 
                 <kendo-grid-column field="hascode" title="Code" width="120">
+                    <ng-template kendoGridFilterMenuTemplate
+                    let-column="column"
+                    let-filter="filter"
+                    let-filterService="filterService"
+                    >
+                    <multicheck-filter
+                      [isPrimitive]="true"
+                      [field]="column.field"
+                      [filterService]="filterService"
+                      [currentFilter]="filter"
+                      [data]="distinctPrimitive(column.field)">
+                    </multicheck-filter>
+                </ng-template>
                 </kendo-grid-column>
                 <kendo-grid-column field="hasversion" title="Version" width="100" filter="numeric">
                 </kendo-grid-column>
