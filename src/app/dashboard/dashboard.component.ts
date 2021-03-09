@@ -72,8 +72,9 @@ export class DashboardComponent implements OnInit {
     if (urlParams["loaded"]) {
       setTimeout(() => {
         this.checkLoaded = true
-        if (!this.dashboardPermission.includes('Dashboard')) {
-          if (this.modulePermission.includes('Asset Portal Access')) {
+        // console.log(this.dashboardPermission); debugger;
+        if (this.dashboardPermission.indexOf('Dashboard') === -1) {
+          if (this.modulePermission.indexOf('Asset Portal Access') != -1) {
             this.router.navigate(['asset-list']);
           } else {
             this.router.navigate(['my-profile']);
