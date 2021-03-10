@@ -113,7 +113,7 @@ import { SurveyCbcreportComponent } from './survey-portal/survey-cbcreport/surve
 import { SurveyCbcreportSelectPDFComponent } from './survey-portal/survey-cbcreport-select-pdf/survey-cbcreport-select-pdf.component';
 import { SurveyCbcreportSelectImageComponent } from './survey-portal/survey-cbcreport-select-image/survey-cbcreport-select-image.component';
 import { SurveyCbcreportSignatureImageComponent } from './survey-portal/survey-cbcreport-signature-image/survey-cbcreport-signature-image.component';
-
+import {WorksordersManagementComponent} from './worksorders/worksorders-management/worksorders-management.component';
 
 
 
@@ -215,7 +215,8 @@ import { SurveyCbcreportSignatureImageComponent } from './survey-portal/survey-c
     SurveyCbcreportComponent,
     SurveyCbcreportSelectImageComponent,
     SurveyCbcreportSelectPDFComponent,
-    SurveyCbcreportSignatureImageComponent
+    SurveyCbcreportSignatureImageComponent,
+    WorksordersManagementComponent
 
   ],
 
