@@ -1,0 +1,11 @@
+.radioDiv, .actionDiv{
+    display: inline-block;
+}
+.radioDiv {
+    padding-right: 6px;
+}
+
+.radioDiv .radio-inline input[type=radio], .radioDiv .radio-inline {
+    margin-right: 4px;
+}
+

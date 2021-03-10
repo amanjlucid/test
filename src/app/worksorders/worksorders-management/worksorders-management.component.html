@@ -1,1 +1,59 @@
-<p>worksorders-management works!</p>
+<div class="container-fluid flex-grow-1 container-p-y">
+
+    <div class="row">
+        <div class="col-md-2 col-sm-3">
+            <h4 class="font-weight-bold py-3 mb-1">
+                Management
+            </h4>
+        </div>
+
+        <div class="col-md-10 text-right">
+            <div class="radioDiv">
+                <label class="radio-inline">
+                    <input type="radio" name="gridStatus">All
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="gridStatus">Active
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="gridStatus">Inactive
+                </label>
+
+            </div>
+
+
+            <div class="actionDiv">
+                <button type="button" class="btn btn-sm themeButton mr-1">Export Data</button>
+                <button type="button" class="btn btn-sm themeButton mr-1">New</button>
+            </div>
+
+            <!-- <button id="showFilePanel" class="btn btn-sm themeButton"><i
+                    class="fa fa-search"></i>
+            </button> -->
+        </div>
+
+    </div>
+
+    <div class="row mt-2">
+
+        <div class="col-md-12">
+            <kendo-treelist kendoTreeListExpandable [data]="rootData | async" [fetchChildren]="fetchChildren"
+                [hasChildren]="hasChildren" [height]="400">
+                <kendo-treelist-column field="Position" title="Position" [width]="180">
+                </kendo-treelist-column>
+                <kendo-treelist-column [expandable]="true" title="Name" [width]="250">
+                    <ng-template kendoTreeListCellTemplate let-dataItem>
+                        {{ dataItem.FirstName }}
+                        {{ dataItem.LastName }}
+                    </ng-template>
+                </kendo-treelist-column>
+                <kendo-treelist-column field="Position" title="Position" [width]="180">
+                </kendo-treelist-column>
+                <kendo-treelist-column field="Extension" title="Extension" [width]="180">
+                </kendo-treelist-column>
+            </kendo-treelist>
+        </div>
+    </div>
+
+
+</div>
