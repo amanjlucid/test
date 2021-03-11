@@ -10,21 +10,20 @@
         <div class="col-md-10 text-right">
             <div class="radioDiv">
                 <label class="radio-inline">
-                    <input type="radio" name="gridStatus">All
+                    <input type="radio" (click)="checkActiveInactive($event)" value="S" name="gridStatus">All
                 </label>
                 <label class="radio-inline">
-                    <input type="radio" name="gridStatus">Active
+                    <input type="radio" (click)="checkActiveInactive($event)" checked value="A" name="gridStatus">Active
                 </label>
                 <label class="radio-inline">
-                    <input type="radio" name="gridStatus">Inactive
+                    <input type="radio" (click)="checkActiveInactive($event)" value="I" name="gridStatus">Inactive
                 </label>
-
             </div>
 
 
             <div class="actionDiv">
-                <button type="button" class="btn btn-sm themeButton mr-1">Export Data</button>
-                <button type="button" class="btn btn-sm themeButton mr-1">New</button>
+                <button type="button" class="btn btn-sm themeButton mr-1" (click)="export()">Export Data</button>
+                <button type="button" class="btn btn-sm themeButton mr-1" (click)="opneNewManagementWindow()">New</button>
             </div>
 
             <!-- <button id="showFilePanel" class="btn btn-sm themeButton"><i
@@ -37,23 +36,161 @@
     <div class="row mt-2">
 
         <div class="col-md-12">
-            <kendo-treelist kendoTreeListExpandable [data]="rootData | async" [fetchChildren]="fetchChildren"
-                [hasChildren]="hasChildren" [height]="400">
-                <kendo-treelist-column field="Position" title="Position" [width]="180">
-                </kendo-treelist-column>
-                <kendo-treelist-column [expandable]="true" title="Name" [width]="250">
-                    <ng-template kendoTreeListCellTemplate let-dataItem>
-                        {{ dataItem.FirstName }}
-                        {{ dataItem.LastName }}
-                    </ng-template>
-                </kendo-treelist-column>
-                <kendo-treelist-column field="Position" title="Position" [width]="180">
-                </kendo-treelist-column>
-                <kendo-treelist-column field="Extension" title="Extension" [width]="180">
-                </kendo-treelist-column>
-            </kendo-treelist>
+            <kendo-treelist [kendoTreeListFlatBinding]="gridData" idField="id" parentIdField="parentId"
+                scrollable="virtual"
+                [rowHeight]="36"
+                kendoTreeListExpandable
+                [sortable]="true"
+                filterable="menu"
+                [filter]="filter"
+                (filterChange)="onFilterChange($event)"
+                [pageSize]="26"
+                [navigable]="true"
+                kendoTreeListSelectable [selectable]="settings" [(selectedItems)]="selected"
+                [height]="720"
+                [virtualColumns]="true"
+                [loading]="loading"
+                [resizable]="true"
+            >
+            
+            <kendo-treelist-column [expandable]="true" [minResizableWidth]="200" field="name" title="Name" [width]="280">
+            </kendo-treelist-column>
+            
+            <kendo-treelist-column field="wprstatus" title="Status" [width]="110">
+            </kendo-treelist-column>
+            <kendo-treelist-column field="budget" title="Budget" [width]="150">
+                <ng-template kendoTreeListCellTemplate let-dataItem>
+                    <span>
+                        {{ dataItem.budget | currency:"GBP":"symbol" }}
+                    </span>
+                </ng-template>
+            </kendo-treelist-column>
+            <kendo-treelist-column field="forecast" title="Forcast" [width]="150">
+                <ng-template kendoTreeListCellTemplate let-dataItem>
+                    <span>
+                        {{ dataItem.forecast | currency:"GBP":"symbol" }}
+                    </span>
+                </ng-template>
+            </kendo-treelist-column>
+            <kendo-treelist-column field="committed" title="Commited" [width]="150">
+                <ng-template kendoTreeListCellTemplate let-dataItem>
+                    <span>
+                        {{ dataItem.committed | currency:"GBP":"symbol" }}
+                    </span>
+                </ng-template>
+            </kendo-treelist-column>
+            <kendo-treelist-column field="issued" title="Issued" [width]="150">
+                <ng-template kendoTreeListCellTemplate let-dataItem>
+                    <span>
+                        {{ dataItem.issued | currency:"GBP":"symbol" }}
+                    </span>
+                </ng-template>
+            </kendo-treelist-column>
+            <kendo-treelist-column field="wpracceptedvalue" title="Accepted" [width]="150">
+                <ng-template kendoTreeListCellTemplate let-dataItem>
+                    <span>
+                        {{ dataItem.wpracceptedvalue | currency:"GBP":"symbol" }}
+                    </span>
+                </ng-template>
+            </kendo-treelist-column>
+            <kendo-treelist-column field="actual" title="Actual" [width]="150">
+                <ng-template kendoTreeListCellTemplate let-dataItem>
+                    <span>
+                        {{ dataItem.actual | currency:"GBP":"symbol" }}
+                    </span>
+                </ng-template>
+            </kendo-treelist-column>
+            <kendo-treelist-column field="approved" title="Approved" [width]="150">
+                <ng-template kendoTreeListCellTemplate let-dataItem>
+                    <span>
+                        {{ dataItem.approved | currency:"GBP":"symbol" }}
+                    </span>
+                </ng-template>
+            </kendo-treelist-column>
+            <kendo-treelist-column field="pending" title="Pending" [width]="150">
+                <ng-template kendoTreeListCellTemplate let-dataItem>
+                    <span>
+                        {{ dataItem.pending | currency:"GBP":"symbol" }}
+                    </span>
+                </ng-template>
+            </kendo-treelist-column>
+            <kendo-treelist-column field="payments" title="Payments" [width]="150">
+                <ng-template kendoTreeListCellTemplate let-dataItem>
+                    <span>
+                        {{ dataItem.payments | currency:"GBP":"symbol" }}
+                    </span>
+                </ng-template>
+            </kendo-treelist-column>
+            <kendo-treelist-column field="targetcompletiondate" title="Target Date" [width]="150">
+                <ng-template kendoTreeListCellTemplate let-dataItem>
+                    <span>
+                        {{ dataItem.targetcompletiondate | dateFormat : 'DD-MMM-YYYY' }}
+                    </span>
+                </ng-template>
+            </kendo-treelist-column>
+            <kendo-treelist-column field="startDate" title="Issued Date" [width]="150">
+                <ng-template kendoTreeListCellTemplate let-dataItem>
+                    <span>
+                        {{ dataItem.startDate | dateFormat : 'DD-MMM-YYYY' }}
+                    </span>
+                </ng-template>
+            </kendo-treelist-column>
+            <kendo-treelist-column field="startDate" title="Acceptance Date" [width]="150">
+                <ng-template kendoTreeListCellTemplate let-dataItem>
+                    <span>
+                        {{ dataItem.startDate | dateFormat : 'DD-MMM-YYYY' }}
+                    </span>
+                </ng-template>
+            </kendo-treelist-column>
+            <kendo-treelist-column field="startDate" title="Plan Start Date" [width]="150">
+                <ng-template kendoTreeListCellTemplate let-dataItem>
+                    <span>
+                        {{ dataItem.startDate | dateFormat : 'DD-MMM-YYYY' }}
+                    </span>
+                </ng-template>
+            </kendo-treelist-column>
+            <kendo-treelist-column field="endDate" title="Plan End Date" [width]="150">
+                <ng-template kendoTreeListCellTemplate let-dataItem>
+                    <span>
+                        {{ dataItem.endDate | dateFormat : 'DD-MMM-YYYY' }}
+                    </span>
+                </ng-template>
+            </kendo-treelist-column>
+            <kendo-treelist-column field="startDate" title="Actual Start Date" [width]="150">
+                <ng-template kendoTreeListCellTemplate let-dataItem>
+                    <span>
+                        {{ dataItem.startDate | dateFormat : 'DD-MMM-YYYY' }}
+                    </span>
+                </ng-template>
+            </kendo-treelist-column>
+            <kendo-treelist-column field="endDate" title="Actual End Date" [width]="150">
+                <ng-template kendoTreeListCellTemplate let-dataItem>
+                    <span>
+                        {{ dataItem.endDate | dateFormat : 'DD-MMM-YYYY' }}
+                    </span>
+                </ng-template>
+            </kendo-treelist-column>
+            <kendo-treelist-column field="new" title="New" [width]="80">
+            </kendo-treelist-column>
+            <kendo-treelist-column field="issued" title="Issued" [width]="100">
+            </kendo-treelist-column>
+            <kendo-treelist-column field="wip" title="WIP" [width]="100">
+            </kendo-treelist-column>
+            <kendo-treelist-column field="handover" title="Handover" [width]="80">
+            </kendo-treelist-column>
+            <kendo-treelist-column field="pc" title="PC" [width]="80">
+            </kendo-treelist-column>
+            <kendo-treelist-column field="fc" title="FC" [width]="80">
+            </kendo-treelist-column>
+            <kendo-treelist-column field="wprstatus" title="Comment" [width]="80">
+            </kendo-treelist-column>
+          
+        </kendo-treelist>
         </div>
     </div>
 
 
 </div>
+
+<div class="newManagementOverlay"></div>
+<app-worksorders-newmanagement *ngIf="openNewManagement" [openNewManagement]="openNewManagement" (closeNewManagementEvent)="closeNewManagementEvent($event)"></app-worksorders-newmanagement>

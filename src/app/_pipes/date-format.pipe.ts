@@ -15,9 +15,11 @@ export class DateFormatPipe extends DatePipe implements PipeTransform {
     // } else {
     //   var momentDate = moment(new Date(value));
     // }
+   
     if (value == null) {
       return ' ';
     }
+   
     const momentDate = moment(new Date(value));
     if (!momentDate.isValid()) {
       return value

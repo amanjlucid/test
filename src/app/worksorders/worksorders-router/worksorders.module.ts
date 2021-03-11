@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { GridModule, ExcelModule } from '@progress/kendo-angular-grid';
+import { GridModule } from '@progress/kendo-angular-grid';
 import { InputsModule } from '@progress/kendo-angular-inputs';
 import { DialogsModule } from '@progress/kendo-angular-dialog';
 import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
@@ -13,17 +13,16 @@ import { WorksOrderRoutingModule } from './worksorders-routing.module';
 import { WorksordersRouterComponent } from '../worksorders-router/worksorders-router.component';
 import { WorksordersDashboardComponent } from '../worksorders-dashboard/worksorders-dashboard.component';
 import { WorksordersManagementComponent } from '../worksorders-management/worksorders-management.component'
-import { RetrievedEpcGridComponent } from '../../assets-portal/asset-energy/retrieved-epc-grid/retrieved-epc-grid.component';
-import { TreeListModule } from '@progress/kendo-angular-treelist';
+import { TreeListModule  } from '@progress/kendo-angular-treelist';
+import { WorksordersNewmanagementComponent } from '../worksorders-newmanagement/worksorders-newmanagement.component'
 
 @NgModule({
-  declarations: [WorksordersRouterComponent, WorksordersDashboardComponent, WorksordersManagementComponent],
+  declarations: [WorksordersRouterComponent, WorksordersDashboardComponent, WorksordersManagementComponent, WorksordersNewmanagementComponent],
   imports: [
     CommonModule,
     FormsModule,
     TooltipModule,
     ReactiveFormsModule,
-    ExcelModule,
     DropDownsModule,
     InputsModule,
     DialogsModule,
@@ -33,7 +32,7 @@ import { TreeListModule } from '@progress/kendo-angular-treelist';
     WorksOrderRoutingModule,
     NgbModule,
     TreeListModule
-    
+
   ]
 })
 export class WorksOrderModule { }

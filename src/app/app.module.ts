@@ -10,7 +10,7 @@ import { LoginComponent } from './login';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { AuthGuard } from './_guards';
 import { JwtInterceptor, ErrorInterceptor, LoaderInterceptorService, NgbDateCustomParserFormatter } from './_helpers';
-import { AlertService, AuthenticationService, UserService, LoaderService, GroupService, CharacteristicGroupService, ElementGroupService, AttributeGroupService, PortalGroupService, FunctionSecurityService, PropertySecurityGroupService, ReportingGroupService, ConfirmationDialogService, EventService, AssetAttributeService, SharedService, ServicePortalService, SettingsService, HnsPortalService, HnsResultsService, EventManagerDashboardService, EventManagerService, WebReporterService, SurveyPortalService } from './_services';
+import { AlertService, AuthenticationService, UserService, LoaderService, GroupService, CharacteristicGroupService, ElementGroupService, AttributeGroupService, PortalGroupService, FunctionSecurityService, PropertySecurityGroupService, ReportingGroupService, ConfirmationDialogService, EventService, AssetAttributeService, SharedService, ServicePortalService, SettingsService, HnsPortalService, HnsResultsService, EventManagerDashboardService, EventManagerService, WebReporterService, SurveyPortalService, WorksorderManagementService } from './_services';
 import { AlertComponent, LoaderComponent, KendoGridColor, KendoZindex, MyDatePicker, DecimalValidation } from './_directives';
 import { GridModule, ExcelModule } from '@progress/kendo-angular-grid';
 import { InputsModule } from '@progress/kendo-angular-inputs';
@@ -30,7 +30,7 @@ import { PortalTabsComponent } from './security-portal/groups/portal-tabs/portal
 import { PropertySecurityComponent } from './security-portal/groups/property-security/property-security.component';
 import { ReportingComponent } from './security-portal/groups/reporting/reporting.component';
 import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
-import { DateFormatPipe } from './_pipes/date-format.pipe';
+// import { DateFormatPipe } from './_pipes/date-format.pipe';
 import { AsbestosRefDetailPipe } from './_pipes/asbestos-ref-detail.pipe'
 import { NumberFormatPipe } from './_pipes/number-format.pipe';
 import { RoundOffPipe } from './_pipes/round-off.pipe';
@@ -273,6 +273,7 @@ import { TreeListModule } from '@progress/kendo-angular-treelist';
     EventManagerService,
     WebReporterService,
     SurveyPortalService,
+    WorksorderManagementService,
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptorService, multi: true },

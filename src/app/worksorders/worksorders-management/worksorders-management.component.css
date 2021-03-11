@@ -2,10 +2,16 @@
     display: inline-block;
 }
 .radioDiv {
-    padding-right: 6px;
+    margin-right: 15px;
 }
 
 .radioDiv .radio-inline input[type=radio], .radioDiv .radio-inline {
     margin-right: 4px;
+}
+
+.k-treelist tbody td {
+    white-space: nowrap !important;
+    line-height: 20px;
+    padding: 8px 12px;
 }
 

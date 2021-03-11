@@ -1,0 +1,173 @@
+<kendo-window title="New Works Management" *ngIf="openNewManagement" (close)="closeNewManagementWindow()" [top]="20"
+    [minWidth]="700" [width]="900" [height]="auto" [minHeight]="350">
+
+    <form [formGroup]="workManagementForm" (ngSubmit)="onSubmit()" autocomplete="off">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="col-form-label">Name</label>
+                    </div>
+                    <div class="col-md-8 form-group">
+                        <input type="text" class="form-control" formControlName="name"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.name }" autocomplete="off">
+                       
+                        <div *ngIf="submitted && formErrors.name" class="invalid-feedback">
+                            <div *ngIf="formErrors.name">{{ formErrors.name }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="col-form-label">Ext Ref</label>
+                    </div>
+                    <div class="col-md-8 form-group">
+                        <input type="text" class="form-control">
+
+                        <!-- <div *ngIf="submitted && formErrors.woc" class="invalid-feedback">
+                      <div *ngIf="formErrors.woc">{{ formErrors.woc }}</div>
+                    </div> -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-2">
+                        <label class="col-form-label">Desc</label>
+                    </div>
+                    <div class="col-md-10 form-group">
+                        <input type="text" class="form-control">
+
+                        <!-- <div *ngIf="submitted && formErrors.woc" class="invalid-feedback">
+                      <div *ngIf="formErrors.woc">{{ formErrors.woc }}</div>
+                    </div> -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="col-form-label">Status</label>
+                    </div>
+                    <div class="col-md-8 form-group">
+                        <input type="text" class="form-control">
+
+                        <!-- <div *ngIf="submitted && formErrors.woc" class="invalid-feedback">
+                      <div *ngIf="formErrors.woc">{{ formErrors.woc }}</div>
+                    </div> -->
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="col-form-label">Active/Inactive</label>
+                    </div>
+                    <div class="col-md-8 form-group">
+                        <input type="text" class="form-control">
+
+                        <!-- <div *ngIf="submitted && formErrors.woc" class="invalid-feedback">
+                      <div *ngIf="formErrors.woc">{{ formErrors.woc }}</div>
+                    </div> -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="col-form-label">Programme Type</label>
+                    </div>
+                    <div class="col-md-8 form-group">
+                        <input type="text" class="form-control">
+
+                        <!-- <div *ngIf="submitted && formErrors.woc" class="invalid-feedback">
+                      <div *ngIf="formErrors.woc">{{ formErrors.woc }}</div>
+                    </div> -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="col-form-label">Budget</label>
+                    </div>
+                    <div class="col-md-8 form-group">
+                        <input type="text" class="form-control">
+
+                        <!-- <div *ngIf="submitted && formErrors.woc" class="invalid-feedback">
+                      <div *ngIf="formErrors.woc">{{ formErrors.woc }}</div>
+                    </div> -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-2">
+                        <label class="col-form-label">Target Date</label>
+                    </div>
+                    <div class="col-md-4 form-group">
+                        <input type="text" class="form-control" (click)="openCalendar(td,'completedDate')"
+                            [minDate]="minDate" ngbDatepicker #td="ngbDatepicker" [placement]="'right'">
+
+                        <!-- <div *ngIf="submitted && formErrors.woc" class="invalid-feedback">
+                      <div *ngIf="formErrors.woc">{{ formErrors.woc }}</div>
+                    </div> -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="col-form-label">Planned Start Date</label>
+                    </div>
+                    <div class="col-md-8 form-group">
+                        <input type="text" class="form-control" (click)="openCalendar(psd,'completedDate')"
+                            [minDate]="minDate" ngbDatepicker #psd="ngbDatepicker" [placement]="'top'">
+
+                        <!-- <div *ngIf="submitted && formErrors.woc" class="invalid-feedback">
+                      <div *ngIf="formErrors.woc">{{ formErrors.woc }}</div>
+                    </div> -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="col-form-label">Planned End Date</label>
+                    </div>
+                    <div class="col-md-8 form-group">
+                        <input type="text" class="form-control" (click)="openCalendar(ped,'completedDate')"
+                            [minDate]="minDate" ngbDatepicker #ped="ngbDatepicker" [placement]="'top'">
+
+                        <!-- <div *ngIf="submitted && formErrors.woc" class="invalid-feedback">
+                      <div *ngIf="formErrors.woc">{{ formErrors.woc }}</div>
+                    </div> -->
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+        <div class="row">
+            <div class="col-md-12 text-right">
+                <button type="submit" class="btn btn-sm themeButton mr-1">Apply</button>
+                <button type="button" (click)="closeNewManagementWindow()"
+                    class="btn btn-sm themeButton">Cancel</button>
+            </div>
+        </div>
+    </form>
+
+</kendo-window>
