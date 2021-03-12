@@ -1,6 +1,6 @@
-import { Component, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { filterBy, FilterDescriptor, CompositeFilterDescriptor } from '@progress/kendo-data-query';
-import { FilterService, SelectableSettings, TreeListComponent } from '@progress/kendo-angular-treelist';
+import { FilterService, SelectableSettings, TreeListComponent, ExpandEvent } from '@progress/kendo-angular-treelist';
 import { AlertService, HelperService, WorksorderManagementService } from '../../_services'
 import { SubSink } from 'subsink';
 
@@ -15,7 +15,8 @@ export class WorksordersManagementComponent {
   managementformMode = 'new';
   subs = new SubSink(); // to unsubscribe services
   openNewManagement: boolean = false;
-  loading = false
+  loading = true
+  // private expandedIds: any[] = [];
   public filter: CompositeFilterDescriptor;
   public settings: SelectableSettings = {
     mode: 'row',
@@ -23,25 +24,49 @@ export class WorksordersManagementComponent {
     drag: false,
     enabled: true
   };
-  public apiData:any = []
+  gridPageSize = 25;
+  public apiData: any = [];
+  public groupedData: any = [];
   public gridData: any = [];
-  // @ViewChild(TreeListComponent) public grid: TreeListComponent;
+  @ViewChild(TreeListComponent) public grid: TreeListComponent;
 
   constructor(
     private worksorderManagementService: WorksorderManagementService,
     private helperService: HelperService,
     private alertService: AlertService,
+    private chRef: ChangeDetectorRef,
   ) { }
 
   ngOnInit(): void {
-    // this.getManagement();
+    this.getManagement();
   }
 
   ngOnDestroy() {
     this.subs.unsubscribe();
   }
 
-  getManagement(status = "A"){
+  /**
+     * A function that determines whether a given item is expanded.
+     */
+  // public isExpanded = (dataItem: any): boolean => {
+  //   return this.expandedIds.indexOf(dataItem.id) > -1;
+  // }
+
+  // /**
+  //  * A `collapse` event handler that will collapse the item.
+  //  */
+  // public onCollapse(args: ExpandEvent): void {
+  //   this.expandedIds = this.expandedIds.filter(id => id !== args.dataItem.id);
+  // }
+
+  // /**
+  //  * A `expand` event handler that will expand the item.
+  //  */
+  // public onExpand(args: ExpandEvent): void {
+  //   this.expandedIds.push(args.dataItem.id);
+  // }
+
+  getManagement(status = "A") {
     this.subs.add(
       this.worksorderManagementService.getManagementData(status).subscribe(
         data => {
@@ -54,6 +79,8 @@ export class WorksordersManagementComponent {
               r[a.wprsequence] = [...r[a.wprsequence] || [], a];
               return r;
             }, {});
+
+            this.groupedData = [...groupBywprsequence];
 
             //Find parent and Set parent id in each row
             tempData.forEach((value, index) => {
@@ -84,11 +111,11 @@ export class WorksordersManagementComponent {
 
             })
 
-            // setTimeout(() => {
-            //   this.gridData = [...gridData];
-            //    console.log(this.gridData);
-            //   this.loading = false
-            // }, 100);
+            setTimeout(() => {
+              this.gridData = [...gridData];
+              //  console.log(this.gridData);
+              this.loading = false
+            }, 100);
 
           } else {
             this.alertService.error(data.message);
@@ -111,18 +138,8 @@ export class WorksordersManagementComponent {
     this.selected = [];
   }
 
-  // public titleChange(values: any[], filterService: FilterService): void {
-  //   filterService.filter({
-  //     filters: values.map(value => ({
-  //       field: 'title',
-  //       operator: 'eq',
-  //       value
-  //     })),
-  //     logic: 'or'
-  //   });
-  // }
 
-  checkActiveInactive($event){
+  checkActiveInactive($event) {
     this.loading = true;
     this.gridData = [];
     this.getManagement($event.target.value)
@@ -134,6 +151,17 @@ export class WorksordersManagementComponent {
   //     ...flatten(filter).map(({ value }) => value)
   //   );
   //   return this.titleFilter;
+  // }
+
+  // public titleChange(values: any[], filterService: FilterService): void {
+  //   filterService.filter({
+  //     filters: values.map(value => ({
+  //       field: 'title',
+  //       operator: 'eq',
+  //       value
+  //     })),
+  //     logic: 'or'
+  //   });
   // }
 
 
@@ -150,8 +178,58 @@ export class WorksordersManagementComponent {
     $('.newManagementOverlay').removeClass('ovrlay');
   }
 
-  export(){
-    // console.log(this.grid);
+  async export() {
+    $('.newManagementOverlay').addClass('ovrlay');
+    await this.resetOnExport(this.grid.view.total)
+    setTimeout(async () => {
+      let gridState = [...this.grid.view.data];
+      this.resetOnExport(25);
+
+      if (gridState.length != undefined && gridState.length > 0) {
+        this.gridStateExport(gridState);
+      } else {
+        $('.newManagementOverlay').removeClass('ovrlay');
+        this.alertService.error('There is not record to export');
+      }
+
+    }, 1000);
+
+  }
+
+  resetOnExport(pageSize) {
+    setTimeout(() => {
+      this.gridPageSize = pageSize;
+      let gridData = [...this.gridData];
+      this.gridData = [];
+      this.gridData = gridData;
+      this.chRef.detectChanges();
+    }, 100);
+  }
+
+  gridStateExport(gridState) {
+    let dataToExport = gridState.map(x => { return x.data });
+    // console.log(dataToExport);
+    let label = {
+      'name': 'Name',
+      'wprstatus': 'Status',
+      'budget': 'Budget',
+      // 'eventTypeDesc': 'Event',
+      // 'eventRowCount': 'Record(s)',
+      // 'processedPercentage': 'Processed(%)',
+      // 'eventCreatedDate': 'Created',
+      // 'eventStatusName': 'Status',
+      // 'eventEscStatusName': 'Esc',
+      // 'eventSevTypeName': 'Severity',
+      // 'eventAskTypeName': 'Action',
+      // 'eventAssignUserName': 'Assigned To',
+      // 'eventPlannedDate': 'Planned',
+      // 'eventCreatedBy': 'Created By',
+      // 'eventUpdatedBy': 'Updated By',
+      // 'eventUpdateDate': 'Updated',
+    }
+    this.helperService.exportAsExcelFile(dataToExport, 'Programme', label)
+    setTimeout(() => $('.newManagementOverlay').removeClass('ovrlay'), 500);
+
   }
 
 

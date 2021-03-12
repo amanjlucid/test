@@ -14,7 +14,7 @@ import { ShouldGreaterThanYesterday, isNumberCheck } from 'src/app/_helpers';
 export class WorksordersNewmanagementComponent implements OnInit {
   @Output() closeNewManagementEvent = new EventEmitter<boolean>();
   @Input() openNewManagement: boolean = false;
-  @Input() formMode:string = 'new';
+  @Input() formMode: string = 'new';
   minDate: any;
   subs = new SubSink(); // to unsubscribe services
   workManagementForm: FormGroup;
@@ -73,7 +73,7 @@ export class WorksordersNewmanagementComponent implements OnInit {
       'invalidDate': 'Please insert date in dd/mm/yyyy format.',
       'pastDate': 'Actual end date cannot be in the past.'
     },
-    'workForecast' : {
+    'workForecast': {
       'required': 'Work Forecast is required.',
     }
 
@@ -81,7 +81,7 @@ export class WorksordersNewmanagementComponent implements OnInit {
 
   };
 
-  
+
 
 
   constructor(
@@ -113,23 +113,23 @@ export class WorksordersNewmanagementComponent implements OnInit {
       actualEndDate: [''],
       issuedDate: [''],
 
-      workForecast:[''],
-      workCommited:[''],
-      workApproved:[''],
-      workPending:[''],
-      workActual:[''],
+      workForecast: [''],
+      workCommited: [''],
+      workApproved: [''],
+      workPending: [''],
+      workActual: [''],
 
-      workFeesForecast:[''],
-      workFeesCommited:[''],
-      workFeesApproved:[''],
-      workFeesPending:[''],
-      workFeesActual:[''],
+      workFeesForecast: [''],
+      workFeesCommited: [''],
+      workFeesApproved: [''],
+      workFeesPending: [''],
+      workFeesActual: [''],
 
-      contractFeesForecast:[''],
-      contractFeesCommited:[''],
-      contractFeesApproved:[''],
-      contractFeesPending:[''],
-      contractFeesActual:[''],
+      contractFeesForecast: [''],
+      contractFeesCommited: [''],
+      contractFeesApproved: [''],
+      contractFeesPending: [''],
+      contractFeesActual: [''],
 
 
     });
@@ -144,13 +144,9 @@ export class WorksordersNewmanagementComponent implements OnInit {
     this.subs.unsubscribe();
   }
 
-  populateForm(){
-    if(this.formMode == 'new'){
-      this.workManagementForm.patchValue({
-        status : 'N',
-        active : 'A',
-      });
-
+  populateForm() {
+    if (this.formMode == 'new') {
+      this.workManagementForm.patchValue({ status: 'N', active: 'A' });
       this.workManagementForm.get('status').disable();
       this.workManagementForm.get('active').disable();
     } else {
@@ -160,7 +156,6 @@ export class WorksordersNewmanagementComponent implements OnInit {
 
 
   logValidationErrors(group: FormGroup): void {
-   
     Object.keys(group.controls).forEach((key: string) => {
       const abstractControl = group.get(key);
       if (abstractControl instanceof FormGroup) {

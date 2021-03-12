@@ -50,7 +50,7 @@
         <div class="col-md-12">
             <kendo-treelist [kendoTreeListFlatBinding]="gridData" idField="id" parentIdField="parentId"
                 scrollable="virtual" [rowHeight]="36" kendoTreeListExpandable [sortable]="true" filterable="menu"
-                [filter]="filter" (filterChange)="onFilterChange($event)" [pageSize]="26" [navigable]="true"
+                [filter]="filter" (filterChange)="onFilterChange($event)" [pageSize]="gridPageSize" [navigable]="true"
                 kendoTreeListSelectable [selectable]="settings" [(selectedItems)]="selected" [height]="720"
                 [virtualColumns]="true" [loading]="loading" [resizable]="true">
 
@@ -58,6 +58,15 @@
                     <ng-template kendoTreeListCellTemplate let-dataItem>
                         <li *ngIf="dataItem.treelevel == 1" class="nav-item dropdown list-unstyled"
                             style="margin-top: -7px;">
+                            <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="javascript:void(0)">Task Details</a>
+                                <a class="dropdown-item" href="javascript:void(0)">Task Data</a>
+                            </div>
+                        </li>
+
+                        <li *ngIf="dataItem.treelevel == 2" class="nav-item dropdown list-unstyled level2Menu"
+                        style="margin-top: -7px;">
                             <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
                             <div class="dropdown-menu">
                                 <a class="dropdown-item" href="javascript:void(0)">Task Details</a>
