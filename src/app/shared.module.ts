@@ -20,8 +20,6 @@ import { RetrievedEpcGridComponent } from './assets-portal/asset-energy/retrieve
 
 
 
-
-
 @NgModule({
   imports: [FormsModule, ReactiveFormsModule, GridModule, InputsModule, DialogsModule, DatePickerModule, CommonModule, TreeListModule],
   declarations: [DateFormatPipe, CurrencyFormatPipe, RoundOffPipe, SimpleTextFilterComponent, DateRangeFilterComponent, MultiCheckFilterComponent, RetrievedEpcGridComponent],

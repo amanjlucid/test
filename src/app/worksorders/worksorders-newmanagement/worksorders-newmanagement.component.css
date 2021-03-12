@@ -1,3 +1,74 @@
 .k-window {
     position: fixed !important;
 }
+
+.managementForm .leftDiv {
+    width: 48%;
+    display: inline-block;
+}
+
+.managementForm .rightDiv {
+    width: 49%;
+    display: inline-block;
+}
+
+.managementForm .fullDiv {
+    width: 100%;
+}
+
+.managementForm .rightDiv {
+    margin-left: 10px;
+}
+
+.managementForm .leftDiv .first, .managementForm .rightDiv .first {
+    width: 30%;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.managementForm .leftDiv .second, .managementForm .rightDiv .second {
+    width: 70%;
+    display: inline-block;
+}
+
+.formRow .col-md-12 {
+    margin-top: 10px;
+}
+
+.managementForm .fullDiv .first {
+    width: 14%;
+    margin-right: 3px;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.managementForm .fullDiv .second {
+    width: 84%;
+    display: inline-block;
+}
+
+.managementForm .grpDiv {
+    width: 100%;
+    display: block;
+}
+
+.managementForm .grpDiv .childGrpDiv {
+    width: 16%;
+    display: inline-block;
+    margin-top: 3px;
+}
+
+.managementForm .grpDiv:first-child .childGrpDiv {
+    text-align: center;
+}
+
+.managementForm .grpDiv .div1 {
+    width: 14%;
+    margin-right: 3px;
+    margin-left: 0px;
+    margin-top: 0px;
+}
+
+.managementForm .grpDiv .childGrpDiv:nth-child(n+3) {
+    margin-left: 8px;
+}

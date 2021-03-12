@@ -1,6 +1,7 @@
-.radioDiv, .actionDiv{
+.radioDiv, .actionDiv, .actionDiv #nesting-dropdown-demo{
     display: inline-block;
 }
+
 .radioDiv {
     margin-right: 15px;
 }
@@ -13,5 +14,9 @@
     white-space: nowrap !important;
     line-height: 20px;
     padding: 8px 12px;
+}
+
+.dropdown.list-unstyled {
+    position: absolute !important;
 }
 

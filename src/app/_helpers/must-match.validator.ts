@@ -55,6 +55,40 @@ export function DateValidator(format = "DD/MM/YYYY"): any {
     };
 }
 
+
+export function ShouldGreaterThanYesterday(format = "DD/MM/YYYY"): any {
+    return (control: FormControl): { [key: string]: any } => {
+        if (control.value != null && control.value != "") {
+            let date;
+            if (control.value.day == undefined) {
+                date = control.value;
+                const dateObj = moment(date, format, true);
+                if (isNaN(dateObj.year()) || isNaN(dateObj.month()) || isNaN(dateObj.date())) {
+                    return { invalidDate: true };
+                }
+                if (dateObj.isValid()) {
+                    const dd = { day: dateObj.date(), month: dateObj.month() + 1, year: dateObj.year() }
+                    control.setValue(dd);
+                }
+            } else {
+                date = `${control.value.day}/${control.value.month}/${control.value.year}`;
+            }
+            const val = moment(date, format, false);
+            if (!val.isValid()) {
+                return { invalidDate: true };
+            }
+            let today = moment().format("YYYY/MM/DD")
+            let givenDate = val.format("YYYY/MM/DD");
+            if (new Date(givenDate) < new Date(today)) {
+                return { pastDate: true }
+            }
+        }
+        return null;
+
+    };
+}
+
+
 export function InstValidator(controlName: any, matchingControlName1: any, matchingControlName2: any) {
     return (formGroup: FormGroup) => {
         const control = formGroup.controls[controlName];

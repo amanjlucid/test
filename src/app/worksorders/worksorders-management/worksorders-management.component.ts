@@ -12,9 +12,10 @@ import { SubSink } from 'subsink';
 })
 
 export class WorksordersManagementComponent {
+  managementformMode = 'new';
   subs = new SubSink(); // to unsubscribe services
   openNewManagement: boolean = false;
-  loading = true
+  loading = false
   public filter: CompositeFilterDescriptor;
   public settings: SelectableSettings = {
     mode: 'row',
@@ -24,7 +25,7 @@ export class WorksordersManagementComponent {
   };
   public apiData:any = []
   public gridData: any = [];
-  @ViewChild(TreeListComponent) public grid: TreeListComponent;
+  // @ViewChild(TreeListComponent) public grid: TreeListComponent;
 
   constructor(
     private worksorderManagementService: WorksorderManagementService,
@@ -33,7 +34,7 @@ export class WorksordersManagementComponent {
   ) { }
 
   ngOnInit(): void {
-    this.getManagement();
+    // this.getManagement();
   }
 
   ngOnDestroy() {
@@ -83,10 +84,11 @@ export class WorksordersManagementComponent {
 
             })
 
-            setTimeout(() => {
-              this.gridData = [...gridData];
-              this.loading = false
-            }, 100);
+            // setTimeout(() => {
+            //   this.gridData = [...gridData];
+            //    console.log(this.gridData);
+            //   this.loading = false
+            // }, 100);
 
           } else {
             this.alertService.error(data.message);
@@ -138,7 +140,7 @@ export class WorksordersManagementComponent {
 
   //############### Code for the Management
 
-  opneNewManagementWindow() {
+  openNewManagementWindow() {
     $('.newManagementOverlay').addClass('ovrlay');
     this.openNewManagement = true;
   }
@@ -149,7 +151,7 @@ export class WorksordersManagementComponent {
   }
 
   export(){
-    console.log(this.grid);
+    // console.log(this.grid);
   }
 
 
