@@ -16,7 +16,6 @@ export class WorksordersManagementComponent {
   subs = new SubSink(); // to unsubscribe services
   openNewManagement: boolean = false;
   loading = true
-  // private expandedIds: any[] = [];
   public filter: CompositeFilterDescriptor;
   public settings: SelectableSettings = {
     mode: 'row',
@@ -44,27 +43,6 @@ export class WorksordersManagementComponent {
   ngOnDestroy() {
     this.subs.unsubscribe();
   }
-
-  /**
-     * A function that determines whether a given item is expanded.
-     */
-  // public isExpanded = (dataItem: any): boolean => {
-  //   return this.expandedIds.indexOf(dataItem.id) > -1;
-  // }
-
-  // /**
-  //  * A `collapse` event handler that will collapse the item.
-  //  */
-  // public onCollapse(args: ExpandEvent): void {
-  //   this.expandedIds = this.expandedIds.filter(id => id !== args.dataItem.id);
-  // }
-
-  // /**
-  //  * A `expand` event handler that will expand the item.
-  //  */
-  // public onExpand(args: ExpandEvent): void {
-  //   this.expandedIds.push(args.dataItem.id);
-  // }
 
   getManagement(status = "A") {
     this.subs.add(
@@ -145,29 +123,7 @@ export class WorksordersManagementComponent {
     this.getManagement($event.target.value)
   }
 
-  // public titleFilters(filter: CompositeFilterDescriptor): FilterDescriptor[] {
-  //   this.titleFilter.splice(
-  //     0, this.titleFilter.length,
-  //     ...flatten(filter).map(({ value }) => value)
-  //   );
-  //   return this.titleFilter;
-  // }
-
-  // public titleChange(values: any[], filterService: FilterService): void {
-  //   filterService.filter({
-  //     filters: values.map(value => ({
-  //       field: 'title',
-  //       operator: 'eq',
-  //       value
-  //     })),
-  //     logic: 'or'
-  //   });
-  // }
-
-
-
-  //############### Code for the Management
-
+  
   openNewManagementWindow() {
     $('.newManagementOverlay').addClass('ovrlay');
     this.openNewManagement = true;
