@@ -47,16 +47,17 @@
                 scrollable="virtual" [rowHeight]="36" kendoTreeListExpandable [sortable]="true" filterable="menu"
                 [filter]="filter" (filterChange)="onFilterChange($event)" [pageSize]="gridPageSize" [navigable]="true"
                 kendoTreeListSelectable [selectable]="settings" [(selectedItems)]="selected" [height]="720"
-                [virtualColumns]="true" [loading]="loading" [resizable]="true">
+                [virtualColumns]="true" [loading]="loading" [resizable]="true" (cellClick)="cellClickHandler($event)" >
 
                 <kendo-treelist-column field="wprstatus" title="" [width]="33" [sortable]="false" [filterable]="false">
                     <ng-template kendoTreeListCellTemplate let-dataItem>
                         <li *ngIf="dataItem.treelevel == 1" class="nav-item dropdown list-unstyled"
                             style="margin-top: -7px;">
-                            <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
+                            <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars" (click)="setSeletedRow(dataItem)"></i>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" href="javascript:void(0)">Task Details</a>
-                                <a class="dropdown-item" href="javascript:void(0)">Task Data</a>
+                                <a class="dropdown-item" (click)="openNewManagementWindow('edit')" href="javascript:void(0)">Edit</a>
+                                <a class="dropdown-item" (click)="openConfirmationDialog(dataItem)" href="javascript:void(0)">Delete</a>
+                                
                             </div>
                         </li>
 
@@ -215,5 +216,5 @@
 
 <div class="newManagementOverlay"></div>
 <app-worksorders-newmanagement *ngIf="openNewManagement" [openNewManagement]="openNewManagement"
-    [formMode]="managementformMode" (closeNewManagementEvent)="closeNewManagementEvent($event)">
+    [formMode]="managementformMode" [selectedProgramme]="selectedProgramme" (closeNewManagementEvent)="closeNewManagementEvent($event)" (refreshManagementGrid)="refreshManagementGrid($event)">
 </app-worksorders-newmanagement>

@@ -20,6 +20,9 @@
     margin-left: 10px;
 }
 
+.managementForm .leftDiv, .managementForm .rightDiv{
+    vertical-align: top;
+}
 .managementForm .leftDiv .first, .managementForm .rightDiv .first {
     width: 30%;
     display: inline-block;

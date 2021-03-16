@@ -22,4 +22,5 @@ export * from './survey-portal-xports.model';
 export * from './survey-project-access.model';
 export * from './survey-project-settings.model';
 export * from './survey-cbc-report.model';
+export * from './workorders/workorders-add-management.model';
 

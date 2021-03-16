@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewEncapsulation, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { filterBy, FilterDescriptor, CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { FilterService, SelectableSettings, TreeListComponent, ExpandEvent } from '@progress/kendo-angular-treelist';
-import { AlertService, HelperService, WorksorderManagementService } from '../../_services'
+import { AlertService, HelperService, WorksorderManagementService, ConfirmationDialogService } from '../../_services'
 import { SubSink } from 'subsink';
 
 @Component({
@@ -15,7 +15,8 @@ export class WorksordersManagementComponent {
   managementformMode = 'new';
   subs = new SubSink(); // to unsubscribe services
   openNewManagement: boolean = false;
-  loading = true
+  loading = true;
+  public selected: any[] = [];
   public filter: CompositeFilterDescriptor;
   public settings: SelectableSettings = {
     mode: 'row',
@@ -28,12 +29,15 @@ export class WorksordersManagementComponent {
   public groupedData: any = [];
   public gridData: any = [];
   @ViewChild(TreeListComponent) public grid: TreeListComponent;
+  selectedProgramme: any;
+  currentUser = JSON.parse(localStorage.getItem('currentUser'));
 
   constructor(
     private worksorderManagementService: WorksorderManagementService,
     private helperService: HelperService,
     private alertService: AlertService,
     private chRef: ChangeDetectorRef,
+    private confirmationDialogService: ConfirmationDialogService
   ) { }
 
   ngOnInit(): void {
@@ -110,7 +114,10 @@ export class WorksordersManagementComponent {
     this.filter = filter;
   }
 
-  public selected: any[] = [];
+  cellClickHandler($event) {
+    // console.log($event)
+    // console.log(this.selected)
+  }
 
   public clearSelection(): void {
     this.selected = [];
@@ -123,8 +130,9 @@ export class WorksordersManagementComponent {
     this.getManagement($event.target.value)
   }
 
-  
-  openNewManagementWindow() {
+
+  openNewManagementWindow(mode = 'new') {
+    this.managementformMode = mode;
     $('.newManagementOverlay').addClass('ovrlay');
     this.openNewManagement = true;
   }
@@ -186,6 +194,54 @@ export class WorksordersManagementComponent {
     this.helperService.exportAsExcelFile(dataToExport, 'Programme', label)
     setTimeout(() => $('.newManagementOverlay').removeClass('ovrlay'), 500);
 
+  }
+
+  refreshManagementGrid(event) {
+    if (event) {
+      this.getManagement();
+      this.selectedProgramme = undefined;
+    }
+  }
+
+  public openConfirmationDialog(item) {
+    this.selectedProgramme = item;
+    if (this.selectedProgramme != undefined) {
+      $('.k-window').css({ 'z-index': 1000 });
+      this.confirmationDialogService.confirm('Please confirm..', `Delete Programme "${this.selectedProgramme.name}" ?`)
+        .then((confirmed) => (confirmed) ? this.deleteProgramme() : console.log(confirmed))
+        .catch(() => console.log('Attribute dismissed the dialog.'));
+    } else {
+      this.alertService.error('Please select one record');
+    }
+  }
+
+  deleteProgramme() {
+    if (this.selectedProgramme != undefined) {
+      const params = {
+        WPRSEQUENCE: this.selectedProgramme.wprsequence,
+        userId: this.currentUser.userId,
+        CheckOrProcess: 'P'
+      }
+
+      this.worksorderManagementService.deleteWorkOrderManagement(params).subscribe(
+        data => {
+          console.log(data)
+          if (data.isSuccess && data.data == "S") {
+            this.alertService.success(data.message);
+            this.refreshManagementGrid(true);
+          } else {
+            this.alertService.error(data.message);
+          }
+        },
+        err => this.alertService.error(err)
+      )
+    }
+    //unset selectedProgramme variable
+
+  }
+
+  setSeletedRow(dataItem) {
+    this.selectedProgramme = dataItem
   }
 
 
