@@ -30,7 +30,7 @@ import { SurveyProjectAccessComponent } from './survey-portal/survey-project-acc
 import { SurveyProjectSettingsComponent } from './survey-portal/survey-project-settings/survey-project-settings.component';
 import { SurveyDashboardComponent } from './survey-portal/survey-dashboard/survey-dashboard.component';
 import { SurveyCbcreportComponent } from './survey-portal/survey-cbcreport/survey-cbcreport.component';
-import {WorkorderListComponent} from './worksorders/workorder-list/workorder-list.component';
+// import {WorkorderListComponent} from './worksorders/workorder-list/workorder-list.component';
 
 
 const appRoutes: Routes = [

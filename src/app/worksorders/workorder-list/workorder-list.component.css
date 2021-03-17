@@ -1,169 +1,105 @@
-.filterCheckBox {
-    display: inherit;
-}
-
 .k-grid tbody td {
     white-space: nowrap;
     line-height: 20px;
     padding: 8px 12px;
 }
 
-.k-grouping-header {
-  display: none;
-}
-
-
-/* .progress {
-    height: 1rem !important;
-    background-color: gainsboro !important;
-    font-size: 11px !important;
-}
-
-.progress-bar {
-    padding-left: 3px !important;
-} */
-
-#progress {
-    border-radius: 5px;
-    border: 1px solid #b4b4b4;
-    position: relative;
-    padding: 3px;
-}
-
-#percent {
-    position: absolute;
-    left: 40%;
-}
-
-#bar {
-    height: 20px;
-    background-color: #f4c7dc;
-}
-
-.actionDiv {
-    display: inline;
-}
-
-.asbestosColumnSwitch, .colSwitch {
-    border: 1px solid #847d7d;
-}
-
-.dropdown.list-unstyled {
-    position: absolute !important;
-}
-
-.mediumColor {
-    color: #F39C12 !important;
-}
-
-.highColor {
-    color: #C0392B !important;
-}
-
-.lowColor {
-    color: #27AE60 !important;
-}
-
-.processedRecord {
-    border: 1px solid gainsboro;
-    border-radius: 5px;
-    padding: 4px 16px;
-}
-
-.search-container {
-    position: fixed;
-    top: 0;
-    right: 0;
-    width: 245px;
-    display: none;
-    height: 100%;
-    overflow: hidden;
-    background: #070627;
-    z-index: 999;
-    /* transform: translateX(100%); */
-    -webkit-transform: translateX(100%);
-}
-
-.selectedcs {
-    animation: slide-in 0.5s forwards;
-    -webkit-animation: slide-in 0.5s forwards;
-}
-
-.searchDiv .filterLabel {
-    float: right;
-}
-
-.dismiss {
-    animation: slide-out 0.5s forwards;
-    -webkit-animation: slide-out 0.5s forwards;
-}
-
-.searchDiv {
-    padding: 7px;
-    color: white;
-}
-
-.filtersection {
-    padding: 10px 0px;
-    border-top: 1px solid gray;
-}
-
-@keyframes slide-in {
-    0% {
-        -webkit-transform: translateX(100%);
-    }
-    100% {
-        -webkit-transform: translateX(0%);
-    }
-}
-
-@-webkit-keyframes slide-in {
-    0% {
-        transform: translateX(100%);
-    }
-    100% {
-        transform: translateX(0%);
-    }
-}
-
-@keyframes slide-out {
-    0% {
-        transform: translateX(0%);
-    }
-    100% {
-        transform: translateX(100%);
-    }
-}
-
-@-webkit-keyframes slide-out {
-    0% {
-        -webkit-transform: translateX(0%);
-    }
-    100% {
-        -webkit-transform: translateX(100%);
-    }
-}
-
-/** param and notify area on hover  */
-
-.tooltipHeading {
-    width: 100%;
-    text-align: center;
-    font-size: 17px;
-    font-weight: 600;
-}
-
-.notifyDataTable th {
-    font-weight: 600;
-}
-
-.tooltip-class * {
-    background: white !important;
+.worksOrderFilter .text-dark:hover {
     color: black !important;
-    z-index: 99999 !important;
 }
 
-.tooltip-class .k-callout {
-    background-color: transparent !important;
-    color: white !important;
+.filterArea {
+    width: 100%;
+    display: block;
+}
+
+.filterArea input[type=text] {
+    font-size: .894rem;
+    line-height: 1.54;
+    color: #4E5155;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid rgba(24, 28, 33, 0.1);
+    border-radius: .25rem;
+}
+
+.filterArea .filterdiv, .radioDiv, .actionDiv, .actionDiv #nesting-dropdown-demo {
+    display: inline-block;
+}
+
+.filterArea .filterdiv .filterLbl {
+    width: 26%;
+}
+
+.filterArea .filterdiv input[type=text] {
+    width: 65%;
+}
+
+.filterArea .filterdiv1 .filterLbl {
+    width: 45%;
+}
+
+.filterArea .filterdiv1 input[type=text] {
+    width: 52%;
+}
+
+.filterArea .filterdiv4 .filterLbl {
+    width: 20%;
+}
+
+.filterArea .filterdiv4 input[type=text] {
+    width: 78%;
+}
+
+.filterArea .filterdiv:not(:first-child) {
+    margin-left: 15px;
+}
+
+.filterdiv2, .filterdiv3, .filterdiv4, .filterdiv5 {
+    width: 19%;
+}
+
+.filterdiv1, .filterdiv3 {
+    width: 13%;
+}
+
+.filterdiv6 {
+    width: 10%;
+}
+
+.filterArea .radioDiv {
+    margin-left: 10px;
+}
+
+.radioDiv .radio-inline input[type=radio], .radioDiv .radio-inline {
+    margin-right: 8px;
+}
+
+/** media query **/
+
+@media only screen and (min-device-width: 768px) and (max-device-width: 1366px) {
+    .filterArea .filterdiv {
+        width: 40%;
+    }
+
+    .filterArea .filterdiv{
+        margin-left: 0px;
+    }
+}
+
+@media only screen and (min-device-width: 280px) and (max-device-width: 540px) {
+    .filterArea .filterdiv {
+        width: 100%;
+    }
+    .filterArea .filterdiv .filterLbl {
+        width: 25%;
+        text-align: left;
+    }
+    .filterArea .filterdiv input[type=text] {
+        width: 70%;
+    }
+
+    .filterArea .filterdiv{
+        margin-left: 0px !important;
+    }
 }
