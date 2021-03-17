@@ -130,7 +130,7 @@ export class HnsDefinitionsComponent implements OnInit, OnDestroy {
           // if (this.hnsPermission.includes("Inactivate") == false && this.hnsPermission.includes("Activate") == false) {
           //   this.contextMenus = ['Copy']
           // }
-          
+
         }
       )
     )
@@ -495,7 +495,7 @@ export class HnsDefinitionsComponent implements OnInit, OnDestroy {
                           var file = new Blob([byteArray], { type: mimedata.data.mimeType1 + ';base64' });
                           var fileURL = URL.createObjectURL(file);
                           let newPdfWindow =window.open(fileURL);
-      
+
                           // let newPdfWindow = window.open("",this.selectedNotes.fileName);
                           // let iframeStart = "<\iframe title='Notepad' width='100%' height='100%' src='data:" + mimedata.data.mimeType1 + ";base64, ";
                           // let iframeEnd = "'><\/iframe>";
