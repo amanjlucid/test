@@ -15,9 +15,10 @@ import { WorksordersDashboardComponent } from '../worksorders-dashboard/worksord
 import { WorksordersManagementComponent } from '../worksorders-management/worksorders-management.component'
 import { TreeListModule  } from '@progress/kendo-angular-treelist';
 import { WorksordersNewmanagementComponent } from '../worksorders-newmanagement/worksorders-newmanagement.component'
+import { WorksordersAssetChecklistComponent } from '../worksorders-asset-checklist/worksorders-asset-checklist.component';
 
 @NgModule({
-  declarations: [WorksordersRouterComponent, WorksordersDashboardComponent, WorksordersManagementComponent, WorksordersNewmanagementComponent],
+  declarations: [WorksordersRouterComponent, WorksordersDashboardComponent, WorksordersManagementComponent, WorksordersNewmanagementComponent, WorksordersAssetChecklistComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -35,4 +36,5 @@ import { WorksordersNewmanagementComponent } from '../worksorders-newmanagement/
 
   ]
 })
+
 export class WorksOrderModule { }

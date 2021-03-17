@@ -1,0 +1,11 @@
+.k-window {
+    position: fixed !important;
+}
+
+.actionBtnDiv button{
+    margin-left: 2px;
+} 
+
+.dropdown.list-unstyled {
+    position: absolute !important;
+}

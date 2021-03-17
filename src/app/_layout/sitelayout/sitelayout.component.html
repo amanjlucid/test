@@ -234,7 +234,7 @@
                                 <div>Dashboard</div>
                             </a>
                         </li>
-                        <li class="sidenav-item" [routerLinkActive]="['active']">
+                        <li class="sidenav-item" [routerLinkActive]="['active']" *ngIf="checkWorksOrdersAccess('Programme Management')">
                             <a [routerLink]="['/worksorders/management']" class="sidenav-link">
                                 <div>Management</div>
                             </a>
