@@ -1,0 +1,304 @@
+<kendo-window title="{{windowTitle}}" [top]="20"
+ height="600"  size="auto"  [(width)]="windowWidth" [minWidth]="120" *ngIf="userFormWindow"
+  (close)="closeUserFormWindow()">
+  <div class="flex-grow-1 userFrm" >
+
+    <form [formGroup]="userForm" (ngSubmit)="onSubmit()" autocomplete="off">
+
+
+
+  <div class="form-row">
+
+
+    <div class="form-group col-md-6">
+      <label class="form-label">Name</label>
+      <input [readonly]="readInput" oninput="this.value = this.value.toUpperCase()" type="text" class="form-control"
+        placeholder="" formControlName="woname" [ngClass]="{ 'is-invalid': submitted && formErrors.woname }">
+
+      <div *ngIf="submitted && formErrors.woname" class="invalid-feedback">
+        <div *ngIf="formErrors.woname">{{ formErrors.woname }}</div>
+      </div>
+    </div>
+
+
+    
+        <div class="form-group col-md-6">
+          <label class="form-label">Asset Template</label>
+          <select class="custom-select" formControlName="wottemplatetype"
+            [ngClass]="{ 'is-invalid': submitted && formErrors.wottemplatetype }">
+            <option value=""></option>
+          <option *ngFor="let assetTmp of assetTemplateListData"  [ngValue]="assetTmp">{{assetTmp}}</option>
+
+          </select>
+        </div>
+
+        <div class="form-group col-md-6">
+          <label class="form-label">Programme</label>
+          <select class="custom-select" formControlName="loginAllowed"
+            [ngClass]="{ 'is-invalid': submitted && formErrors.loginAllowed }">
+            <option value=""></option>
+            <option value="ACE1">ACE 1</option>
+            <option value="ACE2">ACE 1</option>
+
+          </select>
+        </div>
+
+
+</div>
+
+
+
+
+<div class="form-row">
+
+      <div class="form-group col-md-6">
+        <label class="form-label">Contact</label>
+        <select class="custom-select" formControlName="loginAllowed"
+          [ngClass]="{ 'is-invalid': submitted && formErrors.loginAllowed }">
+          <option value=""></option>
+          <option value="ACE1">ACE 1</option>
+          <option value="ACE2">ACE 1</option>
+
+        </select>
+      </div>
+
+      <div class="form-group col-md-6">
+        <label class="form-label">Work Order Type</label>
+        <select class="custom-select" formControlName="woType"
+          [ngClass]="{ 'is-invalid': submitted && formErrors.woType }">
+          <option value=""></option>
+        <option *ngFor="let woType of getWorkOrderTypeData"  [ngValue]="woType">{{woType}}</option>
+
+        </select>
+      </div>
+    </div>
+
+
+<div class="form-row">
+
+  <div class="form-group col-md-6">
+    <label class="form-label">Name</label>
+    <input [readonly]="readInput" oninput="this.value = this.value.toUpperCase()" type="text" class="form-control"
+      placeholder="" formControlName="woname" [ngClass]="{ 'is-invalid': submitted && formErrors.woname }">
+
+    <div *ngIf="submitted && formErrors.woname" class="invalid-feedback">
+      <div *ngIf="formErrors.woname">{{ formErrors.woname }}</div>
+    </div>
+  </div>
+
+
+
+  </div>
+<div class="form-row">
+  <div class="form-group col-md-12">
+    <label class="form-label">Desc</label>
+    <input [readonly]="readInput" oninput="this.value = this.value.toUpperCase()" type="text" class="form-control"
+      placeholder="" formControlName="user" [ngClass]="{ 'is-invalid': submitted && formErrors.user }">
+
+    <div *ngIf="submitted && formErrors.user" class="invalid-feedback">
+      <div *ngIf="formErrors.user">{{ formErrors.user }}</div>
+    </div>
+  </div>
+
+</div>
+  <div class="form-row">
+
+        <div class="form-group col-md-4">
+          <label class="form-label">Status</label>
+          <select class="custom-select" formControlName="loginAllowed"
+            [ngClass]="{ 'is-invalid': submitted && formErrors.loginAllowed }">
+            <option value=""></option>
+            <option value="ACE1">ACE 1</option>
+            <option value="ACE2">ACE 1</option>
+
+          </select>
+        </div>
+        <div class="form-group col-md-4">
+          <label class="form-label">Active/Inactive</label>
+          <select class="custom-select" formControlName="loginAllowed"
+            [ngClass]="{ 'is-invalid': submitted && formErrors.loginAllowed }">
+            <option value=""></option>
+            <option value="ACE1">ACE 1</option>
+            <option value="ACE2">ACE 1</option>
+
+          </select>
+        </div>
+
+
+        <div class="form-group col-md-12">
+          <label class="form-label">Target Completion Date</label>
+          <input [readonly]="readInput" oninput="this.value = this.value.toUpperCase()" type="text" class="form-control"
+            placeholder="" formControlName="user" [ngClass]="{ 'is-invalid': submitted && formErrors.user }">
+
+          <div *ngIf="submitted && formErrors.user" class="invalid-feedback">
+            <div *ngIf="formErrors.user">{{ formErrors.user }}</div>
+          </div>
+        </div>
+
+  </div>
+
+
+
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label class="form-label">Budget</label>
+      <input [readonly]="readInput" oninput="this.value = this.value.toUpperCase()" type="text" class="form-control"
+        placeholder="" formControlName="user" [ngClass]="{ 'is-invalid': submitted && formErrors.user }">
+
+      <div *ngIf="submitted && formErrors.user" class="invalid-feedback">
+        <div *ngIf="formErrors.user">{{ formErrors.user }}</div>
+      </div>
+    </div>
+
+    <div class="form-group col-md-6">
+      <label class="form-label">Budget Code</label>
+      <input [readonly]="readInput" oninput="this.value = this.value.toUpperCase()" type="text" class="form-control"
+        placeholder="" formControlName="user" [ngClass]="{ 'is-invalid': submitted && formErrors.user }">
+
+      <div *ngIf="submitted && formErrors.user" class="invalid-feedback">
+        <div *ngIf="formErrors.user">{{ formErrors.user }}</div>
+      </div>
+    </div>
+
+
+
+
+  </div>
+
+  <div class="form-row">
+
+    <div class="form-group col-md-4">
+      <label class="form-label">Plan Year</label>
+      <input [readonly]="readInput" oninput="this.value = this.value.toUpperCase()" type="text" class="form-control"
+        placeholder="" formControlName="user" [ngClass]="{ 'is-invalid': submitted && formErrors.user }">
+
+      <div *ngIf="submitted && formErrors.user" class="invalid-feedback">
+        <div *ngIf="formErrors.user">{{ formErrors.user }}</div>
+      </div>
+    </div>
+
+    <div class="form-group col-md-4">
+      <label class="form-label">Plan Start Date</label>
+      <input [readonly]="readInput" oninput="this.value = this.value.toUpperCase()" type="text" class="form-control"
+        placeholder="" formControlName="user" [ngClass]="{ 'is-invalid': submitted && formErrors.user }">
+
+      <div *ngIf="submitted && formErrors.user" class="invalid-feedback">
+        <div *ngIf="formErrors.user">{{ formErrors.user }}</div>
+      </div>
+    </div>
+
+
+    <div class="form-group col-md-4">
+      <label class="form-label">Plan End Date</label>
+      <input [readonly]="readInput" oninput="this.value = this.value.toUpperCase()" type="text" class="form-control"
+        placeholder="" formControlName="user" [ngClass]="{ 'is-invalid': submitted && formErrors.user }">
+
+      <div *ngIf="submitted && formErrors.user" class="invalid-feedback">
+        <div *ngIf="formErrors.user">{{ formErrors.user }}</div>
+      </div>
+    </div>
+
+
+  </div>
+
+
+
+  <div class="form-row">
+
+
+        <div class="form-group col-md-12">
+          <label class="form-label">Instructions</label>
+
+
+            <textarea matInput placeholder="Work Order Instructions" [ngClass]="{ 'is-invalid': submitted && formErrors.instructions }" formControlName="instructions" class="form-control">
+           </textarea>
+
+          <div *ngIf="submitted && formErrors.instructions" class="invalid-feedback">
+            <div *ngIf="formErrors.instructions">{{ formErrors.instructions }}</div>
+          </div>
+        </div>
+
+
+  </div>
+
+  <div class="form-row">
+    <div class="form-group col-md-3">
+      <label class="form-label">Overhead %</label>
+      <input [readonly]="readInput" oninput="this.value = this.value.toUpperCase()" type="text" class="form-control"
+        placeholder="" formControlName="user" [ngClass]="{ 'is-invalid': submitted && formErrors.user }">
+
+      <div *ngIf="submitted && formErrors.user" class="invalid-feedback">
+        <div *ngIf="formErrors.user">{{ formErrors.user }}</div>
+      </div>
+    </div>
+    <div class="form-group col-md-3">
+      <label class="form-label">Prelim %</label>
+      <input [readonly]="readInput" oninput="this.value = this.value.toUpperCase()" type="text" class="form-control"
+        placeholder="" formControlName="user" [ngClass]="{ 'is-invalid': submitted && formErrors.user }">
+
+      <div *ngIf="submitted && formErrors.user" class="invalid-feedback">
+        <div *ngIf="formErrors.user">{{ formErrors.user }}</div>
+      </div>
+    </div>
+    <div class="form-group col-md-3">
+      <label class="form-label">Profit Year</label>
+      <input [readonly]="readInput" oninput="this.value = this.value.toUpperCase()" type="text" class="form-control"
+        placeholder="" formControlName="user" [ngClass]="{ 'is-invalid': submitted && formErrors.user }">
+
+      <div *ngIf="submitted && formErrors.user" class="invalid-feedback">
+        <div *ngIf="formErrors.user">{{ formErrors.user }}</div>
+      </div>
+    </div>
+    <div class="form-group col-md-3">
+      <label class="form-label">Other Cast</label>
+      <input [readonly]="readInput" oninput="this.value = this.value.toUpperCase()" type="text" class="form-control"
+        placeholder="" formControlName="user" [ngClass]="{ 'is-invalid': submitted && formErrors.user }">
+
+      <div *ngIf="submitted && formErrors.user" class="invalid-feedback">
+        <div *ngIf="formErrors.user">{{ formErrors.user }}</div>
+      </div>
+    </div>
+
+
+  </div>
+
+
+  <div class="form-row">
+
+    <div class="form-group col-md-6">
+      <label class="form-label">Contract Payment Type</label>
+      <input [readonly]="readInput" oninput="this.value = this.value.toUpperCase()" type="text" class="form-control"
+        placeholder="" formControlName="user" [ngClass]="{ 'is-invalid': submitted && formErrors.user }">
+
+      <div *ngIf="submitted && formErrors.user" class="invalid-feedback">
+        <div *ngIf="formErrors.user">{{ formErrors.user }}</div>
+      </div>
+    </div>
+
+    <div class="form-group col-md-6">
+      <label class="form-label">Set Defect Liability Period(days)</label>
+      <input [readonly]="readInput" oninput="this.value = this.value.toUpperCase()" type="text" class="form-control"
+        placeholder="" formControlName="user" [ngClass]="{ 'is-invalid': submitted && formErrors.user }">
+
+      <div *ngIf="submitted && formErrors.user" class="invalid-feedback">
+        <div *ngIf="formErrors.user">{{ formErrors.user }}</div>
+      </div>
+    </div>
+
+  </div>
+
+
+      <div class="buttonDiv pull-right mb-4">
+        <button type="button" (click)="closeUserFormWindow()" class="btn btn-danger">Cancel</button>
+        <button type="submit"  class="btn btn-success newBtn">Submit</button>
+
+      </div>
+
+<div class="clearfix"></div>
+
+
+    </form>
+
+
+  </div>
+</kendo-window>

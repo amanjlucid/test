@@ -31,6 +31,8 @@ import { SurveyProjectAccessComponent } from './survey-portal/survey-project-acc
 import { SurveyProjectSettingsComponent } from './survey-portal/survey-project-settings/survey-project-settings.component';
 import { SurveyDashboardComponent} from './survey-portal/survey-dashboard/survey-dashboard.component';
 import { SurveyCbcreportComponent } from './survey-portal/survey-cbcreport/survey-cbcreport.component';
+import {WorkorderListComponent} from './worksorders/workorder-list/workorder-list.component';
+
 
 const appRoutes: Routes = [
 
@@ -86,8 +88,11 @@ const appRoutes: Routes = [
                 children: [
                     { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
                     { path: 'dashboard', component: WorksordersDashboardComponent, canActivate: [AuthGuard] },
+                    { path: 'list', component: WorkorderListComponent, canActivate: [AuthGuard] },
+
                 ]
             },
+
 
             { path: 'health&safety', loadChildren: () => import('./hns-portal/hns.module').then(m => m.HnsModule) },
             { path: 'tasks', loadChildren: () => import('./event-manager/eventmanager.module').then(m => m.EventManagerModule) },

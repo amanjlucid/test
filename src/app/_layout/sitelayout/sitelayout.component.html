@@ -234,6 +234,12 @@
                                 <div>Dashboard</div>
                             </a>
                         </li>
+                        <li class="sidenav-item" [routerLinkActive]="['active']"
+                            *ngIf="checkWorksOrdersAccess('Dashboard')">
+                            <a [routerLink]="['/worksorders/list']" class="sidenav-link">
+                                <div>Works Orders</div>
+                            </a>
+                        </li>
                     </ul>
                 </li>
 
