@@ -55,7 +55,6 @@
     width: 50%;
 }
 
-
 .filterArea .filterdiv4 .filterLbl {
     width: 30%;
 }
@@ -76,7 +75,7 @@
     width: 21%;
 }
 
-.filterdiv1{
+.filterdiv1 {
     width: 13%;
 }
 
@@ -102,8 +101,7 @@
     .filterArea .filterdiv {
         width: 40%;
     }
-
-    .filterArea .filterdiv{
+    .filterArea .filterdiv {
         margin-left: 0px;
     }
 }
@@ -119,8 +117,22 @@
     .filterArea .filterdiv input[type=text] {
         width: 70%;
     }
-
-    .filterArea .filterdiv{
+    .filterArea .filterdiv {
         margin-left: 0px !important;
     }
+}
+
+@media (max-width: 1224px) {
+    .filterdiv {
+        width: 40% !important;
+        margin-left: 0px !important;
+    }
+
+    .filterdiv .filterLbl{
+        width: 38% !important;
+    } 
+
+    .filterdiv input[type=text]{
+        width: 58% !important;
+    } 
 }

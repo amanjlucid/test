@@ -1,15 +1,10 @@
-import { Component, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { SubSink } from 'subsink';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { FilterService, SelectableSettings, TreeListComponent, ExpandEvent } from '@progress/kendo-angular-treelist';
 import { AlertService, LoaderService, ConfirmationDialogService, HelperService, WorksorderManagementService, SharedService, PropertySecurityGroupService } from '../../_services'
-
-// import { packages_mapping,assets_data } from './package_mapping';
-// import { DataBindingDirective } from '@progress/kendo-angular-grid';
-import { process, State } from '@progress/kendo-data-query';
 import { forkJoin } from 'rxjs';
 import { WorkordersDetailModel } from 'src/app/_models';
-
 
 
 @Component({
@@ -18,7 +13,6 @@ import { WorkordersDetailModel } from 'src/app/_models';
   styleUrls: ['./worksorders-details.component.css'],
   encapsulation: ViewEncapsulation.None,
 })
-
 
 export class WorksordersDetailsComponent implements OnInit {
   printHiearchy: any;
@@ -30,7 +24,7 @@ export class WorksordersDetailsComponent implements OnInit {
   hiearchyWindow = false;
 
   subs = new SubSink();
-  filterToggle = true;
+  filterToggle = false;
   readonly = true;
   worksOrderSingleData = JSON.parse(localStorage.getItem('worksOrderSingleData'));
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
@@ -49,12 +43,21 @@ export class WorksordersDetailsComponent implements OnInit {
     enabled: true
   };
   gridPageSize = 25;
-  public apiData: any = [];
+  // public apiData: any = [];
   public groupedData: any = [];
   public gridData: any = [];
   @ViewChild(TreeListComponent) public grid: TreeListComponent;
-  gridHeight = 400;
+  gridHeight = 680;
   worksOrderData: any;
+
+  assetchecklistWindow = false;
+  selectedChildRow: any;
+  selectedParentRow: any;
+
+  newPhasewindow = false;
+  phaseFormMode = 'new';
+
+  packageMappingWindow = false;
 
   constructor(
     private sharedService: SharedService,
@@ -63,11 +66,11 @@ export class WorksordersDetailsComponent implements OnInit {
     private alertService: AlertService,
     private propSecGrpService: PropertySecurityGroupService,
     private loaderService: LoaderService,
+    private chRef: ChangeDetectorRef,
   ) { }
 
 
   ngOnInit() {
-
     //update notification on top
     //this.helperService.updateNotificationOnTop(); // Common service for all routing page
 
@@ -75,14 +78,13 @@ export class WorksordersDetailsComponent implements OnInit {
     this.subs.add(
       this.sharedService.worksOrderObs.subscribe(
         data => {
-          // console.log(data);
           if (data.length == 0 && !this.worksOrderSingleData) {
             this.alertService.error("Please select one work order from the works orders list");
             return
           }
 
           this.worksOrderDetailPageData();
-          // console.log(this.worksOrderSingleData);
+
         }
       )
     )
@@ -137,55 +139,44 @@ export class WorksordersDetailsComponent implements OnInit {
       this.worksorderManagementService.getWorkOrderDetails(this.workorderDetailModel).subscribe(
         data => {
           console.log(data);
-          // if (data.isSuccess) {
-          //   let gridData = [];
-          //   this.apiData = [...data.data];
-          //   let tempData = [...data.data];
-          //   let groupBywprsequence = tempData.reduce((r, a) => {
-          //     r[a.wprsequence] = [...r[a.wprsequence] || [], a];
-          //     return r;
-          //   }, {});
+          if (data.isSuccess) {
+            let gridData = [];
+            let tempData = [...data.data];
 
-          //   this.groupedData = [...groupBywprsequence];
+            //Find parent and Set parent id in each row
+            tempData.forEach((value, index) => {
+              if (value.treelevel == 2) {
+                value.parentId = null
+                value.id = `${value.wopsequence}${value.wosequence}${value.wprsequence}${this.helperService.replaceAll(value.assid, " ", "")}`;
 
-          //   //Find parent and Set parent id in each row
-          //   tempData.forEach((value, index) => {
-          //     if (value.treelevel == 1) {
-          //       value.parentId = null;
-          //       value.id = `${value.wopsequence}${value.wosequence}${value.wprsequence}`;
-          //       gridData.push(value)
-          //     }
+                const valueWithDateObj = this.addDateObjectFields(value, ['targetdate', 'woacompletiondate', 'planstartdate', 'planenddate']); //Converting date object for filter from grid
+                gridData.push(valueWithDateObj);
 
-          //     if (value.treelevel == 2) {
-          //       const parent = groupBywprsequence[value.wprsequence].find(x => x.treelevel == 1 && x.wprsequence == value.wprsequence);
-          //       if (parent) {
-          //         value.parentId = `${parent.wopsequence}${parent.wosequence}${parent.wprsequence}`;
-          //         value.id = `${value.wopsequence}${value.wosequence}${value.wprsequence}`;
-          //         gridData.push(value)
-          //       }
+              }
 
-          //     }
+              if (value.treelevel == 3) {
+                const parent = tempData.find(x => x.treelevel == 2 && x.wprsequence == value.wprsequence && x.wosequence == value.wosequence);
+                if (parent) {
+                  value.parentId = `${parent.wopsequence}${parent.wosequence}${parent.wprsequence}${this.helperService.replaceAll(parent.assid, " ", "")}`;
+                  value.id = `${value.wopsequence}${value.wosequence}${value.wprsequence}${this.helperService.replaceAll(value.assid, " ", "")}${index}`;
 
-          //     if (value.treelevel == 3) {
-          //       const parent = groupBywprsequence[value.wprsequence].find(x => x.treelevel == 2 && x.wprsequence == value.wprsequence && x.wosequence == value.wosequence);
-          //       if (parent) {
-          //         value.parentId = `${parent.wopsequence}${parent.wosequence}${parent.wprsequence}`;
-          //         value.id = `${value.wopsequence}${value.wosequence}${value.wprsequence}`;
-          //         gridData.push(value)
-          //       }
-          //     }
+                  const valueWithDateObj = this.addDateObjectFields(value, ['targetdate', 'woacompletiondate', 'planstartdate', 'planenddate']); //Converting date object for filter from grid
+                  gridData.push(valueWithDateObj);
+                }
+              }
 
-          //   })
+            })
 
-          //   setTimeout(() => {
-          //     this.gridData = [...gridData];
-          //     this.loading = false
-          //   }, 100);
+            setTimeout(() => {
+              this.gridData = [...gridData];
+              this.loading = false;
+              this.chRef.detectChanges();
+            }, 100);
 
-          // } else {
-          //   this.alertService.error(data.message);
-          //   this.loading = false
-          // }
+          } else {
+            this.alertService.error(data.message);
+            this.loading = false
+          }
         }
       )
     )
@@ -214,7 +205,7 @@ export class WorksordersDetailsComponent implements OnInit {
     }
   }
 
-  public onFilterChange(filter: any): void {
+  onFilterChange(filter: any): void {
     this.filter = filter;
   }
 
@@ -223,7 +214,19 @@ export class WorksordersDetailsComponent implements OnInit {
     // console.log(this.selected)
   }
 
-  // hierarchy function start
+  addDateObjectFields(obj, fieldsArr: Array<any>) {
+    if (fieldsArr.length > 0) {
+      fieldsArr.forEach(element => {
+        if (obj[element] != undefined) {
+          obj[element + 'obj'] = obj[element] != "" ? new Date(obj[element]) : '';
+        }
+      });
+    }
+
+    return obj;
+  }
+
+  //####################### hierarchy function start ####################################//
   getHierarchyTypeList() {
     this.propSecGrpService.getHierarchyTypeList().subscribe(
       data => {
@@ -312,19 +315,98 @@ export class WorksordersDetailsComponent implements OnInit {
     // this.filter()
   }
 
-  // hierarchy function end
+  //##################### hierarchy function end ######################################//
 
-  openElmGrpWin(action) {
-    // $('.bgblur').addClass('ovrlay');
-    // this.elmGrpWindow = true;
-  }
+  // openElmGrpWin(action) {
+  //   // $('.bgblur').addClass('ovrlay');
+  //   // this.elmGrpWindow = true;
+  // }
 
-  public slideToggle() {
+  slideToggle() {
     this.filterToggle = !this.filterToggle;
-    if (this.filterToggle) this.gridHeight = 400;
-    else this.gridHeight = 680;
     $('.worksorder-header').slideToggle();
+    if (this.filterToggle) {
+      this.gridHeight = 370;
+    } else {
+      setTimeout(() => {
+        this.gridHeight = 680;
+      }, 500);
+    }
   }
+
+
+  openAssetChecklist(item) {
+    this.selectedChildRow = item;
+    this.assetchecklistWindow = true;
+    $('.worksOrderDetailOvrlay').addClass('ovrlay');
+  }
+
+  closeAssetchecklistEvent(eve) {
+    this.assetchecklistWindow = eve;
+    $('.worksOrderDetailOvrlay').removeClass('ovrlay');
+  }
+
+  openNewphase(mode, item = null) {
+    if (mode == 'edit') {
+      this.selectedParentRow = item
+    }
+    this.phaseFormMode = mode
+    this.newPhasewindow = true;
+    $('.worksOrderDetailOvrlay').addClass('ovrlay');
+  }
+
+  closeNewphaseEvent(eve) {
+    this.newPhasewindow = eve;
+    $('.worksOrderDetailOvrlay').removeClass('ovrlay');
+  }
+
+  openPackageMappingWindow() {
+    this.packageMappingWindow = true;
+    $('.worksOrderDetailOvrlay').addClass('ovrlay');
+  }
+
+  cloasePackageMappingWindow(eve) {
+    this.packageMappingWindow = eve;
+    $('.worksOrderDetailOvrlay').removeClass('ovrlay');
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

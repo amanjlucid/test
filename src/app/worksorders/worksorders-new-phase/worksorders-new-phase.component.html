@@ -1,0 +1,355 @@
+<kendo-window title="{{title}}" *ngIf="newPhasewindow" (close)="closeNewphaseWindow()" [top]="20" [minWidth]="700"
+    [width]="1050" [height]="auto" [minHeight]="320">
+    <div class="row">
+        <div class="col-md-12">
+            <form [formGroup]="nePhaseForm" (ngSubmit)="onSubmit()" autocomplete="off" class="managementForm">
+                <div class="row formRow">
+                    <div class="col-md-12">
+                        <div class="leftDiv">
+                            <div class="first">
+                                <label class="col-form-label">Name</label>
+                            </div>
+                            <div class="second">
+                                <input type="text" class="form-control" formControlName="WOPNAME"
+                                    [ngClass]="{ 'is-invalid': submitted && formErrors.WOPNAME }" autocomplete="off">
+
+                                <div *ngIf="submitted && formErrors.WOPNAME" class="invalid-feedback">
+                                    <div *ngIf="formErrors.WOPNAME">{{ formErrors.WOPNAME }}</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="rightDiv">
+                            <div class="first">
+                                <label class="col-form-label">Active/Inactive</label>
+                            </div>
+                            <div class="second">
+                                <select class="form-control" formControlName="WOPACTINACT"
+                                    [ngClass]="{ 'is-invalid': submitted && formErrors.WOPACTINACT }">
+                                    <option value="A">Active</option>
+                                    <option value="I">Inactive</option>
+                                </select>
+                                <!-- <input type="text" class="form-control" formControlName="active"
+                                    [ngClass]="{ 'is-invalid': submitted && formErrors.active }" autocomplete="off"> -->
+
+                                <div *ngIf="submitted && formErrors.WOPACTINACT" class="invalid-feedback">
+                                    <div *ngIf="formErrors.WOPACTINACT">{{ formErrors.WOPACTINACT }}</div>
+                                </div>
+                            </div>
+
+
+
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="fullDiv">
+                            <div class="first">
+                                <label class="col-form-label">Desc</label>
+                            </div>
+                            <div class="second">
+                                <input type="text" class="form-control" formControlName="WOPDESC"
+                                    [ngClass]="{ 'is-invalid': submitted && formErrors.WOPDESC }" autocomplete="off">
+
+                                <div *ngIf="submitted && formErrors.WOPDESC" class="invalid-feedback">
+                                    <div *ngIf="formErrors.WOPDESC">{{ formErrors.WOPDESC }}</div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="leftDiv">
+                            <div class="first">
+                                <label class="col-form-label">Status</label>
+                            </div>
+                            <div class="second">
+                                <select class="form-control" formControlName="WOPSTATUS"
+                                    [ngClass]="{ 'is-invalid': submitted && formErrors.WOPSTATUS }">
+                                    <option value="New">New</option>
+                                    <option value="In Progress">In Progress</option>
+                                    <option value="Closed">Closed</option>
+                                </select>
+                                <!-- <input type="text" class="form-control" formControlName="status"
+                                    [ngClass]="{ 'is-invalid': submitted && formErrors.status }" autocomplete="off"> -->
+
+                                <div *ngIf="submitted && formErrors.WOPSTATUS" class="invalid-feedback">
+                                    <div *ngIf="formErrors.WOPSTATUS">{{ formErrors.WOPSTATUS }}</div>
+                                </div>
+                            </div>
+
+
+
+                        </div>
+
+                        <div class="rightDiv">
+                            <div class="first">
+                                <label class="col-form-label">Budget</label>
+                            </div>
+                            <div class="second">
+                                <input type="text" class="form-control" formControlName="WOPBUDGET"
+                                    [ngClass]="{ 'is-invalid': submitted && formErrors.WOPBUDGET }" autocomplete="off">
+
+                                <div *ngIf="submitted && formErrors.WOPBUDGET" class="invalid-feedback">
+                                    <div *ngIf="formErrors.WOPBUDGET">{{ formErrors.WOPBUDGET }}</div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-md-12" *ngIf="phaseFormMode == 'edit'">
+                        <div class="grpDiv">
+                            <div class="div1 childGrpDiv">
+
+                            </div>
+                            <div class="childGrpDiv">
+                                <label class="col-form-label">Forecast</label>
+                            </div>
+                            <div class="childGrpDiv">
+                                <label class="col-form-label">Committed</label>
+                            </div>
+                            <div class="childGrpDiv">
+                                <label class="col-form-label">Approved</label>
+                            </div>
+                            <div class="childGrpDiv">
+                                <label class="col-form-label">Pending</label>
+                            </div>
+                            <div class="childGrpDiv">
+                                <label class="col-form-label">Actual</label>
+                            </div>
+                        </div>
+
+                        <div class="grpDiv">
+                            <div class="div1 childGrpDiv">
+                                <label class="col-form-label">Work</label>
+                            </div>
+                            <div class="childGrpDiv">
+                                <input type="text" class="form-control" formControlName="WOPFORECAST"
+                                    [ngClass]="{ 'is-invalid': submitted && formErrors.WOPFORECAST }" autocomplete="off"
+                                    [readonly]="readonly">
+                            </div>
+                            <div class="childGrpDiv">
+                                <input type="text" class="form-control" formControlName="WOPCOMMITTED"
+                                    [ngClass]="{ 'is-invalid': submitted && formErrors.WOPCOMMITTED }"
+                                    autocomplete="off" [readonly]="readonly">
+                            </div>
+                            <div class="childGrpDiv">
+                                <input type="text" class="form-control" formControlName="WOPAPPROVED"
+                                    [ngClass]="{ 'is-invalid': submitted && formErrors.WOPAPPROVED }" autocomplete="off"
+                                    [readonly]="readonly">
+                            </div>
+                            <div class="childGrpDiv">
+                                <input type="text" class="form-control" formControlName="WOPPENDING"
+                                    [ngClass]="{ 'is-invalid': submitted && formErrors.WOPPENDING }" autocomplete="off"
+                                    [readonly]="readonly">
+                            </div>
+                            <div class="childGrpDiv">
+                                <input type="text" class="form-control" formControlName="WOPACTUAL"
+                                    [ngClass]="{ 'is-invalid': submitted && formErrors.WOPACTUAL }" autocomplete="off"
+                                    [readonly]="readonly">
+                            </div>
+                        </div>
+
+                        <div class="grpDiv">
+                            <div class="div1 childGrpDiv">
+                                <label class="col-form-label">Fees</label>
+                            </div>
+                            <div class="childGrpDiv">
+                                <input type="text" class="form-control" formControlName="WOPFORECASTFEE"
+                                    [ngClass]="{ 'is-invalid': submitted && formErrors.WOPFORECASTFEE }"
+                                    autocomplete="off" [readonly]="readonly">
+                            </div>
+                            <div class="childGrpDiv">
+                                <input type="text" class="form-control" formControlName="WOPCOMMITTEDFEE"
+                                    [ngClass]="{ 'is-invalid': submitted && formErrors.WOPCOMMITTEDFEE }"
+                                    autocomplete="off" [readonly]="readonly">
+                            </div>
+                            <div class="childGrpDiv">
+                                <input type="text" class="form-control" formControlName="WOPAPPROVEDFEE"
+                                    [ngClass]="{ 'is-invalid': submitted && formErrors.WOPAPPROVEDFEE }"
+                                    autocomplete="off" [readonly]="readonly">
+                            </div>
+                            <div class="childGrpDiv">
+                                <input type="text" class="form-control" formControlName="WOPPENDINGFEE"
+                                    [ngClass]="{ 'is-invalid': submitted && formErrors.WOPPENDINGFEE }"
+                                    autocomplete="off" [readonly]="readonly">
+                            </div>
+                            <div class="childGrpDiv">
+                                <input type="text" class="form-control" formControlName="WOPACTUALFEE"
+                                    [ngClass]="{ 'is-invalid': submitted && formErrors.WOPACTUALFEE }"
+                                    autocomplete="off" [readonly]="readonly">
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-md-12" *ngIf="phaseFormMode == 'edit'">
+                        <div class="leftDiv">
+                            <div class="first">
+                                <label class="col-form-label">Target Date</label>
+                            </div>
+                            <div class="second">
+                                <input type="text" class="form-control" formControlName="WOPTARGETCOMPLETIONDATE"
+                                    [ngClass]="{ 'is-invalid': submitted && formErrors.WOPTARGETCOMPLETIONDATE }"
+                                    autocomplete="off" (click)="openCalendar(td,'completedDate')" [minDate]="minDate"
+                                    ngbDatepicker #td="ngbDatepicker" [placement]="'top'">
+
+                                <div *ngIf="submitted && formErrors.WOPTARGETCOMPLETIONDATE" class="invalid-feedback">
+                                    <div *ngIf="formErrors.WOPTARGETCOMPLETIONDATE">{{
+                                        formErrors.WOPTARGETCOMPLETIONDATE }}</div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="rightDiv">
+
+                            <!-- <div class="first">
+                                <label class="col-form-label">Ext Ref</label>
+                            </div>
+                            <div class="second">
+                                <input type="text" class="form-control" formControlName="WPREXTREF"
+                                    [ngClass]="{ 'is-invalid': submitted && formErrors.WPREXTREF }" autocomplete="off">
+                                <div *ngIf="submitted && formErrors.WPREXTREF" class="invalid-feedback">
+                                    <div *ngIf="formErrors.WPREXTREF">{{ formErrors.WPREXTREF }}</div>
+                                </div>
+                            </div> -->
+
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-12" *ngIf="phaseFormMode == 'edit'">
+                        <div class="leftDiv">
+                            <div class="first">
+                                <label class="col-form-label">Issued Date</label>
+                            </div>
+                            <div class="second">
+                                <input type="text" class="form-control" formControlName="WOPCONTRACTORISSUEDATE"
+                                    [ngClass]="{ 'is-invalid': submitted && formErrors.WOPCONTRACTORISSUEDATE }"
+                                    autocomplete="off" (click)="openCalendar(td)" [minDate]="minDate" ngbDatepicker
+                                    #td="ngbDatepicker" [placement]="'top'"
+                                    [disabled]="disableFields.includes('WOPCONTRACTORISSUEDATE')">
+
+                                <div *ngIf="submitted && formErrors.WOPCONTRACTORISSUEDATE" class="invalid-feedback">
+                                    <div *ngIf="formErrors.WOPCONTRACTORISSUEDATE">
+                                        {{ formErrors.WOPCONTRACTORISSUEDATE }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="rightDiv">
+                            <div class="first">
+                                <label class="col-form-label">Acceptance Date</label>
+                            </div>
+                            <div class="second">
+                                <input type="text" class="form-control" formControlName="WOPCONTRACTORACCEPTANCEDATE"
+                                    [ngClass]="{ 'is-invalid': submitted && formErrors.WOPCONTRACTORACCEPTANCEDATE }"
+                                    autocomplete="off" (click)="openCalendar(apd)"
+                                    [disabled]="disableFields.includes('WOPCONTRACTORACCEPTANCEDATE')" [minDate]="minDate"
+                                    ngbDatepicker #apd="ngbDatepicker" [placement]="'top'">
+
+                                <div *ngIf="submitted && formErrors.WOPCONTRACTORACCEPTANCEDATE" class="invalid-feedback">
+                                    <div *ngIf="formErrors.WOPCONTRACTORACCEPTANCEDATE">{{ formErrors.WOPCONTRACTORACCEPTANCEDATE }}</div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-md-12" *ngIf="phaseFormMode == 'edit'">
+                        <div class="leftDiv">
+                            <div class="first">
+                                <label class="col-form-label">Planned Start Date</label>
+                            </div>
+                            <div class="second">
+                                <input type="text" class="form-control" formControlName="WOPPLANSTARTDATE"
+                                    [ngClass]="{ 'is-invalid': submitted && formErrors.WOPPLANSTARTDATE }"
+                                    autocomplete="off" (click)="openCalendar(psd,'completedDate')" [minDate]="minDate"
+                                    ngbDatepicker #psd="ngbDatepicker" [placement]="'top'">
+
+                                <div *ngIf="submitted && formErrors.WOPPLANSTARTDATE" class="invalid-feedback">
+                                    <div *ngIf="formErrors.WOPPLANSTARTDATE">{{ formErrors.WOPPLANSTARTDATE }}</div>
+                                </div>
+                            </div>
+
+
+                        </div>
+
+                        <div class="rightDiv">
+                            <div class="first">
+                                <label class="col-form-label">Planned End Date</label>
+                            </div>
+                            <div class="second">
+                                <input type="text" class="form-control" formControlName="WOPPLANENDDATE"
+                                    [ngClass]="{ 'is-invalid': submitted && formErrors.WOPPLANENDDATE }"
+                                    autocomplete="off" (click)="openCalendar(ped,'completedDate')" [minDate]="minDate"
+                                    ngbDatepicker #ped="ngbDatepicker" [placement]="'top'">
+
+                                <div *ngIf="submitted && formErrors.WOPPLANENDDATE" class="invalid-feedback">
+                                    <div *ngIf="formErrors.WOPPLANENDDATE">{{ formErrors.WOPPLANENDDATE }}</div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-12" *ngIf="phaseFormMode == 'edit'">
+                        <div class="leftDiv">
+                            <div class="first">
+                                <label class="col-form-label">Actual Start Date</label>
+                            </div>
+                            <div class="second">
+                                <input type="text" class="form-control" formControlName="WOPACTUALSTARTDATE"
+                                    [ngClass]="{ 'is-invalid': submitted && formErrors.WOPACTUALSTARTDATE }"
+                                    autocomplete="off" (click)="openCalendar(asd,'completedDate')" [minDate]="minDate"
+                                    ngbDatepicker #asd="ngbDatepicker" [placement]="'top'"
+                                    [disabled]="disableFields.includes('WOPACTUALSTARTDATE')">
+
+                                <div *ngIf="submitted && formErrors.WOPACTUALSTARTDATE" class="invalid-feedback">
+                                    <div *ngIf="formErrors.WOPACTUALSTARTDATE">{{ formErrors.WOPACTUALSTARTDATE }}</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="rightDiv">
+                            <div class="first">
+                                <label class="col-form-label">Actual End Date</label>
+                            </div>
+                            <div class="second">
+                                <input type="text" class="form-control" formControlName="WOPACTUALENDDATE"
+                                    [ngClass]="{ 'is-invalid': submitted && formErrors.WOPACTUALENDDATE }"
+                                    autocomplete="off" (click)="openCalendar(aed,'completedDate')" [minDate]="minDate"
+                                    ngbDatepicker #aed="ngbDatepicker" [placement]="'top'"
+                                    [disabled]="disableFields.includes('WOPACTUALENDDATE')">
+
+                                <div *ngIf="submitted && formErrors.WOPACTUALENDDATE" class="invalid-feedback">
+                                    <div *ngIf="formErrors.WOPACTUALENDDATE">{{ formErrors.WOPACTUALENDDATE }}</div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="row mt-3">
+                    <div class="col-md-12 text-right">
+                        <button type="submit" class="btn btn-sm themeButton mr-1">Apply</button>
+                        <button type="button" (click)="closeNewphaseWindow()"
+                            class="btn btn-sm themeButton">Cancel</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</kendo-window>

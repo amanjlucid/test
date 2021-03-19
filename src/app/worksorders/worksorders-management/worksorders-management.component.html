@@ -35,7 +35,7 @@
                     </div>
                 </div>
             </div>
-            
+
         </div>
 
     </div>
@@ -53,24 +53,27 @@
                     <ng-template kendoTreeListCellTemplate let-dataItem>
                         <li *ngIf="dataItem.treelevel == 1" class="nav-item dropdown list-unstyled"
                             style="margin-top: -7px;">
-                            <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars" (click)="setSeletedRow(dataItem)"></i>
+                            <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"
+                                (click)="setSeletedRow(dataItem)"></i>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" (click)="openNewManagementWindow('edit')" href="javascript:void(0)">Edit</a>
-                                <a class="dropdown-item" (click)="openConfirmationDialog(dataItem)" href="javascript:void(0)">Delete</a>
+                                <a class="dropdown-item" (click)="openNewManagementWindow('edit')"
+                                    href="javascript:void(0)">Edit</a>
+                                <a class="dropdown-item" (click)="openConfirmationDialog(dataItem)"
+                                    href="javascript:void(0)">Delete</a>
                                 <a class="dropdown-item" href="javascript:void(0)">New Works Order</a>
-                                
+
                             </div>
                         </li>
 
                         <li *ngIf="dataItem.treelevel == 2" class="nav-item dropdown list-unstyled level2Menu"
-                        style="margin-top: -7px;">
+                            style="margin-top: -7px;">
                             <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
                             <div class="dropdown-menu">
                                 <a class="dropdown-item" href="javascript:void(0)">Edit</a>
                                 <a class="dropdown-item" href="javascript:void(0)">Delete</a>
                                 <a class="dropdown-item" href="javascript:void(0)">Works Order Detail</a>
                                 <a class="dropdown-item" href="javascript:void(0)">Package Mapping</a>
-                                
+
                             </div>
                         </li>
                     </ng-template>
@@ -147,6 +150,12 @@
                 </kendo-treelist-column>
                 <kendo-treelist-column field="targetcompletiondate" title="Target Date" [width]="150"
                     format="{0:dd-MM-yyyy}">
+                    <ng-template kendoTreeListFilterMenuTemplate let-filter let-column="column"
+                        let-filterService="filterService">
+                        <date-range-treelist-filter [field]="column.field" [filter]="filter"
+                            [filterService]="filterService">
+                        </date-range-treelist-filter>
+                    </ng-template>
 
                     <ng-template kendoTreeListCellTemplate let-dataItem>
                         <span>
@@ -155,6 +164,12 @@
                     </ng-template>
                 </kendo-treelist-column>
                 <kendo-treelist-column field="wprcontractorissuedate" title="Issued Date" [width]="150">
+                    <ng-template kendoTreeListFilterMenuTemplate let-filter let-column="column"
+                        let-filterService="filterService">
+                        <date-range-treelist-filter [field]="column.field" [filter]="filter"
+                            [filterService]="filterService">
+                        </date-range-treelist-filter>
+                    </ng-template>
                     <ng-template kendoTreeListCellTemplate let-dataItem>
                         <span>
                             {{ dataItem.wprcontractorissuedate | dateFormat : 'DD-MMM-YYYY' }}
@@ -162,6 +177,12 @@
                     </ng-template>
                 </kendo-treelist-column>
                 <kendo-treelist-column field="wprcontractoracceptancedate" title="Acceptance Date" [width]="150">
+                    <ng-template kendoTreeListFilterMenuTemplate let-filter let-column="column"
+                        let-filterService="filterService">
+                        <date-range-treelist-filter [field]="column.field" [filter]="filter"
+                            [filterService]="filterService">
+                        </date-range-treelist-filter>
+                    </ng-template>
                     <ng-template kendoTreeListCellTemplate let-dataItem>
                         <span>
                             {{ dataItem.wprcontractoracceptancedate | dateFormat : 'DD-MMM-YYYY' }}
@@ -169,6 +190,12 @@
                     </ng-template>
                 </kendo-treelist-column>
                 <kendo-treelist-column field="wprplanstartdate" title="Plan Start Date" [width]="150">
+                    <ng-template kendoTreeListFilterMenuTemplate let-filter let-column="column"
+                        let-filterService="filterService">
+                        <date-range-treelist-filter [field]="column.field" [filter]="filter"
+                            [filterService]="filterService">
+                        </date-range-treelist-filter>
+                    </ng-template>
                     <ng-template kendoTreeListCellTemplate let-dataItem>
                         <span>
                             {{ dataItem.wprplanstartdate | dateFormat : 'DD-MMM-YYYY' }}
@@ -176,6 +203,12 @@
                     </ng-template>
                 </kendo-treelist-column>
                 <kendo-treelist-column field="wprplanenddate" title="Plan End Date" [width]="150">
+                    <ng-template kendoTreeListFilterMenuTemplate let-filter let-column="column"
+                        let-filterService="filterService">
+                        <date-range-treelist-filter [field]="column.field" [filter]="filter"
+                            [filterService]="filterService">
+                        </date-range-treelist-filter>
+                    </ng-template>
                     <ng-template kendoTreeListCellTemplate let-dataItem>
                         <span>
                             {{ dataItem.wprplanenddate | dateFormat : 'DD-MMM-YYYY' }}
@@ -183,6 +216,12 @@
                     </ng-template>
                 </kendo-treelist-column>
                 <kendo-treelist-column field="wpractualstartdate" title="Actual Start Date" [width]="150">
+                    <ng-template kendoTreeListFilterMenuTemplate let-filter let-column="column"
+                        let-filterService="filterService">
+                        <date-range-treelist-filter [field]="column.field" [filter]="filter"
+                            [filterService]="filterService">
+                        </date-range-treelist-filter>
+                    </ng-template>
                     <ng-template kendoTreeListCellTemplate let-dataItem>
                         <span>
                             {{ dataItem.wpractualstartdate | dateFormat : 'DD-MMM-YYYY' }}
@@ -190,6 +229,12 @@
                     </ng-template>
                 </kendo-treelist-column>
                 <kendo-treelist-column field="wpractualenddate" title="Actual End Date" [width]="150">
+                    <ng-template kendoTreeListFilterMenuTemplate let-filter let-column="column"
+                        let-filterService="filterService">
+                        <date-range-treelist-filter [field]="column.field" [filter]="filter"
+                            [filterService]="filterService">
+                        </date-range-treelist-filter>
+                    </ng-template>
                     <ng-template kendoTreeListCellTemplate let-dataItem>
                         <span>
                             {{ dataItem.wpractualenddate | dateFormat : 'DD-MMM-YYYY' }}
@@ -220,5 +265,6 @@
 
 <div class="newManagementOverlay"></div>
 <app-worksorders-newmanagement *ngIf="openNewManagement" [openNewManagement]="openNewManagement"
-    [formMode]="managementformMode" [selectedProgramme]="selectedProgramme" (closeNewManagementEvent)="closeNewManagementEvent($event)" (refreshManagementGrid)="refreshManagementGrid($event)">
+    [formMode]="managementformMode" [selectedProgramme]="selectedProgramme"
+    (closeNewManagementEvent)="closeNewManagementEvent($event)" (refreshManagementGrid)="refreshManagementGrid($event)">
 </app-worksorders-newmanagement>

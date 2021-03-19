@@ -25,4 +25,5 @@ export * from './survey-cbc-report.model';
 export * from './workorders/workorders-add-management.model';
 export * from './workorders/workorders-list-filter.model';
 export * from './workorders/workorders-detail.model';
+export * from './workorders/workorders-add-phase.model';
 
