@@ -18,39 +18,49 @@ export class WorksOrdersService {
 
 
     getListOfUserWorksOrderByUserId(userId, strActiveInactive) {
+      //return this.http.post<any>(`${appConfig.apiUrl}/api/WorkordersPortal/UserWorksOrdersList`, params, this.httpOptions);
         //return this.http.get<any>(`${appConfig.apiUrl}/api/UserEvents/GetListOfUserEventByUserId?userId=${userId}&hideComplete=${hideComplete}`, this.httpOptions);
-        return this.http.get<any>(`${appConfig.apiUrl}/api/workorders/UserWorksOrdersList?strUserId=${userId}&strActiveInactive=${strActiveInactive}`, this.httpOptions);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/WorkordersPortal/UserWorksOrdersList?strUserId=${userId}&strActiveInactive=${strActiveInactive}`, this.httpOptions);
     }
 
 
     getAssetTemplateList() {
         //return this.http.get<any>(`${appConfig.apiUrl}/api/UserEvents/GetListOfUserEventByUserId?userId=${userId}&hideComplete=${hideComplete}`, this.httpOptions);
-        return this.http.get<any>(`${appConfig.apiUrl}/api/workorders/GetAssetTemplateList`, this.httpOptions);
+        return this.http.get<any>(`${appConfig.apiUrl}/api/WorkordersPortal/GetAssetTemplateList`, this.httpOptions);
     }
 
     GetPhaseTemplateList() {
         //return this.http.get<any>(`${appConfig.apiUrl}/api/UserEvents/GetListOfUserEventByUserId?userId=${userId}&hideComplete=${hideComplete}`, this.httpOptions);
-        return this.http.get<any>(`${appConfig.apiUrl}/api/workorders/GetPhaseTemplateList`, this.httpOptions);
+        return this.http.get<any>(`${appConfig.apiUrl}/api/WorkordersPortal/GetPhaseTemplateList`, this.httpOptions);
     }
 
 
     getWorkOrderType() {
         //return this.http.get<any>(`${appConfig.apiUrl}/api/UserEvents/GetListOfUserEventByUserId?userId=${userId}&hideComplete=${hideComplete}`, this.httpOptions);
-        return this.http.get<any>(`${appConfig.apiUrl}/api/workorders/GetWorkOrderTypeList`, this.httpOptions);
+        return this.http.get<any>(`${appConfig.apiUrl}/api/WorkordersPortal/GetWorkOrderTypeList`, this.httpOptions);
     }
 
 
     GetWorkOrderProgrammeList() {
         //return this.http.get<any>(`${appConfig.apiUrl}/api/UserEvents/GetListOfUserEventByUserId?userId=${userId}&hideComplete=${hideComplete}`, this.httpOptions);
-        return this.http.get<any>(`${appConfig.apiUrl}/api/workorders/GetWorkOrderProgrammeList`, this.httpOptions);
+        return this.http.get<any>(`${appConfig.apiUrl}/api/WorkordersPortal/GetWorkOrderProgrammeList`, this.httpOptions);
     }
 
 
-        WorkOrderContractList(bActiveOnly) {
-            //return this.http.get<any>(`${appConfig.apiUrl}/api/UserEvents/GetListOfUserEventByUserId?userId=${userId}&hideComplete=${hideComplete}`, this.httpOptions);
-            return this.http.get<any>(`${appConfig.apiUrl}/api/workorders/WorkOrderContractList?bActiveOnly=${bActiveOnly}`, this.httpOptions);
-        }
+    WorkOrderContractList(bActiveOnly) {
+        //return this.http.get<any>(`${appConfig.apiUrl}/api/UserEvents/GetListOfUserEventByUserId?userId=${userId}&hideComplete=${hideComplete}`, this.httpOptions);
+        return this.http.get<any>(`${appConfig.apiUrl}/api/WorkordersPortal/WorkOrderContractList?bActiveOnly=${bActiveOnly}`, this.httpOptions);
+    }
 
+
+    GetNewSourceCodeForWorksOrder() {
+        //return this.http.get<any>(`${appConfig.apiUrl}/api/UserEvents/GetListOfUserEventByUserId?userId=${userId}&hideComplete=${hideComplete}`, this.httpOptions);
+        return this.http.get<any>(`${appConfig.apiUrl}/api/WorkordersPortal/GetNewSourceCodeForWorksOrder`, this.httpOptions);
+    }
+
+    InsertWorksOrder(params) {
+      return this.http.post<any>(`${appConfig.apiUrl}/api/WorkordersPortal/InsertWorksOrder`, params, this.httpOptions);
+    }
 
 
 
