@@ -4,6 +4,10 @@
     padding: 8px 12px;
 }
 
+.dropdown.list-unstyled {
+    position: absolute !important;
+}
+
 .worksOrderFilter .text-dark:hover {
     color: black !important;
 }
@@ -27,52 +31,69 @@
     display: inline-block;
 }
 
-.filterArea .filterdiv .filterLbl {
-    width: 26%;
-}
-
-.filterArea .filterdiv input[type=text] {
-    width: 65%;
-}
-
 .filterArea .filterdiv1 .filterLbl {
-    width: 45%;
+    width: 55%;
 }
 
 .filterArea .filterdiv1 input[type=text] {
-    width: 52%;
+    width: 45%;
 }
 
+.filterArea .filterdiv2 .filterLbl {
+    width: 32%;
+}
+
+.filterArea .filterdiv2 input[type=text] {
+    width: 65%;
+}
+
+.filterArea .filterdiv3 .filterLbl {
+    width: 36%;
+}
+
+.filterArea .filterdiv3 input[type=text] {
+    width: 50%;
+}
+
+
 .filterArea .filterdiv4 .filterLbl {
-    width: 20%;
+    width: 30%;
 }
 
 .filterArea .filterdiv4 input[type=text] {
-    width: 78%;
+    width: 68%;
 }
 
 .filterArea .filterdiv:not(:first-child) {
-    margin-left: 15px;
+    margin-left: 6px;
 }
 
-.filterdiv2, .filterdiv3, .filterdiv4, .filterdiv5 {
+.filterdiv2, .filterdiv4 {
     width: 19%;
 }
 
-.filterdiv1, .filterdiv3 {
+.filterdiv5 {
+    width: 21%;
+}
+
+.filterdiv1{
     width: 13%;
 }
 
+.filterdiv3 {
+    width: 11%;
+}
+
 .filterdiv6 {
-    width: 10%;
+    width: 14%;
 }
 
 .filterArea .radioDiv {
-    margin-left: 10px;
+    margin-left: 5px;
 }
 
 .radioDiv .radio-inline input[type=radio], .radioDiv .radio-inline {
-    margin-right: 8px;
+    margin-right: 5px;
 }
 
 /** media query **/

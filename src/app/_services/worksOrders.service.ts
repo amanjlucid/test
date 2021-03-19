@@ -13,8 +13,10 @@ export class WorksOrdersService {
 
     constructor(private http: HttpClient) { }
 
-    getListOfUserWorksOrderByUserId(userId, strActiveInactive) {
-        return this.http.get<any>(`${appConfig.apiUrl}/api/workorders/UserWorksOrdersList?strUserId=${userId}&strActiveInactive=${strActiveInactive}`, this.httpOptions);
+    getListOfUserWorksOrderByUserId(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/WorkordersPortal/UserWorksOrdersList`, body, this.httpOptions)
+
     }
 
 

@@ -1,10 +1,12 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { WorksordersRouterComponent } from './worksorders-router.component';
 import { WorkorderListComponent } from '../workorder-list/workorder-list.component';
 import { WorksordersAssetChecklistComponent } from '../worksorders-asset-checklist/worksorders-asset-checklist.component';
 import { WorksordersDashboardComponent } from '../worksorders-dashboard/worksorders-dashboard.component';
 import { WorksordersManagementComponent } from '../worksorders-management/worksorders-management.component';
-import { WorksordersRouterComponent } from './worksorders-router.component';
+import { WorksordersDetailsComponent } from '../worksorders-details/worksorders-details.component';
+
 
 const routes: Routes = [
   {
@@ -14,10 +16,13 @@ const routes: Routes = [
       { path: '', redirectTo: 'reports', pathMatch: 'full' },
       { path: 'dashboard', component: WorksordersDashboardComponent },
       { path: 'management', component: WorksordersManagementComponent },
-      { path: 'list', component: WorkorderListComponent},
+      { path: 'list', component: WorkorderListComponent },
+      { path: 'details', component: WorksordersDetailsComponent },
+
+
       //Demo route - remove after UI complete
       { path: 'chlist', component: WorksordersAssetChecklistComponent },
-      
+
     ]
   }
 ];

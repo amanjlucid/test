@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewEncapsulation, ViewChild, ChangeDetectorRef } from '@angular/core';
-import { filterBy, FilterDescriptor, CompositeFilterDescriptor } from '@progress/kendo-data-query';
+import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { FilterService, SelectableSettings, TreeListComponent, ExpandEvent } from '@progress/kendo-angular-treelist';
 import { AlertService, HelperService, WorksorderManagementService, ConfirmationDialogService } from '../../_services'
 import { SubSink } from 'subsink';
@@ -11,7 +11,7 @@ import { SubSink } from 'subsink';
   encapsulation: ViewEncapsulation.None,
 })
 
-export class WorksordersManagementComponent {
+export class WorksordersManagementComponent implements OnInit {
   managementformMode = 'new';
   subs = new SubSink(); // to unsubscribe services
   openNewManagement: boolean = false;
@@ -41,6 +41,9 @@ export class WorksordersManagementComponent {
   ) { }
 
   ngOnInit(): void {
+    //update notification on top
+    this.helperService.updateNotificationOnTop();
+
     this.getManagement();
   }
 
@@ -52,7 +55,7 @@ export class WorksordersManagementComponent {
     this.subs.add(
       this.worksorderManagementService.getManagementData(status).subscribe(
         data => {
-          // console.log(data);
+          console.log(data);
           if (data.isSuccess) {
             let gridData = [];
             this.apiData = [...data.data];
@@ -95,7 +98,6 @@ export class WorksordersManagementComponent {
 
             setTimeout(() => {
               this.gridData = [...gridData];
-              //  console.log(this.gridData);
               this.loading = false
             }, 100);
 
@@ -232,10 +234,10 @@ export class WorksordersManagementComponent {
 
       this.worksorderManagementService.deleteWorkOrderManagement(params).subscribe(
         data => {
-          console.log(data)
           if (data.isSuccess && data.data == "S") {
             this.alertService.success(data.message);
             this.refreshManagementGrid(true);
+            this.selectedProgramme = undefined //reset selected programme after delete
           } else {
             this.alertService.error(data.message);
           }
@@ -243,7 +245,7 @@ export class WorksordersManagementComponent {
         err => this.alertService.error(err)
       )
     }
-    //unset selectedProgramme variable
+
 
   }
 

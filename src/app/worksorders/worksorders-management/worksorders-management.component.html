@@ -47,7 +47,7 @@
                 scrollable="virtual" [rowHeight]="36" kendoTreeListExpandable [sortable]="true" filterable="menu"
                 [filter]="filter" (filterChange)="onFilterChange($event)" [pageSize]="gridPageSize" [navigable]="true"
                 kendoTreeListSelectable [selectable]="settings" [(selectedItems)]="selected" [height]="720"
-                [virtualColumns]="true" [loading]="loading" [resizable]="true" (cellClick)="cellClickHandler($event)" >
+                [virtualColumns]="true" [loading]="loading" [resizable]="true" (cellClick)="cellClickHandler($event)">
 
                 <kendo-treelist-column field="wprstatus" title="" [width]="33" [sortable]="false" [filterable]="false">
                     <ng-template kendoTreeListCellTemplate let-dataItem>
@@ -57,6 +57,7 @@
                             <div class="dropdown-menu">
                                 <a class="dropdown-item" (click)="openNewManagementWindow('edit')" href="javascript:void(0)">Edit</a>
                                 <a class="dropdown-item" (click)="openConfirmationDialog(dataItem)" href="javascript:void(0)">Delete</a>
+                                <a class="dropdown-item" href="javascript:void(0)">New Works Order</a>
                                 
                             </div>
                         </li>
@@ -65,8 +66,11 @@
                         style="margin-top: -7px;">
                             <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" href="javascript:void(0)">Task Details</a>
-                                <a class="dropdown-item" href="javascript:void(0)">Task Data</a>
+                                <a class="dropdown-item" href="javascript:void(0)">Edit</a>
+                                <a class="dropdown-item" href="javascript:void(0)">Delete</a>
+                                <a class="dropdown-item" href="javascript:void(0)">Works Order Detail</a>
+                                <a class="dropdown-item" href="javascript:void(0)">Package Mapping</a>
+                                
                             </div>
                         </li>
                     </ng-template>

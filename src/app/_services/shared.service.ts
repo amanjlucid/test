@@ -197,4 +197,14 @@ export class SharedService {
   }
 
 
+  //######### Works order module shared service start #########//
+  private worksOrderSrc = new BehaviorSubject<any>([]);
+  worksOrderObs = this.worksOrderSrc.asObservable();
+
+  changeWorksOrderSingleData(data){
+    this.worksOrderSrc.next(data);
+  }
+  
+  //######### Works order module shared service end #########//
+
 }

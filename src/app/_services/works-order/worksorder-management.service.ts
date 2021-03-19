@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { appConfig } from '../../app.config';
-import { Observable, BehaviorSubject } from 'rxjs';
-import { map } from 'rxjs/operators';
+
 
 @Injectable()
 export class WorksorderManagementService {
@@ -30,7 +29,6 @@ export class WorksorderManagementService {
 
     deleteWorkOrderManagement(params) {
         const { WPRSEQUENCE, userId, CheckOrProcess } = params;
-        // let body = JSON.stringify(params);
         return this.http.get<any>(`${appConfig.apiUrl}/api/Programmes/DeleteWorkProgramme?WPRSEQUENCE=${WPRSEQUENCE}&userId=${userId}&CheckOrProcess=${CheckOrProcess}`, this.httpOptions);
     }
 
@@ -38,14 +36,33 @@ export class WorksorderManagementService {
         return this.http.get<any>(`${appConfig.apiUrl}/api/Programmes/GetWorkProgrammesByWprsequence?WPRSequence=${WPRSequence}`, this.httpOptions);
     }
 
-    // updateSchedulingReport(params) {
-    //     let body = JSON.stringify(params);
-    //     return this.http.post<any>(`${appConfig.apiUrl}/api/WebReportSearch/UpdateSchedulingReport`, body, this.httpOptions);
-    // }
 
-    // getSchedulingList(reportId) {
-    //     return this.http.get<any>(`${appConfig.apiUrl}/api/WebReportSearch/GetSchedulingList?reportId=${reportId}`, this.httpOptions);
-    // }
+    // Works order detail page service
+    getWorksOrderRepairingCharConfigExt(intWOSEQUENCE) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/WorkOrderDetails/GetWorksOrderRepairingCharConfigExt?intWOSEQUENCE=${intWOSEQUENCE}`, this.httpOptions);
+    }
+
+    getListOfWorksOrderChecklistForWORK(WOSEQUENCE) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/WorkOrderDetails/GetListOfWorksOrderChecklistForWORK?WOSEQUENCE=${WOSEQUENCE}`, this.httpOptions);
+    }
+
+    worksOrderGetUnallocPhaseBudget(WOSEQUENCE) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/WorkOrderDetails/WorksOrderGetUnallocPhaseBudget?WOSEQUENCE=${WOSEQUENCE}`, this.httpOptions);
+    }
+
+    GetWEBWorksOrdersUserSecurityByWorksOrders(WPRSequence, intWOSEQUENCE, sMPUserID) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/WorkOrderDetails/GetWEBWorksOrdersUserSecurityByWorksOrders?intWPRSEQUENCE=${WPRSequence}&intWOSEQUENCE=${intWOSEQUENCE}&sMPUserID=${sMPUserID}`, this.httpOptions);
+    }
+
+    getWorkOrderDetails(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/WorkOrderDetails/WorkOrderPhase_TreeList`, body, this.httpOptions)
+    }
+
+    getWorksOrderByWOsequence(WOSequence) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/WorkordersPortal/GetWorksOrderByWOsequence?WOSequence=${WOSequence}`, this.httpOptions);
+    }
+
 
 
 }
