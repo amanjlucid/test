@@ -16,22 +16,21 @@ import { ManagementComponent } from './service-portal/management/management.comp
 import { ServiceSettingsComponent } from './setting/service-settings/service-settings.component';
 import { HnsSettingsComponent } from './hns-settings/hns-settings.component';
 import { EpcSettingsComponent } from './setting/epc-settings/epc-settings.component';
-// import { HnsChartComponent } from './hns-portal/hns-chart/hns-chart.component';
-//import { MyProfileComponent } from './my-profile/my-profile.component';
+
 import { WebReporterSettingComponent } from './setting/web-reporter-setting/web-reporter-setting.component';
-import {AssetEpcDashboardComponent} from './assets-portal/asset-energy/asset-epc-dashboard/asset-epc-dashboard.component';
-import {AssetEpcRouterComponent} from './assets-portal/asset-energy/asset-epc-router/asset-epc-router.component';
-import {WorksordersDashboardComponent} from './worksorders/worksorders-dashboard/worksorders-dashboard.component';
-import {WorksordersRouterComponent} from './worksorders/worksorders-router/worksorders-router.component';
+import { AssetEpcDashboardComponent } from './assets-portal/asset-energy/asset-epc-dashboard/asset-epc-dashboard.component';
+import { AssetEpcRouterComponent } from './assets-portal/asset-energy/asset-epc-router/asset-epc-router.component';
+// import { WorksordersDashboardComponent } from './worksorders/worksorders-dashboard/worksorders-dashboard.component';
+// import { WorksordersRouterComponent } from './worksorders/worksorders-router/worksorders-router.component';
 import { SurveyProjectsComponent } from './survey-portal/survey-projects/survey-projects.component';
 import { SurveyProjectSurveysComponent } from './survey-portal/survey-project-surveys/survey-project-surveys.component';
 import { SurveyBatchesComponent } from './survey-portal/survey-batches/survey-batches.component';
 import { SurveyBatchSurveysComponent } from './survey-portal/survey-batch-surveys/survey-batch-surveys.component';
 import { SurveyProjectAccessComponent } from './survey-portal/survey-project-access/survey-project-access.component';
 import { SurveyProjectSettingsComponent } from './survey-portal/survey-project-settings/survey-project-settings.component';
-import { SurveyDashboardComponent} from './survey-portal/survey-dashboard/survey-dashboard.component';
+import { SurveyDashboardComponent } from './survey-portal/survey-dashboard/survey-dashboard.component';
 import { SurveyCbcreportComponent } from './survey-portal/survey-cbcreport/survey-cbcreport.component';
-import {WorkorderListComponent} from './worksorders/workorder-list/workorder-list.component';
+// import {WorkorderListComponent} from './worksorders/workorder-list/workorder-list.component';
 
 
 const appRoutes: Routes = [
@@ -82,16 +81,17 @@ const appRoutes: Routes = [
                     { path: 'dashboard', component: AssetEpcDashboardComponent, canActivate: [AuthGuard] },
                 ]
             },
-            {
-                path: 'worksorders',
-                component: WorksordersRouterComponent,
-                children: [
-                    { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-                    { path: 'dashboard', component: WorksordersDashboardComponent, canActivate: [AuthGuard] },
-                    { path: 'list', component: WorkorderListComponent, canActivate: [AuthGuard] },
-
-                ]
-            },
+            // {
+            //     path: 'worksorders',
+            //     component: WorksordersRouterComponent,
+            //     children: [
+            //         { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+            //         { path: 'dashboard', component: WorksordersDashboardComponent, canActivate: [AuthGuard] },
+            //         { path: 'management', component: WorksordersManagementComponent },
+            //     ]
+            // },
+            { path: 'worksorders', canActivate: [AuthGuard], loadChildren: () => import('./worksorders/worksorders-router/worksorders.module').then(m => m.WorksOrderModule) },
+            
 
 
             { path: 'health&safety', loadChildren: () => import('./hns-portal/hns.module').then(m => m.HnsModule) },
@@ -106,24 +106,22 @@ const appRoutes: Routes = [
             { path: 'notification', loadChildren: () => import('./setting/notification/notification.module').then(m => m.NotificationModule) },
             { path: 'tasks-settings', loadChildren: () => import('./setting/event-manager-setting/event-manager-setting.module').then(m => m.EventManagerSettingModule) },
             { path: 'web-reporter-settings', component: WebReporterSettingComponent, canActivate: [AuthGuard] },
-			{
-              path: 'surveying',
-              component: ServicePortalComponent,
-              children: [
-                  { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-                  { path: 'dashboard', component: SurveyDashboardComponent, canActivate: [AuthGuard] },
-                  { path: 'projects', component: SurveyProjectsComponent, canActivate: [AuthGuard] },
-                  { path: 'projectsurveys', component: SurveyProjectSurveysComponent, canActivate: [AuthGuard] },
-                  { path: 'batches', component: SurveyBatchesComponent, canActivate: [AuthGuard] },
-                  { path: 'batchsurveys', component: SurveyBatchSurveysComponent, canActivate: [AuthGuard] },
-                  { path: 'surveyors', component: SurveyProjectsComponent, canActivate: [AuthGuard] },
-                  { path: 'projectaccess', component: SurveyProjectAccessComponent, canActivate: [AuthGuard] },
-                  { path: 'projectsettings', component: SurveyProjectSettingsComponent, canActivate: [AuthGuard] },
-                  { path: 'cbcreport', component: SurveyCbcreportComponent, canActivate: [AuthGuard] }
-
-
-              		]
-          	},
+            {
+                path: 'surveying',
+                component: ServicePortalComponent,
+                children: [
+                    { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+                    { path: 'dashboard', component: SurveyDashboardComponent, canActivate: [AuthGuard] },
+                    { path: 'projects', component: SurveyProjectsComponent, canActivate: [AuthGuard] },
+                    { path: 'projectsurveys', component: SurveyProjectSurveysComponent, canActivate: [AuthGuard] },
+                    { path: 'batches', component: SurveyBatchesComponent, canActivate: [AuthGuard] },
+                    { path: 'batchsurveys', component: SurveyBatchSurveysComponent, canActivate: [AuthGuard] },
+                    { path: 'surveyors', component: SurveyProjectsComponent, canActivate: [AuthGuard] },
+                    { path: 'projectaccess', component: SurveyProjectAccessComponent, canActivate: [AuthGuard] },
+                    { path: 'projectsettings', component: SurveyProjectSettingsComponent, canActivate: [AuthGuard] },
+                    { path: 'cbcreport', component: SurveyCbcreportComponent, canActivate: [AuthGuard] }
+                ]
+            },
 
         ]
     },

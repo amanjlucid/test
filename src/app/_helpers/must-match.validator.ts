@@ -55,6 +55,40 @@ export function DateValidator(format = "DD/MM/YYYY"): any {
     };
 }
 
+
+export function ShouldGreaterThanYesterday(format = "DD/MM/YYYY"): any {
+    return (control: FormControl): { [key: string]: any } => {
+        if (control.value != null && control.value != "") {
+            let date;
+            if (control.value.day == undefined) {
+                date = control.value;
+                const dateObj = moment(date, format, true);
+                if (isNaN(dateObj.year()) || isNaN(dateObj.month()) || isNaN(dateObj.date())) {
+                    return { invalidDate: true };
+                }
+                if (dateObj.isValid()) {
+                    const dd = { day: dateObj.date(), month: dateObj.month() + 1, year: dateObj.year() }
+                    control.setValue(dd);
+                }
+            } else {
+                date = `${control.value.day}/${control.value.month}/${control.value.year}`;
+            }
+            const val = moment(date, format, false);
+            if (!val.isValid()) {
+                return { invalidDate: true };
+            }
+            let today = moment().format("YYYY/MM/DD")
+            let givenDate = val.format("YYYY/MM/DD");
+            if (new Date(givenDate) < new Date(today)) {
+                return { pastDate: true }
+            }
+        }
+        return null;
+
+    };
+}
+
+
 export function InstValidator(controlName: any, matchingControlName1: any, matchingControlName2: any) {
     return (formGroup: FormGroup) => {
         const control = formGroup.controls[controlName];
@@ -133,6 +167,32 @@ export function OrderDateValidator(controlName: any, matchingControlName1: any) 
 
         if (dateOne < dateTwo) {
             return control.setErrors({ isLower: true });
+        }
+
+        return control.setErrors(null);
+    }
+}
+
+export function IsGreaterDateValidator(controlName: any, matchingControlName1: any) {
+    return (formGroup: FormGroup) => {
+        const control = formGroup.controls[controlName];
+        const matchingControl1 = formGroup.controls[matchingControlName1];
+
+        if (control.errors && !control.errors.isLower) {
+            // return if another validator has already found an error on the matchingControl
+            return;
+        }
+
+        if (matchingControl1.value == null || control.value == null) {
+            return;
+        }
+        const date1 = `${control.value.year}/${control.value.month}/${control.value.day}`
+        const date2 = `${matchingControl1.value.year}/${matchingControl1.value.month}/${matchingControl1.value.day}`
+        let dateOne = new Date(date1);
+        let dateTwo = new Date(date2);
+
+        if (dateOne > dateTwo) {
+            return control.setErrors({ isGreaterDate: true });
         }
 
         return control.setErrors(null);

@@ -1,0 +1,26 @@
+.radioDiv, .actionDiv, .actionDiv #nesting-dropdown-demo{
+    display: inline-block;
+}
+
+.radioDiv {
+    margin-right: 15px;
+}
+
+.radioDiv .radio-inline input[type=radio], .radioDiv .radio-inline {
+    margin-right: 4px;
+}
+
+.k-treelist tbody td {
+    white-space: nowrap !important;
+    line-height: 20px;
+    padding: 8px 12px;
+}
+
+.dropdown.list-unstyled {
+    position: absolute !important;
+}
+
+li.level2Menu{
+    color: #e4287e;
+}
+

@@ -1,0 +1,762 @@
+<div class="container-fluid flex-grow-1 container-p-y">
+  <div class="row">
+    <div class="col-md-4 col-sm-4">
+      <h4 class="font-weight-bold">
+        Works Orders Detail
+      </h4>
+
+    </div>
+    <div class="col-md-8 col-sm-8 text-right">
+      <button type="submit" class="btn btn-sm themeButton mr-1 headin_section" (click)="slideToggle()"><i class="fa"
+          [ngClass]="(filterToggle)? 'fa-minus':'fa-plus'"></i></button>
+      <button (click)="openElmGrpWin('package-mapping')" class="btn btn-sm themeButton mr-1">Package Mapping</button>
+      <button (click)="openPopup('new')" class="btn btn-sm themeButton mr-1">Phase</button>
+    </div>
+  </div>
+
+  <div class="cont">
+    <div id="wrapper">
+      <div class="worksorder-header">
+        <fieldset>
+          <div class="form-group form-row">
+            <div class="col-md-1">Programme: </div>
+            <div class="col-md-8">
+              <input type="text" value="{{programmeData?.wprname}}" class="form-control form-control-sm"
+                [readonly]="readonly">
+            </div>
+            <div class="col-md-2">UnAuthorised Contract Costs: </div>
+            <div class="col-md-1 text-right"><input type="text" class="form-control form-control-sm"
+                [readonly]="readonly" value="{{programmeData?.wprcurrentcontractsum | currency:'GBP':'symbol'}}"></div>
+          </div>
+
+          <div class="form-group form-row">
+            <div class="col-md-1">Works Order: </div>
+            <div class="col-md-8"><input type="text" class="form-control form-control-sm" [readonly]="readonly"
+                value="{{worksOrderData?.woname}} (Works Order No: {{worksOrderData?.wosequence}})"></div>
+            <div class="col-md-2">Authorised Contract Costs: </div>
+            <div class="col-md-1 text-right"><input type="text" class="form-control form-control-sm"
+                [readonly]="readonly" value="{{programmeData?.wprcurrentcontractsum | currency:'GBP':'symbol'}}"></div>
+          </div>
+
+          <div class="form-group form-row">
+            <div class="col-md-2">
+              <label>Status:</label>
+              <input type="text" [readonly]="readonly" class="form-control form-control-sm"
+                value="{{programmeData?.wprstatus}}">
+
+            </div>
+            <div class="col-md-2">
+              <label>Budget:</label>
+              <input type="text" class="form-control form-control-sm" [readonly]="readonly"
+                value="{{programmeData?.wprbudget | currency:'GBP':'symbol'}}">
+            </div>
+            <div class="col-md-2">
+              <label>Unalloc Budget:</label>
+              <input type="text" class="form-control form-control-sm" [readonly]="readonly"
+                value="{{programmeData?.wprbudget | currency:'GBP':'symbol'}}">
+            </div>
+
+            <div class="col-md-3">
+              <label>Phase budget available:</label>
+              <input type="text" class="form-control form-control-sm" [readonly]="readonly"
+                value="{{programmeData?.wprbudget | currency:'GBP':'symbol'}}">
+            </div>
+
+            <div class="col-md-3">
+              <label>Target Date:</label>
+              <input type="text" class="form-control form-control-sm"
+                value="{{programmeData?.wprtargetcompletiondate | dateFormat : 'DD-MMM-YYYY'}}" [readonly]="readonly">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="col-md-2">
+              <label class="mt-4">Work/Fees:</label>
+            </div>
+
+            <div class="col-md-1">
+              <label>Forecast:</label>
+              <input type="text" class="form-control form-control-sm" readonly="true"
+                value="{{programmeData?.wprforecast + programmeData?.wprforecastfee | currency:'GBP':'symbol'}}">
+            </div>
+
+            <div class="col-md-1">
+              <label>Commited:</label>
+              <input type="text" class="form-control form-control-sm" readonly="true"
+                value="{{programmeData?.wprcommitted+programmeData?.wprcommittedfee | currency:'GBP':'symbol'}}">
+            </div>
+
+            <div class="col-md-1">
+              <label>Approved:</label>
+              <input type="text" class="form-control form-control-sm" readonly="true"
+                value="{{programmeData?.wprapproved+programmeData?.wprapprovedfee | currency:'GBP':'symbol'}}">
+            </div>
+
+            <div class="col-md-1">
+              <label>Pending:</label>
+              <input type="text" class="form-control form-control-sm" readonly="true"
+                value="{{programmeData?.wprpending+programmeData?.wprpendingfee | currency:'GBP':'symbol'}}">
+            </div>
+
+            <div class="col-md-1">
+              <label>Actual:</label>
+              <input type="text" class="form-control form-control-sm" readonly="true"
+                value="{{programmeData?.wpractual+programmeData?.wpractualfee | currency:'GBP':'symbol'}}">
+            </div>
+
+            <div class="col-md-1">
+              <label>Issued:</label>
+              <input type="text" class="form-control form-control-sm" readonly="true"
+                value="{{programmeData?.wprbudget | currency:'GBP':'symbol'}}">
+            </div>
+
+            <div class="col-md-1">
+              <label>Accepted:</label>
+              <input type="text" class="form-control form-control-sm" readonly="true"
+                value="{{programmeData?.wpracceptedvalue | currency:'GBP':'symbol'}}">
+            </div>
+
+            <div class="col-md-1">
+              <label>Payment:</label>
+              <input type="text" class="form-control form-control-sm" readonly="true"
+                value="{{programmeData?.wprpayment | currency:'GBP':'symbol'}}">
+            </div>
+          </div>
+
+          <div class="row mt-2 hiearchyDiv">
+            <label class="col-sm-12 col-md-1">Hierarchy</label>
+            <div class="col-sm-12 col-md-10 pl-0 hiearchyTree">
+              <ul id="myUL">
+                <ng-template #recursiveList let-printHiearchy>
+                  <li *ngFor="let item of printHiearchy">
+                    <span><span style="color:red;">({{ item?.assetName }})</span> {{ item?.assetId }} -
+                      {{ item?.address }}</span>
+                    <ul *ngIf="item.childLayers.length > 0">
+                      <ng-container *ngTemplateOutlet="recursiveList; context:{ $implicit: item.childLayers }">
+                      </ng-container>
+                    </ul>
+                  </li>
+                </ng-template>
+                <ng-container *ngTemplateOutlet="recursiveList; context:{ $implicit: printHiearchy }"></ng-container>
+
+              </ul>
+            </div>
+
+            <div class="hiearchyBtn col-md-1 p-0">
+              <button type="button" (click)="openHiearchyWindow()" class="btn btn-sm">...</button>
+              <button type="button" (click)="clearPropSec()" class="btn btn-sm">Clear</button>
+            </div>
+
+
+          </div>
+
+        </fieldset>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <kendo-treelist [kendoTreeListFlatBinding]="gridData" idField="id" parentIdField="parentId"
+      scrollable="virtual" [rowHeight]="36" kendoTreeListExpandable [sortable]="true" filterable="menu"
+      [filter]="filter" (filterChange)="onFilterChange($event)" [pageSize]="gridPageSize" [navigable]="true"
+      kendoTreeListSelectable [selectable]="settings" [(selectedItems)]="selected" [height]="720"
+      [virtualColumns]="true" [loading]="loading" [resizable]="true" (cellClick)="cellClickHandler($event)">
+
+        <kendo-treelist-column field="wprstatus" title="" [width]="33" [sortable]="false" [filterable]="false">
+          <ng-template kendoTreeListCellTemplate let-dataItem>
+            <li class="nav-item dropdown list-unstyled" style="margin-top: -7px;">
+              <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
+              <div class="dropdown-menu">
+
+                <a class="dropdown-item" href="javascript:void(0)" (click)="openAssets('assets')">Assets</a>
+                <a class="dropdown-item" (click)="openAssets('work-name')" href="javascript:void(0)">Assets
+                  Details</a>
+                <a class="dropdown-item" href="javascript:void(0)" (click)="openAssets('work-list')">Asset's from
+                  worklist</a>
+                <a class="dropdown-item" href="javascript:void(0)">Asset's for phase work costs</a>
+
+                <a class="dropdown-item" href="javascript:void(0)">Work</a>
+                <a class="dropdown-item">Variations</a>
+                <a class="dropdown-item">Documents</a>
+
+              </div>
+            </li>
+
+
+          </ng-template>
+        </kendo-treelist-column>
+
+
+        <kendo-treelist-column  [expandable]="true" [minResizableWidth]="200" field="woname" title="Name" [width]="250">
+        </kendo-treelist-column>
+        <kendo-treelist-column field="wprstatus" title="Status" [width]="120"></kendo-treelist-column>
+        <kendo-treelist-column field="woaworkaccess" title="Work Access" [width]="180"></kendo-treelist-column>
+
+        <kendo-treelist-column field="targetdate" title="Target Date" [width]="130">
+          <ng-template kendoTreeListCellTemplate let-dataItem>
+            <span>
+              {{ dataItem.targetdate | dateFormat : 'DD-MMM-YYYY' }}
+            </span>
+          </ng-template>
+        </kendo-treelist-column>
+        <kendo-treelist-column field="woacompletiondate" title="Completion Date" [width]="130">
+          <ng-template kendoTreeListCellTemplate let-dataItem>
+            <span>
+              {{ dataItem.woacompletiondate | dateFormat : 'DD-MMM-YYYY' }}
+            </span>
+          </ng-template>
+        </kendo-treelist-column>
+        <kendo-treelist-column field="wobudget" title="Budget" [width]="130">
+          <ng-template kendoTreeListCellTemplate let-dataItem>
+            <span>
+              {{ dataItem.wobudget | currency:"GBP":"symbol" }}
+            </span>
+          </ng-template>
+        </kendo-treelist-column>
+        <kendo-treelist-column field="woforecast" title="Forecast" [width]="130">
+          <ng-template kendoTreeListCellTemplate let-dataItem>
+            <span>
+              {{ dataItem.woforecast | currency:"GBP":"symbol" }}
+            </span>
+          </ng-template>
+        </kendo-treelist-column>
+        <kendo-treelist-column field="wocommitted" title="Committed" [width]="130">
+          <ng-template kendoTreeListCellTemplate let-dataItem>
+            <span>
+              {{ dataItem.wocommitted | currency:"GBP":"symbol" }}
+            </span>
+          </ng-template>
+        </kendo-treelist-column>
+        <kendo-treelist-column field="woacceptedvalue" title="Issued" [width]="130">
+          <ng-template kendoTreeListCellTemplate let-dataItem>
+            <span>
+              {{ dataItem.woacceptedvalue | currency:"GBP":"symbol" }}
+            </span>
+          </ng-template>
+        </kendo-treelist-column>
+        <kendo-treelist-column field="woacceptedvalue" title="Accepted" [width]="130">
+          <ng-template kendoTreeListCellTemplate let-dataItem>
+            <span>
+              {{ dataItem.woacceptedvalue | currency:"GBP":"symbol" }}
+            </span>
+          </ng-template>
+        </kendo-treelist-column>
+        <kendo-treelist-column field="woactual" title="Actual" [width]="130">
+          <ng-template kendoTreeListCellTemplate let-dataItem>
+            <span>
+              {{ dataItem.woactual | currency:"GBP":"symbol" }}
+            </span>
+          </ng-template>
+        </kendo-treelist-column>
+        <kendo-treelist-column field="woapproved" title="Approved" [width]="130">
+          <ng-template kendoTreeListCellTemplate let-dataItem>
+            <span>
+              {{ dataItem.woapproved | currency:"GBP":"symbol" }}
+            </span>
+          </ng-template>
+        </kendo-treelist-column>
+        <kendo-treelist-column field="wopending" title="Pending" [width]="130">
+          <ng-template kendoTreeListCellTemplate let-dataItem>
+            <span>
+              {{ dataItem.pending | currency:"GBP":"symbol" }}
+            </span>
+          </ng-template>
+        </kendo-treelist-column>
+        <kendo-treelist-column field="planstartdate" title="Plan Start Date" [width]="130">
+          <ng-template kendoTreeListCellTemplate let-dataItem>
+            <span>
+              {{ dataItem.planstartdate | dateFormat : 'DD-MMM-YYYY' }}
+            </span>
+          </ng-template>
+        </kendo-treelist-column>
+        <kendo-treelist-column field="planenddate" title="Plan End Date" [width]="130">
+          <ng-template kendoTreeListCellTemplate let-dataItem>
+            <span>
+              {{ dataItem.planenddate | dateFormat : 'DD-MMM-YYYY' }}
+            </span>
+          </ng-template>
+        </kendo-treelist-column>
+        <kendo-treelist-column field="comment" title="Comments" [width]="130">
+        </kendo-treelist-column>
+      </kendo-treelist>
+    </div>
+
+
+  </div>
+
+  <div class="worksOrderDetailOvrlay"></div>
+
+  <!-- window for add new hiearchy starts -->
+  <kendo-window [height]="640" [top]="15" [width]="700" title="Select Hierarchy..." *ngIf="hiearchyWindow"
+    (close)="closeHiearchyWindow()">
+    <div class="row hiearchyDiv">
+      <div class="col-md-12">
+        <div class="form-group">
+          <select class="form-control" id="sel1" (change)="getHiearchyTree()" [(ngModel)]="selectedHiearchyType">
+            <option *ngFor="let hiearchyTypeList of hiearchyTypeLists" [ngValue]="hiearchyTypeList.hierarchyTypeCode">
+              {{hiearchyTypeList.hierarchyTypeName}}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="col-md-12">
+        <ul class="tree" *ngIf="hierarchyLevels">
+          <ng-template #recursiveList let-hierarchyLevels>
+            <li *ngFor="let item of hierarchyLevels" class="{{item?.assetId}}">
+
+              <ng-container *ngIf="item.childLayers.length > 0; then someContent else otherContent"></ng-container>
+              <ng-template #someContent>
+                <input type="checkbox" [checked]="visitedHierarchy[item?.assetId] != undefined" id="{{item?.assetId}}"
+                  class="chkBox" />
+                <label
+                  [className]="selectedhierarchyLevel != undefined ? ( selectedhierarchyLevel.assetId == item.assetId ? 'tree_label selected' : 'tree_label') : 'tree_label'"
+                  (click)="selectHiearchy($event, item)" for="{{item?.assetId}}"><span style="color:red;">({{
+                    item?.assetName }})</span>
+                  {{ item?.assetId }} - {{ item?.address }}</label>
+              </ng-template>
+              <ng-template #otherContent>
+                <label (click)="selectHiearchy($event, item)"> <span
+                    [className]="selectedhierarchyLevel != undefined ? ( selectedhierarchyLevel.assetId == item.assetId ? 'tree_label selected' : 'tree_label') : 'tree_label'"><span
+                      style="color:red;">({{ item?.assetName }})</span> {{ item?.assetId }} -
+                    {{ item?.address }}</span></label>
+              </ng-template>
+
+              <ul *ngIf="item.childLayers.length > 0">
+                <ng-container *ngTemplateOutlet="recursiveList; context:{ $implicit: item.childLayers }"></ng-container>
+              </ul>
+            </li>
+          </ng-template>
+          <ng-container *ngTemplateOutlet="recursiveList; context:{ $implicit: hierarchyLevels }"></ng-container>
+        </ul>
+
+
+        <div class="pull-right footerButton footerSec">
+          <button (click)="closeHiearchyWindow()" class="btn btn-sm">Cancel</button>
+          <button class="btn btn-sm btn-default themeButton" (click)="setHiearchyValues()">Ok</button>
+
+        </div>
+
+
+      </div>
+
+    </div>
+
+  </kendo-window>
+
+  <!-- <div class="example-wrapper1">
+  <kendo-window title="Packages" [(width)]="windowWidth" [top]="20" [minWidth]="250" *ngIf="elmGrpWindow" (close)="closeElmGrpWin()">
+    <div class="packagePopup">
+      
+        <kendo-grid
+            [kendoGridBinding]="gridPackageView"
+            kendoGridSelectBy="id"
+            [selectedKeys]="mySelection"
+            [pageSize]="20"
+            [pageable]="true"
+            [skip]="state.skip"
+            [sort]="state.sort"
+            [filter]="state.filter"
+            filterable="menu"
+            [sortable]="true"
+            [groupable]="false"
+            [reorderable]="true"
+            [resizable]="true"
+            [height]="480"
+        >
+
+           
+                <kendo-grid-column field="code" title="Code" [width]="220">
+                    
+                </kendo-grid-column>
+           
+                <kendo-grid-column field="name" title="Name" [width]="130">
+                </kendo-grid-column>
+                <kendo-grid-column field="description" title="Description" [width]="200">
+                </kendo-grid-column>
+                <kendo-grid-column field="stage" title="Stage - Checklist" [width]="200">
+                </kendo-grid-column>
+
+        </kendo-grid>
+
+    </div>
+  </kendo-window>
+</div>
+
+<div class="example-wrapper">
+  <kendo-window title="Phase Work Asset Name" [(width)]="windowWidth" [top]="20" [minWidth]="250" *ngIf="pwanWindow" (close)="closeAssets('work-name')">
+      <div class="groupPopup">
+        <form #newPhaseForm="ngForm">
+          <div class="form-group">
+            <label for="name">Please enter a name for the new 'Phase Work' asset:</label>
+            <input type="text" class="form-control form-control-sm" name="">
+          </div>
+          <div class="form-group text-right">
+              <button class="btn btn-sm themeButton mr-2">Ok</button>
+              <button class="btn btn-sm btn-default" (click)="closeAssets('work-name')">Cancel</button>
+          </div>
+        </form>
+      </div>
+  </kendo-window>
+  <kendo-window title="Add Asset(s) from Work list" [(width)]="windowWidth" [top]="20" [minWidth]="250" *ngIf="addAssetFromWlWindow" (close)="closeAssets('work-list')">
+      <div class="groupPopup">
+        <form #newPhaseForm="ngForm">
+            <div class="groupDiv col-md-12 col-sm-12 col-xs-12">
+              
+              <div class="form-group form-row">
+                <div class="col-md-2">
+                    <label for="name">Phase:</label>
+                </div>
+                <div class="col-md-2">
+                    <input type="text" name="Name" class="form-control form-control-sm" value="PhaseOne" readonly="true">
+                </div>
+                <div class="col-md-2">
+                    <label for="name">Phase Budget:</label>
+                </div>
+                <div class="col-md-2">
+                    <input type="text" name="Name" readonly="true" class="form-control form-control-sm" value="£10,000.00">
+                </div>
+                <div class="col-md-2">
+                    <label for="name">Phase Available Budget:</label>
+                </div>
+                <div class="col-md-2">
+                    <input type="text" name="Name" class="form-control form-control-sm" value="£2,900.00" readonly="true">
+                </div>
+              </div>
+
+              <div class="form-group form-row">
+                <div class="col-md-2">
+                    <label for="name">Asset(s) Selected:</label>
+                </div>
+                <div class="col-md-2">
+                    <input type="text" name="Name" class="form-control form-control-sm" value="0" readonly="true">
+                </div>
+                <div class="col-md-2">
+                    <label for="name">Assets Checklist Cost:</label>
+                </div>
+                <div class="col-md-2">
+                    <input type="text" name="Name" readonly="true" class="form-control form-control-sm" value="£50.00">
+                </div>
+                <div class="col-md-2">
+                    <label for="name">Required Budget:</label>
+                </div>
+                <div class="col-md-2">
+                    <input type="text" name="Name" class="form-control form-control-sm" value="£0.00" readonly="true">
+                </div>
+              </div>
+
+              <div class="form-row mt-2 hiearchyDiv">
+                  <label class="col-sm-12 col-md-1">WL Tag:</label>
+
+                  <div class="col-sm-12 col-md-4 pl-0 hiearchyTree">
+                    <input type="text" name="" class="form-control form-control-sm">
+                  </div>
+                  <label class="col-sm-12 col-md-1">Hierarchy</label>
+                  <div class="col-sm-12 col-md-4 pl-0 hiearchyTree">
+                    <ul id="myUL">
+                    </ul>
+                  </div>
+
+                  <div class="hiearchyBtn col-md-2 p-0">
+                    <button type="button" class="btn btn-sm">...</button>
+                    <button type="button" class="btn btn-sm ml-2">Clear</button>
+                  </div>
+              </div>
+
+              <div class="form-row mt-2 hiearchyDiv">
+                  <label class="col-sm-12 col-md-1">Asset Id:</label>
+                  <div class="col-sm-12 col-md-3 pl-0 hiearchyTree">
+                    <input type="text" name="" class="form-control form-control-sm">
+                  </div>
+                  <label class="col-sm-12 col-md-1">Address:</label>
+                  <div class="col-sm-12 col-md-3 pl-0 hiearchyTree">
+                    <input type="text" name="" class="form-control form-control-sm">
+                  </div>
+                  <label class="col-sm-12 col-md-2">Plan Year:</label>
+                  <div class="col-sm-12 col-md-1 pl-0 hiearchyTree">
+                    <input type="text" name="" class="form-control form-control-sm">
+                  </div>
+                  <div class="col-md-1">
+                    <button type="button" class="btn btn-sm ml-2">Search</button>
+                  </div>
+              </div>
+            </div>
+          </form>
+
+
+          <kendo-grid
+            [kendoGridBinding]="gridAssetsView"
+            kendoGridSelectBy="id"
+            [selectedKeys]="mySelection"
+            [pageSize]="20"
+            [pageable]="true"
+            [skip]="state.skip"
+            [sort]="state.sort"
+            [filter]="state.filter"
+            filterable="menu"
+            [sortable]="true"
+            [groupable]="false"
+            [reorderable]="true"
+            [resizable]="true"
+            [height]="380"
+        >
+
+                <kendo-grid-checkbox-column
+                    [width]="45"
+                    [headerClass]="{'text-center': true}"
+                    [class]="{'text-center': true}"
+                    [resizable]="false"
+                    [columnMenu]="false"
+                    showSelectAll="true"
+                ></kendo-grid-checkbox-column>
+
+                <kendo-grid-column field="asset_id" title="Asset Id" [width]="220">
+                    
+                </kendo-grid-column>
+           
+                <kendo-grid-column field="address" title="Address" [width]="130">
+                </kendo-grid-column>
+
+                <kendo-grid-column field="address" title="Work Cost" [width]="130">
+                </kendo-grid-column>
+
+                <kendo-grid-column field="address" title="Work Package" [width]="130">
+                </kendo-grid-column>
+
+                <kendo-grid-column field="address" title="Work Package Name" [width]="130">
+                </kendo-grid-column>
+
+                <kendo-grid-column field="address" title="Element" [width]="130">
+                </kendo-grid-column>
+
+                <kendo-grid-column field="address" title="Description" [width]="130">
+                </kendo-grid-column>
+
+                <kendo-grid-column field="address" title="Plan Year" [width]="130">
+                </kendo-grid-column>
+
+                <kendo-grid-column field="address" title="Contractor" [width]="130">
+                </kendo-grid-column>
+
+                <kendo-grid-column field="property_status" title="Contractor Code" [width]="200">
+                </kendo-grid-column>
+                <kendo-grid-column field="right_to_buy" title="Checklist Name" [width]="200">
+                </kendo-grid-column>
+
+                <kendo-grid-column field="right_to_buy" title="WL Tag" [width]="200">
+                </kendo-grid-column>
+        </kendo-grid>
+
+
+        </div>
+  </kendo-window>
+
+  <kendo-window title="Add Asset(s) to Workes Order" [(width)]="windowWidth" [top]="20" [minWidth]="250" *ngIf="assetWindow" (close)="closeAssets('assets')">
+      <div class="groupPopup">
+        <form #newPhaseForm="ngForm">
+            <div class="groupDiv col-md-12 col-sm-12 col-xs-12">
+              <div class="form-group form-row">
+                <div class="col-md-2">
+                    <label for="name">Phase:</label>
+                </div>
+                <div class="col-md-2">
+                    <input type="text" name="Name" class="form-control form-control-sm" value="PhaseOne" readonly="true">
+                </div>
+                <div class="col-md-2">
+                    <label for="name">Phase Budget:</label>
+                </div>
+                <div class="col-md-2">
+                    <input type="text" name="Name" readonly="true" class="form-control form-control-sm" value="£10,000.00">
+                </div>
+                <div class="col-md-2">
+                    <label for="name">Phase Available Budget:</label>
+                </div>
+                <div class="col-md-2">
+                    <input type="text" name="Name" class="form-control form-control-sm" value="£2,900.00" readonly="true">
+                </div>
+              </div>
+
+              <div class="form-group form-row">
+                <div class="col-md-2">
+                    <label for="name">Asset(s) Selected:</label>
+                </div>
+                <div class="col-md-2">
+                    <input type="text" name="Name" class="form-control form-control-sm" value="0" readonly="true">
+                </div>
+                <div class="col-md-2">
+                    <label for="name">Assets Checklist Cost:</label>
+                </div>
+                <div class="col-md-2">
+                    <input type="text" name="Name" readonly="true" class="form-control form-control-sm" value="£50.00">
+                </div>
+                <div class="col-md-2">
+                    <label for="name">Required Budget:</label>
+                </div>
+                <div class="col-md-2">
+                    <input type="text" name="Name" class="form-control form-control-sm" value="£0.00" readonly="true">
+                </div>
+              </div>
+
+
+              <div class="row mt-2 hiearchyDiv">
+                  <label class="col-sm-12 col-md-2">Hierarchy</label>
+                  <div class="col-sm-12 col-md-8 pl-0 hiearchyTree">
+                    <ul id="myUL">
+                    </ul>
+                  </div>
+
+                  <div class="hiearchyBtn col-md-2 p-0">
+                    <button type="button" class="btn btn-sm">...</button>
+                    <button type="button" class="btn btn-sm ml-2">Clear</button>
+                  </div>
+              </div>
+            </div>
+          </form>
+
+          
+
+          <kendo-grid
+            [kendoGridBinding]="gridAssetsView"
+            kendoGridSelectBy="id"
+            [selectedKeys]="mySelection"
+            [pageSize]="20"
+            [pageable]="true"
+            [skip]="state.skip"
+            [sort]="state.sort"
+            [filter]="state.filter"
+            filterable="menu"
+            [sortable]="true"
+            [groupable]="false"
+            [reorderable]="true"
+            [resizable]="true"
+            [height]="480"
+        >
+        <ng-template kendoGridToolbarTemplate>
+
+
+          <div class="form-row asset_searchbar">
+            <div class="col-md-2">
+              <label>Windcard Address: </label>
+            </div>
+            <div class="col-md-6">
+              <input placeholder="Search in all columns..." kendoTextBox (input)="onFilter($event.target.value)" class="form-control form-control-sm" />
+            </div>
+            <div class="col-md-2">
+              <label>Assets Type</label>
+            </div>
+            <div class="col-md-2">
+              <div class="input-group">
+                <select class="form-control form-control-sm">
+                  <option>All Type</option>
+                  <option>Area</option>
+                  <option>Block</option>
+                </select>
+                <div class="input-group-append">
+                  <button class="input-group-text btn-default btn-xs">Search</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          
+
+        </ng-template>
+                <kendo-grid-checkbox-column
+                    [width]="45"
+                    [headerClass]="{'text-center': true}"
+                    [class]="{'text-center': true}"
+                    [resizable]="false"
+                    [columnMenu]="false"
+                    showSelectAll="true"
+                ></kendo-grid-checkbox-column>
+
+                <kendo-grid-column field="asset_id" title="Asset Id" [width]="220">
+                    
+                </kendo-grid-column>
+           
+                <kendo-grid-column field="address" title="Address" [width]="130">
+                </kendo-grid-column>
+                <kendo-grid-column field="property_status" title="Property Status" [width]="200">
+                </kendo-grid-column>
+                <kendo-grid-column field="right_to_buy" title="Right to Buy" [width]="200">
+                </kendo-grid-column>
+
+        </kendo-grid>
+      </div>
+  </kendo-window>
+</div>
+
+<div class="example-wrapper">
+
+  <kendo-window title="New Phase" [(width)]="windowWidth" [top]="20" [minWidth]="250" *ngIf="dialogOpened" (close)="closePopup()">
+    <div class="groupPopup">
+      <form (ngSubmit)="onSubmit()" #newPhaseForm="ngForm">
+        <div class="groupDiv col-md-12 col-sm-12 col-xs-12">
+          <div class="form-group form-row">
+            <div class="col-md-2">
+                <label for="name">Name:</label>
+            </div>
+            <div class="col-md-4">
+                <input type="text" name="Name" required class="form-control form-control-sm" placeholder="Name">
+            </div>
+            <div class="col-md-2">
+                <label for="name">Active/Inactive:</label>
+            </div>
+            <div class="col-md-4">
+                <select class="form-control form-control-sm" disabled="disabled">
+                    <option>Active</option>
+                    <option>Inactive</option>
+                </select>
+
+            </div>
+          </div>
+          <div class="form-group form-row">
+            <div class="col-md-2">
+              <label for="description">Description:</label>
+            </div>
+            <div class="col-md-10">
+              <input type="text" name="groupDescription" required
+               class="form-control form-control-sm" id="description" placeholder="Description">
+             
+            </div>
+          </div>
+          <div class="form-group form-row">
+            <div class="col-md-2">
+              <label for="name">Status:</label>
+            </div>
+            <div class="col-md-4">
+              <select class="form-control form-control-sm" disabled="disabled">
+                    <option>New</option>
+                    <option>Old</option>
+              </select>
+            </div>
+            <div class="col-md-2">
+              <label for="name">Budget:</label>
+            </div>
+            <div class="col-md-4">
+              <input type="text" name="" class="form-control form-control-sm" placeholder="$0.00">
+            </div>
+          </div>
+          <div class="form-group form-row">
+            <div class="col-md-2">
+              <label for="name">Target Date:</label>
+            </div>
+            <div class="col-md-4">
+              <input type="date" name="" class="form-control form-control-sm" placeholder="$0.00">
+            </div>
+          </div>
+        
+
+          <div class="formBtn text-right mt-0">
+            <button type="button" (click)="closePopup();" class="btn btn-sm">Cancel</button>
+            <button type="submit" [disabled]="!newPhaseForm.form.valid" class="btn btn-sm newBtn">Ok</button>
+          </div>
+        </div>
+      </form>
+
+    </div>
+  </kendo-window>
+
+
+</div> -->

@@ -1,0 +1,363 @@
+<kendo-window title="New Works Management" *ngIf="openNewManagement" (close)="closeNewManagementWindow()" [top]="20"
+    [minWidth]="700" [width]="950" [height]="auto" [minHeight]="350">
+
+    <form [formGroup]="workManagementForm" (ngSubmit)="onSubmit()" autocomplete="off" class="managementForm">
+        <div class="row formRow">
+            <div class="col-md-12">
+                <div class="leftDiv">
+                    <div class="first">
+                        <label class="col-form-label">Name</label>
+                    </div>
+                    <div class="second">
+                        <input type="text" class="form-control" formControlName="WPRNAME"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.WPRNAME }" autocomplete="off">
+
+                        <div *ngIf="submitted && formErrors.WPRNAME" class="invalid-feedback">
+                            <div *ngIf="formErrors.WPRNAME">{{ formErrors.WPRNAME }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="rightDiv">
+                    <div class="first">
+                        <label class="col-form-label">Ext Ref</label>
+                    </div>
+                    <div class="second">
+                        <input type="text" class="form-control" formControlName="WPREXTREF"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.WPREXTREF }" autocomplete="off">
+                        <div *ngIf="submitted && formErrors.WPREXTREF" class="invalid-feedback">
+                            <div *ngIf="formErrors.WPREXTREF">{{ formErrors.WPREXTREF }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12">
+                <div class="fullDiv">
+                    <div class="first">
+                        <label class="col-form-label">Desc</label>
+                    </div>
+                    <div class="second">
+                        <input type="text" class="form-control" formControlName="WPRDESC"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.WPRDESC }" autocomplete="off">
+
+                        <div *ngIf="submitted && formErrors.WPRDESC" class="invalid-feedback">
+                            <div *ngIf="formErrors.WPRDESC">{{ formErrors.WPRDESC }}</div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+
+            <div class="col-md-12">
+                <div class="leftDiv">
+                    <div class="first">
+                        <label class="col-form-label">Status</label>
+                    </div>
+                    <div class="second">
+                        <select class="form-control" formControlName="WPRSTATUS"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.WPRSTATUS }">
+                            <option value="New">New</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="Closed">Closed</option>
+                        </select>
+                        <!-- <input type="text" class="form-control" formControlName="status"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.status }" autocomplete="off"> -->
+
+                        <div *ngIf="submitted && formErrors.WPRSTATUS" class="invalid-feedback">
+                            <div *ngIf="formErrors.WPRSTATUS">{{ formErrors.WPRSTATUS }}</div>
+                        </div>
+                    </div>
+
+
+
+                </div>
+
+                <div class="rightDiv">
+                    <div class="first">
+                        <label class="col-form-label">Active/Inactive</label>
+                    </div>
+                    <div class="second">
+                        <select class="form-control" formControlName="WPRACTINACT"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.WPRACTINACT }">
+                            <option value="A">Active</option>
+                            <option value="I">Inactive</option>
+                        </select>
+                        <!-- <input type="text" class="form-control" formControlName="active"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.active }" autocomplete="off"> -->
+
+                        <div *ngIf="submitted && formErrors.WPRACTINACT" class="invalid-feedback">
+                            <div *ngIf="formErrors.WPRACTINACT">{{ formErrors.WPRACTINACT }}</div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+            <div class="col-md-12">
+                <div class="leftDiv">
+                    <div class="first">
+                        <label class="col-form-label">Programme Type</label>
+                    </div>
+                    <div class="second">
+                        <input type="text" class="form-control" formControlName="WPRPROGRAMMETYPE"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.WPRPROGRAMMETYPE }" autocomplete="off">
+
+                        <div *ngIf="submitted && formErrors.WPRPROGRAMMETYPE" class="invalid-feedback">
+                            <div *ngIf="formErrors.WPRPROGRAMMETYPE">{{ formErrors.WPRPROGRAMMETYPE }}</div>
+                        </div>
+                    </div>
+
+
+                </div>
+
+                <div class="rightDiv">
+                    <div class="first">
+                        <label class="col-form-label">Budget</label>
+                    </div>
+                    <div class="second">
+                        <input type="text" class="form-control" formControlName="WPRBUDGET"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.WPRBUDGET }" autocomplete="off">
+
+                        <div *ngIf="submitted && formErrors.WPRBUDGET" class="invalid-feedback">
+                            <div *ngIf="formErrors.WPRBUDGET">{{ formErrors.WPRBUDGET }}</div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+
+
+            <div class="col-md-12" *ngIf="formMode == 'edit'">
+                <div class="grpDiv">
+                    <div class="div1 childGrpDiv">
+
+                    </div>
+                    <div class="childGrpDiv">
+                        <label class="col-form-label">Forecast</label>
+                    </div>
+                    <div class="childGrpDiv">
+                        <label class="col-form-label">Committed</label>
+                    </div>
+                    <div class="childGrpDiv">
+                        <label class="col-form-label">Approved</label>
+                    </div>
+                    <div class="childGrpDiv">
+                        <label class="col-form-label">Pending</label>
+                    </div>
+                    <div class="childGrpDiv">
+                        <label class="col-form-label">Actual</label>
+                    </div>
+                </div>
+
+                <div class="grpDiv">
+                    <div class="div1 childGrpDiv">
+                        <label class="col-form-label">Work</label>
+                    </div>
+                    <div class="childGrpDiv">
+                        <input type="text" class="form-control" formControlName="WPRFORECAST"
+                        [ngClass]="{ 'is-invalid': submitted && formErrors.WPRFORECAST }" autocomplete="off" [readonly]="readonly">
+                    </div>
+                    <div class="childGrpDiv">
+                        <input type="text" class="form-control" formControlName="WPRCOMMITTED"
+                        [ngClass]="{ 'is-invalid': submitted && formErrors.WPRCOMMITTED }" autocomplete="off" [readonly]="readonly">
+                    </div>
+                    <div class="childGrpDiv">
+                        <input type="text" class="form-control" formControlName="WPRAPPROVED"
+                        [ngClass]="{ 'is-invalid': submitted && formErrors.WPRAPPROVED }" autocomplete="off" [readonly]="readonly">
+                    </div>
+                    <div class="childGrpDiv">
+                        <input type="text" class="form-control" formControlName="WPRPENDING"
+                        [ngClass]="{ 'is-invalid': submitted && formErrors.WPRPENDING }" autocomplete="off" [readonly]="readonly">
+                    </div>
+                    <div class="childGrpDiv">
+                        <input type="text" class="form-control" formControlName="WPRACTUAL"
+                        [ngClass]="{ 'is-invalid': submitted && formErrors.WPRACTUAL }" autocomplete="off" [readonly]="readonly">
+                    </div>
+                </div>
+
+                <div class="grpDiv">
+                    <div class="div1 childGrpDiv">
+                        <label class="col-form-label">Work Fees</label>
+                    </div>
+                    <div class="childGrpDiv">
+                        <input type="text" class="form-control" formControlName="WPRFORECASTFEE"
+                        [ngClass]="{ 'is-invalid': submitted && formErrors.WPRFORECASTFEE }" autocomplete="off" [readonly]="readonly">
+                    </div>
+                    <div class="childGrpDiv">
+                        <input type="text" class="form-control" formControlName="WPRCOMMITTEDFEE"
+                        [ngClass]="{ 'is-invalid': submitted && formErrors.WPRCOMMITTEDFEE }" autocomplete="off" [readonly]="readonly">
+                    </div>
+                    <div class="childGrpDiv">
+                        <input type="text" class="form-control" formControlName="WPRAPPROVEDFEE"
+                        [ngClass]="{ 'is-invalid': submitted && formErrors.WPRAPPROVEDFEE }" autocomplete="off" [readonly]="readonly">
+                    </div>
+                    <div class="childGrpDiv">
+                        <input type="text" class="form-control" formControlName="WPRPENDINGFEE"
+                        [ngClass]="{ 'is-invalid': submitted && formErrors.WPRPENDINGFEE }" autocomplete="off" [readonly]="readonly">
+                    </div>
+                    <div class="childGrpDiv">
+                        <input type="text" class="form-control" formControlName="WPRACTUALFEE"
+                        [ngClass]="{ 'is-invalid': submitted && formErrors.WPRACTUALFEE }" autocomplete="off" [readonly]="readonly">
+                    </div>
+                </div>
+
+                <div class="grpDiv">
+                    <div class="div1 childGrpDiv">
+                        <label class="col-form-label">Contract Fees</label>
+                    </div>
+                    <div class="childGrpDiv">
+                        <input type="text" class="form-control" formControlName="WPRFORECASTCONFEE"
+                        [ngClass]="{ 'is-invalid': submitted && formErrors.WPRFORECASTCONFEE }" autocomplete="off" [readonly]="readonly">
+                    </div>
+                    <div class="childGrpDiv">
+                        <input type="text" class="form-control" formControlName="WPRCOMMITTEDCONFEE"
+                        [ngClass]="{ 'is-invalid': submitted && formErrors.WPRCOMMITTEDCONFEE }" autocomplete="off" [readonly]="readonly">
+                    </div>
+                    <div class="childGrpDiv">
+                        <input type="text" class="form-control" formControlName="WPRAPPROVEDCONFEE"
+                        [ngClass]="{ 'is-invalid': submitted && formErrors.WPRAPPROVEDCONFEE }" autocomplete="off" [readonly]="readonly">
+                    </div>
+                    <div class="childGrpDiv">
+                        <input type="text" class="form-control" formControlName="WPRPENDINGCONFEE"
+                        [ngClass]="{ 'is-invalid': submitted && formErrors.WPRPENDINGCONFEE }" autocomplete="off" [readonly]="readonly">
+                    </div>
+                    <div class="childGrpDiv">
+                        <input type="text" class="form-control" formControlName="WPRACTUALCONFEE"
+                        [ngClass]="{ 'is-invalid': submitted && formErrors.WPRACTUALCONFEE }" autocomplete="off" [readonly]="readonly">
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-md-12">
+                <div class="leftDiv">
+                    <div class="first">
+                        <label class="col-form-label">Target Date</label>
+                    </div>
+                    <div class="second">
+                        <input type="text" class="form-control" formControlName="WPRTARGETCOMPLETIONDATE"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.WPRTARGETCOMPLETIONDATE }" autocomplete="off"
+                            (click)="openCalendar(td,'completedDate')" [minDate]="minDate" ngbDatepicker
+                            #td="ngbDatepicker" [placement]="'top'">
+
+                        <div *ngIf="submitted && formErrors.WPRTARGETCOMPLETIONDATE" class="invalid-feedback">
+                            <div *ngIf="formErrors.WPRTARGETCOMPLETIONDATE">{{ formErrors.WPRTARGETCOMPLETIONDATE }}</div>
+                        </div>
+                    </div>
+
+
+                </div>
+
+                <div class="rightDiv" *ngIf="formMode == 'edit'">
+                    <div class="first">
+                        <label class="col-form-label">Issued Date</label>
+                    </div>
+                    <div class="second">
+                        <input type="text" class="form-control" formControlName="WPRCONTRACTORISSUEDATE"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.WPRCONTRACTORISSUEDATE }" autocomplete="off"
+                            (click)="openCalendar(td,'completedDate')" [minDate]="minDate" ngbDatepicker
+                            #td="ngbDatepicker" [placement]="'top'">
+
+                        <div *ngIf="submitted && formErrors.WPRCONTRACTORISSUEDATE" class="invalid-feedback">
+                            <div *ngIf="formErrors.WPRCONTRACTORISSUEDATE">{{ formErrors.WPRCONTRACTORISSUEDATE }}</div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+            <div class="col-md-12">
+                <div class="leftDiv">
+                    <div class="first">
+                        <label class="col-form-label">Planned Start Date</label>
+                    </div>
+                    <div class="second">
+                        <input type="text" class="form-control" formControlName="WPRPLANSTARTDATE"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.WPRPLANSTARTDATE }" autocomplete="off"
+                            (click)="openCalendar(psd,'completedDate')" [minDate]="minDate" ngbDatepicker
+                            #psd="ngbDatepicker" [placement]="'top'">
+
+                        <div *ngIf="submitted && formErrors.WPRPLANSTARTDATE" class="invalid-feedback">
+                            <div *ngIf="formErrors.WPRPLANSTARTDATE">{{ formErrors.WPRPLANSTARTDATE }}</div>
+                        </div>
+                    </div>
+
+
+                </div>
+
+                <div class="rightDiv">
+                    <div class="first">
+                        <label class="col-form-label">Planned End Date</label>
+                    </div>
+                    <div class="second">
+                        <input type="text" class="form-control" formControlName="WPRPLANENDDATE"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.WPRPLANENDDATE }" autocomplete="off"
+                            (click)="openCalendar(ped,'completedDate')" [minDate]="minDate" ngbDatepicker
+                            #ped="ngbDatepicker" [placement]="'top'">
+
+                        <div *ngIf="submitted && formErrors.WPRPLANENDDATE" class="invalid-feedback">
+                            <div *ngIf="formErrors.WPRPLANENDDATE">{{ formErrors.WPRPLANENDDATE }}</div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+
+            <div class="col-md-12" *ngIf="formMode == 'edit'">
+                <div class="leftDiv">
+                    <div class="first">
+                        <label class="col-form-label">Actual Start Date</label>
+                    </div>
+                    <div class="second">
+                        <input type="text" class="form-control" formControlName="WPRACTUALSTARTDATE"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.WPRACTUALSTARTDATE }" autocomplete="off"
+                            (click)="openCalendar(asd,'completedDate')" [minDate]="minDate" ngbDatepicker
+                            #asd="ngbDatepicker" [placement]="'top'">
+
+                        <div *ngIf="submitted && formErrors.WPRACTUALSTARTDATE" class="invalid-feedback">
+                            <div *ngIf="formErrors.WPRACTUALSTARTDATE">{{ formErrors.WPRACTUALSTARTDATE }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="rightDiv">
+                    <div class="first">
+                        <label class="col-form-label">Actual End Date</label>
+                    </div>
+                    <div class="second">
+                        <input type="text" class="form-control" formControlName="WPRACTUALENDDATE"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.WPRACTUALENDDATE }" autocomplete="off"
+                            (click)="openCalendar(aed,'completedDate')" [minDate]="minDate" ngbDatepicker
+                            #aed="ngbDatepicker" [placement]="'top'">
+
+                        <div *ngIf="submitted && formErrors.WPRACTUALENDDATE" class="invalid-feedback">
+                            <div *ngIf="formErrors.WPRACTUALENDDATE">{{ formErrors.WPRACTUALENDDATE }}</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+
+
+        <div class="row mt-2">
+            <div class="col-md-12 text-right">
+                <button type="submit" class="btn btn-sm themeButton mr-1">Apply</button>
+                <button type="button" (click)="closeNewManagementWindow()"
+                    class="btn btn-sm themeButton">Cancel</button>
+            </div>
+        </div>
+    </form>
+
+</kendo-window>

@@ -23,7 +23,7 @@ export class WorkOrderFormComponent implements OnInit {
   subs = new SubSink();
   userForm: FormGroup;
   @Input() userFormWindow: boolean = false
-  @Input() selectedUser:any;
+  @Input() selectedUser: any;
   @Input() userFormType: any
   @Output() closeUserFormWin = new EventEmitter<boolean>();
   public windowWidth = 'auto';
@@ -166,7 +166,7 @@ export class WorkOrderFormComponent implements OnInit {
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.getContractor();
 
-    if(this.addStage == 1){
+    if (this.addStage == 1) {
       this.userForm = this.fb.group({
         woname: [''],
         wodesc: [''],
@@ -231,62 +231,62 @@ export class WorkOrderFormComponent implements OnInit {
   }
 
 
-GetPhaseTemplateList() {
+  GetPhaseTemplateList() {
 
-  this.subs.add(
-    this.worksOrdersService.GetPhaseTemplateList().subscribe(
-      (data) => {
-        // console.log('WorkOrderContractList '+ JSON.stringify(data) )
-        this.GetPhaseTemplateListData = data.data;
-        this.chRef.detectChanges();
-      },
-      error => {
-        //console.log(error);
-        this.alertService.error(error);
-        this.chRef.detectChanges();
+    this.subs.add(
+      this.worksOrdersService.GetPhaseTemplateList().subscribe(
+        (data) => {
+          // console.log('WorkOrderContractList '+ JSON.stringify(data) )
+          this.GetPhaseTemplateListData = data.data;
+          this.chRef.detectChanges();
+        },
+        error => {
+          //console.log(error);
+          this.alertService.error(error);
+          this.chRef.detectChanges();
 
-      }
+        }
+      )
     )
-  )
-}
+  }
 
-WorkOrderContractList() {
+  WorkOrderContractList() {
 
-  let bActiveOnly = true;
-  this.subs.add(
-    this.worksOrdersService.WorkOrderContractList( bActiveOnly).subscribe(
-      (data) => {
-        // console.log('WorkOrderContractList '+ JSON.stringify(data) )
-        this.WorkOrderContractListData = data.data;
-        this.chRef.detectChanges();
-      },
-      error => {
-        //console.log(error);
-        this.alertService.error(error);
-        this.chRef.detectChanges();
+    let bActiveOnly = true;
+    this.subs.add(
+      this.worksOrdersService.WorkOrderContractList(bActiveOnly).subscribe(
+        (data) => {
+          // console.log('WorkOrderContractList '+ JSON.stringify(data) )
+          this.WorkOrderContractListData = data.data;
+          this.chRef.detectChanges();
+        },
+        error => {
+          //console.log(error);
+          this.alertService.error(error);
+          this.chRef.detectChanges();
 
-      }
+        }
+      )
     )
-  )
-}
+  }
 
-GetWorkOrderProgrammeList() {
-  this.subs.add(
-    this.worksOrdersService.GetWorkOrderProgrammeList().subscribe(
-      (data) => {
-        // console.log(data)
-        this.workOrderProgrammeListData = data.data;
-        this.chRef.detectChanges();
-      },
-      error => {
-        //console.log(error);
-        this.alertService.error(error);
-        this.chRef.detectChanges();
+  GetWorkOrderProgrammeList() {
+    this.subs.add(
+      this.worksOrdersService.GetWorkOrderProgrammeList().subscribe(
+        (data) => {
+          // console.log(data)
+          this.workOrderProgrammeListData = data.data;
+          this.chRef.detectChanges();
+        },
+        error => {
+          //console.log(error);
+          this.alertService.error(error);
+          this.chRef.detectChanges();
 
-      }
+        }
+      )
     )
-  )
-}
+  }
 
 
   getAssetTemplateList() {
@@ -311,7 +311,7 @@ GetWorkOrderProgrammeList() {
     this.subs.add(
       this.worksOrdersService.getWorkOrderType().subscribe(
         (data) => {
-        //   console.log(data)
+          //   console.log(data)
           this.getWorkOrderTypeData = data.data;
           this.chRef.detectChanges();
         },
@@ -451,8 +451,19 @@ GetWorkOrderProgrammeList() {
 
 
 
-      if(this.addStage == 2){
+    if (this.addStage == 2) {
 
+
+      this.saveParms = {
+        woType: this.saveParms.woType,
+        wottemplatetype: this.saveParms.wottemplatetype,
+        woprogram: this.saveParms.woprogram,
+        contractName: this.saveParms.contractName,
+        wophasetemplate: this.saveParms.wophasetemplate,
+        woname: this.f.woname.value,
+        wodesc: this.f.wodesc.value,
+        IsEdit: this.userFormType == "new" ? false : true
+      }
 
         this.saveParms = {
            WOSEQUENCE:   this.work_order_no,
@@ -553,11 +564,12 @@ GetWorkOrderProgrammeList() {
            //IsEdit:   this.userFormType == "new" ? false : true
        }
 
+    }
 
-      }
 
+    if (this.addStage == 1) {
 
-      if(this.addStage == 1){
+      this.saveParms = {
 
 let contarctSelcted = this.f.contractName.value;
          this.GetNewSourceCodeForWorksOrder();
@@ -607,12 +619,12 @@ let contarctSelcted = this.f.contractName.value;
 
 
 
-        }
+    }
 
-  //  this.addStage = 2;
+    //  this.addStage = 2;
 
 
-    console.log('saveParms '+ JSON.stringify(this.saveParms));
+    console.log('saveParms ' + JSON.stringify(this.saveParms));
 
     this.loading = true;
 

@@ -1,0 +1,224 @@
+<div class="container-fluid flex-grow-1 container-p-y">
+
+    <div class="row">
+        <div class="col-md-2 col-sm-3">
+            <h4 class="font-weight-bold py-3 mb-1">
+                Management
+            </h4>
+        </div>
+
+        <div class="col-md-10 text-right">
+            <div class="radioDiv">
+                <label class="radio-inline">
+                    <input type="radio" (click)="checkActiveInactive($event)" value="S" name="gridStatus">All
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" (click)="checkActiveInactive($event)" checked value="A" name="gridStatus">Active
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" (click)="checkActiveInactive($event)" value="I" name="gridStatus">Inactive
+                </label>
+            </div>
+
+
+            <div class="actionDiv">
+                <button type="button" class="btn btn-sm themeButton mr-1" (click)="export()">Export</button>
+                <div class="dropdown" id="nesting-dropdown-demo">
+                    <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown"
+                        aria-expanded="false">New</button>
+                    <div class="dropdown-menu" x-placement="bottom-start"
+                        style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
+                        <a class="dropdown-item" (click)="openNewManagementWindow()" href="javascript:void(0)">New
+                            Programme</a>
+                        <a class="dropdown-item" href="javascript:void(0)">New Works Order</a>
+
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+
+    </div>
+
+    <div class="row mt-2">
+
+        <div class="col-md-12">
+            <kendo-treelist [kendoTreeListFlatBinding]="gridData" idField="id" parentIdField="parentId"
+                scrollable="virtual" [rowHeight]="36" kendoTreeListExpandable [sortable]="true" filterable="menu"
+                [filter]="filter" (filterChange)="onFilterChange($event)" [pageSize]="gridPageSize" [navigable]="true"
+                kendoTreeListSelectable [selectable]="settings" [(selectedItems)]="selected" [height]="720"
+                [virtualColumns]="true" [loading]="loading" [resizable]="true" (cellClick)="cellClickHandler($event)">
+
+                <kendo-treelist-column field="wprstatus" title="" [width]="33" [sortable]="false" [filterable]="false">
+                    <ng-template kendoTreeListCellTemplate let-dataItem>
+                        <li *ngIf="dataItem.treelevel == 1" class="nav-item dropdown list-unstyled"
+                            style="margin-top: -7px;">
+                            <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars" (click)="setSeletedRow(dataItem)"></i>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" (click)="openNewManagementWindow('edit')" href="javascript:void(0)">Edit</a>
+                                <a class="dropdown-item" (click)="openConfirmationDialog(dataItem)" href="javascript:void(0)">Delete</a>
+                                <a class="dropdown-item" href="javascript:void(0)">New Works Order</a>
+                                
+                            </div>
+                        </li>
+
+                        <li *ngIf="dataItem.treelevel == 2" class="nav-item dropdown list-unstyled level2Menu"
+                        style="margin-top: -7px;">
+                            <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="javascript:void(0)">Edit</a>
+                                <a class="dropdown-item" href="javascript:void(0)">Delete</a>
+                                <a class="dropdown-item" href="javascript:void(0)">Works Order Detail</a>
+                                <a class="dropdown-item" href="javascript:void(0)">Package Mapping</a>
+                                
+                            </div>
+                        </li>
+                    </ng-template>
+                </kendo-treelist-column>
+
+                <kendo-treelist-column [expandable]="true" [minResizableWidth]="200" field="name" title="Name"
+                    [width]="280">
+                </kendo-treelist-column>
+
+                <kendo-treelist-column field="wprstatus" title="Status" [width]="110">
+                </kendo-treelist-column>
+                <kendo-treelist-column field="budget" title="Budget" [width]="150">
+                    <ng-template kendoTreeListCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.budget | currency:"GBP":"symbol" }}
+                        </span>
+                    </ng-template>
+                </kendo-treelist-column>
+                <kendo-treelist-column field="forecast" title="Forcast" [width]="150">
+                    <ng-template kendoTreeListCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.forecast | currency:"GBP":"symbol" }}
+                        </span>
+                    </ng-template>
+                </kendo-treelist-column>
+                <kendo-treelist-column field="committed" title="Commited" [width]="150">
+                    <ng-template kendoTreeListCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.committed | currency:"GBP":"symbol" }}
+                        </span>
+                    </ng-template>
+                </kendo-treelist-column>
+                <kendo-treelist-column field="issued" title="Issued" [width]="150">
+                    <ng-template kendoTreeListCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.issued | currency:"GBP":"symbol" }}
+                        </span>
+                    </ng-template>
+                </kendo-treelist-column>
+                <kendo-treelist-column field="wpracceptedvalue" title="Accepted" [width]="150">
+                    <ng-template kendoTreeListCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.wpracceptedvalue | currency:"GBP":"symbol" }}
+                        </span>
+                    </ng-template>
+                </kendo-treelist-column>
+                <kendo-treelist-column field="actual" title="Actual" [width]="150">
+                    <ng-template kendoTreeListCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.actual | currency:"GBP":"symbol" }}
+                        </span>
+                    </ng-template>
+                </kendo-treelist-column>
+                <kendo-treelist-column field="approved" title="Approved" [width]="150">
+                    <ng-template kendoTreeListCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.approved | currency:"GBP":"symbol" }}
+                        </span>
+                    </ng-template>
+                </kendo-treelist-column>
+                <kendo-treelist-column field="pending" title="Pending" [width]="150">
+                    <ng-template kendoTreeListCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.pending | currency:"GBP":"symbol" }}
+                        </span>
+                    </ng-template>
+                </kendo-treelist-column>
+                <kendo-treelist-column field="payments" title="Payments" [width]="150">
+                    <ng-template kendoTreeListCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.payments | currency:"GBP":"symbol" }}
+                        </span>
+                    </ng-template>
+                </kendo-treelist-column>
+                <kendo-treelist-column field="targetcompletiondate" title="Target Date" [width]="150"
+                    format="{0:dd-MM-yyyy}">
+
+                    <ng-template kendoTreeListCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.targetcompletiondate | dateFormat : 'DD-MMM-YYYY' }}
+                        </span>
+                    </ng-template>
+                </kendo-treelist-column>
+                <kendo-treelist-column field="wprcontractorissuedate" title="Issued Date" [width]="150">
+                    <ng-template kendoTreeListCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.wprcontractorissuedate | dateFormat : 'DD-MMM-YYYY' }}
+                        </span>
+                    </ng-template>
+                </kendo-treelist-column>
+                <kendo-treelist-column field="wprcontractoracceptancedate" title="Acceptance Date" [width]="150">
+                    <ng-template kendoTreeListCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.wprcontractoracceptancedate | dateFormat : 'DD-MMM-YYYY' }}
+                        </span>
+                    </ng-template>
+                </kendo-treelist-column>
+                <kendo-treelist-column field="wprplanstartdate" title="Plan Start Date" [width]="150">
+                    <ng-template kendoTreeListCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.wprplanstartdate | dateFormat : 'DD-MMM-YYYY' }}
+                        </span>
+                    </ng-template>
+                </kendo-treelist-column>
+                <kendo-treelist-column field="wprplanenddate" title="Plan End Date" [width]="150">
+                    <ng-template kendoTreeListCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.wprplanenddate | dateFormat : 'DD-MMM-YYYY' }}
+                        </span>
+                    </ng-template>
+                </kendo-treelist-column>
+                <kendo-treelist-column field="wpractualstartdate" title="Actual Start Date" [width]="150">
+                    <ng-template kendoTreeListCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.wpractualstartdate | dateFormat : 'DD-MMM-YYYY' }}
+                        </span>
+                    </ng-template>
+                </kendo-treelist-column>
+                <kendo-treelist-column field="wpractualenddate" title="Actual End Date" [width]="150">
+                    <ng-template kendoTreeListCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.wpractualenddate | dateFormat : 'DD-MMM-YYYY' }}
+                        </span>
+                    </ng-template>
+                </kendo-treelist-column>
+                <kendo-treelist-column field="new" title="New" [width]="80">
+                </kendo-treelist-column>
+                <kendo-treelist-column field="issued" title="Issued" [width]="100">
+                </kendo-treelist-column>
+                <kendo-treelist-column field="wip" title="WIP" [width]="100">
+                </kendo-treelist-column>
+                <kendo-treelist-column field="handover" title="Handover" [width]="80">
+                </kendo-treelist-column>
+                <kendo-treelist-column field="pc" title="PC" [width]="80">
+                </kendo-treelist-column>
+                <kendo-treelist-column field="fc" title="FC" [width]="80">
+                </kendo-treelist-column>
+                <kendo-treelist-column field="wprstatus" title="Comment" [width]="80">
+                </kendo-treelist-column>
+
+            </kendo-treelist>
+        </div>
+    </div>
+
+
+</div>
+
+<div class="newManagementOverlay"></div>
+<app-worksorders-newmanagement *ngIf="openNewManagement" [openNewManagement]="openNewManagement"
+    [formMode]="managementformMode" [selectedProgramme]="selectedProgramme" (closeNewManagementEvent)="closeNewManagementEvent($event)" (refreshManagementGrid)="refreshManagementGrid($event)">
+</app-worksorders-newmanagement>
