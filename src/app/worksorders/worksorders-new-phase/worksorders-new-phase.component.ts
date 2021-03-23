@@ -3,6 +3,7 @@ import { SubSink } from 'subsink';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AlertService, HelperService, WorksorderManagementService } from 'src/app/_services';
 import { WorkordersAddPhaseModel } from '../../_models';
+import { ShouldGreaterThanYesterday, isNumberCheck, OrderDateValidator, IsGreaterDateValidator } from 'src/app/_helpers';
 
 @Component({
   selector: 'app-worksorders-new-phase',
@@ -15,7 +16,7 @@ export class WorksordersNewPhaseComponent implements OnInit {
   @Input() newPhasewindow: boolean = false;
   @Input() phaseFormMode: string = 'new';
   @Input() selectedParentRow: any;
-  @Input() worksOrderData:any;
+  @Input() worksOrderData: any;
   @Output() closeNewphaseEvent = new EventEmitter<boolean>();
   subs = new SubSink();
   nePhaseForm: FormGroup;
@@ -46,28 +47,28 @@ export class WorksordersNewPhaseComponent implements OnInit {
     //   'required': 'Programme Type is required.',
     // },
 
-    // 'WPRTARGETCOMPLETIONDATE': {
-    //   'required': 'Target Date is required.',
-    //   'invalidDate': 'Please insert date in dd/mm/yyyy format.',
-    //   'pastDate': 'Target Date cannot be in the past.'
-    // },
-    // 'WPRCONTRACTORISSUEDATE': {
-    //   'required': 'Issue Date is required.',
-    //   'invalidDate': 'Please insert date in dd/mm/yyyy format.',
-    //   'pastDate': 'Issue Date cannot be in the past.'
-    // },
-    // 'WPRPLANSTARTDATE': {
-    //   'required': 'Planned Start Date is required.',
-    //   'invalidDate': 'Please insert date in dd/mm/yyyy format.',
-    //   'pastDate': 'Planned Start Date cannot be in the past.'
-    // },
-    // 'WPRPLANENDDATE': {
-    //   'required': 'Planned End Date is required.',
-    //   'invalidDate': 'Please insert date in dd/mm/yyyy format.',
-    //   'pastDate': 'Planned End Date cannot be in the past.',
-    //   'isLower': 'Planned End Date must be on or after the Planned Start Date.',
-    //   'isGreaterDate': 'Planned End Date cannot be later than the Target Completion Date.'
-    // },
+    'WOPTARGETCOMPLETIONDATE': {
+      'required': 'Target Date is required.',
+      'invalidDate': 'Please insert date in dd/mm/yyyy format.',
+      'pastDate': 'Target Date cannot be in the past.'
+    },
+    'WOPCONTRACTORISSUEDATE': {
+      'required': 'Issue Date is required.',
+      'invalidDate': 'Please insert date in dd/mm/yyyy format.',
+      'pastDate': 'Issue Date cannot be in the past.'
+    },
+    'WOPPLANSTARTDATE': {
+      'required': 'Planned Start Date is required.',
+      'invalidDate': 'Please insert date in dd/mm/yyyy format.',
+      'pastDate': 'Planned Start Date cannot be in the past.'
+    },
+    'WOPPLANENDDATE': {
+      'required': 'Planned End Date is required.',
+      'invalidDate': 'Please insert date in dd/mm/yyyy format.',
+      'pastDate': 'Planned End Date cannot be in the past.',
+      'isLower': 'Planned End Date must be on or after the Planned Start Date.',
+      'isGreaterDate': 'Planned End Date cannot be later than the Target Completion Date.'
+    },
     // 'WPRACTUALSTARTDATE': {
     //   'required': 'Actual Start Date is required.',
     //   'invalidDate': 'Please insert date in dd/mm/yyyy format.',
@@ -90,12 +91,14 @@ export class WorksordersNewPhaseComponent implements OnInit {
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
   minDate: any;
   disableFields = ['WOPCONTRACTORACCEPTANCEDATE', 'WOPCONTRACTORISSUEDATE', 'WOPACTUALSTARTDATE', 'WOPACTUALENDDATE']
+  @Output() refreshWorkOrderDetails = new EventEmitter<boolean>();
+  phaseData: any;
 
   constructor(
     private chRef: ChangeDetectorRef,
     private fb: FormBuilder,
     private helperService: HelperService,
-    private alertService : AlertService,
+    private alertService: AlertService,
     private worksorderService: WorksorderManagementService
   ) {
     const current = new Date();
@@ -109,40 +112,38 @@ export class WorksordersNewPhaseComponent implements OnInit {
   ngOnInit(): void {
     this.nePhaseForm = this.fb.group({
       WOPNAME: ['', [Validators.required]],
-      //WPREXTREF: ['', [Validators.required]],
       WOPDESC: ['', [Validators.required]],
       WOPSTATUS: ['', [Validators.required]],
       WOPACTINACT: ['', [Validators.required]],
-
-      WOPBUDGET: ['', [Validators.required]],
-
+      WOPBUDGET: ['', [Validators.required, isNumberCheck(), Validators.maxLength(9)]],
       WOPFORECAST: [''],
       WOPCOMMITTED: [''],
       WOPAPPROVED: [''],
       WOPPENDING: [''],
       WOPACTUAL: [''],
       WOPFORECASTFEE: [''],
-
       WOPCOMMITTEDFEE: [''],
       WOPAPPROVEDFEE: [''],
       WOPPENDINGFEE: [''],
       WOPACTUALFEE: [''],
 
       WOPCONTRACTORISSUEDATE: [''],
-
-      WOPTARGETCOMPLETIONDATE: [''],
+      WOPTARGETCOMPLETIONDATE: ['', [Validators.required, ShouldGreaterThanYesterday()]],
       WOPCONTRACTORACCEPTANCEDATE: [''],
-      WOPPLANSTARTDATE: [''],
-      WOPPLANENDDATE: [''],
+      WOPPLANSTARTDATE: ['', [ShouldGreaterThanYesterday()]],
+      WOPPLANENDDATE: ['', [ShouldGreaterThanYesterday()]],
       WOPACTUALSTARTDATE: [''],
       WOPACTUALENDDATE: [''],
 
+    }, {
+      validator: [OrderDateValidator('WOPPLANENDDATE', 'WOPPLANSTARTDATE'), IsGreaterDateValidator('WOPPLANENDDATE', 'WOPTARGETCOMPLETIONDATE')],
     });
 
     this.populateForm()
 
     this.chRef.detectChanges();
 
+    
 
   }
 
@@ -156,8 +157,48 @@ export class WorksordersNewPhaseComponent implements OnInit {
       this.nePhaseForm.get('WOPSTATUS').disable();
       this.nePhaseForm.get('WOPACTINACT').disable();
     } else {
-      // this.getWopmManagementData()
+      this.getPhase()
     }
+  }
+
+  getPhase() {
+    this.subs.add(
+      this.worksorderService.getPhase(this.selectedParentRow.wosequence, this.selectedParentRow.wopsequence).subscribe(
+        data => {
+          // console.log(data);
+          if (data.isSuccess) {
+            const phaseData = data.data;
+            this.phaseData = data.data;
+            this.nePhaseForm.patchValue({
+              WOPNAME: phaseData.wopname,
+              WOPDESC: phaseData.wopdesc,
+              WOPSTATUS: phaseData.wopstatus,
+              WOPACTINACT: phaseData.wopactinact,
+              WOPBUDGET: phaseData.wopbudget,
+              WOPFORECAST: phaseData.wopforecast,
+              WOPCOMMITTED: phaseData.wopcommitted,
+              WOPAPPROVED: phaseData.wopapproved,
+              WOPPENDING: phaseData.woppending,
+              WOPACTUAL: phaseData.wopactual,
+              WOPFORECASTFEE: phaseData.wopforecastfee,
+              WOPCOMMITTEDFEE: phaseData.wopcommittedfee,
+              WOPAPPROVEDFEE: phaseData.wopapprovedfee,
+              WOPPENDINGFEE: phaseData.woppendingfee,
+              WOPACTUALFEE: phaseData.wopactualfee,
+
+              WOPCONTRACTORISSUEDATE: this.helperService.ngbDatepickerFormat(phaseData.wopcontractorissuedate),
+              WOPTARGETCOMPLETIONDATE: this.helperService.ngbDatepickerFormat(phaseData.woptargetcompletiondate),
+              WOPCONTRACTORACCEPTANCEDATE: this.helperService.ngbDatepickerFormat(phaseData.wopcontractoracceptancedate),
+              WOPPLANSTARTDATE: this.helperService.ngbDatepickerFormat(phaseData.wopplanstartdate),
+              WOPPLANENDDATE: this.helperService.ngbDatepickerFormat(phaseData.wopplanenddate),
+              WOPACTUALSTARTDATE: this.helperService.ngbDatepickerFormat(phaseData.wopactualstartdate),
+              WOPACTUALENDDATE: this.helperService.ngbDatepickerFormat(phaseData.wopactualenddate),
+            })
+          }
+          // debugger;
+        }
+      )
+    )
   }
 
   closeNewphaseWindow() {
@@ -170,9 +211,9 @@ export class WorksordersNewPhaseComponent implements OnInit {
     Object.keys(group.controls).forEach((key: string) => {
       const abstractControl = group.get(key);
 
-      // if (key == 'WPRACTUALENDDATE' || key == 'WPRACTUALSTARTDATE' || key == 'WPRCONTRACTORISSUEDATE') {
-      //   abstractControl.setErrors(null)
-      // }
+      if (key == 'WOPACTUALENDDATE' || key == 'WOPACTUALSTARTDATE' || key == 'WOPCONTRACTORISSUEDATE' || key == 'WOPCONTRACTORACCEPTANCEDATE' || key == 'WOPPLANSTARTDATE' || key == 'WOPPLANENDDATE') {
+        abstractControl.setErrors(null)
+      }
 
       if (abstractControl instanceof FormGroup) {
         this.logValidationErrors(abstractControl);
@@ -186,7 +227,6 @@ export class WorksordersNewPhaseComponent implements OnInit {
           const messages = this.validationMessage[key];
           for (const errorKey in abstractControl.errors) {
             if (errorKey) {
-              console.log(this.formErrors[key])
               this.formErrors[key] += messages[errorKey] + ' ';
             }
           }
@@ -202,9 +242,12 @@ export class WorksordersNewPhaseComponent implements OnInit {
       'WOPSTATUS': '',
       'WOPACTINACT': '',
       'WOPTARGETCOMPLETIONDATE': '',
-      'WOPBUDGET': ''
-
+      'WOPBUDGET': '',
+      'WOPPLANSTARTDATE': '',
+      'WOPCONTRACTORISSUEDATE': '',
+      'WOPPLANENDDATE': ''
     }
+
   }
 
   get f() { return this.nePhaseForm.controls; }
@@ -219,19 +262,17 @@ export class WorksordersNewPhaseComponent implements OnInit {
       return;
     }
 
-    if(!this.worksOrderData){
-      this.alertService.error("Work Order is not selected.");
-      return 
+    if (!this.worksOrderData) {
+      this.alertService.error("Work Order Phase is not selected.");
+      return
     }
 
     let formRawVal = this.nePhaseForm.getRawValue();
     let phaseModel: WorkordersAddPhaseModel = formRawVal;
 
-
     phaseModel.WOPTARGETCOMPLETIONDATE = this.dateFormate(formRawVal.WOPTARGETCOMPLETIONDATE);
     phaseModel.WOPPLANSTARTDATE = this.dateFormate(formRawVal.WOPPLANSTARTDATE);
     phaseModel.WOPPLANENDDATE = this.dateFormate(formRawVal.WOPPLANENDDATE);
-
 
     phaseModel.WOPCONTRACTORISSUEDATE = this.dateFormate(formRawVal.WOPCONTRACTORISSUEDATE);
     phaseModel.WOPACTUALSTARTDATE = this.dateFormate(formRawVal.WOPACTUALSTARTDATE);
@@ -248,40 +289,43 @@ export class WorksordersNewPhaseComponent implements OnInit {
 
     // Common fields
     phaseModel.WOSEQUENCE = this.worksOrderData.wosequence;
-    phaseModel.WOPSEQUENCE = this.worksOrderData.wprsequence
-    phaseModel.WOPDISPSEQ = 0
-    phaseModel.WOPFINALACCOUNT = 0
-    phaseModel.WOPBUDGETASSET = 0
-    phaseModel.WOPINITIALCONTRACTSUM = 0
-    phaseModel.WOPCURRENTCONTRACTSUM = 0
-    phaseModel.WOPACCEPTEDVALUE = 0
-
-
 
     let apiToAddUpdate: any;
     let message = '';
     if (this.phaseFormMode == 'new') {
-      // apiToAddUpdate = this.worksorderService.addWorkOrderManagement(managementModel);
-      // message = `New Programme "${managementModel.WPRNAME}" added successfully.`;
+      phaseModel.WOPSEQUENCE = 0;
+      phaseModel.WOPDISPSEQ = 0;
+      phaseModel.WOPFINALACCOUNT = 0;
+      phaseModel.WOPBUDGETASSET = 0;
+      phaseModel.WOPINITIALCONTRACTSUM = 0;
+      phaseModel.WOPCURRENTCONTRACTSUM = 0;
+      phaseModel.WOPACCEPTEDVALUE = 0;
+
+      apiToAddUpdate = this.worksorderService.addWorksOrderPhase(phaseModel);
+      message = `New Works Order Phase "${phaseModel.WOPNAME}" added successfully.`;
     } else {
-      // managementModel.WPRSEQUENCE = this.mData.wprsequence;
-      // apiToAddUpdate = this.worksorderService.updateWorksProgramme(managementModel);
-      // message = `Programme "${managementModel.WPRNAME}" updated successfully.`;
+      phaseModel.WOPSEQUENCE = this.phaseData.wopsequence;
+      phaseModel.WOPDISPSEQ = this.phaseData.wopdispseq;
+      phaseModel.WOPFINALACCOUNT = this.phaseData.wopfinalaccount;
+      phaseModel.WOPBUDGETASSET = this.phaseData.wopbudgetasset;
+      phaseModel.WOPINITIALCONTRACTSUM = this.phaseData.wopinitialcontractsum;
+      phaseModel.WOPCURRENTCONTRACTSUM = this.phaseData.wopcurrentcontractsum;
+      phaseModel.WOPACCEPTEDVALUE = this.phaseData.wopacceptedvalue;
+
+      apiToAddUpdate = this.worksorderService.updateWorksOrderPhase(phaseModel);
+      message = `Works Order Phase "${phaseModel.WOPNAME}" updated successfully.`;
     }
 
-    // console.log(managementModel);
-    // apiToAddUpdate.subscribe(
-    //   data => {
-    //     if (data.isSuccess) {
-    //       this.alertService.success(message);
-    //       this.refreshManagementGrid.emit(true);
-    //       this.closeNewManagementWindow()
-    //     } else {
-    //       this.alertService.error(data.message);
-    //     }
-    //     // console.log(data)
-    //   }
-    // )
+    apiToAddUpdate.subscribe(
+      data => {
+        if (data.isSuccess) {
+          this.alertService.success(message);
+          this.refreshWorkOrderDetails.emit(true);
+          this.closeNewphaseWindow()
+        } else this.alertService.error(data.message);
+      },
+      err => this.alertService.error(err)
+    )
   }
 
 

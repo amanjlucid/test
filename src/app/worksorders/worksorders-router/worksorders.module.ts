@@ -21,6 +21,8 @@ import { WorkOrderFormComponent } from '../workorder-list/workorder-form/workord
 import { WorksordersDetailsComponent } from '../worksorders-details/worksorders-details.component';
 import { WorksordersNewPhaseComponent } from '../worksorders-new-phase/worksorders-new-phase.component';
 import { WorksordersPackageMappingComponent } from '../worksorders-package-mapping/worksorders-package-mapping.component';
+import { WorksordersAddAssetsComponent } from '../worksorders-add-assets/worksorders-add-assets.component';
+import { WorksordersAssetDetailComponent } from '../worksorders-asset-detail/worksorders-asset-detail.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +35,9 @@ import { WorksordersPackageMappingComponent } from '../worksorders-package-mappi
     WorkOrderFormComponent,
     WorksordersDetailsComponent,
     WorksordersNewPhaseComponent,
-    WorksordersPackageMappingComponent
+    WorksordersPackageMappingComponent,
+    WorksordersAddAssetsComponent,
+    WorksordersAssetDetailComponent
   ],
 
   imports: [

@@ -235,7 +235,6 @@ export class WorksordersNewmanagementComponent implements OnInit {
           const messages = this.validationMessage[key];
           for (const errorKey in abstractControl.errors) {
             if (errorKey) {
-              console.log(this.formErrors[key])
               this.formErrors[key] += messages[errorKey] + ' ';
             }
           }

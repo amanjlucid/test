@@ -1,0 +1,354 @@
+.k-window {
+    position: fixed !important;
+}
+
+.k-treelist tbody td {
+    white-space: nowrap !important;
+    line-height: 20px;
+    padding: 8px 12px;
+}
+
+.headerArea input[type=text] {
+    height: 27px;
+    font-size: .894rem;
+    line-height: 1.54;
+    color: #4E5155;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid rgba(24, 28, 33, 0.1);
+    border-radius: .25rem;
+    width: 100%;
+}
+
+.headerArea select {
+    height: calc(1.5rem + 2px);
+    background-position: right .625rem center;
+    font-size: .75rem;
+    line-height: 1.5;
+    background-clip: padding-box;
+    border: 1px solid rgba(24, 28, 33, 0.1);
+    width: 100%;
+}
+
+.headerArea label{
+    margin-top: 5px;
+    display: block;
+    padding: 0;
+}
+
+
+
+/*------------------   Heiarchy css             ------------------------- */
+
+/* ————————————————————–
+  Tree core styles
+*/
+
+.tree {
+    font-size: 13px;
+  }
+  
+  .tree input {
+    position: absolute;
+    clip: rect(0, 0, 0, 0);
+  }
+  
+  .tree input~ul {
+    display: none;
+  }
+  
+  .tree input:checked~ul {
+    display: block;
+  }
+  
+  /* ————————————————————–
+      Tree rows
+    */
+  
+  .tree li {
+    line-height: 1.2;
+    position: relative;
+    /* padding: 0 0 1em 1em; */
+    list-style: none;
+    padding-top: 10px !important;
+  }
+  
+  .tree label {
+    margin: 0px;
+  }
+  
+  .tree ul li {
+    padding: 1em 0 0 1em;
+  }
+  
+  .tree ul {
+    padding-left: 0;
+  }
+  
+  .tree>li:last-child {
+    padding-bottom: 0;
+  }
+  
+  /* ————————————————————–
+      Tree labels
+    */
+  
+  .tree_label {
+    position: relative;
+    display: inline-block;
+    background: #fff;
+  }
+  
+  label.tree_label {
+    cursor: pointer;
+  }
+  
+  label.tree_label:hover {
+    color: #666;
+  }
+  
+  /* ————————————————————–
+      Tree expanded icon
+    */
+  
+  label.tree_label:before {
+    background: #b42a2a;
+    color: #fff;
+    position: relative;
+    z-index: 1;
+    float: left;
+    margin: 0 1em 0 -2em;
+    width: 16px;
+    height: 1em;
+    border-radius: 1em;
+    content: '+';
+    text-align: center;
+    padding-bottom: 16px;
+    /* line-height: 0.9em; */
+  }
+  
+  :checked~label.tree_label:before {
+    content: '–';
+  }
+  
+  /* ————————————————————–
+      Tree branches
+    */
+  
+  .tree li:before {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -.5em;
+    /* left: -7.5px; */
+    display: block;
+    width: 0;
+    border-left: 1px solid #777;
+    content: "";
+  }
+  
+  .tree_label:after {
+    position: absolute;
+    top: 0;
+    /* left: -1.5em; */
+    left: -19.5px;
+    display: block;
+    height: 0.5em;
+    width: 1em;
+    border-bottom: 1px solid #777;
+    border-left: 1px solid #777;
+    border-radius: 0 0 0 .3em;
+    content: '';
+  }
+  
+  label.tree_label:after {
+    border-bottom: 0;
+  }
+  
+  :checked~label.tree_label:after {
+    /* border-radius: 0 .3em 0 0; */
+    border-top: 1px solid #777;
+    /* border-right: 1px solid #777; */
+    border-bottom: 0;
+    border-left: 0;
+    bottom: 0;
+    top: 0.5em;
+    height: auto;
+    /* left: -20px; */
+    /* margin-left: 1px; */
+  }
+  
+  .tree li:last-child:before {
+    height: 1em;
+    bottom: auto;
+  }
+  
+  .tree>li:last-child:before {
+    display: none;
+  }
+  
+  .selected {
+    background-color: #cacaca;
+  }
+  
+  #myUL {
+    border: 1px solid #e2e2eb;
+    background-color: #fff;
+    list-style: none;
+    font-size: 12px;
+    min-height: 27px;
+    max-height: 58px;
+    overflow-y: scroll;
+    border-radius: 5px;
+    padding: 2px 0px;
+    margin-bottom: 0px;
+  }
+  
+  #myUL li {
+    list-style: none;
+    font-size: 12px;
+  }
+  
+  #myUL, #myUL ul {
+    padding-left: 20px !important;
+  }
+  
+  .addr_search {
+    text-align: center;
+    margin-top: 3px;
+  }
+  
+  .assetInpBox {
+    height: 27px;
+    font-size: .894rem;
+    line-height: 1.54;
+    color: #4E5155;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid rgba(24, 28, 33, 0.1);
+    border-radius: .25rem;
+    padding-left: 5px !important;
+  }
+  
+  .assetSelect {
+    /* padding: .188rem 2.5rem .188rem .625rem; */
+    height: calc(1.5rem + 2px);
+    background-position: right .625rem center;
+    font-size: .75rem;
+    line-height: 1.5;
+    background-clip: padding-box;
+    border: 1px solid rgba(24, 28, 33, 0.1);
+  }
+  
+  .iconDiv {
+    display: inline-block !important;
+  }
+  
+  .iconDiv i {
+    display: inline-block !important;
+    margin: 0px 5px;
+  }
+  
+  
+  
+  .filtersection {
+    padding: 10px 0px;
+    border-top: 1px solid gray;
+  }
+  
+  .filterHead {
+    color: #b0acac;
+    font-size: 18px;
+  }
+  
+  .assetTbl td{
+    word-break: break-all;
+  }
+  
+  .readonlyCl{
+    background: #eee2e2;
+  }
+  
+  .radioFilterDiv {
+    text-align: right;
+    padding: 0!important;
+  }
+  
+  /* .radioDiv {
+    padding-right: 6px;
+  } */
+  
+  .filterArea label {
+    margin-bottom: 0!important;
+    margin-top: 5px!important;
+  }
+  
+  label.radio-inline {
+    padding: 0 8px;
+    margin-top: 5px;
+  }
+  
+  .radioDiv .radio-inline input[type=radio] {
+    margin-right: 3px;
+  }
+  
+  
+  .gridStateDiv{
+  display: inline-block;
+  }
+  
+  .goBtnDiv{
+    padding-left: 6px;
+  }
+  
+  @keyframes slide-in {
+    0% {
+      -webkit-transform: translateX(100%);
+    }
+    100% {
+      -webkit-transform: translateX(0%);
+    }
+  }
+  
+  @-webkit-keyframes slide-in {
+    0% {
+      transform: translateX(100%);
+    }
+    100% {
+      transform: translateX(0%);
+    }
+  }
+  
+  @keyframes slide-out {
+    0% {
+      transform: translateX(0%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
+  
+  @-webkit-keyframes slide-out {
+    0% {
+      -webkit-transform: translateX(0%);
+    }
+    100% {
+      -webkit-transform: translateX(100%);
+    }
+  }
+  
+  
+  
+  @media only screen and (max-width: 768px) {
+    .hiearchyDiv label {
+      text-align: left !important;
+    }
+    .hiearchyBtn {
+      margin-bottom: 8px;
+      min-width: 16% !important;
+      max-width: 16% !important;
+    }
+    
+    
+  }
+  

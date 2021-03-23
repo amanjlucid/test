@@ -59,6 +59,10 @@ export class WorksordersDetailsComponent implements OnInit {
 
   packageMappingWindow = false;
 
+  addAssetWindow = false;
+
+  assetDetailWindow = false;
+
   constructor(
     private sharedService: SharedService,
     private worksorderManagementService: WorksorderManagementService,
@@ -67,6 +71,7 @@ export class WorksordersDetailsComponent implements OnInit {
     private propSecGrpService: PropertySecurityGroupService,
     private loaderService: LoaderService,
     private chRef: ChangeDetectorRef,
+    private confirmationDialogService: ConfirmationDialogService
   ) { }
 
 
@@ -109,7 +114,7 @@ export class WorksordersDetailsComponent implements OnInit {
         // this.worksorderManagementService.getListOfWorksOrderChecklistForWORK(intWOSEQUENCE),
       ]).subscribe(
         data => {
-          console.log(data)
+          // console.log(data)
           const programmeData = data[0];
           const userSecurityByWO = data[1];
           const worksOrderData = data[2];
@@ -143,7 +148,7 @@ export class WorksordersDetailsComponent implements OnInit {
             let gridData = [];
             let tempData = [...data.data];
 
-            //Find parent and Set parent id in each row
+            //Find parent and Set parent id in each row wopsequence
             tempData.forEach((value, index) => {
               if (value.treelevel == 2) {
                 value.parentId = null
@@ -155,7 +160,7 @@ export class WorksordersDetailsComponent implements OnInit {
               }
 
               if (value.treelevel == 3) {
-                const parent = tempData.find(x => x.treelevel == 2 && x.wprsequence == value.wprsequence && x.wosequence == value.wosequence);
+                const parent = tempData.find(x => x.treelevel == 2 && x.wprsequence == value.wprsequence && x.wosequence == value.wosequence && x.wopsequence == value.wopsequence);
                 if (parent) {
                   value.parentId = `${parent.wopsequence}${parent.wosequence}${parent.wprsequence}${this.helperService.replaceAll(parent.assid, " ", "")}`;
                   value.id = `${value.wopsequence}${value.wosequence}${value.wprsequence}${this.helperService.replaceAll(value.assid, " ", "")}${index}`;
@@ -259,9 +264,9 @@ export class WorksordersDetailsComponent implements OnInit {
         data => {
           this.loaderService.pageShow();
           this.printHiearchy = data;
-          // this.filterValues.hittypecode = this.selectedHiearchyType;
-          // this.filterValues.hsownassid = this.selectedhierarchyLevel.assetId;
-          // this.filter()
+          this.workorderDetailModel.pHITTYPECODE = this.selectedHiearchyType;
+          this.workorderDetailModel.pHSOWNASSID = this.selectedhierarchyLevel.assetId;
+          this.getWorkDetails()
 
           this.closeHiearchyWindow();
         }
@@ -287,10 +292,12 @@ export class WorksordersDetailsComponent implements OnInit {
     if (this.selectedHiearchyType) {
       this.hierarchyLevels = [];
       this.visitedHierarchy = [];
-      this.propSecGrpService.getHierarchyAllLevel(this.selectedHiearchyType).subscribe(
-        data => {
-          this.hierarchyLevels = data;
-        }
+      this.subs.add(
+        this.propSecGrpService.getHierarchyAllLevel(this.selectedHiearchyType).subscribe(
+          data => {
+            this.hierarchyLevels = data;
+          }
+        )
       )
     }
   }
@@ -309,10 +316,10 @@ export class WorksordersDetailsComponent implements OnInit {
 
   clearPropSec() {
     this.printHiearchy = [];
-    // this.filterValues.hittypecode = '';
-    // this.filterValues.hsownassid = '';
-    // this.sharedService.changeResultHeaderFilters(this.filterValues);
-    // this.filter()
+    this.workorderDetailModel.pHITTYPECODE = '';
+    this.workorderDetailModel.pHSOWNASSID = '';
+    this.getWorkDetails()
+
   }
 
   //##################### hierarchy function end ######################################//
@@ -370,224 +377,74 @@ export class WorksordersDetailsComponent implements OnInit {
     $('.worksOrderDetailOvrlay').removeClass('ovrlay');
   }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  // @ViewChild(DataBindingDirective) dataBinding: DataBindingDirective;
-  // public gridData: any[] = dummydata;
-  // public gridView: any[];
-
-  // // public gridPackageData: any[] = packages_mapping;
-  // // public gridPackageView: any[];
-
-  // // public gridAssetsData: any[] = assets_data;
-  // public gridAssetsView: any[];
-
-  // state: State = {
-  //   skip: 0,
-  //   sort: [],
-  //   group: [],
-  //   filter: {
-  //     logic: "or",
-  //     filters: []
-  //   }
-  // }
-  // currentUser: any;
-  // public dialogOpened = false;
-  // public mySelection: string[] = [];
-  // public elmGrpWindow = false;
-  // public assetWindow = false;
-  // public addAssetFromWlWindow = false;
-  // public pwanWindow = false;
-
-  // paramPhaseTree = {
-  //   "pWOSEQUENCE": 661,
-  //   "pWOPSEQUENCE": 0,
-  //   "pInitialLoad": 1,
-  //   "pTREELEVEL": 0,
-  //   "pHITTYPECODE": "",
-  //   "pHSOWNASSID": "",
-  //   "pASTCONCATADDRESS": "",
-  //   "pNew": 0,
-  //   "pInProgress": 0,
-  //   "pPracticalCompletion": 0,
-  //   "pFinalCompletion": 0,
-  //   "pIssued": 0,
-  //   "pAccepted": 0,
-  //   "pPending": 0,
-  //   "pHandover": 0,
-  //   "pFromDate": "1753-01-01",
-  //   "pToDate": "1753-01-01",
-  //   "pContractor": 0
-  //   };
-
-
-  // ngOnInit() {
-  //   this.gridView = this.gridData;
-  //   this.gridPackageView = this.gridPackageData;
-  //   this.gridAssetsView = this.gridAssetsData;
-  //   //update notification on top
-
-  //   this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
-  // }
-
-
-
-
-  // getManagement(paramPhaseTree) {
-  //   this.subs.add(
-  //     this.worksorderManagementService.getOrderPhasetreeList(paramPhaseTree).subscribe(
-  //       data => {
-  //           console.log(data);
-
-  //       }
-  //     )
-  //   )
-  // }
-
-  // groupChange(): void {
-  // }
-
-
-
-
-  // public onFilter(inputValue: string): void {
-  //       this.gridView = process(this.gridData, {
-  //           filter: {
-  //               logic: "or",
-  //               filters: [
-  //                   {
-  //                       field: 'full_name',
-  //                       operator: 'contains',
-  //                       value: inputValue
-  //                   },
-  //                   {
-  //                       field: 'job_title',
-  //                       operator: 'contains',
-  //                       value: inputValue
-  //                   },
-  //                   {
-  //                       field: 'budget',
-  //                       operator: 'contains',
-  //                       value: inputValue
-  //                   },
-  //                   {
-  //                       field: 'phone',
-  //                       operator: 'contains',
-  //                       value: inputValue
-  //                   },
-  //                   {
-  //                       field: 'address',
-  //                       operator: 'contains',
-  //                       value: inputValue
-  //                   }
-  //               ],
-  //           }
-  //       }).data;
-
-  //       this.dataBinding.skip = 0;
-  //   }
-
-
-  public openPopup(action) {
-    // this.dialogOpened = true;
-    $('.bgblur').addClass('ovrlay');
+  openConfirmationDialog(item) {
+    $('.k-window').css({ 'z-index': 1000 });
+    this.confirmationDialogService.confirm('Please confirm..', `Delete Phase?`)
+      .then((confirmed) => (confirmed) ? this.deletePhase(item) : console.log(confirmed))
+      .catch(() => console.log('Attribute dismissed the dialog.'));
   }
 
-  // public openAssets(assets){
+  refreshGrid(eve) {
+    if (eve) this.worksOrderDetailPageData();
+  }
 
-  //   if(assets == "assets"){
-  //     this.assetWindow = true;
-  //   }else if(assets == "work-list"){
-  //     this.addAssetFromWlWindow = true;
-  //   }
-  //   else if(assets == "work-name"){
-  //     this.pwanWindow = true;
-  //   }
+  deletePhase(item) {
+    let params = {
+      WOSEQUENCE: item.wosequence,
+      WOPSEQUENCE: item.wopsequence,
+      UserId: this.currentUser.userId,
+      CheckProcess: 'P'
+    }
 
-  //   $('.bgblur').addClass('ovrlay');
-  // }
+    this.subs.add(
+      this.worksorderManagementService.deletePhase(params).subscribe(
+        data => {
+          if (data.isSuccess && data.data == "S") {
+            this.alertService.success(data.message);
+            this.refreshGrid(true);
+          } else {
+            this.alertService.error(data.message);
+          }
+        },
+        err => this.alertService.error(err)
+      )
+    )
+  }
 
-  // public closeAssets(assets){
+  moveWorksOrderDetailRow(move, item) {
+    this.subs.add(
+      this.worksorderManagementService.phaseUpDown(item.wosequence, item.wopdispseq, move).subscribe(
+        data => {
+          console.log(data);
+          if (data.isSuccess) this.refreshGrid(true);
+          // this.alertService.success(data.message);
+        },
+        err => this.alertService.error(err)
+      )
+    )
+  }
 
-  //   console.log(assets);
-
-  //   if(assets == "assets"){
-  //     this.assetWindow = false;
-  //   }else if(assets == "work-list"){
-  //     this.addAssetFromWlWindow = false;
-  //   }else if(assets == "work-name"){
-  //     this.pwanWindow = false;
-  //   }
-  //   $('.bgblur').removeClass('ovrlay');
-  // }
-
-
-  // public closePopup() {
-  //   this.dialogOpened = false;
-  //   $('.bgblur').removeClass('ovrlay');
-  // }
-
-
-
-
-  // closeElmGrpWin($event) {
-  //   this.elmGrpWindow = false;
-  //   $('.bgblur').removeClass('ovrlay');
-  // }
-
-
-  // ngOnDestroy() {
-  //   $('.bgblur').removeClass('ovrlay');
-  // }
-
-  // public togleChild(child){
-  //   let el = $(this).closest('td');
-
-  //   el.addClass("active");
-  // }
+  openAddAssetWorkOrders(workOrderType, item) {
+    this.addAssetWindow = true;
+    $('.worksOrderDetailOvrlay').addClass('ovrlay');
+  }
 
 
+  closeAddAssetWindow(eve) {
+    this.addAssetWindow = eve;
+    $('.worksOrderDetailOvrlay').removeClass('ovrlay');
+  }
+
+  openAssetDetail(item) {
+    this.assetDetailWindow = true;
+    $('.worksOrderDetailOvrlay').addClass('ovrlay');
+  }
 
 
+  closeAssetDetailWindow(eve) {
+    this.assetDetailWindow = eve;
+    $('.worksOrderDetailOvrlay').removeClass('ovrlay');
+  }
 
 }
 

@@ -159,7 +159,7 @@
 
           <div class="row mt-2 hiearchyDiv">
             <label class="col-sm-12 col-md-1">Hierarchy</label>
-            <div class="col-sm-12 col-md-10 pl-0 hiearchyTree">
+            <div class="col-sm-12 col-md-9 pl-0 hiearchyTree">
               <ul id="myUL">
                 <ng-template #recursiveList let-printHiearchy>
                   <li *ngFor="let item of printHiearchy">
@@ -176,7 +176,7 @@
               </ul>
             </div>
 
-            <div class="hiearchyBtn col-md-1 p-0">
+            <div class="hiearchyBtn col-md-2 p-0">
               <button type="button" (click)="openHiearchyWindow()" class="btn btn-sm">...</button>
               <button type="button" (click)="clearPropSec()" class="btn btn-sm">Clear</button>
             </div>
@@ -193,10 +193,10 @@
   <div class="row">
     <div class="col-md-12">
       <kendo-treelist [kendoTreeListFlatBinding]="gridData" idField="id" parentIdField="parentId" scrollable="virtual"
-        [rowHeight]="36" kendoTreeListExpandable [initiallyExpanded]="true" [sortable]="true" filterable="menu" [filter]="filter"
-        (filterChange)="onFilterChange($event)" [pageSize]="gridPageSize" [navigable]="false" kendoTreeListSelectable
-        [selectable]="settings" [(selectedItems)]="selected" [height]="gridHeight" [virtualColumns]="true"
-        [loading]="loading" [resizable]="true" (cellClick)="cellClickHandler($event)">
+        [rowHeight]="36" kendoTreeListExpandable [initiallyExpanded]="true" [sortable]="true" filterable="menu"
+        [filter]="filter" (filterChange)="onFilterChange($event)" [pageSize]="gridPageSize" [navigable]="false"
+        kendoTreeListSelectable [selectable]="settings" [(selectedItems)]="selected" [height]="gridHeight"
+        [virtualColumns]="true" [loading]="loading" [resizable]="true" (cellClick)="cellClickHandler($event)">
 
         <kendo-treelist-column field="wprstatus" title="" [width]="33" [sortable]="false" [filterable]="false">
           <ng-template kendoTreeListCellTemplate let-dataItem>
@@ -205,7 +205,14 @@
               <div class="dropdown-menu">
                 <a class="dropdown-item" href="javascript:void(0)">New</a>
                 <a class="dropdown-item" href="javascript:void(0)" (click)="openNewphase('edit', dataItem)">Edit</a>
-                <a class="dropdown-item" href="javascript:void(0)">Delete</a>
+                <a class="dropdown-item" href="javascript:void(0)"
+                  (click)="moveWorksOrderDetailRow(false, dataItem)">Move Up</a>
+                <a class="dropdown-item" href="javascript:void(0)"
+                  (click)="moveWorksOrderDetailRow(true, dataItem)">Move Down</a>
+                <a class="dropdown-item" href="javascript:void(0)" (click)="openConfirmationDialog(dataItem)">Delete</a>
+                <a class="dropdown-item" href="javascript:void(0)"
+                  (click)="openAddAssetWorkOrders(1, dataItem)">Asset(s)</a>
+                <a class="dropdown-item" href="javascript:void(0)" (click)="openAssetDetail(dataItem)">Asset Details</a>
               </div>
             </li>
 
@@ -226,8 +233,9 @@
         <kendo-treelist-column field="wprstatus" title="Status" [width]="120"></kendo-treelist-column>
         <kendo-treelist-column field="woaworkaccess" title="Work Access" [width]="180"></kendo-treelist-column>
 
-        <kendo-treelist-column field="targetdateobj" title="Target Date" [width]="130" filter="date" format="{0:dd-M-yyyy}">
-          <ng-template kendoTreeListFilterMenuTemplate  let-filter let-column="column" let-filterService="filterService">
+        <kendo-treelist-column field="targetdateobj" title="Target Date" [width]="130" filter="date"
+          format="{0:dd-M-yyyy}">
+          <ng-template kendoTreeListFilterMenuTemplate let-filter let-column="column" let-filterService="filterService">
             <date-range-treelist-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
             </date-range-treelist-filter>
           </ng-template>
@@ -239,7 +247,7 @@
           </ng-template>
         </kendo-treelist-column>
         <kendo-treelist-column field="woacompletiondateobj" title="Completion Date" [width]="150">
-          <ng-template kendoTreeListFilterMenuTemplate  let-filter let-column="column" let-filterService="filterService">
+          <ng-template kendoTreeListFilterMenuTemplate let-filter let-column="column" let-filterService="filterService">
             <date-range-treelist-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
             </date-range-treelist-filter>
           </ng-template>
@@ -306,7 +314,7 @@
           </ng-template>
         </kendo-treelist-column>
         <kendo-treelist-column field="planstartdateobj" title="Plan Start Date" [width]="150">
-          <ng-template kendoTreeListFilterMenuTemplate  let-filter let-column="column" let-filterService="filterService">
+          <ng-template kendoTreeListFilterMenuTemplate let-filter let-column="column" let-filterService="filterService">
             <date-range-treelist-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
             </date-range-treelist-filter>
           </ng-template>
@@ -317,7 +325,7 @@
           </ng-template>
         </kendo-treelist-column>
         <kendo-treelist-column field="planenddateobj" title="Plan End Date" [width]="150">
-          <ng-template kendoTreeListFilterMenuTemplate  let-filter let-column="column" let-filterService="filterService">
+          <ng-template kendoTreeListFilterMenuTemplate let-filter let-column="column" let-filterService="filterService">
             <date-range-treelist-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
             </date-range-treelist-filter>
           </ng-template>
@@ -383,7 +391,7 @@
 
         <div class="pull-right footerButton footerSec">
           <button (click)="closeHiearchyWindow()" class="btn btn-sm">Cancel</button>
-          <button class="btn btn-sm btn-default themeButton" (click)="setHiearchyValues()">Ok</button>
+          <button class="btn btn-sm btn-default themeButton ml-1" (click)="setHiearchyValues()">Ok</button>
 
         </div>
 
@@ -400,444 +408,18 @@
   </app-worksorders-asset-checklist>
 
   <app-worksorders-new-phase *ngIf="newPhasewindow" [newPhasewindow]="newPhasewindow" [phaseFormMode]="phaseFormMode"
-    [selectedParentRow]="selectedParentRow" [worksOrderData]="worksOrderData" (closeNewphaseEvent)="closeNewphaseEvent($event)">
+    [selectedParentRow]="selectedParentRow" [worksOrderData]="worksOrderData"
+    (closeNewphaseEvent)="closeNewphaseEvent($event)" (refreshWorkOrderDetails)="refreshGrid($event)">
   </app-worksorders-new-phase>
 
   <app-worksorders-package-mapping *ngIf="packageMappingWindow" [packageMappingWindow]="packageMappingWindow"
     (closePackageMappingEvent)="cloasePackageMappingWindow($event)"></app-worksorders-package-mapping>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  <!-- <div class="example-wrapper1">
-  <kendo-window title="Packages" [(width)]="windowWidth" [top]="20" [minWidth]="250" *ngIf="elmGrpWindow" (close)="closeElmGrpWin()">
-    <div class="packagePopup">
-      
-        <kendo-grid
-            [kendoGridBinding]="gridPackageView"
-            kendoGridSelectBy="id"
-            [selectedKeys]="mySelection"
-            [pageSize]="20"
-            [pageable]="true"
-            [skip]="state.skip"
-            [sort]="state.sort"
-            [filter]="state.filter"
-            filterable="menu"
-            [sortable]="true"
-            [groupable]="false"
-            [reorderable]="true"
-            [resizable]="true"
-            [height]="480"
-        >
-
-           
-                <kendo-grid-column field="code" title="Code" [width]="220">
-                    
-                </kendo-grid-column>
-           
-                <kendo-grid-column field="name" title="Name" [width]="130">
-                </kendo-grid-column>
-                <kendo-grid-column field="description" title="Description" [width]="200">
-                </kendo-grid-column>
-                <kendo-grid-column field="stage" title="Stage - Checklist" [width]="200">
-                </kendo-grid-column>
-
-        </kendo-grid>
-
-    </div>
-  </kendo-window>
-</div>
-
-<div class="example-wrapper">
-  <kendo-window title="Phase Work Asset Name" [(width)]="windowWidth" [top]="20" [minWidth]="250" *ngIf="pwanWindow" (close)="closeAssets('work-name')">
-      <div class="groupPopup">
-        <form #newPhaseForm="ngForm">
-          <div class="form-group">
-            <label for="name">Please enter a name for the new 'Phase Work' asset:</label>
-            <input type="text" class="form-control form-control-sm" name="">
-          </div>
-          <div class="form-group text-right">
-              <button class="btn btn-sm themeButton mr-2">Ok</button>
-              <button class="btn btn-sm btn-default" (click)="closeAssets('work-name')">Cancel</button>
-          </div>
-        </form>
-      </div>
-  </kendo-window>
-  <kendo-window title="Add Asset(s) from Work list" [(width)]="windowWidth" [top]="20" [minWidth]="250" *ngIf="addAssetFromWlWindow" (close)="closeAssets('work-list')">
-      <div class="groupPopup">
-        <form #newPhaseForm="ngForm">
-            <div class="groupDiv col-md-12 col-sm-12 col-xs-12">
-              
-              <div class="form-group form-row">
-                <div class="col-md-2">
-                    <label for="name">Phase:</label>
-                </div>
-                <div class="col-md-2">
-                    <input type="text" name="Name" class="form-control form-control-sm" value="PhaseOne" readonly="true">
-                </div>
-                <div class="col-md-2">
-                    <label for="name">Phase Budget:</label>
-                </div>
-                <div class="col-md-2">
-                    <input type="text" name="Name" readonly="true" class="form-control form-control-sm" value="£10,000.00">
-                </div>
-                <div class="col-md-2">
-                    <label for="name">Phase Available Budget:</label>
-                </div>
-                <div class="col-md-2">
-                    <input type="text" name="Name" class="form-control form-control-sm" value="£2,900.00" readonly="true">
-                </div>
-              </div>
-
-              <div class="form-group form-row">
-                <div class="col-md-2">
-                    <label for="name">Asset(s) Selected:</label>
-                </div>
-                <div class="col-md-2">
-                    <input type="text" name="Name" class="form-control form-control-sm" value="0" readonly="true">
-                </div>
-                <div class="col-md-2">
-                    <label for="name">Assets Checklist Cost:</label>
-                </div>
-                <div class="col-md-2">
-                    <input type="text" name="Name" readonly="true" class="form-control form-control-sm" value="£50.00">
-                </div>
-                <div class="col-md-2">
-                    <label for="name">Required Budget:</label>
-                </div>
-                <div class="col-md-2">
-                    <input type="text" name="Name" class="form-control form-control-sm" value="£0.00" readonly="true">
-                </div>
-              </div>
-
-              <div class="form-row mt-2 hiearchyDiv">
-                  <label class="col-sm-12 col-md-1">WL Tag:</label>
-
-                  <div class="col-sm-12 col-md-4 pl-0 hiearchyTree">
-                    <input type="text" name="" class="form-control form-control-sm">
-                  </div>
-                  <label class="col-sm-12 col-md-1">Hierarchy</label>
-                  <div class="col-sm-12 col-md-4 pl-0 hiearchyTree">
-                    <ul id="myUL">
-                    </ul>
-                  </div>
-
-                  <div class="hiearchyBtn col-md-2 p-0">
-                    <button type="button" class="btn btn-sm">...</button>
-                    <button type="button" class="btn btn-sm ml-2">Clear</button>
-                  </div>
-              </div>
-
-              <div class="form-row mt-2 hiearchyDiv">
-                  <label class="col-sm-12 col-md-1">Asset Id:</label>
-                  <div class="col-sm-12 col-md-3 pl-0 hiearchyTree">
-                    <input type="text" name="" class="form-control form-control-sm">
-                  </div>
-                  <label class="col-sm-12 col-md-1">Address:</label>
-                  <div class="col-sm-12 col-md-3 pl-0 hiearchyTree">
-                    <input type="text" name="" class="form-control form-control-sm">
-                  </div>
-                  <label class="col-sm-12 col-md-2">Plan Year:</label>
-                  <div class="col-sm-12 col-md-1 pl-0 hiearchyTree">
-                    <input type="text" name="" class="form-control form-control-sm">
-                  </div>
-                  <div class="col-md-1">
-                    <button type="button" class="btn btn-sm ml-2">Search</button>
-                  </div>
-              </div>
-            </div>
-          </form>
-
-
-          <kendo-grid
-            [kendoGridBinding]="gridAssetsView"
-            kendoGridSelectBy="id"
-            [selectedKeys]="mySelection"
-            [pageSize]="20"
-            [pageable]="true"
-            [skip]="state.skip"
-            [sort]="state.sort"
-            [filter]="state.filter"
-            filterable="menu"
-            [sortable]="true"
-            [groupable]="false"
-            [reorderable]="true"
-            [resizable]="true"
-            [height]="380"
-        >
-
-                <kendo-grid-checkbox-column
-                    [width]="45"
-                    [headerClass]="{'text-center': true}"
-                    [class]="{'text-center': true}"
-                    [resizable]="false"
-                    [columnMenu]="false"
-                    showSelectAll="true"
-                ></kendo-grid-checkbox-column>
-
-                <kendo-grid-column field="asset_id" title="Asset Id" [width]="220">
-                    
-                </kendo-grid-column>
-           
-                <kendo-grid-column field="address" title="Address" [width]="130">
-                </kendo-grid-column>
-
-                <kendo-grid-column field="address" title="Work Cost" [width]="130">
-                </kendo-grid-column>
-
-                <kendo-grid-column field="address" title="Work Package" [width]="130">
-                </kendo-grid-column>
-
-                <kendo-grid-column field="address" title="Work Package Name" [width]="130">
-                </kendo-grid-column>
-
-                <kendo-grid-column field="address" title="Element" [width]="130">
-                </kendo-grid-column>
-
-                <kendo-grid-column field="address" title="Description" [width]="130">
-                </kendo-grid-column>
-
-                <kendo-grid-column field="address" title="Plan Year" [width]="130">
-                </kendo-grid-column>
-
-                <kendo-grid-column field="address" title="Contractor" [width]="130">
-                </kendo-grid-column>
-
-                <kendo-grid-column field="property_status" title="Contractor Code" [width]="200">
-                </kendo-grid-column>
-                <kendo-grid-column field="right_to_buy" title="Checklist Name" [width]="200">
-                </kendo-grid-column>
-
-                <kendo-grid-column field="right_to_buy" title="WL Tag" [width]="200">
-                </kendo-grid-column>
-        </kendo-grid>
-
-
-        </div>
-  </kendo-window>
-
-  <kendo-window title="Add Asset(s) to Workes Order" [(width)]="windowWidth" [top]="20" [minWidth]="250" *ngIf="assetWindow" (close)="closeAssets('assets')">
-      <div class="groupPopup">
-        <form #newPhaseForm="ngForm">
-            <div class="groupDiv col-md-12 col-sm-12 col-xs-12">
-              <div class="form-group form-row">
-                <div class="col-md-2">
-                    <label for="name">Phase:</label>
-                </div>
-                <div class="col-md-2">
-                    <input type="text" name="Name" class="form-control form-control-sm" value="PhaseOne" readonly="true">
-                </div>
-                <div class="col-md-2">
-                    <label for="name">Phase Budget:</label>
-                </div>
-                <div class="col-md-2">
-                    <input type="text" name="Name" readonly="true" class="form-control form-control-sm" value="£10,000.00">
-                </div>
-                <div class="col-md-2">
-                    <label for="name">Phase Available Budget:</label>
-                </div>
-                <div class="col-md-2">
-                    <input type="text" name="Name" class="form-control form-control-sm" value="£2,900.00" readonly="true">
-                </div>
-              </div>
-
-              <div class="form-group form-row">
-                <div class="col-md-2">
-                    <label for="name">Asset(s) Selected:</label>
-                </div>
-                <div class="col-md-2">
-                    <input type="text" name="Name" class="form-control form-control-sm" value="0" readonly="true">
-                </div>
-                <div class="col-md-2">
-                    <label for="name">Assets Checklist Cost:</label>
-                </div>
-                <div class="col-md-2">
-                    <input type="text" name="Name" readonly="true" class="form-control form-control-sm" value="£50.00">
-                </div>
-                <div class="col-md-2">
-                    <label for="name">Required Budget:</label>
-                </div>
-                <div class="col-md-2">
-                    <input type="text" name="Name" class="form-control form-control-sm" value="£0.00" readonly="true">
-                </div>
-              </div>
-
-
-              <div class="row mt-2 hiearchyDiv">
-                  <label class="col-sm-12 col-md-2">Hierarchy</label>
-                  <div class="col-sm-12 col-md-8 pl-0 hiearchyTree">
-                    <ul id="myUL">
-                    </ul>
-                  </div>
-
-                  <div class="hiearchyBtn col-md-2 p-0">
-                    <button type="button" class="btn btn-sm">...</button>
-                    <button type="button" class="btn btn-sm ml-2">Clear</button>
-                  </div>
-              </div>
-            </div>
-          </form>
-
-          
-
-          <kendo-grid
-            [kendoGridBinding]="gridAssetsView"
-            kendoGridSelectBy="id"
-            [selectedKeys]="mySelection"
-            [pageSize]="20"
-            [pageable]="true"
-            [skip]="state.skip"
-            [sort]="state.sort"
-            [filter]="state.filter"
-            filterable="menu"
-            [sortable]="true"
-            [groupable]="false"
-            [reorderable]="true"
-            [resizable]="true"
-            [height]="480"
-        >
-        <ng-template kendoGridToolbarTemplate>
-
-
-          <div class="form-row asset_searchbar">
-            <div class="col-md-2">
-              <label>Windcard Address: </label>
-            </div>
-            <div class="col-md-6">
-              <input placeholder="Search in all columns..." kendoTextBox (input)="onFilter($event.target.value)" class="form-control form-control-sm" />
-            </div>
-            <div class="col-md-2">
-              <label>Assets Type</label>
-            </div>
-            <div class="col-md-2">
-              <div class="input-group">
-                <select class="form-control form-control-sm">
-                  <option>All Type</option>
-                  <option>Area</option>
-                  <option>Block</option>
-                </select>
-                <div class="input-group-append">
-                  <button class="input-group-text btn-default btn-xs">Search</button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          
-
-        </ng-template>
-                <kendo-grid-checkbox-column
-                    [width]="45"
-                    [headerClass]="{'text-center': true}"
-                    [class]="{'text-center': true}"
-                    [resizable]="false"
-                    [columnMenu]="false"
-                    showSelectAll="true"
-                ></kendo-grid-checkbox-column>
-
-                <kendo-grid-column field="asset_id" title="Asset Id" [width]="220">
-                    
-                </kendo-grid-column>
-           
-                <kendo-grid-column field="address" title="Address" [width]="130">
-                </kendo-grid-column>
-                <kendo-grid-column field="property_status" title="Property Status" [width]="200">
-                </kendo-grid-column>
-                <kendo-grid-column field="right_to_buy" title="Right to Buy" [width]="200">
-                </kendo-grid-column>
-
-        </kendo-grid>
-      </div>
-  </kendo-window>
-</div>
-
-<div class="example-wrapper">
-
-  <kendo-window title="New Phase" [(width)]="windowWidth" [top]="20" [minWidth]="250" *ngIf="dialogOpened" (close)="closePopup()">
-    <div class="groupPopup">
-      <form (ngSubmit)="onSubmit()" #newPhaseForm="ngForm">
-        <div class="groupDiv col-md-12 col-sm-12 col-xs-12">
-          <div class="form-group form-row">
-            <div class="col-md-2">
-                <label for="name">Name:</label>
-            </div>
-            <div class="col-md-4">
-                <input type="text" name="Name" required class="form-control form-control-sm" placeholder="Name">
-            </div>
-            <div class="col-md-2">
-                <label for="name">Active/Inactive:</label>
-            </div>
-            <div class="col-md-4">
-                <select class="form-control form-control-sm" disabled="disabled">
-                    <option>Active</option>
-                    <option>Inactive</option>
-                </select>
-
-            </div>
-          </div>
-          <div class="form-group form-row">
-            <div class="col-md-2">
-              <label for="description">Description:</label>
-            </div>
-            <div class="col-md-10">
-              <input type="text" name="groupDescription" required
-               class="form-control form-control-sm" id="description" placeholder="Description">
-             
-            </div>
-          </div>
-          <div class="form-group form-row">
-            <div class="col-md-2">
-              <label for="name">Status:</label>
-            </div>
-            <div class="col-md-4">
-              <select class="form-control form-control-sm" disabled="disabled">
-                    <option>New</option>
-                    <option>Old</option>
-              </select>
-            </div>
-            <div class="col-md-2">
-              <label for="name">Budget:</label>
-            </div>
-            <div class="col-md-4">
-              <input type="text" name="" class="form-control form-control-sm" placeholder="$0.00">
-            </div>
-          </div>
-          <div class="form-group form-row">
-            <div class="col-md-2">
-              <label for="name">Target Date:</label>
-            </div>
-            <div class="col-md-4">
-              <input type="date" name="" class="form-control form-control-sm" placeholder="$0.00">
-            </div>
-          </div>
-        
-
-          <div class="formBtn text-right mt-0">
-            <button type="button" (click)="closePopup();" class="btn btn-sm">Cancel</button>
-            <button type="submit" [disabled]="!newPhaseForm.form.valid" class="btn btn-sm newBtn">Ok</button>
-          </div>
-        </div>
-      </form>
-
-    </div>
-  </kendo-window>
-
-
-</div> -->
+  <app-worksorders-add-assets *ngIf="addAssetWindow" [addAssetWindow]="addAssetWindow"
+    [selectedChildRow]="selectedChildRow" [selectedParentRow]="selectedParentRow"
+    (closeAddAssetEvent)="closeAddAssetWindow($event)"></app-worksorders-add-assets>
+
+  <app-worksorders-asset-detail *ngIf="assetDetailWindow" [assetDetailWindow]="assetDetailWindow"
+    [selectedChildRow]="selectedChildRow" [selectedParentRow]="selectedParentRow"
+    (closeAssetDetailEvent)="closeAssetDetailWindow($event)">
+  </app-worksorders-asset-detail>
