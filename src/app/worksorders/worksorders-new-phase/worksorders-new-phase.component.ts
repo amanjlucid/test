@@ -143,8 +143,6 @@ export class WorksordersNewPhaseComponent implements OnInit {
 
     this.chRef.detectChanges();
 
-    
-
   }
 
   ngOnDestroy() {

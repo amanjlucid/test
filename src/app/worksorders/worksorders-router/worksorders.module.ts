@@ -23,6 +23,7 @@ import { WorksordersNewPhaseComponent } from '../worksorders-new-phase/worksorde
 import { WorksordersPackageMappingComponent } from '../worksorders-package-mapping/worksorders-package-mapping.component';
 import { WorksordersAddAssetsComponent } from '../worksorders-add-assets/worksorders-add-assets.component';
 import { WorksordersAssetDetailComponent } from '../worksorders-asset-detail/worksorders-asset-detail.component';
+import { WorksordersAddAssetsworklistComponent } from '../worksorders-add-assetsworklist/worksorders-add-assetsworklist.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,8 @@ import { WorksordersAssetDetailComponent } from '../worksorders-asset-detail/wor
     WorksordersNewPhaseComponent,
     WorksordersPackageMappingComponent,
     WorksordersAddAssetsComponent,
-    WorksordersAssetDetailComponent
+    WorksordersAssetDetailComponent,
+    WorksordersAddAssetsworklistComponent
   ],
 
   imports: [

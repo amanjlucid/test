@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { appConfig } from '../../app.config';
-
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Injectable()
 export class WorksorderManagementService {
@@ -63,29 +64,44 @@ export class WorksorderManagementService {
         return this.http.get<any>(`${appConfig.apiUrl}/api/WorkordersPortal/GetWorksOrderByWOsequence?WOSequence=${WOSequence}`, this.httpOptions);
     }
 
-    addWorksOrderPhase(params){
+    addWorksOrderPhase(params) {
         let body = JSON.stringify(params);
         return this.http.post<any>(`${appConfig.apiUrl}/api/WorkOrderDetails/InsertWorksOrderPhase`, body, this.httpOptions)
     }
 
-    updateWorksOrderPhase(params){
+    updateWorksOrderPhase(params) {
         let body = JSON.stringify(params);
         return this.http.post<any>(`${appConfig.apiUrl}/api/WorkOrderDetails/UpdateWorksOrderPhase`, body, this.httpOptions)
     }
 
-    getPhase(WOSEQUENCE, WOPSEQUENCE){
+    getPhase(WOSEQUENCE, WOPSEQUENCE) {
         return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWorksOrderPhase?WOSEQUENCE=${WOSEQUENCE}&WOPSEQUENCE=${WOPSEQUENCE}`, this.httpOptions);
 
     }
 
-    deletePhase(params){
+    deletePhase(params) {
         let body = JSON.stringify(params);
         return this.http.post<any>(`${appConfig.apiUrl}/api/WorkOrderDetails/DeleteWorkOrderPhase`, body, this.httpOptions)
     }
 
-    phaseUpDown(WOSEQUENCE, WOPDISPSEQ, nextPrev){
+    phaseUpDown(WOSEQUENCE, WOPDISPSEQ, nextPrev) {
         return this.http.get<any>(`${appConfig.apiUrl}/api/WorkOrderDetails/PhaseUpDown?WOSEQUENCE=${WOSEQUENCE}&WOPDISPSEQ=${WOPDISPSEQ}&nextPrev=${nextPrev}`, this.httpOptions);
     }
 
+
+    getWorkOrderAsset(params): Observable<any> {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WorkOrderAsset `, body, this.httpOptions).pipe(
+            map(response => (<any>{
+                data: (response.data != null) ? response.data.assetsViews : [],
+                total: (response.data != null) ? response.data.totalCount : 0
+            }))
+        );
+    }
+
+    addWorksOrderAssets(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/AddWorksOrderAssets`, body, this.httpOptions)
+    }
 
 }

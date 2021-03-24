@@ -53,6 +53,7 @@ export class WorksordersDetailsComponent implements OnInit {
   assetchecklistWindow = false;
   selectedChildRow: any;
   selectedParentRow: any;
+  actualSelectedRow:any;
 
   newPhasewindow = false;
   phaseFormMode = 'new';
@@ -60,6 +61,7 @@ export class WorksordersDetailsComponent implements OnInit {
   packageMappingWindow = false;
 
   addAssetWindow = false;
+  addAssetWorklistWindow = false;
 
   assetDetailWindow = false;
 
@@ -77,7 +79,7 @@ export class WorksordersDetailsComponent implements OnInit {
 
   ngOnInit() {
     //update notification on top
-    //this.helperService.updateNotificationOnTop(); // Common service for all routing page
+    this.helperService.updateNotificationOnTop(); // Common service for all routing page
 
     //subscribe for worksorders data
     this.subs.add(
@@ -143,7 +145,7 @@ export class WorksordersDetailsComponent implements OnInit {
     this.subs.add(
       this.worksorderManagementService.getWorkOrderDetails(this.workorderDetailModel).subscribe(
         data => {
-          console.log(data);
+          // console.log(data);
           if (data.isSuccess) {
             let gridData = [];
             let tempData = [...data.data];
@@ -324,11 +326,6 @@ export class WorksordersDetailsComponent implements OnInit {
 
   //##################### hierarchy function end ######################################//
 
-  // openElmGrpWin(action) {
-  //   // $('.bgblur').addClass('ovrlay');
-  //   // this.elmGrpWindow = true;
-  // }
-
   slideToggle() {
     this.filterToggle = !this.filterToggle;
     $('.worksorder-header').slideToggle();
@@ -415,7 +412,7 @@ export class WorksordersDetailsComponent implements OnInit {
     this.subs.add(
       this.worksorderManagementService.phaseUpDown(item.wosequence, item.wopdispseq, move).subscribe(
         data => {
-          console.log(data);
+          // console.log(data);
           if (data.isSuccess) this.refreshGrid(true);
           // this.alertService.success(data.message);
         },
@@ -425,6 +422,7 @@ export class WorksordersDetailsComponent implements OnInit {
   }
 
   openAddAssetWorkOrders(workOrderType, item) {
+    this.actualSelectedRow = item;
     this.addAssetWindow = true;
     $('.worksOrderDetailOvrlay').addClass('ovrlay');
   }
@@ -432,6 +430,18 @@ export class WorksordersDetailsComponent implements OnInit {
 
   closeAddAssetWindow(eve) {
     this.addAssetWindow = eve;
+    $('.worksOrderDetailOvrlay').removeClass('ovrlay');
+  }
+
+  openAddAssetWorkOrdersList(workOrderType, item) {
+    this.actualSelectedRow = item;
+    this.addAssetWorklistWindow = true;
+    $('.worksOrderDetailOvrlay').addClass('ovrlay');
+  }
+
+
+  closeAddAssetWorkordersListWindow(eve) {
+    this.addAssetWorklistWindow = eve;
     $('.worksOrderDetailOvrlay').removeClass('ovrlay');
   }
 

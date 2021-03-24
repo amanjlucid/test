@@ -203,15 +203,31 @@
             <li *ngIf="dataItem.treelevel == 2" class="nav-item dropdown list-unstyled" style="margin-top: -7px;">
               <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
               <div class="dropdown-menu">
-                <a class="dropdown-item" href="javascript:void(0)">New</a>
                 <a class="dropdown-item" href="javascript:void(0)" (click)="openNewphase('edit', dataItem)">Edit</a>
-                <a class="dropdown-item" href="javascript:void(0)"
-                  (click)="moveWorksOrderDetailRow(false, dataItem)">Move Up</a>
-                <a class="dropdown-item" href="javascript:void(0)"
-                  (click)="moveWorksOrderDetailRow(true, dataItem)">Move Down</a>
+
+                <div class="dropdown-toggle">
+                  <div class="dropdown-item">Move</div>
+                  <div class="dropdown-menu">
+                    <a class="dropdown-item" (click)="moveWorksOrderDetailRow(false, dataItem)"
+                      href="javascript:void(0)">Move Up</a>
+                    <a class="dropdown-item" href="javascript:void(0)"
+                      (click)="moveWorksOrderDetailRow(true, dataItem)">Move Down</a>
+
+                  </div>
+                </div>
+
                 <a class="dropdown-item" href="javascript:void(0)" (click)="openConfirmationDialog(dataItem)">Delete</a>
-                <a class="dropdown-item" href="javascript:void(0)"
-                  (click)="openAddAssetWorkOrders(1, dataItem)">Asset(s)</a>
+                <div class="dropdown-toggle">
+                  <div class="dropdown-item">Add Asset(s)</div>
+                  <div class="dropdown-menu">
+                    <a class="dropdown-item" (click)="openAddAssetWorkOrders(1, dataItem)" href="javascript:void(0)">
+                      Asset(s)</a>
+                    <a class="dropdown-item" (click)="openAddAssetWorkOrdersList(1, dataItem)"
+                      href="javascript:void(0)">Asset(s) From Work List</a>
+
+                  </div>
+                </div>
+
                 <a class="dropdown-item" href="javascript:void(0)" (click)="openAssetDetail(dataItem)">Asset Details</a>
               </div>
             </li>
@@ -416,8 +432,13 @@
     (closePackageMappingEvent)="cloasePackageMappingWindow($event)"></app-worksorders-package-mapping>
 
   <app-worksorders-add-assets *ngIf="addAssetWindow" [addAssetWindow]="addAssetWindow"
-    [selectedChildRow]="selectedChildRow" [selectedParentRow]="selectedParentRow"
-    (closeAddAssetEvent)="closeAddAssetWindow($event)"></app-worksorders-add-assets>
+    [actualSelectedRow]="actualSelectedRow" (closeAddAssetEvent)="closeAddAssetWindow($event)"
+    (refreshWorkOrderDetails)="refreshGrid($event)">
+  </app-worksorders-add-assets>
+
+  <app-worksorders-add-assetsworklist *ngIf="addAssetWorklistWindow" [addAssetWorklistWindow]="addAssetWorklistWindow"
+    [actualSelectedRow]="actualSelectedRow" (closeAddAssetWorkListEvent)="closeAddAssetWorkordersListWindow($event)"
+    (refreshWorkOrderDetails)="refreshGrid($event)"></app-worksorders-add-assetsworklist>
 
   <app-worksorders-asset-detail *ngIf="assetDetailWindow" [assetDetailWindow]="assetDetailWindow"
     [selectedChildRow]="selectedChildRow" [selectedParentRow]="selectedParentRow"

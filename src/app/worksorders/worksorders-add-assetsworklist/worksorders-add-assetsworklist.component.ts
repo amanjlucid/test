@@ -8,15 +8,14 @@ import { tap, switchMap} from 'rxjs/operators';
 import { BehaviorSubject } from 'rxjs';
 
 @Component({
-  selector: 'app-worksorders-add-assets',
-  templateUrl: './worksorders-add-assets.component.html',
-  styleUrls: ['./worksorders-add-assets.component.css'],
+  selector: 'app-worksorders-add-assetsworklist',
+  templateUrl: './worksorders-add-assetsworklist.component.html',
+  styleUrls: ['./worksorders-add-assetsworklist.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None
 })
 
-export class WorksordersAddAssetsComponent implements OnInit {
-
+export class WorksordersAddAssetsworklistComponent implements OnInit {
   //hierarchy
   printHiearchy: any;
   visitedHierarchy: any[] = [];
@@ -27,8 +26,8 @@ export class WorksordersAddAssetsComponent implements OnInit {
   hiearchyWindow = false;
   //hierarchy variable ends here
 
-  @Input() addAssetWindow: boolean = false;
-  @Output() closeAddAssetEvent = new EventEmitter<boolean>();
+  @Input() addAssetWorklistWindow: boolean = false;
+  @Output() closeAddAssetWorkListEvent = new EventEmitter<boolean>();
   @Output() refreshWorkOrderDetails = new EventEmitter<boolean>();
   @Input() actualSelectedRow: any;
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
@@ -36,7 +35,7 @@ export class WorksordersAddAssetsComponent implements OnInit {
 
   readonly = true;
   assetTypes: any;
-  title = 'Add Asset(s) to Works Order';
+  title = 'Add Assets from Work List';
   headerFilters: WorkordersAddAssetModel = new WorkordersAddAssetModel()
   public query: any;
   private stateChange = new BehaviorSubject<any>(this.headerFilters);
@@ -110,8 +109,8 @@ export class WorksordersAddAssetsComponent implements OnInit {
   }
 
   closeAddAssetWindow() {
-    this.addAssetWindow = false;
-    this.closeAddAssetEvent.emit(this.addAssetWindow);
+    this.addAssetWorklistWindow = false;
+    this.closeAddAssetWorkListEvent.emit(this.addAssetWorklistWindow);
   }
 
   setSelectableSettings(): void {
