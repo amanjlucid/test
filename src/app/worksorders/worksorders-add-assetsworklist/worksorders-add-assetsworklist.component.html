@@ -134,7 +134,7 @@
                 <kendo-grid-checkbox-column width="40">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <input (click)="selectionChange(dataItem)" class="k-checkbox" type="checkbox"
-                            *ngIf="dataItem.alreadyInWorksOrderAssetDetail == 'N'">
+                            *ngIf="dataItem.alreadyInWorksOrderAssetDetail == 'N' && dataItem.woChecklistMatchCount  == 1">
                     </ng-template>
                 </kendo-grid-checkbox-column>
 
@@ -218,8 +218,6 @@
                 </kendo-grid-column>
                 <kendo-grid-column field="wlttagcode" title="WL Tag" width="110" [filterable]="false">
                 </kendo-grid-column>
-
-
 
             </kendo-grid>
 

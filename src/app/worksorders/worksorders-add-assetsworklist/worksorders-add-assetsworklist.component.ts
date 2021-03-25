@@ -74,6 +74,9 @@ export class WorksordersAddAssetsworklistComponent implements OnInit {
     console.log(this.actualSelectedRow)
     this.headerFilters.wopsequence = this.actualSelectedRow.wopsequence;
     this.headerFilters.wosequence = this.actualSelectedRow.wosequence;
+    if (this.actualSelectedRow.treelevel == 3) {
+      this.headerFilters.wlassid = this.actualSelectedRow.assid
+    }
 
     this.subs.add(
       forkJoin([
@@ -114,23 +117,6 @@ export class WorksordersAddAssetsworklistComponent implements OnInit {
         }
       )
     )
-
-
-    // this.worksorderManagementService.getWorksOrderByWOsequence(this.actualSelectedRow.wosequence).subscribe(
-    //   data => {
-    //     console.log(data);
-    //     if (data.isSuccess) {
-    //       this.worksOrder = data.data;
-
-    //       this.headerFilters.wopsequence = this.actualSelectedRow.wopsequence;
-    //       this.headerFilters.wosequence = this.actualSelectedRow.wosequence;
-
-
-
-    //     }
-    //   }
-    // )
-
 
   }
 
@@ -256,9 +242,12 @@ export class WorksordersAddAssetsworklistComponent implements OnInit {
     this.headerFilters.astconcataddress = '';
     this.headerFilters.hittypecode = '';
     this.headerFilters.ownassid = '';
-    this.headerFilters.wlassid = '';
     this.headerFilters.astconcataddress = '';
     this.headerFilters.wlttagcode = '';
+    this.headerFilters.wlassid = '';
+    this.headerFilters.wlcomppackage = '';
+    this.headerFilters.elecode = ''
+
   }
 
   pageChange(state: PageChangeEvent): void {
@@ -267,6 +256,12 @@ export class WorksordersAddAssetsworklistComponent implements OnInit {
   }
 
   searchGrid() {
+    if (this.actualSelectedRow.treelevel == 3) {
+      if (this.headerFilters.wlassid == "") {
+        this.headerFilters.wlassid = this.actualSelectedRow.assid;
+      }
+    } 
+    
     this.headerFilters.CurrentPage = 0;
     this.state.skip = 0;
     this.stateChange.next(this.headerFilters);

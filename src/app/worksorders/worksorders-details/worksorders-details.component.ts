@@ -149,7 +149,7 @@ export class WorksordersDetailsComponent implements OnInit {
     this.subs.add(
       this.worksorderManagementService.getWorkOrderDetails(this.workorderDetailModel).subscribe(
         data => {
-          // console.log(data);
+          console.log(data);
           if (data.isSuccess) {
             let gridData = [];
             let tempData = [...data.data];
