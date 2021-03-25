@@ -64,7 +64,7 @@
       <kendo-grid [kendoGridGroupBinding]="worksOrderData" [pageSize]="30" scrollable="virtual" [rowHeight]="36"
         [height]="680" [loading]="loading" filterable="menu" [resizable]="true" [sortable]="{
     allowUnsort: true, mode: 'single'}" [skip]="state.skip" [sort]="state.sort" [selectable]="selectableSettings"
-        [filter]="state.filter" (cellClick)="cellClickHandler($event)" [navigable]="false" [virtualColumns]="true">
+        [filter]="state.filter" (cellClick)="cellClickHandler($event)" [navigable]="false" [virtualColumns]="true" [rowClass]="rowCallback">
 
 
         <kendo-grid-column title=" " width="35" [filterable]="false">

@@ -53,7 +53,7 @@ export class WorksordersDetailsComponent implements OnInit {
   assetchecklistWindow = false;
   selectedChildRow: any;
   selectedParentRow: any;
-  actualSelectedRow:any;
+  actualSelectedRow: any;
 
   newPhasewindow = false;
   phaseFormMode = 'new';
@@ -78,8 +78,11 @@ export class WorksordersDetailsComponent implements OnInit {
 
 
   ngOnInit() {
-    //update notification on top
-    this.helperService.updateNotificationOnTop(); // Common service for all routing page
+    /**
+     * update notification on top
+     * Common service for all routing page
+     **/
+    this.helperService.updateNotificationOnTop();
 
     //subscribe for worksorders data
     this.subs.add(
@@ -111,12 +114,13 @@ export class WorksordersDetailsComponent implements OnInit {
         this.worksorderManagementService.getWorkProgrammesByWprsequence(wprsequence),
         this.worksorderManagementService.GetWEBWorksOrdersUserSecurityByWorksOrders(wprsequence, intWOSEQUENCE, userId),
         this.worksorderManagementService.getWorksOrderByWOsequence(intWOSEQUENCE),
-        // this.worksorderManagementService.worksOrderGetUnallocPhaseBudget(intWOSEQUENCE),
-        // this.worksorderManagementService.getWorksOrderRepairingCharConfigExt(intWOSEQUENCE),
-        // this.worksorderManagementService.getListOfWorksOrderChecklistForWORK(intWOSEQUENCE),
+
+        this.worksorderManagementService.worksOrderGetUnallocPhaseBudget(intWOSEQUENCE),
+        this.worksorderManagementService.getWorksOrderRepairingCharConfigExt(intWOSEQUENCE),
+        this.worksorderManagementService.getListOfWorksOrderChecklistForWORK(intWOSEQUENCE),
       ]).subscribe(
         data => {
-          // console.log(data)
+          console.log(data)
           const programmeData = data[0];
           const userSecurityByWO = data[1];
           const worksOrderData = data[2];
@@ -412,9 +416,7 @@ export class WorksordersDetailsComponent implements OnInit {
     this.subs.add(
       this.worksorderManagementService.phaseUpDown(item.wosequence, item.wopdispseq, move).subscribe(
         data => {
-          // console.log(data);
           if (data.isSuccess) this.refreshGrid(true);
-          // this.alertService.success(data.message);
         },
         err => this.alertService.error(err)
       )
@@ -434,6 +436,9 @@ export class WorksordersDetailsComponent implements OnInit {
   }
 
   openAddAssetWorkOrdersList(workOrderType, item) {
+    if (item.treelevel == 3 && item.wostatus != "New") {
+      return
+    }
     this.actualSelectedRow = item;
     this.addAssetWorklistWindow = true;
     $('.worksOrderDetailOvrlay').addClass('ovrlay');

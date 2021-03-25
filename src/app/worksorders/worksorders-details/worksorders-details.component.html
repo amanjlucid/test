@@ -238,6 +238,14 @@
               <div class="dropdown-menu">
 
                 <a class="dropdown-item" href="javascript:void(0)" (click)="openAssetChecklist()">Asset Checklist</a>
+                <div class="dropdown-toggle">
+                  <div class="dropdown-item">Add Asset(s)</div>
+                  <div class="dropdown-menu">
+                    <a class="dropdown-item" (click)="openAddAssetWorkOrdersList(1, dataItem)"
+                      href="javascript:void(0)" [ngClass]="{'disabled' : dataItem.wostatus != 'New'}">Asset(s) From Work List</a>
+
+                  </div>
+                </div>
               </div>
             </li>
           </ng-template>
@@ -246,7 +254,7 @@
 
         <kendo-treelist-column [expandable]="true" [minResizableWidth]="200" field="woname" title="Name" [width]="250">
         </kendo-treelist-column>
-        <kendo-treelist-column field="wprstatus" title="Status" [width]="120"></kendo-treelist-column>
+        <kendo-treelist-column field="wostatus" title="Status" [width]="120"></kendo-treelist-column>
         <kendo-treelist-column field="woaworkaccess" title="Work Access" [width]="180"></kendo-treelist-column>
 
         <kendo-treelist-column field="targetdateobj" title="Target Date" [width]="130" filter="date"

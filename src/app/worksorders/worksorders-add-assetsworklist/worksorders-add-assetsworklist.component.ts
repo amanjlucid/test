@@ -3,9 +3,9 @@ import { SubSink } from 'subsink';
 import { State, SortDescriptor } from '@progress/kendo-data-query';
 import { SelectableSettings, PageChangeEvent, RowArgs } from '@progress/kendo-angular-grid';
 import { AlertService, AssetAttributeService, ConfirmationDialogService, HelperService, LoaderService, PropertySecurityGroupService, WorksorderManagementService } from 'src/app/_services';
-import { WorkordersAddAssetModel } from '../../_models'
-import { tap, switchMap} from 'rxjs/operators';
-import { BehaviorSubject } from 'rxjs';
+import { WorkordersAddAssetworklistModel } from '../../_models'
+import { tap, switchMap } from 'rxjs/operators';
+import { BehaviorSubject, forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-worksorders-add-assetsworklist',
@@ -36,7 +36,7 @@ export class WorksordersAddAssetsworklistComponent implements OnInit {
   readonly = true;
   assetTypes: any;
   title = 'Add Assets from Work List';
-  headerFilters: WorkordersAddAssetModel = new WorkordersAddAssetModel()
+  headerFilters: WorkordersAddAssetworklistModel = new WorkordersAddAssetworklistModel()
   public query: any;
   private stateChange = new BehaviorSubject<any>(this.headerFilters);
   loading = true
@@ -54,6 +54,8 @@ export class WorksordersAddAssetsworklistComponent implements OnInit {
   selectableSettings: SelectableSettings;
   mySelection: any[] = [];
   zero = 0;
+  worksOrder: any;
+  phaseData: any;
 
   constructor(
     private propSecGrpService: PropertySecurityGroupService,
@@ -69,43 +71,71 @@ export class WorksordersAddAssetsworklistComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // console.log(this.actualSelectedRow)
+    console.log(this.actualSelectedRow)
     this.headerFilters.wopsequence = this.actualSelectedRow.wopsequence;
     this.headerFilters.wosequence = this.actualSelectedRow.wosequence;
 
-    this.getAssetType();
+    this.subs.add(
+      forkJoin([
+        this.assetAttributeService.getAssetTypes(),
+        this.worksorderManagementService.getPhase(this.actualSelectedRow.wosequence, this.actualSelectedRow.wopsequence),
+        this.worksorderManagementService.getWorksOrderByWOsequence(this.actualSelectedRow.wosequence)
+      ]).subscribe(
+        resp => {
+          console.log(resp);
+          const assetType = resp[0];
+          const phase = resp[1];
+          const worksOrder = resp[2];
 
-    this.query = this.stateChange.pipe(
-      tap(state => {
-        this.headerFilters = state;
-        this.loading = true;
-      }),
-      switchMap(state => this.worksorderManagementService.getWorkOrderAsset(state)),
-      tap((res) => {
-        this.totalCount = (res.total != undefined) ? res.total : 0;
-        this.loading = false;
-        this.chRef.detectChanges();
-      })
-    );
+          if (assetType.isSuccess) this.assetTypes = assetType.data;
+          if (phase.isSuccess) this.phaseData = phase.data;
+
+          if (worksOrder.isSuccess) {
+            this.worksOrder = worksOrder.data;
+            this.headerFilters.cttsurcde = this.worksOrder.cttsurcde;
+
+            //get asset from works order
+            this.query = this.stateChange.pipe(
+              tap(state => {
+                this.headerFilters = state;
+                this.loading = true;
+              }),
+              switchMap(state => this.worksorderManagementService.getWorkOrderAssetFromWorklist(state)),
+              tap((res) => {
+                console.log(res);
+                this.totalCount = (res.total != undefined) ? res.total : 0;
+                this.loading = false;
+                this.chRef.detectChanges();
+              })
+            );
+          }
+
+          this.chRef.detectChanges();
+        }
+      )
+    )
+
+
+    // this.worksorderManagementService.getWorksOrderByWOsequence(this.actualSelectedRow.wosequence).subscribe(
+    //   data => {
+    //     console.log(data);
+    //     if (data.isSuccess) {
+    //       this.worksOrder = data.data;
+
+    //       this.headerFilters.wopsequence = this.actualSelectedRow.wopsequence;
+    //       this.headerFilters.wosequence = this.actualSelectedRow.wosequence;
+
+
+
+    //     }
+    //   }
+    // )
 
 
   }
 
   ngOnDestroy() {
     this.subs.unsubscribe();
-  }
-
-  getAssetType() {
-    this.subs.add(
-      this.assetAttributeService.getAssetTypes().subscribe(
-        data => {
-          if (data.isSuccess) {
-            this.assetTypes = data.data;
-            this.chRef.detectChanges();
-          }
-        }
-      )
-    )
   }
 
   closeAddAssetWindow() {
@@ -221,15 +251,14 @@ export class WorksordersAddAssetsworklistComponent implements OnInit {
   }
 
   resetGridFilter() {
-    this.headerFilters.wildcardaddress = '';
-    this.headerFilters.hittypecode = '';
-    this.headerFilters.astcode = '';
-    this.headerFilters.ownassid = '';
-    this.headerFilters.assid = '';
-    this.headerFilters.propertyStatus = '';
+    this.headerFilters.wlplanyear = '';
+    this.headerFilters.wphname = '';
     this.headerFilters.astconcataddress = '';
-    this.headerFilters.rightToBuy = '';
-
+    this.headerFilters.hittypecode = '';
+    this.headerFilters.ownassid = '';
+    this.headerFilters.wlassid = '';
+    this.headerFilters.astconcataddress = '';
+    this.headerFilters.wlttagcode = '';
   }
 
   pageChange(state: PageChangeEvent): void {
@@ -294,7 +323,7 @@ export class WorksordersAddAssetsworklistComponent implements OnInit {
       .catch(() => console.log('Attribute dismissed the dialog.'));
   }
 
-   selectionChange(item) {
+  selectionChange(item) {
     if (this.mySelection.includes(item.assid)) {
       this.mySelection = this.mySelection.filter(x => x != item.assid);
     } else {
@@ -302,7 +331,7 @@ export class WorksordersAddAssetsworklistComponent implements OnInit {
     }
   }
 
- 
+
   //####################### hierarchy function start ####################################//
   getHierarchyTypeList() {
     this.propSecGrpService.getHierarchyTypeList().subscribe(

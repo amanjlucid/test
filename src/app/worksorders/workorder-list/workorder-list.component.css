@@ -4,6 +4,10 @@
     padding: 8px 12px;
 }
 
+.k-grid tr.notNew {
+    background-color: #f8e0dc;
+}
+
 .dropdown.list-unstyled {
     position: absolute !important;
 }
@@ -127,12 +131,10 @@
         width: 40% !important;
         margin-left: 0px !important;
     }
-
-    .filterdiv .filterLbl{
+    .filterdiv .filterLbl {
         width: 38% !important;
-    } 
-
-    .filterdiv input[type=text]{
+    }
+    .filterdiv input[type=text] {
         width: 58% !important;
-    } 
+    }
 }

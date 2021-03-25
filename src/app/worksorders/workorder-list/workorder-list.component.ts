@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { SubSink } from 'subsink';
 import { State } from '@progress/kendo-data-query';
-import { SelectableSettings } from '@progress/kendo-angular-grid';
+import { SelectableSettings, RowClassArgs } from '@progress/kendo-angular-grid';
 import { AlertService, HelperService, SharedService, WorksOrdersService } from '../../_services'
 import { Subject } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -20,7 +20,10 @@ export class WorkorderListComponent implements OnInit {
   subs = new SubSink();
   state: State = {
     skip: 0,
-    sort: [],
+    sort: [{
+      field: 'wosequence',
+      dir: 'desc'
+    }],
     group: [],
     filter: {
       logic: "or",
@@ -135,9 +138,12 @@ export class WorkorderListComponent implements OnInit {
     this.selectedWorksOrder = item;
     this.sharedService.changeWorksOrderSingleData(item);
     localStorage.setItem('worksOrderSingleData', JSON.stringify(item)); // remove code on logout service
-    this.router.navigate(['worksorders/details']);      
+    this.router.navigate(['worksorders/details']);
   }
 
+  rowCallback(context: RowClassArgs) {
+    return { notNew: context.dataItem.wostatus != "New" }
+  }
 
   // public close() {
   //   $('.bgblur').removeClass('ovrlay');

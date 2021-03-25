@@ -104,4 +104,15 @@ export class WorksorderManagementService {
         return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/AddWorksOrderAssets`, body, this.httpOptions)
     }
 
+    getWorkOrderAssetFromWorklist(params): Observable<any> {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/AssetSearchWorkListWod `, body, this.httpOptions).pipe(
+            map(response => (<any>{
+                data: (response.data != null) ? response.data.wODAssestSearchListViews : [],
+                total: (response.data != null) ? response.data.totalCount : 0
+            }))
+        );
+    }
+
+ 
 }
