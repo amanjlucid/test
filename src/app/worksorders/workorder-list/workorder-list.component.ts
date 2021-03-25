@@ -31,11 +31,12 @@ export class WorkorderListComponent implements OnInit {
   worksOrderData: any;
   loading = true;
   selectableSettings: SelectableSettings;
-  userFormWindow = false;
+  woFormWindow = false;
   filterObject: WorkordersListFilterModel;
   searchInGrid$ = new Subject<WorkordersListFilterModel>();
   selectedWorksOrder: any
-  // public userFormWindow = false;
+  selectedWorkOrderAddEdit:any;
+  woFormType = 'new';
   // public windowOpened = false;
 
   constructor(
@@ -110,9 +111,9 @@ export class WorkorderListComponent implements OnInit {
 
   openUserPopup(action, item = null) {
     $('.bgblur').addClass('ovrlay');
-    // this.userFormType = action;
-    // this.selectedUser = item;
-    // this.userFormWindow = true;
+     this.woFormType = action;
+     this.selectedWorkOrderAddEdit = item;
+     this.woFormWindow = true;
   }
 
   resetFilter() {
@@ -135,19 +136,33 @@ export class WorkorderListComponent implements OnInit {
     this.selectedWorksOrder = item;
     this.sharedService.changeWorksOrderSingleData(item);
     localStorage.setItem('worksOrderSingleData', JSON.stringify(item)); // remove code on logout service
-    this.router.navigate(['worksorders/details']);      
+    this.router.navigate(['worksorders/details']);
   }
+
+  redirectToWorksOrderEdit(item) {
+
+    $('.bgblur').addClass('ovrlay');
+     this.woFormType = 'edit';
+     this.selectedWorkOrderAddEdit = item;
+     this.woFormWindow = true;
+
+  }
+
+
+
 
 
   // public close() {
   //   $('.bgblur').removeClass('ovrlay');
   //   this.windowOpened = false;
   // }
-  // closeUserFormWin($event) {
-  //   this.userFormWindow = $event;
-  //   $('.bgblur').removeClass('ovrlay');
-  //   //this.getUserList();
-  // }
+
+
+   closeWoFormWin($event) {
+      this.woFormWindow = $event;
+      $('.bgblur').removeClass('ovrlay');
+      this.getUserWorksOrdersList(this.filterObject);
+   }
 
 
 

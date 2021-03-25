@@ -73,6 +73,7 @@
               <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
               <div class="dropdown-menu">
                 <a class="dropdown-item" href="javascript:void(0)" (click)="redirectToWorksOrder(dataItem)"> Works Order Details</a>
+                <a class="dropdown-item" href="javascript:void(0)" (click)="redirectToWorksOrderEdit(dataItem)">Edit</a>
                 <a class="dropdown-item" href="javascript:void(0)">Defects </a>
                 <a class="dropdown-item" href="javascript:void(0)">Contract Costs</a>
                 <a class="dropdown-item" href="javascript:void(0)">Variations</a>
@@ -258,5 +259,5 @@
 
 
 <div class="worksOrderOverlay"></div>
-<app-workorder-form [userFormType]="userFormType" [userFormWindow]="userFormWindow" [selectedUser]="selectedUser"
-  *ngIf="userFormWindow" (closeUserFormWin)="closeUserFormWin($event)"></app-workorder-form>
+<app-workorder-form [woFormType]="woFormType" [woFormWindow]="woFormWindow" [selectedWorkOrderAddEdit]="selectedWorkOrderAddEdit"
+  *ngIf="woFormWindow" (closeWoFormWin)="closeWoFormWin($event)"></app-workorder-form>

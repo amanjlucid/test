@@ -1,36 +1,44 @@
-<kendo-window title="{{windowTitle}}" [top]="20" height="600" size="auto" [(width)]="windowWidth" [minWidth]="120"
-  *ngIf="userFormWindow" (close)="closeUserFormWindow()">
-  <div class="flex-grow-1 userFrm">
+<kendo-window title="{{windowTitle}}" [top]="20"
+ height="600"  size="auto"  [(width)]="windowWidth" [minWidth]="120" *ngIf="woFormWindow"
+  (close)="closewoFormWindow()">
+  <div class="flex-grow-1 userFrm" >
 
-    <form [formGroup]="userForm" (ngSubmit)="onSubmit()" autocomplete="off">
-
-      <div *ngIf="addStage == 1" class="form-row">
-        <div class="form-group col-md-12">
-          <label class="form-label">Asset Template</label>
-          <select class="custom-select" formControlName="wottemplatetype"
-            [ngClass]="{ 'is-invalid': submitted && formErrors.wottemplatetype }">
-            <option value=""></option>
-            <option *ngFor="let assetTmp of assetTemplateListData" [ngValue]="assetTmp">{{assetTmp}}</option>
-          </select>
-
-          <div *ngIf="submitted && formErrors.wottemplatetype" class="invalid-feedback">
-            <div *ngIf="formErrors.wottemplatetype">{{ formErrors.wottemplatetype }}</div>
-          </div>
-
-        </div>
+    <form  [formGroup]="woForm" (ngSubmit)="onSubmit()" autocomplete="off">
 
 
-        <div class="form-group col-md-12">
-          <label class="form-label">Programme</label>
-          <select class="custom-select" formControlName="woprogram"
-            [ngClass]="{ 'is-invalid': submitted && formErrors.woprogram }">
-            <option value=""></option>
-            <option *ngFor="let program of workOrderProgrammeListData" [ngValue]="program">{{program}}</option>
-          </select>
 
-          <div *ngIf="submitted && formErrors.woprogram" class="invalid-feedback">
-            <div *ngIf="formErrors.woprogram">{{ formErrors.woprogram }}</div>
-          </div>
+      <div  *ngIf="addStage == 1"  class="form-row">
+
+            <div class="form-group col-md-12">
+              <label class="form-label">Asset Template</label>
+              <select class="custom-select" formControlName="wottemplatetype"
+                [ngClass]="{ 'is-invalid': submitted && formErrors.wottemplatetype }">
+                <option value=""></option>
+              <option *ngFor="let assetTmp of assetTemplateListData"  [ngValue]="assetTmp">{{assetTmp.wotname}}</option>
+
+              </select>
+
+              <div *ngIf="submitted && formErrors.wottemplatetype" class="invalid-feedback">
+                <div *ngIf="formErrors.wottemplatetype">{{ formErrors.wottemplatetype }}</div>
+              </div>
+
+            </div>
+
+
+            <div class="form-group col-md-12">
+              <label class="form-label">Programme</label>
+              <select class="custom-select" formControlName="woprogram"
+                [ngClass]="{ 'is-invalid': submitted && formErrors.woprogram }">
+                <option value=""></option>
+                <option *ngFor="let program of workOrderProgrammeListData"  [ngValue]="program">{{program.wprname}}</option>
+
+              </select>
+
+              <div *ngIf="submitted && formErrors.woprogram" class="invalid-feedback">
+                <div *ngIf="formErrors.woprogram">{{ formErrors.woprogram }}</div>
+              </div>
+
+            </div>
 
             <div class="form-group col-md-12">
               <label class="form-label">Contract</label>
@@ -39,169 +47,159 @@
                 <option value=""></option>
                 <option *ngFor="let contractnme of WorkOrderContractListData"  [ngValue]="contractnme">{{contractnme.conname}}</option>
 
-        <div class="form-group col-md-12">
-          <label class="form-label">Contract</label>
-          <select class="custom-select" formControlName="contractName"
-            [ngClass]="{ 'is-invalid': submitted && formErrors.contractName }">
-            <option value=""></option>
-            <option *ngFor="let contractnme of WorkOrderContractListData" [ngValue]="contractnme.conname">
-              {{contractnme.conname}}</option>
-          </select>
+              </select>
 
-          <div *ngIf="submitted && formErrors.contractName" class="invalid-feedback">
-            <div *ngIf="formErrors.contractName">{{ formErrors.contractName }}</div>
-          </div>
+              <div *ngIf="submitted && formErrors.contractName" class="invalid-feedback">
+                <div *ngIf="formErrors.contractName">{{ formErrors.contractName }}</div>
+              </div>
 
-        </div>
+            </div>
 
-        <div class="form-group col-md-12">
-          <label class="form-label">Works Order/Phase Template</label>
-          <select class="custom-select" formControlName="wophasetemplate"
-            [ngClass]="{ 'is-invalid': submitted && formErrors.wophasetemplate }">
-            <option value=""></option>
-            <option *ngFor="let wophasetmp of GetPhaseTemplateListData" [ngValue]="wophasetmp">{{wophasetmp}}</option>
+            <div class="form-group col-md-12">
+              <label class="form-label">Works Order/Phase Template</label>
+              <select class="custom-select" formControlName="wophasetemplate"
+                [ngClass]="{ 'is-invalid': submitted && formErrors.wophasetemplate }">
+                <option value=""></option>
+                <option *ngFor="let wophasetmp of GetPhaseTemplateListData"  [ngValue]="wophasetmp">{{wophasetmp}}</option>
 
-          </select>
+              </select>
 
-          <div *ngIf="submitted && formErrors.wophasetemplate" class="invalid-feedback">
-            <div *ngIf="formErrors.wophasetemplate">{{ formErrors.wophasetemplate }}</div>
-          </div>
+              <div *ngIf="submitted && formErrors.wophasetemplate" class="invalid-feedback">
+                <div *ngIf="formErrors.wophasetemplate">{{ formErrors.wophasetemplate }}</div>
+              </div>
 
-        </div>
+            </div>
 
 
-        <div class="form-group col-md-12">
-          <label class="form-label">Work Order Type</label>
-          <select class="custom-select" formControlName="woType"
-            [ngClass]="{ 'is-invalid': submitted && formErrors.woType }">
-            <option value=""></option>
-            <option *ngFor="let woType of getWorkOrderTypeData" [ngValue]="woType">{{woType}}</option>
+            <div class="form-group col-md-12">
+              <label class="form-label">Work Order Type</label>
+              <select class="custom-select" formControlName="woType"
+                [ngClass]="{ 'is-invalid': submitted && formErrors.woType }">
+                <option value=""></option>
+              <option *ngFor="let woType of getWorkOrderTypeData"  [ngValue]="woType">{{woType}}</option>
 
-          </select>
+              </select>
 
-          <div *ngIf="submitted && formErrors.woType" class="invalid-feedback">
-            <div *ngIf="formErrors.woType">{{ formErrors.woType }}</div>
-          </div>
+              <div *ngIf="submitted && formErrors.woType" class="invalid-feedback">
+                <div *ngIf="formErrors.woType">{{ formErrors.woType }}</div>
+              </div>
 
-        </div>
+            </div>
+
+
+
+
+
+
+
+    </div>
+
+
+  <div  *ngIf="addStage == 2" class="">
+
+
+    <div  class="form-row">
+
+      <div class="form-group col-md-6">
+        <label class="form-label">Works Order No</label>
+
+        <input  [readonly]="true" type="text" class="form-control" value="{{ work_order_no }}">
+
+
 
 
       </div>
 
 
-      <div *ngIf="addStage == 2" class="">
+      <div class="form-group col-md-6">
+        <label class="form-label">Work Order Type</label>
+
+        <input  [readonly]="true" formControlName="woTypevalue"    type="text" class="form-control" >
+
+      </div>
 
 
-        <div class="form-row">
-
-          <div class="form-group col-md-6">
-            <label class="form-label">Works Order No</label>
-
-        <input [disabled]="true" type="text" class="form-control" value="{{ work_order_no }}">
+</div>
+  <div  class="form-row">
 
 
+    <div class="form-group col-md-6">
+      <label class="form-label">External Reference</label>
 
-
-          </div>
-
-
-          <div class="form-group col-md-6">
-            <label class="form-label">Work Order Type</label>
-
-            <input [disabled]="true" type="text" class="form-control" value="{{saveParms.woType}}">
-
-            <!--
-        <select [disabled]="true" class="custom-select">
-        <option >{{saveParms.woType}}</option>
-
-        </select>
-      -->
-
-          </div>
-
-
-        </div>
-        <div class="form-row">
-
-
-          <div class="form-group col-md-6">
-            <label class="form-label">External Reference</label>
-
-      <input [disabled]="true" type="text" class="form-control" value="{{ work_order_no }}">
+      <input [readonly]="true" type="text" class="form-control" value="{{ work_order_no }}">
 
 
 
 
-          </div>
+    </div>
 
 
-        </div>
+</div>
 
-        <div class="form-row">
-          <div class="form-group col-md-12">
-            <label class="form-label">Name</label>
-            <input [readonly]="readInput" oninput="this.value = this.value.toUpperCase()" type="text"
-              class="form-control" placeholder="" formControlName="woname"
-              [ngClass]="{ 'is-invalid': submitted && formErrors.woname }">
+<div  class="form-row">
+    <div class="form-group col-md-12">
+      <label class="form-label">Name</label>
+      <input [readonly]="readInput" oninput="this.value = this.value.toUpperCase()" type="text" class="form-control"
+        placeholder="" formControlName="woname" [ngClass]="{ 'is-invalid': submitted && formErrors.woname }">
 
-            <div *ngIf="submitted && formErrors.woname" class="invalid-feedback">
-              <div *ngIf="formErrors.woname">{{ formErrors.woname }}</div>
-            </div>
-          </div>
+      <div *ngIf="submitted && formErrors.woname" class="invalid-feedback">
+        <div *ngIf="formErrors.woname">{{ formErrors.woname }}</div>
+      </div>
+    </div>
 
-          <div class="form-group col-md-12">
-            <label class="form-label">Desc</label>
-            <input [readonly]="readInput" type="text" class="form-control" placeholder="" formControlName="wodesc"
-              [ngClass]="{ 'is-invalid': submitted && formErrors.wodesc }">
+    <div class="form-group col-md-12">
+      <label class="form-label">Desc</label>
+      <input [readonly]="readInput"  type="text" class="form-control"
+        placeholder="" formControlName="wodesc" [ngClass]="{ 'is-invalid': submitted && formErrors.wodesc }">
 
-            <div *ngIf="submitted && formErrors.wodesc" class="invalid-feedback">
-              <div *ngIf="formErrors.wodesc">{{ formErrors.wodesc }}</div>
-            </div>
-          </div>
+      <div *ngIf="submitted && formErrors.wodesc" class="invalid-feedback">
+        <div *ngIf="formErrors.wodesc">{{ formErrors.wodesc }}</div>
+      </div>
+    </div>
 
-        </div>
+</div>
 
-        <div class="form-row">
+<div  class="form-row">
 
-          <div class="form-group col-md-6">
-            <label class="form-label">Template</label>
+  <div class="form-group col-md-6">
+    <label class="form-label">Template</label>
 
-    <input [disabled]="true" type="text" class="form-control" value="{{saveParms.wowottemplatetype}}">
-
-
-
-
-          </div>
-
-          <div class="form-group col-md-6">
-            <label class="form-label">Contractor</label>
-
-    <input [disabled]="true" type="text" class="form-control" value="{{saveParms.contractName}}">
+    <input type="text" formControlName="wotname"  class="form-control" >
 
 
 
 
-          </div>
+  </div>
 
-          <div class="form-group col-md-6">
-            <label class="form-label">Contract Code</label>
+  <div class="form-group col-md-6">
+    <label class="form-label">Contractor</label>
 
-    <input [disabled]="true" type="text" class="form-control" value="{{saveParms.cttcode}}">
-
-
-
-
-          </div>
-
-          <div class="form-group col-md-6">
-            <label class="form-label">Contract Name</label>
-
-    <input [disabled]="true" type="text" class="form-control" value="{{saveParms.cttname}}">
+    <input   formControlName="conname"  type="text" class="form-control">
 
 
 
 
-          </div>
+  </div>
+
+  <div class="form-group col-md-6">
+    <label class="form-label">Contract Code</label>
+
+    <input formControlName="cttcode"  type="text" class="form-control" >
+
+
+
+
+  </div>
+
+  <div class="form-group col-md-6">
+    <label class="form-label">Contract Name</label>
+
+    <input type="text" formControlName="cttname"  class="form-control">
+
+
+
+
+  </div>
 
 
   <div class="form-group col-md-6">
@@ -243,14 +241,11 @@
 
     <div class="form-group">
     <div class="input-group">
-      <input class="form-control" placeholder="yyyy-mm-dd"
-             formControlName="wotargetcompletiondate" [ngClass]="{ 'is-invalid': submitted && formErrors.wotargetcompletiondate }" [(ngModel)]="wotargetcompletiondate_model" ngbDatepicker #wotargetcompletiondate="ngbDatepicker">
 
-
-
-      <div class="input-group-append">
-        <button class="btn btn-outline-secondary calendar" (click)="wotargetcompletiondate.toggle()" type="button"><i  class="fa fa-calendar"></i></button>
-      </div>
+             <input type="text" class="form-control" formControlName="wotargetcompletiondate"
+                 [ngClass]="{ 'is-invalid': submitted && formErrors.wotargetcompletiondate }" autocomplete="off"
+                 (click)="openCalendar(td)" [minDate]="minDate" ngbDatepicker
+                 #td="ngbDatepicker" [placement]="'top'">
     </div>
 
     <div *ngIf="submitted && formErrors.wotargetcompletiondate" class="invalid-feedback">
@@ -320,12 +315,14 @@
 
     <div class="form-group">
     <div class="input-group">
-      <input class="form-control" placeholder="yyyy-mm-dd"
-             formControlName="woplanstartdate" [ngClass]="{ 'is-invalid': submitted && formErrors.woplanstartdate }" [(ngModel)]="woplanstartdate_model" ngbDatepicker #woplanstartdate="ngbDatepicker">
 
-      <div class="input-group-append">
-        <button class="btn btn-outline-secondary calendar" (click)="woplanstartdate.toggle()" type="button"><i  class="fa fa-calendar"></i></button>
-      </div>
+
+             <input type="text" class="form-control" formControlName="woplanstartdate"
+                 [ngClass]="{ 'is-invalid': submitted && formErrors.woplanstartdate }" autocomplete="off"
+                 (click)="openCalendar(tds)" [minDate]="minDate" ngbDatepicker
+                 #tds="ngbDatepicker" [placement]="'top'">
+
+
     </div>
 
     <div *ngIf="submitted && formErrors.woplanstartdate" class="invalid-feedback">
@@ -343,12 +340,12 @@
 
     <div class="form-group">
     <div class="input-group">
-      <input class="form-control" placeholder="yyyy-mm-dd"
-             formControlName="woplanenddate" [ngClass]="{ 'is-invalid': submitted && formErrors.woplanenddate }" [(ngModel)]="woplanenddate_model" ngbDatepicker #woplanenddate="ngbDatepicker">
 
-      <div class="input-group-append">
-        <button class="btn btn-outline-secondary calendar" (click)="woplanenddate.toggle()" type="button"><i  class="fa fa-calendar"></i></button>
-      </div>
+             <input type="text" class="form-control" formControlName="woplanenddate"
+                 [ngClass]="{ 'is-invalid': submitted && formErrors.woplanenddate }" autocomplete="off"
+                 (click)="openCalendar(tde)" [minDate]="minDate" ngbDatepicker
+                 #tde="ngbDatepicker" [placement]="'top'">
+
     </div>
 
     <div *ngIf="submitted && formErrors.woplanenddate" class="invalid-feedback">
@@ -482,7 +479,7 @@
           </div>
 
 
-      </div>
+</div>
 
 
 
@@ -492,12 +489,13 @@
       <div class="buttonDiv pull-right mb-4">
 
         <button type="submit" class="btn btn-sm themeButton mr-1">Submit</button>
-        <button type="button" (click)="closeUserFormWindow()" class="btn btn-sm themeButton">Cancel</button>
+               <button type="button" (click)="closewoFormWindow()"
+                   class="btn btn-sm themeButton">Cancel</button>
 
 
       </div>
 
-      <div class="clearfix"></div>
+<div class="clearfix"></div>
 
 
     </form>
