@@ -1,0 +1,74 @@
+<kendo-window title="{{title}}" *ngIf="packageToWorklistWindow" (close)="closePackageWindow()" [top]="20"
+    [minWidth]="700" [width]="980" [height]="auto" [minHeight]="350">
+    <div class="row">
+        <div class="col-md-1">
+            Asset:
+        </div>
+        <div class="col-md-2">
+            <input type="text" class="form-control form-control-sm" [readonly]="true" value="{{selectedWorkOrder?.assid}}">
+        </div>
+
+        <div class="col-md-9">
+            <input type="text" class="form-control form-control-sm" [readonly]="true" value="{{selectedWorkOrder?.woname}}">
+        </div>
+    </div>
+
+    <div class="row">
+
+
+        <div class="col-md-12 mt-2">
+            <kendo-grid [data]="gridView" [height]="600" [selectable]="{
+                    mode: 'multiple'
+                  }" filterable="menu" [resizable]="true" [sortable]="{
+                    allowUnsort: true,
+                    mode: 'multiple'
+                    }" [skip]="state.skip" [pageSize]="pageSize" [rowHeight]="36" (pageChange)="pageChange($event)"
+                scrollable="virtual" [sort]="state.sort" [filter]="state.filter" (sortChange)="sortChange($event)"
+                (filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)" [navigable]="true">
+
+                <kendo-grid-checkbox-column width="40">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <input (click)="selectionChange(dataItem)" class="k-checkbox" type="checkbox"
+                            *ngIf="dataItem.attributeexists != 'Work Package Exists'">
+                    </ng-template>
+                </kendo-grid-checkbox-column>
+
+
+                <kendo-grid-column field="wphcode" title="Package Code" width="140">
+                </kendo-grid-column>
+                <kendo-grid-column field="wphname" title="Package Name" width="160">
+                </kendo-grid-column>
+                <kendo-grid-column field="wlcomppackagedesc" title="Work Package Description" width="150">
+                </kendo-grid-column>
+                <kendo-grid-column field="atadescription" title="Attribute Description" width="200">
+                </kendo-grid-column>
+                <kendo-grid-column field="asaquantity" title="Quantiy" width="120">
+                </kendo-grid-column>
+
+                <kendo-grid-column field="uom" title="UOM" width="120">
+                </kendo-grid-column>
+                <kendo-grid-column field="defaultcost" title="SOR Rate" width="120">
+                </kendo-grid-column>
+                <kendo-grid-column field="contractrate" title="Contract Rate" width="120">
+                </kendo-grid-column>
+                <kendo-grid-column field="cost" title="Work Cost" width="120">
+                </kendo-grid-column>
+                <kendo-grid-column field="attributeexists" title="Attribute Status" width="120">
+                </kendo-grid-column>
+                <kendo-grid-column field="exclusionreason" title="Exclusion Reason" width="120">
+                </kendo-grid-column>
+
+
+            </kendo-grid>
+
+        </div>
+
+        <div class="col-md-12 text-right mt-2">
+            <button (click)="addTickedToWorklist()" [disabled]="mySelection.length == 0" class="btn btn-sm themeButton ml-1">Add Ticked To Work List</button>
+            <button (click)="closePackageWindow()" class="btn btn-sm themeButton ml-1">Close</button>
+        </div>
+    </div>
+
+    <div class="worklistPackageOvrlay"></div>
+    <app-worksorders-add-package-enter-quantity *ngIf="packageQuantityWindow" [packageQuantityWindow]="packageQuantityWindow" (closePackageQuantiyEvent)="closePackageQuantiyEvent($event)"></app-worksorders-add-package-enter-quantity>
+</kendo-window>

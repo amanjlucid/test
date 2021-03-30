@@ -57,6 +57,8 @@ export class WorksordersAddAssetsworklistComponent implements OnInit {
   worksOrder: any;
   phaseData: any;
 
+  packageToWorklistWindow = false;
+
   constructor(
     private propSecGrpService: PropertySecurityGroupService,
     private loaderService: LoaderService,
@@ -85,7 +87,7 @@ export class WorksordersAddAssetsworklistComponent implements OnInit {
         this.worksorderManagementService.getWorksOrderByWOsequence(this.actualSelectedRow.wosequence)
       ]).subscribe(
         resp => {
-          console.log(resp);
+          // console.log(resp);
           const assetType = resp[0];
           const phase = resp[1];
           const worksOrder = resp[2];
@@ -105,7 +107,7 @@ export class WorksordersAddAssetsworklistComponent implements OnInit {
               }),
               switchMap(state => this.worksorderManagementService.getWorkOrderAssetFromWorklist(state)),
               tap((res) => {
-                console.log(res);
+                // console.log(res);
                 this.totalCount = (res.total != undefined) ? res.total : 0;
                 this.loading = false;
                 this.chRef.detectChanges();
@@ -324,6 +326,17 @@ export class WorksordersAddAssetsworklistComponent implements OnInit {
     } else {
       this.mySelection.push(item.assid);
     }
+  }
+
+  openPackageWindow(){
+    $('.worksOrderAddAssetOverlay').addClass('ovrlay');
+    this.packageToWorklistWindow = true;
+    
+  }
+
+  closePackageWindowEvent($event){
+    this.packageToWorklistWindow = $event;
+    $('.worksOrderAddAssetOverlay').removeClass('ovrlay');
   }
 
 

@@ -188,7 +188,7 @@
                     </div>
 
 
-                    <div class="col-md-12" *ngIf="phaseFormMode == 'edit'">
+                    <div class="col-md-12">
                         <div class="leftDiv">
                             <div class="first">
                                 <label class="col-form-label">Target Date</label>
@@ -197,7 +197,7 @@
                                 <input type="text" class="form-control" formControlName="WOPTARGETCOMPLETIONDATE"
                                     [ngClass]="{ 'is-invalid': submitted && formErrors.WOPTARGETCOMPLETIONDATE }"
                                     autocomplete="off" (click)="openCalendar(td,'completedDate')" [minDate]="minDate"
-                                    ngbDatepicker #td="ngbDatepicker" [placement]="'top'">
+                                    ngbDatepicker #td="ngbDatepicker" [placement]="'right'">
 
                                 <div *ngIf="submitted && formErrors.WOPTARGETCOMPLETIONDATE" class="invalid-feedback">
                                     <div *ngIf="formErrors.WOPTARGETCOMPLETIONDATE">{{

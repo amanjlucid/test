@@ -228,7 +228,7 @@
 
     <div class="row mt-4">
         <div class="col-md-12 text-right">
-            <button class="btn btn-sm themeButton" [disabled]="actualSelectedRow?.treelevel != 3">Add Package to Work List</button>
+            <button class="btn btn-sm themeButton" (click)="openPackageWindow()" [disabled]="actualSelectedRow?.treelevel != 3">Add Package to Work List</button>
             <button (click)="addTickedToWorksOrder()" [disabled]="mySelection.length == 0"
                 class="btn btn-sm themeButton ml-1">Add Ticked To Works Order</button>
             <button (click)="addTickedToWorksOrder()" [disabled]="totalCount == 0"
@@ -302,4 +302,7 @@
         </div>
 
     </kendo-window>
+
+
+    <app-worksorders-add-package-to-worklist *ngIf="packageToWorklistWindow" [packageToWorklistWindow]="packageToWorklistWindow" [selectedWorkOrder]="actualSelectedRow" (closePackageWindowEvent)="closePackageWindowEvent($event)"></app-worksorders-add-package-to-worklist>
 </kendo-window>

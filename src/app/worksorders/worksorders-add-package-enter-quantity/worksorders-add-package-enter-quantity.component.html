@@ -1,0 +1,65 @@
+<kendo-window title="{{title}}" *ngIf="packageQuantityWindow" (close)="closePackageQuantityWindow()" [top]="20"
+    [minWidth]="700" [width]="980" [height]="auto" [minHeight]="350">
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="row1">
+                <div class="blockleft">
+                    <div class="lblDiv">Code</div>
+                    <input type="text">
+                </div>
+                <div class="blockright">
+                    <div class="lblDiv">Code</div>
+                    <input type="text">
+                </div>
+            </div>
+
+            <div class="row2">
+                <div class="blockleft">
+                    <div class="lblDiv">Attr Desc</div>
+                    <input type="text">
+                </div>
+
+            </div>
+
+            <div class="row3">
+                <div class="blockleft">
+                    <div class="lblDiv">Please Provide Quantity:</div>
+                    <input type="text">
+                    <div class="lblDiv">UOM:</div>
+                    <input type="text">
+                    <div class="lblDiv">SOR Rate:</div>
+                    <input type="text">
+                    <div class="lblDiv">Contract Rate:</div>
+                    <input type="text">
+                    <div class="lblDiv">Work Cost:</div>
+                    <input type="text">
+                    <div class="lblDiv">Cost Override:</div>
+                    <input type="text">
+                </div>
+                <!-- <div class="blockright">
+                    <div class="lblDiv">Code</div>
+                    <input type="text">
+                </div> -->
+            </div>
+
+            <div class="row4">
+                <div class="blockleft">
+                    <div class="lblDiv">Comment:</div>
+                    <input type="text">
+                </div>
+
+            </div>
+
+
+        </div>
+
+        <div class="col-md-12 mt-2 text-right">
+            <button class="btn btn-sm themeButton ml-1">Apply</button>
+            <button class="btn btn-sm themeButton ml-1">Apply To All</button>
+            <button (click)="closePackageQuantityWindow()" class="btn btn-sm themeButton ml-1">Cancel</button>
+        </div>
+
+    </div>
+
+</kendo-window>

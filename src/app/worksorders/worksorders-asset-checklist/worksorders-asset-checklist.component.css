@@ -10,11 +10,11 @@
     position: absolute !important;
 }
 
-.k-treelist tbody td {
-    white-space: nowrap !important;
+.k-grid tbody td {
+    white-space: nowrap;
     line-height: 20px;
     padding: 8px 12px;
-}
+  }
 
 .worksorder-assetchecklist-header {
     padding: 20px;
