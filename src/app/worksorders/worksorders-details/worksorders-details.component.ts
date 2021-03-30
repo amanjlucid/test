@@ -120,7 +120,7 @@ export class WorksordersDetailsComponent implements OnInit {
         this.worksorderManagementService.getListOfWorksOrderChecklistForWORK(intWOSEQUENCE),
       ]).subscribe(
         data => {
-          // console.log(data)
+          console.log(data)
           const programmeData = data[0];
           const userSecurityByWO = data[1];
           const worksOrderData = data[2];

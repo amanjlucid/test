@@ -1,41 +1,44 @@
 <kendo-window title="{{title}}" *ngIf="packageQuantityWindow" (close)="closePackageQuantityWindow()" [top]="20"
-    [minWidth]="700" [width]="980" [height]="auto" [minHeight]="350">
+    [minWidth]="700" [width]="1400" [height]="auto" [minHeight]="200">
 
     <div class="row">
         <div class="col-md-12">
             <div class="row1">
                 <div class="blockleft">
                     <div class="lblDiv">Code</div>
-                    <input type="text">
+                    <input type="text" [readonly]="readonly" value="{{displayHighestPkz?.wphcode}}">
                 </div>
                 <div class="blockright">
-                    <div class="lblDiv">Code</div>
-                    <input type="text">
+                    <div class="lblDiv">Name</div>
+                    <input type="text" [readonly]="readonly" value="{{displayHighestPkz?.wphname}}">
                 </div>
             </div>
 
-            <div class="row2">
+            <div class="row2 mt-2">
                 <div class="blockleft">
                     <div class="lblDiv">Attr Desc</div>
-                    <input type="text">
+                    <input type="text" [readonly]="readonly" value="{{displayHighestPkz?.atadescription}}">
                 </div>
 
             </div>
 
-            <div class="row3">
+            <div class="row3 mt-2">
                 <div class="blockleft">
-                    <div class="lblDiv">Please Provide Quantity:</div>
-                    <input type="text">
-                    <div class="lblDiv">UOM:</div>
-                    <input type="text">
+                    <div class="lblDiv lblDiv1">Please Provide Quantity:</div>
+                    <input type="text" [(ngModel)]="quantity" (keypress)="validate($event)" (ngModelChange)="setCost($event, 'quantity')">
+                    <div class="lblDiv lblDiv2">UOM:</div>
+                    <input type="text" [readonly]="readonly" value="{{displayHighestPkz?.uom}}">
                     <div class="lblDiv">SOR Rate:</div>
-                    <input type="text">
+                    <input type="text" [readonly]="readonly"
+                        value="{{displayHighestPkz?.defaultcost | currency:'GBP':'symbol'}}">
                     <div class="lblDiv">Contract Rate:</div>
-                    <input type="text">
+                    <input type="text" [readonly]="readonly"
+                        value="{{displayHighestPkz?.contractrate | currency:'GBP':'symbol'}}">
                     <div class="lblDiv">Work Cost:</div>
-                    <input type="text">
+                    <input type="text" [readonly]="readonly"
+                        value="{{displayHighestPkz?.cost | currency:'GBP':'symbol'}}">
                     <div class="lblDiv">Cost Override:</div>
-                    <input type="text">
+                    <input type="text" value="{{costOverride | currency:'GBP':'symbol'}}" [readonly]="readonly">
                 </div>
                 <!-- <div class="blockright">
                     <div class="lblDiv">Code</div>
@@ -43,10 +46,10 @@
                 </div> -->
             </div>
 
-            <div class="row4">
+            <div class="row4 mt-2">
                 <div class="blockleft">
                     <div class="lblDiv">Comment:</div>
-                    <input type="text">
+                    <input type="text" [(ngModel)]="comment">
                 </div>
 
             </div>
@@ -54,9 +57,12 @@
 
         </div>
 
-        <div class="col-md-12 mt-2 text-right">
-            <button class="btn btn-sm themeButton ml-1">Apply</button>
-            <button class="btn btn-sm themeButton ml-1">Apply To All</button>
+        <div class="col-md-4 mt-4 text-left">
+            <button class="btn btn-sm themeButton ml-1" (click)="defaultToOne()">Default to 1</button>
+        </div>
+        <div class="col-md-8 mt-4 text-right">
+            <button class="btn btn-sm themeButton ml-1" (click)="applyCost(1)">Apply</button>
+            <button class="btn btn-sm themeButton ml-1" (click)="applyCost(2)">Apply To All</button>
             <button (click)="closePackageQuantityWindow()" class="btn btn-sm themeButton ml-1">Cancel</button>
         </div>
 

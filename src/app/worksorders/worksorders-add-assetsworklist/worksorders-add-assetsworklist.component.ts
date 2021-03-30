@@ -73,7 +73,7 @@ export class WorksordersAddAssetsworklistComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log(this.actualSelectedRow)
+    // console.log(this.actualSelectedRow)
     this.headerFilters.wopsequence = this.actualSelectedRow.wopsequence;
     this.headerFilters.wosequence = this.actualSelectedRow.wosequence;
     if (this.actualSelectedRow.treelevel == 3) {
@@ -321,11 +321,14 @@ export class WorksordersAddAssetsworklistComponent implements OnInit {
   }
 
   selectionChange(item) {
-    if (this.mySelection.includes(item.assid)) {
-      this.mySelection = this.mySelection.filter(x => x != item.assid);
+    // console.log(item)
+    if (this.mySelection.includes(item.wlcomppackage)) {
+      this.mySelection = this.mySelection.filter(x => x != item.wlcomppackage);
     } else {
-      this.mySelection.push(item.assid);
+      this.mySelection.push(item.wlcomppackage);
     }
+
+    console.log(this.mySelection)
   }
 
   openPackageWindow(){
@@ -337,6 +340,7 @@ export class WorksordersAddAssetsworklistComponent implements OnInit {
   closePackageWindowEvent($event){
     this.packageToWorklistWindow = $event;
     $('.worksOrderAddAssetOverlay').removeClass('ovrlay');
+    this.searchGrid()
   }
 
 

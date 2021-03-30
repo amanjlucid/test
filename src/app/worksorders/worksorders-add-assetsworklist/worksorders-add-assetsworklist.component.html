@@ -229,9 +229,9 @@
     <div class="row mt-4">
         <div class="col-md-12 text-right">
             <button class="btn btn-sm themeButton" (click)="openPackageWindow()" [disabled]="actualSelectedRow?.treelevel != 3">Add Package to Work List</button>
-            <button (click)="addTickedToWorksOrder()" [disabled]="mySelection.length == 0"
+            <button (click)="addTickedToWorksOrder(1)" [disabled]="mySelection.length == 0"
                 class="btn btn-sm themeButton ml-1">Add Ticked To Works Order</button>
-            <button (click)="addTickedToWorksOrder()" [disabled]="totalCount == 0"
+            <button (click)="addTickedToWorksOrder(2)" [disabled]="totalCount == 0"
                 class="btn btn-sm themeButton ml-1">Add All To Works Order</button>
             <button (click)="closeAddAssetWindow()" class="btn btn-sm themeButton ml-1">Close</button>
         </div>

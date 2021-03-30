@@ -70,5 +70,5 @@
     </div>
 
     <div class="worklistPackageOvrlay"></div>
-    <app-worksorders-add-package-enter-quantity *ngIf="packageQuantityWindow" [packageQuantityWindow]="packageQuantityWindow" (closePackageQuantiyEvent)="closePackageQuantiyEvent($event)"></app-worksorders-add-package-enter-quantity>
+    <app-worksorders-add-package-enter-quantity *ngIf="packageQuantityWindow" [packageQuantityWindow]="packageQuantityWindow" [selectedWorkOrder]="selectedWorkOrder" (closePackageQuantiyEvent)="closePackageQuantiyEvent($event)" (refreshPackageList)="refreshPackageList($event)" [mySelection]="mySelection" [packageData]="packageData"></app-worksorders-add-package-enter-quantity>
 </kendo-window>

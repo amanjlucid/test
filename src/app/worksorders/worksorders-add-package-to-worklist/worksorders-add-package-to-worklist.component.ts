@@ -79,7 +79,7 @@ export class WorksordersAddPackageToWorklistComponent implements OnInit {
     this.subs.add(
       this.worksorderManagementService.getWorksPackagesForAssets(params).subscribe(
         data => {
-          console.log(data);
+          // console.log(data);
           if (data.isSuccess) {
             this.packageData = data.data;
             this.gridView = process(this.packageData, this.state);
@@ -156,6 +156,11 @@ export class WorksordersAddPackageToWorklistComponent implements OnInit {
   closePackageQuantiyEvent(eve) {
     this.packageQuantityWindow = eve;
     $('.worklistPackageOvrlay').removeClass('ovrlay');
+  }
+
+  refreshPackageList(eve){
+    this.mySelection = [];
+    this.getPackageList();
   }
 
 }
