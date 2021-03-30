@@ -1,0 +1,167 @@
+<kendo-window title="{{title}}" *ngIf="assetDetailWindow" (close)="closeAssetDetailWindow()" [top]="10" [minWidth]="700"
+    [width]="1050" [height]="auto" [minHeight]="350">
+
+    <div class="row headerArea">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-2">
+                    <label for="">Works Order: {{ selectedParentRow.wosequence}}</label>
+                </div>
+                <div class="col-md-10">
+                         <input [readonly]="true" type="text" class="form-control"  placeholder="" value="{{ worksOrderData.woname}}">
+                </div>
+
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-2">
+                    <label for=""> Phase:</label>
+                </div>
+                <div class="col-md-10">
+                         <input type="text" [readonly]="true" class="form-control"  placeholder="" value="{{ selectedParentRow.woname}}">
+                </div>
+
+            </div>
+        </div>
+
+
+    </div>
+
+    <div class="row mt-2">
+        <div class="col-md-12 mt-2">
+            <kendo-grid [kendoGridGroupBinding]="assetDetailsGridData"  [data]="gridView" [height]="570" [selectable]="{
+                    mode: 'multiple'
+                  }" filterable="menu" [resizable]="true" [sortable]="{
+                    allowUnsort: true,
+                    mode: 'multiple'
+                    }" [skip]="state.skip" [sort]="state.sort" [filter]="state.filter"
+                (sortChange)="sortChange($event)" (filterChange)="filterChange($event)"
+                (cellClick)="cellClickHandler($event)" [navigable]="false">
+
+                <kendo-grid-column title=" " width="37" [filterable]="false" [sortable]="false">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <li class="nav-item dropdown list-unstyled" style="margin-top: -7px;">
+                            <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"
+                                (click)="setSeletedRow(dataItem)"></i>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="javascript:void(0)" (click)="removeAssetFromPhase(dataItem)">Remove</a>
+
+
+                            </div>
+                        </li>
+
+                    </ng-template>
+                </kendo-grid-column>
+
+
+                <kendo-grid-column field="assid" title="Asset Id" width="100">
+                </kendo-grid-column>
+                <kendo-grid-column field="astconcataddress" title="Address" width="160">
+                </kendo-grid-column>
+                <kendo-grid-column field="wlataid" title="Attr Id" width="120">
+                </kendo-grid-column>
+                <kendo-grid-column field="atadescription" title="Description" width="410">
+                </kendo-grid-column>
+                <kendo-grid-column field="asaquantity" title="Qty" width="120">
+                </kendo-grid-column>
+                <kendo-grid-column field="asauom" title="UOM" width="120">
+                </kendo-grid-column>
+                <kendo-grid-column field="wlcomppackage" title="Package Code" width="120">
+                </kendo-grid-column>
+
+
+                <kendo-grid-column field="wlcomppackage" title="Package Name" width="120">
+                </kendo-grid-column>
+
+
+
+                <kendo-grid-column field="woadcomment" title="Comment" width="120">
+                </kendo-grid-column>
+
+
+
+                <kendo-grid-column field="wocheckname" title="Checklist Name" width="120">
+                </kendo-grid-column>
+
+
+
+                <kendo-grid-column field="woassstatus" title="Status" width="120">
+                </kendo-grid-column>
+
+                <kendo-grid-column field="woadforecast" title="Forecast" width="120">
+                </kendo-grid-column>
+
+
+
+              <kendo-grid-column field="woadcommitted" title="Committed" width="120">
+              </kendo-grid-column>
+
+              <kendo-grid-column field="woadactual" title="Actual" width="120">
+              </kendo-grid-column>
+
+                            <kendo-grid-column field="woadapproved" title="Approved" width="120">
+                            </kendo-grid-column>
+
+
+                                          <kendo-grid-column field="woadpending" title="Pending" width="120">
+                                          </kendo-grid-column>
+
+
+                                                        <kendo-grid-column field="mPgoA" title="Created By" width="120">
+                                                        </kendo-grid-column>
+
+                                                        <kendo-grid-column field="mPgpA" title="Created" width="150" filter="date" format="{0:dd-MM-yyyy}">
+                                                          <ng-template kendoGridFilterMenuTemplate let-filter let-column="column" let-filterService="filterService">
+                                                            <date-range-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
+                                                            </date-range-filter>
+                                                          </ng-template>
+                                                          <ng-template kendoGridCellTemplate let-dataItem>
+                                                            <span>
+                                                              {{ dataItem.mPgqA | dateFormat : 'DD-MMM-YYYY' }}
+                                                            </span>
+                                                          </ng-template>
+                                                        </kendo-grid-column>
+
+
+                                                        <kendo-grid-column field="mPgrA" title="Updated By" width="120">
+                                                        </kendo-grid-column>
+
+                                                        <kendo-grid-column field="mPgpA" title="Updated" width="150" filter="date" format="{0:dd-MM-yyyy}">
+                                                          <ng-template kendoGridFilterMenuTemplate let-filter let-column="column" let-filterService="filterService">
+                                                            <date-range-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
+                                                            </date-range-filter>
+                                                          </ng-template>
+                                                          <ng-template kendoGridCellTemplate let-dataItem>
+                                                            <span>
+                                                              {{ dataItem.mPgtA | dateFormat : 'DD-MMM-YYYY' }}
+                                                            </span>
+                                                          </ng-template>
+                                                        </kendo-grid-column>
+
+
+            </kendo-grid>
+
+        </div>
+
+
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <!-- <select class="selectTemplate">
+                <option value="w">Test</option>
+                <option value="w">Test</option>
+            </select>
+
+            <button class="btn btn-sm themeButton ml-3">Apply Selected</button>
+            <button class="btn btn-sm themeButton ml-2">Apply All</button> -->
+        </div>
+
+        <div class="col-md-6 text-right">
+            <button (click)="closeAssetDetailWindow()" class="btn btn-sm themeButton">Close</button>
+        </div>
+    </div>
+
+</kendo-window>

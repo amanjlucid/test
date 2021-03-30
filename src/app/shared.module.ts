@@ -18,12 +18,14 @@ import { RoundOffPipe } from './_pipes/round-off.pipe';
 import { TreeListModule } from '@progress/kendo-angular-treelist';
 import { RetrievedEpcGridComponent } from './assets-portal/asset-energy/retrieved-epc-grid/retrieved-epc-grid.component';
 
+import { DateRangeTreeListFilterComponent } from './kendo-component/date-range-treelist-filter.component';
+
 
 
 @NgModule({
   imports: [FormsModule, ReactiveFormsModule, GridModule, InputsModule, DialogsModule, DatePickerModule, CommonModule, TreeListModule],
-  declarations: [DateFormatPipe, CurrencyFormatPipe, RoundOffPipe, SimpleTextFilterComponent, DateRangeFilterComponent, MultiCheckFilterComponent, RetrievedEpcGridComponent],
-  exports: [DateFormatPipe, CurrencyFormatPipe, RoundOffPipe, SimpleTextFilterComponent, DateRangeFilterComponent, MultiCheckFilterComponent, RetrievedEpcGridComponent]
+  declarations: [DateFormatPipe, CurrencyFormatPipe, RoundOffPipe, SimpleTextFilterComponent, DateRangeFilterComponent, MultiCheckFilterComponent, RetrievedEpcGridComponent, DateRangeTreeListFilterComponent],
+  exports: [DateFormatPipe, CurrencyFormatPipe, RoundOffPipe, SimpleTextFilterComponent, DateRangeFilterComponent, MultiCheckFilterComponent, RetrievedEpcGridComponent, DateRangeTreeListFilterComponent]
 })
 
 export class SharedModule { }

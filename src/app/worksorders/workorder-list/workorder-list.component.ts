@@ -32,11 +32,16 @@ export class WorkorderListComponent implements OnInit {
   loading = true;
   selectableSettings: SelectableSettings;
   woFormWindow = false;
+  woFormDeleteWindow = false;
   filterObject: WorkordersListFilterModel;
   searchInGrid$ = new Subject<WorkordersListFilterModel>();
   selectedWorksOrder: any
   selectedWorkOrderAddEdit:any;
   woFormType = 'new';
+  errorDeleteMsg = '';
+  successDeleteMsg = '';
+  deleteReasonMsgInput = false;
+  wosequenceForDelete:any;
   // public windowOpened = false;
 
   constructor(
@@ -148,10 +153,143 @@ export class WorkorderListComponent implements OnInit {
 
   }
 
+  closewoFormDeleteWindow() {
+    this.woFormDeleteWindow = false;
+  }
+
+
+
+  deleteThis(item){
+
+
+    this.wosequenceForDelete =   item.wosequence;
+
+    this.errorDeleteMsg   = '';
+    this.successDeleteMsg = '';
+
+    let reason =   'no';
+    let userId =   this.currentUser.userId;
+    let checkOrProcess =   'C';
+
+
+    this.eveneManagerService.DeleteWebWorkOrder(this.wosequenceForDelete,reason,userId,checkOrProcess).subscribe(
+        (data) => {
+
+
+            if (data.isSuccess) {
+
+                 if(data.data.pRETURNSTATUS == 'E'){
+                   this.errorDeleteMsg =  data.data.pRETURNMESSAGE;
+                   this.deleteReasonMsgInput = false;
+
+                 }
+
+                 else if(data.data.pRETURNSTATUS == 'S'){
+
+                    this.errorDeleteMsg = '';
+                    this.deleteReasonMsgInput = true;
+
+                 }
+                 else
+                 {
+
+                  this.errorDeleteMsg = '';
+                   this.deleteReasonMsgInput = true;
+                 }
 
 
 
 
+            }
+
+            console.log('Delete Data Return '+ JSON.stringify(data.data));
+
+        },
+        error => {
+            this.alertService.error(error);
+
+        }
+    )
+
+
+
+    this.woFormDeleteWindow = true;
+
+
+  }
+
+
+finalDeleteSubmit(reason){
+
+    this.errorDeleteMsg   = '';
+    this.successDeleteMsg = '';
+
+    if(reason == '' || reason == null){
+        this.errorDeleteMsg   = 'You must enter a reason for deleting a Works Order';
+
+    }
+    else{
+
+      let userId =   this.currentUser.userId;
+      let checkOrProcess =   'P';
+
+
+
+          this.eveneManagerService.DeleteWebWorkOrder(this.wosequenceForDelete,reason,userId,checkOrProcess).subscribe(
+              (data) => {
+
+
+                  if (data.isSuccess) {
+
+                    if(data.data.pRETURNSTATUS == 'E'){
+                      this.errorDeleteMsg =  data.data.pRETURNMESSAGE;
+
+                        this.alertService.error(data.data.pRETURNMESSAGE);
+
+                    }
+                    else
+                    {
+
+                      this.deleteReasonMsgInput = false;
+                      this.successDeleteMsg = 'Works Order Deleted';
+
+
+                      this.alertService.success(this.successDeleteMsg);
+
+
+                       this.woFormDeleteWindow = false;
+                        this.getUserWorksOrdersList(this.filterObject);
+
+
+                    }
+
+
+
+
+
+
+                  }
+
+                  console.log('Final Delete '+ JSON.stringify(data.data));
+
+              },
+              error => {
+                  this.alertService.error(error);
+
+              }
+          )
+
+
+
+
+
+
+
+    }
+
+
+
+}
   // public close() {
   //   $('.bgblur').removeClass('ovrlay');
   //   this.windowOpened = false;

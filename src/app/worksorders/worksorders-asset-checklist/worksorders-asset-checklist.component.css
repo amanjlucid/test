@@ -2,10 +2,30 @@
     position: fixed !important;
 }
 
-.actionBtnDiv button{
+.actionBtnDiv button {
     margin-left: 2px;
-} 
+}
 
 .dropdown.list-unstyled {
     position: absolute !important;
+}
+
+.k-treelist tbody td {
+    white-space: nowrap !important;
+    line-height: 20px;
+    padding: 8px 12px;
+}
+
+.worksorder-assetchecklist-header {
+    padding: 20px;
+    border: 1px solid #e0e0e1;
+    margin: 0px 0px 20px;
+    font-size: 13px;
+    color: #000;
+    background-color: white;
+}
+
+.worksorder-assetchecklist-header * {
+    font-size: 13px;
+    color: #000;
 }

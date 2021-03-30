@@ -67,9 +67,15 @@ WEBWorksOrdersValidForNewWorkOrder(WPRSEQUENCE,WOTSEQUENCE,CTTSURCDE,WorksOrderT
  }
 
 
+ DeleteWebWorkOrder(WOSEQUENCE,reason,userId,checkOrProcess) {
+     return this.http.get<any>(`${appConfig.apiUrl}/api/WorkordersPortal/DeleteWebWorkOrder?WOSEQUENCE=${WOSEQUENCE}&reason=${reason}&userId=${userId}&checkOrProcess=${checkOrProcess}`, this.httpOptions);
+ }
+ WorkOrderAssetDetailPhases(wosequence,wopsequence) {
+     return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/WorkOrderAssetDetailPhases?wosequence=${wosequence}&wopsequence=${wopsequence}`, this.httpOptions);
+ }
 
-
-
-
+ WorksOrderRemoveWork(params) {
+  return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WorksOrderRemoveWork`, params, this.httpOptions);
+}
 
 }

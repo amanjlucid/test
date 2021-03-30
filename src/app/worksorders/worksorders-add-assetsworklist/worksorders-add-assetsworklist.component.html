@@ -1,0 +1,273 @@
+<kendo-window title="{{title}}" *ngIf="addAssetWorklistWindow" (close)="closeAddAssetWindow()" [top]="10" [minWidth]="700"
+    [width]="1050" [height]="auto" [minHeight]="350">
+
+    <div class="row headerArea">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-2">
+                    <label for="">Phase:</label>
+                </div>
+                <div class="col-md-2">
+                    <input type="text" [readonly]="readonly" value="{{actualSelectedRow?.woname}}">
+                </div>
+                <div class="col-md-2">
+                    <label for="">Phase Budget:</label>
+                </div>
+                <div class="col-md-2">
+                    <input type="text" [readonly]="readonly"
+                        value="{{actualSelectedRow?.wobudget | currency:'GBP':'symbol'}}">
+                </div>
+                <div class="col-md-2">
+                    <label for="">Phase Available Budget</label>
+                </div>
+                <div class="col-md-2">
+                    <input type="text" [readonly]="readonly"
+                        value="{{actualSelectedRow?.wobudget - actualSelectedRow?.wocommitted | currency:'GBP':'symbol'}}">
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12 mt-1">
+            <div class="row">
+                <div class="col-md-2">
+                    <label for=""> Asset(s) Selected:</label>
+                </div>
+                <div class="col-md-2">
+                    <input type="text" [readonly]="readonly" value="0">
+                </div>
+                <div class="col-md-2">
+                    <label for="">Asset Checklist Cost:</label>
+                </div>
+                <div class="col-md-2">
+                    <input type="text" [readonly]="readonly" value="{{zero| currency:'GBP':'symbol'}}">
+                </div>
+                <div class="col-md-2">
+                    <label for="">Required Budget</label>
+                </div>
+                <div class="col-md-2">
+                    <input type="text" [readonly]="readonly" value="{{zero| currency:'GBP':'symbol'}}">
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12 mt-1">
+            <div class="row hiearchyDiv">
+                <div class="col-md-2">
+                    <label>Hierarchy</label>
+                </div>
+
+                <div class=" col-md-8 hiearchyTree">
+                    <ul id="myUL">
+                        <ng-template #recursiveList let-printHiearchy>
+                            <li *ngFor="let item of printHiearchy">
+                                <span><span style="color:red;">({{ item?.assetName }})</span> {{ item?.assetId }} -
+                                    {{ item?.address }}</span>
+                                <ul *ngIf="item.childLayers.length > 0">
+                                    <ng-container
+                                        *ngTemplateOutlet="recursiveList; context:{ $implicit: item.childLayers }">
+                                    </ng-container>
+                                </ul>
+                            </li>
+                        </ng-template>
+                        <ng-container *ngTemplateOutlet="recursiveList; context:{ $implicit: printHiearchy }">
+                        </ng-container>
+
+                    </ul>
+                </div>
+
+                <div class="hiearchyBtn col-md-2 p-0">
+                    <button type="button" (click)="openHiearchyWindow()" class="btn btn-sm">...</button>
+                    <button type="button" (click)="clearPropSec()" class="btn btn-sm">Clear</button>
+                </div>
+
+
+            </div>
+        </div>
+
+        <div class="col-md-12 mt-1">
+            <div class="row">
+                <div class="col-md-2">
+                    <label for=""> Wildcard Address:</label>
+                </div>
+                <div class="col-md-4">
+                    <input type="text" [(ngModel)]="headerFilters.wildcardaddress">
+                </div>
+                <div class="col-md-2">
+                    <label for="">Asset Type:</label>
+                </div>
+                <div class="col-md-2">
+                    <select [(ngModel)]="headerFilters.astcode">
+                        <option selected value="">All Types</option>
+                        <option *ngFor="let assetType of assetTypes" [value]="assetType">{{assetType}}</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button (click)="searchGrid()" class="btn btn-sm">Search</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-2">
+        <div class="col-md-12 mt-2">
+            <kendo-grid [data]="query | async" [loading]="loading" [skip]="headerFilters.CurrentPage"
+                [pageSize]="headerFilters.PageSize" filterable="menu" [resizable]="true" [sortable]="{
+        allowUnsort: true, mode: 'multiple' }" [sort]="state.sort" (sortChange)="sortChange($event)"
+                (filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)" [filter]="state.filter"
+                scrollable="virtual" [rowHeight]="36" [height]="550" (pageChange)="pageChange($event)"
+                [navigable]="false" [selectedKeys]="mySelection" [selectable]="selectableSettings"
+                [kendoGridSelectBy]="mySelectionKey" [groupable]="false">
+
+                <kendo-grid-checkbox-column width="25">
+                    <!-- <ng-template kendoGridHeaderTemplate *ngIf="selectableSettings.mode == 'multiple'">
+                        <input class="k-checkbox" id="selectAllCheckboxId" kendoGridSelectAllCheckbox
+                            [state]="selectAllState" (selectAllChange)="onSelectAllChange($event)">
+                        <label class="k-checkbox-label" for="selectAllCheckboxId"></label>
+                    </ng-template> -->
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <input (click)="selectionChange(dataItem)" class="k-checkbox" type="checkbox"
+                            *ngIf="dataItem.alreadyInWorksOrderPhase == 'N'">
+                    </ng-template>
+                </kendo-grid-checkbox-column>
+
+                <kendo-grid-column field="alreadyInWorksOrderPhase" title="" width="25" [filterable]="false"
+                    [sortable]="false">
+                    <ng-template kendoGridHeaderTemplate>
+                        <img style="height:14px; width:16px;" src="assets/img/icons/cross.png" />
+                    </ng-template>
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            <img style="height: 14px;" *ngIf="dataItem.alreadyInWorksOrderPhase == 'Y'"
+                                src="assets/img/icons/cross.png" />
+                        </span>
+                    </ng-template>
+                </kendo-grid-column>
+
+                <kendo-grid-column field="asbestosIcon" title="" width="25" [filterable]="false" [sortable]="false">
+                    <ng-template kendoGridHeaderTemplate>
+                        <img style="height:14px; width:16px;" src="assets/img/icons/asbestos-green.png" />
+                    </ng-template>
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            <img style="height: 14px;" *ngIf="dataItem.asbestosIcon == 'Red'"
+                                src="assets/img/icons/asbestos-red.png" />
+                            <img style="height: 14px;" *ngIf="dataItem.asbestosIcon == 'Green'"
+                                src="assets/img/icons/asbestos-green.png" />
+                            <img style="height: 14px;" *ngIf="dataItem.asbestosIcon == 'Black'"
+                                src="assets/img/icons/asbestos-black.png" />
+                        </span>
+                    </ng-template>
+                </kendo-grid-column>
+
+                <kendo-grid-column field="assid" title="Asset Id" width="130">
+                    <ng-template kendoGridFilterMenuTemplate let-filter="filter" let-column="column"
+                        let-filterService="filterService">
+                        <simple-text-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
+                        </simple-text-filter>
+                    </ng-template>
+                </kendo-grid-column>
+                <kendo-grid-column field="astconcataddress" title="Address" width="190">
+                    <ng-template kendoGridFilterMenuTemplate let-filter="filter" let-column="column"
+                        let-filterService="filterService">
+                        <simple-text-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
+                        </simple-text-filter>
+                    </ng-template>
+                </kendo-grid-column>
+                <kendo-grid-column field="propertyStatus" title="Property Status" width="120">
+                    <ng-template kendoGridFilterMenuTemplate let-filter="filter" let-column="column"
+                        let-filterService="filterService">
+                        <simple-text-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
+                        </simple-text-filter>
+                    </ng-template>
+                </kendo-grid-column>
+                <kendo-grid-column field="rightToBuy" title="Right To Buy" width="100">
+                    <ng-template kendoGridFilterMenuTemplate let-filter="filter" let-column="column"
+                        let-filterService="filterService">
+                        <simple-text-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
+                        </simple-text-filter>
+                    </ng-template>
+                </kendo-grid-column>
+
+
+
+            </kendo-grid>
+
+        </div>
+
+
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-12 text-right">
+            <button (click)="addTickedToWorksOrder()" [disabled]="mySelection.length == 0" class="btn btn-sm themeButton">Add Ticked To Works Order</button>
+            <button (click)="closeAddAssetWindow()" class="btn btn-sm themeButton ml-1">Close</button>
+        </div>
+    </div>
+
+    <div class="worksOrderAddAssetOverlay"></div>
+
+    <!-- window for add new hiearchy starts -->
+    <kendo-window [height]="640" [top]="15" [width]="700" title="Select Hierarchy..." *ngIf="hiearchyWindow"
+        (close)="closeHiearchyWindow()">
+        <div class="row hiearchyDiv">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <select class="form-control" id="sel1" (change)="getHiearchyTree()"
+                        [(ngModel)]="selectedHiearchyType">
+                        <option *ngFor="let hiearchyTypeList of hiearchyTypeLists"
+                            [ngValue]="hiearchyTypeList.hierarchyTypeCode">
+                            {{hiearchyTypeList.hierarchyTypeName}}</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-md-12">
+                <ul class="tree" *ngIf="hierarchyLevels">
+                    <ng-template #recursiveList let-hierarchyLevels>
+                        <li *ngFor="let item of hierarchyLevels" class="{{item?.assetId}}">
+
+                            <ng-container *ngIf="item.childLayers.length > 0; then someContent else otherContent">
+                            </ng-container>
+                            <ng-template #someContent>
+                                <input type="checkbox" [checked]="visitedHierarchy[item?.assetId] != undefined"
+                                    id="{{item?.assetId}}" class="chkBox" />
+                                <label
+                                    [className]="selectedhierarchyLevel != undefined ? ( selectedhierarchyLevel.assetId == item.assetId ? 'tree_label selected' : 'tree_label') : 'tree_label'"
+                                    (click)="selectHiearchy($event, item)" for="{{item?.assetId}}"><span
+                                        style="color:red;">({{
+                                        item?.assetName }})</span>
+                                    {{ item?.assetId }} - {{ item?.address }}</label>
+                            </ng-template>
+                            <ng-template #otherContent>
+                                <label (click)="selectHiearchy($event, item)"> <span
+                                        [className]="selectedhierarchyLevel != undefined ? ( selectedhierarchyLevel.assetId == item.assetId ? 'tree_label selected' : 'tree_label') : 'tree_label'"><span
+                                            style="color:red;">({{ item?.assetName }})</span> {{ item?.assetId }} -
+                                        {{ item?.address }}</span></label>
+                            </ng-template>
+
+                            <ul *ngIf="item.childLayers.length > 0">
+                                <ng-container
+                                    *ngTemplateOutlet="recursiveList; context:{ $implicit: item.childLayers }">
+                                </ng-container>
+                            </ul>
+                        </li>
+                    </ng-template>
+                    <ng-container *ngTemplateOutlet="recursiveList; context:{ $implicit: hierarchyLevels }">
+                    </ng-container>
+                </ul>
+
+
+                <div class="pull-right footerButton footerSec">
+                    <button (click)="closeHiearchyWindow()" class="btn btn-sm">Cancel</button>
+                    <button class="btn btn-sm btn-default themeButton" (click)="setHiearchyValues()">Ok</button>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+    </kendo-window>
+</kendo-window>

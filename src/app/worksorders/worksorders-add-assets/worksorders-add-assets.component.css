@@ -1,46 +1,43 @@
-.worksorder-header {
-  padding: 20px;
-  border: 1px solid #e0e0e1;
-  margin: 0px 0px 20px;
-  font-size: 13px;
-  color: #000;
-  background-color: white;
+.k-window {
+  position: fixed !important;
 }
 
-.worksorder-header * {
-  font-size: 13px;
-  color: #000;
-}
-
-.dropdown.list-unstyled {
-  position: absolute !important;
-}
-
-.k-treelist tbody td {
-  white-space: nowrap !important;
+.k-grid tbody td {
+  white-space: nowrap;
   line-height: 20px;
   padding: 8px 12px;
 }
 
-.headerBtnArea .actionBtnArea, .headerBtnArea .administrationBtnAera{
-  display: inline-block;
+.headerArea input[type=text] {
+  height: 27px;
+  font-size: .894rem;
+  line-height: 1.54;
+  color: #4E5155;
+  /* background-color: #fff; */
+  background-clip: padding-box;
+  border: 1px solid rgba(24, 28, 33, 0.1);
+  border-radius: .25rem;
+  width: 100%;
 }
 
-.hiearchyBtn {
-  max-width: 10.60%;
+input[readonly] {
+  background-color: #f5f5f5;
 }
 
-.hiearchyBtn button {
-  margin-left: 5px;
+.headerArea select {
+  height: calc(1.5rem + 2px);
+  background-position: right .625rem center;
+  font-size: .75rem;
+  line-height: 1.5;
+  background-clip: padding-box;
+  border: 1px solid rgba(24, 28, 33, 0.1);
+  width: 100%;
 }
 
-.propsecDiv {
-  width: 800px;
-  height: 590px;
-}
-
-.assetLabel {
-  max-width: 11%;
+.headerArea label {
+  margin-top: 5px;
+  display: block;
+  padding: 0;
 }
 
 /*------------------   Heiarchy css             ------------------------- */
@@ -67,8 +64,8 @@
 }
 
 /* ————————————————————–
-    Tree rows
-  */
+      Tree rows
+    */
 
 .tree li {
   line-height: 1.2;
@@ -95,8 +92,8 @@
 }
 
 /* ————————————————————–
-    Tree labels
-  */
+      Tree labels
+    */
 
 .tree_label {
   position: relative;
@@ -113,8 +110,8 @@ label.tree_label:hover {
 }
 
 /* ————————————————————–
-    Tree expanded icon
-  */
+      Tree expanded icon
+    */
 
 label.tree_label:before {
   background: #b42a2a;
@@ -137,8 +134,8 @@ label.tree_label:before {
 }
 
 /* ————————————————————–
-    Tree branches
-  */
+      Tree branches
+    */
 
 .tree li:before {
   position: absolute;
@@ -206,6 +203,7 @@ label.tree_label:after {
   overflow-y: scroll;
   border-radius: 5px;
   padding: 2px 0px;
+  margin-bottom: 0px;
 }
 
 #myUL li {
@@ -253,8 +251,6 @@ label.tree_label:after {
   margin: 0px 5px;
 }
 
-
-
 .filtersection {
   padding: 10px 0px;
   border-top: 1px solid gray;
@@ -265,11 +261,11 @@ label.tree_label:after {
   font-size: 18px;
 }
 
-.assetTbl td{
+.assetTbl td {
   word-break: break-all;
 }
 
-.readonlyCl{
+.readonlyCl {
   background: #eee2e2;
 }
 
@@ -279,8 +275,8 @@ label.tree_label:after {
 }
 
 /* .radioDiv {
-  padding-right: 6px;
-} */
+    padding-right: 6px;
+  } */
 
 .filterArea label {
   margin-bottom: 0!important;
@@ -296,12 +292,11 @@ label.radio-inline {
   margin-right: 3px;
 }
 
-
-.gridStateDiv{
-display: inline-block;
+.gridStateDiv {
+  display: inline-block;
 }
 
-.goBtnDiv{
+.goBtnDiv {
   padding-left: 6px;
 }
 
@@ -341,8 +336,6 @@ display: inline-block;
   }
 }
 
-
-
 @media only screen and (max-width: 768px) {
   .hiearchyDiv label {
     text-align: left !important;
@@ -352,6 +345,4 @@ display: inline-block;
     min-width: 16% !important;
     max-width: 16% !important;
   }
-  
-  
 }

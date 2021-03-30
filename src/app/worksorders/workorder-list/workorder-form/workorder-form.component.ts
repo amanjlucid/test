@@ -335,7 +335,7 @@ export class WorkOrderFormComponent implements OnInit {
       }
 
 
-    //   console.log('assetTmpSelcted edit '+ JSON.stringify( this.assetTmpSelcted));
+    // console.log('selectedWorkOrderAddEdit edit '+ JSON.stringify( this.selectedWorkOrderAddEdit));
       this.woForm.patchValue({
           conname: (this.contractSelcted.conname) ? this.contractSelcted.conname : '',
           cttcode: (this.contractSelcted.cttcode) ? this.contractSelcted.cttcode : '',

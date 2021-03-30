@@ -1,0 +1,22 @@
+.k-window {
+    position: fixed !important;
+}
+
+.k-treelist tbody td {
+    white-space: nowrap !important;
+    line-height: 20px;
+    padding: 8px 12px;
+  }
+
+  
+.selectTemplate{
+    display: inline-block;
+    width: 36%;
+    height: 28px;
+    font-size: .894rem;
+    color: #4E5155;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid rgba(24,28,33,0.1);
+    border-radius: .25rem;
+}

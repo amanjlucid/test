@@ -74,6 +74,7 @@
               <div class="dropdown-menu">
                 <a class="dropdown-item" href="javascript:void(0)" (click)="redirectToWorksOrder(dataItem)"> Works Order Details</a>
                 <a class="dropdown-item" href="javascript:void(0)" (click)="redirectToWorksOrderEdit(dataItem)">Edit</a>
+                <a class="dropdown-item" href="javascript:void(0)" (click)="deleteThis(dataItem)">Delete</a>
                 <a class="dropdown-item" href="javascript:void(0)">Defects </a>
                 <a class="dropdown-item" href="javascript:void(0)">Contract Costs</a>
                 <a class="dropdown-item" href="javascript:void(0)">Variations</a>
@@ -256,6 +257,53 @@
 
 
 </div>
+
+
+<kendo-dialog title="DELETE WORKS ORDERS" *ngIf="woFormDeleteWindow" (close)="closewoFormDeleteWindow()" [minWidth]="250" [width]="450">
+
+
+
+    <p  *ngIf="errorDeleteMsg"   class="deleteError">{{ errorDeleteMsg }}</p>
+    <p  *ngIf="successDeleteMsg"   class="successDeleteMsg">{{ successDeleteMsg }}</p>
+
+
+    <div *ngIf="deleteReasonMsgInput"   class="">
+
+        <div   class="form-group col-md-12">
+          <label class="form-label">Enter Reason For Deleting</label>
+          <textarea   type="text" class="form-control"
+            placeholder="" name="reason_for_delete" #reason_for_deleteInput></textarea>
+
+          <div  class="invalid-feedback">
+            <div ></div>
+          </div>
+        </div>
+
+
+
+
+        <div class="buttonDiv pull-right mb-4">
+
+          <button (click)="finalDeleteSubmit(reason_for_deleteInput.value)" type="button" class="btn btn-sm themeButton mr-1">Delete</button>
+
+
+
+        </div>
+
+
+
+        </div>
+
+
+
+
+
+
+
+  </kendo-dialog>
+
+
+
 
 
 <div class="worksOrderOverlay"></div>
