@@ -238,6 +238,7 @@
               <div class="dropdown-menu">
 
                 <a class="dropdown-item" href="javascript:void(0)" (click)="openAssetChecklist()">Asset Checklist</a>
+                <a class="dropdown-item" href="javascript:void(0)" (click)="openAssetDetailChild(dataItem)">Asset Details</a>
               </div>
             </li>
           </ng-template>
@@ -441,6 +442,6 @@
     (refreshWorkOrderDetails)="refreshGrid($event)"></app-worksorders-add-assetsworklist>
 
   <app-worksorders-asset-detail *ngIf="assetDetailWindow" [assetDetailWindow]="assetDetailWindow"
-    [selectedChildRow]="selectedChildRow" [selectedParentRow]="selectedParentRow"  [worksOrderData] ="worksOrderData"
+    [selectedChildRow]="selectedChildRow"   [selectedParentRow]="selectedParentRow" [treelevel] = "treelevel" [selectedRow]="selectedRow"  [worksOrderData] ="worksOrderData"
     (closeAssetDetailEvent)="closeAssetDetailWindow($event)">
   </app-worksorders-asset-detail>
