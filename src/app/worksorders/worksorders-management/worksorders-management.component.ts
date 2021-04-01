@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewEncapsulation, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { FilterService, SelectableSettings, TreeListComponent, ExpandEvent } from '@progress/kendo-angular-treelist';
-import { AlertService, HelperService, WorksorderManagementService, ConfirmationDialogService } from '../../_services'
+import { AlertService, HelperService, WorksorderManagementService, ConfirmationDialogService, SharedService } from '../../_services'
 import { SubSink } from 'subsink';
 
 @Component({
@@ -31,18 +31,26 @@ export class WorksordersManagementComponent implements OnInit {
   @ViewChild(TreeListComponent) public grid: TreeListComponent;
   selectedProgramme: any;
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
+  worksOrderAccess = [];
 
   constructor(
     private worksorderManagementService: WorksorderManagementService,
     private helperService: HelperService,
     private alertService: AlertService,
     private chRef: ChangeDetectorRef,
-    private confirmationDialogService: ConfirmationDialogService
+    private confirmationDialogService: ConfirmationDialogService,
+    private sharedServie : SharedService
   ) { }
 
   ngOnInit(): void {
     //update notification on top
     this.helperService.updateNotificationOnTop();
+    this.sharedServie.worksOrdersAccess.subscribe(
+      data => {
+        this.worksOrderAccess = data;
+        
+      }
+    )
 
     this.getManagement();
   }

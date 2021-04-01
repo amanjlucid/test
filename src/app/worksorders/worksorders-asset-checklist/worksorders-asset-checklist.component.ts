@@ -11,8 +11,8 @@ import { AlertService, HelperService, SharedService } from '../../_services'
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WorksordersAssetChecklistComponent implements OnInit {
-  @Input() assetchecklistWindow:boolean = false;
-  @Input() selectedChildRow:any;
+  @Input() assetchecklistWindow: boolean = false;
+  @Input() selectedChildRow: any;
   @Output() closeAssetchecklistEvent = new EventEmitter<boolean>();
   subs = new SubSink();
   state: State = {
@@ -24,16 +24,18 @@ export class WorksordersAssetChecklistComponent implements OnInit {
       filters: []
     }
   }
-  assetCheckListData:any;
+  assetCheckListData: any;
   gridView: DataResult;
   gridLoading = true
   pageSize = 25;
   title = 'Works Orders Asset Checklist';
-  programmeData:any;
-  worksOrderData:any;
+  programmeData: any;
+  worksOrderData: any;
   gridHeight = 680;
   filterToggle = false;
   readonly = true;
+
+  checklistDocWindow = false;
 
   constructor(
     private chRef: ChangeDetectorRef,
@@ -71,11 +73,11 @@ export class WorksordersAssetChecklistComponent implements OnInit {
     // }
   }
 
-  setSeletedRow(item){
+  setSeletedRow(item) {
 
   }
 
-  closeAssetcheckListWindow(){
+  closeAssetcheckListWindow() {
     this.assetchecklistWindow = false;
     this.closeAssetchecklistEvent.emit(this.assetchecklistWindow);
   }
@@ -86,7 +88,17 @@ export class WorksordersAssetChecklistComponent implements OnInit {
     if (this.filterToggle) this.gridHeight = 400;
     else this.gridHeight = 680;
     this.chRef.detectChanges();
-    
+
+  }
+
+  openChecklistDoc() {
+    $('.checklistOverlay').addClass('ovrlay');
+    this.checklistDocWindow = true;
+  }
+
+  closeChecklistDoc() {
+    $('.checklistOverlay').removeClass('ovrlay');
+    this.checklistDocWindow = false;
   }
 
 }

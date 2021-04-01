@@ -31,13 +31,13 @@
             aria-expanded="false">Actions</button>
           <div class="dropdown-menu" x-placement="bottom-start"
             style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
-            <a class="dropdown-item" href="javascript:void(0)">Release </a>
+            <!-- <a class="dropdown-item" href="javascript:void(0)">Release </a>
             <a class="dropdown-item" href="javascript:void(0)">Issue</a>
             <a class="dropdown-item" href="javascript:void(0)">Accept</a>
             <a class="dropdown-item" href="javascript:void(0)">Handover</a>
             <a class="dropdown-item" href="javascript:void(0)">Sign Off</a>
             <a class="dropdown-item" href="javascript:void(0)">Remove</a>
-            <a class="dropdown-item" href="javascript:void(0)">Cancel</a>
+            <a class="dropdown-item" href="javascript:void(0)">Cancel</a> -->
 
           </div>
         </div>
@@ -241,11 +241,25 @@
                 <div class="dropdown-toggle">
                   <div class="dropdown-item">Add Asset(s)</div>
                   <div class="dropdown-menu">
-                    <a class="dropdown-item" (click)="openAddAssetWorkOrdersList(1, dataItem)"
-                      href="javascript:void(0)" [ngClass]="{'disabled' : dataItem.wostatus != 'New'}">Asset(s) From Work List</a>
+                    <a class="dropdown-item" (click)="openAddAssetWorkOrdersList(1, dataItem)" href="javascript:void(0)"
+                      [ngClass]="{'disabled' : dataItem.wostatus != 'New'}">Asset(s) From Work List</a>
 
                   </div>
                 </div>
+                <!-- <div class="dropdown-toggle">
+                  <div class="dropdown-item">Action</div>
+                  <div class="dropdown-menu">
+
+                    <a class="dropdown-item" href="javascript:void(0)">Release </a>
+                    <a class="dropdown-item" href="javascript:void(0)">Issue</a>
+                    <a class="dropdown-item" href="javascript:void(0)">Accept</a>
+                    <a class="dropdown-item" href="javascript:void(0)">Handover</a>
+                    <a class="dropdown-item" href="javascript:void(0)">Sign Off</a>
+                    <a class="dropdown-item" href="javascript:void(0)">Remove</a>
+                    <a class="dropdown-item" href="javascript:void(0)">Cancel</a>
+
+                  </div>
+                </div> -->
               </div>
             </li>
           </ng-template>
@@ -437,7 +451,8 @@
   </app-worksorders-new-phase>
 
   <app-worksorders-package-mapping *ngIf="packageMappingWindow" [packageMappingWindow]="packageMappingWindow"
-    (closePackageMappingEvent)="cloasePackageMappingWindow($event)"></app-worksorders-package-mapping>
+    (closePackageMappingEvent)="cloasePackageMappingWindow($event)" [worksOrderSingleData]="worksOrderSingleData">
+  </app-worksorders-package-mapping>
 
   <app-worksorders-add-assets *ngIf="addAssetWindow" [addAssetWindow]="addAssetWindow"
     [actualSelectedRow]="actualSelectedRow" (closeAddAssetEvent)="closeAddAssetWindow($event)"

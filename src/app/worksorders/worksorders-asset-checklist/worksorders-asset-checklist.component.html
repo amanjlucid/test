@@ -11,7 +11,7 @@
             </button>
             <button type="button" class="btn btn-sm themeButton">Export</button>
             <button type="button" class="btn btn-sm themeButton">Administration</button>
-            <button type="button" class="btn btn-sm themeButton">Doucuments</button>
+            <button type="button" class="btn btn-sm themeButton" (click)="openChecklistDoc()">Doucuments</button>
             <button type="button" class="btn btn-sm themeButton">Work</button>
             <button type="button" class="btn btn-sm themeButton">Defects</button>
             <button type="button" class="btn btn-sm themeButton">Variations</button>
@@ -222,5 +222,11 @@
 
         </div>
     </div>
+
+    <div class="checklistOverlay"></div>
+
+    <app-worksorders-asset-checklist-document *ngIf="checklistDocWindow" [checklistDocWindow]="checklistDocWindow"
+        (closeAssetchecklistDocEvent)="closeChecklistDoc($event)"></app-worksorders-asset-checklist-document>
+
 
 </kendo-window>

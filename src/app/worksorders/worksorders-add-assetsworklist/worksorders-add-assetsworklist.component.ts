@@ -58,6 +58,8 @@ export class WorksordersAddAssetsworklistComponent implements OnInit {
   phaseData: any;
 
   packageToWorklistWindow = false;
+  selectedRow: any = [];
+  planYear: any;
 
   constructor(
     private propSecGrpService: PropertySecurityGroupService,
@@ -84,13 +86,15 @@ export class WorksordersAddAssetsworklistComponent implements OnInit {
       forkJoin([
         this.assetAttributeService.getAssetTypes(),
         this.worksorderManagementService.getPhase(this.actualSelectedRow.wosequence, this.actualSelectedRow.wopsequence),
-        this.worksorderManagementService.getWorksOrderByWOsequence(this.actualSelectedRow.wosequence)
+        this.worksorderManagementService.getWorksOrderByWOsequence(this.actualSelectedRow.wosequence),
+        this.worksorderManagementService.getPlanYear(this.actualSelectedRow.wosequence)
       ]).subscribe(
         resp => {
           // console.log(resp);
           const assetType = resp[0];
           const phase = resp[1];
           const worksOrder = resp[2];
+          this.planYear = resp[3].data;
 
           if (assetType.isSuccess) this.assetTypes = assetType.data;
           if (phase.isSuccess) this.phaseData = phase.data;
@@ -262,45 +266,89 @@ export class WorksordersAddAssetsworklistComponent implements OnInit {
       if (this.headerFilters.wlassid == "") {
         this.headerFilters.wlassid = this.actualSelectedRow.assid;
       }
-    } 
-    
+    }
+
     this.headerFilters.CurrentPage = 0;
     this.state.skip = 0;
     this.stateChange.next(this.headerFilters);
   }
 
   mySelectionKey(context: RowArgs): string {
-    return encodeURIComponent(context.dataItem.assid);
+    return context.dataItem.wlcomppackage;
   }
 
-  addTickedToWorksOrder(strCheckOrProcess = "C") {
+  addTickedToWorksOrder(type = 1, strCheckOrProcess = "C") {
     if (strCheckOrProcess != "C" && strCheckOrProcess != "P") {
       return
     }
 
-    let params = {
-      strCheckOrProcess: strCheckOrProcess,
-      assidlist: this.mySelection,
-      strUserId: this.currentUser.userId,
-      wopsequence: this.actualSelectedRow.wopsequence,
-      wosequence: this.actualSelectedRow.wosequence,
+    let addWorksOrder;
+    if (type == 1) {
+      if (this.selectedRow.length > 0) {
+        let req = [];
+        let params = {
+          CheckOrProcess: strCheckOrProcess,
+          strASSID_WLCODE_WLATAID_WLPLANYEAR_STAGE_CHECK: '',
+          UserId: this.currentUser.userId,
+          WOPSEQUENCE: this.actualSelectedRow.wopsequence,
+          WOSEQUENCE: this.actualSelectedRow.wosequence,
+        }
+
+        for (let row of this.selectedRow) {
+          req.push(row.wlassid)
+          req.push(row.wlcode)
+          req.push(row.wlataid)
+          req.push(row.wlplanyear)
+          req.push(row.matchedSTAGESURCDE)
+          req.push(row.matchedCHECKSURCDE)
+        }
+
+        params.strASSID_WLCODE_WLATAID_WLPLANYEAR_STAGE_CHECK = req.toString();
+
+        addWorksOrder = this.worksorderManagementService.addWorksOrderAssetsFromWorkList(params)
+
+      }
+
+    } else if (type == 2) {
+      let params = {
+        WOPSEQUENCE: this.actualSelectedRow.wopsequence,
+        WOSEQUENCE: this.actualSelectedRow.wosequence,
+        CTTSURCDE: this.worksOrder.cttsurcde,
+        PlANYEAR: 0,
+        EleCode: '',
+        WLCOMPPACKAGE: '',
+        WILDCARDADDRESS: '',
+        ASSID: this.actualSelectedRow.assid,
+        WOCHECKSURCDE: '',
+        FilterSql: '',
+        HitTypeCode: (this.selectedHiearchyType) ? this.selectedHiearchyType : '',
+        HSOWNASSID: (this.selectedhierarchyLevel) ? this.selectedhierarchyLevel.assetId : '',
+        UserId: this.currentUser.userId,
+        WLTAG: '',
+        CheckOrProcess: strCheckOrProcess,
+
+      }
+
+      addWorksOrder = this.worksorderManagementService.addWorksOrderAssetsFromWorkListALL(params)
     }
 
+
     this.subs.add(
-      this.worksorderManagementService.addWorksOrderAssets(params).subscribe(
+      addWorksOrder.subscribe(
         data => {
+
           if (!data.isSuccess) {
             this.alertService.error(data.message)
             return
           }
-          if (strCheckOrProcess == "C" && data.data[0].pRETURNSTATUS == "S") {
-            this.openConfirmationDialog(data.data)
-          } else if (strCheckOrProcess == "P" && data.data[0].pRETURNSTATUS == "S") {
-            this.alertService.success(data.data[0].pRETURNMESSAGE);
+          if (strCheckOrProcess == "C" && data.data['validYN'] == "S") {
+            this.openConfirmationDialog(type, data.data)
+          } else if (strCheckOrProcess == "P" && data.data['validYN'] == "S") {
+            this.alertService.success(data.data['validationMessage']);
             this.refreshWorkOrderDetails.emit(true);
             this.searchGrid();
           } else if (data.data[0].pRETURNSTATUS != "S") {
-            this.alertService.error(data.data[0].pRETURNMESSAGE)
+            this.alertService.error(data.data['validYN'])
           }
         },
         err => this.alertService.error(err)
@@ -308,15 +356,15 @@ export class WorksordersAddAssetsworklistComponent implements OnInit {
     )
   }
 
-  openConfirmationDialog(resp) {
+  openConfirmationDialog(type, resp) {
     let strCheckOrProcess = "N";
-    let res = resp[0]
-    if (res.pRETURNSTATUS == "S" && res.pWPLSEQUENCE == 0 && res.pWPRSEQUENCE == 0) {
+    let res = resp
+    if (res.validYN == "S" && res.returnWPLSEQUENCE == 0 && res.returnWPRSEQUENCE == 0) {
       strCheckOrProcess = "P"
     }
     $('.k-window').css({ 'z-index': 1000 });
-    this.confirmationDialogService.confirm('Please confirm..', `${res.pRETURNMESSAGE}`)
-      .then((confirmed) => (confirmed) ? this.addTickedToWorksOrder(strCheckOrProcess) : console.log(confirmed))
+    this.confirmationDialogService.confirm('Please confirm..', `${res.validationMessage}`)
+      .then((confirmed) => (confirmed) ? this.addTickedToWorksOrder(type, strCheckOrProcess) : console.log(confirmed))
       .catch(() => console.log('Attribute dismissed the dialog.'));
   }
 
@@ -328,16 +376,24 @@ export class WorksordersAddAssetsworklistComponent implements OnInit {
       this.mySelection.push(item.wlcomppackage);
     }
 
-    console.log(this.mySelection)
+    const checkObj = this.selectedRow.find(x => x.wlcomppackage == item.wlcomppackage);
+
+    if (checkObj) {
+      this.selectedRow = this.selectedRow.filter(x => x.wlcomppackage != item.wlcomppackage);
+    } else {
+      this.selectedRow.push(item);
+    }
+
+    // console.log(this.selectedRow)
   }
 
-  openPackageWindow(){
+  openPackageWindow() {
     $('.worksOrderAddAssetOverlay').addClass('ovrlay');
     this.packageToWorklistWindow = true;
-    
+
   }
 
-  closePackageWindowEvent($event){
+  closePackageWindowEvent($event) {
     this.packageToWorklistWindow = $event;
     $('.worksOrderAddAssetOverlay').removeClass('ovrlay');
     this.searchGrid()
