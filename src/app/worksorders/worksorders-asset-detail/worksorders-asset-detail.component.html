@@ -440,7 +440,7 @@
         <label for="">Provide Quantity:</label>
     </div>
   <div class="col-md-1">
-             <input [(ngModel)]="itemData.asaquantity" (ngModelChange)="modelChanged($event)"  type="text" class="form-control"  placeholder="" value="">
+             <input (keypress)="numberOnly($event)" [(ngModel)]="itemData.asaquantity" (ngModelChange)="modelChanged($event)"  type="text" class="form-control"  placeholder="" value="">
   </div>
 
   <div class="col-md-1">
