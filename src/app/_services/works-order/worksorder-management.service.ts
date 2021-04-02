@@ -157,5 +157,11 @@ export class WorksorderManagementService {
         return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/ApplyallSelectedOrderMapping`, body, this.httpOptions);
     }
 
+    assetChecklistGridData(wosequence, assid, wopsequence) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/WorksOrdersAssetChecklistsForAsset?wosequence=${wosequence}&assid=${assid}&wopsequence=${wopsequence}`, this.httpOptions);
+    }
+
+    //http://104.40.138.8/RowanwoodWebAPI/api/workorderdetails/WorksOrdersAssetChecklistsForAsset?wosequence=705&assid=00ACE3-BLK&wopsequence=4
+
  
 }

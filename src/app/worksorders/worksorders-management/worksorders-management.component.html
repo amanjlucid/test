@@ -71,8 +71,10 @@
                             <div class="dropdown-menu">
                                 <a class="dropdown-item" href="javascript:void(0)">Edit</a>
                                 <a class="dropdown-item" href="javascript:void(0)">Delete</a>
-                                <a class="dropdown-item" href="javascript:void(0)">Works Order Detail</a>
-                                <a class="dropdown-item" href="javascript:void(0)">Package Mapping</a>
+                                <a class="dropdown-item" href="javascript:void(0)"
+                                    (click)="redirectToWorksOrder(dataItem)">Works Order Detail</a>
+                                <a class="dropdown-item" href="javascript:void(0)"
+                                    (click)="openPackageMappingWindow(dataItem)">Package Mapping</a>
 
                             </div>
                         </li>
@@ -268,3 +270,7 @@
     [formMode]="managementformMode" [selectedProgramme]="selectedProgramme"
     (closeNewManagementEvent)="closeNewManagementEvent($event)" (refreshManagementGrid)="refreshManagementGrid($event)">
 </app-worksorders-newmanagement>
+
+<app-worksorders-package-mapping *ngIf="packageMappingWindow" [packageMappingWindow]="packageMappingWindow"
+    (closePackageMappingEvent)="cloasePackageMappingWindow($event)" [worksOrderSingleData]="worksOrderSingleData">
+</app-worksorders-package-mapping>

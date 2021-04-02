@@ -2,6 +2,12 @@
     position: fixed !important;
 }
 
+.k-grid tbody td {
+    white-space: nowrap;
+    line-height: 20px;
+    padding: 8px 12px;
+}
+
 .actionBtnDiv button {
     margin-left: 2px;
 }
@@ -9,12 +15,6 @@
 .dropdown.list-unstyled {
     position: absolute !important;
 }
-
-.k-grid tbody td {
-    white-space: nowrap;
-    line-height: 20px;
-    padding: 8px 12px;
-  }
 
 .worksorder-assetchecklist-header {
     padding: 20px;

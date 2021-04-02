@@ -35,6 +35,7 @@ export class WorksordersPackageMappingComponent implements OnInit {
   templates: any;
   templateid: any = 0;
   public mySelection: number[] = [];
+  worksOrderData: any;
 
 
   constructor(
@@ -46,10 +47,20 @@ export class WorksordersPackageMappingComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.subs.add(
+      this.worksorderManagementService.getWorksOrderByWOsequence(this.worksOrderSingleData.wosequence).subscribe(
+        data => {
+          if (data.isSuccess) {
+            this.worksOrderData = data.data;
+            this.getTemplate();
+            this.getWorksPackages();
+          } else {
+            this.alertService.error(data.message);
+          }
+        }
+      )
+    )
 
-    this.getTemplate();
-
-    this.getWorksPackages();
   }
 
   ngOnDestroy() {
@@ -59,8 +70,8 @@ export class WorksordersPackageMappingComponent implements OnInit {
 
   getWorksPackages() {
     const param = {
-      "WOSEQUENCE": this.worksOrderSingleData.wosequence,
-      "CTTSURCDE": this.worksOrderSingleData.cttsurcde,
+      "WOSEQUENCE": this.worksOrderData.wosequence,
+      "CTTSURCDE": this.worksOrderData.cttsurcde,
       "WPHCODEFilter": "",
       "WPHNAMEFilter": "",
       "ATADESCRIPTIONFilter": "",
@@ -85,7 +96,7 @@ export class WorksordersPackageMappingComponent implements OnInit {
 
   getTemplate() {
     this.subs.add(
-      this.worksorderManagementService.getPackageTemplate(this.worksOrderSingleData.wosequence).subscribe(
+      this.worksorderManagementService.getPackageTemplate(this.worksOrderData.wosequence).subscribe(
         data => {
           if (data.isSuccess) {
             this.templates = data.data;
@@ -137,8 +148,8 @@ export class WorksordersPackageMappingComponent implements OnInit {
       }
 
       let params = {
-        sequence: this.worksOrderSingleData.wosequence,
-        cttsurcde: this.worksOrderSingleData.cttsurcde,
+        sequence: this.worksOrderData.wosequence,
+        cttsurcde: this.worksOrderData.cttsurcde,
         wphcode: wphcode,//[],
         ataid: ataid,//[],
         checksurcde: this.templateid
@@ -149,8 +160,8 @@ export class WorksordersPackageMappingComponent implements OnInit {
     } else {
 
       let params = {
-        WOSEQUENCE: this.worksOrderSingleData.wosequence,
-        CTTSURCDE: this.worksOrderSingleData.cttsurcde,
+        WOSEQUENCE: this.worksOrderData.wosequence,
+        CTTSURCDE: this.worksOrderData.cttsurcde,
         WOCHECKSURCDE: this.templateid,
         WPHCODEFilter: '',
         WPHNAMEFilter: '',
@@ -163,18 +174,20 @@ export class WorksordersPackageMappingComponent implements OnInit {
 
     }
 
-    applyApi.subscribe(
-      data => {
-        if (!data.isSuccess) {
-          this.alertService.error(data.message);
-          return;
-        }
+    this.subs.add(
+      applyApi.subscribe(
+        data => {
+          if (!data.isSuccess) {
+            this.alertService.error(data.message);
+            return;
+          }
 
-        this.templateid = 0;
-        this.mySelection = [];
-        this.getWorksPackages();
-      },
-      err => this.alertService.error(err)
+          this.templateid = 0;
+          this.mySelection = [];
+          this.getWorksPackages();
+        },
+        err => this.alertService.error(err)
+      )
     )
 
 

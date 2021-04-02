@@ -3,6 +3,7 @@ import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { FilterService, SelectableSettings, TreeListComponent, ExpandEvent } from '@progress/kendo-angular-treelist';
 import { AlertService, HelperService, WorksorderManagementService, ConfirmationDialogService, SharedService } from '../../_services'
 import { SubSink } from 'subsink';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-worksorders-management',
@@ -33,22 +34,26 @@ export class WorksordersManagementComponent implements OnInit {
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
   worksOrderAccess = [];
 
+  packageMappingWindow = false
+  worksOrderSingleData: any;
+
   constructor(
     private worksorderManagementService: WorksorderManagementService,
     private helperService: HelperService,
     private alertService: AlertService,
     private chRef: ChangeDetectorRef,
     private confirmationDialogService: ConfirmationDialogService,
-    private sharedServie : SharedService
+    private sharedService: SharedService,
+    private router: Router,
   ) { }
 
   ngOnInit(): void {
     //update notification on top
     this.helperService.updateNotificationOnTop();
-    this.sharedServie.worksOrdersAccess.subscribe(
+    this.sharedService.worksOrdersAccess.subscribe(
       data => {
         this.worksOrderAccess = data;
-        
+
       }
     )
 
@@ -261,5 +266,22 @@ export class WorksordersManagementComponent implements OnInit {
     this.selectedProgramme = dataItem
   }
 
+
+  openPackageMappingWindow(dataItem) {
+    this.worksOrderSingleData = dataItem
+    this.packageMappingWindow = true;
+    $('.newManagementOverlay').addClass('ovrlay');
+  }
+
+  cloasePackageMappingWindow(eve) {
+    this.packageMappingWindow = eve;
+    $('.newManagementOverlay').removeClass('ovrlay');
+  }
+
+  redirectToWorksOrder(item) {
+    this.sharedService.changeWorksOrderSingleData(item);
+    localStorage.setItem('worksOrderSingleData', JSON.stringify(item)); // remove code on logout service
+    this.router.navigate(['worksorders/details']);
+  }
 
 }
