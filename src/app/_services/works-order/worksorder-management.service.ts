@@ -114,26 +114,26 @@ export class WorksorderManagementService {
         );
     }
 
-    getWorksPackagesForAssets(params){
+    getWorksPackagesForAssets(params) {
         let body = JSON.stringify(params);
         return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWorksPackagesForAssets `, body, this.httpOptions)
-    } 
+    }
 
     getPlanYear(WOSEQUENCE) {
         return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetPlanYear?WOSEQUENCE=${WOSEQUENCE}`, this.httpOptions);
     }
 
-    worksOrdersInsertIntoWorkList (params){
+    worksOrdersInsertIntoWorkList(params) {
         let body = JSON.stringify(params);
         return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WorksOrdersInsertIntoWorkList  `, body, this.httpOptions)
     }
 
-    addWorksOrderAssetsFromWorkList (params){
+    addWorksOrderAssetsFromWorkList(params) {
         let body = JSON.stringify(params);
         return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/AddWorksOrderAssetsFromWorkList  `, body, this.httpOptions)
     }
 
-    addWorksOrderAssetsFromWorkListALL (params){
+    addWorksOrderAssetsFromWorkListALL(params) {
         let body = JSON.stringify(params);
         return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/AddWorksOrderAssetsFromWorkListALL  `, body, this.httpOptions)
     }
@@ -161,7 +161,22 @@ export class WorksorderManagementService {
         return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/WorksOrdersAssetChecklistsForAsset?wosequence=${wosequence}&assid=${assid}&wopsequence=${wopsequence}`, this.httpOptions);
     }
 
-    //http://104.40.138.8/RowanwoodWebAPI/api/workorderdetails/WorksOrdersAssetChecklistsForAsset?wosequence=705&assid=00ACE3-BLK&wopsequence=4
+    getPredecessors(params) {
 
- 
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWEBWorksOrdersAssetChecklistsForPredecessors`, body, this.httpOptions);
+
+    }
+
+    specificWorkOrderAssets(wosequence, assid, wopsequence) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/SpecificWorkOrderAssets?wosequence=${wosequence}&assid=${assid}&wopsequence=${wopsequence}`, this.httpOptions);
+    }
+
+    setStatus(apiName, params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/${apiName}`, body, this.httpOptions);
+
+    }
+
+
 }

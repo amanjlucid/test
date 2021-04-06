@@ -1,0 +1,118 @@
+<kendo-window title="{{title}}" *ngIf="predecessors" (close)="closepredecessors()" [top]="20" [minWidth]="700"
+    [width]="1100" [height]="auto" [minHeight]="350">
+
+    <div class="row">
+        <div class="col-md-12 assetDetails">
+            <div class="row">
+                <div class="col-md-2"><label>Works Order: {{worksOrderData?.wosequence}}</label> </div>
+                <div class="col-md-10"><input class="form-control form-control-sm" type="text"
+                        value="{{worksOrderData?.woname}}" [readonly]="readonly"></div>
+            </div>
+
+            <div class="row mt-1">
+                <div class="col-md-2">Asset: </div>
+                <div class="col-md-2"><input class="form-control form-control-sm" type="text"
+                        value="{{commonParams?.assid}}" [readonly]="readonly"></div>
+                <div class="col-md-5"><input class="form-control form-control-sm" type="text"
+                        value="{{commonParams?.assid}}" [readonly]="readonly"></div>
+                <div class="col-md-1"><label>Phase:</label> </div>
+                <div class="col-md-2"><input class="form-control form-control-sm" type="text"
+                        value="{{phaseData?.wopname}}" [readonly]="readonly"></div>
+            </div>
+
+            <div class="row mt-1">
+                <div class="col-md-2"><label>Stage:</label> </div>
+                <div class="col-md-2"><input class="form-control form-control-sm" type="text"
+                        value="{{commonParams?.wostagename}}" [readonly]="readonly"></div>
+                <div class="col-md-2"><label>Checklist:</label> </div>
+                <div class="col-md-2"><input class="form-control form-control-sm" type="text"
+                        value="{{commonParams?.wocheckname}}" [readonly]="readonly"></div>
+                <div class="col-md-2"><label>Status:</label> </div>
+                <div class="col-md-2"><input class="form-control form-control-sm" type="text"
+                        value="{{commonParams?.woasscheckstatus}}" [readonly]="readonly"></div>
+            </div>
+        </div>
+
+
+
+
+        <div class="col-md-12 mt-2">
+            <kendo-grid [data]="gridView" [height]="auto" [selectable]="{
+                    mode: 'multiple'
+                  }" filterable="menu" [resizable]="true" [sortable]="{
+                    allowUnsort: true,
+                    mode: 'multiple'
+                    }" [skip]="state.skip" [pageSize]="pageSize" [rowHeight]="36" (pageChange)="pageChange($event)"
+                scrollable="virtual" [sort]="state.sort" [filter]="state.filter" (sortChange)="sortChange($event)"
+                (filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)" [navigable]="true"
+                [virtualColumns]="true" [loading]="loading">
+
+
+                <kendo-grid-column field="dependenciesIndicator" title="" width="40" [filterable]="false">
+                    <ng-template kendoGridHeaderTemplate>
+                        <i class="fa fa-list" aria-hidden="true"></i>
+                    </ng-template>
+
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <i (click)="openPredecessors(dataItem)" class="fa fa-list"
+                            *ngIf="dataItem.dependenciesIndicator == 'I'" aria-hidden="true"></i>
+                    </ng-template>
+                </kendo-grid-column>
+
+                <kendo-grid-column field="wostagename" title="" width="40" [filterable]="false" [resizable]="false">
+                    <ng-template kendoGridHeaderTemplate>
+                        <img style="height: 14px;" src="assets/img/icons/tick.png" />
+                    </ng-template>
+
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <img style="height: 14px;" *ngIf="dataItem.itemIsCompleted != 'N'"
+                            src="assets/img/icons/tick.png" />
+                    </ng-template>
+
+                </kendo-grid-column>
+
+                <kendo-grid-column field="worksOrderAssetChecklistFileCount" title="" width="40" [filterable]="false"
+                    [resizable]="false">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <div style="width:100%; text-align: center;">
+                            <img style="height:16px;" *ngIf="dataItem.worksOrderAssetChecklistFileCount != 0"
+                                src="assets/img/icons/attach.png" />
+                        </div>
+                    </ng-template>
+                </kendo-grid-column>
+
+
+
+
+                <kendo-grid-column field="wostagename" title="Stage" width="100">
+                </kendo-grid-column>
+                <kendo-grid-column field="wocheckname" title="Name" width="280">
+                </kendo-grid-column>
+                <kendo-grid-column field="wocheckresp" title="Responsibility" width="140">
+                </kendo-grid-column>
+                <kendo-grid-column field="wocheckspeciaL1" title="Special" width="120">
+                </kendo-grid-column>
+                <kendo-grid-column field="woasscheckstatus" title="Status" width="120">
+                </kendo-grid-column>
+
+                <kendo-grid-column field="woasscheckcomment" title="Comment(s)" width="180">
+                </kendo-grid-column>
+
+            </kendo-grid>
+
+        </div>
+
+        <div class="col-md-12 text-right mt-4">
+            <button (click)="closepredecessors()" class="btn btn-sm themeButton ml-1">Close</button>
+        </div>
+    </div>
+
+
+    <div class="predecessorsOverlay"></div>
+
+    <app-worksorders-asset-checklist-predecessors *ngIf="predecessorsInner" [predecessors]="predecessorsInner"
+        [predecessorsWindowFrom]="'inner'" [selectedChecklist]="innerselectedChecklist"
+        (closeInnerPredecessorsEvent)="closeInnerPredessor($event)">
+    </app-worksorders-asset-checklist-predecessors>
+
+</kendo-window>

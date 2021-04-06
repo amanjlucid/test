@@ -27,6 +27,7 @@ import { WorksordersAddAssetsworklistComponent } from '../worksorders-add-assets
 import { WorksordersAddPackageToWorklistComponent } from '../worksorders-add-package-to-worklist/worksorders-add-package-to-worklist.component';
 import { WorksordersAddPackageEnterQuantityComponent } from '../worksorders-add-package-enter-quantity/worksorders-add-package-enter-quantity.component';
 import { WorksordersAssetChecklistDocumentComponent } from '../worksorders-asset-checklist-document/worksorders-asset-checklist-document.component';
+import { WorksordersAssetChecklistPredecessorsComponent } from '../worksorders-asset-checklist-predecessors/worksorders-asset-checklist-predecessors.component';
 
 @NgModule({
   declarations: [
@@ -45,7 +46,8 @@ import { WorksordersAssetChecklistDocumentComponent } from '../worksorders-asset
     WorksordersAddAssetsworklistComponent,
     WorksordersAddPackageToWorklistComponent,
     WorksordersAddPackageEnterQuantityComponent,
-    WorksordersAssetChecklistDocumentComponent
+    WorksordersAssetChecklistDocumentComponent,
+    WorksordersAssetChecklistPredecessorsComponent
   ],
 
   imports: [

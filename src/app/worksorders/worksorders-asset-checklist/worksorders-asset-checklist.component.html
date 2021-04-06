@@ -29,8 +29,8 @@
                                     <input type="text" value="{{worksOrderData?.woname}}"
                                         class="form-control form-control-sm" [readonly]="readonly">
                                 </div>
-                                <div class="col-md-2">Phase: </div>
-                                <div class="col-md-1 text-right"><input type="text" class="form-control form-control-sm"
+                                <div class="col-md-1">Phase: </div>
+                                <div class="col-md-2 text-right"><input type="text" class="form-control form-control-sm"
                                         [readonly]="readonly" value="{{phaseData?.wopname }}">
                                 </div>
                             </div>
@@ -180,7 +180,7 @@
                     mode: 'multiple'
                   }" filterable="menu" [resizable]="true" [sortable]="{
                     allowUnsort: true,
-                    mode: 'multiple'
+                    mode: 'single'
                     }" [skip]="state.skip" [pageSize]="pageSize" [rowHeight]="36" (pageChange)="pageChange($event)"
                 scrollable="virtual" [sort]="state.sort" [filter]="state.filter" (sortChange)="sortChange($event)"
                 (filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)" [navigable]="true"
@@ -192,11 +192,109 @@
                             <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"
                                 (click)="setSeletedRow(dataItem)"></i>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" href="javascript:void(0)">Status</a>
-                                <a class="dropdown-item" href="javascript:void(0)">Dates</a>
+
+                                <div class="dropdown-toggle">
+                                    <div class="dropdown-item">Status</div>
+                                    <div class="dropdown-menu">
+
+                                        <a class="dropdown-item" (click)="setStatus('NA', dataItem)"
+                                            href="javascript:void(0)">
+                                            Set to N/A</a>
+
+                                        <div class="dropdown-toggle">
+                                            <div class="dropdown-item">Set to In Progress</div>
+                                            <div class="dropdown-menu">
+                                                <a class="dropdown-item" (click)="setStatus('IPY', dataItem)"
+                                                    href="javascript:void(0)">Yesterday</a>
+                                                <a class="dropdown-item" (click)="setStatus('IPT', dataItem)"
+                                                    href="javascript:void(0)">Today</a>
+                                                <a class="dropdown-item" (click)="setStatus('IPD', dataItem)"
+                                                    href="javascript:void(0)">Choose Date</a>
+
+                                            </div>
+                                        </div>
+
+                                        <a class="dropdown-item" (click)="setStatus('NOT STARTED', dataItem)"
+                                            href="javascript:void(0)">Set to Not Started</a>
+                                        <a class="dropdown-item" (click)="setStatus('RESET', dataItem)"
+                                            href="javascript:void(0)">Reset Checklist Item</a>
+                                    </div>
+                                </div>
+
+                                <div class="dropdown-toggle">
+                                    <div class="dropdown-item">Dates</div>
+                                    <div class="dropdown-menu">
+
+                                        <a class="dropdown-item" (click)="setStatus('NA', dataItem)"
+                                            href="javascript:void(0)">
+                                            Set Planned Start/End Dates</a>
+
+                                        <div class="dropdown-toggle">
+                                            <div class="dropdown-item">Set Target Completion Date</div>
+                                            <div class="dropdown-menu">
+                                                <a class="dropdown-item" (click)="setStatus('IPY', dataItem)"
+                                                    href="javascript:void(0)">Yesterday</a>
+                                                <a class="dropdown-item" (click)="setStatus('IPT', dataItem)"
+                                                    href="javascript:void(0)">Today</a>
+                                                <a class="dropdown-item" (click)="setStatus('IPT', dataItem)"
+                                                    href="javascript:void(0)">Tomorrow</a>
+                                                <a class="dropdown-item" (click)="setStatus('IPT', dataItem)"
+                                                    href="javascript:void(0)">7 Days</a>
+                                                <a class="dropdown-item" (click)="setStatus('IPD', dataItem)"
+                                                    href="javascript:void(0)">Choose Date</a>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="dropdown-toggle">
+                                            <div class="dropdown-item">Change Start Date</div>
+                                            <div class="dropdown-menu">
+                                                <a class="dropdown-item" (click)="setStatus('IPY', dataItem)"
+                                                    href="javascript:void(0)">Yesterday</a>
+                                                <a class="dropdown-item" (click)="setStatus('IPT', dataItem)"
+                                                    href="javascript:void(0)">Today</a>
+                                                <a class="dropdown-item" (click)="setStatus('IPD', dataItem)"
+                                                    href="javascript:void(0)">Choose Date</a>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="dropdown-toggle">
+                                            <div class="dropdown-item">Change Completion Date</div>
+                                            <div class="dropdown-menu">
+                                                <a class="dropdown-item" (click)="setStatus('IPY', dataItem)"
+                                                    href="javascript:void(0)">Yesterday</a>
+                                                <a class="dropdown-item" (click)="setStatus('IPT', dataItem)"
+                                                    href="javascript:void(0)">Today</a>
+                                                <a class="dropdown-item" (click)="setStatus('IPD', dataItem)"
+                                                    href="javascript:void(0)">Choose Date</a>
+
+                                            </div>
+                                        </div>
+
+                                        <a class="dropdown-item" (click)="setStatus('NOT STARTED', dataItem)"
+                                            href="javascript:void(0)">Set to Not Started</a>
+                                        <a class="dropdown-item" (click)="setStatus('RESET', dataItem)"
+                                            href="javascript:void(0)">Reset Checklist Item</a>
+                                    </div>
+                                </div>
+
+
+                                <div class="dropdown-toggle">
+                                    <div class="dropdown-item">Complete</div>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item" (click)="setStatus('IPY', dataItem)"
+                                            href="javascript:void(0)">Yesterday</a>
+                                        <a class="dropdown-item" (click)="setStatus('IPT', dataItem)"
+                                            href="javascript:void(0)">Today</a>
+                                        <a class="dropdown-item" (click)="setStatus('IPD', dataItem)"
+                                            href="javascript:void(0)">Choose Date</a>
+                                    </div>
+                                </div>
+
+                                <!-- <a class="dropdown-item" href="javascript:void(0)">Dates</a>
                                 <a class="dropdown-item" href="javascript:void(0)">Complete</a>
-                                <a class="dropdown-item" href="javascript:void(0)">Comments</a>
-                                <!-- <a class="dropdown-item" href="javascript:void(0)">Edit Fee</a> -->
+                                <a class="dropdown-item" href="javascript:void(0)">Comments</a> -->
 
                             </div>
                         </li>
@@ -205,12 +303,19 @@
                 </kendo-grid-column>
 
 
-                <kendo-grid-column field="dependenciesIndicator" title="" width="40">
+                <kendo-grid-column field="dependenciesIndicator" title="" width="40" [filterable]="false">
+                    <ng-template kendoGridHeaderTemplate>
+                        <i class="fa fa-list" aria-hidden="true"></i>
+                    </ng-template>
+
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <i (click)="openPredecessors(dataItem)" class="fa fa-list"
+                            *ngIf="dataItem.dependenciesIndicator == 'I'" aria-hidden="true"></i>
+                    </ng-template>
                 </kendo-grid-column>
 
-                <kendo-grid-column field="wostagename" title="" width="40">
+                <kendo-grid-column field="wostagename" title="" width="40" [filterable]="false">
                     <ng-template kendoGridHeaderTemplate>
-                        <!-- <i class="fa fa-question" aria-hidden="true"></i> -->
                         <img style="height: 14px;" src="assets/img/icons/tick.png" />
                     </ng-template>
 
@@ -220,8 +325,12 @@
                     </ng-template>
 
                 </kendo-grid-column>
-                
-                <kendo-grid-column field="worksOrderAssetChecklistFileCount" title="" width="40">
+
+                <kendo-grid-column field="worksOrderAssetChecklistFileCount" title="" width="40" [filterable]="false">
+                    <ng-template kendoGridHeaderTemplate>
+                        <img style="height: 14px;" src="assets/img/icons/attach.png" />
+                    </ng-template>
+
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <div style="width:100%; text-align: center;">
                             <img style="height:16px;" *ngIf="dataItem.worksOrderAssetChecklistFileCount != 0"
@@ -237,7 +346,7 @@
                 </kendo-grid-column>
                 <kendo-grid-column field="wocheckname" title="Name" width="280">
                 </kendo-grid-column>
-                <kendo-grid-column field="wocheckresp" title="Responsibility" width="120">
+                <kendo-grid-column field="wocheckresp" title="Responsibility" width="140">
                 </kendo-grid-column>
                 <kendo-grid-column field="wocheckspeciaL1" title="Special" width="120">
                 </kendo-grid-column>
@@ -330,9 +439,6 @@
                 <kendo-grid-column field="woasscheckcomment" title="Comment(s)" width="120">
                 </kendo-grid-column>
 
-
-
-
             </kendo-grid>
 
         </div>
@@ -343,5 +449,27 @@
     <app-worksorders-asset-checklist-document *ngIf="checklistDocWindow" [checklistDocWindow]="checklistDocWindow"
         (closeAssetchecklistDocEvent)="closeChecklistDoc($event)"></app-worksorders-asset-checklist-document>
 
+    <app-worksorders-asset-checklist-predecessors *ngIf="predecessors" [predecessors]="predecessors"
+        [predecessorsWindowFrom]="predecessorsWindowFrom" [selectedChecklist]="selectedChecklist"
+        (closePredecessorsEvent)="closePredecessors($event)">
+    </app-worksorders-asset-checklist-predecessors>
 
+
+
+    <kendo-window title="Select Today or Past In Progress Date" *ngIf="chooseDateWindow" (close)="closeChooseDate()"
+        [top]="20" [minWidth]="300" [width]="400" [height]="auto" [minHeight]="350">
+
+        <div class="row">
+            <div class="col-md-12">
+                <ngb-datepicker #dp [(ngModel)]="model" (navigate)="date = $event.next" [maxDate]="maxDate">
+                </ngb-datepicker>
+            </div>
+
+            <div class="col-md-12 text-right mt-2">
+                <button type="submit" class="btn btn-sm themeButton ml-1" (click)="selectDate()">Ok</button>
+                <button type="submit" class="btn btn-sm themeButton ml-1" (click)="closeChooseDate()">Cancel</button>
+            </div>
+        </div>
+
+    </kendo-window>
 </kendo-window>

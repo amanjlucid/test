@@ -2,8 +2,9 @@ import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { PageChangeEvent } from '@progress/kendo-angular-grid';
-import { AlertService, HelperService, SharedService, WorksorderManagementService } from '../../_services'
+import { AlertService, ConfirmationDialogService, HelperService, SharedService, WorksorderManagementService } from '../../_services'
 import { forkJoin } from 'rxjs';
+import { NgbDateStruct, NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-worksorders-asset-checklist',
@@ -45,14 +46,34 @@ export class WorksordersAssetChecklistComponent implements OnInit {
   readonly = true;
 
   checklistDocWindow = false;
+  predecessors: boolean = false;
+  predecessorsWindowFrom = 'assetchecklist';
+
+  currentUser = JSON.parse(localStorage.getItem('currentUser'));
+  chooseDateWindow = false;
+
+  model: NgbDateStruct;
+  date: { year: number, month: number };
+  maxDate: any;
+
 
 
   constructor(
     private chRef: ChangeDetectorRef,
     private worksorderManagementService: WorksorderManagementService,
     private alertService: AlertService,
-    
-  ) { }
+    private confirmationDialogService: ConfirmationDialogService,
+    private helperService: HelperService,
+    private calendar: NgbCalendar
+
+  ) {
+    const current = new Date();
+    this.maxDate = {
+      year: current.getFullYear(),
+      month: current.getMonth() + 1,
+      day: current.getDate()
+    };
+  }
 
   ngOnInit(): void {
     console.log(this.selectedChildRow);
@@ -74,7 +95,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
           console.log(data)
           const programmeData = data[0];
           const worksOrderData = data[1];
-          const phaseData = data[1];
+          const phaseData = data[2];
 
           if (programmeData.isSuccess) this.programmeData = programmeData.data[0];
           if (worksOrderData.isSuccess) this.worksOrderData = worksOrderData.data;
@@ -165,5 +186,127 @@ export class WorksordersAssetChecklistComponent implements OnInit {
     // this.mySelection.push(dataItem.eventSequence)
     this.selectedChecklist.push(dataItem)
   }
+
+  openPredecessors(item) {
+    this.selectedChecklist = [];
+    $('.checklistOverlay').addClass('ovrlay');
+    this.predecessors = true;
+    this.selectedChecklist.push(item)
+  }
+
+  closePredecessors(eve) {
+    this.selectedChecklist = [];
+    $('.checklistOverlay').removeClass('ovrlay');
+    this.predecessors = false;
+  }
+
+  setStatus(type, item, checkOrProcess = 'C') {
+    let apiName = '';
+    let params: any = {}
+    params.WOSEQUENCE = item.wosequence;
+    params.WOPSEQUENCE = item.wopsequence;
+    params.ASSID_STAGESURCDE_CHECKSURCDE = [item.assid, item.wostagesurcde, item.wochecksurcde]
+    params.UserId = this.currentUser.userId;
+    params.CHECKORPROCESS = checkOrProcess;
+
+
+    if (type == 'NA') {
+      apiName = 'SetWorksOrderCheckListStatusToNA'
+    } else if (type == 'RESET') {
+      apiName = 'ResetChecklistItem'
+    } else if (type == 'NOT STARTED') {
+      apiName = 'WorksOrderCheckListStatusToNotStarted'
+    } else if (type == 'IPY') {
+      let today = new Date();
+      let dateObj = new Date(today);
+      dateObj.setDate(today.getDate() - 1);
+      let yesterday = `${this.helperService.zeorBeforeSingleDigit(dateObj.getFullYear())}-${this.helperService.zeorBeforeSingleDigit(dateObj.getMonth() + 1)}-${this.helperService.zeorBeforeSingleDigit(dateObj.getDate())}`;
+      apiName = 'SetWorksOrderCheckListStatusToInProgress'
+      console.log(yesterday);
+
+      params.dtDate = yesterday
+    } else if (type == 'IPT') {
+      let dateObj = new Date();
+      let today = `${this.helperService.zeorBeforeSingleDigit(dateObj.getMonth() + 1)}/${this.helperService.zeorBeforeSingleDigit(dateObj.getDate())}/${this.helperService.zeorBeforeSingleDigit(dateObj.getFullYear())}`;
+      apiName = 'SetWorksOrderCheckListStatusToInProgress'
+      params.dtDate = today
+      console.log(today);
+    } else if (type == 'IPD') {
+      this.chooseDateWindow = true;
+      this.chRef.detectChanges();
+      $('.checklistOverlay').addClass('ovrlay');
+      return
+    }
+
+
+    this.subs.add(
+      this.worksorderManagementService.setStatus(apiName, params).subscribe(
+        data => {
+          console.log(data)
+          if (data.isSuccess) {
+
+            if (type == 'NA' && data.data[0].pRETURNSTATUS == "E") {
+              this.openConfirmationDialog(type, item, data.data[0])
+            }
+
+
+
+
+
+            // if (data.data[0].pRETURNSTATUS == "E") {
+            //   this.openConfirmationDialog(type, item, data.data[0])
+            // } else if (data.data[0].pRETURNSTATUS == "S") {
+            //   //this.openConfirmationDialog(type, item, data.data[0])
+            //   this.worksOrderDetailPageData(); 
+            // }
+            // if (type == 'P') {
+            //   // this.worksOrderDetailPageData();
+            // }
+          } else {
+            this.alertService.error(data.message);
+          }
+
+        },
+        err => this.alertService.error(err)
+      )
+    )
+  }
+
+  public openConfirmationDialog(type, item, res) {
+    if (res.pRETURNSTATUS == 'S') {
+      return
+    }
+    
+    $('.k-window').css({ 'z-index': 1000 });
+    this.confirmationDialogService.confirm('Please confirm..', `${res.pRETURNMESSAGE}`)
+      .then((confirmed) => {
+        if (confirmed) {
+          // if (res.pRETURNSTATUS == 'E') {
+          //   this.setStatus(type, item, 'P')
+          // } else {
+          //   this.setStatus(type, item, 'C')
+          // }
+          this.setStatus(type, item, 'P')
+        }
+        //(confirmed) ? this.setStatus(type, item, 'P') : console.log(confirmed)
+      })
+      .catch(() => console.log('Attribute dismissed the dialog.'));
+  }
+
+  closeChooseDate() {
+    this.chooseDateWindow = false;
+    $('.checklistOverlay').removeClass('ovrlay');
+    console.log(this.model)
+  }
+
+  selectDate() {
+    this.closeChooseDate()
+  }
+
+  // selectToday() {
+  //   this.model = this.calendar.getToday();
+  // }
+
+
 
 }

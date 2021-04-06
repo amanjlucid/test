@@ -53,6 +53,7 @@ export class WorksordersManagementComponent implements OnInit {
     this.sharedService.worksOrdersAccess.subscribe(
       data => {
         this.worksOrderAccess = data;
+        // console.log(this.worksOrderAccess)
 
       }
     )
