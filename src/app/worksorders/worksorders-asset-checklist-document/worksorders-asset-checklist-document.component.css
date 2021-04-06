@@ -32,6 +32,8 @@
 
 .lbl{
     font-weight: 600;
+    position: absolute;
+    margin-top: 4px;
 }
 
 .headingDetail{
@@ -46,4 +48,10 @@
 .leftSideBtn button{
     margin-right: 5px;
 }
+
+#addDoc{
+    display: none;
+}
+
+
 

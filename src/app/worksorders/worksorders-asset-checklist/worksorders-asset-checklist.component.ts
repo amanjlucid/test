@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef, ViewEncapsulation } from '@angular/core';
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
-import { PageChangeEvent } from '@progress/kendo-angular-grid';
+import { PageChangeEvent, RowArgs } from '@progress/kendo-angular-grid';
 import { AlertService, ConfirmationDialogService, HelperService, SharedService, WorksorderManagementService } from '../../_services'
 import { forkJoin } from 'rxjs';
 import { NgbDateStruct, NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
@@ -57,7 +57,6 @@ export class WorksordersAssetChecklistComponent implements OnInit {
   maxDate: any;
 
 
-
   constructor(
     private chRef: ChangeDetectorRef,
     private worksorderManagementService: WorksorderManagementService,
@@ -76,7 +75,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log(this.selectedChildRow);
+    // console.log(this.selectedChildRow);
     this.worksOrderDetailPageData();
   }
 
@@ -92,7 +91,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
 
       ]).subscribe(
         data => {
-          console.log(data)
+          // console.log(data)
           const programmeData = data[0];
           const worksOrderData = data[1];
           const phaseData = data[2];
@@ -116,7 +115,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
     this.subs.add(
       this.worksorderManagementService.assetChecklistGridData(this.selectedChildRow.wosequence, this.selectedChildRow.assid, this.selectedChildRow.wopsequence).subscribe(
         data => {
-          console.log(data)
+          // console.log(data)
           if (data.isSuccess) {
             this.assetCheckListData = data.data;
             this.gridView = process(this.assetCheckListData, this.state);
@@ -153,8 +152,12 @@ export class WorksordersAssetChecklistComponent implements OnInit {
     // if (columnIndex > 1) {
     //   this.openDefinitionDetailPopUp(dataItem)
     // }
+    // console.log(this.mySelection)
   }
 
+  mySelectionKey(context: RowArgs): string {
+    return context.dataItem.wosequence + '' + context.dataItem.wochecksurcde + '' + context.dataItem.wostagesurcde;
+  }
 
   closeAssetcheckListWindow() {
     this.assetchecklistWindow = false;
@@ -171,6 +174,15 @@ export class WorksordersAssetChecklistComponent implements OnInit {
   }
 
   openChecklistDoc() {
+    if (this.mySelection.length != 1) return
+
+    //set selected checklist data according to selection
+    this.selectedChecklist = this.assetCheckListData.filter(x => {
+      const key = `${x.wosequence}${x.wochecksurcde}${x.wostagesurcde}`;
+      return this.mySelection.includes(key);
+    });
+
+    // console.log(this.selectedChecklist)
     $('.checklistOverlay').addClass('ovrlay');
     this.checklistDocWindow = true;
   }
@@ -222,7 +234,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
       dateObj.setDate(today.getDate() - 1);
       let yesterday = `${this.helperService.zeorBeforeSingleDigit(dateObj.getFullYear())}-${this.helperService.zeorBeforeSingleDigit(dateObj.getMonth() + 1)}-${this.helperService.zeorBeforeSingleDigit(dateObj.getDate())}`;
       apiName = 'SetWorksOrderCheckListStatusToInProgress'
-      console.log(yesterday);
+      // console.log(yesterday);
 
       params.dtDate = yesterday
     } else if (type == 'IPT') {
@@ -230,7 +242,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
       let today = `${this.helperService.zeorBeforeSingleDigit(dateObj.getMonth() + 1)}/${this.helperService.zeorBeforeSingleDigit(dateObj.getDate())}/${this.helperService.zeorBeforeSingleDigit(dateObj.getFullYear())}`;
       apiName = 'SetWorksOrderCheckListStatusToInProgress'
       params.dtDate = today
-      console.log(today);
+      // console.log(today);
     } else if (type == 'IPD') {
       this.chooseDateWindow = true;
       this.chRef.detectChanges();
@@ -245,23 +257,11 @@ export class WorksordersAssetChecklistComponent implements OnInit {
           console.log(data)
           if (data.isSuccess) {
 
-            if (type == 'NA' && data.data[0].pRETURNSTATUS == "E") {
+            if (checkOrProcess == "C" && (data.data[0].pRETURNSTATUS == "E" || data.data[0].pRETURNSTATUS == "S")) {
               this.openConfirmationDialog(type, item, data.data[0])
+            } else {
+              this.worksOrderDetailPageData();
             }
-
-
-
-
-
-            // if (data.data[0].pRETURNSTATUS == "E") {
-            //   this.openConfirmationDialog(type, item, data.data[0])
-            // } else if (data.data[0].pRETURNSTATUS == "S") {
-            //   //this.openConfirmationDialog(type, item, data.data[0])
-            //   this.worksOrderDetailPageData(); 
-            // }
-            // if (type == 'P') {
-            //   // this.worksOrderDetailPageData();
-            // }
           } else {
             this.alertService.error(data.message);
           }
@@ -273,20 +273,16 @@ export class WorksordersAssetChecklistComponent implements OnInit {
   }
 
   public openConfirmationDialog(type, item, res) {
+    let checkstatus = "C";
     if (res.pRETURNSTATUS == 'S') {
-      return
+      checkstatus = "P"
     }
-    
+
     $('.k-window').css({ 'z-index': 1000 });
     this.confirmationDialogService.confirm('Please confirm..', `${res.pRETURNMESSAGE}`)
       .then((confirmed) => {
         if (confirmed) {
-          // if (res.pRETURNSTATUS == 'E') {
-          //   this.setStatus(type, item, 'P')
-          // } else {
-          //   this.setStatus(type, item, 'C')
-          // }
-          this.setStatus(type, item, 'P')
+          this.setStatus(type, item, checkstatus)
         }
         //(confirmed) ? this.setStatus(type, item, 'P') : console.log(confirmed)
       })
@@ -296,11 +292,72 @@ export class WorksordersAssetChecklistComponent implements OnInit {
   closeChooseDate() {
     this.chooseDateWindow = false;
     $('.checklistOverlay').removeClass('ovrlay');
-    console.log(this.model)
+    // console.log(this.model)
   }
 
   selectDate() {
     this.closeChooseDate()
+  }
+
+
+  setDates(type, item, checkOrProcess = 'C') {
+    let apiName = '';
+    let params: any = {}
+    params.WOSEQUENCE = item.wosequence;
+    params.WOPSEQUENCE = item.wopsequence;
+    params.ASSID_STAGESURCDE_CHECKSURCDE = [item.assid, item.wostagesurcde, item.wochecksurcde]
+    params.UserId = this.currentUser.userId;
+    params.CHECKORPROCESS = checkOrProcess;
+
+    if (type == 'SE') {
+     
+    } else if (type == 'TCY') {
+     
+    } else if (type == 'TCTOD') {
+     
+    } else if (type == 'TCTOM') {
+     
+    } else if (type == 'TC7') {
+
+    } else if (type == 'TCPICK') {
+
+    } else if (type == 'CSDY') {
+
+    } else if (type == 'CSDT') {
+
+    } else if (type == 'CSDPICK') {
+
+    } else if (type == 'CCDY') {
+
+    } else if (type == 'CCDT') {
+
+    } else if (type == 'CCDPICK') {
+
+    }
+
+
+  }
+
+
+
+  setComplete(type, item, checkOrProcess = 'C') {
+    let apiName = '';
+    let params: any = {}
+    params.WOSEQUENCE = item.wosequence;
+    params.WOPSEQUENCE = item.wopsequence;
+    params.ASSID_STAGESURCDE_CHECKSURCDE = [item.assid, item.wostagesurcde, item.wochecksurcde]
+    params.UserId = this.currentUser.userId;
+    params.CHECKORPROCESS = checkOrProcess;
+
+    if (type == 'CIY') {
+
+    } else if (type == 'CIT') {
+
+    } else if (type == 'CIPICK') {
+
+    }
+
+
   }
 
   // selectToday() {

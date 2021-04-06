@@ -98,7 +98,7 @@ export class DashboardComponent implements OnInit {
 
           component.selectedCalendarEvents = component.caledarEventsByDate[dd + "-" + mm + "-" + yy];
         });
-      }, 1000);
+      }, 1500);
 
     } else {
       let win = (window as any);

@@ -178,5 +178,23 @@ export class WorksorderManagementService {
 
     }
 
+    getWOPAssetChecklistDoc(WOSEQUENCE, Assid_WOPSequence_CheckSurcde) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWEBWorksOrdersAssetChecklistFilenameList?WOSEQUENCE=${WOSEQUENCE}&Assid_WOPSequence_CheckSurcde=${Assid_WOPSequence_CheckSurcde}`, this.httpOptions);
+    }
+
+    viewDoc(params) {
+        // let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/HealthSafetyResult/GetDcocument`, params, this.httpOptions);
+        // return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWorkOrderDcocument`, params, this.httpOptions);
+
+    }
+
+    updateWorksOrderAssetChecklistDocument(params) {
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/UpdateWorksOrderAssetChecklistDocument`, params, this.httpOptions);
+    }
+
+    removeWorksOrderAssetChecklistDocument(params) {
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/RemoveWorksOrderAssetChecklistDocument`, params, this.httpOptions);
+    }
 
 }

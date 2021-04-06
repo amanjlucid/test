@@ -11,7 +11,8 @@
             </button>
             <!-- <button type="button" class="btn btn-sm themeButton">Export</button>
             <button type="button" class="btn btn-sm themeButton">Administration</button> -->
-            <button type="button" class="btn btn-sm themeButton" (click)="openChecklistDoc()">Doucuments</button>
+            <button type="button" [disabled]="mySelection.length != 1" class="btn btn-sm themeButton"
+                (click)="openChecklistDoc()">Doucuments</button>
             <!-- <button type="button" class="btn btn-sm themeButton">Work</button>
             <button type="button" class="btn btn-sm themeButton">Defects</button>
             <button type="button" class="btn btn-sm themeButton">Variations</button>
@@ -184,7 +185,8 @@
                     }" [skip]="state.skip" [pageSize]="pageSize" [rowHeight]="36" (pageChange)="pageChange($event)"
                 scrollable="virtual" [sort]="state.sort" [filter]="state.filter" (sortChange)="sortChange($event)"
                 (filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)" [navigable]="true"
-                [virtualColumns]="true" [loading]="loading">
+                [virtualColumns]="true" [loading]="loading" [kendoGridSelectBy]="mySelectionKey"
+                [selectedKeys]="mySelection">
 
                 <kendo-grid-column title=" " width="37" [filterable]="false" [sortable]="false">
                     <ng-template kendoGridCellTemplate let-dataItem>
@@ -225,22 +227,22 @@
                                     <div class="dropdown-item">Dates</div>
                                     <div class="dropdown-menu">
 
-                                        <a class="dropdown-item" (click)="setStatus('NA', dataItem)"
+                                        <a class="dropdown-item" (click)="setDates('SE', dataItem)"
                                             href="javascript:void(0)">
                                             Set Planned Start/End Dates</a>
 
                                         <div class="dropdown-toggle">
                                             <div class="dropdown-item">Set Target Completion Date</div>
                                             <div class="dropdown-menu">
-                                                <a class="dropdown-item" (click)="setStatus('IPY', dataItem)"
+                                                <a class="dropdown-item" (click)="setDates('TCY', dataItem)"
                                                     href="javascript:void(0)">Yesterday</a>
-                                                <a class="dropdown-item" (click)="setStatus('IPT', dataItem)"
+                                                <a class="dropdown-item" (click)="setDates('TCTOD', dataItem)"
                                                     href="javascript:void(0)">Today</a>
-                                                <a class="dropdown-item" (click)="setStatus('IPT', dataItem)"
+                                                <a class="dropdown-item" (click)="setDates('TCTOM', dataItem)"
                                                     href="javascript:void(0)">Tomorrow</a>
-                                                <a class="dropdown-item" (click)="setStatus('IPT', dataItem)"
+                                                <a class="dropdown-item" (click)="setDates('TC7', dataItem)"
                                                     href="javascript:void(0)">7 Days</a>
-                                                <a class="dropdown-item" (click)="setStatus('IPD', dataItem)"
+                                                <a class="dropdown-item" (click)="setDates('TCPICK', dataItem)"
                                                     href="javascript:void(0)">Choose Date</a>
 
                                             </div>
@@ -249,11 +251,11 @@
                                         <div class="dropdown-toggle">
                                             <div class="dropdown-item">Change Start Date</div>
                                             <div class="dropdown-menu">
-                                                <a class="dropdown-item" (click)="setStatus('IPY', dataItem)"
+                                                <a class="dropdown-item" (click)="setDates('CSDY', dataItem)"
                                                     href="javascript:void(0)">Yesterday</a>
-                                                <a class="dropdown-item" (click)="setStatus('IPT', dataItem)"
+                                                <a class="dropdown-item" (click)="setDates('CSDT', dataItem)"
                                                     href="javascript:void(0)">Today</a>
-                                                <a class="dropdown-item" (click)="setStatus('IPD', dataItem)"
+                                                <a class="dropdown-item" (click)="setDates('CSDPICK', dataItem)"
                                                     href="javascript:void(0)">Choose Date</a>
 
                                             </div>
@@ -262,19 +264,19 @@
                                         <div class="dropdown-toggle">
                                             <div class="dropdown-item">Change Completion Date</div>
                                             <div class="dropdown-menu">
-                                                <a class="dropdown-item" (click)="setStatus('IPY', dataItem)"
+                                                <a class="dropdown-item" (click)="setDates('CCDY', dataItem)"
                                                     href="javascript:void(0)">Yesterday</a>
-                                                <a class="dropdown-item" (click)="setStatus('IPT', dataItem)"
+                                                <a class="dropdown-item" (click)="setDates('CCDT', dataItem)"
                                                     href="javascript:void(0)">Today</a>
-                                                <a class="dropdown-item" (click)="setStatus('IPD', dataItem)"
+                                                <a class="dropdown-item" (click)="setDates('CCDPICK', dataItem)"
                                                     href="javascript:void(0)">Choose Date</a>
 
                                             </div>
                                         </div>
 
-                                        <a class="dropdown-item" (click)="setStatus('NOT STARTED', dataItem)"
+                                        <a class="dropdown-item" (click)="setDates('NOT STARTED', dataItem)"
                                             href="javascript:void(0)">Set to Not Started</a>
-                                        <a class="dropdown-item" (click)="setStatus('RESET', dataItem)"
+                                        <a class="dropdown-item" (click)="setDates('RESET', dataItem)"
                                             href="javascript:void(0)">Reset Checklist Item</a>
                                     </div>
                                 </div>
@@ -283,11 +285,11 @@
                                 <div class="dropdown-toggle">
                                     <div class="dropdown-item">Complete</div>
                                     <div class="dropdown-menu">
-                                        <a class="dropdown-item" (click)="setStatus('IPY', dataItem)"
+                                        <a class="dropdown-item" (click)="setComplete('IPY', dataItem)"
                                             href="javascript:void(0)">Yesterday</a>
-                                        <a class="dropdown-item" (click)="setStatus('IPT', dataItem)"
+                                        <a class="dropdown-item" (click)="setComplete('IPT', dataItem)"
                                             href="javascript:void(0)">Today</a>
-                                        <a class="dropdown-item" (click)="setStatus('IPD', dataItem)"
+                                        <a class="dropdown-item" (click)="setComplete('IPD', dataItem)"
                                             href="javascript:void(0)">Choose Date</a>
                                     </div>
                                 </div>
@@ -447,7 +449,7 @@
     <div class="checklistOverlay"></div>
 
     <app-worksorders-asset-checklist-document *ngIf="checklistDocWindow" [checklistDocWindow]="checklistDocWindow"
-        (closeAssetchecklistDocEvent)="closeChecklistDoc($event)"></app-worksorders-asset-checklist-document>
+        (closeAssetchecklistDocEvent)="closeChecklistDoc($event)" [selectedChecklist]="selectedChecklist"></app-worksorders-asset-checklist-document>
 
     <app-worksorders-asset-checklist-predecessors *ngIf="predecessors" [predecessors]="predecessors"
         [predecessorsWindowFrom]="predecessorsWindowFrom" [selectedChecklist]="selectedChecklist"
