@@ -449,7 +449,7 @@
     <div class="checklistOverlay"></div>
 
     <app-worksorders-asset-checklist-document *ngIf="checklistDocWindow" [checklistDocWindow]="checklistDocWindow"
-        (closeAssetchecklistDocEvent)="closeChecklistDoc($event)" [selectedChecklist]="selectedChecklist"></app-worksorders-asset-checklist-document>
+        (closeAssetchecklistDocEvent)="closeChecklistDoc($event)" [selectedChildRow]="selectedChildRow" [selectedChecklist]="selectedChecklist"></app-worksorders-asset-checklist-document>
 
     <app-worksorders-asset-checklist-predecessors *ngIf="predecessors" [predecessors]="predecessors"
         [predecessorsWindowFrom]="predecessorsWindowFrom" [selectedChecklist]="selectedChecklist"

@@ -382,7 +382,7 @@ export class WorkOrderFormComponent implements OnInit {
               (data) => {
                   this.selectedWorkOrderAddEdit = data.data;
                   this.chRef.detectChanges();
-                  resolve();
+                  resolve(true);
               },
               error => {
                   this.alertService.error(error);
@@ -424,7 +424,7 @@ export class WorkOrderFormComponent implements OnInit {
               (data) => {
                   this.GetPhaseTemplateListData = data.data;
                   this.chRef.detectChanges();
-                  resolve();
+                  resolve(true);
               },
               error => {
                   this.alertService.error(error);
@@ -447,7 +447,7 @@ export class WorkOrderFormComponent implements OnInit {
               (data) => {
                   this.WorkOrderContractListData = data.data;
                   this.chRef.detectChanges();
-                  resolve();
+                  resolve(true);
               },
               error => {
                   this.alertService.error(error);
@@ -472,7 +472,7 @@ export class WorkOrderFormComponent implements OnInit {
               (data) => {
                   this.workOrderProgrammeListData = data.data;
                   this.chRef.detectChanges();
-                  resolve();
+                  resolve(true);
               },
               error => {
                   this.alertService.error(error);
@@ -497,7 +497,7 @@ export class WorkOrderFormComponent implements OnInit {
               (data) => {
                   this.assetTemplateListData = data.data;
                   this.chRef.detectChanges();
-                      resolve();
+                      resolve(true);
               },
               error => {
                   this.alertService.error(error);
@@ -542,7 +542,7 @@ export class WorkOrderFormComponent implements OnInit {
                   (data) => {
                       this.getWorkOrderTypeData = data.data;
                       this.chRef.detectChanges();
-                      resolve();
+                      resolve(true);
                   },
                   error => {
                       this.alertService.error(error);
@@ -578,7 +578,7 @@ export class WorkOrderFormComponent implements OnInit {
               wophasetemplate: (this.woFormType == "new") ? '' : item.wophasetemplate,
           });
 
-          resolve();
+          resolve(true);
 
 
       });

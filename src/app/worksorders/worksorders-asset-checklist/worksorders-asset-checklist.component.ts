@@ -190,6 +190,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
   closeChecklistDoc() {
     $('.checklistOverlay').removeClass('ovrlay');
     this.checklistDocWindow = false;
+    this.worksOrderDetailPageData();
   }
 
   setSeletedRow(dataItem) {
@@ -239,7 +240,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
       params.dtDate = yesterday
     } else if (type == 'IPT') {
       let dateObj = new Date();
-      let today = `${this.helperService.zeorBeforeSingleDigit(dateObj.getMonth() + 1)}/${this.helperService.zeorBeforeSingleDigit(dateObj.getDate())}/${this.helperService.zeorBeforeSingleDigit(dateObj.getFullYear())}`;
+      let today = `${this.helperService.zeorBeforeSingleDigit(dateObj.getMonth() + 1)}-${this.helperService.zeorBeforeSingleDigit(dateObj.getDate())}-${this.helperService.zeorBeforeSingleDigit(dateObj.getFullYear())}`;
       apiName = 'SetWorksOrderCheckListStatusToInProgress'
       params.dtDate = today
       // console.log(today);

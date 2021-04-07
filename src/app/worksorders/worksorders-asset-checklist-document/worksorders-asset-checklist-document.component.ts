@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { AlertService, AssetAttributeService, ConfirmationDialogService, HelperService, LoaderService, SharedService, WorksorderManagementService } from 'src/app/_services';
-import { forkJoin } from 'rxjs';
+
 
 
 @Component({
@@ -16,6 +16,7 @@ export class WorksordersAssetChecklistDocumentComponent implements OnInit {
   @ViewChild('addDoc') input;
   @Input() checklistDocWindow: boolean = false;
   @Input() selectedChecklist: any;
+  @Input() selectedChildRow: any
   @Output() closeAssetchecklistDocEvent = new EventEmitter<boolean>();
   title = 'Documents for Works Order Asset Checklist item';
   subs = new SubSink();
@@ -37,6 +38,10 @@ export class WorksordersAssetChecklistDocumentComponent implements OnInit {
   readonly = true;
   worksOrderData: any;
   programmeData: any;
+  errors: string[];
+  fileExt: string = "JPG, GIF, PNG";
+  maxSize: number = 5; // 5MB
+  filePath;
 
   constructor(
     private chRef: ChangeDetectorRef,
@@ -52,8 +57,22 @@ export class WorksordersAssetChecklistDocumentComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    
     this.worksOrderDetailPageData();
     this.getDocumentData();
+
+    this.subs.add(
+      this.worksorderManagementService.getListOfSystemValuesByCode().subscribe(
+        data => {
+          if (data.isSuccess) {
+            this.filePath = data.data[0]._text;
+          } else {
+            this.alertService.error(data.message);
+          }
+        },
+        err => this.alertService.error(err)
+      )
+    )
   }
 
   worksOrderDetailPageData() {
@@ -89,7 +108,7 @@ export class WorksordersAssetChecklistDocumentComponent implements OnInit {
     this.subs.add(
       this.worksorderManagementService.getWOPAssetChecklistDoc(woseq, Assid_WOPSequence_CheckSurcde).subscribe(
         data => {
-          console.log(data);
+          // console.log(data);
           if (data.isSuccess) {
             this.gridData = data.data;
             this.gridView = process(this.gridData, this.state);
@@ -188,7 +207,7 @@ export class WorksordersAssetChecklistDocumentComponent implements OnInit {
   }
 
   complete($event) {
-    // this.getDocumentData();
+    this.getDocumentData();
   }
 
   viewDocument() {
@@ -267,8 +286,98 @@ export class WorksordersAssetChecklistDocumentComponent implements OnInit {
     $('#addDoc').trigger('click');
   }
 
-  onFileChange(event){
+
+
+  private isValidFileExtension(files) {
+    // Make array of file extensions
+    let extensions: any;
+    // if (this.fileType != "P") {
+    //   let fileExt = "PDF";
+    //   extensions = (fileExt.split(',')).map(function (x) { return x.toLocaleUpperCase().trim() });
+    // } else {
+    //   extensions = (this.fileExt.split(',')).map(function (x) { return x.toLocaleUpperCase().trim() });
+    // }
+    extensions = (this.fileExt.split(',')).map(function (x) { return x.toLocaleUpperCase().trim() });
+
+    for (let i = 0; i < files.length; i++) {
+      // Get file extension
+      let ext = files[i].name.toUpperCase().split('.').pop() || files[i].name;
+      // Check the extension exists
+      let exists = extensions.includes(ext);
+      if (!exists) {
+        this.alertService.error("Error (Extension): " + files[i].name)
+        return false;
+      }
+      // Check file size
+      return this.isValidFileSize(files[i]);
+    }
+  }
+
+  private isValidFileSize(file) {
+    let fileSizeinMB = file.size / (1024 * 1000);
+    let size = Math.round(fileSizeinMB * 100) / 100; // convert upto 2 decimal place
+    if (size > this.maxSize) {
+      this.alertService.error("Error (File Size): " + file.name + ": exceed file size limit of " + this.maxSize + "MB ( " + size + "MB )");
+      return false;
+    }
+
+    return true
+
+  }
+
+  private validateFile(file) {
+
+    return this.isValidFileExtension(file);
+
+  }
+
+  onFileChange(event) {
     const file = event.target.files;
+    console.log(file)
+
+    if (file.length > 0 && this.validateFile(file) == false) {
+      return;
+    }
+
+    if (file.length > 0) {
+
+      const formData = new FormData();
+
+      // let params = {
+      //   WO_FILEPATH: this.filePath,
+      //   WO_LEVEL: this.selectedChildRow.treelevel,
+      //   WO_SEQNO: this.selectedChildRow.wosequence,
+      //   WOP_SEQNO: this.selectedChildRow.wopsequence,
+      //   ASSID: this.selectedChildRow.assid,
+      //   CHECKSURCDE: this.selectedChecklist[0].wochecksurcde,
+      //   CurrentUser: this.currentUser.userId
+      // }
+
+      // console.log(params);
+
+      formData.append('file', file[0], file[0].name);
+      formData.append('WO_FILEPATH', this.filePath);
+      formData.append('WO_LEVEL', '2');
+      formData.append('WO_SEQNO', this.selectedChildRow.wosequence);
+      formData.append('WOP_SEQNO', this.selectedChildRow.wopsequence);
+      formData.append('ASSID', this.selectedChildRow.assid);
+      formData.append('CHECKSURCDE', this.selectedChecklist[0].wochecksurcde);
+      formData.append('CurrentUser', this.currentUser.userId);
+
+      this.worksorderManagementService.workOrderUploadDocument(formData).subscribe(
+        data => {
+          console.log(data)
+          if (data) {
+            this.getDocumentData()
+          } else {
+            this.alertService.error("Something went wrong, File not uploaded.")
+          }
+        },
+        err => this.alertService.error(err)
+      )
+
+    }
+
   }
 
 }

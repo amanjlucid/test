@@ -197,4 +197,13 @@ export class WorksorderManagementService {
         return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/RemoveWorksOrderAssetChecklistDocument`, params, this.httpOptions);
     }
 
+    getListOfSystemValuesByCode() {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetListOfSystemValuesByCode`, this.httpOptions);
+    }
+
+
+    workOrderUploadDocument(params) {
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WorkOrderUploadDocument`, params)
+    }
+
 }

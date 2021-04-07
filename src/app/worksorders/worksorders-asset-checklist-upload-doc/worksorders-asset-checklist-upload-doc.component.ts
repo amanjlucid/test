@@ -1,7 +1,7 @@
-import { Component, OnInit, Input, Output, EventEmitter, Injectable, HostListener, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component, OnInit, Input, Output, EventEmitter, HostListener, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { SubSink } from 'subsink';
-import { HelperService, HnsResultsService, AlertService, LoaderService, SharedService } from '../../_services'
+import { AlertService, LoaderService, WorksorderManagementService } from '../../_services'
 
 @Component({
   selector: 'app-worksorders-asset-checklist-upload-doc',
@@ -14,15 +14,8 @@ export class WorksordersAssetChecklistUploadDocComponent implements OnInit {
 
   @Input() uploadAttachment: any;
   @Input() selectedChecklist: any;
-  @Input() isAssessment: boolean = false;
-  @Input() imageFor: string = "ans";
-  @Input() rootAction: any = [];
   @Output() closeAttachment = new EventEmitter<boolean>();
-  @Input() fileType: any = "P";
   @Output() complete = new EventEmitter<boolean>();
-  @Input() selectedIssue: any;
-  //uploadSaveUrl = 'saveUrl'; // should represent an actual API endpoint
-  //uploadRemoveUrl = 'removeUrl'; // should represent an actual API endpoint
   form: FormGroup;
   error: string;
   uploadResponse = { status: '', message: 0, filePath: '' };
@@ -32,17 +25,13 @@ export class WorksordersAssetChecklistUploadDocComponent implements OnInit {
 
   errors: Array<string> = [];
   dragAreaClass: string = 'dragarea';
-  //projectId: number = 0;
-  //sectionId: number = 0;
-  fileExt: string = "JPG, GIF, PNG";
+  fileExt: string = "JPG, GIF, PNG, PDF";
   maxFiles: number = 5;
   maxSize: number = 5; // 5MB
   uploadStatus = false;
   currentUser: any;
-  systemValues: any;
-  // sesCode: any = ["Select Service Stage"];
-
-  // selectedSesCode: any;
+  // systemValues: any;
+  filePath: any
 
   @HostListener('dragover', ['$event']) onDragOver(event) {
     this.dragAreaClass = "droparea";
@@ -73,23 +62,15 @@ export class WorksordersAssetChecklistUploadDocComponent implements OnInit {
   }
 
   constructor(
-    private resultService: HnsResultsService,
+    private worksorderManagementService: WorksorderManagementService,
     private alertService: AlertService,
-    private helper: HelperService,
-    private formBuilder: FormBuilder,
-    private dataShareService: SharedService,
     private loaderService: LoaderService,
     private chRef: ChangeDetectorRef,
   ) { }
 
   ngOnInit() {
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    // console.log(this.imageFor);
-    // console.log(this.fileType)
-    this.getPath()
-    //this.GetNotepadSesCodeList(this.servicingDetails.service_Type_Code);
-    // console.log(this.selectedAction.hasissueid)
-    // console.log(this.selectedAction)
+    this.getPath();
   }
 
   ngOnDestroy() {
@@ -97,23 +78,24 @@ export class WorksordersAssetChecklistUploadDocComponent implements OnInit {
   }
 
   getPath() {
-    let path = this.fileType == "P" ? "IMAGELOCAL" : "HSDOCSLOCN";
     this.subs.add(
-      this.resultService.getSystemValues(path).subscribe(
+      this.worksorderManagementService.getListOfSystemValuesByCode().subscribe(
         data => {
-          //console.log(data)
           if (data.isSuccess) {
-            this.systemValues = data.data[0];
-            this.chRef.detectChanges();
+            this.filePath = data.data[0]._text;
+          } else {
+            this.alertService.error(data.message);
           }
-        }
+          this.chRef.detectChanges();
+        },
+        err => this.alertService.error(err)
       )
     )
   }
 
 
   onFileChange(event) {
-    //this.uploadFile(event.target.files)
+    this.uploadFile(event.target.files)
   }
 
   closeUploadAttachment() {
@@ -121,142 +103,78 @@ export class WorksordersAssetChecklistUploadDocComponent implements OnInit {
     this.closeAttachment.emit(this.uploadAttachment);
   }
 
-  // uploadFile(files) {
-  //   this.errors = []; // Clear error
-  //   this.uploadObj = { image: [], message: '' };
-  //   this.uploadResponse = { status: '', message: 0, filePath: '' };
+  uploadFile(files) {
+    this.errors = []; // Clear error
+    this.uploadObj = { image: [], message: '' };
+    this.uploadResponse = { status: '', message: 0, filePath: '' };
 
-  //   if (files.length > 0 && (!this.isValidFiles(files))) {
-  //     this.uploadStatus = false;
-  //     return;
-  //   }
+    // debugger
+    if (files.length > 0 && (!this.isValidFiles(files))) {
+      this.uploadStatus = false;
+      this.chRef.detectChanges();
+      return;
+    }
 
-  //   if (files.length > 0) {
-  //     let uploadMsg = '';
-  //     if (files.length == 1) {
-  //       uploadMsg = `${files.length} file is`
-  //     } else if (files.length > 1) {
-  //       uploadMsg = `${files.length} files are`
-  //     }
-  //     this.uploadObj.message = `${uploadMsg} uploading...`;
+    if (files.length > 0) {
+      let uploadMsg = '';
+      if (files.length == 1) {
+        uploadMsg = `${files.length} file is`
+      } else if (files.length > 1) {
+        uploadMsg = `${files.length} files are`
+      }
+      this.uploadObj.message = `${uploadMsg} uploading...`;
 
-  //     // this.uploadResponse.message = '0';
-  //     $('.progress-bar').css({ 'background-color': '#ffffff' });
-  //     $('.progress-bar').css({ 'width': '' }).attr('aria-valuenow', 0);
+      // this.uploadResponse.message = '0';
+      $('.progress-bar').css({ 'background-color': '#ffffff' });
+      $('.progress-bar').css({ 'width': '' }).attr('aria-valuenow', 0);
 
-  //     let averageUploadedPercent = Math.round(parseFloat('100') / parseFloat(files.length));
-  //     let checkUploadPercent = 0;
-  //     let uploadedFile = 0;
+      let averageUploadedPercent = Math.round(parseFloat('100') / parseFloat(files.length));
+      let checkUploadPercent = 0;
+      let uploadedFile = 0;
 
-  //     if (this.fileType == "P") {
-  //       let issueId: any = 0;
-  //       if (this.imageFor != "ans") {
-  //         if (this.selectedIssue != undefined) {
-  //           if (this.selectedIssue.length == undefined) {
-  //             issueId = this.selectedIssue.hasissueid
-  //           } else {
-  //             issueId = this.selectedAction.hasissueid
-  //           }
-  //         } else {
-  //           issueId = this.selectedAction.hasissueid
-  //         }
-  //       }
-  //       //let issueId = (this.imageFor == "ans") ? 0 : (this.selectedIssue) ? this.selectedIssue.hasissueid : this.selectedAction.hasissueid;
+      // document upload
 
-  //       let assrf: any;
-  //       if (this.isAssessment) {
-  //         assrf = this.selectedAction.hasaassessmentref == undefined ? this.selectedAction.assessmentRef : this.selectedAction.hasaassessmentref //action.assessmentRef
-  //       } else {
-  //         assrf = this.selectedAction.hasaassessmentref
-  //       }
+      for (let file of files) {
+        this.uploadObj.image.push(file);
+        const formData = new FormData();
+        formData.append('file', file, file.name);
+        formData.append('WO_FILEPATH', this.filePath);
+        formData.append('WO_LEVEL', '2');
+        formData.append('WO_SEQNO', this.selectedChecklist[0].wosequence);
+        formData.append('WOP_SEQNO', this.selectedChecklist[0].wopsequence);
+        formData.append('ASSID', this.selectedChecklist[0].assid);
+        formData.append('CHECKSURCDE', this.selectedChecklist[0].wochecksurcde);
+        formData.append('CurrentUser', this.currentUser.userId);
 
+        this.loaderService.pageShow();
 
-  //       for (let file of files) {
-  //         this.uploadObj.image.push(file);
-  //         const formData = new FormData();
-  //         formData.append('file', file, file.name);
+        let httpres = this.worksorderManagementService.workOrderUploadDocument(formData).subscribe(
+          data => {
+            uploadedFile++;
+            checkUploadPercent += averageUploadedPercent;
+            if (checkUploadPercent > 95) {
+              checkUploadPercent = 100;
 
-  //         formData.append('DOCFILEPATH', this.systemValues._text);
-  //         formData.append('DOCTYPE', this.fileType);
-  //         formData.append('ASSID', this.selectedAction.assid);
-  //         formData.append('UserId', this.currentUser.userId);
-  //         formData.append('HASCODE', this.selectedAction.hascode);
-  //         formData.append('HASVERSION', this.selectedAction.hasversion);
-  //         formData.append('HASGROUPID', this.selectedAction.hasgroupid);
-  //         formData.append('HASHEADINGID', this.selectedAction.hasheadingid);
-  //         formData.append('HASQUESTIONID', this.selectedAction.hasquestionid);
-  //         formData.append('HASANSWERID', this.selectedAction.hasanswerid);
-  //         formData.append('HASISSUEID', issueId);
-  //         formData.append('HASASSREF', assrf);
+            }
+            this.uploadResponse.message = checkUploadPercent
+            // console.log(this.uploadResponse)
 
-  //         // console.log(formData)
-  //         this.loaderService.pageShow();
-  //         let httpres = this.resultService.uploadImagesandDocuments(formData).subscribe(
-  //           data => {
-  //             uploadedFile++;
-  //             checkUploadPercent += averageUploadedPercent;
-  //             if (checkUploadPercent > 95) {
-  //               checkUploadPercent = 100;
+            if (uploadedFile == files.length) {
+              this.uploadObj.message = `${uploadMsg} uploaded.`;
 
-  //             }
-  //             this.uploadResponse.message = checkUploadPercent
-  //             // console.log(this.uploadResponse)
-
-  //             if (uploadedFile == files.length) {
-  //               this.uploadObj.message = `${uploadMsg} uploaded.`;
-
-  //               this.loaderService.pageHide();
-  //               this.complete.emit(true);
-  //             }
-  //           },
-  //           error => {
-  //             this.loaderService.pageHide();
-  //             this.alertService.error(error);
-  //           });
-  //       }
-  //     } else {
-
-  //       // document upload
-
-  //       for (let file of files) {
-  //         this.uploadObj.image.push(file);
-  //         const formData = new FormData();
-  //         formData.append('file', file, file.name);
-
-  //         formData.append('DOCFILEPATH', this.systemValues._text);
-  //         formData.append('DOCTYPE', this.fileType);
-  //         formData.append('ASSID', this.selectedAction.assid);
-  //         formData.append('UserId', this.currentUser.userId);
-
-  //         this.loaderService.pageShow();
-  //         let httpres = this.resultService.uploadImagesandDocuments(formData).subscribe(
-  //           data => {
-  //             uploadedFile++;
-  //             checkUploadPercent += averageUploadedPercent;
-  //             if (checkUploadPercent > 95) {
-  //               checkUploadPercent = 100;
-
-  //             }
-  //             this.uploadResponse.message = checkUploadPercent
-  //             // console.log(this.uploadResponse)
-
-  //             if (uploadedFile == files.length) {
-  //               this.uploadObj.message = `${uploadMsg} uploaded.`;
-
-  //               this.loaderService.pageHide();
-  //               this.complete.emit(true);
-  //             }
-  //           },
-  //           error => {
-  //             this.loaderService.pageHide();
-  //             this.alertService.error(error);
-  //           });
-  //       }
-  //     }
+              this.loaderService.pageHide();
+              this.complete.emit(true);
+            }
+          },
+          error => {
+            this.loaderService.pageHide();
+            this.alertService.error(error);
+          });
+      }
 
 
-  //   }
-  // }
+    }
+  }
 
 
   getWidth(val) {
@@ -280,12 +198,7 @@ export class WorksordersAssetChecklistUploadDocComponent implements OnInit {
   private isValidFileExtension(files) {
     // Make array of file extensions
     let extensions: any;
-    if (this.fileType != "P") {
-      let fileExt = "PDF";
-      extensions = (fileExt.split(',')).map(function (x) { return x.toLocaleUpperCase().trim() });
-    } else {
-      extensions = (this.fileExt.split(',')).map(function (x) { return x.toLocaleUpperCase().trim() });
-    }
+    extensions = (this.fileExt.split(',')).map(function (x) { return x.toLocaleUpperCase().trim() });
 
     for (let i = 0; i < files.length; i++) {
       // Get file extension

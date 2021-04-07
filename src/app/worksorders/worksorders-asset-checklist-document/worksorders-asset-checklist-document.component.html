@@ -92,8 +92,8 @@
     </app-worksorders-asset-checklist-edit-description>
 
     <app-worksorders-asset-checklist-upload-doc *ngIf="uploadAttachment" [uploadAttachment]="uploadAttachment"
-        [selectedChecklist]="selectedChecklist" [isAssessment]="false" [fileType]="'L'" [imageFor]="'doc'"
-        (closeAttachment)="closeAttachment($event)" (complete)="complete($event)">
+        [selectedChecklist]="selectedChecklist" (closeAttachment)="closeAttachment($event)"
+        (complete)="complete($event)">
     </app-worksorders-asset-checklist-upload-doc>
 
 

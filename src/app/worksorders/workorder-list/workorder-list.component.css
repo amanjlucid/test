@@ -149,15 +149,7 @@
     .filterdiv .filterLbl {
         width: 38% !important;
     }
-<<<<<<< HEAD
-
-    .filterdiv input[type=text]{
-        width: 58% !important;
-    }
-}
-=======
     .filterdiv input[type=text] {
         width: 58% !important;
     }
 }
->>>>>>> 49c6be009adb1290007e91a25115c9f129fe61d5
