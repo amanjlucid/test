@@ -256,6 +256,8 @@ export class WorksordersNewPhaseComponent implements OnInit {
     this.formErrorObject(); // empty form error 
     this.logValidationErrors(this.nePhaseForm);
 
+    // console.log(this.nePhaseForm);
+
     if (this.nePhaseForm.invalid) {
       return;
     }

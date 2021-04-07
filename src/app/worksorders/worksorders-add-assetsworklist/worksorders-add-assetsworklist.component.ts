@@ -3,9 +3,9 @@ import { SubSink } from 'subsink';
 import { State, SortDescriptor } from '@progress/kendo-data-query';
 import { SelectableSettings, PageChangeEvent, RowArgs } from '@progress/kendo-angular-grid';
 import { AlertService, AssetAttributeService, ConfirmationDialogService, HelperService, LoaderService, PropertySecurityGroupService, WorksorderManagementService } from 'src/app/_services';
-import { WorkordersAddAssetModel } from '../../_models'
-import { tap, switchMap} from 'rxjs/operators';
-import { BehaviorSubject } from 'rxjs';
+import { WorkordersAddAssetworklistModel } from '../../_models'
+import { tap, switchMap } from 'rxjs/operators';
+import { BehaviorSubject, forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-worksorders-add-assetsworklist',
@@ -36,7 +36,7 @@ export class WorksordersAddAssetsworklistComponent implements OnInit {
   readonly = true;
   assetTypes: any;
   title = 'Add Assets from Work List';
-  headerFilters: WorkordersAddAssetModel = new WorkordersAddAssetModel()
+  headerFilters: WorkordersAddAssetworklistModel = new WorkordersAddAssetworklistModel()
   public query: any;
   private stateChange = new BehaviorSubject<any>(this.headerFilters);
   loading = true
@@ -54,6 +54,12 @@ export class WorksordersAddAssetsworklistComponent implements OnInit {
   selectableSettings: SelectableSettings;
   mySelection: any[] = [];
   zero = 0;
+  worksOrder: any;
+  phaseData: any;
+
+  packageToWorklistWindow = false;
+  selectedRow: any = [];
+  planYear: any;
 
   constructor(
     private propSecGrpService: PropertySecurityGroupService,
@@ -72,40 +78,56 @@ export class WorksordersAddAssetsworklistComponent implements OnInit {
     // console.log(this.actualSelectedRow)
     this.headerFilters.wopsequence = this.actualSelectedRow.wopsequence;
     this.headerFilters.wosequence = this.actualSelectedRow.wosequence;
+    if (this.actualSelectedRow.treelevel == 3) {
+      this.headerFilters.wlassid = this.actualSelectedRow.assid
+    }
 
-    this.getAssetType();
+    this.subs.add(
+      forkJoin([
+        this.assetAttributeService.getAssetTypes(),
+        this.worksorderManagementService.getPhase(this.actualSelectedRow.wosequence, this.actualSelectedRow.wopsequence),
+        this.worksorderManagementService.getWorksOrderByWOsequence(this.actualSelectedRow.wosequence),
+        this.worksorderManagementService.getPlanYear(this.actualSelectedRow.wosequence)
+      ]).subscribe(
+        resp => {
+          // console.log(resp);
+          const assetType = resp[0];
+          const phase = resp[1];
+          const worksOrder = resp[2];
+          this.planYear = resp[3].data;
 
-    this.query = this.stateChange.pipe(
-      tap(state => {
-        this.headerFilters = state;
-        this.loading = true;
-      }),
-      switchMap(state => this.worksorderManagementService.getWorkOrderAsset(state)),
-      tap((res) => {
-        this.totalCount = (res.total != undefined) ? res.total : 0;
-        this.loading = false;
-        this.chRef.detectChanges();
-      })
-    );
+          if (assetType.isSuccess) this.assetTypes = assetType.data;
+          if (phase.isSuccess) this.phaseData = phase.data;
 
+          if (worksOrder.isSuccess) {
+            this.worksOrder = worksOrder.data;
+            this.headerFilters.cttsurcde = this.worksOrder.cttsurcde;
+
+            //get asset from works order
+            this.query = this.stateChange.pipe(
+              tap(state => {
+                this.headerFilters = state;
+                this.loading = true;
+              }),
+              switchMap(state => this.worksorderManagementService.getWorkOrderAssetFromWorklist(state)),
+              tap((res) => {
+                // console.log(res);
+                this.totalCount = (res.total != undefined) ? res.total : 0;
+                this.loading = false;
+                this.chRef.detectChanges();
+              })
+            );
+          }
+
+          this.chRef.detectChanges();
+        }
+      )
+    )
 
   }
 
   ngOnDestroy() {
     this.subs.unsubscribe();
-  }
-
-  getAssetType() {
-    this.subs.add(
-      this.assetAttributeService.getAssetTypes().subscribe(
-        data => {
-          if (data.isSuccess) {
-            this.assetTypes = data.data;
-            this.chRef.detectChanges();
-          }
-        }
-      )
-    )
   }
 
   closeAddAssetWindow() {
@@ -221,14 +243,16 @@ export class WorksordersAddAssetsworklistComponent implements OnInit {
   }
 
   resetGridFilter() {
-    this.headerFilters.wildcardaddress = '';
-    this.headerFilters.hittypecode = '';
-    this.headerFilters.astcode = '';
-    this.headerFilters.ownassid = '';
-    this.headerFilters.assid = '';
-    this.headerFilters.propertyStatus = '';
+    this.headerFilters.wlplanyear = '';
+    this.headerFilters.wphname = '';
     this.headerFilters.astconcataddress = '';
-    this.headerFilters.rightToBuy = '';
+    this.headerFilters.hittypecode = '';
+    this.headerFilters.ownassid = '';
+    this.headerFilters.astconcataddress = '';
+    this.headerFilters.wlttagcode = '';
+    this.headerFilters.wlassid = '';
+    this.headerFilters.wlcomppackage = '';
+    this.headerFilters.elecode = ''
 
   }
 
@@ -238,43 +262,93 @@ export class WorksordersAddAssetsworklistComponent implements OnInit {
   }
 
   searchGrid() {
+    if (this.actualSelectedRow.treelevel == 3) {
+      if (this.headerFilters.wlassid == "") {
+        this.headerFilters.wlassid = this.actualSelectedRow.assid;
+      }
+    }
+
     this.headerFilters.CurrentPage = 0;
     this.state.skip = 0;
     this.stateChange.next(this.headerFilters);
   }
 
   mySelectionKey(context: RowArgs): string {
-    return encodeURIComponent(context.dataItem.assid);
+    return context.dataItem.wlcomppackage;
   }
 
-  addTickedToWorksOrder(strCheckOrProcess = "C") {
+  addTickedToWorksOrder(type = 1, strCheckOrProcess = "C") {
     if (strCheckOrProcess != "C" && strCheckOrProcess != "P") {
       return
     }
 
-    let params = {
-      strCheckOrProcess: strCheckOrProcess,
-      assidlist: this.mySelection,
-      strUserId: this.currentUser.userId,
-      wopsequence: this.actualSelectedRow.wopsequence,
-      wosequence: this.actualSelectedRow.wosequence,
+    let addWorksOrder;
+    if (type == 1) {
+      if (this.selectedRow.length > 0) {
+        let req = [];
+        let params = {
+          CheckOrProcess: strCheckOrProcess,
+          strASSID_WLCODE_WLATAID_WLPLANYEAR_STAGE_CHECK: '',
+          UserId: this.currentUser.userId,
+          WOPSEQUENCE: this.actualSelectedRow.wopsequence,
+          WOSEQUENCE: this.actualSelectedRow.wosequence,
+        }
+
+        for (let row of this.selectedRow) {
+          req.push(row.wlassid)
+          req.push(row.wlcode)
+          req.push(row.wlataid)
+          req.push(row.wlplanyear)
+          req.push(row.matchedSTAGESURCDE)
+          req.push(row.matchedCHECKSURCDE)
+        }
+
+        params.strASSID_WLCODE_WLATAID_WLPLANYEAR_STAGE_CHECK = req.toString();
+
+        addWorksOrder = this.worksorderManagementService.addWorksOrderAssetsFromWorkList(params)
+
+      }
+
+    } else if (type == 2) {
+      let params = {
+        WOPSEQUENCE: this.actualSelectedRow.wopsequence,
+        WOSEQUENCE: this.actualSelectedRow.wosequence,
+        CTTSURCDE: this.worksOrder.cttsurcde,
+        PlANYEAR: 0,
+        EleCode: '',
+        WLCOMPPACKAGE: '',
+        WILDCARDADDRESS: '',
+        ASSID: this.actualSelectedRow.assid,
+        WOCHECKSURCDE: '',
+        FilterSql: '',
+        HitTypeCode: (this.selectedHiearchyType) ? this.selectedHiearchyType : '',
+        HSOWNASSID: (this.selectedhierarchyLevel) ? this.selectedhierarchyLevel.assetId : '',
+        UserId: this.currentUser.userId,
+        WLTAG: '',
+        CheckOrProcess: strCheckOrProcess,
+
+      }
+
+      addWorksOrder = this.worksorderManagementService.addWorksOrderAssetsFromWorkListALL(params)
     }
 
+
     this.subs.add(
-      this.worksorderManagementService.addWorksOrderAssets(params).subscribe(
+      addWorksOrder.subscribe(
         data => {
+
           if (!data.isSuccess) {
             this.alertService.error(data.message)
             return
           }
-          if (strCheckOrProcess == "C" && data.data[0].pRETURNSTATUS == "S") {
-            this.openConfirmationDialog(data.data)
-          } else if (strCheckOrProcess == "P" && data.data[0].pRETURNSTATUS == "S") {
-            this.alertService.success(data.data[0].pRETURNMESSAGE);
+          if (strCheckOrProcess == "C" && data.data['validYN'] == "S") {
+            this.openConfirmationDialog(type, data.data)
+          } else if (strCheckOrProcess == "P" && data.data['validYN'] == "S") {
+            this.alertService.success(data.data['validationMessage']);
             this.refreshWorkOrderDetails.emit(true);
             this.searchGrid();
           } else if (data.data[0].pRETURNSTATUS != "S") {
-            this.alertService.error(data.data[0].pRETURNMESSAGE)
+            this.alertService.error(data.data['validYN'])
           }
         },
         err => this.alertService.error(err)
@@ -282,27 +356,50 @@ export class WorksordersAddAssetsworklistComponent implements OnInit {
     )
   }
 
-  openConfirmationDialog(resp) {
+  openConfirmationDialog(type, resp) {
     let strCheckOrProcess = "N";
-    let res = resp[0]
-    if (res.pRETURNSTATUS == "S" && res.pWPLSEQUENCE == 0 && res.pWPRSEQUENCE == 0) {
+    let res = resp
+    if (res.validYN == "S" && res.returnWPLSEQUENCE == 0 && res.returnWPRSEQUENCE == 0) {
       strCheckOrProcess = "P"
     }
     $('.k-window').css({ 'z-index': 1000 });
-    this.confirmationDialogService.confirm('Please confirm..', `${res.pRETURNMESSAGE}`)
-      .then((confirmed) => (confirmed) ? this.addTickedToWorksOrder(strCheckOrProcess) : console.log(confirmed))
+    this.confirmationDialogService.confirm('Please confirm..', `${res.validationMessage}`)
+      .then((confirmed) => (confirmed) ? this.addTickedToWorksOrder(type, strCheckOrProcess) : console.log(confirmed))
       .catch(() => console.log('Attribute dismissed the dialog.'));
   }
 
-   selectionChange(item) {
-    if (this.mySelection.includes(item.assid)) {
-      this.mySelection = this.mySelection.filter(x => x != item.assid);
+  selectionChange(item) {
+    // console.log(item)
+    if (this.mySelection.includes(item.wlcomppackage)) {
+      this.mySelection = this.mySelection.filter(x => x != item.wlcomppackage);
     } else {
-      this.mySelection.push(item.assid);
+      this.mySelection.push(item.wlcomppackage);
     }
+
+    const checkObj = this.selectedRow.find(x => x.wlcomppackage == item.wlcomppackage);
+
+    if (checkObj) {
+      this.selectedRow = this.selectedRow.filter(x => x.wlcomppackage != item.wlcomppackage);
+    } else {
+      this.selectedRow.push(item);
+    }
+
+    // console.log(this.selectedRow)
   }
 
- 
+  openPackageWindow() {
+    $('.worksOrderAddAssetOverlay').addClass('ovrlay');
+    this.packageToWorklistWindow = true;
+
+  }
+
+  closePackageWindowEvent($event) {
+    this.packageToWorklistWindow = $event;
+    $('.worksOrderAddAssetOverlay').removeClass('ovrlay');
+    this.searchGrid()
+  }
+
+
   //####################### hierarchy function start ####################################//
   getHierarchyTypeList() {
     this.propSecGrpService.getHierarchyTypeList().subscribe(

@@ -1,5 +1,5 @@
-<kendo-window title="{{title}}" *ngIf="addAssetWorklistWindow" (close)="closeAddAssetWindow()" [top]="10" [minWidth]="700"
-    [width]="1050" [height]="auto" [minHeight]="350">
+<kendo-window title="{{title}}" *ngIf="addAssetWorklistWindow" (close)="closeAddAssetWindow()" [top]="10"
+    [minWidth]="700" [width]="1050" [height]="auto" [minHeight]="350">
 
     <div class="row headerArea">
         <div class="col-md-12">
@@ -8,21 +8,21 @@
                     <label for="">Phase:</label>
                 </div>
                 <div class="col-md-2">
-                    <input type="text" [readonly]="readonly" value="{{actualSelectedRow?.woname}}">
+                    <input type="text" [readonly]="readonly" value="{{phaseData?.wopname}}">
                 </div>
                 <div class="col-md-2">
                     <label for="">Phase Budget:</label>
                 </div>
                 <div class="col-md-2">
                     <input type="text" [readonly]="readonly"
-                        value="{{actualSelectedRow?.wobudget | currency:'GBP':'symbol'}}">
+                        value="{{phaseData?.wopbudget | currency:'GBP':'symbol'}}">
                 </div>
                 <div class="col-md-2">
                     <label for="">Phase Available Budget</label>
                 </div>
                 <div class="col-md-2">
                     <input type="text" [readonly]="readonly"
-                        value="{{actualSelectedRow?.wobudget - actualSelectedRow?.wocommitted | currency:'GBP':'symbol'}}">
+                        value="{{phaseData?.wopbudget - phaseData?.wopcommitted | currency:'GBP':'symbol'}}">
                 </div>
             </div>
         </div>
@@ -52,11 +52,17 @@
 
         <div class="col-md-12 mt-1">
             <div class="row hiearchyDiv">
-                <div class="col-md-2">
+                <div class="col-md-1">
+                    <label>WL Tag:</label>
+                </div>
+                <div class="col-md-3">
+                    <input type="text" [(ngModel)]="headerFilters.wlttagcode">
+                </div>
+                <div class="col-md-1">
                     <label>Hierarchy</label>
                 </div>
 
-                <div class=" col-md-8 hiearchyTree">
+                <div class=" col-md-5 hiearchyTree">
                     <ul id="myUL">
                         <ng-template #recursiveList let-printHiearchy>
                             <li *ngFor="let item of printHiearchy">
@@ -86,20 +92,26 @@
 
         <div class="col-md-12 mt-1">
             <div class="row">
-                <div class="col-md-2">
-                    <label for=""> Wildcard Address:</label>
+                <div class="col-md-1">
+                    <label for=""> Asset Id:</label>
                 </div>
-                <div class="col-md-4">
-                    <input type="text" [(ngModel)]="headerFilters.wildcardaddress">
+                <div class="col-md-3">
+                    <input type="text" [(ngModel)]="headerFilters.wlassid">
                 </div>
-                <div class="col-md-2">
-                    <label for="">Asset Type:</label>
+                <div class="col-md-1">
+                    <label for="">Address:</label>
                 </div>
-                <div class="col-md-2">
-                    <select [(ngModel)]="headerFilters.astcode">
+                <div class="col-md-3">
+                    <select [(ngModel)]="headerFilters.wildcrdaddress">
                         <option selected value="">All Types</option>
                         <option *ngFor="let assetType of assetTypes" [value]="assetType">{{assetType}}</option>
                     </select>
+                </div>
+                <div class="col-md-1">
+                    <label for=""> Plan Year:</label>
+                </div>
+                <div class="col-md-1">
+                    <input type="text" [(ngModel)]="headerFilters.planyear">
                 </div>
                 <div class="col-md-2">
                     <button (click)="searchGrid()" class="btn btn-sm">Search</button>
@@ -113,38 +125,33 @@
         <div class="col-md-12 mt-2">
             <kendo-grid [data]="query | async" [loading]="loading" [skip]="headerFilters.CurrentPage"
                 [pageSize]="headerFilters.PageSize" filterable="menu" [resizable]="true" [sortable]="{
-        allowUnsort: true, mode: 'multiple' }" [sort]="state.sort" (sortChange)="sortChange($event)"
+        allowUnsort: true, mode: 'single' }" [sort]="state.sort" (sortChange)="sortChange($event)"
                 (filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)" [filter]="state.filter"
                 scrollable="virtual" [rowHeight]="36" [height]="550" (pageChange)="pageChange($event)"
                 [navigable]="false" [selectedKeys]="mySelection" [selectable]="selectableSettings"
-                [kendoGridSelectBy]="mySelectionKey" [groupable]="false">
+                [kendoGridSelectBy]="mySelectionKey" [groupable]="false" [virtualColumns]="true">
 
-                <kendo-grid-checkbox-column width="25">
-                    <!-- <ng-template kendoGridHeaderTemplate *ngIf="selectableSettings.mode == 'multiple'">
-                        <input class="k-checkbox" id="selectAllCheckboxId" kendoGridSelectAllCheckbox
-                            [state]="selectAllState" (selectAllChange)="onSelectAllChange($event)">
-                        <label class="k-checkbox-label" for="selectAllCheckboxId"></label>
-                    </ng-template> -->
+                <kendo-grid-checkbox-column width="40">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <input (click)="selectionChange(dataItem)" class="k-checkbox" type="checkbox"
-                            *ngIf="dataItem.alreadyInWorksOrderPhase == 'N'">
+                            *ngIf="dataItem.alreadyInWorksOrderAssetDetail == 'N' && dataItem.woChecklistMatchCount  == 1">
                     </ng-template>
                 </kendo-grid-checkbox-column>
 
-                <kendo-grid-column field="alreadyInWorksOrderPhase" title="" width="25" [filterable]="false"
+                <kendo-grid-column field="alreadyInWorksOrderAssetDetail" title="" width="43" [filterable]="false"
                     [sortable]="false">
                     <ng-template kendoGridHeaderTemplate>
                         <img style="height:14px; width:16px;" src="assets/img/icons/cross.png" />
                     </ng-template>
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <span>
-                            <img style="height: 14px;" *ngIf="dataItem.alreadyInWorksOrderPhase == 'Y'"
+                            <img style="height: 14px;" *ngIf="dataItem.alreadyInWorksOrderAssetDetail == 'Y'"
                                 src="assets/img/icons/cross.png" />
                         </span>
                     </ng-template>
                 </kendo-grid-column>
 
-                <kendo-grid-column field="asbestosIcon" title="" width="25" [filterable]="false" [sortable]="false">
+                <kendo-grid-column field="asbestosIcon" title="" width="44" [filterable]="false" [sortable]="false">
                     <ng-template kendoGridHeaderTemplate>
                         <img style="height:14px; width:16px;" src="assets/img/icons/asbestos-green.png" />
                     </ng-template>
@@ -160,36 +167,57 @@
                     </ng-template>
                 </kendo-grid-column>
 
-                <kendo-grid-column field="assid" title="Asset Id" width="130">
-                    <ng-template kendoGridFilterMenuTemplate let-filter="filter" let-column="column"
-                        let-filterService="filterService">
-                        <simple-text-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
-                        </simple-text-filter>
-                    </ng-template>
-                </kendo-grid-column>
-                <kendo-grid-column field="astconcataddress" title="Address" width="190">
-                    <ng-template kendoGridFilterMenuTemplate let-filter="filter" let-column="column"
-                        let-filterService="filterService">
-                        <simple-text-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
-                        </simple-text-filter>
-                    </ng-template>
-                </kendo-grid-column>
-                <kendo-grid-column field="propertyStatus" title="Property Status" width="120">
-                    <ng-template kendoGridFilterMenuTemplate let-filter="filter" let-column="column"
-                        let-filterService="filterService">
-                        <simple-text-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
-                        </simple-text-filter>
-                    </ng-template>
-                </kendo-grid-column>
-                <kendo-grid-column field="rightToBuy" title="Right To Buy" width="100">
-                    <ng-template kendoGridFilterMenuTemplate let-filter="filter" let-column="column"
-                        let-filterService="filterService">
-                        <simple-text-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
-                        </simple-text-filter>
-                    </ng-template>
-                </kendo-grid-column>
+                <kendo-grid-column field="wlassid" title="Asset Id" width="110" [filterable]="false">
 
-
+                </kendo-grid-column>
+                <kendo-grid-column field="astconcataddress" title="Address" width="330" [filterable]="false">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span title="{{dataItem.astconcataddress}}">
+                            {{ dataItem.astconcataddress }}
+                        </span>
+                    </ng-template>
+                </kendo-grid-column>
+                <kendo-grid-column field="wlcontcost" title="Work Cost" width="120" [filterable]="false">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.wlcontcost | currency:"GBP":"symbol" }}
+                        </span>
+                    </ng-template>
+                </kendo-grid-column>
+                <kendo-grid-column field="wlcomppackage" title="Work Package" width="140">
+                    <ng-template kendoGridFilterMenuTemplate let-filter="filter" let-column="column"
+                        let-filterService="filterService">
+                        <simple-text-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
+                        </simple-text-filter>
+                    </ng-template>
+                </kendo-grid-column>
+                <kendo-grid-column field="wphname" title="Work Package Name" width="160">
+                    <ng-template kendoGridFilterMenuTemplate let-filter="filter" let-column="column"
+                        let-filterService="filterService">
+                        <simple-text-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
+                        </simple-text-filter>
+                    </ng-template>
+                </kendo-grid-column>
+                <kendo-grid-column field="elecode" title="Element" width="120">
+                    <ng-template kendoGridFilterMenuTemplate let-filter="filter" let-column="column"
+                        let-filterService="filterService">
+                        <simple-text-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
+                        </simple-text-filter>
+                    </ng-template>
+                </kendo-grid-column>
+                <kendo-grid-column field="atadescription" title="Description" width="120" [filterable]="false">
+                </kendo-grid-column>
+                <kendo-grid-column field="wlplanyear" title="Plan Year" width="110" [filterable]="false">
+                </kendo-grid-column>
+                <kendo-grid-column field="conname" title="Contractor" width="120" [filterable]="false">
+                </kendo-grid-column>
+                <kendo-grid-column field="concode" title="Contract Code" width="120" [filterable]="false">
+                </kendo-grid-column>
+                <kendo-grid-column field="works_Order_Checklist_Name" title="Checklist Name" width="120"
+                    [filterable]="false">
+                </kendo-grid-column>
+                <kendo-grid-column field="wlttagcode" title="WL Tag" width="110" [filterable]="false">
+                </kendo-grid-column>
 
             </kendo-grid>
 
@@ -200,7 +228,11 @@
 
     <div class="row mt-4">
         <div class="col-md-12 text-right">
-            <button (click)="addTickedToWorksOrder()" [disabled]="mySelection.length == 0" class="btn btn-sm themeButton">Add Ticked To Works Order</button>
+            <button class="btn btn-sm themeButton" (click)="openPackageWindow()" [disabled]="actualSelectedRow?.treelevel != 3">Add Package to Work List</button>
+            <button (click)="addTickedToWorksOrder(1)" [disabled]="mySelection.length == 0"
+                class="btn btn-sm themeButton ml-1">Add Ticked To Works Order</button>
+            <button (click)="addTickedToWorksOrder(2)" [disabled]="totalCount == 0"
+                class="btn btn-sm themeButton ml-1">Add All To Works Order</button>
             <button (click)="closeAddAssetWindow()" class="btn btn-sm themeButton ml-1">Close</button>
         </div>
     </div>
@@ -270,4 +302,7 @@
         </div>
 
     </kendo-window>
+
+
+    <app-worksorders-add-package-to-worklist *ngIf="packageToWorklistWindow" [packageToWorklistWindow]="packageToWorklistWindow" [selectedWorkOrder]="actualSelectedRow" (closePackageWindowEvent)="closePackageWindowEvent($event)"></app-worksorders-add-package-to-worklist>
 </kendo-window>

@@ -18,8 +18,8 @@
             aria-expanded="false">Administration</button>
           <div class="dropdown-menu" x-placement="bottom-start"
             style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
-            <a class="dropdown-item" href="javascript:void(0)">Edit Works Order </a>
-            <a class="dropdown-item" href="javascript:void(0)" (click)="openPackageMappingWindow()">Package Mapping</a>
+            <a *ngIf="worksOrderAccess.indexOf('Edit Works Order') != -1" class="dropdown-item" href="javascript:void(0)">Edit Works Order </a>
+            <a *ngIf="worksOrderAccess.indexOf('Package Mapping') != -1" class="dropdown-item" href="javascript:void(0)" (click)="openPackageMappingWindow()">Package Mapping</a>
           </div>
         </div>
       </div>
@@ -31,19 +31,19 @@
             aria-expanded="false">Actions</button>
           <div class="dropdown-menu" x-placement="bottom-start"
             style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
-            <a class="dropdown-item" href="javascript:void(0)">Release </a>
+            <!-- <a class="dropdown-item" href="javascript:void(0)">Release </a>
             <a class="dropdown-item" href="javascript:void(0)">Issue</a>
             <a class="dropdown-item" href="javascript:void(0)">Accept</a>
             <a class="dropdown-item" href="javascript:void(0)">Handover</a>
             <a class="dropdown-item" href="javascript:void(0)">Sign Off</a>
             <a class="dropdown-item" href="javascript:void(0)">Remove</a>
-            <a class="dropdown-item" href="javascript:void(0)">Cancel</a>
+            <a class="dropdown-item" href="javascript:void(0)">Cancel</a> -->
 
           </div>
         </div>
       </div>
 
-      <button (click)="openNewphase('new')" class="btn btn-sm themeButton">New Phase</button>
+      <button *ngIf="worksOrderAccess.indexOf('Add Phase') != -1" (click)="openNewphase('new')" class="btn btn-sm themeButton">New Phase</button>
 
     </div>
   </div>
@@ -203,32 +203,32 @@
             <li *ngIf="dataItem.treelevel == 2" class="nav-item dropdown list-unstyled" style="margin-top: -7px;">
               <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
               <div class="dropdown-menu">
-                <a class="dropdown-item" href="javascript:void(0)" (click)="openNewphase('edit', dataItem)">Edit</a>
+                <a *ngIf="worksOrderAccess.indexOf('Edit Phase') != -1" class="dropdown-item" href="javascript:void(0)" (click)="openNewphase('edit', dataItem)">Edit</a>
 
                 <div class="dropdown-toggle">
                   <div class="dropdown-item">Move</div>
                   <div class="dropdown-menu">
-                    <a class="dropdown-item" (click)="moveWorksOrderDetailRow(false, dataItem)"
+                    <a *ngIf="worksOrderAccess.indexOf('Move Assets') != -1" class="dropdown-item" (click)="moveWorksOrderDetailRow(false, dataItem)"
                       href="javascript:void(0)">Move Up</a>
-                    <a class="dropdown-item" href="javascript:void(0)"
+                    <a *ngIf="worksOrderAccess.indexOf('Move Assets') != -1" class="dropdown-item" href="javascript:void(0)"
                       (click)="moveWorksOrderDetailRow(true, dataItem)">Move Down</a>
 
                   </div>
                 </div>
 
-                <a class="dropdown-item" href="javascript:void(0)" (click)="openConfirmationDialog(dataItem)">Delete</a>
+                <a *ngIf="worksOrderAccess.indexOf('Delete Phase') != -1" class="dropdown-item" href="javascript:void(0)" (click)="openConfirmationDialog(dataItem)">Delete</a>
                 <div class="dropdown-toggle">
                   <div class="dropdown-item">Add Asset(s)</div>
                   <div class="dropdown-menu">
-                    <a class="dropdown-item" (click)="openAddAssetWorkOrders(1, dataItem)" href="javascript:void(0)">
+                    <a  *ngIf="worksOrderAccess.indexOf('Add Assets') != -1" class="dropdown-item" (click)="openAddAssetWorkOrders(1, dataItem)" href="javascript:void(0)">
                       Asset(s)</a>
-                    <a class="dropdown-item" (click)="openAddAssetWorkOrdersList(1, dataItem)"
+                    <a *ngIf="worksOrderAccess.indexOf('Add Assets From Work List') != -1" class="dropdown-item" (click)="openAddAssetWorkOrdersList(1, dataItem)"
                       href="javascript:void(0)">Asset(s) From Work List</a>
 
                   </div>
                 </div>
 
-                <a class="dropdown-item" href="javascript:void(0)" (click)="openAssetDetail(dataItem)">Asset Details</a>
+                <a class="dropdown-item" *ngIf="worksOrderAccess.indexOf('Asset Details') != -1"  href="javascript:void(0)" (click)="openAssetDetail(dataItem)">Asset Details</a>
               </div>
             </li>
 
@@ -237,8 +237,31 @@
               <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
               <div class="dropdown-menu">
 
-                <a class="dropdown-item" href="javascript:void(0)" (click)="openAssetChecklist()">Asset Checklist</a>
-                <a class="dropdown-item" href="javascript:void(0)" (click)="openAssetDetailChild(dataItem)">Asset Details</a>
+
+                <a *ngIf="worksOrderAccess.indexOf('Asset Checklist') != -1" class="dropdown-item" href="javascript:void(0)" (click)="openAssetChecklist(dataItem)">Asset
+                  Checklist</a>
+                <div class="dropdown-toggle">
+                  <div class="dropdown-item">Add Asset(s)</div>
+                  <div class="dropdown-menu">
+                    <a *ngIf="worksOrderAccess.indexOf('Add Assets From Work List') != -1" class="dropdown-item" (click)="openAddAssetWorkOrdersList(1, dataItem)" href="javascript:void(0)"
+                      [ngClass]="{'disabled' : dataItem.wostatus != 'New'}">Asset(s) From Work List</a>
+
+                  </div>
+                </div>
+                <!-- <div class="dropdown-toggle">
+                  <div class="dropdown-item">Action</div>
+                  <div class="dropdown-menu">
+
+                    <a class="dropdown-item" href="javascript:void(0)">Release </a>
+                    <a class="dropdown-item" href="javascript:void(0)">Issue</a>
+                    <a class="dropdown-item" href="javascript:void(0)">Accept</a>
+                    <a class="dropdown-item" href="javascript:void(0)">Handover</a>
+                    <a class="dropdown-item" href="javascript:void(0)">Sign Off</a>
+                    <a class="dropdown-item" href="javascript:void(0)">Remove</a>
+                    <a class="dropdown-item" href="javascript:void(0)">Cancel</a>
+
+                  </div>
+                </div> -->
               </div>
             </li>
           </ng-template>
@@ -247,7 +270,7 @@
 
         <kendo-treelist-column [expandable]="true" [minResizableWidth]="200" field="woname" title="Name" [width]="250">
         </kendo-treelist-column>
-        <kendo-treelist-column field="wprstatus" title="Status" [width]="120"></kendo-treelist-column>
+        <kendo-treelist-column field="wostatus" title="Status" [width]="120"></kendo-treelist-column>
         <kendo-treelist-column field="woaworkaccess" title="Work Access" [width]="180"></kendo-treelist-column>
 
         <kendo-treelist-column field="targetdateobj" title="Target Date" [width]="130" filter="date"
@@ -430,7 +453,8 @@
   </app-worksorders-new-phase>
 
   <app-worksorders-package-mapping *ngIf="packageMappingWindow" [packageMappingWindow]="packageMappingWindow"
-    (closePackageMappingEvent)="cloasePackageMappingWindow($event)"></app-worksorders-package-mapping>
+    (closePackageMappingEvent)="cloasePackageMappingWindow($event)" [worksOrderSingleData]="worksOrderSingleData">
+  </app-worksorders-package-mapping>
 
   <app-worksorders-add-assets *ngIf="addAssetWindow" [addAssetWindow]="addAssetWindow"
     [actualSelectedRow]="actualSelectedRow" (closeAddAssetEvent)="closeAddAssetWindow($event)"

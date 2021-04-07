@@ -1,5 +1,5 @@
 <kendo-window title="{{title}}" *ngIf="assetchecklistWindow" (close)="closeAssetcheckListWindow()" [top]="20"
-    [minWidth]="700" [width]="1050" [height]="auto" [minHeight]="350">
+    [minWidth]="700" [width]="1250" [height]="auto" [minHeight]="350">
 
     <div class="row">
         <div class="col-md-12">
@@ -9,13 +9,13 @@
             <button type="submit" class="btn btn-sm themeButton mr-1 headin_section" (click)="slideToggle()">
                 <i class="fa" [ngClass]="(filterToggle) ? 'fa-minus':'fa-plus'"></i>
             </button>
-            <button type="button" class="btn btn-sm themeButton">Export</button>
-            <button type="button" class="btn btn-sm themeButton">Administration</button>
-            <button type="button" class="btn btn-sm themeButton">Doucuments</button>
-            <button type="button" class="btn btn-sm themeButton">Work</button>
+            <!-- <button type="button" class="btn btn-sm themeButton">Export</button>
+            <button type="button" class="btn btn-sm themeButton">Administration</button> -->
+            <button type="button" class="btn btn-sm themeButton" (click)="openChecklistDoc()">Doucuments</button>
+            <!-- <button type="button" class="btn btn-sm themeButton">Work</button>
             <button type="button" class="btn btn-sm themeButton">Defects</button>
             <button type="button" class="btn btn-sm themeButton">Variations</button>
-            <button type="button" class="btn btn-sm themeButton">Actions</button>
+            <button type="button" class="btn btn-sm themeButton">Actions</button> -->
         </div>
 
         <div class="col-md-12 mt-2">
@@ -24,14 +24,14 @@
                     <div class="worksorder-assetchecklist-header" style="display: none;">
                         <fieldset>
                             <div class="form-group form-row">
-                                <div class="col-md-1">Works Order: </div>
+                                <div class="col-md-1">Works Order: {{worksOrderData?.wosequence}} </div>
                                 <div class="col-md-8">
-                                    <input type="text" value="{{programmeData?.wprname}}"
+                                    <input type="text" value="{{worksOrderData?.woname}}"
                                         class="form-control form-control-sm" [readonly]="readonly">
                                 </div>
                                 <div class="col-md-2">Phase: </div>
                                 <div class="col-md-1 text-right"><input type="text" class="form-control form-control-sm"
-                                        [readonly]="readonly" value="{{programmeData?.wprcurrentcontractsum }}">
+                                        [readonly]="readonly" value="{{phaseData?.wopname }}">
                                 </div>
                             </div>
 
@@ -39,16 +39,16 @@
                                 <div class="col-md-1">Asset: </div>
                                 <div class="col-md-3">
                                     <input type="text" class="form-control form-control-sm" [readonly]="readonly"
-                                        value="{{worksOrderData?.woname}} (Works Order No: {{worksOrderData?.wosequence}})">
+                                        value="{{selectedChildRow?.assid}}">
                                 </div>
                                 <div class="col-md-5">
                                     <input type="text" class="form-control form-control-sm" [readonly]="readonly"
-                                        value="{{worksOrderData?.woname}} (Works Order No: {{worksOrderData?.wosequence}})">
+                                        value="{{selectedChildRow?.woname}}">
                                 </div>
                                 <div class="col-md-2">Work Access: </div>
                                 <div class="col-md-1 text-right"><input type="text" class="form-control form-control-sm"
                                         [readonly]="readonly"
-                                        value="{{programmeData?.wprcurrentcontractsum | currency:'GBP':'symbol'}}">
+                                        value="{{selectedChildRow?.woaworkaccess | currency:'GBP':'symbol'}}">
                                 </div>
                             </div>
 
@@ -56,37 +56,37 @@
                                 <div class="col-md-2">
                                     <label>Status:</label>
                                     <input type="text" [readonly]="readonly" class="form-control form-control-sm"
-                                        value="{{programmeData?.wprstatus}}">
+                                        value="{{selectedChildRow?.wostatus}}">
 
                                 </div>
                                 <div class="col-md-2">
                                     <label>Target:</label>
                                     <input type="text" class="form-control form-control-sm" [readonly]="readonly"
-                                        value="{{programmeData?.wprbudget | currency:'GBP':'symbol'}}">
+                                        value="{{selectedChildRow?.targetdate | dateFormat : 'DD-MMM-YYYY'}}">
                                 </div>
                                 <div class="col-md-2">
                                     <label>Issue:</label>
                                     <input type="text" class="form-control form-control-sm" [readonly]="readonly"
-                                        value="{{programmeData?.wprbudget | currency:'GBP':'symbol'}}">
+                                        value="{{programmeData?.wprcontractorissuedate | dateFormat : 'DD-MMM-YYYY'}}">
                                 </div>
 
                                 <div class="col-md-2">
                                     <label>Accepted:</label>
                                     <input type="text" class="form-control form-control-sm" [readonly]="readonly"
-                                        value="{{programmeData?.wprbudget | currency:'GBP':'symbol'}}">
+                                        value="{{programmeData?.wpracceptedvalue | currency:'GBP':'symbol'}}">
                                 </div>
 
                                 <div class="col-md-2">
                                     <label>Handover:</label>
                                     <input type="text" class="form-control form-control-sm"
-                                        value="{{programmeData?.wprtargetcompletiondate | dateFormat : 'DD-MMM-YYYY'}}"
+                                        value="{{programmeData?.wprapproved | currency:'GBP':'symbol'}}"
                                         [readonly]="readonly">
                                 </div>
 
                                 <div class="col-md-2">
                                     <label>Payment:</label>
                                     <input type="text" class="form-control form-control-sm"
-                                        value="{{programmeData?.wprtargetcompletiondate | dateFormat : 'DD-MMM-YYYY'}}"
+                                        value="{{programmeData?.wprpayment | currency:'GBP':'symbol'}}"
                                         [readonly]="readonly">
                                 </div>
                             </div>
@@ -95,37 +95,37 @@
                                 <div class="col-md-2">
                                     <label>Planned Start:</label>
                                     <input type="text" [readonly]="readonly" class="form-control form-control-sm"
-                                        value="{{programmeData?.wprstatus}}">
+                                        value="{{selectedChildRow?.planstartdate | dateFormat : 'DD-MMM-YYYY' }}">
 
                                 </div>
                                 <div class="col-md-2">
                                     <label>Planned End:</label>
                                     <input type="text" class="form-control form-control-sm" [readonly]="readonly"
-                                        value="{{programmeData?.wprbudget | currency:'GBP':'symbol'}}">
+                                        value="{{selectedChildRow?.planenddate | dateFormat : 'DD-MMM-YYYY'}}">
                                 </div>
                                 <div class="col-md-2">
                                     <label>Actual Start:</label>
                                     <input type="text" class="form-control form-control-sm" [readonly]="readonly"
-                                        value="{{programmeData?.wprbudget | currency:'GBP':'symbol'}}">
+                                        value="{{selectedChildRow?.planenddate | dateFormat : 'DD-MMM-YYYY'}}">
                                 </div>
 
                                 <div class="col-md-2">
                                     <label>Actual End:</label>
                                     <input type="text" class="form-control form-control-sm" [readonly]="readonly"
-                                        value="{{programmeData?.wprbudget | currency:'GBP':'symbol'}}">
+                                        value="{{selectedChildRow?.planenddate | dateFormat : 'DD-MMM-YYYY'}}">
                                 </div>
 
                                 <div class="col-md-2">
                                     <label>Practical Completion:</label>
                                     <input type="text" class="form-control form-control-sm"
-                                        value="{{programmeData?.wprtargetcompletiondate | dateFormat : 'DD-MMM-YYYY'}}"
+                                        value="{{selectedChildRow?.woacompletiondate | dateFormat : 'DD-MMM-YYYY'}}"
                                         [readonly]="readonly">
                                 </div>
 
                                 <div class="col-md-2">
                                     <label>Open Date:</label>
                                     <input type="text" class="form-control form-control-sm"
-                                        value="{{programmeData?.wprtargetcompletiondate | dateFormat : 'DD-MMM-YYYY'}}"
+                                        value="{{selectedChildRow?.woaopendate | dateFormat : 'DD-MMM-YYYY'}}"
                                         [readonly]="readonly">
                                 </div>
                             </div>
@@ -134,37 +134,37 @@
                                 <div class="col-md-1">
                                     <label>Forecast:</label>
                                     <input type="text" class="form-control form-control-sm" readonly="true"
-                                        value="{{programmeData?.wprforecast + programmeData?.wprforecastfee | currency:'GBP':'symbol'}}">
+                                        value="{{selectedChildRow?.woforecast | currency:'GBP':'symbol'}}">
                                 </div>
 
                                 <div class="col-md-1">
                                     <label>Commited:</label>
                                     <input type="text" class="form-control form-control-sm" readonly="true"
-                                        value="{{programmeData?.wprcommitted+programmeData?.wprcommittedfee | currency:'GBP':'symbol'}}">
+                                        value="{{selectedChildRow?.wocommitted | currency:'GBP':'symbol'}}">
                                 </div>
 
                                 <div class="col-md-1">
                                     <label>Approved:</label>
                                     <input type="text" class="form-control form-control-sm" readonly="true"
-                                        value="{{programmeData?.wprapproved+programmeData?.wprapprovedfee | currency:'GBP':'symbol'}}">
+                                        value="{{selectedChildRow?.woapproved| currency:'GBP':'symbol'}}">
                                 </div>
 
                                 <div class="col-md-1">
                                     <label>Pending:</label>
                                     <input type="text" class="form-control form-control-sm" readonly="true"
-                                        value="{{programmeData?.wprpending+programmeData?.wprpendingfee | currency:'GBP':'symbol'}}">
+                                        value="{{selectedChildRow?.wopending | currency:'GBP':'symbol'}}">
                                 </div>
 
                                 <div class="col-md-1">
                                     <label>Actual:</label>
                                     <input type="text" class="form-control form-control-sm" readonly="true"
-                                        value="{{programmeData?.wpractual+programmeData?.wpractualfee | currency:'GBP':'symbol'}}">
+                                        value="{{selectedChildRow?.woactual | currency:'GBP':'symbol'}}">
                                 </div>
 
                                 <div class="col-md-1">
                                     <label>Payment:</label>
                                     <input type="text" class="form-control form-control-sm" readonly="true"
-                                        value="{{programmeData?.wprpayment | currency:'GBP':'symbol'}}">
+                                        value="{{worksOrderData?.wopayment | currency:'GBP':'symbol'}}">
                                 </div>
                             </div>
 
@@ -183,7 +183,8 @@
                     mode: 'multiple'
                     }" [skip]="state.skip" [pageSize]="pageSize" [rowHeight]="36" (pageChange)="pageChange($event)"
                 scrollable="virtual" [sort]="state.sort" [filter]="state.filter" (sortChange)="sortChange($event)"
-                (filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)" [navigable]="true">
+                (filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)" [navigable]="true"
+                [virtualColumns]="true" [loading]="loading">
 
                 <kendo-grid-column title=" " width="37" [filterable]="false" [sortable]="false">
                     <ng-template kendoGridCellTemplate let-dataItem>
@@ -204,15 +205,129 @@
                 </kendo-grid-column>
 
 
-                <kendo-grid-column field="eventSequence" title="Seq" width="100">
+                <kendo-grid-column field="dependenciesIndicator" title="" width="40">
                 </kendo-grid-column>
-                <kendo-grid-column field="busareaName" title="Business Area" width="160">
+
+                <kendo-grid-column field="wostagename" title="" width="40">
+                    <ng-template kendoGridHeaderTemplate>
+                        <!-- <i class="fa fa-question" aria-hidden="true"></i> -->
+                        <img style="height: 14px;" src="assets/img/icons/tick.png" />
+                    </ng-template>
+
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <img style="height: 14px;" *ngIf="dataItem.itemIsCompleted != 'N'"
+                            src="assets/img/icons/tick.png" />
+                    </ng-template>
+
                 </kendo-grid-column>
-                <kendo-grid-column field="eventTypeCode" title="Code" width="120">
+                
+                <kendo-grid-column field="worksOrderAssetChecklistFileCount" title="" width="40">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <div style="width:100%; text-align: center;">
+                            <img style="height:16px;" *ngIf="dataItem.worksOrderAssetChecklistFileCount != 0"
+                                src="assets/img/icons/attach.png" />
+                        </div>
+                    </ng-template>
                 </kendo-grid-column>
-                <kendo-grid-column field="eventName" title="Task" width="410">
+
+
+
+
+                <kendo-grid-column field="wostagename" title="Stage" width="100">
                 </kendo-grid-column>
-                <kendo-grid-column field="eventRowCount" title="Record(s)" width="120">
+                <kendo-grid-column field="wocheckname" title="Name" width="280">
+                </kendo-grid-column>
+                <kendo-grid-column field="wocheckresp" title="Responsibility" width="120">
+                </kendo-grid-column>
+                <kendo-grid-column field="wocheckspeciaL1" title="Special" width="120">
+                </kendo-grid-column>
+                <kendo-grid-column field="woasscheckstatus" title="Status" width="120">
+                </kendo-grid-column>
+                <kendo-grid-column field="detailCount" title="# Work" width="120">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.detailCount != 0 ? dataItem.detailCount : '' }}
+                        </span>
+                    </ng-template>
+                </kendo-grid-column>
+                <kendo-grid-column field="woacactualstartdate" title="Start Date" width="120">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.woacactualstartdate | dateFormat : 'DD-MMM-YYYY' }}
+                        </span>
+                    </ng-template>
+                </kendo-grid-column>
+                <kendo-grid-column field="woactargetcompletiondate" title="Target Date" width="120">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.woactargetcompletiondate | dateFormat : 'DD-MMM-YYYY' }}
+                        </span>
+                    </ng-template>
+                </kendo-grid-column>
+                <kendo-grid-column field="woaccontractorissuedate" title="Issue Date" width="120">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.woaccontractorissuedate | dateFormat : 'DD-MMM-YYYY' }}
+                        </span>
+                    </ng-template>
+                </kendo-grid-column>
+                <kendo-grid-column field="woactargetcompletiondate" title="Completion Date" width="120">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.woactargetcompletiondate | dateFormat : 'DD-MMM-YYYY' }}
+                        </span>
+                    </ng-template>
+                </kendo-grid-column>
+                <kendo-grid-column field="woacforecastplusfee" title="Forecast" width="120">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.woacforecastplusfee | currency:'GBP':'symbol' }}
+                        </span>
+                    </ng-template>
+                </kendo-grid-column>
+                <kendo-grid-column field="woaccommittedplusfee" title="Committed" width="120">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.woaccommittedplusfee | currency:'GBP':'symbol' }}
+                        </span>
+                    </ng-template>
+                </kendo-grid-column>
+                <kendo-grid-column field="woacactualplusfee" title="Actual" width="120">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.woacactualplusfee | currency:'GBP':'symbol' }}
+                        </span>
+                    </ng-template>
+                </kendo-grid-column>
+                <kendo-grid-column field="woacapprovedplusfee" title="Approved" width="120">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.woacapprovedplusfee | currency:'GBP':'symbol' }}
+                        </span>
+                    </ng-template>
+                </kendo-grid-column>
+                <kendo-grid-column field="woacpendingplusfee" title="Pending" width="120">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.woacpendingplusfee | currency:'GBP':'symbol' }}
+                        </span>
+                    </ng-template>
+                </kendo-grid-column>
+                <kendo-grid-column field="woacplanstartdate" title="Planned Start Date" width="120">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.woacplanstartdate | dateFormat : 'DD-MMM-YYYY' }}
+                        </span>
+                    </ng-template>
+                </kendo-grid-column>
+                <kendo-grid-column field="woacplanenddate" title="Planned End Date" width="120">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.woacplanenddate | dateFormat : 'DD-MMM-YYYY' }}
+                        </span>
+                    </ng-template>
+                </kendo-grid-column>
+                <kendo-grid-column field="woasscheckcomment" title="Comment(s)" width="120">
                 </kendo-grid-column>
 
 
@@ -222,5 +337,11 @@
 
         </div>
     </div>
+
+    <div class="checklistOverlay"></div>
+
+    <app-worksorders-asset-checklist-document *ngIf="checklistDocWindow" [checklistDocWindow]="checklistDocWindow"
+        (closeAssetchecklistDocEvent)="closeChecklistDoc($event)"></app-worksorders-asset-checklist-document>
+
 
 </kendo-window>

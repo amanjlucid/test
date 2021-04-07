@@ -1,0 +1,49 @@
+.k-window-content{
+    padding-top: 5px !important;
+}
+
+.k-window {
+    position: fixed !important;
+}
+
+.headingDiv{
+    /* width: 50%; */
+    margin: auto;
+}
+
+.leftHheadingDiv, .rightHheadingDiv{
+    display: inline-block;
+}
+
+.rightHheadingDiv{
+    margin-left: 34px;
+}
+
+.leftHheadingDiv{
+    float: left;
+}
+
+.headingDiv{
+    background: #dddddd;
+    padding: 5px;
+    border-radius: 6px;
+    font-size: 17px;
+}
+
+.lbl{
+    font-weight: 600;
+}
+
+.headingDetail{
+    margin-top: -14px;
+}
+
+.leftHheadingDiv .tp, .leftHheadingDiv .bt{
+    /* display: block; */
+    display: flex;
+}
+
+.leftSideBtn button{
+    margin-right: 5px;
+}
+

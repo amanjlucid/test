@@ -104,4 +104,64 @@ export class WorksorderManagementService {
         return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/AddWorksOrderAssets`, body, this.httpOptions)
     }
 
+    getWorkOrderAssetFromWorklist(params): Observable<any> {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/AssetSearchWorkListWod `, body, this.httpOptions).pipe(
+            map(response => (<any>{
+                data: (response.data != null) ? response.data.wODAssestSearchListViews : [],
+                total: (response.data != null) ? response.data.totalCount : 0
+            }))
+        );
+    }
+
+    getWorksPackagesForAssets(params){
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWorksPackagesForAssets `, body, this.httpOptions)
+    } 
+
+    getPlanYear(WOSEQUENCE) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetPlanYear?WOSEQUENCE=${WOSEQUENCE}`, this.httpOptions);
+    }
+
+    worksOrdersInsertIntoWorkList (params){
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WorksOrdersInsertIntoWorkList  `, body, this.httpOptions)
+    }
+
+    addWorksOrderAssetsFromWorkList (params){
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/AddWorksOrderAssetsFromWorkList  `, body, this.httpOptions)
+    }
+
+    addWorksOrderAssetsFromWorkListALL (params){
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/AddWorksOrderAssetsFromWorkListALL  `, body, this.httpOptions)
+    }
+
+    packageMappingList(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/MappingWorksOrderPackages`, body, this.httpOptions);
+    }
+
+    getPackageTemplate(WOSEQUENCE) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetListOfWorksOrderChecklistForWORK?WOSEQUENCE=${WOSEQUENCE}`, this.httpOptions);
+    }
+
+    selectedOrderMapping(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/SelectedOrderMapping`, body, this.httpOptions);
+    }
+
+    applyAllWorksOrderPackageMapping(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/ApplyallSelectedOrderMapping`, body, this.httpOptions);
+    }
+
+    assetChecklistGridData(wosequence, assid, wopsequence) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/WorksOrdersAssetChecklistsForAsset?wosequence=${wosequence}&assid=${assid}&wopsequence=${wopsequence}`, this.httpOptions);
+    }
+
+    //http://104.40.138.8/RowanwoodWebAPI/api/workorderdetails/WorksOrdersAssetChecklistsForAsset?wosequence=705&assid=00ACE3-BLK&wopsequence=4
+
+ 
 }

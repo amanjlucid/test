@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { SubSink } from 'subsink';
 import { State } from '@progress/kendo-data-query';
-import { SelectableSettings } from '@progress/kendo-angular-grid';
+import { SelectableSettings, RowClassArgs } from '@progress/kendo-angular-grid';
 import { AlertService, HelperService, SharedService, WorksOrdersService } from '../../_services'
 import { Subject } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -20,7 +20,10 @@ export class WorkorderListComponent implements OnInit {
   subs = new SubSink();
   state: State = {
     skip: 0,
-    sort: [],
+    sort: [{
+      field: 'wosequence',
+      dir: 'desc'
+    }],
     group: [],
     filter: {
       logic: "or",
@@ -42,6 +45,8 @@ export class WorkorderListComponent implements OnInit {
   successDeleteMsg = '';
   deleteReasonMsgInput = false;
   wosequenceForDelete:any;
+  worksOrderAccess = [];
+
   // public windowOpened = false;
 
   constructor(
@@ -60,6 +65,13 @@ export class WorkorderListComponent implements OnInit {
   ngOnInit(): void {
     //update notification on top
     this.helper.updateNotificationOnTop();
+
+    this.sharedService.worksOrdersAccess.subscribe(
+      data => {
+        this.worksOrderAccess = data;
+      }
+    )
+
 
     this.getUserWorksOrdersList(this.filterObject);
 
@@ -144,8 +156,12 @@ export class WorkorderListComponent implements OnInit {
     this.router.navigate(['worksorders/details']);
   }
 
-  redirectToWorksOrderEdit(item) {
+  rowCallback(context: RowClassArgs) {
+    return { notNew: context.dataItem.wostatus != "New" }
+  }
 
+
+redirectToWorksOrderEdit(item) {
     $('.bgblur').addClass('ovrlay');
      this.woFormType = 'edit';
      this.selectedWorkOrderAddEdit = item;

@@ -1,34 +1,62 @@
 export class WorkordersAddAssetworklistModel {
-  wosequence  : number = 0
-  wopsequence   : number = 0
-  cttsurcde : number = 0
-  planyear : number = 0
-  wlcompackage : string = ''
-  wildcrdaddress : string = ''
 
-  assid : string = '';
-  wochcksurcde : number = 0;
-  hittypecode : string = 'Ascending'
-  ownassid : string = 'assid'
-  tag : string = ''
-  CurrentPage : number = 0 
-  PageSize : number = 50
-  OrderType : string = ''
+  alreadyInWorksOrderAssetDetail: string = ''
+  alreadyInWorksOrderPhase: string = ''
+  asbestosIcon: string = ''
+  assetstatusvalidforselection: string = ''
+  astconcataddress: string = ''
+  atadescription: string = ''
 
-  OrderBy :string = ''
-  wlassid  :string = ''
+  concode: string = '';
+  conname: string = '';
+  cttcode: string = ''
+  cttname: string = ''
+  cttsurcde: number = 0
+  elecode: string = ''
+  mPgrA: string = ''
+  matchedCHECKSURCDE: number = 0
 
-  astconcataddress  :string = ''
-  wlcontcost  :number = 0
-  wlcomppackage  :string = ''
-  elecode   :string = ''
-  atadescription  :string = ''
-  concode  :string = ''
-  cttcode  :string = ''
+  matchedSTAGESURCDE: number = 0
+  wlactcost: number = 0
 
-  works_Order_Checklist_Name   :string = ''
-  wlttagcode  :string = ''
-  
+  wlassid: string = ''
+  wlataid: number = 0
+  wlcode: number = 0
+  wlcomppackage: string = ''
+  wlcomppackagedesc: string = ''
+  wlcontcost: number = 0
+  wlplanyear: any = 0
+
+  wltransfdate: any = ''
+  wlttagcode: string = ''
+
+
+
+
+  wlworkstatus: string = ''
+  woChecklistMatchCount: string = ''
+  works_Order_Checklist_Name: string = ''
+  wphname: any = ''
+  wosequence: number = 0
+  wopsequence: number = 0
+
+  wildcrdaddress: string = '';
+
+  hittypecode: string = ''
+  ownassid: string = ''
+  CurrentPage: number = 0
+  PageSize: number = 50
+  OrderType: string = 'Ascending'
+  OrderBy: string = 'wlassid'
+
+
+
+
+
+
+
+
+
 
 
 
