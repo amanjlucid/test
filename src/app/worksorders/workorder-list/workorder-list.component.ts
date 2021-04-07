@@ -34,11 +34,19 @@ export class WorkorderListComponent implements OnInit {
   worksOrderData: any;
   loading = true;
   selectableSettings: SelectableSettings;
-  userFormWindow = false;
+  woFormWindow = false;
+  woFormDeleteWindow = false;
   filterObject: WorkordersListFilterModel;
   searchInGrid$ = new Subject<WorkordersListFilterModel>();
   selectedWorksOrder: any
-  // public userFormWindow = false;
+  selectedWorkOrderAddEdit:any;
+  woFormType = 'new';
+  errorDeleteMsg = '';
+  successDeleteMsg = '';
+  deleteReasonMsgInput = false;
+  wosequenceForDelete:any;
+  worksOrderAccess = [];
+
   // public windowOpened = false;
 
   constructor(
@@ -57,6 +65,13 @@ export class WorkorderListComponent implements OnInit {
   ngOnInit(): void {
     //update notification on top
     this.helper.updateNotificationOnTop();
+
+    this.sharedService.worksOrdersAccess.subscribe(
+      data => {
+        this.worksOrderAccess = data;
+      }
+    )
+
 
     this.getUserWorksOrdersList(this.filterObject);
 
@@ -113,9 +128,9 @@ export class WorkorderListComponent implements OnInit {
 
   openUserPopup(action, item = null) {
     $('.bgblur').addClass('ovrlay');
-    // this.userFormType = action;
-    // this.selectedUser = item;
-    // this.userFormWindow = true;
+     this.woFormType = action;
+     this.selectedWorkOrderAddEdit = item;
+     this.woFormWindow = true;
   }
 
   resetFilter() {
@@ -145,15 +160,163 @@ export class WorkorderListComponent implements OnInit {
     return { notNew: context.dataItem.wostatus != "New" }
   }
 
+
+redirectToWorksOrderEdit(item) {
+    $('.bgblur').addClass('ovrlay');
+     this.woFormType = 'edit';
+     this.selectedWorkOrderAddEdit = item;
+     this.woFormWindow = true;
+
+  }
+
+  closewoFormDeleteWindow() {
+    this.woFormDeleteWindow = false;
+  }
+
+
+
+  deleteThis(item){
+
+
+    this.wosequenceForDelete =   item.wosequence;
+
+    this.errorDeleteMsg   = '';
+    this.successDeleteMsg = '';
+
+    let reason =   'no';
+    let userId =   this.currentUser.userId;
+    let checkOrProcess =   'C';
+
+
+    this.eveneManagerService.DeleteWebWorkOrder(this.wosequenceForDelete,reason,userId,checkOrProcess).subscribe(
+        (data) => {
+
+
+            if (data.isSuccess) {
+
+                 if(data.data.pRETURNSTATUS == 'E'){
+                   this.errorDeleteMsg =  data.data.pRETURNMESSAGE;
+                   this.deleteReasonMsgInput = false;
+
+                 }
+
+                 else if(data.data.pRETURNSTATUS == 'S'){
+
+                    this.errorDeleteMsg = '';
+                    this.deleteReasonMsgInput = true;
+
+                 }
+                 else
+                 {
+
+                  this.errorDeleteMsg = '';
+                   this.deleteReasonMsgInput = true;
+                 }
+
+
+
+
+            }
+
+            console.log('Delete Data Return '+ JSON.stringify(data.data));
+
+        },
+        error => {
+            this.alertService.error(error);
+
+        }
+    )
+
+
+
+    this.woFormDeleteWindow = true;
+
+
+  }
+
+
+finalDeleteSubmit(reason){
+
+    this.errorDeleteMsg   = '';
+    this.successDeleteMsg = '';
+
+    if(reason == '' || reason == null){
+        this.errorDeleteMsg   = 'You must enter a reason for deleting a Works Order';
+
+    }
+    else{
+
+      let userId =   this.currentUser.userId;
+      let checkOrProcess =   'P';
+
+
+
+          this.eveneManagerService.DeleteWebWorkOrder(this.wosequenceForDelete,reason,userId,checkOrProcess).subscribe(
+              (data) => {
+
+
+                  if (data.isSuccess) {
+
+                    if(data.data.pRETURNSTATUS == 'E'){
+                      this.errorDeleteMsg =  data.data.pRETURNMESSAGE;
+
+                        this.alertService.error(data.data.pRETURNMESSAGE);
+
+                    }
+                    else
+                    {
+
+                      this.deleteReasonMsgInput = false;
+                      this.successDeleteMsg = 'Works Order Deleted';
+
+
+                      this.alertService.success(this.successDeleteMsg);
+
+
+                       this.woFormDeleteWindow = false;
+                        this.getUserWorksOrdersList(this.filterObject);
+
+
+                    }
+
+
+
+
+
+
+                  }
+
+                  console.log('Final Delete '+ JSON.stringify(data.data));
+
+              },
+              error => {
+                  this.alertService.error(error);
+
+              }
+          )
+
+
+
+
+
+
+
+    }
+
+
+
+}
   // public close() {
   //   $('.bgblur').removeClass('ovrlay');
   //   this.windowOpened = false;
   // }
-  // closeUserFormWin($event) {
-  //   this.userFormWindow = $event;
-  //   $('.bgblur').removeClass('ovrlay');
-  //   //this.getUserList();
-  // }
+
+
+   closeWoFormWin($event) {
+      this.woFormWindow = $event;
+      $('.bgblur').removeClass('ovrlay');
+      this.getUserWorksOrdersList(this.filterObject);
+   }
 
 
 

@@ -99,6 +99,21 @@
     margin-right: 5px;
 }
 
+
+.deleteError {
+    margin: 30px;
+     text-align: center;
+     color:red;
+     font-size: 17px;
+}
+.successDeleteMsg {
+    margin: 30px;
+     text-align: center;
+     color:green;
+     font-size: 17px;
+}
+
+
 /** media query **/
 
 @media only screen and (min-device-width: 768px) and (max-device-width: 1366px) {
@@ -134,7 +149,15 @@
     .filterdiv .filterLbl {
         width: 38% !important;
     }
+<<<<<<< HEAD
+
+    .filterdiv input[type=text]{
+        width: 58% !important;
+    }
+}
+=======
     .filterdiv input[type=text] {
         width: 58% !important;
     }
 }
+>>>>>>> 49c6be009adb1290007e91a25115c9f129fe61d5

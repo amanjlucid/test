@@ -53,7 +53,8 @@ export class WorksordersDetailsComponent implements OnInit {
   assetchecklistWindow = false;
   selectedChildRow: any;
   selectedParentRow: any;
-  actualSelectedRow: any;
+  selectedRow: any;
+  actualSelectedRow:any;
 
   newPhasewindow = false;
   phaseFormMode = 'new';
@@ -64,6 +65,8 @@ export class WorksordersDetailsComponent implements OnInit {
   addAssetWorklistWindow = false;
 
   assetDetailWindow = false;
+  treelevel = 2;
+    worksOrderAccess = [];
 
   constructor(
     private sharedService: SharedService,
@@ -83,6 +86,12 @@ export class WorksordersDetailsComponent implements OnInit {
      * Common service for all routing page
      **/
     this.helperService.updateNotificationOnTop();
+    this.sharedService.worksOrdersAccess.subscribe(
+      data => {
+        this.worksOrderAccess = data;
+      }
+    )
+
 
     //subscribe for worksorders data
     this.subs.add(
@@ -159,7 +168,7 @@ export class WorksordersDetailsComponent implements OnInit {
               if (value.treelevel == 2) {
                 value.parentId = null
                 value.id = `${value.wopsequence}${value.wosequence}${value.wprsequence}${this.helperService.replaceAll(value.assid, " ", "")}`;
-
+               value.parentData = JSON.stringify(value);
                 const valueWithDateObj = this.addDateObjectFields(value, ['targetdate', 'woacompletiondate', 'planstartdate', 'planenddate']); //Converting date object for filter from grid
                 gridData.push(valueWithDateObj);
 
@@ -170,6 +179,13 @@ export class WorksordersDetailsComponent implements OnInit {
                 if (parent) {
                   value.parentId = `${parent.wopsequence}${parent.wosequence}${parent.wprsequence}${this.helperService.replaceAll(parent.assid, " ", "")}`;
                   value.id = `${value.wopsequence}${value.wosequence}${value.wprsequence}${this.helperService.replaceAll(value.assid, " ", "")}${index}`;
+
+
+                //  let Form = JSON.stringify(this.myForm.value);
+
+
+                  value.parentData =  JSON.stringify(parent);
+                  value.assid =  value.assid;
 
                   const valueWithDateObj = this.addDateObjectFields(value, ['targetdate', 'woacompletiondate', 'planstartdate', 'planenddate']); //Converting date object for filter from grid
                   gridData.push(valueWithDateObj);
@@ -452,8 +468,39 @@ export class WorksordersDetailsComponent implements OnInit {
 
   openAssetDetail(item) {
     this.assetDetailWindow = true;
+    this.selectedRow = item;
+    this.selectedParentRow = item;
+    this.treelevel = 2;
+
+
+
+
+   //  this.worksOrderData
+
+
+  //  console.log('selectedParentRow ' + JSON.stringify(this.selectedParentRow));
+
     $('.worksOrderDetailOvrlay').addClass('ovrlay');
   }
+
+
+  openAssetDetailChild(item) {
+    this.assetDetailWindow = true;
+    this.selectedChildRow = item;
+    this.selectedRow = item;
+    this.treelevel = 3;
+
+
+     this.selectedParentRow = JSON.parse(item.parentData);
+    ///this.worksOrderData
+
+
+   console.log('selected item ' + JSON.stringify(item));
+  // console.log('selectedParentRow ' + JSON.stringify(this.selectedParentRow));
+
+    $('.worksOrderDetailOvrlay').addClass('ovrlay');
+  }
+
 
 
   closeAssetDetailWindow(eve) {
@@ -462,4 +509,3 @@ export class WorksordersDetailsComponent implements OnInit {
   }
 
 }
-
