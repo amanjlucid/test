@@ -274,10 +274,6 @@
                                             </div>
                                         </div>
 
-                                        <a class="dropdown-item" (click)="setDates('NOT STARTED', dataItem)"
-                                            href="javascript:void(0)">Set to Not Started</a>
-                                        <a class="dropdown-item" (click)="setDates('RESET', dataItem)"
-                                            href="javascript:void(0)">Reset Checklist Item</a>
                                     </div>
                                 </div>
 
@@ -285,18 +281,60 @@
                                 <div class="dropdown-toggle">
                                     <div class="dropdown-item">Complete</div>
                                     <div class="dropdown-menu">
-                                        <a class="dropdown-item" (click)="setComplete('IPY', dataItem)"
+                                        <a class="dropdown-item" (click)="setComplete('CIY', dataItem)"
                                             href="javascript:void(0)">Yesterday</a>
-                                        <a class="dropdown-item" (click)="setComplete('IPT', dataItem)"
+                                        <a class="dropdown-item" (click)="setComplete('CIT', dataItem)"
                                             href="javascript:void(0)">Today</a>
-                                        <a class="dropdown-item" (click)="setComplete('IPD', dataItem)"
+                                        <a class="dropdown-item" (click)="setComplete('CIPICK', dataItem)"
                                             href="javascript:void(0)">Choose Date</a>
                                     </div>
                                 </div>
 
-                                <!-- <a class="dropdown-item" href="javascript:void(0)">Dates</a>
-                                <a class="dropdown-item" href="javascript:void(0)">Complete</a>
-                                <a class="dropdown-item" href="javascript:void(0)">Comments</a> -->
+                                <div class="dropdown-toggle">
+                                    <div class="dropdown-item">Asset</div>
+                                    <div class="dropdown-menu">
+
+                                        <a class="dropdown-item" (click)="setAsset('RELEASE', dataItem)"
+                                            href="javascript:void(0)">
+                                            Release</a>
+                                            <a class="dropdown-item" (click)="setAsset('RESET', dataItem)"
+                                            href="javascript:void(0)">
+                                            Reset</a>
+                                            
+                                            <a class="dropdown-item" (click)="setAsset('ISSUE', dataItem)"
+                                            href="javascript:void(0)">
+                                            Issue</a>
+
+                                           
+
+                                        <div class="dropdown-toggle">
+                                            <div class="dropdown-item">Handover</div>
+                                            <div class="dropdown-menu">
+                                                <a class="dropdown-item" (click)="setAsset('TCY', dataItem)"
+                                                    href="javascript:void(0)">Yesterday</a>
+                                                
+
+                                            </div>
+                                        </div>
+
+                                        <div class="dropdown-toggle">
+                                            <div class="dropdown-item">Sign Off</div>
+                                            <div class="dropdown-menu">
+                                                <a class="dropdown-item" (click)="setAsset('CSDY', dataItem)"
+                                                    href="javascript:void(0)">Yesterday</a>
+                                               
+
+                                            </div>
+                                        </div>
+
+                                     
+                                        <a class="dropdown-item" (click)="setAsset('CANCEL', dataItem)"
+                                            href="javascript:void(0)">Cancel</a>
+                                       
+                                    </div>
+                                </div>
+
+
 
                             </div>
                         </li>
@@ -449,7 +487,8 @@
     <div class="checklistOverlay"></div>
 
     <app-worksorders-asset-checklist-document *ngIf="checklistDocWindow" [checklistDocWindow]="checklistDocWindow"
-        (closeAssetchecklistDocEvent)="closeChecklistDoc($event)" [selectedChildRow]="selectedChildRow" [selectedChecklist]="selectedChecklist"></app-worksorders-asset-checklist-document>
+        (closeAssetchecklistDocEvent)="closeChecklistDoc($event)" [selectedChildRow]="selectedChildRow"
+        [selectedChecklist]="selectedChecklist"></app-worksorders-asset-checklist-document>
 
     <app-worksorders-asset-checklist-predecessors *ngIf="predecessors" [predecessors]="predecessors"
         [predecessorsWindowFrom]="predecessorsWindowFrom" [selectedChecklist]="selectedChecklist"
@@ -457,21 +496,9 @@
     </app-worksorders-asset-checklist-predecessors>
 
 
+    <app-pick-date *ngIf="chooseDateWindow" [chooseDateWindow]="chooseDateWindow"
+        (closePickeDateEvent)="closeChooseDate($event)" [chooseDateType]="chooseDateType"
+        (selectedDateEvent)="selectedDateEvent($event)"></app-pick-date>
 
-    <kendo-window title="Select Today or Past In Progress Date" *ngIf="chooseDateWindow" (close)="closeChooseDate()"
-        [top]="20" [minWidth]="300" [width]="400" [height]="auto" [minHeight]="350">
 
-        <div class="row">
-            <div class="col-md-12">
-                <ngb-datepicker #dp [(ngModel)]="model" (navigate)="date = $event.next" [maxDate]="maxDate">
-                </ngb-datepicker>
-            </div>
-
-            <div class="col-md-12 text-right mt-2">
-                <button type="submit" class="btn btn-sm themeButton ml-1" (click)="selectDate()">Ok</button>
-                <button type="submit" class="btn btn-sm themeButton ml-1" (click)="closeChooseDate()">Cancel</button>
-            </div>
-        </div>
-
-    </kendo-window>
 </kendo-window>

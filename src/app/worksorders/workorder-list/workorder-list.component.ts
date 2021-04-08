@@ -95,7 +95,7 @@ export class WorkorderListComponent implements OnInit {
     this.subs.add(
       this.eveneManagerService.getListOfUserWorksOrderByUserId(filter).subscribe(
         data => {
-          console.log(data)
+          // console.log(data)
           if (data.isSuccess) this.worksOrderData = data.data
           else this.alertService.error(data.message);
           this.loading = false;

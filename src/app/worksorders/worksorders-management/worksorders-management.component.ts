@@ -69,7 +69,7 @@ export class WorksordersManagementComponent implements OnInit {
     this.subs.add(
       this.worksorderManagementService.getManagementData(status).subscribe(
         data => {
-          console.log(data);
+          // console.log(data);
           if (data.isSuccess) {
             let gridData = [];
             this.apiData = [...data.data];

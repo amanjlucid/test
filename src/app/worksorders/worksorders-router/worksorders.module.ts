@@ -30,6 +30,7 @@ import { WorksordersAssetChecklistDocumentComponent } from '../worksorders-asset
 import { WorksordersAssetChecklistPredecessorsComponent } from '../worksorders-asset-checklist-predecessors/worksorders-asset-checklist-predecessors.component';
 import { WorksordersAssetChecklistEditDescriptionComponent } from '../worksorders-asset-checklist-edit-description/worksorders-asset-checklist-edit-description.component';
 import { WorksordersAssetChecklistUploadDocComponent } from '../worksorders-asset-checklist-upload-doc/worksorders-asset-checklist-upload-doc.component';
+import { PickDateComponent } from '../pick-date/pick-date.component';
 
 @NgModule({
   declarations: [
@@ -51,7 +52,8 @@ import { WorksordersAssetChecklistUploadDocComponent } from '../worksorders-asse
     WorksordersAssetChecklistDocumentComponent,
     WorksordersAssetChecklistPredecessorsComponent,
     WorksordersAssetChecklistEditDescriptionComponent,
-    WorksordersAssetChecklistUploadDocComponent
+    WorksordersAssetChecklistUploadDocComponent,
+    PickDateComponent
   ],
 
   imports: [

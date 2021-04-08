@@ -54,7 +54,7 @@ export class WorksordersDetailsComponent implements OnInit {
   selectedChildRow: any;
   selectedParentRow: any;
   selectedRow: any;
-  actualSelectedRow:any;
+  actualSelectedRow: any;
 
   newPhasewindow = false;
   phaseFormMode = 'new';
@@ -66,7 +66,8 @@ export class WorksordersDetailsComponent implements OnInit {
 
   assetDetailWindow = false;
   treelevel = 2;
-    worksOrderAccess = [];
+  worksOrderAccess = [];
+  woFormWindow = false;
 
   constructor(
     private sharedService: SharedService,
@@ -168,7 +169,7 @@ export class WorksordersDetailsComponent implements OnInit {
               if (value.treelevel == 2) {
                 value.parentId = null
                 value.id = `${value.wopsequence}${value.wosequence}${value.wprsequence}${this.helperService.replaceAll(value.assid, " ", "")}`;
-               value.parentData = JSON.stringify(value);
+                value.parentData = JSON.stringify(value);
                 const valueWithDateObj = this.addDateObjectFields(value, ['targetdate', 'woacompletiondate', 'planstartdate', 'planenddate']); //Converting date object for filter from grid
                 gridData.push(valueWithDateObj);
 
@@ -181,11 +182,11 @@ export class WorksordersDetailsComponent implements OnInit {
                   value.id = `${value.wopsequence}${value.wosequence}${value.wprsequence}${this.helperService.replaceAll(value.assid, " ", "")}${index}`;
 
 
-                //  let Form = JSON.stringify(this.myForm.value);
+                  //  let Form = JSON.stringify(this.myForm.value);
 
 
-                  value.parentData =  JSON.stringify(parent);
-                  value.assid =  value.assid;
+                  value.parentData = JSON.stringify(parent);
+                  value.assid = value.assid;
 
                   const valueWithDateObj = this.addDateObjectFields(value, ['targetdate', 'woacompletiondate', 'planstartdate', 'planenddate']); //Converting date object for filter from grid
                   gridData.push(valueWithDateObj);
@@ -475,10 +476,10 @@ export class WorksordersDetailsComponent implements OnInit {
 
 
 
-   //  this.worksOrderData
+    //  this.worksOrderData
 
 
-  //  console.log('selectedParentRow ' + JSON.stringify(this.selectedParentRow));
+    //  console.log('selectedParentRow ' + JSON.stringify(this.selectedParentRow));
 
     $('.worksOrderDetailOvrlay').addClass('ovrlay');
   }
@@ -491,12 +492,12 @@ export class WorksordersDetailsComponent implements OnInit {
     this.treelevel = 3;
 
 
-     this.selectedParentRow = JSON.parse(item.parentData);
+    this.selectedParentRow = JSON.parse(item.parentData);
     ///this.worksOrderData
 
 
-   console.log('selected item ' + JSON.stringify(item));
-  // console.log('selectedParentRow ' + JSON.stringify(this.selectedParentRow));
+    console.log('selected item ' + JSON.stringify(item));
+    // console.log('selectedParentRow ' + JSON.stringify(this.selectedParentRow));
 
     $('.worksOrderDetailOvrlay').addClass('ovrlay');
   }
@@ -506,6 +507,18 @@ export class WorksordersDetailsComponent implements OnInit {
   closeAssetDetailWindow(eve) {
     this.assetDetailWindow = eve;
     $('.worksOrderDetailOvrlay').removeClass('ovrlay');
+  }
+
+  redirectToWorksOrderEdit() {
+    $('.worksOrderDetailOvrlay').addClass('ovrlay');
+    this.woFormWindow = true;
+
+  }
+
+  closeWoFormWin($event) {
+    this.woFormWindow = $event;
+    $('.worksOrderDetailOvrlay').removeClass('ovrlay');
+    this.worksOrderDetailPageData();
   }
 
 }

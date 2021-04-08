@@ -23,14 +23,17 @@
 
             <div class="actionDiv">
                 <button type="button" class="btn btn-sm themeButton mr-1" (click)="export()">Export</button>
-                <div class="dropdown" id="nesting-dropdown-demo">
+                <div class="dropdown" id="nesting-dropdown-demo"
+                    *ngIf="worksOrderAccess.indexOf('New Programme') != -1 || worksOrderAccess.indexOf('New Works Order') != -1">
                     <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown"
                         aria-expanded="false">New</button>
                     <div class="dropdown-menu" x-placement="bottom-start"
                         style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
-                        <a class="dropdown-item" (click)="openNewManagementWindow()" href="javascript:void(0)">New
+                        <a *ngIf="worksOrderAccess.indexOf('New Programme') != -1" class="dropdown-item"
+                            (click)="openNewManagementWindow()" href="javascript:void(0)">New
                             Programme</a>
-                        <a class="dropdown-item" href="javascript:void(0)">New Works Order</a>
+                        <a class="dropdown-item" *ngIf="worksOrderAccess.indexOf('New Works Order') != -1"
+                            href="javascript:void(0)">New Works Order</a>
 
                     </div>
                 </div>
@@ -56,11 +59,11 @@
                             <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"
                                 (click)="setSeletedRow(dataItem)"></i>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" (click)="openNewManagementWindow('edit')"
+                                <a *ngIf="worksOrderAccess.indexOf('Edit Programme') != -1" class="dropdown-item" (click)="openNewManagementWindow('edit')"
                                     href="javascript:void(0)">Edit</a>
-                                <a class="dropdown-item" (click)="openConfirmationDialog(dataItem)"
+                                <a *ngIf="worksOrderAccess.indexOf('Delete Programme') != -1" class="dropdown-item" (click)="openConfirmationDialog(dataItem)"
                                     href="javascript:void(0)">Delete</a>
-                                <a class="dropdown-item" href="javascript:void(0)">New Works Order</a>
+                                <a *ngIf="worksOrderAccess.indexOf('New Works Order') != -1" class="dropdown-item" href="javascript:void(0)">New Works Order</a>
 
                             </div>
                         </li>
@@ -69,12 +72,14 @@
                             style="margin-top: -7px;">
                             <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" href="javascript:void(0)">Edit</a>
-                                <a class="dropdown-item" href="javascript:void(0)">Delete</a>
+                                <a class="dropdown-item" *ngIf="worksOrderAccess.indexOf('Edit Works Order') != -1"
+                                    href="javascript:void(0)">Edit</a>
+                                <a class="dropdown-item" *ngIf="worksOrderAccess.indexOf('Delete Works Order') != -1"
+                                    href="javascript:void(0)">Delete</a>
                                 <a class="dropdown-item" href="javascript:void(0)"
-                                    (click)="redirectToWorksOrder(dataItem)">Works Order Detail</a>
+                                    (click)="redirectToWorksOrder(dataItem)" *ngIf="worksOrderAccess.indexOf('Works Order Detail') != -1">Works Order Detail</a>
                                 <a class="dropdown-item" href="javascript:void(0)"
-                                    (click)="openPackageMappingWindow(dataItem)">Package Mapping</a>
+                                    (click)="openPackageMappingWindow(dataItem)" *ngIf="worksOrderAccess.indexOf('Package Mapping') != -1">Package Mapping</a>
 
                             </div>
                         </li>
