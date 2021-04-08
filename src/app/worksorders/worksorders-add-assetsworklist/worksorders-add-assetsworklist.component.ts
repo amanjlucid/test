@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy
 import { SubSink } from 'subsink';
 import { State, SortDescriptor } from '@progress/kendo-data-query';
 import { SelectableSettings, PageChangeEvent, RowArgs } from '@progress/kendo-angular-grid';
-import { AlertService, AssetAttributeService, ConfirmationDialogService, HelperService, LoaderService, PropertySecurityGroupService, WorksorderManagementService } from 'src/app/_services';
+import { AlertService, AssetAttributeService, ConfirmationDialogService, HelperService, LoaderService, PropertySecurityGroupService, SharedService, WorksorderManagementService } from 'src/app/_services';
 import { WorkordersAddAssetworklistModel } from '../../_models'
 import { tap, switchMap } from 'rxjs/operators';
 import { BehaviorSubject, forkJoin } from 'rxjs';
@@ -60,11 +60,12 @@ export class WorksordersAddAssetsworklistComponent implements OnInit {
   packageToWorklistWindow = false;
   selectedRow: any = [];
   planYear: any;
+  worksOrderAccess:any = [];
 
   constructor(
     private propSecGrpService: PropertySecurityGroupService,
     private loaderService: LoaderService,
-    private helperService: HelperService,
+    private sharedService: SharedService,
     private alertService: AlertService,
     private chRef: ChangeDetectorRef,
     private assetAttributeService: AssetAttributeService,
@@ -81,6 +82,14 @@ export class WorksordersAddAssetsworklistComponent implements OnInit {
     if (this.actualSelectedRow.treelevel == 3) {
       this.headerFilters.wlassid = this.actualSelectedRow.assid
     }
+
+    this.subs.add(
+      this.sharedService.worksOrdersAccess.subscribe(
+        data => {
+          this.worksOrderAccess = data;
+        }
+      )
+    )
 
     this.subs.add(
       forkJoin([
@@ -123,6 +132,8 @@ export class WorksordersAddAssetsworklistComponent implements OnInit {
         }
       )
     )
+
+
 
   }
 

@@ -67,14 +67,14 @@
     <div class="row mt-2">
         <div class="col-md-9 text-left leftSideBtn">
             <input (change)="onFileChange($event)" type="file" #addDoc id="addDoc" style="display: none;">
-            <button class="btn btn-sm themeButton" (click)="viewDocument()" [disabled]="!selectedDoc">View
+            <button *ngIf="worksOrderAccess.indexOf('View Document') != -1" class="btn btn-sm themeButton" (click)="viewDocument()" [disabled]="!selectedDoc">View
                 Document</button>
-            <button class="btn btn-sm themeButton" (click)="openEditDoc()" [disabled]="!selectedDoc">Edit
+            <button *ngIf="worksOrderAccess.indexOf('Edit Checklist Document Description') != -1" class="btn btn-sm themeButton" (click)="openEditDoc()" [disabled]="!selectedDoc">Edit
                 Description</button>
-            <button class="btn btn-sm themeButton" (click)="addDocument()">Add Document</button>
+            <button *ngIf="worksOrderAccess.indexOf('Add Checklist Document') != -1" class="btn btn-sm themeButton" (click)="addDocument()">Add Document</button>
 
-            <button class="btn btn-sm themeButton" (click)="uploadImage()">Upload Document</button>
-            <button class="btn btn-sm themeButton" (click)="openConfirmationDialog()" [disabled]="!selectedDoc">Remove
+            <button *ngIf="worksOrderAccess.indexOf('Upload Checklist Document') != -1" class="btn btn-sm themeButton" (click)="uploadImage()">Upload Document</button>
+            <button *ngIf="worksOrderAccess.indexOf('Remove Checklist Document') != -1" class="btn btn-sm themeButton" (click)="openConfirmationDialog()" [disabled]="!selectedDoc">Remove
                 Document</button>
         </div>
 

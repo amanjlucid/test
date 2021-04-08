@@ -87,10 +87,13 @@ export class WorksordersDetailsComponent implements OnInit {
      * Common service for all routing page
      **/
     this.helperService.updateNotificationOnTop();
-    this.sharedService.worksOrdersAccess.subscribe(
-      data => {
-        this.worksOrderAccess = data;
-      }
+
+    this.subs.add(
+      this.sharedService.worksOrdersAccess.subscribe(
+        data => {
+          this.worksOrderAccess = data;
+        }
+      )
     )
 
 

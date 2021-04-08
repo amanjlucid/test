@@ -39,12 +39,12 @@ export class WorkorderListComponent implements OnInit {
   filterObject: WorkordersListFilterModel;
   searchInGrid$ = new Subject<WorkordersListFilterModel>();
   selectedWorksOrder: any
-  selectedWorkOrderAddEdit:any;
+  selectedWorkOrderAddEdit: any;
   woFormType = 'new';
   errorDeleteMsg = '';
   successDeleteMsg = '';
   deleteReasonMsgInput = false;
-  wosequenceForDelete:any;
+  wosequenceForDelete: any;
   worksOrderAccess = [];
 
   // public windowOpened = false;
@@ -66,10 +66,12 @@ export class WorkorderListComponent implements OnInit {
     //update notification on top
     this.helper.updateNotificationOnTop();
 
-    this.sharedService.worksOrdersAccess.subscribe(
-      data => {
-        this.worksOrderAccess = data;
-      }
+    this.subs.add(
+      this.sharedService.worksOrdersAccess.subscribe(
+        data => {
+          this.worksOrderAccess = data;
+        }
+      )
     )
 
 
@@ -128,9 +130,9 @@ export class WorkorderListComponent implements OnInit {
 
   openUserPopup(action, item = null) {
     $('.bgblur').addClass('ovrlay');
-     this.woFormType = action;
-     this.selectedWorkOrderAddEdit = item;
-     this.woFormWindow = true;
+    this.woFormType = action;
+    this.selectedWorkOrderAddEdit = item;
+    this.woFormWindow = true;
   }
 
   resetFilter() {
@@ -161,11 +163,11 @@ export class WorkorderListComponent implements OnInit {
   }
 
 
-redirectToWorksOrderEdit(item) {
+  redirectToWorksOrderEdit(item) {
     $('.bgblur').addClass('ovrlay');
-     this.woFormType = 'edit';
-     this.selectedWorkOrderAddEdit = item;
-     this.woFormWindow = true;
+    this.woFormType = 'edit';
+    this.selectedWorkOrderAddEdit = item;
+    this.woFormWindow = true;
 
   }
 
@@ -175,56 +177,55 @@ redirectToWorksOrderEdit(item) {
 
 
 
-  deleteThis(item){
+  deleteThis(item) {
 
 
-    this.wosequenceForDelete =   item.wosequence;
+    this.wosequenceForDelete = item.wosequence;
 
-    this.errorDeleteMsg   = '';
+    this.errorDeleteMsg = '';
     this.successDeleteMsg = '';
 
-    let reason =   'no';
-    let userId =   this.currentUser.userId;
-    let checkOrProcess =   'C';
+    let reason = 'no';
+    let userId = this.currentUser.userId;
+    let checkOrProcess = 'C';
 
 
-    this.eveneManagerService.DeleteWebWorkOrder(this.wosequenceForDelete,reason,userId,checkOrProcess).subscribe(
-        (data) => {
+    this.eveneManagerService.DeleteWebWorkOrder(this.wosequenceForDelete, reason, userId, checkOrProcess).subscribe(
+      (data) => {
 
 
-            if (data.isSuccess) {
+        if (data.isSuccess) {
 
-                 if(data.data.pRETURNSTATUS == 'E'){
-                   this.errorDeleteMsg =  data.data.pRETURNMESSAGE;
-                   this.deleteReasonMsgInput = false;
+          if (data.data.pRETURNSTATUS == 'E') {
+            this.errorDeleteMsg = data.data.pRETURNMESSAGE;
+            this.deleteReasonMsgInput = false;
 
-                 }
+          }
 
-                 else if(data.data.pRETURNSTATUS == 'S'){
+          else if (data.data.pRETURNSTATUS == 'S') {
 
-                    this.errorDeleteMsg = '';
-                    this.deleteReasonMsgInput = true;
+            this.errorDeleteMsg = '';
+            this.deleteReasonMsgInput = true;
 
-                 }
-                 else
-                 {
+          }
+          else {
 
-                  this.errorDeleteMsg = '';
-                   this.deleteReasonMsgInput = true;
-                 }
-
+            this.errorDeleteMsg = '';
+            this.deleteReasonMsgInput = true;
+          }
 
 
 
-            }
-
-            console.log('Delete Data Return '+ JSON.stringify(data.data));
-
-        },
-        error => {
-            this.alertService.error(error);
 
         }
+
+        console.log('Delete Data Return ' + JSON.stringify(data.data));
+
+      },
+      error => {
+        this.alertService.error(error);
+
+      }
     )
 
 
@@ -235,65 +236,64 @@ redirectToWorksOrderEdit(item) {
   }
 
 
-finalDeleteSubmit(reason){
+  finalDeleteSubmit(reason) {
 
-    this.errorDeleteMsg   = '';
+    this.errorDeleteMsg = '';
     this.successDeleteMsg = '';
 
-    if(reason == '' || reason == null){
-        this.errorDeleteMsg   = 'You must enter a reason for deleting a Works Order';
+    if (reason == '' || reason == null) {
+      this.errorDeleteMsg = 'You must enter a reason for deleting a Works Order';
 
     }
-    else{
+    else {
 
-      let userId =   this.currentUser.userId;
-      let checkOrProcess =   'P';
-
-
-
-          this.eveneManagerService.DeleteWebWorkOrder(this.wosequenceForDelete,reason,userId,checkOrProcess).subscribe(
-              (data) => {
+      let userId = this.currentUser.userId;
+      let checkOrProcess = 'P';
 
 
-                  if (data.isSuccess) {
 
-                    if(data.data.pRETURNSTATUS == 'E'){
-                      this.errorDeleteMsg =  data.data.pRETURNMESSAGE;
-
-                        this.alertService.error(data.data.pRETURNMESSAGE);
-
-                    }
-                    else
-                    {
-
-                      this.deleteReasonMsgInput = false;
-                      this.successDeleteMsg = 'Works Order Deleted';
+      this.eveneManagerService.DeleteWebWorkOrder(this.wosequenceForDelete, reason, userId, checkOrProcess).subscribe(
+        (data) => {
 
 
-                      this.alertService.success(this.successDeleteMsg);
+          if (data.isSuccess) {
+
+            if (data.data.pRETURNSTATUS == 'E') {
+              this.errorDeleteMsg = data.data.pRETURNMESSAGE;
+
+              this.alertService.error(data.data.pRETURNMESSAGE);
+
+            }
+            else {
+
+              this.deleteReasonMsgInput = false;
+              this.successDeleteMsg = 'Works Order Deleted';
 
 
-                       this.woFormDeleteWindow = false;
-                        this.getUserWorksOrdersList(this.filterObject);
+              this.alertService.success(this.successDeleteMsg);
 
 
-                    }
+              this.woFormDeleteWindow = false;
+              this.getUserWorksOrdersList(this.filterObject);
 
+
+            }
 
 
 
 
 
-                  }
 
-                  console.log('Final Delete '+ JSON.stringify(data.data));
+          }
 
-              },
-              error => {
-                  this.alertService.error(error);
+          console.log('Final Delete ' + JSON.stringify(data.data));
 
-              }
-          )
+        },
+        error => {
+          this.alertService.error(error);
+
+        }
+      )
 
 
 
@@ -305,18 +305,18 @@ finalDeleteSubmit(reason){
 
 
 
-}
+  }
   // public close() {
   //   $('.bgblur').removeClass('ovrlay');
   //   this.windowOpened = false;
   // }
 
 
-   closeWoFormWin($event) {
-      this.woFormWindow = $event;
-      $('.bgblur').removeClass('ovrlay');
-      this.getUserWorksOrdersList(this.filterObject);
-   }
+  closeWoFormWin($event) {
+    this.woFormWindow = $event;
+    $('.bgblur').removeClass('ovrlay');
+    this.getUserWorksOrdersList(this.filterObject);
+  }
 
 
 

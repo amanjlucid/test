@@ -43,6 +43,8 @@ export class WorksordersAssetChecklistDocumentComponent implements OnInit {
   maxSize: number = 5; // 5MB
   filePath;
 
+  worksOrderAccess:any = [];
+
   constructor(
     private chRef: ChangeDetectorRef,
     private alertService: AlertService,
@@ -71,6 +73,14 @@ export class WorksordersAssetChecklistDocumentComponent implements OnInit {
           }
         },
         err => this.alertService.error(err)
+      )
+    )
+    
+    this.subs.add(
+      this.sharedService.worksOrdersAccess.subscribe(
+        data => {
+          this.worksOrderAccess = data;
+        }
       )
     )
   }

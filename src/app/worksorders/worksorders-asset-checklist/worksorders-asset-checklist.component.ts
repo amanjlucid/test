@@ -53,7 +53,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
   chooseDateWindow = false;
   chooseDateType = 'status';
 
-  worksOrderAccess:any = [];
+  worksOrderAccess: any = [];
 
   constructor(
     private chRef: ChangeDetectorRef,
@@ -65,13 +65,15 @@ export class WorksordersAssetChecklistComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    console.log(this.selectedChildRow);
+    // console.log(this.selectedChildRow);
     this.worksOrderDetailPageData();
 
-    this.sharedService.worksOrdersAccess.subscribe(
-      data => {
-        this.worksOrderAccess = data;
-      }
+    this.subs.add(
+      this.sharedService.worksOrdersAccess.subscribe(
+        data => {
+          this.worksOrderAccess = data;
+        }
+      )
     )
 
   }

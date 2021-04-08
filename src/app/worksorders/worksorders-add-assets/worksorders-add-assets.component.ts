@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy
 import { SubSink } from 'subsink';
 import { State, SortDescriptor } from '@progress/kendo-data-query';
 import { SelectableSettings, PageChangeEvent, RowArgs } from '@progress/kendo-angular-grid';
-import { AlertService, AssetAttributeService, ConfirmationDialogService, HelperService, LoaderService, PropertySecurityGroupService, WorksorderManagementService } from 'src/app/_services';
+import { AlertService, AssetAttributeService, ConfirmationDialogService, HelperService, LoaderService, PropertySecurityGroupService, SharedService, WorksorderManagementService } from 'src/app/_services';
 import { WorkordersAddAssetModel } from '../../_models'
 import { tap, switchMap} from 'rxjs/operators';
 import { BehaviorSubject } from 'rxjs';
@@ -55,16 +55,17 @@ export class WorksordersAddAssetsComponent implements OnInit {
   selectableSettings: SelectableSettings;
   mySelection: any[] = [];
   zero = 0;
+  worksOrderAccess:any= [];
 
   constructor(
     private propSecGrpService: PropertySecurityGroupService,
     private loaderService: LoaderService,
-    private helperService: HelperService,
+    private sharedService: SharedService,
     private alertService: AlertService,
     private chRef: ChangeDetectorRef,
     private assetAttributeService: AssetAttributeService,
     private worksorderManagementService: WorksorderManagementService,
-    private confirmationDialogService: ConfirmationDialogService
+    private confirmationDialogService: ConfirmationDialogService,
   ) {
     this.setSelectableSettings();
   }
@@ -73,6 +74,14 @@ export class WorksordersAddAssetsComponent implements OnInit {
     // console.log(this.actualSelectedRow)
     this.headerFilters.wopsequence = this.actualSelectedRow.wopsequence;
     this.headerFilters.wosequence = this.actualSelectedRow.wosequence;
+
+    this.subs.add(
+      this.sharedService.worksOrdersAccess.subscribe(
+        data => {
+          this.worksOrderAccess = data;
+        }
+      )
+    )
 
     this.getAssetType();
 
@@ -88,7 +97,6 @@ export class WorksordersAddAssetsComponent implements OnInit {
         this.chRef.detectChanges();
       })
     );
-
 
   }
 

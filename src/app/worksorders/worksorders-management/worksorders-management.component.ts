@@ -50,12 +50,12 @@ export class WorksordersManagementComponent implements OnInit {
   ngOnInit(): void {
     //update notification on top
     this.helperService.updateNotificationOnTop();
-    this.sharedService.worksOrdersAccess.subscribe(
-      data => {
-        this.worksOrderAccess = data;
-        // console.log(this.worksOrderAccess)
-
-      }
+    this.subs.add(
+      this.sharedService.worksOrdersAccess.subscribe(
+        data => {
+          this.worksOrderAccess = data;
+        }
+      )
     )
 
     this.getManagement();
