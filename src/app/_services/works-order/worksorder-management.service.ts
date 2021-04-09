@@ -206,4 +206,24 @@ export class WorksorderManagementService {
         return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WorkOrderUploadDocument`, params)
     }
 
+    worksOrderHandoverAsset(params){
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WorksOrderHandoverAsset`, body, this.httpOptions);
+    }
+
+    worksOrderSignOffAsset(params){
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WorksOrderSignOffAsset`, body, this.httpOptions);
+    }
+
+    worksOrderCancelAsset(params){
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WorksOrderCancelAsset`, body, this.httpOptions);
+    }
+
+    // setWorksOrderCheckListTargetDate(params){
+    //     let body = JSON.stringify(params);
+    //     return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/`, body, this.httpOptions);
+    // }
+
 }

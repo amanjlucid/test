@@ -213,7 +213,7 @@
                                                     href="javascript:void(0)">Yesterday</a>
                                                 <a class="dropdown-item" (click)="setStatus('IPT', dataItem)"
                                                     href="javascript:void(0)">Today</a>
-                                                <a class="dropdown-item" (click)="setStatus('IPD', dataItem)"
+                                                <a class="dropdown-item" (click)="openChooseDate('IPD', dataItem)"
                                                     href="javascript:void(0)">Choose Date</a>
 
                                             </div>
@@ -234,7 +234,7 @@
                                     <div class="dropdown-menu">
 
                                         <a *ngIf="worksOrderAccess.indexOf('Set Asset Planned Dates') != -1"
-                                            class="dropdown-item" (click)="setDates('SE', dataItem)"
+                                            class="dropdown-item" (click)="openChooseDate('SE', dataItem)"
                                             href="javascript:void(0)">
                                             Set Planned Start/End Dates</a>
 
@@ -250,7 +250,7 @@
                                                     href="javascript:void(0)">Tomorrow</a>
                                                 <a class="dropdown-item" (click)="setDates('TC7', dataItem)"
                                                     href="javascript:void(0)">7 Days</a>
-                                                <a class="dropdown-item" (click)="setDates('TCPICK', dataItem)"
+                                                <a class="dropdown-item" (click)="openChooseDate('TCPICK', dataItem)"
                                                     href="javascript:void(0)">Choose Date</a>
 
                                             </div>
@@ -264,7 +264,7 @@
                                                     href="javascript:void(0)">Yesterday</a>
                                                 <a class="dropdown-item" (click)="setDates('CSDT', dataItem)"
                                                     href="javascript:void(0)">Today</a>
-                                                <a class="dropdown-item" (click)="setDates('CSDPICK', dataItem)"
+                                                <a class="dropdown-item" (click)="openChooseDate('CSDPICK', dataItem)"
                                                     href="javascript:void(0)">Choose Date</a>
 
                                             </div>
@@ -278,7 +278,7 @@
                                                     href="javascript:void(0)">Yesterday</a>
                                                 <a class="dropdown-item" (click)="setDates('CCDT', dataItem)"
                                                     href="javascript:void(0)">Today</a>
-                                                <a class="dropdown-item" (click)="setDates('CCDPICK', dataItem)"
+                                                <a class="dropdown-item" (click)="openChooseDate('CCDPICK', dataItem)"
                                                     href="javascript:void(0)">Choose Date</a>
 
                                             </div>
@@ -295,7 +295,7 @@
                                             href="javascript:void(0)">Yesterday</a>
                                         <a class="dropdown-item" (click)="setComplete('CIT', dataItem)"
                                             href="javascript:void(0)">Today</a>
-                                        <a class="dropdown-item" (click)="setComplete('CIPICK', dataItem)"
+                                        <a class="dropdown-item" (click)="openChooseDate('CIPICK', dataItem)"
                                             href="javascript:void(0)">Choose Date</a>
                                     </div>
                                 </div>
@@ -321,8 +321,12 @@
                                             *ngIf="worksOrderAccess.indexOf('Handover Asset') != -1">
                                             <div class="dropdown-item">Handover</div>
                                             <div class="dropdown-menu">
-                                                <a class="dropdown-item" (click)="setAsset('TCY', dataItem)"
+                                                <a class="dropdown-item" (click)="setAsset('AHOY', dataItem)"
                                                     href="javascript:void(0)">Yesterday</a>
+                                                <a class="dropdown-item" (click)="setAsset('AHOT', dataItem)"
+                                                    href="javascript:void(0)">Today</a>
+                                                <a class="dropdown-item" (click)="setAsset('AHOPICK', dataItem)"
+                                                    href="javascript:void(0)">Choose Date</a>
 
 
                                             </div>
@@ -332,8 +336,12 @@
                                             *ngIf="worksOrderAccess.indexOf('Signoff Asset') != -1">
                                             <div class="dropdown-item">Sign Off</div>
                                             <div class="dropdown-menu">
-                                                <a class="dropdown-item" (click)="setAsset('CSDY', dataItem)"
-                                                    href="javascript:void(0)">Yesterday</a>
+                                                <a class="dropdown-item" (click)="setAsset('ASY', dataItem)"
+                                                href="javascript:void(0)">Yesterday</a>
+                                            <a class="dropdown-item" (click)="setAsset('AST', dataItem)"
+                                                href="javascript:void(0)">Today</a>
+                                            <a class="dropdown-item" (click)="setAsset('ASPICK', dataItem)"
+                                                href="javascript:void(0)">Choose Date</a>
 
 
                                             </div>
@@ -362,7 +370,8 @@
 
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <i (click)="openPredecessors(dataItem)" class="fa fa-list"
-                            *ngIf="dataItem.dependenciesIndicator == 'I'" aria-hidden="true"></i>
+                            *ngIf="dataItem.dependenciesIndicator == 'I' || dataItem.dependenciesIndicator == 'C'"
+                            aria-hidden="true"></i>
                     </ng-template>
                 </kendo-grid-column>
 
@@ -432,10 +441,10 @@
                         </span>
                     </ng-template>
                 </kendo-grid-column>
-                <kendo-grid-column field="woactargetcompletiondate" title="Completion Date" width="120">
+                <kendo-grid-column field="woacactualenddate" title="Completion Date" width="120">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <span>
-                            {{ dataItem.woactargetcompletiondate | dateFormat : 'DD-MMM-YYYY' }}
+                            {{ dataItem.woacactualenddate | dateFormat : 'DD-MMM-YYYY' }}
                         </span>
                     </ng-template>
                 </kendo-grid-column>

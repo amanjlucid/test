@@ -39,30 +39,24 @@ export class PickDateComponent implements OnInit {
   ngOnInit(): void {
     if (this.chooseDateType == "IPD") {
       this.title = "Select Today or Past In Progress Date"
-    }
-
-    if (this.chooseDateType == "CCDPICK") {
+    } else if (this.chooseDateType == "CCDPICK") {
       this.title = "Select Today or Past Planned Completion Date"
-    }
-
-    if (this.chooseDateType == "CIPICK") {
+    } else if (this.chooseDateType == "CIPICK") {
       this.title = "Select Today or Past Completion Date"
-    }
-
-    if (this.chooseDateType == "TCPICK") {
+    } else if (this.chooseDateType == "TCPICK") {
       this.title = "Select Target Date"
-    }
-
-    if (this.chooseDateType == "CSDPICK") {
+    } else if (this.chooseDateType == "CSDPICK") {
       this.title = "Select Start Date"
-    }
-
-    if (this.chooseDateType == "SE") {
+    } else if (this.chooseDateType == "SE") {
+      this.title = "Select Date"
+    } else {
       this.title = "Select Date"
     }
 
+
+
     this.chRef.detectChanges();
-   
+
     const current = new Date();
 
     if (this.chooseDateType == "IPD" || this.chooseDateType == "CCDPICK" || this.chooseDateType == "CIPICK") {
@@ -71,15 +65,21 @@ export class PickDateComponent implements OnInit {
         month: current.getMonth() + 1,
         day: current.getDate()
       };
-    }
-    else if (this.chooseDateType == "SE") {
+    } else if (this.chooseDateType == "SE") {
       this.width = 520;
       // this.height = 430;
       this.range = true;
       // this.fromDate = this.calendar.getToday();
       // this.toDate = this.calendar.getNext(this.calendar.getToday(), 'd', 10);
 
+    } else {
+      this.maxDate = {
+        year: current.getFullYear(),
+        month: current.getMonth() + 1,
+        day: current.getDate()
+      };
     }
+
     this.chRef.detectChanges();
   }
 
@@ -97,6 +97,8 @@ export class PickDateComponent implements OnInit {
       const date = { selectedDate: this.model }
       this.selectedDateEvent.emit(date)
     }
+
+    this.closePickDate();
 
   }
 
