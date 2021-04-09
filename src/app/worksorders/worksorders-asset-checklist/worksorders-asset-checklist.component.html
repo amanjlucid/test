@@ -12,8 +12,29 @@
             <!-- <button type="button" class="btn btn-sm themeButton">Export</button>
             <button type="button" class="btn btn-sm themeButton">Administration</button> -->
             <button *ngIf="worksOrderAccess.indexOf('Checklist Documents') != -1" type="button"
-                [disabled]="mySelection.length != 1" class="btn btn-sm themeButton"
+                [disabled]="mySelection.length != 1" class="btn btn-sm themeButton mr-1"
                 (click)="openChecklistDoc()">Doucuments</button>
+
+            <div class="dropdown" id="nesting-dropdown-demo">
+                <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown"
+                    aria-expanded="false">Action</button>
+                <div class="dropdown-menu" x-placement="bottom-start"
+                    style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
+                    <a *ngIf="worksOrderAccess.indexOf('Release Asset') != -1" class="dropdown-item"
+                        (click)="setAsset('RELEASE')" href="javascript:void(0)">
+                        Release</a>
+
+                    <a *ngIf="worksOrderAccess.indexOf('Issue Asset') != -1" class="dropdown-item disabled"
+                        (click)="setAsset('ISSUE')" href="javascript:void(0)">
+                        Issue</a>
+
+                    <a [ngClass]="{'disabled':workorderAsset?.woassstatus === 'New' || workorderAsset?.woassstatus === 'In Progress'}"
+                        *ngIf="worksOrderAccess.indexOf('Release Asset') != -1" class="dropdown-item"
+                        (click)="setAsset('ACCEPT')" href="javascript:void(0)">
+                        Accept</a>
+
+                </div>
+            </div>
             <!-- <button type="button" class="btn btn-sm themeButton">Work</button>
             <button type="button" class="btn btn-sm themeButton">Defects</button>
             <button type="button" class="btn btn-sm themeButton">Variations</button>
@@ -50,7 +71,7 @@
                                 <div class="col-md-2">Work Access: </div>
                                 <div class="col-md-1 text-right"><input type="text" class="form-control form-control-sm"
                                         [readonly]="readonly"
-                                        value="{{selectedChildRow?.woaworkaccess | currency:'GBP':'symbol'}}">
+                                        value="{{workorderAsset?.woaworkaccess == null ? 'No Access' : selectedChildRow?.woaworkaccess }}">
                                 </div>
                             </div>
 
@@ -58,13 +79,13 @@
                                 <div class="col-md-2">
                                     <label>Status:</label>
                                     <input type="text" [readonly]="readonly" class="form-control form-control-sm"
-                                        value="{{selectedChildRow?.wostatus}}">
+                                        value="{{workorderAsset?.woassstatus}}">
 
                                 </div>
                                 <div class="col-md-2">
                                     <label>Target:</label>
                                     <input type="text" class="form-control form-control-sm" [readonly]="readonly"
-                                        value="{{selectedChildRow?.targetdate | dateFormat : 'DD-MMM-YYYY'}}">
+                                        value="{{workorderAsset?.woatargetcompletiondate | dateFormat : 'DD-MMM-YYYY'}}">
                                 </div>
                                 <div class="col-md-2">
                                     <label>Issue:</label>
@@ -97,37 +118,37 @@
                                 <div class="col-md-2">
                                     <label>Planned Start:</label>
                                     <input type="text" [readonly]="readonly" class="form-control form-control-sm"
-                                        value="{{selectedChildRow?.planstartdate | dateFormat : 'DD-MMM-YYYY' }}">
+                                        value="{{workorderAsset?.woaplanstartdate | dateFormat : 'DD-MMM-YYYY' }}">
 
                                 </div>
                                 <div class="col-md-2">
                                     <label>Planned End:</label>
                                     <input type="text" class="form-control form-control-sm" [readonly]="readonly"
-                                        value="{{selectedChildRow?.planenddate | dateFormat : 'DD-MMM-YYYY'}}">
+                                        value="{{workorderAsset?.woaplanenddate | dateFormat : 'DD-MMM-YYYY'}}">
                                 </div>
                                 <div class="col-md-2">
                                     <label>Actual Start:</label>
                                     <input type="text" class="form-control form-control-sm" [readonly]="readonly"
-                                        value="{{selectedChildRow?.planenddate | dateFormat : 'DD-MMM-YYYY'}}">
+                                        value="{{workorderAsset?.woaactualstartdate | dateFormat : 'DD-MMM-YYYY'}}">
                                 </div>
 
                                 <div class="col-md-2">
                                     <label>Actual End:</label>
                                     <input type="text" class="form-control form-control-sm" [readonly]="readonly"
-                                        value="{{selectedChildRow?.planenddate | dateFormat : 'DD-MMM-YYYY'}}">
+                                        value="{{workorderAsset?.woaactualenddate | dateFormat : 'DD-MMM-YYYY'}}">
                                 </div>
 
                                 <div class="col-md-2">
                                     <label>Practical Completion:</label>
                                     <input type="text" class="form-control form-control-sm"
-                                        value="{{selectedChildRow?.woacompletiondate | dateFormat : 'DD-MMM-YYYY'}}"
+                                        value="{{workorderAsset?.woapracticalcompletiondate | dateFormat : 'DD-MMM-YYYY'}}"
                                         [readonly]="readonly">
                                 </div>
 
                                 <div class="col-md-2">
                                     <label>Open Date:</label>
                                     <input type="text" class="form-control form-control-sm"
-                                        value="{{selectedChildRow?.woaopendate | dateFormat : 'DD-MMM-YYYY'}}"
+                                        value="{{workorderAsset?.woaopendate | dateFormat : 'DD-MMM-YYYY'}}"
                                         [readonly]="readonly">
                                 </div>
                             </div>
@@ -136,37 +157,37 @@
                                 <div class="col-md-1">
                                     <label>Forecast:</label>
                                     <input type="text" class="form-control form-control-sm" readonly="true"
-                                        value="{{selectedChildRow?.woforecast | currency:'GBP':'symbol'}}">
+                                        value="{{workorderAsset?.woaforecast | currency:'GBP':'symbol'}}">
                                 </div>
 
                                 <div class="col-md-1">
                                     <label>Commited:</label>
                                     <input type="text" class="form-control form-control-sm" readonly="true"
-                                        value="{{selectedChildRow?.wocommitted | currency:'GBP':'symbol'}}">
+                                        value="{{workorderAsset?.woacommitted | currency:'GBP':'symbol'}}">
                                 </div>
 
                                 <div class="col-md-1">
                                     <label>Approved:</label>
                                     <input type="text" class="form-control form-control-sm" readonly="true"
-                                        value="{{selectedChildRow?.woapproved| currency:'GBP':'symbol'}}">
+                                        value="{{workorderAsset?.woaapproved| currency:'GBP':'symbol'}}">
                                 </div>
 
                                 <div class="col-md-1">
                                     <label>Pending:</label>
                                     <input type="text" class="form-control form-control-sm" readonly="true"
-                                        value="{{selectedChildRow?.wopending | currency:'GBP':'symbol'}}">
+                                        value="{{workorderAsset?.woapending | currency:'GBP':'symbol'}}">
                                 </div>
 
                                 <div class="col-md-1">
                                     <label>Actual:</label>
                                     <input type="text" class="form-control form-control-sm" readonly="true"
-                                        value="{{selectedChildRow?.woactual | currency:'GBP':'symbol'}}">
+                                        value="{{workorderAsset?.woaactual | currency:'GBP':'symbol'}}">
                                 </div>
 
                                 <div class="col-md-1">
                                     <label>Payment:</label>
                                     <input type="text" class="form-control form-control-sm" readonly="true"
-                                        value="{{worksOrderData?.wopayment | currency:'GBP':'symbol'}}">
+                                        value="{{workorderAsset?.woapayment | currency:'GBP':'symbol'}}">
                                 </div>
                             </div>
 
@@ -300,7 +321,7 @@
                                     </div>
                                 </div>
 
-                                <div class="dropdown-toggle">
+                                <!-- <div class="dropdown-toggle">
                                     <div class="dropdown-item">Asset</div>
                                     <div class="dropdown-menu">
 
@@ -352,7 +373,7 @@
                                             (click)="setAsset('CANCEL', dataItem)" href="javascript:void(0)">Cancel</a>
 
                                     </div>
-                                </div>
+                                </div> -->
 
 
 

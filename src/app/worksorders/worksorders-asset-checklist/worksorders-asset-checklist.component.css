@@ -29,3 +29,7 @@
     font-size: 13px;
     color: #000;
 }
+
+.actionBtnDiv #nesting-dropdown-demo{
+    display: inline-block;
+}

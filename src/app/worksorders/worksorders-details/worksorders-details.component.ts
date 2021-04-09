@@ -68,6 +68,7 @@ export class WorksordersDetailsComponent implements OnInit {
   treelevel = 2;
   worksOrderAccess = [];
   woFormWindow = false;
+  phaseBudgetAvailable:any = 0;
 
   constructor(
     private sharedService: SharedService,
@@ -82,6 +83,7 @@ export class WorksordersDetailsComponent implements OnInit {
 
 
   ngOnInit() {
+    // console.log(this.worksOrderSingleData)
     /**
      * update notification on top
      * Common service for all routing page
@@ -137,6 +139,7 @@ export class WorksordersDetailsComponent implements OnInit {
           const programmeData = data[0];
           const userSecurityByWO = data[1];
           const worksOrderData = data[2];
+          this.phaseBudgetAvailable = data[3].data;
 
           // const repairingChar = data[3];
           // const checkListForWO = data[4];

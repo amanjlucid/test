@@ -5,8 +5,6 @@ import { PageChangeEvent, RowArgs } from '@progress/kendo-angular-grid';
 import { AlertService, ConfirmationDialogService, HelperService, SharedService, WorksorderManagementService } from '../../_services'
 import { forkJoin } from 'rxjs';
 
-
-
 @Component({
   selector: 'app-worksorders-asset-checklist',
   templateUrl: './worksorders-asset-checklist.component.html',
@@ -57,6 +55,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
 
   worksOrderAccess: any = [];
   selectedDate: any;
+  workorderAsset: any
 
 
   constructor(
@@ -91,6 +90,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
         this.worksorderManagementService.getWorkProgrammesByWprsequence(wprsequence),
         this.worksorderManagementService.getWorksOrderByWOsequence(intWOSEQUENCE),
         this.worksorderManagementService.getPhase(this.selectedChildRow.wosequence, this.selectedChildRow.wopsequence),
+        this.worksorderManagementService.specificWorkOrderAssets(this.selectedChildRow.wosequence, this.selectedChildRow.assid, this.selectedChildRow.wopsequence),
 
       ]).subscribe(
         data => {
@@ -98,10 +98,12 @@ export class WorksordersAssetChecklistComponent implements OnInit {
           const programmeData = data[0];
           const worksOrderData = data[1];
           const phaseData = data[2];
+          const workorderAsset = data[3];
 
           if (programmeData.isSuccess) this.programmeData = programmeData.data[0];
           if (worksOrderData.isSuccess) this.worksOrderData = worksOrderData.data;
           if (phaseData.isSuccess) this.phaseData = phaseData.data;
+          if (workorderAsset.isSuccess) this.workorderAsset = workorderAsset.data[0];
 
           this.checkListGridData();
 
@@ -118,7 +120,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
     this.subs.add(
       this.worksorderManagementService.assetChecklistGridData(this.selectedChildRow.wosequence, this.selectedChildRow.assid, this.selectedChildRow.wopsequence).subscribe(
         data => {
-          console.log(data)
+          // console.log(data)
           if (data.isSuccess) {
             this.assetCheckListData = data.data;
             this.gridView = process(this.assetCheckListData, this.state);
@@ -237,13 +239,16 @@ export class WorksordersAssetChecklistComponent implements OnInit {
       apiName = 'WorksOrderCheckListStatusToNotStarted'
     } else if (type == 'IPY') {
       apiName = 'SetWorksOrderCheckListStatusToInProgress'
-      params.dtDate = this.getDateString('Yesterday')
+      params.dtDate = this.getDateString('Yesterday');
+      params.CheckName = item.wocheckname
     } else if (type == 'IPT') {
       apiName = 'SetWorksOrderCheckListStatusToInProgress'
       params.dtDate = this.getDateString('Today');
+      params.CheckName = item.wocheckname
     } else if (type == 'IPD') {
       apiName = 'SetWorksOrderCheckListStatusToInProgress'
       params.dtDate = this.dateFormate(this.selectedDate.selectedDate);
+      params.CheckName = item.wocheckname
     }
 
 
@@ -460,6 +465,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
           if (checkOrProcess == "C" && (resp.pRETURNSTATUS == "E" || resp.pRETURNSTATUS == "S")) {
             this.openConfirmationDialog(type, item, resp, 'complete')
           } else {
+            this.alertService.success(resp.pRETURNMESSAGE)
             this.worksOrderDetailPageData();
             this.selectedChecklistsingleItem = undefined
           }
@@ -528,53 +534,112 @@ export class WorksordersAssetChecklistComponent implements OnInit {
 
   }
 
-  setAsset(type, item, checkOrProcess = 'C') {
-    this.selectedChecklistsingleItem = item;
+  setAsset(type, checkOrProcess = 'C') {
     let params: any = {};
     this.chooseDateType = type;
     let callApi: any;
 
+    //this.selectedChecklistsingleItem = item;
+    params.WOSEQUENCE = this.phaseData.wosequence;
+    params.WOPSEQUENCE = this.phaseData.wopsequence;
+    params.strASSID = [this.selectedChildRow.assid]
+    params.strUserId = this.currentUser.userId;
+    params.strCheckOrProcess = checkOrProcess;
+
     if (type == "RELEASE") {
-      params.WOSEQUENCE = item.wosequence;
-      params.WOPSEQUENCE = item.wopsequence;
-      params.strASSIDLIST = [item.assid, item.wostagesurcde, item.wochecksurcde]
-      params.strUserId = this.currentUser.userId;
-      params.strCheckOrProcess = checkOrProcess;
-      params.dtDate = this.getDateString('Today');
-      // this.worksorderManagementService.rel
-    }
-
-    if (type == "AHOY" || type == "AHOT" || type == "AHOPICK") {
-      params.WOSEQUENCE = item.wosequence;
-      params.WOPSEQUENCE = item.wopsequence;
-      params.strASSIDLIST = [item.assid, item.wostagesurcde, item.wochecksurcde]
-      params.strUserId = this.currentUser.userId;
-      params.strCheckOrProcess = checkOrProcess;
-
-      if (type == "AHOY") {
-        params.dtDate = this.getDateString('Yesterday')
-      } else if (type == "AHOT") {
-        params.dtDate = this.getDateString('Today')
-      } else if (type == "AHOPICK") {
-        // this.openChooseDate();
+      callApi = this.worksorderManagementService.worksOrderReleaseAsset(params);
+    } else if (type == "ACCEPT") {
+      if (this.workorderAsset.woassstatus == "New" || this.workorderAsset.woassstatus == "In Progress") {
         return
       }
-
-    }
-
-    if (type == "Signoff Asset") {
-      params.WOSEQUENCE = item.wosequence;
-      params.WOPSEQUENCE = item.wopsequence;
-      params.strASSIDLIST = [item.assid, item.wostagesurcde, item.wochecksurcde]
-      params.strUserId = this.currentUser.userId;
-      params.strCheckOrProcess = checkOrProcess;
-      params.dtDate = this.getDateString('Today')
+      callApi = this.worksorderManagementService.worksOrderAcceptAsset(params);
     } else {
-
+      return
     }
 
 
+    this.subs.add(
+      callApi.subscribe(
+        data => {
+          if (!data.isSuccess) {
+            this.alertService.error(data.message);
+            return
+          }
 
+          let resp: any;
+          if (data.data[0] == undefined) {
+            resp = data.data;
+          } else {
+            resp = data.data[0];
+          }
+
+          if (checkOrProcess == "C" && (resp.pRETURNSTATUS == "E" || resp.pRETURNSTATUS == "S")) {
+            this.openConfirmationDialogAction(type, resp)
+          } else {
+            this.alertService.success(resp.pRETURNMESSAGE)
+            this.worksOrderDetailPageData();
+            this.selectedChecklistsingleItem = undefined
+          }
+        }
+      )
+    )
+
+
+    // if (type == "AHOY" || type == "AHOT" || type == "AHOPICK") {
+    //   params.WOSEQUENCE = item.wosequence;
+    //   params.WOPSEQUENCE = item.wopsequence;
+    //   params.strASSIDLIST = [item.assid, item.wostagesurcde, item.wochecksurcde]
+    //   params.strUserId = this.currentUser.userId;
+    //   params.strCheckOrProcess = checkOrProcess;
+
+    //   if (type == "AHOY") {
+    //     params.dtDate = this.getDateString('Yesterday')
+    //   } else if (type == "AHOT") {
+    //     params.dtDate = this.getDateString('Today')
+    //   } else if (type == "AHOPICK") {
+    //     // this.openChooseDate();
+    //     return
+    //   }
+
+    // }
+
+    // if (type == "Signoff Asset") {
+    //   params.WOSEQUENCE = item.wosequence;
+    //   params.WOPSEQUENCE = item.wopsequence;
+    //   params.strASSIDLIST = [item.assid, item.wostagesurcde, item.wochecksurcde]
+    //   params.strUserId = this.currentUser.userId;
+    //   params.strCheckOrProcess = checkOrProcess;
+    //   params.dtDate = this.getDateString('Today')
+    // } else {
+
+    // }
+
+
+
+  }
+
+
+  openConfirmationDialogAction(type, res, apiType = 'status') {
+    let checkstatus = "C";
+    if (res.pRETURNSTATUS == 'S') {
+      checkstatus = "P"
+    }
+
+    $('.k-window').css({ 'z-index': 1000 });
+    this.confirmationDialogService.confirm('Please confirm..', `${res.pRETURNMESSAGE}`)
+      .then((confirmed) => {
+        if (confirmed) {
+          if (res.pRETURNSTATUS == 'E') {
+            return
+          }
+
+          this.setAsset(type, checkstatus);
+
+
+        }
+        //(confirmed) ? this.setStatus(type, item, 'P') : console.log(confirmed)
+      })
+      .catch(() => console.log('Attribute dismissed the dialog.'));
   }
 
 
