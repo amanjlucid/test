@@ -29,3 +29,7 @@ export * from './workorders/workorders-add-phase.model';
 export * from './workorders/workorders-add-asset.model';
 export * from './workorders/workorders-add-assetworklist.model';
 
+export * from './wopm-template.model';
+export * from './wopm-masterstage.model';
+export * from './wopm-checklistmaster.model';
+export * from './wopm-checklist-dependency.model';

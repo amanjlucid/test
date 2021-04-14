@@ -25,7 +25,7 @@ export class HnsCharacteristicComponent implements OnInit {
     take: 30,
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }

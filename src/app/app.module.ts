@@ -10,9 +10,10 @@ import { LoginComponent } from './login';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { AuthGuard } from './_guards';
 import { JwtInterceptor, ErrorInterceptor, LoaderInterceptorService, NgbDateCustomParserFormatter } from './_helpers';
-import { AlertService, AuthenticationService, UserService, LoaderService, GroupService, CharacteristicGroupService, ElementGroupService, AttributeGroupService, PortalGroupService, FunctionSecurityService, PropertySecurityGroupService, ReportingGroupService, ConfirmationDialogService, EventService, AssetAttributeService, SharedService, ServicePortalService, SettingsService, HnsPortalService, HnsResultsService, EventManagerDashboardService, EventManagerService, WebReporterService, SurveyPortalService, WorksorderManagementService, WorksOrdersService } from './_services';
+import { AlertService, AuthenticationService, UserService, LoaderService, GroupService, CharacteristicGroupService, ElementGroupService, AttributeGroupService, PortalGroupService, FunctionSecurityService, PropertySecurityGroupService, ReportingGroupService, ConfirmationDialogService, EventService, AssetAttributeService, SharedService, ServicePortalService, SettingsService, HnsPortalService, HnsResultsService, EventManagerDashboardService, EventManagerService, WebReporterService, SurveyPortalService, WorksorderManagementService, WorksOrdersService, WopmConfigurationService } from './_services';
 
 
+// import { AlertService, AuthenticationService, UserService, LoaderService, GroupService, CharacteristicGroupService, ElementGroupService, AttributeGroupService, PortalGroupService, FunctionSecurityService, PropertySecurityGroupService, ReportingGroupService, ConfirmationDialogService, EventService, AssetAttributeService, SharedService, ServicePortalService, SettingsService, HnsPortalService, HnsResultsService, EventManagerDashboardService, EventManagerService, WebReporterService, SurveyPortalService,  WopmConfigurationService} from './_services';
 import { AlertComponent, LoaderComponent, KendoGridColor, KendoZindex, MyDatePicker, DecimalValidation } from './_directives';
 import { GridModule, ExcelModule } from '@progress/kendo-angular-grid';
 import { InputsModule } from '@progress/kendo-angular-inputs';
@@ -30,7 +31,7 @@ import { ElementsGroupComponent } from './security-portal/groups/elements-group/
 import { AttributeGroupComponent } from './security-portal/groups/attribute-group/attribute-group.component';
 import { PortalTabsComponent } from './security-portal/groups/portal-tabs/portal-tabs.component';
 import { PropertySecurityComponent } from './security-portal/groups/property-security/property-security.component';
-import { ReportingComponent } from './security-portal/groups/reporting/reporting.component';
+// import { ReportingComponent } from './security-portal/groups/reporting/reporting.component';
 import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
 // import { DateFormatPipe } from './_pipes/date-format.pipe';
 import { AsbestosRefDetailPipe } from './_pipes/asbestos-ref-detail.pipe'
@@ -119,6 +120,16 @@ import { SurveyCbcreportSignatureImageComponent } from './survey-portal/survey-c
 import { TreeListModule } from '@progress/kendo-angular-treelist';
 
 
+// import { WopmTemplatesComponent } from './worksorders/Config/wopm-templates/wopm-templates.component';
+// import { WopmConfigComponent } from './worksorders/Config/wopm-config/wopm-config.component';
+// import { WopmMasterstagesComponent } from './worksorders/Config/wopm-masterstages/wopm-masterstages.component';
+// import { WopmEditTemplateComponent } from './worksorders/Config/wopm-templates/wopm-edit-template/wopm-edit-template.component';
+// import { WopmEditMasterstageComponent } from './worksorders/Config/wopm-masterstages/wopm-edit-masterstage/wopm-edit-masterstage.component';
+// import { WopmChecklistMasterComponent } from './worksorders/Config/wopm-templates/wopm-checklist-master/wopm-checklist-master.component';
+// import { WopmEditChecklistMasterComponent } from './worksorders/Config/wopm-templates/wopm-checklist-master/wopm-edit-checklist-master/wopm-edit-checklist-master.component';
+// import { WopmEditChecklistDependenciesComponent } from './worksorders/Config/wopm-templates/wopm-edit-checklist-dependencies/wopm-edit-checklist-dependencies.component';
+
+
 
 @NgModule({
   declarations: [
@@ -137,7 +148,7 @@ import { TreeListModule } from '@progress/kendo-angular-treelist';
     AttributeGroupComponent,
     PortalTabsComponent,
     PropertySecurityComponent,
-    ReportingComponent,
+    // ReportingComponent,
     ConfirmationDialogComponent,
     // DateFormatPipe,
     AsbestosRefDetailPipe,
@@ -219,6 +230,15 @@ import { TreeListModule } from '@progress/kendo-angular-treelist';
     SurveyCbcreportSignatureImageComponent,
   
   
+    // WopmTemplatesComponent,
+    // WopmConfigComponent,
+    // WopmMasterstagesComponent,
+    // WopmEditTemplateComponent,
+    // WopmEditMasterstageComponent,
+    // WopmChecklistMasterComponent,
+    // WopmEditChecklistMasterComponent,
+    // WopmEditChecklistDependenciesComponent
+
   ],
 
   imports: [
@@ -276,10 +296,11 @@ import { TreeListModule } from '@progress/kendo-angular-treelist';
     WebReporterService,
     SurveyPortalService,
     WorksorderManagementService,
+    WopmConfigurationService,
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptorService, multi: true },
-    { provide: NgbDateParserFormatter, useClass: NgbDateCustomParserFormatter }
+    { provide: NgbDateParserFormatter, useClass: NgbDateCustomParserFormatter },
 
   ],
   // exports: [

@@ -21,7 +21,7 @@ export class HnsDefinitionDetailComponent implements OnInit, OnDestroy {
   keys: string[] = [];
   subs = new SubSink();
   definitionDetails: any = [];
-  treeMenuItems: any[] = ['New Group', 'Change Group', 'Delete Group', 'New Heading'];
+  treeMenuItems: string[] =[];
   expandedKeys: any[] = [];
   isOpenNewGrpDialog: boolean = false;
   isCreateNewGrp: boolean = false;
@@ -97,6 +97,30 @@ export class HnsDefinitionDetailComponent implements OnInit, OnDestroy {
       )
     )
 
+    if(this.hnsPermission != undefined)
+    {
+        if (this.hnsPermission.indexOf("Add Group") !== -1)
+        {
+          this.treeMenuItems.push('Add Group');
+        }
+
+        if (this.hnsPermission.indexOf("Change Group") !== -1)
+        {
+          this.treeMenuItems.push('Change Group');
+        }
+
+        if (this.hnsPermission.indexOf("Delete Group") !== -1)
+        {
+          this.treeMenuItems.push('Delete Group');
+        }
+
+        if (this.hnsPermission.indexOf("Add Heading") !== -1)
+        {
+          this.treeMenuItems.push('Add Heading');
+        }
+
+    }
+
   }
 
   ngOnDestroy() {
@@ -138,16 +162,16 @@ export class HnsDefinitionDetailComponent implements OnInit, OnDestroy {
     }
     //console.log(event);
     const source = event.sourceItem.item.dataItem;
-    const destinaton = event.destinationItem.item.dataItem;
+    const destination = event.destinationItem.item.dataItem;
 
     //prevent drop if attempting to add file if not same type
-    if (destinaton.elType != source.elType && ((source.elType == "group" && destinaton.elType == "heading") || (source.elType == "group" && destinaton.elType == "ques") || (source.elType == "heading" && destinaton.elType == "ques") || (source.elType == "ques" && destinaton.elType == "group") || (source.elType == "heading" && event.destinationItem.parent == null && event.dropPosition !== DropPosition.Over) || (source.elType == "ques" && event.destinationItem.parent == null) || ((source.elType == "ques" && destinaton.elType == "heading") && (event.dropPosition !== DropPosition.Over)))) {
+    if (destination.elType != source.elType && ((source.elType == "group" && destination.elType == "heading") || (source.elType == "group" && destination.elType == "ques") || (source.elType == "heading" && destination.elType == "ques") || (source.elType == "ques" && destination.elType == "group") || (source.elType == "heading" && event.destinationItem.parent == null && event.dropPosition !== DropPosition.Over) || (source.elType == "ques" && event.destinationItem.parent == null) || ((source.elType == "ques" && destination.elType == "heading") && (event.dropPosition !== DropPosition.Over)))) {
       event.setValid(false);
       return
     }
 
     // prevent drop if attempting to add to in same type and drop over
-    if ((destinaton.elType == source.elType) && event.dropPosition === DropPosition.Over) {
+    if ((destination.elType == source.elType) && event.dropPosition === DropPosition.Over) {
       event.setValid(false);
       return
     }
@@ -195,7 +219,10 @@ export class HnsDefinitionDetailComponent implements OnInit, OnDestroy {
       }
     } else {
       if ((e.type == "contextmenu")) {
-        this.treeMenuItems = ['New Group'];
+        if (this.hnsPermission.indexOf("Add Group") !== -1)
+        {
+          this.treeMenuItems = ['Add Group'];
+        }
         this.showSimpleContextMenu = true
         this.clickEvent = e;
       }
@@ -208,46 +235,90 @@ export class HnsDefinitionDetailComponent implements OnInit, OnDestroy {
   }
 
   onNodeClick(e: any): void {
-    let grpMenu = [];
-    let headMenu = [];
-    let quesMenu = [];
-    let scoringRule = [];
-    if (this.disableActins) {
-      grpMenu = ['View Group'];
-      headMenu = ['View Heading'];
 
-      if (this.hnsPermission.indexOf("Edit Scoring Rule") !== -1) {
-        scoringRule = ['Edit Scoring Rules'];
+    let grpMenu: string[] = [];
+    let headMenu: string[]= [];
+    let quesMenu: string[]= [];
+    if (this.disableActins)
+    {
+      grpMenu.push('View Group');
+      headMenu.push('View Heading');
+      quesMenu.push('View Question');
+      if (this.hnsPermission.indexOf("Edit Template Issues") !== -1)
+      {
+        quesMenu.push('Edit Template Issues');
       }
-      quesMenu = [...['View Question', 'Edit Template Issues', 'Edit Template Actions'], ...scoringRule];
+      if (this.hnsPermission.indexOf("Edit Template Actions") !== -1)
+      {
+        quesMenu.push('Edit Template Actions');
+      }
+      if(this.selectedDefinition.hasscoring == "1")
+      {
+        if (this.hnsPermission.indexOf("Edit Scoring Rule") !== -1)
+        {
+          quesMenu.push('Edit Scoring Rule');
+        }
+      }
 
     } else {
-      let grp = [];
-      let ques = [];
-      let head = [];
-      let cmnQuesMenu = ['Change Question', 'Delete Question', 'Edit Template Issues', 'Edit Template Actions']
+
+      let grp: string[] = [];
+      let ques: string[] = [];
+      let head: string[] = [];
 
       if (this.hnsPermission.indexOf("Add Group") !== -1) {
-        grp = ["New Group"];
+        grp.push("Add Group");
       }
-      if (this.hnsPermission.indexOf("Add Header") !== -1) {
-        head = ["New Heading"];
+      if (this.hnsPermission.indexOf("Change Group") !== -1) {
+        grp.push("Change Group");
       }
+      if (this.hnsPermission.indexOf("Delete Group") !== -1) {
+        grp.push("Delete Group");
+      }
+      if (this.hnsPermission.indexOf("Add Heading") !== -1) {
+        grp.push("Add Heading");
+      }
+      grpMenu = grp;
+
+      if (this.hnsPermission.indexOf("Add Heading") !== -1) {
+        head.push("Add Heading");
+      }
+      if (this.hnsPermission.indexOf("Change Heading") !== -1) {
+        head.push("Change Heading");
+      }
+      if (this.hnsPermission.indexOf("Delete Heading") !== -1) {
+        head.push("Delete Heading");
+      }
+      if (this.hnsPermission.indexOf("Add Question") !== -1) {
+        head.push("Add Question");
+      }
+      headMenu = head;
 
       if (this.hnsPermission.indexOf("Add Question") !== -1) {
-        ques = ["New Question"];
+        ques.push("Add Question");
       }
-
-
-      if (this.hnsPermission.indexOf("Edit Scoring Rule") !== -1 || this.currentUser.admin == "Y") {
-        scoringRule = ['Edit Scoring Rules'];
-        cmnQuesMenu = ['Change Question', 'Delete Question', 'Edit Template Issues', 'Edit Scoring Rules', 'Edit Template Actions']
+      if (this.hnsPermission.indexOf("Change Question") !== -1) {
+        ques.push("Change Question");
       }
-
-
-      grpMenu = [].concat(grp, ['Change Group', 'Delete Group'], head)
-      headMenu = [...head, ...['Change Heading', 'Delete Heading'], ...ques];
-      quesMenu = [].concat(ques, cmnQuesMenu)
+      if (this.hnsPermission.indexOf("Delete Question") !== -1) {
+        ques.push("Delete Question");
+      }
+      if (this.hnsPermission.indexOf("Edit Template Issues") !== -1)
+      {
+        ques.push('Edit Template Issues');
+      }
+      if (this.hnsPermission.indexOf("Edit Template Actions") !== -1)
+      {
+        ques.push('Edit Template Actions');
+      }
+      if(this.selectedDefinition.hasscoring == "1")
+      {
+        if (this.hnsPermission.indexOf("Edit Scoring Rule") !== -1)
+        {
+          ques.push('Edit Scoring Rule');
+        }
+      }
+      quesMenu = ques;
 
       grpMenu = grpMenu.filter(x => {
         return x != undefined;
@@ -267,7 +338,8 @@ export class HnsDefinitionDetailComponent implements OnInit, OnDestroy {
 
     let disableDoubleClick = false;
     //if (e.type === 'contextmenu') {
-    if (e.item.dataItem.elType == "group") {
+    if (e.item.dataItem.elType == "group")
+    {
       if (grpMenu.indexOf("View Group") !== -1) {
         readOnlyWindow = "View Group";
       } else if (grpMenu.indexOf("Change Group") !== -1) {
@@ -343,13 +415,13 @@ export class HnsDefinitionDetailComponent implements OnInit, OnDestroy {
     this.selectedNode = dataItem;
     // console.log(this.selectedNode);
     // console.log(item);
-    if (item == "New Group" && dataItem == undefined) {
+    if (item == "Add Group" && dataItem == undefined) {
       this.defGrpFormMode = "new";
       this.createNewDefGrp();
       return
     }
 
-    if (item == "New Group" && dataItem.elType == "group") {
+    if (item == "Add Group" && dataItem.elType == "group") {
       this.defGrpFormMode = "new";
       this.createNewDefGrp();
     } else if (item == "Change Group" && dataItem.elType == "group") {
@@ -360,7 +432,7 @@ export class HnsDefinitionDetailComponent implements OnInit, OnDestroy {
       this.createNewDefGrp();
     } else if (item == "Delete Group" && dataItem.elType == "group") {
       this.openConfirmationDialog({ HasCode: dataItem.hascode, HasVersion: dataItem.hasversion, HASGROUPID: dataItem.hasgroupid }, "group")
-    } else if ((item == "New Heading" && dataItem.elType == "heading") || item == "New Heading" && dataItem.elType == "group") {
+    } else if ((item == "Add Heading" && dataItem.elType == "heading") || item == "Add Heading" && dataItem.elType == "group") {
       this.defGrpFormMode = "new";
       this.openHeadingForm();
     } else if (item == "Change Heading" && dataItem.elType == "heading") {
@@ -371,7 +443,7 @@ export class HnsDefinitionDetailComponent implements OnInit, OnDestroy {
       this.openHeadingForm();
     } else if (item == "Delete Heading" && dataItem.elType == "heading") {
       this.openConfirmationDialog({ HASCODE: dataItem.hascode, HASVERSION: dataItem.hasversion, HASGROUPID: dataItem.hasgroupid, HASHEADINGID: dataItem.hasheadingid }, "heading")
-    } else if (item == "New Question" && dataItem.elType == "ques") {
+    } else if (item == "Add Question" && dataItem.elType == "ques") {
       this.defGrpFormMode = "new"
       this.openQuestionForm();
     } else if (item == "Change Question" && dataItem.elType == "ques") {
@@ -380,7 +452,7 @@ export class HnsDefinitionDetailComponent implements OnInit, OnDestroy {
     } else if (item == "View Question" && dataItem.elType == "ques") {
       this.defGrpFormMode = "view"
       this.openQuestionForm();
-    } else if (item == "New Question" && dataItem.elType == "heading") {
+    } else if (item == "Add Question" && dataItem.elType == "heading") {
       this.defGrpFormMode = "new"
       this.openQuestionForm();
     } else if (item == "Delete Question" && dataItem.elType == "ques") {
@@ -389,13 +461,13 @@ export class HnsDefinitionDetailComponent implements OnInit, OnDestroy {
       this.openTemplateIssue();
     } else if (item == "Edit Template Actions" && dataItem.elType == "ques") {
       this.openTemplateAction();
-    } else if (item == "Edit Scoring Rules" && dataItem.elType == "ques") {
+    } else if (item == "Edit Scoring Rule" && dataItem.elType == "ques") {
       this.openEditScoringrules();
     }
   }
 
   getDefinitionDetail(selectedDefinition) {
-    this.expandedKeys = []; // reset expanded keys
+    //this.expandedKeys = []; // reset expanded keys
     this.subs.add(
       this.hnsPortalService.getDefinitionDetail(selectedDefinition).subscribe(
         data => {
@@ -406,8 +478,14 @@ export class HnsDefinitionDetailComponent implements OnInit, OnDestroy {
               //console.log(this.definitionDetails);
             } else {
               this.definitionDetails = [];
+              if (this.hnsPermission.indexOf("Add Group") !== -1) {
               this.isOpenNewGrpDialog = true;
               $('.detailvieBlur').addClass('ovrlay');
+              }
+              else
+              {
+                this.alertService.error("No existing Health and Safety Definition detail, but you do not have permission to create a new group")
+              }
               //this.alertService.error(data.message);
             }
           }
@@ -464,9 +542,9 @@ export class HnsDefinitionDetailComponent implements OnInit, OnDestroy {
 
   changeNode(event) {
     const source = event.sourceItem.item.dataItem;
-    const destinaton = event.destinationItem.item.dataItem;
-    const sourceItem = event.destinationItem;
-    const destinationItem = event.sourceItem;
+    const destination = event.destinationItem.item.dataItem;
+    const destinationItem = event.destinationItem;
+    const sourceItem= event.sourceItem;
     //console.log({ev:event, des: destinationItem, sor : sourceItem})
     let formObj: any = {};
     formObj.HASCODE = source.hascode;
@@ -477,29 +555,31 @@ export class HnsDefinitionDetailComponent implements OnInit, OnDestroy {
 
     if (source.elType == "ques") {
       formObj.HASHEADINGID = source.hasheadingid;
-      formObj.DestinationQuestionSequence = destinaton.hasquestionseq;
+      formObj.DestinationQuestionSequence = destination.hasquestionseq;
       formObj.HASQUESTIONID = source.hasquestionid;
 
-      if (JSON.stringify(destinationItem.parent.item.dataItem) == JSON.stringify(sourceItem.parent.item.dataItem)) {
+      if (source.elType == destination.elType && JSON.stringify(destinationItem.parent.item.dataItem) == JSON.stringify(sourceItem.parent.item.dataItem)) {
         apiToCall = "quesSeq";
-      } else if ((source.elType == "ques" && destinaton.elType == "heading") || ((source.elType == "ques" && destinaton.elType == "ques") && (JSON.stringify(destinationItem.parent.item.dataItem) != JSON.stringify(sourceItem.parent.item.dataItem)))) {
-        formObj.DestinationGroupId = destinaton.hasgroupid;
-        formObj.DestinationHeadingId = destinaton.hasheadingid;
+      } else if ((source.elType == "ques" && destination.elType == "heading") || ((source.elType == "ques" && destination.elType == "ques") && (JSON.stringify(destinationItem.parent.item.dataItem) != JSON.stringify(sourceItem.parent.item.dataItem)))) {
+        formObj.DestinationGroupId = destination.hasgroupid;
+        formObj.DestinationHeadingId = destination.hasheadingid;
         apiToCall = "quesHead";
       }
+    }
 
-    } else if (source.elType == "heading") {
+    if (source.elType == "heading") {
       formObj.HASHEADINGID = source.hasheadingid;
-      formObj.DESTINATIONHEADINGSEQ = destinaton.hasheadingseq;
-      if (JSON.stringify(destinationItem.parent.item.dataItem) == JSON.stringify(sourceItem.parent.item.dataItem)) {
+      formObj.DESTINATIONHEADINGSEQ = destination.hasheadingseq;
+      if (source.elType == destination.elType && JSON.stringify(destinationItem.parent.item.dataItem) == JSON.stringify(sourceItem.parent.item.dataItem)) {
         apiToCall = "headSeq";
-      } else if ((source.elType == "heading" && destinaton.elType == "group") || ((source.elType == "heading" && destinaton.elType == "heading") && (JSON.stringify(destinationItem.parent.item.dataItem) != JSON.stringify(sourceItem.parent.item.dataItem)))) {
-        formObj.DESTINATIONGROUPID = destinaton.hasgroupid;
+      } else if ((source.elType == "heading" && destination.elType == "group") || ((source.elType == "heading" && destination.elType == "heading") && (JSON.stringify(destinationItem.parent.item.dataItem) != JSON.stringify(sourceItem.parent.item.dataItem)))) {
+        formObj.DESTINATIONGROUPID = destination.hasgroupid;
         apiToCall = "headGrp";
       }
+    }
 
-    } else if (source.elType == "group" && destinaton.elType == "group") {
-      formObj.hasgroupseq = destinaton.hasgroupseq;
+    if (source.elType == "group" && destination.elType == "group") {
+      formObj.hasgroupseq = destination.hasgroupseq;
       apiToCall = "grpSeq";
     }
 

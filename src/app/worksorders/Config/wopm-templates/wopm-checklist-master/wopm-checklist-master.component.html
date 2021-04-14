@@ -1,0 +1,155 @@
+<kendo-window  title="Manage Checklist" [top]="10" [minWidth]="550" [height]="550"
+[width]="1150" (close)="closeChecklistWin()" style="padding: 0;" >
+
+<app-wopm-edit-checklist-master (closechecklistFormWin)="closechecklistFormWin($event)" *ngIf="editchecklistWindow"
+[editchecklistWindow]="editchecklistWindow"  [selectedChecklist]="wopmChecklistMasterModel" [editType]="editType"
+[wopmTemplateModel]="wopmTemplateModel" [allChecklists]="checklistDetails">
+</app-wopm-edit-checklist-master>
+
+
+<div style="height:100%;" class="col-md-12 m-0 p-0">
+
+  <kendo-grid id="checklistgrid" #grid="kendoGrid"  [navigable]="true" [resizable]="true" [data]="gridView" [selectable]="{
+    mode: 'single' }" [loading]="loading"  [selectedKeys]="mySelection" [kendoGridSelectBy]="mySelectionKey"  
+    (cellClick)="cellClickHandler($event)">
+
+    <kendo-grid-column title=" " width="37" [filterable]="false">
+        <ng-template kendoGridCellTemplate let-dataItem>
+            <!-- <li class="nav-item dropdown list-unstyled" style="margin-top: -7px;"> -->
+              <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
+              <div class="dropdown-menu" >
+                <a class="dropdown-item" href="javascript:void(0)" *ngIf="checkWorksOrdersAccess('Edit Checklist')"
+                (click)="openEditChecklist('edit', dataItem)">Edit</a>
+                
+                <a class="dropdown-item" href="javascript:void(0)" *ngIf="checkWorksOrdersAccess('Delete Checklist')"
+                (click)="deleteChecklist(dataItem)">Delete</a>
+              </div>
+            <!-- </li> -->
+    
+          </ng-template>
+<!--         <ng-template kendoGridCellTemplate let-dataItem>
+            <li [ngClass]="{'disabled' : selectedRows.length > 1}" class="nav-item dropdown list-unstyled"
+                style="margin-top: -7px;">
+                <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"
+                    (click)="setSelectedRow(dataItem)"></i>
+                <div class="dropdown-menu"  
+                *ngIf="checkWorksOrdersAccess('Edit Checklist') || checkWorksOrdersAccess('Delete Checklist')"  >
+
+                    <a class="dropdown-item" href="javascript:void(0)" *ngIf="checkWorksOrdersAccess('Edit Checklist')"
+                    (click)="openEditTemplate('edit', dataItem)">Edit</a>
+                    
+                    <a class="dropdown-item" href="javascript:void(0)" *ngIf="checkWorksOrdersAccess('Delete Checklist')"
+                    (click)="deleteTemplate(dataItem)">Delete</a>
+                </div>
+            </li>
+        </ng-template> -->
+    </kendo-grid-column>
+
+
+
+
+
+
+    
+    <kendo-grid-column field="wostagename" title="Stage" width="180">
+    </kendo-grid-column>
+    <kendo-grid-column field="wocheckname" title="Name" width="200">
+    </kendo-grid-column>
+    <kendo-grid-column field="wocheckstatus" title="Status" width="80" >
+    </kendo-grid-column>
+    <kendo-grid-column field="wocheckspeciaL1" title="Checklist Type" width="120" >
+    </kendo-grid-column>
+    <kendo-grid-column field="wocheckspeciaL2" title="Attachment Req'd" width="140" >
+    </kendo-grid-column>
+    <kendo-grid-column field="wocheckdesc" title="Desc"  width="200">
+    </kendo-grid-column>
+    <kendo-grid-column field="wocheckitemcomment" title="Comment" width="200" >
+    </kendo-grid-column>
+    <kendo-grid-column field="wocheckresp" title="Responsibility" width="120" >
+    </kendo-grid-column>
+    <kendo-grid-column field="wocheckcost" title="Cost" width="130">
+    </kendo-grid-column>
+    <kendo-grid-column field="woextrareF1" title="Mail Merge Document" width="200" >
+    </kendo-grid-column>
+    <kendo-grid-column field="woextrareF2" title="User Ref 2" width="100" >
+    </kendo-grid-column>
+    <kendo-grid-column field="woextrareF3" title="User Ref 3"  width="100">
+    </kendo-grid-column>
+    <kendo-grid-column field="woextrareF4" title="User Ref 4" width="100" >
+    </kendo-grid-column>
+    <kendo-grid-column field="woextrareF5" title="User Ref 5"  width="100">
+    </kendo-grid-column>
+    <kendo-grid-column field="createdby" title="Created By" width="160" >
+    </kendo-grid-column>
+    <kendo-grid-column field="mPgqA" title="Created Date"  width="120" format="{0:dd-MM-yyyy}">
+        <ng-template kendoGridCellTemplate let-dataItem>
+            <span>
+                {{ dataItem.mPgqA | dateFormat : 'DD-MMM-YYYY' }}
+            </span>
+        </ng-template>
+    </kendo-grid-column>
+    <kendo-grid-column field="updatedby" title="Amended By" width="160" >
+    </kendo-grid-column>
+    <kendo-grid-column field="mPgtA" title="Amended Date" width="120" format="{0:dd-MM-yyyy}">   
+        <ng-template kendoGridCellTemplate let-dataItem>
+            <span>
+                {{ dataItem.mPgtA | dateFormat : 'DD-MMM-YYYY' }}
+            </span>
+        </ng-template>
+    </kendo-grid-column> 
+    </kendo-grid> 
+
+  <p style="position: absolute; top: 0px;background-color: white;  height: 50px;" class="col-md-12 m-0 p-0"></p>
+
+  <div class="row" style="position: absolute; top:18px;width: 100%;margin-left:3px;">
+    <div class="col-md-12 m-0 p-0 text-right">
+
+        <button *ngIf="checkWorksOrdersAccess('Add Checklist')"
+        type="button" class="btn btn-sm themeButton mr-1" (click)="openEditChecklist('new', null)">New</button>
+
+        <button type="button" [disabled]="mySelection.length == 0" class="btn btn-sm themeButton mr-1"
+        *ngIf="checkWorksOrdersAccess('Edit Checklist')" (click)="moveStage('up')"><i
+          class='fas fa-long-arrow-alt-up'></i> Move up</button>
+
+      <button type="button" [disabled]="mySelection.length == 0" *ngIf="checkWorksOrdersAccess('Edit Checklist')"
+        class="btn btn-sm themeButton mr-1" (click)="moveStage('down')"><i class='fas fa-long-arrow-alt-down'> </i> Move
+        Down</button>
+
+     <button type="button" class="btn btn-sm themeButton mr-1 pull-right" (click)="exportToExcel(grid,'xlsx')">Export Data</button>
+
+    </div>
+</div>
+
+<div style="position: absolute; top: 50px;width: 100%" >
+    <p style="background-color: #dcdcdc; height: 1px;" class="col-md-12 m-0 p-0"></p>
+</div>
+
+
+</div>
+
+<div style="background-color: #cecece;position: absolute; top: 0px; left:0px; width: 100%;" class=" m-0  p-0">
+  <div style="background-color: #cecece;" class="form-row m-0 p-0">
+    <p style="background-color: #cecece; margin: -1px; font-weight: 600;  text-overflow: ellipsis;white-space: nowrap;overflow: hidden;" class="col-md-12 m-0 px-3 pt-1 pb-1">
+      Template:<span style="font-weight: 400;margin-left:10px">{{wopmTemplateModel.name}}</span>
+     </div>
+</div>
+
+
+</kendo-window>
+
+<div class="disabledBackground2"></div>
+
+
+<kendo-dialog title="Confirm checklist item deletion" *ngIf="dialogDeleteChecklist" (close)="closeDeleteWin(false)" [minWidth]="250"
+[width]="450">
+<p style="margin: 30px; text-align: left;">Delete checklist item {{currentRow.wocheckname}} ?</p>
+
+<div class="row">
+  <div class="col-md-12">
+    <div class="actionBtn text-right">
+      <button class="btn btn-sm themeButton mr-1 confirmButton" (click)="closeDeleteWin(false)">No</button>
+      <button class="btn btn-sm themeButton confirmButton" (click)="closeDeleteWin(true)">Yes</button>
+    </div>
+  </div>
+</div>
+</kendo-dialog>

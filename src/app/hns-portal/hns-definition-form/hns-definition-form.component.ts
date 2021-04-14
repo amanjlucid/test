@@ -203,7 +203,7 @@ export class HnsDefinitionFormComponent implements OnInit, OnDestroy {
       this.hnsPortalService.saveDefinition(formObj, this.definitionFormMode).subscribe(
         data => {
           if (data.isSuccess) {
-            this.alertService.success(`New Health and Definition ${this.successMsg} successfully.`);
+            this.alertService.success(`New Health and Safety Definition ${this.successMsg} successfully.`);
             this.successfulSubmit.emit(true);
             this.closeForm();
           } else {

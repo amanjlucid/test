@@ -20,7 +20,7 @@ export class HnsScoringBandsComponent implements OnInit {
     take: 30,
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -37,6 +37,7 @@ export class HnsScoringBandsComponent implements OnInit {
   updatedRange: any = { min: null, max: null, maxRowInd: 0 };
   currentUser: any;
   hnsPermission: any = [];
+  ScoringBandRules: boolean = false;
 
   constructor(
     private hnsService: HnsPortalService,

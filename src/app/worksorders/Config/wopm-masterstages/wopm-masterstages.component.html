@@ -1,0 +1,133 @@
+<div class="container-fluid flex-grow-1 container-p-y">
+
+    <div class="row">
+        <div class="col-md-2 col-sm-3">
+            <h4 class="font-weight-bold py-3 mb-1">
+                Master Stages
+            </h4>
+        </div>
+
+        <div class="col-md-10 text-right" >
+<!--             <button *ngIf="taskSecurityList.indexOf('Edit') != -1" type="button" class="btn btn-sm themeButton mr-1"
+                (click)="editEventMethod('edit')">Edit</button>
+            <button *ngIf="taskSecurityList.indexOf('Edit') != -1" type="button" class="btn btn-sm themeButton mr-1"
+                (click)="editEventMethod('escalation')">Escalation</button>
+            <button *ngIf="taskSecurityList.indexOf('Edit') != -1" type="button" class="btn btn-sm themeButton mr-1"
+                (click)="addEvent()">Schedule</button>
+            <button *ngIf="taskSecurityList.indexOf('Notify') != -1" type="button" class="btn btn-sm themeButton mr-1"
+                (click)="opneNotifyWindow()">Notify</button>
+            <button type="button" class="btn btn-sm themeButton mr-1" (click)="runEvent()">Run</button>
+            <button type="button" class="btn btn-sm themeButton mr-1" (click)="copyEvent()">Copy</button>
+            <button type="button" *ngIf="checkUserEvents" class="btn btn-sm themeButton"
+                (click)="openConfirmationDialog()">Delete</button> -->
+                <button *ngIf="checkWorksOrdersAccess('New Master Stages')"
+                 type="button" class="btn btn-sm themeButton mr-1" (click)="openEditStage('new', null)">New</button>
+                 <button type="button" [disabled]="mySelection.length == 0" class="btn btn-sm themeButton mr-1"
+                 *ngIf="checkWorksOrdersAccess('Edit Master Stages')" (click)="moveStage('up')"><i
+                   class='fas fa-long-arrow-alt-up'></i> Move up</button>
+               <button type="button" [disabled]="mySelection.length == 0" *ngIf="checkWorksOrdersAccess('Edit Master Stages')"
+                 class="btn btn-sm themeButton mr-1" (click)="moveStage('down')"><i class='fas fa-long-arrow-alt-down'> </i> Move
+                 Down</button>
+
+                <button type="button" class="btn btn-sm themeButton mr-1" (click)="export()">Export Data</button>
+
+
+        </div>
+
+    </div>
+
+
+    <div class="row mt-2">
+        <div class="col-md-12">
+
+            <kendo-grid [groupable]="false" [data]="gridView"  [height]="720" filterable="menu" [loading]="loading" [resizable]="true" 
+            [sortable]="{allowUnsort: allowUnsort, mode: multiple ? 'multiple' : 'single' }" 
+            [skip]="state.skip" [sort]="state.sort" [selectable]="selectableSettings" kendoGridSelectBy="wostagesurcde"
+                [selectedKeys]="mySelection" (selectedKeysChange)="onSelectedKeysChange($event)" [filter]="state.filter"
+                (sortChange)="sortChange($event)" (filterChange)="filterChange($event)"
+                 [navigable]="true" (cellClick)="cellClickHandler($event)">
+
+                <kendo-grid-column title=" " width="37" [filterable]="false">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <li [ngClass]="{'disabled' : selectedStages.length > 1}" class="nav-item dropdown list-unstyled"
+                            style="margin-top: -7px;">
+                            <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"
+                                (click)="setSelectedRow(dataItem)"></i>
+                            <div class="dropdown-menu"  
+                            *ngIf="checkWorksOrdersAccess('Edit Master Stages')"
+                            >
+
+                                <a class="dropdown-item" href="javascript:void(0)" *ngIf="checkWorksOrdersAccess('Edit Master Stages')"
+                                (click)="openEditStage('edit', dataItem)">Edit</a>
+
+
+                            </div>
+                        </li>
+
+                    </ng-template>
+                </kendo-grid-column>
+                <kendo-grid-column field="wostagedispseq" title="Sequence" width="100">
+                </kendo-grid-column>
+                <kendo-grid-column field="wostagename" title="Name" width="250">
+                </kendo-grid-column>
+                <kendo-grid-column field="wostagedesc" title="Description" width="300">
+                </kendo-grid-column>                
+                <kendo-grid-column field="wostagestatus" title="Status" width="100">
+                    <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
+                    let-filterService="filterService">
+                    <multicheck-filter [isPrimitive]="false" [field]="column.field" [currentFilter]="filter"
+                        [filterService]="filterService" textField="text" valueField="val"  
+                        [data]="distinctPrimitive(column.field)">
+                    </multicheck-filter>
+                </ng-template>
+                </kendo-grid-column> 
+                <kendo-grid-column field="createdBy" title="Created By" width="180">
+                </kendo-grid-column>
+                <kendo-grid-column field="mPgpA" title="Created" width="120" filter="date"
+                    format="{0:dd-MM-yyyy}">
+                    <ng-template kendoGridFilterMenuTemplate let-filter let-column="column"
+                        let-filterService="filterService">
+                        <date-range-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
+                        </date-range-filter>
+                    </ng-template>
+
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.mPgpA | dateFormat : 'DD-MMM-YYYY' }}
+                        </span>
+                    </ng-template>
+                </kendo-grid-column>
+                <kendo-grid-column field="updatedBy" title="Amended By" width="180">
+                </kendo-grid-column>
+                <kendo-grid-column field="mPgsA" title="Amended" width="120" filter="date"
+                    format="{0:dd-MM-yyyy}">
+                    <ng-template kendoGridFilterMenuTemplate let-filter let-column="column"
+                        let-filterService="filterService">
+                        <date-range-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
+                        </date-range-filter>
+                    </ng-template>
+
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.mPgsA | dateFormat : 'DD-MMM-YYYY' }}
+                        </span>
+                    </ng-template>
+                </kendo-grid-column>
+
+
+            </kendo-grid>
+
+        </div>
+    </div>
+
+ 
+
+<div class="disabledBackground"></div>
+
+<app-wopm-edit-masterstage [stageFormWindow]="stageFormWindow" [stageFormType]="stageFormType" [selectedStage]="wopmMasterStagesModel" 
+*ngIf="stageFormWindow" (closeStageFormWin)="closeStageFormWin($event)">
+</app-wopm-edit-masterstage>
+
+
+
+

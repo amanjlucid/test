@@ -20,7 +20,7 @@
             <a class="nav-link" [ngClass]="{'active': tabName=='energy'}" (click)="showTab('energy')"
               href="javascript:void(0)">Energy</a>
           </li>
-          <li class="nav-item" *ngIf="checkTabPermission('EPC') && checkModuleEnabled('EPC Module') && checkEnergyPortalAccess('Energy Portal Access')" >
+          <li class="nav-item" *ngIf="checkTabPermission('EPC') && checkModuleEnabled('EPC Module') && checkEnergyPortalAccess('Energy Portal Access') && checkMenuAccess('EPCs', 1)" >
             <a class="nav-link" [ngClass]="{'active': tabName=='epc'}" (click)="showTab('epc')"
               href="javascript:void(0)">EPC</a>
           </li>

@@ -169,10 +169,11 @@ export class HnsAddPriorityComponent implements OnInit {
       let formObj: any = {};
 
       if (this.selectedDefinition.hasscoring == 2) {
-        formObj.hasrisklower = parseInt(formRawVal.hasrisklower);
-        formObj.hasriskupper = parseInt(formRawVal.hasriskupper);
-        if (formObj.hasrisklower > formObj.hasriskupper) {
-          this.alertService.error("The Upper Score Limit cannot be lower than the Lower Score Limit")
+
+        let message = this.validateScoreData(formRawVal);
+        if(message != "")
+          {
+            this.alertService.error(message);
           return
         }
 
@@ -183,30 +184,6 @@ export class HnsAddPriorityComponent implements OnInit {
           priorityData = this.priorityData.filter(x => x != this.selectedPriority)
         }
 
-        if (formObj.hasrisklower != 0 && formObj.hasriskupper != 0) {
-          let validRange = this.helper.checkValidRange(priorityData, formObj.hasrisklower, formObj.hasriskupper, this.range)
-          // console.log(validRange)
-          if (typeof validRange == "boolean") {
-            this.alertService.error("The Lower and Upper Score Limits overlap with those of another priority level, they must not overlap within the definition");
-            return
-          } else {
-            if (validRange.isInpHigher) {
-              this.alertService.error(`The Score Limit values cannot be greater than the Maximum Score Value of ${validRange.highest}`);
-              return
-            } else if (validRange.isInpHigher == false && validRange.isTrue == false) {
-              this.alertService.error("The Lower and Upper Score Limits overlap with those of another priority level, they must not overlap within the definition");
-              return
-            } else if (validRange.isInpLower) {
-              this.alertService.error(`The Score Limit values cannot be lower than the Minimum Score Value of ${validRange.lowest}`);
-              return
-            }
-          }
-        } else {
-          this.alertService.error("The Lower and Upper Score Limits value cannot be 0.");
-          return
-        }
-
-
       }
 
       formObj.hascode = this.selectedDefinition.hascode;
@@ -215,6 +192,8 @@ export class HnsAddPriorityComponent implements OnInit {
       formObj.hasprioritydescription = formRawVal.description;
       formObj.hasdaystoresolve = formRawVal.daysToResolve;
       formObj.modifiedby = this.currentUser.userId;
+      formObj.hasrisklower = parseInt(formRawVal.hasrisklower);
+      formObj.hasriskupper = parseInt(formRawVal.hasriskupper);
 
       let queryAddEdit;
       if (this.formMode == "add") {
@@ -222,8 +201,6 @@ export class HnsAddPriorityComponent implements OnInit {
         formObj.haspriorityorder = 0;
         queryAddEdit = this.hnsService.addPriority(formObj);
       } else if (this.formMode == "edit") {
-        // formObj.hasrisklower = parseInt(this.selectedPriority.hasrisklower);
-        // formObj.hasriskupper = parseInt(this.selectedPriority.hasriskupper);
         formObj.haspriorityorder = this.selectedPriority.haspriorityorder;
         queryAddEdit = this.hnsService.updatePriority(formObj);
       }
@@ -248,6 +225,52 @@ export class HnsAddPriorityComponent implements OnInit {
 
     }
   }
+
+  validateScoreData(dataItem){
+
+    let thisLower = parseInt(dataItem.hasrisklower);
+    let thisUpper = parseInt(dataItem.hasriskupper);
+
+    if(thisLower <= 0 || thisUpper <= 0)
+    {
+      return "Please enter a valid value for both the Lower and Upper Score limits";
+    }
+
+    if(thisLower > 0 || thisUpper > 0){
+      if(thisUpper < thisLower){
+        return "The Upper Score Limit cannot be lower than the Lower Score limit"
+      }
+    }
+    //range: any = { min: 1, max: 1 };
+    if(thisUpper > this.range.max || thisLower > this.range.max){
+        return "The Score Limit values cannot be greater than the Maximum Score Value of " + this.range.max
+    }
+
+    let overlap  = false;
+
+    for(let obj of this.priorityData)
+    {
+        if(dataItem.code != obj.haspriority)
+        {
+            if(thisLower >= obj.hasrisklower && thisLower <= obj.hasriskupper){
+                overlap = true;
+                break;
+            }
+            if(thisUpper >= obj.hasrisklower && thisUpper <= obj.hasriskupper){
+                overlap = true;
+                break;
+            }
+        }
+      }
+
+    if(overlap){
+        return "The Lower and Upper Score Limits ovelap with those of another priority level, they must not ovelap within the definition"
+    }
+
+    return "";
+
+  }
+
 
 
   numberOnly(event): boolean {

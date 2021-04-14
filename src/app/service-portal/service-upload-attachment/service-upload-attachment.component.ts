@@ -25,7 +25,7 @@ export class ServiceUploadAttachmentComponent implements OnInit {
   dragAreaClass: string = 'dragarea';
   //projectId: number = 0;
   //sectionId: number = 0;
-  fileExt: string = "JPG, GIF, PNG, PDF";
+  fileExt: string = "JPG, GIF, PNG, PDF, JPEG";
   maxFiles: number = 5;
   maxSize: number = 5; // 5MB
   uploadStatus = false;

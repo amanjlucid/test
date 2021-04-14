@@ -130,10 +130,12 @@
 
           <td class="smallCol">
             <li style="display: block;" class="nav-item dropdown list-unstyled"
-              *ngIf="item.levelName == 4 && servicePortalAccess.indexOf('Asset Search Tab') !== -1">
+              *ngIf="item.levelName >= 3">
               <i data-toggle="dropdown" aria-expanded="false" class="fa fa-bars"></i>
               <div class="dropdown-menu">
-                <a class="dropdown-item" (click)="gotoAsset(item)" href="javascript:void(0)">Asset Search</a>
+                <a class="dropdown-item" *ngIf="item.levelName == 4 && servicePortalAccess.indexOf('Asset Search Tab') !== -1" (click)="gotoAsset(item)" href="javascript:void(0)">View Assets</a>
+                <a class="dropdown-item" *ngIf="item.levelName == 3" (click)="runDetailReport(item, '')" href="javascript:void(0)">Detail Report</a>
+                <a class="dropdown-item" *ngIf="item.levelName == 4" (click)="runDetailReport(item, 'Asset')" href="javascript:void(0)">Detail Report</a>
               </div>
             </li>
           </td>

@@ -20,7 +20,7 @@
             <label class="col-form-label">Heading</label>
           </div>
           <div class="col-md-8">
-            <input #firstInp type="text" formControlName="heading" [ngClass]="{ 'is-invalid': submitted && formErrors.heading }"
+            <input #firstInp type="text" maxlength="50" formControlName="heading" [ngClass]="{ 'is-invalid': submitted && formErrors.heading }"
               class="form-control">
             <div *ngIf="submitted && formErrors.heading" class="invalid-feedback">
               <div *ngIf="formErrors.heading">{{ formErrors.heading }}</div>

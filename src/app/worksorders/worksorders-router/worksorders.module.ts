@@ -32,6 +32,18 @@ import { WorksordersAssetChecklistEditDescriptionComponent } from '../worksorder
 import { WorksordersAssetChecklistUploadDocComponent } from '../worksorders-asset-checklist-upload-doc/worksorders-asset-checklist-upload-doc.component';
 import { PickDateComponent } from '../pick-date/pick-date.component';
 
+import { WopmTemplatesComponent } from '../Config/wopm-templates/wopm-templates.component';
+
+import { WopmConfigComponent } from '../Config/wopm-config/wopm-config.component';
+import { WopmMasterstagesComponent } from '../Config/wopm-masterstages/wopm-masterstages.component';
+import { WopmEditTemplateComponent } from '../Config/wopm-templates/wopm-edit-template/wopm-edit-template.component';
+import { WopmEditMasterstageComponent } from '../Config/wopm-masterstages/wopm-edit-masterstage/wopm-edit-masterstage.component';
+import { WopmChecklistMasterComponent } from '../Config/wopm-templates/wopm-checklist-master/wopm-checklist-master.component';
+import { WopmEditChecklistMasterComponent } from '../Config/wopm-templates/wopm-checklist-master/wopm-edit-checklist-master/wopm-edit-checklist-master.component';
+import { WopmEditChecklistDependenciesComponent } from '../Config/wopm-templates/wopm-edit-checklist-dependencies/wopm-edit-checklist-dependencies.component';
+
+import { MultiSelectModule } from '@progress/kendo-angular-dropdowns';
+
 @NgModule({
   declarations: [
     WorksordersRouterComponent,
@@ -53,7 +65,16 @@ import { PickDateComponent } from '../pick-date/pick-date.component';
     WorksordersAssetChecklistPredecessorsComponent,
     WorksordersAssetChecklistEditDescriptionComponent,
     WorksordersAssetChecklistUploadDocComponent,
-    PickDateComponent
+    PickDateComponent,
+
+    WopmTemplatesComponent,
+    WopmConfigComponent,
+    WopmMasterstagesComponent,
+    WopmEditTemplateComponent,
+    WopmEditMasterstageComponent,
+    WopmChecklistMasterComponent,
+    WopmEditChecklistMasterComponent,
+    WopmEditChecklistDependenciesComponent
   ],
 
   imports: [
@@ -69,7 +90,10 @@ import { PickDateComponent } from '../pick-date/pick-date.component';
     NgMultiSelectDropDownModule,
     WorksOrderRoutingModule,
     NgbModule,
-    TreeListModule
+    TreeListModule,
+
+    NgMultiSelectDropDownModule.forRoot(),
+    MultiSelectModule
 
   ]
 

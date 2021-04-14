@@ -573,12 +573,7 @@ export class UserTaskDataComponent implements OnInit {
     let findAssetKey = this.columns.find(x => x.val.toLowerCase() == "asset");
     if (findAssetKey) {
       const host = window.location.hostname;
-      let siteUrl = `${appConfig.appUrl}`;
-      // if (host == "localhost") {
-      //   siteUrl = "http://localhost:4200"
-      // } else {
-      //   siteUrl = "http://104.40.138.8/rowanwood"
-      //}
+
       let filterModel = Object.assign({}, this.headerFilters);
       filterModel.IsExport = true;
 
@@ -591,7 +586,7 @@ export class UserTaskDataComponent implements OnInit {
               if (selectedData.length > 0) {
                 let assetIds = selectedData.map(x => x[findAssetKey.key])
                 localStorage.setItem('assetList', btoa(assetIds.toString()));
-                siteUrl = `${siteUrl}/asset-list?taskData=true`
+                let siteUrl = `https://apexdevweb.rowanwood.ltd/dev/rowanwood/asset-list?taskData=true`
                 window.open(siteUrl, "_blank");
               }
             }

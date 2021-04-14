@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AlertService, HelperService, SharedService, HnsPortalService, EventManagerDashboardService,AssetAttributeService } from '../../_services'
 import { SubSink } from 'subsink';
 import { Router } from "@angular/router"
+import { appConfig } from '../../app.config';
 
 declare var $: any;
 declare var GoldenLayout: any;
@@ -47,12 +48,14 @@ export class WorksordersDashboardComponent implements OnInit {
           componentState: { text: 'Component3' },
           title: 'Component 3',
 
-        }, {
+        }
+/*         , {
           type: 'component',
           componentName: 'testComponent',
           componentState: { text: 'Component4' },
           title: 'Component 4',
-        }]
+        } */
+      ]
       }]
     }]
   };
@@ -61,11 +64,11 @@ export class WorksordersDashboardComponent implements OnInit {
   pageload: boolean = true;
   //allChartDropdownVlaues: any;
   dashboardName: string;
-  portalName: string = "EPC";
+  portalName: string = "Works Orders";
   defaultFilterVal: string = "";
   retrievedEPCs = false
   selectedBarChartXasis: any;
-  taskSecurityList: any = [];
+  worksOrdersAccess: any = [];
 
   constructor(
     private hnsPortalService: HnsPortalService,
@@ -84,14 +87,14 @@ export class WorksordersDashboardComponent implements OnInit {
 
   ngAfterViewInit() {
     this.subs.add(
-      this.sharedServie.taskPortalSecList.subscribe(
+      this.sharedServie.worksOrdersAccess.subscribe(
         data => {
-          this.taskSecurityList = data;
-          if (this.taskSecurityList.length > 0) {
-            this.sharedServie.modulePermission.subscribe(
+          this.worksOrdersAccess = data;
+          if (this.worksOrdersAccess.length > 0) {
+            this.sharedServie.realModulesEnabled.subscribe(
               modules => {
                 if (modules.length > 0) {
-                  if (this.taskSecurityList.indexOf("Event Dashboard") == -1 || modules.indexOf("Event Manager Portal Access") == -1) {
+                  if (this.worksOrdersAccess.indexOf("Dashboard") == -1 || modules.indexOf("WOPM") == -1) {
                     this.alertService.error("You have no access to configuration")
                     this.router.navigate(['/dashboard']);
                   }
@@ -116,7 +119,7 @@ export class WorksordersDashboardComponent implements OnInit {
     setTimeout(() => {
       this.subs.add(
         // get chart data and render in template
-        this.hnsPortalService.getUserChartData(this.currentUser.userId, this.portalName).subscribe(
+        this.hnsPortalService.getUserChartData(this.currentUser.userId, "this.portalName").subscribe(
           data => {
             if (data.data.chartData != null) {
               this.dashboardName = data.data.dashboard;
@@ -128,7 +131,7 @@ export class WorksordersDashboardComponent implements OnInit {
             }
 
             this.subs.add(
-              this.assetAttributeService.getEPCChartsList().subscribe(
+              this.assetAttributeService.getChartsList("WorksOrder").subscribe(
                 data => {
                   if (data.isSuccess) {
                     // console.log(data);
@@ -160,8 +163,10 @@ export class WorksordersDashboardComponent implements OnInit {
                           }
 
                         } else if (state.text == "Component4") {
+                          if (comp.chartNames[3] != undefined) {
                            container.setTitle(comp.chartNames[3].chartName)
                            comp.renderChartTypes(comp.chartNames[3], comp, container, state);
+                        }
                         }
                       } else if (comp.drawChartObj == null && comp.savedState != null) {
                         comp.renderChartIfStateSaved(container, state, comp);
@@ -1372,19 +1377,6 @@ export class WorksordersDashboardComponent implements OnInit {
 
   openDrillDownchart(chartEvent, parentChartObj) {
     if (parentChartObj != null && parentChartObj.ddChartID != undefined) {
-      if (parentChartObj.chartName == "EPC SAP Bands") {
-        this.selectedBarChartXasis = {
-          "ddChartId": parentChartObj.ddChartId != undefined ? parentChartObj.ddChartId : parentChartObj.ddChartID,
-          "parantChartId": parentChartObj.parantChartId != undefined ? parentChartObj.parantChartId : parentChartObj.chartID,
-          "xAxisValue": chartEvent.options.name,
-          "seriesId": chartEvent.options.seriesId,
-          "chartName": parentChartObj.chartName
-        }
-
-        this.gotoAsset(this.selectedBarChartXasis);
-      }
-      else
-      {
         if (parentChartObj.ddChartID != 0) {
           const params = {
             "chartName": `${parentChartObj.chartName} (${chartEvent.options.name})`,
@@ -1402,12 +1394,12 @@ export class WorksordersDashboardComponent implements OnInit {
         }
       }
     }
-  }
 
 
   openGridOnClickOfBarChart(chartEvent, parentChartObj) {
     // console.log(chartEvent)
 
+    if (parentChartObj.drilldown == 1 && parentChartObj.ddChartID > 0) {
     this.selectedBarChartXasis = {
       "ddChartId": parentChartObj.ddChartId != undefined ? parentChartObj.ddChartId : parentChartObj.ddChartID,
       "parantChartId": parentChartObj.parantChartId != undefined ? parentChartObj.parantChartId : parentChartObj.chartID,
@@ -1415,11 +1407,7 @@ export class WorksordersDashboardComponent implements OnInit {
       "seriesId": parentChartObj.seriesId,
       "chartName": parentChartObj.chartName
     }
-
-    if (parentChartObj.chartName == "Retrieved EPCs") {
       this.openGrid();
-    } else {
-      this.gotoAsset(this.selectedBarChartXasis);
     }
     
   }
@@ -1448,16 +1436,7 @@ export class WorksordersDashboardComponent implements OnInit {
 
     localStorage.setItem('assetFilterObj', JSON.stringify(assetFilterObj)); */
     // let url = `${window.location.origin}/rowanwood/asset-list?servicing=true`;
-
-
-    let url = `${window.location.origin}/asset-list`; // for local
-    if (item.chartName == "EPC SAP Band & Cloned" || item.chartName == "EPC SAP Bands") {
-      url += `?sapBand=${encodeURIComponent(item.xAxisValue)}`;
-    }
-    if (item.chartName == "EPC Status") {
-      url += `?epcStatus=${encodeURIComponent(item.xAxisValue)}`;
-    }
-    window.open(url, "_blank");
+    //window.open(url, "_blank");
   }
 
 

@@ -65,8 +65,8 @@
     <div class="col-md-8 actionAreaBtnleft">
       <button type="button" *ngIf="hnsPermission.indexOf('Add Priority List') != -1" [disabled]="disableAddBtn"
         class="btn btn-sm themeButton" (click)="addPriority('add')">Add</button>
-      <button type="button" [disabled]="disableBtn" class="btn btn-sm themeButton" (click)="addPriority('view')"
-        *ngIf="selectedDefinition.hasinuse == 'Y'">View</button>
+    <!--  <button type="button" [disabled]="disableBtn" class="btn btn-sm themeButton" (click)="addPriority('view')"
+        *ngIf="selectedDefinition.hasinuse == 'Y'">View</button>-->
       <button type="button" [disabled]="disableBtn" class="btn btn-sm themeButton" (click)="addPriority('edit')"
         *ngIf="selectedDefinition.hasinuse == 'N' && hnsPermission.indexOf('Edit Priority List') != -1">Edit</button>
       <button type="button" [disabled]="disableBtn" class="btn btn-sm themeButton" (click)="openConfirmationDialog()"
@@ -79,7 +79,7 @@
         Down</button>
     </div>
     <div class="col-md-4 actionAreaBtnright">
-      <button type="button" class="btn btn-sm themeButton" (click)="closePriorityListMethod()">Cancel</button>
+      <button type="button" class="btn btn-sm themeButton" (click)="closePriorityListMethod()">Close</button>
     </div>
   </div>
 

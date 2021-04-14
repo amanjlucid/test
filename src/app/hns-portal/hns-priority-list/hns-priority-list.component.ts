@@ -22,7 +22,7 @@ export class HnsPriorityListComponent implements OnInit {
     take: 30,
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -91,16 +91,12 @@ export class HnsPriorityListComponent implements OnInit {
   }
 
   closePriorityListMethod() {
-    // if (this.selectedDefinition.hasscoring == 2) {
-    //   if (this.range.max != this.updatedRange.max) {
-    //     this.alertService.error(`The Lower and Upper Score Limit do not cover the complete range Please ensure the Score Limits cover all values from  ${this.range.min} to ${this.range.max}`);
+
+    let missingRange = this.validateScoreData();
+
+    if (missingRange != '' && this.selectedDefinition.hasscoring == 2) {
+      this.alertService.error(missingRange + `. This definition cannot be used until this is complete.`);
     //     return
-    //   }
-    // }
-    let missingRange = this.checkLeftRangeValue();
-    if (!missingRange && this.selectedDefinition.hasscoring == 2) {
-      this.alertService.error(`The Lower and Upper Score Limit do not cover the complete range Please ensure the Score Limits cover all values from  ${this.range.min} to ${this.range.max}`);
-      return
 
     }
     this.openPriorityList = false;
@@ -247,6 +243,35 @@ export class HnsPriorityListComponent implements OnInit {
     )
   }
 
+validateScoreData(){
+
+let res = '';
+
+    let coveredValue = [];
+
+    for (let elm of this.listData) {
+      //if (!coveredValue.indexOf(elm.) == -1)
+      for (let i = elm.hasrisklower; i <= elm.hasriskupper; i++) {
+        if (coveredValue.indexOf(i) == -1) {
+          coveredValue.push(i);
+        }
+        else
+        {
+          return 'The Lower and Upper Score Limits must not ovelap between priority levels';
+        }
+      }
+    }
+
+    for (let i = this.range.min; i <= this.range.max; i++) {
+      if (coveredValue.indexOf(i) === -1) {
+        return "The Lower and Upper Score Limits do not cover the complete range Please ensure the Score Limits cover all values from " + this.range.min + " to " + this.range.max;
+      }
+    }
+
+    return res;
+
+  }
+/*
   checkLeftRangeValue() {
     let flag = true;
     let coveredValue = [];
@@ -270,6 +295,6 @@ export class HnsPriorityListComponent implements OnInit {
 
     return flag;
   }
-
+*/
 
 }

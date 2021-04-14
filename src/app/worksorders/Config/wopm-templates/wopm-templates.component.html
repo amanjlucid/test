@@ -1,0 +1,237 @@
+<div class="container-fluid flex-grow-1 container-p-y">
+
+    <div class="row">
+        <div class="col-md-2 col-sm-3">
+            <h4 class="font-weight-bold py-3 mb-1">
+                Templates
+            </h4>
+        </div>
+
+        <div class="col-md-10 text-right" >
+<!--             <button *ngIf="taskSecurityList.indexOf('Edit') != -1" type="button" class="btn btn-sm themeButton mr-1"
+                (click)="editEventMethod('edit')">Edit</button>
+            <button *ngIf="taskSecurityList.indexOf('Edit') != -1" type="button" class="btn btn-sm themeButton mr-1"
+                (click)="editEventMethod('escalation')">Escalation</button>
+            <button *ngIf="taskSecurityList.indexOf('Edit') != -1" type="button" class="btn btn-sm themeButton mr-1"
+                (click)="addEvent()">Schedule</button>
+            <button *ngIf="taskSecurityList.indexOf('Notify') != -1" type="button" class="btn btn-sm themeButton mr-1"
+                (click)="opneNotifyWindow()">Notify</button>
+            <button type="button" class="btn btn-sm themeButton mr-1" (click)="runEvent()">Run</button>
+            <button type="button" class="btn btn-sm themeButton mr-1" (click)="copyEvent()">Copy</button>
+            <button type="button" *ngIf="checkUserEvents" class="btn btn-sm themeButton"
+                (click)="openConfirmationDialog()">Delete</button> -->
+                <button *ngIf="checkWorksOrdersAccess('New Template')"
+                 type="button" class="btn btn-sm themeButton mr-1" (click)="openEditTemplate('new', null)">New</button>
+
+                 <button *ngIf="checkWorksOrdersAccess('Import Template')"
+                 type="button" class="btn btn-sm themeButton mr-1" (click)="openFile()">Import Template
+                 <input type="file" [(ngModel)]="fileValue" accept=".csv" style="display:none" (change)="handleFile($event)"></button>
+
+                <button *ngIf="checkWorksOrdersAccess('Export Template')"
+                 type="button" class="btn btn-sm themeButton mr-1" (click)="export()">Export Data</button>
+
+                <button id="showFilePanel" (click)="openSearchBar()" class="btn btn-sm themeButton"><i
+                        class="fa fa-search"></i>
+                </button>
+
+        </div>
+
+    </div>
+
+
+    <div class="row mt-2">
+        <div class="col-md-12">
+
+            <kendo-grid [groupable]="false" [data]="gridView"  [height]="720" filterable="menu" [loading]="loading" [resizable]="true" 
+            [sortable]="{allowUnsort: allowUnsort, mode: multiple ? 'multiple' : 'single' }" 
+            [skip]="state.skip" [sort]="state.sort" [selectable]="selectableSettings" kendoGridSelectBy="wotsequence"
+                [selectedKeys]="mySelection" (selectedKeysChange)="onSelectedKeysChange($event)" [filter]="state.filter"
+                (sortChange)="sortChange($event)" (filterChange)="filterChange($event)"
+                 [navigable]="true" (cellClick)="cellClickHandler($event)">
+
+                <kendo-grid-column title=" " width="37" [filterable]="false">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <li [ngClass]="{'disabled' : selectedTemplates.length > 1}" class="nav-item dropdown list-unstyled"
+                            style="margin-top: -7px;">
+                            <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"
+                                (click)="setSeletedRow(dataItem)"></i>
+                            <div class="dropdown-menu"  
+                            *ngIf="checkWorksOrdersAccess('Edit Template') || checkWorksOrdersAccess('Copy Template') || checkWorksOrdersAccess('Delete Template')"
+                            >
+
+                                <a class="dropdown-item" href="javascript:void(0)" *ngIf="checkWorksOrdersAccess('Edit Template')"
+                                (click)="openEditTemplate('edit', dataItem)">Edit</a>
+                                
+                                <a class="dropdown-item" href="javascript:void(0)" *ngIf="checkWorksOrdersAccess('Copy Template')"
+                                (click)="copyTemplate(dataItem)">Copy</a>
+
+                                <a class="dropdown-item" href="javascript:void(0)" *ngIf="checkWorksOrdersAccess('Delete Template')"
+                                (click)="deleteTemplate(dataItem)">Delete</a>
+
+                                <a class="dropdown-item" href="javascript:void(0)" *ngIf="checkWorksOrdersAccess('Manage Checklist')"
+                                (click)="openChecklistWindow(dataItem)">Manage Checklist</a>
+
+                                <a class="dropdown-item" href="javascript:void(0)" *ngIf="checkWorksOrdersAccess('Edit Dependencies')"
+                                (click)="editDependenciesWindow(dataItem)">Edit Dependencies</a>
+
+                                <a class="dropdown-item" href="javascript:void(0)" *ngIf="checkWorksOrdersAccess('Export Template')"
+                                (click)="exportTemplate(dataItem)">Export Template</a>
+
+                            </div>
+                        </li>
+
+                    </ng-template>
+                </kendo-grid-column>
+                <kendo-grid-column field="wotvalid" title="Parameters" width="40" [filterable]="false"
+                    [groupable]="false">
+                    <ng-template kendoGridHeaderTemplate>
+                        <i title="Valid Template?" class="fa fa-question" aria-hidden="true" ></i>
+                      </ng-template>
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            <img style="height: 14px;"
+                                *ngIf="dataItem.wotvalid == 'Y'"
+                                src="assets/img/icons/tick.png" />
+                            <img style="height: 14px;"
+                                *ngIf="dataItem.wotvalid == 'N'"
+                                src="assets/img/icons/cross.png" />
+                        </span>
+                    </ng-template>
+                </kendo-grid-column>
+                <kendo-grid-column field="wotname" title="Name" width="250">
+                </kendo-grid-column>
+                <kendo-grid-column field="wotdesc" title="Description" width="250">
+                </kendo-grid-column>
+                <kendo-grid-column field="wottemplatetype" title="Type " width="160">
+                    <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
+                    let-filterService="filterService">
+                    <multicheck-filter [isPrimitive]="false" [field]="column.field" [currentFilter]="filter"
+                        [filterService]="filterService" textField="text" valueField="val"  
+                        [data]="distinctPrimitive(column.field)">
+                    </multicheck-filter>
+                </ng-template>
+                </kendo-grid-column>
+                <kendo-grid-column field="wotstatus" title="Status" width="100">
+                    <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
+                    let-filterService="filterService">
+                    <multicheck-filter [isPrimitive]="false" [field]="column.field" [currentFilter]="filter"
+                        [filterService]="filterService" textField="text" valueField="val"  
+                        [data]="distinctPrimitive(column.field)">
+                    </multicheck-filter>
+                </ng-template>
+                </kendo-grid-column>       
+                <kendo-grid-column field="createdby" title="Created By" width="180">
+                </kendo-grid-column>
+                <kendo-grid-column field="mPgpA" title="Created" width="120" filter="date"
+                    format="{0:dd-MM-yyyy}">
+                    <ng-template kendoGridFilterMenuTemplate let-filter let-column="column"
+                        let-filterService="filterService">
+                        <date-range-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
+                        </date-range-filter>
+                    </ng-template>
+
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.mPgpA | dateFormat : 'DD-MMM-YYYY' }}
+                        </span>
+                    </ng-template>
+                </kendo-grid-column>
+                <kendo-grid-column field="updatedby" title="Amended By" width="180">
+                </kendo-grid-column>
+                <kendo-grid-column field="mPgsA" title="Amended" width="120" filter="date"
+                    format="{0:dd-MM-yyyy}">
+                    <ng-template kendoGridFilterMenuTemplate let-filter let-column="column"
+                        let-filterService="filterService">
+                        <date-range-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
+                        </date-range-filter>
+                    </ng-template>
+
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.mPgsA | dateFormat : 'DD-MMM-YYYY' }}
+                        </span>
+                    </ng-template>
+                </kendo-grid-column>
+
+
+            </kendo-grid>
+
+        </div>
+    </div>
+
+ 
+<!-- Search bar -->
+<div class="search-container dismiss">
+
+    <h5 style="color:white" class="p-4 m-0 line-height-1 font-weight-bolder bg-light theme-settings-header"> Filters
+        <a href="javascript:void(0)" (click)="closeSearchBar()"
+            class="theme-settings-close-btn font-weight-light px-4 py-2" style="color:#ffffff;" tabindex="-1">×</a>
+    </h5>
+
+    <div class="searchDiv">
+        <form id="mgmGridFiter">
+            <div class="filtersection">
+                <span class="filterHead">Templates</span>
+            </div>
+
+
+
+            <div class="form-group">
+                <label class="form-label form-label-sm">Status</label>
+                <select data-col="9" class="form-control form-control-sm"
+                  (change)="filterTable($event.target.value, 'status')">
+                  <option [selected]="status == ''" value="">All</option>
+                  <option selected [selected]="status == 'A'" value="A">Active</option>
+                  <option [selected]="status == 'I'" value="I">Inactive</option>
+                </select>
+            </div>
+
+            <div class="filtersection">
+                <div class="form-group">
+                    <!-- <button id="searchBtn" (click)="search($event)" class="btn btn-sm themeButton mr-1">Search
+                    </button> -->
+                    <button id="clearBtn" (click)="clearFilter()" class="btn btn-sm themeButton">Clear
+                    </button>
+                </div>
+            </div>
+        </form>
+
+    </div>
+</div>   
+</div>
+
+<div class="disabledBackground"></div>
+
+<app-wopm-edit-template [templateFormWindow]="templateFormWindow" [templateFormType]="templateFormType" [selectedTemplate]="wopmTemplateModel" [allTemplates]="templateDetails"
+*ngIf="templateFormWindow" (closetemplateFormWin)="closeTemplateFormWin($event)">
+</app-wopm-edit-template>
+
+
+
+<kendo-dialog title="Confirm template deletion" *ngIf="dialogDeleteTemplate" (close)="closeDeleteWin(false)" [minWidth]="250"
+[width]="450">
+<p style="margin: 30px; text-align: left;">Delete template {{selectedTemplate.wotname}} ?</p>
+
+<div class="row">
+  <div class="col-md-12">
+    <div class="actionBtn text-right">
+      <button class="btn btn-sm themeButton mr-1 confirmButton" (click)="closeDeleteWin(false)">No</button>
+      <button class="btn btn-sm themeButton confirmButton" (click)="closeDeleteWin(true)">Yes</button>
+    </div>
+  </div>
+</div>
+</kendo-dialog>
+
+
+<app-wopm-checklist-master [checklistWindow]="checklistWindow" [wopmTemplateModel]="wopmTemplateModel" 
+*ngIf="checklistWindow" (closechecklistWindow)="closeChecklistWindow($event)">
+</app-wopm-checklist-master>
+
+<app-wopm-edit-checklist-dependencies [dependenciesWindow]="dependenciesWindow" [wopmTemplateModel]="wopmTemplateModel" 
+*ngIf="dependenciesWindow" (closedependenciesWindow)="closeEditDependenciesWindow($event)">
+</app-wopm-edit-checklist-dependencies>
+
+
+<app-reporting [reportingAction]="reportingAction" [surveyPortalXport]="selectedXport" [openReports]="openReports"
+*ngIf="openReports" (closeReportingWin)="closeReportingWin($event)"></app-reporting>
+

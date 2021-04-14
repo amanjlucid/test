@@ -28,7 +28,7 @@ export class HnsResAssessmentComponent implements OnInit {
         skip: 0,
         group: [{ field: 'concatgroup' }, { field: "concateheading" }, { field: "concatquestion" }],
         filter: {
-            logic: "or",
+            logic: "and",
             filters: []
         },
         sort: [{
@@ -44,6 +44,7 @@ export class HnsResAssessmentComponent implements OnInit {
     };
     public allowUnsort = true;
     public multiple = false;
+    public isHistorical: boolean = false;
     public gridView: DataResult;
     @ViewChild(GridComponent) grid: GridComponent;
     currentUser: any;
@@ -96,11 +97,14 @@ export class HnsResAssessmentComponent implements OnInit {
     ngOnInit() {
         //console.log(this.selectedAction)
         // when user comes from assessmenttab
+        sessionStorage.removeItem('AssetHSView');
+
         if (this.selectedAction.haslatestassessment != undefined) {
             if (this.selectedAction.haslatestassessment != "Y") {
                 this.editAnsBtnName = "View Answer";
                 this.title = "Health and Safety Assessment (HISTORY)"
                 this.chRef.detectChanges();
+                this.isHistorical = true;
             }
         }
 
@@ -110,6 +114,7 @@ export class HnsResAssessmentComponent implements OnInit {
                 this.editAnsBtnName = "View Answer";
                 this.title = "Health and Safety Assessment (HISTORY)"
                 this.chRef.detectChanges();
+                this.isHistorical = true;
             }
         }
 
@@ -126,7 +131,7 @@ export class HnsResAssessmentComponent implements OnInit {
 
         this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
         let assmDateParam: any;
-        
+
 
         if (!this.fromAssessment) {
             assmDateParam = {
@@ -278,6 +283,10 @@ export class HnsResAssessmentComponent implements OnInit {
         this.closeAssessment.emit(this.showAssessment);
     }
 
+    heightChanged(event) {
+      event;
+   }
+
     onStateChange(event) {
         this.assessmentFilters.LatestAssessment = event;
         this.getAssessment(this.assessmentFilters)
@@ -325,7 +334,7 @@ export class HnsResAssessmentComponent implements OnInit {
             this.hnsResultService.getAssessmentDate(params).subscribe(
                 data => {
                     if (data.isSuccess) {
-                        this.assessmentDate = this.helperService.ddmmyyFormat(data.data, true);
+                        this.assessmentDate = data.data; //this.helperService.ddmmyyFormat(data.data, true);
                         this.chRef.detectChanges();
 
                     }
@@ -358,12 +367,12 @@ export class HnsResAssessmentComponent implements OnInit {
                         // console.log(tempData);
                         // debugger;
                         tempData.map(s => {
-                            s.modifieddate = s.modifieddate != null ? new Date(s.modifieddate) : '';
-                            s.hasitargetdate = s.hasitargetdate != null ? new Date(s.hasitargetdate) : '';
-                            s.hasaassessmentdate = s.hasaassessmentdate != null ? new Date(s.hasaassessmentdate) : '';
-                            s.hasimodifieddate = s.hasimodifieddate != null ? new Date(s.hasimodifieddate) : '';
-                            s.hasiworkauthoriseddate = s.hasiworkauthoriseddate != null ? new Date(s.hasiworkauthoriseddate) : '';
-                            s.hasiworkscheduledate = s.hasiworkscheduledate != null ? new Date(s.hasiworkscheduledate) : '';
+                            s.modifieddate = s.modifieddate != null ?  s.modifieddate  : '';
+                            s.hasitargetdate = s.hasitargetdate != null ?  s.hasitargetdate  : '';
+                            s.hasaassessmentdate = s.hasaassessmentdate != null ?  s.hasaassessmentdate  : '';
+                            s.hasimodifieddate = s.hasimodifieddate != null ?  s.hasimodifieddate  : '';
+                            s.hasiworkauthoriseddate = s.hasiworkauthoriseddate != null ?  s.hasiworkauthoriseddate  : '';
+                            s.hasiworkscheduledate = s.hasiworkscheduledate != null ?  s.hasiworkscheduledate  : '';
                             s.hasiissue = (s.hasquestiontype == "Info") ? s.hasaansweritem : s.hasiissue;
                         });
                         this.assessmentData = tempData
@@ -430,7 +439,7 @@ export class HnsResAssessmentComponent implements OnInit {
     }
 
     closerImage(event) {
-        this.showImage = event;
+        this.showImage = false;
         $('.assessmentOvrlay').removeClass('ovrlay');
         this.disableBtn = true
     }
@@ -442,25 +451,27 @@ export class HnsResAssessmentComponent implements OnInit {
                 // let tempData = tempData1[0]
                 //  console.log(tempData);
                 // modify export data
-                tempData.map((x: any) => {
+                tempData. map((x: any) => {
                     x.amend = this.helperService.formatDateWithoutTimeWithCheckDateObj(x.modifieddate)
                     x.hasscoremax1 = x.hasscoremax
                     x.hasactionyesnona = x.hasactionyesnona == "N" ? "No" : x.hasactionyesnona == "Y" ? "Yes" : x.hasactionyesnona == "X" ? "N/A" : "";
-                    x.hasalatestassesment = x.hasalatestassesment == "N" ? "Historical" : x.hasalatestassesment == "Y" ? "Current" : "";
+                    x.hasiactionstatus = x.hasiactionstatus == "O" ? "Outstanding" : x.hasiactionstatus == "R" ? "Resolved" : "";
+                    x.hasalatestassesment = x.hasalatestassesment == "N" ? "Historical" : x.hasalatestassesment == "Y" ? "Current" : x.hasalatestassesment == "S" ? "Superseded": "";
                     x.hasiissue = (x.hasquestiontype == "Info") ? x.hasaansweritem : x.hasiissue;
                     x.hasitargetdate = this.helperService.formatDateWithoutTimeWithCheckDateObj(x.hasitargetdate)
-                    x.hasiresolutionDate = ''
-                    x.hasaassessmentdate = this.helperService.formatDateWithoutTimeWithCheckDateObj(x.hasaassessmentdate)
-                    x.hasimodifieddate = this.helperService.formatDateWithoutTimeWithCheckDateObj(x.hasimodifieddate)
-                    x.hasiworkauthoriseddate = this.helperService.formatDateWithoutTimeWithCheckDateObj(x.hasiworkauthoriseddate)
-                    x.hasiworkscheduledate = this.helperService.formatDateWithoutTimeWithCheckDateObj(x.hasiworkscheduledate)
+                    x.hasiresolutiondate = x.hasiresolutiondate == "01-Jan-1753" ? "" : x.hasiresolutiondate;
+                    x.hasaassessmentdate  = x.hasaassessmentdate == "01-Jan-1753" ? "" : x.hasaassessmentdate;
+                    x.hasimodifieddate  = x.hasimodifieddate == "01-Jan-1753" ? "" : x.hasimodifieddate;
+                    x.hasiworkauthoriseddate  = x.hasiworkauthoriseddate == "01-Jan-1753" ? "" : x.hasiworkauthoriseddate;
+                    x.hasiworkscheduledate  = x.hasiworkscheduledate == "01-Jan-1753" ? "" : x.hasiworkscheduledate;
+                   // x.questionnumber = x.questionnumber.replace(/0/,"" );
                 })
                 //console.log(this.gridView)
                 // let ignore = [];
                 let label = {
                     'assid': 'Asset',
                     'astconcateaddress': 'Address',
-                    'questionnumber': 'Question',
+                    'questionNo': 'Question Number',
                     'hasquestioncode': 'Question Code',
                     'groupName': 'Group',
                     'hasheadingname': 'Heading',
@@ -475,15 +486,15 @@ export class HnsResAssessmentComponent implements OnInit {
                     'hasiriskscore': 'Risk Score',
                     'hasipriority': 'Priority',
                     'hasitargetdate': 'Target Date',
-                    'overdue': 'Overdue',
+                    'overduepending': 'Overdue',
                     'hasiactionstatus': 'Status',
                     'hasiresolution': 'Resolution',
-                    'hasiresolutionDate': 'Resolution Date',
+                    'hasiresolutiondate': 'Resolution Date',
                     'hasALocation': 'Location',
                     'hasAFloor': 'Floor',
                     'hasacomment': 'Answer Comments',
                     'hasicomments': 'Issue Comments',
-                    'sprtotalcost': 'Assessor',
+                    'hasaassessor': 'Assessor',
                     'hasaassessmentdate': 'Assessment Date',
                     'hasimodifiedby': 'Issue Updated By',
                     'hasimodifieddate': 'Issue Updated Date',

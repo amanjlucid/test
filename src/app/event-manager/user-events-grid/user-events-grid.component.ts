@@ -119,8 +119,6 @@ export class UserEventsGridComponent implements OnInit {
 
   redirectToUserEevnt(val) {
     const host = window.location.hostname;
-    let siteUrl = `${appConfig.appUrl}`;
-
 
     const seqCol = this.columnName.find(x => x.val == "Task No.")
     if (seqCol) {
@@ -143,7 +141,7 @@ export class UserEventsGridComponent implements OnInit {
         }
       }
 
-      siteUrl = `${siteUrl}/tasks/tasks?seq=true`
+      let siteUrl = `https://apexdevweb.rowanwood.ltd/dev/rowanwood/tasks/tasks?seq=true`
       localStorage.setItem('taskslist', btoa(seqArr.toString()));
       window.open(siteUrl, "_blank");
 

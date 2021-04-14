@@ -21,7 +21,7 @@ export class HnsReportImagesComponent implements OnInit {
   filesToUpload: Array<File> = [];
   errors: Array<string> = [];
   dragAreaClass: string = 'dragarea';
-  fileExt: string = "JPG, GIF, PNG, PDF";
+  fileExt: string = "JPG, GIF, PNG, PDF, JPEG";
   maxFiles: number = 1;
   maxSize: number = 5; // 5MB
   uploadStatus = false;
@@ -85,7 +85,7 @@ export class HnsReportImagesComponent implements OnInit {
       this.uploadStatus = false;
       return;
     }
-    
+
     if (files.length > 0) {
       let uploadMsg = '';
       if (files.length == 1) {
@@ -111,19 +111,32 @@ export class HnsReportImagesComponent implements OnInit {
 
         let httpres = this.settingService.uploadSettingImage(formData).subscribe(
           data => {
+            if(data)
+            {
             uploadedFile++;
             checkUploadPercent += averageUploadedPercent;
             if (checkUploadPercent > 95)
               checkUploadPercent = 100;
             this.uploadResponse.message = checkUploadPercent
 
-            if (uploadedFile == files.length) {
+              if (uploadedFile == files.length)
+              {
               this.uploadObj.message = `${uploadMsg} uploaded.`;
               this.uploadedSuccessfull.emit(true);
               setTimeout(() => {
                 this.closeUploadAttachmentWin()
               }, 100);
             }
+            }
+            else
+            {
+              this.alertService.error("The image failed to upload");
+              this.loaderService.pageHide();
+              this.uploadedSuccessfull.emit(false);
+            }
+
+
+
             //console.log(uploadedFile, files.length);
 
           }, error => {

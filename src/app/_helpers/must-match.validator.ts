@@ -231,7 +231,7 @@ export function SimpleDateValidator(format = "DD/MM/YYYY"): any {
 export function onlyImageType(): any {
     return (control: FormControl): { [key: string]: any } => {
         if (control.value != null && control.value != "") {
-            let fileExt = "JPG, GIF, PNG, PDF";
+            let fileExt = "JPG, GIF, PNG, PDF, JPEG";
             let extensions = (fileExt.split(','))
                 .map(function (x) { return x.toLocaleUpperCase().trim() });
             let ext = control.value.toUpperCase().split('.').pop();

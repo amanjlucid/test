@@ -261,6 +261,8 @@ export class HnsResultsService {
         return this.http.get<any>(`${appConfig.apiUrl}/api/HealthSafetyResult/GetDistinctValuesForDefinationAndChacode?columnName=${columnName}`, this.httpOptions);
     }
 
-
+    getHealthSafetyIssueData(Hascode, Hasversion, HasQCode, Assid) {
+      return this.http.get<any>(`${appConfig.apiUrl}/api/HealthSafetyResult/GetHealthSafetyIssueData?Hascode=${Hascode}&Hasversion=${Hasversion}&hasQCode=${HasQCode}&assid=${Assid}`, this.httpOptions);
+  }
 
 }

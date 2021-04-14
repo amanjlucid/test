@@ -202,7 +202,7 @@ export class WorkStatusComponent implements OnInit {
   }
 
   dateFormate(value) {
-    return `${value.month}-${value.day}-${value.year}`
+    return `${value.day}-${value.month}-${value.year}`
   }
 
   get f() { return this.workStatusForm.controls; }

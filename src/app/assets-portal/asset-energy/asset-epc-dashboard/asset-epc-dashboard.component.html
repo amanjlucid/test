@@ -55,5 +55,5 @@
   
   <div class="eventdashboardovrlay"></div>
 
-<app-retrieved-epc-grid *ngIf="retrievedEPCs" [retrievedEPCs]="retrievedEPCs" [selectedBarChartXasis]="selectedBarChartXasis"
-    (closeretrievedEPCs)="closeretrievedEPCs($event)"></app-retrieved-epc-grid>
+<app-retrieved-epc-grid *ngIf="showDataPanel" [retrievedEPCs]="retrievedEPCs" [selectedBarChartXasis]="selectedBarChartXasis" [showPanel]="showDataPanel"
+    (closeretrievedEPCs)="closeDataPanel($event)"></app-retrieved-epc-grid>

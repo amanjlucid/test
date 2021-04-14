@@ -306,9 +306,7 @@
                     (click)="openTabWindow('asbestos',attributeList)" href="javascript:void(0)">Asbestos</a>
 
                   <div class="dropdown-toggle">
-                    <div class="dropdown-item"
-                      *ngIf="((checkTabPermission('Energy') && checkModuleEnabled('Energy')) || (checkTabPermission('EPC') && checkModuleEnabled('EPC Module') && checkEnergyPortalAccess('Energy Portal Access')))">
-                      Energy</div>
+                      <div class="dropdown-item" *ngIf="((checkTabPermission('Energy') && checkModuleEnabled('Energy')) || (checkTabPermission('EPC') && checkModuleEnabled('EPC Module') && checkEnergyPortalAccess('Energy Portal Access')))" >Energy</div>
 
                     <!-- <div class="dropdown-item" *ngIf="EnableEnergyMenu()" >Energy</div> -->
 
@@ -316,11 +314,9 @@
                     <div class="dropdown-menu">
                       <a class="dropdown-item" *ngIf="checkTabPermission('Energy') && checkModuleEnabled('Energy')"
                         (click)="openTabWindow('energy',attributeList)" href="javascript:void(0)">Rating</a>
-                      <a class="dropdown-item"
-                        *ngIf="checkTabPermission('EPC') && checkModuleEnabled('EPC Module') && checkEnergyPortalAccess('Energy Portal Access')"
+                          <a class="dropdown-item" *ngIf="checkTabPermission('EPC') && checkModuleEnabled('EPC Module') && checkEnergyPortalAccess('Energy Portal Access')  && checkMenuAccess('EPCs', 1)"
                         (click)="openTabWindow('epc',attributeList)" href="javascript:void(0)">EPC</a>
-                      <a class="dropdown-item"
-                        *ngIf="checkTabPermission('EPC') && checkModuleEnabled('EPC Module') && checkEnergyPortalAccess('Energy Portal Access') && checkEnergyPortalAccess('Retrieve EPC')"
+                          <a class="dropdown-item" *ngIf="checkTabPermission('EPC') && checkModuleEnabled('EPC Module') && checkEnergyPortalAccess('Energy Portal Access') && checkEnergyPortalAccess('Retrieve EPC') && checkMenuAccess('EPCs', 1)"
                         (click)="openRetrieveEPCWindow(attributeList)" href="javascript:void(0)">Retrieve EPC</a>
                     </div>
                   </div>
@@ -393,11 +389,9 @@
 
                 <img title="New EPC" *ngIf="attributeList.epcStatus != '' && attributeList.epcStatus=='New'"
                   class="table-icon-wr" src="assets/img/icons/epc-new.png" />
-                <img title="Incomplete EPC"
-                  *ngIf="attributeList.epcStatus != '' && (attributeList.epcStatus=='EPC Started' || attributeList.epcStatus=='Mapped Successfully' || attributeList.epcStatus=='Uploaded Successfully')"
+                  <img title="Incomplete EPC" *ngIf="attributeList.epcStatus != '' && (attributeList.epcStatus=='EPC Started' || attributeList.epcStatus=='Mapped Successfully' || attributeList.epcStatus=='Uploaded Successfully')"
                   class="table-icon-wr" src="assets/img/icons/epc-edit.png" />
-                <img title="EPC Error"
-                  *ngIf="attributeList.epcStatus != '' && (attributeList.epcStatus=='Uploading errors' || attributeList.epcStatus=='Mapping Errors')"
+                  <img title="EPC Error" *ngIf="attributeList.epcStatus != '' && (attributeList.epcStatus=='Uploading errors' || attributeList.epcStatus=='Mapping Errors')"
                   class="table-icon-wr" src="assets/img/icons/epc-error.png" />
                 <img title="Lodged EPC" *ngIf="attributeList.epcStatus != '' && attributeList.epcStatus=='Lodged EPC'"
                   class="table-icon-wr" src="assets/img/icons/epc-logged.png" />
@@ -669,8 +663,7 @@
     style="color:#ffffff;" tabindex="-1">
     <div class="row">
       <div class="col-md-3">
-        <h5 style="color:white" class="p-4 m-0 line-height-1 font-weight-bolder bg-light theme-settings-header"> Filters
-        </h5>
+          <h5 style="color:white" class="p-4 m-0 line-height-1 font-weight-bolder bg-light theme-settings-header"> Filters</h5>
       </div>
       <div class="col-md-1">
         <h5 style="color:white" class="p-4 m-0 line-height-1 font-weight-bolder bg-light theme-settings-header">x</h5>
@@ -795,17 +788,14 @@
         </div>
 
 
-        <div class="filtersection ml-0"
-          *ngIf="checkTabPermission('EPC') && checkEnergyPortalAccess('Energy Portal Access') && checkModuleEnabled('EPC Module') && checkMenuAccess('EPCs', 1)">
-          <mat-expansion-panel
-            *ngIf="checkTabPermission('EPC') && checkEnergyPortalAccess('Energy Portal Access') && checkModuleEnabled('EPC Module') && checkMenuAccess('EPCs', 1)"
+      <div class="filtersection ml-0" *ngIf="checkTabPermission('EPC') && checkEnergyPortalAccess('Energy Portal Access') && checkModuleEnabled('EPC Module') && checkMenuAccess('EPCs', 1)">
+        <mat-expansion-panel *ngIf="checkTabPermission('EPC') && checkEnergyPortalAccess('Energy Portal Access') && checkModuleEnabled('EPC Module') && checkMenuAccess('EPCs', 1)"
             style="background-color: transparent; font-family: 'MuseoSansRounded-300', sans-serif;padding:1px; margin: 0px;">
             <mat-expansion-panel-header style="margin: 0px;padding: 0px;">
               <mat-panel-title>
                 <div class="row p-0 m-0" style="width: 100%;">
                   <div class="col-md-11 p-0 m-0">
-                    <span style="margin: 0px;padding: 0px;font-family: 'MuseoSansRounded-300', sans-serif;"
-                      class="filterHead">EPC</span>
+              <span style="margin: 0px;padding: 0px;font-family: 'MuseoSansRounded-300', sans-serif;" class="filterHead">EPC</span>
                   </div>
                   <div class="col-md-1 p-0 m-0">
                     <i class="fas fa-edit mt-1" style="color: #e4287e;" *ngIf="EPCFilter"></i>
@@ -819,8 +809,8 @@
               <div class="form-group mt-0">
                 <label class="form-label form-label-sm">EPC View</label>
                 <label class="switcher switcher-secondary osFilterLabel">
-                  <input #epcViewCheckBox id="epcViewCheckBox" type="checkbox" [checked]="epcView"
-                    (change)="filterAssetTable(epcViewCheckBox.checked, 'epcView')" class="switcher-input">
+              <input #epcViewCheckBox id="epcViewCheckBox"  type="checkbox" [checked]="epcView" (change)="filterAssetTable(epcViewCheckBox.checked, 'epcView')"
+                class="switcher-input">
                   <span class="switcher-indicator osFilterSwitch">
                     <span class="switcher-yes">
                       <span class="ion ion-md-checkmark"></span>
@@ -837,8 +827,8 @@
               <div class="form-group mt-3">
                 <label class="form-label form-label-sm">EPCs Only</label>
                 <label class="switcher switcher-secondary osFilterLabel">
-                  <input #epcOnlyCheckBox id="epcOnlyCheckBox" type="checkbox" [checked]="assetList.epcOnly"
-                    (change)="filterAssetTable(epcOnlyCheckBox.checked, 'epc')" class="switcher-input">
+              <input #epcOnlyCheckBox id="epcOnlyCheckBox" type="checkbox" [checked]="assetList.epcOnly" (change)="filterAssetTable(epcOnlyCheckBox.checked, 'epc')"
+                class="switcher-input">
                   <span class="switcher-indicator osFilterSwitch">
                     <span class="switcher-yes">
                       <span class="ion ion-md-checkmark"></span>
@@ -854,8 +844,8 @@
 
               <div class="form-group mt-3">
                 <label class="form-label form-label-sm">EPC Status</label>
-                <select data-col="9" class="form-control form-control-sm" name="epcStatus"
-                  [(ngModel)]="assetList.EPCStatus" (change)="filterAssetTable($event.target.value, 'EPCStatus')">
+          <select data-col="9" class="form-control form-control-sm"  name="epcStatus" [(ngModel)]="assetList.EPCStatus" 
+            (change)="filterAssetTable($event.target.value, 'EPCStatus')">
                   <option value="">Select EPC Status</option>
                   <option value="New">New</option>
                   <option value="EPC Started">EPC Started</option>
@@ -863,7 +853,6 @@
                   <option value="Mapping Errors">Mapping Errors</option>
                   <option value="Uploaded Successfully">Uploaded Successfully</option>
                   <option value="Uploading errors">Uploading errors</option>
-                  <option value="Mapping Errors">Mapping Errors</option>
                   <option value="Lodged EPC">Lodged EPC</option>
                 </select>
               </div>
@@ -879,9 +868,10 @@
                 <label class="form-label form-label-sm" style="margin-left: 13px">SAP Rating Bands</label>
                 <kendo-multiselect id="sapMultiSelect" color="secondary"
                   style="margin-left: 13px;margin-right:-11px;padding-top: 0px;padding-bottom: 0px;padding-left: 10;"
-                  [placeholder]="'    Select SAP Bands'" [value]="selectedSAPBands" [data]="sapBands"
-                  [filterable]="true" (filterChange)="filterChange($event)" (valueChange)="sapBandsChanged($event)">
-                </kendo-multiselect>
+            [placeholder]="'    Select SAP Bands'"   [value]="selectedSAPBands"
+            [data]="sapBands" [filterable]="true"  (filterChange)="filterChange($event)"
+            (valueChange)="sapBandsChanged($event)"
+            ></kendo-multiselect>
 
               </div>
 

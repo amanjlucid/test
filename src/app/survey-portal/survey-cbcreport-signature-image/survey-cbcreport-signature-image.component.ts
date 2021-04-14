@@ -20,7 +20,7 @@ export class SurveyCbcreportSignatureImageComponent implements OnInit {
   filesToUpload: Array<File> = [];
   errors: Array<string> = [];
   dragAreaClass: string = 'dragarea';
-  fileExt: string = "JPG, GIF, PNG, PDF";
+  fileExt: string = "JPG, GIF, PNG, PDF, JPEG";
   maxFiles: number = 1;
   maxSize: number = 5; // 5MB
   uploadStatus = false;

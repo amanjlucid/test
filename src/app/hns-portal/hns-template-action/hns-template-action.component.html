@@ -38,9 +38,9 @@
         </div>
 
         <div class="col-md-12 mt-2 actionAreaBtn">
-          <button type="button" class="btn btn-sm themeButton mr-1" (click)="addUpdateAction('new')">Add</button>
-          <button type="button" class="btn btn-sm themeButton mr-1" (click)="addUpdateAction('edit')">Edit</button>
-          <button type="button" class="btn btn-sm themeButton mr-1" (click)="openConfirmationDialog()">Delete</button>
+          <button *ngIf="checkGroupPermission('Add Action')" type="button" class="btn btn-sm themeButton mr-1"  (click)="addUpdateAction('new')">Add</button>
+          <button *ngIf="checkGroupPermission('Edit Action')" type="button" class="btn btn-sm themeButton mr-1" (click)="addUpdateAction('edit')">Edit</button>
+          <button *ngIf="checkGroupPermission('Delete Action')" type="button" class="btn btn-sm themeButton mr-1" (click)="openConfirmationDialog()">Delete</button>
           <button type="button" class="btn btn-sm themeButton pull-right" (click)="closeTemplateActionMethod()">Close</button>
         </div>
 

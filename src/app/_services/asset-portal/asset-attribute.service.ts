@@ -618,7 +618,17 @@ export class AssetAttributeService {
     }
 
 
-    GetRetrievedEPCs
+    getChartsList(chartArea: string) {
+        var httpOptions = {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json'
+            }),
+        };
+        return this.http.get<any>(`${appConfig.apiUrl}/api/Asset/GetChartsList?chartArea=${encodeURIComponent(chartArea)}`, httpOptions);
+        
+    }
+  
+  
     /** remove these */
 
     getAssetCountd(assetList: AssetListModel) {
