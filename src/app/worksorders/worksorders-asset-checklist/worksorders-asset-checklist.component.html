@@ -17,6 +17,30 @@
 
             <div class="dropdown" id="nesting-dropdown-demo">
                 <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown"
+                    aria-expanded="false">Work</button>
+                <div class="dropdown-menu" x-placement="bottom-start"
+                    style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
+                    <a *ngIf="worksOrderAccess.indexOf('Asset Details') != -1" class="dropdown-item"
+                        (click)="openAssetDetailChild()" href="javascript:void(0)"
+                        [ngClass]="{'disabled' : !selectedChecklistsingleItem || selectedChecklistsingleItem?.detailCount == 0}">
+                        Detail</a>
+                    <!-- <a *ngIf="worksOrderAccess.indexOf('Asset Details') != -1" class="dropdown-item"
+                        (click)="openAssetDetailChild()" href="javascript:void(0)"
+                        [ngClass]="{'disabled' : !selectedChecklistsingleItem || selectedChecklistsingleItem.detailCount == 0}">
+                        Remove All</a>
+                    <a *ngIf="worksOrderAccess.indexOf('Asset Details') != -1" class="dropdown-item"
+                        (click)="openAssetDetailChild()" href="javascript:void(0)"
+                        [ngClass]="{'disabled' : !selectedChecklistsingleItem || selectedChecklistsingleItem.detailCount == 0}">
+                        Delete All</a> -->
+                    <a *ngIf="worksOrderAccess.indexOf('Asset Details') != -1" class="dropdown-item"
+                        (click)="openAddAssetWorkOrdersList(selectedChildRow, 'all')" href="javascript:void(0)">
+                        Add</a>
+
+                </div>
+            </div>
+
+            <div class="dropdown" id="nesting-dropdown-demo">
+                <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown"
                     aria-expanded="false">Action</button>
                 <div class="dropdown-menu" x-placement="bottom-start"
                     style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
@@ -321,6 +345,11 @@
                                     </div>
                                 </div>
 
+                                <a *ngIf="worksOrderAccess.indexOf('Add Assets From Work List') != -1"
+                                    class="dropdown-item" (click)="openAddAssetWorkOrdersList(dataItem, 'single')"
+                                    href="javascript:void(0)"
+                                    [ngClass]="{'disabled' : this.selectedChildRow.wostatus != 'New' || dataItem.wocheckspeciaL1 != 'WORK'}">Work</a>
+
                                 <!-- <div class="dropdown-toggle">
                                     <div class="dropdown-item">Asset</div>
                                     <div class="dropdown-menu">
@@ -541,6 +570,19 @@
     <app-pick-date *ngIf="chooseDateWindow" [chooseDateWindow]="chooseDateWindow"
         (closePickeDateEvent)="closeChooseDate($event)" [chooseDateType]="chooseDateType"
         (selectedDateEvent)="selectedDateEvent($event)"></app-pick-date>
+
+
+    <app-worksorders-asset-detail *ngIf="assetDetailWindow" [assetDetailWindow]="assetDetailWindow"
+        [selectedChildRow]="selectedChildRow" [selectedParentRow]="selectedChildRow" [treelevel]="'3'"
+        [selectedRow]="selectedChildRow" [worksOrderData]="worksOrderData"
+        (closeAssetDetailEvent)="closeAssetDetailWindow($event)">
+    </app-worksorders-asset-detail>
+
+    <app-worksorders-add-assetsworklist *ngIf="addAssetWorklistWindow" [addAssetWorklistWindow]="addAssetWorklistWindow"
+        [actualSelectedRow]="itemPassToWorkList" [selectedAssetChecklist]="selectedChecklistsingleItem"
+        [addWorkFrom]="'assetchecklist'" [addWorkorderType]="addWorkorderType"
+        (closeAddAssetWorkListEvent)="closeAddAssetWorkordersListWindow($event)"
+        (refreshWorkOrderDetails)="refreshGrid($event)"></app-worksorders-add-assetsworklist>
 
 
 </kendo-window>

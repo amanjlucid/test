@@ -35,10 +35,11 @@ export class WorksordersDetailsComponent implements OnInit {
 
   loading = true;
   public selected: any[] = [];
+  // selectKey = (dataItem: any) => `${dataItem.id}`;
   public filter: CompositeFilterDescriptor;
   public settings: SelectableSettings = {
     mode: 'row',
-    multiple: false,
+    multiple: true,
     drag: false,
     enabled: true
   };
@@ -68,7 +69,10 @@ export class WorksordersDetailsComponent implements OnInit {
   treelevel = 2;
   worksOrderAccess = [];
   woFormWindow = false;
-  phaseBudgetAvailable:any = 0;
+  phaseBudgetAvailable: any = 0;
+  touchtime = 0;
+
+  addWorkFrom:string;
 
   constructor(
     private sharedService: SharedService,
@@ -94,6 +98,7 @@ export class WorksordersDetailsComponent implements OnInit {
       this.sharedService.worksOrdersAccess.subscribe(
         data => {
           this.worksOrderAccess = data;
+          // console.log(this.worksOrderAccess)
         }
       )
     )
@@ -243,9 +248,40 @@ export class WorksordersDetailsComponent implements OnInit {
     this.filter = filter;
   }
 
-  cellClickHandler($event) {
-    // console.log($event)
-    // console.log(this.selected)
+  cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
+    if (columnIndex > 0) {
+      if (this.touchtime == 0) {
+        this.touchtime = new Date().getTime();
+      } else {
+
+        if (((new Date().getTime()) - this.touchtime) < 400) {
+          if (dataItem.treelevel == 2) {
+            //open asset detail window
+            if (this.worksOrderAccess.indexOf('Asset Details') != -1) {
+              this.openAssetDetail(dataItem)
+            }
+
+          } else if (dataItem.treelevel == 3) {
+            //open asset checklist window
+            if (this.worksOrderAccess.indexOf('Asset Checklist') != -1) {
+              this.openAssetChecklist(dataItem)
+            }
+
+          }
+
+          this.touchtime = 0;
+        } else {
+          // not a double click so set as a new first click
+          this.touchtime = new Date().getTime();
+        }
+
+      }
+
+
+    }
+    // console.log(this.selected);
+    // console.log(dataItem)
+
   }
 
   addDateObjectFields(obj, fieldsArr: Array<any>) {
@@ -458,10 +494,13 @@ export class WorksordersDetailsComponent implements OnInit {
     $('.worksOrderDetailOvrlay').removeClass('ovrlay');
   }
 
-  openAddAssetWorkOrdersList(workOrderType, item) {
+  openAddAssetWorkOrdersList(item, workOrderType) {
     if (item.treelevel == 3 && item.wostatus != "New") {
       return
     }
+
+    
+    this.addWorkFrom = workOrderType;
     this.actualSelectedRow = item;
     this.addAssetWorklistWindow = true;
     $('.worksOrderDetailOvrlay').addClass('ovrlay');
@@ -479,12 +518,7 @@ export class WorksordersDetailsComponent implements OnInit {
     this.selectedParentRow = item;
     this.treelevel = 2;
 
-
-
-
     //  this.worksOrderData
-
-
     //  console.log('selectedParentRow ' + JSON.stringify(this.selectedParentRow));
 
     $('.worksOrderDetailOvrlay').addClass('ovrlay');
@@ -502,7 +536,7 @@ export class WorksordersDetailsComponent implements OnInit {
     ///this.worksOrderData
 
 
-    console.log('selected item ' + JSON.stringify(item));
+    // console.log('selected item ' + JSON.stringify(item));
     // console.log('selectedParentRow ' + JSON.stringify(this.selectedParentRow));
 
     $('.worksOrderDetailOvrlay').addClass('ovrlay');

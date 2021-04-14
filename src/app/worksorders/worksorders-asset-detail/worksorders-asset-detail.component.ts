@@ -629,6 +629,7 @@ export class WorksordersAssetDetailComponent implements OnInit {
 
 
     }
+    
     editWorkPackageQtyCostSave() {
 
         this.loading = true;

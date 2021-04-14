@@ -14,7 +14,7 @@ export class WorkordersAddAssetworklistModel {
   cttsurcde: number = 0
   elecode: string = ''
   mPgrA: string = ''
-  matchedCHECKSURCDE: number = 0
+  matcheckCHECKSURCDE: number = 0
 
   matchedSTAGESURCDE: number = 0
   wlactcost: number = 0

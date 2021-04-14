@@ -57,6 +57,12 @@ export class WorksordersAssetChecklistComponent implements OnInit {
   selectedDate: any;
   workorderAsset: any
 
+  assetDetailWindow: boolean = false;
+
+
+  addAssetWorklistWindow: boolean = false;
+  addWorkorderType = '';
+  itemPassToWorkList:any;
 
   constructor(
     private chRef: ChangeDetectorRef,
@@ -153,11 +159,11 @@ export class WorksordersAssetChecklistComponent implements OnInit {
   }
 
   cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
-    // this.selectedDefinition = dataItem;
-    // if (columnIndex > 1) {
-    //   this.openDefinitionDetailPopUp(dataItem)
-    // }
-    // console.log(this.mySelection)
+    if (columnIndex > 0) {
+      this.selectedChecklistsingleItem = dataItem
+    }
+    this.chRef.detectChanges();
+    // console.log(dataItem);
   }
 
   mySelectionKey(context: RowArgs): string {
@@ -437,6 +443,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
     params.ASSID_STAGESURCDE_CHECKSURCDE = [item.assid, item.wostagesurcde, item.wochecksurcde]
     params.UserId = this.currentUser.userId;
     params.CHECKORPROCESS = checkOrProcess;
+    params.CheckName = item.wocheckname
 
     if (type == 'CIY') {
       params.dtDate = this.getDateString('Yesterday')
@@ -585,37 +592,6 @@ export class WorksordersAssetChecklistComponent implements OnInit {
     )
 
 
-    // if (type == "AHOY" || type == "AHOT" || type == "AHOPICK") {
-    //   params.WOSEQUENCE = item.wosequence;
-    //   params.WOPSEQUENCE = item.wopsequence;
-    //   params.strASSIDLIST = [item.assid, item.wostagesurcde, item.wochecksurcde]
-    //   params.strUserId = this.currentUser.userId;
-    //   params.strCheckOrProcess = checkOrProcess;
-
-    //   if (type == "AHOY") {
-    //     params.dtDate = this.getDateString('Yesterday')
-    //   } else if (type == "AHOT") {
-    //     params.dtDate = this.getDateString('Today')
-    //   } else if (type == "AHOPICK") {
-    //     // this.openChooseDate();
-    //     return
-    //   }
-
-    // }
-
-    // if (type == "Signoff Asset") {
-    //   params.WOSEQUENCE = item.wosequence;
-    //   params.WOPSEQUENCE = item.wopsequence;
-    //   params.strASSIDLIST = [item.assid, item.wostagesurcde, item.wochecksurcde]
-    //   params.strUserId = this.currentUser.userId;
-    //   params.strCheckOrProcess = checkOrProcess;
-    //   params.dtDate = this.getDateString('Today')
-    // } else {
-
-    // }
-
-
-
   }
 
 
@@ -653,6 +629,53 @@ export class WorksordersAssetChecklistComponent implements OnInit {
   }
 
 
+  openAssetDetailChild() {
+    if (!this.selectedChecklistsingleItem || this.selectedChecklistsingleItem.detailCount == 0) return;
+    $('.checklistOverlay').addClass('ovrlay');
+    this.assetDetailWindow = true;
+
+    // this.selectedRow = this.selectedChildRow;
+    // this.selectedChildRow = item;
+    // this.selectedRow = item;
+    // this.treelevel = 3;
+
+    // this.selectedParentRow = JSON.parse(item.parentData);
+
+  }
+
+  closeAssetDetailWindow(eve) {
+    this.assetDetailWindow = eve;
+    $('.checklistOverlay').removeClass('ovrlay');
+    // this.selectedChecklistsingleItem = undefined;
+  }
+
+
+
+  openAddAssetWorkOrdersList(item, addWorkorderType) {
+    if (addWorkorderType != "all") {
+      if ((this.selectedChildRow.treelevel == 3 && this.selectedChildRow.wostatus != "New") || (item.wocheckspeciaL1 != 'WORK')) {
+        return
+      }
+      this.selectedChecklistsingleItem = item
+    } else {
+      this.selectedChecklistsingleItem = undefined;
+    }
+
+    this.itemPassToWorkList = item;
+    this.addWorkorderType = addWorkorderType;
+    this.addAssetWorklistWindow = true;
+    $('.checklistOverlay').addClass('ovrlay');
+  }
+
+
+  closeAddAssetWorkordersListWindow(eve) {
+    this.addAssetWorklistWindow = eve;
+    $('.checklistOverlay').removeClass('ovrlay');
+  }
+
+  refreshGrid(eve) {
+    this.worksOrderDetailPageData();
+  }
 
 
 }

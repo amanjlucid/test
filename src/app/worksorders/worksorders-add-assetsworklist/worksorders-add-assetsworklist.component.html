@@ -49,6 +49,18 @@
             </div>
         </div>
 
+        <div class="col-md-12 mt-1" *ngIf="addWorkFrom == 'assetchecklist'">
+            <div class="row">
+                <div class="col-md-2">
+                    <label for=""> Checklist:</label>
+                </div>
+                <div class="col-md-10">
+                    <input type="text" [readonly]="readonly" value="{{selectedAssetChecklist?.wocheckname}}">
+                </div>
+
+            </div>
+        </div>
+
         <div class="col-md-12 mt-1">
             <div class="row hiearchyDiv">
                 <div class="col-md-1">

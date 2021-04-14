@@ -26,16 +26,21 @@ export class WorksordersAddAssetsworklistComponent implements OnInit {
   hiearchyWindow = false;
   //hierarchy variable ends here
 
+  @Input() addWorkorderType = "single"
+  @Input() addWorkFrom = '';
   @Input() addAssetWorklistWindow: boolean = false;
   @Output() closeAddAssetWorkListEvent = new EventEmitter<boolean>();
   @Output() refreshWorkOrderDetails = new EventEmitter<boolean>();
   @Input() actualSelectedRow: any;
-  currentUser = JSON.parse(localStorage.getItem('currentUser'));
-  subs = new SubSink();
+  @Input() selectedAssetChecklist: any = [];
 
-  readonly = true;
-  assetTypes: any;
   title = 'Add Assets from Work List';
+  subs = new SubSink();
+  currentUser = JSON.parse(localStorage.getItem('currentUser'));
+  readonly = true;
+
+  assetTypes: any;
+
   headerFilters: WorkordersAddAssetworklistModel = new WorkordersAddAssetworklistModel()
   public query: any;
   private stateChange = new BehaviorSubject<any>(this.headerFilters);
@@ -60,7 +65,7 @@ export class WorksordersAddAssetsworklistComponent implements OnInit {
   packageToWorklistWindow = false;
   selectedRow: any = [];
   planYear: any;
-  worksOrderAccess:any = [];
+  worksOrderAccess: any = [];
 
   constructor(
     private propSecGrpService: PropertySecurityGroupService,
@@ -76,12 +81,10 @@ export class WorksordersAddAssetsworklistComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // console.log(this.actualSelectedRow)
-    this.headerFilters.wopsequence = this.actualSelectedRow.wopsequence;
-    this.headerFilters.wosequence = this.actualSelectedRow.wosequence;
-    if (this.actualSelectedRow.treelevel == 3) {
-      this.headerFilters.wlassid = this.actualSelectedRow.assid
-    }
+    // console.log(this.addWorkorderType)
+    // console.log(this.addWorkFrom)
+    // console.log({ selected: this.actualSelectedRow })
+    // console.log({ checklist: this.selectedAssetChecklist })
 
     this.subs.add(
       this.sharedService.worksOrdersAccess.subscribe(
@@ -90,6 +93,20 @@ export class WorksordersAddAssetsworklistComponent implements OnInit {
         }
       )
     )
+
+
+    if (this.addWorkFrom == 'assetchecklist') {
+      this.title = 'Add Work'
+
+      if(this.addWorkorderType == 'single'){
+        this.headerFilters.matcheckCHECKSURCDE = this.actualSelectedRow.wochecksurcde
+        this.headerFilters.matchedSTAGESURCDE = this.actualSelectedRow.wostagesurcde
+      }
+    }
+
+    this.headerFilters.wlassid = this.actualSelectedRow.assid
+    this.headerFilters.wopsequence = this.actualSelectedRow.wopsequence;
+    this.headerFilters.wosequence = this.actualSelectedRow.wosequence;
 
     this.subs.add(
       forkJoin([
