@@ -12,7 +12,7 @@
             <!-- <button type="button" class="btn btn-sm themeButton">Export</button>
             <button type="button" class="btn btn-sm themeButton">Administration</button> -->
             <button *ngIf="worksOrderAccess.indexOf('Checklist Documents') != -1" type="button"
-                [disabled]="mySelection.length != 1" class="btn btn-sm themeButton mr-1"
+                [disabled]="!selectedChecklistsingleItem || mySelection.length != 1" class="btn btn-sm themeButton mr-1"
                 (click)="openChecklistDoc()">Doucuments</button>
 
             <div class="dropdown" id="nesting-dropdown-demo">
@@ -20,20 +20,21 @@
                     aria-expanded="false">Work</button>
                 <div class="dropdown-menu" x-placement="bottom-start"
                     style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
-                    <a *ngIf="worksOrderAccess.indexOf('Asset Details') != -1" class="dropdown-item"
+                    <a *ngIf="worksOrderAccess.indexOf('Work Details') != -1" class="dropdown-item"
                         (click)="openAssetDetailChild('all')" href="javascript:void(0)">
                         Detail</a>
-                    <!-- <a *ngIf="worksOrderAccess.indexOf('Asset Details') != -1" class="dropdown-item"
-                        (click)="openAssetDetailChild()" href="javascript:void(0)"
+                    <a *ngIf="worksOrderAccess.indexOf('Remove Work') != -1" class="dropdown-item"
+                        (click)="removeOrDeletework('remove')" href="javascript:void(0)"
                         [ngClass]="{'disabled' : !selectedChecklistsingleItem || selectedChecklistsingleItem.detailCount == 0}">
                         Remove All</a>
-                    <a *ngIf="worksOrderAccess.indexOf('Asset Details') != -1" class="dropdown-item"
-                        (click)="openAssetDetailChild()" href="javascript:void(0)"
+                    <a *ngIf="worksOrderAccess.indexOf('Delete Work') != -1" class="dropdown-item"
+                        (click)="removeOrDeletework('delete')" href="javascript:void(0)"
                         [ngClass]="{'disabled' : !selectedChecklistsingleItem || selectedChecklistsingleItem.detailCount == 0}">
-                        Delete All</a> -->
-                    <a *ngIf="worksOrderAccess.indexOf('Asset Details') != -1" class="dropdown-item"
+                        Delete All</a>
+                    <a *ngIf="worksOrderAccess.indexOf('Add Work') != -1" class="dropdown-item"
                         (click)="openAddAssetWorkOrdersList(selectedChildRow, 'all')" href="javascript:void(0)">
                         Add</a>
+
 
                 </div>
             </div>
@@ -41,20 +42,72 @@
             <div class="dropdown" id="nesting-dropdown-demo">
                 <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown"
                     aria-expanded="false">Action</button>
-                <div class="dropdown-menu" x-placement="bottom-start"
+                <div class="dropdown-menu actionDrp" x-placement="bottom-start"
                     style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
                     <a *ngIf="worksOrderAccess.indexOf('Release Asset') != -1" class="dropdown-item"
-                        (click)="setAsset('RELEASE')" href="javascript:void(0)">
+                        (click)="setAsset('RELEASE')" href="javascript:void(0)"
+                        [ngClass]="{'disabled' : !selectedChecklistsingleItem ||  workorderAsset?.woassstatus != 'New' }">
                         Release</a>
 
-                    <a *ngIf="worksOrderAccess.indexOf('Issue Asset') != -1" class="dropdown-item disabled"
-                        (click)="setAsset('ISSUE')" href="javascript:void(0)">
+                    <a *ngIf="worksOrderAccess.indexOf('Issue Asset') != -1" class="dropdown-item"
+                        (click)="setAsset('ISSUE')" href="javascript:void(0)"
+                        [ngClass]="{'disabled' : !selectedChecklistsingleItem ||  workorderAsset?.woassstatus != 'Pending'}">
                         Issue</a>
 
-                    <a [ngClass]="{'disabled':workorderAsset?.woassstatus === 'New' || workorderAsset?.woassstatus === 'In Progress'}"
+
+                    <a [ngClass]="{'disabled':!selectedChecklistsingleItem || workorderAsset?.woassstatus != 'In Progress'}"
                         *ngIf="worksOrderAccess.indexOf('Release Asset') != -1" class="dropdown-item"
                         (click)="setAsset('ACCEPT')" href="javascript:void(0)">
                         Accept</a>
+
+
+                    <div [ngClass]="{'disabled' :  mySelection.length == 0 || workorderAsset?.woassstatus == 'Pending'}"
+                        class="dropdown-toggle" *ngIf="worksOrderAccess.indexOf('Set Status') != -1">
+                        <div class="dropdown-item">Status</div>
+                        <div class="dropdown-menu">
+
+                            <a *ngIf="worksOrderAccess.indexOf('Set Status To N/A') != -1" class="dropdown-item"
+                                (click)="setStatusMul('NA')" href="javascript:void(0)">
+                                Set to N/A</a>
+
+                            <div class="dropdown-toggle"
+                                *ngIf="worksOrderAccess.indexOf('Set Status To In Progress') != -1">
+                                <div class="dropdown-item">Set to In Progress</div>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" (click)="setStatusMul('IPY')"
+                                        href="javascript:void(0)">Yesterday</a>
+                                    <a class="dropdown-item" (click)="setStatusMul('IPT')"
+                                        href="javascript:void(0)">Today</a>
+                                    <a class="dropdown-item" (click)="openChooseDate('IPDM')"
+                                        href="javascript:void(0)">Choose Date</a>
+
+                                </div>
+                            </div>
+
+                            <a *ngIf="worksOrderAccess.indexOf('Set Status To Not Started') != -1" class="dropdown-item"
+                                (click)="setStatusMul('NOT STARTED')" href="javascript:void(0)">Set to Not
+                                Started</a>
+                            <a *ngIf="worksOrderAccess.indexOf('Reset Checklist Item') != -1" class="dropdown-item"
+                                (click)="setStatusMul('RESET')" href="javascript:void(0)">Reset Checklist
+                                Item</a>
+                        </div>
+                    </div>
+
+                    <div [ngClass]="{'disabled' : mySelection.length == 0 || workorderAsset?.woassstatus == 'Pending'}"
+                        class="dropdown-toggle" *ngIf="worksOrderAccess.indexOf('Complete Item') != -1">
+                        <div class="dropdown-item">Complete</div>
+                        <div class="dropdown-menu completeDrp">
+                            <a class="dropdown-item" (click)="setStatusMul('CIY', dataItem)"
+                                href="javascript:void(0)">Yesterday</a>
+                            <a class="dropdown-item" (click)="setStatusMul('CIT', dataItem)"
+                                href="javascript:void(0)">Today</a>
+                            <a class="dropdown-item" (click)="openChooseDate('CIPICKM', dataItem)"
+                                href="javascript:void(0)">Choose Date</a>
+                        </div>
+                    </div>
+
+
+
 
                 </div>
             </div>
@@ -240,7 +293,8 @@
                                 (click)="setSeletedRow(dataItem)"></i>
                             <div class="dropdown-menu">
 
-                                <div class="dropdown-toggle" *ngIf="worksOrderAccess.indexOf('Set Status') != -1">
+                                <div [ngClass]="{'disabled' : workorderAsset?.woassstatus == 'Pending'}"
+                                    class="dropdown-toggle" *ngIf="worksOrderAccess.indexOf('Set Status') != -1">
                                     <div class="dropdown-item">Status</div>
                                     <div class="dropdown-menu">
 
@@ -272,7 +326,8 @@
                                     </div>
                                 </div>
 
-                                <div class="dropdown-toggle">
+                                <div [ngClass]="{'disabled' : workorderAsset?.woassstatus == 'Pending'}"
+                                    class="dropdown-toggle">
                                     <div class="dropdown-item" *ngIf="worksOrderAccess.indexOf('Set Dates') != -1">Dates
                                     </div>
                                     <div class="dropdown-menu">
@@ -332,7 +387,8 @@
                                 </div>
 
 
-                                <div class="dropdown-toggle" *ngIf="worksOrderAccess.indexOf('Complete Item') != -1">
+                                <div [ngClass]="{'disabled' : workorderAsset?.woassstatus == 'Pending'}"
+                                    class="dropdown-toggle" *ngIf="worksOrderAccess.indexOf('Complete Item') != -1">
                                     <div class="dropdown-item">Complete</div>
                                     <div class="dropdown-menu">
                                         <a class="dropdown-item" (click)="setComplete('CIY', dataItem)"
@@ -344,10 +400,30 @@
                                     </div>
                                 </div>
 
-                                <a *ngIf="worksOrderAccess.indexOf('Add Assets From Work List') != -1"
-                                    class="dropdown-item" (click)="openAssetDetailChild('single')"
-                                    href="javascript:void(0)"
-                                    [ngClass]="{'disabled' : !selectedChecklistsingleItem || selectedChecklistsingleItem?.detailCount == 0}">Work</a>
+
+                                <div class="dropdown-toggle" *ngIf="worksOrderAccess.indexOf('Work Details') != -1">
+                                    <div class="dropdown-item">Work</div>
+                                    <div class="dropdown-menu">
+                                        <a *ngIf="worksOrderAccess.indexOf('Work Details') != -1" class="dropdown-item"
+                                            (click)="openAssetDetailChild('single', dataItem)" href="javascript:void(0)"
+                                            [ngClass]="{'disabled' : !selectedChecklistsingleItem || selectedChecklistsingleItem?.detailCount == 0}">Detail</a>
+
+                                        <a *ngIf="worksOrderAccess.indexOf('Add Assets From Work List') != -1"
+                                            class="dropdown-item"
+                                            (click)="openAddAssetWorkOrdersList(dataItem, 'single')"
+                                            href="javascript:void(0)"
+                                            [ngClass]="{'disabled' : this.selectedChildRow.wostatus != 'New' || dataItem.wocheckspeciaL1 != 'WORK'}">Add</a>
+                                        <!-- <a class="dropdown-item" (click)="setComplete('CIT', dataItem)"
+                                            href="javascript:void(0)">Remove</a>
+                                        <a class="dropdown-item" (click)="openChooseDate('CIPICK', dataItem)"
+                                            href="javascript:void(0)">Delete</a> -->
+                                    </div>
+                                </div>
+
+
+                                <!-- <a *ngIf="worksOrderAccess.indexOf('Work Details') != -1" class="dropdown-item"
+                                    (click)="openAssetDetailChild('single', dataItem)" href="javascript:void(0)"
+                                    [ngClass]="{'disabled' : !selectedChecklistsingleItem || selectedChecklistsingleItem?.detailCount == 0}">Work</a> -->
 
 
                                 <!-- <a *ngIf="worksOrderAccess.indexOf('Add Assets From Work List') != -1"
@@ -566,7 +642,7 @@
 
     <app-worksorders-asset-checklist-document *ngIf="checklistDocWindow" [checklistDocWindow]="checklistDocWindow"
         (closeAssetchecklistDocEvent)="closeChecklistDoc($event)" [selectedChildRow]="selectedChildRow"
-        [selectedChecklist]="selectedChecklist"></app-worksorders-asset-checklist-document>
+        [selectedChecklist]="selectedChecklistsingleItem"></app-worksorders-asset-checklist-document>
 
     <app-worksorders-asset-checklist-predecessors *ngIf="predecessors" [predecessors]="predecessors"
         [predecessorsWindowFrom]="predecessorsWindowFrom" [selectedChecklist]="selectedChecklist"
@@ -581,7 +657,8 @@
 
     <app-worksorders-asset-detail *ngIf="assetDetailWindow" [assetDetailWindow]="assetDetailWindow"
         [selectedChildRow]="selectedChildRow" [selectedParentRow]="selectedChildRow" [treelevel]="'3'"
-        [selectedRow]="selectedChildRow" [worksOrderData]="worksOrderData"
+        [selectedRow]="selectedChildRow" [selectedChecklist]="selectedChecklistsingleItem"
+        [wodDetailType]="wodDetailType" [worksOrderData]="worksOrderData"
         (closeAssetDetailEvent)="closeAssetDetailWindow($event)">
     </app-worksorders-asset-detail>
 

@@ -261,7 +261,7 @@
                   </div>
                 </div>
                 <a class="dropdown-item" *ngIf="worksOrderAccess.indexOf('Asset Details') != -1"
-                  href="javascript:void(0)" (click)="openAssetDetailChild(dataItem)">Asset Details</a>
+                  href="javascript:void(0)" (click)="openActualAssetDetails(dataItem)">Asset Details</a>
                 <!-- <div class="dropdown-toggle">
                   <div class="dropdown-item">Action</div>
                   <div class="dropdown-menu">
@@ -489,3 +489,4 @@
   <app-workorder-form [woFormType]="'edit'" [woFormWindow]="woFormWindow"
     [selectedWorkOrderAddEdit]="worksOrderSingleData" *ngIf="woFormWindow" (closeWoFormWin)="closeWoFormWin($event)">
   </app-workorder-form>
+

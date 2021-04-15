@@ -2,10 +2,10 @@ import { Component, OnInit, ViewEncapsulation, ViewChild, ChangeDetectorRef } fr
 import { SubSink } from 'subsink';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { FilterService, SelectableSettings, TreeListComponent, ExpandEvent } from '@progress/kendo-angular-treelist';
-import { AlertService, LoaderService, ConfirmationDialogService, HelperService, WorksorderManagementService, SharedService, PropertySecurityGroupService } from '../../_services'
+import { AlertService, LoaderService, ConfirmationDialogService, HelperService, WorksorderManagementService, SharedService, PropertySecurityGroupService, AuthenticationService } from '../../_services'
 import { forkJoin } from 'rxjs';
 import { WorkordersDetailModel } from 'src/app/_models';
-
+import { appConfig } from '../../app.config';
 
 @Component({
   selector: 'app-worksorders-details',
@@ -72,7 +72,7 @@ export class WorksordersDetailsComponent implements OnInit {
   phaseBudgetAvailable: any = 0;
   touchtime = 0;
 
-  addWorkFrom:string;
+  addWorkFrom: string;
 
   constructor(
     private sharedService: SharedService,
@@ -82,7 +82,8 @@ export class WorksordersDetailsComponent implements OnInit {
     private propSecGrpService: PropertySecurityGroupService,
     private loaderService: LoaderService,
     private chRef: ChangeDetectorRef,
-    private confirmationDialogService: ConfirmationDialogService
+    private confirmationDialogService: ConfirmationDialogService,
+    private autService: AuthenticationService,
   ) { }
 
 
@@ -499,7 +500,7 @@ export class WorksordersDetailsComponent implements OnInit {
       return
     }
 
-    
+
     this.addWorkFrom = workOrderType;
     this.actualSelectedRow = item;
     this.addAssetWorklistWindow = true;
@@ -533,13 +534,28 @@ export class WorksordersDetailsComponent implements OnInit {
 
 
     this.selectedParentRow = JSON.parse(item.parentData);
-    ///this.worksOrderData
-
-
-    // console.log('selected item ' + JSON.stringify(item));
-    // console.log('selectedParentRow ' + JSON.stringify(this.selectedParentRow));
 
     $('.worksOrderDetailOvrlay').addClass('ovrlay');
+  }
+
+
+  openActualAssetDetails(item) {
+   
+    this.autService.validateAssetIDDeepLinkParameters(this.currentUser.userId, item.assid).subscribe(
+      data => {
+        if (data.validated) {
+          const siteUrl = `${appConfig.appUrl}/asset-list?assetid=${item.assid}`; // UAT
+          // const siteUrl = `http://localhost:4200/asset-list?assetid=${item.assid}`;
+          window.open(siteUrl, "_blank");
+
+        } else {
+          const errMsg = `${data.errorCode} : ${data.errorMessage}`
+          this.alertService.error(errMsg);
+        }
+      }
+    )
+
+    // $('.worksOrderDetailOvrlay').addClass('ovrlay');
   }
 
 

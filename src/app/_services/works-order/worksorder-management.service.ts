@@ -231,4 +231,10 @@ export class WorksorderManagementService {
         return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WorksOrderAcceptAsset`, body, this.httpOptions);
     }
 
+    
+    worksOrderRemoveAllWork(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WorksOrderRemoveAllWork`, body, this.httpOptions);
+    }
+
 }

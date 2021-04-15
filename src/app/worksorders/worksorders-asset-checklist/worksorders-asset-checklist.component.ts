@@ -64,6 +64,8 @@ export class WorksordersAssetChecklistComponent implements OnInit {
   addWorkorderType = '';
   itemPassToWorkList: any;
 
+  wodDetailType: string = 'all'
+
   constructor(
     private chRef: ChangeDetectorRef,
     private worksorderManagementService: WorksorderManagementService,
@@ -81,6 +83,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
       this.sharedService.worksOrdersAccess.subscribe(
         data => {
           this.worksOrderAccess = data;
+
         }
       )
     )
@@ -134,6 +137,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
             this.alertService.error(data.message);
           }
           this.loading = false
+          this.resetSelections()
           this.chRef.detectChanges();
         }
       )
@@ -167,7 +171,8 @@ export class WorksordersAssetChecklistComponent implements OnInit {
   }
 
   mySelectionKey(context: RowArgs): string {
-    return context.dataItem.wosequence + '' + context.dataItem.wochecksurcde + '' + context.dataItem.wostagesurcde;
+    return context.dataItem.wochecksurcde;
+    //return context.dataItem.wosequence + '_' + context.dataItem.wochecksurcde + '_' + context.dataItem.wostagesurcde;
   }
 
   closeAssetcheckListWindow() {
@@ -187,11 +192,12 @@ export class WorksordersAssetChecklistComponent implements OnInit {
   openChecklistDoc() {
     if (this.mySelection.length != 1) return
 
-    //set selected checklist data according to selection
-    this.selectedChecklist = this.assetCheckListData.filter(x => {
-      const key = `${x.wosequence}${x.wochecksurcde}${x.wostagesurcde}`;
-      return this.mySelection.includes(key);
-    });
+    // //set selected checklist data according to selection
+    // this.selectedChecklist = this.assetCheckListData.filter(x => {
+    //   // const key = `${x.wosequence}${x.wochecksurcde}${x.wostagesurcde}`;
+    //   const key = `${x.wochecksurcde}`;
+    //   return this.mySelection.includes(key);
+    // });
 
     // console.log(this.selectedChecklist)
     $('.checklistOverlay').addClass('ovrlay');
@@ -275,7 +281,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
             } else {
               this.alertService.success(resp.pRETURNMESSAGE)
               this.worksOrderDetailPageData();
-              this.selectedChecklistsingleItem = undefined;
+              // this.selectedChecklistsingleItem = undefined;
             }
           } else {
             this.alertService.error(data.message);
@@ -417,7 +423,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
             } else {
               this.alertService.success(resp.pRETURNMESSAGE)
               this.worksOrderDetailPageData();
-              this.selectedChecklistsingleItem = undefined;
+              // this.selectedChecklistsingleItem = undefined;
             }
           } else {
             this.alertService.error(data.message);
@@ -537,6 +543,8 @@ export class WorksordersAssetChecklistComponent implements OnInit {
       this.setDates(this.chooseDateType, this.selectedChecklistsingleItem, 'C')
     } else if (this.chooseDateType == "CIPICK") {
       this.setComplete(this.chooseDateType, this.selectedChecklistsingleItem, 'C')
+    } else if (this.chooseDateType == "IPDM") {
+      this.setStatusMul(this.chooseDateType, "C")
     }
 
   }
@@ -552,16 +560,20 @@ export class WorksordersAssetChecklistComponent implements OnInit {
     params.strASSID = [this.selectedChildRow.assid]
     params.strUserId = this.currentUser.userId;
     params.strCheckOrProcess = checkOrProcess;
+    params.concateAddress = this.selectedChildRow.woname;
 
     if (type == "RELEASE") {
       callApi = this.worksorderManagementService.worksOrderReleaseAsset(params);
     } else if (type == "ACCEPT") {
-      if (this.workorderAsset.woassstatus == "New" || this.workorderAsset.woassstatus == "In Progress") {
+      if (!this.selectedChecklistsingleItem || this.workorderAsset.woassstatus == "In Progress") {
         return
       }
       callApi = this.worksorderManagementService.worksOrderAcceptAsset(params);
-    } else {
-      return
+    } else if (type == "ISSUE") {
+      if (!this.selectedChecklistsingleItem || this.workorderAsset.woassstatus == "Pending") {
+        return
+      }
+      callApi = this.worksorderManagementService.worksOrderAcceptAsset(params);
     }
 
 
@@ -585,7 +597,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
           } else {
             this.alertService.success(resp.pRETURNMESSAGE)
             this.worksOrderDetailPageData();
-            this.selectedChecklistsingleItem = undefined
+
           }
         }
       )
@@ -629,12 +641,15 @@ export class WorksordersAssetChecklistComponent implements OnInit {
   }
 
 
-  openAssetDetailChild(detailType) {
+  openAssetDetailChild(detailType, item = null) {
+    this.wodDetailType = detailType;
 
     if (detailType == "single") {
       if (!this.selectedChecklistsingleItem || this.selectedChecklistsingleItem.detailCount == 0) {
         return;
       }
+
+      this.selectedChecklistsingleItem = item;
     }
 
 
@@ -665,7 +680,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
       }
       this.selectedChecklistsingleItem = item
     } else {
-      this.selectedChecklistsingleItem = undefined;
+      this.resetSelections()
     }
 
     this.itemPassToWorkList = item;
@@ -683,6 +698,199 @@ export class WorksordersAssetChecklistComponent implements OnInit {
   refreshGrid(eve) {
     this.worksOrderDetailPageData();
   }
+
+  resetSelections() {
+    this.selectedChecklistsingleItem = undefined;
+    this.mySelection = [];
+  }
+
+  removeOrDeletework(type, checkOrProcess = "C") {
+    if (!this.selectedChecklistsingleItem || this.selectedChecklistsingleItem.detailCount == 0) {
+      return;
+    }
+
+    let params: any = {}
+
+    if (type == "remove") params.RemoveWorkList = false;
+    else if (type == "delete") params.RemoveWorkList = true;
+
+    params.WOSEQUENCE = this.selectedChecklistsingleItem.wosequence;
+    params.WOPSEQUENCE = this.selectedChecklistsingleItem.wopsequence;
+    params.ASSID_STAGESURCDE_CHECKSURCDE = [this.selectedChecklistsingleItem.assid, this.selectedChecklistsingleItem.wostagesurcde, this.selectedChecklistsingleItem.wochecksurcde];
+    params.strUserId = this.currentUser.userId;
+    params.strCheckOrProcess = checkOrProcess;
+
+    this.subs.add(
+      this.worksorderManagementService.worksOrderRemoveAllWork(params).subscribe(
+        data => {
+
+          let resp: any;
+          if (data.data[0] == undefined) {
+            resp = data.data;
+          } else {
+            resp = data.data[0];
+          }
+
+          if (checkOrProcess == "C" && (resp.pRETURNSTATUS == "E" || resp.pRETURNSTATUS == "S")) {
+            this.confirmationForDeleteOrRemoveWork(type, resp)
+          } else {
+            this.alertService.success(resp.pRETURNMESSAGE)
+            this.worksOrderDetailPageData();
+            this.selectedChecklistsingleItem = undefined
+          }
+        }
+      )
+    )
+
+  }
+
+  confirmationForDeleteOrRemoveWork(type, res) {
+    let checkstatus = "C";
+    if (res.pRETURNSTATUS == 'S') {
+      checkstatus = "P"
+    }
+
+    $('.k-window').css({ 'z-index': 1000 });
+    this.confirmationDialogService.confirm('Please confirm..', `${res.pRETURNMESSAGE}`)
+      .then((confirmed) => {
+        if (confirmed) {
+          if (res.pRETURNSTATUS == 'E') {
+            return
+          }
+
+          this.removeOrDeletework(type, checkstatus);
+        }
+
+      })
+      .catch(() => console.log('Attribute dismissed the dialog.'));
+  }
+
+
+
+  setStatusMul(type, checkOrProcess = 'C') {
+    
+    if (this.mySelection.length == 0) {
+      return
+    }
+
+    let filterChecklist = this.assetCheckListData.filter(x => this.mySelection.includes(x.wochecksurcde))
+
+    if (filterChecklist.length == 0) {
+      return
+    }
+
+    let ASSID_STAGESURCDE_CHECKSURCDE = [];
+    for (const checklist of filterChecklist) {
+      ASSID_STAGESURCDE_CHECKSURCDE.push(checklist.assid)
+      ASSID_STAGESURCDE_CHECKSURCDE.push(checklist.wostagesurcde)
+      ASSID_STAGESURCDE_CHECKSURCDE.push(checklist.wochecksurcde)
+    }
+    // console.log(filterChecklist)
+
+
+    this.chooseDateType = type;
+    let apiName = '';
+    let params: any = {}
+    params.WOSEQUENCE = filterChecklist[0].wosequence;
+    params.WOPSEQUENCE = filterChecklist[0].wopsequence;
+    params.ASSID_STAGESURCDE_CHECKSURCDE = ASSID_STAGESURCDE_CHECKSURCDE;
+    params.UserId = this.currentUser.userId;
+    params.CHECKORPROCESS = checkOrProcess;
+    params.RecordCount = this.mySelection.length
+    params.CheckName = this.mySelection.length == 1 ? filterChecklist[0].wocheckname : ''
+
+    if (type == 'NA') {
+      apiName = 'SetWorksOrderCheckListStatusToNA'
+    } else if (type == 'RESET') {
+      apiName = 'ResetChecklistItem'
+    } else if (type == 'NOT STARTED') {
+      apiName = 'WorksOrderCheckListStatusToNotStarted'
+    } else if (type == 'IPY') {
+      apiName = 'SetWorksOrderCheckListStatusToInProgress'
+      params.dtDate = this.getDateString('Yesterday');
+      // params.CheckName = ''
+
+    } else if (type == 'IPT') {
+      apiName = 'SetWorksOrderCheckListStatusToInProgress'
+      params.dtDate = this.getDateString('Today');
+      // params.CheckName = '';
+
+    } else if (type == 'IPDM') {
+      apiName = 'SetWorksOrderCheckListStatusToInProgress'
+      params.dtDate = this.dateFormate(this.selectedDate.selectedDate);
+      // params.CheckName = ''
+
+
+
+    } else if (type == 'CIY') {
+      apiName = "WorksOrderCheckListCompleteItem"
+      params.dtDate = this.getDateString('Yesterday')
+    } else if (type == 'CIT') {
+      apiName = "WorksOrderCheckListCompleteItem"
+      params.dtDate = this.getDateString('Today')
+    } else if (type == 'CIPICKM') {
+      apiName = "WorksOrderCheckListCompleteItem"
+      params.dtDate = this.dateFormate(this.selectedDate.selectedDate);
+    }
+
+
+    this.subs.add(
+      this.worksorderManagementService.setStatus(apiName, params).subscribe(
+        data => {
+
+          if (data.isSuccess) {
+            let resp: any;
+            if (data.data[0] == undefined) {
+              resp = data.data;
+            } else {
+              resp = data.data[0];
+            }
+
+            if (checkOrProcess == "C" && (resp.pRETURNSTATUS == "E" || resp.pRETURNSTATUS == "S")) {
+              this.confirmationForMultipleStatus(type, resp)
+            } else {
+              this.alertService.success(resp.pRETURNMESSAGE)
+              this.worksOrderDetailPageData();
+              // this.selectedChecklistsingleItem = undefined;
+            }
+          } else {
+            this.alertService.error(data.message);
+          }
+
+        },
+        err => this.alertService.error(err)
+      )
+    )
+
+
+  }
+
+
+
+  confirmationForMultipleStatus(type, res, apiType = 'status') {
+    let checkstatus = "C";
+    if (res.pRETURNSTATUS == 'S') {
+      checkstatus = "P"
+    }
+
+    $('.k-window').css({ 'z-index': 1000 });
+
+    this.confirmationDialogService.confirm('Please confirm..', `${res.pRETURNMESSAGE}`)
+      .then((confirmed) => {
+        if (confirmed) {
+          if (res.pRETURNSTATUS == 'E') {
+            return
+          }
+
+          this.setStatusMul(type, checkstatus);
+
+        }
+
+      })
+      .catch(() => console.log('Attribute dismissed the dialog.'));
+  }
+
+
 
 
 }

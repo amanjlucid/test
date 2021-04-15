@@ -16,8 +16,12 @@ export class WorksordersAssetDetailComponent implements OnInit {
     @Input() selectedRow: any;
     @Input() treelevel: any;
     @Input() worksOrderData: any;
+    @Input() selectedChecklist: any = [];
+    @Input() wodDetailType: string = 'all';
     @Input() selectedChildRow: any;
     @Input() selectedParentRow: any;
+
+
     subs = new SubSink();
 
     state: State = {
@@ -90,21 +94,7 @@ export class WorksordersAssetDetailComponent implements OnInit {
         };
 
 
-
-        // console.log('selectedParentRow on aASEET Detaails Page ' + JSON.stringify(this.selectedParentRow));
-        //console.log('worksOrderData on asset deatils page ' + JSON.stringify(this.worksOrderData));
-        //console.log('selected tRow on asset deatils page ' + JSON.stringify(this.selectedRow));
-
-
-        //if(this.treelevel == 2)
-        //  this.WorkOrderAssetDetailPhases();
-
-
-
         this.getData();
-
-
-
 
     }
 
@@ -130,9 +120,9 @@ export class WorksordersAssetDetailComponent implements OnInit {
 
 
     async WorkOrderAssetDetail() {
-
+        const checkSrc = this.wodDetailType == "single" ? this.selectedChecklist.wochecksurcde : 0;
         let promise = new Promise((resolve, reject) => {
-            this.worksOrdersService.WorkOrderAssetDetail(this.selectedRow.wosequence, this.selectedRow.wopsequence, this.selectedRow.assid, 0).subscribe(
+            this.worksOrdersService.WorkOrderAssetDetail(this.selectedRow.wosequence, this.selectedRow.wopsequence, this.selectedRow.assid, checkSrc).subscribe(
                 (data) => {
 
                     if (data.isSuccess) {
@@ -367,8 +357,6 @@ export class WorksordersAssetDetailComponent implements OnInit {
         //console.log('worksOrderData'+ JSON.stringify(this.worksOrderData));
 
 
-
-
         let paramsTosend = {
             'ASSID': this.selectedItem.assid,
             'CTTSURCDE': this.worksOrderData.cttsurcde,
@@ -385,8 +373,6 @@ export class WorksordersAssetDetailComponent implements OnInit {
             (data) => {
 
                 //  console.log('openSwapPackage item  api reponse'+ JSON.stringify(data));
-
-
 
                 if (data.isSuccess) {
                     this.SwapPackagesForAssetsDataGrid = data.data
@@ -408,16 +394,11 @@ export class WorksordersAssetDetailComponent implements OnInit {
         )
 
 
-
-
     }
 
+
     closeSwapPackageWindow() {
-
         this.SwapPackageWindow = false;
-
-
-
     }
 
     openSetToRefusalWindow(item) {
@@ -627,7 +608,7 @@ export class WorksordersAssetDetailComponent implements OnInit {
 
 
     }
-    
+
     editWorkPackageQtyCostSave() {
 
         this.loading = true;

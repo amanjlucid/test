@@ -86,7 +86,7 @@ export class WorksordersAssetChecklistDocumentComponent implements OnInit {
   }
 
   worksOrderDetailPageData() {
-    const intWOSEQUENCE = this.selectedChecklist[0].wosequence;
+    const intWOSEQUENCE = this.selectedChecklist.wosequence;
 
     this.subs.add(
       this.worksorderManagementService.getWorksOrderByWOsequence(intWOSEQUENCE).subscribe(
@@ -112,8 +112,8 @@ export class WorksordersAssetChecklistDocumentComponent implements OnInit {
 
   getDocumentData() {
     this.selectedDoc = undefined;
-    const Assid_WOPSequence_CheckSurcde = `${this.selectedChecklist[0].assid}-${this.selectedChecklist[0].wopsequence}-${this.selectedChecklist[0].wochecksurcde}`;
-    const woseq = this.selectedChecklist[0].wosequence;
+    const Assid_WOPSequence_CheckSurcde = `${this.selectedChecklist.assid}-${this.selectedChecklist.wopsequence}-${this.selectedChecklist.wochecksurcde}`;
+    const woseq = this.selectedChecklist.wosequence;
 
     this.subs.add(
       this.worksorderManagementService.getWOPAssetChecklistDoc(woseq, Assid_WOPSequence_CheckSurcde).subscribe(
@@ -192,7 +192,7 @@ export class WorksordersAssetChecklistDocumentComponent implements OnInit {
 
   removeDocument() {
     if (this.selectedDoc) {
-      const checklistdata = this.selectedChecklist[0];
+      const checklistdata = this.selectedChecklist;
       let params = {
         WOSEQUENCE: checklistdata.wosequence,
         ASSID: checklistdata.assid,
@@ -359,7 +359,7 @@ export class WorksordersAssetChecklistDocumentComponent implements OnInit {
       //   WO_SEQNO: this.selectedChildRow.wosequence,
       //   WOP_SEQNO: this.selectedChildRow.wopsequence,
       //   ASSID: this.selectedChildRow.assid,
-      //   CHECKSURCDE: this.selectedChecklist[0].wochecksurcde,
+      //   CHECKSURCDE: this.selectedChecklist.wochecksurcde,
       //   CurrentUser: this.currentUser.userId
       // }
 
@@ -371,7 +371,7 @@ export class WorksordersAssetChecklistDocumentComponent implements OnInit {
       formData.append('WO_SEQNO', this.selectedChildRow.wosequence);
       formData.append('WOP_SEQNO', this.selectedChildRow.wopsequence);
       formData.append('ASSID', this.selectedChildRow.assid);
-      formData.append('CHECKSURCDE', this.selectedChecklist[0].wochecksurcde);
+      formData.append('CHECKSURCDE', this.selectedChecklist.wochecksurcde);
       formData.append('CurrentUser', this.currentUser.userId);
 
       this.worksorderManagementService.workOrderUploadDocument(formData).subscribe(
