@@ -33,7 +33,7 @@
             aria-expanded="false">Actions</button>
           <div class="dropdown-menu" x-placement="bottom-start"
             style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
-            <a class="dropdown-item" href="javascript:void(0)">Release </a>
+            <a (click)="assetAction(null, 'multiple')" class="dropdown-item" href="javascript:void(0)">Release </a>
             <a class="dropdown-item" href="javascript:void(0)">Issue</a>
             <a class="dropdown-item" href="javascript:void(0)">Accept</a>
             <!-- <a class="dropdown-item" href="javascript:void(0)">Handover</a>
@@ -194,7 +194,9 @@
   </div>
 
   <div class="row">
-    <div class="col-md-12">
+
+    <div class="col-md-12 mt-2">
+
       <kendo-treelist [kendoTreeListFlatBinding]="gridData" idField="id" parentIdField="parentId" scrollable="virtual"
         [rowHeight]="36" kendoTreeListExpandable [initiallyExpanded]="true" [sortable]="true" filterable="menu"
         [filter]="filter" (filterChange)="onFilterChange($event)" [pageSize]="gridPageSize" [navigable]="false"
@@ -236,8 +238,8 @@
                   </div>
                 </div>
 
-                <a class="dropdown-item" *ngIf="worksOrderAccess.indexOf('Asset Details') != -1"
-                  href="javascript:void(0)" (click)="openAssetDetail(dataItem)">Asset Details</a>
+                <a class="dropdown-item" *ngIf="worksOrderAccess.indexOf('Work Details') != -1"
+                  href="javascript:void(0)" (click)="openAssetDetail(dataItem)">Work Asset Details</a>
 
               </div>
             </li>
@@ -251,7 +253,7 @@
                 <a *ngIf="worksOrderAccess.indexOf('Asset Checklist') != -1" class="dropdown-item"
                   href="javascript:void(0)" (click)="openAssetChecklist(dataItem)">Asset
                   Checklist</a>
-                <div class="dropdown-toggle">
+                <!-- <div class="dropdown-toggle">
                   <div class="dropdown-item">Add Asset(s)</div>
                   <div class="dropdown-menu">
                     <a *ngIf="worksOrderAccess.indexOf('Add Assets From Work List') != -1" class="dropdown-item"
@@ -259,23 +261,46 @@
                       [ngClass]="{'disabled' : dataItem.wostatus != 'New'}">Asset(s) From Work List</a>
 
                   </div>
-                </div>
-                <a class="dropdown-item" *ngIf="worksOrderAccess.indexOf('Asset Details') != -1"
-                  href="javascript:void(0)" (click)="openActualAssetDetails(dataItem)">Asset Details</a>
-                <!-- <div class="dropdown-toggle">
-                  <div class="dropdown-item">Action</div>
+                </div> -->
+
+                <div class="dropdown-toggle">
+                  <div class="dropdown-item">Work</div>
                   <div class="dropdown-menu">
 
-                    <a class="dropdown-item" href="javascript:void(0)">Release </a>
-                    <a class="dropdown-item" href="javascript:void(0)">Issue</a>
-                    <a class="dropdown-item" href="javascript:void(0)">Accept</a>
-                    <a class="dropdown-item" href="javascript:void(0)">Handover</a>
-                    <a class="dropdown-item" href="javascript:void(0)">Sign Off</a>
-                    <a class="dropdown-item" href="javascript:void(0)">Remove</a>
-                    <a class="dropdown-item" href="javascript:void(0)">Cancel</a>
+                    <a *ngIf="worksOrderAccess.indexOf('Work Details') != -1" class="dropdown-item"
+                      (click)="openAssetDetailChild(dataItem)" href="javascript:void(0)">
+                      Detail</a>
+
+                    <a *ngIf="worksOrderAccess.indexOf('Add Assets From Work List') != -1" class="dropdown-item"
+                      (click)="openAddAssetWorkOrdersList(dataItem,'fromasset')" href="javascript:void(0)"
+                      [ngClass]="{'disabled' : dataItem.wostatus != 'New'}">Asset(s) From Work List</a>
+
+
+                  </div>
+                </div>
+
+                <a class="dropdown-item" *ngIf="worksOrderAccess.indexOf('Asset Details') != -1"
+                  href="javascript:void(0)" (click)="openActualAssetDetails(dataItem)">Asset Details</a>
+
+
+
+
+
+
+                <!-- <div class="dropdown-toggle">
+                  <div class="dropdown-item">Actions</div>
+                  <div class="dropdown-menu">
+
+                    <a *ngIf="worksOrderAccess.indexOf('Release Asset') != -1" class="dropdown-item"
+                      (click)="assetAction(dataItem, 'single')" href="javascript:void(0)">Release</a>
+                    <a *ngIf="worksOrderAccess.indexOf('Issue Asset') != -1" class="dropdown-item"
+                      (click)="assetAction(dataItem, 'single')" href="javascript:void(0)">Issue</a>
+                    <a *ngIf="worksOrderAccess.indexOf('Accept Asset') != -1" class="dropdown-item"
+                      (click)="assetAction(dataItem, 'single')" href="javascript:void(0)">Accept</a>
 
                   </div>
                 </div> -->
+
               </div>
             </li>
           </ng-template>
@@ -489,4 +514,3 @@
   <app-workorder-form [woFormType]="'edit'" [woFormWindow]="woFormWindow"
     [selectedWorkOrderAddEdit]="worksOrderSingleData" *ngIf="woFormWindow" (closeWoFormWin)="closeWoFormWin($event)">
   </app-workorder-form>
-

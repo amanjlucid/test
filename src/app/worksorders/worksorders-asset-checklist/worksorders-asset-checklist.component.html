@@ -56,7 +56,7 @@
 
 
                     <a [ngClass]="{'disabled':!selectedChecklistsingleItem || workorderAsset?.woassstatus != 'In Progress'}"
-                        *ngIf="worksOrderAccess.indexOf('Release Asset') != -1" class="dropdown-item"
+                        *ngIf="worksOrderAccess.indexOf('Accept Asset') != -1" class="dropdown-item"
                         (click)="setAsset('ACCEPT')" href="javascript:void(0)">
                         Accept</a>
 

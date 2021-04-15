@@ -1,11 +1,12 @@
 import { Component, OnInit, ViewEncapsulation, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { SubSink } from 'subsink';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
-import { FilterService, SelectableSettings, TreeListComponent, ExpandEvent } from '@progress/kendo-angular-treelist';
+import { FilterService, SelectableSettings, TreeListComponent } from '@progress/kendo-angular-treelist';
 import { AlertService, LoaderService, ConfirmationDialogService, HelperService, WorksorderManagementService, SharedService, PropertySecurityGroupService, AuthenticationService } from '../../_services'
 import { forkJoin } from 'rxjs';
 import { WorkordersDetailModel } from 'src/app/_models';
 import { appConfig } from '../../app.config';
+
 
 @Component({
   selector: 'app-worksorders-details',
@@ -74,6 +75,7 @@ export class WorksordersDetailsComponent implements OnInit {
 
   addWorkFrom: string;
 
+
   constructor(
     private sharedService: SharedService,
     private worksorderManagementService: WorksorderManagementService,
@@ -124,6 +126,7 @@ export class WorksordersDetailsComponent implements OnInit {
   ngOnDestroy() {
     this.subs.unsubscribe();
   }
+
 
   worksOrderDetailPageData() {
     const wprsequence = this.worksOrderSingleData.wprsequence;
@@ -540,11 +543,11 @@ export class WorksordersDetailsComponent implements OnInit {
 
 
   openActualAssetDetails(item) {
-   
+
     this.autService.validateAssetIDDeepLinkParameters(this.currentUser.userId, item.assid).subscribe(
       data => {
         if (data.validated) {
-          const siteUrl = `${appConfig.appUrl}/asset-list?assetid=${item.assid}`; // UAT
+          const siteUrl = `${appConfig.appUrl}/asset-list?assetid=${encodeURIComponent(item.assid)}`; // UAT  
           // const siteUrl = `http://localhost:4200/asset-list?assetid=${item.assid}`;
           window.open(siteUrl, "_blank");
 
@@ -575,6 +578,17 @@ export class WorksordersDetailsComponent implements OnInit {
     this.woFormWindow = $event;
     $('.worksOrderDetailOvrlay').removeClass('ovrlay');
     this.worksOrderDetailPageData();
+  }
+
+
+  assetAction(item = null, type = "multiple") {
+    if (type == "single") {
+      console.log(item)
+    } else {
+
+    }
+
+    console.log(this.selected)
   }
 
 }

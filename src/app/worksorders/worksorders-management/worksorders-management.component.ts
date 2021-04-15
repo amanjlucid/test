@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewEncapsulation, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
-import { FilterService, SelectableSettings, TreeListComponent, ExpandEvent } from '@progress/kendo-angular-treelist';
+import { FilterService, SelectableSettings, TreeListComponent, ExpandEvent, RowClassArgs } from '@progress/kendo-angular-treelist';
 import { AlertService, HelperService, WorksorderManagementService, ConfirmationDialogService, SharedService } from '../../_services'
 import { SubSink } from 'subsink';
 import { Router } from '@angular/router';
@@ -63,6 +63,18 @@ export class WorksordersManagementComponent implements OnInit {
 
   ngOnDestroy() {
     this.subs.unsubscribe();
+  }
+
+  rowCallback(context: RowClassArgs) {
+    if (context.dataItem.treelevel == 1) {
+      return { level1: true, }
+    }
+    if (context.dataItem.treelevel == 2) {
+      return { level2: true, }
+    }
+    if (context.dataItem.treelevel == 3) {
+      return { level3: true, }
+    }
   }
 
   getManagement(status = "A") {
