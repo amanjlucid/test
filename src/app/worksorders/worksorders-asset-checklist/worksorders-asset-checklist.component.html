@@ -21,8 +21,7 @@
                 <div class="dropdown-menu" x-placement="bottom-start"
                     style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
                     <a *ngIf="worksOrderAccess.indexOf('Asset Details') != -1" class="dropdown-item"
-                        (click)="openAssetDetailChild()" href="javascript:void(0)"
-                        [ngClass]="{'disabled' : !selectedChecklistsingleItem || selectedChecklistsingleItem?.detailCount == 0}">
+                        (click)="openAssetDetailChild('all')" href="javascript:void(0)">
                         Detail</a>
                     <!-- <a *ngIf="worksOrderAccess.indexOf('Asset Details') != -1" class="dropdown-item"
                         (click)="openAssetDetailChild()" href="javascript:void(0)"
@@ -346,9 +345,17 @@
                                 </div>
 
                                 <a *ngIf="worksOrderAccess.indexOf('Add Assets From Work List') != -1"
+                                    class="dropdown-item" (click)="openAssetDetailChild('single')"
+                                    href="javascript:void(0)"
+                                    [ngClass]="{'disabled' : !selectedChecklistsingleItem || selectedChecklistsingleItem?.detailCount == 0}">Work</a>
+
+
+                                <!-- <a *ngIf="worksOrderAccess.indexOf('Add Assets From Work List') != -1"
                                     class="dropdown-item" (click)="openAddAssetWorkOrdersList(dataItem, 'single')"
                                     href="javascript:void(0)"
-                                    [ngClass]="{'disabled' : this.selectedChildRow.wostatus != 'New' || dataItem.wocheckspeciaL1 != 'WORK'}">Work</a>
+                                    [ngClass]="{'disabled' : this.selectedChildRow.wostatus != 'New' || dataItem.wocheckspeciaL1 != 'WORK'}">Add Work</a> -->
+
+
 
                                 <!-- <div class="dropdown-toggle">
                                     <div class="dropdown-item">Asset</div>

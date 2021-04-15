@@ -62,7 +62,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
 
   addAssetWorklistWindow: boolean = false;
   addWorkorderType = '';
-  itemPassToWorkList:any;
+  itemPassToWorkList: any;
 
   constructor(
     private chRef: ChangeDetectorRef,
@@ -629,8 +629,15 @@ export class WorksordersAssetChecklistComponent implements OnInit {
   }
 
 
-  openAssetDetailChild() {
-    if (!this.selectedChecklistsingleItem || this.selectedChecklistsingleItem.detailCount == 0) return;
+  openAssetDetailChild(detailType) {
+
+    if (detailType == "single") {
+      if (!this.selectedChecklistsingleItem || this.selectedChecklistsingleItem.detailCount == 0) {
+        return;
+      }
+    }
+
+
     $('.checklistOverlay').addClass('ovrlay');
     this.assetDetailWindow = true;
 

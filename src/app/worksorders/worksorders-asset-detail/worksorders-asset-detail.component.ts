@@ -461,9 +461,7 @@ export class WorksordersAssetDetailComponent implements OnInit {
 
     SetToRefusalSave() {
 
-        console.log('SetToRefusalSave itemDat' + JSON.stringify(this.itemData));
-
-
+        // console.log('SetToRefusalSave itemDat' + JSON.stringify(this.itemData));
 
 
         const params = {
