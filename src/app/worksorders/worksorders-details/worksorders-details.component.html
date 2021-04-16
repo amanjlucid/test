@@ -27,15 +27,18 @@
       </div>
 
 
-      <div class="actionBtnArea mr-1">
+      <div class="actionBtnArea mr-1" *ngIf="selected.length > 1">
         <div class="dropdown" id="nesting-dropdown-demo">
           <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown"
             aria-expanded="false">Actions</button>
           <div class="dropdown-menu" x-placement="bottom-start"
             style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
-            <a (click)="assetAction(null, 'multiple')" class="dropdown-item" href="javascript:void(0)">Release </a>
-            <a class="dropdown-item" href="javascript:void(0)">Issue</a>
-            <a class="dropdown-item" href="javascript:void(0)">Accept</a>
+            <a *ngIf="worksOrderAccess.indexOf('Release Asset') != -1" (click)="assetAction(null, 'RELEASE', 'multiple')"
+              class="dropdown-item" href="javascript:void(0)">Release </a>
+            <a *ngIf="worksOrderAccess.indexOf('Issue Asset') != -1" (click)="assetAction(null, 'ISSUE', 'multiple')" class="dropdown-item"
+              href="javascript:void(0)">Issue</a>
+            <a *ngIf="worksOrderAccess.indexOf('Accept Asset') != -1" (click)="assetAction(null, 'ACCEPT', 'multiple')" class="dropdown-item"
+              href="javascript:void(0)">Accept</a>
             <!-- <a class="dropdown-item" href="javascript:void(0)">Handover</a>
             <a class="dropdown-item" href="javascript:void(0)">Sign Off</a>
             <a class="dropdown-item" href="javascript:void(0)">Remove</a>
@@ -287,19 +290,19 @@
 
 
 
-                <!-- <div class="dropdown-toggle">
+                <div class="dropdown-toggle">
                   <div class="dropdown-item">Actions</div>
                   <div class="dropdown-menu">
 
                     <a *ngIf="worksOrderAccess.indexOf('Release Asset') != -1" class="dropdown-item"
-                      (click)="assetAction(dataItem, 'single')" href="javascript:void(0)">Release</a>
+                      (click)="assetAction(dataItem, 'RELEASE', 'single')" href="javascript:void(0)">Release</a>
                     <a *ngIf="worksOrderAccess.indexOf('Issue Asset') != -1" class="dropdown-item"
-                      (click)="assetAction(dataItem, 'single')" href="javascript:void(0)">Issue</a>
+                      (click)="assetAction(dataItem, 'ISSUE', 'single')" href="javascript:void(0)">Issue</a>
                     <a *ngIf="worksOrderAccess.indexOf('Accept Asset') != -1" class="dropdown-item"
-                      (click)="assetAction(dataItem, 'single')" href="javascript:void(0)">Accept</a>
+                      (click)="assetAction(dataItem, 'ACCEPT', 'single')" href="javascript:void(0)">Accept</a>
 
                   </div>
-                </div> -->
+                </div>
 
               </div>
             </li>

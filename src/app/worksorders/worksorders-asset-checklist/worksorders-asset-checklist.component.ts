@@ -573,7 +573,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
       if (!this.selectedChecklistsingleItem || this.workorderAsset.woassstatus == "Pending") {
         return
       }
-      callApi = this.worksorderManagementService.worksOrderAcceptAsset(params);
+      callApi = this.worksorderManagementService.worksOrderIssueAsset(params);
     }
 
 

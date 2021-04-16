@@ -1,13 +1,15 @@
 <div class="container-fluid flex-grow-1 container-p-y">
 
     <div class="row">
-        <div class="col-md-2 col-sm-3">
+        <div class="col-md-3 col-sm-3">
             <h4 class="font-weight-bold py-3 mb-1">
                 Management
             </h4>
+
+
         </div>
 
-        <div class="col-md-10 text-right">
+        <div class="col-md-9 text-right">
             <div class="radioDiv">
                 <label class="radio-inline">
                     <input type="radio" (click)="checkActiveInactive($event)" value="S" name="gridStatus">All
@@ -23,7 +25,7 @@
 
             <div class="actionDiv">
                 <button type="button" class="btn btn-sm themeButton mr-1" (click)="export()">Export</button>
-                <div class="dropdown" id="nesting-dropdown-demo"
+                <div class="dropdown mr-1" id="nesting-dropdown-demo"
                     *ngIf="worksOrderAccess.indexOf('New Programme') != -1 || worksOrderAccess.indexOf('New Works Order') != -1">
                     <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown"
                         aria-expanded="false">New</button>
@@ -37,6 +39,10 @@
 
                     </div>
                 </div>
+                <button id="showFilePanel" (click)="lockUnlockColumn()" class="btn btn-sm themeButton">
+                    <i *ngIf="!columnLocked" class="fa fa-lock" aria-hidden="true"></i>
+                    <i *ngIf="columnLocked" class="fa fa-unlock" aria-hidden="true"></i>
+                </button>
             </div>
 
         </div>
@@ -47,23 +53,25 @@
 
         <div class="col-md-12">
             <kendo-treelist [kendoTreeListFlatBinding]="gridData" idField="id" parentIdField="parentId"
-                scrollable="virtual" [rowHeight]="36" kendoTreeListExpandable [sortable]="true" filterable="menu"
-                [filter]="filter" (filterChange)="onFilterChange($event)" [pageSize]="gridPageSize" [navigable]="true"
+                scrollable="virtual" [rowHeight]="36" kendoTreeListExpandable [sortable]="true" [sort]="sort" filterable="menu"
+                [filter]="filter" (filterChange)="onFilterChange($event)" [pageSize]="gridPageSize" [navigable]="false"
                 kendoTreeListSelectable [selectable]="settings" [(selectedItems)]="selected" [height]="720"
-                [virtualColumns]="true" [loading]="loading" [resizable]="true" (cellClick)="cellClickHandler($event)" [rowClass]="rowCallback">
+                [virtualColumns]="true" [loading]="loading" [resizable]="true" (cellClick)="cellClickHandler($event)"
+                [rowClass]="rowCallback">
 
-                <kendo-treelist-column field="wprstatus" title="" [width]="33" [sortable]="false" [filterable]="false">
+                <kendo-treelist-column field="wosequence" title="" [width]="33" [sortable]="false" [resizable]="false" [filterable]="false" [locked]="columnLocked">
                     <ng-template kendoTreeListCellTemplate let-dataItem>
                         <li *ngIf="dataItem.treelevel == 1" class="nav-item dropdown list-unstyled"
                             style="margin-top: -7px;">
                             <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"
                                 (click)="setSeletedRow(dataItem)"></i>
                             <div class="dropdown-menu">
-                                <a *ngIf="worksOrderAccess.indexOf('Edit Programme') != -1" class="dropdown-item" (click)="openNewManagementWindow('edit')"
-                                    href="javascript:void(0)">Edit</a>
-                                <a *ngIf="worksOrderAccess.indexOf('Delete Programme') != -1" class="dropdown-item" (click)="openConfirmationDialog(dataItem)"
-                                    href="javascript:void(0)">Delete</a>
-                                <a *ngIf="worksOrderAccess.indexOf('New Works Order') != -1" class="dropdown-item" href="javascript:void(0)">New Works Order</a>
+                                <a *ngIf="worksOrderAccess.indexOf('Edit Programme') != -1" class="dropdown-item"
+                                    (click)="openNewManagementWindow('edit')" href="javascript:void(0)">Edit</a>
+                                <a *ngIf="worksOrderAccess.indexOf('Delete Programme') != -1" class="dropdown-item"
+                                    (click)="openConfirmationDialog(dataItem)" href="javascript:void(0)">Delete</a>
+                                <a *ngIf="worksOrderAccess.indexOf('New Works Order') != -1" class="dropdown-item"
+                                    href="javascript:void(0)">New Works Order</a>
 
                             </div>
                         </li>
@@ -77,9 +85,11 @@
                                 <a class="dropdown-item" *ngIf="worksOrderAccess.indexOf('Delete Works Order') != -1"
                                     href="javascript:void(0)">Delete</a>
                                 <a class="dropdown-item" href="javascript:void(0)"
-                                    (click)="redirectToWorksOrder(dataItem)" *ngIf="worksOrderAccess.indexOf('Works Order Detail') != -1">Works Order Detail</a>
+                                    (click)="redirectToWorksOrder(dataItem)"
+                                    *ngIf="worksOrderAccess.indexOf('Works Order Detail') != -1">Works Order Detail</a>
                                 <a class="dropdown-item" href="javascript:void(0)"
-                                    (click)="openPackageMappingWindow(dataItem)" *ngIf="worksOrderAccess.indexOf('Package Mapping') != -1">Package Mapping</a>
+                                    (click)="openPackageMappingWindow(dataItem)"
+                                    *ngIf="worksOrderAccess.indexOf('Package Mapping') != -1">Package Mapping</a>
 
                             </div>
                         </li>
@@ -87,7 +97,15 @@
                 </kendo-treelist-column>
 
                 <kendo-treelist-column [expandable]="true" [minResizableWidth]="200" field="name" title="Name"
-                    [width]="280">
+                    [width]="280" [locked]="columnLocked">
+                    <ng-template kendoTreeListCellTemplate let-dataItem>
+                        <span *ngIf="dataItem.treelevel == 2">
+                            {{ dataItem.name }} (Works Order No: {{dataItem.wosequence}})
+                        </span>
+                        <span *ngIf="dataItem.treelevel != 2">
+                            {{ dataItem.name }}
+                        </span>
+                    </ng-template>
                 </kendo-treelist-column>
 
                 <kendo-treelist-column field="wprstatus" title="Status" [width]="110">
@@ -113,10 +131,10 @@
                         </span>
                     </ng-template>
                 </kendo-treelist-column>
-                <kendo-treelist-column field="issued" title="Issued" [width]="150">
+                <kendo-treelist-column field="wprcurrentcontractsum" title="Issued" [width]="150">
                     <ng-template kendoTreeListCellTemplate let-dataItem>
                         <span>
-                            {{ dataItem.issued | currency:"GBP":"symbol" }}
+                            {{ dataItem.wprcurrentcontractsum | currency:"GBP":"symbol" }}
                         </span>
                     </ng-template>
                 </kendo-treelist-column>
@@ -260,7 +278,12 @@
                 </kendo-treelist-column>
                 <kendo-treelist-column field="fc" title="FC" [width]="80">
                 </kendo-treelist-column>
-                <kendo-treelist-column field="wprstatus" title="Comment" [width]="80">
+                <kendo-treelist-column field="fc" title="Comment" [width]="150">
+                    <ng-template kendoTreeListCellTemplate let-dataItem>
+                        <span>
+                           
+                        </span>
+                    </ng-template>
                 </kendo-treelist-column>
 
             </kendo-treelist>

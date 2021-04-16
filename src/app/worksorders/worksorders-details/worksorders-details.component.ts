@@ -581,14 +581,114 @@ export class WorksordersDetailsComponent implements OnInit {
   }
 
 
-  assetAction(item = null, type = "multiple") {
-    if (type == "single") {
-      console.log(item)
+
+  assetAction(item = null, type, selection = "multiple", checkOrProcess = 'C') {
+
+    let params: any = {};
+    let callApi: any;
+
+    if (selection == "single") {
+
+      if (this.selected.length > 1) {
+        return
+      }
+
+      if (item.treelevel == 2) {
+        this.alertService.error("You must select some Assets.")
+        return
+      }
+
+      params.WOSEQUENCE = item.wosequence;
+      params.WOPSEQUENCE = item.wosequence;
+      params.strASSID = [item.assid];
+      params.concateAddress = item.woname;
+
+      
     } else {
 
+      let selectedKeyArr = this.selected.map(x => { return x.itemKey });
+      let assetData = this.gridData.filter(x => selectedKeyArr.includes(x.id) && x.treelevel == 3);
+
+      if (assetData.length == 0) {
+        this.alertService.error("You must select some Assets.")
+        return
+      }
+
+      let assetIdArr = [];
+      for (const asset of assetData) {
+        assetIdArr.push(asset.assid)
+      }
+
+      params.strASSID = assetIdArr;
+      params.WOSEQUENCE = assetData[0].wosequence;
+      params.WOPSEQUENCE = assetData[0].wosequence;
+      // params.concateAddress = this.selectedChildRow.woname;
     }
 
-    console.log(this.selected)
+    params.strUserId = this.currentUser.userId;
+    params.strCheckOrProcess = checkOrProcess;
+
+
+    if (type == "RELEASE") {
+      callApi = this.worksorderManagementService.worksOrderReleaseAsset(params);
+    } else if (type == "ACCEPT") {
+      callApi = this.worksorderManagementService.worksOrderAcceptAsset(params);
+    } else if (type == "ISSUE") {
+      callApi = this.worksorderManagementService.worksOrderIssueAsset(params);
+    }
+
+
+    this.subs.add(
+      callApi.subscribe(
+        data => {
+          if (!data.isSuccess) {
+            this.alertService.error(data.message);
+            return
+          }
+
+          let resp: any;
+          if (data.data[0] == undefined) {
+            resp = data.data;
+          } else {
+            resp = data.data[0];
+          }
+
+          if (checkOrProcess == "C" && (resp.pRETURNSTATUS == "E" || resp.pRETURNSTATUS == "S")) {
+            this.openConfirmationDialogAction({ item, type, selection }, resp)
+          } else {
+            this.alertService.success(resp.pRETURNMESSAGE)
+            this.worksOrderDetailPageData();
+
+          }
+        }
+      )
+    )
+
+
   }
+
+
+  openConfirmationDialogAction(obj, res) {
+
+    const { item, type, selection } = obj;
+    let checkstatus = "C";
+    if (res.pRETURNSTATUS == 'S') {
+      checkstatus = "P"
+    }
+
+    $('.k-window').css({ 'z-index': 1000 });
+    this.confirmationDialogService.confirm('Please confirm..', `${res.pRETURNMESSAGE}`)
+      .then((confirmed) => {
+        if (confirmed) {
+          if (res.pRETURNSTATUS == 'E') {
+            return
+          }
+
+          this.assetAction(item, type, selection, checkstatus);
+        }
+
+      }).catch(() => console.log('Attribute dismissed the dialog.'));
+  }
+
 
 }

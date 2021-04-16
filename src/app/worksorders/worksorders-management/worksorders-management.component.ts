@@ -4,6 +4,7 @@ import { FilterService, SelectableSettings, TreeListComponent, ExpandEvent, RowC
 import { AlertService, HelperService, WorksorderManagementService, ConfirmationDialogService, SharedService } from '../../_services'
 import { SubSink } from 'subsink';
 import { Router } from '@angular/router';
+import { SortDescriptor } from '@progress/kendo-data-query';
 
 @Component({
   selector: 'app-worksorders-management',
@@ -19,12 +20,20 @@ export class WorksordersManagementComponent implements OnInit {
   loading = true;
   public selected: any[] = [];
   public filter: CompositeFilterDescriptor;
+  columnLocked = true;
   public settings: SelectableSettings = {
     mode: 'row',
     multiple: false,
     drag: false,
     enabled: true
   };
+  sort: SortDescriptor[] = [{
+    field: 'wosequence',
+    dir: 'asc'
+  }, {
+    field: 'name',
+    dir: 'asc'
+  }];
   gridPageSize = 25;
   public apiData: any = [];
   public groupedData: any = [];
@@ -95,6 +104,10 @@ export class WorksordersManagementComponent implements OnInit {
 
             //Find parent and Set parent id in each row
             tempData.forEach((value, index) => {
+              // if(value.name == "Test New Special Items 1"){
+              //   console.log(value)
+              // }
+
               if (value.treelevel == 1) {
                 value.parentId = null;
                 value.id = `${value.wopsequence}${value.wosequence}${value.wprsequence}`;
@@ -295,6 +308,10 @@ export class WorksordersManagementComponent implements OnInit {
     this.sharedService.changeWorksOrderSingleData(item);
     localStorage.setItem('worksOrderSingleData', JSON.stringify(item)); // remove code on logout service
     this.router.navigate(['worksorders/details']);
+  }
+
+  lockUnlockColumn() {
+    this.columnLocked = !this.columnLocked
   }
 
 }
