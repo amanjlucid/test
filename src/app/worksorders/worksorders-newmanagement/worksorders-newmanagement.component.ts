@@ -24,12 +24,15 @@ export class WorksordersNewmanagementComponent implements OnInit {
   workManagementForm: FormGroup;
   submitted = false;
   formErrors: any;
+  title = "New Works Programme"
   validationMessage = {
     'WPRNAME': {
       'required': 'Name is required.',
+      'maxlength': 'Name must be maximum 50 characters.',
     },
     'WPREXTREF': {
       'required': 'Ext Ref is required.',
+      'maxlength': 'Ext Ref must be maximum 50 characters.',
     },
     'WPRDESC': {
       'required': 'Desc is required.',
@@ -42,6 +45,7 @@ export class WorksordersNewmanagementComponent implements OnInit {
     },
     'WPRPROGRAMMETYPE': {
       'required': 'Programme Type is required.',
+      'maxlength': 'Programme Type must be maximum 50 characters.',
     },
     'WPRBUDGET': {
       'required': 'Budget is required.',
@@ -109,13 +113,13 @@ export class WorksordersNewmanagementComponent implements OnInit {
 
   ngOnInit(): void {
     this.workManagementForm = this.fb.group({
-      WPRNAME: ['', [Validators.required]],
-      WPREXTREF: ['', [Validators.required]],
+      WPRNAME: ['', [Validators.required, Validators.maxLength(50)]],
+      WPREXTREF: ['', [Validators.required, Validators.maxLength(50)]],
       WPRDESC: ['', [Validators.required]],
       WPRSTATUS: [''],
       WPRACTINACT: [''],
-      WPRPROGRAMMETYPE: ['', [Validators.required]],
-      WPRBUDGET: ['', [Validators.required, isNumberCheck(), Validators.maxLength(9)]],
+      WPRPROGRAMMETYPE: ['', [Validators.required, Validators.maxLength(50)]],
+      WPRBUDGET: ['', [Validators.required]], //isNumberCheck(), Validators.maxLength(9)
       WPRTARGETCOMPLETIONDATE: ['', [Validators.required, ShouldGreaterThanYesterday()]],
       WPRPLANSTARTDATE: ['', [Validators.required, ShouldGreaterThanYesterday()]],
       WPRPLANENDDATE: ['', [Validators.required, ShouldGreaterThanYesterday()]],
@@ -143,8 +147,14 @@ export class WorksordersNewmanagementComponent implements OnInit {
 
     },
       {
-        validator: [OrderDateValidator('WPRPLANENDDATE', 'WPRPLANSTARTDATE'), IsGreaterDateValidator('WPRPLANENDDATE', 'WPRTARGETCOMPLETIONDATE')],
-      });
+        validator: [
+          OrderDateValidator('WPRPLANENDDATE', 'WPRPLANSTARTDATE'),
+          IsGreaterDateValidator('WPRPLANENDDATE', 'WPRTARGETCOMPLETIONDATE')
+        ],
+      }
+    );
+
+
 
     this.populateForm()
 
@@ -162,6 +172,7 @@ export class WorksordersNewmanagementComponent implements OnInit {
       this.workManagementForm.get('WPRSTATUS').disable();
       this.workManagementForm.get('WPRACTINACT').disable();
     } else {
+      this.title = "Edit Works Programme"
       this.getWopmManagementData()
     }
   }
@@ -267,11 +278,12 @@ export class WorksordersNewmanagementComponent implements OnInit {
     this.submitted = true;
     this.formErrorObject(); // empty form error 
     this.logValidationErrors(this.workManagementForm);
-    
+
+    // console.log(this.workManagementForm)
     if (this.workManagementForm.invalid) {
       return;
     }
-    
+
     let formRawVal = this.workManagementForm.getRawValue();
     let managementModel: WorkordersAddManagementModel = formRawVal;
     managementModel.WPRTARGETCOMPLETIONDATE = this.dateFormate(formRawVal.WPRTARGETCOMPLETIONDATE);
@@ -292,7 +304,9 @@ export class WorksordersNewmanagementComponent implements OnInit {
     managementModel.MPgoA = this.currentUser.userId
     managementModel.MPgrA = this.currentUser.userId
 
+    managementModel.WPRBUDGET = formRawVal.WPRBUDGET
 
+    
     let apiToAddUpdate: any;
     let message = '';
     if (this.formMode == 'new') {

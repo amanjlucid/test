@@ -160,6 +160,7 @@ export function OrderDateValidator(controlName: any, matchingControlName1: any) 
         if (matchingControl1.value == null || control.value == null) {
             return;
         }
+
         const date1 = `${control.value.year}/${control.value.month}/${control.value.day}`
         const date2 = `${matchingControl1.value.year}/${matchingControl1.value.month}/${matchingControl1.value.day}`
         let dateOne = new Date(date1);
@@ -178,7 +179,8 @@ export function IsGreaterDateValidator(controlName: any, matchingControlName1: a
         const control = formGroup.controls[controlName];
         const matchingControl1 = formGroup.controls[matchingControlName1];
 
-        if (control.errors && !control.errors.isLower) {
+       
+        if (control.errors && !control.errors.isGreaterDate) {
             // return if another validator has already found an error on the matchingControl
             return;
         }
@@ -279,6 +281,9 @@ export function MustbeTodayOrGreater(format = "DD/MM/YYYY"): any {
 
 export function isNumberCheck(): ValidatorFn {
     return (control: FormControl): { [key: string]: boolean } | null => {
+        if (control.errors && !control.errors.isNotNumber) {
+            return;
+        }
         if (control.value != null && control.value != "") {
             let number = /^[.\d]+$/.test(control.value) ? +control.value : NaN;
             if (number !== number) {

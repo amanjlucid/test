@@ -118,7 +118,7 @@ import { SurveyCbcreportSelectImageComponent } from './survey-portal/survey-cbcr
 import { SurveyCbcreportSignatureImageComponent } from './survey-portal/survey-cbcreport-signature-image/survey-cbcreport-signature-image.component';
 // import { WorksordersManagementComponent } from './worksorders/worksorders-management/worksorders-management.component';
 import { TreeListModule } from '@progress/kendo-angular-treelist';
-
+import { CurrencyPipe } from '@angular/common';
 
 // import { WopmTemplatesComponent } from './worksorders/Config/wopm-templates/wopm-templates.component';
 // import { WopmConfigComponent } from './worksorders/Config/wopm-config/wopm-config.component';
@@ -297,6 +297,7 @@ import { TreeListModule } from '@progress/kendo-angular-treelist';
     SurveyPortalService,
     WorksorderManagementService,
     WopmConfigurationService,
+    CurrencyPipe,
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptorService, multi: true },

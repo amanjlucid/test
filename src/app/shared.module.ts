@@ -20,14 +20,15 @@ import { RetrievedEpcGridComponent } from './assets-portal/asset-energy/retrieve
 
 import { DateRangeTreeListFilterComponent } from './kendo-component/date-range-treelist-filter.component';
 
-import {ReportingComponent} from './security-portal/groups/reporting/reporting.component';
+import { ReportingComponent } from './security-portal/groups/reporting/reporting.component';
 import { MultiSelectModule } from '@progress/kendo-angular-dropdowns';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
+import { CurrencyInputDirective } from './_directives';
 
 @NgModule({
-  imports: [FormsModule, ReactiveFormsModule, GridModule, InputsModule, DialogsModule, DatePickerModule, CommonModule, TreeListModule, MultiSelectModule, NgMultiSelectDropDownModule.forRoot(),],
-  declarations: [DateFormatPipe, CurrencyFormatPipe, RoundOffPipe, SimpleTextFilterComponent, DateRangeFilterComponent, MultiCheckFilterComponent, RetrievedEpcGridComponent, DateRangeTreeListFilterComponent, ReportingComponent],
-  exports: [DateFormatPipe, CurrencyFormatPipe, RoundOffPipe, SimpleTextFilterComponent, DateRangeFilterComponent, MultiCheckFilterComponent, RetrievedEpcGridComponent, DateRangeTreeListFilterComponent, ReportingComponent]
+  imports: [FormsModule, ReactiveFormsModule, GridModule, InputsModule, DialogsModule, DatePickerModule, CommonModule, TreeListModule, MultiSelectModule, NgMultiSelectDropDownModule.forRoot()],
+  declarations: [DateFormatPipe, CurrencyFormatPipe, RoundOffPipe, SimpleTextFilterComponent, DateRangeFilterComponent, MultiCheckFilterComponent, RetrievedEpcGridComponent, DateRangeTreeListFilterComponent, ReportingComponent, CurrencyInputDirective],
+  exports: [DateFormatPipe, CurrencyFormatPipe, RoundOffPipe, SimpleTextFilterComponent, DateRangeFilterComponent, MultiCheckFilterComponent, RetrievedEpcGridComponent, DateRangeTreeListFilterComponent, ReportingComponent, CurrencyInputDirective]
 })
 
 export class SharedModule { }

@@ -6,6 +6,7 @@ import { User } from '../../../_models'
 declare var $: any;
 import * as moment from 'moment';
 import { SubSink } from 'subsink';
+import { OrderDateValidator, IsGreaterDateValidator } from 'src/app/_helpers';
 
 @Component({
     selector: 'app-workorder-form',
@@ -113,6 +114,7 @@ export class WorkOrderFormComponent implements OnInit {
 
         'woplanenddate': {
             'required': 'Plan End Date is required.',
+            'isLower': 'Planned End Date must be on or after the Planned Start Date.',
         },
 
         'woinstructions': {
@@ -224,7 +226,11 @@ export class WorkOrderFormComponent implements OnInit {
                 woprofitpct: ['', Validators.required],
                 woothercostpct: ['', Validators.required],
                 contract_payment_type: ['', Validators.required],
-            })
+            },
+                {
+                    validator: [OrderDateValidator('woplanenddate', 'woplanstartdate')],
+                }
+            )
 
 
             this.readInput = false
@@ -589,10 +595,20 @@ export class WorkOrderFormComponent implements OnInit {
     logValidationErrors(group: FormGroup): void {
         Object.keys(group.controls).forEach((key: string) => {
             const abstractControl = group.get(key);
+
+            // if (key == 'WPRACTUALENDDATE' || key == 'WPRACTUALSTARTDATE' || key == 'WPRCONTRACTORISSUEDATE') {
+            //     abstractControl.setErrors(null)
+            //   }
+
+
             if (abstractControl instanceof FormGroup) {
                 this.logValidationErrors(abstractControl);
             } else {
-                if (abstractControl && !abstractControl.valid) {
+                if (abstractControl && !abstractControl.valid && abstractControl.errors != null) {
+                    if (abstractControl.errors.hasOwnProperty('ngbDate')) {
+                        delete abstractControl.errors['ngbDate'];
+                    }
+
                     const messages = this.validationMessage[key];
                     for (const errorKey in abstractControl.errors) {
                         if (errorKey) {

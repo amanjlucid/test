@@ -599,11 +599,11 @@ export class WorksordersDetailsComponent implements OnInit {
       }
 
       params.WOSEQUENCE = item.wosequence;
-      params.WOPSEQUENCE = item.wosequence;
+      params.WOPSEQUENCE = item.wopsequence;
       params.strASSID = [item.assid];
       params.concateAddress = item.woname;
 
-      
+
     } else {
 
       let selectedKeyArr = this.selected.map(x => { return x.itemKey });
@@ -621,7 +621,7 @@ export class WorksordersDetailsComponent implements OnInit {
 
       params.strASSID = assetIdArr;
       params.WOSEQUENCE = assetData[0].wosequence;
-      params.WOPSEQUENCE = assetData[0].wosequence;
+      params.WOPSEQUENCE = assetData[0].wopsequence;
       // params.concateAddress = this.selectedChildRow.woname;
     }
 

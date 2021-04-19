@@ -1,4 +1,4 @@
-<kendo-window title="New Works Management" *ngIf="openNewManagement" (close)="closeNewManagementWindow()" [top]="20"
+<kendo-window title="{{title}}" *ngIf="openNewManagement" (close)="closeNewManagementWindow()" [top]="20"
     [minWidth]="700" [width]="950" [height]="auto" [minHeight]="350">
 
     <form [formGroup]="workManagementForm" (ngSubmit)="onSubmit()" autocomplete="off" class="managementForm">
@@ -117,8 +117,9 @@
                     <div class="first">
                         <label class="col-form-label">Budget</label>
                     </div>
-                    <div class="second">
-                        <input type="text" class="form-control" formControlName="WPRBUDGET"
+                    <div class="second budgetDiv">
+                        
+                        <input type="text" currencyInput  maxDigits="9" class="form-control" formControlName="WPRBUDGET"
                             [ngClass]="{ 'is-invalid': submitted && formErrors.WPRBUDGET }" autocomplete="off">
 
                         <div *ngIf="submitted && formErrors.WPRBUDGET" class="invalid-feedback">

@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewEncapsulation, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { FilterService, SelectableSettings, TreeListComponent, ExpandEvent, RowClassArgs } from '@progress/kendo-angular-treelist';
-import { AlertService, HelperService, WorksorderManagementService, ConfirmationDialogService, SharedService } from '../../_services'
+import { AlertService, HelperService, WorksorderManagementService, ConfirmationDialogService, SharedService, WorksOrdersService } from '../../_services'
 import { SubSink } from 'subsink';
 import { Router } from '@angular/router';
 import { SortDescriptor } from '@progress/kendo-data-query';
@@ -27,13 +27,15 @@ export class WorksordersManagementComponent implements OnInit {
     drag: false,
     enabled: true
   };
-  sort: SortDescriptor[] = [{
-    field: 'wosequence',
-    dir: 'asc'
-  }, {
-    field: 'name',
-    dir: 'asc'
-  }];
+  sort: SortDescriptor[] = [
+    //   {
+    //   field: 'wosequence',
+    //   dir: 'asc'
+    // }, {
+    //   field: 'name',
+    //   dir: 'asc'
+    // }
+  ];
   gridPageSize = 25;
   public apiData: any = [];
   public groupedData: any = [];
@@ -45,6 +47,12 @@ export class WorksordersManagementComponent implements OnInit {
 
   packageMappingWindow = false
   worksOrderSingleData: any;
+  deleteWorksOrderReasonWindow = false;
+  selctedWorksOrder: any;
+  reasonToDeleteWO: string;
+
+  woFormType = 'new';
+  woFormWindow: boolean = false;
 
   constructor(
     private worksorderManagementService: WorksorderManagementService,
@@ -54,6 +62,7 @@ export class WorksordersManagementComponent implements OnInit {
     private confirmationDialogService: ConfirmationDialogService,
     private sharedService: SharedService,
     private router: Router,
+    private worksOrderService: WorksOrdersService,
   ) { }
 
   ngOnInit(): void {
@@ -313,5 +322,65 @@ export class WorksordersManagementComponent implements OnInit {
   lockUnlockColumn() {
     this.columnLocked = !this.columnLocked
   }
+
+  deleteWorksOrder(worksOrderItem, reason = "no", checkOrProcess = "C") {
+    this.selctedWorksOrder = worksOrderItem;
+    this.subs.add(
+      this.worksOrderService.DeleteWebWorkOrder(worksOrderItem.wosequence, reason, this.currentUser.userId, checkOrProcess).subscribe(
+        data => {
+          // console.log(data);
+          if (data.isSuccess && data.data.pRETURNSTATUS == "S") {
+            this.deleteWorksOrderReasonWindow = true;
+          } else if (data.pRETURNSTATUS == "E") {
+            this.alertService.error(data.datapRETURNMESSAGE)
+          } else {
+            this.alertService.success(data.datapRETURNMESSAGE)
+          }
+        }
+      )
+    )
+  }
+
+  finalDelete() {
+    if (this.reasonToDeleteWO == "" || this.reasonToDeleteWO == undefined) {
+      this.alertService.error("You must enter a reason for deleting a Works Order");
+      return
+    }
+
+    this.subs.add(
+      this.worksOrderService.DeleteWebWorkOrder(this.selctedWorksOrder.wosequence, this.reasonToDeleteWO, this.currentUser.userId, "P").subscribe(
+        data => {
+          // console.log(data);
+          if (data.data.pRETURNSTATUS == "E") {
+            this.alertService.error(data.data.pRETURNMESSAGE)
+          } else {
+            this.alertService.success(data.data.pRETURNMESSAGE);
+            this.refreshManagementGrid(true);
+            this.closeWorksorderReasonWindow()
+          }
+        }
+      )
+    )
+  }
+
+  closeWorksorderReasonWindow() {
+    this.deleteWorksOrderReasonWindow = false;
+    this.reasonToDeleteWO = undefined
+  }
+
+
+  openWorksOrderForm(action, item = null) {
+    $('.newManagementOverlay').addClass('ovrlay');
+    this.woFormType = action;
+    this.selctedWorksOrder = item;
+    this.woFormWindow = true;
+  }
+
+  closeWoFormWin($event) {
+    this.woFormWindow = $event;
+    $('.newManagementOverlay').removeClass('ovrlay');
+    this.refreshManagementGrid(true);
+  }
+
 
 }
