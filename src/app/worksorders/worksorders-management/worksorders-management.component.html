@@ -72,7 +72,7 @@
                                 <a *ngIf="worksOrderAccess.indexOf('Delete Programme') != -1" class="dropdown-item"
                                     (click)="openConfirmationDialog(dataItem)" href="javascript:void(0)">Delete</a>
                                 <a *ngIf="worksOrderAccess.indexOf('New Works Order') != -1" class="dropdown-item"
-                                    href="javascript:void(0)">New Works Order</a>
+                                    href="javascript:void(0)" (click)="openWorksOrderForm('new')">New Works Order</a>
 
                             </div>
                         </li>

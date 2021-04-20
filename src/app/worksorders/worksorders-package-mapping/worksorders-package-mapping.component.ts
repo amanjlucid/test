@@ -150,10 +150,12 @@ export class WorksordersPackageMappingComponent implements OnInit {
       let selectedData = this.mappingData.filter(x => this.mySelection.includes(x.wphcode));
       let wphcode = [];
       let ataid = [];
-
+     
       for (let mapdata of selectedData) {
-        wphcode.push(mapdata.wphcode);
-        ataid.push(mapdata.ataid);
+        if (!wphcode.includes(mapdata.wphcode)) {
+          wphcode.push(mapdata.wphcode);
+          ataid.push(mapdata.ataid);
+        }
       }
 
       let params = {
@@ -163,7 +165,7 @@ export class WorksordersPackageMappingComponent implements OnInit {
         ataid: ataid,//[],
         checksurcde: this.templateid
       }
-
+     
       applyApi = this.worksorderManagementService.selectedOrderMapping(params);
 
     } else {

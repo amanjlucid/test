@@ -9,7 +9,7 @@
                         <label class="col-form-label">Name</label>
                     </div>
                     <div class="second">
-                        <input type="text" class="form-control" formControlName="WPRNAME"
+                        <input maxlength="50" type="text" class="form-control" formControlName="WPRNAME"
                             [ngClass]="{ 'is-invalid': submitted && formErrors.WPRNAME }" autocomplete="off">
 
                         <div *ngIf="submitted && formErrors.WPRNAME" class="invalid-feedback">
@@ -23,7 +23,7 @@
                         <label class="col-form-label">Ext Ref</label>
                     </div>
                     <div class="second">
-                        <input type="text" class="form-control" formControlName="WPREXTREF"
+                        <input maxlength="50" type="text" class="form-control" formControlName="WPREXTREF"
                             [ngClass]="{ 'is-invalid': submitted && formErrors.WPREXTREF }" autocomplete="off">
                         <div *ngIf="submitted && formErrors.WPREXTREF" class="invalid-feedback">
                             <div *ngIf="formErrors.WPREXTREF">{{ formErrors.WPREXTREF }}</div>
@@ -38,7 +38,7 @@
                         <label class="col-form-label">Desc</label>
                     </div>
                     <div class="second">
-                        <input type="text" class="form-control" formControlName="WPRDESC"
+                        <input maxlength="50" type="text" class="form-control" formControlName="WPRDESC"
                             [ngClass]="{ 'is-invalid': submitted && formErrors.WPRDESC }" autocomplete="off">
 
                         <div *ngIf="submitted && formErrors.WPRDESC" class="invalid-feedback">
@@ -102,7 +102,7 @@
                         <label class="col-form-label">Programme Type</label>
                     </div>
                     <div class="second">
-                        <input type="text" class="form-control" formControlName="WPRPROGRAMMETYPE"
+                        <input maxlength="50" type="text" class="form-control" formControlName="WPRPROGRAMMETYPE"
                             [ngClass]="{ 'is-invalid': submitted && formErrors.WPRPROGRAMMETYPE }" autocomplete="off">
 
                         <div *ngIf="submitted && formErrors.WPRPROGRAMMETYPE" class="invalid-feedback">
@@ -118,8 +118,12 @@
                         <label class="col-form-label">Budget</label>
                     </div>
                     <div class="second budgetDiv">
-                        
-                        <input type="text" currencyInput  maxDigits="9" class="form-control" formControlName="WPRBUDGET"
+                        <!-- <kendo-maskedtextbox class="form-control" formControlName="WPRBUDGET"
+                        [ngClass]="{ 'is-invalid': submitted && formErrors.WPRBUDGET }" [mask]="mask" [value]="value"></kendo-maskedtextbox> -->
+
+                        <!-- <input type="text" currencyInput  maxDigits="9" class="form-control" formControlName="WPRBUDGET"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.WPRBUDGET }" autocomplete="off"> -->
+                        <input type="text" appCurrencyMask maxDigits="9" class="form-control" formControlName="WPRBUDGET"
                             [ngClass]="{ 'is-invalid': submitted && formErrors.WPRBUDGET }" autocomplete="off">
 
                         <div *ngIf="submitted && formErrors.WPRBUDGET" class="invalid-feedback">
@@ -160,24 +164,29 @@
                         <label class="col-form-label">Work</label>
                     </div>
                     <div class="childGrpDiv">
-                        <input type="text" class="form-control" formControlName="WPRFORECAST"
-                        [ngClass]="{ 'is-invalid': submitted && formErrors.WPRFORECAST }" autocomplete="off" [readonly]="readonly">
+                        <input appCurrencyMask maxDigits="9" type="text" class="form-control" formControlName="WPRFORECAST"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.WPRFORECAST }" autocomplete="off"
+                            [readonly]="readonly">
                     </div>
                     <div class="childGrpDiv">
-                        <input type="text" class="form-control" formControlName="WPRCOMMITTED"
-                        [ngClass]="{ 'is-invalid': submitted && formErrors.WPRCOMMITTED }" autocomplete="off" [readonly]="readonly">
+                        <input appCurrencyMask maxDigits="9" type="text" class="form-control" formControlName="WPRCOMMITTED"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.WPRCOMMITTED }" autocomplete="off"
+                            [readonly]="readonly">
                     </div>
                     <div class="childGrpDiv">
-                        <input type="text" class="form-control" formControlName="WPRAPPROVED"
-                        [ngClass]="{ 'is-invalid': submitted && formErrors.WPRAPPROVED }" autocomplete="off" [readonly]="readonly">
+                        <input appCurrencyMask maxDigits="9" type="text" class="form-control" formControlName="WPRAPPROVED"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.WPRAPPROVED }" autocomplete="off"
+                            [readonly]="readonly">
                     </div>
                     <div class="childGrpDiv">
-                        <input type="text" class="form-control" formControlName="WPRPENDING"
-                        [ngClass]="{ 'is-invalid': submitted && formErrors.WPRPENDING }" autocomplete="off" [readonly]="readonly">
+                        <input appCurrencyMask maxDigits="9" type="text" class="form-control" formControlName="WPRPENDING"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.WPRPENDING }" autocomplete="off"
+                            [readonly]="readonly">
                     </div>
                     <div class="childGrpDiv">
-                        <input type="text" class="form-control" formControlName="WPRACTUAL"
-                        [ngClass]="{ 'is-invalid': submitted && formErrors.WPRACTUAL }" autocomplete="off" [readonly]="readonly">
+                        <input appCurrencyMask maxDigits="9" type="text" class="form-control" formControlName="WPRACTUAL"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.WPRACTUAL }" autocomplete="off"
+                            [readonly]="readonly">
                     </div>
                 </div>
 
@@ -186,24 +195,29 @@
                         <label class="col-form-label">Work Fees</label>
                     </div>
                     <div class="childGrpDiv">
-                        <input type="text" class="form-control" formControlName="WPRFORECASTFEE"
-                        [ngClass]="{ 'is-invalid': submitted && formErrors.WPRFORECASTFEE }" autocomplete="off" [readonly]="readonly">
+                        <input appCurrencyMask maxDigits="9" type="text" class="form-control" formControlName="WPRFORECASTFEE"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.WPRFORECASTFEE }" autocomplete="off"
+                            [readonly]="readonly">
                     </div>
                     <div class="childGrpDiv">
-                        <input type="text" class="form-control" formControlName="WPRCOMMITTEDFEE"
-                        [ngClass]="{ 'is-invalid': submitted && formErrors.WPRCOMMITTEDFEE }" autocomplete="off" [readonly]="readonly">
+                        <input appCurrencyMask maxDigits="9" type="text" class="form-control" formControlName="WPRCOMMITTEDFEE"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.WPRCOMMITTEDFEE }" autocomplete="off"
+                            [readonly]="readonly">
                     </div>
                     <div class="childGrpDiv">
-                        <input type="text" class="form-control" formControlName="WPRAPPROVEDFEE"
-                        [ngClass]="{ 'is-invalid': submitted && formErrors.WPRAPPROVEDFEE }" autocomplete="off" [readonly]="readonly">
+                        <input appCurrencyMask maxDigits="9" type="text" class="form-control" formControlName="WPRAPPROVEDFEE"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.WPRAPPROVEDFEE }" autocomplete="off"
+                            [readonly]="readonly">
                     </div>
                     <div class="childGrpDiv">
-                        <input type="text" class="form-control" formControlName="WPRPENDINGFEE"
-                        [ngClass]="{ 'is-invalid': submitted && formErrors.WPRPENDINGFEE }" autocomplete="off" [readonly]="readonly">
+                        <input appCurrencyMask maxDigits="9" type="text" class="form-control" formControlName="WPRPENDINGFEE"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.WPRPENDINGFEE }" autocomplete="off"
+                            [readonly]="readonly">
                     </div>
                     <div class="childGrpDiv">
-                        <input type="text" class="form-control" formControlName="WPRACTUALFEE"
-                        [ngClass]="{ 'is-invalid': submitted && formErrors.WPRACTUALFEE }" autocomplete="off" [readonly]="readonly">
+                        <input appCurrencyMask maxDigits="9" type="text" class="form-control" formControlName="WPRACTUALFEE"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.WPRACTUALFEE }" autocomplete="off"
+                            [readonly]="readonly">
                     </div>
                 </div>
 
@@ -212,24 +226,29 @@
                         <label class="col-form-label">Contract Fees</label>
                     </div>
                     <div class="childGrpDiv">
-                        <input type="text" class="form-control" formControlName="WPRFORECASTCONFEE"
-                        [ngClass]="{ 'is-invalid': submitted && formErrors.WPRFORECASTCONFEE }" autocomplete="off" [readonly]="readonly">
+                        <input appCurrencyMask maxDigits="9" type="text" class="form-control" formControlName="WPRFORECASTCONFEE"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.WPRFORECASTCONFEE }" autocomplete="off"
+                            [readonly]="readonly">
                     </div>
                     <div class="childGrpDiv">
-                        <input type="text" class="form-control" formControlName="WPRCOMMITTEDCONFEE"
-                        [ngClass]="{ 'is-invalid': submitted && formErrors.WPRCOMMITTEDCONFEE }" autocomplete="off" [readonly]="readonly">
+                        <input appCurrencyMask maxDigits="9" type="text" class="form-control" formControlName="WPRCOMMITTEDCONFEE"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.WPRCOMMITTEDCONFEE }" autocomplete="off"
+                            [readonly]="readonly">
                     </div>
                     <div class="childGrpDiv">
-                        <input type="text" class="form-control" formControlName="WPRAPPROVEDCONFEE"
-                        [ngClass]="{ 'is-invalid': submitted && formErrors.WPRAPPROVEDCONFEE }" autocomplete="off" [readonly]="readonly">
+                        <input appCurrencyMask maxDigits="9" type="text" class="form-control" formControlName="WPRAPPROVEDCONFEE"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.WPRAPPROVEDCONFEE }" autocomplete="off"
+                            [readonly]="readonly">
                     </div>
                     <div class="childGrpDiv">
-                        <input type="text" class="form-control" formControlName="WPRPENDINGCONFEE"
-                        [ngClass]="{ 'is-invalid': submitted && formErrors.WPRPENDINGCONFEE }" autocomplete="off" [readonly]="readonly">
+                        <input appCurrencyMask maxDigits="9" type="text" class="form-control" formControlName="WPRPENDINGCONFEE"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.WPRPENDINGCONFEE }" autocomplete="off"
+                            [readonly]="readonly">
                     </div>
                     <div class="childGrpDiv">
-                        <input type="text" class="form-control" formControlName="WPRACTUALCONFEE"
-                        [ngClass]="{ 'is-invalid': submitted && formErrors.WPRACTUALCONFEE }" autocomplete="off" [readonly]="readonly">
+                        <input appCurrencyMask maxDigits="9" type="text" class="form-control" formControlName="WPRACTUALCONFEE"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.WPRACTUALCONFEE }" autocomplete="off"
+                            [readonly]="readonly">
                     </div>
                 </div>
             </div>
@@ -242,12 +261,13 @@
                     </div>
                     <div class="second">
                         <input type="text" class="form-control" formControlName="WPRTARGETCOMPLETIONDATE"
-                            [ngClass]="{ 'is-invalid': submitted && formErrors.WPRTARGETCOMPLETIONDATE }" autocomplete="off"
-                            (click)="openCalendar(td,'completedDate')" [minDate]="minDate" ngbDatepicker
-                            #td="ngbDatepicker" [placement]="'top'">
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.WPRTARGETCOMPLETIONDATE }"
+                            autocomplete="off" (click)="openCalendar(td,'completedDate')" [minDate]="minDate"
+                            ngbDatepicker #td="ngbDatepicker" [placement]="'top'">
 
                         <div *ngIf="submitted && formErrors.WPRTARGETCOMPLETIONDATE" class="invalid-feedback">
-                            <div *ngIf="formErrors.WPRTARGETCOMPLETIONDATE">{{ formErrors.WPRTARGETCOMPLETIONDATE }}</div>
+                            <div *ngIf="formErrors.WPRTARGETCOMPLETIONDATE">{{ formErrors.WPRTARGETCOMPLETIONDATE }}
+                            </div>
                         </div>
                     </div>
 
@@ -260,9 +280,9 @@
                     </div>
                     <div class="second">
                         <input type="text" class="form-control" formControlName="WPRCONTRACTORISSUEDATE"
-                            [ngClass]="{ 'is-invalid': submitted && formErrors.WPRCONTRACTORISSUEDATE }" autocomplete="off"
-                            (click)="openCalendar(td,'completedDate')" [minDate]="minDate" ngbDatepicker
-                            #td="ngbDatepicker" [placement]="'top'">
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.WPRCONTRACTORISSUEDATE }"
+                            autocomplete="off" (click)="openCalendar(td,'completedDate')" [minDate]="minDate"
+                            ngbDatepicker #td="ngbDatepicker" [placement]="'top'">
 
                         <div *ngIf="submitted && formErrors.WPRCONTRACTORISSUEDATE" class="invalid-feedback">
                             <div *ngIf="formErrors.WPRCONTRACTORISSUEDATE">{{ formErrors.WPRCONTRACTORISSUEDATE }}</div>

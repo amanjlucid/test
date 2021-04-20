@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewEncapsulation, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { SubSink } from 'subsink';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
-import { FilterService, SelectableSettings, TreeListComponent } from '@progress/kendo-angular-treelist';
+import { FilterService, SelectableSettings, TreeListComponent, RowClassArgs } from '@progress/kendo-angular-treelist';
 import { AlertService, LoaderService, ConfirmationDialogService, HelperService, WorksorderManagementService, SharedService, PropertySecurityGroupService, AuthenticationService } from '../../_services'
 import { forkJoin } from 'rxjs';
 import { WorkordersDetailModel } from 'src/app/_models';
@@ -245,6 +245,18 @@ export class WorksordersDetailsComponent implements OnInit {
       pFromDate: "1753-01-01",
       pToDate: "1753-01-01",
       pContractor: false
+    }
+  }
+
+  rowCallback(context: RowClassArgs) {
+    if (context.dataItem.treelevel == 1) {
+      return { level1: true, }
+    }
+    if (context.dataItem.treelevel == 2) {
+      return { level2: true, }
+    }
+    if (context.dataItem.treelevel == 3) {
+      return { level3: true, }
     }
   }
 

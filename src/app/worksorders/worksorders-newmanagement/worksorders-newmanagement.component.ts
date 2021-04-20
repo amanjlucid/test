@@ -95,6 +95,8 @@ export class WorksordersNewmanagementComponent implements OnInit {
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
   readonly = true;
   mData: any;
+  mask = '£00,000,0000.00';
+  value = '0';
 
   constructor(
     private chRef: ChangeDetectorRef,
@@ -114,15 +116,15 @@ export class WorksordersNewmanagementComponent implements OnInit {
   ngOnInit(): void {
     this.workManagementForm = this.fb.group({
       WPRNAME: ['', [Validators.required, Validators.maxLength(50)]],
-      WPREXTREF: ['', [Validators.required, Validators.maxLength(50)]],
-      WPRDESC: ['', [Validators.required]],
+      WPREXTREF: ['', [Validators.maxLength(50)]],
+      WPRDESC: ['', []],
       WPRSTATUS: [''],
       WPRACTINACT: [''],
-      WPRPROGRAMMETYPE: ['', [Validators.required, Validators.maxLength(50)]],
+      WPRPROGRAMMETYPE: ['', [Validators.maxLength(50)]],
       WPRBUDGET: ['', [Validators.required]], //isNumberCheck(), Validators.maxLength(9)
       WPRTARGETCOMPLETIONDATE: ['', [Validators.required, ShouldGreaterThanYesterday()]],
-      WPRPLANSTARTDATE: ['', [Validators.required, ShouldGreaterThanYesterday()]],
-      WPRPLANENDDATE: ['', [Validators.required, ShouldGreaterThanYesterday()]],
+      WPRPLANSTARTDATE: ['', [ShouldGreaterThanYesterday()]],
+      WPRPLANENDDATE: ['', [ShouldGreaterThanYesterday()]],
       WPRACTUALSTARTDATE: [''],
       WPRACTUALENDDATE: [''],
       WPRCONTRACTORISSUEDATE: [''],
@@ -181,6 +183,7 @@ export class WorksordersNewmanagementComponent implements OnInit {
     this.subs.add(
       this.worksorderManagementService.getWorkProgrammesByWprsequence(this.selectedProgramme.wprsequence).subscribe(
         data => {
+          // console.log(data);
           if (data.isSuccess) {
             const mData = this.mData = data.data[0];
             this.workManagementForm.patchValue({
@@ -218,6 +221,10 @@ export class WorksordersNewmanagementComponent implements OnInit {
               WPRACTUALCONFEE: mData.wpractualconfee,
 
             })
+
+            this.workManagementForm.get('WPRCONTRACTORISSUEDATE').disable();
+            this.workManagementForm.get('WPRACTUALSTARTDATE').disable();
+            this.workManagementForm.get('WPRACTUALENDDATE').disable();
           } else {
             this.alertService.error(data.message)
           }
@@ -304,9 +311,9 @@ export class WorksordersNewmanagementComponent implements OnInit {
     managementModel.MPgoA = this.currentUser.userId
     managementModel.MPgrA = this.currentUser.userId
 
-    managementModel.WPRBUDGET = formRawVal.WPRBUDGET
+    managementModel.WPRBUDGET = this.convertMoneyToFlatFormat(formRawVal.WPRBUDGET)
 
-    
+
     let apiToAddUpdate: any;
     let message = '';
     if (this.formMode == 'new') {
@@ -314,6 +321,17 @@ export class WorksordersNewmanagementComponent implements OnInit {
       message = `New Programme "${managementModel.WPRNAME}" added successfully.`;
     } else {
       managementModel.WPRSEQUENCE = this.mData.wprsequence;
+
+      if (this.mData.wprstatus == "New" && managementModel.WPRSTATUS == "In Progress") {
+        this.alertService.error("The work programme satus cannot be changed from 'New' to 'In Progress'");
+        return
+      }
+
+      if (this.mData.wprstatus == "Closed" && managementModel.WPRSTATUS == "New") {
+        this.alertService.error("The work programme satus cannot be changed from 'Closed' to 'New'");
+        return
+      }
+
       apiToAddUpdate = this.worksorderManagementService.updateWorksProgramme(managementModel);
       message = `Programme "${managementModel.WPRNAME}" updated successfully.`;
     }
@@ -331,6 +349,13 @@ export class WorksordersNewmanagementComponent implements OnInit {
         // console.log(data)
       }
     )
+  }
+
+  convertMoneyToFlatFormat(val) {
+    val = typeof val == "number" ? val.toString() : val;
+    console.log(typeof val)
+    console.log(val)
+    return val == "" ? val : val.replace(/[^0-9.]+/g, '');
   }
 
   closeNewManagementWindow() {

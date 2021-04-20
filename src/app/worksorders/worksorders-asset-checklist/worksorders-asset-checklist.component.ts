@@ -570,9 +570,9 @@ export class WorksordersAssetChecklistComponent implements OnInit {
       }
       callApi = this.worksorderManagementService.worksOrderAcceptAsset(params);
     } else if (type == "ISSUE") {
-      if (!this.selectedChecklistsingleItem || this.workorderAsset.woassstatus == "Pending") {
-        return
-      }
+      // if (!this.selectedChecklistsingleItem || this.workorderAsset.woassstatus != "Pending") {
+      //   return
+      // }
       callApi = this.worksorderManagementService.worksOrderIssueAsset(params);
     }
 

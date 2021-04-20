@@ -328,13 +328,13 @@ export class WorksordersManagementComponent implements OnInit {
     this.subs.add(
       this.worksOrderService.DeleteWebWorkOrder(worksOrderItem.wosequence, reason, this.currentUser.userId, checkOrProcess).subscribe(
         data => {
-          // console.log(data);
+          console.log(data);
           if (data.isSuccess && data.data.pRETURNSTATUS == "S") {
             this.deleteWorksOrderReasonWindow = true;
-          } else if (data.pRETURNSTATUS == "E") {
-            this.alertService.error(data.datapRETURNMESSAGE)
+          } else if (data.data.pRETURNSTATUS == "E") {
+            this.alertService.error(data.data.pRETURNMESSAGE)
           } else {
-            this.alertService.success(data.datapRETURNMESSAGE)
+            this.alertService.error(data.data.pRETURNMESSAGE)
           }
         }
       )

@@ -204,7 +204,7 @@
         [rowHeight]="36" kendoTreeListExpandable [initiallyExpanded]="true" [sortable]="true" filterable="menu"
         [filter]="filter" (filterChange)="onFilterChange($event)" [pageSize]="gridPageSize" [navigable]="false"
         kendoTreeListSelectable [selectable]="settings" [(selectedItems)]="selected" itemKey="id" [height]="gridHeight"
-        [virtualColumns]="true" [loading]="loading" [resizable]="true" (cellClick)="cellClickHandler($event)">
+        [virtualColumns]="true" [loading]="loading" [resizable]="true" (cellClick)="cellClickHandler($event)" [rowClass]="rowCallback">
 
         <kendo-treelist-column field="wprstatus" title="" [width]="33" [sortable]="false" [filterable]="false">
           <ng-template kendoTreeListCellTemplate let-dataItem>

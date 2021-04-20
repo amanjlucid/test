@@ -110,6 +110,10 @@ export class WorksordersNewPhaseComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    if(this.phaseFormMode != "new"){
+      this.title = "Edit Phase"
+    }
+
     this.nePhaseForm = this.fb.group({
       WOPNAME: ['', [Validators.required]],
       WOPDESC: ['', [Validators.required]],

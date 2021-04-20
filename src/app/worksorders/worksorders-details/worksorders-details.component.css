@@ -49,6 +49,10 @@
   max-width: 11%;
 }
 
+.level2 {
+  background-color: rgba(230, 0, 126, 0.1) !important;
+}
+
 /*------------------   Heiarchy css             ------------------------- */
 
 /* ————————————————————–
