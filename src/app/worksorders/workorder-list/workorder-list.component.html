@@ -8,7 +8,8 @@
     </div>
 
     <div class="col-md-10 text-right">
-      <button *ngIf="worksOrderAccess.indexOf('New Works Order') != -1" (click)="openUserPopup('new')" class="btn btn-sm themeButton "><i class="fa fa-plus"></i>
+      <button *ngIf="worksOrderAccess.indexOf('New Works Order') != -1" (click)="openUserPopup('new')"
+        class="btn btn-sm themeButton "><i class="fa fa-plus"></i>
         New Works Order
       </button>
 
@@ -20,23 +21,24 @@
     <div class="col-md-12">
       <div class="filterArea">
         <div class="filterdiv1 filterdiv">
-          <label for="woNumber" class="filterLbl">WO Number:</label>
-          <input type="text" id="woNumber" [(ngModel)]="filterObject.Wosequence">
+          <label for="woNumber" class="filterLbl">Number:</label>
+          <input (keydown)="keyDownFunction($event)" type="text" id="woNumber" [(ngModel)]="filterObject.Wosequence">
         </div>
         <div class="filterdiv2 filterdiv">
-          <label for="woName" class="filterLbl">WO Name:</label>
-          <input type="text" id="woName" [(ngModel)]="filterObject.WoName">
+          <label for="woName" class="filterLbl">Name:</label>
+          <input (keydown)="keyDownFunction($event)" type="text" id="woName" [(ngModel)]="filterObject.WoName">
         </div>
         <div class="filterdiv3 filterdiv">
           <label for="extRef" class="filterLbl">Ext Ref:</label>
-          <input type="text" id="extRef" [(ngModel)]="filterObject.Woextref">
+          <input (keydown)="keyDownFunction($event)" type="text" id="extRef" [(ngModel)]="filterObject.Woextref">
         </div>
         <div class="filterdiv4 filterdiv">
           <label for="address" class="filterLbl">Address:</label>
-          <input type="text" id="address" autocomplete="off" [(ngModel)]="filterObject.Address">
+          <input (keydown)="keyDownFunction($event)" type="text" id="address" autocomplete="off"
+            [(ngModel)]="filterObject.Address">
         </div>
         <div class="filterdiv5 filterdiv">
-          <label for="woStatus" class="">WO Status:</label>
+          <label for="woStatus" class="">Status:</label>
           <div class="radioDiv">
             <label class="radio-inline">
               <input type="radio" value="S" name="gridStatus" [(ngModel)]="filterObject.ActiveInactive">All
@@ -51,7 +53,7 @@
         </div>
         <div class="filterdiv6 filterdiv">
           <button class="btn btn-sm themeButton mr-1" (click)="filterGrid($event)">Search</button>
-          <button class="btn btn-sm themeButton" (click)="resetFilter()">Reset Filter</button>
+          <button class="btn btn-sm themeButton" (click)="resetFilter()">Clear</button>
         </div>
       </div>
     </div>
@@ -60,22 +62,26 @@
 
   <div class="row mt-2">
 
-    <div class="col-md-12">
-      <kendo-grid [kendoGridGroupBinding]="worksOrderData" [pageSize]="30" scrollable="virtual" [rowHeight]="36"
-        [height]="680" [loading]="loading" filterable="menu" [resizable]="true" [sortable]="{
-    allowUnsort: true, mode: 'single'}" [skip]="state.skip" [sort]="state.sort" [selectable]="selectableSettings"
-        [filter]="state.filter" (cellClick)="cellClickHandler($event)" [navigable]="false" [virtualColumns]="true" [rowClass]="rowCallback">
+    <div class="col-md-12 worksorderGrid">
+      <kendo-grid [data]="gridView" [pageSize]="pageSize" [rowHeight]="36" (pageChange)="pageChange($event)"
+        scrollable="virtual" [height]="680" [loading]="loading" filterable="menu" [resizable]="true" [sortable]="{
+    allowUnsort: true, mode: 'single'}" [skip]="state.skip" [sort]="state.state" [selectable]="selectableSettings"
+        [filter]="state.filter" (cellClick)="cellClickHandler($event)" [navigable]="false" [virtualColumns]="true"
+        [rowClass]="rowCallback" [kendoGridSelectBy]="mySelectionKey" [selectedKeys]="mySelection">
 
 
         <kendo-grid-column title=" " width="35" [filterable]="false">
           <ng-template kendoGridCellTemplate let-dataItem>
             <li class="nav-item dropdown list-unstyled" style="margin-top: -7px;" (click)="setSeletedRow(dataItem)">
               <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
-              <div class="dropdown-menu">
-                
-                <a *ngIf="worksOrderAccess.indexOf('Edit Works Order') != -1" class="dropdown-item" href="javascript:void(0)" (click)="redirectToWorksOrderEdit(dataItem)">Edit</a>
-                <a *ngIf="worksOrderAccess.indexOf('Delete Works Order') != -1" class="dropdown-item" href="javascript:void(0)" (click)="deleteThis(dataItem)">Delete</a>
-                <a *ngIf="worksOrderAccess.indexOf('Works Order Detail') != -1" class="dropdown-item" href="javascript:void(0)" (click)="redirectToWorksOrder(dataItem)"> Works Order Details</a>
+              <div class="dropdown-menu selectedMenuBar{{dataItem.wosequence}}">
+
+                <a *ngIf="worksOrderAccess.indexOf('Edit Works Order') != -1" class="dropdown-item"
+                  href="javascript:void(0)" (click)="redirectToWorksOrderEdit(dataItem)">Edit</a>
+                <a *ngIf="worksOrderAccess.indexOf('Delete Works Order') != -1" class="dropdown-item"
+                  href="javascript:void(0)" (click)="deleteThis(dataItem)">Delete</a>
+                <a *ngIf="worksOrderAccess.indexOf('Works Order Detail') != -1" class="dropdown-item"
+                  href="javascript:void(0)" (click)="redirectToWorksOrder(dataItem)"> Works Order Details</a>
                 <!-- <a class="dropdown-item" href="javascript:void(0)">Defects </a>
                 <a class="dropdown-item" href="javascript:void(0)">Contract Costs</a>
                 <a class="dropdown-item" href="javascript:void(0)">Variations</a>
@@ -260,53 +266,56 @@
 </div>
 
 
-<kendo-dialog title="DELETE WORKS ORDERS" *ngIf="woFormDeleteWindow" (close)="closewoFormDeleteWindow()" [minWidth]="250" [width]="450">
+<kendo-dialog title="DELETE WORKS ORDERS" *ngIf="woFormDeleteWindow" (close)="closewoFormDeleteWindow()"
+  [minWidth]="250" [width]="450">
 
 
 
-    <p  *ngIf="errorDeleteMsg"   class="deleteError">{{ errorDeleteMsg }}</p>
-    <p  *ngIf="successDeleteMsg"   class="successDeleteMsg">{{ successDeleteMsg }}</p>
+  <p *ngIf="errorDeleteMsg" class="deleteError">{{ errorDeleteMsg }}</p>
+  <p *ngIf="successDeleteMsg" class="successDeleteMsg">{{ successDeleteMsg }}</p>
 
 
-    <div *ngIf="deleteReasonMsgInput"   class="">
+  <div *ngIf="deleteReasonMsgInput" class="">
 
-        <div   class="form-group col-md-12">
-          <label class="form-label">Enter Reason For Deleting</label>
-          <textarea   type="text" class="form-control"
-            placeholder="" name="reason_for_delete" #reason_for_deleteInput></textarea>
+    <div class="form-group col-md-12">
+      <label class="form-label">Enter Reason For Deleting</label>
+      <textarea type="text" class="form-control" placeholder="" name="reason_for_delete"
+        #reason_for_deleteInput></textarea>
 
-          <div  class="invalid-feedback">
-            <div ></div>
-          </div>
-        </div>
-
-
-
-
-        <div class="buttonDiv pull-right mb-4">
-
-          <button (click)="finalDeleteSubmit(reason_for_deleteInput.value)" type="button" class="btn btn-sm themeButton mr-1">Delete</button>
-
-
-
-        </div>
-
-
-
-        </div>
+      <div class="invalid-feedback">
+        <div></div>
+      </div>
+    </div>
 
 
 
 
+    <div class="buttonDiv pull-right mb-4">
+
+      <button (click)="finalDeleteSubmit(reason_for_deleteInput.value)" type="button"
+        class="btn btn-sm themeButton mr-1">Delete</button>
 
 
 
-  </kendo-dialog>
+    </div>
+
+
+
+  </div>
+
+
+
+
+
+
+
+</kendo-dialog>
 
 
 
 
 
 <div class="worksOrderOverlay"></div>
-<app-workorder-form [woFormType]="woFormType" [woFormWindow]="woFormWindow" [selectedWorkOrderAddEdit]="selectedWorkOrderAddEdit"
-  *ngIf="woFormWindow" (closeWoFormWin)="closeWoFormWin($event)"></app-workorder-form>
+<app-workorder-form [woFormType]="woFormType" [woFormWindow]="woFormWindow"
+  [selectedWorkOrderAddEdit]="selectedWorkOrderAddEdit" *ngIf="woFormWindow" (closeWoFormWin)="closeWoFormWin($event)">
+</app-workorder-form>

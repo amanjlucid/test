@@ -124,7 +124,7 @@ export class WorksordersAssetDetailComponent implements OnInit {
         let promise = new Promise((resolve, reject) => {
             this.worksOrdersService.WorkOrderAssetDetail(this.selectedRow.wosequence, this.selectedRow.wopsequence, this.selectedRow.assid, checkSrc).subscribe(
                 (data) => {
-
+                    // console.log(data)
                     if (data.isSuccess) {
                         this.assetDetailsGridData = data.data
                         resolve(true);
@@ -161,6 +161,7 @@ export class WorksordersAssetDetailComponent implements OnInit {
         let promise = new Promise((resolve, reject) => {
             this.worksOrdersService.WorkOrderAssetDetailPhases(this.selectedRow.wosequence, this.selectedRow.wopsequence).subscribe(
                 (data) => {
+                    // console.log(data);
                     if (data.isSuccess) {
 
                         if (this.treelevel == 2)
@@ -195,6 +196,10 @@ export class WorksordersAssetDetailComponent implements OnInit {
     }
 
     finalremoveAssetFromPhase(dataItem) {
+        if (dataItem.woadstatus == 'Issued' || dataItem.woadstatus == 'Released') {
+            return
+        }
+
         this.selectedItem = dataItem;
         let wosequence = this.selectedItem.wosequence;
         let wopsequence = this.selectedItem.wopsequence;
@@ -313,6 +318,9 @@ export class WorksordersAssetDetailComponent implements OnInit {
     }
 
     clearRefusalConfirm(item) {
+        if (item.woadstatus != 'New') {
+            return
+        }
 
         this.selectedItem = item;
 
@@ -345,7 +353,9 @@ export class WorksordersAssetDetailComponent implements OnInit {
     }
 
     openSwapPackage(item) {
-
+        if (item.woadstatus != 'New') {
+            return
+        }
         this.selectedItem = item;
         this.SwapPackageWindow = true;
         this.itemData.assid = item.assid;
@@ -402,6 +412,10 @@ export class WorksordersAssetDetailComponent implements OnInit {
     }
 
     openSetToRefusalWindow(item) {
+
+        if (item.woadstatus != 'New') {
+            return
+        }
 
         //  console.log('item  api reponse'+ JSON.stringify(item));
         this.selectedItem = item;
@@ -581,6 +595,11 @@ export class WorksordersAssetDetailComponent implements OnInit {
 
     async openEditWorkPackageQtyCostWindow(item) {
 
+        if (item.woadstatus != 'New') {
+            return
+        }
+
+
         this.selectedItem = item;
         this.EditWorkPackageQtyCostWindow = true;
 
@@ -676,6 +695,10 @@ export class WorksordersAssetDetailComponent implements OnInit {
 
 
     rechargeToggle(item) {
+
+        if (item.woadstatus != 'New') {
+            return
+        }
 
         this.selectedItem = item;
 

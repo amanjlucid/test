@@ -67,23 +67,32 @@
             <li class="nav-item dropdown list-unstyled" style="margin-top: -7px;">
               <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars" (click)="setSeletedRow(dataItem)"></i>
               <div class="dropdown-menu">
-                <a class="dropdown-item" href="javascript:void(0)" *ngIf="worksOrderAccess.indexOf('Remove Asset') != -1" (click)="removeAssetFromPhase(dataItem)">Delete</a>
+                <a class="dropdown-item" href="javascript:void(0)"
+                  *ngIf="worksOrderAccess.indexOf('Remove Asset') != -1" (click)="removeAssetFromPhase(dataItem)"
+                  [ngClass]="{'disabled' :dataItem.woadstatus != 'New'}">Delete</a>
 
                 <a *ngIf="treelevel == 3 && worksOrderAccess.indexOf('Edit Comment') != -1" class="dropdown-item"
                   href="javascript:void(0)" (click)="openEditCommentForWoAssetWindow(dataItem)">Edit Comment</a>
-                <a *ngIf="treelevel == 3 && worksOrderAccess.indexOf('Edit Work') != -1" class="dropdown-item" href="javascript:void(0)"
-                  (click)="openEditWorkPackageQtyCostWindow(dataItem)">Edit Work</a>
-                <a *ngIf="treelevel == 3 && dataItem.woadrechargeyn == 'N' && worksOrderAccess.indexOf('Recharge') != -1"
+
+                <a [ngClass]="{'disabled' :dataItem.woadstatus != 'New'}"
+                  *ngIf="treelevel == 3 && worksOrderAccess.indexOf('Edit Work') != -1" class="dropdown-item"
+                  href="javascript:void(0)" (click)="openEditWorkPackageQtyCostWindow(dataItem)">Edit Work</a>
+                <a [ngClass]="{'disabled' :dataItem.woadstatus != 'New'}"
+                  *ngIf="treelevel == 3 && dataItem.woadrechargeyn == 'N' && worksOrderAccess.indexOf('Recharge') != -1"
                   class="dropdown-item" href="javascript:void(0)" (click)="rechargeToggle(dataItem)">Recharge</a>
-                <a *ngIf="treelevel == 3 && dataItem.woadrechargeyn == 'Y' && worksOrderAccess.indexOf('Recharge') != -1"
+                <a [ngClass]="{'disabled' :dataItem.woadstatus != 'New'}"
+                  *ngIf="treelevel == 3 && dataItem.woadrechargeyn == 'Y' && worksOrderAccess.indexOf('Recharge') != -1"
                   class="dropdown-item" href="javascript:void(0)" (click)="rechargeToggle(dataItem)">Clear Recharge</a>
-                <a *ngIf="treelevel == 3 && dataItem.woadrefusaL_YN == 'N' && worksOrderAccess.indexOf('Refusal') != -1"
+                <a [ngClass]="{'disabled' :dataItem.woadstatus != 'New'}"
+                  *ngIf="treelevel == 3 && dataItem.woadrefusaL_YN == 'N' && worksOrderAccess.indexOf('Refusal') != -1"
                   class="dropdown-item" href="javascript:void(0)" (click)="openSetToRefusalWindow(dataItem)">Set to
                   Refusal</a>
-                <a *ngIf="treelevel == 3 && dataItem.woadrefusaL_YN == 'Y' && worksOrderAccess.indexOf('Refusal') != -1"
+                <a [ngClass]="{'disabled' :dataItem.woadstatus != 'New'}"
+                  *ngIf="treelevel == 3 && dataItem.woadrefusaL_YN == 'Y' && worksOrderAccess.indexOf('Refusal') != -1"
                   class="dropdown-item" href="javascript:void(0)" (click)="clearRefusalConfirm(dataItem)">Clear
                   Refusal</a>
-                <a *ngIf="treelevel == 3 && worksOrderAccess.indexOf('Swap Package') != -1" class="dropdown-item"
+                <a [ngClass]="{'disabled' :dataItem.woadstatus != 'New'}"
+                  *ngIf="treelevel == 3 && worksOrderAccess.indexOf('Swap Package') != -1" class="dropdown-item"
                   href="javascript:void(0)" (click)="openSwapPackage(dataItem)">Swap Package</a>
 
 

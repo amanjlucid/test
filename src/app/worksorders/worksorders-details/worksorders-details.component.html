@@ -227,7 +227,7 @@
 
                 <a *ngIf="worksOrderAccess.indexOf('Delete Phase') != -1" class="dropdown-item"
                   href="javascript:void(0)" (click)="openConfirmationDialog(dataItem)">Delete</a>
-                <div class="dropdown-toggle">
+                <div class="dropdown-toggle" [ngClass]="{'disabled' : dataItem.wostatus != 'New'}">
                   <div class="dropdown-item">Add Asset(s)</div>
                   <div class="dropdown-menu">
                     <a *ngIf="worksOrderAccess.indexOf('Add Assets') != -1" class="dropdown-item"

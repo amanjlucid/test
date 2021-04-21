@@ -5,7 +5,7 @@
 }
 
 .k-grid tr.notNew {
-    background-color: #f8e0dc;
+    background-color: rgba(230, 0, 126, 0.1)
 }
 
 .dropdown.list-unstyled {
@@ -99,20 +99,23 @@
     margin-right: 5px;
 }
 
-
 .deleteError {
     margin: 30px;
-     text-align: center;
-     color:red;
-     font-size: 17px;
-}
-.successDeleteMsg {
-    margin: 30px;
-     text-align: center;
-     color:green;
-     font-size: 17px;
+    text-align: center;
+    color: red;
+    font-size: 17px;
 }
 
+.successDeleteMsg {
+    margin: 30px;
+    text-align: center;
+    color: green;
+    font-size: 17px;
+}
+
+.worksorderGrid .k-grid tr.k-alt {
+    background-color: white !important;
+}
 
 /** media query **/
 

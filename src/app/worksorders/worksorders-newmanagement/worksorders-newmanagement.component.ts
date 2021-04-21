@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { SubSink } from 'subsink';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { WorksorderManagementService, AlertService, HelperService } from '../../_services'
+import { WorksorderManagementService, AlertService, HelperService, LoaderService } from '../../_services'
 import { ShouldGreaterThanYesterday, isNumberCheck, OrderDateValidator, IsGreaterDateValidator } from 'src/app/_helpers';
 import { WorkordersAddManagementModel } from '../../_models';
 
@@ -95,8 +95,7 @@ export class WorksordersNewmanagementComponent implements OnInit {
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
   readonly = true;
   mData: any;
-  mask = '£00,000,0000.00';
-  value = '0';
+
 
   constructor(
     private chRef: ChangeDetectorRef,
@@ -104,6 +103,7 @@ export class WorksordersNewmanagementComponent implements OnInit {
     private worksorderManagementService: WorksorderManagementService,
     private alertService: AlertService,
     private helperService: HelperService,
+    private loaderService: LoaderService
   ) {
     const current = new Date();
     this.minDate = {
@@ -114,6 +114,13 @@ export class WorksordersNewmanagementComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    let targetDateValidationArr = [Validators.required, ShouldGreaterThanYesterday()];
+    let planDateValidationArr = [ShouldGreaterThanYesterday()];
+    if (this.formMode == "edit") {
+      targetDateValidationArr = [Validators.required];
+      planDateValidationArr = [];
+    }
+
     this.workManagementForm = this.fb.group({
       WPRNAME: ['', [Validators.required, Validators.maxLength(50)]],
       WPREXTREF: ['', [Validators.maxLength(50)]],
@@ -122,9 +129,9 @@ export class WorksordersNewmanagementComponent implements OnInit {
       WPRACTINACT: [''],
       WPRPROGRAMMETYPE: ['', [Validators.maxLength(50)]],
       WPRBUDGET: ['', [Validators.required]], //isNumberCheck(), Validators.maxLength(9)
-      WPRTARGETCOMPLETIONDATE: ['', [Validators.required, ShouldGreaterThanYesterday()]],
-      WPRPLANSTARTDATE: ['', [ShouldGreaterThanYesterday()]],
-      WPRPLANENDDATE: ['', [ShouldGreaterThanYesterday()]],
+      WPRTARGETCOMPLETIONDATE: ['', targetDateValidationArr],
+      WPRPLANSTARTDATE: ['', planDateValidationArr],
+      WPRPLANENDDATE: ['', planDateValidationArr],
       WPRACTUALSTARTDATE: [''],
       WPRACTUALENDDATE: [''],
       WPRCONTRACTORISSUEDATE: [''],
@@ -156,7 +163,16 @@ export class WorksordersNewmanagementComponent implements OnInit {
       }
     );
 
-
+    // const completionDateControl = this.workManagementForm.get('WPRTARGETCOMPLETIONDATE');
+    // completionDateControl.valueChanges.subscribe(
+    //   date => {
+    //     if (this.formMode == "new") {
+    //       completionDateControl.setValidators([Validators.required, ShouldGreaterThanYesterday()]);
+    //     } else {
+    //       completionDateControl.setValidators([Validators.required]);
+    //     }
+    //   }
+    // )
 
     this.populateForm()
 
@@ -225,6 +241,8 @@ export class WorksordersNewmanagementComponent implements OnInit {
             this.workManagementForm.get('WPRCONTRACTORISSUEDATE').disable();
             this.workManagementForm.get('WPRACTUALSTARTDATE').disable();
             this.workManagementForm.get('WPRACTUALENDDATE').disable();
+
+
           } else {
             this.alertService.error(data.message)
           }
@@ -237,9 +255,9 @@ export class WorksordersNewmanagementComponent implements OnInit {
     Object.keys(group.controls).forEach((key: string) => {
       const abstractControl = group.get(key);
 
-      if (key == 'WPRACTUALENDDATE' || key == 'WPRACTUALSTARTDATE' || key == 'WPRCONTRACTORISSUEDATE') {
-        abstractControl.setErrors(null)
-      }
+      // if (key == 'WPRACTUALENDDATE' || key == 'WPRACTUALSTARTDATE' || key == 'WPRCONTRACTORISSUEDATE') {
+      //   abstractControl.setErrors(null)
+      // }
 
       if (abstractControl instanceof FormGroup) {
         this.logValidationErrors(abstractControl);
@@ -248,6 +266,11 @@ export class WorksordersNewmanagementComponent implements OnInit {
 
           if (abstractControl.errors.hasOwnProperty('ngbDate')) {
             delete abstractControl.errors['ngbDate'];
+
+            if (Object.keys(abstractControl.errors).length == 0) {
+              abstractControl.setErrors(null)
+            }
+
           }
 
           const messages = this.validationMessage[key];
@@ -286,7 +309,8 @@ export class WorksordersNewmanagementComponent implements OnInit {
     this.formErrorObject(); // empty form error 
     this.logValidationErrors(this.workManagementForm);
 
-    // console.log(this.workManagementForm)
+    this.chRef.detectChanges();
+
     if (this.workManagementForm.invalid) {
       return;
     }
@@ -319,7 +343,11 @@ export class WorksordersNewmanagementComponent implements OnInit {
     if (this.formMode == 'new') {
       apiToAddUpdate = this.worksorderManagementService.addWorkOrderManagement(managementModel);
       message = `New Programme "${managementModel.WPRNAME}" added successfully.`;
+
+      this.subscribeToSubmitForm(apiToAddUpdate, message);
+
     } else {
+
       managementModel.WPRSEQUENCE = this.mData.wprsequence;
 
       if (this.mData.wprstatus == "New" && managementModel.WPRSTATUS == "In Progress") {
@@ -332,29 +360,50 @@ export class WorksordersNewmanagementComponent implements OnInit {
         return
       }
 
+      if (this.mData.wprstatus == "In Progress" && managementModel.WPRSTATUS == "New") {
+        this.alertService.error("The work programme satus cannot be changed from 'In Progress' to 'New'");
+        return
+      }
+
       apiToAddUpdate = this.worksorderManagementService.updateWorksProgramme(managementModel);
       message = `Programme "${managementModel.WPRNAME}" updated successfully.`;
+
+      if (new Date(managementModel.WPRTARGETCOMPLETIONDATE) < new Date()) {
+        this.alertService.warning("Warning - Target Completion Date is in the past!", false);
+        this.loaderService.pageShow();
+        setTimeout(() => {
+          this.subscribeToSubmitForm(apiToAddUpdate, message);
+        }, 2000);
+      } else {
+        this.subscribeToSubmitForm(apiToAddUpdate, message);
+      }
+
     }
 
     // console.log(managementModel);
-    apiToAddUpdate.subscribe(
-      data => {
-        if (data.isSuccess) {
-          this.alertService.success(message);
-          this.refreshManagementGrid.emit(true);
-          this.closeNewManagementWindow()
-        } else {
-          this.alertService.error(data.message);
+
+  }
+
+  subscribeToSubmitForm(apiToAddUpdate, message) {
+    this.subs.add(
+      apiToAddUpdate.subscribe(
+        data => {
+          if (data.isSuccess) {
+            this.alertService.success(message);
+            this.refreshManagementGrid.emit(true);
+            this.closeNewManagementWindow()
+          } else {
+            this.alertService.error(data.message);
+          }
+          this.loaderService.pageHide();
+          // console.log(data)
         }
-        // console.log(data)
-      }
+      )
     )
   }
 
   convertMoneyToFlatFormat(val) {
     val = typeof val == "number" ? val.toString() : val;
-    console.log(typeof val)
-    console.log(val)
     return val == "" ? val : val.replace(/[^0-9.]+/g, '');
   }
 

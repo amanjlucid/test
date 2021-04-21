@@ -1,7 +1,7 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, ChangeDetectorRef } from '@angular/core';
 import { SubSink } from 'subsink';
-import { State } from '@progress/kendo-data-query';
-import { SelectableSettings, RowClassArgs } from '@progress/kendo-angular-grid';
+import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
+import { SelectableSettings, RowClassArgs, RowArgs, PageChangeEvent } from '@progress/kendo-angular-grid';
 import { AlertService, HelperService, SharedService, WorksOrdersService } from '../../_services'
 import { Subject } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -20,15 +20,19 @@ export class WorkorderListComponent implements OnInit {
   subs = new SubSink();
   state: State = {
     skip: 0,
-    sort: [{
-      field: 'wosequence',
-      dir: 'desc'
-    }],
+    sort: [],
+    take: 25,
     group: [],
     filter: {
       logic: "or",
       filters: []
     }
+  }
+  gridView: DataResult;
+  pageSize = 25;
+  mySelection: any = [];
+  mySelectionKey(context: RowArgs): string {
+    return context.dataItem.wosequence
   }
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
   worksOrderData: any;
@@ -56,7 +60,8 @@ export class WorkorderListComponent implements OnInit {
     private helperService: HelperService,
     private sharedService: SharedService,
     private router: Router,
-    private helper: HelperService
+    private helper: HelperService,
+    private chRef: ChangeDetectorRef,
   ) {
     this.setSelectableSettings();
     this.setInitialFilterValue();
@@ -75,7 +80,7 @@ export class WorkorderListComponent implements OnInit {
     )
 
 
-    this.getUserWorksOrdersList(this.filterObject);
+    this.getUserWorksOrdersList(this.filterObject, "menuOpen");
 
     // Filter grid from header filter area
     this.subs.add(
@@ -93,14 +98,50 @@ export class WorkorderListComponent implements OnInit {
     this.subs.unsubscribe();
   }
 
-  getUserWorksOrdersList(filter) {
+  keyDownFunction(event) {
+    if (event.keyCode == 13) {
+      this.loading = false
+      this.getUserWorksOrdersList(this.filterObject);
+    }
+  }
+
+  getUserWorksOrdersList(filter, menuOpen = null) {
+    console.log(filter)
+   
     this.subs.add(
       this.eveneManagerService.getListOfUserWorksOrderByUserId(filter).subscribe(
         data => {
-          // console.log(data)
-          if (data.isSuccess) this.worksOrderData = data.data
-          else this.alertService.error(data.message);
+          console.log(data)
+          if (data.isSuccess) {
+            this.worksOrderData = data.data;
+            this.gridView = process(this.worksOrderData, this.state);
+          } else {
+            this.alertService.error(data.message);
+          }
+         
           this.loading = false;
+
+          //select the row if item exist in local storage
+          // if (menuOpen == "menuOpen") {
+          //   this.selectedWorksOrder = JSON.parse(localStorage.getItem('worksOrderSingleData'));
+          //   this.mySelection = [this.selectedWorksOrder.wosequence];
+          //   console.log(this.selectedWorksOrder);
+          //   console.log(this.mySelection);
+          //   if (this.selectedWorksOrder) {
+          //     setTimeout(() => {
+                
+          //       setTimeout(() => {
+          //         document.querySelector('.k-state-selected').scrollIntoView();
+          //         setTimeout(() => {
+          //           $('.selectedMenuBar' + this.selectedWorksOrder.wosequence).prev().trigger('click');
+          //         }, 200);
+          //       }, 100);
+
+          //     }, 2000);
+          //   }
+          // }
+
+          this.chRef.detectChanges();
         },
         err => this.alertService.error(err)
       )
@@ -108,8 +149,28 @@ export class WorkorderListComponent implements OnInit {
   }
 
 
+  sortChange(sort: SortDescriptor[]): void {
+    this.state.sort = sort;
+    this.gridView = process(this.worksOrderData, this.state);
+  }
+
+  filterChange(filter: any): void {
+    this.state.filter = filter;
+    this.gridView = process(this.worksOrderData, this.state);
+  }
+
+  pageChange(event: PageChangeEvent): void {
+    this.state.skip = event.skip;
+    this.gridView = {
+      data: this.worksOrderData.slice(this.state.skip, this.state.skip + this.pageSize),
+      total: this.worksOrderData.length
+    };
+  }
+
+
   cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
     this.selectedWorksOrder = dataItem;
+
   }
 
   setSelectableSettings(): void {
@@ -125,7 +186,7 @@ export class WorkorderListComponent implements OnInit {
 
   setSeletedRow(dataItem) {
     this.selectedWorksOrder = dataItem;
-    // this.selectedEvent.push(dataItem)
+    this.mySelection = [this.selectedWorksOrder.wosequence];
   }
 
   openUserPopup(action, item = null) {

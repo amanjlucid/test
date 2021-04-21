@@ -33,6 +33,11 @@ export class AlertService {
         this.subject.next({ type: 'error', text: message, time: time });
     }
 
+    warning(message: string, keepAfterNavigationChange = false, time = 10000) {
+        this.keepAfterNavigationChange = keepAfterNavigationChange;
+        this.subject.next({ type: 'warning', text: message, time: time });
+    }
+
     destroyAlert() {
         this.subject.next({ type: 'destroy' });
     }

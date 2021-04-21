@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { SubSink } from 'subsink';
+import { RowArgs } from '@progress/kendo-angular-grid';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { AlertService, ConfirmationDialogService, HelperService, WorksorderManagementService, SharedService } from '../../_services'
 
@@ -34,9 +35,11 @@ export class WorksordersPackageMappingComponent implements OnInit {
   requestedData: any = [];
   templates: any;
   templateid: any = 0;
-  public mySelection: number[] = [];
+  public mySelection: any[] = [];
   worksOrderData: any;
-
+  mySelectionKey(context: RowArgs): string {
+    return `${context.dataItem.wphcode}_${context.dataItem.ataid}_${context.dataItem.cttsurcde}`;
+  }
 
   constructor(
     private sharedService: SharedService,
@@ -83,6 +86,7 @@ export class WorksordersPackageMappingComponent implements OnInit {
     this.subs.add(
       this.worksorderManagementService.packageMappingList(param).subscribe(
         data => {
+          
           if (data.isSuccess && data) {
             this.mappingData = data.data;
             this.gridView = process(this.mappingData, this.state);
@@ -147,15 +151,15 @@ export class WorksordersPackageMappingComponent implements OnInit {
         return
       }
 
-      let selectedData = this.mappingData.filter(x => this.mySelection.includes(x.wphcode));
+    
+      let selectedData = this.mappingData.filter(x => this.mySelection.includes(`${x.wphcode}_${x.ataid}_${x.cttsurcde}`));
+
       let wphcode = [];
       let ataid = [];
-     
+
       for (let mapdata of selectedData) {
-        if (!wphcode.includes(mapdata.wphcode)) {
-          wphcode.push(mapdata.wphcode);
-          ataid.push(mapdata.ataid);
-        }
+        wphcode.push(mapdata.wphcode);
+        ataid.push(mapdata.ataid);
       }
 
       let params = {
@@ -165,7 +169,7 @@ export class WorksordersPackageMappingComponent implements OnInit {
         ataid: ataid,//[],
         checksurcde: this.templateid
       }
-     
+
       applyApi = this.worksorderManagementService.selectedOrderMapping(params);
 
     } else {
