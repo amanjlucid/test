@@ -147,6 +147,7 @@ export class WorkOrderFormComponent implements OnInit {
 
     };
     formErrors: any;
+    templateType:string;
 
 
     constructor(
@@ -174,9 +175,6 @@ export class WorkOrderFormComponent implements OnInit {
                 woprogram: ['', Validators.required],
                 contractName: ['', Validators.required],
                 wophasetemplate: [''],
-
-
-
             })
 
         }
@@ -248,7 +246,6 @@ export class WorkOrderFormComponent implements OnInit {
 
     async getAllData() {
 
-
         this.GetPhaseTemplateList();
         this.getWorkOrderType();
         this.GetWorkOrderProgrammeList();
@@ -316,12 +313,6 @@ export class WorkOrderFormComponent implements OnInit {
         let cttcode = '';
         let cttname = '';
 
-
-
-
-
-
-
         if (this.assetTmpSelcted.hasOwnProperty("wotname")) {
 
         } else {
@@ -386,7 +377,9 @@ export class WorkOrderFormComponent implements OnInit {
 
             this.worksOrdersService.GetWorksOrderByWOsequence(this.work_order_no).subscribe(
                 (data) => {
+                    // console.log(data.data)
                     this.selectedWorkOrderAddEdit = data.data;
+                    this.templateType = this.selectedWorkOrderAddEdit.wocodE5
                     this.chRef.detectChanges();
                     resolve(true);
                 },
@@ -424,10 +417,9 @@ export class WorkOrderFormComponent implements OnInit {
     GetPhaseTemplateList() {
 
         let promise = new Promise((resolve, reject) => {
-
-
             this.worksOrdersService.GetPhaseTemplateList().subscribe(
                 (data) => {
+                    // console.log(data)
                     this.GetPhaseTemplateListData = data.data;
                     this.chRef.detectChanges();
                     resolve(true);
@@ -726,13 +718,13 @@ export class WorkOrderFormComponent implements OnInit {
             WOINITIALCONTRACTSUM: 0,
             WOCURRENTCONTRACTSUM: 0,
             WOACCEPTEDVALUE: 0,
-            WOCONTRACTORISSUEDATE: '1753-01-01 00:00:00.000',
+            WOCONTRACTORISSUEDATE: this.dateFormate(undefined),
             WOTARGETCOMPLETIONDATE: this.dateFormate(this.f.wotargetcompletiondate.value),
-            WOCONTRACTORACCEPTANCEDATE: '1753-01-01 00:00:00.000',
+            WOCONTRACTORACCEPTANCEDATE: this.dateFormate(undefined),
             WOPLANSTARTDATE: this.dateFormate(this.f.woplanstartdate.value),
             WOPLANENDDATE: this.dateFormate(this.f.woplanenddate.value),
-            WOACTUALSTARTDATE: '1753-01-01 00:00:00.000',
-            WOACTUALENDDATE: '1753-01-01 00:00:00.000',
+            WOACTUALSTARTDATE: this.dateFormate(undefined),
+            WOACTUALENDDATE: this.dateFormate(undefined),
             WOCALCOVERPREMTYPE: 'N',
             WODEFECTLIABPERIODFLAG: 'N',
             WODEFECTLIABPERIODDAYS: 0,
@@ -740,7 +732,7 @@ export class WorkOrderFormComponent implements OnInit {
             WOCODE2: '',
             WOCODE3: this.f.purchase_order_no.value,
             WOCODE4: this.f.wobudgetcode.value,
-            WOCODE5: 'Works Order Milestone',
+            WOCODE5: this.templateType,
             WOCODE6: this.selectedWorkOrderAddEdit.wocodE6,
             WOTEXT1: '',
             WOTEXT2: '',
@@ -748,23 +740,20 @@ export class WorkOrderFormComponent implements OnInit {
             WOTEXT4: '',
             WOTEXT5: '',
             WOTEXT6: '',
-            MPgoA: 'BRIANJ',
-            MPgpA: '2021-03-17 18:30:00',
-            MPgqA: '2021-03-17 18:30:00',
-            MPgrA: 'BRIANJ',
-            MPgsA: '2021-03-17 18:30:00',
-            MPgtA: '2021-03-17 18:30:00',
+            MPgoA: this.currentUser.userid,
+            MPgpA: this.dateFormate(undefined),
+            MPgqA: this.dateFormate(undefined),
+            MPgrA: this.currentUser.userid,
+            MPgsA: this.dateFormate(undefined),
+            MPgtA: this.dateFormate(undefined),
         }
 
-
-
+       
         //console.log('Edited saveParms ' + JSON.stringify(this.saveParms));
 
 
         if (this.FinalSubmit == true) {
-
             this.loading = true;
-
             this.subs.add(
                 this.worksOrdersService.UpdateWorksOrder(this.saveParms)
                     .subscribe(
@@ -809,12 +798,10 @@ export class WorkOrderFormComponent implements OnInit {
         this.chRef.detach();
         this.chRef.detectChanges();
         this.chRef.reattach();
-        //  console.log('FOR DETECTOR CHANGE');
     }
 
 
     onSubmitAdd() {
-
         this.submitted = true;
         this.formErrorObject(); // empty form error
         this.logValidationErrors(this.woForm);
@@ -825,10 +812,7 @@ export class WorkOrderFormComponent implements OnInit {
 
 
         if (this.addStage == 2) {
-
-
             let woType = this.saveParms.woType;
-
             this.FinalSubmit = true;
             this.saveParms = {
                 WOSEQUENCE: this.work_order_no,
@@ -882,7 +866,7 @@ export class WorkOrderFormComponent implements OnInit {
                 WOCODE2: '',
                 WOCODE3: this.f.purchase_order_no.value,
                 WOCODE4: this.f.wobudgetcode.value,
-                WOCODE5: 'Works Order Milestone',
+                WOCODE5: this.templateType,
                 WOCODE6: woType,
                 WOTEXT1: '',
                 WOTEXT2: '',
@@ -898,10 +882,11 @@ export class WorkOrderFormComponent implements OnInit {
                 MPgtA: this.dateFormate(undefined),
             }
 
-
-
+           
 
         }
+
+      
 
         if (this.addStage == 1) {
 
@@ -913,6 +898,7 @@ export class WorkOrderFormComponent implements OnInit {
             //  let wotsequence  = this.assetTmpSelcted.wotsequence;
             //  let wprsequence  = this.programSelcted.wprsequence;
             let WorksOrderTypes = this.f.woType.value;
+            this.templateType = this.f.wophasetemplate.value
 
             this.loading = true;
 

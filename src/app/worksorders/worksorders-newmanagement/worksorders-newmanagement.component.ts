@@ -351,17 +351,17 @@ export class WorksordersNewmanagementComponent implements OnInit {
       managementModel.WPRSEQUENCE = this.mData.wprsequence;
 
       if (this.mData.wprstatus == "New" && managementModel.WPRSTATUS == "In Progress") {
-        this.alertService.error("The work programme satus cannot be changed from 'New' to 'In Progress'");
+        this.alertService.error("The Work Programme Status cannot be changed from 'New' to 'In Progress'");
         return
       }
 
       if (this.mData.wprstatus == "Closed" && managementModel.WPRSTATUS == "New") {
-        this.alertService.error("The work programme satus cannot be changed from 'Closed' to 'New'");
+        this.alertService.error("The Work Programme Status cannot be changed from 'Closed' to 'New'");
         return
       }
 
       if (this.mData.wprstatus == "In Progress" && managementModel.WPRSTATUS == "New") {
-        this.alertService.error("The work programme satus cannot be changed from 'In Progress' to 'New'");
+        this.alertService.error("The Work Programme Status cannot be changed from 'In Progress' to 'New'");
         return
       }
 

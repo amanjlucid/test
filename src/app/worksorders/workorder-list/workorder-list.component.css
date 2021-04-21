@@ -4,8 +4,13 @@
     padding: 8px 12px;
 }
 
+.worksorderGrid .k-grid tr {
+    background-color: white 
+}
+
+
 .k-grid tr.notNew {
-    background-color: rgba(230, 0, 126, 0.1)
+    background-color: rgba(230, 0, 126, 0.1) !important
 }
 
 .dropdown.list-unstyled {
@@ -113,9 +118,6 @@
     font-size: 17px;
 }
 
-.worksorderGrid .k-grid tr.k-alt {
-    background-color: white !important;
-}
 
 /** media query **/
 

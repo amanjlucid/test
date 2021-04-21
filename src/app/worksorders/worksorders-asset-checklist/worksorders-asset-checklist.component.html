@@ -32,7 +32,7 @@
                         [ngClass]="{'disabled' : !selectedChecklistsingleItem || selectedChecklistsingleItem.detailCount == 0}">
                         Delete All</a>
                     <a *ngIf="worksOrderAccess.indexOf('Add Work') != -1" class="dropdown-item"
-                        (click)="openAddAssetWorkOrdersList(selectedChildRow, 'all')" href="javascript:void(0)">
+                        (click)="openAddAssetWorkOrdersList(selectedChildRow, 'all')" href="javascript:void(0)" [ngClass]="{'disabled' : workorderAsset?.woassstatus != 'New'}">
                         Add</a>
 
 
@@ -412,7 +412,7 @@
                                             class="dropdown-item"
                                             (click)="openAddAssetWorkOrdersList(dataItem, 'single')"
                                             href="javascript:void(0)"
-                                            [ngClass]="{'disabled' : this.selectedChildRow.wostatus != 'New' || dataItem.wocheckspeciaL1 != 'WORK'}">Add</a>
+                                            [ngClass]="{'disabled' : selectedChildRow.wostatus != 'New' || dataItem.wocheckspeciaL1 != 'WORK'}">Add</a>
                                         <!-- <a class="dropdown-item" (click)="setComplete('CIT', dataItem)"
                                             href="javascript:void(0)">Remove</a>
                                         <a class="dropdown-item" (click)="openChooseDate('CIPICK', dataItem)"

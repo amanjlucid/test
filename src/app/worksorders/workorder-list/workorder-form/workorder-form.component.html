@@ -3,11 +3,7 @@
   <div class="flex-grow-1 userFrm">
 
     <form [formGroup]="woForm" (ngSubmit)="onSubmit()" autocomplete="off">
-
-
-
       <div *ngIf="addStage == 1" class="form-row">
-
         <div class="form-group col-md-12">
           <label class="form-label">Asset Template</label>
           <select class="custom-select" formControlName="wottemplatetype"
@@ -60,7 +56,7 @@
           <select class="custom-select" formControlName="wophasetemplate"
             [ngClass]="{ 'is-invalid': submitted && formErrors.wophasetemplate }">
             <option value=""></option>
-            <option *ngFor="let wophasetmp of GetPhaseTemplateListData" [ngValue]="wophasetmp">{{wophasetmp}}</option>
+            <option *ngFor="let wophasetmp of GetPhaseTemplateListData" [ngValue]="wophasetmp.wottemplatetype">{{wophasetmp.wotname}}</option>
 
           </select>
 
@@ -86,12 +82,6 @@
 
         </div>
 
-
-
-
-
-
-
       </div>
 
 
@@ -99,15 +89,9 @@
 
 
         <div class="form-row">
-
           <div class="form-group col-md-6">
             <label class="form-label">Works Order No</label>
-
             <input [readonly]="true" type="text" class="form-control" value="{{ work_order_no }}">
-
-
-
-
           </div>
 
 

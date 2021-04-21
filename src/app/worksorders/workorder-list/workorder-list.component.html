@@ -9,7 +9,7 @@
 
     <div class="col-md-10 text-right">
       <button *ngIf="worksOrderAccess.indexOf('New Works Order') != -1" (click)="openUserPopup('new')"
-        class="btn btn-sm themeButton "><i class="fa fa-plus"></i>
+        class="btn btn-sm themeButton ">
         New Works Order
       </button>
 
@@ -65,8 +65,10 @@
     <div class="col-md-12 worksorderGrid">
       <kendo-grid [data]="gridView" [pageSize]="pageSize" [rowHeight]="36" (pageChange)="pageChange($event)"
         scrollable="virtual" [height]="680" [loading]="loading" filterable="menu" [resizable]="true" [sortable]="{
-    allowUnsort: true, mode: 'single'}" [skip]="state.skip" [sort]="state.state" [selectable]="selectableSettings"
-        [filter]="state.filter" (cellClick)="cellClickHandler($event)" [navigable]="false" [virtualColumns]="true"
+          allowUnsort: true,
+          mode: 'single'
+          }" [skip]="state.skip" [sort]="state.sort" [selectable]="selectableSettings"
+        [filter]="state.filter" (sortChange)="sortChange($event)" (filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)" [navigable]="false" [virtualColumns]="true"
         [rowClass]="rowCallback" [kendoGridSelectBy]="mySelectionKey" [selectedKeys]="mySelection">
 
 
@@ -270,7 +272,6 @@
   [minWidth]="250" [width]="450">
 
 
-
   <p *ngIf="errorDeleteMsg" class="deleteError">{{ errorDeleteMsg }}</p>
   <p *ngIf="successDeleteMsg" class="successDeleteMsg">{{ successDeleteMsg }}</p>
 
@@ -310,8 +311,6 @@
 
 
 </kendo-dialog>
-
-
 
 
 

@@ -106,19 +106,19 @@ export class WorkorderListComponent implements OnInit {
   }
 
   getUserWorksOrdersList(filter, menuOpen = null) {
-    console.log(filter)
-   
+    this.state.skip = 0;
     this.subs.add(
       this.eveneManagerService.getListOfUserWorksOrderByUserId(filter).subscribe(
         data => {
-          console.log(data)
+
           if (data.isSuccess) {
             this.worksOrderData = data.data;
             this.gridView = process(this.worksOrderData, this.state);
+            this.chRef.detectChanges();
           } else {
             this.alertService.error(data.message);
           }
-         
+
           this.loading = false;
 
           //select the row if item exist in local storage
@@ -129,7 +129,7 @@ export class WorkorderListComponent implements OnInit {
           //   console.log(this.mySelection);
           //   if (this.selectedWorksOrder) {
           //     setTimeout(() => {
-                
+
           //       setTimeout(() => {
           //         document.querySelector('.k-state-selected').scrollIntoView();
           //         setTimeout(() => {
@@ -220,7 +220,12 @@ export class WorkorderListComponent implements OnInit {
   }
 
   rowCallback(context: RowClassArgs) {
-    return { notNew: context.dataItem.wostatus != "New" }
+    if (context.dataItem.wostatus != "New") {
+      return { notNew: true }
+    } else {
+      return { notNew: false }
+    }
+
   }
 
 
@@ -280,7 +285,7 @@ export class WorkorderListComponent implements OnInit {
 
         }
 
-        console.log('Delete Data Return ' + JSON.stringify(data.data));
+        // console.log('Delete Data Return ' + JSON.stringify(data.data));
 
       },
       error => {
@@ -347,7 +352,7 @@ export class WorkorderListComponent implements OnInit {
 
           }
 
-          console.log('Final Delete ' + JSON.stringify(data.data));
+          // console.log('Final Delete ' + JSON.stringify(data.data));
 
         },
         error => {
