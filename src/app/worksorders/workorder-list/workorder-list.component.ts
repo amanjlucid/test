@@ -68,6 +68,7 @@ export class WorkorderListComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.alertService.warning("Warning - Target Completion Date is in the past!", false, 20000);
     //update notification on top
     this.helper.updateNotificationOnTop();
 
@@ -89,7 +90,7 @@ export class WorkorderListComponent implements OnInit {
           debounceTime(100),
         ).subscribe(obj => this.getUserWorksOrdersList(obj))
     )
-
+   
   }
 
 
@@ -114,6 +115,7 @@ export class WorkorderListComponent implements OnInit {
           if (data.isSuccess) {
             this.worksOrderData = data.data;
             this.gridView = process(this.worksOrderData, this.state);
+           
             this.chRef.detectChanges();
           } else {
             this.alertService.error(data.message);

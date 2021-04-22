@@ -23,6 +23,11 @@
 }
 
 
+.stage2Form{
+  max-height: 680px;
+    overflow: auto;
+}
+
 
 @media screen and (max-width: 769px) {
     .userFrm{width: 100%;}
