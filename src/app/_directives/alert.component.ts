@@ -22,9 +22,9 @@ export class AlertComponent implements OnInit, OnDestroy {
             this.message = message;
             if (this.message != undefined) {
                 if (this.message.type != 'destroy') {
-                    // this.timeout = setTimeout(() => this.close(), this.message.time);
+                    this.timeout = setTimeout(() => this.close(), this.message.time);
                 } else {
-                    // this.close()
+                    this.close()
                 }
 
             }

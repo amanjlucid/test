@@ -68,7 +68,6 @@ export class WorkorderListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.alertService.warning("Warning - Target Completion Date is in the past!", false, 20000);
     //update notification on top
     this.helper.updateNotificationOnTop();
 

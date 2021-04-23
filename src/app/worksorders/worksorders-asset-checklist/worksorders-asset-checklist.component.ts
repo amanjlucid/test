@@ -570,6 +570,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
       }
       callApi = this.worksorderManagementService.worksOrderAcceptAsset(params);
     } else if (type == "ISSUE") {
+      params.UserName = this.currentUser.userName;
       // if (!this.selectedChecklistsingleItem || this.workorderAsset.woassstatus != "Pending") {
       //   return
       // }

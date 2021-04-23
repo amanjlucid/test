@@ -7,7 +7,7 @@
       </h4>
     </div>
 
-    <div class="col-md-8 col-sm-8 text-right headerBtnArea">
+    <div class="col-md-8 col-sm-8 text-right headerBtnArea" *ngIf="worksOrderSingleData">
       <button type="submit" class="btn btn-sm themeButton mr-1 headin_section" (click)="slideToggle()"><i class="fa"
           [ngClass]="(filterToggle)? 'fa-minus':'fa-plus'"></i></button>
       <!-- <button (click)="openElmGrpWin('package-mapping')" class="btn btn-sm themeButton mr-1">Package Mapping</button> -->

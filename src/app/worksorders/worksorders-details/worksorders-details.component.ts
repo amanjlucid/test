@@ -113,6 +113,7 @@ export class WorksordersDetailsComponent implements OnInit {
         data => {
           if (data.length == 0 && !this.worksOrderSingleData) {
             this.alertService.error("Please select one work order from the works orders list");
+            this.loading = false;
             return
           }
 
@@ -646,6 +647,7 @@ export class WorksordersDetailsComponent implements OnInit {
     } else if (type == "ACCEPT") {
       callApi = this.worksorderManagementService.worksOrderAcceptAsset(params);
     } else if (type == "ISSUE") {
+      params.UserName = this.currentUser.userName;
       callApi = this.worksorderManagementService.worksOrderIssueAsset(params);
     }
 

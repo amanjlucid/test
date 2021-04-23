@@ -335,7 +335,7 @@ export class WorksordersNewmanagementComponent implements OnInit {
     managementModel.MPgoA = this.currentUser.userId
     managementModel.MPgrA = this.currentUser.userId
 
-    managementModel.WPRBUDGET = this.convertMoneyToFlatFormat(formRawVal.WPRBUDGET)
+    managementModel.WPRBUDGET = this.helperService.convertMoneyToFlatFormat(formRawVal.WPRBUDGET)
 
 
     let apiToAddUpdate: any;
@@ -402,10 +402,7 @@ export class WorksordersNewmanagementComponent implements OnInit {
     )
   }
 
-  convertMoneyToFlatFormat(val) {
-    val = typeof val == "number" ? val.toString() : val;
-    return val == "" ? val : val.replace(/[^0-9.]+/g, '');
-  }
+ 
 
   closeNewManagementWindow() {
     this.openNewManagement = false;

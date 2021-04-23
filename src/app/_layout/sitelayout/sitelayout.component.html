@@ -246,6 +246,12 @@
                                 <div>Works Orders</div>
                             </a>
                         </li>
+                        <li class="sidenav-item" [routerLinkActive]="['active']"
+                            *ngIf="checkWorksOrdersAccess('Dashboard')">
+                            <a [routerLink]="['/worksorders/details']" class="sidenav-link">
+                                <div>Works Order Detail</div>
+                            </a>
+                        </li>
 
                         <!-- <li class="sidenav-item" [routerLinkActive]="['open']"
                             *ngIf="checkWorksOrdersAccess('Config Menu')">

@@ -1,5 +1,5 @@
-<kendo-window title="{{windowTitle}}" [top]="20" [height]="panelHeight" [(width)]="windowWidth" [minWidth]="120"
-  *ngIf="woFormWindow" (close)="closewoFormWindow()">
+<kendo-window title="{{windowTitle}}" [top]="20" [height]="panelHeight" [left]="left" [(width)]="windowWidth"
+  [minWidth]="120" *ngIf="woFormWindow" (close)="closewoFormWindow()">
 
   <div class="row">
     <div class="col-md-12">
@@ -10,7 +10,8 @@
             <select class="custom-select" formControlName="wottemplatetype"
               [ngClass]="{ 'is-invalid': submitted && formErrors.wottemplatetype }">
               <option value=""></option>
-              <option *ngFor="let assetTmp of assetTemplateListData" [ngValue]="assetTmp.wotsequence">{{assetTmp.wotname}}</option>
+              <option *ngFor="let assetTmp of assetTemplateListData" [ngValue]="assetTmp.wotsequence">
+                {{assetTmp.wotname}}</option>
 
             </select>
 
@@ -25,7 +26,8 @@
             <select class="custom-select" formControlName="woprogram"
               [ngClass]="{ 'is-invalid': submitted1 && formErrors.woprogram }">
               <option value=""></option>
-              <option *ngFor="let program of workOrderProgrammeListData" [ngValue]="program.wprsequence">{{program.wprname}}
+              <option *ngFor="let program of workOrderProgrammeListData" [ngValue]="program.wprsequence">
+                {{program.wprname}}
               </option>
 
             </select>
@@ -42,7 +44,7 @@
               [ngClass]="{ 'is-invalid': submitted1 && formErrors.contractName }">
               <option value=""></option>
               <option *ngFor="let contractnme of WorkOrderContractListData" [ngValue]="contractnme.cttsurcde">
-                {{contractnme.conname}}</option>
+                {{contractnme.conname}} - {{contractnme.cttname}}</option>
 
             </select>
 
@@ -94,304 +96,369 @@
           </div>
         </div>
       </form>
+    </div>
 
+
+    <div class="col-md-12 state2Form">
       <form *ngIf="addStage == 2" [formGroup]="woForm2" (ngSubmit)="onSubmit2()" autocomplete="off">
-        <div class="row stage2Form">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="firstdiv">
+              <label class="form-label">Works Order No</label>
+              <div class="form-group">
+                <input [readonly]="readonly" type="text" class="form-control" formControlName="won">
+              </div>
 
-          <div class="form-group col-md-6">
-            <label class="form-label">Works Order No</label>
-            <input [readonly]="readonly" type="text" class="form-control" formControlName="won">
-          </div>
+            </div>
 
+            <div class="secondDiv">
+              <label class="form-label">Work Order Type</label>
+              <div class="form-group">
+                <input [readonly]="readonly" formControlName="woTypevalue" type="text" class="form-control">
+              </div>
 
-          <div class="form-group col-md-6">
-            <label class="form-label">Work Order Type</label>
-            <input [readonly]="readonly" formControlName="woTypevalue" type="text" class="form-control">
+            </div>
 
+            <div class="thirdDiv">
+              <label class="form-label">External Reference</label>
+              <div class="form-group">
+                <input type="text" class="form-control" formControlName="extRef">
+              </div>
 
-          </div>
-
-          <div class="form-group col-md-6">
-            <label class="form-label">External Reference</label>
-            <input type="text" class="form-control" formControlName="extRef">
-          </div>
-
-
-          <div class="form-group col-md-12">
-            <label class="form-label">Name</label>
-            <input  oninput="this.value = this.value.toUpperCase()" type="text"
-              class="form-control" placeholder="" formControlName="woname"
-              [ngClass]="{ 'is-invalid': submitted && formErrors.woname }">
-
-            <div *ngIf="submitted && formErrors.woname" class="invalid-feedback">
-              <div *ngIf="formErrors.woname">{{ formErrors.woname }}</div>
             </div>
           </div>
 
-          <div class="form-group col-md-12">
-            <label class="form-label">Desc</label>
-            <input  type="text" class="form-control" placeholder="" formControlName="wodesc"
-              [ngClass]="{ 'is-invalid': submitted && formErrors.wodesc }">
+          <div class="col-md-12">
+            <div class="firstTwo">
+              <label class="form-label">Name</label>
+              <div class="form-group">
+                <input maxlength="50" type="text" class="form-control" placeholder="" formControlName="woname"
+                  [ngClass]="{ 'is-invalid': submitted && formErrors.woname }">
 
-            <div *ngIf="submitted && formErrors.wodesc" class="invalid-feedback">
-              <div *ngIf="formErrors.wodesc">{{ formErrors.wodesc }}</div>
+                <div *ngIf="submitted && formErrors.woname" class="invalid-feedback">
+                  <div *ngIf="formErrors.woname">{{ formErrors.woname }}</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="secondOne">
+              <label class="form-label">Purchase Order No</label>
+              <div class="form-group">
+                <input [readonly]="readInput" type="text" class="form-control" placeholder=""
+                  formControlName="purchase_order_no"
+                  [ngClass]="{ 'is-invalid': submitted && formErrors.purchase_order_no }">
+
+                <div *ngIf="submitted && formErrors.purchase_order_no" class="invalid-feedback">
+                  <div *ngIf="formErrors.purchase_order_no">{{ formErrors.purchase_order_no }}</div>
+                </div>
+              </div>
             </div>
           </div>
 
+          <div class="col-md-12">
+            <div class="firstTwo">
+              <label class="form-label">Desc</label>
+              <div class="form-group">
+                <input type="text" class="form-control" placeholder="" formControlName="wodesc"
+                  [ngClass]="{ 'is-invalid': submitted && formErrors.wodesc }">
 
+                <div *ngIf="submitted && formErrors.wodesc" class="invalid-feedback">
+                  <div *ngIf="formErrors.wodesc">{{ formErrors.wodesc }}</div>
+                </div>
+              </div>
 
-          <div class="form-group col-md-6">
-            <label class="form-label">Template</label>
-            <input [readonly]="readonly" type="text" formControlName="wotname" class="form-control">
-          </div>
-
-          <div class="form-group col-md-6">
-            <label class="form-label">Contractor</label>
-            <input [readonly]="readonly" formControlName="conname" type="text" class="form-control">
-          </div>
-
-          <div class="form-group col-md-6">
-            <label class="form-label">Contract Code</label>
-            <input [readonly]="readonly" formControlName="cttcode" type="text" class="form-control">
-          </div>
-
-          <div class="form-group col-md-6">
-            <label class="form-label">Contract Name</label>
-            <input [readonly]="readonly" type="text" formControlName="cttname" class="form-control">
-          </div>
-
-
-          <div class="form-group col-md-6">
-            <label class="form-label">Status</label>
-            <select class="custom-select" formControlName="wostatus"
-              [ngClass]="{ 'is-invalid': submitted && formErrors.wostatus }">
-              <option value=""></option>
-              <option value="New">New</option>
-              <option value="In Progress">In Progress</option>
-              <option value="Closed">Closed</option>
-            </select>
-
-            <div *ngIf="submitted && formErrors.wostatus" class="invalid-feedback">
-              <div *ngIf="formErrors.wostatus">{{ formErrors.wostatus }}</div>
             </div>
 
+            <div class="secondOne">
+              <label class="form-label">Budget Code</label>
+              <div class="form-group">
+                <input [readonly]="readInput" type="text" class="form-control" placeholder=""
+                  formControlName="wobudgetcode" [ngClass]="{ 'is-invalid': submitted && formErrors.wobudgetcode }">
+
+                <div *ngIf="submitted && formErrors.wobudgetcode" class="invalid-feedback">
+                  <div *ngIf="formErrors.wobudgetcode">{{ formErrors.wobudgetcode }}</div>
+                </div>
+              </div>
+
+            </div>
           </div>
 
-          <div class="form-group col-md-6">
-            <label class="form-label">Active/Inactive</label>
-            <select class="custom-select" formControlName="woactinact"
-              [ngClass]="{ 'is-invalid': submitted && formErrors.woactinact }">
-              <option value=""></option>
-              <option value="A">Active</option>
-              <option value="I">Inactive</option>
+          <div class="col-md-12">
 
-            </select>
+            <div class="firstdiv">
+              <label class="form-label">Template</label>
+              <div class="form-group">
+                <input [readonly]="readonly" type="text" formControlName="wotname" class="form-control">
+              </div>
 
-            <div *ngIf="submitted && formErrors.woactinact" class="invalid-feedback">
-              <div *ngIf="formErrors.woactinact">{{ formErrors.woactinact }}</div>
             </div>
 
+
+            <div class="secondDiv">
+              <label class="form-label">Status</label>
+              <div class="form-group">
+                <select class="custom-select" formControlName="wostatus"
+                  [ngClass]="{ 'is-invalid': submitted && formErrors.wostatus }">
+                  <option value=""></option>
+                  <option value="New">New</option>
+                  <option value="In Progress">In Progress</option>
+                  <option value="Closed">Closed</option>
+                </select>
+
+                <div *ngIf="submitted && formErrors.wostatus" class="invalid-feedback">
+                  <div *ngIf="formErrors.wostatus">{{ formErrors.wostatus }}</div>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="thirdDiv">
+              <label class="form-label">Active/Inactive</label>
+              <div class="form-group">
+                <select class="custom-select" formControlName="woactinact"
+                  [ngClass]="{ 'is-invalid': submitted && formErrors.woactinact }">
+                  <option value=""></option>
+                  <option value="A">Active</option>
+                  <option value="I">Inactive</option>
+
+                </select>
+
+                <div *ngIf="submitted && formErrors.woactinact" class="invalid-feedback">
+                  <div *ngIf="formErrors.woactinact">{{ formErrors.woactinact }}</div>
+                </div>
+              </div>
+
+
+            </div>
           </div>
 
-          <div class="form-group col-md-6">
-            <label class="form-label">Target Completion Date</label>
+          <div class="col-md-12">
+            <div class="firstdiv">
+              <label class="form-label">Contractor</label>
+              <div class="form-group">
+                <input [readonly]="readonly" formControlName="conname" type="text" class="form-control">
+              </div>
 
+            </div>
 
-            <div class="form-group">
-              <div class="input-group">
+            <div class="secondDiv">
+              <label class="form-label">Contract Code</label>
+              <div class="form-group">
+                <input [readonly]="readonly" formControlName="cttcode" type="text" class="form-control">
+              </div>
 
+            </div>
+
+            <div class="thirdDiv">
+              <label class="form-label">Contract Name</label>
+              <div class="form-group">
+                <input [readonly]="readonly" type="text" formControlName="cttname" class="form-control">
+              </div>
+
+            </div>
+          </div>
+
+          <div class="col-md-12">
+            <div class="firstdiv">
+              <label class="form-label">Target Date</label>
+              <div class="form-group">
                 <input type="text" class="form-control" formControlName="wotargetcompletiondate"
                   [ngClass]="{ 'is-invalid': submitted && formErrors.wotargetcompletiondate }" autocomplete="off"
-                  (click)="openCalendar(td)" [minDate]="minDate" ngbDatepicker #td="ngbDatepicker" [placement]="'top'">
+                  (click)="openCalendar(td)" [minDate]="minDate" ngbDatepicker #td="ngbDatepicker"
+                  [placement]="'right'">
+
+                <div *ngIf="submitted && formErrors.wotargetcompletiondate" class="invalid-feedback">
+                  <div *ngIf="formErrors.wotargetcompletiondate">{{ formErrors.wotargetcompletiondate }}</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="secondDiv">
+              <label class="form-label">Plan Year Code</label>
+              <div class="form-group">
+                <input [readonly]="readInput" type="text" class="form-control" placeholder=""
+                  formControlName="plan_year" [ngClass]="{ 'is-invalid': submitted && formErrors.plan_year }">
+
+                <div *ngIf="submitted && formErrors.plan_year" class="invalid-feedback">
+                  <div *ngIf="formErrors.plan_year">{{ formErrors.plan_year }}</div>
+                </div>
               </div>
 
-              <div *ngIf="submitted && formErrors.wotargetcompletiondate" class="invalid-feedback">
-                <div *ngIf="formErrors.wotargetcompletiondate">{{ formErrors.wotargetcompletiondate }}</div>
+            </div>
+
+
+            <div class="thirdDiv">
+              <label class="form-label">Budget</label>
+              <div class="form-group">
+                <input [readonly]="readInput" appCurrencyMask maxDigits="9" type="text" class="form-control"
+                  placeholder="" formControlName="wobudget"
+                  [ngClass]="{ 'is-invalid': submitted && formErrors.wobudget }">
+                <div *ngIf="submitted && formErrors.wobudget" class="invalid-feedback">
+                  <div *ngIf="formErrors.wobudget">{{ formErrors.wobudget }}</div>
+                </div>
               </div>
 
             </div>
 
-
-
-
           </div>
 
+          <div class="col-md-12">
+            <div class="firstdiv">
+              <label class="form-label">Planned Start Date</label>
+              <div class="form-group">
 
-
-          <div class="form-group col-md-6">
-            <label class="form-label">Budget</label>
-            <input [readonly]="readInput" type="text" class="form-control" placeholder=""
-              (keypress)="numberOnly($event)" formControlName="wobudget"
-              [ngClass]="{ 'is-invalid': submitted && formErrors.wobudget }">
-            <div *ngIf="submitted && formErrors.wobudget" class="invalid-feedback">
-              <div *ngIf="formErrors.wobudget">{{ formErrors.wobudget }}</div>
-            </div>
-
-          </div>
-
-
-          <div class="form-group col-md-6">
-            <label class="form-label">Purchase Order No</label>
-            <input [readonly]="readInput" type="text" class="form-control" placeholder=""
-              formControlName="purchase_order_no"
-              [ngClass]="{ 'is-invalid': submitted && formErrors.purchase_order_no }">
-
-            <div *ngIf="submitted && formErrors.purchase_order_no" class="invalid-feedback">
-              <div *ngIf="formErrors.purchase_order_no">{{ formErrors.purchase_order_no }}</div>
-            </div>
-          </div>
-
-
-
-          <div class="form-group col-md-6">
-            <label class="form-label">Budget Code</label>
-            <input [readonly]="readInput" type="text" class="form-control" placeholder="" formControlName="wobudgetcode"
-              [ngClass]="{ 'is-invalid': submitted && formErrors.wobudgetcode }">
-
-            <div *ngIf="submitted && formErrors.wobudgetcode" class="invalid-feedback">
-              <div *ngIf="formErrors.wobudgetcode">{{ formErrors.wobudgetcode }}</div>
-            </div>
-          </div>
-
-          <div class="form-group col-md-6">
-            <label class="form-label">Plan Year Code</label>
-            <input [readonly]="readInput" type="text" class="form-control" placeholder="" formControlName="plan_year"
-              [ngClass]="{ 'is-invalid': submitted && formErrors.plan_year }">
-
-            <div *ngIf="submitted && formErrors.plan_year" class="invalid-feedback">
-              <div *ngIf="formErrors.plan_year">{{ formErrors.plan_year }}</div>
-            </div>
-          </div>
-
-          <div class="form-group col-md-6">
-            <label class="form-label">Planned Start Date</label>
-            <div class="form-group">
-              <div class="input-group">
                 <input type="text" class="form-control" formControlName="woplanstartdate"
                   [ngClass]="{ 'is-invalid': submitted && formErrors.woplanstartdate }" autocomplete="off"
                   (click)="openCalendar(tds)" [minDate]="minDate" ngbDatepicker #tds="ngbDatepicker"
                   [placement]="'top'">
-              </div>
 
-              <div *ngIf="submitted && formErrors.woplanstartdate" class="invalid-feedback">
-                <div *ngIf="formErrors.woplanstartdate">{{ formErrors.woplanstartdate }}</div>
-              </div>
 
+                <div *ngIf="submitted && formErrors.woplanstartdate" class="invalid-feedback">
+                  <div *ngIf="formErrors.woplanstartdate">{{ formErrors.woplanstartdate }}</div>
+                </div>
+
+              </div>
             </div>
-          </div>
 
-          <div class="form-group col-md-6">
-            <label class="form-label">Planned End Date</label>
-
-
-            <div class="form-group">
-              <div class="input-group">
-
+            <div class="secondDiv">
+              <label class="form-label">Planned End Date</label>
+              <div class="form-group">
                 <input type="text" class="form-control" formControlName="woplanenddate"
                   [ngClass]="{ 'is-invalid': submitted && formErrors.woplanenddate }" autocomplete="off"
                   (click)="openCalendar(tde)" [minDate]="minDate" ngbDatepicker #tde="ngbDatepicker"
                   [placement]="'top'">
 
+                <div *ngIf="submitted && formErrors.woplanenddate" class="invalid-feedback">
+                  <div *ngIf="formErrors.woplanenddate">{{ formErrors.woplanenddate }}</div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+
+          <div class="col-md-12">
+            <div class="instructionDiv">
+              <label class="form-label">Instructions</label>
+              <div class="form-group">
+
+                <textarea class="form-control" formControlName="woinstructions"
+                  [ngClass]="{ 'is-invalid': submitted && formErrors.woinstructions }" cols="30" rows="2"></textarea>
+
+                <div *ngIf="submitted && formErrors.woinstructions" class="invalid-feedback">
+                  <div *ngIf="formErrors.woinstructions">{{ formErrors.woinstructions }}</div>
+                </div>
+              </div>
+              <!-- <input  type="text" class="form-control" placeholder=""
+                  formControlName="woinstructions" [ngClass]="{ 'is-invalid': submitted && formErrors.woinstructions }"> -->
+            </div>
+          </div>
+
+          <div class="col-md-12">
+
+            <div class="firstdiv">
+              <label class="form-label">Overhead %</label>
+              <div class="form-group">
+                <input [readonly]="readonly" type="text" class="form-control" placeholder=""
+                  (keypress)="numberOnly($event)" formControlName="wooverheadpct"
+                  [ngClass]="{ 'is-invalid': submitted && formErrors.wooverheadpct }">
+                <div *ngIf="submitted && formErrors.wooverheadpct" class="invalid-feedback">
+                  <div *ngIf="formErrors.wooverheadpct">{{ formErrors.wooverheadpct }}</div>
+                </div>
               </div>
 
-              <div *ngIf="submitted && formErrors.woplanenddate" class="invalid-feedback">
-                <div *ngIf="formErrors.woplanenddate">{{ formErrors.woplanenddate }}</div>
+            </div>
+
+            <div class="secondDiv">
+              <label class="form-label">Prelim %</label>
+              <div class="form-group">
+                <input [readonly]="readonly" type="text" class="form-control" placeholder=""
+                  (keypress)="numberOnly($event)" formControlName="woprelimpct"
+                  [ngClass]="{ 'is-invalid': submitted && formErrors.woprelimpct }">
+                <div *ngIf="submitted && formErrors.woprelimpct" class="invalid-feedback">
+                  <div *ngIf="formErrors.woprelimpct">{{ formErrors.woprelimpct }}</div>
+                </div>
               </div>
 
             </div>
-          </div>
 
 
-          <div class="form-group col-md-12">
-            <label class="form-label">Instructions</label>
-            <textarea class="form-control" formControlName="woinstructions" [ngClass]="{ 'is-invalid': submitted && formErrors.woinstructions }" cols="30" rows="2"></textarea>
-           
-            <!-- <input  type="text" class="form-control" placeholder=""
-              formControlName="woinstructions" [ngClass]="{ 'is-invalid': submitted && formErrors.woinstructions }"> -->
+            <div class="thirdDiv">
+              <label class="form-label">Profit %</label>
+              <div class="form-group">
+                <input [readonly]="readonly" type="text" class="form-control" placeholder=""
+                  (keypress)="numberOnly($event)" formControlName="woprofitpct"
+                  [ngClass]="{ 'is-invalid': submitted && formErrors.woprofitpct }">
+                <div *ngIf="submitted && formErrors.woprofitpct" class="invalid-feedback">
+                  <div *ngIf="formErrors.woprofitpct">{{ formErrors.woprofitpct }}</div>
+                </div>
+              </div>
 
-            <div *ngIf="submitted && formErrors.woinstructions" class="invalid-feedback">
-              <div *ngIf="formErrors.woinstructions">{{ formErrors.woinstructions }}</div>
+
             </div>
           </div>
 
+          <div class="col-md-12">
+            <div class="firstdiv">
+              <label class="form-label">Other Cast %</label>
+              <div class="form-group">
+                <input [readonly]="readonly" type="text" class="form-control" placeholder=""
+                  (keypress)="numberOnly($event)" formControlName="woothercostpct"
+                  [ngClass]="{ 'is-invalid': submitted && formErrors.woothercostpct }">
 
-          <div class="form-group col-md-6">
-            <label class="form-label">Overhead %</label>
 
-            <input [readonly]="readonly" type="text" class="form-control" placeholder=""
-              (keypress)="numberOnly($event)" formControlName="wooverheadpct"
-              [ngClass]="{ 'is-invalid': submitted && formErrors.wooverheadpct }">
+                <div *ngIf="submitted && formErrors.woothercostpct" class="invalid-feedback">
+                  <div *ngIf="formErrors.woothercostpct">{{ formErrors.woothercostpct }}</div>
+                </div>
+              </div>
 
 
-            <div *ngIf="submitted && formErrors.wooverheadpct" class="invalid-feedback">
-              <div *ngIf="formErrors.wooverheadpct">{{ formErrors.wooverheadpct }}</div>
+            </div>
+
+
+            <div class="secondDiv">
+              <label class="form-label">Payment Type</label>
+              <div class="form-group">
+                <select class="custom-select" formControlName="contract_payment_type"
+                  [ngClass]="{ 'is-invalid': submitted && formErrors.contract_payment_type }">
+                  <option value=""></option>
+                  <option value="COMPLETION">Payment by Completion</option>
+                  <option value="STAGE">Payment by Stage</option>
+                  <option value="VALUATION">Payment by Valuation</option>
+                </select>
+
+                <div *ngIf="submitted && formErrors.contract_payment_type" class="invalid-feedback">
+                  <div *ngIf="formErrors.contract_payment_type">{{ formErrors.contract_payment_type }}</div>
+                </div>
+              </div>
+
+
+            </div>
+          </div>
+
+          <div class="col-md-12 mt-1">
+            <div class="half">
+              <label class="form-label">Set Defect Liability Period (days)</label>
+              <input value="true" type="checkbox" class="checkBox" formControlName="defectLibPeriodCheck">
+              <input [readonly]="readonly" type="text" formControlName="defectLibPeriodVal" class="form-control"
+                placeholder="" (keypress)="numberOnly($event)"
+                [ngClass]="{ 'is-invalid': submitted && formErrors.defectLibPeriodVal }">
+            </div>
+
+            <div class="half2">
+              <label class="form-label">Allow contractor to enter valuations</label>
+              <input value="true" type="checkbox" class="checkBox" formControlName="valuationCheck">
             </div>
 
           </div>
-
-
-
-          <div class="form-group col-md-6">
-            <label class="form-label">Prelim %</label>
-
-            <input [readonly]="readonly" type="text" class="form-control" placeholder=""
-              (keypress)="numberOnly($event)" formControlName="woprelimpct"
-              [ngClass]="{ 'is-invalid': submitted && formErrors.woprelimpct }">
-
-
-            <div *ngIf="submitted && formErrors.woprelimpct" class="invalid-feedback">
-              <div *ngIf="formErrors.woprelimpct">{{ formErrors.woprelimpct }}</div>
-            </div>
-
-          </div>
-
-
-          <div class="form-group col-md-6">
-            <label class="form-label">Profit %</label>
-            <input [readonly]="readonly" type="text" class="form-control" placeholder=""
-              (keypress)="numberOnly($event)" formControlName="woprofitpct"
-              [ngClass]="{ 'is-invalid': submitted && formErrors.woprofitpct }">
-
-
-            <div *ngIf="submitted && formErrors.woprofitpct" class="invalid-feedback">
-              <div *ngIf="formErrors.woprofitpct">{{ formErrors.woprofitpct }}</div>
-            </div>
-
-          </div>
-
-
-          <div class="form-group col-md-6">
-            <label class="form-label">Other Cast %</label>
-            <input [readonly]="readonly" type="text" class="form-control" placeholder=""
-              (keypress)="numberOnly($event)" formControlName="woothercostpct"
-              [ngClass]="{ 'is-invalid': submitted && formErrors.woothercostpct }">
-
-
-            <div *ngIf="submitted && formErrors.woothercostpct" class="invalid-feedback">
-              <div *ngIf="formErrors.woothercostpct">{{ formErrors.woothercostpct }}</div>
-            </div>
-
-          </div>
-
-
-          <div class="form-group col-md-6">
-            <label class="form-label">Contract Payment Type</label>
-            <select class="custom-select" formControlName="contract_payment_type"
-              [ngClass]="{ 'is-invalid': submitted && formErrors.contract_payment_type }">
-              <option value=""></option>
-              <option value="COMPLETION">Payment by Completion</option>
-              <option value="STAGE">Payment by Stage</option>
-              <option value="VALUATION">Payment by Valuation</option>
-            </select>
-
-            <div *ngIf="submitted && formErrors.contract_payment_type" class="invalid-feedback">
-              <div *ngIf="formErrors.contract_payment_type">{{ formErrors.contract_payment_type }}</div>
-            </div>
-
-          </div>
-
 
         </div>
+
+
+
+
+
+
 
         <div class="row mt-3">
           <div class="col-md-12 text-right">
@@ -400,7 +467,6 @@
           </div>
         </div>
       </form>
-
 
     </div>
 

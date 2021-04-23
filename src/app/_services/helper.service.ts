@@ -651,6 +651,11 @@ export class HelperService {
         return date
     }
 
+    convertMoneyToFlatFormat(val) {
+        val = typeof val == "number" ? val.toString() : val;
+        return val == "" ? val : val.replace(/[^0-9.]+/g, '');
+      }
+
 
     updateNotificationOnTop() {
         let currentUser = JSON.parse(localStorage.getItem('currentUser'));

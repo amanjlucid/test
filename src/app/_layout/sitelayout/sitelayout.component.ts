@@ -37,7 +37,7 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
   tasksPortalPermissions: any = [];
   reporterPortalPermissions: any = [];
   apexDashboardPermission: any = [];
-  SurveyPortalPermissions:any = [];
+  SurveyPortalPermissions: any = [];
   BatchesLink: string = '';
   BatchSurveysLink: string = '';
   BatchesLinkColor: string = 'Yellow';
@@ -138,19 +138,16 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
 
   }
 
-  checkLinkEnabled(divValue: string, linkValue: string): Boolean
-  {
+  checkLinkEnabled(divValue: string, linkValue: string): Boolean {
     let linkExists = false;
-    if (sessionStorage.getItem(linkValue))
-      {
-        linkExists = true;
-      }
-
-    if(divValue =='firstLink')
-    {
-        return linkExists;
+    if (sessionStorage.getItem(linkValue)) {
+      linkExists = true;
     }
-    else{
+
+    if (divValue == 'firstLink') {
+      return linkExists;
+    }
+    else {
       return !linkExists;
     }
   }
@@ -515,6 +512,8 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
 
 
 
-
+  isActive(base: string): boolean {
+    return this.router.url.includes(`/${base}`);
+  }
 
 }
