@@ -24,7 +24,7 @@ export class PickDateComponent implements OnInit {
   fromDate: NgbDate | null;
   toDate: NgbDate | null;
 
-  width = 350
+  width = 300
   height: any = 'auto';
   title = '';
 

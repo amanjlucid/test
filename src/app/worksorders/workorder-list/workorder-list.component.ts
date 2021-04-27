@@ -1,7 +1,7 @@
-import { Component, OnInit, ViewEncapsulation, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
-import { SelectableSettings, RowClassArgs, RowArgs, PageChangeEvent } from '@progress/kendo-angular-grid';
+import { SelectableSettings, RowClassArgs, RowArgs, PageChangeEvent, GridComponent } from '@progress/kendo-angular-grid';
 import { AlertService, HelperService, SharedService, WorksOrdersService } from '../../_services'
 import { Subject } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -28,6 +28,16 @@ export class WorkorderListComponent implements OnInit {
       filters: []
     }
   }
+  tempState: State = {
+    skip: 0,
+    sort: [],
+    group: [],
+    filter: {
+      logic: "and",
+      filters: []
+    }
+  }
+  worksorderTempData: any;
   gridView: DataResult;
   pageSize = 25;
   mySelection: any = [];
@@ -51,7 +61,11 @@ export class WorkorderListComponent implements OnInit {
   wosequenceForDelete: any;
   worksOrderAccess = [];
 
-  // public windowOpened = false;
+  touchtime = 0;
+  columnLocked: boolean = true;
+  @ViewChild(GridComponent) grid: GridComponent;
+
+
 
   constructor(
     private eveneManagerService: WorksOrdersService,
@@ -89,7 +103,10 @@ export class WorkorderListComponent implements OnInit {
           debounceTime(100),
         ).subscribe(obj => this.getUserWorksOrdersList(obj))
     )
-   
+
+ 
+
+
   }
 
 
@@ -105,16 +122,26 @@ export class WorkorderListComponent implements OnInit {
     }
   }
 
-  getUserWorksOrdersList(filter, menuOpen = null) {
+  lockUnlockColumn() {
+    this.columnLocked = !this.columnLocked;
+  }
+
+  resetGrid() {
     this.state.skip = 0;
+  }
+
+  getUserWorksOrdersList(filter, menuOpen = null) {
+
     this.subs.add(
       this.eveneManagerService.getListOfUserWorksOrderByUserId(filter).subscribe(
         data => {
-
+          this.resetGrid();
+          // console.log(data)
           if (data.isSuccess) {
-            this.worksOrderData = data.data;
+            this.worksorderTempData = [...data.data]
+            this.worksOrderData = [...data.data];
             this.gridView = process(this.worksOrderData, this.state);
-           
+
             this.chRef.detectChanges();
           } else {
             this.alertService.error(data.message);
@@ -151,27 +178,51 @@ export class WorkorderListComponent implements OnInit {
 
 
   sortChange(sort: SortDescriptor[]): void {
+    this.resetGrid()
     this.state.sort = sort;
-    this.gridView = process(this.worksOrderData, this.state);
+    this.tempState.sort = sort;
+    this.worksorderTempData = process(this.worksOrderData, this.tempState).data
+    this.gridView = process(this.worksorderTempData, this.state);
+
   }
 
   filterChange(filter: any): void {
+    this.resetGrid()
     this.state.filter = filter;
-    this.gridView = process(this.worksOrderData, this.state);
+    this.tempState.filter = filter;
+    this.worksorderTempData = process(this.worksOrderData, this.tempState).data //filter without skipping and pagination 
+    this.gridView = process(this.worksorderTempData, this.state);
   }
 
   pageChange(event: PageChangeEvent): void {
     this.state.skip = event.skip;
     this.gridView = {
-      data: this.worksOrderData.slice(this.state.skip, this.state.skip + this.pageSize),
-      total: this.worksOrderData.length
+      data: this.worksorderTempData.slice(this.state.skip, this.state.skip + this.pageSize),
+      total: this.worksorderTempData.length
     };
   }
 
 
   cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
     this.selectedWorksOrder = dataItem;
+    if (columnIndex > 0) {
+      if (this.touchtime == 0) {
+        this.touchtime = new Date().getTime();
+      } else {
+        if (((new Date().getTime()) - this.touchtime) < 400) {
+          //open work order detail window
+          if (this.worksOrderAccess.indexOf('Works Order Detail') != -1) {
+            this.redirectToWorksOrder(dataItem)
+          }
 
+          this.touchtime = 0;
+        } else {
+          // not a double click so set as a new first click
+          this.touchtime = new Date().getTime();
+        }
+
+      }
+    }
   }
 
   setSelectableSettings(): void {
@@ -222,9 +273,9 @@ export class WorkorderListComponent implements OnInit {
 
   rowCallback(context: RowClassArgs) {
     if (context.dataItem.wostatus != "New") {
-      return { notNew: true }
+      return { notNew: true, gridRow: true }
     } else {
-      return { notNew: false }
+      return { notNew: false, gridRow: true }
     }
 
   }
@@ -235,7 +286,6 @@ export class WorkorderListComponent implements OnInit {
     this.woFormType = 'edit';
     this.selectedWorkOrderAddEdit = item;
     this.woFormWindow = true;
-
   }
 
   closewoFormDeleteWindow() {
@@ -245,10 +295,7 @@ export class WorkorderListComponent implements OnInit {
 
 
   deleteThis(item) {
-
-
     this.wosequenceForDelete = item.wosequence;
-
     this.errorDeleteMsg = '';
     this.successDeleteMsg = '';
 
@@ -259,30 +306,17 @@ export class WorkorderListComponent implements OnInit {
 
     this.eveneManagerService.DeleteWebWorkOrder(this.wosequenceForDelete, reason, userId, checkOrProcess).subscribe(
       (data) => {
-
-
         if (data.isSuccess) {
-
           if (data.data.pRETURNSTATUS == 'E') {
-            this.errorDeleteMsg = data.data.pRETURNMESSAGE;
-            this.deleteReasonMsgInput = false;
-
-          }
-
-          else if (data.data.pRETURNSTATUS == 'S') {
-
+            this.alertService.error(data.data.pRETURNMESSAGE);
+            return
+            // this.errorDeleteMsg = data.data.pRETURNMESSAGE;
+            // this.deleteReasonMsgInput = false;
+          } else if (data.data.pRETURNSTATUS == 'S') {
             this.errorDeleteMsg = '';
             this.deleteReasonMsgInput = true;
-
+            this.woFormDeleteWindow = true;
           }
-          else {
-
-            this.errorDeleteMsg = '';
-            this.deleteReasonMsgInput = true;
-          }
-
-
-
 
         }
 
@@ -296,10 +330,6 @@ export class WorkorderListComponent implements OnInit {
     )
 
 
-
-    this.woFormDeleteWindow = true;
-
-
   }
 
 
@@ -310,46 +340,26 @@ export class WorkorderListComponent implements OnInit {
 
     if (reason == '' || reason == null) {
       this.errorDeleteMsg = 'You must enter a reason for deleting a Works Order';
-
     }
     else {
-
       let userId = this.currentUser.userId;
       let checkOrProcess = 'P';
-
-
-
       this.eveneManagerService.DeleteWebWorkOrder(this.wosequenceForDelete, reason, userId, checkOrProcess).subscribe(
         (data) => {
-
-
           if (data.isSuccess) {
 
             if (data.data.pRETURNSTATUS == 'E') {
               this.errorDeleteMsg = data.data.pRETURNMESSAGE;
-
               this.alertService.error(data.data.pRETURNMESSAGE);
-
             }
             else {
-
               this.deleteReasonMsgInput = false;
               this.successDeleteMsg = 'Works Order Deleted';
-
-
               this.alertService.success(this.successDeleteMsg);
-
-
               this.woFormDeleteWindow = false;
               this.getUserWorksOrdersList(this.filterObject);
 
-
             }
-
-
-
-
-
 
           }
 
@@ -362,17 +372,11 @@ export class WorkorderListComponent implements OnInit {
         }
       )
 
-
-
-
-
-
-
     }
 
-
-
   }
+
+
   // public close() {
   //   $('.bgblur').removeClass('ovrlay');
   //   this.windowOpened = false;
@@ -383,6 +387,59 @@ export class WorkorderListComponent implements OnInit {
     this.woFormWindow = $event;
     $('.bgblur').removeClass('ovrlay');
     this.getUserWorksOrdersList(this.filterObject);
+  }
+
+  export() {
+
+    if (this.gridView.total > 0 && this.gridView.data) {
+      // let tempData = this.gridView.data;
+      let tempData = Object.assign([], this.worksorderTempData);
+      tempData.map((x: any) => {
+        x.wocontractorissuedate = this.helperService.formatDateWithoutTime(x.wocontractorissuedate)
+        x.wotargetcompletiondate = this.helperService.formatDateWithoutTime(x.wotargetcompletiondate)
+        x.wocontractoracceptancedate = this.helperService.formatDateWithoutTime(x.wocontractoracceptancedate)
+        x.woplanstartdate = this.helperService.formatDateWithoutTime(x.woplanstartdate)
+        x.woplanenddate = this.helperService.formatDateWithoutTime(x.woplanenddate)
+        x.woactualstartdate = this.helperService.formatDateWithoutTime(x.woactualstartdate)
+        x.woactualenddate = this.helperService.formatDateWithoutTime(x.woactualenddate)
+        x.mPgpA = this.helperService.formatDateWithoutTime(x.mPgpA)
+        x.mPgsA = this.helperService.formatDateWithoutTime(x.mPgsA)
+      });
+
+      let label = {
+        'wosequence': 'Work Order',
+        'woname': 'Name',
+        'wostatus': 'Status',
+        'contractorName': 'Contractor',
+        'wobudget': 'Budget',
+        'woforecastplusfee': 'Forecast',
+        'wocommittedplusfee': 'Committed',
+        'wocurrentcontractsum': 'Issued',
+        'woacceptedvalue': 'Accepted',
+        'woactualplusfee': 'Actual',
+        'woapprovedplusfee': 'Approved',
+        'wopendingplusfee': 'Pending',
+        'wopayment': 'Payments',
+        'wocontractorissuedate': 'Issue Date',
+        'wotargetcompletiondate': 'Target Date',
+        'wocontractoracceptancedate': 'Acceptance Date',
+        'woplanstartdate': 'Plan Start Date',
+        'woplanenddate': 'Plan End Date',
+        'woactualstartdate': 'Actual Start Date',
+        'woactualenddate': 'Actual End Date',
+        'woextref': 'External Ref',
+        'mPgoA': 'Created By',
+        'mPgpA': 'Created Date',
+        'mPgrA': 'Amended By',
+        'mPgsA': 'Amended Date',
+
+      }
+
+      this.helperService.exportAsExcelFile(tempData, 'WorksOrders', label)
+
+    } else {
+      alert('There is no record to import');
+    }
   }
 
 

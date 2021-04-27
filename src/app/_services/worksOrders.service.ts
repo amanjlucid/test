@@ -55,6 +55,7 @@ export class WorksOrdersService {
   return this.http.get<any>(`${appConfig.apiUrl}/api/WorkordersPortal/GetWorksOrderByWOsequence?WOSequence=${WOSequence}`, this.httpOptions);
   }
 
+
   UpdateWorksOrder(params) {
   return this.http.post<any>(`${appConfig.apiUrl}/api/WorkordersPortal/UpdateWorksOrder`, params, this.httpOptions);
   }

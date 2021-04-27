@@ -179,7 +179,7 @@ export function IsGreaterDateValidator(controlName: any, matchingControlName1: a
         const control = formGroup.controls[controlName];
         const matchingControl1 = formGroup.controls[matchingControlName1];
 
-       
+
         if (control.errors && !control.errors.isGreaterDate) {
             // return if another validator has already found an error on the matchingControl
             return;
@@ -290,6 +290,30 @@ export function isNumberCheck(): ValidatorFn {
                 return { 'isNotNumber': true };
             }
         }
+
+        return null;
+    };
+}
+
+export function shouldNotZero(): ValidatorFn {
+    return (control: FormControl): { [key: string]: boolean } | null => {
+      
+        if (control.errors && !control.errors.shouldNotZero) {
+            return;
+        }
+
+        // if (control.value != null && control.value != "") {
+        //     return
+        // }
+
+        let number = control.value.toString().replace(/[^0-9.]+/g, '');
+        
+       
+      
+        if (number == 0) {
+            return { 'shouldNotZero': true };
+        }
+
 
         return null;
     };

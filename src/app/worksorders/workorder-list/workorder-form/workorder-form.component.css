@@ -32,7 +32,7 @@
   display: block !important;
 }
 
-.firstdiv, .secondDiv, .thirdDiv {
+.firstdiv, .secondDiv, .thirdDiv, .thirdDivchk {
   width: 32%;
   display: inline-flex;
   margin: 5px;
@@ -45,6 +45,7 @@
   margin-right: 5px !important;
   font-size: 15px !important;
   margin-top: 12px;
+ 
 }
 
 /* .firstdiv .form-control, .secondDiv .form-control, .thirdDiv .form-control {
@@ -90,11 +91,16 @@
   margin-right: 5px !important;
   font-size: 15px !important;
   margin-top: 12px;
+  margin-left: 20px;
 }
 
 .secondOne .form-group {
   width: 58%;
   display: inline-block;
+}
+
+.secondOne .form-group .form-control{
+  width: 95%;
 }
 
 .instructionDiv {
@@ -140,7 +146,7 @@
   margin-left: 12px;
 }
 
-.half .checkBox, .half2 .checkBox {
+.half .checkBox, .half2 .checkBox{
   margin-top: 13px;
 }
 
@@ -152,6 +158,39 @@
   margin-top: 12px;
 }
 
+.thirdDivchk label{
+  display: inline-block;
+  margin-right: 9px !important;
+  font-size: 15px !important;
+  margin-top: 12px;
+}
+
+.thirdDivchk .checkBox {
+  margin-top: 14px;
+}
+
+.full{
+  width: 64%;
+  display: inline-flex;
+}
+
+.full label{
+  display: inline-block;
+  margin-right: 9px !important;
+  font-size: 15px !important;
+  margin-left: 5px;
+  margin-top: 12px;
+  width: 30%;
+}
+
+.full .checkBox{
+  margin-top: 13px;
+}
+
+.full .form-group {
+  width: 61%;
+  margin-left: 34px;
+}
 
 /* .stage2Form{
   max-height: 680px;

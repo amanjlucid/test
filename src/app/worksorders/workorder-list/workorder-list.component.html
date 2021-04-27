@@ -12,7 +12,11 @@
         class="btn btn-sm themeButton ">
         New Works Order
       </button>
-
+      <button (click)="export()" class="btn btn-sm themeButton ml-1"> Export</button>
+      <button id="showFilePanel" (click)="lockUnlockColumn()" class="btn btn-sm themeButton ml-1">
+        <i *ngIf="!columnLocked" class="fa fa-lock" aria-hidden="true"></i>
+        <i *ngIf="columnLocked" class="fa fa-unlock" aria-hidden="true"></i>
+      </button>
     </div>
 
   </div>
@@ -63,16 +67,18 @@
   <div class="row mt-2">
 
     <div class="col-md-12 worksorderGrid">
-      <kendo-grid [data]="gridView" [pageSize]="pageSize" [rowHeight]="36" (pageChange)="pageChange($event)"
+
+      <kendo-grid #grid="kendoGrid" [data]="gridView" [pageSize]="pageSize" [rowHeight]="36" (pageChange)="pageChange($event)"
         scrollable="virtual" [height]="680" [loading]="loading" filterable="menu" [resizable]="true" [sortable]="{
           allowUnsort: true,
           mode: 'single'
-          }" [skip]="state.skip" [sort]="state.sort" [selectable]="selectableSettings"
-        [filter]="state.filter" (sortChange)="sortChange($event)" (filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)" [navigable]="false" [virtualColumns]="true"
-        [rowClass]="rowCallback" [kendoGridSelectBy]="mySelectionKey" [selectedKeys]="mySelection">
+          }" [skip]="state.skip" [sort]="state.sort" [selectable]="selectableSettings" [filter]="state.filter"
+        (sortChange)="sortChange($event)" (filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)"
+        [navigable]="false" [virtualColumns]="true" [rowClass]="rowCallback" [kendoGridSelectBy]="mySelectionKey"
+        [selectedKeys]="mySelection">
 
 
-        <kendo-grid-column title=" " width="35" [filterable]="false">
+        <kendo-grid-column title=" " width="35" [filterable]="false" [locked]="columnLocked">
           <ng-template kendoGridCellTemplate let-dataItem>
             <li class="nav-item dropdown list-unstyled" style="margin-top: -7px;" (click)="setSeletedRow(dataItem)">
               <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
@@ -98,9 +104,9 @@
         </kendo-grid-column>
 
 
-        <kendo-grid-column field="wosequence" title="Work Order" width="140">
+        <kendo-grid-column field="wosequence" title="Work Order" width="140" [locked]="columnLocked">
         </kendo-grid-column>
-        <kendo-grid-column field="woname" title="Name" width="160">
+        <kendo-grid-column field="woname" title="Name" width="160" [locked]="columnLocked">
         </kendo-grid-column>
         <kendo-grid-column field="wostatus" title="Status" width="160">
         </kendo-grid-column>
@@ -117,21 +123,21 @@
         <kendo-grid-column field="woforecast" title="Forecast" width="120">
           <ng-template kendoGridCellTemplate let-dataItem>
             <span>
-              {{ dataItem.woforecast | currency:"GBP":"symbol" }}
+              {{ dataItem.woforecastplusfee | currency:"GBP":"symbol" }}
             </span>
           </ng-template>
         </kendo-grid-column>
         <kendo-grid-column field="wocommitted" title="Committed" width="120">
           <ng-template kendoGridCellTemplate let-dataItem>
             <span>
-              {{ dataItem.wocommitted | currency:"GBP":"symbol" }}
+              {{ dataItem.wocommittedplusfee | currency:"GBP":"symbol" }}
             </span>
           </ng-template>
         </kendo-grid-column>
-        <kendo-grid-column field="wocommitted" title="Issued" width="120">
+        <kendo-grid-column field="wocurrentcontractsum" title="Issued" width="120">
           <ng-template kendoGridCellTemplate let-dataItem>
             <span>
-              No Value
+              {{ dataItem.wocurrentcontractsum | currency:"GBP":"symbol" }}
             </span>
           </ng-template>
         </kendo-grid-column>
@@ -146,7 +152,7 @@
         <kendo-grid-column field="woactual" title="Actual" width="120">
           <ng-template kendoGridCellTemplate let-dataItem>
             <span>
-              {{ dataItem.woactual | currency:"GBP":"symbol" }}
+              {{ dataItem.woactualplusfee | currency:"GBP":"symbol" }}
             </span>
           </ng-template>
         </kendo-grid-column>
@@ -154,7 +160,7 @@
         <kendo-grid-column field="woapproved" title="Approved" width="120">
           <ng-template kendoGridCellTemplate let-dataItem>
             <span>
-              {{ dataItem.woapproved | currency:"GBP":"symbol" }}
+              {{ dataItem.woapprovedplusfee | currency:"GBP":"symbol" }}
             </span>
           </ng-template>
         </kendo-grid-column>
@@ -163,7 +169,7 @@
         <kendo-grid-column field="wopending" title="Pending" width="120">
           <ng-template kendoGridCellTemplate let-dataItem>
             <span>
-              {{ dataItem.wopending | currency:"GBP":"symbol" }}
+              {{ dataItem.wopendingplusfee | currency:"GBP":"symbol" }}
             </span>
           </ng-template>
         </kendo-grid-column>
@@ -180,28 +186,28 @@
         <kendo-grid-column field="wocontractorissuedate" title="Issue Date" width="150">
           <ng-template kendoGridCellTemplate let-dataItem>
             <span>
-              {{ dataItem.woplanstartdate | dateFormat : 'DD-MMM-YYYY HH:mm:ss' }}
+              {{ dataItem.woplanstartdate | dateFormat : 'DD-MMM-YYYY' }}
             </span>
           </ng-template>
         </kendo-grid-column>
         <kendo-grid-column field="wotargetcompletiondate" title="Target Date" width="150">
           <ng-template kendoGridCellTemplate let-dataItem>
             <span>
-              {{ dataItem.wotargetcompletiondate | dateFormat : 'DD-MMM-YYYY HH:mm:ss' }}
+              {{ dataItem.wotargetcompletiondate | dateFormat : 'DD-MMM-YYYY' }}
             </span>
           </ng-template>
         </kendo-grid-column>
         <kendo-grid-column field="wocontractoracceptancedate" title="Acceptance Date" width="150">
           <ng-template kendoGridCellTemplate let-dataItem>
             <span>
-              {{ dataItem.wocontractoracceptancedate | dateFormat : 'DD-MMM-YYYY HH:mm:ss' }}
+              {{ dataItem.wocontractoracceptancedate | dateFormat : 'DD-MMM-YYYY' }}
             </span>
           </ng-template>
         </kendo-grid-column>
         <kendo-grid-column field="woplanstartdate" title="Plan Start Date" width="150">
           <ng-template kendoGridCellTemplate let-dataItem>
             <span>
-              {{ dataItem.woplanstartdate | dateFormat : 'DD-MMM-YYYY HH:mm:ss' }}
+              {{ dataItem.woplanstartdate | dateFormat : 'DD-MMM-YYYY' }}
             </span>
           </ng-template>
         </kendo-grid-column>
@@ -209,7 +215,7 @@
         <kendo-grid-column field="woplanenddate" title="Plan End Date" width="150">
           <ng-template kendoGridCellTemplate let-dataItem>
             <span>
-              {{ dataItem.woplanenddate | dateFormat : 'DD-MMM-YYYY HH:mm:ss' }}
+              {{ dataItem.woplanenddate | dateFormat : 'DD-MMM-YYYY' }}
             </span>
           </ng-template>
         </kendo-grid-column>
@@ -217,14 +223,14 @@
         <kendo-grid-column field="woactualstartdate" title="Actual Start Date" width="150">
           <ng-template kendoGridCellTemplate let-dataItem>
             <span>
-              {{ dataItem.woactualstartdate | dateFormat : 'DD-MMM-YYYY HH:mm:ss' }}
+              {{ dataItem.woactualstartdate | dateFormat : 'DD-MMM-YYYY' }}
             </span>
           </ng-template>
         </kendo-grid-column>
         <kendo-grid-column field="woactualenddate" title="Actual End Date" width="150">
           <ng-template kendoGridCellTemplate let-dataItem>
             <span>
-              {{ dataItem.woactualenddate | dateFormat : 'DD-MMM-YYYY HH:mm:ss' }}
+              {{ dataItem.woactualenddate | dateFormat : 'DD-MMM-YYYY' }}
             </span>
           </ng-template>
         </kendo-grid-column>
@@ -268,13 +274,11 @@
 </div>
 
 
-<kendo-dialog title="DELETE WORKS ORDERS" *ngIf="woFormDeleteWindow" (close)="closewoFormDeleteWindow()"
-  [minWidth]="250" [width]="450">
-
+<kendo-dialog title="Delete Works Order" *ngIf="woFormDeleteWindow" (close)="closewoFormDeleteWindow()" [minWidth]="250"
+  [width]="450">
 
   <p *ngIf="errorDeleteMsg" class="deleteError">{{ errorDeleteMsg }}</p>
   <p *ngIf="successDeleteMsg" class="successDeleteMsg">{{ successDeleteMsg }}</p>
-
 
   <div *ngIf="deleteReasonMsgInput" class="">
 
@@ -289,26 +293,14 @@
     </div>
 
 
-
-
     <div class="buttonDiv pull-right mb-4">
 
       <button (click)="finalDeleteSubmit(reason_for_deleteInput.value)" type="button"
         class="btn btn-sm themeButton mr-1">Delete</button>
 
-
-
     </div>
 
-
-
   </div>
-
-
-
-
-
-
 
 </kendo-dialog>
 

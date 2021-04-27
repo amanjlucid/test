@@ -215,7 +215,7 @@ export class WorksordersDetailsComponent implements OnInit {
               this.gridData = [...gridData];
               this.loading = false;
               this.chRef.detectChanges();
-            }, 100);
+            }, 10);
 
           } else {
             this.alertService.error(data.message);
@@ -509,6 +509,7 @@ export class WorksordersDetailsComponent implements OnInit {
   closeAddAssetWindow(eve) {
     this.addAssetWindow = eve;
     $('.worksOrderDetailOvrlay').removeClass('ovrlay');
+    this.refreshGrid(true)
   }
 
   openAddAssetWorkOrdersList(item, workOrderType) {

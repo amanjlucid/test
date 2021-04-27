@@ -5,13 +5,21 @@
 }
 
 .worksorderGrid .k-grid tr {
-    background-color: white 
+    background-color: white
 }
-
 
 .k-grid tr.notNew {
     background-color: rgba(230, 0, 126, 0.1) !important
 }
+
+.worksorderGrid .gridRow:hover:not(.notNew), .worksorderGrid .gridRow:hover td{
+    background-color: transparent !important;;
+}
+
+.worksorderGrid .k-state-selected.gridRow:hover{
+    background-color: #d4cdcd!important;
+}
+
 
 .dropdown.list-unstyled {
     position: absolute !important;
@@ -117,7 +125,6 @@
     color: green;
     font-size: 17px;
 }
-
 
 /** media query **/
 

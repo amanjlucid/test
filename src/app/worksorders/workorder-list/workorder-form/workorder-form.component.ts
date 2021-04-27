@@ -1,8 +1,9 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef, HostListener } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AlertService, WorksOrdersService, HelperService } from '../../../_services';
+import { AlertService, WorksOrdersService, HelperService, LoaderService, WorksorderManagementService } from '../../../_services';
 import { SubSink } from 'subsink';
 import { forkJoin } from 'rxjs';
+import { isNumberCheck, ShouldGreaterThanYesterday, shouldNotZero, SimpleDateValidator } from 'src/app/_helpers';
 
 @Component({
     selector: 'app-workorder-form',
@@ -50,13 +51,13 @@ export class WorkOrderFormComponent implements OnInit {
         wodesc: ['', Validators.required],
         wostatus: ['', Validators.required],
         woactinact: ['', Validators.required],
-        wotargetcompletiondate: ['', Validators.required],
-        wobudget: ['', [Validators.required, Validators.pattern("^[0-9]*$")]],
+        wotargetcompletiondate: [''],
+        wobudget: ['', [Validators.required, shouldNotZero()]],
         purchase_order_no: [''],
         wobudgetcode: [''],
         plan_year: ['', Validators.required],
-        woplanstartdate: [''],
-        woplanenddate: [''],
+        woplanstartdate: ['', [SimpleDateValidator()]],
+        woplanenddate: ['', [SimpleDateValidator()]],
         woinstructions: ['', Validators.required],
         wooverheadpct: ['', Validators.required],
         woprelimpct: ['', Validators.required],
@@ -64,7 +65,7 @@ export class WorkOrderFormComponent implements OnInit {
         woothercostpct: ['', Validators.required],
         contract_payment_type: ['', Validators.required],
         defectLibPeriodCheck: [''],
-        defectLibPeriodVal: [''],
+        defectLibPeriodVal: ['', [shouldNotZero()]],
         valuationCheck: [''],
     }
     workOrderNo: any;
@@ -97,11 +98,14 @@ export class WorkOrderFormComponent implements OnInit {
         },
         'wotargetcompletiondate': {
             'required': 'Target Date is required.',
+            'pastDate': 'Target Date cannot be in the past.',
+            'invalidDate': 'Target Date in dd/mm/yyyy format.',
         },
 
         'wobudget': {
             'required': 'Budget is required.',
             'pattern': 'Number Only.',
+            'shouldNotZero': 'Budget cannot be 0 and blank'
         },
         'purchase_order_no': {
             'required': 'Purchase Order No is required.',
@@ -114,10 +118,12 @@ export class WorkOrderFormComponent implements OnInit {
         },
         'woplanstartdate': {
             'required': 'Plan Start Date is required.',
+            'invalidDate': 'Plan Start Date in dd/mm/yyyy format.',
         },
         'woplanenddate': {
             'required': 'Plan End Date is required.',
             'isLower': 'Planned End Date must be on or after the Planned Start Date.',
+            'invalidDate': 'Planned End Date in dd/mm/yyyy format.',
         },
         'woinstructions': {
             'required': 'Instructions is required.',
@@ -137,6 +143,12 @@ export class WorkOrderFormComponent implements OnInit {
         'contract_payment_type': {
             'required': 'Contract payment Type is required.',
         },
+        'defectLibPeriodVal': {
+            'isNotNumber': 'DLP value should be an integer value.',
+            'shouldNotZero': 'DLP value cannot be 0 and blank'
+        },
+
+
     };
     addStage = 1;
     contractSelcted: any = {};
@@ -164,6 +176,8 @@ export class WorkOrderFormComponent implements OnInit {
         private alertService: AlertService,
         private chRef: ChangeDetectorRef,
         private helperService: HelperService,
+        private loaderService: LoaderService,
+        private worksorderManagementService: WorksorderManagementService
     ) {
         const current = new Date();
         this.minDate = {
@@ -197,7 +211,7 @@ export class WorkOrderFormComponent implements OnInit {
                 this.worksOrdersService.WorkOrderContractList(true)
             ]).subscribe(
                 data => {
-                    // console.log(data);
+                    console.log(data);
                     this.GetPhaseTemplateListData = data[0].data;
                     this.getWorkOrderTypeData = data[1].data;
                     this.workOrderProgrammeListData = data[2].data;
@@ -328,7 +342,7 @@ export class WorkOrderFormComponent implements OnInit {
             wostatus: wod?.wostatus ?? 'New',
             woactinact: wod?.woactinact ?? 'A',
             wotargetcompletiondate: compDate,
-            wobudget: wod?.wobudget ?? 0,
+            wobudget: wod?.wobudget ?? "",
             purchase_order_no: wod?.wocodE3 ?? '',
             wobudgetcode: wod?.wocodE4 ?? '',
             plan_year: wod?.wocodE1 ?? '',
@@ -347,18 +361,25 @@ export class WorkOrderFormComponent implements OnInit {
 
         });
 
-        this.woForm2.get('valuationCheck').disable();
+
+        let targetDateValidationArr = [Validators.required, ShouldGreaterThanYesterday(), SimpleDateValidator()];
+        if (this.woFormType == "edit") {
+            targetDateValidationArr = [Validators.required, SimpleDateValidator()];
+        }
+
+        const targetCompletionCtr = this.woForm2.get('wotargetcompletiondate');
+        targetCompletionCtr.setValidators(targetDateValidationArr);
+
+        const budgetCtr = this.woForm2.get('wobudget');
         this.subs.add(
-            this.woForm2.get('contract_payment_type').valueChanges.subscribe(
+            budgetCtr.valueChanges.subscribe(
                 val => {
-                    if (val == "VALUATION") {
-                        this.woForm2.get('valuationCheck').enable();
-                    }
+                    budgetCtr.setValidators([shouldNotZero()])
                 }
             )
         )
 
-
+        this.woForm2.get('valuationCheck').disable();
 
         if (this.woFormType == "edit") {
             this.woForm2.get('contract_payment_type').disable();
@@ -366,18 +387,46 @@ export class WorkOrderFormComponent implements OnInit {
             this.woForm2.get('defectLibPeriodVal').disable();
         }
 
+        this.subs.add(
+            this.woForm2.get('contract_payment_type').valueChanges.subscribe(
+                val => {
+                    // console.log(val)
+                    if (val == "VALUATION") {
+                        this.woForm2.get('valuationCheck').enable();
+                    } else {
+                        this.woForm2.get('valuationCheck').disable();
+                    }
+                }
+            )
+        )
+
+
+
+        const defectLibPeriodValCtr = this.woForm2.get('defectLibPeriodVal');
+
         if (this.woFormType == "new") {
             this.woForm2.get('wostatus').disable();
             this.subs.add(
                 this.woForm2.get('defectLibPeriodCheck').valueChanges.subscribe(
                     val => {
-                        this.woForm2.get('defectLibPeriodVal').disable();
+                        defectLibPeriodValCtr.clearValidators();
                         if (val) {
-                            this.woForm2.get('defectLibPeriodVal').enable();
+                            defectLibPeriodValCtr.enable();
+                            defectLibPeriodValCtr.setValidators([shouldNotZero()]);
+                            this.woForm2.patchValue({ defectLibPeriodVal: 0 })
+                            this.chRef.detectChanges();
+                        } else {
+                            this.woForm2.patchValue({ defectLibPeriodVal: 0 })
+                            defectLibPeriodValCtr.disable();
+                            delete this.formErrors.defectLibPeriodVal
+                            this.chRef.detectChanges();
                         }
                     }
                 )
             )
+        } else if (this.woFormType == "edit") {
+            defectLibPeriodValCtr.clearValidators();
+            this.chRef.detectChanges();
         }
 
 
@@ -389,9 +438,11 @@ export class WorkOrderFormComponent implements OnInit {
 
 
     onSubmit() {
+
         this.submitted1 = true;
         this.formErrorObject(); // empty form error
         this.logValidationErrors(this.woForm);
+        this.chRef.detectChanges();
 
         if (this.woForm.invalid) {
             return;
@@ -436,13 +487,24 @@ export class WorkOrderFormComponent implements OnInit {
 
 
     onSubmit2() {
+
         this.submitted = true;
         this.formErrorObject(); // empty form error
         this.logValidationErrors(this.woForm2);
+        this.chRef.detectChanges();
 
+        // console.log(this.woForm2)
         if (this.woForm2.invalid) {
             return;
         }
+
+        // this.subs.add(
+        //     this.worksorderManagementService.getWorkProgrammesByWprsequence(this.programSelcted.wprsequence).subscribe(
+        //         data => {
+        //             console.log(data)
+        //         }
+        //     )
+        // )
 
         let formRawVal = this.woForm2.getRawValue();
 
@@ -529,25 +591,35 @@ export class WorkOrderFormComponent implements OnInit {
             MPgtA: this.dateFormate(undefined),
         }
 
+        // console.log(params);
+
         let apiCall: any;
         if (this.woFormType == "new") {
             apiCall = this.worksOrdersService.InsertWorksOrder(params)
         } else {
 
-            // if (this.mData.wprstatus == "New" && managementModel.WPRSTATUS == "In Progress") {
-            //     this.alertService.error("The Work Programme Status cannot be changed from 'New' to 'In Progress'");
-            //     return
-            //   }
+            if (wodData.wostatus == "New" && formRawVal.wostatus == "In Progress") {
+                this.alertService.error("The Works Order Status cannot be changed from 'New' to 'In Progress'");
+                return
+            }
 
-            //   if (this.mData.wprstatus == "Closed" && managementModel.WPRSTATUS == "New") {
-            //     this.alertService.error("The Work Programme Status cannot be changed from 'Closed' to 'New'");
-            //     return
-            //   }
+            if (wodData.wostatus == "Closed" && formRawVal.wostatus == "New") {
+                this.alertService.error("The Works Order Status cannot be changed from 'Closed' to 'New'");
+                return
+            }
 
-            //   if (this.mData.wprstatus == "In Progress" && managementModel.WPRSTATUS == "New") {
-            //     this.alertService.error("The Work Programme Status cannot be changed from 'In Progress' to 'New'");
-            //     return
-            //   }
+            if (wodData.wostatus == "In Progress" && formRawVal.wostatus == "New") {
+                this.alertService.error("The Works Order Status cannot be changed from 'In Progress' to 'New'");
+                return
+            }
+
+            if (new Date(params.WOTARGETCOMPLETIONDATE) < new Date()) {
+                this.alertService.warning("Warning - Target Completion Date is in the past!", false);
+                this.loaderService.pageShow();
+                // setTimeout(() => {
+                // //   this.subscribeToSubmitForm(apiToAddUpdate, message);
+                // }, 2000);
+            }
 
 
             apiCall = this.worksOrdersService.UpdateWorksOrder(params)
@@ -564,7 +636,11 @@ export class WorkOrderFormComponent implements OnInit {
                         this.alertService.error(data.message);
                         this.chRef.detectChanges();
                     }
-                }, error => this.alertService.error(error)
+                    this.loaderService.pageHide();
+                }, error => {
+                    this.loaderService.pageHide();
+                    this.alertService.error(error)
+                }
             )
         )
 
@@ -635,6 +711,7 @@ export class WorkOrderFormComponent implements OnInit {
             'woprofitpct': '',
             'woothercostpct': '',
             'contract_payment_type': '',
+            'defectLibPeriodVal': ''
         }
     }
 

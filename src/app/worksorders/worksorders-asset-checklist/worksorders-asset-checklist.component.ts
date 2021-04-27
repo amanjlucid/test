@@ -76,7 +76,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    // console.log(this.selectedChildRow);
+    console.log(this.selectedChildRow);
     this.worksOrderDetailPageData();
 
     this.subs.add(
@@ -103,7 +103,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
 
       ]).subscribe(
         data => {
-          // console.log(data)
+          console.log(data)
           const programmeData = data[0];
           const worksOrderData = data[1];
           const phaseData = data[2];
@@ -769,7 +769,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
 
 
   setStatusMul(type, checkOrProcess = 'C') {
-    
+
     if (this.mySelection.length == 0) {
       return
     }
@@ -892,6 +892,75 @@ export class WorksordersAssetChecklistComponent implements OnInit {
   }
 
 
+  disableBtnsIndividualMenu(name, item) {
+    this.selectedChecklistsingleItem = item
+   
+      if (name == "status") {
+        return this.workorderAsset?.woassstatus == 'Pending' || this.workorderAsset?.woassstatus == 'Issued'
+      }
+
+      if (name == "SE") {
+        return this.workorderAsset?.woassstatus == 'Pending' || this.workorderAsset?.woassstatus == 'Final Completion'
+      }
+
+      if (name == "STCD") {
+        return this.workorderAsset?.woassstatus == 'Pending' || this.workorderAsset?.woassstatus == 'Issued' || this.workorderAsset?.woassstatus == 'Final Completion'
+      }
+
+      if (name == "CSD" ) {
+        return this.workorderAsset?.woassstatus == 'Pending' || this.workorderAsset?.woassstatus == 'Issued' || this.workorderAsset?.woassstatus == 'Final Completion'
+      }
+
+      if (name == "CCD") {
+        return this.workorderAsset?.woassstatus == 'Pending' || this.workorderAsset?.woassstatus == 'Issued'
+      }
+
+      if (name == "CMP") {
+        return this.workorderAsset?.woassstatus == 'Pending' || this.workorderAsset?.woassstatus == 'Issued'
+      }
+
+      if (name == "WOADD") {
+        return this.selectedChildRow.wostatus != 'New'
+      }
+
+      if (name == "WODETAIL") {
+        return this.selectedChecklistsingleItem?.detailCount == 0
+      }
+
+
+   
+
+    return false
+  }
+
+  disableMainActions(type){
+    if(type == "woremoveAll" || type == "wodeleteAll"){
+      return !this.selectedChecklistsingleItem || this.selectedChecklistsingleItem.detailCount == 0
+    }
+
+    if(type == "woAdd"){
+      return this.workorderAsset?.woassstatus != 'New'
+    }
+
+    if(type == "release"){
+      return !this.selectedChecklistsingleItem ||  this.workorderAsset?.woassstatus != 'New'
+    }
+
+    if(type == "issue"){
+      return !this.selectedChecklistsingleItem ||  this.workorderAsset?.woassstatus != 'Pending'
+    }
+
+    if(type == "accept"){
+      return !this.selectedChecklistsingleItem || this.workorderAsset?.woassstatus != 'Issued'
+    }
+
+    if(type == "na" || type == "STIP" || type == "NS" || type == "RCI" || type == "COMP"){
+      return this.mySelection.length == 0 || this.workorderAsset?.woassstatus == 'Pending' || this.workorderAsset?.woassstatus == 'Issued'
+    }
+
+
+
+  }
 
 
 }
