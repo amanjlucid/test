@@ -1,71 +1,101 @@
 <kendo-window title="{{title}}" *ngIf="packageQuantityWindow" (close)="closePackageQuantityWindow()" [top]="20"
     [minWidth]="700" [width]="1400" [height]="auto" [minHeight]="200">
-
-    <div class="row">
-        <div class="col-md-12">
-            <div class="row1">
-                <div class="blockleft">
-                    <div class="lblDiv">Code</div>
-                    <input type="text" [readonly]="readonly" value="{{displayHighestPkz?.wphcode}}">
-                </div>
-                <div class="blockright">
-                    <div class="lblDiv">Name</div>
-                    <input type="text" [readonly]="readonly" value="{{displayHighestPkz?.wphname}}">
-                </div>
-            </div>
-
-            <div class="row2 mt-2">
-                <div class="blockleft">
-                    <div class="lblDiv">Attr Desc</div>
-                    <input type="text" [readonly]="readonly" value="{{displayHighestPkz?.atadescription}}">
+    <form [formGroup]="pakzQuantityForm" (ngSubmit)="onSubmit()" autocomplete="off" class="managementForm">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="row1">
+                    <div class="blockleft">
+                        <div class="lblDiv">Code</div>
+                        <input type="text" formControlName="code"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.code }" autocomplete="off">
+                        <!-- <input type="text" [readonly]="readonly" value="{{displayHighestPkz?.wphcode}}"> -->
+                    </div>
+                    <div class="blockright">
+                        <div class="lblDiv">Name</div>
+                        <input type="text" formControlName="name"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.name }" autocomplete="off">
+                        <!-- <input type="text" [readonly]="readonly" value="{{displayHighestPkz?.wphname}}"> -->
+                    </div>
                 </div>
 
-            </div>
+                <div class="row2 mt-2">
+                    <div class="blockleft">
+                        <div class="lblDiv">Attr Desc</div>
+                        <input type="text" formControlName="desc"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.desc }" autocomplete="off">
+                        <!-- <input type="text" [readonly]="readonly" value="{{displayHighestPkz?.atadescription}}"> -->
+                    </div>
 
-            <div class="row3 mt-2">
-                <div class="blockleft">
-                    <div class="lblDiv lblDiv1">Please Provide Quantity:</div>
-                    <input type="text" [(ngModel)]="quantity" (keypress)="validate($event)" (ngModelChange)="setCost($event, 'quantity')">
-                    <div class="lblDiv lblDiv2">UOM:</div>
-                    <input type="text" [readonly]="readonly" value="{{displayHighestPkz?.uom}}">
-                    <div class="lblDiv">SOR Rate:</div>
-                    <input type="text" [readonly]="readonly"
-                        value="{{displayHighestPkz?.defaultcost | currency:'GBP':'symbol'}}">
-                    <div class="lblDiv">Contract Rate:</div>
-                    <input type="text" [readonly]="readonly"
-                        value="{{displayHighestPkz?.contractrate | currency:'GBP':'symbol'}}">
-                    <div class="lblDiv">Work Cost:</div>
-                    <input type="text" [readonly]="readonly"
-                        value="{{displayHighestPkz?.cost | currency:'GBP':'symbol'}}">
-                    <div class="lblDiv">Cost Override:</div>
-                    <input type="text" value="{{costOverride | currency:'GBP':'symbol'}}" [readonly]="readonly">
                 </div>
-                <!-- <div class="blockright">
+
+                <div class="row3 mt-2">
+                    <div class="blockleft">
+                        <div class="lblDiv lblDiv1">Please Provide Quantity:</div>
+                        <input type="text" numberDecimal maxDigits="5" formControlName="quantity"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.quantity }" autocomplete="off">
+
+                        <!-- <input type="text" [(ngModel)]="quantity" (keypress)="validate($event)"
+                            (ngModelChange)="setCost($event, 'quantity')"> -->
+                        <div class="lblDiv lblDiv2">UOM:</div>
+                        <input type="text" formControlName="uom"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.uom }" autocomplete="off">
+
+                        <!-- <input type="text" [readonly]="readonly" value="{{displayHighestPkz?.uom}}"> -->
+                        <div class="lblDiv">SOR Rate:</div>
+                        <input type="text" formControlName="sorRate"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.sorRate }" autocomplete="off">
+
+                        <!-- <input type="text" [readonly]="readonly"
+                            value="{{displayHighestPkz?.defaultcost | currency:'GBP':'symbol'}}"> -->
+                        <div class="lblDiv">Contract Rate:</div>
+                        <input type="text" formControlName="contractorRate"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.contractorRate }" autocomplete="off">
+
+                        <!-- <input type="text" [readonly]="readonly"
+                            value="{{displayHighestPkz?.contractrate | currency:'GBP':'symbol'}}"> -->
+                        <div class="lblDiv">Work Cost:</div>
+                        <input appCurrencyMask type="text" formControlName="workCost"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.workCost }" autocomplete="off">
+                        <!-- <input type="text" [readonly]="readonly"
+                            value="{{displayHighestPkz?.cost | currency:'GBP':'symbol'}}"> -->
+                        <div class="lblDiv">Cost Override:</div>
+                        <input appCurrencyMask maxDigits="20" type="text" formControlName="costOverride"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.costOverride }" autocomplete="off">
+                        <!-- <input type="text" value="{{costOverride | currency:'GBP':'symbol'}}"> -->
+
+                    </div>
+                    <!-- <div class="blockright">
                     <div class="lblDiv">Code</div>
                     <input type="text">
                 </div> -->
-            </div>
-
-            <div class="row4 mt-2">
-                <div class="blockleft">
-                    <div class="lblDiv">Comment:</div>
-                    <input type="text" [(ngModel)]="comment">
                 </div>
 
+                <div class="row4 mt-2">
+                    <div class="blockleft">
+                        <div class="lblDiv">Comment:</div>
+                        <input type="text" formControlName="comment"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.comment }" autocomplete="off">
+
+                        <!-- <input type="text" [(ngModel)]="comment"> -->
+                    </div>
+
+                </div>
+
+
             </div>
 
+            <div class="col-md-4 mt-4 text-left">
+                <button type="button" class="btn btn-sm themeButton ml-1" (click)="defaultToOne()">Default to 1</button>
+            </div>
+            <div class="col-md-8 mt-4 text-right">
+                <button type="button" class="btn btn-sm themeButton ml-1" (click)="selectApply(1)">Apply</button>
+                <button type="button" *ngIf="mode == 'new'" class="btn btn-sm themeButton ml-1"
+                    (click)="selectApply(2)">Apply To
+                    All</button>
+                <button type="button" (click)="closePackageQuantityWindow()"
+                    class="btn btn-sm themeButton ml-1">Cancel</button>
+            </div>
 
         </div>
-
-        <div class="col-md-4 mt-4 text-left">
-            <button class="btn btn-sm themeButton ml-1" (click)="defaultToOne()">Default to 1</button>
-        </div>
-        <div class="col-md-8 mt-4 text-right">
-            <button class="btn btn-sm themeButton ml-1" (click)="applyCost(1)">Apply</button>
-            <button class="btn btn-sm themeButton ml-1" (click)="applyCost(2)">Apply To All</button>
-            <button (click)="closePackageQuantityWindow()" class="btn btn-sm themeButton ml-1">Cancel</button>
-        </div>
-
-    </div>
-
+    </form>
 </kendo-window>

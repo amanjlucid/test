@@ -161,6 +161,7 @@ export class WorksordersAddPackageToWorklistComponent implements OnInit {
   refreshPackageList(eve){
     this.mySelection = [];
     this.getPackageList();
+    this.chRef.detectChanges();
   }
 
 }

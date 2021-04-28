@@ -8,4 +8,5 @@ export * from './kendo-treenode-colo.directive';
 export * from './popup.anchor-target.directive';
 export * from './currency-input.directive';
 export * from './currency-mask.directive';
+export * from './number-deciaml-mask.directive';
 

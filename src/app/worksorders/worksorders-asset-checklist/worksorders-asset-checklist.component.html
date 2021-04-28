@@ -126,10 +126,10 @@
                 <div id="wrapper">
                     <div class="worksorder-assetchecklist-header" style="display: none;">
                         <fieldset>
-                            <div class="form-group form-row">
-                                <div class="col-md-1">Works Order: {{worksOrderData?.wosequence}} </div>
+                            <div class="form-group form-row inlineRow">
+                                <div class="col-md-1">Works Order:  </div>
                                 <div class="col-md-8">
-                                    <input type="text" value="{{worksOrderData?.woname}}"
+                                    <input type="text" value="{{worksOrderData?.woname}} ({{worksOrderData?.wosequence}})"
                                         class="form-control form-control-sm" [readonly]="readonly">
                                 </div>
                                 <div class="col-md-1">Phase: </div>
@@ -138,7 +138,7 @@
                                 </div>
                             </div>
 
-                            <div class="form-group form-row">
+                            <div class="form-group form-row inlineRow">
                                 <div class="col-md-1">Asset: </div>
                                 <div class="col-md-3">
                                     <input type="text" class="form-control form-control-sm" [readonly]="readonly"

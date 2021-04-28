@@ -51,3 +51,7 @@
 .actionDrp .completeDrp{
     left: -102% !important;
 }
+
+.inlineRow .col-md-1, .inlineRow .col-md-2{
+    padding-top: 6px;
+}
