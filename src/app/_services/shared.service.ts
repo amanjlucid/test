@@ -201,10 +201,18 @@ export class SharedService {
   private worksOrderSrc = new BehaviorSubject<any>([]);
   worksOrderObs = this.worksOrderSrc.asObservable();
 
-  changeWorksOrderSingleData(data){
+  changeWorksOrderSingleData(data) {
     this.worksOrderSrc.next(data);
   }
-  
+
+  private woUserSecSrc = new BehaviorSubject<any>([]);
+  woUserSecObs = this.woUserSecSrc.asObservable();
+
+  changeWoSecurity(data) {
+    this.woUserSecSrc.next(data)
+  }
+
+
   //######### Works order module shared service end #########//
 
 }

@@ -43,6 +43,7 @@ export class NumberDecimalMaskDirective {
   onInputChange(event, backspace) {
     event = (typeof event == "number") ? event.toString() : event;
 
+    if (event == undefined) return
     // console.log(event);
     const replaceWithnumber = event.replace(/[^0-9.]+/g, '')
     const cleanValue = (replaceWithnumber.match(this.digitRegex) || []).join('')

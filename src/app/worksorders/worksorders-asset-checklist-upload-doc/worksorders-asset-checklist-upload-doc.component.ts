@@ -69,6 +69,7 @@ export class WorksordersAssetChecklistUploadDocComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    // console.log(this.selectedChecklist)
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.getPath();
   }
@@ -140,10 +141,10 @@ export class WorksordersAssetChecklistUploadDocComponent implements OnInit {
         formData.append('file', file, file.name);
         formData.append('WO_FILEPATH', this.filePath);
         formData.append('WO_LEVEL', '2');
-        formData.append('WO_SEQNO', this.selectedChecklist[0].wosequence);
-        formData.append('WOP_SEQNO', this.selectedChecklist[0].wopsequence);
-        formData.append('ASSID', this.selectedChecklist[0].assid);
-        formData.append('CHECKSURCDE', this.selectedChecklist[0].wochecksurcde);
+        formData.append('WO_SEQNO', this.selectedChecklist.wosequence);
+        formData.append('WOP_SEQNO', this.selectedChecklist.wopsequence);
+        formData.append('ASSID', this.selectedChecklist.assid);
+        formData.append('CHECKSURCDE', this.selectedChecklist.wochecksurcde);
         formData.append('CurrentUser', this.currentUser.userId);
 
         this.loaderService.pageShow();

@@ -5,7 +5,7 @@ import { SelectableSettings, PageChangeEvent, RowArgs } from '@progress/kendo-an
 import { AlertService, AssetAttributeService, ConfirmationDialogService, HelperService, LoaderService, PropertySecurityGroupService, SharedService, WorksorderManagementService } from 'src/app/_services';
 import { WorkordersAddAssetworklistModel } from '../../_models'
 import { tap, switchMap } from 'rxjs/operators';
-import { BehaviorSubject, forkJoin } from 'rxjs';
+import { BehaviorSubject, combineLatest, forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-worksorders-add-assetsworklist',
@@ -86,10 +86,14 @@ export class WorksordersAddAssetsworklistComponent implements OnInit {
     // console.log({ selected: this.actualSelectedRow })
     // console.log({ checklist: this.selectedAssetChecklist })
 
+    //works order security access
     this.subs.add(
-      this.sharedService.worksOrdersAccess.subscribe(
+      combineLatest([
+        this.sharedService.woUserSecObs,
+        this.sharedService.worksOrdersAccess
+      ]).subscribe(
         data => {
-          this.worksOrderAccess = data;
+          this.worksOrderAccess = [...data[0], ...data[1]];
         }
       )
     )
@@ -98,7 +102,7 @@ export class WorksordersAddAssetsworklistComponent implements OnInit {
     if (this.addWorkFrom == 'assetchecklist') {
       this.title = 'Add Work'
 
-      if(this.addWorkorderType == 'single'){
+      if (this.addWorkorderType == 'single') {
         this.headerFilters.matcheckCHECKSURCDE = this.actualSelectedRow.wochecksurcde
         this.headerFilters.matchedSTAGESURCDE = this.actualSelectedRow.wostagesurcde
       }

@@ -60,7 +60,7 @@
             <select class="custom-select" formControlName="wophasetemplate"
               [ngClass]="{ 'is-invalid': submitted1 && formErrors.wophasetemplate }">
               <option value=""></option>
-              <option *ngFor="let wophasetmp of GetPhaseTemplateListData" [ngValue]="wophasetmp.wottemplatetype">
+              <option *ngFor="let wophasetmp of GetPhaseTemplateListData" [ngValue]="wophasetmp.wotsequence">
                 {{wophasetmp.wotname}}</option>
 
             </select>

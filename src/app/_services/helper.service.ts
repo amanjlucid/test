@@ -9,6 +9,7 @@ import * as moment from "moment";
 import { anyChanged } from '@progress/kendo-angular-grid/dist/es2015/utils';
 import { SubSink } from 'subsink';
 import { EventService } from './event.service';
+import { WorksorderManagementService } from './works-order/worksorder-management.service';
 
 
 
@@ -26,7 +27,8 @@ export class HelperService {
 
     constructor(
         private sharedService: SharedService,
-        private notificationService: EventService
+        private notificationService: EventService,
+        private worksorderManagementService: WorksorderManagementService,
     ) { }
 
     public exportAsExcelFile(json: any[], excelFileName: string, labels): void {
@@ -668,6 +670,18 @@ export class HelperService {
         )
     }
 
-    
+    getWorkOrderSecurity(wo) {
+        let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        this.subs.add(
+            this.worksorderManagementService.workOrderUserSecurity(currentUser.userId, wo).subscribe(
+                wosecurtiy => {
+                    // console.log(wosecurtiy)
+                    this.sharedService.changeWoSecurity(wosecurtiy.data)
+                }
+            )
+        )
+    }
+
+
 
 }

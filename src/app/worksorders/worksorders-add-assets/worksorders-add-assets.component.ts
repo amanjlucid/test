@@ -4,8 +4,8 @@ import { State, SortDescriptor } from '@progress/kendo-data-query';
 import { SelectableSettings, PageChangeEvent, RowArgs } from '@progress/kendo-angular-grid';
 import { AlertService, AssetAttributeService, ConfirmationDialogService, HelperService, LoaderService, PropertySecurityGroupService, SharedService, WorksorderManagementService } from 'src/app/_services';
 import { WorkordersAddAssetModel } from '../../_models'
-import { tap, switchMap} from 'rxjs/operators';
-import { BehaviorSubject } from 'rxjs';
+import { tap, switchMap } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest } from 'rxjs';
 
 @Component({
   selector: 'app-worksorders-add-assets',
@@ -55,7 +55,7 @@ export class WorksordersAddAssetsComponent implements OnInit {
   selectableSettings: SelectableSettings;
   mySelection: any[] = [];
   zero = 0;
-  worksOrderAccess:any= [];
+  worksOrderAccess: any = [];
 
   constructor(
     private propSecGrpService: PropertySecurityGroupService,
@@ -75,10 +75,15 @@ export class WorksordersAddAssetsComponent implements OnInit {
     this.headerFilters.wopsequence = this.actualSelectedRow.wopsequence;
     this.headerFilters.wosequence = this.actualSelectedRow.wosequence;
 
+ 
+    //works order security access
     this.subs.add(
-      this.sharedService.worksOrdersAccess.subscribe(
+      combineLatest([
+        this.sharedService.woUserSecObs,
+        this.sharedService.worksOrdersAccess
+      ]).subscribe(
         data => {
-          this.worksOrderAccess = data;
+          this.worksOrderAccess = [...data[0], ...data[1]];
         }
       )
     )
@@ -303,7 +308,7 @@ export class WorksordersAddAssetsComponent implements OnInit {
       .catch(() => console.log('Attribute dismissed the dialog.'));
   }
 
-   selectionChange(item) {
+  selectionChange(item) {
     if (this.mySelection.includes(item.assid)) {
       this.mySelection = this.mySelection.filter(x => x != item.assid);
     } else {
@@ -311,7 +316,7 @@ export class WorksordersAddAssetsComponent implements OnInit {
     }
   }
 
- 
+
   //####################### hierarchy function start ####################################//
   getHierarchyTypeList() {
     this.propSecGrpService.getHierarchyTypeList().subscribe(

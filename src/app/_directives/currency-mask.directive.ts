@@ -41,6 +41,7 @@ export class CurrencyMaskDirective {
 
   private lastValid = '';
   onInputChange(event, backspace) {
+    if (event == undefined) return
     event = (typeof event == "number") ? event.toString() : event;
 
     const replaceWithnumber = event.replace(/[^0-9.]+/g, '')
@@ -90,7 +91,7 @@ export class CurrencyMaskDirective {
 
     newVal = (splitVal.length > 0) ? `${newVal}.${splitVal[1]}` : newVal;
     this.ngControl.valueAccessor.writeValue("£" + newVal);
-   
+
     this.toNumber(newVal)
   }
 

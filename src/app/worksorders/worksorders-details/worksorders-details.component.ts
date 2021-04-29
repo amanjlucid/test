@@ -3,7 +3,7 @@ import { SubSink } from 'subsink';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { FilterService, SelectableSettings, TreeListComponent, RowClassArgs } from '@progress/kendo-angular-treelist';
 import { AlertService, LoaderService, ConfirmationDialogService, HelperService, WorksorderManagementService, SharedService, PropertySecurityGroupService, AuthenticationService } from '../../_services'
-import { forkJoin } from 'rxjs';
+import { combineLatest, forkJoin } from 'rxjs';
 import { WorkordersDetailModel } from 'src/app/_models';
 import { appConfig } from '../../app.config';
 
@@ -69,6 +69,7 @@ export class WorksordersDetailsComponent implements OnInit {
   assetDetailWindow = false;
   treelevel = 2;
   worksOrderAccess = [];
+  worksOrderUsrAccess = [];
   woFormWindow = false;
   phaseBudgetAvailable: any = 0;
   touchtime = 0;
@@ -96,18 +97,23 @@ export class WorksordersDetailsComponent implements OnInit {
      * Common service for all routing page
      **/
     this.helperService.updateNotificationOnTop();
+    this.helperService.getWorkOrderSecurity(this.worksOrderSingleData.wosequence)
 
+    //subscribe for work order security access
     this.subs.add(
-      this.sharedService.worksOrdersAccess.subscribe(
+      combineLatest([
+        this.sharedService.woUserSecObs,
+        this.sharedService.worksOrdersAccess
+      ]).subscribe(
         data => {
-          this.worksOrderAccess = data;
-          // console.log(this.worksOrderAccess)
+          // console.log(data);
+          this.worksOrderUsrAccess = data[0];
+          this.worksOrderAccess = data[1];
         }
       )
     )
 
-
-    //subscribe for worksorders data
+    //subscribe for worksorders data when coming from works order
     this.subs.add(
       this.sharedService.worksOrderObs.subscribe(
         data => {
@@ -127,6 +133,15 @@ export class WorksordersDetailsComponent implements OnInit {
   ngOnDestroy() {
     this.subs.unsubscribe();
   }
+
+  // ngAfterViewChecked() {
+  //   const wod = this.woMenuBtnSecurityAccess("Works Order Detail");
+  //   if (wod) {
+  //     this.alertService.error("milgaya")
+  //   } else {
+  //     this.alertService.error("nahi milgaya")
+  //   }
+  // }
 
 
   worksOrderDetailPageData() {
@@ -272,19 +287,21 @@ export class WorksordersDetailsComponent implements OnInit {
       } else {
 
         if (((new Date().getTime()) - this.touchtime) < 400) {
-          if (dataItem.treelevel == 2) {
-            //open asset detail window
-            if (this.worksOrderAccess.indexOf('Asset Details') != -1) {
-              this.openAssetDetail(dataItem)
-            }
+          setTimeout(() => {
+            if (dataItem.treelevel == 2) {
+              //open asset detail window
+              if (this.worksOrderAccess.indexOf('Asset Details') != -1 || this.worksOrderUsrAccess.indexOf('Asset Details') != -1) {
+                this.openAssetDetail(dataItem)
+              }
 
-          } else if (dataItem.treelevel == 3) {
-            //open asset checklist window
-            if (this.worksOrderAccess.indexOf('Asset Checklist') != -1) {
-              this.openAssetChecklist(dataItem)
-            }
+            } else if (dataItem.treelevel == 3) {
+              //open asset checklist window
+              if (this.worksOrderAccess.indexOf('Asset Checklist') != -1 || this.worksOrderUsrAccess.indexOf('Asset Checklist') != -1) {
+                this.openAssetChecklist(dataItem)
+              }
 
-          }
+            }
+          }, 200);
 
           this.touchtime = 0;
         } else {
@@ -703,6 +720,11 @@ export class WorksordersDetailsComponent implements OnInit {
         }
 
       }).catch(() => console.log('Attribute dismissed the dialog.'));
+  }
+
+
+  woMenuBtnSecurityAccess(menuName) {
+    return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
   }
 
 

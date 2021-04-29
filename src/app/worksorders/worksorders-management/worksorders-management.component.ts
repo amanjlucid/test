@@ -5,6 +5,7 @@ import { AlertService, HelperService, WorksorderManagementService, ConfirmationD
 import { SubSink } from 'subsink';
 import { Router } from '@angular/router';
 import { SortDescriptor } from '@progress/kendo-data-query';
+import { combineLatest } from 'rxjs';
 
 @Component({
   selector: 'app-worksorders-management',
@@ -54,6 +55,8 @@ export class WorksordersManagementComponent implements OnInit {
   woFormType = 'new';
   woFormWindow: boolean = false;
 
+  worksOrderUsrAccess: any = [];
+
   constructor(
     private worksorderManagementService: WorksorderManagementService,
     private helperService: HelperService,
@@ -68,13 +71,51 @@ export class WorksordersManagementComponent implements OnInit {
   ngOnInit(): void {
     //update notification on top
     this.helperService.updateNotificationOnTop();
+
     this.subs.add(
-      this.sharedService.worksOrdersAccess.subscribe(
+      combineLatest([
+        this.sharedService.worksOrdersAccess,
+        this.sharedService.woUserSecObs
+      ]).subscribe(
         data => {
-          this.worksOrderAccess = data;
+          // console.log(data);
+
+          this.worksOrderAccess = data[0];
+          this.worksOrderUsrAccess = data[1];
+
+          if (this.worksOrderAccess.length > 0) {
+            if (!this.worksOrderAccess.includes("Programme Management")) {
+              this.alertService.error("No access")
+              this.router.navigate(['login']);
+            }
+          }
+
         }
       )
     )
+  
+    // this.subs.add(
+    //   this.sharedService.woUserSecObs.subscribe(
+    //     data => {
+    //       this.worksOrderUsrAccess = data;
+    //       // console.log(this.worksOrderUsrAccess)
+    //     }
+    //   )
+    // )
+
+    // this.subs.add(
+    //   this.sharedService.worksOrdersAccess.subscribe(
+    //     data => {
+    //       this.worksOrderAccess = data;
+    //       // console.log(this.worksOrderAccess);
+    //       if (this.worksOrderAccess.length > 0) {
+    //         if (!this.worksOrderAccess.includes("Programme Management")) {
+    //           this.router.navigate(['login']);
+    //         }
+    //       }
+    //     }
+    //   )
+    // )
 
     this.getManagement();
   }
@@ -165,6 +206,9 @@ export class WorksordersManagementComponent implements OnInit {
   }
 
   cellClickHandler($event) {
+    if ($event.dataItem.treelevel == 2) {
+      this.setSeletedWORow($event.dataItem);
+    }
     // console.log($event)
     // console.log(this.selected)
   }
@@ -328,7 +372,7 @@ export class WorksordersManagementComponent implements OnInit {
     this.subs.add(
       this.worksOrderService.DeleteWebWorkOrder(worksOrderItem.wosequence, reason, this.currentUser.userId, checkOrProcess).subscribe(
         data => {
-          console.log(data);
+          // console.log(data);
           if (data.isSuccess && data.data.pRETURNSTATUS == "S") {
             this.deleteWorksOrderReasonWindow = true;
           } else if (data.data.pRETURNSTATUS == "E") {
@@ -382,5 +426,17 @@ export class WorksordersManagementComponent implements OnInit {
     this.refreshManagementGrid(true);
   }
 
+
+  setSeletedWORow(dataItem) {
+    if (this.selctedWorksOrder?.wosequence != dataItem.wosequence) {
+      this.helperService.getWorkOrderSecurity(dataItem.wosequence)
+    }
+
+    this.selctedWorksOrder = dataItem;
+  }
+
+  woMenuAccess(menuName) {
+    return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
+  }
 
 }

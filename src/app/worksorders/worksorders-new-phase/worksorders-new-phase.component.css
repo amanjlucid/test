@@ -75,3 +75,15 @@
 .managementForm .grpDiv .childGrpDiv:nth-child(n+3) {
     margin-left: 8px;
 }
+
+/* .tgdate{
+    position: relative !important;
+} */
+
+.tgdate .dropdown-menu.show {
+    display: block;
+    /* left: 24px; */
+    position: fixed !important;
+    /* top: 46% !important; */
+    left: 22% !important;
+}

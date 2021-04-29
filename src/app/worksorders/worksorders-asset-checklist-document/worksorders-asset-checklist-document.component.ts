@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { AlertService, AssetAttributeService, ConfirmationDialogService, HelperService, LoaderService, SharedService, WorksorderManagementService } from 'src/app/_services';
+import { combineLatest } from 'rxjs';
 
 
 
@@ -39,11 +40,11 @@ export class WorksordersAssetChecklistDocumentComponent implements OnInit {
   worksOrderData: any;
   programmeData: any;
   errors: string[];
-  fileExt: string = "JPG, GIF, PNG";
+  fileExt: string = "JPG, GIF, PNG, PDF";
   maxSize: number = 5; // 5MB
   filePath;
 
-  worksOrderAccess:any = [];
+  worksOrderAccess: any = [];
 
   constructor(
     private chRef: ChangeDetectorRef,
@@ -59,7 +60,9 @@ export class WorksordersAssetChecklistDocumentComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    
+    // console.log(this.selectedChecklist); 
+    // debugger;
+
     this.worksOrderDetailPageData();
     this.getDocumentData();
 
@@ -75,14 +78,25 @@ export class WorksordersAssetChecklistDocumentComponent implements OnInit {
         err => this.alertService.error(err)
       )
     )
-    
+
     this.subs.add(
-      this.sharedService.worksOrdersAccess.subscribe(
+      combineLatest([
+        this.sharedService.woUserSecObs,
+        this.sharedService.worksOrdersAccess
+      ]).subscribe(
         data => {
-          this.worksOrderAccess = data;
+          this.worksOrderAccess = [...data[0], ...data[1]];
         }
       )
     )
+
+    // this.subs.add(
+    //   this.sharedService.worksOrdersAccess.subscribe(
+    //     data => {
+    //       this.worksOrderAccess = data;
+    //     }
+    //   )
+    // )
   }
 
   worksOrderDetailPageData() {
@@ -234,7 +248,7 @@ export class WorksordersAssetChecklistDocumentComponent implements OnInit {
       this.subs.add(
         this.worksorderManagementService.viewDoc(param).subscribe(
           data => {
-            console.log(data);
+            // console.log(data);
             this.loaderService.pageHide()
 
             if (data.isSuccess && data.data && data.data.length > 0) {
@@ -336,55 +350,78 @@ export class WorksordersAssetChecklistDocumentComponent implements OnInit {
   }
 
   private validateFile(file) {
-
     return this.isValidFileExtension(file);
+  }
 
+  public openFileNotExistConfirmationOnAdd() {
+    $('.k-window').css({ 'z-index': 1000 });
+    this.confirmationDialogService.confirm('Please confirm..', 'You cannot add a document that is outside of the Works Order Document Location directory.  Upload Document Now?')
+      .then((confirmed) => (confirmed) ? $('.uploadDocBtn').trigger('click') : console.log(confirmed))
+      .catch(() => console.log('Attribute dismissed the dialog.'));
   }
 
   onFileChange(event) {
     const file = event.target.files;
-    console.log(file)
+    // console.log(file)
 
     if (file.length > 0 && this.validateFile(file) == false) {
       return;
     }
 
     if (file.length > 0) {
-
-      const formData = new FormData();
-
-      // let params = {
-      //   WO_FILEPATH: this.filePath,
-      //   WO_LEVEL: this.selectedChildRow.treelevel,
-      //   WO_SEQNO: this.selectedChildRow.wosequence,
-      //   WOP_SEQNO: this.selectedChildRow.wopsequence,
-      //   ASSID: this.selectedChildRow.assid,
-      //   CHECKSURCDE: this.selectedChecklist.wochecksurcde,
-      //   CurrentUser: this.currentUser.userId
-      // }
-
-      // console.log(params);
-
-      formData.append('file', file[0], file[0].name);
-      formData.append('WO_FILEPATH', this.filePath);
-      formData.append('WO_LEVEL', '2');
-      formData.append('WO_SEQNO', this.selectedChildRow.wosequence);
-      formData.append('WOP_SEQNO', this.selectedChildRow.wopsequence);
-      formData.append('ASSID', this.selectedChildRow.assid);
-      formData.append('CHECKSURCDE', this.selectedChecklist.wochecksurcde);
-      formData.append('CurrentUser', this.currentUser.userId);
-
-      this.worksorderManagementService.workOrderUploadDocument(formData).subscribe(
-        data => {
-          console.log(data)
-          if (data) {
-            this.getDocumentData()
-          } else {
-            this.alertService.error("Something went wrong, File not uploaded.")
+      const fullFilePath = `${this.filePath}\\${file[0].name}`
+      this.worksorderManagementService.attachmentExists(fullFilePath).subscribe(
+        fileExist => {
+          // console.log(fileExist);
+          if (!fileExist.isSuccess) {
+            this.openFileNotExistConfirmationOnAdd();
+            return;
           }
-        },
-        err => this.alertService.error(err)
+
+          const formData = new FormData();
+
+          // let params = {
+          //   WO_FILEPATH: this.filePath,
+          //   WO_LEVEL: this.selectedChildRow.treelevel,
+          //   WO_SEQNO: this.selectedChildRow.wosequence,
+          //   WOP_SEQNO: this.selectedChildRow.wopsequence,
+          //   ASSID: this.selectedChildRow.assid,
+          //   CHECKSURCDE: this.selectedChecklist.wochecksurcde,
+          //   CurrentUser: this.currentUser.userId
+          // }
+
+          // console.log(params);
+
+          formData.append('file', file[0], file[0].name);
+          formData.append('WO_FILEPATH', this.filePath);
+          formData.append('WO_LEVEL', '2');
+          formData.append('WO_SEQNO', this.selectedChildRow.wosequence);
+          formData.append('WOP_SEQNO', this.selectedChildRow.wopsequence);
+          formData.append('ASSID', this.selectedChildRow.assid);
+          formData.append('CHECKSURCDE', this.selectedChecklist.wochecksurcde);
+          formData.append('CurrentUser', this.currentUser.userId);
+
+
+
+
+
+          this.worksorderManagementService.workOrderUploadDocument(formData).subscribe(
+            data => {
+              console.log(data)
+              if (data) {
+                this.getDocumentData()
+              } else {
+                this.alertService.error("Something went wrong, File not uploaded.")
+              }
+            },
+            err => this.alertService.error(err)
+          )
+
+        }
       )
+
+
+
 
     }
 

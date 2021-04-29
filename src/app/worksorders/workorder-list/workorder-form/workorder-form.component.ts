@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AlertService, WorksOrdersService, HelperService, LoaderService, WorksorderManagementService } from '../../../_services';
 import { SubSink } from 'subsink';
 import { forkJoin } from 'rxjs';
-import { isNumberCheck, ShouldGreaterThanYesterday, shouldNotZero, SimpleDateValidator } from 'src/app/_helpers';
+import { isNumberCheck, ShouldGreaterThanYesterday, shouldNotZero, SimpleDateValidator, yearFormatValidator } from 'src/app/_helpers';
 
 @Component({
     selector: 'app-workorder-form',
@@ -55,7 +55,7 @@ export class WorkOrderFormComponent implements OnInit {
         wobudget: ['', [Validators.required, shouldNotZero()]],
         purchase_order_no: [''],
         wobudgetcode: [''],
-        plan_year: ['', Validators.required],
+        plan_year: ['', [Validators.required, yearFormatValidator()]],
         woplanstartdate: ['', [SimpleDateValidator()]],
         woplanenddate: ['', [SimpleDateValidator()]],
         woinstructions: ['', Validators.required],
@@ -115,6 +115,7 @@ export class WorkOrderFormComponent implements OnInit {
         },
         'plan_year': {
             'required': 'Plan Year is required.',
+            'invalidYear': 'Plan Year is invalid.'
         },
         'woplanstartdate': {
             'required': 'Plan Start Date is required.',
@@ -211,7 +212,7 @@ export class WorkOrderFormComponent implements OnInit {
                 this.worksOrdersService.WorkOrderContractList(true)
             ]).subscribe(
                 data => {
-                    console.log(data);
+                    // console.log(data);
                     this.GetPhaseTemplateListData = data[0].data;
                     this.getWorkOrderTypeData = data[1].data;
                     this.workOrderProgrammeListData = data[2].data;
@@ -324,6 +325,8 @@ export class WorkOrderFormComponent implements OnInit {
             wodefectliabperiodflag = wod.wodefectliabperiodflag == "N" ? false : true;
             wodefectliabperioddays = wod.wodefectliabperioddays;
             wocodE2 = wod.wocodE2 == "N" ? false : true;
+            
+            // console.log(wod)
         }
 
         //this variable is used while saving and updating record
@@ -486,7 +489,7 @@ export class WorkOrderFormComponent implements OnInit {
 
 
 
-    onSubmit2() {
+    async onSubmit2() {
 
         this.submitted = true;
         this.formErrorObject(); // empty form error
@@ -511,16 +514,26 @@ export class WorkOrderFormComponent implements OnInit {
         let msg = "";
         let wodData: any = {};
         let wocodE6: any = '';
-        let WOCODE5: any = '';
+        let WOCODE5: any = null;
         if (this.woFormType == "new") {
             msg = "Work Order created successfully.";
             wocodE6 = this.woForm.getRawValue().woType;
-            WOCODE5 = this.woForm.getRawValue().wophasetemplate
+            WOCODE5 = this.woForm.getRawValue().wophasetemplate == "" ? null : this.woForm.getRawValue().wophasetemplate
         } else {
             msg = "Work Order updated successfully.";
             wodData = this.worksOrderData;
             wocodE6 = wodData.wocodE6;
-            WOCODE5 = wodData.wocodE5
+
+
+            if (wodData.wocodE5 == "" || wodData.wocodE5 == null) {
+                WOCODE5 = null;
+            } else {
+                const template = this.GetPhaseTemplateListData.find(x => x.wottemplatetype == wodData.wocodE5);
+                if (template) {
+                    WOCODE5 = template.wotsequence
+                }
+            }
+            // WOCODE5 = (wodData.wocodE5 == "" || wodData.wocodE5 == null) ? null : this.GetPhaseTemplateListData.find(x.wottemplatetype == wodData.wocodE5)?.
         }
 
         let params = {
@@ -591,11 +604,32 @@ export class WorkOrderFormComponent implements OnInit {
             MPgtA: this.dateFormate(undefined),
         }
 
-        // console.log(params);
+
+
+        // console.log(JSON.stringify(params));
+        // console.log(params)
 
         let apiCall: any;
         if (this.woFormType == "new") {
+            let validationparmas = {
+                WPRSequence: params.WPRSEQUENCE,
+                Budget: params.WOBUDGET,
+                TargetDate: params.WOTARGETCOMPLETIONDATE,
+                PlanStartDate: params.WOPLANSTARTDATE,
+                PlanEndDate: params.WOPLANENDDATE,
+                WONAME: params.WONAME,
+            }
+
+            let validate = await this.worksOrdersService.WEBWorksOrdersValidateNewWorksOrder(validationparmas);
+            if (validate.isSuccess) {
+                if (validate.data.validYN == "N") {
+                    this.alertService.error(validate.data.validationMessage);
+                    return
+                }
+            }
+
             apiCall = this.worksOrdersService.InsertWorksOrder(params)
+
         } else {
 
             if (wodData.wostatus == "New" && formRawVal.wostatus == "In Progress") {

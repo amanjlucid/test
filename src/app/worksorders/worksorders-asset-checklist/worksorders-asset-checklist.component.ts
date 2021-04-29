@@ -3,7 +3,7 @@ import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { PageChangeEvent, RowArgs } from '@progress/kendo-angular-grid';
 import { AlertService, ConfirmationDialogService, HelperService, SharedService, WorksorderManagementService } from '../../_services'
-import { forkJoin } from 'rxjs';
+import { combineLatest, forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-worksorders-asset-checklist',
@@ -65,6 +65,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
   itemPassToWorkList: any;
 
   wodDetailType: string = 'all'
+  worksOrderUsrAccess: any = [];
 
   constructor(
     private chRef: ChangeDetectorRef,
@@ -76,17 +77,30 @@ export class WorksordersAssetChecklistComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    // console.log(this.selectedChildRow);
-    this.worksOrderDetailPageData();
 
+    //subscribe for work order security access
     this.subs.add(
-      this.sharedService.worksOrdersAccess.subscribe(
+      combineLatest([
+        this.sharedService.woUserSecObs,
+        this.sharedService.worksOrdersAccess
+      ]).subscribe(
         data => {
-          this.worksOrderAccess = data;
-
+          this.worksOrderUsrAccess = data[0];
+          this.worksOrderAccess = data[1];
         }
       )
     )
+
+    this.worksOrderDetailPageData();
+
+    // this.subs.add(
+    //   this.sharedService.worksOrdersAccess.subscribe(
+    //     data => {
+    //       this.worksOrderAccess = data;
+
+    //     }
+    //   )
+    // )
 
   }
 
@@ -163,9 +177,11 @@ export class WorksordersAssetChecklistComponent implements OnInit {
   }
 
   cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
+    this.selectedChecklistsingleItem = dataItem
     if (columnIndex > 0) {
-      this.selectedChecklistsingleItem = dataItem
+
     }
+    // console.log(this.selectedChecklistsingleItem);
     this.chRef.detectChanges();
     // console.log(dataItem);
   }
@@ -191,16 +207,8 @@ export class WorksordersAssetChecklistComponent implements OnInit {
 
   openChecklistDoc() {
     if (this.mySelection.length != 1) return
-
-    // //set selected checklist data according to selection
-    // this.selectedChecklist = this.assetCheckListData.filter(x => {
-    //   // const key = `${x.wosequence}${x.wochecksurcde}${x.wostagesurcde}`;
-    //   const key = `${x.wochecksurcde}`;
-    //   return this.mySelection.includes(key);
-    // });
-
-    // console.log(this.selectedChecklist)
     $('.checklistOverlay').addClass('ovrlay');
+    // console.log(this.selectedChecklistsingleItem); debugger;
     this.checklistDocWindow = true;
   }
 
@@ -893,7 +901,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
 
 
   disableBtnsIndividualMenu(name, item) {
-    this.selectedChecklistsingleItem = item
+    // this.selectedChecklistsingleItem = item
 
     if (name == "status") {
       return this.workorderAsset?.woassstatus == 'Pending' || this.workorderAsset?.woassstatus == 'Issued'
@@ -920,14 +928,12 @@ export class WorksordersAssetChecklistComponent implements OnInit {
     }
 
     if (name == "WOADD") {
-      return this.selectedChildRow.wostatus != 'New' || this.selectedChecklistsingleItem.wocheckspeciaL1 != 'WORK'
+      return this.selectedChildRow.wostatus != 'New' || item.wocheckspeciaL1 != 'WORK'
     }
 
     if (name == "WODETAIL") {
-      return this.selectedChecklistsingleItem?.detailCount == 0
+      return item?.detailCount == 0
     }
-
-
 
 
     return false
@@ -962,5 +968,10 @@ export class WorksordersAssetChecklistComponent implements OnInit {
 
   }
 
+
+
+  woMenuBtnSecurityAccess(menuName) {
+    return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
+  }
 
 }

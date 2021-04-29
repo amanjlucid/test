@@ -42,19 +42,19 @@
 
                         <!-- <input type="text" [readonly]="readonly" value="{{displayHighestPkz?.uom}}"> -->
                         <div class="lblDiv">SOR Rate:</div>
-                        <input type="text" formControlName="sorRate"
+                        <input appCurrencyMask maxDigits="20" type="text" formControlName="sorRate"
                             [ngClass]="{ 'is-invalid': submitted && formErrors.sorRate }" autocomplete="off">
 
                         <!-- <input type="text" [readonly]="readonly"
                             value="{{displayHighestPkz?.defaultcost | currency:'GBP':'symbol'}}"> -->
                         <div class="lblDiv">Contract Rate:</div>
-                        <input type="text" formControlName="contractorRate"
+                        <input appCurrencyMask maxDigits="20" type="text" formControlName="contractorRate"
                             [ngClass]="{ 'is-invalid': submitted && formErrors.contractorRate }" autocomplete="off">
 
                         <!-- <input type="text" [readonly]="readonly"
                             value="{{displayHighestPkz?.contractrate | currency:'GBP':'symbol'}}"> -->
                         <div class="lblDiv">Work Cost:</div>
-                        <input appCurrencyMask type="text" formControlName="workCost"
+                        <input appCurrencyMask maxDigits="20" type="text" formControlName="workCost"
                             [ngClass]="{ 'is-invalid': submitted && formErrors.workCost }" autocomplete="off">
                         <!-- <input type="text" [readonly]="readonly"
                             value="{{displayHighestPkz?.cost | currency:'GBP':'symbol'}}"> -->
@@ -73,8 +73,13 @@
                 <div class="row4 mt-2">
                     <div class="blockleft">
                         <div class="lblDiv">Comment:</div>
-                        <input type="text" formControlName="comment"
-                            [ngClass]="{ 'is-invalid': submitted && formErrors.comment }" autocomplete="off">
+                        <div class="form-group">
+                            <input type="text" formControlName="comment"
+                                [ngClass]="{ 'is-invalid': submitted && formErrors.comment }" autocomplete="off">
+                            <div *ngIf="submitted && formErrors.comment" class="invalid-feedback">
+                                <div *ngIf="formErrors.comment">{{ formErrors.comment }}</div>
+                            </div>
+                        </div>
 
                         <!-- <input type="text" [(ngModel)]="comment"> -->
                     </div>
@@ -84,10 +89,10 @@
 
             </div>
 
-            <div class="col-md-4 mt-4 text-left">
-                <button type="button" class="btn btn-sm themeButton ml-1" (click)="defaultToOne()">Default to 1</button>
+            <div class="col-md-4 mt-3 text-left">
+                <button type="button" *ngIf="mode == 'new'" class="btn btn-sm themeButton ml-1" (click)="defaultToOne()">Default to 1</button>
             </div>
-            <div class="col-md-8 mt-4 text-right">
+            <div class="col-md-8 mt-3 text-right">
                 <button type="button" class="btn btn-sm themeButton ml-1" (click)="selectApply(1)">Apply</button>
                 <button type="button" *ngIf="mode == 'new'" class="btn btn-sm themeButton ml-1"
                     (click)="selectApply(2)">Apply To

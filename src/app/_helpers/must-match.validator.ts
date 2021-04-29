@@ -297,25 +297,34 @@ export function isNumberCheck(): ValidatorFn {
 
 export function shouldNotZero(): ValidatorFn {
     return (control: FormControl): { [key: string]: boolean } | null => {
-      
+
         if (control.errors && !control.errors.shouldNotZero) {
             return;
         }
 
-        // if (control.value != null && control.value != "") {
-        //     return
-        // }
-
         let number = control.value.toString().replace(/[^0-9.]+/g, '');
-        
-       
-      
+
         if (number == 0) {
             return { 'shouldNotZero': true };
         }
 
 
         return null;
+    };
+}
+
+
+export function yearFormatValidator(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+        if (control.errors && !control.errors.invalidYear) {
+            return;
+        }
+
+        const dateRegEx = new RegExp('/^[0-9]+$/');;
+        const dateInput = control.value;
+        const match = dateInput.length != 4 || !dateRegEx.test(dateInput)
+        return match ? null : { 'invalidYear': { value: control.value } };
+
     };
 }
 

@@ -10,7 +10,7 @@
                                 <label class="col-form-label">Name</label>
                             </div>
                             <div class="second">
-                                <input type="text" class="form-control" formControlName="WOPNAME"
+                                <input maxlength="50" type="text" class="form-control" formControlName="WOPNAME"
                                     [ngClass]="{ 'is-invalid': submitted && formErrors.WOPNAME }" autocomplete="off">
 
                                 <div *ngIf="submitted && formErrors.WOPNAME" class="invalid-feedback">
@@ -48,7 +48,7 @@
                                 <label class="col-form-label">Desc</label>
                             </div>
                             <div class="second">
-                                <input type="text" class="form-control" formControlName="WOPDESC"
+                                <input maxlength="50" type="text" class="form-control" formControlName="WOPDESC"
                                     [ngClass]="{ 'is-invalid': submitted && formErrors.WOPDESC }" autocomplete="off">
 
                                 <div *ngIf="submitted && formErrors.WOPDESC" class="invalid-feedback">
@@ -89,7 +89,8 @@
                                 <label class="col-form-label">Budget</label>
                             </div>
                             <div class="second">
-                                <input type="text" class="form-control" formControlName="WOPBUDGET"
+                                <input appCurrencyMask maxDigits="9" type="text" class="form-control"
+                                    formControlName="WOPBUDGET"
                                     [ngClass]="{ 'is-invalid': submitted && formErrors.WOPBUDGET }" autocomplete="off">
 
                                 <div *ngIf="submitted && formErrors.WOPBUDGET" class="invalid-feedback">
@@ -193,11 +194,11 @@
                             <div class="first">
                                 <label class="col-form-label">Target Date</label>
                             </div>
-                            <div class="second">
+                            <div class="second tgdate">
                                 <input type="text" class="form-control" formControlName="WOPTARGETCOMPLETIONDATE"
                                     [ngClass]="{ 'is-invalid': submitted && formErrors.WOPTARGETCOMPLETIONDATE }"
                                     autocomplete="off" (click)="openCalendar(td,'completedDate')" [minDate]="minDate"
-                                    ngbDatepicker #td="ngbDatepicker" [placement]="'right'">
+                                    ngbDatepicker #td="ngbDatepicker">
 
                                 <div *ngIf="submitted && formErrors.WOPTARGETCOMPLETIONDATE" class="invalid-feedback">
                                     <div *ngIf="formErrors.WOPTARGETCOMPLETIONDATE">{{
@@ -252,11 +253,13 @@
                                 <input type="text" class="form-control" formControlName="WOPCONTRACTORACCEPTANCEDATE"
                                     [ngClass]="{ 'is-invalid': submitted && formErrors.WOPCONTRACTORACCEPTANCEDATE }"
                                     autocomplete="off" (click)="openCalendar(apd)"
-                                    [disabled]="disableFields.includes('WOPCONTRACTORACCEPTANCEDATE')" [minDate]="minDate"
-                                    ngbDatepicker #apd="ngbDatepicker" [placement]="'top'">
+                                    [disabled]="disableFields.includes('WOPCONTRACTORACCEPTANCEDATE')"
+                                    [minDate]="minDate" ngbDatepicker #apd="ngbDatepicker" [placement]="'top'">
 
-                                <div *ngIf="submitted && formErrors.WOPCONTRACTORACCEPTANCEDATE" class="invalid-feedback">
-                                    <div *ngIf="formErrors.WOPCONTRACTORACCEPTANCEDATE">{{ formErrors.WOPCONTRACTORACCEPTANCEDATE }}</div>
+                                <div *ngIf="submitted && formErrors.WOPCONTRACTORACCEPTANCEDATE"
+                                    class="invalid-feedback">
+                                    <div *ngIf="formErrors.WOPCONTRACTORACCEPTANCEDATE">{{
+                                        formErrors.WOPCONTRACTORACCEPTANCEDATE }}</div>
                                 </div>
                             </div>
                         </div>

@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { AlertService, HelperService, LoaderService, ConfirmationDialogService, WorksOrdersService, PropertySecurityGroupService, SharedService } from 'src/app/_services';
+import { combineLatest } from 'rxjs';
 
 @Component({
     selector: 'app-worksorders-asset-detail',
@@ -56,6 +57,7 @@ export class WorksordersAssetDetailComponent implements OnInit {
     SwapPackagesForAssetsDataGrid: any
 
     worksOrderAccess: any = []
+    worksOrderUsrAccess: any = [];
 
     constructor(
         private worksOrdersService: WorksOrdersService,
@@ -67,14 +69,19 @@ export class WorksordersAssetDetailComponent implements OnInit {
 
     ngOnInit(): void {
 
+        //works order security access
         this.subs.add(
-            this.sharedService.worksOrdersAccess.subscribe(
+            combineLatest([
+                this.sharedService.woUserSecObs,
+                this.sharedService.worksOrdersAccess
+            ]).subscribe(
                 data => {
-                    this.worksOrderAccess = data;
+                    // this.worksOrderUsrAccess = data[0];
+                    this.worksOrderAccess = [...data[0], ...data[1]];
+                    // console.log(this.worksOrderAccess);
                 }
             )
         )
-
 
         this.itemData = {
             wlcomppackage: '',
@@ -105,7 +112,6 @@ export class WorksordersAssetDetailComponent implements OnInit {
     async getData() {
 
         if (this.treelevel == 3) {
-
             await this.WorkOrderAssetDetail();
             await this.WorkOrderAssetDetailPhases();
         }
@@ -113,8 +119,6 @@ export class WorksordersAssetDetailComponent implements OnInit {
         if (this.treelevel == 2) {
             this.WorkOrderAssetDetailPhases();
         }
-
-
 
     }
 
@@ -356,6 +360,9 @@ export class WorksordersAssetDetailComponent implements OnInit {
         if (item.woadstatus != 'New') {
             return
         }
+
+        $('.woassetdetailoverlay').addClass('ovrlay');
+
         this.selectedItem = item;
         this.SwapPackageWindow = true;
         this.itemData.assid = item.assid;
@@ -409,6 +416,7 @@ export class WorksordersAssetDetailComponent implements OnInit {
 
     closeSwapPackageWindow() {
         this.SwapPackageWindow = false;
+        $('.woassetdetailoverlay').removeClass('ovrlay');
     }
 
     openSetToRefusalWindow(item) {
@@ -444,7 +452,7 @@ export class WorksordersAssetDetailComponent implements OnInit {
 
                     this.chRef.detectChanges();
 
-                    console.log('WorkOrderRefusalCodes api reponse' + JSON.stringify(data));
+                    // console.log('WorkOrderRefusalCodes api reponse' + JSON.stringify(data));
                 },
                 err => this.alertService.error(err)
             )
@@ -599,31 +607,35 @@ export class WorksordersAssetDetailComponent implements OnInit {
             return
         }
 
+        $('.woassetdetailoverlay').addClass('ovrlay');
 
         this.selectedItem = item;
         this.EditWorkPackageQtyCostWindow = true;
 
-        this.itemData.wlcomppackage = item.wlcomppackage;
-        this.itemData.wphname = item.wphname;
-        this.itemData.atadescription = item.atadescription;
-        this.itemData.asaquantity = item.asaquantity;
-        this.itemData.asauom = item.asauom;
-        this.itemData.woadforecast = item.woadforecast;
-        this.itemData.woadcomment = item.woadcomment;
+        // this.itemData.wlcomppackage = item.wlcomppackage;
+        // this.itemData.wphname = item.wphname;
+        // this.itemData.atadescription = item.atadescription;
+        // this.itemData.asaquantity = item.asaquantity;
+        // this.itemData.asauom = item.asauom;
+        // this.itemData.woadforecast = item.woadforecast;
+        // this.itemData.woadcomment = item.woadcomment;
 
-        let params = {
-            "WLCode": this.selectedItem.wlcode,
-            "WLATAId": this.selectedItem.wlataid,
-            "WLAssid": this.selectedItem.assid,
-            "WLPlanYear": this.selectedItem.wlplanyear,
-            "WOSequence": this.selectedItem.wosequence
-        };
+        // let params = {
+        //     "WLCode": this.selectedItem.wlcode,
+        //     "WLATAId": this.selectedItem.wlataid,
+        //     "WLAssid": this.selectedItem.assid,
+        //     "WLPlanYear": this.selectedItem.wlplanyear,
+        //     "WOSequence": this.selectedItem.wosequence
+        // };
 
-        await this.GetDefaultCostForAssetWork(params);
+        // await this.GetDefaultCostForAssetWork(params);
 
-        //console.log('costData'+ JSON.stringify(this.itemData));
-        //this.itemData.work_cost = (  this.itemData.wo_forcast * item.asaquantity) ;
-        //this.itemData.cost_override = (  this.itemData.wo_forcast * item.asaquantity) ;
+
+
+        /*** */
+        // console.log('costData'+ JSON.stringify(this.itemData));
+        // this.itemData.work_cost = (  this.itemData.wo_forcast * item.asaquantity) ;
+        // this.itemData.cost_override = (  this.itemData.wo_forcast * item.asaquantity) ;
 
 
     }
@@ -631,7 +643,7 @@ export class WorksordersAssetDetailComponent implements OnInit {
     editWorkPackageQtyCostSave() {
 
         this.loading = true;
-        console.log('this.itemData values ' + JSON.stringify(this.itemData));
+        // console.log('this.itemData values ' + JSON.stringify(this.itemData));
 
 
         let params = {
@@ -687,10 +699,16 @@ export class WorksordersAssetDetailComponent implements OnInit {
     }
 
     closeEditWorkPackageQtyCostWindow() {
-
         this.EditWorkPackageQtyCostWindow = false;
+        $('.woassetdetailoverlay').removeClass('ovrlay');
+        this.getData();
         this.chRef.detectChanges();
 
+    }
+
+
+    refreshAssetDetailGrid(eve) {
+        // if (eve) this.getData()
     }
 
 
@@ -778,5 +796,9 @@ export class WorksordersAssetDetailComponent implements OnInit {
         this.assetDetailWindow = false;
         this.closeAssetDetailEvent.emit(this.assetDetailWindow);
     }
+
+    // woMenuBtnSecurityAccess(menuName) {
+    //     return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
+    // }
 
 }

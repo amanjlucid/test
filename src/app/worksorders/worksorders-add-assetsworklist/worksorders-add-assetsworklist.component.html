@@ -113,10 +113,11 @@
                     <label for="">Address:</label>
                 </div>
                 <div class="col-md-3">
-                    <select [(ngModel)]="headerFilters.wildcrdaddress">
+                    <input type="text" [(ngModel)]="headerFilters.wildcrdaddress">
+                    <!-- <select [(ngModel)]="headerFilters.wildcrdaddress">
                         <option selected value="">All Types</option>
                         <option *ngFor="let assetType of assetTypes" [value]="assetType">{{assetType}}</option>
-                    </select>
+                    </select> -->
                 </div>
                 <div class="col-md-1">
                     <label for=""> Plan Year:</label>

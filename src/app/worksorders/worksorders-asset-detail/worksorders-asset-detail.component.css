@@ -1,3 +1,7 @@
-.headerRow12{
+.headerRow12 {
       margin-bottom: 10px;
+}
+
+.k-window {
+      position: fixed !important;
 }

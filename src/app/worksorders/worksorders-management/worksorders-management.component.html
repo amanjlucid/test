@@ -66,7 +66,7 @@
                             style="margin-top: -7px;">
                             <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"
                                 (click)="setSeletedRow(dataItem)"></i>
-                            <div class="dropdown-menu">
+                            <div class="dropdown-menu" *ngIf="woMenuAccess('Programmes Menu'); else elsePRBlock">
                                 <a *ngIf="worksOrderAccess.indexOf('Edit Programme') != -1" class="dropdown-item"
                                     (click)="openNewManagementWindow('edit')" href="javascript:void(0)">Edit</a>
                                 <a *ngIf="worksOrderAccess.indexOf('Delete Programme') != -1" class="dropdown-item"
@@ -75,24 +75,37 @@
                                     href="javascript:void(0)" (click)="openWorksOrderForm('new')">New Works Order</a>
 
                             </div>
+
+                            <ng-template #elsePRBlock>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="javascript:void(0)">No Menu Access</a>
+                                </div>
+                            </ng-template>
                         </li>
 
                         <li *ngIf="dataItem.treelevel == 2" class="nav-item dropdown list-unstyled level2Menu"
-                            style="margin-top: -7px;">
+                            style="margin-top: -7px;" (click)="setSeletedWORow(dataItem)">
                             <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" *ngIf="worksOrderAccess.indexOf('Edit Works Order') != -1"
+                            <div class="dropdown-menu" *ngIf="woMenuAccess('Works Orders Menu'); else elseWOBlock">
+                                <a class="dropdown-item" *ngIf="woMenuAccess('Edit Works Order')"
                                     href="javascript:void(0)" (click)="openWorksOrderForm('edit', dataItem)">Edit</a>
-                                <a class="dropdown-item" *ngIf="worksOrderAccess.indexOf('Delete Works Order') != -1"
+                                <a class="dropdown-item" *ngIf="woMenuAccess('Delete Works Order')"
                                     href="javascript:void(0)" (click)="deleteWorksOrder(dataItem)">Delete</a>
                                 <a class="dropdown-item" href="javascript:void(0)"
                                     (click)="redirectToWorksOrder(dataItem)"
-                                    *ngIf="worksOrderAccess.indexOf('Works Order Detail') != -1">Works Order Detail</a>
+                                    *ngIf="woMenuAccess('Works Order Detail')">Works Order Detail</a>
                                 <a class="dropdown-item" href="javascript:void(0)"
                                     (click)="openPackageMappingWindow(dataItem)"
-                                    *ngIf="worksOrderAccess.indexOf('Package Mapping') != -1">Package Mapping</a>
+                                    *ngIf="woMenuAccess('Package Mapping')">Package Mapping</a>
 
                             </div>
+
+                            <ng-template #elseWOBlock>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="javascript:void(0)">No Menu Access</a>
+                                </div>
+                            </ng-template>
+
                         </li>
                     </ng-template>
                 </kendo-treelist-column>
@@ -304,10 +317,11 @@
     (closePackageMappingEvent)="cloasePackageMappingWindow($event)" [worksOrderSingleData]="worksOrderSingleData">
 </app-worksorders-package-mapping>
 
-<app-workorder-form [woFormType]="woFormType" [woFormWindow]="woFormWindow" [selectedWorkOrderAddEdit]="selctedWorksOrder"
-  *ngIf="woFormWindow" (closeWoFormWin)="closeWoFormWin($event)"></app-workorder-form>
+<app-workorder-form [woFormType]="woFormType" [woFormWindow]="woFormWindow"
+    [selectedWorkOrderAddEdit]="selctedWorksOrder" *ngIf="woFormWindow" (closeWoFormWin)="closeWoFormWin($event)">
+</app-workorder-form>
 
-<kendo-dialog title="DELETE WORKS ORDERS"  *ngIf="deleteWorksOrderReasonWindow" (close)="closeWorksorderReasonWindow()"
+<kendo-dialog title="DELETE WORKS ORDERS" *ngIf="deleteWorksOrderReasonWindow" (close)="closeWorksorderReasonWindow()"
     [minWidth]="250" [width]="450">
 
     <div class="row">
@@ -322,8 +336,7 @@
         </div>
 
         <div class="col-md-12 text-right">
-            <button (click)="finalDelete()" type="button"
-                class="btn btn-sm themeButton mr-1">Delete</button>
+            <button (click)="finalDelete()" type="button" class="btn btn-sm themeButton mr-1">Delete</button>
         </div>
     </div>
 </kendo-dialog>

@@ -3,7 +3,7 @@ import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { SelectableSettings, RowClassArgs, RowArgs, PageChangeEvent, GridComponent } from '@progress/kendo-angular-grid';
 import { AlertService, HelperService, SharedService, WorksOrdersService } from '../../_services'
-import { Subject } from 'rxjs';
+import { combineLatest, Subject } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { WorkordersListFilterModel } from '../../_models';
 import { debounceTime } from 'rxjs/operators';
@@ -65,10 +65,11 @@ export class WorkorderListComponent implements OnInit {
   columnLocked: boolean = true;
   @ViewChild(GridComponent) grid: GridComponent;
 
+  worksOrderUsrAccess: any = [];
 
 
   constructor(
-    private eveneManagerService: WorksOrdersService,
+    private worksOrderService: WorksOrdersService,
     private activeRoute: ActivatedRoute,
     private alertService: AlertService,
     private helperService: HelperService,
@@ -85,13 +86,49 @@ export class WorkorderListComponent implements OnInit {
     //update notification on top
     this.helper.updateNotificationOnTop();
 
+    // console.log(this.currentUser)
+    //subscribe for work order security access
     this.subs.add(
-      this.sharedService.worksOrdersAccess.subscribe(
+      combineLatest([
+        this.sharedService.worksOrdersAccess,
+        this.sharedService.woUserSecObs
+      ]).subscribe(
         data => {
-          this.worksOrderAccess = data;
+          console.log(data);
+
+          this.worksOrderAccess = data[0];
+          this.worksOrderUsrAccess = data[1];
+
+          if (this.worksOrderAccess.length > 0) {
+            if (!this.worksOrderAccess.includes("Works Order Portal Access")) {
+              this.alertService.error("No access")
+              this.router.navigate(['login']);
+            }
+          }
+
         }
       )
     )
+
+
+    // this.subs.add(
+    //   this.sharedService.woUserSecObs.subscribe(
+    //     data => {
+    //       this.worksOrderUsrAccess = data;
+    //       console.log(this.worksOrderUsrAccess)
+    //     }
+    //   )
+    // )
+
+    // this.subs.add(
+    //   this.sharedService.worksOrdersAccess.subscribe(
+    //     data => {
+    //       this.worksOrderAccess = data;
+    //       console.log(this.worksOrderAccess)
+
+    //     }
+    //   )
+    // )
 
 
     this.getUserWorksOrdersList(this.filterObject, "menuOpen");
@@ -104,7 +141,7 @@ export class WorkorderListComponent implements OnInit {
         ).subscribe(obj => this.getUserWorksOrdersList(obj))
     )
 
- 
+
 
 
   }
@@ -133,7 +170,7 @@ export class WorkorderListComponent implements OnInit {
   getUserWorksOrdersList(filter, menuOpen = null) {
 
     this.subs.add(
-      this.eveneManagerService.getListOfUserWorksOrderByUserId(filter).subscribe(
+      this.worksOrderService.getListOfUserWorksOrderByUserId(filter).subscribe(
         data => {
           this.resetGrid();
           // console.log(data)
@@ -204,24 +241,37 @@ export class WorkorderListComponent implements OnInit {
 
 
   cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
+    //get work order user access when row is changed
+    if (this.selectedWorksOrder?.wosequence != dataItem.wosequence) {
+      this.helperService.getWorkOrderSecurity(dataItem.wosequence)
+    }
+
     this.selectedWorksOrder = dataItem;
+
     if (columnIndex > 0) {
-      if (this.touchtime == 0) {
-        this.touchtime = new Date().getTime();
-      } else {
-        if (((new Date().getTime()) - this.touchtime) < 400) {
-          //open work order detail window
-          if (this.worksOrderAccess.indexOf('Works Order Detail') != -1) {
-            this.redirectToWorksOrder(dataItem)
+      if (this.selectedWorksOrder.wosequence)
+
+        if (this.touchtime == 0) {
+          this.touchtime = new Date().getTime();
+        } else {
+          if (((new Date().getTime()) - this.touchtime) < 400) {
+            //open work order detail window
+            setTimeout(() => {
+              if (this.worksOrderAccess.indexOf('Works Orders Menu') != -1 || this.worksOrderUsrAccess.indexOf('Works Orders Menu') != -1) {
+                if (this.worksOrderAccess.indexOf('Works Order Detail') != -1 || this.worksOrderUsrAccess.indexOf('Works Order Detail') != -1) {
+                  this.redirectToWorksOrder(dataItem)
+                }
+              }
+
+            }, 200);
+
+            this.touchtime = 0;
+          } else {
+            // not a double click so set as a new first click
+            this.touchtime = new Date().getTime();
           }
 
-          this.touchtime = 0;
-        } else {
-          // not a double click so set as a new first click
-          this.touchtime = new Date().getTime();
         }
-
-      }
     }
   }
 
@@ -237,8 +287,15 @@ export class WorkorderListComponent implements OnInit {
   }
 
   setSeletedRow(dataItem) {
+
+    if (this.selectedWorksOrder?.wosequence != dataItem.wosequence) {
+      this.helperService.getWorkOrderSecurity(dataItem.wosequence)
+    }
+
     this.selectedWorksOrder = dataItem;
     this.mySelection = [this.selectedWorksOrder.wosequence];
+
+
   }
 
   openUserPopup(action, item = null) {
@@ -304,7 +361,7 @@ export class WorkorderListComponent implements OnInit {
     let checkOrProcess = 'C';
 
 
-    this.eveneManagerService.DeleteWebWorkOrder(this.wosequenceForDelete, reason, userId, checkOrProcess).subscribe(
+    this.worksOrderService.DeleteWebWorkOrder(this.wosequenceForDelete, reason, userId, checkOrProcess).subscribe(
       (data) => {
         if (data.isSuccess) {
           if (data.data.pRETURNSTATUS == 'E') {
@@ -344,7 +401,7 @@ export class WorkorderListComponent implements OnInit {
     else {
       let userId = this.currentUser.userId;
       let checkOrProcess = 'P';
-      this.eveneManagerService.DeleteWebWorkOrder(this.wosequenceForDelete, reason, userId, checkOrProcess).subscribe(
+      this.worksOrderService.DeleteWebWorkOrder(this.wosequenceForDelete, reason, userId, checkOrProcess).subscribe(
         (data) => {
           if (data.isSuccess) {
 
@@ -438,11 +495,30 @@ export class WorkorderListComponent implements OnInit {
       this.helperService.exportAsExcelFile(tempData, 'WorksOrders', label)
 
     } else {
-      alert('There is no record to import');
+      this.alertService.error('There is no record to export');
     }
   }
 
 
+  woMenuAccess(menuName) {
+    // const workorderToplevelAccess = this.worksOrderAccess.indexOf(menuName) != -1;
+    // const workorderLowerLevelAccess = this.worksOrderUsrAccess.indexOf(menuName) != -1;
+
+    // // console.log(workorderToplevelAccess)
+    // // console.log(workorderLowerLevelAccess)
+
+    // if (workorderToplevelAccess && workorderLowerLevelAccess) return true
+
+    // if (!workorderToplevelAccess && workorderLowerLevelAccess) return true
+
+    // return false;
+
+    //if (workorderToplevelAccess && !workorderLowerLevelAccess) return false
+    return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
+
+
+
+  }
 
 
 

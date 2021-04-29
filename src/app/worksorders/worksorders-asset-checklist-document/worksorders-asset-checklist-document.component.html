@@ -73,7 +73,7 @@
                 Description</button>
             <button *ngIf="worksOrderAccess.indexOf('Add Checklist Document') != -1" class="btn btn-sm themeButton" (click)="addDocument()">Add Document</button>
 
-            <button *ngIf="worksOrderAccess.indexOf('Upload Checklist Document') != -1" class="btn btn-sm themeButton" (click)="uploadImage()">Upload Document</button>
+            <button *ngIf="worksOrderAccess.indexOf('Upload Checklist Document') != -1" class="btn btn-sm themeButton uploadDocBtn" (click)="uploadImage()">Upload Document</button>
             <button *ngIf="worksOrderAccess.indexOf('Remove Checklist Document') != -1" class="btn btn-sm themeButton" (click)="openConfirmationDialog()" [disabled]="!selectedDoc">Remove
                 Document</button>
         </div>

@@ -235,10 +235,18 @@ export class WorksorderManagementService {
         let body = JSON.stringify(params);
         return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WorksOrderIssueAsset`, body, this.httpOptions);
     }
-    
+
     worksOrderRemoveAllWork(params) {
         let body = JSON.stringify(params);
         return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WorksOrderRemoveAllWork`, body, this.httpOptions);
+    }
+
+    workOrderUserSecurity(userId, WOSEQUENCE) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/WorkOrderUserSecurity?userId=${userId}&WOSEQUENCE=${WOSEQUENCE}`, this.httpOptions);
+    }
+
+    attachmentExists(sFullFileName) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/AttachmentExists?sFullFileName=${sFullFileName}`, this.httpOptions);
     }
 
 }

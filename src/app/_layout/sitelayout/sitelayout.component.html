@@ -241,13 +241,12 @@
                             </a>
                         </li>
                         <li class="sidenav-item" [routerLinkActive]="['active']"
-                            *ngIf="checkWorksOrdersAccess('Dashboard')">
+                            *ngIf="checkWorksOrdersAccess('Works Order Portal Access')">
                             <a [routerLink]="['/worksorders/list']" class="sidenav-link">
                                 <div>Works Orders</div>
                             </a>
                         </li>
-                        <li style="display: none;" class="sidenav-item" [routerLinkActive]="['active']"
-                            *ngIf="checkWorksOrdersAccess('Dashboard')">
+                        <li style="display: none;" class="sidenav-item" [routerLinkActive]="['active']">
                             <a [routerLink]="['/worksorders/details']" class="sidenav-link">
                                 <div>Works Order Detail</div>
                             </a>

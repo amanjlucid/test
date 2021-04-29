@@ -48,10 +48,25 @@
                 <kendo-grid-column field="uom" title="UOM" width="120">
                 </kendo-grid-column>
                 <kendo-grid-column field="defaultcost" title="SOR Rate" width="120">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                          {{ dataItem.defaultcost | currency:"GBP":"symbol" }}
+                        </span>
+                      </ng-template>
                 </kendo-grid-column>
                 <kendo-grid-column field="contractrate" title="Contract Rate" width="120">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                          {{ dataItem.contractrate | currency:"GBP":"symbol" }}
+                        </span>
+                      </ng-template>
                 </kendo-grid-column>
                 <kendo-grid-column field="cost" title="Work Cost" width="120">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                          {{ dataItem.cost | currency:"GBP":"symbol" }}
+                        </span>
+                      </ng-template>
                 </kendo-grid-column>
                 <kendo-grid-column field="attributeexists" title="Attribute Status" width="280">
                 </kendo-grid-column>

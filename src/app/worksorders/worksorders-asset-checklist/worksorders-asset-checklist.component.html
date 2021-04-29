@@ -11,7 +11,7 @@
             </button>
             <!-- <button type="button" class="btn btn-sm themeButton">Export</button>
             <button type="button" class="btn btn-sm themeButton">Administration</button> -->
-            <button *ngIf="worksOrderAccess.indexOf('Checklist Documents') != -1" type="button"
+            <button *ngIf="woMenuBtnSecurityAccess('Checklist Documents')" type="button"
                 [disabled]="!selectedChecklistsingleItem || mySelection.length != 1" class="btn btn-sm themeButton mr-1"
                 (click)="openChecklistDoc()">Documents</button>
 
@@ -20,18 +20,18 @@
                     aria-expanded="false">Work</button>
                 <div class="dropdown-menu" x-placement="bottom-start"
                     style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
-                    <a *ngIf="worksOrderAccess.indexOf('Work Details') != -1" class="dropdown-item"
+                    <a *ngIf="woMenuBtnSecurityAccess('Work Details')" class="dropdown-item"
                         (click)="openAssetDetailChild('all')" href="javascript:void(0)">
                         Detail</a>
-                    <a *ngIf="worksOrderAccess.indexOf('Remove Work') != -1" class="dropdown-item"
+                    <a *ngIf="woMenuBtnSecurityAccess('Remove Work')" class="dropdown-item"
                         (click)="removeOrDeletework('remove')" href="javascript:void(0)"
                         [ngClass]="{'disabled' : disableMainActions('woremoveAll')}">
                         Remove All</a>
-                    <a *ngIf="worksOrderAccess.indexOf('Delete Work') != -1" class="dropdown-item"
+                    <a *ngIf="woMenuBtnSecurityAccess('Delete Work')" class="dropdown-item"
                         (click)="removeOrDeletework('delete')" href="javascript:void(0)"
                         [ngClass]="{'disabled' : disableMainActions('wodeleteAll')}">
                         Delete All</a>
-                    <a *ngIf="worksOrderAccess.indexOf('Add Work') != -1" class="dropdown-item"
+                    <a *ngIf="woMenuBtnSecurityAccess('Add Work')" class="dropdown-item"
                         (click)="openAddAssetWorkOrdersList(selectedChildRow, 'all')" href="javascript:void(0)"
                         [ngClass]="{'disabled' : disableMainActions('woAdd')}">
                         Add</a>
@@ -45,34 +45,34 @@
                     aria-expanded="false">Action</button>
                 <div class="dropdown-menu actionDrp" x-placement="bottom-start"
                     style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
-                    <a *ngIf="worksOrderAccess.indexOf('Release Asset') != -1" class="dropdown-item"
+                    <a *ngIf="woMenuBtnSecurityAccess('Release Asset')" class="dropdown-item"
                         (click)="setAsset('RELEASE')" href="javascript:void(0)"
                         [ngClass]="{'disabled' : disableMainActions('release')}">
                         Release</a>
 
-                    <a *ngIf="worksOrderAccess.indexOf('Issue Asset') != -1" class="dropdown-item"
+                    <a *ngIf="woMenuBtnSecurityAccess('Issue Asset')" class="dropdown-item"
                         (click)="setAsset('ISSUE')" href="javascript:void(0)"
                         [ngClass]="{'disabled' : disableMainActions('issue')}">
                         Issue</a>
 
 
                     <a [ngClass]="{'disabled' : disableMainActions('accept')}"
-                        *ngIf="worksOrderAccess.indexOf('Accept Asset') != -1" class="dropdown-item"
+                        *ngIf="woMenuBtnSecurityAccess('Accept Asset')" class="dropdown-item"
                         (click)="setAsset('ACCEPT')" href="javascript:void(0)">
                         Accept</a>
 
 
-                    <div class="dropdown-toggle" *ngIf="worksOrderAccess.indexOf('Set Status') != -1">
+                    <div class="dropdown-toggle" *ngIf="woMenuBtnSecurityAccess('Set Status')">
                         <div class="dropdown-item">Status</div>
                         <div class="dropdown-menu">
 
                             <a [ngClass]="{'disabled' : disableMainActions('na')}"
-                                *ngIf="worksOrderAccess.indexOf('Set Status To N/A') != -1" class="dropdown-item"
+                                *ngIf="woMenuBtnSecurityAccess('Set Status To N/A')" class="dropdown-item"
                                 (click)="setStatusMul('NA')" href="javascript:void(0)">
                                 Set to N/A</a>
 
                             <div [ngClass]="{'disabled' : disableMainActions('STIP')}" class="dropdown-toggle"
-                                *ngIf="worksOrderAccess.indexOf('Set Status To In Progress') != -1">
+                                *ngIf="woMenuBtnSecurityAccess('Set Status To In Progress')">
                                 <div class="dropdown-item">Set to In Progress</div>
                                 <div class="dropdown-menu">
                                     <a class="dropdown-item" (click)="setStatusMul('IPY')"
@@ -86,19 +86,19 @@
                             </div>
 
                             <a [ngClass]="{'disabled' : disableMainActions('NS')}"
-                                *ngIf="worksOrderAccess.indexOf('Set Status To Not Started') != -1"
+                                *ngIf="woMenuBtnSecurityAccess('Set Status To Not Started')"
                                 class="dropdown-item" (click)="setStatusMul('NOT STARTED')"
                                 href="javascript:void(0)">Set to Not
                                 Started</a>
                             <a [ngClass]="{'disabled' : disableMainActions('RCI')}"
-                                *ngIf="worksOrderAccess.indexOf('Reset Checklist Item') != -1" class="dropdown-item"
+                                *ngIf="woMenuBtnSecurityAccess('Reset Checklist Item')" class="dropdown-item"
                                 (click)="setStatusMul('RESET')" href="javascript:void(0)">Reset Checklist
                                 Item</a>
                         </div>
                     </div>
 
                     <div [ngClass]="{'disabled' : disableMainActions('COMP')}" class="dropdown-toggle"
-                        *ngIf="worksOrderAccess.indexOf('Complete Item') != -1">
+                        *ngIf="woMenuBtnSecurityAccess('Complete Item')">
                         <div class="dropdown-item">Complete</div>
                         <div class="dropdown-menu completeDrp">
                             <a class="dropdown-item" (click)="setStatusMul('CIY', dataItem)"
@@ -109,8 +109,6 @@
                                 href="javascript:void(0)">Choose Date</a>
                         </div>
                     </div>
-
-
 
 
                 </div>
@@ -127,9 +125,10 @@
                     <div class="worksorder-assetchecklist-header" style="display: none;">
                         <fieldset>
                             <div class="form-group form-row inlineRow">
-                                <div class="col-md-1">Works Order:  </div>
+                                <div class="col-md-1">Works Order: </div>
                                 <div class="col-md-8">
-                                    <input type="text" value="{{worksOrderData?.woname}} ({{worksOrderData?.wosequence}})"
+                                    <input type="text"
+                                        value="{{worksOrderData?.woname}} ({{worksOrderData?.wosequence}})"
                                         class="form-control form-control-sm" [readonly]="readonly">
                                 </div>
                                 <div class="col-md-1">Phase: </div>
@@ -298,17 +297,16 @@
                             <div class="dropdown-menu">
 
                                 <div [ngClass]="{'disabled' :disableBtnsIndividualMenu('status', dataItem)}"
-                                    class="dropdown-toggle" *ngIf="worksOrderAccess.indexOf('Set Status') != -1">
+                                    class="dropdown-toggle" *ngIf="woMenuBtnSecurityAccess('Set Status')">
                                     <div class="dropdown-item">Status</div>
                                     <div class="dropdown-menu">
 
-                                        <a *ngIf="worksOrderAccess.indexOf('Set Status To N/A') != -1"
-                                            class="dropdown-item" (click)="setStatus('NA', dataItem)"
-                                            href="javascript:void(0)">
+                                        <a *ngIf="woMenuBtnSecurityAccess('Set Status To N/A')" class="dropdown-item"
+                                            (click)="setStatus('NA', dataItem)" href="javascript:void(0)">
                                             Set to N/A</a>
 
                                         <div class="dropdown-toggle"
-                                            *ngIf="worksOrderAccess.indexOf('Set Status To In Progress') != -1">
+                                            *ngIf="woMenuBtnSecurityAccess('Set Status To In Progress')">
                                             <div class="dropdown-item">Set to In Progress</div>
                                             <div class="dropdown-menu">
                                                 <a class="dropdown-item" (click)="setStatus('IPY', dataItem)"
@@ -321,28 +319,28 @@
                                             </div>
                                         </div>
 
-                                        <a *ngIf="worksOrderAccess.indexOf('Set Status To Not Started') != -1"
+                                        <a *ngIf="woMenuBtnSecurityAccess('Set Status To Not Started')"
                                             class="dropdown-item" (click)="setStatus('NOT STARTED', dataItem)"
                                             href="javascript:void(0)">Set to Not Started</a>
-                                        <a *ngIf="worksOrderAccess.indexOf('Reset Checklist Item') != -1"
-                                            class="dropdown-item" (click)="setStatus('RESET', dataItem)"
-                                            href="javascript:void(0)">Reset Checklist Item</a>
+                                        <a *ngIf="woMenuBtnSecurityAccess('Reset Checklist Item')" class="dropdown-item"
+                                            (click)="setStatus('RESET', dataItem)" href="javascript:void(0)">Reset
+                                            Checklist Item</a>
                                     </div>
                                 </div>
 
                                 <div [ngClass]="{'disabled' : workorderAsset?.woassstatus == 'Pending'}"
                                     class="dropdown-toggle">
-                                    <div class="dropdown-item" *ngIf="worksOrderAccess.indexOf('Set Dates') != -1">Dates
+                                    <div class="dropdown-item" *ngIf="woMenuBtnSecurityAccess('Set Dates')">Dates
                                     </div>
                                     <div class="dropdown-menu">
 
                                         <a [ngClass]="{'disabled' :disableBtnsIndividualMenu('SE', dataItem)}"
-                                            *ngIf="worksOrderAccess.indexOf('Set Asset Planned Dates') != -1"
+                                            *ngIf="woMenuBtnSecurityAccess('Set Asset Planned Dates')"
                                             class="dropdown-item" (click)="openChooseDate('SE', dataItem)"
                                             href="javascript:void(0)">
                                             Set Planned Start/End Dates</a>
 
-                                        <div *ngIf="worksOrderAccess.indexOf('Set Asset Target Date') != -1"
+                                        <div *ngIf="woMenuBtnSecurityAccess('Set Asset Target Date')"
                                             class="dropdown-toggle"
                                             [ngClass]="{'disabled' :disableBtnsIndividualMenu('STCD', dataItem)}">
                                             <div class="dropdown-item">Set Target Completion Date</div>
@@ -363,7 +361,7 @@
 
                                         <div [ngClass]="{'disabled' :disableBtnsIndividualMenu('CSD', dataItem)}"
                                             class="dropdown-toggle"
-                                            *ngIf="worksOrderAccess.indexOf('Change Start Date') != -1">
+                                            *ngIf="woMenuBtnSecurityAccess('Change Start Date')">
                                             <div class="dropdown-item">Change Start Date</div>
                                             <div class="dropdown-menu">
                                                 <a class="dropdown-item" (click)="setDates('CSDY', dataItem)"
@@ -378,7 +376,7 @@
 
                                         <div [ngClass]="{'disabled' :disableBtnsIndividualMenu('CCD', dataItem)}"
                                             class="dropdown-toggle"
-                                            *ngIf="worksOrderAccess.indexOf('Change Completion Date') != -1">
+                                            *ngIf="woMenuBtnSecurityAccess('Change Completion Date')">
                                             <div class="dropdown-item">Change Completion Date</div>
                                             <div class="dropdown-menu">
                                                 <a class="dropdown-item" (click)="setDates('CCDY', dataItem)"
@@ -396,7 +394,7 @@
 
 
                                 <div [ngClass]="{'disabled' :disableBtnsIndividualMenu('CMP', dataItem)}"
-                                    class="dropdown-toggle" *ngIf="worksOrderAccess.indexOf('Complete Item') != -1">
+                                    class="dropdown-toggle" *ngIf="woMenuBtnSecurityAccess('Complete Item')">
                                     <div class="dropdown-item">Complete</div>
                                     <div class="dropdown-menu">
                                         <a class="dropdown-item" (click)="setComplete('CIY', dataItem)"
@@ -409,14 +407,14 @@
                                 </div>
 
 
-                                <div class="dropdown-toggle" *ngIf="worksOrderAccess.indexOf('Work Details') != -1">
+                                <div class="dropdown-toggle">
                                     <div class="dropdown-item">Work</div>
                                     <div class="dropdown-menu">
-                                        <a *ngIf="worksOrderAccess.indexOf('Work Details') != -1" class="dropdown-item"
+                                        <a *ngIf="woMenuBtnSecurityAccess('Work Details')" class="dropdown-item"
                                             (click)="openAssetDetailChild('single', dataItem)" href="javascript:void(0)"
                                             [ngClass]="{'disabled' :disableBtnsIndividualMenu('WODETAIL', dataItem)}">Detail</a>
 
-                                        <a *ngIf="worksOrderAccess.indexOf('Add Assets From Work List') != -1"
+                                        <a *ngIf="woMenuBtnSecurityAccess('Add Assets From Work List')"
                                             class="dropdown-item"
                                             (click)="openAddAssetWorkOrdersList(dataItem, 'single')"
                                             href="javascript:void(0)"
