@@ -93,7 +93,7 @@ export class WorksordersManagementComponent implements OnInit {
         }
       )
     )
-  
+
     // this.subs.add(
     //   this.sharedService.woUserSecObs.subscribe(
     //     data => {
@@ -414,9 +414,21 @@ export class WorksordersManagementComponent implements OnInit {
 
 
   openWorksOrderForm(action, item = null) {
+
+    if (item?.treelevel == 2 && action == "edit") {
+      this.selctedWorksOrder = item;
+    }
+
+    if (item?.treelevel == 1 && action == "new") {
+      this.selectedProgramme = item
+    }
+
+    if (item == null && action == "new") {
+      this.selctedWorksOrder = item
+    }
+
     $('.newManagementOverlay').addClass('ovrlay');
     this.woFormType = action;
-    this.selctedWorksOrder = item;
     this.woFormWindow = true;
   }
 

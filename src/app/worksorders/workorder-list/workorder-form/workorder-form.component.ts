@@ -19,6 +19,7 @@ export class WorkOrderFormComponent implements OnInit {
     @Input() woFormWindow: boolean = false
     @Input() selectedWorkOrderAddEdit: any;
     @Input() woFormType: any = 'new';
+    @Input() selectedProgramme: any = null;
     @Output() closeWoFormWin = new EventEmitter<boolean>();
     panelHeight: any = "auto";
     windowWidth: any = 600;
@@ -234,6 +235,12 @@ export class WorkOrderFormComponent implements OnInit {
                                 this.chRef.detectChanges();
                             }
                         )
+                    } else {
+                        if (this.selectedProgramme != null) {
+                            this.woForm.patchValue({
+                                woprogram: this.selectedProgramme?.wprsequence
+                            })
+                        }
                     }
 
 
@@ -259,7 +266,9 @@ export class WorkOrderFormComponent implements OnInit {
                 woprogram: ['', Validators.required],
                 contractName: ['', Validators.required],
                 wophasetemplate: [''],
-            })
+            });
+
+
         } else if (stage == 2) {
             // this.panelHeight = 800;
             // this.left = 300;

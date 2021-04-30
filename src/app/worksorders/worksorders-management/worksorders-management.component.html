@@ -71,8 +71,8 @@
                                     (click)="openNewManagementWindow('edit')" href="javascript:void(0)">Edit</a>
                                 <a *ngIf="worksOrderAccess.indexOf('Delete Programme') != -1" class="dropdown-item"
                                     (click)="openConfirmationDialog(dataItem)" href="javascript:void(0)">Delete</a>
-                                <a *ngIf="worksOrderAccess.indexOf('New Works Order') != -1" class="dropdown-item"
-                                    href="javascript:void(0)" (click)="openWorksOrderForm('new')">New Works Order</a>
+                                <a *ngIf="worksOrderAccess.indexOf('New Works Order') != -1 && dataItem.wpractinact != 'I'" class="dropdown-item"
+                                    href="javascript:void(0)" (click)="openWorksOrderForm('new', dataItem)">New Works Order</a>
 
                             </div>
 
@@ -318,7 +318,7 @@
 </app-worksorders-package-mapping>
 
 <app-workorder-form [woFormType]="woFormType" [woFormWindow]="woFormWindow"
-    [selectedWorkOrderAddEdit]="selctedWorksOrder" *ngIf="woFormWindow" (closeWoFormWin)="closeWoFormWin($event)">
+    [selectedWorkOrderAddEdit]="selctedWorksOrder" [selectedProgramme]="selectedProgramme" *ngIf="woFormWindow" (closeWoFormWin)="closeWoFormWin($event)">
 </app-workorder-form>
 
 <kendo-dialog title="DELETE WORKS ORDERS" *ngIf="deleteWorksOrderReasonWindow" (close)="closeWorksorderReasonWindow()"

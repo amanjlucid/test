@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy
 import { SubSink } from 'subsink';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { WorksorderManagementService, AlertService, HelperService, LoaderService } from '../../_services'
-import { ShouldGreaterThanYesterday, isNumberCheck, OrderDateValidator, IsGreaterDateValidator, checkFirstDateisLower, firstDateIsLower } from 'src/app/_helpers';
+import { ShouldGreaterThanYesterday, isNumberCheck, OrderDateValidator, IsGreaterDateValidator, checkFirstDateisLower, firstDateIsLower, SimpleDateValidator } from 'src/app/_helpers';
 import { WorkordersAddManagementModel } from '../../_models';
 
 
@@ -118,12 +118,12 @@ export class WorksordersNewmanagementComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    let targetDateValidationArr = [Validators.required, ShouldGreaterThanYesterday()];
-    let planDateValidationArr: any = [ShouldGreaterThanYesterday()];
+    let targetDateValidationArr = [Validators.required, ShouldGreaterThanYesterday(), SimpleDateValidator()];
+    let planDateValidationArr: any = [ShouldGreaterThanYesterday(), SimpleDateValidator()];
 
     if (this.formMode == "edit") {
-      targetDateValidationArr = [Validators.required];
-      planDateValidationArr = [];
+      targetDateValidationArr = [Validators.required, SimpleDateValidator()];
+      planDateValidationArr = [SimpleDateValidator()];
     }
 
     this.workManagementForm = this.fb.group({
@@ -176,21 +176,21 @@ export class WorksordersNewmanagementComponent implements OnInit {
     const plnEndCtr = this.workManagementForm.get('WPRPLANENDDATE');
     const plnStartCtr = this.workManagementForm.get('WPRPLANSTARTDATE');
 
-    // this.subs.add(
-    //   plnEndCtr.valueChanges.subscribe(
-    //     data => {
-    //       console.log(data)
-    //       plnEndCtr.setValidators([checkFirstDateisLower(plnEndCtr, plnStartCtr)])
-    //     }
-    //   )
-    // )
+    this.subs.add(
+      plnEndCtr.valueChanges.subscribe(
+        data => {
+          plnEndCtr.setValidators([SimpleDateValidator(), checkFirstDateisLower(plnEndCtr, plnStartCtr)])
+        }
+      )
+    )
 
-    plnStartCtr.valueChanges.subscribe(
-      data => {
-        // console.log(data)
-        plnEndCtr.setValidators([checkFirstDateisLower(plnEndCtr, plnStartCtr)])
-      }
-    );
+    this.subs.add(
+      plnStartCtr.valueChanges.subscribe(
+        data => {
+          plnEndCtr.setValidators([SimpleDateValidator(), checkFirstDateisLower(plnEndCtr, plnStartCtr)])
+        }
+      )
+    )
 
 
     this.populateForm()
@@ -335,9 +335,6 @@ export class WorksordersNewmanagementComponent implements OnInit {
 
     this.chRef.detectChanges();
 
-    // console.log(this.workManagementForm)
-    // return
-
     if (this.workManagementForm.invalid) {
       return;
     }
@@ -347,14 +344,10 @@ export class WorksordersNewmanagementComponent implements OnInit {
     managementModel.WPRTARGETCOMPLETIONDATE = this.dateFormate(formRawVal.WPRTARGETCOMPLETIONDATE);
     managementModel.WPRPLANSTARTDATE = this.dateFormate(formRawVal.WPRPLANSTARTDATE);
     managementModel.WPRPLANENDDATE = this.dateFormate(formRawVal.WPRPLANENDDATE);
-
     managementModel.WPRCONTRACTORISSUEDATE = this.dateFormate(formRawVal.WPRCONTRACTORISSUEDATE);
     managementModel.WPRACTUALSTARTDATE = this.dateFormate(formRawVal.WPRACTUALSTARTDATE);
     managementModel.WPRACTUALENDDATE = this.dateFormate(formRawVal.WPRACTUALENDDATE);
-
     managementModel.WPRCONTRACTORACCEPTANCEDATE = this.dateFormate(formRawVal.WPRCONTRACTORACCEPTANCEDATE)
-
-
     managementModel.WPRBUDGET = this.helperService.convertMoneyToFlatFormat(formRawVal.WPRBUDGET)
 
 
