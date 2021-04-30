@@ -271,14 +271,12 @@ export class WorksordersAddPackageEnterQuantityComponent implements OnInit {
   }
 
   defaultToOne() {
-    // this.quantity = 1;
-    // this.setCost(this.quantity, '');
     this.pakzQuantityForm.patchValue({
       quantity: 1
     })
 
     setTimeout(() => {
-      this.applyCost(1)
+      this.selectApply(1)
     }, 50);
   }
 
@@ -429,7 +427,7 @@ export class WorksordersAddPackageEnterQuantityComponent implements OnInit {
         this.worksOrdersService.WOEditWorkPackageTablet(params).subscribe(
           data => {
             if (data.isSuccess) {
-              let success_msg = "Save successfully";
+              let success_msg = "Work Updated Successfully";
               this.alertService.success(success_msg);
               this.closePackageQuantityWindow();
 
@@ -452,7 +450,7 @@ export class WorksordersAddPackageEnterQuantityComponent implements OnInit {
           Quantity: formRawVal.quantity,
           ASSID: this.selectedWorkOrder.assid,
           UserId: this.currentUser.userId,
-          Cost: this.helperService.convertMoneyToFlatFormat(formRawVal.costOverride),
+          Cost: pkz.defaultcost,//this.helperService.convertMoneyToFlatFormat(formRawVal.costOverride),
           CTTSURCDE: this.worksOrder.cttsurcde,
           Comment: formRawVal.comment,
           WPRSEQUENCE: this.worksOrder.wprsequence,

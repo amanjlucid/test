@@ -229,10 +229,11 @@
 
                 <a *ngIf="woMenuBtnSecurityAccess('Delete Phase')" class="dropdown-item" href="javascript:void(0)"
                   (click)="openConfirmationDialog(dataItem)">Delete</a>
-                <div class="dropdown-toggle" [ngClass]="{'disabled' : dataItem.wostatus != 'New'}">
+
+                <div class="dropdown-toggle" *ngIf="woMenuBtnSecurityAccess('Add Assets')">
                   <div class="dropdown-item">Add Asset(s)</div>
                   <div class="dropdown-menu">
-                    <a *ngIf="woMenuBtnSecurityAccess('Add Assets')" class="dropdown-item"
+                    <a *ngIf="woMenuBtnSecurityAccess('Add Assets for Phase Work Costs')" class="dropdown-item"
                       (click)="openAddAssetWorkOrders(1, dataItem)" href="javascript:void(0)">
                       Asset(s)</a>
                     <a *ngIf="woMenuBtnSecurityAccess('Add Assets From Work List')" class="dropdown-item"

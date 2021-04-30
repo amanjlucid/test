@@ -67,7 +67,7 @@
     <div class="row mt-2">
         <div class="col-md-9 text-left leftSideBtn">
             <input (change)="onFileChange($event)" type="file" #addDoc id="addDoc" style="display: none;">
-            <button *ngIf="worksOrderAccess.indexOf('View Document') != -1" class="btn btn-sm themeButton" (click)="viewDocument()" [disabled]="!selectedDoc">View
+            <button *ngIf="worksOrderAccess.indexOf('View Checklist Document') != -1" class="btn btn-sm themeButton" (click)="viewDocument()" [disabled]="!selectedDoc">View
                 Document</button>
             <button *ngIf="worksOrderAccess.indexOf('Edit Checklist Document Description') != -1" class="btn btn-sm themeButton" (click)="openEditDoc()" [disabled]="!selectedDoc">Edit
                 Description</button>

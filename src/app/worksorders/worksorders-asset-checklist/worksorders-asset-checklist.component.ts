@@ -66,6 +66,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
 
   wodDetailType: string = 'all'
   worksOrderUsrAccess: any = [];
+  touchtime = 0;
 
   constructor(
     private chRef: ChangeDetectorRef,
@@ -179,7 +180,23 @@ export class WorksordersAssetChecklistComponent implements OnInit {
   cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
     this.selectedChecklistsingleItem = dataItem
     if (columnIndex > 0) {
+      if (this.touchtime == 0) {
+        this.touchtime = new Date().getTime();
+      } else {
 
+        if (((new Date().getTime()) - this.touchtime) < 400) {
+          if (dataItem.wocheckspeciaL1 == 'WORK' && dataItem.detailCount > 0) {
+            this.openAssetDetailChild('single', dataItem)
+          }
+
+
+          this.touchtime = 0;
+        } else {
+          // not a double click so set as a new first click
+          this.touchtime = new Date().getTime();
+        }
+
+      }
     }
     // console.log(this.selectedChecklistsingleItem);
     this.chRef.detectChanges();
@@ -538,6 +555,9 @@ export class WorksordersAssetChecklistComponent implements OnInit {
   selectedDateEvent(event) {
 
     this.selectedDate = event
+    // console.log(this.selectedDate)
+    // console.log(this.chooseDateType)
+    // debugger;
 
     if (this.chooseDateType == "SE") {
       this.setDates(this.chooseDateType, this.selectedChecklistsingleItem, 'C')
@@ -552,6 +572,8 @@ export class WorksordersAssetChecklistComponent implements OnInit {
     } else if (this.chooseDateType == "CIPICK") {
       this.setComplete(this.chooseDateType, this.selectedChecklistsingleItem, 'C')
     } else if (this.chooseDateType == "IPDM") {
+      this.setStatusMul(this.chooseDateType, "C")
+    } else if (this.chooseDateType == "CIPICKM") {
       this.setStatusMul(this.chooseDateType, "C")
     }
 
@@ -971,7 +993,11 @@ export class WorksordersAssetChecklistComponent implements OnInit {
 
 
   woMenuBtnSecurityAccess(menuName) {
-    return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
+    if (this.currentUser.admin == "Y") {
+      return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
+    } else {
+      return this.worksOrderUsrAccess.indexOf(menuName) != -1
+    }
   }
 
 }

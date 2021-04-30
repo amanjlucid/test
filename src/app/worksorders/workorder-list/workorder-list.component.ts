@@ -94,7 +94,7 @@ export class WorkorderListComponent implements OnInit {
         this.sharedService.woUserSecObs
       ]).subscribe(
         data => {
-          console.log(data);
+          // console.log(data);
 
           this.worksOrderAccess = data[0];
           this.worksOrderUsrAccess = data[1];

@@ -445,6 +445,7 @@ export class WorksordersDetailsComponent implements OnInit {
   closeAssetchecklistEvent(eve) {
     this.assetchecklistWindow = eve;
     $('.worksOrderDetailOvrlay').removeClass('ovrlay');
+    this.refreshGrid(true)
   }
 
   openNewphase(mode, item = null) {
@@ -459,6 +460,7 @@ export class WorksordersDetailsComponent implements OnInit {
   closeNewphaseEvent(eve) {
     this.newPhasewindow = eve;
     $('.worksOrderDetailOvrlay').removeClass('ovrlay');
+    this.refreshGrid(true)
   }
 
   openPackageMappingWindow() {
@@ -507,7 +509,7 @@ export class WorksordersDetailsComponent implements OnInit {
 
   moveWorksOrderDetailRow(move, item) {
     this.subs.add(
-      this.worksorderManagementService.phaseUpDown(item.wosequence, item.wopdispseq, move).subscribe(
+      this.worksorderManagementService.phaseUpDown(item.wosequence, item.wopsequence, move).subscribe(
         data => {
           if (data.isSuccess) this.refreshGrid(true);
         },
@@ -545,6 +547,7 @@ export class WorksordersDetailsComponent implements OnInit {
   closeAddAssetWorkordersListWindow(eve) {
     this.addAssetWorklistWindow = eve;
     $('.worksOrderDetailOvrlay').removeClass('ovrlay');
+    this.refreshGrid(true)
   }
 
   openAssetDetail(item) {
@@ -597,6 +600,7 @@ export class WorksordersDetailsComponent implements OnInit {
   closeAssetDetailWindow(eve) {
     this.assetDetailWindow = eve;
     $('.worksOrderDetailOvrlay').removeClass('ovrlay');
+    this.refreshGrid(true)
   }
 
   redirectToWorksOrderEdit() {
@@ -621,6 +625,7 @@ export class WorksordersDetailsComponent implements OnInit {
     if (selection == "single") {
 
       if (this.selected.length > 1) {
+        this.alertService.error("Please select single record.")
         return
       }
 
@@ -724,7 +729,12 @@ export class WorksordersDetailsComponent implements OnInit {
 
 
   woMenuBtnSecurityAccess(menuName) {
-    return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
+    if (this.currentUser.admin == "Y") {
+      return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
+    } else {
+      return this.worksOrderUsrAccess.indexOf(menuName) != -1
+    }
+
   }
 
 

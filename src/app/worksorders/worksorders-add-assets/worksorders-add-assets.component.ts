@@ -83,7 +83,11 @@ export class WorksordersAddAssetsComponent implements OnInit {
         this.sharedService.worksOrdersAccess
       ]).subscribe(
         data => {
-          this.worksOrderAccess = [...data[0], ...data[1]];
+          if (this.currentUser.admin == "Y") {
+            this.worksOrderAccess = [...data[0], ...data[1]];
+          } else {
+            this.worksOrderAccess = data[0]
+          }
         }
       )
     )

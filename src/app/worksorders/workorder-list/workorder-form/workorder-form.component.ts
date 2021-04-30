@@ -325,7 +325,7 @@ export class WorkOrderFormComponent implements OnInit {
             wodefectliabperiodflag = wod.wodefectliabperiodflag == "N" ? false : true;
             wodefectliabperioddays = wod.wodefectliabperioddays;
             wocodE2 = wod.wocodE2 == "N" ? false : true;
-            
+
             // console.log(wod)
         }
 
@@ -515,14 +515,40 @@ export class WorkOrderFormComponent implements OnInit {
         let wodData: any = {};
         let wocodE6: any = '';
         let WOCODE5: any = null;
+        let userAndDate: any = {};
+
         if (this.woFormType == "new") {
             msg = "Work Order created successfully.";
             wocodE6 = this.woForm.getRawValue().woType;
             WOCODE5 = this.woForm.getRawValue().wophasetemplate == "" ? null : this.woForm.getRawValue().wophasetemplate
+            userAndDate.MPgoA = this.currentUser.userId;
+            userAndDate.MPgpA = this.dateFormate(this.minDate);
+            userAndDate.MPgqA = this.dateFormate(this.minDate);
+            userAndDate.MPgrA = this.currentUser.userId;
+            userAndDate.MPgsA = this.dateFormate(this.minDate);
+            userAndDate.MPgtA = this.dateFormate(this.minDate);
         } else {
             msg = "Work Order updated successfully.";
             wodData = this.worksOrderData;
             wocodE6 = wodData.wocodE6;
+
+            userAndDate.MPgoA = wodData.mPgoA;
+            userAndDate.MPgpA = wodData.mPgpA;
+            userAndDate.MPgqA = wodData.mPgqA;
+            userAndDate.MPgrA = this.currentUser.userId;
+
+            const today = new Date()
+            const yesterday = new Date(today)
+            yesterday.setDate(yesterday.getDate() - 1)
+
+            let yesterdayObj = {
+                year: yesterday.getFullYear(),
+                month: yesterday.getMonth() + 1,
+                day: yesterday.getDate()
+            }
+
+            userAndDate.MPgsA = this.dateFormate(yesterdayObj);
+            userAndDate.MPgtA = this.dateFormate(this.minDate);
 
 
             if (wodData.wocodE5 == "" || wodData.wocodE5 == null) {
@@ -596,14 +622,13 @@ export class WorkOrderFormComponent implements OnInit {
             WOTEXT4: null,
             WOTEXT5: null,
             WOTEXT6: null,
-            MPgoA: this.currentUser.userId,
-            MPgpA: this.dateFormate(undefined),
-            MPgqA: this.dateFormate(undefined),
-            MPgrA: this.currentUser.userId,
-            MPgsA: this.dateFormate(undefined),
-            MPgtA: this.dateFormate(undefined),
+            MPgoA: userAndDate.MPgoA, // created user
+            MPgpA: userAndDate.MPgpA, // created date
+            MPgqA: userAndDate.MPgqA, // created date
+            MPgrA: userAndDate.MPgrA, // updated user
+            MPgsA: userAndDate.MPgsA, // created date
+            MPgtA: userAndDate.MPgtA, // updated date
         }
-
 
 
         // console.log(JSON.stringify(params));

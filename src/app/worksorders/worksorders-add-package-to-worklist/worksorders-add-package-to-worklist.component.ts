@@ -1,7 +1,7 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
-import { SelectableSettings, PageChangeEvent, RowArgs } from '@progress/kendo-angular-grid';
+import { SelectableSettings, PageChangeEvent, RowArgs, GridComponent } from '@progress/kendo-angular-grid';
 import { AlertService, HelperService, WorksorderManagementService } from 'src/app/_services';
 import { forkJoin } from 'rxjs';
 
@@ -38,6 +38,8 @@ export class WorksordersAddPackageToWorklistComponent implements OnInit {
   selectableSettings: SelectableSettings;
   mySelection: any[] = [];
   packageQuantityWindow = false;
+
+  @ViewChild(GridComponent) grid: GridComponent;
 
   constructor(
     private chRef: ChangeDetectorRef,
@@ -84,6 +86,9 @@ export class WorksordersAddPackageToWorklistComponent implements OnInit {
             this.packageData = data.data;
             this.gridView = process(this.packageData, this.state);
             this.gridLoading = false;
+            setTimeout(() => {
+              this.grid.autoFitColumns();
+            }, 100);
           } else {
             this.alertService.error(data.message);
           }
@@ -158,10 +163,16 @@ export class WorksordersAddPackageToWorklistComponent implements OnInit {
     $('.worklistPackageOvrlay').removeClass('ovrlay');
   }
 
-  refreshPackageList(eve){
+  refreshPackageList(eve) {
     // this.mySelection = [];
     this.getPackageList();
     this.chRef.detectChanges();
+  }
+
+  checkPackageExist(item) {
+    if (item.attributeexists == 'Work Package Exists') return false;
+    if (item.exclusionreason != '') return false;
+    return true;
   }
 
 }

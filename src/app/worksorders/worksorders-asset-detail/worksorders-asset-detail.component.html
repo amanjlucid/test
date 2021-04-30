@@ -68,9 +68,12 @@
             <li class="nav-item dropdown list-unstyled" style="margin-top: -7px;">
               <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars" (click)="setSeletedRow(dataItem)"></i>
               <div class="dropdown-menu">
-                <a class="dropdown-item" href="javascript:void(0)"
-                  *ngIf="worksOrderAccess.indexOf('Remove Asset') != -1" (click)="removeAssetFromPhase(dataItem)"
+                <a class="dropdown-item" href="javascript:void(0)" *ngIf="worksOrderAccess.indexOf('Delete Work') != -1"
+                  (click)="removeAssetFromPhase(dataItem, true)"
                   [ngClass]="{'disabled' :dataItem.woadstatus != 'New'}">Delete</a>
+                <a class="dropdown-item" href="javascript:void(0)" *ngIf="worksOrderAccess.indexOf('Remove Work') != -1"
+                  (click)="removeAssetFromPhase(dataItem, false)"
+                  [ngClass]="{'disabled' :dataItem.woadstatus != 'New'}">Remove</a>
 
                 <a *ngIf="treelevel == 3 && worksOrderAccess.indexOf('Edit Comment') != -1" class="dropdown-item"
                   href="javascript:void(0)" (click)="openEditCommentForWoAssetWindow(dataItem)">Edit Comment</a>
@@ -80,10 +83,11 @@
                   href="javascript:void(0)" (click)="openEditWorkPackageQtyCostWindow(dataItem)">Edit Work</a>
                 <a [ngClass]="{'disabled' :dataItem.woadstatus != 'New'}"
                   *ngIf="treelevel == 3 && dataItem.woadrechargeyn == 'N' && worksOrderAccess.indexOf('Recharge') != -1"
-                  class="dropdown-item" href="javascript:void(0)" (click)="rechargeToggle(dataItem)">Recharge</a>
+                  class="dropdown-item" href="javascript:void(0)" (click)="rechargeToggle(dataItem, true)">Recharge</a>
                 <a [ngClass]="{'disabled' :dataItem.woadstatus != 'New'}"
                   *ngIf="treelevel == 3 && dataItem.woadrechargeyn == 'Y' && worksOrderAccess.indexOf('Recharge') != -1"
-                  class="dropdown-item" href="javascript:void(0)" (click)="rechargeToggle(dataItem)">Clear Recharge</a>
+                  class="dropdown-item" href="javascript:void(0)" (click)="rechargeToggle(dataItem, false)">Clear
+                  Recharge</a>
                 <a [ngClass]="{'disabled' :dataItem.woadstatus != 'New'}"
                   *ngIf="treelevel == 3 && dataItem.woadrefusaL_YN == 'N' && worksOrderAccess.indexOf('Refusal') != -1"
                   class="dropdown-item" href="javascript:void(0)" (click)="openSetToRefusalWindow(dataItem)">Set to
@@ -143,7 +147,14 @@
 
 
 
-        <kendo-grid-column *ngIf="treelevel == 3" field="woadrechargeyn" title="Recharge" width="120">
+        <kendo-grid-column *ngIf="treelevel == 3" field="woadrechargeyn" title="Recharge" width="120"
+          [style]="{'text-align': 'center'}">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span>
+              <img *ngIf="dataItem.woadrechargeyn == 'Y'" style="height: 14px;" src="assets/img/icons/tick.png" />
+
+            </span>
+          </ng-template>
         </kendo-grid-column>
         <kendo-grid-column *ngIf="treelevel == 3" field="refusaL_REASON" title="Refusal" width="120">
         </kendo-grid-column>

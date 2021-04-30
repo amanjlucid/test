@@ -76,9 +76,12 @@ export class WorksordersAssetDetailComponent implements OnInit {
                 this.sharedService.worksOrdersAccess
             ]).subscribe(
                 data => {
-                    // this.worksOrderUsrAccess = data[0];
-                    this.worksOrderAccess = [...data[0], ...data[1]];
-                    // console.log(this.worksOrderAccess);
+                    // console.log(data);
+                    if (this.currentUser.admin == "Y") {
+                        this.worksOrderAccess = [...data[0], ...data[1]];
+                    } else {
+                        this.worksOrderAccess = data[0]
+                    }
                 }
             )
         )
@@ -199,7 +202,7 @@ export class WorksordersAssetDetailComponent implements OnInit {
 
     }
 
-    finalremoveAssetFromPhase(dataItem) {
+    finalremoveAssetFromPhase(dataItem, action) {
         if (dataItem.woadstatus == 'Issued' || dataItem.woadstatus == 'Released') {
             return
         }
@@ -218,7 +221,7 @@ export class WorksordersAssetDetailComponent implements OnInit {
             assid_wlcode: [assid, wlcode, wlataid, wlplanyear],
             userid: this.currentUser.userId,
             strCheckOrProcess: 'P',
-            RemoveWorkList: true,
+            RemoveWorkList: action,
         };
 
         //console.log('finalremoveAssetFromPhase to dlete ' +  JSON.stringify(params));
@@ -231,7 +234,10 @@ export class WorksordersAssetDetailComponent implements OnInit {
                     if (apiData.pRETURNSTATUS == 'E') {
                         this.alertService.error(apiData.pRETURNMESSAGE);
                     } else if (apiData.pRETURNSTATUS == 'S') {
-                        this.successDeleteMsg = 'Works Deleted';
+                        this.successDeleteMsg = 'Works Deleted Successfully';
+                        if (!action) {
+                            this.successDeleteMsg = 'Works Removed Successfully';
+                        }
                         this.alertService.success(this.successDeleteMsg);
                         this.getData();
                     } else {
@@ -251,18 +257,18 @@ export class WorksordersAssetDetailComponent implements OnInit {
     }
 
 
-    finalDeleteWorkConfirmBox(item, msg) {
+    finalDeleteWorkConfirmBox(item, msg, action) {
 
         $('.k-window').css({
             'z-index': 1000
         });
         this.confirmationDialogService.confirm('Please confirm..', msg)
-            .then((confirmed) => (confirmed) ? this.finalremoveAssetFromPhase(item) : console.log(confirmed))
+            .then((confirmed) => (confirmed) ? this.finalremoveAssetFromPhase(item, action) : console.log(confirmed))
             .catch(() => console.log('Attribute dismissed the dialog.'));
     }
 
 
-    removeAssetFromPhase(dataItem) {
+    removeAssetFromPhase(dataItem, action) {
 
 
         this.selectedItem = dataItem;
@@ -286,7 +292,7 @@ export class WorksordersAssetDetailComponent implements OnInit {
             assid_wlcode: [assid, wlcode, wlataid, wlplanyear],
             userid: this.currentUser.userId,
             strCheckOrProcess: 'C',
-            RemoveWorkList: true,
+            RemoveWorkList: action,
         };
 
         //  console.log('Parms to dlete ' +  JSON.stringify(params));
@@ -299,7 +305,7 @@ export class WorksordersAssetDetailComponent implements OnInit {
                         this.alertService.error(apiData.pRETURNMESSAGE);
 
                     } else if (apiData.pRETURNSTATUS == 'S') {
-                        this.finalDeleteWorkConfirmBox(this.selectedItem, apiData.pRETURNMESSAGE);
+                        this.finalDeleteWorkConfirmBox(this.selectedItem, apiData.pRETURNMESSAGE, action);
                     } else {
                         this.alertService.error(apiData.pRETURNMESSAGE);
 
@@ -332,6 +338,7 @@ export class WorksordersAssetDetailComponent implements OnInit {
         $('.k-window').css({
             'z-index': 1000
         });
+
         this.confirmationDialogService.confirm('Please confirm..', 'Clear Refusal')
             .then(
                 (confirmed) => {
@@ -462,7 +469,7 @@ export class WorksordersAssetDetailComponent implements OnInit {
 
     }
 
-    SetToRefusalSave() {
+    SetToRefusalSave(clear = false) {
 
         // console.log('SetToRefusalSave itemDat' + JSON.stringify(this.itemData));
 
@@ -486,7 +493,11 @@ export class WorksordersAssetDetailComponent implements OnInit {
                 data => {
 
                     if (data.isSuccess) {
-                        let success_msg = "Save successfully";
+                        let success_msg = "Refusal Successfully Set";
+                        if (!clear) {
+                            success_msg = "Refusal Successfully Cleared";
+                        }
+
                         this.alertService.success(success_msg);
                         this.loading = false;
                         this.getData();
@@ -550,7 +561,7 @@ export class WorksordersAssetDetailComponent implements OnInit {
                 data => {
 
                     if (data.isSuccess) {
-                        let success_msg = "Save successfully";
+                        let success_msg = "Comment Updated Successfully";
                         this.alertService.success(success_msg);
                         this.loading = false;
                         this.getData();
@@ -673,7 +684,7 @@ export class WorksordersAssetDetailComponent implements OnInit {
                 /// console.log('WOEditWorkPackageTablet Api Response '+ JSON.stringify(data));
 
                 if (data.isSuccess) {
-                    let success_msg = "Save successfully";
+                    let success_msg = "Work Updated Successfully";
                     this.alertService.success(success_msg);
                     this.loading = false;
                     this.closeEditWorkPackageQtyCostWindow();
@@ -712,7 +723,7 @@ export class WorksordersAssetDetailComponent implements OnInit {
     }
 
 
-    rechargeToggle(item) {
+    rechargeToggle(item, recharge) {
 
         if (item.woadstatus != 'New') {
             return
@@ -745,7 +756,10 @@ export class WorksordersAssetDetailComponent implements OnInit {
                 /// console.log('WOEditWorkPackageTablet Api Response '+ JSON.stringify(data));
 
                 if (data.isSuccess) {
-                    let success_msg = "Saved successfully";
+                    let success_msg = "Recharge Successfully Set";
+                    if (!recharge) {
+                        success_msg = "Recharge Successfully Cleared";
+                    }
                     this.alertService.success(success_msg);
                     this.loading = false;
 

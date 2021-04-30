@@ -290,12 +290,7 @@ export class WorksordersNewPhaseComponent implements OnInit {
 
     phaseModel.WOPCONTRACTORACCEPTANCEDATE = this.dateFormate(formRawVal.WOPCONTRACTORACCEPTANCEDATE)
 
-    phaseModel.MPgpA = this.dateFormate(formRawVal.MPgpA)
-    phaseModel.MPgqA = this.dateFormate(formRawVal.MPgqA)
-    phaseModel.MPgsA = this.dateFormate(formRawVal.MPgsA)
-    phaseModel.MPgtA = this.dateFormate(formRawVal.MPgtA)
-    phaseModel.MPgoA = this.currentUser.userId
-    phaseModel.MPgrA = this.currentUser.userId
+
 
     phaseModel.WOPBUDGET = this.helperService.convertMoneyToFlatFormat(formRawVal.WOPBUDGET)
 
@@ -313,8 +308,16 @@ export class WorksordersNewPhaseComponent implements OnInit {
       phaseModel.WOPCURRENTCONTRACTSUM = 0;
       phaseModel.WOPACCEPTEDVALUE = 0;
 
+      phaseModel.MPgpA = this.dateFormate(this.minDate)
+      phaseModel.MPgqA = this.dateFormate(this.minDate)
+      phaseModel.MPgsA = this.dateFormate(this.minDate)
+      phaseModel.MPgtA = this.dateFormate(this.minDate)
+      phaseModel.MPgoA = this.currentUser.userId;
+      phaseModel.MPgrA = this.currentUser.userId;
+
       apiToAddUpdate = this.worksorderService.addWorksOrderPhase(phaseModel);
       message = `New Works Order Phase "${phaseModel.WOPNAME}" added successfully.`;
+
     } else {
       phaseModel.WOPSEQUENCE = this.phaseData.wopsequence;
       phaseModel.WOPDISPSEQ = this.phaseData.wopdispseq;
@@ -324,8 +327,19 @@ export class WorksordersNewPhaseComponent implements OnInit {
       phaseModel.WOPCURRENTCONTRACTSUM = this.phaseData.wopcurrentcontractsum;
       phaseModel.WOPACCEPTEDVALUE = this.phaseData.wopacceptedvalue;
 
+      phaseModel.MPgpA = this.phaseData.mPgoA
+      phaseModel.MPgqA = this.phaseData.mPgpA
+
+      phaseModel.MPgsA = this.phaseData.mPgsA // -1
+
+      phaseModel.MPgtA = this.phaseData.mPgtA;//this.dateFormate(this.minDate)
+
+      phaseModel.MPgoA = this.phaseData.mPgoA
+      phaseModel.MPgrA = this.currentUser.userId
+
       apiToAddUpdate = this.worksorderService.updateWorksOrderPhase(phaseModel);
       message = `Works Order Phase "${phaseModel.WOPNAME}" updated successfully.`;
+
     }
 
     apiToAddUpdate.subscribe(

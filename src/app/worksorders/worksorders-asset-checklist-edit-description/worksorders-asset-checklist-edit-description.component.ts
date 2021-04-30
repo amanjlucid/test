@@ -36,7 +36,7 @@ export class WorksordersAssetChecklistEditDescriptionComponent implements OnInit
   }
 
   updateDescription() {
-    const checklistdata = this.selectedChecklist[0];
+    const checklistdata = this.selectedChecklist;
     let params = {
       WOSEQUENCE: checklistdata.wosequence,
       ASSID: checklistdata.assid,

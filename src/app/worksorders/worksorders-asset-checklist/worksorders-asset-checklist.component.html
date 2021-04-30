@@ -23,11 +23,11 @@
                     <a *ngIf="woMenuBtnSecurityAccess('Work Details')" class="dropdown-item"
                         (click)="openAssetDetailChild('all')" href="javascript:void(0)">
                         Detail</a>
-                    <a *ngIf="woMenuBtnSecurityAccess('Remove Work')" class="dropdown-item"
+                    <a *ngIf="woMenuBtnSecurityAccess('Remove All Work')" class="dropdown-item"
                         (click)="removeOrDeletework('remove')" href="javascript:void(0)"
                         [ngClass]="{'disabled' : disableMainActions('woremoveAll')}">
                         Remove All</a>
-                    <a *ngIf="woMenuBtnSecurityAccess('Delete Work')" class="dropdown-item"
+                    <a *ngIf="woMenuBtnSecurityAccess('Delete All Work')" class="dropdown-item"
                         (click)="removeOrDeletework('delete')" href="javascript:void(0)"
                         [ngClass]="{'disabled' : disableMainActions('wodeleteAll')}">
                         Delete All</a>
@@ -50,9 +50,8 @@
                         [ngClass]="{'disabled' : disableMainActions('release')}">
                         Release</a>
 
-                    <a *ngIf="woMenuBtnSecurityAccess('Issue Asset')" class="dropdown-item"
-                        (click)="setAsset('ISSUE')" href="javascript:void(0)"
-                        [ngClass]="{'disabled' : disableMainActions('issue')}">
+                    <a *ngIf="woMenuBtnSecurityAccess('Issue Asset')" class="dropdown-item" (click)="setAsset('ISSUE')"
+                        href="javascript:void(0)" [ngClass]="{'disabled' : disableMainActions('issue')}">
                         Issue</a>
 
 
@@ -86,9 +85,8 @@
                             </div>
 
                             <a [ngClass]="{'disabled' : disableMainActions('NS')}"
-                                *ngIf="woMenuBtnSecurityAccess('Set Status To Not Started')"
-                                class="dropdown-item" (click)="setStatusMul('NOT STARTED')"
-                                href="javascript:void(0)">Set to Not
+                                *ngIf="woMenuBtnSecurityAccess('Set Status To Not Started')" class="dropdown-item"
+                                (click)="setStatusMul('NOT STARTED')" href="javascript:void(0)">Set to Not
                                 Started</a>
                             <a [ngClass]="{'disabled' : disableMainActions('RCI')}"
                                 *ngIf="woMenuBtnSecurityAccess('Reset Checklist Item')" class="dropdown-item"
@@ -340,8 +338,7 @@
                                             href="javascript:void(0)">
                                             Set Planned Start/End Dates</a>
 
-                                        <div *ngIf="woMenuBtnSecurityAccess('Set Asset Target Date')"
-                                            class="dropdown-toggle"
+                                        <div *ngIf="woMenuBtnSecurityAccess('Set Target Date')" class="dropdown-toggle"
                                             [ngClass]="{'disabled' :disableBtnsIndividualMenu('STCD', dataItem)}">
                                             <div class="dropdown-item">Set Target Completion Date</div>
                                             <div class="dropdown-menu">
@@ -407,7 +404,7 @@
                                 </div>
 
 
-                                <div class="dropdown-toggle">
+                                <div class="dropdown-toggle" *ngIf="dataItem.wocheckspeciaL1 == 'WORK'">
                                     <div class="dropdown-item">Work</div>
                                     <div class="dropdown-menu">
                                         <a *ngIf="woMenuBtnSecurityAccess('Work Details')" class="dropdown-item"

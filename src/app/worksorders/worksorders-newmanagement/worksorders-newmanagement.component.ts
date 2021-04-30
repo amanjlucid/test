@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy
 import { SubSink } from 'subsink';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { WorksorderManagementService, AlertService, HelperService, LoaderService } from '../../_services'
-import { ShouldGreaterThanYesterday, isNumberCheck, OrderDateValidator, IsGreaterDateValidator } from 'src/app/_helpers';
+import { ShouldGreaterThanYesterday, isNumberCheck, OrderDateValidator, IsGreaterDateValidator, checkFirstDateisLower, firstDateIsLower } from 'src/app/_helpers';
 import { WorkordersAddManagementModel } from '../../_models';
 
 
@@ -113,9 +113,14 @@ export class WorksordersNewmanagementComponent implements OnInit {
     };
   }
 
+  ngAfterViewInit() {
+    this.chRef.detectChanges();
+  }
+
   ngOnInit(): void {
     let targetDateValidationArr = [Validators.required, ShouldGreaterThanYesterday()];
-    let planDateValidationArr = [ShouldGreaterThanYesterday()];
+    let planDateValidationArr: any = [ShouldGreaterThanYesterday()];
+
     if (this.formMode == "edit") {
       targetDateValidationArr = [Validators.required];
       planDateValidationArr = [];
@@ -130,8 +135,10 @@ export class WorksordersNewmanagementComponent implements OnInit {
       WPRPROGRAMMETYPE: ['', [Validators.maxLength(50)]],
       WPRBUDGET: ['', [Validators.required]], //isNumberCheck(), Validators.maxLength(9)
       WPRTARGETCOMPLETIONDATE: ['', targetDateValidationArr],
+
       WPRPLANSTARTDATE: ['', planDateValidationArr],
       WPRPLANENDDATE: ['', planDateValidationArr],
+
       WPRACTUALSTARTDATE: [''],
       WPRACTUALENDDATE: [''],
       WPRCONTRACTORISSUEDATE: [''],
@@ -157,26 +164,38 @@ export class WorksordersNewmanagementComponent implements OnInit {
     },
       {
         validator: [
-          OrderDateValidator('WPRPLANENDDATE', 'WPRPLANSTARTDATE'),
+          firstDateIsLower('WPRPLANENDDATE', 'WPRPLANSTARTDATE'),
           IsGreaterDateValidator('WPRPLANENDDATE', 'WPRTARGETCOMPLETIONDATE')
         ],
       }
     );
 
-    // const completionDateControl = this.workManagementForm.get('WPRTARGETCOMPLETIONDATE');
-    // completionDateControl.valueChanges.subscribe(
-    //   date => {
-    //     if (this.formMode == "new") {
-    //       completionDateControl.setValidators([Validators.required, ShouldGreaterThanYesterday()]);
-    //     } else {
-    //       completionDateControl.setValidators([Validators.required]);
+    this.chRef.detectChanges();
+
+
+    const plnEndCtr = this.workManagementForm.get('WPRPLANENDDATE');
+    const plnStartCtr = this.workManagementForm.get('WPRPLANSTARTDATE');
+
+    // this.subs.add(
+    //   plnEndCtr.valueChanges.subscribe(
+    //     data => {
+    //       console.log(data)
+    //       plnEndCtr.setValidators([checkFirstDateisLower(plnEndCtr, plnStartCtr)])
     //     }
-    //   }
+    //   )
     // )
+
+    plnStartCtr.valueChanges.subscribe(
+      data => {
+        // console.log(data)
+        plnEndCtr.setValidators([checkFirstDateisLower(plnEndCtr, plnStartCtr)])
+      }
+    );
+
 
     this.populateForm()
 
-    this.chRef.detectChanges();
+
 
   }
 
@@ -238,6 +257,9 @@ export class WorksordersNewmanagementComponent implements OnInit {
 
             })
 
+            setTimeout(() => {
+              this.chRef.detectChanges();
+            }, 100);
             this.workManagementForm.get('WPRCONTRACTORISSUEDATE').disable();
             this.workManagementForm.get('WPRACTUALSTARTDATE').disable();
             this.workManagementForm.get('WPRACTUALENDDATE').disable();
@@ -246,6 +268,8 @@ export class WorksordersNewmanagementComponent implements OnInit {
           } else {
             this.alertService.error(data.message)
           }
+
+
         }
       )
     )
@@ -311,6 +335,9 @@ export class WorksordersNewmanagementComponent implements OnInit {
 
     this.chRef.detectChanges();
 
+    // console.log(this.workManagementForm)
+    // return
+
     if (this.workManagementForm.invalid) {
       return;
     }
@@ -321,19 +348,12 @@ export class WorksordersNewmanagementComponent implements OnInit {
     managementModel.WPRPLANSTARTDATE = this.dateFormate(formRawVal.WPRPLANSTARTDATE);
     managementModel.WPRPLANENDDATE = this.dateFormate(formRawVal.WPRPLANENDDATE);
 
-
     managementModel.WPRCONTRACTORISSUEDATE = this.dateFormate(formRawVal.WPRCONTRACTORISSUEDATE);
     managementModel.WPRACTUALSTARTDATE = this.dateFormate(formRawVal.WPRACTUALSTARTDATE);
     managementModel.WPRACTUALENDDATE = this.dateFormate(formRawVal.WPRACTUALENDDATE);
 
     managementModel.WPRCONTRACTORACCEPTANCEDATE = this.dateFormate(formRawVal.WPRCONTRACTORACCEPTANCEDATE)
-    managementModel.MPgpA = this.dateFormate(formRawVal.MPgpA)
-    managementModel.MPgqA = this.dateFormate(formRawVal.MPgqA)
-    managementModel.MPgsA = this.dateFormate(formRawVal.MPgsA)
-    managementModel.MPgtA = this.dateFormate(formRawVal.MPgtA)
 
-    managementModel.MPgoA = this.currentUser.userId
-    managementModel.MPgrA = this.currentUser.userId
 
     managementModel.WPRBUDGET = this.helperService.convertMoneyToFlatFormat(formRawVal.WPRBUDGET)
 
@@ -341,13 +361,28 @@ export class WorksordersNewmanagementComponent implements OnInit {
     let apiToAddUpdate: any;
     let message = '';
     if (this.formMode == 'new') {
+      managementModel.MPgpA = this.dateFormate(this.minDate)
+      managementModel.MPgqA = this.dateFormate(this.minDate)
+      managementModel.MPgsA = this.dateFormate(this.minDate)
+      managementModel.MPgtA = this.dateFormate(this.minDate)
+
+      managementModel.MPgoA = this.currentUser.userId
+      managementModel.MPgrA = this.currentUser.userId
+
       apiToAddUpdate = this.worksorderManagementService.addWorkOrderManagement(managementModel);
       message = `New Programme "${managementModel.WPRNAME}" added successfully.`;
 
       this.subscribeToSubmitForm(apiToAddUpdate, message);
 
     } else {
+      managementModel.MPgpA = this.mData.mPgpA
+      managementModel.MPgqA = this.mData.mPgqA
 
+      managementModel.MPgsA = this.dateFormate(this.minDate)
+      managementModel.MPgtA = this.dateFormate(this.minDate)
+
+      managementModel.MPgoA = this.mData.mPgoA
+      managementModel.MPgrA = this.currentUser.userId
       managementModel.WPRSEQUENCE = this.mData.wprsequence;
 
       if (this.mData.wprstatus == "New" && managementModel.WPRSTATUS == "In Progress") {
@@ -402,7 +437,7 @@ export class WorksordersNewmanagementComponent implements OnInit {
     )
   }
 
- 
+
 
   closeNewManagementWindow() {
     this.openNewManagement = false;

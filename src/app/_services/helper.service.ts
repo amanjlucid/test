@@ -656,7 +656,7 @@ export class HelperService {
     convertMoneyToFlatFormat(val) {
         val = typeof val == "number" ? val.toString() : val;
         return val == "" ? val : val.replace(/[^0-9.]+/g, '');
-      }
+    }
 
 
     updateNotificationOnTop() {
@@ -680,6 +680,21 @@ export class HelperService {
                 }
             )
         )
+    }
+
+
+    yesterday() {
+        const today = new Date()
+        const yesterday = new Date(today)
+        yesterday.setDate(yesterday.getDate() - 1)
+
+        let yesterdayObj = {
+            year: yesterday.getFullYear(),
+            month: yesterday.getMonth() + 1,
+            day: yesterday.getDate()
+        }
+
+        return yesterdayObj;
     }
 
 
