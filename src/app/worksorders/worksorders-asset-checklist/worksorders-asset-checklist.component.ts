@@ -68,6 +68,9 @@ export class WorksordersAssetChecklistComponent implements OnInit {
   worksOrderUsrAccess: any = [];
   touchtime = 0;
 
+  actionType = 'single'
+  userType: any = []
+
   constructor(
     private chRef: ChangeDetectorRef,
     private worksorderManagementService: WorksorderManagementService,
@@ -83,11 +86,15 @@ export class WorksordersAssetChecklistComponent implements OnInit {
     this.subs.add(
       combineLatest([
         this.sharedService.woUserSecObs,
-        this.sharedService.worksOrdersAccess
+        this.sharedService.worksOrdersAccess,
+        this.sharedService.userTypeObs
       ]).subscribe(
         data => {
+          console.log(data);
+          console.log(this.currentUser)
           this.worksOrderUsrAccess = data[0];
           this.worksOrderAccess = data[1];
+          this.userType = data[2][0];
         }
       )
     )
@@ -257,6 +264,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
 
 
   setStatus(type, item, checkOrProcess = 'C') {
+    this.actionType = "single";
     this.selectedChecklistsingleItem = item;
     this.chooseDateType = type;
     let apiName = '';
@@ -347,6 +355,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
   }
 
   openChooseDate(type, item) {
+    this.actionType = 'single';
     this.selectedChecklistsingleItem = item;
     this.chooseDateType = type;
     this.chooseDateWindow = true;
@@ -354,8 +363,137 @@ export class WorksordersAssetChecklistComponent implements OnInit {
     $('.checklistOverlay').addClass('ovrlay');
   }
 
+  openChooseDateMul(type) {
+    // this.selectedChecklistsingleItem = item;
+    this.actionType = 'multiple';
+    this.chooseDateType = type;
+    this.chooseDateWindow = true;
+    this.chRef.detectChanges();
+    $('.checklistOverlay').addClass('ovrlay');
+  }
+
+
+
+  setDatesMul(type, checkOrProcess = 'C') {
+    this.actionType = 'multiple';
+    if (this.mySelection.length == 0) {
+      return
+    }
+
+    let filterChecklist = this.assetCheckListData.filter(x => this.mySelection.includes(x.wochecksurcde))
+
+    if (filterChecklist.length == 0) {
+      return
+    }
+
+    let ASSID_STAGESURCDE_CHECKSURCDE = [];
+    for (const checklist of filterChecklist) {
+      ASSID_STAGESURCDE_CHECKSURCDE.push(checklist.assid)
+      ASSID_STAGESURCDE_CHECKSURCDE.push(checklist.wostagesurcde)
+      ASSID_STAGESURCDE_CHECKSURCDE.push(checklist.wochecksurcde)
+    }
+    // console.log(filterChecklist)
+    // console.log(ASSID_STAGESURCDE_CHECKSURCDE)
+
+
+    this.chooseDateType = type;
+    let apiName = '';
+    let params: any = {}
+
+    params.WOSEQUENCE = filterChecklist[0].wosequence;
+    params.WOPSEQUENCE = filterChecklist[0].wopsequence;
+    params.strASSID_STAGESURCDE_CHECKSURCDE = ASSID_STAGESURCDE_CHECKSURCDE;
+    params.strUserId = this.currentUser.userId;
+    params.strCheckOrProcess = checkOrProcess;
+    params.RecordCount = this.mySelection.length
+    params.CheckName = this.mySelection.length == 1 ? filterChecklist[0].wocheckname : ''
+
+    if (type == 'SE') {
+      apiName = 'SetWorksOrderCheckListPlannedDates'
+      params.dtStartDate = this.dateFormate(this.selectedDate.start);
+      params.dtEndDate = this.dateFormate(this.selectedDate.end);
+    } else if (type == 'TCY') {
+      apiName = 'SetWorksOrderCheckListTargetDate';
+      params.dtDate = this.getDateString('Yesterday');
+    } else if (type == 'TCTOD') {
+      apiName = 'SetWorksOrderCheckListTargetDate';
+      params.dtDate = this.getDateString('Today');
+    } else if (type == 'TCTOM') {
+      apiName = 'SetWorksOrderCheckListTargetDate';
+      params.dtDate = this.getDateString('Tomorrow');
+    } else if (type == 'TC7') {
+      apiName = 'SetWorksOrderCheckListTargetDate';
+      params.dtDate = this.getDateString('Next 7');
+    } else if (type == 'TCPICK') {
+      apiName = 'SetWorksOrderCheckListTargetDate'
+      params.dtDate = this.dateFormate(this.selectedDate.selectedDate);
+    } else if (type == 'CSDY') {
+      apiName = 'UpdateChecklistStartDate';
+      delete params.strASSID_STAGESURCDE_CHECKSURCDE;
+      params.strASSID_STAGE_CHECK = ASSID_STAGESURCDE_CHECKSURCDE
+      params.NewDate = this.getDateString('Yesterday');
+    } else if (type == 'CSDT') {
+      apiName = 'UpdateChecklistStartDate'
+      delete params.strASSID_STAGESURCDE_CHECKSURCDE;
+      params.strASSID_STAGE_CHECK = ASSID_STAGESURCDE_CHECKSURCDE
+      params.NewDate = this.getDateString('Today');
+    } else if (type == 'CSDPICK') {
+      apiName = 'UpdateChecklistStartDate'
+      delete params.strASSID_STAGESURCDE_CHECKSURCDE;
+      params.strASSID_STAGE_CHECK = ASSID_STAGESURCDE_CHECKSURCDE
+      params.NewDate = this.dateFormate(this.selectedDate.selectedDate);
+    }
+
+    else if (type == 'CCDY') {
+      apiName = 'WorksOrderChangeCompletionDate';
+      params.dtDate = this.getDateString('Yesterday');
+    } else if (type == 'CCDT') {
+      apiName = 'WorksOrderChangeCompletionDate';
+      params.dtDate = this.getDateString('Today');
+    } else if (type == 'CCDPICK') {
+      apiName = 'WorksOrderChangeCompletionDate';
+      params.dtDate = this.dateFormate(this.selectedDate.selectedDate);
+    }
+
+
+
+
+
+    this.subs.add(
+      this.worksorderManagementService.setStatus(apiName, params).subscribe(
+        data => {
+
+          if (data.isSuccess) {
+            let resp: any;
+            if (data.data[0] == undefined) {
+              resp = data.data;
+            } else {
+              resp = data.data[0];
+            }
+
+            if (checkOrProcess == "C" && (resp.pRETURNSTATUS == "E" || resp.pRETURNSTATUS == "S")) {
+              this.confirmationForMultipleStatus(type, resp)
+            } else {
+              this.alertService.success(resp.pRETURNMESSAGE)
+              this.worksOrderDetailPageData();
+              // this.selectedChecklistsingleItem = undefined;
+            }
+          } else {
+            this.alertService.error(data.message);
+          }
+
+        },
+        err => this.alertService.error(err)
+      )
+    )
+
+
+  }
+
+
 
   setDates(type, item, checkOrProcess = 'C') {
+    this.actionType = "single"
     this.selectedChecklistsingleItem = item;
     this.chooseDateType = type;
     let apiName = '';
@@ -465,6 +603,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
 
 
   setComplete(type, item, checkOrProcess = 'C') {
+    this.actionType = 'single';
     this.chooseDateType = type;
     this.selectedChecklistsingleItem = item;
     let apiName = 'WorksOrderCheckListCompleteItem';
@@ -558,24 +697,36 @@ export class WorksordersAssetChecklistComponent implements OnInit {
     // console.log(this.selectedDate)
     // console.log(this.chooseDateType)
     // debugger;
-
-    if (this.chooseDateType == "SE") {
-      this.setDates(this.chooseDateType, this.selectedChecklistsingleItem, 'C')
-    } else if (this.chooseDateType == "IPD") {
-      this.setStatus(this.chooseDateType, this.selectedChecklistsingleItem, 'C')
-    } else if (this.chooseDateType == "TCPICK") {
-      this.setDates(this.chooseDateType, this.selectedChecklistsingleItem, 'C')
-    } else if (this.chooseDateType == "CSDPICK") {
-      this.setDates(this.chooseDateType, this.selectedChecklistsingleItem, 'C')
-    } else if (this.chooseDateType == "CCDPICK") {
-      this.setDates(this.chooseDateType, this.selectedChecklistsingleItem, 'C')
-    } else if (this.chooseDateType == "CIPICK") {
-      this.setComplete(this.chooseDateType, this.selectedChecklistsingleItem, 'C')
-    } else if (this.chooseDateType == "IPDM") {
-      this.setStatusMul(this.chooseDateType, "C")
-    } else if (this.chooseDateType == "CIPICKM") {
-      this.setStatusMul(this.chooseDateType, "C")
+    if (this.actionType == "single") {
+      if (this.chooseDateType == "SE") {
+        this.setDates(this.chooseDateType, this.selectedChecklistsingleItem, 'C')
+      } else if (this.chooseDateType == "IPD") {
+        this.setStatus(this.chooseDateType, this.selectedChecklistsingleItem, 'C')
+      } else if (this.chooseDateType == "TCPICK") {
+        this.setDates(this.chooseDateType, this.selectedChecklistsingleItem, 'C')
+      } else if (this.chooseDateType == "CSDPICK") {
+        this.setDates(this.chooseDateType, this.selectedChecklistsingleItem, 'C')
+      } else if (this.chooseDateType == "CCDPICK") {
+        this.setDates(this.chooseDateType, this.selectedChecklistsingleItem, 'C')
+      } else if (this.chooseDateType == "CIPICK") {
+        this.setComplete(this.chooseDateType, this.selectedChecklistsingleItem, 'C')
+      }
     }
+
+    
+    if (this.actionType == "multiple") {
+      if (this.chooseDateType == "IPDM") {
+        this.setStatusMul(this.chooseDateType, "C")
+      } else if (this.chooseDateType == "CIPICKM") {
+        this.setStatusMul(this.chooseDateType, "C")
+      }
+
+      else if (this.chooseDateType == "SE" || this.chooseDateType == "TCPICK" || this.chooseDateType == "CSDPICK" || this.chooseDateType == "CCDPICK") {
+        this.setDatesMul(this.chooseDateType, "C")
+      }
+    }
+
+
 
   }
 
@@ -595,9 +746,12 @@ export class WorksordersAssetChecklistComponent implements OnInit {
     if (type == "RELEASE") {
       callApi = this.worksorderManagementService.worksOrderReleaseAsset(params);
     } else if (type == "ACCEPT") {
-      if (!this.selectedChecklistsingleItem || this.workorderAsset.woassstatus == "In Progress") {
-        return
+      if (this.workorderAsset?.woassstatus != 'Issued') {
+
       }
+      // if (!this.selectedChecklistsingleItem || this.workorderAsset.woassstatus == "In Progress") {
+      //   return
+      // }
       callApi = this.worksorderManagementService.worksOrderAcceptAsset(params);
     } else if (type == "ISSUE") {
       params.UserName = this.currentUser.userName;
@@ -699,6 +853,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
   closeAssetDetailWindow(eve) {
     this.assetDetailWindow = eve;
     $('.checklistOverlay').removeClass('ovrlay');
+    this.worksOrderDetailPageData();
     // this.selectedChecklistsingleItem = undefined;
   }
 
@@ -799,7 +954,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
 
 
   setStatusMul(type, checkOrProcess = 'C') {
-
+    this.actionType = 'multiple';
     if (this.mySelection.length == 0) {
       return
     }
@@ -827,7 +982,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
     params.ASSID_STAGESURCDE_CHECKSURCDE = ASSID_STAGESURCDE_CHECKSURCDE;
     params.UserId = this.currentUser.userId;
     params.CHECKORPROCESS = checkOrProcess;
-    params.RecordCount = this.mySelection.length
+    params.RecordCount = this.mySelection.length;
     params.CheckName = this.mySelection.length == 1 ? filterChecklist[0].wocheckname : ''
 
     if (type == 'NA') {
@@ -863,6 +1018,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
       apiName = "WorksOrderCheckListCompleteItem"
       params.dtDate = this.dateFormate(this.selectedDate.selectedDate);
     }
+
 
 
     this.subs.add(
@@ -971,15 +1127,15 @@ export class WorksordersAssetChecklistComponent implements OnInit {
     }
 
     if (type == "release") {
-      return !this.selectedChecklistsingleItem || this.workorderAsset?.woassstatus != 'New'
+      return this.workorderAsset?.woassstatus != 'New'
     }
 
     if (type == "issue") {
-      return !this.selectedChecklistsingleItem || this.workorderAsset?.woassstatus != 'Pending'
+      return this.workorderAsset?.woassstatus != 'Pending'
     }
 
     if (type == "accept") {
-      return !this.selectedChecklistsingleItem || this.workorderAsset?.woassstatus != 'Issued'
+      return this.workorderAsset?.woassstatus != 'Issued'
     }
 
     if (type == "na" || type == "STIP" || type == "NS" || type == "RCI" || type == "COMP") {
@@ -993,9 +1149,12 @@ export class WorksordersAssetChecklistComponent implements OnInit {
 
 
   woMenuBtnSecurityAccess(menuName) {
-    if (this.currentUser.admin == "Y") {
+    if (this.userType?.wourroletype == "Dual Role") {
       return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
     } else {
+      // if(menuName == "Release Asset"){
+      //   console.log(this.worksOrderUsrAccess.indexOf(menuName) != -1)
+      // }
       return this.worksOrderUsrAccess.indexOf(menuName) != -1
     }
   }

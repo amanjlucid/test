@@ -78,7 +78,7 @@
                                         href="javascript:void(0)">Yesterday</a>
                                     <a class="dropdown-item" (click)="setStatusMul('IPT')"
                                         href="javascript:void(0)">Today</a>
-                                    <a class="dropdown-item" (click)="openChooseDate('IPDM')"
+                                    <a class="dropdown-item" (click)="openChooseDateMul('IPDM')"
                                         href="javascript:void(0)">Choose Date</a>
 
                                 </div>
@@ -99,12 +99,77 @@
                         *ngIf="woMenuBtnSecurityAccess('Complete Item')">
                         <div class="dropdown-item">Complete</div>
                         <div class="dropdown-menu completeDrp">
-                            <a class="dropdown-item" (click)="setStatusMul('CIY', dataItem)"
+                            <a class="dropdown-item" (click)="setStatusMul('CIY')"
                                 href="javascript:void(0)">Yesterday</a>
-                            <a class="dropdown-item" (click)="setStatusMul('CIT', dataItem)"
-                                href="javascript:void(0)">Today</a>
-                            <a class="dropdown-item" (click)="openChooseDate('CIPICKM', dataItem)"
+                            <a class="dropdown-item" (click)="setStatusMul('CIT')" href="javascript:void(0)">Today</a>
+                            <a class="dropdown-item" (click)="openChooseDateMul('CIPICKM')"
                                 href="javascript:void(0)">Choose Date</a>
+                        </div>
+                    </div>
+
+
+
+
+
+
+
+
+                    <div [ngClass]="{'disabled' : workorderAsset?.woassstatus == 'Pending'}" class="dropdown-toggle">
+                        <div class="dropdown-item" *ngIf="woMenuBtnSecurityAccess('Set Dates')">Dates
+                        </div>
+                        <div class="dropdown-menu dateDrp">
+
+                            <a [ngClass]="{'disabled' :disableBtnsIndividualMenu('SE', null)}"
+                                *ngIf="woMenuBtnSecurityAccess('Set Asset Planned Dates')" class="dropdown-item"
+                                (click)="openChooseDateMul('SE')" href="javascript:void(0)">
+                                Set Planned Start/End Dates</a>
+
+                            <div *ngIf="woMenuBtnSecurityAccess('Set Target Date')" class="dropdown-toggle"
+                                [ngClass]="{'disabled' :disableBtnsIndividualMenu('STCD', null)}">
+                                <div class="dropdown-item">Set Target Completion Date</div>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" (click)="setDatesMul('TCY')"
+                                        href="javascript:void(0)">Yesterday</a>
+                                    <a class="dropdown-item" (click)="setDatesMul('TCTOD')"
+                                        href="javascript:void(0)">Today</a>
+                                    <a class="dropdown-item" (click)="setDatesMul('TCTOM')"
+                                        href="javascript:void(0)">Tomorrow</a>
+                                    <a class="dropdown-item" (click)="setDatesMul('TC7')" href="javascript:void(0)">7
+                                        Days</a>
+                                    <a class="dropdown-item" (click)="openChooseDateMul('TCPICK')"
+                                        href="javascript:void(0)">Choose Date</a>
+
+                                </div>
+                            </div>
+
+                            <div [ngClass]="{'disabled' :disableBtnsIndividualMenu('CSD', null)}"
+                                class="dropdown-toggle" *ngIf="woMenuBtnSecurityAccess('Change Start Date')">
+                                <div class="dropdown-item">Change Start Date</div>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" (click)="setDatesMul('CSDY')"
+                                        href="javascript:void(0)">Yesterday</a>
+                                    <a class="dropdown-item" (click)="setDatesMul('CSDT')"
+                                        href="javascript:void(0)">Today</a>
+                                    <a class="dropdown-item" (click)="openChooseDateMul('CSDPICK')"
+                                        href="javascript:void(0)">Choose Date</a>
+
+                                </div>
+                            </div>
+
+                            <div [ngClass]="{'disabled' :disableBtnsIndividualMenu('CCD', null)}"
+                                class="dropdown-toggle" *ngIf="woMenuBtnSecurityAccess('Change Completion Date')">
+                                <div class="dropdown-item">Change Completion Date</div>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" (click)="setDatesMul('CCDY')"
+                                        href="javascript:void(0)">Yesterday</a>
+                                    <a class="dropdown-item" (click)="setDatesMul('CCDT')"
+                                        href="javascript:void(0)">Today</a>
+                                    <a class="dropdown-item" (click)="openChooseDateMul('CCDPICK')"
+                                        href="javascript:void(0)">Choose Date</a>
+
+                                </div>
+                            </div>
+
                         </div>
                     </div>
 

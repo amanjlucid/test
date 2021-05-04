@@ -45,6 +45,7 @@ export class WorksordersAssetChecklistDocumentComponent implements OnInit {
   filePath;
 
   worksOrderAccess: any = [];
+  userType: any = []
 
   constructor(
     private chRef: ChangeDetectorRef,
@@ -82,11 +83,13 @@ export class WorksordersAssetChecklistDocumentComponent implements OnInit {
     this.subs.add(
       combineLatest([
         this.sharedService.woUserSecObs,
-        this.sharedService.worksOrdersAccess
+        this.sharedService.worksOrdersAccess,
+        this.sharedService.userTypeObs
       ]).subscribe(
         data => {
-         
-          if (this.currentUser.admin == "Y") {
+          console.log(data);
+          this.userType = data[2][0];
+          if (this.userType?.wourroletype == "Dual Role") {
             this.worksOrderAccess = [...data[0], ...data[1]];
           } else {
             this.worksOrderAccess = data[0]
@@ -260,7 +263,9 @@ export class WorksordersAssetChecklistDocumentComponent implements OnInit {
             if (data.isSuccess && data.data && data.data.length > 0) {
               let baseStr = data.data;
               const fileName = `${this.selectedDoc.description}`;
-              let fileExt = "pdf";
+
+              let fileExt = this.selectedDoc.filename.substring(this.selectedDoc.filename.lastIndexOf(".") + 1).toLowerCase();
+
               this.assetAttributeService.getMimeType(fileExt).subscribe(
                 mimedata => {
                   if (mimedata && mimedata.isSuccess && mimedata.data && mimedata.data.fileExtension) {
@@ -276,11 +281,6 @@ export class WorksordersAssetChecklistDocumentComponent implements OnInit {
                       var fileURL = URL.createObjectURL(file);
                       let newPdfWindow = window.open(fileURL);
 
-                      // let newPdfWindow = window.open("",this.selectedNotes.fileName);
-                      // let iframeStart = "<\iframe title='Notepad' width='100%' height='100%' src='data:" + mimedata.data.mimeType1 + ";base64, ";
-                      // let iframeEnd = "'><\/iframe>";
-                      // newPdfWindow.document.write(iframeStart + filedata + iframeEnd);
-                      // newPdfWindow.document.title = this.selectedNotes.fileName;
                     }
                     else {
                       linkSource = linkSource + baseStr;

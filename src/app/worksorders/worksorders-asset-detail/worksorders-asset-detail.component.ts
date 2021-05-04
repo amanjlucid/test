@@ -59,6 +59,8 @@ export class WorksordersAssetDetailComponent implements OnInit {
     worksOrderAccess: any = []
     worksOrderUsrAccess: any = [];
 
+    userType: any = []
+
     constructor(
         private worksOrdersService: WorksOrdersService,
         private alertService: AlertService,
@@ -73,11 +75,12 @@ export class WorksordersAssetDetailComponent implements OnInit {
         this.subs.add(
             combineLatest([
                 this.sharedService.woUserSecObs,
-                this.sharedService.worksOrdersAccess
+                this.sharedService.worksOrdersAccess,
+                this.sharedService.userTypeObs
             ]).subscribe(
                 data => {
-                    // console.log(data);
-                    if (this.currentUser.admin == "Y") {
+                    this.userType = data[2][0];
+                    if (this.userType?.wourroletype == "Dual Role") {
                         this.worksOrderAccess = [...data[0], ...data[1]];
                     } else {
                         this.worksOrderAccess = data[0]

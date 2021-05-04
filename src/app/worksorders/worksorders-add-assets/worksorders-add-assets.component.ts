@@ -56,6 +56,7 @@ export class WorksordersAddAssetsComponent implements OnInit {
   mySelection: any[] = [];
   zero = 0;
   worksOrderAccess: any = [];
+  userType: any = []
 
   constructor(
     private propSecGrpService: PropertySecurityGroupService,
@@ -75,15 +76,17 @@ export class WorksordersAddAssetsComponent implements OnInit {
     this.headerFilters.wopsequence = this.actualSelectedRow.wopsequence;
     this.headerFilters.wosequence = this.actualSelectedRow.wosequence;
 
- 
+
     //works order security access
     this.subs.add(
       combineLatest([
         this.sharedService.woUserSecObs,
-        this.sharedService.worksOrdersAccess
+        this.sharedService.worksOrdersAccess,
+        this.sharedService.userTypeObs
       ]).subscribe(
         data => {
-          if (this.currentUser.admin == "Y") {
+          this.userType = data[2][0];
+          if (this.userType?.wourroletype == "Dual Role") {
             this.worksOrderAccess = [...data[0], ...data[1]];
           } else {
             this.worksOrderAccess = data[0]
@@ -115,7 +118,7 @@ export class WorksordersAddAssetsComponent implements OnInit {
 
   getAssetType() {
     this.subs.add(
-      this.assetAttributeService.getAssetTypes().subscribe(
+      this.worksorderManagementService.getActiveAssetTypeList().subscribe(
         data => {
           if (data.isSuccess) {
             this.assetTypes = data.data;

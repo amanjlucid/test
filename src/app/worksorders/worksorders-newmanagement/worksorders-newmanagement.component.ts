@@ -111,6 +111,8 @@ export class WorksordersNewmanagementComponent implements OnInit {
       month: current.getMonth() + 1,
       day: current.getDate()
     };
+
+    
   }
 
   ngAfterViewInit() {

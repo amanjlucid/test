@@ -56,6 +56,7 @@ export class WorksordersManagementComponent implements OnInit {
   woFormWindow: boolean = false;
 
   worksOrderUsrAccess: any = [];
+  userType: any = []
 
   constructor(
     private worksorderManagementService: WorksorderManagementService,
@@ -66,6 +67,7 @@ export class WorksordersManagementComponent implements OnInit {
     private sharedService: SharedService,
     private router: Router,
     private worksOrderService: WorksOrdersService,
+
   ) { }
 
   ngOnInit(): void {
@@ -75,13 +77,15 @@ export class WorksordersManagementComponent implements OnInit {
     this.subs.add(
       combineLatest([
         this.sharedService.worksOrdersAccess,
-        this.sharedService.woUserSecObs
+        this.sharedService.woUserSecObs,
+        this.sharedService.userTypeObs
       ]).subscribe(
         data => {
-          // console.log(data);
+          console.log(data);
 
           this.worksOrderAccess = data[0];
           this.worksOrderUsrAccess = data[1];
+          this.userType = data[2][0];
 
           if (this.worksOrderAccess.length > 0) {
             if (!this.worksOrderAccess.includes("Programme Management")) {
@@ -342,7 +346,14 @@ export class WorksordersManagementComponent implements OnInit {
   }
 
   setSeletedRow(dataItem) {
+    // console.log(this.selectedProgramme);
+    if (this.selectedProgramme?.wprsequence != dataItem.wprsequence) {
+      this.helperService.getWorkOrderSecurity(dataItem.wosequence);
+      this.helperService.getUserTypeWithWOAndWp(dataItem.wosequence, dataItem.wprsequence);
+    }
+
     this.selectedProgramme = dataItem
+
   }
 
 
@@ -440,15 +451,28 @@ export class WorksordersManagementComponent implements OnInit {
 
 
   setSeletedWORow(dataItem) {
+   
     if (this.selctedWorksOrder?.wosequence != dataItem.wosequence) {
       this.helperService.getWorkOrderSecurity(dataItem.wosequence)
+      this.helperService.getUserTypeWithWOAndWp(dataItem.wosequence, dataItem.wprsequence);
     }
 
     this.selctedWorksOrder = dataItem;
   }
 
-  woMenuAccess(menuName) {
+  programmeMenuAccess(menuName){
     return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
+  }
+
+  woMenuAccess(menuName) {
+    // console.log(this.userType)
+    if (this.userType == undefined) return true;
+
+    if (this.userType?.wourroletype == "Dual Role") {
+      return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
+    }
+
+    return this.worksOrderUsrAccess.indexOf(menuName) != -1
   }
 
 }

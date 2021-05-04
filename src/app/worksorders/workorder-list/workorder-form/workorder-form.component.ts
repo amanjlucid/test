@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AlertService, WorksOrdersService, HelperService, LoaderService, WorksorderManagementService } from '../../../_services';
 import { SubSink } from 'subsink';
 import { forkJoin } from 'rxjs';
-import { isNumberCheck, ShouldGreaterThanYesterday, shouldNotZero, SimpleDateValidator, yearFormatValidator } from 'src/app/_helpers';
+import { firstDateIsLower, IsGreaterDateValidator, isNumberCheck, ShouldGreaterThanYesterday, shouldNotZero, SimpleDateValidator, yearFormatValidator } from 'src/app/_helpers';
 
 @Component({
     selector: 'app-workorder-form',
@@ -101,6 +101,7 @@ export class WorkOrderFormComponent implements OnInit {
             'required': 'Target Date is required.',
             'pastDate': 'Target Date cannot be in the past.',
             'invalidDate': 'Target Date in dd/mm/yyyy format.',
+            'isLower': 'Target Date must be on or after the Plan Start Date.',
         },
 
         'wobudget': {
@@ -120,12 +121,15 @@ export class WorkOrderFormComponent implements OnInit {
         },
         'woplanstartdate': {
             'required': 'Plan Start Date is required.',
+            'pastDate': 'Plan Start Date cannot be in the past.',
             'invalidDate': 'Plan Start Date in dd/mm/yyyy format.',
         },
         'woplanenddate': {
             'required': 'Plan End Date is required.',
-            'isLower': 'Planned End Date must be on or after the Planned Start Date.',
-            'invalidDate': 'Planned End Date in dd/mm/yyyy format.',
+            'isLower': 'Plan End Date must be on or after the Plan Start Date.',
+            'invalidDate': 'Plan End Date in dd/mm/yyyy format.',
+            'pastDate': 'Plan End Date cannot be in the past.',
+            'isGreaterDate': 'Plane End Date cannot be later than the Target Completion Date.'
         },
         'woinstructions': {
             'required': 'Instructions is required.',
@@ -187,6 +191,8 @@ export class WorkOrderFormComponent implements OnInit {
             month: current.getMonth() + 1,
             day: current.getDate()
         };
+
+        console.log(this.minDate);
     }
 
 
@@ -278,7 +284,40 @@ export class WorkOrderFormComponent implements OnInit {
                 this.windowTitle = "Edit Works Order";
             }
 
-            this.woForm2 = this.fb.group(this.stage2FormSetting);
+            // this.woForm2 = this.fb.group(this.stage2FormSetting);
+
+            this.woForm2 = this.fb.group(this.stage2FormSetting,
+                {
+                    validator: [
+                        firstDateIsLower('woplanenddate', 'woplanstartdate'),
+                        IsGreaterDateValidator('woplanenddate', 'wotargetcompletiondate')
+                    ],
+                }
+            );
+
+            const targetCompletionCtr = this.woForm2.get('wotargetcompletiondate')
+            const planStartCompletionCtr = this.woForm2.get('woplanstartdate')
+            const planEndCompletionCtr = this.woForm2.get('woplanenddate')
+
+            if (this.woFormType == "edit") {
+                targetCompletionCtr.setValidators[Validators.required, SimpleDateValidator()];
+                planStartCompletionCtr.setValidators[SimpleDateValidator()];
+                planEndCompletionCtr.setValidators[SimpleDateValidator()];
+
+                // this.stage2FormSetting.wotargetcompletiondate = [Validators.required, ShouldGreaterThanYesterday(), SimpleDateValidator()];
+                // this.stage2FormSetting.woplanstartdate = [ShouldGreaterThanYesterday(), SimpleDateValidator()];
+                // this.stage2FormSetting.woplanenddate = [ShouldGreaterThanYesterday(), SimpleDateValidator()];
+            }
+
+            if (this.woFormType == "new") {
+                targetCompletionCtr.setValidators[Validators.required, ShouldGreaterThanYesterday(), SimpleDateValidator()];
+                planStartCompletionCtr.setValidators[ShouldGreaterThanYesterday(), SimpleDateValidator()];
+                planEndCompletionCtr.setValidators[ShouldGreaterThanYesterday(), SimpleDateValidator()];
+
+                // this.stage2FormSetting.wotargetcompletiondate = [Validators.required, ShouldGreaterThanYesterday(), SimpleDateValidator()];
+                // this.stage2FormSetting.woplanstartdate = [ShouldGreaterThanYesterday(), SimpleDateValidator()];
+                // this.stage2FormSetting.woplanenddate = [ShouldGreaterThanYesterday(), SimpleDateValidator()];
+            }
 
         }
 
@@ -460,6 +499,7 @@ export class WorkOrderFormComponent implements OnInit {
             return;
         }
 
+
         let formRawVal = this.woForm.getRawValue();
         let paramsForValidWO = {
             programme: formRawVal.woprogram,
@@ -637,6 +677,8 @@ export class WorkOrderFormComponent implements OnInit {
             MPgrA: userAndDate.MPgrA, // updated user
             MPgsA: userAndDate.MPgsA, // created date
             MPgtA: userAndDate.MPgtA, // updated date
+
+            filed: false
         }
 
 

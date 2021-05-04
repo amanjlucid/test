@@ -76,6 +76,8 @@ export class WorksordersDetailsComponent implements OnInit {
 
   addWorkFrom: string;
 
+  columnLocked: boolean = true;
+  userType: any = []
 
   constructor(
     private sharedService: SharedService,
@@ -97,18 +99,22 @@ export class WorksordersDetailsComponent implements OnInit {
      * Common service for all routing page
      **/
     this.helperService.updateNotificationOnTop();
-    this.helperService.getWorkOrderSecurity(this.worksOrderSingleData.wosequence)
+
+    this.helperService.getWorkOrderSecurity(this.worksOrderSingleData.wosequence);
+    this.helperService.getUserTypeWithWOAndWp(this.worksOrderSingleData.wosequence, this.worksOrderSingleData.wprsequence)
 
     //subscribe for work order security access
     this.subs.add(
       combineLatest([
         this.sharedService.woUserSecObs,
-        this.sharedService.worksOrdersAccess
+        this.sharedService.worksOrdersAccess,
+        this.sharedService.userTypeObs
       ]).subscribe(
         data => {
           // console.log(data);
           this.worksOrderUsrAccess = data[0];
           this.worksOrderAccess = data[1];
+          this.userType = data[2][0];
         }
       )
     )
@@ -729,13 +735,18 @@ export class WorksordersDetailsComponent implements OnInit {
 
 
   woMenuBtnSecurityAccess(menuName) {
-    if (this.currentUser.admin == "Y") {
+    if (this.userType?.wourroletype == "Dual Role") {
       return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
     } else {
       return this.worksOrderUsrAccess.indexOf(menuName) != -1
     }
 
   }
+
+  lockUnlockColumn() {
+    this.columnLocked = !this.columnLocked;
+  }
+
 
 
 }

@@ -8,7 +8,7 @@
     </div>
 
     <div class="col-md-8 col-sm-8 text-right headerBtnArea" *ngIf="worksOrderSingleData">
-      <button type="submit" class="btn btn-sm themeButton mr-1 headin_section" (click)="slideToggle()"><i class="fa"
+      <button type="button" class="btn btn-sm themeButton mr-1 headin_section" (click)="slideToggle()"><i class="fa"
           [ngClass]="(filterToggle)? 'fa-minus':'fa-plus'"></i></button>
       <!-- <button (click)="openElmGrpWin('package-mapping')" class="btn btn-sm themeButton mr-1">Package Mapping</button> -->
 
@@ -33,8 +33,8 @@
             aria-expanded="false">Actions</button>
           <div class="dropdown-menu" x-placement="bottom-start"
             style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
-            <a *ngIf="woMenuBtnSecurityAccess('Release Asset')"
-              (click)="assetAction(null, 'RELEASE', 'multiple')" class="dropdown-item" href="javascript:void(0)">Release
+            <a *ngIf="woMenuBtnSecurityAccess('Release Asset')" (click)="assetAction(null, 'RELEASE', 'multiple')"
+              class="dropdown-item" href="javascript:void(0)">Release
             </a>
             <a *ngIf="woMenuBtnSecurityAccess('Issue Asset')" (click)="assetAction(null, 'ISSUE', 'multiple')"
               class="dropdown-item" href="javascript:void(0)">Issue</a>
@@ -51,6 +51,11 @@
 
       <button *ngIf="woMenuBtnSecurityAccess('Add Phase')" (click)="openNewphase('new')"
         class="btn btn-sm themeButton">New Phase</button>
+
+      <button id="showFilePanel" (click)="lockUnlockColumn()" class="btn btn-sm themeButton ml-1">
+        <i *ngIf="!columnLocked" class="fa fa-lock" aria-hidden="true"></i>
+        <i *ngIf="columnLocked" class="fa fa-unlock" aria-hidden="true"></i>
+      </button>
 
     </div>
   </div>
@@ -208,7 +213,7 @@
         [virtualColumns]="true" [loading]="loading" [resizable]="true" (cellClick)="cellClickHandler($event)"
         [rowClass]="rowCallback">
 
-        <kendo-treelist-column field="wprstatus" title="" [width]="33" [sortable]="false" [filterable]="false">
+        <kendo-treelist-column field="wprstatus" title="" [width]="33" [sortable]="false" [filterable]="false" [locked]="columnLocked">
           <ng-template kendoTreeListCellTemplate let-dataItem>
             <li *ngIf="dataItem.treelevel == 2" class="nav-item dropdown list-unstyled" style="margin-top: -7px;">
               <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
@@ -232,7 +237,7 @@
 
                 <div class="dropdown-toggle" *ngIf="woMenuBtnSecurityAccess('Add Assets')">
                   <div class="dropdown-item">Add Asset(s)</div>
-                  <div class="dropdown-menu">
+                  <div class="dropdown-menu addAssetMenu">
                     <a *ngIf="woMenuBtnSecurityAccess('Add Assets for Phase Work Costs')" class="dropdown-item"
                       (click)="openAddAssetWorkOrders(1, dataItem)" href="javascript:void(0)">
                       Asset(s)</a>
@@ -309,9 +314,9 @@
         </kendo-treelist-column>
 
 
-        <kendo-treelist-column [expandable]="true" [minResizableWidth]="200" field="woname" title="Name" [width]="450">
+        <kendo-treelist-column [expandable]="true" [minResizableWidth]="200" field="woname" title="Name" [width]="450" [locked]="columnLocked">
         </kendo-treelist-column>
-        <kendo-treelist-column field="wostatus" title="Status" [width]="120"></kendo-treelist-column>
+        <kendo-treelist-column field="wostatus" title="Status" [width]="120" [locked]="columnLocked"></kendo-treelist-column>
         <kendo-treelist-column field="woaworkaccess" title="Work Access" [width]="180"></kendo-treelist-column>
 
         <kendo-treelist-column field="targetdateobj" title="Target Date" [width]="130" filter="date"

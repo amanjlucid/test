@@ -66,6 +66,7 @@ export class WorkorderListComponent implements OnInit {
   @ViewChild(GridComponent) grid: GridComponent;
 
   worksOrderUsrAccess: any = [];
+  userType: any = []
 
 
   constructor(
@@ -91,13 +92,14 @@ export class WorkorderListComponent implements OnInit {
     this.subs.add(
       combineLatest([
         this.sharedService.worksOrdersAccess,
-        this.sharedService.woUserSecObs
+        this.sharedService.woUserSecObs,
+        this.sharedService.userTypeObs
       ]).subscribe(
         data => {
-          // console.log(data);
-
+        
           this.worksOrderAccess = data[0];
           this.worksOrderUsrAccess = data[1];
+          this.userType = data[2][0];
 
           if (this.worksOrderAccess.length > 0) {
             if (!this.worksOrderAccess.includes("Works Order Portal Access")) {
@@ -243,7 +245,8 @@ export class WorkorderListComponent implements OnInit {
   cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
     //get work order user access when row is changed
     if (this.selectedWorksOrder?.wosequence != dataItem.wosequence) {
-      this.helperService.getWorkOrderSecurity(dataItem.wosequence)
+      this.helperService.getWorkOrderSecurity(dataItem.wosequence);
+      this.helperService.getUserTypeWithWOAndWp(dataItem.wosequence, dataItem.wprsequence);
     }
 
     this.selectedWorksOrder = dataItem;
@@ -257,11 +260,12 @@ export class WorkorderListComponent implements OnInit {
           if (((new Date().getTime()) - this.touchtime) < 400) {
             //open work order detail window
             setTimeout(() => {
-              if (this.worksOrderAccess.indexOf('Works Orders Menu') != -1 || this.worksOrderUsrAccess.indexOf('Works Orders Menu') != -1) {
-                if (this.worksOrderAccess.indexOf('Works Order Detail') != -1 || this.worksOrderUsrAccess.indexOf('Works Order Detail') != -1) {
-                  this.redirectToWorksOrder(dataItem)
-                }
-              }
+              this.redirectToWorksOrder(dataItem)
+              // if (this.worksOrderAccess.indexOf('Works Orders Menu') != -1 || this.worksOrderUsrAccess.indexOf('Works Orders Menu') != -1) {
+              //   if (this.worksOrderAccess.indexOf('Works Order Detail') != -1 || this.worksOrderUsrAccess.indexOf('Works Order Detail') != -1) {
+              //     this.redirectToWorksOrder(dataItem)
+              //   }
+              // }
 
             }, 200);
 
@@ -287,9 +291,11 @@ export class WorkorderListComponent implements OnInit {
   }
 
   setSeletedRow(dataItem) {
-
+    // console.log(dataItem.wosequence)
+    // console.log(this.selectedWorksOrder?.wosequence);
     if (this.selectedWorksOrder?.wosequence != dataItem.wosequence) {
-      this.helperService.getWorkOrderSecurity(dataItem.wosequence)
+      this.helperService.getWorkOrderSecurity(dataItem.wosequence);
+      this.helperService.getUserTypeWithWOAndWp(dataItem.wosequence, dataItem.wprsequence);
     }
 
     this.selectedWorksOrder = dataItem;
@@ -322,6 +328,16 @@ export class WorkorderListComponent implements OnInit {
   }
 
   redirectToWorksOrder(item) {
+    if (this.userType?.wourroletype == "Dual Role") {
+      if (this.worksOrderAccess.indexOf('Works Order Detail') == -1 && this.worksOrderUsrAccess.indexOf('Works Order Detail') == -1) {
+        return;
+      }
+    } else {
+      if (this.worksOrderUsrAccess.indexOf('Works Order Detail') == -1) {
+        return
+      }
+    }
+
     this.selectedWorksOrder = item;
     this.sharedService.changeWorksOrderSingleData(item);
     localStorage.setItem('worksOrderSingleData', JSON.stringify(item)); // remove code on logout service
@@ -339,6 +355,16 @@ export class WorkorderListComponent implements OnInit {
 
 
   redirectToWorksOrderEdit(item) {
+    if (this.userType?.wourroletype == "Dual Role") {
+      if (this.worksOrderAccess.indexOf('Edit Works Order') == -1 && this.worksOrderUsrAccess.indexOf('Edit Works Order') == -1) {
+        return;
+      }
+    } else {
+      if (this.worksOrderUsrAccess.indexOf('Edit Works Order') == -1) {
+        return
+      }
+    }
+
     $('.bgblur').addClass('ovrlay');
     this.woFormType = 'edit';
     this.selectedWorkOrderAddEdit = item;
@@ -501,20 +527,40 @@ export class WorkorderListComponent implements OnInit {
 
 
   woMenuAccess(menuName) {
-    // const workorderToplevelAccess = this.worksOrderAccess.indexOf(menuName) != -1;
-    // const workorderLowerLevelAccess = this.worksOrderUsrAccess.indexOf(menuName) != -1;
 
-    // // console.log(workorderToplevelAccess)
-    // // console.log(workorderLowerLevelAccess)
+    if (this.userType == undefined) return true;
 
-    // if (workorderToplevelAccess && workorderLowerLevelAccess) return true
+    if (this.userType?.wourroletype == "Dual Role") {
+      if (menuName == "Works Orders Menu") {
+        if (this.worksOrderAccess.indexOf('Edit Works Order') != -1 || this.worksOrderUsrAccess.indexOf('Edit Works Order') != -1) {
+          return true
+        }
 
-    // if (!workorderToplevelAccess && workorderLowerLevelAccess) return true
+        if (this.worksOrderAccess.indexOf('Delete Works Order') != -1 || this.worksOrderUsrAccess.indexOf('Delete Works Order') != -1) {
+          return true
+        }
 
-    // return false;
+        if (this.worksOrderAccess.indexOf('Works Order Detail') != -1 || this.worksOrderUsrAccess.indexOf('Works Order Detail') != -1) {
+          return true
+        }
 
-    //if (workorderToplevelAccess && !workorderLowerLevelAccess) return false
-    return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
+        return false;
+      }
+      return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
+    }
+
+    return this.worksOrderUsrAccess.indexOf(menuName) != -1
+
+
+    // if (menuName == "Works Orders Menu") {
+    //   if(this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1){
+
+    //   }
+    //   return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf('Edit Works Order') != -1 || this.worksOrderUsrAccess.indexOf('Delete Works Order') != -1 || this.worksOrderUsrAccess.indexOf('Works Order Detail') != -1
+    // }
+
+
+
 
 
 

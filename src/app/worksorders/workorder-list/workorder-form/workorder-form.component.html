@@ -8,14 +8,14 @@
           <div class="form-group col-md-12">
             <label class="form-label">Asset Template</label>
             <select class="custom-select" formControlName="wottemplatetype"
-              [ngClass]="{ 'is-invalid': submitted && formErrors.wottemplatetype }">
+              [ngClass]="{ 'is-invalid': submitted1 && formErrors.wottemplatetype }">
               <option value=""></option>
               <option *ngFor="let assetTmp of assetTemplateListData" [ngValue]="assetTmp.wotsequence">
                 {{assetTmp.wotname}}</option>
 
             </select>
 
-            <div *ngIf="submitted && formErrors.wottemplatetype" class="invalid-feedback">
+            <div *ngIf="submitted1 && formErrors.wottemplatetype" class="invalid-feedback">
               <div *ngIf="formErrors.wottemplatetype">{{ formErrors.wottemplatetype }}</div>
             </div>
 

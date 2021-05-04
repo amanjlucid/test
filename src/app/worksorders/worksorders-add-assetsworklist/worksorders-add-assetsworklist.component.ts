@@ -66,7 +66,8 @@ export class WorksordersAddAssetsworklistComponent implements OnInit {
   selectedRow: any = [];
   planYear: any;
   worksOrderAccess: any = [];
-
+  userType: any = []
+  
   constructor(
     private propSecGrpService: PropertySecurityGroupService,
     private loaderService: LoaderService,
@@ -90,10 +91,12 @@ export class WorksordersAddAssetsworklistComponent implements OnInit {
     this.subs.add(
       combineLatest([
         this.sharedService.woUserSecObs,
-        this.sharedService.worksOrdersAccess
+        this.sharedService.worksOrdersAccess,
+        this.sharedService.userTypeObs
       ]).subscribe(
         data => {
-          if (this.currentUser.admin == "Y") {
+          this.userType = data[2][0];
+          if (this.userType?.wourroletype == "Dual Role") {
             this.worksOrderAccess = [...data[0], ...data[1]];
           } else {
             this.worksOrderAccess = data[0]
@@ -310,7 +313,7 @@ export class WorksordersAddAssetsworklistComponent implements OnInit {
   }
 
   mySelectionKey(context: RowArgs): string {
-    return context.dataItem.wlcomppackage;
+    return `${context.dataItem.wlataid}_${context.dataItem.wlcode}`;
   }
 
   addTickedToWorksOrder(type = 1, strCheckOrProcess = "C") {
@@ -406,20 +409,23 @@ export class WorksordersAddAssetsworklistComponent implements OnInit {
 
   selectionChange(item) {
     // console.log(item)
-    if (this.mySelection.includes(item.wlcomppackage)) {
-      this.mySelection = this.mySelection.filter(x => x != item.wlcomppackage);
-    } else {
-      this.mySelection.push(item.wlcomppackage);
-    }
 
-    const checkObj = this.selectedRow.find(x => x.wlcomppackage == item.wlcomppackage);
-
-    if (checkObj) {
-      this.selectedRow = this.selectedRow.filter(x => x.wlcomppackage != item.wlcomppackage);
+    if (this.mySelection.includes(`${item.wlataid}_${item.wlcode}`)) {
+      this.mySelection = this.mySelection.filter(x => x != `${item.wlataid}_${item.wlcode}`);
+      this.selectedRow = this.selectedRow.filter(x => this.mySelection.includes(`${x.wlataid}_${x.wlcode}`));
     } else {
+      this.mySelection.push(`${item.wlataid}_${item.wlcode}`);
       this.selectedRow.push(item);
     }
 
+    // const checkObj = this.selectedRow.find(x => x.wlataid == item.wlataid && x.wlcode == item.wlcode);
+    // if (checkObj) {
+    //   this.selectedRow = this.selectedRow.filter(x => x.wlataid != item.wlataid && x.wlcode == item.wlcode);
+    // } else {
+    //   this.selectedRow.push(item);
+    // }
+
+    // console.log(this.mySelection)
     // console.log(this.selectedRow)
   }
 

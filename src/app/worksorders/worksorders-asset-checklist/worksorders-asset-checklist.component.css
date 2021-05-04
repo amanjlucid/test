@@ -52,6 +52,14 @@
     left: -102% !important;
 }
 
+.actionDrp .dateDrp{
+    left: -139% !important;
+}
+
+.actionDrp .dateDrp .dropdown-menu{
+    left: -74% !important;
+}
+
 .inlineRow .col-md-1, .inlineRow .col-md-2{
     padding-top: 6px;
 }

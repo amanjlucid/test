@@ -683,6 +683,19 @@ export class HelperService {
     }
 
 
+    getUserTypeWithWOAndWp(wo, wp) {
+        let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        this.subs.add(
+            this.worksorderManagementService.getUserTypeDetails(wo, wp, currentUser.userId).subscribe(
+                userType => {
+                    // console.log(wosecurtiy)
+                    this.sharedService.changeUserType(userType.data)
+                }
+            )
+        )
+    }
+
+
     yesterday() {
         const today = new Date()
         const yesterday = new Date(today)

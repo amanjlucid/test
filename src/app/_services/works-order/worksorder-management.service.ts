@@ -253,4 +253,13 @@ export class WorksorderManagementService {
         return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/AttachmentExists?sFullFileName=${sFullFileName}`, this.httpOptions);
     }
 
+    
+    getActiveAssetTypeList(){
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetActiveAssetTypeList`, this.httpOptions);
+    }
+
+    getUserTypeDetails(WOSEQUENCE, WPRSEQUENCE, userid) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetUserDetail?WOSEQUENCE=${WOSEQUENCE}&WPRSEQUENCE=${WPRSEQUENCE}&userid=${userid}`, this.httpOptions);
+    }
+
 }

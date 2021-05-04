@@ -212,6 +212,13 @@ export class SharedService {
     this.woUserSecSrc.next(data)
   }
 
+  private userTypeSrc = new BehaviorSubject<any>([]);
+  userTypeObs = this.userTypeSrc.asObservable();
+
+  changeUserType(data) {
+    this.userTypeSrc.next(data)
+  }
+
 
   //######### Works order module shared service end #########//
 

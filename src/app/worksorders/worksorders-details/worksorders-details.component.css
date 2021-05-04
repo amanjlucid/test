@@ -16,6 +16,14 @@
   position: absolute !important;
 }
 
+.dropdown-menu .show{
+  position: fixed !important;
+}
+
+.addAssetMenu{
+  top: -45px !important;
+}
+
 .k-treelist tbody td {
   white-space: nowrap !important;
   line-height: 20px;

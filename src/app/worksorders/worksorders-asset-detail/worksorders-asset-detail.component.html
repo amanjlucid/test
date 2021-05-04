@@ -55,7 +55,7 @@
   <div class="row mt-2">
     <div class="col-md-12 mt-2">
       <kendo-grid [kendoGridGroupBinding]="assetDetailsGridData" [data]="gridView" [height]="570" [selectable]="{
-                    mode: 'multiple'
+                    mode: 'single'
                   }" filterable="menu" [resizable]="true" [sortable]="{
                     allowUnsort: true,
                     mode: 'multiple'
@@ -360,7 +360,7 @@
 
 
 
-  <kendo-dialog title="Select hte Refusal Reason" *ngIf="SetToRefusalWindow" (close)="closeSetToRefusalWindow()"
+  <kendo-dialog title="Select the Refusal Reason" *ngIf="SetToRefusalWindow" (close)="closeSetToRefusalWindow()"
     [minWidth]="250" [width]="650">
 
     <div class="row">
