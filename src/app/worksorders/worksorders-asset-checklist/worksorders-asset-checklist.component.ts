@@ -90,7 +90,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
         this.sharedService.userTypeObs
       ]).subscribe(
         data => {
-          console.log(data);
+          // console.log(data);
           // console.log(this.currentUser)
           this.worksOrderUsrAccess = data[0];
           this.worksOrderAccess = data[1];
