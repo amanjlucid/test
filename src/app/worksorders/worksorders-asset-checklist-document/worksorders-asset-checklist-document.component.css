@@ -6,6 +6,12 @@
     position: fixed !important;
 }
 
+.k-grid tbody td {
+    white-space: nowrap;
+    line-height: 20px;
+    padding: 8px 12px;
+}
+
 .headingDiv{
     /* width: 50%; */
     margin: auto;

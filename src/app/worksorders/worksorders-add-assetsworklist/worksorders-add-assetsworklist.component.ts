@@ -386,6 +386,7 @@ export class WorksordersAddAssetsworklistComponent implements OnInit {
             this.alertService.success(data.data['validationMessage']);
             this.refreshWorkOrderDetails.emit(true);
             this.searchGrid();
+            this.mySelection = [];
           } else if (data.data[0].pRETURNSTATUS != "S") {
             this.alertService.error(data.data['validYN'])
           }

@@ -12,18 +12,26 @@
     background-color: rgba(230, 0, 126, 0.1) !important
 }
 
-.worksorderGrid .gridRow:hover:not(.notNew), .worksorderGrid .gridRow:hover td{
-    background-color: transparent !important;;
+.worksorderGrid .gridRow:hover:not(.notNew), .worksorderGrid .gridRow:hover td {
+    background-color: transparent !important;
+    ;
 }
 
-.worksorderGrid .k-state-selected.gridRow:hover{
+.worksorderGrid .k-state-selected.gridRow:hover {
     background-color: #d4cdcd!important;
 }
-
 
 .dropdown.list-unstyled {
     position: absolute !important;
 }
+
+.k-grid-content tr td {
+    overflow: visible !important;
+}
+
+/* .drpMenu{
+    top: -122px !important;
+} */
 
 .worksOrderFilter .text-dark:hover {
     color: black !important;
@@ -124,6 +132,10 @@
     text-align: center;
     color: green;
     font-size: 17px;
+}
+
+.dropdown-menu.show{
+    margin-bottom: 10px;
 }
 
 /** media query **/

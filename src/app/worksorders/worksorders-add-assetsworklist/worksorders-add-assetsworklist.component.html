@@ -189,7 +189,7 @@
                         </span>
                     </ng-template>
                 </kendo-grid-column>
-                <kendo-grid-column field="wlcontcost" title="Work Cost" width="120" [filterable]="false">
+                <kendo-grid-column field="wlcontcost" title="Work Cost" width="120" [filterable]="false" [style]="{'text-align': 'right'}">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <span>
                             {{ dataItem.wlcontcost | currency:"GBP":"symbol" }}
@@ -321,7 +321,7 @@
 
 
     <app-worksorders-add-package-to-worklist *ngIf="packageToWorklistWindow"
-        [packageToWorklistWindow]="packageToWorklistWindow" [selectedWorkOrder]="actualSelectedRow"
+        [packageToWorklistWindow]="packageToWorklistWindow" [addWorkorderType]="addWorkorderType" [actualSelectedRow]="actualSelectedRow" [selectedWorkOrder]="actualSelectedRow"
         (closePackageWindowEvent)="closePackageWindowEvent($event)">
     </app-worksorders-add-package-to-worklist>
 

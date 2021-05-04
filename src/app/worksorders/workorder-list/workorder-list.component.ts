@@ -96,14 +96,14 @@ export class WorkorderListComponent implements OnInit {
         this.sharedService.userTypeObs
       ]).subscribe(
         data => {
-        
+
           this.worksOrderAccess = data[0];
           this.worksOrderUsrAccess = data[1];
           this.userType = data[2][0];
 
           if (this.worksOrderAccess.length > 0) {
-            if (!this.worksOrderAccess.includes("Works Order Portal Access")) {
-              this.alertService.error("No access")
+            if (!this.worksOrderAccess.includes("Works Orders Menu")) {
+              // this.alertService.error("No access")
               this.router.navigate(['login']);
             }
           }
@@ -290,9 +290,25 @@ export class WorkorderListComponent implements OnInit {
     this.searchInGrid$.next(this.filterObject);
   }
 
-  setSeletedRow(dataItem) {
-    // console.log(dataItem.wosequence)
-    // console.log(this.selectedWorksOrder?.wosequence);
+  setSeletedRow(dataItem, event) {
+
+    // console.log(event)
+    if (event != undefined) {
+      // setTimeout(() => {
+      //   let div: any = $(event).find('.selectedMenuBar' + dataItem.wosequence);
+      //   let att = div[0].getAttribute("x-placement");
+      //   console.log($(event).find('.selectedMenuBar' + dataItem.wosequence))
+      //   console.log(att);
+      //   if (att == "top-start") {
+      //     console.log($('.selectedMenuBar' + dataItem.wosequence))
+      //     $('.selectedMenuBar' + dataItem.wosequence).css("top", "3px")
+      //   }
+
+      // }, 100);
+   
+
+    }
+
     if (this.selectedWorksOrder?.wosequence != dataItem.wosequence) {
       this.helperService.getWorkOrderSecurity(dataItem.wosequence);
       this.helperService.getUserTypeWithWOAndWp(dataItem.wosequence, dataItem.wprsequence);
@@ -568,7 +584,9 @@ export class WorkorderListComponent implements OnInit {
 
 
 
-
+  getTop(e) {
+    console.log(e)
+  }
 
 
 }

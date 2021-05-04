@@ -350,7 +350,7 @@ export class WorksordersAssetDetailComponent implements OnInit {
 
                         this.itemData.refusal_code = '';
 
-                        this.SetToRefusalSave();
+                        this.SetToRefusalSave(false);
 
 
                     }
@@ -372,61 +372,62 @@ export class WorksordersAssetDetailComponent implements OnInit {
         }
 
         $('.woassetdetailoverlay').addClass('ovrlay');
-
-        this.selectedItem = item;
         this.SwapPackageWindow = true;
-        this.itemData.assid = item.assid;
-        this.itemData.wocheckname = item.wocheckname;
-        this.itemData.woname = this.selectedRow.woname;
+        // this.selectedItem = item;
+        // this.SwapPackageWindow = true;
+        // this.itemData.assid = item.assid;
+        // this.itemData.wocheckname = item.wocheckname;
+        // this.itemData.woname = this.selectedRow.woname;
 
 
-        //console.log('selectedItem'+ JSON.stringify(this.selectedItem));
-        //console.log('worksOrderData'+ JSON.stringify(this.worksOrderData));
+        // //console.log('selectedItem'+ JSON.stringify(this.selectedItem));
+        // //console.log('worksOrderData'+ JSON.stringify(this.worksOrderData));
 
 
-        let paramsTosend = {
-            'ASSID': this.selectedItem.assid,
-            'CTTSURCDE': this.worksOrderData.cttsurcde,
-            'PLANYEAR': this.selectedItem.wlplanyear,
-            'WOSEQUENCE': this.selectedItem.wosequence,
-            'WOCHECKSURCDE': this.selectedItem.wochecksurcde,
-            'ATAID': this.selectedItem.wlataid,
+        // let paramsTosend = {
+        //     'ASSID': this.selectedItem.assid,
+        //     'CTTSURCDE': this.worksOrderData.cttsurcde,
+        //     'PLANYEAR': this.selectedItem.wlplanyear,
+        //     'WOSEQUENCE': this.selectedItem.wosequence,
+        //     'WOCHECKSURCDE': this.selectedItem.wochecksurcde,
+        //     'ATAID': this.selectedItem.wlataid,
 
-        };
+        // };
 
 
 
-        this.worksOrdersService.GetWorksPackagesForAssets(paramsTosend).subscribe(
-            (data) => {
+        // this.worksOrdersService.GetWorksPackagesForAssets(paramsTosend).subscribe(
+        //     (data) => {
 
-                //  console.log('openSwapPackage item  api reponse'+ JSON.stringify(data));
+        //         //  console.log('openSwapPackage item  api reponse'+ JSON.stringify(data));
 
-                if (data.isSuccess) {
-                    this.SwapPackagesForAssetsDataGrid = data.data
+        //         if (data.isSuccess) {
+        //             this.SwapPackagesForAssetsDataGrid = data.data
 
-                } else {
+        //         } else {
 
-                    this.alertService.error(data.message);
+        //             this.alertService.error(data.message);
 
-                }
+        //         }
 
-                this.chRef.detectChanges();
+        //         this.chRef.detectChanges();
 
-            },
-            error => {
-                this.alertService.error(error);
-                this.chRef.detectChanges();
+        //     },
+        //     error => {
+        //         this.alertService.error(error);
+        //         this.chRef.detectChanges();
 
-            }
-        )
+        //     }
+        // )
 
 
     }
 
 
-    closeSwapPackageWindow() {
+    closeSwapPackageWindow(eve) {
         this.SwapPackageWindow = false;
         $('.woassetdetailoverlay').removeClass('ovrlay');
+        this.getData();
     }
 
     openSetToRefusalWindow(item) {

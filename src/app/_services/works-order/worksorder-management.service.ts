@@ -262,4 +262,9 @@ export class WorksorderManagementService {
         return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetUserDetail?WOSEQUENCE=${WOSEQUENCE}&WPRSEQUENCE=${WPRSEQUENCE}&userid=${userid}`, this.httpOptions);
     }
 
+    SwapPackage(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/SwapPackage  `, body, this.httpOptions)
+    }
+
 }

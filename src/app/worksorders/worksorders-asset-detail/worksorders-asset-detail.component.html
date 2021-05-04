@@ -171,7 +171,7 @@
         </kendo-grid-column>
 
 
-        <kendo-grid-column field="woadforecast" title="Forecast" width="120">
+        <kendo-grid-column field="woadforecast" title="Forecast" width="120" [style]="{'text-align': 'right'}">
           <ng-template kendoGridCellTemplate let-dataItem>
             <span>
               {{ dataItem.woadforecast | currency:"GBP":"symbol" }}
@@ -181,7 +181,7 @@
 
 
 
-        <kendo-grid-column field="woadcommitted" title="Committed" width="120">
+        <kendo-grid-column field="woadcommitted" title="Committed" width="120" [style]="{'text-align': 'right'}">
           <ng-template kendoGridCellTemplate let-dataItem>
             <span>
               {{ dataItem.woadcommitted | currency:"GBP":"symbol" }}
@@ -189,7 +189,7 @@
           </ng-template>
         </kendo-grid-column>
 
-        <kendo-grid-column field="woadactual" title="Actual" width="120">
+        <kendo-grid-column field="woadactual" title="Actual" width="120" [style]="{'text-align': 'right'}">
           <ng-template kendoGridCellTemplate let-dataItem>
             <span>
               {{ dataItem.woadactual | currency:"GBP":"symbol" }}
@@ -197,7 +197,7 @@
           </ng-template>
         </kendo-grid-column>
 
-        <kendo-grid-column field="woadapproved" title="Approved" width="120">
+        <kendo-grid-column field="woadapproved" title="Approved" width="120" [style]="{'text-align': 'right'}">
           <ng-template kendoGridCellTemplate let-dataItem>
             <span>
               {{ dataItem.woadapproved | currency:"GBP":"symbol" }}
@@ -206,7 +206,7 @@
         </kendo-grid-column>
 
 
-        <kendo-grid-column field="woadpending" title="Pending" width="120">
+        <kendo-grid-column field="woadpending" title="Pending" width="120" [style]="{'text-align': 'right'}">
           <ng-template kendoGridCellTemplate let-dataItem>
             <span>
               {{ dataItem.woadpending | currency:"GBP":"symbol" }}
@@ -278,7 +278,7 @@
 
 
 
-  <kendo-window title="Add Package to Work List" *ngIf="SwapPackageWindow" (close)="closeSwapPackageWindow()"
+  <!-- <kendo-window title="Add Package to Work List" *ngIf="SwapPackageWindow" (close)="closeSwapPackageWindow()"
     [minWidth]="650" [width]="1200">
 
     <div class="row headerRow12">
@@ -356,7 +356,7 @@
       </div>
     </div>
 
-  </kendo-window>
+  </kendo-window> -->
 
 
 
@@ -383,7 +383,7 @@
 
     <div class="buttonDiv pull-right mb-4">
 
-      <button type="button" (click)="SetToRefusalSave()" class="btn btn-sm themeButton mr-1">Apply</button>
+      <button type="button" (click)="SetToRefusalSave(true)" class="btn btn-sm themeButton mr-1">Apply</button>
       <button type="button" (click)="closeSetToRefusalWindow()" class="btn btn-sm themeButton mr-1">Cancel</button>
 
 
@@ -434,6 +434,11 @@
     (closePackageQuantiyEvent)="closeEditWorkPackageQtyCostWindow($event)"
     (refreshPackageList)="refreshAssetDetailGrid($event)" [mySelection]="mySelection" [packageData]="selectedItem"
     [mode]="'edit'"></app-worksorders-add-package-enter-quantity>
+
+  <app-swap-package *ngIf="SwapPackageWindow" [packageToWorklistWindow]="SwapPackageWindow"
+    (closePackageWindowEvent)="closeSwapPackageWindow($event)" [selectedItem]="selectedItem"></app-swap-package>
+
+
 
   <!-- <kendo-dialog title="Edit Package Quantity and/or Cost" *ngIf="EditWorkPackageQtyCostWindow"
     (close)="closeEditWorkPackageQtyCostWindow()" [minWidth]="400" [width]="1200">

@@ -21,6 +21,7 @@ export class WorksordersAddPackageEnterQuantityComponent implements OnInit {
   @Input() mode = "new";
   @Output() closePackageQuantiyEvent = new EventEmitter<boolean>();
   @Output() refreshPackageList = new EventEmitter<boolean>();
+  @Input() swapPkz: any = false;
 
   title = '';
   readonly = true;
@@ -57,7 +58,8 @@ export class WorksordersAddPackageEnterQuantityComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    // console.log(this.packageData)
+    console.log(this.swapPkz)
+
     if (this.mode == "new") {
       this.title = 'Add Package To Work List Details';
     } else {
@@ -333,7 +335,12 @@ export class WorksordersAddPackageEnterQuantityComponent implements OnInit {
       return;
     }
 
-    this.applyCost(this.submitType);
+    if (this.swapPkz == "true") {
+      this.swapPackaze(this.submitType)
+    } else {
+      this.applyCost(this.submitType);
+    }
+
 
   }
 
@@ -472,6 +479,139 @@ export class WorksordersAddPackageEnterQuantityComponent implements OnInit {
       )
 
     }
+  }
+
+
+  swapPackaze(type, confirmed = false) {
+    let formRawVal = this.pakzQuantityForm.getRawValue();
+
+    if (formRawVal.quantity == 0 && confirmed == false) {
+      this.openConfirmationDialog(type, "Are you sure you want to add this item with a zero quantity?");
+      return
+    }
+
+    if (type == 1) {
+      if (this.mode == "new") {
+        let params = {
+          ATAID: this.displayHighestPkz.ataid,
+
+          WLPLANYEAR: this.planYear,
+          WLCODE: this.selectedWorkOrder.wlcode,
+
+          ASSID: this.selectedWorkOrder.assid,
+
+          WPHCODE: this.displayHighestPkz.wphcode,
+          QTY: formRawVal.quantity,
+          UserId: this.currentUser.userId,
+          COST: this.helperService.convertMoneyToFlatFormat(formRawVal.costOverride),
+
+          CTTCode: this.worksOrder.cttsurcde,
+          COMMENT: formRawVal.comment,
+          WPRSEQUENCE: this.worksOrder.wprsequence,
+          WOSEQUENCE: this.worksOrder.wosequence,
+          WOPSEQUENCE: this.selectedWorkOrder.wopsequence
+        }
+
+        
+        if (this.applyCount > 0) {
+
+          this.subs.add(
+            this.worksorderManagementService.SwapPackage(params).subscribe(
+              data => {
+             
+
+                if (data.data != undefined) {
+                  const res = data.data[0];
+                
+                  if (res.pRETURNSTATUS == "E") {
+                    this.alertService.error(res.pRETURNMESSAGE);
+                    return;
+                  
+                  } else {
+                    this.alertService.success(res.pRETURNMESSAGE);
+                    this.closePackageQuantityWindow();
+                  }
+                } else {
+                  this.alertService.success("Something went wrong.");
+                  
+                }
+
+
+              }
+            )
+          )
+        }
+      }
+
+
+    }
+
+
+    // else {
+    //   let req: any = [];
+    //   for (let pkz of this.selectedPackages) {
+    //     let params = {
+    //       WLATAID: pkz.ataid,
+    //       WPHCODE: pkz.wphcode,
+    //       Quantity: formRawVal.quantity,
+    //       ASSID: this.selectedWorkOrder.assid,
+    //       UserId: this.currentUser.userId,
+    //       Cost: pkz.defaultcost,//this.helperService.convertMoneyToFlatFormat(formRawVal.costOverride),
+    //       CTTSURCDE: this.worksOrder.cttsurcde,
+    //       Comment: formRawVal.comment,
+    //       WPRSEQUENCE: this.worksOrder.wprsequence,
+    //       WOSEQUENCE: this.worksOrder.wosequence,
+    //       WOPSEQUENCE: this.selectedWorkOrder.wopsequence
+    //     }
+
+    //     req.push(this.worksorderManagementService.SwapPackage(params))
+    //     //req.push(params);
+    //   }
+
+    //   //console.log(req)
+    //   this.subs.add(
+    //     forkJoin(req).subscribe(
+    //       data => {
+    //         this.closePackageQuantityWindow();
+    //       }
+    //     )
+    //   )
+
+    // }
+  }
+
+
+  // confirmationOnSwap(type, res) {
+  //   let checkstatus = "C";
+  //   if (res.pRETURNSTATUS == 'S') {
+  //     checkstatus = "P"
+  //   }
+
+  //   $('.k-window').css({ 'z-index': 1000 });
+
+  //   this.confirmationDialogService.confirm('Please confirm..', `${res.pRETURNMESSAGE}`)
+  //     .then((confirmed) => {
+  //       if (confirmed) {
+  //         if (res.pRETURNSTATUS == 'E') {
+  //           return
+  //         }
+
+  //         // this.swapPackaze(type, checkstatus);
+
+  //       }
+
+  //     })
+  //     .catch(() => console.log('Attribute dismissed the dialog.'));
+  // }
+
+
+  checkApplyAllDisable() {
+    if (this.swapPkz == 'true') {
+      return true
+      // return this.mySelection.length <= 1;
+    }
+
+    return false;
   }
 
 }

@@ -91,7 +91,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
       ]).subscribe(
         data => {
           console.log(data);
-          console.log(this.currentUser)
+          // console.log(this.currentUser)
           this.worksOrderUsrAccess = data[0];
           this.worksOrderAccess = data[1];
           this.userType = data[2][0];
@@ -407,7 +407,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
     params.strCheckOrProcess = checkOrProcess;
     params.RecordCount = this.mySelection.length
     params.CheckName = this.mySelection.length == 1 ? filterChecklist[0].wocheckname : ''
-
+    
     if (type == 'SE') {
       apiName = 'SetWorksOrderCheckListPlannedDates'
       params.dtStartDate = this.dateFormate(this.selectedDate.start);
@@ -472,7 +472,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
             }
 
             if (checkOrProcess == "C" && (resp.pRETURNSTATUS == "E" || resp.pRETURNSTATUS == "S")) {
-              this.confirmationForMultipleStatus(type, resp)
+              this.confirmationForMultipleDate(type, resp)
             } else {
               this.alertService.success(resp.pRETURNMESSAGE)
               this.worksOrderDetailPageData();
@@ -713,7 +713,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
       }
     }
 
-    
+
     if (this.actionType == "multiple") {
       if (this.chooseDateType == "IPDM") {
         this.setStatusMul(this.chooseDateType, "C")
@@ -891,18 +891,47 @@ export class WorksordersAssetChecklistComponent implements OnInit {
   }
 
   removeOrDeletework(type, checkOrProcess = "C") {
-    if (!this.selectedChecklistsingleItem || this.selectedChecklistsingleItem.detailCount == 0) {
-      return;
+    // if (!this.selectedChecklistsingleItem || this.selectedChecklistsingleItem.detailCount == 0) {
+    //   return;
+    // }
+
+    if (this.mySelection.length == 0) {
+      return
     }
 
+
+
+    let filterChecklist = this.assetCheckListData.filter(x => this.mySelection.includes(x.wochecksurcde));
+
+    if (filterChecklist.length == 0) {
+      return
+    }
+
+    let checkWork = filterChecklist.some(x => x.detailCount != 0);
+
+    if (!checkWork) {
+      this.alertService.error("There is no work to " + type)
+      return
+    }
+
+
     let params: any = {}
+    let ASSID_STAGESURCDE_CHECKSURCDE = [];
+    for (const checklist of filterChecklist) {
+      ASSID_STAGESURCDE_CHECKSURCDE.push(checklist.assid)
+      ASSID_STAGESURCDE_CHECKSURCDE.push(checklist.wostagesurcde)
+      ASSID_STAGESURCDE_CHECKSURCDE.push(checklist.wochecksurcde)
+    }
+
+
 
     if (type == "remove") params.RemoveWorkList = false;
     else if (type == "delete") params.RemoveWorkList = true;
 
     params.WOSEQUENCE = this.selectedChecklistsingleItem.wosequence;
     params.WOPSEQUENCE = this.selectedChecklistsingleItem.wopsequence;
-    params.ASSID_STAGESURCDE_CHECKSURCDE = [this.selectedChecklistsingleItem.assid, this.selectedChecklistsingleItem.wostagesurcde, this.selectedChecklistsingleItem.wochecksurcde];
+    // params.ASSID_STAGESURCDE_CHECKSURCDE = [this.selectedChecklistsingleItem.assid, this.selectedChecklistsingleItem.wostagesurcde, this.selectedChecklistsingleItem.wochecksurcde];
+    params.ASSID_STAGESURCDE_CHECKSURCDE = ASSID_STAGESURCDE_CHECKSURCDE;
     params.strUserId = this.currentUser.userId;
     params.strCheckOrProcess = checkOrProcess;
 
@@ -1053,6 +1082,29 @@ export class WorksordersAssetChecklistComponent implements OnInit {
   }
 
 
+  confirmationForMultipleDate(type, res, apiType = 'status') {
+    let checkstatus = "C";
+    if (res.pRETURNSTATUS == 'S') {
+      checkstatus = "P"
+    }
+
+    $('.k-window').css({ 'z-index': 1000 });
+
+    this.confirmationDialogService.confirm('Please confirm..', `${res.pRETURNMESSAGE}`)
+      .then((confirmed) => {
+        if (confirmed) {
+          if (res.pRETURNSTATUS == 'E') {
+            return
+          }
+
+          this.setDatesMul(type, checkstatus);
+
+        }
+
+      })
+      .catch(() => console.log('Attribute dismissed the dialog.'));
+  }
+
 
   confirmationForMultipleStatus(type, res, apiType = 'status') {
     let checkstatus = "C";
@@ -1119,7 +1171,20 @@ export class WorksordersAssetChecklistComponent implements OnInit {
 
   disableMainActions(type) {
     if (type == "woremoveAll" || type == "wodeleteAll") {
-      return !this.selectedChecklistsingleItem || this.selectedChecklistsingleItem.detailCount == 0
+      if (!this.selectedChecklistsingleItem) {
+        return true;
+      }
+
+      let filterChecklist = this.assetCheckListData.filter(x => this.mySelection.includes(x.wochecksurcde));
+
+      let checkWork = filterChecklist.some(x => x.detailCount != 0);
+      if (checkWork == false) {
+        return true
+      } else {
+        return false
+      }
+
+      // return !this.selectedChecklistsingleItem || this.selectedChecklistsingleItem.detailCount == 0
     }
 
     if (type == "woAdd") {

@@ -87,7 +87,7 @@ export class WorksordersAssetChecklistDocumentComponent implements OnInit {
         this.sharedService.userTypeObs
       ]).subscribe(
         data => {
-          console.log(data);
+          // console.log(data);
           this.userType = data[2][0];
           if (this.userType?.wourroletype == "Dual Role") {
             this.worksOrderAccess = [...data[0], ...data[1]];

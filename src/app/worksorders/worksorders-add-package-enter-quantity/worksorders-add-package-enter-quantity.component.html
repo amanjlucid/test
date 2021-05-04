@@ -94,7 +94,7 @@
             </div>
             <div class="col-md-8 mt-3 text-right">
                 <button type="button" class="btn btn-sm themeButton ml-1" (click)="selectApply(1)">Apply</button>
-                <button type="button" *ngIf="mode == 'new'" class="btn btn-sm themeButton ml-1"
+                <button type="button" *ngIf="mode == 'new'" [disabled]="checkApplyAllDisable()" class="btn btn-sm themeButton ml-1"
                     (click)="selectApply(2)">Apply To
                     All</button>
                 <button type="button" (click)="closePackageQuantityWindow()"

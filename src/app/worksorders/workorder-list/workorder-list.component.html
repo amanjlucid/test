@@ -81,9 +81,10 @@
 
         <kendo-grid-column title=" " width="35" [filterable]="false" [locked]="columnLocked">
           <ng-template kendoGridCellTemplate let-dataItem>
-            <li class="nav-item dropdown list-unstyled" style="margin-top: -7px;" (click)="setSeletedRow(dataItem)">
+            <li #li class="nav-item dropdown list-unstyled" style="margin-top: -7px;"
+              (click)="setSeletedRow(dataItem, li)">
               <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars" (click)="setSeletedRow(dataItem)"></i>
-              <div class="dropdown-menu selectedMenuBar{{dataItem.wosequence}}">
+              <div #elm class="dropdown-menu selectedMenuBar{{dataItem.wosequence}} drpMenu">
 
                 <a *ngIf="woMenuAccess('Edit Works Order')" class="dropdown-item" href="javascript:void(0)"
                   (click)="redirectToWorksOrderEdit(dataItem)">Edit</a>
@@ -121,28 +122,28 @@
         <kendo-grid-column field="contractorName" title="Contractor" width="160">
         </kendo-grid-column>
 
-        <kendo-grid-column field="wobudget" title="Budget" width="120">
+        <kendo-grid-column field="wobudget" title="Budget" width="120" [style]="{'text-align': 'right'}">
           <ng-template kendoGridCellTemplate let-dataItem>
             <span>
               {{ dataItem.wobudget | currency:"GBP":"symbol" }}
             </span>
           </ng-template>
         </kendo-grid-column>
-        <kendo-grid-column field="woforecast" title="Forecast" width="120">
+        <kendo-grid-column field="woforecast" title="Forecast" width="120" [style]="{'text-align': 'right'}">
           <ng-template kendoGridCellTemplate let-dataItem>
             <span>
               {{ dataItem.woforecastplusfee | currency:"GBP":"symbol" }}
             </span>
           </ng-template>
         </kendo-grid-column>
-        <kendo-grid-column field="wocommitted" title="Committed" width="120">
+        <kendo-grid-column field="wocommitted" title="Committed" width="120" [style]="{'text-align': 'right'}">
           <ng-template kendoGridCellTemplate let-dataItem>
             <span>
               {{ dataItem.wocommittedplusfee | currency:"GBP":"symbol" }}
             </span>
           </ng-template>
         </kendo-grid-column>
-        <kendo-grid-column field="wocurrentcontractsum" title="Issued" width="120">
+        <kendo-grid-column field="wocurrentcontractsum" title="Issued" width="120" [style]="{'text-align': 'right'}">
           <ng-template kendoGridCellTemplate let-dataItem>
             <span>
               {{ dataItem.wocurrentcontractsum | currency:"GBP":"symbol" }}
@@ -150,14 +151,14 @@
           </ng-template>
         </kendo-grid-column>
 
-        <kendo-grid-column field="woacceptedvalue" title="Accepted" width="120">
+        <kendo-grid-column field="woacceptedvalue" title="Accepted" width="120" [style]="{'text-align': 'right'}">
           <ng-template kendoGridCellTemplate let-dataItem>
             <span>
               {{ dataItem.woacceptedvalue | currency:"GBP":"symbol" }}
             </span>
           </ng-template>
         </kendo-grid-column>
-        <kendo-grid-column field="woactual" title="Actual" width="120">
+        <kendo-grid-column field="woactual" title="Actual" width="120" [style]="{'text-align': 'right'}">
           <ng-template kendoGridCellTemplate let-dataItem>
             <span>
               {{ dataItem.woactualplusfee | currency:"GBP":"symbol" }}
@@ -165,7 +166,7 @@
           </ng-template>
         </kendo-grid-column>
 
-        <kendo-grid-column field="woapproved" title="Approved" width="120">
+        <kendo-grid-column field="woapproved" title="Approved" width="120" [style]="{'text-align': 'right'}">
           <ng-template kendoGridCellTemplate let-dataItem>
             <span>
               {{ dataItem.woapprovedplusfee | currency:"GBP":"symbol" }}
@@ -174,7 +175,7 @@
         </kendo-grid-column>
 
 
-        <kendo-grid-column field="wopending" title="Pending" width="120">
+        <kendo-grid-column field="wopending" title="Pending" width="120" [style]="{'text-align': 'right'}">
           <ng-template kendoGridCellTemplate let-dataItem>
             <span>
               {{ dataItem.wopendingplusfee | currency:"GBP":"symbol" }}
@@ -183,7 +184,7 @@
         </kendo-grid-column>
 
 
-        <kendo-grid-column field="wopayment" title="Payments" width="120">
+        <kendo-grid-column field="wopayment" title="Payments" width="120" [style]="{'text-align': 'right'}">
           <ng-template kendoGridCellTemplate let-dataItem>
             <span>
               {{ dataItem.wopayment | currency:"GBP":"symbol" }}

@@ -6,18 +6,18 @@ import { AlertService, HelperService, WorksorderManagementService } from 'src/ap
 import { forkJoin } from 'rxjs';
 
 @Component({
-  selector: 'app-worksorders-add-package-to-worklist',
-  templateUrl: './worksorders-add-package-to-worklist.component.html',
-  styleUrls: ['./worksorders-add-package-to-worklist.component.css'],
+  selector: 'app-swap-package',
+  templateUrl: './swap-package.component.html',
+  styleUrls: ['./swap-package.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 
-export class WorksordersAddPackageToWorklistComponent implements OnInit {
+export class SwapPackageComponent implements OnInit {
   @Input() packageToWorklistWindow: boolean = false;
-  @Input() selectedWorkOrder: any;
+  // @Input() selectedItem: any;
   @Output() closePackageWindowEvent = new EventEmitter<boolean>();
-  @Input() actualSelectedRow: any;
-  @Input() addWorkorderType: any;
+  @Input() selectedItem: any;
+  // @Input() addWorkorderType: any;
 
   subs = new SubSink();
   state: State = {
@@ -51,21 +51,23 @@ export class WorksordersAddPackageToWorklistComponent implements OnInit {
     this.setSelectableSettings();
   }
 
+
   ngOnInit(): void {
-    // console.log(this.selectedWorkOrder)
+    // console.log(this.selectedItem)
     // console.log(this.actualSelectedRow)
     // console.log(this.addWorkorderType)
 
     this.subs.add(
       forkJoin([
-        this.worksorderManagementService.getWorksOrderByWOsequence(this.selectedWorkOrder.wosequence),
-        this.worksorderManagementService.getPlanYear(this.selectedWorkOrder.wosequence)
+        this.worksorderManagementService.getWorksOrderByWOsequence(this.selectedItem.wosequence),
+        this.worksorderManagementService.getPlanYear(this.selectedItem.wosequence)
       ]).subscribe(
         data => {
+          //  console.log(data);
           this.worksOrder = data[0].data;
           this.planYear = data[1].data;
           this.getPackageList();
-          // console.log(data);
+         
         }
       ))
   }
@@ -76,11 +78,11 @@ export class WorksordersAddPackageToWorklistComponent implements OnInit {
 
   getPackageList() {
     const params = {
-      ASSID: this.selectedWorkOrder.assid,
+      ASSID: this.selectedItem.assid,
       CTTSURCDE: this.worksOrder.cttsurcde,
-      WOSEQUENCE: this.selectedWorkOrder.wosequence,
+      WOSEQUENCE: this.selectedItem.wosequence,
       PlANYEAR: this.planYear,
-      WOCHECKSURCDE: this.addWorkorderType == "single" ? this.actualSelectedRow?.wochecksurcde : 0,
+      WOCHECKSURCDE: this.selectedItem?.wochecksurcde,
       WLATAID: 0,
     }
 
@@ -177,8 +179,9 @@ export class WorksordersAddPackageToWorklistComponent implements OnInit {
 
   checkPackageExist(item) {
     if (item.attributeexists == 'Work Package Exists') return false;
-    if (item.exclusionreason != '') return false;
+    if (item.exclusionreason == 'Work Package already exists on Work List') return false;
     return true;
   }
+
 
 }

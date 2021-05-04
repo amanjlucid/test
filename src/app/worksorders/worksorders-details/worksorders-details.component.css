@@ -16,11 +16,11 @@
   position: absolute !important;
 }
 
-.dropdown-menu .show{
+.dropdown-menu .show {
   position: fixed !important;
 }
 
-.addAssetMenu{
+.addAssetMenu {
   top: -45px !important;
 }
 
@@ -375,4 +375,17 @@ label.radio-inline {
     min-width: 16% !important;
     max-width: 16% !important;
   }
+}
+
+
+.level3 {
+  background-color: white !important;
+}
+
+.k-grid .k-grid-content-locked .k-state-hover td, .k-grid .k-grid-content-locked tr:hover td {
+  background-color: transparent !important;
+}
+
+.k-grid .k-grid-content-locked .k-state-selected td, .k-grid .k-grid-content-locked .k-state-selected:hover td {
+  background-color: #d4cdcd!important;
 }

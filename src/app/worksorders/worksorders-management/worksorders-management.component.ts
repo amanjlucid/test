@@ -81,15 +81,15 @@ export class WorksordersManagementComponent implements OnInit {
         this.sharedService.userTypeObs
       ]).subscribe(
         data => {
-          console.log(data);
+          // console.log(data);
 
           this.worksOrderAccess = data[0];
           this.worksOrderUsrAccess = data[1];
           this.userType = data[2][0];
 
           if (this.worksOrderAccess.length > 0) {
-            if (!this.worksOrderAccess.includes("Programme Management")) {
-              this.alertService.error("No access")
+            if (!this.worksOrderAccess.includes("Management Menu")) {
+              // this.alertService.error("No access")
               this.router.navigate(['login']);
             }
           }

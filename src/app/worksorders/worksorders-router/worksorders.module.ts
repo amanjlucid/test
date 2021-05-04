@@ -43,6 +43,7 @@ import { WopmEditChecklistMasterComponent } from '../Config/wopm-templates/wopm-
 import { WopmEditChecklistDependenciesComponent } from '../Config/wopm-templates/wopm-edit-checklist-dependencies/wopm-edit-checklist-dependencies.component';
 
 import { MultiSelectModule } from '@progress/kendo-angular-dropdowns';
+import { SwapPackageComponent } from '../swap-package/swap-package.component';
 
 @NgModule({
   declarations: [
@@ -74,7 +75,8 @@ import { MultiSelectModule } from '@progress/kendo-angular-dropdowns';
     WopmEditMasterstageComponent,
     WopmChecklistMasterComponent,
     WopmEditChecklistMasterComponent,
-    WopmEditChecklistDependenciesComponent
+    WopmEditChecklistDependenciesComponent,
+    SwapPackageComponent
   ],
 
   imports: [

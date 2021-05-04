@@ -333,6 +333,7 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
     this.subs.add(
       this.assetService.apexGetAssetManagementSecurity(this.currentUser.userId, 'Programme Management').subscribe(
         data => {
+          // console.log(data);
           if (data && data.isSuccess) {
             this.WorksOrdersPermissions = data.data;
             this.sharedServie.changeWorksOrdersAccess(data.data);
