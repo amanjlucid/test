@@ -58,7 +58,7 @@ export class WorksordersAddPackageEnterQuantityComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    console.log(this.swapPkz)
+    // console.log(this.swapPkz)
 
     if (this.mode == "new") {
       this.title = 'Add Package To Work List Details';

@@ -1,7 +1,7 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef, ViewEncapsulation, ViewChild } from '@angular/core';
 import { SubSink } from 'subsink';
 import { State, SortDescriptor } from '@progress/kendo-data-query';
-import { SelectableSettings, PageChangeEvent, RowArgs } from '@progress/kendo-angular-grid';
+import { SelectableSettings, PageChangeEvent, RowArgs, GridComponent } from '@progress/kendo-angular-grid';
 import { AlertService, AssetAttributeService, ConfirmationDialogService, HelperService, LoaderService, PropertySecurityGroupService, SharedService, WorksorderManagementService } from 'src/app/_services';
 import { WorkordersAddAssetworklistModel } from '../../_models'
 import { tap, switchMap } from 'rxjs/operators';
@@ -66,8 +66,9 @@ export class WorksordersAddAssetsworklistComponent implements OnInit {
   selectedRow: any = [];
   planYear: any;
   worksOrderAccess: any = [];
-  userType: any = []
-  
+  userType: any = [];
+  @ViewChild(GridComponent) grid: GridComponent;
+
   constructor(
     private propSecGrpService: PropertySecurityGroupService,
     private loaderService: LoaderService,
@@ -80,6 +81,8 @@ export class WorksordersAddAssetsworklistComponent implements OnInit {
   ) {
     this.setSelectableSettings();
   }
+
+
 
   ngOnInit(): void {
     // console.log(this.addWorkorderType)
@@ -151,7 +154,13 @@ export class WorksordersAddAssetsworklistComponent implements OnInit {
                 // console.log(res);
                 this.totalCount = (res.total != undefined) ? res.total : 0;
                 this.loading = false;
+
+                setTimeout(() => {
+                  this.grid.autoFitColumns();
+                }, 500);
+
                 this.chRef.detectChanges();
+
               })
             );
           }

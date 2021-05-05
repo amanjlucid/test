@@ -111,8 +111,8 @@
     </div>
 
     <div class="row mt-2">
-        <div class="col-md-12 mt-2">
-            <kendo-grid [data]="query | async" [loading]="loading" [skip]="headerFilters.CurrentPage"
+        <div class="col-md-12 mt-2 addAssetGrid">
+            <kendo-grid #grid [data]="query | async" [loading]="loading" [skip]="headerFilters.CurrentPage"
                 [pageSize]="headerFilters.PageSize" filterable="menu" [resizable]="true" [sortable]="{
         allowUnsort: true, mode: 'multiple' }" [sort]="state.sort" (sortChange)="sortChange($event)"
                 (filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)" [filter]="state.filter"

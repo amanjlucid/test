@@ -204,9 +204,9 @@
 
   <div class="row">
 
-    <div class="col-md-12 mt-2">
+    <div class="col-md-12 mt-2" (mouseover)="getMouseroverEve($event)">
 
-      <kendo-treelist [kendoTreeListFlatBinding]="gridData" idField="id" parentIdField="parentId" scrollable="virtual"
+      <kendo-treelist #grid [kendoTreeListFlatBinding]="gridData" idField="id" parentIdField="parentId" scrollable="virtual"
         [rowHeight]="36" kendoTreeListExpandable [initiallyExpanded]="true" [sortable]="true" filterable="menu"
         [filter]="filter" (filterChange)="onFilterChange($event)" [pageSize]="gridPageSize" [navigable]="false"
         kendoTreeListSelectable [selectable]="settings" [(selectedItems)]="selected" itemKey="id" [height]="gridHeight"
@@ -215,9 +215,9 @@
 
         <kendo-treelist-column field="wprstatus" title="" [width]="33" [sortable]="false" [filterable]="false" [locked]="columnLocked">
           <ng-template kendoTreeListCellTemplate let-dataItem>
-            <li *ngIf="dataItem.treelevel == 2" class="nav-item dropdown list-unstyled" style="margin-top: -7px;">
-              <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
-              <div class="dropdown-menu">
+            <li *ngIf="dataItem.treelevel == 2" class="nav-item dropdown list-unstyled" style="margin-top: -7px;" (click)="setSeletedRow(dataItem)">
+              <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars" (click)="setSeletedRow(dataItem)"></i>
+              <div class="dropdown-menu selectedWodBar{{dataItem.id}}">
                 <a *ngIf="woMenuBtnSecurityAccess('Edit Phase')" class="dropdown-item" href="javascript:void(0)"
                   (click)="openNewphase('edit', dataItem)">Edit</a>
 
@@ -256,9 +256,9 @@
             </li>
 
             <li *ngIf="dataItem.treelevel == 3" class="nav-item dropdown list-unstyled level2Menu"
-              style="margin-top: -7px;">
-              <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
-              <div class="dropdown-menu">
+              style="margin-top: -7px;" (click)="setSeletedRow(dataItem)">
+              <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars" (click)="setSeletedRow(dataItem)"></i>
+              <div class="dropdown-menu selectedWodBar{{dataItem.id}} assetLvl">
 
 
                 <a *ngIf="woMenuBtnSecurityAccess('Asset Checklist')" class="dropdown-item" href="javascript:void(0)"
@@ -294,9 +294,9 @@
                   (click)="openActualAssetDetails(dataItem)">Asset Details</a>
 
 
-                <div class="dropdown-toggle">
+                <div class="dropdown-toggle actionToggle">
                   <div class="dropdown-item">Actions</div>
-                  <div class="dropdown-menu">
+                  <div class="dropdown-menu actionMenu">
 
                     <a *ngIf="woMenuBtnSecurityAccess('Release Asset')" class="dropdown-item"
                       (click)="assetAction(dataItem, 'RELEASE', 'single')" href="javascript:void(0)">Release</a>

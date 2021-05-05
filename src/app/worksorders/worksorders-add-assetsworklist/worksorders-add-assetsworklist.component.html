@@ -135,13 +135,13 @@
 
     <div class="row mt-2">
         <div class="col-md-12 mt-2">
-            <kendo-grid [data]="query | async" [loading]="loading" [skip]="headerFilters.CurrentPage"
+            <kendo-grid #grid [data]="query | async" [loading]="loading" [skip]="headerFilters.CurrentPage"
                 [pageSize]="headerFilters.PageSize" filterable="menu" [resizable]="true" [sortable]="{
         allowUnsort: true, mode: 'single' }" [sort]="state.sort" (sortChange)="sortChange($event)"
                 (filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)" [filter]="state.filter"
                 scrollable="virtual" [rowHeight]="36" [height]="550" (pageChange)="pageChange($event)"
                 [navigable]="false" [selectedKeys]="mySelection" [selectable]="selectableSettings"
-                [kendoGridSelectBy]="mySelectionKey" [groupable]="false" [virtualColumns]="true">
+                [kendoGridSelectBy]="mySelectionKey" [groupable]="false" [virtualColumns]="false">
 
                 <kendo-grid-checkbox-column width="40">
                     <ng-template kendoGridCellTemplate let-dataItem>
@@ -163,7 +163,7 @@
                     </ng-template>
                 </kendo-grid-column>
 
-                <kendo-grid-column field="asbestosIcon" title="" width="44" [filterable]="false" [sortable]="false">
+               <kendo-grid-column field="asbestosIcon" title="" width="44" [filterable]="false" [sortable]="false">
                     <ng-template kendoGridHeaderTemplate>
                         <img style="height:14px; width:16px;" src="assets/img/icons/asbestos-green.png" />
                     </ng-template>
@@ -180,8 +180,8 @@
                 </kendo-grid-column>
 
                 <kendo-grid-column field="wlassid" title="Asset Id" width="110" [filterable]="false">
-
                 </kendo-grid-column>
+
                 <kendo-grid-column field="astconcataddress" title="Address" width="330" [filterable]="false">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <span title="{{dataItem.astconcataddress}}">
@@ -189,6 +189,7 @@
                         </span>
                     </ng-template>
                 </kendo-grid-column>
+                
                 <kendo-grid-column field="wlcontcost" title="Work Cost" width="120" [filterable]="false" [style]="{'text-align': 'right'}">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <span>
@@ -196,6 +197,7 @@
                         </span>
                     </ng-template>
                 </kendo-grid-column>
+                
                 <kendo-grid-column field="wlcomppackage" title="Work Package" width="140">
                     <ng-template kendoGridFilterMenuTemplate let-filter="filter" let-column="column"
                         let-filterService="filterService">
@@ -203,6 +205,7 @@
                         </simple-text-filter>
                     </ng-template>
                 </kendo-grid-column>
+                
                 <kendo-grid-column field="wphname" title="Work Package Name" width="160">
                     <ng-template kendoGridFilterMenuTemplate let-filter="filter" let-column="column"
                         let-filterService="filterService">
@@ -210,6 +213,7 @@
                         </simple-text-filter>
                     </ng-template>
                 </kendo-grid-column>
+                
                 <kendo-grid-column field="elecode" title="Element" width="120">
                     <ng-template kendoGridFilterMenuTemplate let-filter="filter" let-column="column"
                         let-filterService="filterService">
@@ -217,18 +221,23 @@
                         </simple-text-filter>
                     </ng-template>
                 </kendo-grid-column>
-                <kendo-grid-column field="atadescription" title="Description" width="120" [filterable]="false">
+
+                <kendo-grid-column field="atadescription" title="Description" [filterable]="false" width="120" >
                 </kendo-grid-column>
-                <kendo-grid-column field="wlplanyear" title="Plan Year" width="110" [filterable]="false">
+                
+               <kendo-grid-column field="wlplanyear" title="Plan Year"  [filterable]="false" width="110">
                 </kendo-grid-column>
-                <kendo-grid-column field="conname" title="Contractor" width="120" [filterable]="false">
+                
+                <kendo-grid-column field="conname" title="Contractor"  [filterable]="false" width="120">
                 </kendo-grid-column>
-                <kendo-grid-column field="concode" title="Contract Code" width="120" [filterable]="false">
+                
+                <kendo-grid-column field="concode" title="Contract Code"  [filterable]="false" width="120">
                 </kendo-grid-column>
-                <kendo-grid-column field="works_Order_Checklist_Name" title="Checklist Name" width="120"
+                
+                     <kendo-grid-column field="works_Order_Checklist_Name" title="Checklist Name" width="120"
                     [filterable]="false">
                 </kendo-grid-column>
-                <kendo-grid-column field="wlttagcode" title="WL Tag" width="110" [filterable]="false">
+                <kendo-grid-column field="wlttagcode" title="WL Tag" [filterable]="false" width="110">
                 </kendo-grid-column>
 
             </kendo-grid>

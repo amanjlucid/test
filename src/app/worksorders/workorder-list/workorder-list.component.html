@@ -66,7 +66,7 @@
 
   <div class="row mt-2">
 
-    <div class="col-md-12 worksorderGrid">
+    <div class="col-md-12 worksorderGrid" (mouseover)="getMouseroverEve($event)">
 
       <kendo-grid #grid="kendoGrid" [data]="gridView" [pageSize]="pageSize" [rowHeight]="36"
         (pageChange)="pageChange($event)" scrollable="virtual" [height]="680" [loading]="loading" filterable="menu"
@@ -83,7 +83,7 @@
           <ng-template kendoGridCellTemplate let-dataItem>
             <li #li class="nav-item dropdown list-unstyled" style="margin-top: -7px;"
               (click)="setSeletedRow(dataItem, li)">
-              <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars" (click)="setSeletedRow(dataItem)"></i>
+              <i #ii data-toggle="dropdown" aria-expanded="false" class="fas fa-bars" (click)="setSeletedRow(dataItem, ii)"></i>
               <div #elm class="dropdown-menu selectedMenuBar{{dataItem.wosequence}} drpMenu">
 
                 <a *ngIf="woMenuAccess('Edit Works Order')" class="dropdown-item" href="javascript:void(0)"

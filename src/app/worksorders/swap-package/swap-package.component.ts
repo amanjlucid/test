@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { SelectableSettings, PageChangeEvent, RowArgs, GridComponent } from '@progress/kendo-angular-grid';
-import { AlertService, HelperService, WorksorderManagementService } from 'src/app/_services';
+import { AlertService, HelperService, WorksorderManagementService, WorksOrdersService } from 'src/app/_services';
 import { forkJoin } from 'rxjs';
 
 @Component({
@@ -40,13 +40,14 @@ export class SwapPackageComponent implements OnInit {
   selectableSettings: SelectableSettings;
   mySelection: any[] = [];
   packageQuantityWindow = false;
+  assetDetail:any;
 
   @ViewChild(GridComponent) grid: GridComponent;
 
   constructor(
     private chRef: ChangeDetectorRef,
     private worksorderManagementService: WorksorderManagementService,
-    private alertService: AlertService
+    private alertService: AlertService,
   ) {
     this.setSelectableSettings();
   }
@@ -60,14 +61,16 @@ export class SwapPackageComponent implements OnInit {
     this.subs.add(
       forkJoin([
         this.worksorderManagementService.getWorksOrderByWOsequence(this.selectedItem.wosequence),
-        this.worksorderManagementService.getPlanYear(this.selectedItem.wosequence)
+        this.worksorderManagementService.getPlanYear(this.selectedItem.wosequence),
+        this.worksorderManagementService.getAssetAddressForSpecificAsset(this.selectedItem.wosequence, this.selectedItem.wopsequence, this.selectedItem.assid, this.selectedItem.wochecksurcde)
       ]).subscribe(
         data => {
-          //  console.log(data);
+          // console.log(data);
           this.worksOrder = data[0].data;
           this.planYear = data[1].data;
+          this.assetDetail = data[2].data;
           this.getPackageList();
-         
+
         }
       ))
   }
@@ -83,7 +86,7 @@ export class SwapPackageComponent implements OnInit {
       WOSEQUENCE: this.selectedItem.wosequence,
       PlANYEAR: this.planYear,
       WOCHECKSURCDE: this.selectedItem?.wochecksurcde,
-      WLATAID: 0,
+      WLATAID: this.selectedItem?.wlataid,
     }
 
     this.subs.add(

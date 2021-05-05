@@ -77,7 +77,9 @@ export class WorksordersDetailsComponent implements OnInit {
   addWorkFrom: string;
 
   columnLocked: boolean = true;
-  userType: any = []
+  userType: any = [];
+
+  mousePositioin: any = 0;
 
   constructor(
     private sharedService: SharedService,
@@ -747,6 +749,25 @@ export class WorksordersDetailsComponent implements OnInit {
     this.columnLocked = !this.columnLocked;
   }
 
+
+  getMouseroverEve(eve) {
+    this.mousePositioin = { x: eve.pageX, y: eve.pageY };
+  }
+
+  setSeletedRow(dataItem, event) {
+    // console.log(event)
+    if (dataItem != undefined) {
+      setTimeout(() => {
+        let att = $('.selectedWodBar' + dataItem.id)[0].getAttribute("x-placement");
+        if (att == "bottom-start" && this.mousePositioin.y > 600) {
+          $('.selectedWodBar' + dataItem.id).css({ "top": "-116px", "left": "22px" })
+        }
+
+      }, 50);
+
+    }
+
+  }
 
 
 }

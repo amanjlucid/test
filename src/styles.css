@@ -523,6 +523,9 @@ app-dropdown+.k-action-buttons .k-button.k-primary {
 
 .actionGrid .k-grid td, .resAssessment .k-grid td {
     white-space: nowrap !important;
+    line-height: 20px !important;
+    padding: 8px 12px !important;
+
 }
 
 .k-grid-norecords td {

@@ -377,7 +377,6 @@ label.radio-inline {
   }
 }
 
-
 .level3 {
   background-color: white !important;
 }
@@ -388,4 +387,8 @@ label.radio-inline {
 
 .k-grid .k-grid-content-locked .k-state-selected td, .k-grid .k-grid-content-locked .k-state-selected:hover td {
   background-color: #d4cdcd!important;
+}
+
+.actionToggle .actionMenu {
+  top: -82px !important;
 }

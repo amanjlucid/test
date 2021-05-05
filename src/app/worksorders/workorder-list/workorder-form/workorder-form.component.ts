@@ -192,7 +192,7 @@ export class WorkOrderFormComponent implements OnInit {
             day: current.getDate()
         };
 
-        console.log(this.minDate);
+        // console.log(this.minDate);
     }
 
 

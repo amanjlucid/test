@@ -267,4 +267,8 @@ export class WorksorderManagementService {
         return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/SwapPackage  `, body, this.httpOptions)
     }
 
+    getAssetAddressForSpecificAsset(WOSEQUENCE, WOPSEQUENCE, assid, WOCHECKSURCDE) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetAssetAddressForSpecificAsset?WOSEQUENCE=${WOSEQUENCE}&WOPSEQUENCE=${WOPSEQUENCE}&assid=${assid}&WOCHECKSURCDE=${WOCHECKSURCDE}`, this.httpOptions);
+    }
+
 }

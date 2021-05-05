@@ -66,7 +66,9 @@ export class WorkorderListComponent implements OnInit {
   @ViewChild(GridComponent) grid: GridComponent;
 
   worksOrderUsrAccess: any = [];
-  userType: any = []
+  userType: any = [];
+
+  mousePositioin: any = 0;
 
 
   constructor(
@@ -290,32 +292,38 @@ export class WorkorderListComponent implements OnInit {
     this.searchInGrid$.next(this.filterObject);
   }
 
+
+  getMouseroverEve(eve) {
+    this.mousePositioin = { x: eve.pageX, y: eve.pageY };
+  }
+
   setSeletedRow(dataItem, event) {
-
     // console.log(event)
-    if (event != undefined) {
-      // setTimeout(() => {
-      //   let div: any = $(event).find('.selectedMenuBar' + dataItem.wosequence);
-      //   let att = div[0].getAttribute("x-placement");
-      //   console.log($(event).find('.selectedMenuBar' + dataItem.wosequence))
-      //   console.log(att);
-      //   if (att == "top-start") {
-      //     console.log($('.selectedMenuBar' + dataItem.wosequence))
-      //     $('.selectedMenuBar' + dataItem.wosequence).css("top", "3px")
-      //   }
 
-      // }, 100);
-   
+    if (dataItem != undefined) {
+      setTimeout(() => {
+        // let div: any = $(event).find('.selectedMenuBar' + dataItem.wosequence);
+        let att = $('.selectedMenuBar' + dataItem.wosequence)[0].getAttribute("x-placement");
+        // console.log($(event).find('.selectedMenuBar' + dataItem.wosequence))
+        // console.log(att);
+        // console.log(this.mousePositioin.y);
+        if (att == "bottom-start" && this.mousePositioin.y > 600) {
+          // console.log($('.selectedMenuBar' + dataItem.wosequence))
+          $('.selectedMenuBar' + dataItem.wosequence).css("top", "-116px")
+        }
 
+      }, 50);
+
+
+      if (this.selectedWorksOrder?.wosequence != dataItem.wosequence) {
+        this.helperService.getWorkOrderSecurity(dataItem.wosequence);
+        this.helperService.getUserTypeWithWOAndWp(dataItem.wosequence, dataItem.wprsequence);
+      }
+
+      this.selectedWorksOrder = dataItem;
+      this.mySelection = [this.selectedWorksOrder.wosequence];
     }
 
-    if (this.selectedWorksOrder?.wosequence != dataItem.wosequence) {
-      this.helperService.getWorkOrderSecurity(dataItem.wosequence);
-      this.helperService.getUserTypeWithWOAndWp(dataItem.wosequence, dataItem.wprsequence);
-    }
-
-    this.selectedWorksOrder = dataItem;
-    this.mySelection = [this.selectedWorksOrder.wosequence];
 
 
   }

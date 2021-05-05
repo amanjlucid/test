@@ -29,7 +29,7 @@
 
     <div class="row mt-4">
         <div class="col-md-12">
-            <kendo-grid [data]="gridView" [height]="410" [selectable]="{
+            <kendo-grid #grid [data]="gridView" [height]="410" [selectable]="{
         mode: 'single'
       }" filterable="menu" [resizable]="true" [sortable]="{
         allowUnsort: allowUnsort,
@@ -67,14 +67,19 @@
     <div class="row mt-2">
         <div class="col-md-9 text-left leftSideBtn">
             <input (change)="onFileChange($event)" type="file" #addDoc id="addDoc" style="display: none;">
-            <button *ngIf="worksOrderAccess.indexOf('View Checklist Document') != -1" class="btn btn-sm themeButton" (click)="viewDocument()" [disabled]="!selectedDoc">View
+            <button *ngIf="worksOrderAccess.indexOf('View Checklist Document') != -1" class="btn btn-sm themeButton"
+                (click)="viewDocument()" [disabled]="!selectedDoc">View
                 Document</button>
-            <button *ngIf="worksOrderAccess.indexOf('Edit Checklist Document Description') != -1" class="btn btn-sm themeButton" (click)="openEditDoc()" [disabled]="!selectedDoc">Edit
+            <button *ngIf="worksOrderAccess.indexOf('Edit Checklist Document Description') != -1"
+                class="btn btn-sm themeButton" (click)="openEditDoc()" [disabled]="!selectedDoc">Edit
                 Description</button>
-            <button *ngIf="worksOrderAccess.indexOf('Add Checklist Document') != -1" class="btn btn-sm themeButton" (click)="addDocument()">Add Document</button>
+            <button *ngIf="worksOrderAccess.indexOf('Add Checklist Document') != -1" class="btn btn-sm themeButton"
+                (click)="addDocument()">Add Document</button>
 
-            <button *ngIf="worksOrderAccess.indexOf('Upload Checklist Document') != -1" class="btn btn-sm themeButton uploadDocBtn" (click)="uploadImage()">Upload Document</button>
-            <button *ngIf="worksOrderAccess.indexOf('Remove Checklist Document') != -1" class="btn btn-sm themeButton" (click)="openConfirmationDialog()" [disabled]="!selectedDoc">Remove
+            <button *ngIf="worksOrderAccess.indexOf('Upload Checklist Document') != -1"
+                class="btn btn-sm themeButton uploadDocBtn" (click)="uploadImage()">Upload Document</button>
+            <button *ngIf="worksOrderAccess.indexOf('Remove Checklist Document') != -1" class="btn btn-sm themeButton"
+                (click)="openConfirmationDialog()" [disabled]="!selectedDoc">Remove
                 Document</button>
         </div>
 

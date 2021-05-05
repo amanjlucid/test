@@ -3,6 +3,7 @@ import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { AlertService, AssetAttributeService, ConfirmationDialogService, HelperService, LoaderService, SharedService, WorksorderManagementService } from 'src/app/_services';
 import { combineLatest } from 'rxjs';
+import { GridComponent } from '@progress/kendo-angular-grid';
 
 
 
@@ -45,7 +46,8 @@ export class WorksordersAssetChecklistDocumentComponent implements OnInit {
   filePath;
 
   worksOrderAccess: any = [];
-  userType: any = []
+  userType: any = [];
+  @ViewChild(GridComponent) grid: GridComponent;
 
   constructor(
     private chRef: ChangeDetectorRef,
@@ -145,6 +147,11 @@ export class WorksordersAssetChecklistDocumentComponent implements OnInit {
           if (data.isSuccess) {
             this.gridData = data.data;
             this.gridView = process(this.gridData, this.state);
+
+            setTimeout(() => {
+              this.grid.autoFitColumns();
+            }, 100);
+
           } else this.alertService.error(data.message)
           this.chRef.detectChanges();
         }

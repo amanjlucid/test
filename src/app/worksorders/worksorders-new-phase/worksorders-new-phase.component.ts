@@ -3,7 +3,7 @@ import { SubSink } from 'subsink';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AlertService, HelperService, WorksorderManagementService } from 'src/app/_services';
 import { WorkordersAddPhaseModel } from '../../_models';
-import { ShouldGreaterThanYesterday, isNumberCheck, OrderDateValidator, IsGreaterDateValidator, shouldNotZero } from 'src/app/_helpers';
+import { ShouldGreaterThanYesterday, isNumberCheck, OrderDateValidator, IsGreaterDateValidator, shouldNotZero, SimpleDateValidator, firstDateIsLower } from 'src/app/_helpers';
 
 @Component({
   selector: 'app-worksorders-new-phase',
@@ -112,9 +112,16 @@ export class WorksordersNewPhaseComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    let targetdateValidation = [Validators.required, ShouldGreaterThanYesterday(), SimpleDateValidator()];
+    let plandateValidation = [ShouldGreaterThanYesterday(), SimpleDateValidator()];
+
     if (this.phaseFormMode != "new") {
-      this.title = "Edit Phase"
+      this.title = "Edit Phase";
+      targetdateValidation = [Validators.required, SimpleDateValidator()];
+      plandateValidation = [SimpleDateValidator()];
     }
+
+
 
     this.nePhaseForm = this.fb.group({
       WOPNAME: ['', [Validators.required]],
@@ -134,15 +141,15 @@ export class WorksordersNewPhaseComponent implements OnInit {
       WOPACTUALFEE: [''],
 
       WOPCONTRACTORISSUEDATE: [''],
-      WOPTARGETCOMPLETIONDATE: ['', [Validators.required, ShouldGreaterThanYesterday()]],
+      WOPTARGETCOMPLETIONDATE: ['', targetdateValidation],
       WOPCONTRACTORACCEPTANCEDATE: [''],
-      WOPPLANSTARTDATE: ['', [ShouldGreaterThanYesterday()]],
-      WOPPLANENDDATE: ['', [ShouldGreaterThanYesterday()]],
+      WOPPLANSTARTDATE: ['', plandateValidation],
+      WOPPLANENDDATE: ['', plandateValidation],
       WOPACTUALSTARTDATE: [''],
       WOPACTUALENDDATE: [''],
 
     }, {
-      validator: [OrderDateValidator('WOPPLANENDDATE', 'WOPPLANSTARTDATE'), IsGreaterDateValidator('WOPPLANENDDATE', 'WOPTARGETCOMPLETIONDATE')],
+      validator: [firstDateIsLower('WOPPLANENDDATE', 'WOPPLANSTARTDATE'), IsGreaterDateValidator('WOPPLANENDDATE', 'WOPTARGETCOMPLETIONDATE')],
     });
 
     this.populateForm()
@@ -327,8 +334,8 @@ export class WorksordersNewPhaseComponent implements OnInit {
       phaseModel.WOPCURRENTCONTRACTSUM = this.phaseData.wopcurrentcontractsum;
       phaseModel.WOPACCEPTEDVALUE = this.phaseData.wopacceptedvalue;
 
-      phaseModel.MPgpA = this.phaseData.mPgoA
-      phaseModel.MPgqA = this.phaseData.mPgpA
+      phaseModel.MPgpA = this.phaseData.mPgpA
+      phaseModel.MPgqA = this.phaseData.mPgqA
 
       phaseModel.MPgsA = this.phaseData.mPgsA // -1
 
