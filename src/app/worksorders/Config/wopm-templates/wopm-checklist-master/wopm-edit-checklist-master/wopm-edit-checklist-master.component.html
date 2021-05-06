@@ -1,7 +1,7 @@
-<kendo-window  [title]="windowTitle"  [width]="750"  (close)="closeChecklistFormWindow()">
+<kendo-window  [title]="windowTitle"  [width]="750"  (close)="closeChecklistFormWindow()" style="z-index: 12003">
     <div class="flex-grow-1 userFrm">
   
-      <form [formGroup]="checklistForm" (ngSubmit)="onSubmit()" autocomplete="off">
+      <form [formGroup]="checklistForm"  autocomplete="off">
 
           <div class="col-md-12 m-1">
               <div class="row">
@@ -29,7 +29,7 @@
                 <label class="col-form-label">Name</label>
               </div>
               <div class="col-md-9">
-                <input type="text" class="form-control" placeholder="Name" formControlName="name"
+                <input type="text" class="form-control" placeholder="Name" formControlName="name"  maxlength="100"
                   [ngClass]="{ 'is-invalid': submitted && formErrors.name }">
                 <div *ngIf="submitted && formErrors.name" class="invalid-feedback">
                   <div *ngIf="formErrors.name">{{ formErrors.name }}</div>
@@ -44,7 +44,7 @@
                     <label class="col-form-label">Description</label>
                   </div>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" placeholder="Description" formControlName="description"
+                    <input type="text" class="form-control" placeholder="Description" formControlName="description"  maxlength="1024"
                       [ngClass]="{ 'is-invalid': submitted && formErrors.description }">
                     <div *ngIf="submitted && formErrors.description" class="invalid-feedback">
                       <div *ngIf="formErrors.description">{{ formErrors.description }}</div>
@@ -80,7 +80,7 @@
               </div>
 
               <div class="col-md-9">
-                <input type="text" class="form-control" placeholder="Comment" formControlName="comment"
+                <input type="text" class="form-control" placeholder="Comment" formControlName="comment"  maxlength="1024"
                   [ngClass]="{ 'is-invalid': submitted && formErrors.comment }">
                 <div *ngIf="submitted && formErrors.comment" class="invalid-feedback">
                   <div *ngIf="formErrors.comment">{{ formErrors.comment }}</div>
@@ -148,7 +148,7 @@
                 </div>
   
                 <div class="col-md-9">
-                  <input type="text" class="form-control" placeholder="User Ref 2" formControlName="useref2"
+                  <input type="text" class="form-control" placeholder="User Ref 2" formControlName="useref2"  maxlength="20"
                     [ngClass]="{ 'is-invalid': submitted && formErrors.useref2 }">
                   <div *ngIf="submitted && formErrors.useref2" class="invalid-feedback">
                     <div *ngIf="formErrors.useref2">{{ formErrors.useref2 }}</div>
@@ -163,7 +163,7 @@
                   <label class="col-form-label">User Ref 3</label>
                 </div>
                 <div class="col-md-9">
-                  <input type="text" class="form-control" placeholder="User Ref 3" formControlName="useref3"
+                  <input type="text" class="form-control" placeholder="User Ref 3" formControlName="useref3"  maxlength="20"
                     [ngClass]="{ 'is-invalid': submitted && formErrors.useref3 }">
                   <div *ngIf="submitted && formErrors.useref3" class="invalid-feedback">
                     <div *ngIf="formErrors.useref3">{{ formErrors.useref3 }}</div>
@@ -178,7 +178,7 @@
                   <label class="col-form-label">User Ref 4</label>
                 </div>
                 <div class="col-md-9">
-                  <input type="text" class="form-control" placeholder="User Ref 4" formControlName="useref4"
+                  <input type="text" class="form-control" placeholder="User Ref 4" formControlName="useref4"  maxlength="20"
                     [ngClass]="{ 'is-invalid': submitted && formErrors.useref4 }">
                   <div *ngIf="submitted && formErrors.useref4" class="invalid-feedback">
                     <div *ngIf="formErrors.useref4">{{ formErrors.useref4 }}</div>
@@ -193,7 +193,7 @@
                   <label class="col-form-label">User Ref 5</label>
                 </div>
                 <div class="col-md-9">
-                  <input type="text" class="form-control" placeholder="User Ref 5" formControlName="useref5"
+                  <input type="text" class="form-control" placeholder="User Ref 5" formControlName="useref5"  maxlength="20"
                     [ngClass]="{ 'is-invalid': submitted && formErrors.useref5 }">
                   <div *ngIf="submitted && formErrors.useref5" class="invalid-feedback">
                     <div *ngIf="formErrors.useref5">{{ formErrors.useref5 }}</div>
@@ -252,9 +252,14 @@
                 <div class="col-md-3 text-right">
                   <label class="col-form-label">Mail Merge Document</label>
                 </div>
-                <div class="col-md-9">
-                  <input type="text" class="form-control" placeholder="Mail Merge Document" formControlName="mailmergedoc"
-                    [ngClass]="{ 'is-invalid': submitted && formErrors.mailmergedoc }">
+                <div class="col-md-9 row m-0">
+                    <input type="text" class="form-control col textWithButton" placeholder="Mail Merge Document" formControlName="mailmergedoc"  maxlength="1024"
+                      [ngClass]="{ 'is-invalid': submitted && formErrors.mailmergedoc }" readonly>
+                    <button type="button" class="btn btn-sm themeButton col smallButton" (click)="file.click()">...
+                      <!-- <input type="file" [(ngModel)]="fileValue" accept=".csv" style="display:none" (change)="handleFile($event)"> -->
+                      <input type="file" #file [(ngModel)]="fileValue" [ngModelOptions]="{standalone: true}" [multiple]="false" (change)="onFileChange($event)" 
+                      style="display:none"  accept=".docx,.dotx,.doc,.dot"/>
+                    </button>
                   <div *ngIf="submitted && formErrors.mailmergedoc" class="invalid-feedback">
                     <div *ngIf="formErrors.mailmergedoc">{{ formErrors.mailmergedoc }}</div>
                   </div>
@@ -282,7 +287,7 @@
 
           <div class="buttonDiv pull-right mt-2">
             <button type="button" (click)="closeChecklistFormWindow()" class="btn btn-sm themeButton m-1">Cancel</button>
-            <button type="submit"  class="btn btn-sm themeButton m-1">Ok</button>
+            <button type="button" (click)="onSubmit()"  class="btn btn-sm themeButton m-1">Ok</button>
           </div>
 
       </form>

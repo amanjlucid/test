@@ -1,10 +1,14 @@
-<kendo-window  title="Manage Checklist" [top]="10" [minWidth]="550" [height]="550"
-[width]="1150" (close)="closeChecklistWin()" style="padding: 0;" >
+<div class="modalBGround" style="z-index: 10003"></div>
 
 <app-wopm-edit-checklist-master (closechecklistFormWin)="closechecklistFormWin($event)" *ngIf="editchecklistWindow"
 [editchecklistWindow]="editchecklistWindow"  [selectedChecklist]="wopmChecklistMasterModel" [editType]="editType"
 [wopmTemplateModel]="wopmTemplateModel" [allChecklists]="checklistDetails">
 </app-wopm-edit-checklist-master>
+
+
+<kendo-window  title="Template Detail" [top]="10" [minWidth]="550" [height]="550"
+[width]="1150" (close)="closeChecklistWin()" style="padding: 0;" >
+
 
 
 <div style="height:100%;" class="col-md-12 m-0 p-0">
@@ -115,7 +119,7 @@
         class="btn btn-sm themeButton mr-1" (click)="moveStage('down')"><i class='fas fa-long-arrow-alt-down'> </i> Move
         Down</button>
 
-     <button type="button" class="btn btn-sm themeButton mr-1 pull-right" (click)="exportToExcel(grid,'xlsx')">Export Data</button>
+     <button type="button" class="btn btn-sm themeButton mr-1 pull-right" (click)="exportToExcel(grid,'xlsx')">Export</button>
 
     </div>
 </div>
@@ -137,7 +141,6 @@
 
 </kendo-window>
 
-<div class="disabledBackground2"></div>
 
 
 <kendo-dialog title="Confirm checklist item deletion" *ngIf="dialogDeleteChecklist" (close)="closeDeleteWin(false)" [minWidth]="250"

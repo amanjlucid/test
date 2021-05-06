@@ -13,7 +13,6 @@ declare var Highcharts: any;
   templateUrl: './worksorders-dashboard.component.html',
   styleUrls: ['./worksorders-dashboard.component.css']
 })
-
 export class WorksordersDashboardComponent implements OnInit {
 
   subs = new SubSink();
@@ -68,6 +67,7 @@ export class WorksordersDashboardComponent implements OnInit {
   portalName: string = "Works Orders";
   defaultFilterVal: string = "";
   retrievedEPCs = false
+  showDataPanel = false;
   selectedBarChartXasis: any;
   worksOrdersAccess: any = [];
 
@@ -109,7 +109,6 @@ export class WorksordersDashboardComponent implements OnInit {
     )
   }
 
-
   ngOnInit() {
     //this.getChart()
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
@@ -120,7 +119,7 @@ export class WorksordersDashboardComponent implements OnInit {
     setTimeout(() => {
       this.subs.add(
         // get chart data and render in template
-        this.hnsPortalService.getUserChartData(this.currentUser.userId, "this.portalName").subscribe(
+        this.hnsPortalService.getUserChartData(this.currentUser.userId, this.portalName).subscribe(
           data => {
             if (data.data.chartData != null) {
               this.dashboardName = data.data.dashboard;
@@ -519,7 +518,10 @@ export class WorksordersDashboardComponent implements OnInit {
   }
 
   lineChartConfigration(titleText: any, yAxisTitle: any, selector: any, data: any, xaxis: any) {
-    let cat = this.diff(xaxis.start, xaxis.end)
+    let cat = this.diff(xaxis.start, xaxis.end);
+    let maxCol = cat?.length < 10 ? cat.length : 10;
+    let scroll = maxCol < 10 ? false : true;
+    
     return {
       title: {
         text: titleText
@@ -527,9 +529,10 @@ export class WorksordersDashboardComponent implements OnInit {
       xAxis: {
         categories: cat,
         scrollbar: {
-          enabled: true
+          enabled: scroll
         },
-
+        min: 0,
+        max: maxCol
       },
       yAxis: {
         title: {
@@ -1254,6 +1257,7 @@ export class WorksordersDashboardComponent implements OnInit {
 
 
   groupBarChartConfiguration(titleText: any, seriesName: string, allowPointSelect: boolean = true, selector: any, data: any) {
+
     return {
       chart: {
         type: 'column',
@@ -1266,18 +1270,20 @@ export class WorksordersDashboardComponent implements OnInit {
         categories: data.categories,
         crosshair: true,
         min: 0,
-        max: data.categories.length - 1,
+        // max: data.categories.length - 1,
+        max: 10,
         labels: {
           rotation: 90,
         },
-
+        scrollbar: {
+          enabled: true,
+        },
       },
       yAxis: {
         min: 0,
         title: {
           text: ''
-        },
-
+        }
       },
       tooltip: {
         headerFormat: '<span style="font-size:12px">{point.key}</span><table>',
@@ -1369,13 +1375,16 @@ export class WorksordersDashboardComponent implements OnInit {
   }
 
 
-  openGrid() {
-    this.retrievedEPCs = true
+  openGrid(chartName: string) {
+    this.retrievedEPCs = false;
+
+
+    this.showDataPanel = true;
     $('.eventdashboardovrlay').addClass('ovrlay');
   }
 
-  closeretrievedEPCs($event) {
-    this.retrievedEPCs = $event
+  closeDataPanel($event) {
+    this.showDataPanel = $event
     $('.eventdashboardovrlay').removeClass('ovrlay');
   }
 
@@ -1393,54 +1402,37 @@ export class WorksordersDashboardComponent implements OnInit {
           "seriesId": chartEvent.options.seriesId,
           "color": chartEvent.color
         }
-
         this.renderDrillDownChart(chartEvent, params)
-
-      }
-    }
-  }
-
-
-  openGridOnClickOfBarChart(chartEvent, parentChartObj) {
-
-    if (parentChartObj.drilldown == 1 && parentChartObj.ddChartID > 0) {
-      this.selectedBarChartXasis = {
-        "ddChartId": parentChartObj.ddChartId != undefined ? parentChartObj.ddChartId : parentChartObj.ddChartID,
-        "parantChartId": parentChartObj.parantChartId != undefined ? parentChartObj.parantChartId : parentChartObj.chartID,
-        "xAxisValue": chartEvent.category,
-        "seriesId": parentChartObj.seriesId,
-        "chartName": parentChartObj.chartName
-      }
-      this.openGrid();
-    }
-
-  }
-
-
-  gotoAsset(item: any) {
-    /*     let startDateObj = this.managementFilterParam.startDate;
-        let endDateObj = this.managementFilterParam.endDate;
-        let startDate = `${startDateObj.year}-${this.helperService.zeorBeforeSingleDigit(startDateObj.month)}-${this.helperService.zeorBeforeSingleDigit(startDateObj.day)}`;
-        let endDate = `${endDateObj.year}-${this.helperService.zeorBeforeSingleDigit(endDateObj.month)}-${this.helperService.zeorBeforeSingleDigit(endDateObj.day)}`;
-        let startDateTime = new Date(startDate);
-        let endDateTime = new Date(endDate);
-    
-        const assetFilterObj = {
-          setCode: item.setCode,
-          conCode: item.conCode,
-          secoCode: item.secoCode,
-          sesCode: item.sesCode,
-          contractor: item.contractor,
-          contract: item.contract,
-          serviceType: item.serviceType,
-          serviceStage: item.serviceStage,
-          startDate: startDateTime,
-          endDate: endDateTime
+      } else {
+        if (parentChartObj.dataSP != "") {
+          this.openGridOnClickOfBarChart(chartEvent, parentChartObj, true);
         }
-    
-        localStorage.setItem('assetFilterObj', JSON.stringify(assetFilterObj)); */
-    // let url = `${window.location.origin}/rowanwood/asset-list?servicing=true`;
-    //window.open(url, "_blank");
+      }
+    }
+  }
+
+
+  openGridOnClickOfBarChart(chartEvent, parentChartObj, fromPieChart: boolean = false) {
+    if (parentChartObj.dataSP != "") {
+      if (fromPieChart) {
+        this.selectedBarChartXasis = {
+          "ddChartId": parentChartObj.ddChartId != undefined ? parentChartObj.ddChartId : parentChartObj.ddChartID,
+          "parantChartId": parentChartObj.parantChartId != undefined ? parentChartObj.parantChartId : parentChartObj.chartID,
+          "xAxisValue": chartEvent.options.name,
+          "seriesId": chartEvent.options.seriesId,
+          "chartName": parentChartObj.chartName
+        }
+      } else {
+        this.selectedBarChartXasis = {
+          "ddChartId": parentChartObj.ddChartId != undefined ? parentChartObj.ddChartId : parentChartObj.ddChartID,
+          "parantChartId": parentChartObj.parantChartId != undefined ? parentChartObj.parantChartId : parentChartObj.chartID,
+          "xAxisValue": chartEvent.category,
+          "seriesId": parentChartObj.seriesId,
+          "chartName": parentChartObj.chartName
+        }
+      }
+      this.openGrid(parentChartObj.chartName);
+    }
   }
 
 

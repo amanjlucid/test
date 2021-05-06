@@ -44,6 +44,7 @@ export class WopmTemplatesComponent implements OnInit {
     loading = true
     wopmSecurityList: any = [];
     public status: string = "A";
+    public valid: string = "";
     public reportingAction: string;
     public templateFormWindow: boolean = false;
     public templateFormType: any;
@@ -53,6 +54,7 @@ export class WopmTemplatesComponent implements OnInit {
     public openReports: boolean = false;
     public dependenciesWindow: boolean = false;
     public fileValue : any;
+    
   
     constructor(
       private wopmConfigurationService: WopmConfigurationService,
@@ -79,14 +81,16 @@ export class WopmTemplatesComponent implements OnInit {
       this.subs.add(
         this.sharedService.worksOrdersAccess.subscribe(
           data => {
-            this.wopmSecurityList = data;
-            if (this.wopmSecurityList.length > 0) {
-              if (!(this.checkWorksOrdersAccess("Config Templates Tab") && this.checkWorksOrdersAccess("Works Order Portal Access"))) {
-                this.router.navigate(['/dashboard']);
+            if (data) {
+              this.wopmSecurityList = data;
+              if (this.wopmSecurityList.length > 0) {
+                if (!(this.checkWorksOrdersAccess("Config Templates Tab") && this.checkWorksOrdersAccess("Works Order Portal Access"))) {
+                  this.router.navigate(['/dashboard']);
+                }
               }
-            } else {
-              this.router.navigate(['/dashboard']);
+
             }
+
           }
         )
       )
@@ -109,7 +113,7 @@ export class WopmTemplatesComponent implements OnInit {
   
     getTemplateDetails() {
       this.subs.add(
-        this.wopmConfigurationService.getWorksOrdersTemplateList(this.status).subscribe(
+        this.wopmConfigurationService.getWorksOrdersTemplateList(this.status, this.valid).subscribe(
           data => {
             if (data.isSuccess) {
               let templates = data.data;
@@ -118,7 +122,6 @@ export class WopmTemplatesComponent implements OnInit {
                 item.mPgsA = new Date(item.mPgsA);
                 item.wotstatus = (item.wotstatus == "A") ? "Active" :"Inactive";
               });
-
 
               this.templateDetails = templates;
               this.templateDetailsTemp = Object.assign([], templates);
@@ -206,6 +209,7 @@ export class WopmTemplatesComponent implements OnInit {
 
   clearFilter() {
     this.status = "A";
+    this.valid = "";
     this.getTemplateDetails();
   } 
 
@@ -213,6 +217,10 @@ export class WopmTemplatesComponent implements OnInit {
    if (column == "status")
    {
       this.status = value;
+   }
+   if (column == "valid")
+   {
+      this.valid = value;
    }
    this.getTemplateDetails();
   }
@@ -315,11 +323,12 @@ export class WopmTemplatesComponent implements OnInit {
 
   deleteTemplate(dataitem) { 
     this.selectedTemplate = dataitem;
-    this.dialogDeleteTemplate = true;
+    this.confirmationDialogService.confirm('Please confirm..', 'Do you really want to delete this record ?')
+    .then((confirmed) => (confirmed) ? this.deleteTemplateConfirmed(confirmed) : console.log(confirmed))
+    .catch(() => console.log('User dismissed the dialog.'));
   }
 
-  closeDeleteWin(deleteConfirmed:boolean) {
-    this.dialogDeleteTemplate = false;
+  deleteTemplateConfirmed(deleteConfirmed:boolean) {
     if (deleteConfirmed) {
       const template = {
         Sequence: this.selectedTemplate.wotsequence,

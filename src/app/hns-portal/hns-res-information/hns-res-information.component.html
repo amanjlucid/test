@@ -207,12 +207,19 @@
             <simple-text-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
             </simple-text-filter>
           </ng-template> -->
-          <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
-            let-filterService="filterService">
-            <multicheck-filter [isPrimitive]="true" [field]="column.field" [filterService]="filterService"
-              [currentFilter]="filter" [data]="apiColFilter?.definationList">
-            </multicheck-filter>
-          </ng-template>
+          <ng-template kendoGridFilterMenuTemplate
+          let-column="column"
+          let-filter="filter"
+          let-filterService="filterService"
+          >
+          <multicheck-filter
+            [isPrimitive]="true"
+            [field]="column.field"
+            [filterService]="filterService"
+            [currentFilter]="filter"
+            [data]="apiColFilter?.definationList">
+          </multicheck-filter>
+        </ng-template>
 
 
           <ng-template kendoGridCellTemplate let-dataItem>
@@ -252,12 +259,19 @@
             <simple-text-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
             </simple-text-filter>
           </ng-template> -->
-          <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
-            let-filterService="filterService">
-            <multicheck-filter [isPrimitive]="true" [field]="column.field" [filterService]="filterService"
-              [currentFilter]="filter" [data]="apiColFilter?.chacodeList">
-            </multicheck-filter>
-          </ng-template>
+          <ng-template kendoGridFilterMenuTemplate
+          let-column="column"
+          let-filter="filter"
+          let-filterService="filterService"
+          >
+          <multicheck-filter
+            [isPrimitive]="true"
+            [field]="column.field"
+            [filterService]="filterService"
+            [currentFilter]="filter"
+            [data]="apiColFilter?.chacodeList">
+          </multicheck-filter>
+        </ng-template>
 
 
           <ng-template kendoGridCellTemplate let-dataItem>
@@ -289,7 +303,7 @@
           </ng-template>
           <ng-template kendoGridCellTemplate let-dataItem>
             <span [ngClass]="{'blue': dataItem.hasiactionstatus === 'I', 'black':dataItem.hasiactionstatus === null  }">
-              {{ dataItem.hasaansweritem }}
+              {{ dataItem.hasaansweritem  }}
             </span>
           </ng-template>
         </kendo-grid-column>
@@ -303,7 +317,7 @@
           </ng-template>
           <ng-template kendoGridCellTemplate let-dataItem>
             <span [ngClass]="{'blue': dataItem.hasiactionstatus === 'I', 'black':dataItem.hasiactionstatus === null  }">
-              {{ dataItem.hasalocation }}
+              {{ dataItem.hasalocation  }}
             </span>
           </ng-template>
         </kendo-grid-column>
@@ -315,7 +329,7 @@
           </ng-template>
           <ng-template kendoGridCellTemplate let-dataItem>
             <span [ngClass]="{'blue': dataItem.hasiactionstatus === 'I', 'black':dataItem.hasiactionstatus === null  }">
-              {{ dataItem.hasafloor }}
+              {{ dataItem.hasafloor  }}
             </span>
           </ng-template>
         </kendo-grid-column>
@@ -327,7 +341,7 @@
           </ng-template>
           <ng-template kendoGridCellTemplate let-dataItem>
             <span [ngClass]="{'blue': dataItem.hasiactionstatus === 'I', 'black':dataItem.hasiactionstatus === null  }">
-              {{ dataItem.hasacomments }}
+              {{ dataItem.hasacomments  }}
             </span>
           </ng-template>
         </kendo-grid-column>
@@ -341,7 +355,7 @@
           </ng-template>
           <ng-template kendoGridCellTemplate let-dataItem>
             <span [ngClass]="{'blue': dataItem.hasiactionstatus === 'I', 'black':dataItem.hasiactionstatus === null  }">
-              {{ dataItem.hasaassessor }}
+              {{ dataItem.hasaassessor  }}
             </span>
           </ng-template>
         </kendo-grid-column>

@@ -18,8 +18,8 @@ export class WopmConfigurationService {
       return this.http.get<any>(`${appConfig.apiUrl}/api/WOPMConfiguration/GetWorksOrdersStageMasterList`, this.httpOptions);
   }
 
-  getWorksOrdersTemplateList(status: string) {
-      return this.http.get<any>(`${appConfig.apiUrl}/api/WOPMConfiguration/GetWorksOrdersTemplateList?status=${status}`, this.httpOptions);
+  getWorksOrdersTemplateList(status: string, valid: string) {
+      return this.http.get<any>(`${appConfig.apiUrl}/api/WOPMConfiguration/GetWorksOrdersTemplateList?status=${status}&valid=${valid}`, this.httpOptions);
   }
 
   getWOPMConfigSetting(config: string) {
@@ -148,6 +148,17 @@ export class WopmConfigurationService {
     return this.http.post<any>(`${appConfig.apiUrl}/api/WOPMConfiguration/UpdateChecklistMasterDependencies`, body, httpOptions);
   }
 
+  
+  UpdateChecklistMasterDependency(updateParms) {
+    var httpOptions = {
+        headers: new HttpHeaders({
+            'Content-Type': 'application/json'
+        }),
+    };
+    let body = JSON.stringify(updateParms);
+    return this.http.post<any>(`${appConfig.apiUrl}/api/WOPMConfiguration/UpdateChecklistMasterDependency`, body, httpOptions);
+  }
+
   TemplateInterface(interfaceParms) {
     var httpOptions = {
         headers: new HttpHeaders({
@@ -159,5 +170,8 @@ export class WopmConfigurationService {
   }
 
 
+  UploadMergeMailDoc(params) {
+    return this.http.post<any>(`${appConfig.apiUrl}/api/WOPMConfiguration/UploadMergeMailDoc`, params)
+}
   
 }

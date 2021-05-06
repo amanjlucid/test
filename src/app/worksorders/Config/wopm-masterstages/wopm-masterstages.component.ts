@@ -73,18 +73,18 @@ export class WopmMasterstagesComponent implements OnInit {
       this.subs.add(
         this.sharedService.worksOrdersAccess.subscribe(
           data => {
-            this.wopmSecurityList = data;
-            if (this.wopmSecurityList.length > 0) {
-              if (!(this.checkWorksOrdersAccess("Master Stages") && this.checkWorksOrdersAccess("Works Order Portal Access"))) {
-                      this.router.navigate(['/dashboard']);
-                    }
-            } else {
-              this.router.navigate(['/dashboard']);
-                  }
-                }
-              )
-      )
+            if (data) {
+              this.wopmSecurityList = data;
+              if (this.wopmSecurityList.length > 0) {
+                if (!(this.checkWorksOrdersAccess("Master Stages") && this.checkWorksOrdersAccess("Works Order Portal Access"))) {
+                        this.router.navigate(['/dashboard']);
+                      }
+              }
             }
+          }
+        )
+      )
+    }
   
     checkWorksOrdersAccess(val: string): Boolean {
       if (this.wopmSecurityList != undefined) {

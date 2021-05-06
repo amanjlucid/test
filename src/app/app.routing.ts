@@ -85,24 +85,7 @@ const appRoutes: Routes = [
                 ]
             },
             
-            { path: 'worksorders', canActivate: [AuthGuard], loadChildren: () => import('./worksorders/worksorders-router/worksorders.module').then(m => m.WorksOrderModule) },
-            
-
-            // {
-            //     path: 'worksorders',
-            //     component: WorksordersRouterComponent,
-            //     children: [
-            //         { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-            //         { path: 'dashboard', component: WorksordersDashboardComponent, canActivate: [AuthGuard] },
-            //         { path: 'config', 
-            //         component: WopmConfigComponent, 
-            //         children: [
-            //             { path: 'templates', component: WopmTemplatesComponent, canActivate: [AuthGuard] },
-            //             { path: 'masterstages', component: WopmMasterstagesComponent, canActivate: [AuthGuard] },
-            //         ] },
-            //     ]
-            // },
-
+            { path: 'worksorders', loadChildren: () => import('./worksorders/worksorders-router/worksorders.module').then(m => m.WorksOrderModule) },
             { path: 'health&safety', loadChildren: () => import('./hns-portal/hns.module').then(m => m.HnsModule) },
             { path: 'tasks', loadChildren: () => import('./event-manager/eventmanager.module').then(m => m.EventManagerModule) },
 

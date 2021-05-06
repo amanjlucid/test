@@ -14,7 +14,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
   selector: 'app-hns-res-information',
   templateUrl: './hns-res-information.component.html',
   styleUrls: ['./hns-res-information.component.css'],
-  // encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None
 })
 export class HnsResInformationComponent implements OnInit {
 

@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, ViewEncapsulation } from '@angular/core';
-import { WopmConfigurationService, HelperService, AlertService, SharedService } from '../../../../_services'
+import { WopmConfigurationService, HelperService, AlertService, SharedService,ConfirmationDialogService } from '../../../../_services'
 import { GridComponent, RowArgs } from '@progress/kendo-angular-grid';
 import { DataResult, process, State, CompositeFilterDescriptor, SortDescriptor } from '@progress/kendo-data-query';
 import { SubSink } from 'subsink';
@@ -51,6 +51,7 @@ export class WopmChecklistMasterComponent implements OnInit {
     private alertService: AlertService,
     private helper: HelperService,
     private sharedService: SharedService,
+    private confirmationDialogService: ConfirmationDialogService,
   ) { }
 
   ngOnInit(): void {
@@ -177,7 +178,7 @@ export class WopmChecklistMasterComponent implements OnInit {
 
     openEditChecklist (action, record) {
 
-      $('.disabledBackground2').addClass('ovrlay');
+      $('.modalBGround').addClass('ovrlay');
       if (action=="new")
       {
         this.wopmChecklistMasterModel = new WopmChecklistMasterModel(this.wopmTemplateModel.sequence, 0, 0,
@@ -201,7 +202,7 @@ export class WopmChecklistMasterComponent implements OnInit {
 
     closechecklistFormWin(event) {
       this.editchecklistWindow = event;
-      $('.disabledBackground2').removeClass('ovrlay');
+      $('.modalBGround').removeClass('ovrlay');
       this.getChecklist();
     }
 
@@ -228,11 +229,12 @@ export class WopmChecklistMasterComponent implements OnInit {
 
     deleteChecklist(dataitem) { 
       this.currentRow = dataitem;
-      this.dialogDeleteChecklist = true;
+      this.confirmationDialogService.confirm('Please confirm..', 'Do you really want to delete this record ?')
+      .then((confirmed) => (confirmed) ? this.deleteChecklistConfirmed(confirmed) : console.log(confirmed))
+      .catch(() => console.log('User dismissed the dialog.'));
     }
   
-    closeDeleteWin(deleteConfirmed:boolean) {
-      this.dialogDeleteChecklist = false;
+    deleteChecklistConfirmed(deleteConfirmed:boolean) {
       if (deleteConfirmed) {
         const checklist = {
           wotsequence: this.currentRow.wotsequence,

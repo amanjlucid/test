@@ -32,7 +32,7 @@ export class WopmEditChecklistDependenciesComponent implements OnInit {
   public summary: any;
   public mySelectionb: number[] = [];
   haschanges:boolean = false;
-  public selectedOnly:boolean = true;
+  public selectedOnly:boolean = false;
   selectedWOCHECKSURCDE : number;
   public updateParms: any[];
   public dialogConfirmCancel : boolean = false;
@@ -57,13 +57,33 @@ export class WopmEditChecklistDependenciesComponent implements OnInit {
   }
 
   public closeEditDependencies() {
-    if (this.haschanges) {
+/*     if (this.haschanges) {
         this.dialogConfirmCancel = true;
     } else {
         this.dependenciesWindow = false;
         this.closedependenciesWindow.emit(this.dependenciesWindow)
-    }
+    } */
 
+      const template = {
+        Sequence: this.wopmTemplateModel.sequence,
+        UserId: this.currentUser.userId
+      }
+      this.wopmConfigurationService.validateTemplate(template)
+      .subscribe(
+        data => {
+          if (data.isSuccess) {
+            if (!data.data.isValid) {
+              this.alertService.error(data.data.errorMessage)
+            }
+          }
+            this.dependenciesWindow = false;
+            this.closedependenciesWindow.emit(this.dependenciesWindow)
+        },
+      error => {
+        this.alertService.error(error);
+      });
+      this.dependenciesWindow = false;
+      this.closedependenciesWindow.emit(this.dependenciesWindow)
   }
 
 
@@ -117,6 +137,16 @@ export class WopmEditChecklistDependenciesComponent implements OnInit {
       } else {
         hasDependencies = "N";
       }
+
+      this.wopmConfigurationService.UpdateChecklistMasterDependency(dataItem).subscribe(
+        data => {
+          if (data && data.isSuccess) {
+;
+          }
+        },
+          error => {
+            this.alertService.error(error);
+          });
 
       this.summary.forEach(function (record) {
         if (record.wochecksurcde == dataItem.ownerWOCHECKSURCDE) {

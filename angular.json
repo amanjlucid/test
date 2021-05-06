@@ -57,11 +57,8 @@
               "src/assets/vendor/js/pace.js",
               "src/assets/js/mini-event-calendar.min.js",
               "src/assets/js/goldenlayout.min.js",
-            
               "src/assets/js/highstock.js",
-              
               "src/assets/js/ColReorderWithResize.js",
-              
               "src/assets/js/ui_tooltips.js",
               "node_modules/jszip/dist/jszip.js",
               "node_modules/datatables.net-buttons/js/dataTables.buttons.js",
@@ -69,7 +66,6 @@
               "node_modules/datatables.net-buttons/js/buttons.flash.js",
               "node_modules/datatables.net-buttons/js/buttons.html5.js",
               "node_modules/datatables.net-buttons/js/buttons.print.js",
-              
               "src/assets/js/jquery.tabelizer.js"
             ]
           },

@@ -77,6 +77,8 @@ export class WopmEditChecklistMasterComponent implements OnInit {
     currency: 'GBP',
     currencyDisplay: 'symbol'
 };
+fileExt: string = "DOCX, DOTX, DOC, DOT";
+fileValue: any;
 
 
   constructor(
@@ -362,5 +364,71 @@ export class WopmEditChecklistMasterComponent implements OnInit {
     }
   }
 
+
+
+
+  uploadFile(file) {
+  var uploadObj = { image: [], message: '' };
+
+    if (this.isValidFileExtension(file)) {
+      // uploadObj.image.push(file);
+      const formData = new FormData();
+      formData.append('file', file, file.name);
+
+      this.wopmConfigurationService.UploadMergeMailDoc(formData)
+      .subscribe(
+        data => {
+          if (data.isSuccess) {
+            if (data.data) {
+              var rdff = data.data.slice(0,5);
+              if (data.data.slice(0,5) == "ERROR") {
+                this.alertService.error(data.data.slice(5));
+                this.loading = false;
+              } else {
+                this.alertService.success(`File successfully uploaded to ${data.data}.`);
+                this.checklistForm.controls['mailmergedoc'].setValue(data.data);
+                this.loading = false;
+              }
+            } else {
+              this.alertService.error("There was an error saving the uploaded file.");
+              this.loading = false;
+            }
+          } else {
+            this.loading = false;
+            this.alertService.error(data.message);
+          }
+        },
+        error => {
+          this.alertService.error(error);
+          this.loading = false;
+        });
+    } else {
+      this.alertService.error("Invalid file type.");
+      this.loading = false;
+
+    }
+    this.fileValue =null;
+  }
+
+
+  private isValidFileExtension(file) : boolean {
+    // Make array of file extensions
+    let extensions: any;
+    extensions = (this.fileExt.split(',')).map(function (x) { return x.toLocaleUpperCase().trim() });
+
+
+      // Get file extension
+      let ext = file.name.toUpperCase().split('.').pop() || file.name;
+      // Check the extension exists
+      return extensions.includes(ext);
+  }
+
+  
+  onFileChange(event) {
+    if (event.target.files.length > 0) {
+      this.uploadFile(event.target.files[0])
+    }
+
+  }
 
 }

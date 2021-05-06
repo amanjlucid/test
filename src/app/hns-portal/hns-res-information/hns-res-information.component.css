@@ -68,7 +68,7 @@ label.radio-inline {
     margin-top: 0px !important;
 }
 
-/* .actionGrid kendo-grid-filter-cell-operators {
+.actionGrid kendo-grid-filter-cell-operators {
     display: none!important;
 }
 
@@ -76,4 +76,4 @@ label.radio-inline {
     white-space: nowrap !important;
     line-height: 20px !important;
     padding: 8px 12px !important;
-} */
+}

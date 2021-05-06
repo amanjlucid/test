@@ -23,12 +23,33 @@
                 <button *ngIf="checkWorksOrdersAccess('New Template')"
                  type="button" class="btn btn-sm themeButton mr-1" (click)="openEditTemplate('new', null)">New</button>
 
-                 <button *ngIf="checkWorksOrdersAccess('Import Template')"
+                 <!-- <button *ngIf="checkWorksOrdersAccess('Import Template')"
                  type="button" class="btn btn-sm themeButton mr-1" (click)="openFile()">Import Template
                  <input type="file" [(ngModel)]="fileValue" accept=".csv" style="display:none" (change)="handleFile($event)"></button>
 
                 <button *ngIf="checkWorksOrdersAccess('Export Template')"
-                 type="button" class="btn btn-sm themeButton mr-1" (click)="export()">Export Data</button>
+                 type="button" class="btn btn-sm themeButton mr-1" (click)="export()">Export Data</button> -->
+
+
+
+                 <button *ngIf="checkWorksOrdersAccess('Export Template') || checkWorksOrdersAccess('Import Template')"
+                   type="button" class="btn btn-sm themeButton mr-1 dropdown-toggle" data-toggle="dropdown"
+                     aria-expanded="false">Template</button>
+                 <div class="dropdown-menu" x-placement="bottom-start"
+                     style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
+                     <a *ngIf="checkWorksOrdersAccess('Import Template')" class="dropdown-item"
+                         (click)="openFile()" href="javascript:void(0)">Import
+                         <input type="file" [(ngModel)]="fileValue" accept=".csv" style="display:none" (change)="handleFile($event)"></a>
+                     <a class="dropdown-item" *ngIf="checkWorksOrdersAccess('Export Template')"
+                     (click)="export()" href="javascript:void(0)">Export</a>
+
+                 </div>
+
+
+
+
+
+
 
                 <button id="showFilePanel" (click)="openSearchBar()" class="btn btn-sm themeButton"><i
                         class="fa fa-search"></i>
@@ -42,12 +63,13 @@
     <div class="row mt-2">
         <div class="col-md-12">
 
-            <kendo-grid [groupable]="false" [data]="gridView"  [height]="720" filterable="menu" [loading]="loading" [resizable]="true" 
-            [sortable]="{allowUnsort: allowUnsort, mode: multiple ? 'multiple' : 'single' }" 
+            <kendo-grid [groupable]="true" [data]="gridView"  [height]="720" filterable="menu" [loading]="loading" [resizable]="true" 
+            [sortable]="{allowUnsort: allowUnsort, mode: multiple ? 'multiple' : 'single' }" [group]="state.group"
             [skip]="state.skip" [sort]="state.sort" [selectable]="selectableSettings" kendoGridSelectBy="wotsequence"
                 [selectedKeys]="mySelection" (selectedKeysChange)="onSelectedKeysChange($event)" [filter]="state.filter"
                 (sortChange)="sortChange($event)" (filterChange)="filterChange($event)"
-                 [navigable]="true" (cellClick)="cellClickHandler($event)">
+                 [navigable]="true" (cellClick)="cellClickHandler($event)"
+                 (groupChange)="groupChange($event)">
 
                 <kendo-grid-column title=" " width="37" [filterable]="false">
                     <ng-template kendoGridCellTemplate let-dataItem>
@@ -69,10 +91,10 @@
                                 (click)="deleteTemplate(dataItem)">Delete</a>
 
                                 <a class="dropdown-item" href="javascript:void(0)" *ngIf="checkWorksOrdersAccess('Manage Checklist')"
-                                (click)="openChecklistWindow(dataItem)">Manage Checklist</a>
+                                (click)="openChecklistWindow(dataItem)">Detail</a>
 
                                 <a class="dropdown-item" href="javascript:void(0)" *ngIf="checkWorksOrdersAccess('Edit Dependencies')"
-                                (click)="editDependenciesWindow(dataItem)">Edit Dependencies</a>
+                                (click)="editDependenciesWindow(dataItem)">Dependencies</a>
 
                                 <a class="dropdown-item" href="javascript:void(0)" *ngIf="checkWorksOrdersAccess('Export Template')"
                                 (click)="exportTemplate(dataItem)">Export Template</a>
@@ -183,6 +205,17 @@
                   <option [selected]="status == ''" value="">All</option>
                   <option selected [selected]="status == 'A'" value="A">Active</option>
                   <option [selected]="status == 'I'" value="I">Inactive</option>
+                </select>
+            </div>
+
+
+            <div class="form-group">
+                <label class="form-label form-label-sm">Valid Template</label>
+                <select data-col="9" class="form-control form-control-sm"
+                  (change)="filterTable($event.target.value, 'valid')">
+                  <option selected [selected]="valid == ''" value="">All</option>
+                  <option [selected]="valid == 'Y'" value="Y">Valid</option>
+                  <option [selected]="valid == 'N'" value="N">Invalid</option>
                 </select>
             </div>
 

@@ -5,7 +5,7 @@
         <div class="form-row">
           <div class="form-group col-md-12">
               <label class="form-label">Name</label>
-              <input type="text" class="form-control" placeholder="Name" formControlName="name"
+              <input type="text" class="form-control" placeholder="Name" formControlName="name"  maxlength="50"
                 [ngClass]="{ 'is-invalid': submitted && formErrors.name }">
     
               <div *ngIf="submitted && formErrors.name" class="invalid-feedback">
@@ -18,7 +18,7 @@
   
           <div class="form-group col-md-12">
             <label class="form-label">Description</label>
-            <input type="text" class="form-control" placeholder="Description" formControlName="description"
+            <input type="text" class="form-control" placeholder="Description" formControlName="description"  maxlength="50"
               [ngClass]="{ 'is-invalid': submitted && formErrors.description }">
   
             <div *ngIf="submitted && formErrors.description" class="invalid-feedback">
