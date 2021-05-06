@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AlertService, HelperService, SharedService, HnsPortalService, EventManagerDashboardService,AssetAttributeService } from '../../_services'
+import { AlertService, HelperService, SharedService, HnsPortalService, EventManagerDashboardService, AssetAttributeService } from '../../_services'
 import { SubSink } from 'subsink';
 import { Router } from "@angular/router"
 import { appConfig } from '../../app.config';
@@ -13,6 +13,7 @@ declare var Highcharts: any;
   templateUrl: './worksorders-dashboard.component.html',
   styleUrls: ['./worksorders-dashboard.component.css']
 })
+
 export class WorksordersDashboardComponent implements OnInit {
 
   subs = new SubSink();
@@ -49,13 +50,13 @@ export class WorksordersDashboardComponent implements OnInit {
           title: 'Component 3',
 
         }
-/*         , {
-          type: 'component',
-          componentName: 'testComponent',
-          componentState: { text: 'Component4' },
-          title: 'Component 4',
-        } */
-      ]
+          /*         , {
+                    type: 'component',
+                    componentName: 'testComponent',
+                    componentState: { text: 'Component4' },
+                    title: 'Component 4',
+                  } */
+        ]
       }]
     }]
   };
@@ -78,7 +79,7 @@ export class WorksordersDashboardComponent implements OnInit {
     private router: Router,
     private eventMangerDashboardService: EventManagerDashboardService,
     private assetAttributeService: AssetAttributeService,
-    
+
   ) { }
 
   ngOnDestroy() {
@@ -115,7 +116,7 @@ export class WorksordersDashboardComponent implements OnInit {
 
     //update notification on top
     this.helper.updateNotificationOnTop();
-   
+
     setTimeout(() => {
       this.subs.add(
         // get chart data and render in template
@@ -164,9 +165,9 @@ export class WorksordersDashboardComponent implements OnInit {
 
                         } else if (state.text == "Component4") {
                           if (comp.chartNames[3] != undefined) {
-                           container.setTitle(comp.chartNames[3].chartName)
-                           comp.renderChartTypes(comp.chartNames[3], comp, container, state);
-                        }
+                            container.setTitle(comp.chartNames[3].chartName)
+                            comp.renderChartTypes(comp.chartNames[3], comp, container, state);
+                          }
                         }
                       } else if (comp.drawChartObj == null && comp.savedState != null) {
                         comp.renderChartIfStateSaved(container, state, comp);
@@ -453,7 +454,7 @@ export class WorksordersDashboardComponent implements OnInit {
               comp.getLineChartData(dataForChart, className, container, state, chartObj);
             });
 
-            
+
             //trigger change event
             if (lineChartFilterData != null && lineChartData.length == 0) {
               $('.' + className).trigger('change');
@@ -528,6 +529,7 @@ export class WorksordersDashboardComponent implements OnInit {
         scrollbar: {
           enabled: true
         },
+
       },
       yAxis: {
         title: {
@@ -690,8 +692,8 @@ export class WorksordersDashboardComponent implements OnInit {
               comp.getPieChartData(dataForChart, className, container, state, chartObj);
             })
 
-             //trigger change event
-             if (pieChartFilterData != null && tempArr.length == 0) {
+            //trigger change event
+            if (pieChartFilterData != null && tempArr.length == 0) {
               $('.' + className).trigger('change');
             }
 
@@ -1011,8 +1013,6 @@ export class WorksordersDashboardComponent implements OnInit {
       barChartParams.seriesId = data.stackedBarChartViewModelList[0].seriesId
     }
 
-    // console.log(data);
-
     let comp = this;
     return {
       chart: {
@@ -1025,10 +1025,14 @@ export class WorksordersDashboardComponent implements OnInit {
       xAxis: {
         categories: data.categories,
         min: 0,
-        max: data.categories.length - 1,
+        // max: data.categories.length - 1,
+        max: 10,
         labels: {
           rotation: 90,
-        }
+        },
+        scrollbar: {
+          enabled: true,
+        },
       },
       yAxis: {
         min: 0,
@@ -1185,10 +1189,10 @@ export class WorksordersDashboardComponent implements OnInit {
               comp.getGroupBarChartData(dataForChart, className, container, state, chartObj);
             })
 
-           //trigger change event
-           if (chartFilterData != null && chartData.length == 0) {
-            $('.' + className).trigger('change');
-          }
+            //trigger change event
+            if (chartFilterData != null && chartData.length == 0) {
+              $('.' + className).trigger('change');
+            }
 
 
 
@@ -1250,7 +1254,6 @@ export class WorksordersDashboardComponent implements OnInit {
 
 
   groupBarChartConfiguration(titleText: any, seriesName: string, allowPointSelect: boolean = true, selector: any, data: any) {
-
     return {
       chart: {
         type: 'column',
@@ -1266,13 +1269,15 @@ export class WorksordersDashboardComponent implements OnInit {
         max: data.categories.length - 1,
         labels: {
           rotation: 90,
-        }
+        },
+
       },
       yAxis: {
         min: 0,
         title: {
           text: ''
-        }
+        },
+
       },
       tooltip: {
         headerFormat: '<span style="font-size:12px">{point.key}</span><table>',
@@ -1377,64 +1382,63 @@ export class WorksordersDashboardComponent implements OnInit {
 
   openDrillDownchart(chartEvent, parentChartObj) {
     if (parentChartObj != null && parentChartObj.ddChartID != undefined) {
-        if (parentChartObj.ddChartID != 0) {
-          const params = {
-            "chartName": `${parentChartObj.chartName} (${chartEvent.options.name})`,
-            "chartType": 4,
-            "chartParameterValue": "string",
-            "ddChartId": parentChartObj.ddChartID,
-            "parantChartId": parentChartObj.chartID,
-            "xAxisValue": chartEvent.options.name,
-            "seriesId": chartEvent.options.seriesId,
-            "color": chartEvent.color
-          }
-
-          this.renderDrillDownChart(chartEvent, params)
-
+      if (parentChartObj.ddChartID != 0) {
+        const params = {
+          "chartName": `${parentChartObj.chartName} (${chartEvent.options.name})`,
+          "chartType": 4,
+          "chartParameterValue": "string",
+          "ddChartId": parentChartObj.ddChartID,
+          "parantChartId": parentChartObj.chartID,
+          "xAxisValue": chartEvent.options.name,
+          "seriesId": chartEvent.options.seriesId,
+          "color": chartEvent.color
         }
+
+        this.renderDrillDownChart(chartEvent, params)
+
       }
     }
+  }
 
 
   openGridOnClickOfBarChart(chartEvent, parentChartObj) {
-    // console.log(chartEvent)
 
     if (parentChartObj.drilldown == 1 && parentChartObj.ddChartID > 0) {
-    this.selectedBarChartXasis = {
-      "ddChartId": parentChartObj.ddChartId != undefined ? parentChartObj.ddChartId : parentChartObj.ddChartID,
-      "parantChartId": parentChartObj.parantChartId != undefined ? parentChartObj.parantChartId : parentChartObj.chartID,
-      "xAxisValue": chartEvent.category,
-      "seriesId": parentChartObj.seriesId,
-      "chartName": parentChartObj.chartName
-    }
+      this.selectedBarChartXasis = {
+        "ddChartId": parentChartObj.ddChartId != undefined ? parentChartObj.ddChartId : parentChartObj.ddChartID,
+        "parantChartId": parentChartObj.parantChartId != undefined ? parentChartObj.parantChartId : parentChartObj.chartID,
+        "xAxisValue": chartEvent.category,
+        "seriesId": parentChartObj.seriesId,
+        "chartName": parentChartObj.chartName
+      }
       this.openGrid();
     }
-    
+
   }
 
 
   gotoAsset(item: any) {
-/*     let startDateObj = this.managementFilterParam.startDate;
-    let endDateObj = this.managementFilterParam.endDate;
-    let startDate = `${startDateObj.year}-${this.helperService.zeorBeforeSingleDigit(startDateObj.month)}-${this.helperService.zeorBeforeSingleDigit(startDateObj.day)}`;
-    let endDate = `${endDateObj.year}-${this.helperService.zeorBeforeSingleDigit(endDateObj.month)}-${this.helperService.zeorBeforeSingleDigit(endDateObj.day)}`;
-    let startDateTime = new Date(startDate);
-    let endDateTime = new Date(endDate);
-
-    const assetFilterObj = {
-      setCode: item.setCode,
-      conCode: item.conCode,
-      secoCode: item.secoCode,
-      sesCode: item.sesCode,
-      contractor: item.contractor,
-      contract: item.contract,
-      serviceType: item.serviceType,
-      serviceStage: item.serviceStage,
-      startDate: startDateTime,
-      endDate: endDateTime
-    }
-
-    localStorage.setItem('assetFilterObj', JSON.stringify(assetFilterObj)); */
+    /*     let startDateObj = this.managementFilterParam.startDate;
+        let endDateObj = this.managementFilterParam.endDate;
+        let startDate = `${startDateObj.year}-${this.helperService.zeorBeforeSingleDigit(startDateObj.month)}-${this.helperService.zeorBeforeSingleDigit(startDateObj.day)}`;
+        let endDate = `${endDateObj.year}-${this.helperService.zeorBeforeSingleDigit(endDateObj.month)}-${this.helperService.zeorBeforeSingleDigit(endDateObj.day)}`;
+        let startDateTime = new Date(startDate);
+        let endDateTime = new Date(endDate);
+    
+        const assetFilterObj = {
+          setCode: item.setCode,
+          conCode: item.conCode,
+          secoCode: item.secoCode,
+          sesCode: item.sesCode,
+          contractor: item.contractor,
+          contract: item.contract,
+          serviceType: item.serviceType,
+          serviceStage: item.serviceStage,
+          startDate: startDateTime,
+          endDate: endDateTime
+        }
+    
+        localStorage.setItem('assetFilterObj', JSON.stringify(assetFilterObj)); */
     // let url = `${window.location.origin}/rowanwood/asset-list?servicing=true`;
     //window.open(url, "_blank");
   }
