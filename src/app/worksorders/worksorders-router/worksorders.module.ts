@@ -31,9 +31,7 @@ import { WorksordersAssetChecklistPredecessorsComponent } from '../worksorders-a
 import { WorksordersAssetChecklistEditDescriptionComponent } from '../worksorders-asset-checklist-edit-description/worksorders-asset-checklist-edit-description.component';
 import { WorksordersAssetChecklistUploadDocComponent } from '../worksorders-asset-checklist-upload-doc/worksorders-asset-checklist-upload-doc.component';
 import { PickDateComponent } from '../pick-date/pick-date.component';
-
 import { WopmTemplatesComponent } from '../Config/wopm-templates/wopm-templates.component';
-
 import { WopmConfigComponent } from '../Config/wopm-config/wopm-config.component';
 import { WopmMasterstagesComponent } from '../Config/wopm-masterstages/wopm-masterstages.component';
 import { WopmEditTemplateComponent } from '../Config/wopm-templates/wopm-edit-template/wopm-edit-template.component';
@@ -41,9 +39,10 @@ import { WopmEditMasterstageComponent } from '../Config/wopm-masterstages/wopm-e
 import { WopmChecklistMasterComponent } from '../Config/wopm-templates/wopm-checklist-master/wopm-checklist-master.component';
 import { WopmEditChecklistMasterComponent } from '../Config/wopm-templates/wopm-checklist-master/wopm-edit-checklist-master/wopm-edit-checklist-master.component';
 import { WopmEditChecklistDependenciesComponent } from '../Config/wopm-templates/wopm-edit-checklist-dependencies/wopm-edit-checklist-dependencies.component';
-
 import { MultiSelectModule } from '@progress/kendo-angular-dropdowns';
 import { SwapPackageComponent } from '../swap-package/swap-package.component';
+import { NoAccessComponent } from '../no-access/no-access.component';
+import { NoAccessHistoryComponent } from '../no-access-history/no-access-history.component';
 
 @NgModule({
   declarations: [
@@ -67,7 +66,6 @@ import { SwapPackageComponent } from '../swap-package/swap-package.component';
     WorksordersAssetChecklistEditDescriptionComponent,
     WorksordersAssetChecklistUploadDocComponent,
     PickDateComponent,
-
     WopmTemplatesComponent,
     WopmConfigComponent,
     WopmMasterstagesComponent,
@@ -76,7 +74,9 @@ import { SwapPackageComponent } from '../swap-package/swap-package.component';
     WopmChecklistMasterComponent,
     WopmEditChecklistMasterComponent,
     WopmEditChecklistDependenciesComponent,
-    SwapPackageComponent
+    SwapPackageComponent,
+    NoAccessComponent,
+    NoAccessHistoryComponent
   ],
 
   imports: [
@@ -93,7 +93,6 @@ import { SwapPackageComponent } from '../swap-package/swap-package.component';
     WorksOrderRoutingModule,
     NgbModule,
     TreeListModule,
-
     NgMultiSelectDropDownModule.forRoot(),
     MultiSelectModule
 

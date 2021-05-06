@@ -1,0 +1,78 @@
+<kendo-window title="{{title}}" *ngIf="noaccessWindow" (close)="closeNoAccessWindow()" [top]="30" [minWidth]="650"
+    [width]="700" [height]="auto" [minHeight]="350">
+
+    <form [formGroup]="noAccessForm" (ngSubmit)="onSubmit()" autocomplete="off" class="noAccessForm">
+        <div class="row formRow">
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-3">
+                        <label class="col-form-label">Asset:</label>
+                    </div>
+                    <div class="col-md-9">
+                        <input type="text" class="form-control" formControlName="asset"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.asset }" autocomplete="off">
+
+                        <div *ngIf="submitted && formErrors.asset" class="invalid-feedback">
+                            <div *ngIf="formErrors.asset">{{ formErrors.asset }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-2">
+                    <div class="col-md-3">
+                        <label class="col-form-label">No Access Date:</label>
+                    </div>
+                    <div class="col-md-9">
+                        <input type="text" class="form-control" formControlName="noaccessdate"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.noaccessdate }" autocomplete="off"
+                            (click)="openCalendar(nad)" ngbDatepicker #nad="ngbDatepicker"
+                            [placement]="'top'">
+
+                        <div *ngIf="submitted && formErrors.noaccessdate" class="invalid-feedback">
+                            <div *ngIf="formErrors.noaccessdate">{{ formErrors.noaccessdate }}</div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="row mt-2">
+                    <div class="col-md-3">
+                        <label class="col-form-label">Comment:</label>
+                    </div>
+                    <div class="col-md-9">
+                        <textarea class="form-control" formControlName="comment"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.comment }">
+                        </textarea>
+
+                        <div *ngIf="submitted && formErrors.comment" class="invalid-feedback">
+                            <div *ngIf="formErrors.comment">{{ formErrors.comment }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-2">
+                    <div class="col-md-3">
+                        <label class="col-form-label">Next Access Date:</label>
+                    </div>
+                    <div class="col-md-9">
+                        <input type="text" class="form-control" formControlName="nextaccessdate"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.nextaccessdate }" autocomplete="off"
+                            (click)="openCalendar(nxad)" [minDate]="minDate" ngbDatepicker #nxad="ngbDatepicker"
+                            [placement]="'top'">
+
+                        <div *ngIf="submitted && formErrors.nextaccessdate" class="invalid-feedback">
+                            <div *ngIf="formErrors.nextaccessdate">{{ formErrors.nextaccessdate }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12 text-right mt-4">
+                <button type="submit" class="btn btn-sm themeButton mr-1">Apply</button>
+                <button type="button" (click)="closeNoAccessWindow()" class="btn btn-sm themeButton">Cancel</button>
+            </div>
+        </div>
+
+
+    </form>
+</kendo-window>

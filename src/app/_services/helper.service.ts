@@ -711,5 +711,13 @@ export class HelperService {
     }
 
 
+    dateObjToString(value) {
+        if (value == undefined || typeof value == 'undefined' || typeof value == 'string') {
+          return new Date('1753-01-01').toJSON()
+        }
+        const dateStr = `${value.year}-${this.zeorBeforeSingleDigit(value.month)}-${this.zeorBeforeSingleDigit(value.day)}`;
+        return new Date(dateStr).toJSON()
+      }
+
 
 }

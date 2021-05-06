@@ -37,39 +37,32 @@ export class WorksordersAssetChecklistComponent implements OnInit {
   selectedChecklist = [];
   selectedChecklistsingleItem: any;
   loading = true;
-
   programmeData: any;
   worksOrderData: any;
   phaseData: any;
   gridHeight = 680;
   filterToggle = false;
   readonly = true;
-
   checklistDocWindow = false;
   predecessors: boolean = false;
   predecessorsWindowFrom = 'assetchecklist';
-
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
   chooseDateWindow = false;
   chooseDateType = 'status';
-
   worksOrderAccess: any = [];
   selectedDate: any;
   workorderAsset: any
-
   assetDetailWindow: boolean = false;
-
-
   addAssetWorklistWindow: boolean = false;
   addWorkorderType = '';
   itemPassToWorkList: any;
-
   wodDetailType: string = 'all'
   worksOrderUsrAccess: any = [];
   touchtime = 0;
-
   actionType = 'single'
-  userType: any = []
+  userType: any = [];
+  noaccessWindow: boolean = false;
+  noaccessHistory: boolean = false;
 
   constructor(
     private chRef: ChangeDetectorRef,
@@ -90,7 +83,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
         this.sharedService.userTypeObs
       ]).subscribe(
         data => {
-          // console.log(data);
+          console.log(data);
           // console.log(this.currentUser)
           this.worksOrderUsrAccess = data[0];
           this.worksOrderAccess = data[1];
@@ -151,7 +144,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
     this.subs.add(
       this.worksorderManagementService.assetChecklistGridData(this.selectedChildRow.wosequence, this.selectedChildRow.assid, this.selectedChildRow.wopsequence).subscribe(
         data => {
-          // console.log(data)
+          console.log(data)
           if (data.isSuccess) {
             this.assetCheckListData = data.data;
             this.gridView = process(this.assetCheckListData, this.state);
@@ -194,6 +187,10 @@ export class WorksordersAssetChecklistComponent implements OnInit {
         if (((new Date().getTime()) - this.touchtime) < 400) {
           if (dataItem.wocheckspeciaL1 == 'WORK' && dataItem.detailCount > 0) {
             this.openAssetDetailChild('single', dataItem)
+          }
+
+          if (dataItem.wocheckspeciaL1 == 'ACCESS') {
+            this.openNoAccessHistory()
           }
 
 
@@ -407,7 +404,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
     params.strCheckOrProcess = checkOrProcess;
     params.RecordCount = this.mySelection.length
     params.CheckName = this.mySelection.length == 1 ? filterChecklist[0].wocheckname : ''
-    
+
     if (type == 'SE') {
       apiName = 'SetWorksOrderCheckListPlannedDates'
       params.dtStartDate = this.dateFormate(this.selectedDate.start);
@@ -1207,8 +1204,6 @@ export class WorksordersAssetChecklistComponent implements OnInit {
       return this.mySelection.length == 0 || this.workorderAsset?.woassstatus == 'Pending' || this.workorderAsset?.woassstatus == 'Issued'
     }
 
-
-
   }
 
 
@@ -1222,6 +1217,29 @@ export class WorksordersAssetChecklistComponent implements OnInit {
       // }
       return this.worksOrderUsrAccess.indexOf(menuName) != -1
     }
+  }
+
+
+  openNoAccessWindow(item) {
+    this.selectedChecklistsingleItem = item
+    $('.checklistOverlay').addClass('ovrlay');
+    this.noaccessWindow = true;
+  }
+
+
+  closeNoAccessWin(eve) {
+    this.noaccessWindow = eve;
+    $('.checklistOverlay').removeClass('ovrlay');
+  }
+
+  openNoAccessHistory() {
+    this.noaccessHistory = true;
+    $('.checklistOverlay').addClass('ovrlay');
+  }
+
+  closeNoAccessHistory(eve) {
+    this.noaccessHistory = eve;
+    $('.checklistOverlay').removeClass('ovrlay');
   }
 
 }

@@ -271,4 +271,18 @@ export class WorksorderManagementService {
         return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetAssetAddressForSpecificAsset?WOSEQUENCE=${WOSEQUENCE}&WOPSEQUENCE=${WOPSEQUENCE}&assid=${assid}&WOCHECKSURCDE=${WOCHECKSURCDE}`, this.httpOptions);
     }
 
+    //asset address 
+    getAssetAddressByAsset(assid) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetAssetAddress?assid=${assid}`, this.httpOptions);
+    }
+
+    insertNoAccessRecord(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/InsertNoAccessRecord  `, body, this.httpOptions)
+    }
+
+    getNoAccessHistory(WOSEQUENCE, WOPSEQUENCE, assid) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetNoAccessHistory?WOSEQUENCE=${WOSEQUENCE}&WOPSEQUENCE=${WOPSEQUENCE}&assid=${assid}`, this.httpOptions);
+    }
+
 }
