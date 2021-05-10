@@ -1,0 +1,140 @@
+<kendo-window  title="Dependencies" [top]="10" [minWidth]="550" [height]="550"
+[width]="1150" (close)="closeEditDependencies()" style="padding: 0;" >
+<div class="row col-md-12 m-0 p-0" style="height:100%;">
+    <div style="height:100%;" class="col-md-6 m-0 p-0">
+
+        <kendo-grid id="predecessorgrid" #grid="kendoGrid"  [navigable]="true" [resizable]="true" [data]="predecessors" [selectable]="{
+          mode: 'single' }" [loading]="loading2"
+          >
+          <kendo-grid-column field="Discontinued"  width="40">
+            <ng-template kendoGridHeaderTemplate>
+                <i title="Dependent?" class="fa fa-question" aria-hidden="true" ></i>
+              </ng-template>
+            <ng-template kendoGridCellTemplate let-dataItem>
+                <input type="checkbox" [(ngModel)]="dataItem.selected" (change)="checkBoxChanged(dataItem)"/>
+            </ng-template>
+        </kendo-grid-column>
+          <kendo-grid-column field="stage" title="Stage" width="180">
+          </kendo-grid-column>
+          <kendo-grid-column field="name" title="Name" width="200">
+          </kendo-grid-column>
+          <kendo-grid-column field="responsibility" title="Responsibility" width="120" >
+          </kendo-grid-column>  
+          <kendo-grid-column field="checklistType" title="Checklist Type" width="120" >
+          </kendo-grid-column>
+          </kendo-grid> 
+      
+        <p style="position: absolute; top: 0px;background-color: white;  height: 40px;" class="col-md-12 m-0 p-0"></p>
+      
+        <div class="row" style="position: absolute; top:18px;width: 100%;margin-left:3px;">
+          <div class="col-md-12 m-0 p-0 text-center">
+Predecessor(s)
+          </div>
+      </div>
+
+      <div class="row ml-2 pull-center">
+        <label class="mt-2">Selected Only</label>
+        <div class="col">
+            <div class="mt-2">
+            <label class="switcher">
+                <input type="checkbox" class="switcher-input" [(ngModel)]="selectedOnly" (change)="selectedOnlyChanged()">
+                <span class="switcher-indicator">
+                <span class="switcher-yes"><span class="ion ion-md-checkmark"></span></span>
+                <span class="switcher-no"><span class="ion ion-md-close"></span></span>
+                </span>
+            </label>
+            </div>
+        </div> 
+
+      </div>
+
+      
+<!--       <div style="position: absolute;margin-right: 10px; top: 50px;width: 100%" >
+          <p style="background-color: #dcdcdc; height: 1px;" class="col-md-12 m-0 p-0"></p>
+      </div> -->
+      
+      
+      </div>
+      <div style="height:100%;" class="col-md-6 m-0 p-0">
+      
+          <kendo-grid id="checklistgrid" #grid="kendoGrid"  [navigable]="true" [resizable]="true" [data]="summary" [selectable]="{
+            mode: 'single' }" [loading]="loading"  [selectedKeys]="mySelection" [kendoGridSelectBy]="mySelectionKey"  
+            (selectionChange)="onSelect($event)"
+            >
+            <kendo-grid-column field="dependencies"  width="40" [filterable]="false"
+            [groupable]="false">
+            <ng-template kendoGridHeaderTemplate>
+                <i title="Dependencies?" class="fa fa-question" aria-hidden="true" ></i>
+              </ng-template>
+            <ng-template kendoGridCellTemplate let-dataItem>
+                <span>
+                    <img style="height: 14px;"
+                        *ngIf="dataItem.dependencies == 'Y'"
+                        src="assets/img/icons/tick.png" />
+                </span>
+            </ng-template>
+        </kendo-grid-column>
+            <kendo-grid-column field="stage" title="Stage" width="180">
+            </kendo-grid-column>
+            <kendo-grid-column field="name" title="Name" width="200">
+            </kendo-grid-column>
+            <kendo-grid-column field="responsibility" title="Responsibility" width="120" >
+            </kendo-grid-column>  
+            <kendo-grid-column field="checklistType" title="Checklist Type" width="120" >
+            </kendo-grid-column>
+            </kendo-grid> 
+        
+          <p style="position: absolute; top: 0px;background-color: white;  height: 40px;" class="col-md-12 m-0 p-0"></p>
+        
+          <div class="row" style="position: absolute; top:18px;width: 100%;margin-left:3px;">
+            <div class="col-md-12 m-0 p-0 text-center">
+        Checklist items
+            </div>
+        </div>
+        <div class="pull-right mt-2">
+            <!-- <button type="button" class="btn btn-sm themeButton mr-1" (click)="saveEditDependencies()"  >Apply</button> -->
+            <button type="button" class="btn btn-sm themeButton mr-0" (click)="closeEditDependencies()" >Close</button>
+        </div>
+        
+   <!--      <div style="position: absolute;margin-left:10px; top: 50px;width: 100%" >
+            <p style="background-color: #dcdcdc; height: 1px;" class="col-md-12 m-0 p-0"></p>
+        </div> -->
+        
+        
+        </div>
+</div>
+
+
+
+
+
+
+
+
+<div style="background-color: #cecece;position: absolute; top: 0px; left:0px; width: 100%;" class=" m-0  p-0">
+  <div style="background-color: #cecece;" class="form-row m-0 p-0">
+    <p style="background-color: #cecece; margin: -1px; font-weight: 600;  text-overflow: ellipsis;white-space: nowrap;overflow: hidden;" class="col-md-12 m-0 px-3 pt-1 pb-1">
+      Template:<span style="font-weight: 400;margin-left:10px">{{wopmTemplateModel.name}}</span>
+     </div>
+</div>
+
+</kendo-window>
+
+<div class="disabledBackground2"></div>
+
+
+
+
+<kendo-dialog title="Confirm" *ngIf="dialogConfirmCancel" (close)="closeSaveWin(false)" [minWidth]="250"
+[width]="450">
+<p style="margin: 30px; text-align: left;">Save changes made to the Dependencies?</p>
+
+<div class="row">
+  <div class="col-md-12">
+    <div class="actionBtn text-right">
+      <button class="btn btn-sm themeButton mr-1 confirmButton" (click)="closeSaveWin(false)">No</button>
+      <button class="btn btn-sm themeButton confirmButton" (click)="closeSaveWin(true)">Yes</button>
+    </div>
+  </div>
+</div>
+</kendo-dialog>

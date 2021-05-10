@@ -1,0 +1,297 @@
+<kendo-window  [title]="windowTitle"  [width]="750"  (close)="closeChecklistFormWindow()" style="z-index: 12003">
+    <div class="flex-grow-1 userFrm">
+  
+      <form [formGroup]="checklistForm"  autocomplete="off">
+
+          <div class="col-md-12 m-1">
+              <div class="row">
+                <div class="col-md-3 text-right">
+                  <label class="col-form-label">Stage</label>
+                </div>
+                <div class="col-md-9">
+                  <select class="custom-select" formControlName="stage" 
+                      [ngClass]="{ 'is-invalid': submitted && formErrors.stage }">
+                      <option *ngFor="let stage of masterStages; let i = index" [value]="masterStages[i].wostagesurcde">
+                        {{masterStages[i].wostagename}}
+                      </option>
+                  </select>
+                  <div *ngIf="submitted && formErrors.stage" class="invalid-feedback">
+                    <div *ngIf="formErrors.stage">{{ formErrors.stage }}</div>
+                  </div>
+                </div> 
+
+              </div>
+          </div>
+
+          <div class="col-md-12 m-1">
+            <div class="row">
+              <div class="col-md-3 text-right">
+                <label class="col-form-label">Name</label>
+              </div>
+              <div class="col-md-9">
+                <input type="text" class="form-control" placeholder="Name" formControlName="name"  maxlength="100"
+                  [ngClass]="{ 'is-invalid': submitted && formErrors.name }">
+                <div *ngIf="submitted && formErrors.name" class="invalid-feedback">
+                  <div *ngIf="formErrors.name">{{ formErrors.name }}</div>
+                </div>
+              </div>                
+            </div>
+          </div>
+
+          <div class="col-md-12 m-1">
+            <div class="row">
+                  <div class="col-md-3 text-right">
+                    <label class="col-form-label">Description</label>
+                  </div>
+                  <div class="col-md-9">
+                    <input type="text" class="form-control" placeholder="Description" formControlName="description"  maxlength="1024"
+                      [ngClass]="{ 'is-invalid': submitted && formErrors.description }">
+                    <div *ngIf="submitted && formErrors.description" class="invalid-feedback">
+                      <div *ngIf="formErrors.description">{{ formErrors.description }}</div>
+                    </div>
+                  </div>              
+                </div>
+          </div>
+
+          <div class="col-md-12 m-1">
+            <div class="row">
+              <div class="col-md-3 text-right">
+                <label class="col-form-label text-right">Status</label>
+              </div>
+              <div class="col-md-9">
+                <div class="mt-2">
+                  <label class="switcher">
+                    <input type="checkbox" class="switcher-input" formControlName="status"
+                      [ngClass]="{ 'is-invalid': submitted && formErrors.status }">
+                    <span class="switcher-indicator">
+                      <span class="switcher-yes"><span class="ion ion-md-checkmark"></span></span>
+                      <span class="switcher-no"><span class="ion ion-md-close"></span></span>
+                    </span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-12 m-1">
+            <div class="row">
+              <div class="col-md-3 text-right">
+                <label class="col-form-label">Comment</label>
+              </div>
+
+              <div class="col-md-9">
+                <input type="text" class="form-control" placeholder="Comment" formControlName="comment"  maxlength="1024"
+                  [ngClass]="{ 'is-invalid': submitted && formErrors.comment }">
+                <div *ngIf="submitted && formErrors.comment" class="invalid-feedback">
+                  <div *ngIf="formErrors.comment">{{ formErrors.comment }}</div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="col-md-12 m-1" *ngIf="wopmTemplateModel.templateType == 'Asset Template'">
+            <div class="row">
+              <div class="col-md-3 text-right">
+                <label class="col-form-label">Responsibility</label>
+              </div>
+              <div class="col-md-9">
+                <select class="custom-select" formControlName="responsibility"
+                  [ngClass]="{ 'is-invalid': submitted && formErrors.responsibility }">
+                  <option value="CLIENT">CLIENT</option>
+                  <option value="CONTRACTOR">CONTRACTOR</option>
+                </select>
+                <div *ngIf="submitted && formErrors.responsibility" class="invalid-feedback">
+                  <div *ngIf="formErrors.responsibility">{{ formErrors.responsibility }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-12 m-1" *ngIf="wopmTemplateModel.templateType != 'Asset Template'">
+            <div class="row">
+              <div class="col-md-3 text-right">
+                <label class="col-form-label">Responsibility</label>
+              </div>
+              <div class="col-md-9">
+                <select class="custom-select" formControlName="responsibility"
+                  [ngClass]="{ 'is-invalid': submitted && formErrors.responsibility }">
+                  <option value="CLIENT">CLIENT</option>
+                </select>
+                <div *ngIf="submitted && formErrors.responsibility" class="invalid-feedback">
+                  <div *ngIf="formErrors.responsibility">{{ formErrors.responsibility }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-12 m-1"  *ngIf="wopmTemplateModel.templateType == 'Asset Template'">
+            <div class="row">
+                <div class="col-md-3 text-right">
+                  <label class="col-form-label">Cost</label>
+                </div>
+
+                <div class="col-md-9">
+                  <kendo-numerictextbox [format]="'##,#.00'" [min]="0"  class="form-control" placeholder="Cost" formControlName="cost"
+                  [ngClass]="{ 'is-invalid': submitted && formErrors.cost }" ></kendo-numerictextbox>
+                  <div *ngIf="submitted && formErrors.cost" class="invalid-feedback">
+                    <div *ngIf="formErrors.cost">{{ formErrors.cost }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-12 m-1"  *ngIf="wopmTemplateModel.templateType == 'Asset Template'">
+              <div class="row">
+                <div class="col-md-3 text-right">
+                  <label class="col-form-label">User Ref 2</label>
+                </div>
+  
+                <div class="col-md-9">
+                  <input type="text" class="form-control" placeholder="User Ref 2" formControlName="useref2"  maxlength="20"
+                    [ngClass]="{ 'is-invalid': submitted && formErrors.useref2 }">
+                  <div *ngIf="submitted && formErrors.useref2" class="invalid-feedback">
+                    <div *ngIf="formErrors.useref2">{{ formErrors.useref2 }}</div>
+                  </div>
+                </div>
+  
+              </div>
+            </div>
+            <div class="col-md-12 m-1"  *ngIf="wopmTemplateModel.templateType == 'Asset Template'">
+              <div class="row">
+                <div class="col-md-3 text-right">
+                  <label class="col-form-label">User Ref 3</label>
+                </div>
+                <div class="col-md-9">
+                  <input type="text" class="form-control" placeholder="User Ref 3" formControlName="useref3"  maxlength="20"
+                    [ngClass]="{ 'is-invalid': submitted && formErrors.useref3 }">
+                  <div *ngIf="submitted && formErrors.useref3" class="invalid-feedback">
+                    <div *ngIf="formErrors.useref3">{{ formErrors.useref3 }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-12 m-1"  *ngIf="wopmTemplateModel.templateType == 'Asset Template'">
+              <div class="row">
+                <div class="col-md-3 text-right">
+                  <label class="col-form-label">User Ref 4</label>
+                </div>
+                <div class="col-md-9">
+                  <input type="text" class="form-control" placeholder="User Ref 4" formControlName="useref4"  maxlength="20"
+                    [ngClass]="{ 'is-invalid': submitted && formErrors.useref4 }">
+                  <div *ngIf="submitted && formErrors.useref4" class="invalid-feedback">
+                    <div *ngIf="formErrors.useref4">{{ formErrors.useref4 }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-12 m-1"  *ngIf="wopmTemplateModel.templateType == 'Asset Template'">
+              <div class="row">
+                <div class="col-md-3 text-right">
+                  <label class="col-form-label">User Ref 5</label>
+                </div>
+                <div class="col-md-9">
+                  <input type="text" class="form-control" placeholder="User Ref 5" formControlName="useref5"  maxlength="20"
+                    [ngClass]="{ 'is-invalid': submitted && formErrors.useref5 }">
+                  <div *ngIf="submitted && formErrors.useref5" class="invalid-feedback">
+                    <div *ngIf="formErrors.useref5">{{ formErrors.useref5 }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-12 m-1" *ngIf="wopmTemplateModel.templateType == 'Asset Template'">
+              <div class="row">
+                <div class="col-md-3 text-right">
+                  <label class="col-form-label">Checklist Type</label>
+                </div>
+                <div class="col-md-9">
+                  <select class="custom-select" formControlName="checklisttype"
+                    [ngClass]="{ 'is-invalid': submitted && formErrors.checklisttype }">
+                    <option value=""></option>
+                    <option value="ACCESS">ACCESS</option>
+                    <option value="CUSTFORM">CUSTFORM</option>
+                    <option value="HANDOVER">HANDOVER</option>
+                    <option value="LETTER">LETTER</option>
+                    <option value="OPEN">OPEN</option>
+                    <option value="RELEASE">RELEASE</option>
+                    <option value="SIGNOFF">SIGNOFF</option>
+                    <option value="WORK">WORK</option>
+                    <option value="YESNO">YESNO</option>
+                  </select>
+                  <div *ngIf="submitted && formErrors.checklisttype" class="invalid-feedback">
+                    <div *ngIf="formErrors.checklisttype">{{ formErrors.checklisttype }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-12 m-1" *ngIf="wopmTemplateModel.templateType != 'Asset Template'">
+              <div class="row">
+                <div class="col-md-3 text-right">
+                  <label class="col-form-label">Checklist Type</label>
+                </div>
+                <div class="col-md-9">
+                  <select class="custom-select" formControlName="checklisttype"
+                    [ngClass]="{ 'is-invalid': submitted && formErrors.checklisttype }">
+                    <option value=""></option>
+                    <option value="RELEASE">RELEASE</option>
+                    <option value="SIGNOFF">SIGNOFF</option>
+                  </select>
+                  <div *ngIf="submitted && formErrors.checklisttype" class="invalid-feedback">
+                    <div *ngIf="formErrors.checklisttype">{{ formErrors.checklisttype }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-12 m-1"  *ngIf="wopmTemplateModel.templateType == 'Asset Template'">
+              <div class="row">
+                <div class="col-md-3 text-right">
+                  <label class="col-form-label">Mail Merge Document</label>
+                </div>
+                <div class="col-md-9 row m-0">
+                    <input type="text" class="form-control col textWithButton" placeholder="Mail Merge Document" formControlName="mailmergedoc"  maxlength="1024"
+                      [ngClass]="{ 'is-invalid': submitted && formErrors.mailmergedoc }" readonly>
+                    <button type="button" class="btn btn-sm themeButton col smallButton" (click)="file.click()">...
+                      <!-- <input type="file" [(ngModel)]="fileValue" accept=".csv" style="display:none" (change)="handleFile($event)"> -->
+                      <input type="file" #file [(ngModel)]="fileValue" [ngModelOptions]="{standalone: true}" [multiple]="false" (change)="onFileChange($event)" 
+                      style="display:none"  accept=".docx,.dotx,.doc,.dot"/>
+                    </button>
+                  <div *ngIf="submitted && formErrors.mailmergedoc" class="invalid-feedback">
+                    <div *ngIf="formErrors.mailmergedoc">{{ formErrors.mailmergedoc }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-12 m-1">
+              <div class="row">
+                <div class="col-md-3 text-right">
+                  <label class="col-form-label">Attachment Required</label>
+                </div>
+                <div class="col-md-9">
+                  <select class="custom-select" formControlName="attachmentrequired"
+                  [ngClass]="{ 'is-invalid': submitted && formErrors.attachmentrequired }">
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
+                  <div *ngIf="submitted && formErrors.attachmentrequired" class="invalid-feedback">
+                    <div *ngIf="formErrors.attachmentrequired">{{ formErrors.attachmentrequired }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          <div class="buttonDiv pull-right mt-2">
+            <button type="button" (click)="closeChecklistFormWindow()" class="btn btn-sm themeButton m-1">Cancel</button>
+            <button type="button" (click)="onSubmit()"  class="btn btn-sm themeButton m-1">Ok</button>
+          </div>
+
+      </form>
+  
+  
+    </div>
+  </kendo-window>

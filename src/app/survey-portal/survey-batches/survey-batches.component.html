@@ -116,7 +116,7 @@
 
           <tr class="odd gradeX" *ngFor="let batchList of batchesLists let i = index; trackBy:trackByFunction"
             (click)="toggleClass($event, batchList)" (dblclick)="doubleclick(batchList)" >
-            <td class="smallCol">
+            <td class="smallCol" (mousedown)="toggleClass($event, batchList)">
               <!--<i style="color: #dfdbdb;" class="fas fa-bars"></i>-->
               <li class="nav-item dropdown list-unstyled" >
                 <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>

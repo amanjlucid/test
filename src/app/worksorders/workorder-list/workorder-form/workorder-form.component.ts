@@ -1,1089 +1,848 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef, HostListener } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AlertService, WorksOrdersService , HelperService } from '../../../_services';
-import { CustomValidators } from '../../../_helpers/custom.validator'
-import { User } from '../../../_models'
-declare var $: any;
-import * as moment from 'moment';
+import { AlertService, WorksOrdersService, HelperService, LoaderService, WorksorderManagementService } from '../../../_services';
 import { SubSink } from 'subsink';
+import { forkJoin } from 'rxjs';
+import { firstDateIsLower, IsGreaterDateValidator, isNumberCheck, ShouldGreaterThanYesterday, shouldNotZero, SimpleDateValidator, yearFormatValidator } from 'src/app/_helpers';
 
 @Component({
-  selector: 'app-workorder-form',
-  templateUrl: './workorder-form.component.html',
-  styleUrls: ['./workorder-form.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'app-workorder-form',
+    templateUrl: './workorder-form.component.html',
+    styleUrls: ['./workorder-form.component.css'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 
-
 export class WorkOrderFormComponent implements OnInit {
-  subs = new SubSink();
-  woForm: FormGroup;
-  @Input() woFormWindow: boolean = false
-  @Input() selectedWorkOrderAddEdit:any;
-  @Input() woFormType: any = 'new';
-  @Output() closeWoFormWin = new EventEmitter<boolean>();
-  public windowWidth = 'auto';
-  public windowHeight = 'auto';
-  public windowTop = '45';
-  public windowLeft = 'auto';
-  loading = false;
-  submitted = false;
-  public windowTitle: string;
-  saveMsg: string;
-  currentUser;
-  assetTemplateListData:any;
-  getWorkOrderTypeData:any;
-  workOrderProgrammeListData:any;
-  WorkOrderContractListData:any;
-  GetPhaseTemplateListData:any;
-  work_order_no:any;
-  public addStage = 1;
-  public saveParms;
-  public FinalSubmit = false;
-  calendarPosition: string = "bottom";
-  contractSelcted:any = {};
-  programSelcted:any = {};
-  assetTmpSelcted:any = {};
-  validateAddFormError:string = 'N';
-
-
-  readInput: boolean
-  validationMessage = {
-
-    'woType': {
-      'required': 'Work order type is required.',
-    },
-
-    'wottemplatetype': {
-      'required': 'Asset Template is required.',
-    },
-
-    'woprogram': {
-      'required': 'Programme is required.',
-    },
-
-    'contractName': {
-      'required': 'Contract is required.',
-    },
-
-
-    'woname': {
-      'required': 'Work Order Name is required.',
-      'maxlength': 'Name must be maximum 20 characters.',
-      'strinUpperCase': 'Name must be uppercase'
-    },
-
-    'wodesc': {
-      'required': 'Description is required.',
-    },
-
-    'wostatus': {
-      'required': 'Status is required.',
-    },
-    'woactinact': {
-      'required': 'Active?inactive is required.',
-    },
-    'wotargetcompletiondate': {
-      'required': 'Target Date is required.',
-    },
-
-    'wobudget': {
-      'required': 'Budget is required.',
-      'pattern': 'Number Only.',
-    },
-
-    'purchase_order_no': {
-      'required': 'Purchase Order No is required.',
-    },
-
-
-    'wobudgetcode': {
-      'required': 'Budget code is required.',
-    },
-
-
-    'plan_year': {
-      'required': 'Plan Year is required.',
-    },
-
-
-    'woplanstartdate': {
-      'required': 'Plan Start Date is required.',
-    },
-
-    'woplanenddate': {
-      'required': 'Plan End Date is required.',
-    },
-
-    'woinstructions': {
-      'required': 'Instructions is required.',
-    },
-
-    'wooverheadpct': {
-      'required': 'Overhead is required.',
-    },
-
-
-    'woprelimpct': {
-      'required': 'Prelim is required.',
-    },
-
-
-    'woprofitpct': {
-      'required': 'Profit is required.',
-    },
-
-    'woothercostpct': {
-      'required': 'Other Cost is required.',
-    },
-
-    'contract_payment_type': {
-      'required': 'Contract payment Type is required.',
-    },
-
-
-
-  };
-  formErrors: any;
-
-
-  constructor(
-    private fb: FormBuilder,
-    private worksOrdersService: WorksOrdersService,
-    private alertService: AlertService,
-    private chRef: ChangeDetectorRef,
-    private helperService: HelperService,
-  ) { }
-
-
-  ngOnDestroy() {
-      this.subs.unsubscribe();
-  }
-  ngOnInit() {
-
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
-
-      if (this.addStage == 1 && this.woFormType == "new") {
-          this.woForm = this.fb.group({
-              woname: [''],
-              wodesc: [''],
-              woType: ['', Validators.required],
-              wottemplatetype: ['', Validators.required],
-              woprogram: ['', Validators.required],
-              contractName: ['', Validators.required],
-              wophasetemplate: [''],
-
-
-
-          })
-
-      }
-      if (this.woFormType == "new") {
-          this.readInput = false;
-          this.saveMsg = "Work Order created successfully."
-          this.windowTitle = "New Work Order";
-      } else if (this.woFormType == "edit") {
-
-          this.addStage = 2;
-
-          this.woForm = this.fb.group({
-              cttname: [{
-                  value: '',
-                  disabled: true
-              }],
-              cttcode: [{
-                  value: '',
-                  disabled: true
-              }],
-              conname: [{
-                  value: '',
-                  disabled: true
-              }],
-              wotname: [{
-                  value: '',
-                  disabled: true
-              }],
-              woTypevalue: [{
-                  value: '',
-                  disabled: true
-              }],
-              woname: [''],
-              wodesc: ['', Validators.required],
-              wostatus: ['', Validators.required],
-              woactinact: ['', Validators.required],
-              wotargetcompletiondate: ['', Validators.required],
-              wobudget: ['', [Validators.required, Validators.pattern("^[0-9]*$")]],
-              purchase_order_no: ['', Validators.required],
-              wobudgetcode: ['', Validators.required],
-              plan_year: ['', Validators.required],
-              woplanstartdate: ['', Validators.required],
-              woplanenddate: ['', Validators.required],
-              woinstructions: ['', Validators.required],
-              wooverheadpct: ['', Validators.required],
-              woprelimpct: ['', Validators.required],
-              woprofitpct: ['', Validators.required],
-              woothercostpct: ['', Validators.required],
-              contract_payment_type: ['', Validators.required],
-          })
-
-
-          this.readInput = false
-          this.windowTitle = "Edit Work Order";
-          this.saveMsg = "Work Order updated successfully."
-      }
-
-      //  this.formControlValueChanged();
-
-
-
-      this.getAllData();
-
-  }
-
-  async getAllData() {
-
-
-      this.GetPhaseTemplateList();
-      this.getWorkOrderType();
-      this.GetWorkOrderProgrammeList();
-
-      if (this.woFormType == "edit") {
-          await this.firstCallData();
-      } else {
-          this.getAssetTemplateList();
-          this.WorkOrderContractList();
-      }
-      this.populateWorkOrder(this.selectedWorkOrderAddEdit);
-      this.chRef.detectChanges();
-
-
-  }
-
-  async firstCallData() {
-
-    const promise1 =   this.getAssetTemplateList();
-    const promise2 =   this.WorkOrderContractList();
-
-    Promise.all([promise1, promise2]).then((values) => {
-        this.EditRecordData();
-    });
-
-  }
-
-
-
-  async EditRecordData() {
-
-      await this.GetWorksOrderByWOsequence();
-
-      let contData = this.WorkOrderContractListData;
-
-    //  console.log('selectedWorkOrderAddEdit ' + JSON.stringify(this.selectedWorkOrderAddEdit));
-
-      for (let k = 0; k < contData.length; k++) {
-          if (contData[k].cttsurcde == this.selectedWorkOrderAddEdit.cttsurcde) {
-              this.contractSelcted = contData[k];
-          }
-      }
-      /*
-        const woProgramLst = this.workOrderProgrammeListData;
-
-
-        for(let k=0;k<woProgramLst.length;k++)
-        {
-           if(woProgramLst[k].wprsequence == this.selectedWorkOrderAddEdit.wprsequence){
-            this.programSelcted = woProgramLst[k];
-           }
+    subs = new SubSink();
+    woForm: FormGroup;
+    woForm2: FormGroup;
+    @Input() woFormWindow: boolean = false
+    @Input() selectedWorkOrderAddEdit: any;
+    @Input() woFormType: any = 'new';
+    @Input() selectedProgramme: any = null;
+    @Output() closeWoFormWin = new EventEmitter<boolean>();
+    panelHeight: any = "auto";
+    windowWidth: any = 600;
+    currentUser: any;
+    windowTitle: string;
+    readonly = true;
+    worksOrderData: any;
+    submitted = false;
+    submitted1 = false;
+    assetTemplateListData: any;
+    getWorkOrderTypeData: any;
+    workOrderProgrammeListData: any;
+    WorkOrderContractListData: any;
+    GetPhaseTemplateListData: any;
+    formErrors: any;
+    stage2FormSetting = {
+        won: [''],
+        extRef: [''],
+        woType: [''],
+        wottemplatetype: [''],
+        woprogram: [''],
+        contractName: [''],
+        cttname: [''],
+        cttcode: [''],
+        conname: [''],
+        wotname: [''],
+        woTypevalue: [''],
+        wophasetemplate: [''],
+        woname: ['', [Validators.required, Validators.maxLength(50)]],
+        wodesc: ['', Validators.required],
+        wostatus: ['', Validators.required],
+        woactinact: ['', Validators.required],
+        wotargetcompletiondate: [''],
+        wobudget: ['', [Validators.required, shouldNotZero()]],
+        purchase_order_no: [''],
+        wobudgetcode: [''],
+        plan_year: ['', [Validators.required, yearFormatValidator()]],
+        woplanstartdate: ['', [SimpleDateValidator()]],
+        woplanenddate: ['', [SimpleDateValidator()]],
+        woinstructions: ['', Validators.required],
+        wooverheadpct: ['', Validators.required],
+        woprelimpct: ['', Validators.required],
+        woprofitpct: ['', Validators.required],
+        woothercostpct: ['', Validators.required],
+        contract_payment_type: ['', Validators.required],
+        defectLibPeriodCheck: [''],
+        defectLibPeriodVal: ['', [shouldNotZero()]],
+        valuationCheck: [''],
+    }
+    workOrderNo: any;
+    validationMessage = {
+        'woType': {
+            'required': 'Work order type is required.',
+        },
+        'wottemplatetype': {
+            'required': 'Asset Template is required.',
+        },
+        'woprogram': {
+            'required': 'Programme is required.',
+        },
+        'contractName': {
+            'required': 'Contract is required.',
+        },
+        'woname': {
+            'required': 'Work Order Name is required.',
+            'maxlength': 'Name must be maximum 50 characters.',
+            'strinUpperCase': 'Name must be uppercase'
+        },
+        'wodesc': {
+            'required': 'Description is required.',
+        },
+        'wostatus': {
+            'required': 'Status is required.',
+        },
+        'woactinact': {
+            'required': 'Active?inactive is required.',
+        },
+        'wotargetcompletiondate': {
+            'required': 'Target Date is required.',
+            'pastDate': 'Target Date cannot be in the past.',
+            'invalidDate': 'Target Date in dd/mm/yyyy format.',
+            'isLower': 'Target Date must be on or after the Plan Start Date.',
+        },
+
+        'wobudget': {
+            'required': 'Budget is required.',
+            'pattern': 'Number Only.',
+            'shouldNotZero': 'Budget cannot be 0 and blank'
+        },
+        'purchase_order_no': {
+            'required': 'Purchase Order No is required.',
+        },
+        'wobudgetcode': {
+            'required': 'Budget code is required.',
+        },
+        'plan_year': {
+            'required': 'Plan Year is required.',
+            'invalidYear': 'Plan Year is invalid.'
+        },
+        'woplanstartdate': {
+            'required': 'Plan Start Date is required.',
+            'pastDate': 'Plan Start Date cannot be in the past.',
+            'invalidDate': 'Plan Start Date in dd/mm/yyyy format.',
+        },
+        'woplanenddate': {
+            'required': 'Plan End Date is required.',
+            'isLower': 'Plan End Date must be on or after the Plan Start Date.',
+            'invalidDate': 'Plan End Date in dd/mm/yyyy format.',
+            'pastDate': 'Plan End Date cannot be in the past.',
+            'isGreaterDate': 'Plane End Date cannot be later than the Target Completion Date.'
+        },
+        'woinstructions': {
+            'required': 'Instructions is required.',
+        },
+        'wooverheadpct': {
+            'required': 'Overhead is required.',
+        },
+        'woprelimpct': {
+            'required': 'Prelim is required.',
+        },
+        'woprofitpct': {
+            'required': 'Profit is required.',
+        },
+        'woothercostpct': {
+            'required': 'Other Cost is required.',
+        },
+        'contract_payment_type': {
+            'required': 'Contract payment Type is required.',
+        },
+        'defectLibPeriodVal': {
+            'isNotNumber': 'DLP value should be an integer value.',
+            'shouldNotZero': 'DLP value cannot be 0 and blank'
+        },
+
+
+    };
+    addStage = 1;
+    contractSelcted: any = {};
+    assetTmpSelcted: any = {};
+    programSelcted: any = {};
+    left: any = "";
+    minDate: any;
+    innerWidth: any;
+    @HostListener('window:resize', ['$event'])
+    onResize(event) {
+        this.innerWidth = window.innerWidth;
+        if (this.innerWidth > 1708) {
+            this.left = this.addStage == 1 ? 600 : 300;
+        } else if (this.innerWidth > 1300 && this.innerWidth < 1707) {
+            this.left = this.addStage == 1 ? 400 : 200;
+        } else {
+            this.left = "auto";
         }
-      */
-      let assetTmpLst = this.assetTemplateListData;
-      for (let k = 0; k < assetTmpLst.length; k++) {
-          if (assetTmpLst[k].wotsequence == this.selectedWorkOrderAddEdit.wotsequence) {
-              this.assetTmpSelcted = assetTmpLst[k];
-          }
-      }
+    }
+
+
+    constructor(
+        private fb: FormBuilder,
+        private worksOrdersService: WorksOrdersService,
+        private alertService: AlertService,
+        private chRef: ChangeDetectorRef,
+        private helperService: HelperService,
+        private loaderService: LoaderService,
+        private worksorderManagementService: WorksorderManagementService
+    ) {
+        const current = new Date();
+        this.minDate = {
+            year: current.getFullYear(),
+            month: current.getMonth() + 1,
+            day: current.getDate()
+        };
+
+        // console.log(this.minDate);
+    }
+
+
+    ngOnDestroy() {
+        this.subs.unsubscribe();
+    }
+
+    ngOnInit() {
+        // console.log(this.woFormType)
+        // console.log(this.selectedWorkOrderAddEdit)
+        this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        if (this.woFormType == "new") {
+            this.initializeForm(1)
+        } else {
+            this.initializeForm(2)
+        }
+
+        this.subs.add(
+            forkJoin([
+                this.worksOrdersService.GetPhaseTemplateList(),
+                this.worksOrdersService.getWorkOrderType(),
+                this.worksOrdersService.GetWorkOrderProgrammeList(),
+                this.worksOrdersService.getAssetTemplateList(),
+                this.worksOrdersService.WorkOrderContractList(true)
+            ]).subscribe(
+                data => {
+                    // console.log(data);
+                    this.GetPhaseTemplateListData = data[0].data;
+                    this.getWorkOrderTypeData = data[1].data;
+                    this.workOrderProgrammeListData = data[2].data;
+                    this.assetTemplateListData = data[3].data;
+                    this.WorkOrderContractListData = data[4].data;
+                    this.chRef.detectChanges();
+
+                    if (this.woFormType == "edit") {
+                        this.worksOrdersService.GetWorksOrderByWOsequence(this.selectedWorkOrderAddEdit.wosequence).subscribe(
+                            wod => {
+                                // console.log(wod)
+                                if (wod.isSuccess) {
+                                    this.worksOrderData = wod.data;
+                                    this.populateStage2Form(this.worksOrderData)
+                                } else {
+                                    this.alertService.error(wod.message)
+                                }
+
+                                this.chRef.detectChanges();
+                            }
+                        )
+                    } else {
+                        if (this.selectedProgramme != null) {
+                            this.woForm.patchValue({
+                                woprogram: this.selectedProgramme?.wprsequence
+                            })
+                        }
+                    }
+
+
+                }
+            )
+        )
+
+
+
+    }
+
+    initializeForm(stage) {
+        this.addStage = stage;
+        this.onResize(null);
+
+        if (this.woFormType == "new" && stage == 1) {
+            this.windowTitle = "New Works Order";
+            this.woForm = this.fb.group({
+                woname: [''],
+                wodesc: [''],
+                woType: ['', Validators.required],
+                wottemplatetype: ['', Validators.required],
+                woprogram: ['', Validators.required],
+                contractName: ['', Validators.required],
+                wophasetemplate: [''],
+            });
+
 
-      this.chRef.detectChanges();
-
-      let wotname = '';
-      let conname = '';
-      let cttcode = '';
-      let cttname = '';
-
-
-
-
-
-
-
-      if (this.assetTmpSelcted.hasOwnProperty("wotname") ) {
-
-      } else {
-
-          this.assetTmpSelcted.wotname = '';
-          this.assetTmpSelcted.wotsequence = this.selectedWorkOrderAddEdit.wotsequence
-      }
-
-      if (this.contractSelcted.hasOwnProperty("conname")  && this.contractSelcted.hasOwnProperty("cttcode") && this.contractSelcted.hasOwnProperty("cttname")) {
-
-      } else {
-          this.contractSelcted.conname = '';
-          this.contractSelcted.cttcode = '';
-          this.contractSelcted.cttname = '';
-          this.contractSelcted.cttsurcde = this.selectedWorkOrderAddEdit.cttsurcde;
-
-      }
-
-
-    // console.log('selectedWorkOrderAddEdit edit '+ JSON.stringify( this.selectedWorkOrderAddEdit));
-      this.woForm.patchValue({
-          conname: (this.contractSelcted.conname) ? this.contractSelcted.conname : '',
-          cttcode: (this.contractSelcted.cttcode) ? this.contractSelcted.cttcode : '',
-          cttname: (this.contractSelcted.cttname) ? this.contractSelcted.cttname : '',
-          wotname: (this.assetTmpSelcted.wotname) ? this.assetTmpSelcted.wotname : '',
-          woTypevalue: (this.selectedWorkOrderAddEdit.wocodE6) ? this.selectedWorkOrderAddEdit.wocodE6 : '',
-          woname: (this.selectedWorkOrderAddEdit.wocodE6) ? this.selectedWorkOrderAddEdit.woname : '',
-          wodesc: (this.selectedWorkOrderAddEdit.wodesc) ? this.selectedWorkOrderAddEdit.wodesc : '',
-          wostatus: (this.selectedWorkOrderAddEdit.wostatus) ? this.selectedWorkOrderAddEdit.wostatus : '',
-          woactinact: (this.selectedWorkOrderAddEdit.woactinact) ? this.selectedWorkOrderAddEdit.woactinact : '',
-          wotargetcompletiondate: (this.selectedWorkOrderAddEdit.wotargetcompletiondate) ? this.helperService.ngbDatepickerFormat(this.selectedWorkOrderAddEdit.wotargetcompletiondate) : '',
-          wobudget: (this.selectedWorkOrderAddEdit.wobudget) ? this.selectedWorkOrderAddEdit.wobudget : 0,
-          purchase_order_no: (this.selectedWorkOrderAddEdit.wocodE3) ? this.selectedWorkOrderAddEdit.wocodE3 : '',
-          wobudgetcode: (this.selectedWorkOrderAddEdit.wocodE4) ? this.selectedWorkOrderAddEdit.wocodE4 : '',
-          plan_year: (this.selectedWorkOrderAddEdit.wocodE1) ? this.selectedWorkOrderAddEdit.wocodE1 : '',
-          woplanstartdate: (this.selectedWorkOrderAddEdit.woplanstartdate) ? this.helperService.ngbDatepickerFormat(this.selectedWorkOrderAddEdit.woplanstartdate) : '',
-          woplanenddate: (this.selectedWorkOrderAddEdit.woplanenddate) ? this.helperService.ngbDatepickerFormat(this.selectedWorkOrderAddEdit.woplanenddate) : '',
-          woinstructions: (this.selectedWorkOrderAddEdit.woinstructions) ? this.selectedWorkOrderAddEdit.woinstructions : '',
-          wooverheadpct: (this.selectedWorkOrderAddEdit.wooverheadpct) ? this.selectedWorkOrderAddEdit.wooverheadpct : 0,
-          woprelimpct: (this.selectedWorkOrderAddEdit.woprelimpct) ? this.selectedWorkOrderAddEdit.woprelimpct : 0,
-          woprofitpct: (this.selectedWorkOrderAddEdit.woprofitpct) ? this.selectedWorkOrderAddEdit.woprofitpct : 0,
-          woothercostpct: (this.selectedWorkOrderAddEdit.woothercostpct) ? this.selectedWorkOrderAddEdit.woothercostpct : 0,
-          contract_payment_type: (this.selectedWorkOrderAddEdit.wocontracttype) ? this.selectedWorkOrderAddEdit.wocontracttype : '',
-      })
-
-
-      this.chRef.detectChanges();
-
-
-
-
-
-  }
-
-
-
-  async GetWorksOrderByWOsequence() {
-
-      this.work_order_no = this.selectedWorkOrderAddEdit.wosequence;
-      let promise = new Promise((resolve, reject) => {
-
-
-          this.worksOrdersService.GetWorksOrderByWOsequence(this.work_order_no).subscribe(
-              (data) => {
-                  this.selectedWorkOrderAddEdit = data.data;
-                  this.chRef.detectChanges();
-                  resolve();
-              },
-              error => {
-                  this.alertService.error(error);
-                  this.chRef.detectChanges();
-
-              }
-          )
-      });
-      return promise;
-  }
-
-
-
-
-  GetNewSourceCodeForWorksOrder() {
-
-      this.subs.add(
-          this.worksOrdersService.GetNewSourceCodeForWorksOrder().subscribe(
-              (data) => {
-                  this.work_order_no = data.data;
-                  this.chRef.detectChanges();
-              },
-              error => {
-                  this.alertService.error(error);
-                  this.chRef.detectChanges();
-
-              }
-          )
-      )
-  }
-
-
-  GetPhaseTemplateList() {
-
-      let promise = new Promise((resolve, reject) => {
-
-
-          this.worksOrdersService.GetPhaseTemplateList().subscribe(
-              (data) => {
-                  this.GetPhaseTemplateListData = data.data;
-                  this.chRef.detectChanges();
-                  resolve();
-              },
-              error => {
-                  this.alertService.error(error);
-                  this.chRef.detectChanges();
-
-              }
-          )
-      });
-      return promise;
-
-  }
-
-  WorkOrderContractList() {
-
-      let bActiveOnly = true;
-      let promise = new Promise((resolve, reject) => {
-
-
-          this.worksOrdersService.WorkOrderContractList(bActiveOnly).subscribe(
-              (data) => {
-                  this.WorkOrderContractListData = data.data;
-                  this.chRef.detectChanges();
-                  resolve();
-              },
-              error => {
-                  this.alertService.error(error);
-                  this.chRef.detectChanges();
-
-              }
-          )
-      });
-      return promise;
-
-
-
-
-  }
-
-  GetWorkOrderProgrammeList() {
-
-      let promise = new Promise((resolve, reject) => {
-
-
-          this.worksOrdersService.GetWorkOrderProgrammeList().subscribe(
-              (data) => {
-                  this.workOrderProgrammeListData = data.data;
-                  this.chRef.detectChanges();
-                  resolve();
-              },
-              error => {
-                  this.alertService.error(error);
-                  this.chRef.detectChanges();
-
-              }
-          )
-      });
-      return promise;
-
-
-
-
-  }
-
-  getAssetTemplateList() {
-
-      let promise = new Promise((resolve, reject) => {
-
-
-          this.worksOrdersService.getAssetTemplateList().subscribe(
-              (data) => {
-                  this.assetTemplateListData = data.data;
-                  this.chRef.detectChanges();
-                      resolve();
-              },
-              error => {
-                  this.alertService.error(error);
-                  this.chRef.detectChanges();
-
-              }
-          )
-      });
-      return promise;
-
-
-
-  }
-
-  getAssetTemplateListOld() {
-
-
-      this.subs.add(
-
-          this.worksOrdersService.getAssetTemplateList().subscribe(
-              (data) => {
-                  this.assetTemplateListData = data.data;
-                  this.chRef.detectChanges();
-              },
-              error => {
-                  this.alertService.error(error);
-                  this.chRef.detectChanges();
-
-              }
-          )
-      )
-
-  }
-
-
-  getWorkOrderType() {
-
-
-      let promise = new Promise((resolve, reject) => {
-          this.subs.add(
-              this.worksOrdersService.getWorkOrderType().subscribe(
-                  (data) => {
-                      this.getWorkOrderTypeData = data.data;
-                      this.chRef.detectChanges();
-                      resolve();
-                  },
-                  error => {
-                      this.alertService.error(error);
-                      this.chRef.detectChanges();
-
-                  }
-              )
-          )
-      });
-      return promise;
-
-
-  }
-
-  formControlValueChanged() {
-
-  }
-
-  populateWorkOrder(item = null) {
-
-
-
-      let promise = new Promise((resolve, reject) => {
-
-
-
-
-          this.woForm.patchValue({
-              woType: (this.woFormType == "new") ? '' : item.woType,
-              wottemplatetype: (this.woFormType == "new") ? '' : item.wotsequence,
-              woprogram: (this.woFormType == "new") ? '' : item.wprsequence,
-              contractName: (this.woFormType == "new") ? '' : item.cttsurcde,
-              wophasetemplate: (this.woFormType == "new") ? '' : item.wophasetemplate,
-          });
-
-          resolve();
-
-
-      });
-      return promise;
-
-  }
-
-  logValidationErrors(group: FormGroup): void {
-      Object.keys(group.controls).forEach((key: string) => {
-          const abstractControl = group.get(key);
-          if (abstractControl instanceof FormGroup) {
-              this.logValidationErrors(abstractControl);
-          } else {
-              if (abstractControl && !abstractControl.valid) {
-                  const messages = this.validationMessage[key];
-                  for (const errorKey in abstractControl.errors) {
-                      if (errorKey) {
-                          this.formErrors[key] += messages[errorKey] + ' ';
-                      }
-                  }
-              }
-          }
-      })
-
-  }
-  numberOnly(event): boolean {
-      const charCode = (event.which) ? event.which : event.keyCode;
-      if (charCode > 31 && (charCode < 48 || charCode > 57)) {
-          return false;
-      }
-      return true;
-  }
-
-  formErrorObject() {
-      this.formErrors = {
-
-          'woType': '',
-          'wottemplatetype': '',
-          'woprogram': '',
-          'contractName': '',
-          'wophasetemplate': '',
-          'woname': '',
-          'wodesc': '',
-          'wostatus': '',
-          'woactinact': '',
-          'wotargetcompletiondate': '',
-          'wobudget': '',
-          'purchase_order_no': '',
-          'wobudgetcode': '',
-          'plan_year': '',
-          'woplanstartdate': '',
-          'woplanenddate': '',
-          'woinstructions': '',
-          'wooverheadpct': '',
-          'woprelimpct': '',
-          'woprofitpct': '',
-          'woothercostpct': '',
-          'contract_payment_type': '',
-      }
-  }
-
-  get f() {
-      return this.woForm.controls;
-  }
-
-  onEditSubmit() {
-
-
-      this.submitted = true;
-      this.formErrorObject(); // empty form error
-      this.logValidationErrors(this.woForm);
-
-      if (this.woForm.invalid) {
-          return;
-      }
-
-
-
-
-  }
-
-  onSubmitEdit() {
-
-      this.submitted = true;
-      this.formErrorObject(); // empty form error
-      this.logValidationErrors(this.woForm);
-
-      if (this.woForm.invalid) {
-          return;
-      }
-
-
-      this.FinalSubmit = true;
-      this.saveParms = {
-          WOSEQUENCE: this.work_order_no,
-          WOEXTREF: this.work_order_no,
-          WONAME: this.f.woname.value,
-          WODESC: this.f.wodesc.value,
-          WOSTATUS: this.f.wostatus.value,
-          WOACTINACT: this.f.woactinact.value,
-          WOBUDGET: this.f.wobudget.value,
-          WOINSTRUCTIONS: this.f.woinstructions.value,
-          WOOVERHEADPCT: this.f.wooverheadpct.value,
-          WOPRELIMPCT: this.f.woprelimpct.value,
-          WOPROFITPCT: this.f.woprofitpct.value,
-          WOOTHERCOSTPCT: this.f.woothercostpct.value,
-          WOCONTRACTTYPE: this.f.contract_payment_type.value,
-          WOCODE1: this.f.plan_year.value,
-          CTTSURCDE: this.contractSelcted.cttsurcde,
-          WOTSEQUENCE: this.assetTmpSelcted.wotsequence,
-          WPRSEQUENCE: this.selectedWorkOrderAddEdit.wprsequence,
-          WOFINALACCOUNT: 0,
-          WOBUDGETASSET: 0,
-          WOFORECAST: 0,
-          WOCOMMITTED: 0,
-          WOAPPROVED: 0,
-          WOPENDING: 0,
-          WOACTUAL: 0,
-          WOFORECASTFEE: 0,
-          WOCOMMITTEDFEE: 0,
-          WOAPPROVEDFEE: 0,
-          WOPENDINGFEE: 0,
-          WOACTUALFEE: 0,
-          WOFORECASTCONFEE: 0,
-          WOCOMMITTEDCONFEE: 0,
-          WOAPPROVEDCONFEE: 0,
-          WOPENDINGCONFEE: 0,
-          WOACTUALCONFEE: 0,
-          WOINITIALCONTRACTSUM: 0,
-          WOCURRENTCONTRACTSUM: 0,
-          WOACCEPTEDVALUE: 0,
-          WOCONTRACTORISSUEDATE: '1753-01-01 00:00:00.000',
-          WOTARGETCOMPLETIONDATE: this.dateFormate(this.f.wotargetcompletiondate.value),
-          WOCONTRACTORACCEPTANCEDATE: '1753-01-01 00:00:00.000',
-          WOPLANSTARTDATE: this.dateFormate(this.f.woplanstartdate.value),
-          WOPLANENDDATE: this.dateFormate(this.f.woplanenddate.value),
-          WOACTUALSTARTDATE: '1753-01-01 00:00:00.000',
-          WOACTUALENDDATE: '1753-01-01 00:00:00.000',
-          WOCALCOVERPREMTYPE: 'N',
-          WODEFECTLIABPERIODFLAG: 'N',
-          WODEFECTLIABPERIODDAYS: 0,
-          WOPAYMENT: 0,
-          WOCODE2: '',
-          WOCODE3: this.f.purchase_order_no.value,
-          WOCODE4: this.f.wobudgetcode.value,
-          WOCODE5: 'Works Order Milestone',
-          WOCODE6: this.selectedWorkOrderAddEdit.wocodE6,
-          WOTEXT1: '',
-          WOTEXT2: '',
-          WOTEXT3: '',
-          WOTEXT4: '',
-          WOTEXT5: '',
-          WOTEXT6: '',
-          MPgoA: 'BRIANJ',
-          MPgpA: '2021-03-17 18:30:00',
-          MPgqA: '2021-03-17 18:30:00',
-          MPgrA: 'BRIANJ',
-          MPgsA: '2021-03-17 18:30:00',
-          MPgtA: '2021-03-17 18:30:00',
-      }
-
-
-
-      //console.log('Edited saveParms ' + JSON.stringify(this.saveParms));
-
-
-      if (this.FinalSubmit == true) {
-
-          this.loading = true;
-
-          this.subs.add(
-              this.worksOrdersService.UpdateWorksOrder(this.saveParms)
-              .subscribe(
-                  data => {
+        } else if (stage == 2) {
+            // this.panelHeight = 800;
+            // this.left = 300;
+            this.windowWidth = 1200;
+
+            if (this.woFormType == "edit") {
+                this.windowTitle = "Edit Works Order";
+            }
+
+            // this.woForm2 = this.fb.group(this.stage2FormSetting);
+
+            this.woForm2 = this.fb.group(this.stage2FormSetting,
+                {
+                    validator: [
+                        firstDateIsLower('woplanenddate', 'woplanstartdate'),
+                        IsGreaterDateValidator('woplanenddate', 'wotargetcompletiondate')
+                    ],
+                }
+            );
+
+            const targetCompletionCtr = this.woForm2.get('wotargetcompletiondate')
+            const planStartCompletionCtr = this.woForm2.get('woplanstartdate')
+            const planEndCompletionCtr = this.woForm2.get('woplanenddate')
+
+            if (this.woFormType == "edit") {
+                targetCompletionCtr.setValidators[Validators.required, SimpleDateValidator()];
+                planStartCompletionCtr.setValidators[SimpleDateValidator()];
+                planEndCompletionCtr.setValidators[SimpleDateValidator()];
+
+                // this.stage2FormSetting.wotargetcompletiondate = [Validators.required, ShouldGreaterThanYesterday(), SimpleDateValidator()];
+                // this.stage2FormSetting.woplanstartdate = [ShouldGreaterThanYesterday(), SimpleDateValidator()];
+                // this.stage2FormSetting.woplanenddate = [ShouldGreaterThanYesterday(), SimpleDateValidator()];
+            }
+
+            if (this.woFormType == "new") {
+                targetCompletionCtr.setValidators[Validators.required, ShouldGreaterThanYesterday(), SimpleDateValidator()];
+                planStartCompletionCtr.setValidators[ShouldGreaterThanYesterday(), SimpleDateValidator()];
+                planEndCompletionCtr.setValidators[ShouldGreaterThanYesterday(), SimpleDateValidator()];
+
+                // this.stage2FormSetting.wotargetcompletiondate = [Validators.required, ShouldGreaterThanYesterday(), SimpleDateValidator()];
+                // this.stage2FormSetting.woplanstartdate = [ShouldGreaterThanYesterday(), SimpleDateValidator()];
+                // this.stage2FormSetting.woplanenddate = [ShouldGreaterThanYesterday(), SimpleDateValidator()];
+            }
+
+        }
+
+        this.chRef.detectChanges();
+    }
+
+
+
+
+    prepareStage2Form() {
+        this.subs.add(
+            this.worksOrdersService.GetNewSourceCodeForWorksOrder().subscribe(
+                data => {
+                    // console.log(data);
+                    this.workOrderNo = data.data;
+                    this.initializeForm(2);
+                    this.populateStage2Form(undefined);
+                    this.chRef.detectChanges();
+
+                }, err => this.alertService.error(err)
+            )
+        )
+    }
+
+    populateStage2Form(wod) {
+        // console.log(wotname);
+        // console.log(contractor);
+        let wotname: any = "";
+        let wocodE6 = wod?.wocodE6 ?? '';
+        let compDate: any = '';
+        let planStart: any = '';
+        let planEnd: any = '';
+        let wodefectliabperiodflag = true;
+        let wodefectliabperioddays = 0;
+        let wocodE2 = false;
+
+
+        if (this.woFormType == "new") {
+            let form1 = this.woForm.getRawValue();
+            wocodE6 = form1.woType;
+            wotname = this.assetTemplateListData.find(x => x.wotsequence == form1.wottemplatetype)
+            this.contractSelcted = this.WorkOrderContractListData.find(x => x.cttsurcde == form1.contractName)
+            this.programSelcted = this.workOrderProgrammeListData.find(x => x.wprsequence == form1.woprogram)
+
+        } else {
+            wotname = this.assetTemplateListData.find(x => x.wotsequence == wod.wotsequence)
+            this.contractSelcted = this.WorkOrderContractListData.find(x => x.cttsurcde == wod.cttsurcde);
+            this.programSelcted = this.workOrderProgrammeListData.find(x => x.wprsequence == wod.wprsequence)
+
+            compDate = this.helperService.ngbDatepickerFormat(wod.wotargetcompletiondate);
+            planStart = this.helperService.ngbDatepickerFormat(wod.woplanstartdate)
+            planEnd = this.helperService.ngbDatepickerFormat(wod.woplanenddate)
+            wodefectliabperiodflag = wod.wodefectliabperiodflag == "N" ? false : true;
+            wodefectliabperioddays = wod.wodefectliabperioddays;
+            wocodE2 = wod.wocodE2 == "N" ? false : true;
+
+            // console.log(wod)
+        }
+
+        //this variable is used while saving and updating record
+        this.assetTmpSelcted = wotname;
+
+        this.woForm2.patchValue({
+            won: wod?.wosequence ?? this.workOrderNo,
+            woTypevalue: wocodE6 ?? '',
+            extRef: wod?.woextref ?? this.workOrderNo.toString(),
+            woname: wod?.woname ?? '',
+            wodesc: wod?.wodesc ?? '',
+            wotname: wotname?.wotname ?? '',
+            conname: this.contractSelcted?.conname ?? '',
+            cttcode: this.contractSelcted?.cttcode ?? '',
+            cttname: this.contractSelcted?.cttname ?? '',
+            wostatus: wod?.wostatus ?? 'New',
+            woactinact: wod?.woactinact ?? 'A',
+            wotargetcompletiondate: compDate,
+            wobudget: wod?.wobudget ?? "",
+            purchase_order_no: wod?.wocodE3 ?? '',
+            wobudgetcode: wod?.wocodE4 ?? '',
+            plan_year: wod?.wocodE1 ?? '',
+            woplanstartdate: planStart,
+            woplanenddate: planEnd,
+            woinstructions: wod?.woinstructions ?? '',
+            wooverheadpct: wod?.wooverheadpct ?? 0,
+            woprelimpct: wod?.woprelimpct ?? 0,
+            woprofitpct: wod?.woprofitpct ?? 0,
+            woothercostpct: wod?.woothercostpct ?? 0,
+            contract_payment_type: wod?.wocontracttype ?? '',
+
+            defectLibPeriodCheck: wodefectliabperiodflag,
+            defectLibPeriodVal: wodefectliabperioddays,
+            valuationCheck: wocodE2,
+
+        });
+
+
+        let targetDateValidationArr = [Validators.required, ShouldGreaterThanYesterday(), SimpleDateValidator()];
+        if (this.woFormType == "edit") {
+            targetDateValidationArr = [Validators.required, SimpleDateValidator()];
+        }
+
+        const targetCompletionCtr = this.woForm2.get('wotargetcompletiondate');
+        targetCompletionCtr.setValidators(targetDateValidationArr);
+
+        const budgetCtr = this.woForm2.get('wobudget');
+        this.subs.add(
+            budgetCtr.valueChanges.subscribe(
+                val => {
+                    budgetCtr.setValidators([shouldNotZero()])
+                }
+            )
+        )
+
+        this.woForm2.get('valuationCheck').disable();
+
+        if (this.woFormType == "edit") {
+            this.woForm2.get('contract_payment_type').disable();
+            this.woForm2.get('defectLibPeriodCheck').disable();
+            this.woForm2.get('defectLibPeriodVal').disable();
+        }
+
+        this.subs.add(
+            this.woForm2.get('contract_payment_type').valueChanges.subscribe(
+                val => {
+                    // console.log(val)
+                    if (val == "VALUATION") {
+                        this.woForm2.get('valuationCheck').enable();
+                    } else {
+                        this.woForm2.get('valuationCheck').disable();
+                    }
+                }
+            )
+        )
+
+
+
+        const defectLibPeriodValCtr = this.woForm2.get('defectLibPeriodVal');
+
+        if (this.woFormType == "new") {
+            this.woForm2.get('wostatus').disable();
+            this.subs.add(
+                this.woForm2.get('defectLibPeriodCheck').valueChanges.subscribe(
+                    val => {
+                        defectLibPeriodValCtr.clearValidators();
+                        if (val) {
+                            defectLibPeriodValCtr.enable();
+                            defectLibPeriodValCtr.setValidators([shouldNotZero()]);
+                            this.woForm2.patchValue({ defectLibPeriodVal: 0 })
+                            this.chRef.detectChanges();
+                        } else {
+                            this.woForm2.patchValue({ defectLibPeriodVal: 0 })
+                            defectLibPeriodValCtr.disable();
+                            delete this.formErrors.defectLibPeriodVal
+                            this.chRef.detectChanges();
+                        }
+                    }
+                )
+            )
+        } else if (this.woFormType == "edit") {
+            defectLibPeriodValCtr.clearValidators();
+            this.chRef.detectChanges();
+        }
+
+
+
+        this.chRef.detectChanges();
+
+
+    }
+
+
+    onSubmit() {
+
+        this.submitted1 = true;
+        this.formErrorObject(); // empty form error
+        this.logValidationErrors(this.woForm);
+        this.chRef.detectChanges();
+
+        if (this.woForm.invalid) {
+            return;
+        }
+
+
+        let formRawVal = this.woForm.getRawValue();
+        let paramsForValidWO = {
+            programme: formRawVal.woprogram,
+            wotSeq: formRawVal.wottemplatetype,
+            cttsurcde: formRawVal.contractName,
+            WorksOrderTypes: formRawVal.woType,
+        }
+
+        if (this.addStage == 1) {
+            this.subs.add(
+                this.worksOrdersService.WEBWorksOrdersValidForNewWorkOrder(
+                    paramsForValidWO.programme,
+                    paramsForValidWO.wotSeq,
+                    paramsForValidWO.cttsurcde,
+                    paramsForValidWO.WorksOrderTypes
+                ).subscribe(
+                    data => {
+                        // console.log(data)
+                        if (data.isSuccess) {
+                            if (data.data.validYN == 'Y') {
+                                this.prepareStage2Form();
+                            } else {
+                                this.alertService.error(data.data.validationMessage);
+                                this.chRef.detectChanges();
+                            }
+                        } else {
+                            this.alertService.error(data.message);
+                        }
+                    }, err => this.alertService.error(err)
+                )
+            )
+        }
+
+
+    }
+
+
+
+    async onSubmit2() {
+
+        this.submitted = true;
+        this.formErrorObject(); // empty form error
+        this.logValidationErrors(this.woForm2);
+        this.chRef.detectChanges();
+
+        // console.log(this.woForm2)
+        if (this.woForm2.invalid) {
+            return;
+        }
+
+        // this.subs.add(
+        //     this.worksorderManagementService.getWorkProgrammesByWprsequence(this.programSelcted.wprsequence).subscribe(
+        //         data => {
+        //             console.log(data)
+        //         }
+        //     )
+        // )
+
+        let formRawVal = this.woForm2.getRawValue();
+
+        let msg = "";
+        let wodData: any = {};
+        let wocodE6: any = '';
+        let WOCODE5: any = null;
+        let userAndDate: any = {};
+
+        if (this.woFormType == "new") {
+            msg = "Work Order created successfully.";
+            wocodE6 = this.woForm.getRawValue().woType;
+            WOCODE5 = this.woForm.getRawValue().wophasetemplate == "" ? null : this.woForm.getRawValue().wophasetemplate
+            userAndDate.MPgoA = this.currentUser.userId;
+            userAndDate.MPgpA = this.dateFormate(this.minDate);
+            userAndDate.MPgqA = this.dateFormate(this.minDate);
+            userAndDate.MPgrA = this.currentUser.userId;
+            userAndDate.MPgsA = this.dateFormate(this.minDate);
+            userAndDate.MPgtA = this.dateFormate(this.minDate);
+        } else {
+            msg = "Work Order updated successfully.";
+            wodData = this.worksOrderData;
+            wocodE6 = wodData.wocodE6;
+
+            userAndDate.MPgoA = wodData.mPgoA;
+            userAndDate.MPgpA = wodData.mPgpA;
+            userAndDate.MPgqA = wodData.mPgqA;
+            userAndDate.MPgrA = this.currentUser.userId;
+
+            const today = new Date()
+            const yesterday = new Date(today)
+            yesterday.setDate(yesterday.getDate() - 1)
+
+            let yesterdayObj = {
+                year: yesterday.getFullYear(),
+                month: yesterday.getMonth() + 1,
+                day: yesterday.getDate()
+            }
+
+            userAndDate.MPgsA = this.dateFormate(yesterdayObj);
+            userAndDate.MPgtA = this.dateFormate(this.minDate);
+
+
+            if (wodData.wocodE5 == "" || wodData.wocodE5 == null) {
+                WOCODE5 = null;
+            } else {
+                const template = this.GetPhaseTemplateListData.find(x => x.wottemplatetype == wodData.wocodE5);
+                if (template) {
+                    WOCODE5 = template.wotsequence
+                }
+            }
+            // WOCODE5 = (wodData.wocodE5 == "" || wodData.wocodE5 == null) ? null : this.GetPhaseTemplateListData.find(x.wottemplatetype == wodData.wocodE5)?.
+        }
+
+        let params = {
+            WOSEQUENCE: formRawVal.won,
+            WOEXTREF: formRawVal.extRef,
+            WONAME: formRawVal.woname,
+            WODESC: formRawVal.wodesc,
+            WOSTATUS: formRawVal.wostatus,
+            WOACTINACT: formRawVal.woactinact,
+            WOBUDGET: this.helperService.convertMoneyToFlatFormat(formRawVal.wobudget),
+            WOINSTRUCTIONS: formRawVal.woinstructions,
+            WOOVERHEADPCT: formRawVal.wooverheadpct,
+            WOPRELIMPCT: formRawVal.woprelimpct,
+            WOPROFITPCT: formRawVal.woprofitpct,
+            WOOTHERCOSTPCT: formRawVal.woothercostpct,
+            WOCONTRACTTYPE: formRawVal.contract_payment_type,
+            WOCODE1: formRawVal.plan_year,
+            CTTSURCDE: this.contractSelcted.cttsurcde,
+            WOTSEQUENCE: this.assetTmpSelcted.wotsequence,
+            WPRSEQUENCE: this.programSelcted.wprsequence,
+            WOFINALACCOUNT: 0,
+            WOBUDGETASSET: 0,
+            WOFORECAST: 0,
+            WOCOMMITTED: 0,
+            WOAPPROVED: 0,
+            WOPENDING: 0,
+            WOACTUAL: 0,
+            WOFORECASTFEE: 0,
+            WOCOMMITTEDFEE: 0,
+            WOAPPROVEDFEE: 0,
+            WOPENDINGFEE: 0,
+            WOACTUALFEE: 0,
+            WOFORECASTCONFEE: 0,
+            WOCOMMITTEDCONFEE: 0,
+            WOAPPROVEDCONFEE: 0,
+            WOPENDINGCONFEE: 0,
+            WOACTUALCONFEE: 0,
+            WOINITIALCONTRACTSUM: 0,
+            WOCURRENTCONTRACTSUM: 0,
+            WOACCEPTEDVALUE: 0,
+            WOCONTRACTORISSUEDATE: this.dateFormate(undefined),
+            WOTARGETCOMPLETIONDATE: this.dateFormate(formRawVal.wotargetcompletiondate),
+            WOCONTRACTORACCEPTANCEDATE: this.dateFormate(undefined),
+            WOPLANSTARTDATE: this.dateFormate(formRawVal.woplanstartdate),
+            WOPLANENDDATE: this.dateFormate(formRawVal.woplanenddate),
+            WOACTUALSTARTDATE: this.dateFormate(undefined),
+            WOACTUALENDDATE: this.dateFormate(undefined),
+            WOCALCOVERPREMTYPE: 'N',
+            WODEFECTLIABPERIODFLAG: formRawVal.defectLibPeriodCheck ? "Y" : "N",
+            WODEFECTLIABPERIODDAYS: formRawVal.defectLibPeriodVal,
+            WOPAYMENT: 0,
+            WOCODE2: formRawVal.valuationCheck ? "Y" : "N",
+            WOCODE3: formRawVal.purchase_order_no,
+            WOCODE4: formRawVal.wobudgetcode,
+            WOCODE5: WOCODE5,
+            WOCODE6: wocodE6,
+            WOTEXT1: null,
+            WOTEXT2: null,
+            WOTEXT3: null,
+            WOTEXT4: null,
+            WOTEXT5: null,
+            WOTEXT6: null,
+            MPgoA: userAndDate.MPgoA, // created user
+            MPgpA: userAndDate.MPgpA, // created date
+            MPgqA: userAndDate.MPgqA, // created date
+            MPgrA: userAndDate.MPgrA, // updated user
+            MPgsA: userAndDate.MPgsA, // created date
+            MPgtA: userAndDate.MPgtA, // updated date
+
+            filed: false
+        }
+
+
+        // console.log(JSON.stringify(params));
+        // console.log(params)
+
+        let apiCall: any;
+        if (this.woFormType == "new") {
+            let validationparmas = {
+                WPRSequence: params.WPRSEQUENCE,
+                Budget: params.WOBUDGET,
+                TargetDate: params.WOTARGETCOMPLETIONDATE,
+                PlanStartDate: params.WOPLANSTARTDATE,
+                PlanEndDate: params.WOPLANENDDATE,
+                WONAME: params.WONAME,
+            }
+
+            let validate = await this.worksOrdersService.WEBWorksOrdersValidateNewWorksOrder(validationparmas);
+            if (validate.isSuccess) {
+                if (validate.data.validYN == "N") {
+                    this.alertService.error(validate.data.validationMessage);
+                    return
+                }
+            }
+
+            apiCall = this.worksOrdersService.InsertWorksOrder(params)
+
+        } else {
+
+            if (wodData.wostatus == "New" && formRawVal.wostatus == "In Progress") {
+                this.alertService.error("The Works Order Status cannot be changed from 'New' to 'In Progress'");
+                return
+            }
+
+            if (wodData.wostatus == "Closed" && formRawVal.wostatus == "New") {
+                this.alertService.error("The Works Order Status cannot be changed from 'Closed' to 'New'");
+                return
+            }
+
+            if (wodData.wostatus == "In Progress" && formRawVal.wostatus == "New") {
+                this.alertService.error("The Works Order Status cannot be changed from 'In Progress' to 'New'");
+                return
+            }
+
+            if (new Date(params.WOTARGETCOMPLETIONDATE) < new Date()) {
+                this.alertService.warning("Warning - Target Completion Date is in the past!", false);
+                this.loaderService.pageShow();
+                // setTimeout(() => {
+                // //   this.subscribeToSubmitForm(apiToAddUpdate, message);
+                // }, 2000);
+            }
+
+
+            apiCall = this.worksOrdersService.UpdateWorksOrder(params)
+        }
+
+        this.subs.add(
+            apiCall.subscribe(
+                data => {
                     //  console.log(data);
-                      if (data.isSuccess) {
-                          this.woForm.reset();
-                          this.alertService.success(this.saveMsg);
-                          this.loading = false;
-                          this.closewoFormWindow();
-                      } else {
-                          this.loading = false;
-                          this.alertService.error(data.message);
-                      }
-                      this.chRef.detectChanges();
-                  },
-                  error => {
-                      //console.log(error);
-                      this.alertService.error(error);
-                      this.loading = false;
-                  })
-          )
-
-      }
-
-
-
-  }
-
-
-  onSubmit() {
-      if (this.woFormType == 'new') {
-          this.onSubmitAdd();
-      }
-      if (this.woFormType == 'edit') {
-          this.onSubmitEdit();
-      }
-  }
-
-
-  getDetectorCheck() {
-      this.chRef.detach();
-      this.chRef.detectChanges();
-      this.chRef.reattach();
-    //  console.log('FOR DETECTOR CHANGE');
-  }
-
-
-  onSubmitAdd() {
-
-      this.submitted = true;
-      this.formErrorObject(); // empty form error
-      this.logValidationErrors(this.woForm);
-
-      if (this.woForm.invalid) {
-          return;
-      }
-
-
-      if (this.addStage == 2) {
-
-
-          let woType = this.saveParms.woType;
-
-          this.FinalSubmit = true;
-          this.saveParms = {
-              WOSEQUENCE: this.work_order_no,
-              WOEXTREF: this.work_order_no,
-              WONAME: this.f.woname.value,
-              WODESC: this.f.wodesc.value,
-              WOSTATUS: this.f.wostatus.value,
-              WOACTINACT: this.f.woactinact.value,
-              WOBUDGET: this.f.wobudget.value,
-              WOINSTRUCTIONS: this.f.woinstructions.value,
-              WOOVERHEADPCT: this.f.wooverheadpct.value,
-              WOPRELIMPCT: this.f.woprelimpct.value,
-              WOPROFITPCT: this.f.woprofitpct.value,
-              WOOTHERCOSTPCT: this.f.woothercostpct.value,
-              WOCONTRACTTYPE: this.f.contract_payment_type.value,
-              WOCODE1: this.f.plan_year.value,
-              CTTSURCDE: this.contractSelcted.cttsurcde,
-              WOTSEQUENCE: this.assetTmpSelcted.wotsequence,
-              WPRSEQUENCE: this.programSelcted.wprsequence,
-              WOFINALACCOUNT: 0,
-              WOBUDGETASSET: 0,
-              WOFORECAST: 0,
-              WOCOMMITTED: 0,
-              WOAPPROVED: 0,
-              WOPENDING: 0,
-              WOACTUAL: 0,
-              WOFORECASTFEE: 0,
-              WOCOMMITTEDFEE: 0,
-              WOAPPROVEDFEE: 0,
-              WOPENDINGFEE: 0,
-              WOACTUALFEE: 0,
-              WOFORECASTCONFEE: 0,
-              WOCOMMITTEDCONFEE: 0,
-              WOAPPROVEDCONFEE: 0,
-              WOPENDINGCONFEE: 0,
-              WOACTUALCONFEE: 0,
-              WOINITIALCONTRACTSUM: 0,
-              WOCURRENTCONTRACTSUM: 0,
-              WOACCEPTEDVALUE: 0,
-              WOCONTRACTORISSUEDATE: '1753-01-01 00:00:00.000',
-              WOTARGETCOMPLETIONDATE: this.dateFormate(this.f.wotargetcompletiondate.value),
-              WOCONTRACTORACCEPTANCEDATE: '1753-01-01 00:00:00.000',
-              WOPLANSTARTDATE: this.dateFormate(this.f.woplanstartdate.value),
-              WOPLANENDDATE: this.dateFormate(this.f.woplanenddate.value),
-              WOACTUALSTARTDATE: '1753-01-01 00:00:00.000',
-              WOACTUALENDDATE: '1753-01-01 00:00:00.000',
-              WOCALCOVERPREMTYPE: 'N',
-              WODEFECTLIABPERIODFLAG: 'N',
-              WODEFECTLIABPERIODDAYS: 0,
-              WOPAYMENT: 0,
-              WOCODE2: '',
-              WOCODE3: this.f.purchase_order_no.value,
-              WOCODE4: this.f.wobudgetcode.value,
-              WOCODE5: 'Works Order Milestone',
-              WOCODE6: woType,
-              WOTEXT1: '',
-              WOTEXT2: '',
-              WOTEXT3: '',
-              WOTEXT4: '',
-              WOTEXT5: '',
-              WOTEXT6: '',
-              MPgoA: 'BRIANJ',
-              MPgpA: '2021-03-17 18:30:00',
-              MPgqA: '2021-03-17 18:30:00',
-              MPgrA: 'BRIANJ',
-              MPgsA: '2021-03-17 18:30:00',
-              MPgtA: '2021-03-17 18:30:00',
-          }
-
-
-
-
-      }
-
-      if (this.addStage == 1) {
-
-          this.contractSelcted = this.f.contractName.value;
-          this.programSelcted = this.f.woprogram.value;
-          this.assetTmpSelcted = this.f.wottemplatetype.value;
-
-
-
-
-          //  let wprsequence  = this.programSelcted.wprsequence;
-          //  let wotsequence  = this.assetTmpSelcted.wotsequence;
-          //  let wprsequence  = this.programSelcted.wprsequence;
-          let WorksOrderTypes = this.f.woType.value;
-
-          this.loading = true;
-
-          this.subs.add(
-              this.worksOrdersService.WEBWorksOrdersValidForNewWorkOrder(this.programSelcted.wprsequence, this.assetTmpSelcted.wotsequence, this.programSelcted.wprsequence, WorksOrderTypes)
-              .subscribe(
-                  data => {
-                    //  console.log(data);
-                      if (data.isSuccess) {
-
-                          this.loading = false;
-                          if (data.data.validYN == 'Y') {
-
-                          } else {
-
-                              this.validateAddFormError = 'Y';
-                              this.alertService.error(data.data.validationMessage);
-                              this.getDetectorCheck();
+                    if (data.isSuccess) {
+                        this.alertService.success(msg);
+                        this.closewoFormWindow();
+                    } else {
+                        this.alertService.error(data.message);
+                        this.chRef.detectChanges();
+                    }
+                    this.loaderService.pageHide();
+                }, error => {
+                    this.loaderService.pageHide();
+                    this.alertService.error(error)
+                }
+            )
+        )
+
+    }
+
+
+
+
+    logValidationErrors(group: FormGroup): void {
+        Object.keys(group.controls).forEach((key: string) => {
+            const abstractControl = group.get(key);
+
+            if (abstractControl instanceof FormGroup) {
+                this.logValidationErrors(abstractControl);
+            } else {
+                if (abstractControl && !abstractControl.valid && abstractControl.errors != null) {
+                    if (abstractControl.errors.hasOwnProperty('ngbDate')) {
+                        delete abstractControl.errors['ngbDate'];
+
+                        if (Object.keys(abstractControl.errors).length == 0) {
+                            abstractControl.setErrors(null)
+                        }
+                    }
+
+                    const messages = this.validationMessage[key];
+                    for (const errorKey in abstractControl.errors) {
+                        if (errorKey) {
+                            this.formErrors[key] += messages[errorKey] + ' ';
+                        }
+                    }
+                }
+            }
+        })
+
+    }
+
+
+
+    numberOnly(event): boolean {
+        const charCode = (event.which) ? event.which : event.keyCode;
+        if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+            return false;
+        }
+        return true;
+    }
+
+    formErrorObject() {
+        this.formErrors = {
+            'woType': '',
+            'wottemplatetype': '',
+            'woprogram': '',
+            'contractName': '',
+            'wophasetemplate': '',
+            'woname': '',
+            'wodesc': '',
+            'wostatus': '',
+            'woactinact': '',
+            'wotargetcompletiondate': '',
+            'wobudget': '',
+            'purchase_order_no': '',
+            'wobudgetcode': '',
+            'plan_year': '',
+            'woplanstartdate': '',
+            'woplanenddate': '',
+            'woinstructions': '',
+            'wooverheadpct': '',
+            'woprelimpct': '',
+            'woprofitpct': '',
+            'woothercostpct': '',
+            'contract_payment_type': '',
+            'defectLibPeriodVal': ''
+        }
+    }
+
+
+    openCalendar(obj) {
+        obj.toggle()
+    }
+
+    dateFormate(value) {
+        if (value == undefined || typeof value == 'undefined' || typeof value == 'string') {
+            return new Date('1753-01-01').toJSON()
+        }
+        const dateStr = `${value.year}-${this.helperService.zeorBeforeSingleDigit(value.month)}-${this.helperService.zeorBeforeSingleDigit(value.day)}`;
+        return new Date(dateStr).toJSON()
+    }
+
+    closewoFormWindow() {
+        this.woFormWindow = false;
+        this.closeWoFormWin.emit(this.woFormWindow)
+    }
 
-                          }
 
 
-
-                      } else {
-                          this.validateAddFormError = 'Y';
-                          this.getDetectorCheck();
-                          this.loading = false;
-                          this.alertService.error(data.message);
-                      }
-
-                  },
-                  error => {
-                      this.validateAddFormError = 'Y';
-                      this.alertService.error(error);
-                      this.loading = false;
-                      this.getDetectorCheck();
-                  })
-          )
-
-
-          setTimeout(() => {
-
-              if (this.validateAddFormError == 'Y') {
-
-                  return true;
-
-              } else {
-
-                  this.GetNewSourceCodeForWorksOrder();
-                  this.saveParms = {
-                      woType: this.f.woType.value,
-                      wophasetemplate: this.f.wophasetemplate.value,
-                  }
-
-                  let woType = this.f.woType.value;
-                  this.addStage = 2;
-                  this.woForm = this.fb.group({
-                      woType: [''],
-                      wottemplatetype: [''],
-                      woprogram: [''],
-                      contractName: [''],
-                      //  cttname: [''],
-                      cttname: [{
-                          disabled: true
-                      }],
-                      cttcode: [''],
-                      conname: [''],
-                      wotname: [''],
-                      woTypevalue: [''],
-                      wophasetemplate: [''],
-                      woname: ['', Validators.required],
-                      wodesc: ['', Validators.required],
-                      wostatus: ['', Validators.required],
-                      woactinact: ['', Validators.required],
-                      wotargetcompletiondate: ['', Validators.required],
-                      wobudget: ['', [Validators.required, Validators.pattern("^[0-9]*$")]],
-                      purchase_order_no: ['', Validators.required],
-                      wobudgetcode: ['', Validators.required],
-                      plan_year: ['', Validators.required],
-                      woplanstartdate: ['', Validators.required],
-                      woplanenddate: ['', Validators.required],
-                      woinstructions: ['', Validators.required],
-                      wooverheadpct: ['', Validators.required],
-                      woprelimpct: ['', Validators.required],
-                      woprofitpct: ['', Validators.required],
-                      woothercostpct: ['', Validators.required],
-                      contract_payment_type: ['', Validators.required],
-                  })
-
-
-                  this.woForm.patchValue({
-                      conname: (this.contractSelcted.conname) ? this.contractSelcted.conname : '',
-                      cttcode: (this.contractSelcted.cttcode) ? this.contractSelcted.cttcode : '',
-                      cttname: (this.contractSelcted.cttname) ? this.contractSelcted.cttname : '',
-                      wotname: (this.assetTmpSelcted.wotname) ? this.assetTmpSelcted.wotname : '',
-                      woTypevalue: (woType) ? woType : '',
-                      wobudget: 0,
-                      wooverheadpct: 0,
-                      woprelimpct: 0,
-                      woprofitpct: 0,
-                      woothercostpct: 0,
-
-                  });
-
-
-              }
-
-
-
-
-          }, 1000);
-
-
-
-
-      }
-
-
-
-      if (this.FinalSubmit == true) {
-
-        //  console.log('saveParms ' + JSON.stringify(this.saveParms));
-
-          this.loading = true;
-
-          this.subs.add(
-              this.worksOrdersService.InsertWorksOrder(this.saveParms)
-              .subscribe(
-                  data => {
-                    //  console.log(data);
-                      if (data.isSuccess) {
-                          this.woForm.reset();
-                          this.alertService.success(this.saveMsg);
-                          this.loading = false;
-                          this.closewoFormWindow();
-                      } else {
-                          this.loading = false;
-                          this.alertService.error(data.message);
-                      }
-                      this.chRef.detectChanges();
-                  },
-                  error => {
-                      //console.log(error);
-                      this.alertService.error(error);
-                      this.loading = false;
-                  })
-          )
-
-      }
-
-  }
-
-  openCalendar(obj) {
-      obj.toggle()
-  }
-
-  dateFormate(value) {
-      if (value == undefined || typeof value == 'undefined' || typeof value == 'string') {
-          return new Date('1753-01-01').toJSON()
-      }
-      const dateStr = `${value.year}-${this.helperService.zeorBeforeSingleDigit(value.month)}-${this.helperService.zeorBeforeSingleDigit(value.day)}`;
-      return new Date(dateStr).toJSON()
-  }
-
-
-  refreshForm() {
-      // this.woFormType = "new";
-      // this.populateWorkOrder(item);
-      this.woForm.reset();
-      this.chRef.detectChanges();
-  }
-
-  closewoFormWindow() {
-      this.woFormWindow = false;
-      this.closeWoFormWin.emit(this.woFormWindow)
-  }
-
-  convertDate(d, f) {
-      var momentDate = moment(d);
-      if (!momentDate.isValid()) return d;
-      return momentDate.format(f);
-  }
-
-
-
-
-  }
+}

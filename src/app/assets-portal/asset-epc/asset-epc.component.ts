@@ -238,8 +238,11 @@ export class AssetEpcComponent implements OnInit, OnDestroy {
             this.Delay3 = 0.4;
             this.Delay4 = 0.6;
 
-            this.SAPChartText = "SAP rating is {{ePCViewModel.currentSAPBand}}({{ePCViewModel.currentSAP}}) and potential is {{ePCViewModel.currentSAPPotentialBand}}({{ePCViewModel.currentSAPPotential}})";
-            this.EIChartText = "Environmental Impact rating is {{EIBand}}({{EIRating}}) and potential is {{EIPotentialBand}}({{EIPotentialRating}})";
+
+            if (["A","B","C","D","E","F","G"].includes(this.ePCViewModel.currentSAPBand) ){
+              this.SAPChartText = `SAP rating is ${this.ePCViewModel.currentSAPBand}(${this.ePCViewModel.currentSAP}) and potential is ${this.ePCViewModel.currentSAPPotentialBand}(${this.ePCViewModel.currentSAPPotential})`;
+              this.EIChartText = `Environmental Impact rating is ${this.EIBand}(${this.EIRating}) and potential is ${this.EIPotentialBand}(${this.EIPotentialRating})`;              
+            }
             
             if (this.ePCViewModel.currentSAP != 0)
             {

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AlertService, HelperService, SharedService, HnsPortalService, EventManagerDashboardService,AssetAttributeService } from '../../../_services'
 import { SubSink } from 'subsink';
 import { Router } from "@angular/router"
+import { appConfig } from '../../../app.config';
 
 declare var $: any;
 declare var GoldenLayout: any;
@@ -64,8 +65,9 @@ export class AssetEpcDashboardComponent implements OnInit {
   portalName: string = "EPC";
   defaultFilterVal: string = "";
   retrievedEPCs = false
+  showDataPanel = false;
   selectedBarChartXasis: any;
-  taskSecurityList: any = [];
+  energyPortalAccess: any = [];
 
   constructor(
     private hnsPortalService: HnsPortalService,
@@ -84,14 +86,14 @@ export class AssetEpcDashboardComponent implements OnInit {
 
   ngAfterViewInit() {
     this.subs.add(
-      this.sharedServie.taskPortalSecList.subscribe(
+      this.sharedServie.energyPortalAccess.subscribe(
         data => {
-          this.taskSecurityList = data;
-          if (this.taskSecurityList.length > 0) {
-            this.sharedServie.modulePermission.subscribe(
+          this.energyPortalAccess = data;
+          if (this.energyPortalAccess.length > 0) {
+            this.sharedServie.realModulesEnabled.subscribe(
               modules => {
                 if (modules.length > 0) {
-                  if (this.taskSecurityList.indexOf("Event Dashboard") == -1 || modules.indexOf("Event Manager Portal Access") == -1) {
+                  if (this.energyPortalAccess.indexOf("Dashboard") == -1 || modules.indexOf("EPC Module") == -1) {
                     this.alertService.error("You have no access to configuration")
                     this.router.navigate(['/dashboard']);
                   }
@@ -127,7 +129,7 @@ export class AssetEpcDashboardComponent implements OnInit {
             }
 
             this.subs.add(
-              this.assetAttributeService.getEPCChartsList().subscribe(
+              this.assetAttributeService.getChartsList("Energy").subscribe(
                 data => {
                   if (data.isSuccess) {
                     // console.log(data);
@@ -1358,13 +1360,20 @@ export class AssetEpcDashboardComponent implements OnInit {
   }
 
 
-  openGrid() {
-    this.retrievedEPCs = true
+  openGrid(chartName: string) {
+    if (chartName == "Retrieved EPCs") {
+          this.retrievedEPCs = true;
+    }
+    else{
+      this.retrievedEPCs = false;
+    }
+
+    this.showDataPanel = true;
     $('.eventdashboardovrlay').addClass('ovrlay');
   }
 
-  closeretrievedEPCs($event) {
-    this.retrievedEPCs = $event
+  closeDataPanel($event) {
+    this.showDataPanel = $event
     $('.eventdashboardovrlay').removeClass('ovrlay');
   }
 
@@ -1405,8 +1414,6 @@ export class AssetEpcDashboardComponent implements OnInit {
 
 
   openGridOnClickOfBarChart(chartEvent, parentChartObj) {
-    // console.log(chartEvent)
-
     this.selectedBarChartXasis = {
       "ddChartId": parentChartObj.ddChartId != undefined ? parentChartObj.ddChartId : parentChartObj.ddChartID,
       "parantChartId": parentChartObj.parantChartId != undefined ? parentChartObj.parantChartId : parentChartObj.chartID,
@@ -1415,41 +1422,18 @@ export class AssetEpcDashboardComponent implements OnInit {
       "chartName": parentChartObj.chartName
     }
 
-    if (parentChartObj.chartName == "Retrieved EPCs") {
-      this.openGrid();
-    } else {
+    if (parentChartObj.chartName == "EPC Status" || parentChartObj.chartName == "EPC SAP Band & Cloned" || parentChartObj.chartName == "EPC SAP Bands") {
       this.gotoAsset(this.selectedBarChartXasis);
+    } else {
+      this.openGrid(parentChartObj.chartName);
     }
     
   }
 
 
   gotoAsset(item: any) {
-/*     let startDateObj = this.managementFilterParam.startDate;
-    let endDateObj = this.managementFilterParam.endDate;
-    let startDate = `${startDateObj.year}-${this.helperService.zeorBeforeSingleDigit(startDateObj.month)}-${this.helperService.zeorBeforeSingleDigit(startDateObj.day)}`;
-    let endDate = `${endDateObj.year}-${this.helperService.zeorBeforeSingleDigit(endDateObj.month)}-${this.helperService.zeorBeforeSingleDigit(endDateObj.day)}`;
-    let startDateTime = new Date(startDate);
-    let endDateTime = new Date(endDate);
 
-    const assetFilterObj = {
-      setCode: item.setCode,
-      conCode: item.conCode,
-      secoCode: item.secoCode,
-      sesCode: item.sesCode,
-      contractor: item.contractor,
-      contract: item.contract,
-      serviceType: item.serviceType,
-      serviceStage: item.serviceStage,
-      startDate: startDateTime,
-      endDate: endDateTime
-    }
-
-    localStorage.setItem('assetFilterObj', JSON.stringify(assetFilterObj)); */
-    // let url = `${window.location.origin}/rowanwood/asset-list?servicing=true`;
-
-
-    let url = `${window.location.origin}/asset-list`; // for local
+    let url = `https://apexdevweb.rowanwood.ltd/dev/rowanwood/asset-list`; // for local
     if (item.chartName == "EPC SAP Band & Cloned" || item.chartName == "EPC SAP Bands") {
       url += `?sapBand=${encodeURIComponent(item.xAxisValue)}`;
     }

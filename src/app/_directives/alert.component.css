@@ -21,6 +21,10 @@
     -webkit-animation: fadein 0.5s, fadeout 0.5s 100s;
     animation: fadein 0.5s, fadeout 0.5s 100s;
   }
+
+  .alert-dark-warning{
+    background-color: #ff9900 !important;
+  }
   
   @-webkit-keyframes fadein {
     from {top: 0; opacity: 0;} 

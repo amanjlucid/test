@@ -9,13 +9,168 @@
             <button type="submit" class="btn btn-sm themeButton mr-1 headin_section" (click)="slideToggle()">
                 <i class="fa" [ngClass]="(filterToggle) ? 'fa-minus':'fa-plus'"></i>
             </button>
-            <!-- <button type="button" class="btn btn-sm themeButton">Export</button>
-            <button type="button" class="btn btn-sm themeButton">Administration</button> -->
-            <button *ngIf="worksOrderAccess.indexOf('Checklist Documents') != -1" type="button" class="btn btn-sm themeButton" (click)="openChecklistDoc()">Doucuments</button>
-            <!-- <button type="button" class="btn btn-sm themeButton">Work</button>
-            <button type="button" class="btn btn-sm themeButton">Defects</button>
-            <button type="button" class="btn btn-sm themeButton">Variations</button>
-            <button type="button" class="btn btn-sm themeButton">Actions</button> -->
+
+            <button *ngIf="woMenuBtnSecurityAccess('Checklist Documents')" type="button"
+                [disabled]="!selectedChecklistsingleItem || mySelection.length != 1" class="btn btn-sm themeButton mr-1"
+                (click)="openChecklistDoc()">Documents</button>
+
+            <div class="dropdown" id="nesting-dropdown-demo">
+                <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown"
+                    aria-expanded="false">Work</button>
+                <div class="dropdown-menu" x-placement="bottom-start"
+                    style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
+                    <a *ngIf="woMenuBtnSecurityAccess('Work Details')" class="dropdown-item"
+                        (click)="openAssetDetailChild('all')" href="javascript:void(0)">
+                        Detail</a>
+                    <a *ngIf="woMenuBtnSecurityAccess('Remove All Work')" class="dropdown-item"
+                        (click)="removeOrDeletework('remove')" href="javascript:void(0)"
+                        [ngClass]="{'disabled' : disableMainActions('woremoveAll')}">
+                        Remove All</a>
+                    <a *ngIf="woMenuBtnSecurityAccess('Delete All Work')" class="dropdown-item"
+                        (click)="removeOrDeletework('delete')" href="javascript:void(0)"
+                        [ngClass]="{'disabled' : disableMainActions('wodeleteAll')}">
+                        Delete All</a>
+                    <a *ngIf="woMenuBtnSecurityAccess('Add Work')" class="dropdown-item"
+                        (click)="openAddAssetWorkOrdersList(selectedChildRow, 'all')" href="javascript:void(0)"
+                        [ngClass]="{'disabled' : disableMainActions('woAdd')}">
+                        Add</a>
+
+
+                </div>
+            </div>
+
+            <div class="dropdown" id="nesting-dropdown-demo">
+                <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown"
+                    aria-expanded="false">Action</button>
+                <div class="dropdown-menu actionDrp" x-placement="bottom-start"
+                    style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
+                    <a *ngIf="woMenuBtnSecurityAccess('Release Asset')" class="dropdown-item"
+                        (click)="setAsset('RELEASE')" href="javascript:void(0)"
+                        [ngClass]="{'disabled' : disableMainActions('release')}">
+                        Release</a>
+
+                    <a *ngIf="woMenuBtnSecurityAccess('Issue Asset')" class="dropdown-item" (click)="setAsset('ISSUE')"
+                        href="javascript:void(0)" [ngClass]="{'disabled' : disableMainActions('issue')}">
+                        Issue</a>
+
+
+                    <a [ngClass]="{'disabled' : disableMainActions('accept')}"
+                        *ngIf="woMenuBtnSecurityAccess('Accept Asset')" class="dropdown-item"
+                        (click)="setAsset('ACCEPT')" href="javascript:void(0)">
+                        Accept</a>
+
+
+                    <div class="dropdown-toggle" *ngIf="woMenuBtnSecurityAccess('Set Status')">
+                        <div class="dropdown-item">Status</div>
+                        <div class="dropdown-menu">
+
+                            <a [ngClass]="{'disabled' : disableMainActions('na')}"
+                                *ngIf="woMenuBtnSecurityAccess('Set Status To N/A')" class="dropdown-item"
+                                (click)="setStatusMul('NA')" href="javascript:void(0)">
+                                Set to N/A</a>
+
+                            <div [ngClass]="{'disabled' : disableMainActions('STIP')}" class="dropdown-toggle"
+                                *ngIf="woMenuBtnSecurityAccess('Set Status To In Progress')">
+                                <div class="dropdown-item">Set to In Progress</div>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" (click)="setStatusMul('IPY')"
+                                        href="javascript:void(0)">Yesterday</a>
+                                    <a class="dropdown-item" (click)="setStatusMul('IPT')"
+                                        href="javascript:void(0)">Today</a>
+                                    <a class="dropdown-item" (click)="openChooseDateMul('IPDM')"
+                                        href="javascript:void(0)">Choose Date</a>
+
+                                </div>
+                            </div>
+
+                            <a [ngClass]="{'disabled' : disableMainActions('NS')}"
+                                *ngIf="woMenuBtnSecurityAccess('Set Status To Not Started')" class="dropdown-item"
+                                (click)="setStatusMul('NOT STARTED')" href="javascript:void(0)">Set to Not
+                                Started</a>
+                            <a [ngClass]="{'disabled' : disableMainActions('RCI')}"
+                                *ngIf="woMenuBtnSecurityAccess('Reset Checklist Item')" class="dropdown-item"
+                                (click)="setStatusMul('RESET')" href="javascript:void(0)">Reset Checklist
+                                Item</a>
+                        </div>
+                    </div>
+
+                    <div [ngClass]="{'disabled' : disableMainActions('COMP')}" class="dropdown-toggle"
+                        *ngIf="woMenuBtnSecurityAccess('Complete Item')">
+                        <div class="dropdown-item">Complete</div>
+                        <div class="dropdown-menu completeDrp">
+                            <a class="dropdown-item" (click)="setStatusMul('CIY')"
+                                href="javascript:void(0)">Yesterday</a>
+                            <a class="dropdown-item" (click)="setStatusMul('CIT')" href="javascript:void(0)">Today</a>
+                            <a class="dropdown-item" (click)="openChooseDateMul('CIPICKM')"
+                                href="javascript:void(0)">Choose Date</a>
+                        </div>
+                    </div>
+
+
+
+                    <div [ngClass]="{'disabled' : workorderAsset?.woassstatus == 'Pending'}" class="dropdown-toggle">
+                        <div class="dropdown-item" *ngIf="woMenuBtnSecurityAccess('Set Dates')">Dates
+                        </div>
+                        <div class="dropdown-menu dateDrp">
+
+                            <a [ngClass]="{'disabled' :disableBtnsIndividualMenu('SE', null)}"
+                                *ngIf="woMenuBtnSecurityAccess('Set Planned Dates')" class="dropdown-item"
+                                (click)="openChooseDateMul('SE')" href="javascript:void(0)">
+                                Set Planned Start/End Dates</a>
+
+                            <div *ngIf="woMenuBtnSecurityAccess('Set Target Date')" class="dropdown-toggle"
+                                [ngClass]="{'disabled' :disableBtnsIndividualMenu('STCD', null)}">
+                                <div class="dropdown-item">Set Target Completion Date</div>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" (click)="setDatesMul('TCY')"
+                                        href="javascript:void(0)">Yesterday</a>
+                                    <a class="dropdown-item" (click)="setDatesMul('TCTOD')"
+                                        href="javascript:void(0)">Today</a>
+                                    <a class="dropdown-item" (click)="setDatesMul('TCTOM')"
+                                        href="javascript:void(0)">Tomorrow</a>
+                                    <a class="dropdown-item" (click)="setDatesMul('TC7')" href="javascript:void(0)">7
+                                        Days</a>
+                                    <a class="dropdown-item" (click)="openChooseDateMul('TCPICK')"
+                                        href="javascript:void(0)">Choose Date</a>
+
+                                </div>
+                            </div>
+
+                            <div [ngClass]="{'disabled' :disableBtnsIndividualMenu('CSD', null)}"
+                                class="dropdown-toggle" *ngIf="woMenuBtnSecurityAccess('Change Start Date')">
+                                <div class="dropdown-item">Change Start Date</div>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" (click)="setDatesMul('CSDY')"
+                                        href="javascript:void(0)">Yesterday</a>
+                                    <a class="dropdown-item" (click)="setDatesMul('CSDT')"
+                                        href="javascript:void(0)">Today</a>
+                                    <a class="dropdown-item" (click)="openChooseDateMul('CSDPICK')"
+                                        href="javascript:void(0)">Choose Date</a>
+
+                                </div>
+                            </div>
+
+                            <div [ngClass]="{'disabled' :disableBtnsIndividualMenu('CCD', null)}"
+                                class="dropdown-toggle" *ngIf="woMenuBtnSecurityAccess('Change Completion Date')">
+                                <div class="dropdown-item">Change Completion Date</div>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" (click)="setDatesMul('CCDY')"
+                                        href="javascript:void(0)">Yesterday</a>
+                                    <a class="dropdown-item" (click)="setDatesMul('CCDT')"
+                                        href="javascript:void(0)">Today</a>
+                                    <a class="dropdown-item" (click)="openChooseDateMul('CCDPICK')"
+                                        href="javascript:void(0)">Choose Date</a>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
         </div>
 
         <div class="col-md-12 mt-2">
@@ -23,19 +178,20 @@
                 <div id="wrapper">
                     <div class="worksorder-assetchecklist-header" style="display: none;">
                         <fieldset>
-                            <div class="form-group form-row">
-                                <div class="col-md-1">Works Order: {{worksOrderData?.wosequence}} </div>
+                            <div class="form-group form-row inlineRow">
+                                <div class="col-md-1">Works Order: </div>
                                 <div class="col-md-8">
-                                    <input type="text" value="{{worksOrderData?.woname}}"
+                                    <input type="text"
+                                        value="{{worksOrderData?.woname}} ({{worksOrderData?.wosequence}})"
                                         class="form-control form-control-sm" [readonly]="readonly">
                                 </div>
-                                <div class="col-md-2">Phase: </div>
-                                <div class="col-md-1 text-right"><input type="text" class="form-control form-control-sm"
+                                <div class="col-md-1">Phase: </div>
+                                <div class="col-md-2 text-right"><input type="text" class="form-control form-control-sm"
                                         [readonly]="readonly" value="{{phaseData?.wopname }}">
                                 </div>
                             </div>
 
-                            <div class="form-group form-row">
+                            <div class="form-group form-row inlineRow">
                                 <div class="col-md-1">Asset: </div>
                                 <div class="col-md-3">
                                     <input type="text" class="form-control form-control-sm" [readonly]="readonly"
@@ -48,7 +204,7 @@
                                 <div class="col-md-2">Work Access: </div>
                                 <div class="col-md-1 text-right"><input type="text" class="form-control form-control-sm"
                                         [readonly]="readonly"
-                                        value="{{selectedChildRow?.woaworkaccess | currency:'GBP':'symbol'}}">
+                                        value="{{workorderAsset?.woaworkaccess == null ? 'No Access' : selectedChildRow?.woaworkaccess }}">
                                 </div>
                             </div>
 
@@ -56,37 +212,37 @@
                                 <div class="col-md-2">
                                     <label>Status:</label>
                                     <input type="text" [readonly]="readonly" class="form-control form-control-sm"
-                                        value="{{selectedChildRow?.wostatus}}">
+                                        value="{{workorderAsset?.woassstatus}}">
 
                                 </div>
                                 <div class="col-md-2">
                                     <label>Target:</label>
                                     <input type="text" class="form-control form-control-sm" [readonly]="readonly"
-                                        value="{{selectedChildRow?.targetdate | dateFormat : 'DD-MMM-YYYY'}}">
+                                        value="{{workorderAsset?.woatargetcompletiondate | dateFormat : 'DD-MMM-YYYY'}}">
                                 </div>
                                 <div class="col-md-2">
                                     <label>Issue:</label>
                                     <input type="text" class="form-control form-control-sm" [readonly]="readonly"
-                                        value="{{programmeData?.wprcontractorissuedate | dateFormat : 'DD-MMM-YYYY'}}">
+                                        value="{{workorderAsset?.woacontractorissuedate | dateFormat : 'DD-MMM-YYYY'}}">
                                 </div>
 
                                 <div class="col-md-2">
                                     <label>Accepted:</label>
                                     <input type="text" class="form-control form-control-sm" [readonly]="readonly"
-                                        value="{{programmeData?.wpracceptedvalue | currency:'GBP':'symbol'}}">
+                                        value="{{workorderAsset?.woacontractoracceptancedate |dateFormat : 'DD-MMM-YYYY'}}">
                                 </div>
 
                                 <div class="col-md-2">
                                     <label>Handover:</label>
                                     <input type="text" class="form-control form-control-sm"
-                                        value="{{programmeData?.wprapproved | currency:'GBP':'symbol'}}"
+                                        value="{{workorderAsset?.woahandoverdate |dateFormat : 'DD-MMM-YYYY'}}"
                                         [readonly]="readonly">
                                 </div>
 
                                 <div class="col-md-2">
                                     <label>Payment:</label>
                                     <input type="text" class="form-control form-control-sm"
-                                        value="{{programmeData?.wprpayment | currency:'GBP':'symbol'}}"
+                                        value="{{workorderAsset?.wpspaymentdate |dateFormat : 'DD-MMM-YYYY'}}"
                                         [readonly]="readonly">
                                 </div>
                             </div>
@@ -95,37 +251,37 @@
                                 <div class="col-md-2">
                                     <label>Planned Start:</label>
                                     <input type="text" [readonly]="readonly" class="form-control form-control-sm"
-                                        value="{{selectedChildRow?.planstartdate | dateFormat : 'DD-MMM-YYYY' }}">
+                                        value="{{workorderAsset?.woaplanstartdate | dateFormat : 'DD-MMM-YYYY' }}">
 
                                 </div>
                                 <div class="col-md-2">
                                     <label>Planned End:</label>
                                     <input type="text" class="form-control form-control-sm" [readonly]="readonly"
-                                        value="{{selectedChildRow?.planenddate | dateFormat : 'DD-MMM-YYYY'}}">
+                                        value="{{workorderAsset?.woaplanenddate | dateFormat : 'DD-MMM-YYYY'}}">
                                 </div>
                                 <div class="col-md-2">
                                     <label>Actual Start:</label>
                                     <input type="text" class="form-control form-control-sm" [readonly]="readonly"
-                                        value="{{selectedChildRow?.planenddate | dateFormat : 'DD-MMM-YYYY'}}">
+                                        value="{{workorderAsset?.woaactualstartdate | dateFormat : 'DD-MMM-YYYY'}}">
                                 </div>
 
                                 <div class="col-md-2">
                                     <label>Actual End:</label>
                                     <input type="text" class="form-control form-control-sm" [readonly]="readonly"
-                                        value="{{selectedChildRow?.planenddate | dateFormat : 'DD-MMM-YYYY'}}">
+                                        value="{{workorderAsset?.woaactualenddate | dateFormat : 'DD-MMM-YYYY'}}">
                                 </div>
 
                                 <div class="col-md-2">
                                     <label>Practical Completion:</label>
                                     <input type="text" class="form-control form-control-sm"
-                                        value="{{selectedChildRow?.woacompletiondate | dateFormat : 'DD-MMM-YYYY'}}"
+                                        value="{{workorderAsset?.woapracticalcompletiondate | dateFormat : 'DD-MMM-YYYY'}}"
                                         [readonly]="readonly">
                                 </div>
 
                                 <div class="col-md-2">
                                     <label>Open Date:</label>
                                     <input type="text" class="form-control form-control-sm"
-                                        value="{{selectedChildRow?.woaopendate | dateFormat : 'DD-MMM-YYYY'}}"
+                                        value="{{workorderAsset?.woaopendate | dateFormat : 'DD-MMM-YYYY'}}"
                                         [readonly]="readonly">
                                 </div>
                             </div>
@@ -134,37 +290,37 @@
                                 <div class="col-md-1">
                                     <label>Forecast:</label>
                                     <input type="text" class="form-control form-control-sm" readonly="true"
-                                        value="{{selectedChildRow?.woforecast | currency:'GBP':'symbol'}}">
+                                        value="{{workorderAsset?.woaforecast + workorderAsset?.woaforecastfee | currency:'GBP':'symbol'}}">
                                 </div>
 
                                 <div class="col-md-1">
                                     <label>Commited:</label>
                                     <input type="text" class="form-control form-control-sm" readonly="true"
-                                        value="{{selectedChildRow?.wocommitted | currency:'GBP':'symbol'}}">
+                                        value="{{workorderAsset?.woacommitted + workorderAsset?.woacommittedfee | currency:'GBP':'symbol'}}">
                                 </div>
 
                                 <div class="col-md-1">
                                     <label>Approved:</label>
                                     <input type="text" class="form-control form-control-sm" readonly="true"
-                                        value="{{selectedChildRow?.woapproved| currency:'GBP':'symbol'}}">
+                                        value="{{workorderAsset?.woaapproved + workorderAsset?.woaapprovedfee| currency:'GBP':'symbol'}}">
                                 </div>
 
                                 <div class="col-md-1">
                                     <label>Pending:</label>
                                     <input type="text" class="form-control form-control-sm" readonly="true"
-                                        value="{{selectedChildRow?.wopending | currency:'GBP':'symbol'}}">
+                                        value="{{workorderAsset?.woapending + workorderAsset?.woapendingfee | currency:'GBP':'symbol'}}">
                                 </div>
 
                                 <div class="col-md-1">
                                     <label>Actual:</label>
                                     <input type="text" class="form-control form-control-sm" readonly="true"
-                                        value="{{selectedChildRow?.woactual | currency:'GBP':'symbol'}}">
+                                        value="{{workorderAsset?.woaactual+ workorderAsset?.woaactualfee | currency:'GBP':'symbol'}}">
                                 </div>
 
                                 <div class="col-md-1">
                                     <label>Payment:</label>
                                     <input type="text" class="form-control form-control-sm" readonly="true"
-                                        value="{{worksOrderData?.wopayment | currency:'GBP':'symbol'}}">
+                                        value="{{workorderAsset?.woapayment | currency:'GBP':'symbol'}}">
                                 </div>
                             </div>
 
@@ -180,11 +336,12 @@
                     mode: 'multiple'
                   }" filterable="menu" [resizable]="true" [sortable]="{
                     allowUnsort: true,
-                    mode: 'multiple'
+                    mode: 'single'
                     }" [skip]="state.skip" [pageSize]="pageSize" [rowHeight]="36" (pageChange)="pageChange($event)"
                 scrollable="virtual" [sort]="state.sort" [filter]="state.filter" (sortChange)="sortChange($event)"
                 (filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)" [navigable]="true"
-                [virtualColumns]="true" [loading]="loading">
+                [virtualColumns]="true" [loading]="loading" [kendoGridSelectBy]="mySelectionKey"
+                [selectedKeys]="mySelection">
 
                 <kendo-grid-column title=" " width="37" [filterable]="false" [sortable]="false">
                     <ng-template kendoGridCellTemplate let-dataItem>
@@ -192,11 +349,136 @@
                             <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"
                                 (click)="setSeletedRow(dataItem)"></i>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" href="javascript:void(0)">Status</a>
-                                <a class="dropdown-item" href="javascript:void(0)">Dates</a>
-                                <a class="dropdown-item" href="javascript:void(0)">Complete</a>
-                                <a class="dropdown-item" href="javascript:void(0)">Comments</a>
-                                <!-- <a class="dropdown-item" href="javascript:void(0)">Edit Fee</a> -->
+
+                                <div [ngClass]="{'disabled' :disableBtnsIndividualMenu('status', dataItem)}"
+                                    class="dropdown-toggle" *ngIf="woMenuBtnSecurityAccess('Set Status')">
+                                    <div class="dropdown-item">Status</div>
+                                    <div class="dropdown-menu">
+
+                                        <a *ngIf="woMenuBtnSecurityAccess('Set Status To N/A')" class="dropdown-item"
+                                            (click)="setStatus('NA', dataItem)" href="javascript:void(0)">
+                                            Set to N/A</a>
+
+                                        <div class="dropdown-toggle"
+                                            *ngIf="woMenuBtnSecurityAccess('Set Status To In Progress')">
+                                            <div class="dropdown-item">Set to In Progress</div>
+                                            <div class="dropdown-menu">
+                                                <a class="dropdown-item" (click)="setStatus('IPY', dataItem)"
+                                                    href="javascript:void(0)">Yesterday</a>
+                                                <a class="dropdown-item" (click)="setStatus('IPT', dataItem)"
+                                                    href="javascript:void(0)">Today</a>
+                                                <a class="dropdown-item" (click)="openChooseDate('IPD', dataItem)"
+                                                    href="javascript:void(0)">Choose Date</a>
+
+                                            </div>
+                                        </div>
+
+                                        <a *ngIf="woMenuBtnSecurityAccess('Set Status To Not Started')"
+                                            class="dropdown-item" (click)="setStatus('NOT STARTED', dataItem)"
+                                            href="javascript:void(0)">Set to Not Started</a>
+                                        <a *ngIf="woMenuBtnSecurityAccess('Reset Checklist Item')" class="dropdown-item"
+                                            (click)="setStatus('RESET', dataItem)" href="javascript:void(0)">Reset
+                                            Checklist Item</a>
+                                    </div>
+                                </div>
+
+                                <div [ngClass]="{'disabled' : workorderAsset?.woassstatus == 'Pending'}"
+                                    class="dropdown-toggle">
+                                    <div class="dropdown-item" *ngIf="woMenuBtnSecurityAccess('Set Dates')">Dates
+                                    </div>
+                                    <div class="dropdown-menu">
+
+                                        <a [ngClass]="{'disabled' :disableBtnsIndividualMenu('SE', dataItem)}"
+                                            *ngIf="woMenuBtnSecurityAccess('Set Planned Dates')" class="dropdown-item"
+                                            (click)="openChooseDate('SE', dataItem)" href="javascript:void(0)">
+                                            Set Planned Start/End Dates</a>
+
+                                        <div *ngIf="woMenuBtnSecurityAccess('Set Target Date')" class="dropdown-toggle"
+                                            [ngClass]="{'disabled' :disableBtnsIndividualMenu('STCD', dataItem)}">
+                                            <div class="dropdown-item">Set Target Completion Date</div>
+                                            <div class="dropdown-menu">
+                                                <a class="dropdown-item" (click)="setDates('TCY', dataItem)"
+                                                    href="javascript:void(0)">Yesterday</a>
+                                                <a class="dropdown-item" (click)="setDates('TCTOD', dataItem)"
+                                                    href="javascript:void(0)">Today</a>
+                                                <a class="dropdown-item" (click)="setDates('TCTOM', dataItem)"
+                                                    href="javascript:void(0)">Tomorrow</a>
+                                                <a class="dropdown-item" (click)="setDates('TC7', dataItem)"
+                                                    href="javascript:void(0)">7 Days</a>
+                                                <a class="dropdown-item" (click)="openChooseDate('TCPICK', dataItem)"
+                                                    href="javascript:void(0)">Choose Date</a>
+
+                                            </div>
+                                        </div>
+
+                                        <div [ngClass]="{'disabled' :disableBtnsIndividualMenu('CSD', dataItem)}"
+                                            class="dropdown-toggle"
+                                            *ngIf="woMenuBtnSecurityAccess('Change Start Date')">
+                                            <div class="dropdown-item">Change Start Date</div>
+                                            <div class="dropdown-menu">
+                                                <a class="dropdown-item" (click)="setDates('CSDY', dataItem)"
+                                                    href="javascript:void(0)">Yesterday</a>
+                                                <a class="dropdown-item" (click)="setDates('CSDT', dataItem)"
+                                                    href="javascript:void(0)">Today</a>
+                                                <a class="dropdown-item" (click)="openChooseDate('CSDPICK', dataItem)"
+                                                    href="javascript:void(0)">Choose Date</a>
+
+                                            </div>
+                                        </div>
+
+                                        <div [ngClass]="{'disabled' :disableBtnsIndividualMenu('CCD', dataItem)}"
+                                            class="dropdown-toggle"
+                                            *ngIf="woMenuBtnSecurityAccess('Change Completion Date')">
+                                            <div class="dropdown-item">Change Completion Date</div>
+                                            <div class="dropdown-menu">
+                                                <a class="dropdown-item" (click)="setDates('CCDY', dataItem)"
+                                                    href="javascript:void(0)">Yesterday</a>
+                                                <a class="dropdown-item" (click)="setDates('CCDT', dataItem)"
+                                                    href="javascript:void(0)">Today</a>
+                                                <a class="dropdown-item" (click)="openChooseDate('CCDPICK', dataItem)"
+                                                    href="javascript:void(0)">Choose Date</a>
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+
+                                <div [ngClass]="{'disabled' :disableBtnsIndividualMenu('CMP', dataItem)}"
+                                    class="dropdown-toggle" *ngIf="woMenuBtnSecurityAccess('Complete Item')">
+                                    <div class="dropdown-item">Complete</div>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item" (click)="setComplete('CIY', dataItem)"
+                                            href="javascript:void(0)">Yesterday</a>
+                                        <a class="dropdown-item" (click)="setComplete('CIT', dataItem)"
+                                            href="javascript:void(0)">Today</a>
+                                        <a class="dropdown-item" (click)="openChooseDate('CIPICK', dataItem)"
+                                            href="javascript:void(0)">Choose Date</a>
+                                    </div>
+                                </div>
+
+
+                                <div class="dropdown-toggle" *ngIf="dataItem.wocheckspeciaL1 == 'WORK'">
+                                    <div class="dropdown-item">Work</div>
+                                    <div class="dropdown-menu">
+                                        <a *ngIf="woMenuBtnSecurityAccess('Work Details')" class="dropdown-item"
+                                            (click)="openAssetDetailChild('single', dataItem)" href="javascript:void(0)"
+                                            [ngClass]="{'disabled' :disableBtnsIndividualMenu('WODETAIL', dataItem)}">Detail</a>
+
+                                        <a *ngIf="woMenuBtnSecurityAccess('Add Work')" class="dropdown-item"
+                                            (click)="openAddAssetWorkOrdersList(dataItem, 'single')"
+                                            href="javascript:void(0)"
+                                            [ngClass]="{'disabled' :disableBtnsIndividualMenu('WOADD', dataItem)}">Add</a>
+                                        <!-- <a class="dropdown-item" (click)="setComplete('CIT', dataItem)"
+                                            href="javascript:void(0)">Remove</a>
+                                        <a class="dropdown-item" (click)="openChooseDate('CIPICK', dataItem)"
+                                            href="javascript:void(0)">Delete</a> -->
+                                    </div>
+                                </div>
+
+                                <a *ngIf="woMenuBtnSecurityAccess('No Access') && dataItem.wocheckspeciaL1 == 'ACCESS'" class="dropdown-item" href="javascript:void(0)" (click)="openNoAccessWindow(dataItem)">No
+                                    Access</a>
 
                             </div>
                         </li>
@@ -205,12 +487,20 @@
                 </kendo-grid-column>
 
 
-                <kendo-grid-column field="dependenciesIndicator" title="" width="40">
+                <kendo-grid-column field="dependenciesIndicator" title="" width="40" [filterable]="false">
+                    <ng-template kendoGridHeaderTemplate>
+                        <i class="fa fa-list" aria-hidden="true"></i>
+                    </ng-template>
+
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <i (click)="openPredecessors(dataItem)" class="fa fa-list"
+                            *ngIf="dataItem.dependenciesIndicator == 'I' || dataItem.dependenciesIndicator == 'C'"
+                            aria-hidden="true"></i>
+                    </ng-template>
                 </kendo-grid-column>
 
-                <kendo-grid-column field="wostagename" title="" width="40">
+                <kendo-grid-column field="wostagename" title="" width="40" [filterable]="false">
                     <ng-template kendoGridHeaderTemplate>
-                        <!-- <i class="fa fa-question" aria-hidden="true"></i> -->
                         <img style="height: 14px;" src="assets/img/icons/tick.png" />
                     </ng-template>
 
@@ -221,7 +511,11 @@
 
                 </kendo-grid-column>
 
-                <kendo-grid-column field="worksOrderAssetChecklistFileCount" title="" width="40">
+                <kendo-grid-column field="worksOrderAssetChecklistFileCount" title="" width="40" [filterable]="false">
+                    <ng-template kendoGridHeaderTemplate>
+                        <img style="height: 14px;" src="assets/img/icons/attach.png" />
+                    </ng-template>
+
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <div style="width:100%; text-align: center;">
                             <img style="height:16px;" *ngIf="dataItem.worksOrderAssetChecklistFileCount != 0"
@@ -230,14 +524,11 @@
                     </ng-template>
                 </kendo-grid-column>
 
-
-
-
-                <kendo-grid-column field="wostagename" title="Stage" width="100">
+                <kendo-grid-column field="wostagename" title="Stage" width="280">
                 </kendo-grid-column>
                 <kendo-grid-column field="wocheckname" title="Name" width="280">
                 </kendo-grid-column>
-                <kendo-grid-column field="wocheckresp" title="Responsibility" width="120">
+                <kendo-grid-column field="wocheckresp" title="Responsibility" width="140">
                 </kendo-grid-column>
                 <kendo-grid-column field="wocheckspeciaL1" title="Special" width="120">
                 </kendo-grid-column>
@@ -271,42 +562,47 @@
                         </span>
                     </ng-template>
                 </kendo-grid-column>
-                <kendo-grid-column field="woactargetcompletiondate" title="Completion Date" width="120">
+                <kendo-grid-column field="woacactualenddate" title="Completion Date" width="120">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <span>
-                            {{ dataItem.woactargetcompletiondate | dateFormat : 'DD-MMM-YYYY' }}
+                            {{ dataItem.woacactualenddate | dateFormat : 'DD-MMM-YYYY' }}
                         </span>
                     </ng-template>
                 </kendo-grid-column>
-                <kendo-grid-column field="woacforecastplusfee" title="Forecast" width="120">
+                <kendo-grid-column field="woacforecastplusfee" title="Forecast" width="120"
+                    [style]="{'text-align': 'right'}">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <span>
                             {{ dataItem.woacforecastplusfee | currency:'GBP':'symbol' }}
                         </span>
                     </ng-template>
                 </kendo-grid-column>
-                <kendo-grid-column field="woaccommittedplusfee" title="Committed" width="120">
+                <kendo-grid-column field="woaccommittedplusfee" title="Committed" width="120"
+                    [style]="{'text-align': 'right'}">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <span>
                             {{ dataItem.woaccommittedplusfee | currency:'GBP':'symbol' }}
                         </span>
                     </ng-template>
                 </kendo-grid-column>
-                <kendo-grid-column field="woacactualplusfee" title="Actual" width="120">
+                <kendo-grid-column field="woacactualplusfee" title="Actual" width="120"
+                    [style]="{'text-align': 'right'}">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <span>
                             {{ dataItem.woacactualplusfee | currency:'GBP':'symbol' }}
                         </span>
                     </ng-template>
                 </kendo-grid-column>
-                <kendo-grid-column field="woacapprovedplusfee" title="Approved" width="120">
+                <kendo-grid-column field="woacapprovedplusfee" title="Approved" width="120"
+                    [style]="{'text-align': 'right'}">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <span>
                             {{ dataItem.woacapprovedplusfee | currency:'GBP':'symbol' }}
                         </span>
                     </ng-template>
                 </kendo-grid-column>
-                <kendo-grid-column field="woacpendingplusfee" title="Pending" width="120">
+                <kendo-grid-column field="woacpendingplusfee" title="Pending" width="120"
+                    [style]="{'text-align': 'right'}">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <span>
                             {{ dataItem.woacpendingplusfee | currency:'GBP':'symbol' }}
@@ -330,9 +626,6 @@
                 <kendo-grid-column field="woasscheckcomment" title="Comment(s)" width="120">
                 </kendo-grid-column>
 
-
-
-
             </kendo-grid>
 
         </div>
@@ -341,7 +634,36 @@
     <div class="checklistOverlay"></div>
 
     <app-worksorders-asset-checklist-document *ngIf="checklistDocWindow" [checklistDocWindow]="checklistDocWindow"
-        (closeAssetchecklistDocEvent)="closeChecklistDoc($event)"></app-worksorders-asset-checklist-document>
+        (closeAssetchecklistDocEvent)="closeChecklistDoc($event)" [selectedChildRow]="selectedChildRow"
+        [selectedChecklist]="selectedChecklistsingleItem"></app-worksorders-asset-checklist-document>
 
+    <app-worksorders-asset-checklist-predecessors *ngIf="predecessors" [predecessors]="predecessors"
+        [predecessorsWindowFrom]="predecessorsWindowFrom" [selectedChecklist]="selectedChecklist"
+        (closePredecessorsEvent)="closePredecessors($event)">
+    </app-worksorders-asset-checklist-predecessors>
+
+
+    <app-pick-date *ngIf="chooseDateWindow" [chooseDateWindow]="chooseDateWindow"
+        (closePickeDateEvent)="closeChooseDate($event)" [chooseDateType]="chooseDateType"
+        (selectedDateEvent)="selectedDateEvent($event)"></app-pick-date>
+
+
+    <app-worksorders-asset-detail *ngIf="assetDetailWindow" [assetDetailWindow]="assetDetailWindow"
+        [selectedChildRow]="selectedChildRow" [selectedParentRow]="selectedChildRow" [treelevel]="'3'"
+        [selectedRow]="selectedChildRow" [selectedChecklist]="selectedChecklistsingleItem"
+        [wodDetailType]="wodDetailType" [worksOrderData]="worksOrderData"
+        (closeAssetDetailEvent)="closeAssetDetailWindow($event)">
+    </app-worksorders-asset-detail>
+
+    <app-worksorders-add-assetsworklist *ngIf="addAssetWorklistWindow" [addAssetWorklistWindow]="addAssetWorklistWindow"
+        [actualSelectedRow]="itemPassToWorkList" [selectedAssetChecklist]="selectedChecklistsingleItem"
+        [addWorkFrom]="'assetchecklist'" [addWorkorderType]="addWorkorderType"
+        (closeAddAssetWorkListEvent)="closeAddAssetWorkordersListWindow($event)"
+        (refreshWorkOrderDetails)="refreshGrid($event)">
+    </app-worksorders-add-assetsworklist>
+
+    <app-no-access *ngIf="noaccessWindow" [noaccessWindow]="noaccessWindow" [selectedChecklistsingleItem]="selectedChecklistsingleItem" (closeNoAccessWinEvent)="closeNoAccessWin($event)" (refreshChecklist)="refreshGrid($event)"></app-no-access>
+
+    <app-no-access-history *ngIf="noaccessHistory" [noaccessHistory]="noaccessHistory" [selectedChecklistsingleItem]="selectedChecklistsingleItem" (closeNoAccessHistoryEve)="closeNoAccessHistory($event)"></app-no-access-history>
 
 </kendo-window>

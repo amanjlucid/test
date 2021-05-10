@@ -1,0 +1,19 @@
+.k-window{
+    position: fixed !important;
+    /* padding: 0 !important; */
+
+}
+
+.smallButton{
+    width: 32px;
+    height: 30px;
+    margin-left: 2px;
+    margin-top: 7px;
+    margin-bottom: 0;
+    flex-grow:0;
+    font-size: .95rem;
+}
+
+.textWithButton{
+    width:100%
+}

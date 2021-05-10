@@ -51,7 +51,7 @@
         mode: multiple ? 'multiple' : 'single'
         }" [sort]="state.sort" (sortChange)="sortChange($event)" (filterChange)="filterChange($event)"
         (cellClick)="cellClickHandler($event)" [filter]="state.filter" scrollable="virtual" [rowHeight]="36"
-        [height]="600" (pageChange)="pageChange($event)" [navigable]="true">
+        [height]="600" (pageChange)="pageChange($event)" [navigable]="false" [virtualColumns]="true">
 
 
         <kendo-grid-column title=" " width="37" [filterable]="false">

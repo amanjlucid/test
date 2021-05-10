@@ -118,7 +118,7 @@
 
           <tr class="odd gradeX" *ngFor="let projectList of projectsLists let i = index; trackBy:trackByFunction"
             (click)="toggleClass($event, projectList)" (dblclick)="doubleclick(projectList)" >
-            <td class="smallCol">
+            <td class="smallCol" (mousedown)="toggleClass($event, projectList)" >
               <!--<i style="color: #dfdbdb;" class="fas fa-bars"></i>-->
               <li class="nav-item dropdown list-unstyled" >
                 <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>

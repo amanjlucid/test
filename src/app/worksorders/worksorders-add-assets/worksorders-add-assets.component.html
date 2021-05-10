@@ -98,7 +98,8 @@
                 <div class="col-md-2">
                     <select [(ngModel)]="headerFilters.astcode">
                         <option selected value="">All Types</option>
-                        <option *ngFor="let assetType of assetTypes" [value]="assetType">{{assetType}}</option>
+                        <option *ngFor="let assetType of assetTypes" [value]="assetType.astcode">{{assetType.astname}}
+                        </option>
                     </select>
                 </div>
                 <div class="col-md-2">
@@ -110,8 +111,8 @@
     </div>
 
     <div class="row mt-2">
-        <div class="col-md-12 mt-2">
-            <kendo-grid [data]="query | async" [loading]="loading" [skip]="headerFilters.CurrentPage"
+        <div class="col-md-12 mt-2 addAssetGrid">
+            <kendo-grid #grid [data]="query | async" [loading]="loading" [skip]="headerFilters.CurrentPage"
                 [pageSize]="headerFilters.PageSize" filterable="menu" [resizable]="true" [sortable]="{
         allowUnsort: true, mode: 'multiple' }" [sort]="state.sort" (sortChange)="sortChange($event)"
                 (filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)" [filter]="state.filter"
@@ -200,7 +201,9 @@
 
     <div class="row mt-4">
         <div class="col-md-12 text-right">
-            <button (click)="addTickedToWorksOrder()" [disabled]="mySelection.length == 0" class="btn btn-sm themeButton">Add Ticked To Works Order</button>
+            <button *ngIf="worksOrderAccess.indexOf('Add Ticked To Works Order') != -1"
+                (click)="addTickedToWorksOrder()" [disabled]="mySelection.length == 0"
+                class="btn btn-sm themeButton">Add Ticked To Works Order</button>
             <button (click)="closeAddAssetWindow()" class="btn btn-sm themeButton ml-1">Close</button>
         </div>
     </div>

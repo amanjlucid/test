@@ -35,7 +35,7 @@
 
     <div class="col-md-2 text-center">
       <button class="btn btn-sm" [disabled]="loading" (click)="searchActionGrid()">Search</button>
-      <button class="btn btn-sm ml-3 themeButton" (click)="exportToExcelTop()">Export</button>
+      <button *ngIf="hnsPermission.indexOf('Export Data') != -1" class="btn btn-sm ml-3 themeButton" (click)="exportToExcelTop()">Export</button>
     </div>
   </div>
 
@@ -50,7 +50,7 @@
         mode: multiple ? 'multiple' : 'single'
         }" [sort]="state.sort" (sortChange)="sortChange($event)" (filterChange)="filterChange($event)"
         (cellClick)="cellClickHandler($event)" [filter]="state.filter" scrollable="virtual" [rowHeight]="36"
-        [height]="600" (pageChange)="pageChange($event)" [navigable]="true">
+        [height]="600" (pageChange)="pageChange($event)" [navigable]="false">
 
 
         <kendo-grid-column title=" " width="37" [filterable]="false">
@@ -69,55 +69,6 @@
                   (click)="opneDocList(dataItem)">Documents</a>
                 <!-- <a class="dropdown-item" *ngIf="hnsPermission.indexOf('Export Data') != -1" href="javascript:void(0)"
                   (click)="exportToExcelTop()">Export Data</a> -->
-
-
-                <div class="dropdown-toggle" *ngIf="hnsPermission.indexOf('Report') != -1">
-                  <div class="dropdown-item">Reports</div>
-
-
-                  <div class="dropdown-menu">
-                    <div class="dropdown-toggle">
-                      <div class="dropdown-item">Standard Assessment Report</div>
-                      <div class="dropdown-menu">
-                        <a class="dropdown-item" (click)="report(dataItem, 'stCD')" href="javascript:void(0)">Current
-                          Data</a>
-                        <a class="dropdown-item" (click)="report(dataItem, 'stCDR')" href="javascript:void(0)">Current
-                          Data
-                          (Recalculate Score)</a>
-                        <a class="dropdown-item" (click)="report(dataItem, 'stOD')" href="javascript:void(0)">Original
-                          Data</a>
-
-                      </div>
-                    </div>
-
-                    <div class="dropdown-toggle">
-                      <div class="dropdown-item">Published Assessment Report</div>
-                      <div class="dropdown-menu">
-                        <a class="dropdown-item" (click)="report(dataItem, 'paCd')" href="javascript:void(0)">Current
-                          Data</a>
-                        <!-- <a class="dropdown-item" (click)="report(true)" href="javascript:void(0)">Current Data
-                          (Recalculate Score)</a> -->
-                        <a class="dropdown-item" (click)="report(dataItem, 'paOD')" href="javascript:void(0)">Original
-                          Data</a>
-
-                      </div>
-                    </div>
-
-                    <div class="dropdown-toggle">
-                      <div class="dropdown-item">Published Assessment Report (Redacted)</div>
-                      <div class="dropdown-menu">
-                        <a class="dropdown-item" (click)="report(dataItem, 'parCD')" href="javascript:void(0)">Current
-                          Data</a>
-                        <!-- <a class="dropdown-item" (click)="report(true)" href="javascript:void(0)">Current Data
-                          (Recalculate Score)</a> -->
-                        <a class="dropdown-item" (click)="report(dataItem, 'parOD')" href="javascript:void(0)">Original
-                          Data</a>
-
-                      </div>
-                    </div>
-                  </div>
-
-                </div>
 
 
               </div>

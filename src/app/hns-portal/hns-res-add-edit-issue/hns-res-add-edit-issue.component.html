@@ -1,4 +1,4 @@
-<kendo-window title="{{title}}" *ngIf="showIssue" (close)="closeIssue()" [top]="5" [minWidth]="700" [width]="1090"
+<kendo-window title="{{title}}" *ngIf="showIssue" (close)="closeIssue()" [top]="5" [minWidth]="700" [width]="1200"
   [height]="auto" [minHeight]="300">
   <div class="row editAnswerHeader" *ngIf="probability || severity; else mulitPleLine">
     <div class="col-md-2">
@@ -100,7 +100,7 @@
 
           </div>
 
-          <div *ngIf="formErrors.issue" class="invalid-feedback col-md-10 offset-md-2">
+          <div *ngIf="formErrors.issue" class="invalid-feedback col-md-9 offset-md-2">
             <div *ngIf="formErrors.issue">{{ formErrors.issue }}</div>
           </div>
 
@@ -117,7 +117,7 @@
                 <i class="fa fa-stack-1x spellTxt">ABC</i>
             </span>
           </div>
-          <div *ngIf="formErrors.proposedAction" class="invalid-feedback col-md-10 offset-md-2">
+          <div *ngIf="formErrors.proposedAction" class="invalid-feedback col-md-9 offset-md-2">
             <div *ngIf="formErrors.proposedAction">{{ formErrors.proposedAction }}</div>
           </div>
 
@@ -152,12 +152,12 @@
             </div>
             <div class="row" *ngIf="formErrors.probability || formErrors.severity">
               <div class="col-md-6">
-                <div *ngIf="formErrors.severity" class="invalid-feedback col-md-12 p-0">
+                <div *ngIf="formErrors.severity" class="invalid-feedback col-md-11 p-0">
                   <div *ngIf="formErrors.severity">{{ formErrors.severity }}</div>
                 </div>
               </div>
               <div class="col-md-6">
-                <div *ngIf="formErrors.probability" class="invalid-feedback col-md-12 ml-5">
+                <div *ngIf="formErrors.probability" class="invalid-feedback col-md-11 ml-5">
                   <div *ngIf="formErrors.probability">{{ formErrors.probability }}</div>
                 </div>
               </div>
@@ -201,13 +201,13 @@
           <div class="col-md-10 offset-md-2" *ngIf="formErrors.priority || formErrors.targetDate">
             <div class="row">
               <div class="col-md-6">
-                <div *ngIf="formErrors.priority" class="invalid-feedback col-md-12 p-0">
+                <div *ngIf="formErrors.priority" class="invalid-feedback col-md-11 p-0">
                   <div *ngIf="formErrors.priority">{{ formErrors.priority }}</div>
                 </div>
               </div>
 
               <div class="col-md-6">
-                <div *ngIf="formErrors.targetDate" class="invalid-feedback col-md-12 ml-5">
+                <div *ngIf="formErrors.targetDate" class="invalid-feedback col-md-11 ml-5">
                   <div *ngIf="formErrors.targetDate">{{ formErrors.targetDate }}</div>
                 </div>
               </div>

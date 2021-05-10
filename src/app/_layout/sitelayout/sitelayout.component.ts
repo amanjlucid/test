@@ -37,33 +37,13 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
   tasksPortalPermissions: any = [];
   reporterPortalPermissions: any = [];
   apexDashboardPermission: any = [];
-  SurveyPortalPermissions:any = [];
+  SurveyPortalPermissions: any = [];
   BatchesLink: string = '';
   BatchSurveysLink: string = '';
   BatchesLinkColor: string = 'Yellow';
   ProjectSurveysLink: string = '';
   // underDevelopment: boolean = true;
   silverLightMenus: any = [
-    {
-      menuName: "Assets",
-      silverLightLink: `${appConfig.silverLightUrl}/AssetPortal`,
-      grpPermissionName: "Asset Portal Access",
-    },
-    {
-      menuName: "Asbestos",
-      silverLightLink: `${appConfig.silverLightUrl}/AsbestosPortal`,
-      grpPermissionName: "Asbestos Portal Access",
-    },
-    {
-      menuName: "Security",
-      silverLightLink: `${appConfig.silverLightUrl}/securityportal`,
-      grpPermissionName: "Security Access",
-    },
-    {
-      menuName: "Servicing",
-      silverLightLink: `${appConfig.silverLightUrl}/SIM_Portal`,
-      grpPermissionName: "Servicing Portal Access",
-    },
     {
       menuName: "Health & Safety",
       silverLightLink: `${appConfig.silverLightUrl}/HealthAndSafety`,
@@ -73,16 +53,6 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
       menuName: "Energy",
       silverLightLink: `${appConfig.silverLightUrl}/EnergyPortal`,
       grpPermissionName: "Energy Portal Access",
-    },
-    {
-      menuName: "Tasks",
-      silverLightLink: `${appConfig.silverLightUrl}/EventManager`,
-      grpPermissionName: "Event Manager Portal Access",
-    },
-    {
-      menuName: "Reporter",
-      silverLightLink: `${appConfig.silverLightUrl}/WebReporter`,
-      grpPermissionName: "Web Reporter Portal Access",
     },
     {
       menuName: "Surveying",
@@ -168,19 +138,16 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
 
   }
 
-  checkLinkEnabled(divValue: string, linkValue: string): Boolean
-  {
+  checkLinkEnabled(divValue: string, linkValue: string): Boolean {
     let linkExists = false;
-    if (sessionStorage.getItem(linkValue))
-      {
-        linkExists = true;
-      }
-
-    if(divValue =='firstLink')
-    {
-        return linkExists;
+    if (sessionStorage.getItem(linkValue)) {
+      linkExists = true;
     }
-    else{
+
+    if (divValue == 'firstLink') {
+      return linkExists;
+    }
+    else {
       return !linkExists;
     }
   }
@@ -366,7 +333,7 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
     this.subs.add(
       this.assetService.apexGetAssetManagementSecurity(this.currentUser.userId, 'Programme Management').subscribe(
         data => {
-          console.log(data);
+          // console.log(data);
           if (data && data.isSuccess) {
             this.WorksOrdersPermissions = data.data;
             this.sharedServie.changeWorksOrdersAccess(data.data);
@@ -536,8 +503,8 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
 
   redirectToUserEevnt(val) {
     const host = window.location.hostname;
-    //let siteUrl = "";
-    let siteUrl = `${appConfig.appUrl}/tasks/tasks?seq=${val.eventId}`
+
+    let siteUrl = `https://apexdevweb.rowanwood.ltd/dev/rowanwood/tasks/tasks?seq=${val.eventId}`
 
     let win: any = window;
     win.location = siteUrl;
@@ -546,6 +513,8 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
 
 
 
-
+  isActive(base: string): boolean {
+    return this.router.url.includes(`/${base}`);
+  }
 
 }

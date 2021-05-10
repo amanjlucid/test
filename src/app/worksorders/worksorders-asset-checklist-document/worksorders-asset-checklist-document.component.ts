@@ -1,7 +1,10 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
-import { AlertService, ConfirmationDialogService, HelperService, LoaderService, SharedService } from 'src/app/_services';
+import { AlertService, AssetAttributeService, ConfirmationDialogService, HelperService, LoaderService, SharedService, WorksorderManagementService } from 'src/app/_services';
+import { combineLatest } from 'rxjs';
+import { GridComponent } from '@progress/kendo-angular-grid';
+
 
 
 @Component({
@@ -12,7 +15,10 @@ import { AlertService, ConfirmationDialogService, HelperService, LoaderService, 
 })
 
 export class WorksordersAssetChecklistDocumentComponent implements OnInit {
+  @ViewChild('addDoc') input;
   @Input() checklistDocWindow: boolean = false;
+  @Input() selectedChecklist: any;
+  @Input() selectedChildRow: any
   @Output() closeAssetchecklistDocEvent = new EventEmitter<boolean>();
   title = 'Documents for Works Order Asset Checklist item';
   subs = new SubSink();
@@ -31,22 +37,125 @@ export class WorksordersAssetChecklistDocumentComponent implements OnInit {
   showEditDoc: boolean = false
   uploadAttachment: boolean = false;
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
-  worksOrderAccess = [];
+  readonly = true;
+  worksOrderData: any;
+  programmeData: any;
+  errors: string[];
+  fileExt: string = "JPG, GIF, PNG, PDF";
+  maxSize: number = 5; // 5MB
+  filePath;
+
+  worksOrderAccess: any = [];
+  userType: any = [];
+  @ViewChild(GridComponent) grid: GridComponent;
+
   constructor(
     private chRef: ChangeDetectorRef,
     private alertService: AlertService,
     private confirmationDialogService: ConfirmationDialogService,
     private helperServie: HelperService,
     private sharedService: SharedService,
-    private loaderService: LoaderService
+    private loaderService: LoaderService,
+    private worksorderManagementService: WorksorderManagementService,
+    private assetAttributeService: AssetAttributeService,
+
+
   ) { }
 
   ngOnInit(): void {
+    // console.log(this.selectedChecklist); 
+    // debugger;
 
-    this.sharedService.worksOrdersAccess.subscribe(
-      data => {
-        this.worksOrderAccess = data;
-      }
+    this.worksOrderDetailPageData();
+    this.getDocumentData();
+
+    this.subs.add(
+      this.worksorderManagementService.getListOfSystemValuesByCode().subscribe(
+        data => {
+          if (data.isSuccess) {
+            this.filePath = data.data[0]._text;
+          } else {
+            this.alertService.error(data.message);
+          }
+        },
+        err => this.alertService.error(err)
+      )
+    )
+
+    this.subs.add(
+      combineLatest([
+        this.sharedService.woUserSecObs,
+        this.sharedService.worksOrdersAccess,
+        this.sharedService.userTypeObs
+      ]).subscribe(
+        data => {
+          // console.log(data);
+          this.userType = data[2][0];
+          if (this.userType?.wourroletype == "Dual Role") {
+            this.worksOrderAccess = [...data[0], ...data[1]];
+          } else {
+            this.worksOrderAccess = data[0]
+          }
+
+        }
+      )
+    )
+
+    // this.subs.add(
+    //   this.sharedService.worksOrdersAccess.subscribe(
+    //     data => {
+    //       this.worksOrderAccess = data;
+    //     }
+    //   )
+    // )
+  }
+
+  worksOrderDetailPageData() {
+    const intWOSEQUENCE = this.selectedChecklist.wosequence;
+
+    this.subs.add(
+      this.worksorderManagementService.getWorksOrderByWOsequence(intWOSEQUENCE).subscribe(
+        data => {
+          if (data.isSuccess) {
+            this.worksOrderData = data.data;
+            this.worksorderManagementService.getWorkProgrammesByWprsequence(data.data.wprsequence).subscribe(
+              prdata => {
+                if (prdata.isSuccess) this.programmeData = prdata.data[0]
+                else this.alertService.error(prdata.message)
+                this.chRef.detectChanges();
+              },
+              err => this.alertService.error(err)
+            )
+          }
+          else this.alertService.error(data.message);
+        },
+        err => this.alertService.error(err)
+      )
+    )
+
+  }
+
+  getDocumentData() {
+    this.selectedDoc = undefined;
+    const Assid_WOPSequence_CheckSurcde = `${this.selectedChecklist.assid}-${this.selectedChecklist.wopsequence}-${this.selectedChecklist.wochecksurcde}`;
+    const woseq = this.selectedChecklist.wosequence;
+
+    this.subs.add(
+      this.worksorderManagementService.getWOPAssetChecklistDoc(woseq, Assid_WOPSequence_CheckSurcde).subscribe(
+        data => {
+          // console.log(data);
+          if (data.isSuccess) {
+            this.gridData = data.data;
+            this.gridView = process(this.gridData, this.state);
+
+            setTimeout(() => {
+              this.grid.autoFitColumns();
+            }, 100);
+
+          } else this.alertService.error(data.message)
+          this.chRef.detectChanges();
+        }
+      )
     )
   }
 
@@ -84,28 +193,10 @@ export class WorksordersAssetChecklistDocumentComponent implements OnInit {
   closeEditDoc(event) {
     this.showEditDoc = event;
     $('.docOvrlay').removeClass('ovrlay');
-    // this.getDocs(this.selectedAction.assid);
+    this.getDocumentData();
 
   }
 
-  getDocs(assid) {
-    // this.subs.add(
-    //   this.resultSrevice.getHealthSafetyFileName(assid).subscribe(
-    //     data => {
-    //       //console.log(data);
-    //       if (data.isSuccess) {
-    //         let tempObj = Object.assign([], data.data);
-    //         tempObj.map((x: any) => {
-    //           x.ntpmodified = this.helperServie.formatDateTime(x.ntpmodified)
-    //         })
-    //         this.douments = tempObj
-    //         this.gridData = process(this.douments, this.state);
-    //         this.chRef.detectChanges();
-    //       }
-    //     }
-    //   )
-    // )
-  }
 
   closeAttachment($event) {
     $('.docOvrlay').removeClass('ovrlay');
@@ -130,92 +221,223 @@ export class WorksordersAssetChecklistDocumentComponent implements OnInit {
 
 
   removeDocument() {
-    // if (this.selectedDoc) {
-    //   this.subs.add(
-    //     this.resultSrevice.deleteHealthSafetyDocument(this.selectedDoc.assid, this.selectedDoc.ntpsequence).subscribe(
-    //       data => {
-    //         if (data.isSuccess) {
-    //           this.alertService.success("Document deleted successfully.");
-    //           this.getDocs(this.selectedAction.assid);
-    //         } else {
-    //           this.alertService.error(data.message);
-    //         }
-    //       }
-    //     )
-    //   )
-    // }
+    if (this.selectedDoc) {
+      const checklistdata = this.selectedChecklist;
+      let params = {
+        WOSEQUENCE: checklistdata.wosequence,
+        ASSID: checklistdata.assid,
+        WOPSEQUENCE: checklistdata.wopsequence,
+        CHECKSURCDE: checklistdata.wochecksurcde,
+        NTPSEQUENCE: this.selectedDoc.ntpsequence,
+        UserId: this.currentUser.userId
+      }
+      this.subs.add(
+        this.worksorderManagementService.removeWorksOrderAssetChecklistDocument(params).subscribe(
+          data => {
+            if (data.isSuccess) {
+              this.alertService.success("Document deleted successfully.");
+              this.getDocumentData();
+            } else {
+              this.alertService.error(data.message);
+            }
+          }
+        )
+      )
+    }
   }
 
   complete($event) {
-    // this.getDocs(this.selectedAction.assid);
+    this.getDocumentData();
   }
 
   viewDocument() {
-    // if (this.selectedDoc) {
-    //   this.loaderService.pageShow()
-    //   let param = {
-    //     "sessionId": "",
-    //     "userId": this.currentUser.userId,
-    //     "requestType": "",
-    //     "requestParameter": this.selectedDoc.fileName
-    //   }
+    if (this.selectedDoc) {
+      this.loaderService.pageShow()
+      let param = {
+        "sessionId": "",
+        "userId": this.currentUser.userId,
+        "requestType": "",
+        "requestParameter": this.selectedDoc.filename
+      }
 
 
-    //   this.subs.add(
-    //     this.resultSrevice.viewDoc(param).subscribe(
-    //       data => {
-    //         this.loaderService.pageHide()
+      this.subs.add(
+        this.worksorderManagementService.viewDoc(param).subscribe(
+          data => {
+            // console.log(data);
+            this.loaderService.pageHide()
 
-    //         if (data.isSuccess && data.data && data.data.length > 0) {
-    //           let baseStr = data.data;
-    //           const fileName = `${this.selectedDoc.description}`;
-    //           let fileExt = "pdf";
-    //           this.assetAttributeService.getMimeType(fileExt).subscribe(
-    //             mimedata => {
-    //               if (mimedata && mimedata.isSuccess && mimedata.data && mimedata.data.fileExtension) {
-    //                 var linkSource = 'data:' + mimedata.data.mimeType1 + ';base64,';
-    //                 if (mimedata.data.openWindow) {
-    //                   var byteCharacters = atob(baseStr);
-    //                   var byteNumbers = new Array(byteCharacters.length);
-    //                   for (var i = 0; i < byteCharacters.length; i++) {
-    //                     byteNumbers[i] = byteCharacters.charCodeAt(i);
-    //                   }
-    //                   var byteArray = new Uint8Array(byteNumbers);
-    //                   var file = new Blob([byteArray], { type: mimedata.data.mimeType1 + ';base64' });
-    //                   var fileURL = URL.createObjectURL(file);
-    //                   let newPdfWindow = window.open(fileURL);
+            if (data.isSuccess && data.data && data.data.length > 0) {
+              let baseStr = data.data;
+              const fileName = `${this.selectedDoc.description}`;
 
-    //                   // let newPdfWindow = window.open("",this.selectedNotes.fileName);
-    //                   // let iframeStart = "<\iframe title='Notepad' width='100%' height='100%' src='data:" + mimedata.data.mimeType1 + ";base64, ";
-    //                   // let iframeEnd = "'><\/iframe>";
-    //                   // newPdfWindow.document.write(iframeStart + filedata + iframeEnd);
-    //                   // newPdfWindow.document.title = this.selectedNotes.fileName;
-    //                 }
-    //                 else {
-    //                   linkSource = linkSource + baseStr;
-    //                   const downloadLink = document.createElement("a");
-    //                   downloadLink.href = linkSource;
-    //                   downloadLink.download = fileName;
-    //                   downloadLink.click();
-    //                 }
-    //               }
-    //               else {
-    //                 this.alertService.error("This file format is not supported.");
-    //               }
-    //             }
-    //           )
-    //         }
+              let fileExt = this.selectedDoc.filename.substring(this.selectedDoc.filename.lastIndexOf(".") + 1).toLowerCase();
 
-    //       },
-    //       error => {
-    //         this.loaderService.pageHide()
-    //         this.alertService.error(error)
-    //       }
-    //     )
-    //   )
+              this.assetAttributeService.getMimeType(fileExt).subscribe(
+                mimedata => {
+                  if (mimedata && mimedata.isSuccess && mimedata.data && mimedata.data.fileExtension) {
+                    var linkSource = 'data:' + mimedata.data.mimeType1 + ';base64,';
+                    if (mimedata.data.openWindow) {
+                      var byteCharacters = atob(baseStr);
+                      var byteNumbers = new Array(byteCharacters.length);
+                      for (var i = 0; i < byteCharacters.length; i++) {
+                        byteNumbers[i] = byteCharacters.charCodeAt(i);
+                      }
+                      var byteArray = new Uint8Array(byteNumbers);
+                      var file = new Blob([byteArray], { type: mimedata.data.mimeType1 + ';base64' });
+                      var fileURL = URL.createObjectURL(file);
+                      let newPdfWindow = window.open(fileURL);
+
+                    }
+                    else {
+                      linkSource = linkSource + baseStr;
+                      const downloadLink = document.createElement("a");
+                      downloadLink.href = linkSource;
+                      downloadLink.download = fileName;
+                      downloadLink.click();
+                    }
+                  }
+                  else {
+                    this.alertService.error("This file format is not supported.");
+                  }
+                }
+              )
+            } else {
+              this.alertService.error(data.message);
+            }
+
+          },
+          error => {
+            this.loaderService.pageHide()
+            this.alertService.error(error)
+          }
+        )
+      )
+    } else {
+      this.alertService.error("Please select one record first")
+    }
+  }
+
+
+  addDocument() {
+    $('#addDoc').trigger('click');
+  }
+
+
+
+  private isValidFileExtension(files) {
+    // Make array of file extensions
+    let extensions: any;
+    // if (this.fileType != "P") {
+    //   let fileExt = "PDF";
+    //   extensions = (fileExt.split(',')).map(function (x) { return x.toLocaleUpperCase().trim() });
     // } else {
-    //   this.alertService.error("Please select one record first")
+    //   extensions = (this.fileExt.split(',')).map(function (x) { return x.toLocaleUpperCase().trim() });
     // }
+    extensions = (this.fileExt.split(',')).map(function (x) { return x.toLocaleUpperCase().trim() });
+
+    for (let i = 0; i < files.length; i++) {
+      // Get file extension
+      let ext = files[i].name.toUpperCase().split('.').pop() || files[i].name;
+      // Check the extension exists
+      let exists = extensions.includes(ext);
+      if (!exists) {
+        this.alertService.error("Error (Extension): " + files[i].name)
+        return false;
+      }
+      // Check file size
+      return this.isValidFileSize(files[i]);
+    }
+  }
+
+  private isValidFileSize(file) {
+    let fileSizeinMB = file.size / (1024 * 1000);
+    let size = Math.round(fileSizeinMB * 100) / 100; // convert upto 2 decimal place
+    if (size > this.maxSize) {
+      this.alertService.error("Error (File Size): " + file.name + ": exceed file size limit of " + this.maxSize + "MB ( " + size + "MB )");
+      return false;
+    }
+
+    return true
+
+  }
+
+  private validateFile(file) {
+    return this.isValidFileExtension(file);
+  }
+
+  public openFileNotExistConfirmationOnAdd() {
+    $('.k-window').css({ 'z-index': 1000 });
+    this.confirmationDialogService.confirm('Please confirm..', 'You cannot add a document that is outside of the Works Order Document Location directory.  Upload Document Now?')
+      .then((confirmed) => (confirmed) ? $('.uploadDocBtn').trigger('click') : console.log(confirmed))
+      .catch(() => console.log('Attribute dismissed the dialog.'));
+  }
+
+  onFileChange(event) {
+    const file = event.target.files;
+    // console.log(file)
+
+    if (file.length > 0 && this.validateFile(file) == false) {
+      return;
+    }
+
+    if (file.length > 0) {
+      const fullFilePath = `${this.filePath}\\${file[0].name}`
+      this.worksorderManagementService.attachmentExists(fullFilePath).subscribe(
+        fileExist => {
+          // console.log(fileExist);
+          if (!fileExist.isSuccess) {
+            this.openFileNotExistConfirmationOnAdd();
+            return;
+          }
+
+          const formData = new FormData();
+
+          // let params = {
+          //   WO_FILEPATH: this.filePath,
+          //   WO_LEVEL: this.selectedChildRow.treelevel,
+          //   WO_SEQNO: this.selectedChildRow.wosequence,
+          //   WOP_SEQNO: this.selectedChildRow.wopsequence,
+          //   ASSID: this.selectedChildRow.assid,
+          //   CHECKSURCDE: this.selectedChecklist.wochecksurcde,
+          //   CurrentUser: this.currentUser.userId
+          // }
+
+          // console.log(params);
+
+          formData.append('file', file[0], file[0].name);
+          formData.append('WO_FILEPATH', this.filePath);
+          formData.append('WO_LEVEL', '2');
+          formData.append('WO_SEQNO', this.selectedChildRow.wosequence);
+          formData.append('WOP_SEQNO', this.selectedChildRow.wopsequence);
+          formData.append('ASSID', this.selectedChildRow.assid);
+          formData.append('CHECKSURCDE', this.selectedChecklist.wochecksurcde);
+          formData.append('CurrentUser', this.currentUser.userId);
+
+
+
+
+
+          this.worksorderManagementService.workOrderUploadDocument(formData).subscribe(
+            data => {
+              console.log(data)
+              if (data) {
+                this.getDocumentData()
+              } else {
+                this.alertService.error("Something went wrong, File not uploaded.")
+              }
+            },
+            err => this.alertService.error(err)
+          )
+
+        }
+      )
+
+
+
+
+    }
+
   }
 
 }

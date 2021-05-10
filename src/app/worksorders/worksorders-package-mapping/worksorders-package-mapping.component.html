@@ -10,7 +10,7 @@
                     mode: 'multiple'
                     }" [skip]="state.skip" [sort]="state.sort" [filter]="state.filter"
                 (sortChange)="sortChange($event)" (filterChange)="filterChange($event)"
-                (cellClick)="cellClickHandler($event)" [navigable]="false" kendoGridSelectBy="wphcode"
+                (cellClick)="cellClickHandler($event)" [navigable]="false" [kendoGridSelectBy]="mySelectionKey"
                 [selectedKeys]="mySelection">
 
                 <kendo-grid-column field="wphcode" title="Code" width="130">
@@ -39,7 +39,7 @@
             </select>
 
             <button class="btn btn-sm themeButton ml-3" (click)="apply(1)">Apply Selected</button>
-            <button class="btn btn-sm themeButton ml-2" (click)="apply(2)">Apply All</button>
+            <button class="btn btn-sm themeButton ml-2" (click)="confirmAppyAll()">Apply All</button>
         </div>
 
         <div class="col-md-6 text-right">

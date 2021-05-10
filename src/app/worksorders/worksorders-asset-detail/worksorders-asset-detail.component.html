@@ -1,523 +1,570 @@
 <kendo-window title="{{title}}" *ngIf="assetDetailWindow" (close)="closeAssetDetailWindow()" [top]="10" [minWidth]="700"
-    [width]="1050" [height]="auto" [minHeight]="350">
+  [width]="1050" [height]="auto" [minHeight]="350">
 
-    <div class="row headerArea">
-        <div class="col-md-12 headerRow12">
-            <div class="row">
-                <div class="col-md-2">
-                    <label for="">Works Order: {{ selectedRow.wosequence}}</label>
-                </div>
-                <div class="col-md-10">
-                         <input [readonly]="true" type="text" class="form-control"  placeholder="" value="{{ worksOrderData.woname}}">
-                </div>
-
-            </div>
+  <div class="row headerArea">
+    <div class="col-md-12 headerRow12">
+      <div class="row">
+        <div class="col-md-2">
+          <label for="">Works Order: </label>
+        </div>
+        <div class="col-md-10">
+          <input [readonly]="true" type="text" class="form-control" placeholder=""
+            value="{{ worksOrderData.woname}} ({{ selectedRow.wosequence}})">
         </div>
 
-
-
-        <div *ngIf="treelevel == 3" class="col-md-12 headerRow12">
-            <div class="row">
-                <div class="col-md-2">
-                    <label for="">Asset:</label>
-                </div>
-                <div class="col-md-4">
-                         <input [readonly]="true" type="text" class="form-control"  placeholder="" value="{{ selectedRow.assid}}">
-                </div>
-                <div class="col-md-6">
-                         <input [readonly]="true" type="text" class="form-control"  placeholder="" value="{{ selectedRow.woname}}">
-                </div>
-
-
-            </div>
-        </div>
-
-
-
-
-        <div class="col-md-12 headerRow12">
-            <div class="row">
-                <div class="col-md-2">
-                    <label for=""> Phase:</label>
-                </div>
-                <div class="col-md-10">
-                         <input type="text" [readonly]="true" class="form-control"  placeholder="" value="{{ selectedParentRow.woname}}">
-                </div>
-
-            </div>
-        </div>
-
-
+      </div>
     </div>
 
-    <div class="row mt-2">
-        <div class="col-md-12 mt-2">
-            <kendo-grid [kendoGridGroupBinding]="assetDetailsGridData"  [data]="gridView" [height]="570" [selectable]="{
-                    mode: 'multiple'
+
+
+    <div *ngIf="treelevel == 3" class="col-md-12 headerRow12">
+      <div class="row">
+        <div class="col-md-2">
+          <label for="">Asset:</label>
+        </div>
+        <div class="col-md-4">
+          <input [readonly]="true" type="text" class="form-control" placeholder="" value="{{ selectedRow.assid}}">
+        </div>
+        <div class="col-md-6">
+          <input [readonly]="true" type="text" class="form-control" placeholder="" value="{{ selectedRow.woname}}">
+        </div>
+
+
+      </div>
+    </div>
+
+
+
+
+    <div class="col-md-12 headerRow12">
+      <div class="row">
+        <div class="col-md-2">
+          <label for=""> Phase:</label>
+        </div>
+        <div class="col-md-10">
+          <input type="text" [readonly]="true" class="form-control" placeholder=""
+            value="{{ selectedParentRow.woname}}">
+        </div>
+
+      </div>
+    </div>
+
+
+  </div>
+
+  <div class="row mt-2">
+    <div class="col-md-12 mt-2">
+      <kendo-grid [kendoGridGroupBinding]="assetDetailsGridData" [data]="gridView" [height]="570" [selectable]="{
+                    mode: 'single'
                   }" filterable="menu" [resizable]="true" [sortable]="{
                     allowUnsort: true,
                     mode: 'multiple'
                     }" [skip]="state.skip" [sort]="state.sort" [filter]="state.filter"
-                (sortChange)="sortChange($event)" (filterChange)="filterChange($event)"
-                (cellClick)="cellClickHandler($event)" [navigable]="false">
+        (sortChange)="sortChange($event)" (filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)"
+        [navigable]="false">
 
-                <kendo-grid-column title=" " width="37" [filterable]="false" [sortable]="false">
-                    <ng-template kendoGridCellTemplate let-dataItem>
-                        <li class="nav-item dropdown list-unstyled" style="margin-top: -7px;">
-                            <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"
-                                (click)="setSeletedRow(dataItem)"></i>
-                            <div class="dropdown-menu">
-                                <a *ngIf="worksOrderAccess.indexOf('Delete Works Order') != -1"  class="dropdown-item" href="javascript:void(0)" (click)="removeAssetFromPhase(dataItem)">Delete</a>
-                                <a *ngIf="worksOrderAccess.indexOf('Edit Comment') != -1" class="dropdown-item" href="javascript:void(0)" (click)="openEditCommentForWoAssetWindow(dataItem)">Edit Comment</a>
-                                <a *ngIf="worksOrderAccess.indexOf('Edit Work') != -1" class="dropdown-item" href="javascript:void(0)" (click)="openEditWorkPackageQtyCostWindow(dataItem)">Edit Work</a>
-                                <a *ngIf="dataItem.woadrechargeyn == 'N' && worksOrderAccess.indexOf('Recharge') != -1" class="dropdown-item" href="javascript:void(0)" (click)="rechargeToggle(dataItem)">Recharge</a>
-                                <a *ngIf="dataItem.woadrechargeyn == 'Y' && worksOrderAccess.indexOf('Recharge') != -1" class="dropdown-item" href="javascript:void(0)" (click)="rechargeToggle(dataItem)">Clear Recharge</a>
-                                <a *ngIf="dataItem.woadrefusaL_YN == 'N' && worksOrderAccess.indexOf('Refusal') != -1" class="dropdown-item" href="javascript:void(0)" (click)="openSetToRefusalWindow(dataItem)">Set to Refusal</a>
-                                <a *ngIf="dataItem.woadrefusaL_YN == 'Y' && worksOrderAccess.indexOf('Refusal') != -1" class="dropdown-item" href="javascript:void(0)" (click)="clearRefusalConfirm(dataItem)">Clear Refusal</a>
-                                <a *ngIf="worksOrderAccess.indexOf('Swap Package') != -1"  class="dropdown-item" href="javascript:void(0)" (click)="openSwapPackage(dataItem)">Swap Package</a>
+        <kendo-grid-column title=" " width="37" [filterable]="false" [sortable]="false">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <li class="nav-item dropdown list-unstyled" style="margin-top: -7px;">
+              <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars" (click)="setSeletedRow(dataItem)"></i>
+              <div class="dropdown-menu">
+                <a class="dropdown-item" href="javascript:void(0)" *ngIf="worksOrderAccess.indexOf('Delete Work') != -1"
+                  (click)="removeAssetFromPhase(dataItem, true)"
+                  [ngClass]="{'disabled' :dataItem.woadstatus != 'New'}">Delete</a>
+                <a class="dropdown-item" href="javascript:void(0)" *ngIf="worksOrderAccess.indexOf('Remove Work') != -1"
+                  (click)="removeAssetFromPhase(dataItem, false)"
+                  [ngClass]="{'disabled' :dataItem.woadstatus != 'New'}">Remove</a>
 
+                <a *ngIf="treelevel == 3 && worksOrderAccess.indexOf('Edit Comment') != -1" class="dropdown-item"
+                  href="javascript:void(0)" (click)="openEditCommentForWoAssetWindow(dataItem)">Edit Comment</a>
 
-                            </div>
-                        </li>
-
-                    </ng-template>
-                </kendo-grid-column>
-
-
-                <kendo-grid-column  *ngIf="treelevel == 2" field="assid" title="Asset Id" width="100">
-                </kendo-grid-column>
-                <kendo-grid-column *ngIf="treelevel == 2" field="astconcataddress" title="Address" width="160">
-                </kendo-grid-column>
-                <kendo-grid-column field="wlataid" title="Attr Id" width="120">
-                </kendo-grid-column>
-                <kendo-grid-column field="atadescription" title="Description" width="410">
-                </kendo-grid-column>
-                <kendo-grid-column field="asaquantity" title="Qty" width="120">
-                </kendo-grid-column>
-                <kendo-grid-column field="asauom" title="UOM" width="120">
-                </kendo-grid-column>
-                <kendo-grid-column *ngIf="treelevel == 2" field="wlcomppackage" title="Package Code" width="120">
-                </kendo-grid-column>
-
-
-                <kendo-grid-column *ngIf="treelevel == 2" field="wlcomppackage" title="Package Name" width="120">
-                </kendo-grid-column>
+                <a [ngClass]="{'disabled' :dataItem.woadstatus != 'New'}"
+                  *ngIf="treelevel == 3 && worksOrderAccess.indexOf('Edit Work') != -1" class="dropdown-item"
+                  href="javascript:void(0)" (click)="openEditWorkPackageQtyCostWindow(dataItem)">Edit Work</a>
+                <a [ngClass]="{'disabled' :dataItem.woadstatus != 'New'}"
+                  *ngIf="treelevel == 3 && dataItem.woadrechargeyn == 'N' && worksOrderAccess.indexOf('Recharge') != -1"
+                  class="dropdown-item" href="javascript:void(0)" (click)="rechargeToggle(dataItem, true)">Recharge</a>
+                <a [ngClass]="{'disabled' :dataItem.woadstatus != 'New'}"
+                  *ngIf="treelevel == 3 && dataItem.woadrechargeyn == 'Y' && worksOrderAccess.indexOf('Recharge') != -1"
+                  class="dropdown-item" href="javascript:void(0)" (click)="rechargeToggle(dataItem, false)">Clear
+                  Recharge</a>
+                <a [ngClass]="{'disabled' :dataItem.woadstatus != 'New'}"
+                  *ngIf="treelevel == 3 && dataItem.woadrefusaL_YN == 'N' && worksOrderAccess.indexOf('Refusal') != -1"
+                  class="dropdown-item" href="javascript:void(0)" (click)="openSetToRefusalWindow(dataItem)">Set to
+                  Refusal</a>
+                <a [ngClass]="{'disabled' :dataItem.woadstatus != 'New'}"
+                  *ngIf="treelevel == 3 && dataItem.woadrefusaL_YN == 'Y' && worksOrderAccess.indexOf('Refusal') != -1"
+                  class="dropdown-item" href="javascript:void(0)" (click)="clearRefusalConfirm(dataItem)">Clear
+                  Refusal</a>
+                <a [ngClass]="{'disabled' :dataItem.woadstatus != 'New'}"
+                  *ngIf="treelevel == 3 && worksOrderAccess.indexOf('Swap Package') != -1" class="dropdown-item"
+                  href="javascript:void(0)" (click)="openSwapPackage(dataItem)">Swap Package</a>
 
 
+              </div>
+            </li>
 
-                <kendo-grid-column *ngIf="treelevel == 2" field="woadcomment" title="Comment" width="120">
-                </kendo-grid-column>
-
-
-
-                <kendo-grid-column *ngIf="treelevel == 2" field="wocheckname" title="Checklist Name" width="120">
-                </kendo-grid-column>
+          </ng-template>
+        </kendo-grid-column>
 
 
-
-                <kendo-grid-column  *ngIf="treelevel == 2" field="woassstatus" title="Status" width="120">
-                </kendo-grid-column>
-
-                <kendo-grid-column  *ngIf="treelevel == 3" field="woadstatus" title="Status" width="120">
-                </kendo-grid-column>
-
-
-
-                <kendo-grid-column *ngIf="treelevel == 3"  field="woadrechargeyn" title="Recharge" width="120">
-                </kendo-grid-column>
-                <kendo-grid-column *ngIf="treelevel == 3"  field="refusaL_REASON" title="Refusal" width="120">
-                </kendo-grid-column>
-
-                <kendo-grid-column *ngIf="treelevel == 3" field="wlcomppackage" title="Package Code" width="120">
-                </kendo-grid-column>
+        <kendo-grid-column *ngIf="treelevel == 2" field="assid" title="Asset Id" width="100">
+        </kendo-grid-column>
+        <kendo-grid-column *ngIf="treelevel == 2" field="astconcataddress" title="Address" width="160">
+        </kendo-grid-column>
+        <kendo-grid-column field="wlataid" title="Attr Id" width="120">
+        </kendo-grid-column>
+        <kendo-grid-column field="atadescription" title="Description" width="410">
+        </kendo-grid-column>
+        <kendo-grid-column field="asaquantity" title="Qty" width="120">
+        </kendo-grid-column>
+        <kendo-grid-column field="asauom" title="UOM" width="120">
+        </kendo-grid-column>
+        <kendo-grid-column *ngIf="treelevel == 2" field="wlcomppackage" title="Package Code" width="120">
+        </kendo-grid-column>
 
 
-                <kendo-grid-column *ngIf="treelevel == 3" field="wlcomppackage" title="Package Name" width="120">
-                </kendo-grid-column>
-
-
-                <kendo-grid-column *ngIf="treelevel == 3" field="woadcomment" title="Comment" width="120">
-                </kendo-grid-column>
-
-
-                <kendo-grid-column field="woadforecast" title="Forecast" width="120">
-                </kendo-grid-column>
+        <kendo-grid-column *ngIf="treelevel == 2" field="wlcomppackage" title="Package Name" width="120">
+        </kendo-grid-column>
 
 
 
-              <kendo-grid-column field="woadcommitted" title="Committed" width="120">
-              </kendo-grid-column>
-
-              <kendo-grid-column field="woadactual" title="Actual" width="120">
-              </kendo-grid-column>
-
-                            <kendo-grid-column field="woadapproved" title="Approved" width="120">
-                            </kendo-grid-column>
-
-
-                                          <kendo-grid-column field="woadpending" title="Pending" width="120">
-                                          </kendo-grid-column>
-
-
-                                                        <kendo-grid-column field="mPgoA" title="Created By" width="120">
-                                                        </kendo-grid-column>
-
-                                                        <kendo-grid-column field="mPgpA" title="Created" width="150" filter="date" format="{0:dd-MM-yyyy}">
-                                                          <ng-template kendoGridFilterMenuTemplate let-filter let-column="column" let-filterService="filterService">
-                                                            <date-range-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
-                                                            </date-range-filter>
-                                                          </ng-template>
-                                                          <ng-template kendoGridCellTemplate let-dataItem>
-                                                            <span>
-                                                              {{ dataItem.mPgqA | dateFormat : 'DD-MMM-YYYY' }}
-                                                            </span>
-                                                          </ng-template>
-                                                        </kendo-grid-column>
-
-
-                                                        <kendo-grid-column field="mPgrA" title="Updated By" width="120">
-                                                        </kendo-grid-column>
-
-                                                        <kendo-grid-column field="mPgpA" title="Updated" width="150" filter="date" format="{0:dd-MM-yyyy}">
-                                                          <ng-template kendoGridFilterMenuTemplate let-filter let-column="column" let-filterService="filterService">
-                                                            <date-range-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
-                                                            </date-range-filter>
-                                                          </ng-template>
-                                                          <ng-template kendoGridCellTemplate let-dataItem>
-                                                            <span>
-                                                              {{ dataItem.mPgtA | dateFormat : 'DD-MMM-YYYY' }}
-                                                            </span>
-                                                          </ng-template>
-                                                        </kendo-grid-column>
-
-
-            </kendo-grid>
+        <kendo-grid-column *ngIf="treelevel == 2" field="woadcomment" title="Comment" width="120">
+        </kendo-grid-column>
 
 
 
+        <kendo-grid-column *ngIf="treelevel == 2" field="wocheckname" title="Checklist Name" width="120">
+        </kendo-grid-column>
 
 
 
-        </div>
+        <kendo-grid-column *ngIf="treelevel == 2" field="woassstatus" title="Status" width="120">
+        </kendo-grid-column>
+
+        <kendo-grid-column *ngIf="treelevel == 3" field="woadstatus" title="Status" width="120">
+        </kendo-grid-column>
+
+
+
+        <kendo-grid-column *ngIf="treelevel == 3" field="woadrechargeyn" title="Recharge" width="120"
+          [style]="{'text-align': 'center'}">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span>
+              <img *ngIf="dataItem.woadrechargeyn == 'Y'" style="height: 14px;" src="assets/img/icons/tick.png" />
+
+            </span>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column *ngIf="treelevel == 3" field="refusaL_REASON" title="Refusal" width="120">
+        </kendo-grid-column>
+
+        <kendo-grid-column *ngIf="treelevel == 3" field="wlcomppackage" title="Package Code" width="120">
+        </kendo-grid-column>
+
+
+        <kendo-grid-column *ngIf="treelevel == 3" field="wlcomppackage" title="Package Name" width="120">
+        </kendo-grid-column>
+
+
+        <kendo-grid-column *ngIf="treelevel == 3" field="woadcomment" title="Comment" width="120">
+        </kendo-grid-column>
+
+
+        <kendo-grid-column field="woadforecast" title="Forecast" width="120" [style]="{'text-align': 'right'}">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span>
+              {{ dataItem.woadforecast | currency:"GBP":"symbol" }}
+            </span>
+          </ng-template>
+        </kendo-grid-column>
+
+
+
+        <kendo-grid-column field="woadcommitted" title="Committed" width="120" [style]="{'text-align': 'right'}">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span>
+              {{ dataItem.woadcommitted | currency:"GBP":"symbol" }}
+            </span>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column field="woadactual" title="Actual" width="120" [style]="{'text-align': 'right'}">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span>
+              {{ dataItem.woadactual | currency:"GBP":"symbol" }}
+            </span>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column field="woadapproved" title="Approved" width="120" [style]="{'text-align': 'right'}">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span>
+              {{ dataItem.woadapproved | currency:"GBP":"symbol" }}
+            </span>
+          </ng-template>
+        </kendo-grid-column>
+
+
+        <kendo-grid-column field="woadpending" title="Pending" width="120" [style]="{'text-align': 'right'}">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span>
+              {{ dataItem.woadpending | currency:"GBP":"symbol" }}
+            </span>
+          </ng-template>
+        </kendo-grid-column>
+
+
+        <kendo-grid-column field="mPgoA" title="Created By" width="120">
+        </kendo-grid-column>
+
+        <kendo-grid-column field="mPgpA" title="Created" width="150" filter="date" format="{0:dd-MM-yyyy}">
+          <ng-template kendoGridFilterMenuTemplate let-filter let-column="column" let-filterService="filterService">
+            <date-range-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
+            </date-range-filter>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span>
+              {{ dataItem.mPgqA | dateFormat : 'DD-MMM-YYYY' }}
+            </span>
+          </ng-template>
+        </kendo-grid-column>
+
+
+        <kendo-grid-column field="mPgrA" title="Updated By" width="120">
+        </kendo-grid-column>
+
+        <kendo-grid-column field="mPgpA" title="Updated" width="150" filter="date" format="{0:dd-MM-yyyy}">
+          <ng-template kendoGridFilterMenuTemplate let-filter let-column="column" let-filterService="filterService">
+            <date-range-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
+            </date-range-filter>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span>
+              {{ dataItem.mPgtA | dateFormat : 'DD-MMM-YYYY' }}
+            </span>
+          </ng-template>
+        </kendo-grid-column>
+
+
+      </kendo-grid>
+
+
+
+
 
 
     </div>
 
-    <div class="row mt-4">
-        <div class="col-md-6">
-            <!-- <select class="selectTemplate">
+
+  </div>
+
+  <div class="row mt-4">
+    <div class="col-md-6">
+      <!-- <select class="selectTemplate">
                 <option value="w">Test</option>
                 <option value="w">Test</option>
             </select>
 
             <button class="btn btn-sm themeButton ml-3">Apply Selected</button>
             <button class="btn btn-sm themeButton ml-2">Apply All</button> -->
-        </div>
-
-        <div class="col-md-6 text-right">
-            <button (click)="closeAssetDetailWindow()" class="btn btn-sm themeButton">Close</button>
-        </div>
     </div>
 
-
-
-
-<kendo-dialog title="Add Package to Work List" *ngIf="SwapPackageWindow" (close)="closeSwapPackageWindow()" [minWidth]="650" [width]="1200">
-
-
-
-  <div   class="row headerRow12">
-          <div class="col-md-2">
-                <label for="">Assset:</label>
-            </div>
-          <div class="col-md-4">
-                     <input [(ngModel)]="itemData.assid" [readonly]="true" type="text" class="form-control"  placeholder="" >
-          </div>
-
-
-          <div class="col-md-6">
-                     <input [(ngModel)]="itemData.woname"  [readonly]="true" type="text" class="form-control"  placeholder="" >
-          </div>
-
-
-
-
-
-
-
-
-
+    <div class="col-md-6 text-right">
+      <button (click)="closeAssetDetailWindow()" class="btn btn-sm themeButton">Close</button>
     </div>
-    <div   class="row headerRow12">
-
-
-    <div class="col-md-2">
-          <label for="">Checklist:</label>
-      </div>
-    <div class="col-md-4">
-               <input [(ngModel)]="itemData.wocheckname" [readonly]="true" type="text" class="form-control"  placeholder="" value="">
-    </div>
-
-</div>
-
-
-<div   class="row">
-
-  <kendo-grid [kendoGridGroupBinding]="SwapPackagesForAssetsDataGrid"  [data]="gridView" [height]="570" [selectable]="{
-          mode: 'multiple'
-        }" filterable="menu" [resizable]="true" [sortable]="{
-          allowUnsort: true,
-          mode: 'multiple'
-          }" [skip]="state.skip" [sort]="state.sort" [filter]="state.filter"
-      (sortChange)="sortChange($event)" (filterChange)="filterChange($event)"
-      (cellClick)="cellClickHandler($event)" [navigable]="false">
-
-
-
-
-                      <kendo-grid-column field="wphcode" title="Package Code" width="100">
-                      </kendo-grid-column>
-                      <kendo-grid-column field="wphname" title="Package Name" width="100">
-                      </kendo-grid-column>
-                      <kendo-grid-column field="wlcomppackagedesc" title="Work Package Description" width="100">
-                      </kendo-grid-column>
-                      <kendo-grid-column field="atadescription" title="Attribute Description" width="100">
-                      </kendo-grid-column>
-                      <kendo-grid-column field="asaquantity" title="Quantity" width="100">
-                      </kendo-grid-column>
-                      <kendo-grid-column field="uom" title="UOM" width="100">
-                      </kendo-grid-column>
-                      <kendo-grid-column field="contractrate" title="SOR Rate" width="100">
-                      </kendo-grid-column>
-                      <kendo-grid-column field="contractrate" title="Contract Rate" width="100">
-                      </kendo-grid-column>
-                      <kendo-grid-column field="cost" title="Work Cost" width="100">
-                      </kendo-grid-column>
-                      <kendo-grid-column field="attributeexists" title="Attribute Status" width="100">
-                      </kendo-grid-column>
-                      <kendo-grid-column field="exclusionreason" title="Exclusion Reason" width="100">
-                      </kendo-grid-column>
-
-
-
-
-  </kendo-grid>
-
-</div>
-
-  <div class="buttonDiv pull-right mb-4">
-
-    <button  type="button" (click)="closeSwapPackageWindow()" class="btn btn-sm themeButton mr-1">Cancel</button>
-
-
   </div>
 
 
 
-    </kendo-dialog>
+
+  <!-- <kendo-window title="Add Package to Work List" *ngIf="SwapPackageWindow" (close)="closeSwapPackageWindow()"
+    [minWidth]="650" [width]="1200">
+
+    <div class="row headerRow12">
+      <div class="col-md-2">
+        <label for="">Assset:</label>
+      </div>
+      <div class="col-md-4">
+        <input [(ngModel)]="itemData.assid" [readonly]="true" type="text" class="form-control" placeholder="">
+      </div>
+
+
+      <div class="col-md-6">
+        <input [(ngModel)]="itemData.woname" [readonly]="true" type="text" class="form-control" placeholder="">
+      </div>
+
+
+    </div>
+
+    <div class="row headerRow12">
+      <div class="col-md-2">
+        <label for="">Checklist:</label>
+      </div>
+      <div class="col-md-4">
+        <input [(ngModel)]="itemData.wocheckname" [readonly]="true" type="text" class="form-control" placeholder=""
+          value="">
+      </div>
+
+    </div>
+
+
+    <div class="row">
+
+      <div class="col-md-12">
+        <kendo-grid [kendoGridGroupBinding]="SwapPackagesForAssetsDataGrid" [data]="gridView" [height]="570"
+          [selectable]="{
+        mode: 'multiple'
+      }" filterable="menu" [resizable]="true" [sortable]="{
+        allowUnsort: true,
+        mode: 'multiple'
+        }" [skip]="state.skip" [sort]="state.sort" [filter]="state.filter" (sortChange)="sortChange($event)"
+          (filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)" [navigable]="false">
+
+          <kendo-grid-column field="wphcode" title="Package Code" width="150">
+          </kendo-grid-column>
+          <kendo-grid-column field="wphname" title="Package Name" width="160">
+          </kendo-grid-column>
+          <kendo-grid-column field="wlcomppackagedesc" title="Work Package Description" width="180">
+          </kendo-grid-column>
+          <kendo-grid-column field="atadescription" title="Attribute Description" width="180">
+          </kendo-grid-column>
+          <kendo-grid-column field="asaquantity" title="Quantity" width="100">
+          </kendo-grid-column>
+          <kendo-grid-column field="uom" title="UOM" width="100">
+          </kendo-grid-column>
+          <kendo-grid-column field="contractrate" title="SOR Rate" width="100">
+          </kendo-grid-column>
+          <kendo-grid-column field="contractrate" title="Contract Rate" width="100">
+          </kendo-grid-column>
+          <kendo-grid-column field="cost" title="Work Cost" width="100">
+          </kendo-grid-column>
+          <kendo-grid-column field="attributeexists" title="Attribute Status" width="100">
+          </kendo-grid-column>
+          <kendo-grid-column field="exclusionreason" title="Exclusion Reason" width="150">
+          </kendo-grid-column>
+
+        </kendo-grid>
+      </div>
+
+    </div>
+
+    <div class="row">
+      <div class="col-md-12 text-right mb-4 mt-2">
+        <button type="button" (click)="closeSwapPackageWindow()" class="btn btn-sm themeButton mr-1">Cancel</button>
+
+      </div>
+    </div>
+
+  </kendo-window> -->
 
 
 
-    <kendo-dialog title="Select hte Refusal Reason" *ngIf="SetToRefusalWindow" (close)="closeSetToRefusalWindow()" [minWidth]="250" [width]="650">
+  <kendo-dialog title="Select the Refusal Reason" *ngIf="SetToRefusalWindow" (close)="closeSetToRefusalWindow()"
+    [minWidth]="250" [width]="650">
 
+    <div class="row">
 
-  <div   class="row">
-
-      <div   class="form-group col-md-12">
+      <div class="form-group col-md-12">
         <label class="form-label">Refusal Reason</label>
 
+        <select [(ngModel)]="itemData.refusal_code" class="custom-select" name="refusal_code">
+          <option value=""></option>
+          <option *ngFor="let ref of refusalCodeList" value="{{ref.woadrefusal}}">{{ref.worcrefusaldesc}}</option>
 
+        </select>
 
-
-          <select [(ngModel)]="itemData.refusal_code" class="custom-select" name="refusal_code">
-            <option value=""></option>
-            <option *ngFor="let ref of refusalCodeList"  value="{{ref.woadrefusal}}">{{ref.worcrefusaldesc}}</option>
-
-          </select>
-
-
-
-        <div  class="invalid-feedback">
-          <div ></div>
+        <div class="invalid-feedback">
+          <div></div>
         </div>
       </div>
 
-  </div>
+    </div>
 
-      <div class="buttonDiv pull-right mb-4">
+    <div class="buttonDiv pull-right mb-4">
 
-        <button  type="button" (click)="SetToRefusalSave()" class="btn btn-sm themeButton mr-1">Apply</button>
-        <button  type="button" (click)="closeSetToRefusalWindow()" class="btn btn-sm themeButton mr-1">Cancel</button>
+      <button type="button" (click)="SetToRefusalSave(true)" class="btn btn-sm themeButton mr-1">Apply</button>
+      <button type="button" (click)="closeSetToRefusalWindow()" class="btn btn-sm themeButton mr-1">Cancel</button>
 
 
+    </div>
+
+
+
+  </kendo-dialog>
+
+  <kendo-dialog title="Edit Comment for Works Order Details Attribute" *ngIf="EditCommentForWoAssetWindow"
+    (close)="closeEditCommentForWoAssetWindow()" [minWidth]="250" [width]="650">
+
+
+    <div class="row">
+      <div class="col-md-2">
+        <label for="">Attr. Description</label>
       </div>
-
-
-
-        </kendo-dialog>
-
-    <kendo-dialog title="Edit Comment for Works Order Details Attribute" *ngIf="EditCommentForWoAssetWindow" (close)="closeEditCommentForWoAssetWindow()" [minWidth]="250" [width]="650">
-
-
-<div   class="row">
-        <div class="col-md-2">
-              <label for="">Attr. Description</label>
-          </div>
-        <div class="col-md-10">
-                   <input [readonly]="true" type="text" class="form-control"  placeholder="" value="{{ attrDesc }}">
-        </div>
-      <div   class="form-group col-md-12">
+      <div class="col-md-10">
+        <input [readonly]="true" type="text" class="form-control" placeholder="" value="{{ attrDesc }}">
+      </div>
+      <div class="form-group col-md-12">
         <label class="form-label">Comment</label>
-        <textarea   type="text" class="form-control"
-          placeholder=""  [(ngModel)]="edit_comment_input" name="reason_for_delete" #edit_comment_Input></textarea>
-        <div  class="invalid-feedback">
-          <div ></div>
+        <textarea type="text" class="form-control" placeholder="" [(ngModel)]="edit_comment_input"
+          name="reason_for_delete" #edit_comment_Input></textarea>
+        <div class="invalid-feedback">
+          <div></div>
         </div>
       </div>
 
-  </div>
+    </div>
 
-      <div class="buttonDiv pull-right mb-4">
+    <div class="buttonDiv pull-right mb-4">
 
-        <button  type="button" (click)="editCommentSave(edit_comment_Input.value)" class="btn btn-sm themeButton mr-1">Apply</button>
-        <button  type="button" (click)="closeEditCommentForWoAssetWindow()" class="btn btn-sm themeButton mr-1">Cancel</button>
+      <button type="button" (click)="editCommentSave(edit_comment_Input.value)"
+        class="btn btn-sm themeButton mr-1">Apply</button>
+      <button type="button" (click)="closeEditCommentForWoAssetWindow()"
+        class="btn btn-sm themeButton mr-1">Cancel</button>
 
 
+    </div>
+
+
+
+  </kendo-dialog>
+
+  <app-worksorders-add-package-enter-quantity *ngIf="EditWorkPackageQtyCostWindow"
+    [packageQuantityWindow]="EditWorkPackageQtyCostWindow" [selectedWorkOrder]="selectedChildRow"
+    (closePackageQuantiyEvent)="closeEditWorkPackageQtyCostWindow($event)"
+    (refreshPackageList)="refreshAssetDetailGrid($event)" [mySelection]="mySelection" [packageData]="selectedItem"
+    [mode]="'edit'"></app-worksorders-add-package-enter-quantity>
+
+  <app-swap-package *ngIf="SwapPackageWindow" [packageToWorklistWindow]="SwapPackageWindow"
+    (closePackageWindowEvent)="closeSwapPackageWindow($event)" [selectedItem]="selectedItem"></app-swap-package>
+
+
+
+  <!-- <kendo-dialog title="Edit Package Quantity and/or Cost" *ngIf="EditWorkPackageQtyCostWindow"
+    (close)="closeEditWorkPackageQtyCostWindow()" [minWidth]="400" [width]="1200">
+
+
+    <div class="row headerRow12">
+      <div class="col-md-2">
+        <label for="">Code:</label>
+      </div>
+      <div class="col-md-2">
+        <input [(ngModel)]="itemData.wlcomppackage" [readonly]="true" type="text" class="form-control" placeholder=""
+          value="">
+      </div>
+
+      <div class="col-md-2">
+        <label for="">Name</label>
+      </div>
+      <div class="col-md-6">
+        <input [(ngModel)]="itemData.wphname" [readonly]="true" type="text" class="form-control" placeholder=""
+          value="">
       </div>
 
 
+    </div>
 
-        </kendo-dialog>
-
-
-
-        <kendo-dialog title="Edit Package Quantity and/or Cost" *ngIf="EditWorkPackageQtyCostWindow" (close)="closeEditWorkPackageQtyCostWindow()" [minWidth]="400" [width]="1200">
+    <div class="row headerRow12">
 
 
-    <div   class="row headerRow12">
-            <div class="col-md-2">
-                  <label for="">Code:</label>
-              </div>
-            <div class="col-md-2">
-                       <input [(ngModel)]="itemData.wlcomppackage" [readonly]="true" type="text" class="form-control"  placeholder="" value="">
-            </div>
-
-            <div class="col-md-2">
-                  <label for="">Name</label>
-              </div>
-            <div class="col-md-6">
-                       <input [(ngModel)]="itemData.wphname"  [readonly]="true" type="text" class="form-control"  placeholder="" value="">
-            </div>
-
-
-
-
-
-
-
-
-
+      <div class="col-md-2">
+        <label for="">Attr Desc:</label>
+      </div>
+      <div class="col-md-10">
+        <input [(ngModel)]="itemData.atadescription" [readonly]="true" type="text" class="form-control" placeholder=""
+          value="">
       </div>
 
-      <div   class="row headerRow12">
+
+    </div>
+
+    <div class="row headerRow12">
 
 
-        <div class="col-md-2">
-              <label for="">Attr Desc:</label>
-          </div>
-        <div class="col-md-10">
-                   <input [(ngModel)]="itemData.atadescription"  [readonly]="true" type="text" class="form-control"  placeholder="" value="">
-        </div>
-
-
-
-</div>
-
-<div   class="row headerRow12">
-
-
-  <div class="col-md-1">
+      <div class="col-md-1">
         <label for="">Provide Quantity:</label>
-    </div>
-  <div class="col-md-1">
-             <input (keypress)="numberOnly($event)" [(ngModel)]="itemData.asaquantity" (ngModelChange)="modelChanged($event)"  type="text" class="form-control"  placeholder="" value="">
-  </div>
+      </div>
+      <div class="col-md-1">
+        <input (keypress)="numberOnly($event)" [(ngModel)]="itemData.asaquantity" (ngModelChange)="modelChanged($event)"
+          type="text" class="form-control" placeholder="" value="">
+      </div>
 
-  <div class="col-md-1">
+      <div class="col-md-1">
         <label for="">UOM:</label>
-    </div>
-  <div class="col-md-1">
-             <input   [(ngModel)]="itemData.asauom" [readonly]="true" type="text" class="form-control"  placeholder="" value="">
-  </div>
+      </div>
+      <div class="col-md-1">
+        <input [(ngModel)]="itemData.asauom" [readonly]="true" type="text" class="form-control" placeholder="" value="">
+      </div>
 
 
 
-  <div class="col-md-1">
+      <div class="col-md-1">
         <label for="">SOR Rate:</label>
-    </div>
-  <div class="col-md-1">
-             <input [(ngModel)]="itemData.wo_forcast"   [readonly]="true" type="text" class="form-control"  placeholder="" value="">
-  </div>
+      </div>
+      <div class="col-md-1">
+        <input [(ngModel)]="itemData.wo_forcast" [readonly]="true" type="text" class="form-control" placeholder=""
+          value="">
+      </div>
 
 
 
-  <div class="col-md-1">
+      <div class="col-md-1">
         <label for="">Contract Rate:</label>
-    </div>
-  <div class="col-md-1">
-             <input  [(ngModel)]="itemData.wo_forcast"  [readonly]="true" type="text" class="form-control"  placeholder="" value="">
-  </div>
+      </div>
+      <div class="col-md-1">
+        <input [(ngModel)]="itemData.wo_forcast" [readonly]="true" type="text" class="form-control" placeholder=""
+          value="">
+      </div>
 
-  <div class="col-md-1">
+      <div class="col-md-1">
         <label for="">Work Cost:</label>
-    </div>
-  <div class="col-md-1">
-             <input  [(ngModel)]="itemData.work_cost"  [readonly]="true" type="text" class="form-control"  placeholder="" value="">
-  </div>
+      </div>
+      <div class="col-md-1">
+        <input [(ngModel)]="itemData.work_cost" [readonly]="true" type="text" class="form-control" placeholder=""
+          value="">
+      </div>
 
-  <div class="col-md-1">
+      <div class="col-md-1">
         <label for="">Cost Override:</label>
+      </div>
+      <div class="col-md-1">
+        <input [(ngModel)]="itemData.cost_override" [readonly]="true" type="text" class="form-control" placeholder=""
+          value="">
+      </div>
+
+
+
     </div>
-  <div class="col-md-1">
-             <input [(ngModel)]="itemData.cost_override"  [readonly]="true" type="text" class="form-control"  placeholder="" value="">
-  </div>
 
 
-
-  </div>
-
-
-  <div   class="row form-group headerRow12">
+    <div class="row form-group headerRow12">
 
 
-    <div class="col-md-2">
-          <label for="">Comment:</label>
+      <div class="col-md-2">
+        <label for="">Comment:</label>
       </div>
 
 
       <div class="col-md-10">
-                 <input [(ngModel)]="itemData.woadcomment"  type="text" class="form-control"  placeholder="" value="">
+        <input [(ngModel)]="itemData.woadcomment" type="text" class="form-control" placeholder="" value="">
       </div>
 
 
 
 
-  </div>
+    </div>
 
 
-          <div class="buttonDiv pull-right mb-4">
+    <div class="buttonDiv pull-right mb-4">
 
-            <button  type="button" (click)="editWorkPackageQtyCostSave()" class="btn btn-sm themeButton mr-1">Apply</button>
-            <button  type="button" (click)="closeEditWorkPackageQtyCostWindow()" class="btn btn-sm themeButton mr-1">Cancel</button>
-
-
-          </div>
+      <button type="button" (click)="editWorkPackageQtyCostSave()" class="btn btn-sm themeButton mr-1">Apply</button>
+      <button type="button" (click)="closeEditWorkPackageQtyCostWindow()"
+        class="btn btn-sm themeButton mr-1">Cancel</button>
 
 
-
-            </kendo-dialog>
-
+    </div>
 
 
-
+  </kendo-dialog> -->
+  <div class="woassetdetailoverlay"></div>
 </kendo-window>

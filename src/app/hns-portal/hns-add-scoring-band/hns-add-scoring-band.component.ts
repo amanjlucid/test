@@ -165,25 +165,14 @@ export class HnsAddScoringBandComponent implements OnInit {
       }
 
       if (this.formMode == "add" || this.formMode == "edit") {
-        //console.log({list:this.scoringbandList, low : formObj.hasscorebandlow, high :formObj.hasscorebandhigh, range :this.range});
-        let validRange = this.checkValidRange(this.scoringbandList, formObj.hasscorebandlow, formObj.hasscorebandhigh, this.range)
 
-        // console.log(validRange)
-        if (typeof validRange == "boolean") {
-          this.alertService.error("Band Overlaps with an existing Band Range..");
-          return
-        } else {
-          if (validRange.isInpHigher) {
-            this.alertService.error("Band Overlaps with an existing Band Range..");
-            return
-          } else if (validRange.isInpHigher == false && validRange.isTrue == false) {
-            this.alertService.error("Band Overlaps with an existing Band Range..");
+        let message = this.validateScoreData(formRawVal);
+        if(message != "")
+          {
+            this.alertService.error(message);
             return
           }
         }
-      }
-
-
 
       if (formObj.hasscorebandhigh > this.range.max) {
         formObj.hasscorebandhigh = this.range.max;
@@ -221,42 +210,49 @@ export class HnsAddScoringBandComponent implements OnInit {
   }
 
 
-  checkValidRange(rangeArr, lowerInp, higherInp, range) {
-    let highest = range.max;
-    let lowest = range.min;
-    let isTrue: boolean = true;
-    let isValid: boolean = true;
-    let isInpHigher: boolean = false;
-    let checkVlaueExist = rangeArr.some(x => x.hasscorebandlow == lowerInp || x.hasscorebandhigh == lowerInp || x.hasscorebandhigh == higherInp || x.hasscorebandlow == higherInp);
-    if (checkVlaueExist) {
-      return false;
+
+  validateScoreData(dataItem){
+
+    let thisLower = parseInt(dataItem.hasscorebandlow);
+    let thisUpper = parseInt(dataItem.hasscorebandhigh);
+
+    if(thisLower < 0 || thisUpper < 0)
+    {
+      return "Please enter a valid value for both the Lower and Upper Score limits";
     }
 
-    if ((lowerInp >= lowest && lowerInp < highest) && (higherInp <= highest)) {
-      rangeArr.forEach((v, i) => {
-        if (isValid) {
-          isValid = this.checkOtherRangeExistInThisRange(v, lowerInp, higherInp, isValid);
-        } else {
-          isTrue = false;
+    if(thisLower > 0 || thisUpper > 0){
+      if(thisUpper < thisLower){
+        return "The Upper Score Limit cannot be lower than the Lower Score limit"
+      }
+    }
+    //range: any = { min: 1, max: 1 };
+    if(thisUpper > this.range.max || thisLower > this.range.max){
+        return "The Score Band values cannot be greater than the Maximum Score Value of " + this.range.max
+    }
+
+    let overlap  = false;
+
+    for(let obj of this.scoringbandList)
+    {
+
+          if(thisLower >= obj.hasscorebandlow && thisLower <= obj.hasscorebandhigh){
+              overlap = true;
+              break;
         }
-      });
-    } else if ((lowerInp < lowest) && (higherInp < lowest)) {
-      isTrue = true;
-    } else {
-      isTrue = false;
-      isInpHigher = true;
+          if(thisUpper >= obj.hasscorebandlow && thisUpper <= obj.hasscorebandhigh){
+              overlap = true;
+              break;
     }
 
-    return { isTrue: isTrue, isInpHigher: isInpHigher, lowest: lowest, highest: highest };
   }
 
-  checkOtherRangeExistInThisRange(v, lowerInp, higherInp, isValid) {
-    if ((v.hasscorebandlow >= lowerInp && v.hasscorebandlow <= higherInp) || (v.hasscorebandhigh >= lowerInp && v.hasscorebandhigh <= higherInp)) {
-      isValid = false
-    } else {
-      isValid = true;
+    if(overlap){
+        return "The Lower and Upper Score Limits ovelap with those of another score band, they must not ovelap within the definition"
     }
-    return isValid;
+
+    return "";
+
   }
 
 

@@ -1,0 +1,52 @@
+<kendo-window title="{{title}}" *ngIf="moveAsset" (close)="closeMoveAsset()" [top]="30" [minWidth]="400" [width]="500"
+    [height]="auto" [minHeight]="350">
+
+    <div class="row">
+        <div class="col-md-12">
+            <kendo-grid [data]="gridView" [height]="450" [selectable]="{
+                mode: 'single'
+              }" [resizable]="true" [sortable]="{
+                allowUnsort: true,
+                mode: 'single'
+                }" [sort]="state.sort" [filter]="state.filter" (sortChange)="sortChange($event)"
+                (cellClick)="cellClickHandler($event)" [navigable]="false" [loading]="gridLoading" [filterable]="false">
+
+
+                <kendo-grid-column field="wopname" title="Phase Name" width="280">
+                </kendo-grid-column>
+
+            </kendo-grid>
+        </div>
+
+
+
+        <div class="col-md-12 mt-4 text-right">
+            <button type="button" (click)="openReason()" class="btn btn-sm themeButton">Apply</button>
+            <button type="button" (click)="closeMoveAsset()" class="btn btn-sm themeButton ml-1">Close</button>
+        </div>
+
+    </div>
+
+
+
+
+    <div class="reasonOverlay"></div>
+
+    <kendo-window title="Enter Reason For Moving Asset(s)" *ngIf="reasonWin" (close)="closeReasonWin()" [top]="35"
+        [minWidth]="400" [width]="450" [height]="auto" [minHeight]="200">
+
+        <div class="row">
+            <div class="col-md-12">
+                <textarea [(ngModel)]="reason" class="form-control" rows="5"></textarea>
+            </div>
+
+            <div class="col-md-12 mt-4 text-right">
+                <button type="button" (click)="apply()" class="btn btn-sm themeButton">Apply</button>
+                <button type="button" (click)="closeReasonWin()" class="btn btn-sm themeButton ml-1">Close</button>
+            </div>
+
+        </div>
+
+    </kendo-window>
+
+</kendo-window>

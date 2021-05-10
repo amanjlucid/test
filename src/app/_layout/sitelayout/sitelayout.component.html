@@ -83,7 +83,7 @@
                 <li class="sidenav-item" [routerLinkActive]="['open']"
                     *ngIf="checkMenuAccess('EPCs', 1) && checkEnergyPortalAccess('Energy Portal Access') && checkModuleEnabled('EPC Module') && checkEnergyPortalAccess('Dashboard')">
                     <a href="javascript:void(0)" class="sidenav-link sidenav-toggle">
-                        <img class="sidenav-icon ion" src="assets/img/icons/event-manager.svg">
+                        <img class="sidenav-icon ion" src="assets/img/icons/energy.svg">
                         <div>EPC</div>
                     </a>
                     <ul class="sidenav-menu">
@@ -235,18 +235,52 @@
                             </a>
                         </li>
                         <li class="sidenav-item" [routerLinkActive]="['active']"
-                            *ngIf="checkWorksOrdersAccess('Programme Management')">
+                            *ngIf="checkWorksOrdersAccess('Management Menu')">
                             <a [routerLink]="['/worksorders/management']" class="sidenav-link">
                                 <div>Management</div>
                             </a>
                         </li>
                         <li class="sidenav-item" [routerLinkActive]="['active']"
-                            *ngIf="checkWorksOrdersAccess('Dashboard')">
+                            *ngIf="checkWorksOrdersAccess('Works Orders Menu')">
                             <a [routerLink]="['/worksorders/list']" class="sidenav-link">
                                 <div>Works Orders</div>
                             </a>
                         </li>
+                       
+                        <li style="display: none;" class="sidenav-item" [routerLinkActive]="['active']">
+                            <a [routerLink]="['/worksorders/details']" class="sidenav-link">
+                                <div>Works Order Detail</div>
+                            </a>
+                        </li>
+
+                        <!-- <li class="sidenav-item" [routerLinkActive]="['open']"
+                            *ngIf="checkWorksOrdersAccess('Config Menu')">
+                            <a href="javascript:void(0)" class="sidenav-link sidenav-toggle">
+                                <div>Configuration</div>
+                            </a>
+
+                            <ul class="sidenav-menu">
+                                <li class="sidenav-item" [routerLinkActive]="['active']"
+                                    *ngIf="checkWorksOrdersAccess('Config Templates Tab')">
+                                    <a [routerLink]="['/worksorders/config/templates']" class="sidenav-link">
+                                        <div>Templates</div>
+                                    </a>
+                                </li>
+                                <li class="sidenav-item" [routerLinkActive]="['active']"
+                                    *ngIf="checkWorksOrdersAccess('Master Stages')">
+                                    <a [routerLink]="['/worksorders/config/masterstages']" class="sidenav-link">
+                                        <div>Master Stages</div>
+                                    </a>
+                                </li>
+                            </ul>
+
+                        </li> -->
+
                     </ul>
+
+
+
+
                 </li>
 
 
@@ -453,25 +487,29 @@
                         </li>
 
 
-                        <li class="sidenav-item" [routerLinkActive]="['active']">
+                        <li class="sidenav-item" [routerLinkActive]="['active']"
+                            *ngIf="checkAngularGrpPermission('Tasks', 'Event Manager Portal Access',1)">
                             <a [routerLink]="['/tasks-settings']" class="sidenav-link">
                                 <div>Tasks</div>
                             </a>
                         </li>
 
-                        <li class="sidenav-item" [routerLinkActive]="['active']">
+                        <li class="sidenav-item" [routerLinkActive]="['active']"
+                            *ngIf="checkAngularGrpPermission('Tasks', 'Event Manager Portal Access',1)">
                             <a [routerLink]="['/business-areas']" class="sidenav-link">
                                 <div>Business Area</div>
                             </a>
                         </li>
 
-                        <li class="sidenav-item" [routerLinkActive]="['active']">
+                        <li class="sidenav-item" [routerLinkActive]="['active']"
+                            *ngIf="checkAngularGrpPermission('Tasks', 'Event Manager Portal Access',1)">
                             <a [routerLink]="['/notification']" class="sidenav-link">
                                 <div>Notification Groups</div>
                             </a>
                         </li>
 
-                        <li class="sidenav-item" [routerLinkActive]="['active']">
+                        <li class="sidenav-item" [routerLinkActive]="['active']"
+                            *ngIf="checkAngularGrpPermission('Reporter', 'Web Reporter Portal Access',1)">
                             <a [routerLink]="['/web-reporter-settings']" class="sidenav-link">
                                 <div>Reporting</div>
                             </a>

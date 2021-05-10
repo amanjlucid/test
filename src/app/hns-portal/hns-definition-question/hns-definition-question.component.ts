@@ -90,7 +90,7 @@ export class HnsDefinitionQuestionComponent implements OnInit {
     this.getScoringRules(this.selectedNode);
 
     this.definitionQuesForm = this.fb.group({
-      question: ['', [Validators.required, Validators.maxLength(20)]],
+      question: ['', [Validators.required]],
       questionCode: ['', [Validators.required]],
       questionType: [this.quesType, [Validators.required]],
       infoType: [this.datatype],
@@ -193,9 +193,11 @@ export class HnsDefinitionQuestionComponent implements OnInit {
     //const charCode = this.definitionQuesForm.get('charCode');
     this.subs.add(
       this.definitionQuesForm.get('questionType').valueChanges.subscribe(
-        val => {
+        val =>
+        {
           this.quesType = val;
-          if (this.quesType == "3") {
+          if (this.quesType == "3")
+          {
             this.definitionQuesForm.patchValue({
               actionYes: false,
               actionNo: false,
@@ -212,15 +214,19 @@ export class HnsDefinitionQuestionComponent implements OnInit {
           } else {
             //charCode.clearValidators();
             this.clearCharacteristic();
-            if (this.formErrors.hasOwnProperty('charCode')) {
-              this.formErrors.charCode = "";
-            }
           }
           if (this.quesType == "2") {
             this.definitionQuesForm.get('commentNA').enable();
           } else {
             this.definitionQuesForm.get('commentNA').disable();
           }
+          if (this.quesType == "1") {
+            this.definitionQuesForm.patchValue({
+              commentNA: false,
+              promptNA: '',
+            });
+          }
+
           //charCode.updateValueAndValidity();
         }
       )
@@ -236,6 +242,7 @@ export class HnsDefinitionQuestionComponent implements OnInit {
             promptYes.setValidators([Validators.required]);
           } else {
             this.definitionQuesForm.get('promptYes').disable();
+            this.definitionQuesForm.controls.promptYes.setValue("");
             promptYes.clearValidators();
             if (this.formErrors.hasOwnProperty('promptYes')) {
               this.formErrors.promptYes = "";
@@ -255,6 +262,7 @@ export class HnsDefinitionQuestionComponent implements OnInit {
             promptNo.setValidators([Validators.required]);
           } else {
             this.definitionQuesForm.get('promptNo').disable();
+            this.definitionQuesForm.controls.promptNo.setValue("");
             promptNo.clearValidators();
             if (this.formErrors.hasOwnProperty('promptNo')) {
               this.formErrors.promptNo = "";
@@ -274,6 +282,7 @@ export class HnsDefinitionQuestionComponent implements OnInit {
             promptNA.setValidators([Validators.required]);
           } else {
             this.definitionQuesForm.get('promptNA').disable();
+            this.definitionQuesForm.controls.promptNA.setValue("");
             promptNA.clearValidators();
             if (this.formErrors.hasOwnProperty('promptNA')) {
               this.formErrors.promptNA = "";
@@ -297,6 +306,12 @@ export class HnsDefinitionQuestionComponent implements OnInit {
       }, 200);
     }
 
+  }
+
+  radioIntSelected()
+  {
+    this.alertService.success("radio int selected")
+    this.clearCharacteristic()
   }
 
   ngOnDestroy() {
@@ -489,6 +504,9 @@ export class HnsDefinitionQuestionComponent implements OnInit {
       charCode: '',
       charName: ''
     });
+    if (this.formErrors.hasOwnProperty('charCode')) {
+      this.formErrors.charCode = "";
+    }
   }
 
 

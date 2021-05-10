@@ -19,6 +19,7 @@ export class HnsResAddEditIssueComponent implements OnInit {
   @Input() selectedAction: any;
   @Input() rootAssessment: any;
   @Input() isAssessment: boolean = false;
+  @Input() isHistorical: boolean = false;
   @Input() showIssue: boolean = false;
   @Output() closeIssueEvt = new EventEmitter<boolean>();
   @Input() issueFormMode: string;
@@ -75,10 +76,11 @@ export class HnsResAddEditIssueComponent implements OnInit {
   textId: any;
   textString: any;
   remedialCost: any;
-  severity: any
-  probability: any
+  severity: any;
+  probability: any;
   headingValues: any = {};
   pageLoaded = false
+  QCodeOnACtiveSurvey: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -115,6 +117,8 @@ export class HnsResAddEditIssueComponent implements OnInit {
       resDate: [''],
       resolution: [''],
       budget: [''],
+      createdBy: [''],
+      createdDate:[''],
       remedialCost: [''],
       comments: [''],
       assessor: [''],
@@ -127,7 +131,8 @@ export class HnsResAddEditIssueComponent implements OnInit {
       workCompDate: [null],
       workNotes: [''],
       severity: [''],
-      probability: ['']
+      probability: [''],
+      pictureCount: 0,
     });
 
     let params = {
@@ -137,14 +142,6 @@ export class HnsResAddEditIssueComponent implements OnInit {
 
 
     let action = this.selectedAction;
-    // let paramChanges: any = {};
-    // console.log(this.isAssessment);
-
-    // if (this.isAssessment) {
-    //   paramChanges.hasaassessmentref = action.assessmentRef
-    // } else {
-    //   paramChanges.hasaassessmentref = action.hasaassessmentref
-    // }
 
     let params2 = {
       Assid: action.assid,
@@ -156,42 +153,36 @@ export class HnsResAddEditIssueComponent implements OnInit {
       Hasanswerid: action.hasanswerid,
     }
 
-    // let hnsIParam = {
-    //   Hasarid: this.isAssessment ? action.hasarid : 0,
-    //   AssessmentRef: paramChanges.hasaassessmentref,
-    // }
 
-    //let multipleHnsIssParam = { ...params2, ...hnsIParam }
-    // this.getScoreTypeForDefinition(action.hascode, action.hasversion)
     this.loaderService.pageShow()
+    let currentDate = new Date();  console.log('INIT1: ' + currentDate)
 
-    forkJoin([this.actionService.getScoreTypeForDefinition(action.hascode, action.hasversion), this.hnsService.getPriorityList(params), this.hnsService.getSeverityList(params), this.hnsService.getProbabilityList(params), this.hnsService.getbudgetList(params)]).subscribe(
+    this.actionService.getHealthSafetyIssueData(action.hascode, action.hasversion, action.hasquestioncode,  action.assid).subscribe(
       data => {
+        const scoreTypeDate = data.data.scoreType;
+        const priorityData = data.data.priorityList;
+        const severityData = data.data.severityList;
+        const probabilityData = data.data.probabilityList;
+        const budgetData = data.data.budgetList;
+        this.QCodeOnACtiveSurvey = data.data.questionCodeOnActiveSurvey;
 
-        const scoreTypeDate = data[0]
-        const priorityData = data[1];
-        const severityData = data[2];
-        const probabilityData = data[3];
-        const budgetData = data[4];
-
-        // console.log({ score: scoreTypeDate, sev: severityData, prob: probabilityData, prior: priorityData });
         //score data
-        if (scoreTypeDate.isSuccess && scoreTypeDate.data != "") {
-          this.scoreType = scoreTypeDate.data;
+          if (scoreTypeDate != undefined ) {
+            this.scoreType = scoreTypeDate;
           this.chRef.detectChanges();
         }
 
         //priority data
-        if (priorityData.isSuccess && priorityData.data) {
-          this.priority = priorityData.data
+          if (priorityData != undefined && priorityData.length > 0) {
+            this.priority = priorityData;
           this.chRef.detectChanges();
         }
 
         // check if assessment uses risk matrix
         if (this.scoreType == 2) {
           //severity data
-          if (severityData.isSuccess && severityData.data.length > 0) {
-            this.severity = severityData.data
+            if (severityData != undefined && severityData.length > 0) {
+              this.severity = severityData
             if (this.severity) {
               const severityField = this.editIssueForm.get('severity');
               severityField.setValidators([Validators.required]);
@@ -200,8 +191,8 @@ export class HnsResAddEditIssueComponent implements OnInit {
           }
 
           //probability data
-          if (probabilityData.isSuccess && probabilityData.data.length > 0) {
-            this.probability = probabilityData.data;
+            if (probabilityData != undefined && probabilityData.length > 0) {
+              this.probability = probabilityData;
             if (this.probability) {
               const probabilityField = this.editIssueForm.get('probability');
               probabilityField.setValidators([Validators.required]);
@@ -212,8 +203,8 @@ export class HnsResAddEditIssueComponent implements OnInit {
 
 
         //budget data
-        if (budgetData.isSuccess && budgetData.data) {
-          this.budget = budgetData.data
+          if (budgetData != undefined && budgetData.length > 0) {
+            this.budget = budgetData
           this.chRef.detectChanges();
         }
 
@@ -229,21 +220,6 @@ export class HnsResAddEditIssueComponent implements OnInit {
             //console.log(this.selectedIssue)
             this.editIssueData = this.selectedIssue
             this.populateIssueForm(this.selectedIssue, false)
-            // let pr = {
-            //   Assid: this.selectedIssue.assid,
-            //   Hascode: this.selectedIssue.hascode,
-            //   Hasversion: this.selectedIssue.hasversion,
-            //   Hasgroupid: this.selectedIssue.hasgroupid,
-            //   Hasheadingid: this.selectedIssue.hasheadingid,
-            //   Hasquestionid: this.selectedIssue.hasquestionid,
-            //   Hasanswerid: this.selectedIssue.hasanswerid,
-            // }
-
-            // let tempspecificIssPa = {
-            //   Hasissueid: this.selectedIssue.hasissueid
-            // }
-            // let spcPrm = { ...pr, ...tempspecificIssPa }
-            //this.getSpecificAssetHealtSafetyIssue(spcPrm);
           } else {
             this.getSpecificAssetHealtSafetyIssue(specificIssParam);
           }
@@ -269,19 +245,13 @@ export class HnsResAddEditIssueComponent implements OnInit {
         this.pageLoaded = true
         this.loaderService.pageHide()
         this.chRef.detectChanges();
+        currentDate = new Date();  console.log('INIT3: ' + currentDate)
       },
       error => {
         this.loaderService.pageHide();
         this.alertService.error(error)
       }
     )
-
-    // this.getHnsPriority(params)
-    // this.getHnsSeverity(params)
-    // this.getHnsProbability(params)
-    // this.getHnsBudget(params)
-
-    //this.getMultipleAssetHealthSafetyIssue(multipleHnsIssParam);
 
 
     this.subs.add(
@@ -311,7 +281,11 @@ export class HnsResAddEditIssueComponent implements OnInit {
       )
     )
 
-    this.isQuestionCodeOnActiveSurvey(action.hasquestioncode, action.assid);
+    //this.isQuestionCodeOnActiveSurvey(action.hasquestioncode, action.assid);
+   if(this.QCodeOnACtiveSurvey)
+   {
+     this.isQuestionCodeOnActiveSurvey(action.hasquestioncode);
+   }
 
     if (this.rootAssessment.haslatestassessment != undefined && this.selectedAction.haslatestassessment != null) {
       if (this.rootAssessment.haslatestassessment != "Y") {
@@ -330,6 +304,11 @@ export class HnsResAddEditIssueComponent implements OnInit {
     }
 
 
+       if (this.isHistorical) {
+        this.editIssueForm.disable()
+        this.viewOnly = true;
+        this.title = "View Issue";
+      }
 
   }
 
@@ -414,9 +393,18 @@ export class HnsResAddEditIssueComponent implements OnInit {
           if (abstractControl.errors != null && abstractControl.errors.hasOwnProperty('ngbDate')) {
             abstractControl.setErrors(null)
             if (key == "targetDate") {
-              if (abstractControl.value == "") {
+              if (abstractControl.value == "")
+              {
                 abstractControl.setErrors({ required: true });
               }
+              else
+              {
+                var date = Date.parse(abstractControl.value);
+                if(isNaN(date))
+                {
+                abstractControl.setErrors({ required: true });
+              }
+            }
             }
 
             if (key == "date") {
@@ -507,15 +495,15 @@ export class HnsResAddEditIssueComponent implements OnInit {
       formObj.Hasiassessmentdate = this.dateFormate(formRawVal.date);
       formObj.Hasiassessor = formRawVal.assessor;
       formObj.Hasiresolution = formRawVal.resolution;
-      formObj.Hasiresolutiondate = this.dateFormate(formRawVal.resDate);
+      formObj.Hasiresolutiondate = this.dateFormate(this.editIssueForm.controls.resDate.value);
       formObj.Hasiactionstatus = (formRawVal.status == "" || formRawVal.status == null) ? "O" : formRawVal.status;
       formObj.Hasibudgetcode = formRawVal.budget;
       formObj.Hasiremedialcost = formRawVal.remedialCost;
       formObj.Hasicomments = formRawVal.comments;
+      if (this.issueFormMode == "add") {
       formObj.Createdby = this.currentUser.userId;//formRawVal.comments;
-      // formObj.Createddate = formRawVal.comments;
+      }
       formObj.Modifiedby = this.currentUser.userId;//formRawVal.comments;
-      //formObj.Modifieddate = formRawVal.comments;
       formObj.Hasiworkstatus = formRawVal.workStatus;
       formObj.Hasiworkauthoriseddate = this.dateFormate(formRawVal.workAuthDate);
       formObj.Hasiworkauthoriseduser = formRawVal.workAuthUser;
@@ -575,14 +563,20 @@ export class HnsResAddEditIssueComponent implements OnInit {
 
       saveIssue.subscribe(
         data => {
-          if (data.isSuccess) {
-            if (this.issueFormMode == "add") {
+          if (data.isSuccess)
+          {
+            if (this.issueFormMode == "add")
+            {
               this.alertService.success("Issue Added Successfully.");
             } else {
               this.alertService.success("Issue Updated Successfully.");
             }
             this.archiveIssueUpdate()
 
+          }
+          else
+          {
+            this.alertService.success("The Issue was not updated: " + data.message);
           }
         },
         error => {
@@ -634,7 +628,7 @@ export class HnsResAddEditIssueComponent implements OnInit {
 
   dateFormate(value) {
     if (value) {
-      return `${value.month}-${value.day}-${value.year}`
+      return `${value.day}-${value.month}-${value.year}`
     } else {
       return '1753-01-01 00:00:00.000';
     }
@@ -807,7 +801,7 @@ export class HnsResAddEditIssueComponent implements OnInit {
     )
   }
 
-
+/*
   isQuestionCodeOnActiveSurvey(hasQuestionCode, assId) {
     this.subs.add(
       this.actionService.isQuestionCodeOnActiveSurvey(hasQuestionCode, assId).subscribe(
@@ -823,6 +817,13 @@ export class HnsResAddEditIssueComponent implements OnInit {
         }
       )
     )
+  }*/
+  isQuestionCodeOnActiveSurvey(QCode: string)
+  {
+    this.title = `Add/Edit Issue - ` + 'The Question Code "' + QCode + '" exists in a survey that is currently Downloaded, Exported, Pending or Active and is therefore locked from change' ;
+    this.viewOnly = true;
+    this.editIssueForm.disable();
+    this.chRef.detectChanges();
   }
 
   closeIssue() {
@@ -837,7 +838,11 @@ export class HnsResAddEditIssueComponent implements OnInit {
   }
 
   closerImage(event) {
-    this.showImage = event;
+
+    if(event != undefined)
+    {this.selectedIssue.pictureCount = event;
+    }
+    this.showImage = false;
     $('.editIssOvrlay').removeClass('ovrlay');
 
   }
@@ -923,6 +928,11 @@ export class HnsResAddEditIssueComponent implements OnInit {
 
 
       this.tempIssueObj.hasicomments = formRawVal.comments;
+      if (this.issueFormMode == "add"){
+        this.tempIssueObj.createdby = this.currentUser.userId;
+      }else{
+        this.tempIssueObj.createdby = this.selectedIssue.createdby;
+      }
       this.tempIssueObj.createdby = this.currentUser.userId;
       this.tempIssueObj.hasimodifiedby = this.currentUser.userId;
       this.tempIssueObj.hasiworkstatus = formRawVal.workStatus;
@@ -936,7 +946,7 @@ export class HnsResAddEditIssueComponent implements OnInit {
       this.tempIssueObj.hasIFloor = formRawVal.floor;
       this.tempIssueObj.hasquestioncode = this.selectedAction.hasquestioncode;
       this.tempIssueObj.hasiseverity = formRawVal.severity;
-
+      this.tempIssueObj.pictureCount = this.selectedIssue.pictureCount;
       this.tempIssueObj.hasiprobability = formRawVal.probability//this.selectedAction.hasiseverity;
       this.tempIssueObj.hasiriskscore = this.selectedAction.hasiriskscore;
       this.tempIssueObj.hascode = this.selectedAction.hascode;
@@ -1276,6 +1286,8 @@ export class HnsResAddEditIssueComponent implements OnInit {
       resolutionDate.setValidators([Validators.required]);
     } else {
       this.ifNotResolved = true;
+      this.editIssueForm.controls.resDate.setValue('');
+      this.editIssueForm.controls.resolution.setValue('');
       resolution.clearValidators();
       resolutionDate.clearValidators();
     }

@@ -1,0 +1,73 @@
+<kendo-dialog  [title]="windowTitle"  [width]="650"  *ngIf="templateFormWindow" (close)="closetemplateFormWindow()">
+  <div class="flex-grow-1 userFrm">
+
+    <form [formGroup]="templateForm" (ngSubmit)="onSubmit()" autocomplete="off">
+      <div class="form-row">
+        <div class="form-group col-md-12">
+            <label class="form-label">Name</label>
+            <input type="text" class="form-control" placeholder="Name" formControlName="name" maxlength="50"
+              [ngClass]="{ 'is-invalid': submitted && formErrors.name }">
+  
+            <div *ngIf="submitted && formErrors.name" class="invalid-feedback">
+              <div *ngIf="formErrors.name">{{ formErrors.name }}</div>
+            </div>
+          </div>
+
+    </div>
+    <div class="form-row">
+
+        <div class="form-group col-md-12">
+          <label class="form-label">Description</label>
+          <input type="text" class="form-control" placeholder="Description" formControlName="description" maxlength="50"
+            [ngClass]="{ 'is-invalid': submitted && formErrors.description }">
+
+          <div *ngIf="submitted && formErrors.description" class="invalid-feedback">
+            <div *ngIf="formErrors.description">{{ formErrors.description }}</div>
+          </div>
+        </div>
+
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-8">
+          <label class="form-label">Template Type</label>
+          <select class="custom-select" formControlName="templateType" *ngIf="!disableTemplateType"
+            [ngClass]="{ 'is-invalid': submitted && formErrors.templateType }">
+            <option value="Asset Template">Asset Template</option>
+            <option value="Works Order Milestone">Works Order Milestone</option>
+            <option value="Phase Milestone">Phase Milestone</option>
+          </select>
+          <input type="text" class="form-control" formControlName="templateType" *ngIf="disableTemplateType"
+           readonly>
+
+          <div *ngIf="submitted && formErrors.templateType" class="invalid-feedback">
+            <div *ngIf="formErrors.templateType">{{ formErrors.templateType }}</div>
+          </div>
+        </div>
+
+        <div class="form-group col-md-4 text-right">
+            <label class="form-label  mr-4 text-right">Status</label>
+            <div class="mt-2">
+              <label class="switcher">
+                <input type="checkbox" class="switcher-input" formControlName="status"
+                  [ngClass]="{ 'is-invalid': submitted && formErrors.status }">
+                <span class="switcher-indicator">
+                  <span class="switcher-yes"><span class="ion ion-md-checkmark"></span></span>
+                  <span class="switcher-no"><span class="ion ion-md-close"></span></span>
+                </span>
+
+              </label>
+            </div>
+        </div>
+      </div>
+
+      <div class="buttonDiv pull-right mt-2">
+        <button type="button" (click)="closetemplateFormWindow()" class="btn btn-sm themeButton m-1">Cancel</button>
+        <button type="submit"  class="btn btn-sm themeButton m-1">Ok</button>
+        <!-- <button type="button" (click)="refreshForm()" class="btn btn-sm btn-outline-secondary themeButton">Refresh</button> -->
+
+      </div>
+    </form>
+
+
+  </div>
+</kendo-dialog>

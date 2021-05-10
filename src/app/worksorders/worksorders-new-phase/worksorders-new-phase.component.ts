@@ -1,15 +1,16 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef, ViewEncapsulation } from '@angular/core';
 import { SubSink } from 'subsink';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AlertService, HelperService, WorksorderManagementService } from 'src/app/_services';
 import { WorkordersAddPhaseModel } from '../../_models';
-import { ShouldGreaterThanYesterday, isNumberCheck, OrderDateValidator, IsGreaterDateValidator } from 'src/app/_helpers';
+import { ShouldGreaterThanYesterday, isNumberCheck, OrderDateValidator, IsGreaterDateValidator, shouldNotZero, SimpleDateValidator, firstDateIsLower } from 'src/app/_helpers';
 
 @Component({
   selector: 'app-worksorders-new-phase',
   templateUrl: './worksorders-new-phase.component.html',
   styleUrls: ['./worksorders-new-phase.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  encapsulation: ViewEncapsulation.None
 })
 
 export class WorksordersNewPhaseComponent implements OnInit {
@@ -40,6 +41,7 @@ export class WorksordersNewPhaseComponent implements OnInit {
       'required': 'Budget is required.',
       'isNotNumber': 'Budget should be an integer value.',
       'maxlength': 'Budget must be maximum 9 digit.',
+      'shouldNotZero': 'Budget cannot be 0 and blank'
     },
 
 
@@ -110,12 +112,23 @@ export class WorksordersNewPhaseComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    let targetdateValidation = [Validators.required, ShouldGreaterThanYesterday(), SimpleDateValidator()];
+    let plandateValidation = [ShouldGreaterThanYesterday(), SimpleDateValidator()];
+
+    if (this.phaseFormMode != "new") {
+      this.title = "Edit Phase";
+      targetdateValidation = [Validators.required, SimpleDateValidator()];
+      plandateValidation = [SimpleDateValidator()];
+    }
+
+
+
     this.nePhaseForm = this.fb.group({
       WOPNAME: ['', [Validators.required]],
       WOPDESC: ['', [Validators.required]],
       WOPSTATUS: ['', [Validators.required]],
       WOPACTINACT: ['', [Validators.required]],
-      WOPBUDGET: ['', [Validators.required, isNumberCheck(), Validators.maxLength(9)]],
+      WOPBUDGET: ['', [Validators.required, shouldNotZero()]],
       WOPFORECAST: [''],
       WOPCOMMITTED: [''],
       WOPAPPROVED: [''],
@@ -128,15 +141,15 @@ export class WorksordersNewPhaseComponent implements OnInit {
       WOPACTUALFEE: [''],
 
       WOPCONTRACTORISSUEDATE: [''],
-      WOPTARGETCOMPLETIONDATE: ['', [Validators.required, ShouldGreaterThanYesterday()]],
+      WOPTARGETCOMPLETIONDATE: ['', targetdateValidation],
       WOPCONTRACTORACCEPTANCEDATE: [''],
-      WOPPLANSTARTDATE: ['', [ShouldGreaterThanYesterday()]],
-      WOPPLANENDDATE: ['', [ShouldGreaterThanYesterday()]],
+      WOPPLANSTARTDATE: ['', plandateValidation],
+      WOPPLANENDDATE: ['', plandateValidation],
       WOPACTUALSTARTDATE: [''],
       WOPACTUALENDDATE: [''],
 
     }, {
-      validator: [OrderDateValidator('WOPPLANENDDATE', 'WOPPLANSTARTDATE'), IsGreaterDateValidator('WOPPLANENDDATE', 'WOPTARGETCOMPLETIONDATE')],
+      validator: [firstDateIsLower('WOPPLANENDDATE', 'WOPPLANSTARTDATE'), IsGreaterDateValidator('WOPPLANENDDATE', 'WOPTARGETCOMPLETIONDATE')],
     });
 
     this.populateForm()
@@ -151,7 +164,7 @@ export class WorksordersNewPhaseComponent implements OnInit {
 
   populateForm() {
     if (this.phaseFormMode == 'new') {
-      this.nePhaseForm.patchValue({ WOPSTATUS: 'New', WOPACTINACT: 'A' });
+      this.nePhaseForm.patchValue({ WOPSTATUS: 'New', WOPACTINACT: 'A', WOPBUDGET: 0 });
       this.nePhaseForm.get('WOPSTATUS').disable();
       this.nePhaseForm.get('WOPACTINACT').disable();
     } else {
@@ -209,9 +222,9 @@ export class WorksordersNewPhaseComponent implements OnInit {
     Object.keys(group.controls).forEach((key: string) => {
       const abstractControl = group.get(key);
 
-      if (key == 'WOPACTUALENDDATE' || key == 'WOPACTUALSTARTDATE' || key == 'WOPCONTRACTORISSUEDATE' || key == 'WOPCONTRACTORACCEPTANCEDATE' || key == 'WOPPLANSTARTDATE' || key == 'WOPPLANENDDATE') {
-        abstractControl.setErrors(null)
-      }
+      // if (key == 'WOPACTUALENDDATE' || key == 'WOPACTUALSTARTDATE' || key == 'WOPCONTRACTORISSUEDATE' || key == 'WOPCONTRACTORACCEPTANCEDATE' || key == 'WOPPLANSTARTDATE' || key == 'WOPPLANENDDATE') {
+      //   abstractControl.setErrors(null)
+      // }
 
       if (abstractControl instanceof FormGroup) {
         this.logValidationErrors(abstractControl);
@@ -220,6 +233,10 @@ export class WorksordersNewPhaseComponent implements OnInit {
 
           if (abstractControl.errors.hasOwnProperty('ngbDate')) {
             delete abstractControl.errors['ngbDate'];
+
+            if (Object.keys(abstractControl.errors).length == 0) {
+              abstractControl.setErrors(null)
+            }
           }
 
           const messages = this.validationMessage[key];
@@ -280,12 +297,9 @@ export class WorksordersNewPhaseComponent implements OnInit {
 
     phaseModel.WOPCONTRACTORACCEPTANCEDATE = this.dateFormate(formRawVal.WOPCONTRACTORACCEPTANCEDATE)
 
-    phaseModel.MPgpA = this.dateFormate(formRawVal.MPgpA)
-    phaseModel.MPgqA = this.dateFormate(formRawVal.MPgqA)
-    phaseModel.MPgsA = this.dateFormate(formRawVal.MPgsA)
-    phaseModel.MPgtA = this.dateFormate(formRawVal.MPgtA)
-    phaseModel.MPgoA = this.currentUser.userId
-    phaseModel.MPgrA = this.currentUser.userId
+
+
+    phaseModel.WOPBUDGET = this.helperService.convertMoneyToFlatFormat(formRawVal.WOPBUDGET)
 
     // Common fields
     phaseModel.WOSEQUENCE = this.worksOrderData.wosequence;
@@ -301,8 +315,16 @@ export class WorksordersNewPhaseComponent implements OnInit {
       phaseModel.WOPCURRENTCONTRACTSUM = 0;
       phaseModel.WOPACCEPTEDVALUE = 0;
 
+      phaseModel.MPgpA = this.dateFormate(this.minDate)
+      phaseModel.MPgqA = this.dateFormate(this.minDate)
+      phaseModel.MPgsA = this.dateFormate(this.minDate)
+      phaseModel.MPgtA = this.dateFormate(this.minDate)
+      phaseModel.MPgoA = this.currentUser.userId;
+      phaseModel.MPgrA = this.currentUser.userId;
+
       apiToAddUpdate = this.worksorderService.addWorksOrderPhase(phaseModel);
       message = `New Works Order Phase "${phaseModel.WOPNAME}" added successfully.`;
+
     } else {
       phaseModel.WOPSEQUENCE = this.phaseData.wopsequence;
       phaseModel.WOPDISPSEQ = this.phaseData.wopdispseq;
@@ -312,8 +334,19 @@ export class WorksordersNewPhaseComponent implements OnInit {
       phaseModel.WOPCURRENTCONTRACTSUM = this.phaseData.wopcurrentcontractsum;
       phaseModel.WOPACCEPTEDVALUE = this.phaseData.wopacceptedvalue;
 
+      phaseModel.MPgpA = this.phaseData.mPgpA
+      phaseModel.MPgqA = this.phaseData.mPgqA
+
+      phaseModel.MPgsA = this.phaseData.mPgsA // -1
+
+      phaseModel.MPgtA = this.phaseData.mPgtA;//this.dateFormate(this.minDate)
+
+      phaseModel.MPgoA = this.phaseData.mPgoA
+      phaseModel.MPgrA = this.currentUser.userId
+
       apiToAddUpdate = this.worksorderService.updateWorksOrderPhase(phaseModel);
       message = `Works Order Phase "${phaseModel.WOPNAME}" updated successfully.`;
+
     }
 
     apiToAddUpdate.subscribe(

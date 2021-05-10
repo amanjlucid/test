@@ -27,6 +27,24 @@ import { WorksordersAddAssetsworklistComponent } from '../worksorders-add-assets
 import { WorksordersAddPackageToWorklistComponent } from '../worksorders-add-package-to-worklist/worksorders-add-package-to-worklist.component';
 import { WorksordersAddPackageEnterQuantityComponent } from '../worksorders-add-package-enter-quantity/worksorders-add-package-enter-quantity.component';
 import { WorksordersAssetChecklistDocumentComponent } from '../worksorders-asset-checklist-document/worksorders-asset-checklist-document.component';
+import { WorksordersAssetChecklistPredecessorsComponent } from '../worksorders-asset-checklist-predecessors/worksorders-asset-checklist-predecessors.component';
+import { WorksordersAssetChecklistEditDescriptionComponent } from '../worksorders-asset-checklist-edit-description/worksorders-asset-checklist-edit-description.component';
+import { WorksordersAssetChecklistUploadDocComponent } from '../worksorders-asset-checklist-upload-doc/worksorders-asset-checklist-upload-doc.component';
+import { PickDateComponent } from '../pick-date/pick-date.component';
+import { WopmTemplatesComponent } from '../Config/wopm-templates/wopm-templates.component';
+import { WopmConfigComponent } from '../Config/wopm-config/wopm-config.component';
+import { WopmMasterstagesComponent } from '../Config/wopm-masterstages/wopm-masterstages.component';
+import { WopmEditTemplateComponent } from '../Config/wopm-templates/wopm-edit-template/wopm-edit-template.component';
+import { WopmEditMasterstageComponent } from '../Config/wopm-masterstages/wopm-edit-masterstage/wopm-edit-masterstage.component';
+import { WopmChecklistMasterComponent } from '../Config/wopm-templates/wopm-checklist-master/wopm-checklist-master.component';
+import { WopmEditChecklistMasterComponent } from '../Config/wopm-templates/wopm-checklist-master/wopm-edit-checklist-master/wopm-edit-checklist-master.component';
+import { WopmEditChecklistDependenciesComponent } from '../Config/wopm-templates/wopm-edit-checklist-dependencies/wopm-edit-checklist-dependencies.component';
+import { MultiSelectModule } from '@progress/kendo-angular-dropdowns';
+import { SwapPackageComponent } from '../swap-package/swap-package.component';
+import { NoAccessComponent } from '../no-access/no-access.component';
+import { NoAccessHistoryComponent } from '../no-access-history/no-access-history.component';
+import { MoveAssetComponent } from '../move-asset/move-asset.component';
+import { PhaseChecklistComponent } from '../phase-checklist/phase-checklist.component';
 
 @NgModule({
   declarations: [
@@ -45,7 +63,24 @@ import { WorksordersAssetChecklistDocumentComponent } from '../worksorders-asset
     WorksordersAddAssetsworklistComponent,
     WorksordersAddPackageToWorklistComponent,
     WorksordersAddPackageEnterQuantityComponent,
-    WorksordersAssetChecklistDocumentComponent
+    WorksordersAssetChecklistDocumentComponent,
+    WorksordersAssetChecklistPredecessorsComponent,
+    WorksordersAssetChecklistEditDescriptionComponent,
+    WorksordersAssetChecklistUploadDocComponent,
+    PickDateComponent,
+    WopmTemplatesComponent,
+    WopmConfigComponent,
+    WopmMasterstagesComponent,
+    WopmEditTemplateComponent,
+    WopmEditMasterstageComponent,
+    WopmChecklistMasterComponent,
+    WopmEditChecklistMasterComponent,
+    WopmEditChecklistDependenciesComponent,
+    SwapPackageComponent,
+    NoAccessComponent,
+    NoAccessHistoryComponent,
+    MoveAssetComponent,
+    PhaseChecklistComponent
   ],
 
   imports: [
@@ -61,7 +96,9 @@ import { WorksordersAssetChecklistDocumentComponent } from '../worksorders-asset
     NgMultiSelectDropDownModule,
     WorksOrderRoutingModule,
     NgbModule,
-    TreeListModule
+    TreeListModule,
+    NgMultiSelectDropDownModule.forRoot(),
+    MultiSelectModule
 
   ]
 

@@ -188,10 +188,14 @@ export class HnsResUploadAnsImageComponent implements OnInit {
           // console.log(formData)
           this.loaderService.pageShow();
           let httpres = this.resultService.uploadImagesandDocuments(formData).subscribe(
-            data => {
+            data =>
+            {
+              if(data)
+              {
               uploadedFile++;
               checkUploadPercent += averageUploadedPercent;
-              if (checkUploadPercent > 95) {
+                if (checkUploadPercent > 95)
+                {
                 checkUploadPercent = 100;
 
               }
@@ -204,6 +208,14 @@ export class HnsResUploadAnsImageComponent implements OnInit {
                 this.loaderService.pageHide();
                 this.complete.emit(true);
               }
+              }
+              else
+              {
+                this.alertService.error("The image failed to upload");
+                this.loaderService.pageHide();
+                this.complete.emit(false);
+              }
+
             },
             error => {
               this.loaderService.pageHide();
@@ -226,10 +238,14 @@ export class HnsResUploadAnsImageComponent implements OnInit {
 
           this.loaderService.pageShow();
           let httpres = this.resultService.uploadImagesandDocuments(formData).subscribe(
-            data => {
+            data =>
+            {
+              if(data)
+              {
               uploadedFile++;
               checkUploadPercent += averageUploadedPercent;
-              if (checkUploadPercent > 95) {
+                if (checkUploadPercent > 95)
+                {
                 checkUploadPercent = 100;
 
               }
@@ -242,6 +258,14 @@ export class HnsResUploadAnsImageComponent implements OnInit {
                 this.loaderService.pageHide();
                 this.complete.emit(true);
               }
+              }
+              else
+              {
+                this.alertService.error("The document failed to upload");
+                this.loaderService.pageHide();
+                this.complete.emit(false);
+              }
+
             },
             error => {
               this.loaderService.pageHide();

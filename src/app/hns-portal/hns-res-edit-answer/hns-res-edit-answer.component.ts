@@ -16,6 +16,7 @@ export class HnsResEditAnswerComponent implements OnInit {
   @Input() selectedAction: any;
   @Input() rootAssessment: any;
   @Input() isAssessment: boolean = false;
+  @Input() isHistorical: boolean = false;
   @Input() showEditAnswer: boolean = false;
   @Output() closeEditAnswer = new EventEmitter<boolean>();
   public gridData: any[] = [];
@@ -30,7 +31,7 @@ export class HnsResEditAnswerComponent implements OnInit {
 
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -196,6 +197,14 @@ export class HnsResEditAnswerComponent implements OnInit {
       }
     }
 
+    if(this.isHistorical){
+      this.editAnsForm.disable()
+      this.viewOnly = true;
+      this.disableBtn = true;
+      this.disableIssBtn = true;
+      this.issueBtnString = "View Issue";
+      this.title = "View Answer";
+    }
 
   }
 
@@ -343,7 +352,7 @@ export class HnsResEditAnswerComponent implements OnInit {
             this.healthAndSafetyAns = data.data[0];
 
             if (this.healthAndSafetyAns != undefined) {
-              this.healthAndSafetyAns.hasaassessor = "test";
+             // this.healthAndSafetyAns.hasaassessor = "test";
               this.editAnsForm.patchValue({
                 answer: this.healthAndSafetyAns.hasayesnona,
                 location: this.healthAndSafetyAns.hasalocation,
@@ -493,7 +502,7 @@ export class HnsResEditAnswerComponent implements OnInit {
   }
 
   closerImage(event) {
-    this.showImage = event;
+    this.showImage = false;
     $('.editAnsOvrlay').removeClass('ovrlay');
     // this.disableBtn = true
   }
@@ -705,6 +714,7 @@ export class HnsResEditAnswerComponent implements OnInit {
             if (data.isSuccess) {
               resove(true)
             } else {
+              this.alertService.error("The updated Issue was not saved: " +  data.message);
               this.loaderService.pageHide()
             }
           },

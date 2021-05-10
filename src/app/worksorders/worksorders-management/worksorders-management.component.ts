@@ -1,9 +1,11 @@
 import { Component, OnInit, ViewEncapsulation, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
-import { FilterService, SelectableSettings, TreeListComponent, ExpandEvent } from '@progress/kendo-angular-treelist';
-import { AlertService, HelperService, WorksorderManagementService, ConfirmationDialogService, SharedService } from '../../_services'
+import { FilterService, SelectableSettings, TreeListComponent, ExpandEvent, RowClassArgs } from '@progress/kendo-angular-treelist';
+import { AlertService, HelperService, WorksorderManagementService, ConfirmationDialogService, SharedService, WorksOrdersService } from '../../_services'
 import { SubSink } from 'subsink';
 import { Router } from '@angular/router';
+import { SortDescriptor } from '@progress/kendo-data-query';
+import { combineLatest } from 'rxjs';
 
 @Component({
   selector: 'app-worksorders-management',
@@ -19,12 +21,22 @@ export class WorksordersManagementComponent implements OnInit {
   loading = true;
   public selected: any[] = [];
   public filter: CompositeFilterDescriptor;
+  columnLocked = true;
   public settings: SelectableSettings = {
     mode: 'row',
     multiple: false,
     drag: false,
     enabled: true
   };
+  sort: SortDescriptor[] = [
+    //   {
+    //   field: 'wosequence',
+    //   dir: 'asc'
+    // }, {
+    //   field: 'name',
+    //   dir: 'asc'
+    // }
+  ];
   gridPageSize = 25;
   public apiData: any = [];
   public groupedData: any = [];
@@ -36,6 +48,15 @@ export class WorksordersManagementComponent implements OnInit {
 
   packageMappingWindow = false
   worksOrderSingleData: any;
+  deleteWorksOrderReasonWindow = false;
+  selctedWorksOrder: any;
+  reasonToDeleteWO: string;
+
+  woFormType = 'new';
+  woFormWindow: boolean = false;
+
+  worksOrderUsrAccess: any = [];
+  userType: any = []
 
   constructor(
     private worksorderManagementService: WorksorderManagementService,
@@ -45,24 +66,60 @@ export class WorksordersManagementComponent implements OnInit {
     private confirmationDialogService: ConfirmationDialogService,
     private sharedService: SharedService,
     private router: Router,
+    private worksOrderService: WorksOrdersService,
+
   ) { }
 
   ngOnInit(): void {
     //update notification on top
     this.helperService.updateNotificationOnTop();
-    this.sharedService.worksOrdersAccess.subscribe(
-      data => {
 
+    this.subs.add(
+      combineLatest([
+        this.sharedService.worksOrdersAccess,
+        this.sharedService.woUserSecObs,
+        this.sharedService.userTypeObs
+      ]).subscribe(
+        data => {
+          // console.log(data);
 
+          this.worksOrderAccess = data[0];
+          this.worksOrderUsrAccess = data[1];
+          this.userType = data[2][0];
 
-        this.worksOrderAccess = data;
+          if (this.worksOrderAccess.length > 0) {
+            if (!this.worksOrderAccess.includes("Management Menu")) {
+              // this.alertService.error("No access")
+              this.router.navigate(['login']);
+            }
+          }
 
-      //  console.log('worksOrderAccess Response '+JSON.stringify(this.worksOrderAccess));
-
-
-
-      }
+        }
+      )
     )
+
+    // this.subs.add(
+    //   this.sharedService.woUserSecObs.subscribe(
+    //     data => {
+    //       this.worksOrderUsrAccess = data;
+    //       // console.log(this.worksOrderUsrAccess)
+    //     }
+    //   )
+    // )
+
+    // this.subs.add(
+    //   this.sharedService.worksOrdersAccess.subscribe(
+    //     data => {
+    //       this.worksOrderAccess = data;
+    //       // console.log(this.worksOrderAccess);
+    //       if (this.worksOrderAccess.length > 0) {
+    //         if (!this.worksOrderAccess.includes("Programme Management")) {
+    //           this.router.navigate(['login']);
+    //         }
+    //       }
+    //     }
+    //   )
+    // )
 
     this.getManagement();
   }
@@ -71,11 +128,23 @@ export class WorksordersManagementComponent implements OnInit {
     this.subs.unsubscribe();
   }
 
+  rowCallback(context: RowClassArgs) {
+    if (context.dataItem.treelevel == 1) {
+      return { level1: true, }
+    }
+    if (context.dataItem.treelevel == 2) {
+      return { level2: true, }
+    }
+    if (context.dataItem.treelevel == 3) {
+      return { level3: true, }
+    }
+  }
+
   getManagement(status = "A") {
     this.subs.add(
       this.worksorderManagementService.getManagementData(status).subscribe(
         data => {
-          console.log(data);
+          // console.log(data);
           if (data.isSuccess) {
             let gridData = [];
             this.apiData = [...data.data];
@@ -89,6 +158,10 @@ export class WorksordersManagementComponent implements OnInit {
 
             //Find parent and Set parent id in each row
             tempData.forEach((value, index) => {
+              // if(value.name == "Test New Special Items 1"){
+              //   console.log(value)
+              // }
+
               if (value.treelevel == 1) {
                 value.parentId = null;
                 value.id = `${value.wopsequence}${value.wosequence}${value.wprsequence}`;
@@ -137,6 +210,9 @@ export class WorksordersManagementComponent implements OnInit {
   }
 
   cellClickHandler($event) {
+    if ($event.dataItem.treelevel == 2) {
+      this.setSeletedWORow($event.dataItem);
+    }
     // console.log($event)
     // console.log(this.selected)
   }
@@ -270,7 +346,14 @@ export class WorksordersManagementComponent implements OnInit {
   }
 
   setSeletedRow(dataItem) {
+    // console.log(this.selectedProgramme);
+    if (this.selectedProgramme?.wprsequence != dataItem.wprsequence) {
+      this.helperService.getWorkOrderSecurity(dataItem.wosequence);
+      this.helperService.getUserTypeWithWOAndWp(dataItem.wosequence, dataItem.wprsequence);
+    }
+
     this.selectedProgramme = dataItem
+
   }
 
 
@@ -289,6 +372,107 @@ export class WorksordersManagementComponent implements OnInit {
     this.sharedService.changeWorksOrderSingleData(item);
     localStorage.setItem('worksOrderSingleData', JSON.stringify(item)); // remove code on logout service
     this.router.navigate(['worksorders/details']);
+  }
+
+  lockUnlockColumn() {
+    this.columnLocked = !this.columnLocked
+  }
+
+  deleteWorksOrder(worksOrderItem, reason = "no", checkOrProcess = "C") {
+    this.selctedWorksOrder = worksOrderItem;
+    this.subs.add(
+      this.worksOrderService.DeleteWebWorkOrder(worksOrderItem.wosequence, reason, this.currentUser.userId, checkOrProcess).subscribe(
+        data => {
+          // console.log(data);
+          if (data.isSuccess && data.data.pRETURNSTATUS == "S") {
+            this.deleteWorksOrderReasonWindow = true;
+          } else if (data.data.pRETURNSTATUS == "E") {
+            this.alertService.error(data.data.pRETURNMESSAGE)
+          } else {
+            this.alertService.error(data.data.pRETURNMESSAGE)
+          }
+        }
+      )
+    )
+  }
+
+  finalDelete() {
+    if (this.reasonToDeleteWO == "" || this.reasonToDeleteWO == undefined) {
+      this.alertService.error("You must enter a reason for deleting a Works Order");
+      return
+    }
+
+    this.subs.add(
+      this.worksOrderService.DeleteWebWorkOrder(this.selctedWorksOrder.wosequence, this.reasonToDeleteWO, this.currentUser.userId, "P").subscribe(
+        data => {
+          // console.log(data);
+          if (data.data.pRETURNSTATUS == "E") {
+            this.alertService.error(data.data.pRETURNMESSAGE)
+          } else {
+            this.alertService.success(data.data.pRETURNMESSAGE);
+            this.refreshManagementGrid(true);
+            this.closeWorksorderReasonWindow()
+          }
+        }
+      )
+    )
+  }
+
+  closeWorksorderReasonWindow() {
+    this.deleteWorksOrderReasonWindow = false;
+    this.reasonToDeleteWO = undefined
+  }
+
+
+  openWorksOrderForm(action, item = null) {
+
+    if (item?.treelevel == 2 && action == "edit") {
+      this.selctedWorksOrder = item;
+    }
+
+    if (item?.treelevel == 1 && action == "new") {
+      this.selectedProgramme = item
+    }
+
+    if (item == null && action == "new") {
+      this.selctedWorksOrder = item
+    }
+
+    $('.newManagementOverlay').addClass('ovrlay');
+    this.woFormType = action;
+    this.woFormWindow = true;
+  }
+
+  closeWoFormWin($event) {
+    this.woFormWindow = $event;
+    $('.newManagementOverlay').removeClass('ovrlay');
+    this.refreshManagementGrid(true);
+  }
+
+
+  setSeletedWORow(dataItem) {
+   
+    if (this.selctedWorksOrder?.wosequence != dataItem.wosequence) {
+      this.helperService.getWorkOrderSecurity(dataItem.wosequence)
+      this.helperService.getUserTypeWithWOAndWp(dataItem.wosequence, dataItem.wprsequence);
+    }
+
+    this.selctedWorksOrder = dataItem;
+  }
+
+  programmeMenuAccess(menuName){
+    return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
+  }
+
+  woMenuAccess(menuName) {
+    // console.log(this.userType)
+    if (this.userType == undefined) return true;
+
+    if (this.userType?.wourroletype == "Dual Role") {
+      return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
+    }
+
+    return this.worksOrderUsrAccess.indexOf(menuName) != -1
   }
 
 }

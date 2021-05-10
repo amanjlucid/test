@@ -4,6 +4,8 @@ import { SubSink } from 'subsink';
 import { Router } from "@angular/router"
 import { Observable, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
+import { appConfig } from '../../app.config';
+
 declare var $: any;
 declare var tabelize: any;
 
@@ -558,9 +560,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
     }
 
     localStorage.setItem('assetFilterObj', JSON.stringify(assetFilterObj));
-    let url = `${window.location.origin}/rowanwood/asset-list?servicing=true`;
-    //let url = `${window.location.origin}/asset-list?servicing=true`; // for local
-    window.open(url, "_blank");
+    window.open("https://apexdevweb.rowanwood.ltd/dev/rowanwood/asset-list?servicing=true", "_blank");
   }
 
 
@@ -724,6 +724,92 @@ export class ManagementComponent implements OnInit, OnDestroy {
     } else {
       return false;
     }
+  }
+
+  runDetailReport(item: any, level: string) {
+    let startDateObj = this.managementFilterParam.startDate;
+    let endDateObj = this.managementFilterParam.endDate;
+    let startDate = `${startDateObj.year}${this.helperService.zeorBeforeSingleDigit(startDateObj.month)}${this.helperService.zeorBeforeSingleDigit(startDateObj.day)}`;
+    let endDate = `${endDateObj.year}${this.helperService.zeorBeforeSingleDigit(endDateObj.month)}${this.helperService.zeorBeforeSingleDigit(endDateObj.day)}`;
+    let tempses = item.sesCode;
+    if (level != "Asset"){
+      tempses = ""
+    }
+
+    const detailReportFilterObj = {
+      setcode: item.setCode,
+      concode: item.conCode,
+      secocode: item.secoCode,
+      sescode: tempses,
+      startdate: startDate,
+      enddate: endDate
+    }
+
+     this.servicePortalService.getAssetDetailReport(detailReportFilterObj).subscribe(
+      data => {
+        if (data.isSuccess && data.data)
+        {
+            let tempData = data.data;
+            let label = {
+              'contractor': 'Contractor',
+              'contract': 'Contract',
+              'serviceType': 'Service Type',
+              'serviceStage': 'Service Stage',
+              'assetID': 'Asset ID',
+              'address': 'Address',
+              'assetStatus': 'Asset Status',
+              'serviceDueDate': 'Service Due Date',
+              'deadlineDate': 'Deadline Date',
+              'reviewDate': 'Review Date',
+              'serviceDate': 'Service Date',
+              'completionDate': 'Completion Date',
+              'serviceJobNo': 'Service Job No',
+              'serviceJobStatus': 'Service Job Status',
+              'primaryNotServiced': 'Primary - Not Serviced',
+              'servicedNotComplete': 'Serviced Not Complete',
+              'completed': 'Completed',
+              'cancelled': 'Cancelled',
+              'overdue': 'Overdue',
+              'deadlineOverdue': 'Deadline Overdue',
+              'deadlineDueThisWeek': 'Deadline Due This Week',
+              'deadlineDueThisMonth': 'Deadline Due This Month',
+              'dueThisWeek': 'Due This Week',
+              'dueThisWeekServiced': 'Due This Week - Serviced',
+              'dueThisWeekCompleted': 'Due This Week - Completed',
+              'dueThisMonth': 'Due This Month',
+              'dueThisMonthServiced': 'Due This Month - Serviced',
+              'dueThisMonthCompleted': 'Due This Month - Completed',
+              'dueNextMonth': 'Due Next Month',
+              'dueNextMonthServiced': 'Due Next Month - Serviced',
+              'dueNextMonthCompleted': 'Due Next Month - Completed',
+              'dueNext30Days': 'Due Next 30 Days',
+              'dueNext30DaysServiced': 'Due Next 30 Days - Serviced',
+              'dueNext30DaysCompleted': 'Due Next 30 Days - Completed',
+              'servicedOnTime': 'Serviced On Time',
+              'servicedLate': 'Serviced Late',
+              'servicedOnTimeDeadline': 'Serviced On Time - Deadline',
+              'servicedLateDeadline': 'Serviced Late - Deadline',
+              'serviceOnTimePerc': 'Service On Time Perc',
+              'deadlineOnTimePerc': 'Deadline On Time Perc',
+              'contractorCode': 'Contractor Code',
+              'contractCode': 'Contract Code',
+              'serviceTypeCode': 'Service Type Code',
+              'serviceStageCode': 'Service Stage Code',
+              'daysUntilDue': 'Days Until Due',
+              'daysOverdue': 'Days Overdue',
+              'daysUntilDueDeadline': 'Days Until Due (Deadline)',
+              'daysOverdueDeadline': 'Days Overdue (Deadline)',
+          }
+          this.helperService.exportAsExcelFile(tempData, 'Asset Detail Report', label)
+        }
+        else
+        {
+            this.alertService.error("Could not retrieve the data to produce this report!")
+        }
+      }
+    )
+
+
   }
 
 

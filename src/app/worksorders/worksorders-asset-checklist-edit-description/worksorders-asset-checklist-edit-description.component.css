@@ -1,0 +1,12 @@
+.k-window {
+    position: fixed !important;
+}
+
+
+.actionBtn button{
+    margin-left: 5px;
+}
+
+.col-form-label{
+    font-weight: 600;
+}

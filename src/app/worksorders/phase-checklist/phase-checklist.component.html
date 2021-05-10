@@ -1,0 +1,145 @@
+<kendo-window title="{{title}}" *ngIf="phaseChecklist" (close)="closePhaseChecklist()" [top]="20" [minWidth]="700"
+    [width]="1250" [height]="auto" [minHeight]="350">
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group form-row firstHeadingRow">
+                <div class="col-md-1">
+                    <label for="programme">Works Order</label>
+                </div>
+
+                <div class="col-md-5">
+                    <input type="text" value="{{worksOrderData?.woname}} ({{worksOrderData?.wosequence}})"
+                        class="form-control form-control-sm" [readonly]="readonly">
+                </div>
+                <div class="col-md-1 text-right">
+                    <label for="phase">Phase:</label>
+                </div>
+                <div class="col-md-5">
+                    <input type="text" class="form-control form-control-sm" [readonly]="readonly"
+                        value="{{phaseFromApi?.woname}}">
+                </div>
+            </div>
+
+            <div class="form-row">
+
+                <div class="col-md-1">
+                    <label>Phase Budget:</label>
+                    <input type="text" class="form-control form-control-sm" readonly="true"
+                        value="{{phaseFromApi?.wobudget | currency:'GBP':'symbol'}}">
+                </div>
+
+                <div class="col-md-1">
+                    <label>Forecast:</label>
+                    <input type="text" class="form-control form-control-sm" readonly="true"
+                        value="{{phaseFromApi?.woforecast | currency:'GBP':'symbol'}}">
+                </div>
+
+                <div class="col-md-1">
+                    <label>Committed:</label>
+                    <input type="text" class="form-control form-control-sm" readonly="true"
+                        value="{{phaseFromApi?.wocommitted | currency:'GBP':'symbol'}}">
+                </div>
+
+                <div class="col-md-1">
+                    <label>Approved:</label>
+                    <input type="text" class="form-control form-control-sm" readonly="true"
+                        value="{{phaseFromApi?.woapproved | currency:'GBP':'symbol'}}">
+                </div>
+
+                <div class="col-md-1">
+                    <label>Pending:</label>
+                    <input type="text" class="form-control form-control-sm" readonly="true"
+                        value="{{phaseFromApi?.wopending | currency:'GBP':'symbol'}}">
+                </div>
+
+                <div class="col-md-1">
+                    <label>Actual:</label>
+                    <input type="text" class="form-control form-control-sm" readonly="true"
+                        value="{{phaseFromApi?.woactual | currency:'GBP':'symbol'}}">
+                </div>
+
+                <div class="col-md-2">
+                    <label>Unallocated Budget:</label>
+                    <input type="text" class="form-control form-control-sm" readonly="true"
+                        value="{{phaseFromApi?.wobudget-phaseFromApi?.woacceptedvalue | currency:'GBP':'symbol'}}">
+                </div>
+
+                <div class="col-md-2">
+                    <label>Phase Target Date:</label>
+                    <input type="text" class="form-control form-control-sm" readonly="true"
+                        value="{{phaseFromApi?.targetdate | dateFormat : 'DD-MMM-YYYY'}}">
+                </div>
+
+                <div class="col-md-2">
+                    <label></label>
+                    <button type="button" (click)="clearFilters()" class="btn btn-sm">Clear Filters</button>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col-md-12 mt-4">
+            <kendo-grid [data]="gridView" [height]="600" [selectable]="{
+                mode: 'multiple'
+              }" filterable="menu" [resizable]="true" [sortable]="{
+                allowUnsort: true,
+                mode: 'single'
+                }" [skip]="state.skip" [sort]="state.sort" [filter]="state.filter" (sortChange)="sortChange($event)"
+                (filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)" [navigable]="false"
+                [loading]="loading">
+
+                <kendo-grid-column field="wostagename" title="Asset" width="280">
+                </kendo-grid-column>
+
+                <kendo-grid-column field="wostagename" title="Asset Status" width="280">
+                </kendo-grid-column>
+
+
+                <kendo-grid-column field="wostagename" title="Address" width="280">
+                </kendo-grid-column>
+
+                <kendo-grid-column field="wostagename" title="Stage" width="280">
+                </kendo-grid-column>
+                <kendo-grid-column field="wostagename" title="Name" width="280">
+                </kendo-grid-column>
+                <kendo-grid-column field="wostagename" title="Responsibility" width="280">
+                </kendo-grid-column>
+                <kendo-grid-column field="wostagename" title="Special" width="280">
+                </kendo-grid-column>
+                <kendo-grid-column field="wostagename" title="Status" width="280">
+                </kendo-grid-column>
+                <kendo-grid-column field="wostagename" title="# Work" width="280">
+                </kendo-grid-column>
+                <kendo-grid-column field="wostagename" title="Start Date" width="280">
+                </kendo-grid-column>
+                <kendo-grid-column field="wostagename" title="Target Date" width="280">
+                </kendo-grid-column>
+                <kendo-grid-column field="wostagename" title="Issue Date" width="280">
+                </kendo-grid-column>
+                <kendo-grid-column field="wostagename" title="Completion Date" width="280">
+                </kendo-grid-column>
+                <kendo-grid-column field="wostagename" title="Forecast" width="280">
+                </kendo-grid-column>
+                <kendo-grid-column field="wostagename" title="Committed" width="280">
+                </kendo-grid-column>
+                <kendo-grid-column field="wostagename" title="Actual" width="280">
+                </kendo-grid-column>
+                <kendo-grid-column field="wostagename" title="Approved" width="280">
+                </kendo-grid-column>
+                <kendo-grid-column field="wostagename" title="Pending" width="280">
+                </kendo-grid-column>
+                <kendo-grid-column field="wostagename" title="Plan Start Date" width="280">
+                </kendo-grid-column>
+                <kendo-grid-column field="wostagename" title="Plan End Date" width="280">
+                </kendo-grid-column>
+                <kendo-grid-column field="wostagename" title="Comments(s)" width="280">
+                </kendo-grid-column>
+
+
+            </kendo-grid>
+        </div>
+
+    </div>
+
+</kendo-window>

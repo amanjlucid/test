@@ -20,6 +20,8 @@ export class HnsResAnsImageComponent implements OnInit {
   @Input() rootAction: any
   @Output() closerImage = new EventEmitter<boolean>();
   @Input() showImage: boolean = false;
+  @Input() ReadOnly: boolean = false;
+  @Input() QuestionCodeActive: string = '';
   uploadAttachment: boolean = false;
   gridData: any = [];
   imageDate: any;
@@ -30,7 +32,7 @@ export class HnsResAnsImageComponent implements OnInit {
     take: 30,
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -72,7 +74,10 @@ export class HnsResAnsImageComponent implements OnInit {
       this.title = "View Images for Issue & Answer"
     }
 
-
+    if(this.QuestionCodeActive != '')
+    {
+      this.title += (" - " + this.QuestionCodeActive);
+    }
     let action = this.selectedAction;
 
 
@@ -120,7 +125,12 @@ export class HnsResAnsImageComponent implements OnInit {
       )
     )
 
-
+    if (this.ReadOnly)
+    {
+      this.showUploadNRemoveBtn = false;
+    }
+    else
+    {
     if (this.rootAction.haslatestassessment != undefined && this.rootAction.haslatestassessment != null) {
       if (this.rootAction.haslatestassessment != "Y") {
         this.showUploadNRemoveBtn = false;
@@ -132,13 +142,17 @@ export class HnsResAnsImageComponent implements OnInit {
         this.showUploadNRemoveBtn = false;
       }
     }
+    }
+
+
+
 
   }
 
 
   closeImageWin() {
     this.showImage = false;
-    this.closerImage.emit(this.showImage)
+    this.closerImage.emit(this.gridData.total)
   }
 
   uploadImage(imageFor) {

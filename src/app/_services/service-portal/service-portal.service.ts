@@ -236,4 +236,20 @@ export class ServicePortalService {
         return this.http.get<any>(`${appConfig.apiUrl}/api/Chart/GetChartSParameters`, httpOptions);
     }
 
+    getAssetDetailReport(filterParam: any) {
+      let httpOptions = {
+          headers: new HttpHeaders({
+              'Content-Type': 'application/json'
+          }),
+      };
+      let conCode = filterParam.concode;
+      let secoCode = filterParam.secocode;
+      let setCode = filterParam.setcode;
+      let sesCode = filterParam.sescode;
+      let startDate = filterParam.startdate;
+      let endDate = filterParam.enddate;
+      return this.http.get<any>(`${appConfig.apiUrl}/api/Management/SelectAssetDetailReport?concode=${conCode}&secocode=${secoCode}&setcode=${setCode}&sescode=${sesCode}&startdate=${startDate}&enddate=${endDate}`, httpOptions);
+    }
+
+
 }

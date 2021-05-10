@@ -25,7 +25,7 @@ export class HnsResActionComponent implements OnInit {
     sort: [],
     filter: {
       filters: [],
-      logic: "or",
+      logic: "and",
     }
   }
   statusArr: any = [{ hasiactionstatus: "Outstanding" }, { hasiactionstatus: "Resolved" }]
@@ -148,7 +148,7 @@ export class HnsResActionComponent implements OnInit {
           if (data.isSuccess) {
             this.columnFiltersOpt = data.data
           }
-          
+
         }
       )
     )
@@ -204,7 +204,7 @@ export class HnsResActionComponent implements OnInit {
     this.headerFilters.IsFilter = false;
     this.state.filter = filter;
     this.filters = [];
-    
+
     if (filter) {
       // if (filter.filters.length > 0) {
       this.headerFilters.IsFilter = true;
@@ -213,7 +213,7 @@ export class HnsResActionComponent implements OnInit {
       if (this.state.filter) {
         if (this.state.filter.filters.length > 0) {
           let distincFitler = this.changeFilterState(this.state.filter.filters);
-          
+
           distincFitler.then(filter => {
             if (filter.length > 0) {
               this.resetGridFilter()
@@ -350,15 +350,26 @@ export class HnsResActionComponent implements OnInit {
       // compare first click to this click and see if they occurred within double click threshold
       if (((new Date().getTime()) - this.touchtime) < 400) {
         // double click occurred
-        $('.actionOverlay').addClass('ovrlay');
         this.selectedAction = dataItem;
-        if (this.selectedAction.hasiactionstatus == "R" || this.selectedAction.hasiactionstatus == "O" || this.selectedAction.hasiactionstatus == "Y") {
-          if (this.hnsPermission.indexOf('Edit Issue') != -1) {
+        if (this.selectedAction.hasiactionstatus == "R" || this.selectedAction.hasiactionstatus == "O" || this.selectedAction.hasiactionstatus == "Y")
+        {
+          if (this.hnsPermission.indexOf('Edit Issue') != -1)
+          {
+        $('.actionOverlay').addClass('ovrlay');
             this.openIssue("edit", dataItem)
           }
-        } else {
+          else{
+            this.alertService.error("You do not have permission to access the Edit Issue panel!");
+          }
+        }
+        else
+        {
           if (this.hnsPermission.indexOf('Edit Answer') != -1) {
+            $('.actionOverlay').addClass('ovrlay');
             this.openEditAnswer(dataItem);
+          }
+          else{
+            this.alertService.error("You do not have permission to access the Edit Answer panel!");
           }
 
         }
@@ -471,7 +482,7 @@ export class HnsResActionComponent implements OnInit {
         status = "I";
       } else if (obj.value.toLocaleLowerCase() == "overdue") {
         status = "Y";
-      } 
+      }
       //else {
       //   this.headerFilters.Status = obj.value.toLocaleLowerCase();
       // }
@@ -725,7 +736,7 @@ export class HnsResActionComponent implements OnInit {
   }
 
   closerImage(event) {
-    this.showImage = event;
+    this.showImage = false;
     $('.actionOverlay').removeClass('ovrlay');
     // this.disableBtn = true
   }
@@ -759,41 +770,42 @@ export class HnsResActionComponent implements OnInit {
                 x.hasscoremax1 = x.hasscoremax
                 x.hasactionyesnona = x.hasscoremax == "N" ? "No" : x.hasscoremax == "Y" ? "Yes" : x.hasscoremax == "X" ? "N/A" : "";
                 x.hasalatestassesment = x.hasalatestassesment == "N" ? "Historical" : x.hasalatestassesment == "Y" ? "Current" : "";
+                x.hasiactionstatus = x.hasiactionstatus == "O" ? "Outstanding" : x.hasiactionstatus == "R" ? "Resolved" : "";
                 x.amend = this.helperService.formatDateWithoutTime(x.hasimodifieddate)
-                x.hasitargetdate = this.helperService.formatDateWithoutTime(x.hasitargetdate)
+                x.hasitargetdate = x.hasitargetdate == "1753-01-01T00:00:00" ? "":this.helperService.formatDateWithoutTime(x.hasitargetdate)
                 x.hasiresolutionDate = ''
-                x.hasaassessmentdate = this.helperService.formatDateWithoutTime(x.hasaassessmentdate)
-                x.hasimodifieddate = this.helperService.formatDateWithoutTime(x.hasimodifieddate)
-                x.hasiworkauthoriseddate = this.helperService.formatDateWithoutTime(x.hasiworkauthoriseddate)
-                x.hasiworkscheduledate = this.helperService.formatDateWithoutTime(x.hasiworkscheduledate)
+                x.hasaassessmentdate = x.hasaassessmentdate == "1753-01-01T00:00:00" ? "":this.helperService.formatDateWithoutTime(x.hasaassessmentdate)
+                x.hasimodifieddate = x.hasimodifieddate == "1753-01-01T00:00:00" ? "":this.helperService.formatDateWithoutTime(x.hasimodifieddate)
+                x.hasiworkauthoriseddate = x.hasiworkauthoriseddate == "1753-01-01T00:00:00" ? "":this.helperService.formatDateWithoutTime(x.hasiworkauthoriseddate)
+                x.hasiworkscheduledate = x.hasiworkscheduledate == "1753-01-01T00:00:00" ? "":this.helperService.formatDateWithoutTime(x.hasiworkscheduledate)
+                x.hasiworkcompletiondate  = x.hasiworkcompletiondate == "1753-01-01T00:00:00" ? "": this.helperService.formatDateWithoutTime(x.hasiworkcompletiondate)
               })
 
               let label = {
                 'assid': 'Asset',
                 'astconcataddress': 'Address',
-                'questionnumber': 'Question',
+                'asspostcode': 'Post Code',
+                'hascode': 'Defintion',
+                'hasversion': 'Version',
                 'hasquestioncode': 'Question Code',
-                'groupName': 'Group',
-                'hasheadingname': 'Heading',
                 'hasquestiontext': 'Question',
-                'hasactionyesnona': 'Answer',
-                'hasalatestassesment': 'Latest',
-                'amend': 'Amended',
                 'hasiissue': 'Answer/Issue',
                 'hasiproposedaction': 'Proposed Action',
+                'hasiresolution': 'Resolution',
+                'hasiresolutionDate': 'Resolution Date',
                 'hasiseverity': 'Severity',
                 'hasiprobability': 'Probability',
                 'hasiriskscore': 'Risk Score',
                 'hasipriority': 'Priority',
+                'hasibudgetcode': 'Budget',
                 'hasitargetdate': 'Target Date',
-                'overdue': 'Overdue',
+                'overduepending': 'Overdue',
                 'hasiactionstatus': 'Status',
-                'hasiresolution': 'Resolution',
-                'hasiresolutionDate': 'Resolution Date',
-                'hasALocation': 'Location',
-                'hasAFloor': 'Floor',
-                'hasacomment': 'Answer Comments',
+                'hasalocation': 'Location',
+                'hasafloor': 'Floor',
+                'hasacomments': 'Answer Comments',
                 'hasicomments': 'Issue Comments',
+                'hasaassessmentref': 'Assessment Ref',
                 'hasaassessor': 'Assessor',
                 'hasaassessmentdate': 'Assessment Date',
                 'hasimodifiedby': 'Issue Updated By',
@@ -804,9 +816,7 @@ export class HnsResActionComponent implements OnInit {
                 'hasiworkreference': 'Work Ref',
                 'hasiworkscheduledate': 'Work Schedule Date',
                 'hasiworknotes': 'Work Notes',
-                'hasscoremax': 'Score',
-                'hasscoremax1': 'Max',
-                'scoringruletext': 'Rule',
+                'hasiworkcompletiondate': 'Work Completion Date',
               }
 
               this.helperService.exportAsExcelFile(tempData, 'HnS Action', label)

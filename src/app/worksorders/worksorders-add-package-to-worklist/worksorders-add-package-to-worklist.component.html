@@ -5,19 +5,19 @@
             Asset:
         </div>
         <div class="col-md-2">
-            <input type="text" class="form-control form-control-sm" [readonly]="true" value="{{selectedWorkOrder?.assid}}">
+            <input type="text" class="form-control form-control-sm" [readonly]="true"
+                value="{{selectedWorkOrder?.assid}}">
         </div>
 
         <div class="col-md-9">
-            <input type="text" class="form-control form-control-sm" [readonly]="true" value="{{selectedWorkOrder?.woname}}">
+            <input type="text" class="form-control form-control-sm" [readonly]="true"
+                value="{{selectedWorkOrder?.woname}}">
         </div>
     </div>
 
     <div class="row">
-
-
         <div class="col-md-12 mt-2">
-            <kendo-grid [data]="gridView" [height]="600" [selectable]="{
+            <kendo-grid #grid [data]="gridView" [height]="600" [selectable]="{
                     mode: 'multiple'
                   }" filterable="menu" [resizable]="true" [sortable]="{
                     allowUnsort: true,
@@ -29,7 +29,7 @@
                 <kendo-grid-checkbox-column width="40">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <input (click)="selectionChange(dataItem)" class="k-checkbox" type="checkbox"
-                            *ngIf="dataItem.attributeexists != 'Work Package Exists'">
+                            *ngIf="checkPackageExist(dataItem)">
                     </ng-template>
                 </kendo-grid-checkbox-column>
 
@@ -47,15 +47,30 @@
 
                 <kendo-grid-column field="uom" title="UOM" width="120">
                 </kendo-grid-column>
-                <kendo-grid-column field="defaultcost" title="SOR Rate" width="120">
+                <kendo-grid-column field="defaultcost" title="SOR Rate" width="120" [style]="{'text-align': 'right'}">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.defaultcost | currency:"GBP":"symbol" }}
+                        </span>
+                    </ng-template>
                 </kendo-grid-column>
-                <kendo-grid-column field="contractrate" title="Contract Rate" width="120">
+                <kendo-grid-column field="contractrate" title="Contract Rate" width="120" [style]="{'text-align': 'right'}">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.contractrate | currency:"GBP":"symbol" }}
+                        </span>
+                    </ng-template>
                 </kendo-grid-column>
-                <kendo-grid-column field="cost" title="Work Cost" width="120">
+                <kendo-grid-column field="cost" title="Work Cost" width="120" [style]="{'text-align': 'right'}">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.cost | currency:"GBP":"symbol" }}
+                        </span>
+                    </ng-template>
                 </kendo-grid-column>
-                <kendo-grid-column field="attributeexists" title="Attribute Status" width="120">
+                <kendo-grid-column field="attributeexists" title="Attribute Status" width="280">
                 </kendo-grid-column>
-                <kendo-grid-column field="exclusionreason" title="Exclusion Reason" width="120">
+                <kendo-grid-column field="exclusionreason" title="Exclusion Reason" width="280">
                 </kendo-grid-column>
 
 
@@ -64,11 +79,15 @@
         </div>
 
         <div class="col-md-12 text-right mt-2">
-            <button (click)="addTickedToWorklist()" [disabled]="mySelection.length == 0" class="btn btn-sm themeButton ml-1">Add Ticked To Work List</button>
+            <button (click)="addTickedToWorklist()" [disabled]="mySelection.length == 0"
+                class="btn btn-sm themeButton ml-1">Add Ticked To Work List</button>
             <button (click)="closePackageWindow()" class="btn btn-sm themeButton ml-1">Close</button>
         </div>
     </div>
 
     <div class="worklistPackageOvrlay"></div>
-    <app-worksorders-add-package-enter-quantity *ngIf="packageQuantityWindow" [packageQuantityWindow]="packageQuantityWindow" [selectedWorkOrder]="selectedWorkOrder" (closePackageQuantiyEvent)="closePackageQuantiyEvent($event)" (refreshPackageList)="refreshPackageList($event)" [mySelection]="mySelection" [packageData]="packageData"></app-worksorders-add-package-enter-quantity>
+    <app-worksorders-add-package-enter-quantity *ngIf="packageQuantityWindow"
+        [packageQuantityWindow]="packageQuantityWindow" [selectedWorkOrder]="selectedWorkOrder"
+        (closePackageQuantiyEvent)="closePackageQuantiyEvent($event)" (refreshPackageList)="refreshPackageList($event)"
+        [mySelection]="mySelection" [packageData]="packageData"></app-worksorders-add-package-enter-quantity>
 </kendo-window>
