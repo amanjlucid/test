@@ -60,6 +60,10 @@
     left: -74% !important;
 }
 
+.actionDrp .handoverDrp, .actionDrp .signOffDrp{
+    left: -101% !important;
+}
+
 .inlineRow .col-md-1, .inlineRow .col-md-2{
     padding-top: 6px;
 }

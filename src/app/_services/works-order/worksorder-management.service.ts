@@ -300,6 +300,21 @@ export class WorksorderManagementService {
         return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WorksOrderMoveAssetPhase`, body, this.httpOptions)
     }
 
+    workOrderPhaseCheckList(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WorkOrderPhaseCheckList `, body, this.httpOptions).pipe(
+            map(response => (<any>{
+                data: (response.data != null) ? response.data.phaseCheckList : [],
+                total: (response.data != null) ? response.data.totalCount  : 0
+            }))
+        );
+       
+    }
+
+    getPhaseCheckListFiltersList(WOSEQUENCE, workOnly) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetPhaseCheckListFiltersList?WOSEQUENCE=${WOSEQUENCE}&workOnly=${workOnly}`, this.httpOptions);
+    }
+
 
 
 

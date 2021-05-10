@@ -2,10 +2,16 @@
     position: fixed !important;
 }
 
-.firstHeadingRow label{
+.firstHeadingRow label {
     margin-top: 4px;
 }
 
 .dropdown.list-unstyled {
     position: absolute !important;
+}
+
+.k-grid tbody td {
+    white-space: nowrap !important;
+    line-height: 20px !important;
+    padding: 8px 12px !important;
 }

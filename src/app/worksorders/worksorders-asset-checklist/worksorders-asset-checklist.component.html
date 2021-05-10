@@ -60,6 +60,27 @@
                         Accept</a>
 
 
+                    <div class="dropdown-toggle">
+                        <div class="dropdown-item">Handover</div>
+                        <div class="dropdown-menu handoverDrp">
+                            <a class="dropdown-item" href="javascript:void(0)">Yesterday</a>
+                            <a class="dropdown-item" href="javascript:void(0)">Today</a>
+                            <a class="dropdown-item" href="javascript:void(0)">Choose Date</a>
+                        </div>
+                    </div>
+
+                    <div class="dropdown-toggle">
+                        <div class="dropdown-item">Sign Off</div>
+                        <div class="dropdown-menu signOffDrp">
+                            <a class="dropdown-item" href="javascript:void(0)">Yesterday</a>
+                            <a class="dropdown-item" href="javascript:void(0)">Today</a>
+                            <a class="dropdown-item" href="javascript:void(0)">Choose Date</a>
+                        </div>
+                    </div>
+                    <a class="dropdown-item" href="javascript:void(0)">Cancel</a>
+                    <a class="dropdown-item" href="javascript:void(0)">Remove</a>
+
+
                     <div class="dropdown-toggle" *ngIf="woMenuBtnSecurityAccess('Set Status')">
                         <div class="dropdown-item">Status</div>
                         <div class="dropdown-menu">
@@ -477,7 +498,9 @@
                                     </div>
                                 </div>
 
-                                <a *ngIf="woMenuBtnSecurityAccess('No Access') && dataItem.wocheckspeciaL1 == 'ACCESS'" class="dropdown-item" href="javascript:void(0)" (click)="openNoAccessWindow(dataItem)">No
+                                <a *ngIf="woMenuBtnSecurityAccess('No Access') && dataItem.wocheckspeciaL1 == 'ACCESS'"
+                                    class="dropdown-item" href="javascript:void(0)"
+                                    (click)="openNoAccessWindow(dataItem)">No
                                     Access</a>
 
                             </div>
@@ -662,8 +685,12 @@
         (refreshWorkOrderDetails)="refreshGrid($event)">
     </app-worksorders-add-assetsworklist>
 
-    <app-no-access *ngIf="noaccessWindow" [noaccessWindow]="noaccessWindow" [selectedChecklistsingleItem]="selectedChecklistsingleItem" (closeNoAccessWinEvent)="closeNoAccessWin($event)" (refreshChecklist)="refreshGrid($event)"></app-no-access>
+    <app-no-access *ngIf="noaccessWindow" [noaccessWindow]="noaccessWindow"
+        [selectedChecklistsingleItem]="selectedChecklistsingleItem" (closeNoAccessWinEvent)="closeNoAccessWin($event)"
+        (refreshChecklist)="refreshGrid($event)"></app-no-access>
 
-    <app-no-access-history *ngIf="noaccessHistory" [noaccessHistory]="noaccessHistory" [selectedChecklistsingleItem]="selectedChecklistsingleItem" (closeNoAccessHistoryEve)="closeNoAccessHistory($event)"></app-no-access-history>
+    <app-no-access-history *ngIf="noaccessHistory" [noaccessHistory]="noaccessHistory"
+        [selectedChecklistsingleItem]="selectedChecklistsingleItem"
+        (closeNoAccessHistoryEve)="closeNoAccessHistory($event)"></app-no-access-history>
 
 </kendo-window>

@@ -117,7 +117,7 @@ export class WorksordersDetailsComponent implements OnInit {
         this.sharedService.userTypeObs
       ]).subscribe(
         data => {
-          console.log(data);
+          // console.log(data);
           this.worksOrderUsrAccess = data[0];
           this.worksOrderAccess = data[1];
           this.userType = data[2][0];
@@ -294,7 +294,7 @@ export class WorksordersDetailsComponent implements OnInit {
             if (dataItem.treelevel == 2) {
               //open asset detail window
               if (this.worksOrderAccess.indexOf('Asset Details') != -1 || this.worksOrderUsrAccess.indexOf('Asset Details') != -1) {
-                this.openAssetDetail(dataItem)
+                // this.openAssetDetail(dataItem)
               }
 
             } else if (dataItem.treelevel == 3) {

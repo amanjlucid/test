@@ -33,3 +33,4 @@ export * from './wopm-template.model';
 export * from './wopm-masterstage.model';
 export * from './wopm-checklistmaster.model';
 export * from './wopm-checklist-dependency.model';
+export * from './workorders/workorders-phasechecklist-asset.model';
