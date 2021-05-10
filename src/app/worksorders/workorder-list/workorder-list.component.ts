@@ -47,6 +47,7 @@ export class WorkorderListComponent implements OnInit {
   wosequenceForDelete:any;
   worksOrderAccess = [];
 
+
   // public windowOpened = false;
 
   constructor(
@@ -71,6 +72,7 @@ export class WorkorderListComponent implements OnInit {
         this.worksOrderAccess = data;
       }
     )
+
 
 
     this.getUserWorksOrdersList(this.filterObject);

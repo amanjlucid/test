@@ -1,7 +1,7 @@
 <kendo-window title="{{title}}" *ngIf="checklistDocWindow" (close)="closeChecklistDoc()" [top]="10" [minWidth]="700" [width]="870"
     [height]="auto" [minHeight]="300">
     <div class="row headingDetail">
-      
+
 
     </div>
 
@@ -37,10 +37,10 @@
 
     <div class="row mt-2">
         <div class="col-md-8 text-left leftSideBtn">
-            <button class="btn btn-sm themeButton" (click)="viewDocument()">View Document</button>
-            <button class="btn btn-sm themeButton" (click)="openEditDoc()">Edit Description</button>
-            <button class="btn btn-sm themeButton" (click)="uploadImage()">Upload Document</button>
-            <button class="btn btn-sm themeButton" (click)="openConfirmationDialog()">Remove Document</button>
+            <button *ngIf="worksOrderAccess.indexOf('View Document') != -1" class="btn btn-sm themeButton" (click)="viewDocument()">View Document</button>
+            <button *ngIf="worksOrderAccess.indexOf('Edit Document Description') != -1" class="btn btn-sm themeButton" (click)="openEditDoc()">Edit Description</button>
+            <button *ngIf="worksOrderAccess.indexOf('Upload Document') != -1" class="btn btn-sm themeButton" (click)="uploadImage()">Upload Document</button>
+            <button *ngIf="worksOrderAccess.indexOf('Remove Document') != -1" class="btn btn-sm themeButton" (click)="openConfirmationDialog()">Remove Document</button>
         </div>
 
         <div class="col-md-4 text-right rightSideBtn">

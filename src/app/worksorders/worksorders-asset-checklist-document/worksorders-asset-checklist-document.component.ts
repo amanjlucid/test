@@ -31,7 +31,7 @@ export class WorksordersAssetChecklistDocumentComponent implements OnInit {
   showEditDoc: boolean = false
   uploadAttachment: boolean = false;
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
-
+  worksOrderAccess = [];
   constructor(
     private chRef: ChangeDetectorRef,
     private alertService: AlertService,
@@ -42,6 +42,12 @@ export class WorksordersAssetChecklistDocumentComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+
+    this.sharedService.worksOrdersAccess.subscribe(
+      data => {
+        this.worksOrderAccess = data;
+      }
+    )
   }
 
   sortChange(sort: SortDescriptor[]): void {

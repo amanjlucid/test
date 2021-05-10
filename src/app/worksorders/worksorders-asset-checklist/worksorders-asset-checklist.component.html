@@ -11,7 +11,7 @@
             </button>
             <!-- <button type="button" class="btn btn-sm themeButton">Export</button>
             <button type="button" class="btn btn-sm themeButton">Administration</button> -->
-            <button type="button" class="btn btn-sm themeButton" (click)="openChecklistDoc()">Doucuments</button>
+            <button *ngIf="worksOrderAccess.indexOf('Checklist Documents') != -1" type="button" class="btn btn-sm themeButton" (click)="openChecklistDoc()">Doucuments</button>
             <!-- <button type="button" class="btn btn-sm themeButton">Work</button>
             <button type="button" class="btn btn-sm themeButton">Defects</button>
             <button type="button" class="btn btn-sm themeButton">Variations</button>
@@ -220,7 +220,7 @@
                     </ng-template>
 
                 </kendo-grid-column>
-                
+
                 <kendo-grid-column field="worksOrderAssetChecklistFileCount" title="" width="40">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <div style="width:100%; text-align: center;">

@@ -45,18 +45,25 @@ export class WorksordersAssetChecklistComponent implements OnInit {
   readonly = true;
 
   checklistDocWindow = false;
-
+  worksOrderAccess = [];
 
   constructor(
     private chRef: ChangeDetectorRef,
     private worksorderManagementService: WorksorderManagementService,
     private alertService: AlertService,
-    
+      private sharedService: SharedService,
+
   ) { }
 
   ngOnInit(): void {
+    this.sharedService.worksOrdersAccess.subscribe(
+      data => {
+        this.worksOrderAccess = data;
+      }
+    )
     console.log(this.selectedChildRow);
     this.worksOrderDetailPageData();
+
   }
 
   worksOrderDetailPageData() {

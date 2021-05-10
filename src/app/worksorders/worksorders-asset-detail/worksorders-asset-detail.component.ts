@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
-import { AlertService, HelperService, LoaderService, ConfirmationDialogService,  WorksOrdersService, PropertySecurityGroupService } from 'src/app/_services';
+import { AlertService, HelperService, LoaderService, ConfirmationDialogService, SharedService,  WorksOrdersService, PropertySecurityGroupService } from 'src/app/_services';
 
 @Component({
   selector: 'app-worksorders-asset-detail',
@@ -50,7 +50,7 @@ export class WorksordersAssetDetailComponent implements OnInit {
   refusalCodeList:any;
   SwapPackageWindow=false;
   SwapPackagesForAssetsDataGrid :any
-
+    worksOrderAccess = [];
 
 
   constructor(
@@ -58,7 +58,8 @@ export class WorksordersAssetDetailComponent implements OnInit {
         private alertService: AlertService,
         private chRef: ChangeDetectorRef,
         private helperService: HelperService,
-        private confirmationDialogService: ConfirmationDialogService
+        private confirmationDialogService: ConfirmationDialogService,
+        private sharedService: SharedService,
   ) { }
 
   ngOnInit(): void {
@@ -81,6 +82,12 @@ export class WorksordersAssetDetailComponent implements OnInit {
           woname: '',
       };
 
+
+      this.sharedService.worksOrdersAccess.subscribe(
+        data => {
+          this.worksOrderAccess = data;
+        }
+      )
 
 
       // console.log('selectedParentRow on aASEET Detaails Page ' + JSON.stringify(this.selectedParentRow));

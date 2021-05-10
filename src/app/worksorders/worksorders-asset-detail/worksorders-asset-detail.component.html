@@ -67,14 +67,14 @@
                             <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"
                                 (click)="setSeletedRow(dataItem)"></i>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" href="javascript:void(0)" (click)="removeAssetFromPhase(dataItem)">Delete</a>
-                                <a class="dropdown-item" href="javascript:void(0)" (click)="openEditCommentForWoAssetWindow(dataItem)">Edit Comment</a>
-                                <a class="dropdown-item" href="javascript:void(0)" (click)="openEditWorkPackageQtyCostWindow(dataItem)">Edit Work</a>
-                                <a *ngIf="dataItem.woadrechargeyn == 'N'" class="dropdown-item" href="javascript:void(0)" (click)="rechargeToggle(dataItem)">Recharge</a>
-                                <a *ngIf="dataItem.woadrechargeyn == 'Y'" class="dropdown-item" href="javascript:void(0)" (click)="rechargeToggle(dataItem)">Clear Recharge</a>
-                                <a *ngIf="dataItem.woadrefusaL_YN == 'N'" class="dropdown-item" href="javascript:void(0)" (click)="openSetToRefusalWindow(dataItem)">Set to Refusal</a>
-                                <a *ngIf="dataItem.woadrefusaL_YN == 'Y'" class="dropdown-item" href="javascript:void(0)" (click)="clearRefusalConfirm(dataItem)">Clear Refusal</a>
-                                <a class="dropdown-item" href="javascript:void(0)" (click)="openSwapPackage(dataItem)">Swap Package</a>
+                                <a *ngIf="worksOrderAccess.indexOf('Delete Works Order') != -1"  class="dropdown-item" href="javascript:void(0)" (click)="removeAssetFromPhase(dataItem)">Delete</a>
+                                <a *ngIf="worksOrderAccess.indexOf('Edit Comment') != -1" class="dropdown-item" href="javascript:void(0)" (click)="openEditCommentForWoAssetWindow(dataItem)">Edit Comment</a>
+                                <a *ngIf="worksOrderAccess.indexOf('Edit Work') != -1" class="dropdown-item" href="javascript:void(0)" (click)="openEditWorkPackageQtyCostWindow(dataItem)">Edit Work</a>
+                                <a *ngIf="dataItem.woadrechargeyn == 'N' && worksOrderAccess.indexOf('Recharge') != -1" class="dropdown-item" href="javascript:void(0)" (click)="rechargeToggle(dataItem)">Recharge</a>
+                                <a *ngIf="dataItem.woadrechargeyn == 'Y' && worksOrderAccess.indexOf('Recharge') != -1" class="dropdown-item" href="javascript:void(0)" (click)="rechargeToggle(dataItem)">Clear Recharge</a>
+                                <a *ngIf="dataItem.woadrefusaL_YN == 'N' && worksOrderAccess.indexOf('Refusal') != -1" class="dropdown-item" href="javascript:void(0)" (click)="openSetToRefusalWindow(dataItem)">Set to Refusal</a>
+                                <a *ngIf="dataItem.woadrefusaL_YN == 'Y' && worksOrderAccess.indexOf('Refusal') != -1" class="dropdown-item" href="javascript:void(0)" (click)="clearRefusalConfirm(dataItem)">Clear Refusal</a>
+                                <a *ngIf="worksOrderAccess.indexOf('Swap Package') != -1"  class="dropdown-item" href="javascript:void(0)" (click)="openSwapPackage(dataItem)">Swap Package</a>
 
 
                             </div>

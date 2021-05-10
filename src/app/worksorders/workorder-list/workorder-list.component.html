@@ -8,7 +8,7 @@
     </div>
 
     <div class="col-md-10 text-right">
-      <button (click)="openUserPopup('new')" class="btn btn-sm themeButton "><i class="fa fa-plus"></i>
+      <button *ngIf="worksOrderAccess.indexOf('New Works Order') != -1" (click)="openUserPopup('new')" class="btn btn-sm themeButton "><i class="fa fa-plus"></i>
         New Works Order
       </button>
 
@@ -72,12 +72,11 @@
             <li class="nav-item dropdown list-unstyled" style="margin-top: -7px;" (click)="setSeletedRow(dataItem)">
               <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
               <div class="dropdown-menu">
-                <a class="dropdown-item" href="javascript:void(0)" (click)="redirectToWorksOrder(dataItem)"> Works Order Details</a>
-<<<<<<< HEAD
-                <a class="dropdown-item" href="javascript:void(0)" (click)="redirectToWorksOrderEdit(dataItem)">Edit</a>
-                <a class="dropdown-item" href="javascript:void(0)" (click)="deleteThis(dataItem)">Delete</a>
+                <a *ngIf="worksOrderAccess.indexOf('Works Order Detail') != -1" class="dropdown-item" href="javascript:void(0)" (click)="redirectToWorksOrder(dataItem)"> Works Order Details</a>
+
+                <a *ngIf="worksOrderAccess.indexOf('Edit Works Order') != -1" class="dropdown-item" href="javascript:void(0)" (click)="redirectToWorksOrderEdit(dataItem)">Edit</a>
+                <a *ngIf="worksOrderAccess.indexOf('Delete Works Order') != -1" class="dropdown-item" href="javascript:void(0)" (click)="deleteThis(dataItem)">Delete</a>
                 <a class="dropdown-item" href="javascript:void(0)">Defects </a>
-=======
                 <!-- <a class="dropdown-item" href="javascript:void(0)">Defects </a>
 >>>>>>> 49c6be009adb1290007e91a25115c9f129fe61d5
                 <a class="dropdown-item" href="javascript:void(0)">Contract Costs</a>

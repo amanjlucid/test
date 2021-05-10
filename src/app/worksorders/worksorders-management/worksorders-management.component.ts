@@ -52,7 +52,14 @@ export class WorksordersManagementComponent implements OnInit {
     this.helperService.updateNotificationOnTop();
     this.sharedService.worksOrdersAccess.subscribe(
       data => {
+
+
+
         this.worksOrderAccess = data;
+
+      //  console.log('worksOrderAccess Response '+JSON.stringify(this.worksOrderAccess));
+
+
 
       }
     )
