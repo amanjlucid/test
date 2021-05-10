@@ -40,10 +40,27 @@
               class="dropdown-item" href="javascript:void(0)">Issue</a>
             <a *ngIf="woMenuBtnSecurityAccess('Accept Asset')" (click)="assetAction(null, 'ACCEPT', 'multiple')"
               class="dropdown-item" href="javascript:void(0)">Accept</a>
-            <!-- <a class="dropdown-item" href="javascript:void(0)">Handover</a>
-            <a class="dropdown-item" href="javascript:void(0)">Sign Off</a>
+
+
+            <div class="dropdown-toggle">
+              <div class="dropdown-item">Handover</div>
+              <div class="dropdown-menu">
+                <a class="dropdown-item" href="javascript:void(0)">Yesterday</a>
+                <a class="dropdown-item" href="javascript:void(0)">Today</a>
+                <a class="dropdown-item" href="javascript:void(0)">Choose Date</a>
+              </div>
+            </div>
+
+            <div class="dropdown-toggle">
+              <div class="dropdown-item">Sign Off</div>
+              <div class="dropdown-menu">
+                <a class="dropdown-item" href="javascript:void(0)">Yesterday</a>
+                <a class="dropdown-item" href="javascript:void(0)">Today</a>
+                <a class="dropdown-item" href="javascript:void(0)">Choose Date</a>
+              </div>
+            </div>
+            <a class="dropdown-item" href="javascript:void(0)">Cancel</a>
             <a class="dropdown-item" href="javascript:void(0)">Remove</a>
-            <a class="dropdown-item" href="javascript:void(0)">Cancel</a> -->
 
           </div>
         </div>
@@ -206,16 +223,18 @@
 
     <div class="col-md-12 mt-2" (mouseover)="getMouseroverEve($event)">
 
-      <kendo-treelist #grid [kendoTreeListFlatBinding]="gridData" idField="id" parentIdField="parentId" scrollable="virtual"
-        [rowHeight]="36" kendoTreeListExpandable [initiallyExpanded]="true" [sortable]="true" filterable="menu"
-        [filter]="filter" (filterChange)="onFilterChange($event)" [pageSize]="gridPageSize" [navigable]="false"
-        kendoTreeListSelectable [selectable]="settings" [(selectedItems)]="selected" itemKey="id" [height]="gridHeight"
-        [virtualColumns]="true" [loading]="loading" [resizable]="true" (cellClick)="cellClickHandler($event)"
-        [rowClass]="rowCallback">
+      <kendo-treelist #grid [kendoTreeListFlatBinding]="gridData" idField="id" parentIdField="parentId"
+        scrollable="virtual" [rowHeight]="36" kendoTreeListExpandable [initiallyExpanded]="true" [sortable]="true"
+        filterable="menu" [filter]="filter" (filterChange)="onFilterChange($event)" [pageSize]="gridPageSize"
+        [navigable]="false" kendoTreeListSelectable [selectable]="settings" [(selectedItems)]="selected" itemKey="id"
+        [height]="gridHeight" [virtualColumns]="true" [loading]="loading" [resizable]="true"
+        (cellClick)="cellClickHandler($event)" [rowClass]="rowCallback">
 
-        <kendo-treelist-column field="wprstatus" title="" [width]="33" [sortable]="false" [filterable]="false" [locked]="columnLocked">
+        <kendo-treelist-column field="wprstatus" title="" [width]="33" [sortable]="false" [filterable]="false"
+          [locked]="columnLocked">
           <ng-template kendoTreeListCellTemplate let-dataItem>
-            <li *ngIf="dataItem.treelevel == 2" class="nav-item dropdown list-unstyled" style="margin-top: -7px;" (click)="setSeletedRow(dataItem)">
+            <li *ngIf="dataItem.treelevel == 2" class="nav-item dropdown list-unstyled" style="margin-top: -7px;"
+              (click)="setSeletedRow(dataItem)">
               <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars" (click)="setSeletedRow(dataItem)"></i>
               <div class="dropdown-menu selectedWodBar{{dataItem.id}}">
                 <a *ngIf="woMenuBtnSecurityAccess('Edit Phase')" class="dropdown-item" href="javascript:void(0)"
@@ -249,8 +268,8 @@
                   </div>
                 </div>
 
-                <!-- <a class="dropdown-item" *ngIf="woMenuBtnSecurityAccess('Work Details')" href="javascript:void(0)"
-                  (click)="openAssetDetail(dataItem)">Work Asset Details</a> -->
+                <a class="dropdown-item" *ngIf="woMenuBtnSecurityAccess('Phase Checklist')" href="javascript:void(0)"
+                  (click)="openPhaseChecklist(dataItem)">Phase Checklist</a>
 
               </div>
             </li>
@@ -308,15 +327,20 @@
                   </div>
                 </div>
 
+                <a *ngIf="woMenuBtnSecurityAccess('Move Assets')" class="dropdown-item" href="javascript:void(0)"
+                  (click)="moveAssets(dataItem)">Move</a>
+
               </div>
             </li>
           </ng-template>
         </kendo-treelist-column>
 
 
-        <kendo-treelist-column [expandable]="true" [minResizableWidth]="200" field="woname" title="Name" [width]="450" [locked]="columnLocked">
+        <kendo-treelist-column [expandable]="true" [minResizableWidth]="200" field="woname" title="Name" [width]="450"
+          [locked]="columnLocked">
         </kendo-treelist-column>
-        <kendo-treelist-column field="wostatus" title="Status" [width]="120" [locked]="columnLocked"></kendo-treelist-column>
+        <kendo-treelist-column field="wostatus" title="Status" [width]="120" [locked]="columnLocked">
+        </kendo-treelist-column>
         <kendo-treelist-column field="woaworkaccess" title="Work Access" [width]="180"></kendo-treelist-column>
 
         <kendo-treelist-column field="targetdateobj" title="Target Date" [width]="130" filter="date"
@@ -521,3 +545,13 @@
   <app-workorder-form [woFormType]="'edit'" [woFormWindow]="woFormWindow"
     [selectedWorkOrderAddEdit]="worksOrderSingleData" *ngIf="woFormWindow" (closeWoFormWin)="closeWoFormWin($event)">
   </app-workorder-form>
+
+
+  <app-move-asset *ngIf="moveAsset" [moveAsset]="moveAsset" [selectedAssetList]="selectedAssetList"
+    (closeMoveAssetEvent)="closeMoveAsset($event)" (refreshWorkOrderDetails)="refreshGrid($event)">
+  </app-move-asset>
+
+
+  <app-phase-checklist *ngIf="phaseChecklist" [phaseChecklist]="phaseChecklist" [selectedPhase]="actualSelectedRow"
+    (closePhaseChecklistEvent)="closePhaseChecklist($event)">
+  </app-phase-checklist>

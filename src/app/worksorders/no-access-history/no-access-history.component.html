@@ -4,7 +4,7 @@
     <div class="row">
         <div class="col-md-12">
             <kendo-grid [data]="gridView" [height]="600" [selectable]="{
-                mode: 'multiple'
+                mode: 'single'
               }" [resizable]="true" [sortable]="{
                 allowUnsort: true,
                 mode: 'single'
@@ -31,7 +31,7 @@
         </div>
 
         <div class="col-md-6 mt-4 text-left">
-            <button type="button" [disabled]="!selectedSingleNoAccessData" class="btn btn-sm themeButton mr-1">
+            <button type="button" (click)="delete()" [disabled]="!selectedSingleNoAccessData" class="btn btn-sm themeButton mr-1">
                 Delete
             </button>
         </div>

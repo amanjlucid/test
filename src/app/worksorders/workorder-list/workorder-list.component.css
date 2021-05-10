@@ -66,6 +66,7 @@
 
 .filterArea .filterdiv2 .filterLbl {
     width: 19%;
+    margin-right: 12px;
 }
 
 .filterArea .filterdiv2 input[type=text] {

@@ -43,6 +43,8 @@ import { MultiSelectModule } from '@progress/kendo-angular-dropdowns';
 import { SwapPackageComponent } from '../swap-package/swap-package.component';
 import { NoAccessComponent } from '../no-access/no-access.component';
 import { NoAccessHistoryComponent } from '../no-access-history/no-access-history.component';
+import { MoveAssetComponent } from '../move-asset/move-asset.component';
+import { PhaseChecklistComponent } from '../phase-checklist/phase-checklist.component';
 
 @NgModule({
   declarations: [
@@ -76,7 +78,9 @@ import { NoAccessHistoryComponent } from '../no-access-history/no-access-history
     WopmEditChecklistDependenciesComponent,
     SwapPackageComponent,
     NoAccessComponent,
-    NoAccessHistoryComponent
+    NoAccessHistoryComponent,
+    MoveAssetComponent,
+    PhaseChecklistComponent
   ],
 
   imports: [

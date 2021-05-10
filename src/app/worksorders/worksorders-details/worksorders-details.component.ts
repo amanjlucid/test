@@ -36,7 +36,7 @@ export class WorksordersDetailsComponent implements OnInit {
 
   loading = true;
   public selected: any[] = [];
-  // selectKey = (dataItem: any) => `${dataItem.id}`;
+
   public filter: CompositeFilterDescriptor;
   public settings: SelectableSettings = {
     mode: 'row',
@@ -45,7 +45,7 @@ export class WorksordersDetailsComponent implements OnInit {
     enabled: true
   };
   gridPageSize = 25;
-  // public apiData: any = [];
+
   public groupedData: any = [];
   public gridData: any = [];
   @ViewChild(TreeListComponent) public grid: TreeListComponent;
@@ -80,6 +80,10 @@ export class WorksordersDetailsComponent implements OnInit {
   userType: any = [];
 
   mousePositioin: any = 0;
+  moveAsset: boolean = false;
+  phaseChecklist = false;
+
+  selectedAssetList: any = [];
 
   constructor(
     private sharedService: SharedService,
@@ -113,7 +117,7 @@ export class WorksordersDetailsComponent implements OnInit {
         this.sharedService.userTypeObs
       ]).subscribe(
         data => {
-          // console.log(data);
+          console.log(data);
           this.worksOrderUsrAccess = data[0];
           this.worksOrderAccess = data[1];
           this.userType = data[2][0];
@@ -141,15 +145,6 @@ export class WorksordersDetailsComponent implements OnInit {
   ngOnDestroy() {
     this.subs.unsubscribe();
   }
-
-  // ngAfterViewChecked() {
-  //   const wod = this.woMenuBtnSecurityAccess("Works Order Detail");
-  //   if (wod) {
-  //     this.alertService.error("milgaya")
-  //   } else {
-  //     this.alertService.error("nahi milgaya")
-  //   }
-  // }
 
 
   worksOrderDetailPageData() {
@@ -703,8 +698,8 @@ export class WorksordersDetailsComponent implements OnInit {
           } else {
             this.alertService.success(resp.pRETURNMESSAGE)
             this.worksOrderDetailPageData();
-
           }
+
         }
       )
     )
@@ -767,6 +762,46 @@ export class WorksordersDetailsComponent implements OnInit {
 
     }
 
+  }
+
+
+  moveAssets(item = null) {
+    this.selectedAssetList = [];
+
+    if (item == null) {
+      let selectedKeyArr = this.selected.map(x => { return x.itemKey });
+      this.selectedAssetList = this.gridData.filter(x => selectedKeyArr.includes(x.id) && x.treelevel == 3);
+    } else {
+      this.selectedAssetList = [item];
+    }
+
+    if (this.selectedAssetList.length == 0) {
+      this.alertService.error("Please select one asset.");
+      return;
+    }
+
+    $('.worksOrderDetailOvrlay').addClass('ovrlay');
+    this.moveAsset = true;
+
+  }
+
+  closeMoveAsset(eve) {
+    this.moveAsset = eve;
+    $('.worksOrderDetailOvrlay').removeClass('ovrlay');
+    // this.selectedRow = undefined;
+  }
+
+
+  openPhaseChecklist(item) {
+    this.actualSelectedRow = item;
+    $('.worksOrderDetailOvrlay').addClass('ovrlay');
+    this.phaseChecklist = true;
+  }
+
+  closePhaseChecklist(eve) {
+    this.phaseChecklist = eve;
+    $('.worksOrderDetailOvrlay').removeClass('ovrlay');
+    // this.selectedRow = undefined;
   }
 
 

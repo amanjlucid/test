@@ -3,20 +3,20 @@ import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { AlertService, ConfirmationDialogService, HelperService, SharedService, WorksorderManagementService } from '../../_services'
 
-
 @Component({
-  selector: 'app-no-access-history',
-  templateUrl: './no-access-history.component.html',
-  styleUrls: ['./no-access-history.component.css'],
+  selector: 'app-move-asset',
+  templateUrl: './move-asset.component.html',
+  styleUrls: ['./move-asset.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 
-export class NoAccessHistoryComponent implements OnInit {
-  @Input() noaccessHistory: boolean = false;
-  @Input() selectedChecklistsingleItem: any;
-  @Output() closeNoAccessHistoryEve = new EventEmitter<boolean>();
+export class MoveAssetComponent implements OnInit {
+  @Input() moveAsset: boolean = false;
+  @Input() selectedAssetList: any;
+  @Output() closeMoveAssetEvent = new EventEmitter<boolean>();
+  @Output() refreshWorkOrderDetails = new EventEmitter<boolean>();
   subs = new SubSink();
-  title = "No Access Records For Asset";
+  title = "Select the new Phase";
   state: State = {
     skip: 0,
     sort: [],
@@ -26,36 +26,37 @@ export class NoAccessHistoryComponent implements OnInit {
       filters: []
     }
   }
-  noAccessData: any;
+  phaseData: any;
   gridView: DataResult;
   gridLoading = true
-  selectedSingleNoAccessData: any;
+  selectedPhase: any;
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
+  reasonWin: boolean = false;
+  reason = '';
 
   constructor(
     private chRef: ChangeDetectorRef,
     private worksorderManagementService: WorksorderManagementService,
     private alertService: AlertService,
     private confirmationDialogService: ConfirmationDialogService,
-    private helperService: HelperService,
   ) { }
 
   ngOnInit(): void {
-    this.getNoAccessData();
+    this.getPhase();
   }
 
   ngOnDestroy() {
     this.subs.unsubscribe();
   }
 
-  getNoAccessData() {
-    const { wosequence, wopsequence, assid } = this.selectedChecklistsingleItem;
+  getPhase() {
+    const { wosequence } = this.selectedAssetList[0];
     this.subs.add(
-      this.worksorderManagementService.getNoAccessHistory(wosequence, wopsequence, assid).subscribe(
+      this.worksorderManagementService.getWorksOrderPhaseLevelTwo(wosequence).subscribe(
         data => {
           if (data.isSuccess) {
-            this.noAccessData = data.data;
-            this.gridView = process(this.noAccessData, this.state);
+            this.phaseData = data.data;
+            this.gridView = process(this.phaseData, this.state);
           } else this.alertService.error(data.message)
 
           this.gridLoading = false;
@@ -63,38 +64,53 @@ export class NoAccessHistoryComponent implements OnInit {
         }
       )
     )
+
+    this.gridLoading = false;
   }
 
-  closeNoAccessHistory() {
-    this.noaccessHistory = false;
-    this.closeNoAccessHistoryEve.emit(false);
+  closeMoveAsset() {
+    this.moveAsset = false;
+    this.closeMoveAssetEvent.emit(false);
   }
 
   sortChange(sort: SortDescriptor[]): void {
     this.state.sort = sort;
-    this.gridView = process(this.noAccessData, this.state);
+    this.gridView = process(this.phaseData, this.state);
   }
 
   cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
-    this.selectedSingleNoAccessData = dataItem;
+    this.selectedPhase = dataItem;
   }
 
-  delete(checkOrProcess = "C") {
-    const { wosequence, wopsequence, assid, wochecksurcde, wostagesurcde, woacnasequence } = this.selectedSingleNoAccessData;
-    
-    let params = {
+  openReason() {
+    if (this.selectedPhase == undefined) {
+      this.alertService.error("Please select phase.");
+      return;
+    }
+
+    $('.reasonOverlay').addClass('ovrlay');
+    this.reasonWin = true;
+  }
+
+  closeReasonWin() {
+    this.reasonWin = false;
+    $('.reasonOverlay').removeClass('ovrlay');
+  }
+
+  apply(checkOrProcess = "C") {
+    const { wosequence, wopsequence, assid } = this.selectedAssetList[0];
+    const params = {
       WOSEQUENCE: wosequence,
       WOPSEQUENCE: wopsequence,
-      ASSID: assid,
-      WOCheckCode: wochecksurcde,
-      WOStageCode: wostagesurcde,
-      WOACNASEQUENCE: woacnasequence,
+      WOPSEQUENCE_New: this.selectedPhase.wopsequence,
+      ASSIDLIST: [assid],
+      Reason: this.reason,
       UserId: this.currentUser.userId,
-      CheckProcess: checkOrProcess
+      CheckOrProcess: checkOrProcess
     }
 
     this.subs.add(
-      this.worksorderManagementService.deleteNoAccessRecord(params).subscribe(
+      this.worksorderManagementService.worksOrderMoveAssetPhase(params).subscribe(
         data => {
 
           if (!data.isSuccess) {
@@ -113,8 +129,10 @@ export class NoAccessHistoryComponent implements OnInit {
             this.openConfirmationDialog(resp)
           } else {
             this.alertService.success(resp.pRETURNMESSAGE)
-            this.getNoAccessData();
-            this.selectedSingleNoAccessData = undefined;
+
+            this.selectedPhase = undefined;
+            this.closeMoveAsset();
+            this.refreshWorkOrderDetails.emit(true);
           }
 
         }
@@ -124,10 +142,9 @@ export class NoAccessHistoryComponent implements OnInit {
   }
 
 
+
   openConfirmationDialog(res) {
-
     let checkstatus = "C";
-
     if (res.pRETURNSTATUS == 'S') {
       checkstatus = "P"
     }
@@ -138,12 +155,11 @@ export class NoAccessHistoryComponent implements OnInit {
       .then((confirmed) => {
         if (confirmed) {
           if (res.pRETURNSTATUS == 'E') return
-          this.delete(checkstatus);
+          this.apply(checkstatus);
         }
 
       }).catch(() => console.log('Attribute dismissed the dialog.'));
   }
-
 
 
 

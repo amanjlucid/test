@@ -1,0 +1,11 @@
+.k-window {
+    position: fixed !important;
+}
+
+.firstHeadingRow label{
+    margin-top: 4px;
+}
+
+.dropdown.list-unstyled {
+    position: absolute !important;
+}

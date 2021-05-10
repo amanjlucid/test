@@ -253,8 +253,8 @@ export class WorksorderManagementService {
         return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/AttachmentExists?sFullFileName=${sFullFileName}`, this.httpOptions);
     }
 
-    
-    getActiveAssetTypeList(){
+
+    getActiveAssetTypeList() {
         return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetActiveAssetTypeList`, this.httpOptions);
     }
 
@@ -278,11 +278,31 @@ export class WorksorderManagementService {
 
     insertNoAccessRecord(params) {
         let body = JSON.stringify(params);
-        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/InsertNoAccessRecord  `, body, this.httpOptions)
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/InsertNoAccessRecord`, body, this.httpOptions)
     }
 
     getNoAccessHistory(WOSEQUENCE, WOPSEQUENCE, assid) {
         return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetNoAccessHistory?WOSEQUENCE=${WOSEQUENCE}&WOPSEQUENCE=${WOPSEQUENCE}&assid=${assid}`, this.httpOptions);
     }
+
+    deleteNoAccessRecord(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/DeleteNoAccessRecord`, body, this.httpOptions)
+    }
+
+
+    getWorksOrderPhaseLevelTwo(WOSEQUENCE) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWorksOrderPhaseLevelTwo?WOSEQUENCE=${WOSEQUENCE}`, this.httpOptions);
+    }
+
+    worksOrderMoveAssetPhase(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WorksOrderMoveAssetPhase`, body, this.httpOptions)
+    }
+
+
+
+
+
 
 }
