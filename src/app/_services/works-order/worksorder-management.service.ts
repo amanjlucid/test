@@ -316,6 +316,22 @@ export class WorksorderManagementService {
     }
 
 
+    worksOrderAssetSignOff(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WorksOrderAssetSignOff`, body, this.httpOptions);
+    }
+
+    worksOrderRemoveAsset(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WorksOrderRemoveAsset`, body, this.httpOptions);
+    }
+
+
+    workOrderRefusalCodes(ClearRefusal) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/WorkOrderRefusalCodes?ClearRefusal=${ClearRefusal}`, this.httpOptions);
+    }
+
+
 
 
 

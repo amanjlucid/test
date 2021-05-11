@@ -42,25 +42,34 @@
               class="dropdown-item" href="javascript:void(0)">Accept</a>
 
 
-            <div class="dropdown-toggle">
+            <div class="dropdown-toggle" *ngIf="woMenuBtnSecurityAccess('Handover Asset')">
               <div class="dropdown-item">Handover</div>
               <div class="dropdown-menu">
-                <a class="dropdown-item" href="javascript:void(0)">Yesterday</a>
-                <a class="dropdown-item" href="javascript:void(0)">Today</a>
-                <a class="dropdown-item" href="javascript:void(0)">Choose Date</a>
+                <a class="dropdown-item" href="javascript:void(0)"
+                  (click)="assetAction(null, 'HY', 'multiple')">Yesterday</a>
+                <a class="dropdown-item" href="javascript:void(0)"
+                  (click)="assetAction(null, 'HT', 'multiple')">Today</a>
+                <a class="dropdown-item" href="javascript:void(0)" (click)="openChooseDate('multiple', 'HCD')">Choose
+                  Date</a>
               </div>
             </div>
 
-            <div class="dropdown-toggle">
+            <div class="dropdown-toggle" *ngIf="woMenuBtnSecurityAccess('Signoff Asset')">
               <div class="dropdown-item">Sign Off</div>
               <div class="dropdown-menu">
-                <a class="dropdown-item" href="javascript:void(0)">Yesterday</a>
-                <a class="dropdown-item" href="javascript:void(0)">Today</a>
-                <a class="dropdown-item" href="javascript:void(0)">Choose Date</a>
+                <a class="dropdown-item" href="javascript:void(0)"
+                  (click)="assetAction(null, 'SOY', 'multiple')">Yesterday</a>
+                <a class="dropdown-item" href="javascript:void(0)"
+                  (click)="assetAction(null, 'SOT', 'multiple')">Today</a>
+                <a class="dropdown-item" href="javascript:void(0)" (click)="openChooseDate('multiple', 'SOCD')">Choose
+                  Date</a>
               </div>
             </div>
-            <a class="dropdown-item" href="javascript:void(0)">Cancel</a>
-            <a class="dropdown-item" href="javascript:void(0)">Remove</a>
+
+            <a *ngIf="woMenuBtnSecurityAccess('Cancel Asset')" (click)="openRemoveReasonPanel('multiple', 'CANCEL')" class="dropdown-item"
+              href="javascript:void(0)">Cancel</a>
+            <a *ngIf="woMenuBtnSecurityAccess('Remove Asset')" class="dropdown-item" href="javascript:void(0)"
+              (click)="openRemoveReasonPanel('multiple', 'REMOVE')">Remove</a>
 
           </div>
         </div>
@@ -324,6 +333,38 @@
                     <a *ngIf="woMenuBtnSecurityAccess('Accept Asset')" class="dropdown-item"
                       (click)="assetAction(dataItem, 'ACCEPT', 'single')" href="javascript:void(0)">Accept</a>
 
+                    <div class="dropdown-toggle" *ngIf="woMenuBtnSecurityAccess('Handover Asset')">
+                      <div class="dropdown-item">Handover</div>
+                      <div class="dropdown-menu">
+                        <a class="dropdown-item" href="javascript:void(0)"
+                          (click)="assetAction(dataItem, 'HY', 'single')">Yesterday</a>
+                        <a class="dropdown-item" href="javascript:void(0)"
+                          (click)="assetAction(dataItem, 'HT', 'single')">Today</a>
+                        <a class="dropdown-item" href="javascript:void(0)"
+                          (click)="openChooseDate('single', 'HCD', dataItem)">Choose
+                          Date</a>
+                      </div>
+                    </div>
+
+                    <div class="dropdown-toggle" *ngIf="woMenuBtnSecurityAccess('Signoff Asset')">
+                      <div class="dropdown-item">Sign Off</div>
+                      <div class="dropdown-menu">
+                        <a class="dropdown-item" href="javascript:void(0)"
+                          (click)="assetAction(dataItem, 'SOY', 'single')">Yesterday</a>
+                        <a class="dropdown-item" href="javascript:void(0)"
+                          (click)="assetAction(dataItem, 'SOT', 'single')">Today</a>
+                        <a class="dropdown-item" href="javascript:void(0)"
+                          (click)="openChooseDate('single', 'SOCD', dataItem)">Choose
+                          Date</a>
+                      </div>
+                    </div>
+
+                    <a *ngIf="woMenuBtnSecurityAccess('Cancel Asset')" [ngClass]="{'disabled' : dataItem.wostatus != 'Accepted' && dataItem.wostatus != 'Issued'}"
+                      (click)="openRemoveReasonPanel('single', 'CANCEL', dataItem)" class="dropdown-item"
+                      href="javascript:void(0)">Cancel</a>
+                    <a *ngIf="woMenuBtnSecurityAccess('Remove Asset')" class="dropdown-item" href="javascript:void(0)"
+                      (click)="openRemoveReasonPanel('single', 'REMOVE', dataItem)">Remove</a>
+
                   </div>
                 </div>
 
@@ -555,3 +596,12 @@
   <app-phase-checklist *ngIf="phaseChecklist" [phaseChecklist]="phaseChecklist" [selectedPhase]="actualSelectedRow"
     (closePhaseChecklistEvent)="closePhaseChecklist($event)">
   </app-phase-checklist>
+
+  <app-pick-date *ngIf="chooseDateWindow" [chooseDateWindow]="chooseDateWindow"
+    (closePickeDateEvent)="closeChooseDate($event)" [chooseDateType]="chooseDateType"
+    (selectedDateEvent)="selectedDateEvent($event)"></app-pick-date>
+
+
+  <app-asset-remove-reason *ngIf="openAssetRemoveReason" [openAssetRemoveReason]="openAssetRemoveReason"
+    [reasonType]="chooseDateType" (closeReasonEvent)="closeReasonPanel($event)" (outputReason)="getReason($event)">
+  </app-asset-remove-reason>

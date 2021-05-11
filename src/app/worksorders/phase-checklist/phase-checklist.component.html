@@ -2,79 +2,95 @@
     [width]="1250" [height]="auto" [minHeight]="350">
 
     <div class="row">
-        <div class="col-md-12">
-            <div class="form-group form-row firstHeadingRow">
-                <div class="col-md-1">
-                    <label for="programme">Works Order</label>
-                </div>
+        <div class="col-md-12 actionBtnDiv text-right">
+            <button type="submit" class="btn btn-sm themeButton mr-1 headin_section" (click)="slideToggle()">
+                <i class="fa" [ngClass]="(filterToggle) ? 'fa-minus':'fa-plus'"></i>
+            </button>
+        </div>
 
-                <div class="col-md-5">
-                    <input type="text" value="{{worksOrderData?.woname}} ({{worksOrderData?.wosequence}})"
-                        class="form-control form-control-sm" [readonly]="readonly">
-                </div>
-                <div class="col-md-1 text-right">
-                    <label for="phase">Phase:</label>
-                </div>
-                <div class="col-md-5">
-                    <input type="text" class="form-control form-control-sm" [readonly]="readonly"
-                        value="{{phaseFromApi?.woname}}">
-                </div>
-            </div>
 
-            <div class="form-row">
 
-                <div class="col-md-1">
-                    <label>Phase Budget:</label>
-                    <input type="text" class="form-control form-control-sm" readonly="true"
-                        value="{{phaseFromApi?.wobudget | currency:'GBP':'symbol'}}">
-                </div>
+        <div class="col-md-12 mt-2">
+            <div class="cont">
+                <div id="wrapper">
+                    <div class="worksorder-assetchecklist-header" style="display: none;">
+                        <div class="form-group form-row firstHeadingRow">
+                            <div class="col-md-1">
+                                <label for="programme">Works Order</label>
+                            </div>
 
-                <div class="col-md-1">
-                    <label>Forecast:</label>
-                    <input type="text" class="form-control form-control-sm" readonly="true"
-                        value="{{phaseFromApi?.woforecast | currency:'GBP':'symbol'}}">
-                </div>
+                            <div class="col-md-5">
+                                <input type="text" value="{{worksOrderData?.woname}} ({{worksOrderData?.wosequence}})"
+                                    class="form-control form-control-sm" [readonly]="readonly">
+                            </div>
+                            <div class="col-md-1 text-right">
+                                <label for="phase">Phase:</label>
+                            </div>
+                            <div class="col-md-5">
+                                <input type="text" class="form-control form-control-sm" [readonly]="readonly"
+                                    value="{{phaseFromApi?.woname}}">
+                            </div>
+                        </div>
 
-                <div class="col-md-1">
-                    <label>Committed:</label>
-                    <input type="text" class="form-control form-control-sm" readonly="true"
-                        value="{{phaseFromApi?.wocommitted | currency:'GBP':'symbol'}}">
-                </div>
+                        <div class="form-row">
 
-                <div class="col-md-1">
-                    <label>Approved:</label>
-                    <input type="text" class="form-control form-control-sm" readonly="true"
-                        value="{{phaseFromApi?.woapproved | currency:'GBP':'symbol'}}">
-                </div>
+                            <div class="col-md-1">
+                                <label>Phase Budget:</label>
+                                <input type="text" class="form-control form-control-sm" readonly="true"
+                                    value="{{phaseFromApi?.wobudget | currency:'GBP':'symbol'}}">
+                            </div>
 
-                <div class="col-md-1">
-                    <label>Pending:</label>
-                    <input type="text" class="form-control form-control-sm" readonly="true"
-                        value="{{phaseFromApi?.wopending | currency:'GBP':'symbol'}}">
-                </div>
+                            <div class="col-md-1">
+                                <label>Forecast:</label>
+                                <input type="text" class="form-control form-control-sm" readonly="true"
+                                    value="{{phaseFromApi?.woforecast | currency:'GBP':'symbol'}}">
+                            </div>
 
-                <div class="col-md-1">
-                    <label>Actual:</label>
-                    <input type="text" class="form-control form-control-sm" readonly="true"
-                        value="{{phaseFromApi?.woactual | currency:'GBP':'symbol'}}">
-                </div>
+                            <div class="col-md-1">
+                                <label>Committed:</label>
+                                <input type="text" class="form-control form-control-sm" readonly="true"
+                                    value="{{phaseFromApi?.wocommitted | currency:'GBP':'symbol'}}">
+                            </div>
 
-                <div class="col-md-2">
-                    <label>Unallocated Budget:</label>
-                    <input type="text" class="form-control form-control-sm" readonly="true"
-                        value="{{phaseFromApi?.wobudget-phaseFromApi?.woacceptedvalue | currency:'GBP':'symbol'}}">
-                </div>
+                            <div class="col-md-1">
+                                <label>Approved:</label>
+                                <input type="text" class="form-control form-control-sm" readonly="true"
+                                    value="{{phaseFromApi?.woapproved | currency:'GBP':'symbol'}}">
+                            </div>
 
-                <div class="col-md-2">
-                    <label>Phase Target Date:</label>
-                    <input type="text" class="form-control form-control-sm" readonly="true"
-                        value="{{phaseFromApi?.targetdate | dateFormat : 'DD-MMM-YYYY'}}">
-                </div>
+                            <div class="col-md-1">
+                                <label>Pending:</label>
+                                <input type="text" class="form-control form-control-sm" readonly="true"
+                                    value="{{phaseFromApi?.wopending | currency:'GBP':'symbol'}}">
+                            </div>
 
-                <div class="col-md-2">
-                    <label></label>
-                    <button style="margin-top: 25px;" type="button" (click)="clearFilters()" class="btn btn-sm">Clear
-                        Filters</button>
+                            <div class="col-md-1">
+                                <label>Actual:</label>
+                                <input type="text" class="form-control form-control-sm" readonly="true"
+                                    value="{{phaseFromApi?.woactual | currency:'GBP':'symbol'}}">
+                            </div>
+
+                            <div class="col-md-2">
+                                <label>Unallocated Budget:</label>
+                                <input type="text" class="form-control form-control-sm" readonly="true"
+                                    value="{{phaseFromApi?.wobudget-phaseFromApi?.woacceptedvalue | currency:'GBP':'symbol'}}">
+                            </div>
+
+                            <div class="col-md-2">
+                                <label>Phase Target Date:</label>
+                                <input type="text" class="form-control form-control-sm" readonly="true"
+                                    value="{{phaseFromApi?.targetdate | dateFormat : 'DD-MMM-YYYY'}}">
+                            </div>
+
+                            <div class="col-md-2">
+                                <label></label>
+                                <button style="margin-top: 25px;" type="button" (click)="clearFilters()"
+                                    class="btn btn-sm">Clear
+                                    Filters</button>
+
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -88,6 +104,154 @@
                 scrollable="virtual" [rowHeight]="36" [height]="550" (pageChange)="pageChange($event)"
                 [navigable]="false" [selectedKeys]="mySelection" [selectable]="selectableSettings"
                 [kendoGridSelectBy]="mySelectionKey" [groupable]="false">
+
+
+
+                <kendo-grid-column field="dependenciesIndicator" title="" width="40" [filterable]="false"
+                    [sortable]="false">
+                    <ng-template kendoGridHeaderTemplate>
+                        <span>&nbsp;&nbsp;</span>
+                        <!-- <i class="fa fa-list" aria-hidden="true"></i> -->
+                    </ng-template>
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <li class="nav-item dropdown list-unstyled" style="margin-top: -7px;">
+                            <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"
+                                (click)="setSeletedRow(dataItem)"></i>
+                            <div class="dropdown-menu">
+
+                                <div [ngClass]="{'disabled' :disableButtons('status')}" class="dropdown-toggle"
+                                    *ngIf="woMenuBtnSecurityAccess('Set Status')">
+                                    <div class="dropdown-item">Status</div>
+                                    <div class="dropdown-menu">
+
+                                        <a *ngIf="woMenuBtnSecurityAccess('Set Status To N/A')" class="dropdown-item"
+                                            (click)="assetActions('NA','single', dataItem)" href="javascript:void(0)">
+                                            Set to N/A</a>
+
+                                        <div class="dropdown-toggle"
+                                            *ngIf="woMenuBtnSecurityAccess('Set Status To In Progress')">
+                                            <div class="dropdown-item">Set to In Progress</div>
+                                            <div class="dropdown-menu">
+                                                <a class="dropdown-item"
+                                                    (click)="assetActions('IPY','single', dataItem)"
+                                                    href="javascript:void(0)">Yesterday</a>
+                                                <a class="dropdown-item"
+                                                    (click)="assetActions('IPT','single', dataItem)"
+                                                    href="javascript:void(0)">Today</a>
+                                                <a class="dropdown-item"
+                                                    (click)="openChooseDate('IPD', 'single', dataItem)"
+                                                    href="javascript:void(0)">Choose Date</a>
+
+                                            </div>
+                                        </div>
+
+                                        <a *ngIf="woMenuBtnSecurityAccess('Set Status To Not Started')"
+                                            class="dropdown-item"
+                                            (click)="assetActions('NOT STARTED','single', dataItem)"
+                                            href="javascript:void(0)">Set to Not Started</a>
+                                        <a *ngIf="woMenuBtnSecurityAccess('Reset Checklist Item')" class="dropdown-item"
+                                            (click)="assetActions('RESET','single', dataItem)"
+                                            href="javascript:void(0)">Reset
+                                            Checklist Item</a>
+                                    </div>
+                                </div>
+
+                                <div [ngClass]="{'disabled' : workorderAsset?.woassstatus == 'Pending'}"
+                                    class="dropdown-toggle">
+                                    <div class="dropdown-item" *ngIf="woMenuBtnSecurityAccess('Set Dates')">Dates
+                                    </div>
+                                    <div class="dropdown-menu">
+
+                                        <a [ngClass]="{'disabled' :disableButtons('SE', dataItem)}"
+                                            *ngIf="woMenuBtnSecurityAccess('Set Planned Dates')" class="dropdown-item"
+                                            (click)="openChooseDate('SE','single', dataItem)" href="javascript:void(0)">
+                                            Set Planned Start/End Dates</a>
+
+                                        <div *ngIf="woMenuBtnSecurityAccess('Set Target Date')" class="dropdown-toggle"
+                                            [ngClass]="{'disabled' :disableButtons('STCD', dataItem)}">
+                                            <div class="dropdown-item">Set Target Completion Date</div>
+                                            <div class="dropdown-menu">
+                                                <a class="dropdown-item"
+                                                    (click)="assetActions('TCY', 'single', dataItem)"
+                                                    href="javascript:void(0)">Yesterday</a>
+                                                <a class="dropdown-item"
+                                                    (click)="assetActions('TCTOD', 'single', dataItem)"
+                                                    href="javascript:void(0)">Today</a>
+                                                <a class="dropdown-item"
+                                                    (click)="assetActions('TCTOM', 'single', dataItem)"
+                                                    href="javascript:void(0)">Tomorrow</a>
+                                                <a class="dropdown-item"
+                                                    (click)="assetActions('TC7', 'single', dataItem)"
+                                                    href="javascript:void(0)">7 Days</a>
+                                                <a class="dropdown-item"
+                                                    (click)="openChooseDate('TCPICK','single', dataItem)"
+                                                    href="javascript:void(0)">Choose Date</a>
+
+                                            </div>
+                                        </div>
+
+                                        <div [ngClass]="{'disabled' :disableButtons('CSD', dataItem)}"
+                                            class="dropdown-toggle"
+                                            *ngIf="woMenuBtnSecurityAccess('Change Start Date')">
+                                            <div class="dropdown-item">Change Start Date</div>
+                                            <div class="dropdown-menu">
+                                                <a class="dropdown-item"
+                                                    (click)="assetActions('CSDY', 'single', dataItem)"
+                                                    href="javascript:void(0)">Yesterday</a>
+                                                <a class="dropdown-item"
+                                                    (click)="assetActions('CSDT', 'single', dataItem)"
+                                                    href="javascript:void(0)">Today</a>
+                                                <a class="dropdown-item"
+                                                    (click)="openChooseDate('CSDPICK', 'single', dataItem)"
+                                                    href="javascript:void(0)">Choose Date</a>
+
+                                            </div>
+                                        </div>
+
+                                        <div [ngClass]="{'disabled' :disableButtons('CCD', dataItem)}"
+                                            class="dropdown-toggle"
+                                            *ngIf="woMenuBtnSecurityAccess('Change Completion Date')">
+                                            <div class="dropdown-item">Change Completion Date</div>
+                                            <div class="dropdown-menu">
+                                                <a class="dropdown-item"
+                                                    (click)="assetActions('CCDY', 'single',  dataItem)"
+                                                    href="javascript:void(0)">Yesterday</a>
+                                                <a class="dropdown-item"
+                                                    (click)="assetActions('CCDT', 'single',  dataItem)"
+                                                    href="javascript:void(0)">Today</a>
+                                                <a class="dropdown-item"
+                                                    (click)="openChooseDate('CCDPICK', 'single', dataItem)"
+                                                    href="javascript:void(0)">Choose Date</a>
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+
+                                <div [ngClass]="{'disabled' :disableButtons('CMP', dataItem)}" class="dropdown-toggle"
+                                    *ngIf="woMenuBtnSecurityAccess('Complete Item')">
+                                    <div class="dropdown-item">Complete</div>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item" (click)="assetActions('CIY', 'single', dataItem)"
+                                            href="javascript:void(0)">Yesterday</a>
+                                        <a class="dropdown-item" (click)="assetActions('CIT', 'single', dataItem)"
+                                            href="javascript:void(0)">Today</a>
+                                        <a class="dropdown-item" (click)="openChooseDate('CIPICK','single', dataItem)"
+                                            href="javascript:void(0)">Choose Date</a>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </li>
+
+                    </ng-template>
+                </kendo-grid-column>
+
+
+
 
                 <kendo-grid-column field="dependenciesIndicator" title="" width="40" [filterable]="false">
                     <ng-template kendoGridHeaderTemplate>
@@ -314,5 +478,14 @@
         </div>
 
     </div>
+
+
+    <div class="phaseChecklistovrlay"></div>
+
+    <app-pick-date *ngIf="chooseDateWindow" [chooseDateWindow]="chooseDateWindow"
+        (closePickeDateEvent)="closeChooseDate($event)" [chooseDateType]="actionName"
+        (selectedDateEvent)="selectedDateEvent($event)"></app-pick-date>
+
+
 
 </kendo-window>

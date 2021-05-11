@@ -47,6 +47,19 @@ export class PhaseChecklistComponent implements OnInit {
   colFilters: any;
   fieldMap = { assid: 'AssId', woassstatus: 'AssetStatus', astconcataddress: 'Address', wostagename: 'StageName', wocheckname: 'ChecKName', wocheckresp: 'CheckResp', wocheckspeciaL1: 'CheckSpecial', itemIsCompleted: 'CheckStatus', woacactualstartdate: 'FromStartDate', woactargetcompletiondate: 'FromTargetDate', woaccontractorissuedate: 'FromIssueDate', woacactualenddate: 'FromCompletionDate' }
   @ViewChild(GridComponent) grid: GridComponent;
+  worksOrderUsrAccess: any = [];
+  worksOrderAccess: any = [];
+  userType: any = [];
+  workorderAsset: any = [];
+  // gridHeight = 680;
+  filterToggle = false;
+  actionType: string = 'single';
+  actionName: string = '';
+  selectedDate: any;
+  selectedChecklistList = [];
+  singlePhaseChecklist: any;
+  chooseDateWindow: boolean = false;
+
 
   constructor(
     private sharedService: SharedService,
@@ -77,6 +90,23 @@ export class PhaseChecklistComponent implements OnInit {
     //get works order data
     this.getProgrammeAndWo();
 
+
+    //subscribe for work order security access
+    this.subs.add(
+      combineLatest([
+        this.sharedService.woUserSecObs,
+        this.sharedService.worksOrdersAccess,
+        this.sharedService.userTypeObs
+      ]).subscribe(
+        data => {
+          // console.log(data);
+          this.worksOrderUsrAccess = data[0];
+          this.worksOrderAccess = data[1];
+          this.userType = data[2][0];
+        }
+      )
+    )
+
     // get phase asset data
     this.query = this.stateChange.pipe(
       tap(state => {
@@ -92,7 +122,7 @@ export class PhaseChecklistComponent implements OnInit {
           this.grid.autoFitColumns();
           this.chRef.detectChanges();
         }, 500);
-        
+
       })
     );
     console.log(this.selectedPhase)
@@ -103,22 +133,26 @@ export class PhaseChecklistComponent implements OnInit {
   }
 
   getProgrammeAndWo() {
-    const { wosequence } = this.selectedPhase;
+    const { wosequence, assid, wopsequence } = this.selectedPhase;
     this.subs.add(
       forkJoin([
         this.worksorderManagementService.getWorksOrderByWOsequence(wosequence),
         this.worksorderManagementService.getPhaseCheckListFiltersList(wosequence, false),
+        this.worksorderManagementService.specificWorkOrderAssets(wosequence, assid, wopsequence),
       ]).subscribe(
         data => {
           console.log(data)
           const wo = data[0];
           const colFilters = data[1];
+          const workorderAsset = data[2];
 
           if (wo.isSuccess) this.worksOrderData = wo.data;
           else this.alertService.error(wo.message)
 
           if (colFilters.isSuccess) this.colFilters = colFilters.data;
           else this.alertService.error(colFilters.message)
+
+          if (workorderAsset.isSuccess) this.workorderAsset = workorderAsset.data[0];
 
           this.chRef.detectChanges();
 
@@ -353,7 +387,7 @@ export class PhaseChecklistComponent implements OnInit {
   }
 
   mySelectionKey(context: RowArgs): string {
-    return encodeURIComponent(context.dataItem.wochecksurcde);
+    return encodeURIComponent(`${context.dataItem.wochecksurcde}_${context.dataItem.assid}`);
   }
 
   cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
@@ -375,5 +409,358 @@ export class PhaseChecklistComponent implements OnInit {
     this.filterChange(this.state.filter)
 
   }
+
+  public slideToggle() {
+    this.filterToggle = !this.filterToggle;
+    $('.worksorder-assetchecklist-header').slideToggle();
+    // if (this.filterToggle) this.gridHeight = 400;
+    // else this.gridHeight = 680;
+    this.chRef.detectChanges();
+
+  }
+
+
+  woMenuBtnSecurityAccess(menuName) {
+    if (this.userType?.wourroletype == "Dual Role") {
+      return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
+    } else {
+      // if(menuName == "Release Asset"){
+      //   console.log(this.worksOrderUsrAccess.indexOf(menuName) != -1)
+      // }
+      return this.worksOrderUsrAccess.indexOf(menuName) != -1
+    }
+  }
+
+
+  disableButtons(name) {
+    if (name == "status") {
+      return this.workorderAsset?.woassstatus == 'Pending' || this.workorderAsset?.woassstatus == 'Issued'
+    }
+
+    if (name == "SE") {
+      return this.workorderAsset?.woassstatus == 'Pending' || this.workorderAsset?.woassstatus == 'Final Completion'
+    }
+
+    if (name == "STCD") {
+      return this.workorderAsset?.woassstatus == 'Pending' || this.workorderAsset?.woassstatus == 'Issued' || this.workorderAsset?.woassstatus == 'Final Completion'
+    }
+
+    if (name == "CSD") {
+      return this.workorderAsset?.woassstatus == 'Pending' || this.workorderAsset?.woassstatus == 'Issued' || this.workorderAsset?.woassstatus == 'Final Completion'
+    }
+
+    if (name == "CCD") {
+      return this.workorderAsset?.woassstatus == 'Pending' || this.workorderAsset?.woassstatus == 'Issued'
+    }
+
+    if (name == "CMP") {
+      return this.workorderAsset?.woassstatus == 'Pending' || this.workorderAsset?.woassstatus == 'Issued'
+    }
+
+
+    if (name == "woAdd") {
+      return this.workorderAsset?.woassstatus != 'New'
+    }
+
+    if (name == "release") {
+      return this.workorderAsset?.woassstatus != 'New'
+    }
+
+    if (name == "issue") {
+      return this.workorderAsset?.woassstatus != 'Pending'
+    }
+
+    if (name == "accept") {
+      return this.workorderAsset?.woassstatus != 'Issued'
+    }
+
+    if (name == "na" || name == "STIP" || name == "NS" || name == "RCI" || name == "COMP") {
+      return this.mySelection.length == 0 || this.workorderAsset?.woassstatus == 'Pending' || this.workorderAsset?.woassstatus == 'Issued'
+    }
+
+    return false
+  }
+
+
+  openChooseDate(type, actionType, item = null, checkOrProcess = "C") {
+    this.actionName = type;
+    this.actionType = actionType;
+    this.singlePhaseChecklist = item;
+    this.chooseDateWindow = true;
+    this.chRef.detectChanges();
+    $('.phaseChecklistovrlay').addClass('ovrlay');
+  }
+
+  closeChooseDate(event) {
+    this.chooseDateWindow = event;
+    $('.phaseChecklistovrlay').removeClass('ovrlay');
+  }
+
+  selectedDateEvent(event) {
+    this.selectedDate = event;
+    this.assetActions(this.actionName, this.actionType, this.singlePhaseChecklist, "C")
+  }
+
+  assetActions(type, actionType, item = null, checkOrProcess = "C") {
+    this.actionName = type;
+    this.actionType = actionType;
+
+    let apiName = '';
+    let params: any = {}
+
+    if (this.actionType == "single") {
+
+      params.WOSEQUENCE = item?.wosequence;
+      params.WOPSEQUENCE = item?.wopsequence;
+      params.ASSID_STAGESURCDE_CHECKSURCDE = [item?.assid, item?.wostagesurcde, item?.wochecksurcde]
+      params.UserId = this.currentUser.userId;
+      params.CHECKORPROCESS = checkOrProcess;
+
+      //Date action condition
+      if (type == 'SE' || type == 'TCY' || type == 'TCTOD' || type == 'TCTOM' || type == 'TC7' || type == 'TCPICK' || type == 'CSDY' || type == 'CSDT' || type == 'CSDPICK' || type == 'CCDY' || type == 'CCDT' || type == 'CCDPICK') {
+        delete params.UserId;
+        delete params.CHECKORPROCESS;
+        delete params.ASSID_STAGESURCDE_CHECKSURCDE;
+
+        params.strUserId = this.currentUser.userId;
+        params.strCheckOrProcess = checkOrProcess;
+        params.strASSID_STAGESURCDE_CHECKSURCDE = [item?.assid, item?.wostagesurcde, item?.wochecksurcde];
+      }
+
+      //Complete action condition
+      if (type == "CIY" || type == "CIT" || type == "CIPICK") {
+        params.CheckName = item.wocheckname
+      }
+
+
+
+    } else if (this.actionType == "multiple") {
+      //check if no item is selected  
+      if (this.mySelection.length == 0) {
+        this.alertService.error("Please select atleast one record from phase checklist.")
+        return
+      }
+
+      // let filterChecklist = this.assetCheckListData.filter(x => this.mySelection.includes(x.wochecksurcde))
+
+    } else {
+      return;
+    }
+
+    // Set Status
+    if (type == 'NA') {
+      apiName = 'SetWorksOrderCheckListStatusToNA'
+    } else if (type == 'RESET') {
+      apiName = 'ResetChecklistItem'
+    } else if (type == 'NOT STARTED') {
+      apiName = 'WorksOrderCheckListStatusToNotStarted'
+    } else if (type == 'IPY') {
+      apiName = 'SetWorksOrderCheckListStatusToInProgress'
+      params.dtDate = this.helperService.getDateString('Yesterday');
+      params.CheckName = item.wocheckname
+    } else if (type == 'IPT') {
+      apiName = 'SetWorksOrderCheckListStatusToInProgress'
+      params.dtDate = this.helperService.getDateString('Today');
+      params.CheckName = item.wocheckname
+    } else if (type == 'IPD') {
+      apiName = 'SetWorksOrderCheckListStatusToInProgress'
+      params.dtDate = this.helperService.dateObjToString(this.selectedDate.selectedDate);
+      params.CheckName = item.wocheckname
+    }
+
+
+    // Set Dates
+    if (type == 'SE') {
+      apiName = 'SetWorksOrderCheckListPlannedDates'
+      params.dtStartDate = this.helperService.dateObjToString(this.selectedDate.start);
+      params.dtEndDate = this.helperService.dateObjToString(this.selectedDate.end);
+    } else if (type == 'TCY') {
+      apiName = 'SetWorksOrderCheckListTargetDate';
+      params.dtDate = this.helperService.getDateString('Yesterday');
+    } else if (type == 'TCTOD') {
+      apiName = 'SetWorksOrderCheckListTargetDate';
+      params.dtDate = this.helperService.getDateString('Today');
+    } else if (type == 'TCTOM') {
+      apiName = 'SetWorksOrderCheckListTargetDate';
+      params.dtDate = this.helperService.getDateString('Tomorrow');
+    } else if (type == 'TC7') {
+      apiName = 'SetWorksOrderCheckListTargetDate';
+      params.dtDate = this.helperService.getDateString('Next 7');
+    } else if (type == 'TCPICK') {
+      apiName = 'SetWorksOrderCheckListTargetDate'
+      params.dtDate = this.helperService.dateObjToString(this.selectedDate.selectedDate);
+
+    }
+
+    // Reset params for some date action
+    else if (type == 'CSDY') {
+      apiName = 'UpdateChecklistStartDate'
+      params = {};
+      params.WOSEQUENCE = item.wosequence;
+      params.WOPSEQUENCE = item.wopsequence;
+      params.strASSID_STAGE_CHECK = [item.assid, item.wostagesurcde, item.wochecksurcde]
+      params.strUserId = this.currentUser.userId;
+      params.strCheckOrProcess = checkOrProcess;
+      params.NewDate = this.helperService.getDateString('Yesterday');
+    } else if (type == 'CSDT') {
+      apiName = 'UpdateChecklistStartDate'
+      params = {};
+      params.WOSEQUENCE = item.wosequence;
+      params.WOPSEQUENCE = item.wopsequence;
+      params.strASSID_STAGE_CHECK = [item.assid, item.wostagesurcde, item.wochecksurcde]
+      params.strUserId = this.currentUser.userId;
+      params.strCheckOrProcess = checkOrProcess;
+      params.NewDate = this.helperService.getDateString('Today');
+    } else if (type == 'CSDPICK') {
+      apiName = 'UpdateChecklistStartDate'
+      params = {};
+      params.WOSEQUENCE = item.wosequence;
+      params.WOPSEQUENCE = item.wopsequence;
+      params.strASSID_STAGE_CHECK = [item.assid, item.wostagesurcde, item.wochecksurcde]
+      params.strUserId = this.currentUser.userId;
+      params.strCheckOrProcess = checkOrProcess;
+      params.NewDate = this.helperService.dateObjToString(this.selectedDate.selectedDate);
+    }
+
+    else if (type == 'CCDY') {
+      apiName = 'WorksOrderChangeCompletionDate';
+      params.dtDate = this.helperService.getDateString('Yesterday');
+    } else if (type == 'CCDT') {
+      apiName = 'WorksOrderChangeCompletionDate';
+      params.dtDate = this.helperService.getDateString('Today');
+    } else if (type == 'CCDPICK') {
+      apiName = 'WorksOrderChangeCompletionDate';
+      params.dtDate = this.helperService.dateObjToString(this.selectedDate.selectedDate);
+    }
+
+
+    // Set complete
+    else if (type == 'CIY') {
+      apiName = 'WorksOrderCheckListCompleteItem';
+      params.dtDate = this.helperService.getDateString('Yesterday')
+    } else if (type == 'CIT') {
+      apiName = 'WorksOrderCheckListCompleteItem';
+      params.dtDate = this.helperService.getDateString('Today')
+    } else if (type == 'CIPICK') {
+      apiName = 'WorksOrderCheckListCompleteItem';
+      params.dtDate = this.helperService.dateObjToString(this.selectedDate.selectedDate);
+    }
+
+
+    this.subs.add(
+      this.worksorderManagementService.setStatus(apiName, params).subscribe(
+        data => {
+          console.log(data)
+          if (data.isSuccess) {
+            let resp: any;
+            if (data.data[0] == undefined) {
+              resp = data.data;
+            } else {
+              resp = data.data[0];
+            }
+
+
+            if (checkOrProcess == "C" && (resp.pRETURNSTATUS == "E" || resp.pRETURNSTATUS == "S")) {
+              this.openConfirmationDialog(type, actionType, item, resp)
+            } else {
+              this.alertService.success(resp.pRETURNMESSAGE)
+              this.getProgrammeAndWo();
+              this.searchGrid();
+            }
+
+          } else {
+            this.alertService.error(data.message);
+          }
+        }
+      )
+    )
+
+
+
+  }
+
+
+  public openConfirmationDialog(type, actionType, item, res) {
+    let checkstatus = "C";
+    if (res.pRETURNSTATUS == 'S') {
+      checkstatus = "P"
+    }
+
+    $('.k-window').css({ 'z-index': 1000 });
+    this.confirmationDialogService.confirm('Please confirm..', `${res.pRETURNMESSAGE}`)
+      .then((confirmed) => {
+        if (confirmed) {
+          if (res.pRETURNSTATUS == 'E') return
+          this.assetActions(type, actionType, item, checkstatus)
+        }
+      })
+      .catch(() => console.log('Attribute dismissed the dialog.'));
+  }
+
+
+
+  setSeletedRow(dataItem) {
+    this.mySelection = [];
+    this.selectedChecklistList = [];
+    // this.mySelection.push(dataItem.eventSequence)
+    this.selectedChecklistList.push(dataItem)
+  }
+
+
+
+  // disableMainActions(type) {
+  //   if (type == "woAdd") {
+  //     return this.workorderAsset?.woassstatus != 'New'
+  //   }
+
+  //   if (type == "release") {
+  //     return this.workorderAsset?.woassstatus != 'New'
+  //   }
+
+  //   if (type == "issue") {
+  //     return this.workorderAsset?.woassstatus != 'Pending'
+  //   }
+
+  //   if (type == "accept") {
+  //     return this.workorderAsset?.woassstatus != 'Issued'
+  //   }
+
+  //   if (type == "na" || type == "STIP" || type == "NS" || type == "RCI" || type == "COMP") {
+  //     return this.mySelection.length == 0 || this.workorderAsset?.woassstatus == 'Pending' || this.workorderAsset?.woassstatus == 'Issued'
+  //   }
+
+  // }
+
+
+
+  // disableBtnsIndividualMenu(name) {
+
+  //   if (name == "status") {
+  //     return this.workorderAsset?.woassstatus == 'Pending' || this.workorderAsset?.woassstatus == 'Issued'
+  //   }
+
+  //   if (name == "SE") {
+  //     return this.workorderAsset?.woassstatus == 'Pending' || this.workorderAsset?.woassstatus == 'Final Completion'
+  //   }
+
+  //   if (name == "STCD") {
+  //     return this.workorderAsset?.woassstatus == 'Pending' || this.workorderAsset?.woassstatus == 'Issued' || this.workorderAsset?.woassstatus == 'Final Completion'
+  //   }
+
+  //   if (name == "CSD") {
+  //     return this.workorderAsset?.woassstatus == 'Pending' || this.workorderAsset?.woassstatus == 'Issued' || this.workorderAsset?.woassstatus == 'Final Completion'
+  //   }
+
+  //   if (name == "CCD") {
+  //     return this.workorderAsset?.woassstatus == 'Pending' || this.workorderAsset?.woassstatus == 'Issued'
+  //   }
+
+  //   if (name == "CMP") {
+  //     return this.workorderAsset?.woassstatus == 'Pending' || this.workorderAsset?.woassstatus == 'Issued'
+  //   }
+
+
+  //   return false
+  // }
 
 }

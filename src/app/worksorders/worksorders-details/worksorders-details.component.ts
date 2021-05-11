@@ -85,6 +85,15 @@ export class WorksordersDetailsComponent implements OnInit {
 
   selectedAssetList: any = [];
 
+  chooseDateWindow = false;
+  chooseDateType = 'status';
+
+  selectedDate: any;
+  actionType = 'single';
+
+  openAssetRemoveReason = false;
+  reason = '';
+
   constructor(
     private sharedService: SharedService,
     private worksorderManagementService: WorksorderManagementService,
@@ -117,7 +126,7 @@ export class WorksordersDetailsComponent implements OnInit {
         this.sharedService.userTypeObs
       ]).subscribe(
         data => {
-          // console.log(data);
+          console.log(data);
           this.worksOrderUsrAccess = data[0];
           this.worksOrderAccess = data[1];
           this.userType = data[2][0];
@@ -621,6 +630,8 @@ export class WorksordersDetailsComponent implements OnInit {
 
 
   assetAction(item = null, type, selection = "multiple", checkOrProcess = 'C') {
+    this.chooseDateType = type;
+    this.actionType = selection;
 
     let params: any = {};
     let callApi: any;
@@ -640,8 +651,10 @@ export class WorksordersDetailsComponent implements OnInit {
       params.WOSEQUENCE = item.wosequence;
       params.WOPSEQUENCE = item.wopsequence;
       params.strASSID = [item.assid];
-      params.concateAddress = item.woname;
 
+      if (type != "REMOVE") {
+        params.concateAddress = item.woname;
+      }
 
     } else {
 
@@ -676,6 +689,54 @@ export class WorksordersDetailsComponent implements OnInit {
       params.UserName = this.currentUser.userName;
       callApi = this.worksorderManagementService.worksOrderIssueAsset(params);
     }
+
+
+    //####################
+    else if (type == "HY") {
+      // params.UserName = this.currentUser.userName;
+      params.dtDate = this.helperService.getDateString('Yesterday')
+      callApi = this.worksorderManagementService.worksOrderHandoverAsset(params);
+    }
+
+    else if (type == "HT") {
+      // params.UserName = this.currentUser.userName;
+      params.dtDate = this.helperService.getDateString('Today')
+      callApi = this.worksorderManagementService.worksOrderHandoverAsset(params);
+    }
+
+    else if (type == "HCD") {
+      params.dtDate = this.helperService.dateObjToString(this.selectedDate.selectedDate);
+      callApi = this.worksorderManagementService.worksOrderHandoverAsset(params);
+    }
+
+    else if (type == "SOY") {
+      params.UserName = this.currentUser.userName;
+      params.dtDate = this.helperService.getDateString('Yesterday')
+      callApi = this.worksorderManagementService.worksOrderAssetSignOff(params);
+    }
+
+    else if (type == "SOT") {
+      params.UserName = this.currentUser.userName;
+      params.dtDate = this.helperService.getDateString('Today')
+      callApi = this.worksorderManagementService.worksOrderAssetSignOff(params);
+    }
+
+    else if (type == "SOCD") {
+      params.UserName = this.currentUser.userName;
+      params.dtDate = this.helperService.dateObjToString(this.selectedDate.selectedDate);
+      callApi = this.worksorderManagementService.worksOrderAssetSignOff(params);
+    }
+
+    else if (type == "REMOVE") {
+      params.strReason = this.reason;
+      callApi = this.worksorderManagementService.worksOrderRemoveAsset(params);
+    }
+
+    else if (type == "CANCEL") {
+      params.strRefusalReason = this.reason;
+      callApi = this.worksorderManagementService.worksOrderCancelAsset(params);
+    }
+    //############
 
 
     this.subs.add(
@@ -802,6 +863,54 @@ export class WorksordersDetailsComponent implements OnInit {
     this.phaseChecklist = eve;
     $('.worksOrderDetailOvrlay').removeClass('ovrlay');
     // this.selectedRow = undefined;
+  }
+
+
+  closeChooseDate(event) {
+    this.chooseDateWindow = event;
+    $('.worksOrderDetailOvrlay').removeClass('ovrlay');
+  }
+
+  selectedDateEvent(event) {
+    this.selectedDate = event;
+    this.assetAction(this.actualSelectedRow, this.chooseDateType, this.actionType, "C")
+    // if (this.actionType == "multiple") {
+    //   if (this.chooseDateType == "HCD") {
+
+    //   }
+    // }
+
+  }
+
+
+  openChooseDate(action = "single", type, item = null) {
+    this.actionType = action;
+    this.chooseDateType = type;
+    this.chooseDateWindow = true;
+    this.actualSelectedRow = item;
+    $('.worksOrderDetailOvrlay').addClass('ovrlay');
+    this.chRef.detectChanges();
+  }
+
+
+  openRemoveReasonPanel(action = "single", type, item = null) {
+    this.actionType = action;
+    this.chooseDateType = type;
+    this.openAssetRemoveReason = true;
+    this.actualSelectedRow = item;
+    $('.worksOrderDetailOvrlay').addClass('ovrlay');
+  }
+
+  closeReasonPanel(eve) {
+    this.openAssetRemoveReason = false;
+    $('.worksOrderDetailOvrlay').removeClass('ovrlay');
+  }
+
+  getReason(reason) {
+    if (reason != "") {
+      this.reason = reason;
+      this.assetAction(this.actualSelectedRow, this.chooseDateType, this.actionType, "C")
+    }
   }
 
 

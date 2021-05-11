@@ -713,11 +713,38 @@ export class HelperService {
 
     dateObjToString(value) {
         if (value == undefined || typeof value == 'undefined' || typeof value == 'string') {
-          return new Date('1753-01-01').toJSON()
+            return new Date('1753-01-01').toJSON()
         }
         const dateStr = `${value.year}-${this.zeorBeforeSingleDigit(value.month)}-${this.zeorBeforeSingleDigit(value.day)}`;
         return new Date(dateStr).toJSON()
-      }
+    }
+
+ 
+    getDateString(type = "Today") {
+        let todayDateObj = new Date();
+
+        if (type == "Tomorrow") {
+            let tomDateObj = new Date(todayDateObj);
+            tomDateObj.setDate(todayDateObj.getDate() + 1);
+            return `${this.zeorBeforeSingleDigit(tomDateObj.getFullYear())}-${this.zeorBeforeSingleDigit(tomDateObj.getMonth() + 1)}-${this.zeorBeforeSingleDigit(tomDateObj.getDate())}`;
+        }
+
+        if (type == "Next 7") {
+            let next7DateObj = new Date(todayDateObj);
+            next7DateObj.setDate(todayDateObj.getDate() + 7);
+            return `${this.zeorBeforeSingleDigit(next7DateObj.getFullYear())}-${this.zeorBeforeSingleDigit(next7DateObj.getMonth() + 1)}-${this.zeorBeforeSingleDigit(next7DateObj.getDate())}`;
+        }
+
+        if (type == "Yesterday") {
+            let yesterdayDateObj = new Date(todayDateObj);
+            yesterdayDateObj.setDate(todayDateObj.getDate() - 1);
+            return `${this.zeorBeforeSingleDigit(yesterdayDateObj.getFullYear())}-${this.zeorBeforeSingleDigit(yesterdayDateObj.getMonth() + 1)}-${this.zeorBeforeSingleDigit(yesterdayDateObj.getDate())}`;
+        }
+
+        //Default Today
+        return `${this.zeorBeforeSingleDigit(todayDateObj.getFullYear())}-${this.zeorBeforeSingleDigit(todayDateObj.getMonth() + 1)}-${this.zeorBeforeSingleDigit(todayDateObj.getDate())}`;
+
+    }
 
 
 }

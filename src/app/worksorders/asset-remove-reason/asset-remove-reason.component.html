@@ -1,0 +1,31 @@
+<kendo-window title="{{title}}" *ngIf="openAssetRemoveReason" (close)="closeReason()"
+    [top]="35" [minWidth]="400" [width]="450" [height]="auto" [minHeight]="200">
+
+    <div class="row">
+        <div class="col-md-12" *ngIf="reasonType == 'REMOVE'">
+            <textarea [(ngModel)]="reason" class="form-control" rows="5"></textarea>
+        </div>
+
+        <div class="col-md-12" *ngIf="reasonType == 'CANCEL'">
+            <kendo-grid [data]="gridView" [height]="500" [selectable]="{
+            mode: 'single'
+          }" [resizable]="true" [sortable]="{
+            allowUnsort: true,
+            mode: 'single'
+            }" [sort]="state.sort" [filter]="state.filter" (sortChange)="sortChange($event)"
+                (cellClick)="cellClickHandler($event)" [navigable]="false" [loading]="gridLoading" [filterable]="false">
+
+                <kendo-grid-column field="worcrefusaldesc" title="Refusal Reason" width="240">
+                </kendo-grid-column>
+               
+            </kendo-grid>
+        </div>
+
+        <div class="col-md-12 mt-4 text-right">
+            <button type="button" (click)="apply()" class="btn btn-sm themeButton">Apply</button>
+            <button type="button" (click)="closeReason()" class="btn btn-sm themeButton ml-1">Close</button>
+        </div>
+
+    </div>
+
+</kendo-window>

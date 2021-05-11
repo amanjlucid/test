@@ -60,25 +60,29 @@
                         Accept</a>
 
 
-                    <div class="dropdown-toggle">
+                    <div class="dropdown-toggle" *ngIf="woMenuBtnSecurityAccess('Handover Asset')">
                         <div class="dropdown-item">Handover</div>
                         <div class="dropdown-menu handoverDrp">
-                            <a class="dropdown-item" href="javascript:void(0)">Yesterday</a>
-                            <a class="dropdown-item" href="javascript:void(0)">Today</a>
-                            <a class="dropdown-item" href="javascript:void(0)">Choose Date</a>
+                            <a (click)="setAsset('HY')" class="dropdown-item" href="javascript:void(0)">Yesterday</a>
+                            <a (click)="setAsset('HT')" class="dropdown-item" href="javascript:void(0)">Today</a>
+                            <a (click)="selectDate('HCD')" class="dropdown-item" href="javascript:void(0)">Choose
+                                Date</a>
                         </div>
                     </div>
 
-                    <div class="dropdown-toggle">
+                    <div class="dropdown-toggle" *ngIf="woMenuBtnSecurityAccess('Signoff Asset')">
                         <div class="dropdown-item">Sign Off</div>
                         <div class="dropdown-menu signOffDrp">
-                            <a class="dropdown-item" href="javascript:void(0)">Yesterday</a>
-                            <a class="dropdown-item" href="javascript:void(0)">Today</a>
-                            <a class="dropdown-item" href="javascript:void(0)">Choose Date</a>
+                            <a (click)="setAsset('SOY')" class="dropdown-item" href="javascript:void(0)">Yesterday</a>
+                            <a (click)="setAsset('SOT')" class="dropdown-item" href="javascript:void(0)">Today</a>
+                            <a (click)="selectDate('SOCD')" class="dropdown-item" href="javascript:void(0)">Choose
+                                Date</a>
                         </div>
                     </div>
-                    <a class="dropdown-item" href="javascript:void(0)">Cancel</a>
-                    <a class="dropdown-item" href="javascript:void(0)">Remove</a>
+                    <a [ngClass]="{'disabled' : disableMainActions('CANCEL')}" *ngIf="woMenuBtnSecurityAccess('Cancel Asset')"
+                        (click)="openRemoveReasonPanel('multiple', 'CANCEL')" class="dropdown-item"
+                        href="javascript:void(0)">Cancel</a>
+
 
 
                     <div class="dropdown-toggle" *ngIf="woMenuBtnSecurityAccess('Set Status')">
@@ -692,5 +696,9 @@
     <app-no-access-history *ngIf="noaccessHistory" [noaccessHistory]="noaccessHistory"
         [selectedChecklistsingleItem]="selectedChecklistsingleItem"
         (closeNoAccessHistoryEve)="closeNoAccessHistory($event)"></app-no-access-history>
+
+    <app-asset-remove-reason *ngIf="openAssetRemoveReason" [openAssetRemoveReason]="openAssetRemoveReason"
+        [reasonType]="'CANCEL'" (closeReasonEvent)="closeReasonPanel($event)" (outputReason)="getReason($event)">
+    </app-asset-remove-reason>
 
 </kendo-window>

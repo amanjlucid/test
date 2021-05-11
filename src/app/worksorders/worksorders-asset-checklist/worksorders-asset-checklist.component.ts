@@ -63,6 +63,8 @@ export class WorksordersAssetChecklistComponent implements OnInit {
   userType: any = [];
   noaccessWindow: boolean = false;
   noaccessHistory: boolean = false;
+  openAssetRemoveReason = false;
+  reason: string = '';
 
   constructor(
     private chRef: ChangeDetectorRef,
@@ -84,7 +86,6 @@ export class WorksordersAssetChecklistComponent implements OnInit {
       ]).subscribe(
         data => {
           // console.log(data);
-          // console.log(this.currentUser)
           this.worksOrderUsrAccess = data[0];
           this.worksOrderAccess = data[1];
           this.userType = data[2][0];
@@ -144,7 +145,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
     this.subs.add(
       this.worksorderManagementService.assetChecklistGridData(this.selectedChildRow.wosequence, this.selectedChildRow.assid, this.selectedChildRow.wopsequence).subscribe(
         data => {
-          console.log(data)
+          // console.log(data)
           if (data.isSuccess) {
             this.assetCheckListData = data.data;
             this.gridView = process(this.assetCheckListData, this.state);
@@ -363,6 +364,13 @@ export class WorksordersAssetChecklistComponent implements OnInit {
   openChooseDateMul(type) {
     // this.selectedChecklistsingleItem = item;
     this.actionType = 'multiple';
+    this.chooseDateType = type;
+    this.chooseDateWindow = true;
+    this.chRef.detectChanges();
+    $('.checklistOverlay').addClass('ovrlay');
+  }
+
+  selectDate(type) {
     this.chooseDateType = type;
     this.chooseDateWindow = true;
     this.chRef.detectChanges();
@@ -694,6 +702,12 @@ export class WorksordersAssetChecklistComponent implements OnInit {
     // console.log(this.selectedDate)
     // console.log(this.chooseDateType)
     // debugger;
+    if (this.chooseDateType == "HCD" || this.chooseDateType == "SOCD") {
+      this.setAsset(this.chooseDateType, "C");
+      return;
+    }
+
+
     if (this.actionType == "single") {
       if (this.chooseDateType == "SE") {
         this.setDates(this.chooseDateType, this.selectedChecklistsingleItem, 'C')
@@ -725,6 +739,9 @@ export class WorksordersAssetChecklistComponent implements OnInit {
 
 
 
+
+
+
   }
 
   setAsset(type, checkOrProcess = 'C') {
@@ -738,25 +755,62 @@ export class WorksordersAssetChecklistComponent implements OnInit {
     params.strASSID = [this.selectedChildRow.assid]
     params.strUserId = this.currentUser.userId;
     params.strCheckOrProcess = checkOrProcess;
-    params.concateAddress = this.selectedChildRow.woname;
+
+    if (type == "RELEASE" || type == "ACCEPT" || type == "ISSUE") {
+      params.concateAddress = this.selectedChildRow.woname;
+    }
 
     if (type == "RELEASE") {
       callApi = this.worksorderManagementService.worksOrderReleaseAsset(params);
     } else if (type == "ACCEPT") {
-      if (this.workorderAsset?.woassstatus != 'Issued') {
 
-      }
-      // if (!this.selectedChecklistsingleItem || this.workorderAsset.woassstatus == "In Progress") {
-      //   return
-      // }
       callApi = this.worksorderManagementService.worksOrderAcceptAsset(params);
     } else if (type == "ISSUE") {
       params.UserName = this.currentUser.userName;
-      // if (!this.selectedChecklistsingleItem || this.workorderAsset.woassstatus != "Pending") {
-      //   return
-      // }
+
       callApi = this.worksorderManagementService.worksOrderIssueAsset(params);
     }
+
+    //#################
+    else if (type == "HY") {
+      params.dtDate = this.helperService.getDateString('Yesterday')
+      callApi = this.worksorderManagementService.worksOrderHandoverAsset(params);
+    }
+
+    else if (type == "HT") {
+      params.dtDate = this.helperService.getDateString('Today')
+      callApi = this.worksorderManagementService.worksOrderHandoverAsset(params);
+    }
+
+    else if (type == "HCD") {
+      params.dtDate = this.helperService.dateObjToString(this.selectedDate.selectedDate);
+      callApi = this.worksorderManagementService.worksOrderHandoverAsset(params);
+    }
+
+    else if (type == "SOY") {
+      params.UserName = this.currentUser.userName;
+      params.dtDate = this.helperService.getDateString('Yesterday')
+      callApi = this.worksorderManagementService.worksOrderAssetSignOff(params);
+    }
+
+    else if (type == "SOT") {
+      params.UserName = this.currentUser.userName;
+      params.dtDate = this.helperService.getDateString('Today')
+      callApi = this.worksorderManagementService.worksOrderAssetSignOff(params);
+    }
+
+    else if (type == "SOCD") {
+      params.UserName = this.currentUser.userName;
+      params.dtDate = this.helperService.dateObjToString(this.selectedDate.selectedDate);
+      callApi = this.worksorderManagementService.worksOrderAssetSignOff(params);
+    }
+
+    else if (type == "CANCEL") {
+      params.strRefusalReason = this.reason;
+      callApi = this.worksorderManagementService.worksOrderCancelAsset(params);
+    }
+
+    //###################
 
 
     this.subs.add(
@@ -1200,6 +1254,10 @@ export class WorksordersAssetChecklistComponent implements OnInit {
       return this.workorderAsset?.woassstatus != 'Issued'
     }
 
+    if (type == "CANCEL") {
+      return this.workorderAsset?.woassstatus != 'Issued' && this.workorderAsset?.woassstatus != "Accepted"
+    }
+
     if (type == "na" || type == "STIP" || type == "NS" || type == "RCI" || type == "COMP") {
       return this.mySelection.length == 0 || this.workorderAsset?.woassstatus == 'Pending' || this.workorderAsset?.woassstatus == 'Issued'
     }
@@ -1240,6 +1298,25 @@ export class WorksordersAssetChecklistComponent implements OnInit {
   closeNoAccessHistory(eve) {
     this.noaccessHistory = eve;
     $('.checklistOverlay').removeClass('ovrlay');
+  }
+
+
+  openRemoveReasonPanel(action = "single", type, item = null) {
+    this.chooseDateType = type;
+    this.openAssetRemoveReason = true;
+    $('.checklistOverlay').addClass('ovrlay');
+  }
+
+  closeReasonPanel(eve) {
+    this.openAssetRemoveReason = false;
+    $('.checklistOverlay').removeClass('ovrlay');
+  }
+
+  getReason(reason) {
+    if (reason != "") {
+      this.reason = reason;
+      this.setAsset(this.chooseDateType, "C")
+    }
   }
 
 }

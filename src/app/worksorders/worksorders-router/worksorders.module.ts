@@ -45,6 +45,7 @@ import { NoAccessComponent } from '../no-access/no-access.component';
 import { NoAccessHistoryComponent } from '../no-access-history/no-access-history.component';
 import { MoveAssetComponent } from '../move-asset/move-asset.component';
 import { PhaseChecklistComponent } from '../phase-checklist/phase-checklist.component';
+import { AssetRemoveReasonComponent } from '../asset-remove-reason/asset-remove-reason.component';
 
 @NgModule({
   declarations: [
@@ -80,7 +81,8 @@ import { PhaseChecklistComponent } from '../phase-checklist/phase-checklist.comp
     NoAccessComponent,
     NoAccessHistoryComponent,
     MoveAssetComponent,
-    PhaseChecklistComponent
+    PhaseChecklistComponent,
+    AssetRemoveReasonComponent
   ],
 
   imports: [
