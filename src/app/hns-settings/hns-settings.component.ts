@@ -46,7 +46,7 @@ export class HnsSettingsComponent implements OnInit {
 
   formErrors: any;
   imgToUpload: any;
-  fileExt: string = "JPG, GIF, PNG, PDF";
+  fileExt: string = "JPG, GIF, PNG, PDF, JPEG";
   maxFiles: number = 5;
   maxSize: number = 5; // 5MB
   uploadStatus = false;
@@ -163,14 +163,14 @@ export class HnsSettingsComponent implements OnInit {
 
   onSubmit() {
     this.submitted = true;
-    this.formErrorObject(); // empty form error 
+    this.formErrorObject(); // empty form error
     this.logValidationErrors(this.settingsForm);
     if (this.settingsForm.invalid) {
       return;
     }
-    
+
     let formRawVal = this.settingsForm.getRawValue();
-    
+
     const formData = new FormData();
     //formData.append('postedFile', this.imgToUpload[0], this.imgToUpload[0].name);
 

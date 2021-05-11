@@ -29,3 +29,41 @@
     font-size: 13px;
     color: #000;
 }
+
+.actionBtnDiv #nesting-dropdown-demo{
+    display: inline-block;
+}
+
+.disabled .dropdown-item{
+    color: #d1d2d3;
+    background-color: transparent;
+    pointer-events: none;
+}
+
+.actionDrp .dropdown-menu{
+    left: -108% !important;
+}
+
+.actionDrp .dropdown-menu .dropdown-menu{
+    left: -94% !important;
+}
+
+.actionDrp .completeDrp{
+    left: -102% !important;
+}
+
+.actionDrp .dateDrp{
+    left: -139% !important;
+}
+
+.actionDrp .dateDrp .dropdown-menu{
+    left: -74% !important;
+}
+
+.actionDrp .handoverDrp, .actionDrp .signOffDrp{
+    left: -101% !important;
+}
+
+.inlineRow .col-md-1, .inlineRow .col-md-2{
+    padding-top: 6px;
+}

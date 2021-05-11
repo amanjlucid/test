@@ -1,0 +1,45 @@
+<kendo-window title="{{title}}" *ngIf="noaccessHistory" (close)="closeNoAccessHistory()" [top]="30" [minWidth]="700"
+    [width]="800" [height]="auto" [minHeight]="350">
+
+    <div class="row">
+        <div class="col-md-12">
+            <kendo-grid [data]="gridView" [height]="600" [selectable]="{
+                mode: 'single'
+              }" [resizable]="true" [sortable]="{
+                allowUnsort: true,
+                mode: 'single'
+                }" [sort]="state.sort" [filter]="state.filter" (sortChange)="sortChange($event)"
+                (cellClick)="cellClickHandler($event)" [navigable]="false" [loading]="gridLoading" [filterable]="false">
+
+                <kendo-grid-column field="noaccessdate" title="No Access Data" width="140">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.noaccessdate | dateFormat : 'DD-MMM-YYYY' }}
+                        </span>
+                    </ng-template>
+                </kendo-grid-column>
+                <kendo-grid-column field="noaccesscomment" title="Comments" width="280">
+                </kendo-grid-column>
+                <kendo-grid-column field="noaccessplanneddate" title="Next Access Date" width="140">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.noaccessplanneddate | dateFormat : 'DD-MMM-YYYY' }}
+                        </span>
+                    </ng-template>
+                </kendo-grid-column>
+            </kendo-grid>
+        </div>
+
+        <div class="col-md-6 mt-4 text-left">
+            <button type="button" (click)="delete()" [disabled]="!selectedSingleNoAccessData" class="btn btn-sm themeButton mr-1">
+                Delete
+            </button>
+        </div>
+
+        <div class="col-md-6 mt-4 text-right">
+            <button type="button" (click)="closeNoAccessHistory()" class="btn btn-sm themeButton">Close</button>
+        </div>
+
+    </div>
+
+</kendo-window>

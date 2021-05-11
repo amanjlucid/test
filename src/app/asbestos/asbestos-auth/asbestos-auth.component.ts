@@ -242,7 +242,7 @@ export class AsbestosAuthComponent implements OnInit {
   }
 
   dateFormate(value) {
-    return `${value.month}-${value.day}-${value.year}`
+    return `${value.day}-${value.month}-${value.year}`
   }
 
   openAttachment() {

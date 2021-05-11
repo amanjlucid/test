@@ -88,7 +88,7 @@
 
           <div class="col-md-6 colsix">
             <label class="col-form-label">Floor</label>
-            <select class="form-control" formControlName="floor">
+            <select class="form-control" formControlName="floor" [disabled]="!viewOnly" >
               <option *ngFor="let fl of floorDrp; let i = index" value="{{floorDrp[i]}}">{{floorDrp[i]}}</option>
             </select>
             <i title="The floor to which the answer relates." class="fas fa-info-circle d-block inputI"></i>
@@ -100,7 +100,7 @@
 
           <div class="col-md-12 floorDiv mt-2">
             <label class="col-form-label">Comments</label>
-            <textarea class="form-control" formControlName="comments"></textarea>
+            <textarea class="form-control" formControlName="comments" [readonly]="viewOnly" ></textarea>
             <span class="fa-stack spellChecker" (click)="openSpellingCheck('comments')">
                 <i class="fa fa-check fa-stack-1x rightCheck"></i>
                 <i class="fa fa-stack-1x spellTxt">ABC</i>
@@ -113,7 +113,7 @@
 
             <label class="col-form-label">Date</label>
             <!-- <input type="text" class="form-control input-sm" [value]="healthAndSafetyAns?.hasaassessmentdate | dateFormat : 'DD-MMM-YYYY'"> -->
-            <input type="text" class="form-control" formControlName="date" [(ngModel)]="assessorDate"
+            <input type="text" class="form-control" formControlName="date" [(ngModel)]="assessorDate" [readonly]="viewOnly"
               (click)="openCalendar(s)" [minDate]="{year: 1800, month: 1, day: 1}" ngbDatepicker #s="ngbDatepicker"
               autocomplete="off">
 
@@ -235,7 +235,7 @@
     (closerImage)="closerImage($event)"></app-hns-res-ans-image>
 
 
-  <app-hns-res-add-edit-issue *ngIf="showIssue" [issueFormMode]="issueFormMode" [isAssessment]="true"
+  <app-hns-res-add-edit-issue *ngIf="showIssue" [issueFormMode]="issueFormMode" [isAssessment]="true" [isHistorical]="isHistorical"
     [showIssue]="showIssue" [selectedAction]="selectedAction" [fromAns]="true" [allIssuesList]="healthAndSafetyIss"
     [selectedIssue]="selectedIssue" [rootAssessment]="rootAssessment" (closeIssueEvt)="closeIssue($event)">
   </app-hns-res-add-edit-issue>

@@ -29,7 +29,7 @@ export class HnsDefinitionsComponent implements OnInit, OnDestroy {
     take: 25,
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -39,7 +39,7 @@ export class HnsDefinitionsComponent implements OnInit, OnDestroy {
     sort: [],
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -76,7 +76,7 @@ export class HnsDefinitionsComponent implements OnInit, OnDestroy {
   loading: boolean = false;
   hnsPermission: any = [];
   activeInactive: any = "active";
-  contextMenus = ['Copy'];
+  //contextMenus = [];
 
   constructor(
     private assetAttributeService: AssetAttributeService,
@@ -111,26 +111,6 @@ export class HnsDefinitionsComponent implements OnInit, OnDestroy {
       this.sharedService.hnsPortalSecurityList.subscribe(
         data => {
           this.hnsPermission = data;
-          if (this.hnsPermission.indexOf("Inactivate") !== -1) {
-            this.contextMenus.splice(0, 0, "Inactivate");
-          }
-
-          if (this.hnsPermission.indexOf("Activate") !== -1) {
-            this.contextMenus.splice(0, 0, "Activate");
-          }
-
-          // if (this.hnsPermission.includes("Inactivate")) {
-          //   this.contextMenus.splice(0, 0, "Inactivate");//['Activate', 'Inactivate', 'Copy']
-          // }
-
-          // if (this.hnsPermission.includes("Activate")) {
-          //   this.contextMenus.splice(0, 0, "Activate");//['Activate', 'Copy']
-          // }
-
-          // if (this.hnsPermission.includes("Inactivate") == false && this.hnsPermission.includes("Activate") == false) {
-          //   this.contextMenus = ['Copy']
-          // }
-
         }
       )
     )
@@ -220,7 +200,7 @@ export class HnsDefinitionsComponent implements OnInit, OnDestroy {
     };
   }
 
-  public onSelect({ dataItem, item }): void {
+  public onSelect(dataItem, item): void {
     if (item == "Activate" || item == "Inactivate") {
       let status: string = "";
       if (item == "Activate") {
@@ -243,7 +223,10 @@ export class HnsDefinitionsComponent implements OnInit, OnDestroy {
         }
       )
     }
-
+    if (item == "Copy")
+    {
+       this.openHnsForm(this.selectedDefinition,"copy");
+    }
   }
 
 
@@ -284,11 +267,10 @@ export class HnsDefinitionsComponent implements OnInit, OnDestroy {
 
   }
 
-  openHnsForm(formMode: string) {
-    if (formMode != "new" && this.selectedDefinition == undefined) {
-      return
+  openHnsForm(dataItem, formMode: string) {
+    if (formMode != "new" ) {
+      this.selectedDefinition = dataItem;
     }
-
     this.definitionFormMode = formMode;
     $('.difinitionOverlay').addClass('ovrlay');
     this.definitionFormOpen = true;
@@ -359,12 +341,17 @@ export class HnsDefinitionsComponent implements OnInit, OnDestroy {
         this.touchtime = new Date().getTime();
       } else {
         // compare first click to this click and see if they occurred within double click threshold
-        if (((new Date().getTime()) - this.touchtime) < 400) {
+        if (((new Date().getTime()) - this.touchtime) < 400)
+        {
+          if(this.hnsPermission.indexOf("Definition Detail") !== -1)
+          {
           // double click occurred
           $('.difinitionOverlay').addClass('ovrlay');
           this.selectedDefinition = dataItem;
           this.definitionDetailIsTrue = true;
           this.touchtime = 0;
+          }
+
         } else {
           // not a double click so set as a new first click
           this.touchtime = new Date().getTime();
@@ -380,7 +367,8 @@ export class HnsDefinitionsComponent implements OnInit, OnDestroy {
     $('.difinitionOverlay').removeClass('ovrlay');
   }
 
-  public async priorityList() {
+  public async priorityList(dataItem) {
+    this.selectedDefinition = dataItem;
     if (this.selectedDefinition.hasscoring == 2) {
       let riskMatrixScore: any = await this.http.get(`${appConfig.apiUrl}/api/HealthSafetyDefination/GetMaxRiskMatrixForScore?hasCode=${this.selectedDefinition.hascode}&hasVersion=${this.selectedDefinition.hasversion}`).toPromise();
       if (riskMatrixScore.isSuccess) {
@@ -404,7 +392,8 @@ export class HnsDefinitionsComponent implements OnInit, OnDestroy {
     $('.difinitionOverlay').removeClass('ovrlay');
   }
 
-  budgetList() {
+  budgetList(dataItem) {
+    this.selectedDefinition = dataItem;
     this.openBudgetList = true;
     $('.difinitionOverlay').addClass('ovrlay');
   }
@@ -415,7 +404,8 @@ export class HnsDefinitionsComponent implements OnInit, OnDestroy {
     $('.difinitionOverlay').removeClass('ovrlay');
   }
 
-  scoringBands($event) {
+  scoringBands(dataItem, $event) {
+    this.selectedDefinition = dataItem;
     if (this.selectedDefinition != undefined) {
       if (this.selectedDefinition.hasscoring != 1) {
         $event.preventDefault();
@@ -433,7 +423,8 @@ export class HnsDefinitionsComponent implements OnInit, OnDestroy {
   }
 
 
-  openSeverityListMethod() {
+  openSeverityListMethod(dataItem) {
+    this.selectedDefinition = dataItem;
     this.openSeverityList = true;
     $('.difinitionOverlay').addClass('ovrlay');
   }
@@ -444,7 +435,8 @@ export class HnsDefinitionsComponent implements OnInit, OnDestroy {
     $('.difinitionOverlay').removeClass('ovrlay');
   }
 
-  openProbabilityListMethod() {
+  openProbabilityListMethod(dataItem) {
+    this.selectedDefinition = dataItem;
     this.openProbabilityList = true;
     $('.difinitionOverlay').addClass('ovrlay');
   }
@@ -455,7 +447,8 @@ export class HnsDefinitionsComponent implements OnInit, OnDestroy {
     $('.difinitionOverlay').removeClass('ovrlay');
   }
 
-  recalculateScores() {
+  recalculateScores(dataItem) {
+    this.selectedDefinition = dataItem;
     if (this.selectedDefinition.hasscoring == 1) {
       const params = { hasCode: this.selectedDefinition.hascode, hasVersion: this.selectedDefinition.hasversion, modifiedby: this.currentUser.userId }
       this.subs.add(
@@ -472,7 +465,8 @@ export class HnsDefinitionsComponent implements OnInit, OnDestroy {
     }
   }
 
-  report(dependencies) {
+  report(dataItem, dependencies) {
+    this.selectedDefinition = dataItem;
     if (this.selectedDefinition != undefined) {
       const params = { hasCode: this.selectedDefinition.hascode, hasVersion: this.selectedDefinition.hasversion, Dependency: dependencies };
       this.subs.add(

@@ -17,12 +17,13 @@ export class RetrievedEpcGridComponent implements OnInit {
   allowUnsort = true;
   multiple = false;
   @Input() retrievedEPCs: boolean = false;
+  @Input() showPanel: boolean = false;
   @Input() selectedBarChartXasis: any;
   usereventData: any;
   // userEventTempData: any;
   selectedEvent: any;
   @Output() closeretrievedEPCs = new EventEmitter<boolean>();
-  title: any = 'Retrieved EPCs';
+  title: any = 'EPC Data';
   state: State = {
     skip: 0,
     sort: [],
@@ -45,7 +46,12 @@ export class RetrievedEpcGridComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    if (this.retrievedEPCs) {
 this.title= 'Retrieved EPCs during ' + this.selectedBarChartXasis.xAxisValue;
+    } else {
+      this.title= 'EPC Data - ' + this.selectedBarChartXasis.xAxisValue;
+    }
+
     this.getEventData(this.selectedBarChartXasis);
   }
 
@@ -54,6 +60,37 @@ this.title= 'Retrieved EPCs during ' + this.selectedBarChartXasis.xAxisValue;
     this.subs.unsubscribe();
   }
 
+
+  getEventData(params) {
+    this.subs.add(
+      this.dashboardService.getListOfUserEventByCriteria(params).subscribe(
+        data => {
+          if (data.isSuccess) {
+            let userEventTempData = Object.assign([], data.data);
+            let col = data.data[0];
+
+            for (let cl in col) {
+              if (col[cl] != '')
+                this.columnName.push({ 'key': `col${cl}`, 'val': col[cl] })
+            }
+
+            userEventTempData.shift();
+            for (let tmpData of userEventTempData) {
+              for (let tindex in tmpData) {
+                tmpData[`col${tindex}`] = tmpData[tindex]
+                delete tmpData[tindex];
+              }
+            }
+
+            this.usereventData = Object.assign([], userEventTempData);
+            this.renderGrid();
+
+          }
+        }
+      )
+    )
+  }
+/* 
   getEventData(params) {
     this.subs.add(
       this.assetAttributeService.getRetrievedEPCs(params.xAxisValue).subscribe(
@@ -82,7 +119,7 @@ this.title= 'Retrieved EPCs during ' + this.selectedBarChartXasis.xAxisValue;
         }
       )
     )
-  }
+  } */
 
 
   groupChange(groups: GroupDescriptor[]): void {
@@ -113,14 +150,14 @@ this.title= 'Retrieved EPCs during ' + this.selectedBarChartXasis.xAxisValue;
   }
 
   closeGrid() {
-    this.retrievedEPCs = false;
-    this.closeretrievedEPCs.emit(this.retrievedEPCs)
+    this.showPanel = false;
+    this.closeretrievedEPCs.emit(this.showPanel)
   }
 
 
   redirectToUserEevnt(val) {
     const host = window.location.hostname;
-    let siteUrl = `${appConfig.appUrl}`;
+    let siteUrl = `"https://apexdevweb.rowanwood.ltd/dev/rowanwood`;
 
 
     const seqCol = this.columnName.find(x => x.val == "Task No.")

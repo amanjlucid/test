@@ -24,7 +24,7 @@ export class HnsResSummaryComponent implements OnInit {
     sort: [],
     filter: {
       filters: [],
-      logic: "or",
+      logic: "and",
     }
   }
   statusArr: any = [{ hasiactionstatus: "Outstanding" }, { hasiactionstatus: "Resolved" }]
@@ -671,7 +671,7 @@ export class HnsResSummaryComponent implements OnInit {
   }
 
   closerImage(event) {
-    this.showImage = event;
+    this.showImage = false;
     $('.actionOverlay').removeClass('ovrlay');
     // this.disableBtn = true
   }

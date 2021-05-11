@@ -30,8 +30,9 @@
                 [ngClass]="[isOfType(dataItem.elType, ['ques'], dataItem.hasrepeatable) ? 'fa-question-circle' : '', isOfType(dataItem.elType, ['group', 'heading'], dataItem.hasrepeatable) ? 'fa-folder' : '',  isOfTpeGroup(dataItem.elType, ['group'], dataItem.hasrepeatable) ? 'fas fa-folder-plus' : '']"
                 [treeNodeColor]="dataItem"></span> -->
 
-              <span class="treeData textSpan"><b>{{ dataItem.sqstr }} </b> <b
-                  *ngIf="dataItem.elType == 'ques'">({{dataItem.hasquestioncode}})</b> {{ dataItem.text }}</span> 
+              <span [treeNodeColor]="dataItem" class="treeData textSpan" ><b>{{ dataItem.sqstr }} </b>
+                <b *ngIf="dataItem.elType == 'ques'">({{dataItem.hasquestioncode}})</b> {{ dataItem.text }}
+              </span>
             </ng-template>
             <ng-template *ngIf="selectedDefinition.hasinuse != 'Y'" kendoTreeViewDragClueTemplate let-action="action"
               let-destinationItem="destinationItem" let-sourceItem="sourceItem" let-text="text">

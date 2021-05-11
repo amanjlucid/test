@@ -20,9 +20,10 @@
     margin-left: 10px;
 }
 
-.managementForm .leftDiv, .managementForm .rightDiv{
+.managementForm .leftDiv, .managementForm .rightDiv {
     vertical-align: top;
 }
+
 .managementForm .leftDiv .first, .managementForm .rightDiv .first {
     width: 30%;
     display: inline-block;
@@ -74,4 +75,9 @@
 
 .managementForm .grpDiv .childGrpDiv:nth-child(n+3) {
     margin-left: 8px;
+}
+
+
+.childGrpDiv input[type=text], .budgetDiv input[type=text]{
+    text-align: right;
 }

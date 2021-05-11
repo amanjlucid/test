@@ -1,0 +1,88 @@
+.k-window {
+    position: fixed !important;
+}
+
+.uploadHeader {
+    border-bottom: 1px solid #e0e0e0;
+    text-align: center;
+    padding-bottom: 4px;
+    font-weight: 600;
+}
+
+.uploadedContentArea {
+    margin-top: 8px;
+    border: 1px solid #e0e0e0;
+    padding: 5px;
+    height: 4rem;
+    border-radius: 5px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.attachmentActionArea {
+    text-align: right;
+    padding: 0px;
+}
+
+.progress-bar {
+    background-color: #e4287e!important;
+}
+
+.progress {
+    height: 8px;
+}
+
+.upload-btn-wrapper {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+}
+
+.upload-btn-wrapper .btn {
+    border: 1px solid #e0e0e0;
+    color: gray;
+    background-color: white;
+    padding: 7px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.upload-btn-wrapper input[type=file] {
+    font-size: 100px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+}
+
+.blankArea {
+    background-color: grey;
+    background-image: linear-gradient(to bottom right, grey, white);
+    width: 100%;
+    height: 100%;
+}
+
+.error {
+    color: #d9534f;
+}
+
+.dragarea {
+    font-size: 22px;
+    border: 2px solid #bbb;
+    padding: 30px;
+    background-color: #fff;
+    color: #bbb;
+    border-radius: 5px;
+}
+
+.droparea {
+    font-size: 22px;
+    border: 2px dashed #bbb;
+    padding: 30px;
+    background-color: #eff;
+    color: #aaa;
+    border-radius: 5px;
+}

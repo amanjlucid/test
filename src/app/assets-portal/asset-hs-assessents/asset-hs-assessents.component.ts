@@ -2,8 +2,10 @@ import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { DataResult, process, State, CompositeFilterDescriptor, SortDescriptor, GroupDescriptor } from '@progress/kendo-data-query';
 import { GridComponent, RowArgs } from '@progress/kendo-angular-grid';
 import { AssetAttributeService, HelperService } from '../../_services';
+import { Router, ActivatedRoute } from '@angular/router';
 import { DateFormatPipe } from '../../_pipes/date-format.pipe';
 import { SubSink } from 'subsink';
+import { appConfig } from '../../app.config';
 
 @Component({
   selector: 'app-asset-hs-assessents',
@@ -40,6 +42,7 @@ export class AssetHSAssessentsComponent implements OnInit, OnDestroy {
   constructor(
     private assetAttributeService: AssetAttributeService,
     private helper: HelperService,
+    private router: Router,
   ) { }
 
 
@@ -168,7 +171,15 @@ export class AssetHSAssessentsComponent implements OnInit, OnDestroy {
   }
 
   openResult() {
-    window.open(`https://apexdevweb.rowanwood.ltd/dev/Rowanwood/HealthAndSafety/#/Results?ASSID=${this.assetId}&HSCODE=${this.resultData.hascode}&HSVERSION=${this.resultData.hasversion}&HSASSESSMENTREF=${this.resultData.hasassessmentref}`, "_blank");
+
+    sessionStorage.removeItem('AssetHSView');
+
+    let AssetHSView = {assid: this.assetId, hascode: this.resultData.hascode, hasversion: this.resultData.hasversion, hasref: this.resultData.hasassessmentref};
+    sessionStorage.setItem('AssetHSView', JSON.stringify(AssetHSView));
+   // this.router.navigate(['/health&safety/results/assessment']);
+    let url = `https://apexdevweb.rowanwood.ltd/dev/rowanwood/health&safety/results/assessment`;
+    window.open(url, "_blank");
+
   }
 
   public cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {

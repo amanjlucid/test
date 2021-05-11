@@ -56,7 +56,7 @@ export class HnsDefinitionHeadingComponent implements OnInit, OnDestroy {
 
     // this.title = this.defGrpFormMode == "new" ? "New Health and Safety Heading" : "Change Health and Safety Heading";
     this.defintionHeadingForm = this.fb.group({
-      heading: ['', [Validators.required, Validators.maxLength(20)]],
+      heading: ['', [Validators.required]],
       status: ['A', [Validators.required]],
       createdBy: [''],
       modifiedBy: [''],

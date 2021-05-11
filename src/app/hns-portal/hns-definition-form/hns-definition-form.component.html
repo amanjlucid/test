@@ -71,7 +71,7 @@
           </div>
           <div class="col-md-10">
             <div class="wrapdivName">
-              <input #secondInp [readonly]="definitionFormMode == 'view'" type="text" class="form-control" formControlName="name"
+              <input #secondInp [readonly]="definitionFormMode == 'view'" type="text" maxlength="35" class="form-control" formControlName="name"
                 [ngClass]="{ 'is-invalid': submitted && formErrors.name }"><i title="35 character long text field."
                 class="fas fa-info-circle d-block"></i>
             </div>

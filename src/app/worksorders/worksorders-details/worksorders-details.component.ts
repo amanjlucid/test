@@ -1,10 +1,11 @@
 import { Component, OnInit, ViewEncapsulation, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { SubSink } from 'subsink';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
-import { FilterService, SelectableSettings, TreeListComponent, ExpandEvent } from '@progress/kendo-angular-treelist';
-import { AlertService, LoaderService, ConfirmationDialogService, HelperService, WorksorderManagementService, SharedService, PropertySecurityGroupService } from '../../_services'
-import { forkJoin } from 'rxjs';
+import { FilterService, SelectableSettings, TreeListComponent, RowClassArgs } from '@progress/kendo-angular-treelist';
+import { AlertService, LoaderService, ConfirmationDialogService, HelperService, WorksorderManagementService, SharedService, PropertySecurityGroupService, AuthenticationService } from '../../_services'
+import { combineLatest, forkJoin } from 'rxjs';
 import { WorkordersDetailModel } from 'src/app/_models';
+import { appConfig } from '../../app.config';
 
 
 @Component({
@@ -35,15 +36,16 @@ export class WorksordersDetailsComponent implements OnInit {
 
   loading = true;
   public selected: any[] = [];
+
   public filter: CompositeFilterDescriptor;
   public settings: SelectableSettings = {
     mode: 'row',
-    multiple: false,
+    multiple: true,
     drag: false,
     enabled: true
   };
   gridPageSize = 25;
-  // public apiData: any = [];
+
   public groupedData: any = [];
   public gridData: any = [];
   @ViewChild(TreeListComponent) public grid: TreeListComponent;
@@ -54,7 +56,7 @@ export class WorksordersDetailsComponent implements OnInit {
   selectedChildRow: any;
   selectedParentRow: any;
   selectedRow: any;
-  actualSelectedRow:any;
+  actualSelectedRow: any;
 
   newPhasewindow = false;
   phaseFormMode = 'new';
@@ -66,7 +68,22 @@ export class WorksordersDetailsComponent implements OnInit {
 
   assetDetailWindow = false;
   treelevel = 2;
-    worksOrderAccess = [];
+  worksOrderAccess = [];
+  worksOrderUsrAccess = [];
+  woFormWindow = false;
+  phaseBudgetAvailable: any = 0;
+  touchtime = 0;
+
+  addWorkFrom: string;
+
+  columnLocked: boolean = true;
+  userType: any = [];
+
+  mousePositioin: any = 0;
+  moveAsset: boolean = false;
+  phaseChecklist = false;
+
+  selectedAssetList: any = [];
 
   constructor(
     private sharedService: SharedService,
@@ -76,29 +93,45 @@ export class WorksordersDetailsComponent implements OnInit {
     private propSecGrpService: PropertySecurityGroupService,
     private loaderService: LoaderService,
     private chRef: ChangeDetectorRef,
-    private confirmationDialogService: ConfirmationDialogService
+    private confirmationDialogService: ConfirmationDialogService,
+    private autService: AuthenticationService,
   ) { }
 
 
   ngOnInit() {
+    // console.log(this.worksOrderSingleData)
     /**
      * update notification on top
      * Common service for all routing page
      **/
     this.helperService.updateNotificationOnTop();
-    this.sharedService.worksOrdersAccess.subscribe(
-      data => {
-        this.worksOrderAccess = data;
-      }
+
+    this.helperService.getWorkOrderSecurity(this.worksOrderSingleData.wosequence);
+    this.helperService.getUserTypeWithWOAndWp(this.worksOrderSingleData.wosequence, this.worksOrderSingleData.wprsequence)
+
+    //subscribe for work order security access
+    this.subs.add(
+      combineLatest([
+        this.sharedService.woUserSecObs,
+        this.sharedService.worksOrdersAccess,
+        this.sharedService.userTypeObs
+      ]).subscribe(
+        data => {
+          // console.log(data);
+          this.worksOrderUsrAccess = data[0];
+          this.worksOrderAccess = data[1];
+          this.userType = data[2][0];
+        }
+      )
     )
 
-
-    //subscribe for worksorders data
+    //subscribe for worksorders data when coming from works order
     this.subs.add(
       this.sharedService.worksOrderObs.subscribe(
         data => {
           if (data.length == 0 && !this.worksOrderSingleData) {
             this.alertService.error("Please select one work order from the works orders list");
+            this.loading = false;
             return
           }
 
@@ -112,6 +145,7 @@ export class WorksordersDetailsComponent implements OnInit {
   ngOnDestroy() {
     this.subs.unsubscribe();
   }
+
 
   worksOrderDetailPageData() {
     const wprsequence = this.worksOrderSingleData.wprsequence;
@@ -133,6 +167,7 @@ export class WorksordersDetailsComponent implements OnInit {
           const programmeData = data[0];
           const userSecurityByWO = data[1];
           const worksOrderData = data[2];
+          this.phaseBudgetAvailable = data[3].data;
 
           // const repairingChar = data[3];
           // const checkListForWO = data[4];
@@ -158,7 +193,7 @@ export class WorksordersDetailsComponent implements OnInit {
     this.subs.add(
       this.worksorderManagementService.getWorkOrderDetails(this.workorderDetailModel).subscribe(
         data => {
-          console.log(data);
+          // console.log(data);
           if (data.isSuccess) {
             let gridData = [];
             let tempData = [...data.data];
@@ -168,7 +203,7 @@ export class WorksordersDetailsComponent implements OnInit {
               if (value.treelevel == 2) {
                 value.parentId = null
                 value.id = `${value.wopsequence}${value.wosequence}${value.wprsequence}${this.helperService.replaceAll(value.assid, " ", "")}`;
-               value.parentData = JSON.stringify(value);
+                value.parentData = JSON.stringify(value);
                 const valueWithDateObj = this.addDateObjectFields(value, ['targetdate', 'woacompletiondate', 'planstartdate', 'planenddate']); //Converting date object for filter from grid
                 gridData.push(valueWithDateObj);
 
@@ -181,11 +216,11 @@ export class WorksordersDetailsComponent implements OnInit {
                   value.id = `${value.wopsequence}${value.wosequence}${value.wprsequence}${this.helperService.replaceAll(value.assid, " ", "")}${index}`;
 
 
-                //  let Form = JSON.stringify(this.myForm.value);
+                  //  let Form = JSON.stringify(this.myForm.value);
 
 
-                  value.parentData =  JSON.stringify(parent);
-                  value.assid =  value.assid;
+                  value.parentData = JSON.stringify(parent);
+                  value.assid = value.assid;
 
                   const valueWithDateObj = this.addDateObjectFields(value, ['targetdate', 'woacompletiondate', 'planstartdate', 'planenddate']); //Converting date object for filter from grid
                   gridData.push(valueWithDateObj);
@@ -198,7 +233,7 @@ export class WorksordersDetailsComponent implements OnInit {
               this.gridData = [...gridData];
               this.loading = false;
               this.chRef.detectChanges();
-            }, 100);
+            }, 10);
 
           } else {
             this.alertService.error(data.message);
@@ -232,13 +267,58 @@ export class WorksordersDetailsComponent implements OnInit {
     }
   }
 
+  rowCallback(context: RowClassArgs) {
+    if (context.dataItem.treelevel == 1) {
+      return { level1: true, }
+    }
+    if (context.dataItem.treelevel == 2) {
+      return { level2: true, }
+    }
+    if (context.dataItem.treelevel == 3) {
+      return { level3: true, }
+    }
+  }
+
   onFilterChange(filter: any): void {
     this.filter = filter;
   }
 
-  cellClickHandler($event) {
-    // console.log($event)
-    // console.log(this.selected)
+  cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
+    if (columnIndex > 0) {
+      if (this.touchtime == 0) {
+        this.touchtime = new Date().getTime();
+      } else {
+
+        if (((new Date().getTime()) - this.touchtime) < 400) {
+          setTimeout(() => {
+            if (dataItem.treelevel == 2) {
+              //open asset detail window
+              if (this.worksOrderAccess.indexOf('Asset Details') != -1 || this.worksOrderUsrAccess.indexOf('Asset Details') != -1) {
+                // this.openAssetDetail(dataItem)
+              }
+
+            } else if (dataItem.treelevel == 3) {
+              //open asset checklist window
+              if (this.worksOrderAccess.indexOf('Asset Checklist') != -1 || this.worksOrderUsrAccess.indexOf('Asset Checklist') != -1) {
+                this.openAssetChecklist(dataItem)
+              }
+
+            }
+          }, 200);
+
+          this.touchtime = 0;
+        } else {
+          // not a double click so set as a new first click
+          this.touchtime = new Date().getTime();
+        }
+
+      }
+
+
+    }
+    // console.log(this.selected);
+    // console.log(dataItem)
+
   }
 
   addDateObjectFields(obj, fieldsArr: Array<any>) {
@@ -368,6 +448,7 @@ export class WorksordersDetailsComponent implements OnInit {
   closeAssetchecklistEvent(eve) {
     this.assetchecklistWindow = eve;
     $('.worksOrderDetailOvrlay').removeClass('ovrlay');
+    this.refreshGrid(true)
   }
 
   openNewphase(mode, item = null) {
@@ -382,6 +463,7 @@ export class WorksordersDetailsComponent implements OnInit {
   closeNewphaseEvent(eve) {
     this.newPhasewindow = eve;
     $('.worksOrderDetailOvrlay').removeClass('ovrlay');
+    this.refreshGrid(true)
   }
 
   openPackageMappingWindow() {
@@ -430,7 +512,7 @@ export class WorksordersDetailsComponent implements OnInit {
 
   moveWorksOrderDetailRow(move, item) {
     this.subs.add(
-      this.worksorderManagementService.phaseUpDown(item.wosequence, item.wopdispseq, move).subscribe(
+      this.worksorderManagementService.phaseUpDown(item.wosequence, item.wopsequence, move).subscribe(
         data => {
           if (data.isSuccess) this.refreshGrid(true);
         },
@@ -449,12 +531,16 @@ export class WorksordersDetailsComponent implements OnInit {
   closeAddAssetWindow(eve) {
     this.addAssetWindow = eve;
     $('.worksOrderDetailOvrlay').removeClass('ovrlay');
+    this.refreshGrid(true)
   }
 
-  openAddAssetWorkOrdersList(workOrderType, item) {
+  openAddAssetWorkOrdersList(item, workOrderType) {
     if (item.treelevel == 3 && item.wostatus != "New") {
       return
     }
+
+
+    this.addWorkFrom = workOrderType;
     this.actualSelectedRow = item;
     this.addAssetWorklistWindow = true;
     $('.worksOrderDetailOvrlay').addClass('ovrlay');
@@ -464,6 +550,7 @@ export class WorksordersDetailsComponent implements OnInit {
   closeAddAssetWorkordersListWindow(eve) {
     this.addAssetWorklistWindow = eve;
     $('.worksOrderDetailOvrlay').removeClass('ovrlay');
+    this.refreshGrid(true)
   }
 
   openAssetDetail(item) {
@@ -472,13 +559,8 @@ export class WorksordersDetailsComponent implements OnInit {
     this.selectedParentRow = item;
     this.treelevel = 2;
 
-
-
-
-   //  this.worksOrderData
-
-
-  //  console.log('selectedParentRow ' + JSON.stringify(this.selectedParentRow));
+    //  this.worksOrderData
+    //  console.log('selectedParentRow ' + JSON.stringify(this.selectedParentRow));
 
     $('.worksOrderDetailOvrlay').addClass('ovrlay');
   }
@@ -491,14 +573,29 @@ export class WorksordersDetailsComponent implements OnInit {
     this.treelevel = 3;
 
 
-     this.selectedParentRow = JSON.parse(item.parentData);
-    ///this.worksOrderData
-
-
-   console.log('selected item ' + JSON.stringify(item));
-  // console.log('selectedParentRow ' + JSON.stringify(this.selectedParentRow));
+    this.selectedParentRow = JSON.parse(item.parentData);
 
     $('.worksOrderDetailOvrlay').addClass('ovrlay');
+  }
+
+
+  openActualAssetDetails(item) {
+
+    this.autService.validateAssetIDDeepLinkParameters(this.currentUser.userId, item.assid).subscribe(
+      data => {
+        if (data.validated) {
+          const siteUrl = `${appConfig.appUrl}/asset-list?assetid=${encodeURIComponent(item.assid)}`; // UAT  
+          // const siteUrl = `http://localhost:4200/asset-list?assetid=${item.assid}`;
+          window.open(siteUrl, "_blank");
+
+        } else {
+          const errMsg = `${data.errorCode} : ${data.errorMessage}`
+          this.alertService.error(errMsg);
+        }
+      }
+    )
+
+    // $('.worksOrderDetailOvrlay').addClass('ovrlay');
   }
 
 
@@ -506,6 +603,206 @@ export class WorksordersDetailsComponent implements OnInit {
   closeAssetDetailWindow(eve) {
     this.assetDetailWindow = eve;
     $('.worksOrderDetailOvrlay').removeClass('ovrlay');
+    this.refreshGrid(true)
   }
+
+  redirectToWorksOrderEdit() {
+    $('.worksOrderDetailOvrlay').addClass('ovrlay');
+    this.woFormWindow = true;
+
+  }
+
+  closeWoFormWin($event) {
+    this.woFormWindow = $event;
+    $('.worksOrderDetailOvrlay').removeClass('ovrlay');
+    this.worksOrderDetailPageData();
+  }
+
+
+
+  assetAction(item = null, type, selection = "multiple", checkOrProcess = 'C') {
+
+    let params: any = {};
+    let callApi: any;
+
+    if (selection == "single") {
+
+      if (this.selected.length > 1) {
+        this.alertService.error("Please select single record.")
+        return
+      }
+
+      if (item.treelevel == 2) {
+        this.alertService.error("You must select some Assets.")
+        return
+      }
+
+      params.WOSEQUENCE = item.wosequence;
+      params.WOPSEQUENCE = item.wopsequence;
+      params.strASSID = [item.assid];
+      params.concateAddress = item.woname;
+
+
+    } else {
+
+      let selectedKeyArr = this.selected.map(x => { return x.itemKey });
+      let assetData = this.gridData.filter(x => selectedKeyArr.includes(x.id) && x.treelevel == 3);
+
+      if (assetData.length == 0) {
+        this.alertService.error("You must select some Assets.")
+        return
+      }
+
+      let assetIdArr = [];
+      for (const asset of assetData) {
+        assetIdArr.push(asset.assid)
+      }
+
+      params.strASSID = assetIdArr;
+      params.WOSEQUENCE = assetData[0].wosequence;
+      params.WOPSEQUENCE = assetData[0].wopsequence;
+      // params.concateAddress = this.selectedChildRow.woname;
+    }
+
+    params.strUserId = this.currentUser.userId;
+    params.strCheckOrProcess = checkOrProcess;
+
+
+    if (type == "RELEASE") {
+      callApi = this.worksorderManagementService.worksOrderReleaseAsset(params);
+    } else if (type == "ACCEPT") {
+      callApi = this.worksorderManagementService.worksOrderAcceptAsset(params);
+    } else if (type == "ISSUE") {
+      params.UserName = this.currentUser.userName;
+      callApi = this.worksorderManagementService.worksOrderIssueAsset(params);
+    }
+
+
+    this.subs.add(
+      callApi.subscribe(
+        data => {
+          if (!data.isSuccess) {
+            this.alertService.error(data.message);
+            return
+          }
+
+          let resp: any;
+          if (data.data[0] == undefined) {
+            resp = data.data;
+          } else {
+            resp = data.data[0];
+          }
+
+          if (checkOrProcess == "C" && (resp.pRETURNSTATUS == "E" || resp.pRETURNSTATUS == "S")) {
+            this.openConfirmationDialogAction({ item, type, selection }, resp)
+          } else {
+            this.alertService.success(resp.pRETURNMESSAGE)
+            this.worksOrderDetailPageData();
+          }
+
+        }
+      )
+    )
+
+
+  }
+
+
+  openConfirmationDialogAction(obj, res) {
+
+    const { item, type, selection } = obj;
+    let checkstatus = "C";
+    if (res.pRETURNSTATUS == 'S') {
+      checkstatus = "P"
+    }
+
+    $('.k-window').css({ 'z-index': 1000 });
+    this.confirmationDialogService.confirm('Please confirm..', `${res.pRETURNMESSAGE}`)
+      .then((confirmed) => {
+        if (confirmed) {
+          if (res.pRETURNSTATUS == 'E') {
+            return
+          }
+
+          this.assetAction(item, type, selection, checkstatus);
+        }
+
+      }).catch(() => console.log('Attribute dismissed the dialog.'));
+  }
+
+
+  woMenuBtnSecurityAccess(menuName) {
+    if (this.userType?.wourroletype == "Dual Role") {
+      return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
+    } else {
+      return this.worksOrderUsrAccess.indexOf(menuName) != -1
+    }
+
+  }
+
+  lockUnlockColumn() {
+    this.columnLocked = !this.columnLocked;
+  }
+
+
+  getMouseroverEve(eve) {
+    this.mousePositioin = { x: eve.pageX, y: eve.pageY };
+  }
+
+  setSeletedRow(dataItem, event) {
+    // console.log(event)
+    if (dataItem != undefined) {
+      setTimeout(() => {
+        let att = $('.selectedWodBar' + dataItem.id)[0].getAttribute("x-placement");
+        if (att == "bottom-start" && this.mousePositioin.y > 600) {
+          $('.selectedWodBar' + dataItem.id).css({ "top": "-116px", "left": "22px" })
+        }
+
+      }, 50);
+
+    }
+
+  }
+
+
+  moveAssets(item = null) {
+    this.selectedAssetList = [];
+
+    if (item == null) {
+      let selectedKeyArr = this.selected.map(x => { return x.itemKey });
+      this.selectedAssetList = this.gridData.filter(x => selectedKeyArr.includes(x.id) && x.treelevel == 3);
+    } else {
+      this.selectedAssetList = [item];
+    }
+
+    if (this.selectedAssetList.length == 0) {
+      this.alertService.error("Please select one asset.");
+      return;
+    }
+
+    $('.worksOrderDetailOvrlay').addClass('ovrlay');
+    this.moveAsset = true;
+
+  }
+
+  closeMoveAsset(eve) {
+    this.moveAsset = eve;
+    $('.worksOrderDetailOvrlay').removeClass('ovrlay');
+    // this.selectedRow = undefined;
+  }
+
+
+  openPhaseChecklist(item) {
+    this.actualSelectedRow = item;
+    $('.worksOrderDetailOvrlay').addClass('ovrlay');
+    this.phaseChecklist = true;
+  }
+
+  closePhaseChecklist(eve) {
+    this.phaseChecklist = eve;
+    $('.worksOrderDetailOvrlay').removeClass('ovrlay');
+    // this.selectedRow = undefined;
+  }
+
 
 }

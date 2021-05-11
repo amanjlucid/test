@@ -15,6 +15,7 @@ export class HnsResInfoEditAnsComponent implements OnInit {
   subs = new SubSink();
   title: string = "Change Information Answer";
   @Input() isAssessment: any = false;
+  @Input() isHistorical: any = false;
   @Input() showInfoEditAns: boolean = false;
   @Input() selectedAction: any;
   @Input() rootAssessment: any;
@@ -35,6 +36,7 @@ export class HnsResInfoEditAnsComponent implements OnInit {
   };
   floorDrp: any;
   readonly: boolean = true;
+  QuestionCodeOnActiveSurvey: string = '';
   openSpellChecker: boolean = false;
   textId: any;
   textString: any;
@@ -128,6 +130,7 @@ export class HnsResInfoEditAnsComponent implements OnInit {
           if (quesCodeData.data != '') {
             // this.questonCode = data.data;
             this.title = `View Information Answer - ${quesCodeData.data}`;
+            this.QuestionCodeOnActiveSurvey =  quesCodeData.data;
             this.viewOnly = true;
             this.editAnsForm.disable();
             this.chRef.detectChanges();
@@ -225,6 +228,11 @@ export class HnsResInfoEditAnsComponent implements OnInit {
         this.editAnsForm.disable()
         this.viewOnly = true;
       }
+    }
+
+    if (this.isHistorical) {
+        this.editAnsForm.disable()
+        this.viewOnly = true;
     }
 
     this.subs.add(
@@ -449,7 +457,7 @@ export class HnsResInfoEditAnsComponent implements OnInit {
 
 
   dateFormate(value) {
-    return `${value.month}-${value.day}-${value.year}`
+    return `${value.day}-${value.month}-${value.year}`
   }
 
   openCalendar(obj, field) {
@@ -468,7 +476,7 @@ export class HnsResInfoEditAnsComponent implements OnInit {
   }
 
   closerImage(event) {
-    this.showImage = event;
+    this.showImage = false;
     $('.editInfoAnsOvrlay').removeClass('ovrlay');
     // this.disableBtn = true
   }

@@ -24,7 +24,7 @@ export class HnsResAssessmenttabComponent implements OnInit {
     sort: [],
     filter: {
       filters: [],
-      logic: "or",
+      logic: "and",
     }
   }
   statusArr: any = [{ hasiactionstatus: "Outstanding" }, { hasiactionstatus: "Resolved" }]
@@ -56,7 +56,9 @@ export class HnsResAssessmenttabComponent implements OnInit {
   customerRiskRatingFilter = [{ "key": "(Blanks)", "value": "Blank" }, { "key": "LOW", "value": "LOW" }, { "key": "MEDIUM", "value": "MEDIUM" }, { "key": "TOLERABLE", "value": "TOLERABLE" }];
   sourceFilter = [{ "key": "Survey", "value": "S" }, { "key": "Interface", "value": "I" }, { "key": "(blanks)", "value": "Blank" }];
   apiColFilter: any = [];
-
+  AssetHSView;
+  Assessments: any = [];
+  fromAssetView: boolean = false;
   constructor(
     private assetAttributeService: AssetAttributeService,
     private alertService: AlertService,
@@ -79,6 +81,14 @@ export class HnsResAssessmenttabComponent implements OnInit {
     this.headerFilters.Textstring = '';
     this.displayCustomerColOnAssessment()
 
+    if (sessionStorage.getItem('AssetHSView'))
+        {
+          this.AssetHSView = JSON.parse(sessionStorage.getItem('AssetHSView'));
+          this.fromAssetView = true;
+
+
+        }
+
     this.query = this.stateChange.pipe(
       tap(state => {
         this.headerFilters = state;
@@ -90,6 +100,11 @@ export class HnsResAssessmenttabComponent implements OnInit {
         //console.log(res);
         this.totalCount = (res.total != undefined) ? res.total : 0;
         this.loading = false;
+        if (this.fromAssetView)
+        {
+            this.Assessments = res.data;
+            this.displayAssessmentFromAssetWindow()
+        }
       })
     );
 
@@ -104,9 +119,12 @@ export class HnsResAssessmenttabComponent implements OnInit {
             this.headerFilters.AssId = data.assId;
             this.headerFilters.AddressSearch = data.addressSearch;
             this.headerFilters.ActiveInactive = data.status;
-            // if (data.LatestAssessment != undefined) {
-            //   this.headerFilters.LatestAssessment = data.LatestAssessment;
-            // }
+
+            if (this.fromAssetView) {
+               this.headerFilters.LatestAssessment = 'N';
+               this.headerFilters.ActiveInactive  = 'X';
+               this.headerFilters.AssId  = this.AssetHSView.assid;
+             }
 
           }
         }
@@ -145,7 +163,18 @@ export class HnsResAssessmenttabComponent implements OnInit {
         }
       )
     )
-
+      }
+      
+  displayAssessmentFromAssetWindow(){
+    this.AssetHSView
+     for(let obj of this.Assessments)
+     {
+        if (obj.hascode == this.AssetHSView.hascode && obj.hasversion == this.AssetHSView.hasversion && obj.assid == this.AssetHSView.assid && obj.hasassessmentref == this.AssetHSView.hasref )
+        {
+          this.openAssessment(obj);
+        }
+        this.fromAssetView = false;
+  }
   }
 
 
@@ -330,9 +359,9 @@ export class HnsResAssessmenttabComponent implements OnInit {
       // compare first click to this click and see if they occurred within double click threshold
       if (((new Date().getTime()) - this.touchtime) < 400) {
         // double click occurred
+        if (this.hnsPermission.indexOf('View Assessment') != -1) {
         $('.actionOverlay').addClass('ovrlay');
         this.selectedAction = dataItem;
-        if (this.hnsPermission.indexOf('View Assessment') != -1) {
           this.openAssessment(dataItem);
         }
         // this.definitionDetailIsTrue = true;
@@ -714,7 +743,7 @@ export class HnsResAssessmenttabComponent implements OnInit {
   }
 
   closerImage(event) {
-    this.showImage = event;
+    this.showImage = false;
     $('.actionOverlay').removeClass('ovrlay');
     // this.disableBtn = true
   }
@@ -745,10 +774,11 @@ export class HnsResAssessmenttabComponent implements OnInit {
               // modify export data
               tempData.map((x: any) => {
                 x.hasassessmentdate = this.helperService.formatDateWithoutTime(x.hasassessmentdate)
-
+                x.hasasource = x.hasasource == "S" ? "Survey" : x.hasasource == "I" ? "Interface  " : "";
               })
               //console.log(this.gridView)
-              // let ignore = [];
+              let res = this.displayCustCol;
+              if(res == 'True'){
               let label = {
                 'assid': 'Asset',
                 'astconcataddress': 'Address',
@@ -764,15 +794,35 @@ export class HnsResAssessmenttabComponent implements OnInit {
                 'customerreviewyear': 'Customer Review Year',
                 'hasasource': 'Source',
                 'supcode': 'Project',
-                'hasiriskscore': 'Risk Score',
-
+                  'hasscoreactual': 'Risk Score',
+                  'hasscoremax': 'Max Score',
+                  'hasscoreperc': 'Score %',
+                  'hasscorebandname': 'Risk Band',
+                }
+                this.helperService.exportAsExcelFile(tempData, 'HnS Assessment', label)
+              }
+              else{
+                let label = {
+                  'assid': 'Asset',
+                  'astconcataddress': 'Address',
+                  'asspostcode': 'PostCode',
+                  'hascode': 'Definition',
+                  'hasversion': 'Vers',
+                  'hasassessmentref': 'Assessment Ref',
+                  'hasassessmentdate': 'Assessment Date',
+                  'hasassessor': 'Assessor',
+                  'hasasource': 'Source',
+                  'supcode': 'Project',
+                  'hasscoreactual': 'Risk Score',
                 'hasscoremax': 'Max Score',
-                'hasscoreactual': 'Score %',
+                  'hasscoreperc': 'Score %',
                 'hasscorebandname': 'Risk Band',
-
+                }
+                this.helperService.exportAsExcelFile(tempData, 'HnS Assessment', label)
               }
 
-              this.helperService.exportAsExcelFile(tempData, 'HnS Assessment', label)
+
+
 
             }
           } else {
@@ -923,6 +973,10 @@ export class HnsResAssessmenttabComponent implements OnInit {
                 }
               )
             }
+              else
+              {
+                this.alertService.error("This report cannot be created because: " + data.message);
+              }
 
           }
         )

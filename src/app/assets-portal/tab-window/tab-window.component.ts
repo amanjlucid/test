@@ -1,13 +1,13 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
-import { AssetAttributeService, SharedService } from '../../_services'
-
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectorRef, OnDestroy } from '@angular/core';
+import { AssetAttributeService, SharedService, SettingsService } from '../../_services'
+import { SubSink } from 'subsink';
 
 @Component({
   selector: 'app-tab-window',
   templateUrl: './tab-window.component.html',
   styleUrls: ['./tab-window.component.css']
 })
-export class TabWindowComponent implements OnInit {
+export class TabWindowComponent implements OnInit, OnDestroy {
 
   public windowState = 'default';//'maximized';
   @Input() tabWindow: boolean = false;
@@ -22,15 +22,20 @@ export class TabWindowComponent implements OnInit {
   moduleAccess: any;
   energyPortalAccess = [];
   modulesEnabled = [];
+  menuList: any = [];
+  subs = new SubSink(); // to unsubscribe services
 
   constructor(
     private assetAttributeService: AssetAttributeService,
-    private dataShareService: SharedService
+    private dataShareService: SharedService,
+    private settingService: SettingsService,
   ) {
 
   }
 
   ngOnInit() {
+   
+    this.getMenus();
     this.dataShareService.sharedAsset.subscribe();
     this.dataShareService.modulePermission.subscribe(data => {this.moduleAccess = data});
     this.dataShareService.realModulesEnabled.subscribe(data => { 
@@ -53,6 +58,9 @@ export class TabWindowComponent implements OnInit {
     )
   }
 
+  ngOnDestroy() {
+    this.subs.unsubscribe();
+  }
 
   public showTab(tabName) {
     this.tabName = tabName;
@@ -103,6 +111,20 @@ export class TabWindowComponent implements OnInit {
     }
   }
 
+  checkMenuAccess(name: string, forAngular: number): Boolean {
+    return this.menuList.some(x => x.menuName == name && x.linkType == forAngular && x.menuVisible == 1);
+  }
 
+  getMenus() {
+    this.subs.add(
+      this.settingService.getSilverLightMenu().subscribe(
+        data => {
+          if (data.isSuccess) {
+            this.menuList = data.data;
+          }
+        }
+      )
+    )
+  }
   
 }

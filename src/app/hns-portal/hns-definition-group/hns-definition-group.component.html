@@ -17,7 +17,7 @@
             <label class="col-form-label">Group</label>
           </div>
           <div class="col-md-8">
-            <input #firstInp type="text" formControlName="group" [ngClass]="{ 'is-invalid': submitted && formErrors.group }"
+            <input maxlength="200" #firstInp type="text" formControlName="group" [ngClass]="{ 'is-invalid': submitted && formErrors.group }"
               class="form-control">
             <div *ngIf="submitted && formErrors.group" class="invalid-feedback">
               <div *ngIf="formErrors.group">{{ formErrors.group }}</div>

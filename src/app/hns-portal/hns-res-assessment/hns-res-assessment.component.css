@@ -133,3 +133,12 @@ label.radio-inline {
 .bandName, .bandDate{
     width: 100px !important;
 }
+
+#datagrid
+{
+    padding-top: 1px;
+    border-width: 1;
+    height: 100%;
+    white-space:nowrap;
+    grid-auto-rows: auto;
+}

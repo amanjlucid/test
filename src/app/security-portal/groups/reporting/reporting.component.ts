@@ -143,6 +143,15 @@ export class ReportingComponent implements OnInit {
           this.renderTable(data);
         }
       )
+    } else if (this.reportingAction == "runExportTemplate") {
+      this.exportId =  this.surveyPortalXport.XportID;;
+      this.reportParams = this.surveyPortalXport.Params;
+      this.reportingType = this.surveyPortalXport.ReportTitle;
+      this.reportingGrpService.RunSurveyPortalXports(this.exportId, this.reportParams, this.preview).subscribe(
+        data => {
+          this.renderTable(data);
+        }
+      )
     }
   }
 
@@ -232,6 +241,11 @@ export class ReportingComponent implements OnInit {
     } else if (this.reportingAction == "allGrpDetail") {
       //var exportId = 586;
       var lstParamNameValue: string[] = [''];
+    }else if (this.reportingAction == "runSurveyPortalXports") {
+      //var exportId = 586;
+      var lstParamNameValue: string[] = this.reportParams;
+    }else if (this.reportingAction == "runExportTemplate") {
+      var lstParamNameValue: string[] = this.reportParams;
     }
 
     if (this.reportFormat == "PDF") {
@@ -361,6 +375,8 @@ export class ReportingComponent implements OnInit {
     } else if (this.reportingAction == "allGrpDetail") {
       //var exportId = 586;
       var lstParamNameValue: string[] = [''];
+    }  else if (this.reportingAction == "runExportTemplate") {
+      var lstParamNameValue: string[] = this.reportParams;
     }
 
     this.reportingGrpService.emailReport(this.exportId, lstParamNameValue, this.currentUser.userId, this.reportFormat, pivotCheckBox, this.selectedUsersToMail, this.emailReportCon.subject.value, this.emailReportCon.emailText.value).subscribe( data => {

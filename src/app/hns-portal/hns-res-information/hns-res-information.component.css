@@ -12,6 +12,8 @@ label.radio-inline {
     padding: 0px 8px;
 }
 
+
+
 .searchBox {
     height: 27px;
     font-size: .894rem;
@@ -19,7 +21,7 @@ label.radio-inline {
     color: #4E5155;
     background-color: #fff;
     background-clip: padding-box;
-    border: 1px solid rgba(24, 28, 33, 0.1);
+    border: 1px solid #181c211a;
     border-radius: .25rem;
     width: 100% !important;
     padding: 5px;
@@ -64,4 +66,14 @@ label.radio-inline {
 
 .attachmentIcon {
     margin-top: 0px !important;
+}
+
+.actionGrid kendo-grid-filter-cell-operators {
+    display: none!important;
+}
+
+.actionGrid .k-grid tbody td {
+    white-space: nowrap !important;
+    line-height: 20px !important;
+    padding: 8px 12px !important;
 }

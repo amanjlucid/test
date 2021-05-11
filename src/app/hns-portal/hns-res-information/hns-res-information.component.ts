@@ -13,7 +13,8 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 @Component({
   selector: 'app-hns-res-information',
   templateUrl: './hns-res-information.component.html',
-  styleUrls: ['./hns-res-information.component.css']
+  styleUrls: ['./hns-res-information.component.css'],
+  encapsulation: ViewEncapsulation.None
 })
 export class HnsResInformationComponent implements OnInit {
 
@@ -25,7 +26,7 @@ export class HnsResInformationComponent implements OnInit {
     sort: [],
     filter: {
       filters: [],
-      logic: "or",
+      logic: "and",
     }
   }
   // statusArr: any = [{ hasiactionstatus: "Outstanding" }, { hasiactionstatus: "Resolved" }]
@@ -309,11 +310,14 @@ export class HnsResInformationComponent implements OnInit {
     } else {
       // compare first click to this click and see if they occurred within double click threshold
       if (((new Date().getTime()) - this.touchtime) < 400) {
+        if(this.hnsPermission.indexOf('Edit Answer') != -1)
+        {
         // double click occurred
         $('.actionOverlay').addClass('ovrlay');
         this.selectedAction = dataItem;
         this.openEditAnswer(dataItem);
-        // this.definitionDetailIsTrue = true;
+        }
+
         this.touchtime = 0;
       } else {
         // not a double click so set as a new first click
@@ -660,7 +664,7 @@ export class HnsResInformationComponent implements OnInit {
   }
 
   closerImage(event) {
-    this.showImage = event;
+    this.showImage = false;
     $('.actionOverlay').removeClass('ovrlay');
     // this.disableBtn = true
   }
@@ -703,9 +707,9 @@ export class HnsResInformationComponent implements OnInit {
                 'hasquestioncode': 'Question Code',
                 'hasquestiontext': 'Question',
                 'hasaansweritem': 'Answer',
-                'hasALocation': 'Location',
-                'hasAFloor': 'Floor',
-                'hasacomment': 'Comments',
+                'hasalocation': 'Location',
+                'hasafloor': 'Floor',
+                'hasacomments': 'Comments',
                 'hasaassessor': 'Assessor',
                 'hasaassessmentdate': 'Assessment Date',
 

@@ -1,0 +1,32 @@
+.k-window{
+    position: fixed !important;
+    /* padding: 0 !important; */
+
+}
+
+
+.buttonDiv button{
+    margin-left: 5px;
+}
+
+
+#checklistgrid
+{ 
+    margin-left: 10px;
+    padding-top: 40px;
+    border-width: 1;
+    height: calc(100% - 25px); 
+}
+
+#predecessorgrid
+{ 
+    margin-right: 10px;
+    padding-top: 40px;
+    border-width: 1;
+    height: calc(100% - 25px);
+}
+
+
+.k-dialog-wrapper {
+    z-index: 12001
+}

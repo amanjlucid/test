@@ -84,8 +84,12 @@ export class WorksorderManagementService {
         return this.http.post<any>(`${appConfig.apiUrl}/api/WorkOrderDetails/DeleteWorkOrderPhase`, body, this.httpOptions)
     }
 
-    phaseUpDown(WOSEQUENCE, WOPDISPSEQ, nextPrev) {
-        return this.http.get<any>(`${appConfig.apiUrl}/api/WorkOrderDetails/PhaseUpDown?WOSEQUENCE=${WOSEQUENCE}&WOPDISPSEQ=${WOPDISPSEQ}&nextPrev=${nextPrev}`, this.httpOptions);
+    // phaseUpDown(WOSEQUENCE, WOPDISPSEQ, nextPrev) {
+    //     return this.http.get<any>(`${appConfig.apiUrl}/api/WorkOrderDetails/PhaseUpDown?WOSEQUENCE=${WOSEQUENCE}&WOPDISPSEQ=${WOPDISPSEQ}&nextPrev=${nextPrev}`, this.httpOptions);
+    // }
+
+    phaseUpDown(WOSEQUENCE, WOPSEQUENCE, nextPrev) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/WorkOrderDetails/PhaseUpDown?WOSEQUENCE=${WOSEQUENCE}&WOPSEQUENCE=${WOPSEQUENCE}&nextPrev=${nextPrev}`, this.httpOptions);
     }
 
 
@@ -114,26 +118,26 @@ export class WorksorderManagementService {
         );
     }
 
-    getWorksPackagesForAssets(params){
+    getWorksPackagesForAssets(params) {
         let body = JSON.stringify(params);
         return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWorksPackagesForAssets `, body, this.httpOptions)
-    } 
+    }
 
     getPlanYear(WOSEQUENCE) {
         return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetPlanYear?WOSEQUENCE=${WOSEQUENCE}`, this.httpOptions);
     }
 
-    worksOrdersInsertIntoWorkList (params){
+    worksOrdersInsertIntoWorkList(params) {
         let body = JSON.stringify(params);
         return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WorksOrdersInsertIntoWorkList  `, body, this.httpOptions)
     }
 
-    addWorksOrderAssetsFromWorkList (params){
+    addWorksOrderAssetsFromWorkList(params) {
         let body = JSON.stringify(params);
         return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/AddWorksOrderAssetsFromWorkList  `, body, this.httpOptions)
     }
 
-    addWorksOrderAssetsFromWorkListALL (params){
+    addWorksOrderAssetsFromWorkListALL(params) {
         let body = JSON.stringify(params);
         return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/AddWorksOrderAssetsFromWorkListALL  `, body, this.httpOptions)
     }
@@ -161,7 +165,159 @@ export class WorksorderManagementService {
         return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/WorksOrdersAssetChecklistsForAsset?wosequence=${wosequence}&assid=${assid}&wopsequence=${wopsequence}`, this.httpOptions);
     }
 
-    //http://104.40.138.8/RowanwoodWebAPI/api/workorderdetails/WorksOrdersAssetChecklistsForAsset?wosequence=705&assid=00ACE3-BLK&wopsequence=4
+    getPredecessors(params) {
 
- 
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWEBWorksOrdersAssetChecklistsForPredecessors`, body, this.httpOptions);
+
+    }
+
+    specificWorkOrderAssets(wosequence, assid, wopsequence) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/SpecificWorkOrderAssets?wosequence=${wosequence}&assid=${assid}&wopsequence=${wopsequence}`, this.httpOptions);
+    }
+
+    setStatus(apiName, params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/${apiName}`, body, this.httpOptions);
+
+    }
+
+    getWOPAssetChecklistDoc(WOSEQUENCE, Assid_WOPSequence_CheckSurcde) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWEBWorksOrdersAssetChecklistFilenameList?WOSEQUENCE=${WOSEQUENCE}&Assid_WOPSequence_CheckSurcde=${Assid_WOPSequence_CheckSurcde}`, this.httpOptions);
+    }
+
+    viewDoc(params) {
+        // let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/HealthSafetyResult/GetDcocument`, params, this.httpOptions);
+        // return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWorkOrderDcocument`, params, this.httpOptions);
+
+    }
+
+    updateWorksOrderAssetChecklistDocument(params) {
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/UpdateWorksOrderAssetChecklistDocument`, params, this.httpOptions);
+    }
+
+    removeWorksOrderAssetChecklistDocument(params) {
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/RemoveWorksOrderAssetChecklistDocument`, params, this.httpOptions);
+    }
+
+    getListOfSystemValuesByCode() {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetListOfSystemValuesByCode`, this.httpOptions);
+    }
+
+
+    workOrderUploadDocument(params) {
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WorkOrderUploadDocument`, params)
+    }
+
+    worksOrderHandoverAsset(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WorksOrderHandoverAsset`, body, this.httpOptions);
+    }
+
+    worksOrderSignOffAsset(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WorksOrderSignOffAsset`, body, this.httpOptions);
+    }
+
+    worksOrderCancelAsset(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WorksOrderCancelAsset`, body, this.httpOptions);
+    }
+
+    worksOrderReleaseAsset(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WorksOrderReleaseAsset`, body, this.httpOptions);
+    }
+
+    worksOrderAcceptAsset(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WorksOrderAcceptAsset`, body, this.httpOptions);
+    }
+
+    worksOrderIssueAsset(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WorksOrderIssueAsset`, body, this.httpOptions);
+    }
+
+    worksOrderRemoveAllWork(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WorksOrderRemoveAllWork`, body, this.httpOptions);
+    }
+
+    workOrderUserSecurity(userId, WOSEQUENCE) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/WorkOrderUserSecurity?userId=${userId}&WOSEQUENCE=${WOSEQUENCE}`, this.httpOptions);
+    }
+
+    attachmentExists(sFullFileName) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/AttachmentExists?sFullFileName=${sFullFileName}`, this.httpOptions);
+    }
+
+
+    getActiveAssetTypeList() {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetActiveAssetTypeList`, this.httpOptions);
+    }
+
+    getUserTypeDetails(WOSEQUENCE, WPRSEQUENCE, userid) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetUserDetail?WOSEQUENCE=${WOSEQUENCE}&WPRSEQUENCE=${WPRSEQUENCE}&userid=${userid}`, this.httpOptions);
+    }
+
+    SwapPackage(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/SwapPackage  `, body, this.httpOptions)
+    }
+
+    getAssetAddressForSpecificAsset(WOSEQUENCE, WOPSEQUENCE, assid, WOCHECKSURCDE) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetAssetAddressForSpecificAsset?WOSEQUENCE=${WOSEQUENCE}&WOPSEQUENCE=${WOPSEQUENCE}&assid=${assid}&WOCHECKSURCDE=${WOCHECKSURCDE}`, this.httpOptions);
+    }
+
+    //asset address 
+    getAssetAddressByAsset(assid) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetAssetAddress?assid=${assid}`, this.httpOptions);
+    }
+
+    insertNoAccessRecord(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/InsertNoAccessRecord`, body, this.httpOptions)
+    }
+
+    getNoAccessHistory(WOSEQUENCE, WOPSEQUENCE, assid) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetNoAccessHistory?WOSEQUENCE=${WOSEQUENCE}&WOPSEQUENCE=${WOPSEQUENCE}&assid=${assid}`, this.httpOptions);
+    }
+
+    deleteNoAccessRecord(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/DeleteNoAccessRecord`, body, this.httpOptions)
+    }
+
+
+    getWorksOrderPhaseLevelTwo(WOSEQUENCE) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWorksOrderPhaseLevelTwo?WOSEQUENCE=${WOSEQUENCE}`, this.httpOptions);
+    }
+
+    worksOrderMoveAssetPhase(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WorksOrderMoveAssetPhase`, body, this.httpOptions)
+    }
+
+    workOrderPhaseCheckList(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WorkOrderPhaseCheckList `, body, this.httpOptions).pipe(
+            map(response => (<any>{
+                data: (response.data != null) ? response.data.phaseCheckList : [],
+                total: (response.data != null) ? response.data.totalCount  : 0
+            }))
+        );
+       
+    }
+
+    getPhaseCheckListFiltersList(WOSEQUENCE, workOnly) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetPhaseCheckListFiltersList?WOSEQUENCE=${WOSEQUENCE}&workOnly=${workOnly}`, this.httpOptions);
+    }
+
+
+
+
+
+
 }

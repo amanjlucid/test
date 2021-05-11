@@ -1,8 +1,8 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { SubSink } from 'subsink';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { WorksorderManagementService, AlertService, HelperService } from '../../_services'
-import { ShouldGreaterThanYesterday, isNumberCheck, OrderDateValidator, IsGreaterDateValidator } from 'src/app/_helpers';
+import { WorksorderManagementService, AlertService, HelperService, LoaderService } from '../../_services'
+import { ShouldGreaterThanYesterday, isNumberCheck, OrderDateValidator, IsGreaterDateValidator, checkFirstDateisLower, firstDateIsLower, SimpleDateValidator } from 'src/app/_helpers';
 import { WorkordersAddManagementModel } from '../../_models';
 
 
@@ -24,12 +24,15 @@ export class WorksordersNewmanagementComponent implements OnInit {
   workManagementForm: FormGroup;
   submitted = false;
   formErrors: any;
+  title = "New Works Programme"
   validationMessage = {
     'WPRNAME': {
       'required': 'Name is required.',
+      'maxlength': 'Name must be maximum 50 characters.',
     },
     'WPREXTREF': {
       'required': 'Ext Ref is required.',
+      'maxlength': 'Ext Ref must be maximum 50 characters.',
     },
     'WPRDESC': {
       'required': 'Desc is required.',
@@ -42,6 +45,7 @@ export class WorksordersNewmanagementComponent implements OnInit {
     },
     'WPRPROGRAMMETYPE': {
       'required': 'Programme Type is required.',
+      'maxlength': 'Programme Type must be maximum 50 characters.',
     },
     'WPRBUDGET': {
       'required': 'Budget is required.',
@@ -92,12 +96,14 @@ export class WorksordersNewmanagementComponent implements OnInit {
   readonly = true;
   mData: any;
 
+
   constructor(
     private chRef: ChangeDetectorRef,
     private fb: FormBuilder,
     private worksorderManagementService: WorksorderManagementService,
     private alertService: AlertService,
     private helperService: HelperService,
+    private loaderService: LoaderService
   ) {
     const current = new Date();
     this.minDate = {
@@ -105,20 +111,36 @@ export class WorksordersNewmanagementComponent implements OnInit {
       month: current.getMonth() + 1,
       day: current.getDate()
     };
+
+    
+  }
+
+  ngAfterViewInit() {
+    this.chRef.detectChanges();
   }
 
   ngOnInit(): void {
+    let targetDateValidationArr = [Validators.required, ShouldGreaterThanYesterday(), SimpleDateValidator()];
+    let planDateValidationArr: any = [ShouldGreaterThanYesterday(), SimpleDateValidator()];
+
+    if (this.formMode == "edit") {
+      targetDateValidationArr = [Validators.required, SimpleDateValidator()];
+      planDateValidationArr = [SimpleDateValidator()];
+    }
+
     this.workManagementForm = this.fb.group({
-      WPRNAME: ['', [Validators.required]],
-      WPREXTREF: ['', [Validators.required]],
-      WPRDESC: ['', [Validators.required]],
+      WPRNAME: ['', [Validators.required, Validators.maxLength(50)]],
+      WPREXTREF: ['', [Validators.maxLength(50)]],
+      WPRDESC: ['', []],
       WPRSTATUS: [''],
       WPRACTINACT: [''],
-      WPRPROGRAMMETYPE: ['', [Validators.required]],
-      WPRBUDGET: ['', [Validators.required, isNumberCheck(), Validators.maxLength(9)]],
-      WPRTARGETCOMPLETIONDATE: ['', [Validators.required, ShouldGreaterThanYesterday()]],
-      WPRPLANSTARTDATE: ['', [Validators.required, ShouldGreaterThanYesterday()]],
-      WPRPLANENDDATE: ['', [Validators.required, ShouldGreaterThanYesterday()]],
+      WPRPROGRAMMETYPE: ['', [Validators.maxLength(50)]],
+      WPRBUDGET: ['', [Validators.required]], //isNumberCheck(), Validators.maxLength(9)
+      WPRTARGETCOMPLETIONDATE: ['', targetDateValidationArr],
+
+      WPRPLANSTARTDATE: ['', planDateValidationArr],
+      WPRPLANENDDATE: ['', planDateValidationArr],
+
       WPRACTUALSTARTDATE: [''],
       WPRACTUALENDDATE: [''],
       WPRCONTRACTORISSUEDATE: [''],
@@ -143,12 +165,39 @@ export class WorksordersNewmanagementComponent implements OnInit {
 
     },
       {
-        validator: [OrderDateValidator('WPRPLANENDDATE', 'WPRPLANSTARTDATE'), IsGreaterDateValidator('WPRPLANENDDATE', 'WPRTARGETCOMPLETIONDATE')],
-      });
+        validator: [
+          firstDateIsLower('WPRPLANENDDATE', 'WPRPLANSTARTDATE'),
+          IsGreaterDateValidator('WPRPLANENDDATE', 'WPRTARGETCOMPLETIONDATE')
+        ],
+      }
+    );
+
+    this.chRef.detectChanges();
+
+
+    const plnEndCtr = this.workManagementForm.get('WPRPLANENDDATE');
+    const plnStartCtr = this.workManagementForm.get('WPRPLANSTARTDATE');
+
+    this.subs.add(
+      plnEndCtr.valueChanges.subscribe(
+        data => {
+          plnEndCtr.setValidators([SimpleDateValidator(), checkFirstDateisLower(plnEndCtr, plnStartCtr)])
+        }
+      )
+    )
+
+    this.subs.add(
+      plnStartCtr.valueChanges.subscribe(
+        data => {
+          plnEndCtr.setValidators([SimpleDateValidator(), checkFirstDateisLower(plnEndCtr, plnStartCtr)])
+        }
+      )
+    )
+
 
     this.populateForm()
 
-    this.chRef.detectChanges();
+
 
   }
 
@@ -162,6 +211,7 @@ export class WorksordersNewmanagementComponent implements OnInit {
       this.workManagementForm.get('WPRSTATUS').disable();
       this.workManagementForm.get('WPRACTINACT').disable();
     } else {
+      this.title = "Edit Works Programme"
       this.getWopmManagementData()
     }
   }
@@ -170,6 +220,7 @@ export class WorksordersNewmanagementComponent implements OnInit {
     this.subs.add(
       this.worksorderManagementService.getWorkProgrammesByWprsequence(this.selectedProgramme.wprsequence).subscribe(
         data => {
+          // console.log(data);
           if (data.isSuccess) {
             const mData = this.mData = data.data[0];
             this.workManagementForm.patchValue({
@@ -207,9 +258,20 @@ export class WorksordersNewmanagementComponent implements OnInit {
               WPRACTUALCONFEE: mData.wpractualconfee,
 
             })
+
+            setTimeout(() => {
+              this.chRef.detectChanges();
+            }, 100);
+            this.workManagementForm.get('WPRCONTRACTORISSUEDATE').disable();
+            this.workManagementForm.get('WPRACTUALSTARTDATE').disable();
+            this.workManagementForm.get('WPRACTUALENDDATE').disable();
+
+
           } else {
             this.alertService.error(data.message)
           }
+
+
         }
       )
     )
@@ -219,9 +281,9 @@ export class WorksordersNewmanagementComponent implements OnInit {
     Object.keys(group.controls).forEach((key: string) => {
       const abstractControl = group.get(key);
 
-      if (key == 'WPRACTUALENDDATE' || key == 'WPRACTUALSTARTDATE' || key == 'WPRCONTRACTORISSUEDATE') {
-        abstractControl.setErrors(null)
-      }
+      // if (key == 'WPRACTUALENDDATE' || key == 'WPRACTUALSTARTDATE' || key == 'WPRCONTRACTORISSUEDATE') {
+      //   abstractControl.setErrors(null)
+      // }
 
       if (abstractControl instanceof FormGroup) {
         this.logValidationErrors(abstractControl);
@@ -230,6 +292,11 @@ export class WorksordersNewmanagementComponent implements OnInit {
 
           if (abstractControl.errors.hasOwnProperty('ngbDate')) {
             delete abstractControl.errors['ngbDate'];
+
+            if (Object.keys(abstractControl.errors).length == 0) {
+              abstractControl.setErrors(null)
+            }
+
           }
 
           const messages = this.validationMessage[key];
@@ -267,57 +334,105 @@ export class WorksordersNewmanagementComponent implements OnInit {
     this.submitted = true;
     this.formErrorObject(); // empty form error 
     this.logValidationErrors(this.workManagementForm);
-    
+
+    this.chRef.detectChanges();
+
     if (this.workManagementForm.invalid) {
       return;
     }
-    
+
     let formRawVal = this.workManagementForm.getRawValue();
     let managementModel: WorkordersAddManagementModel = formRawVal;
     managementModel.WPRTARGETCOMPLETIONDATE = this.dateFormate(formRawVal.WPRTARGETCOMPLETIONDATE);
     managementModel.WPRPLANSTARTDATE = this.dateFormate(formRawVal.WPRPLANSTARTDATE);
     managementModel.WPRPLANENDDATE = this.dateFormate(formRawVal.WPRPLANENDDATE);
-
-
     managementModel.WPRCONTRACTORISSUEDATE = this.dateFormate(formRawVal.WPRCONTRACTORISSUEDATE);
     managementModel.WPRACTUALSTARTDATE = this.dateFormate(formRawVal.WPRACTUALSTARTDATE);
     managementModel.WPRACTUALENDDATE = this.dateFormate(formRawVal.WPRACTUALENDDATE);
-
     managementModel.WPRCONTRACTORACCEPTANCEDATE = this.dateFormate(formRawVal.WPRCONTRACTORACCEPTANCEDATE)
-    managementModel.MPgpA = this.dateFormate(formRawVal.MPgpA)
-    managementModel.MPgqA = this.dateFormate(formRawVal.MPgqA)
-    managementModel.MPgsA = this.dateFormate(formRawVal.MPgsA)
-    managementModel.MPgtA = this.dateFormate(formRawVal.MPgtA)
-
-    managementModel.MPgoA = this.currentUser.userId
-    managementModel.MPgrA = this.currentUser.userId
+    managementModel.WPRBUDGET = this.helperService.convertMoneyToFlatFormat(formRawVal.WPRBUDGET)
 
 
     let apiToAddUpdate: any;
     let message = '';
     if (this.formMode == 'new') {
+      managementModel.MPgpA = this.dateFormate(this.minDate)
+      managementModel.MPgqA = this.dateFormate(this.minDate)
+      managementModel.MPgsA = this.dateFormate(this.minDate)
+      managementModel.MPgtA = this.dateFormate(this.minDate)
+
+      managementModel.MPgoA = this.currentUser.userId
+      managementModel.MPgrA = this.currentUser.userId
+
       apiToAddUpdate = this.worksorderManagementService.addWorkOrderManagement(managementModel);
       message = `New Programme "${managementModel.WPRNAME}" added successfully.`;
+
+      this.subscribeToSubmitForm(apiToAddUpdate, message);
+
     } else {
+      managementModel.MPgpA = this.mData.mPgpA
+      managementModel.MPgqA = this.mData.mPgqA
+
+      managementModel.MPgsA = this.dateFormate(this.minDate)
+      managementModel.MPgtA = this.dateFormate(this.minDate)
+
+      managementModel.MPgoA = this.mData.mPgoA
+      managementModel.MPgrA = this.currentUser.userId
       managementModel.WPRSEQUENCE = this.mData.wprsequence;
+
+      if (this.mData.wprstatus == "New" && managementModel.WPRSTATUS == "In Progress") {
+        this.alertService.error("The Work Programme Status cannot be changed from 'New' to 'In Progress'");
+        return
+      }
+
+      if (this.mData.wprstatus == "Closed" && managementModel.WPRSTATUS == "New") {
+        this.alertService.error("The Work Programme Status cannot be changed from 'Closed' to 'New'");
+        return
+      }
+
+      if (this.mData.wprstatus == "In Progress" && managementModel.WPRSTATUS == "New") {
+        this.alertService.error("The Work Programme Status cannot be changed from 'In Progress' to 'New'");
+        return
+      }
+
       apiToAddUpdate = this.worksorderManagementService.updateWorksProgramme(managementModel);
       message = `Programme "${managementModel.WPRNAME}" updated successfully.`;
+
+      if (new Date(managementModel.WPRTARGETCOMPLETIONDATE) < new Date()) {
+        this.alertService.warning("Warning - Target Completion Date is in the past!", false);
+        this.loaderService.pageShow();
+        setTimeout(() => {
+          this.subscribeToSubmitForm(apiToAddUpdate, message);
+        }, 2000);
+      } else {
+        this.subscribeToSubmitForm(apiToAddUpdate, message);
+      }
+
     }
 
     // console.log(managementModel);
-    apiToAddUpdate.subscribe(
-      data => {
-        if (data.isSuccess) {
-          this.alertService.success(message);
-          this.refreshManagementGrid.emit(true);
-          this.closeNewManagementWindow()
-        } else {
-          this.alertService.error(data.message);
+
+  }
+
+  subscribeToSubmitForm(apiToAddUpdate, message) {
+    this.subs.add(
+      apiToAddUpdate.subscribe(
+        data => {
+          if (data.isSuccess) {
+            this.alertService.success(message);
+            this.refreshManagementGrid.emit(true);
+            this.closeNewManagementWindow()
+          } else {
+            this.alertService.error(data.message);
+          }
+          this.loaderService.pageHide();
+          // console.log(data)
         }
-        // console.log(data)
-      }
+      )
     )
   }
+
+
 
   closeNewManagementWindow() {
     this.openNewManagement = false;

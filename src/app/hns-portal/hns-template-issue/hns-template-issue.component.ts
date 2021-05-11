@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, Input, Output, EventEmitter, ChangeDetect
 import { SubSink } from 'subsink';
 import { DataResult, process, State, CompositeFilterDescriptor, SortDescriptor, GroupDescriptor } from '@progress/kendo-data-query';
 import { PageChangeEvent } from '@progress/kendo-angular-grid';
-import { HnsPortalService, AlertService, ConfirmationDialogService } from '../../_services'
+import { HnsPortalService, AlertService, ConfirmationDialogService, SharedService } from '../../_services'
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
@@ -25,7 +25,7 @@ export class HnsTemplateIssueComponent implements OnInit {
     take: 30,
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -36,12 +36,14 @@ export class HnsTemplateIssueComponent implements OnInit {
   searchTerm$ = new Subject<string>();
   issueMode: string = "new";
   openPopup: boolean = false;
+  hnsPermission: any = [];
 
   constructor(
     private chRef: ChangeDetectorRef,
     private hnsService: HnsPortalService,
     private alertService: AlertService,
     private confirmationDialogService: ConfirmationDialogService,
+    private sharedService: SharedService,
   ) { }
 
   ngOnInit() {
@@ -54,6 +56,14 @@ export class HnsTemplateIssueComponent implements OnInit {
       textstring: '',
     }
 
+    this.subs.add(
+      this.sharedService.hnsPortalSecurityList.subscribe(
+        data => {
+          this.hnsPermission = data;
+        }
+      )
+    )
+
     this.getTemplateIssues(this.templateIssueModel);
     this.subs.add(
       this.searchTerm$
@@ -65,6 +75,12 @@ export class HnsTemplateIssueComponent implements OnInit {
           this.getTemplateIssues(this.templateIssueModel);
         })
     )
+  }
+
+  checkGroupPermission(val: string): Boolean {
+    if (this.hnsPermission != undefined) {
+      return this.hnsPermission.includes(val);
+    }
   }
 
   ngOnDestroy() {

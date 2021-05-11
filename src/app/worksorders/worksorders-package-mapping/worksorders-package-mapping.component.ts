@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { SubSink } from 'subsink';
+import { RowArgs } from '@progress/kendo-angular-grid';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { AlertService, ConfirmationDialogService, HelperService, WorksorderManagementService, SharedService } from '../../_services'
 
@@ -34,9 +35,11 @@ export class WorksordersPackageMappingComponent implements OnInit {
   requestedData: any = [];
   templates: any;
   templateid: any = 0;
-  public mySelection: number[] = [];
+  public mySelection: any[] = [];
   worksOrderData: any;
-
+  mySelectionKey(context: RowArgs): string {
+    return `${context.dataItem.wphcode}_${context.dataItem.ataid}_${context.dataItem.cttsurcde}`;
+  }
 
   constructor(
     private sharedService: SharedService,
@@ -44,6 +47,7 @@ export class WorksordersPackageMappingComponent implements OnInit {
     private helperService: HelperService,
     private alertService: AlertService,
     private chRef: ChangeDetectorRef,
+    private confirmationDialogService: ConfirmationDialogService,
   ) { }
 
   ngOnInit(): void {
@@ -82,6 +86,7 @@ export class WorksordersPackageMappingComponent implements OnInit {
     this.subs.add(
       this.worksorderManagementService.packageMappingList(param).subscribe(
         data => {
+          
           if (data.isSuccess && data) {
             this.mappingData = data.data;
             this.gridView = process(this.mappingData, this.state);
@@ -127,6 +132,14 @@ export class WorksordersPackageMappingComponent implements OnInit {
     this.gridView = process(this.mappingData, this.state);
   }
 
+  confirmAppyAll() {
+    $('.k-window').css({ 'z-index': 1000 });
+    let confirmationMsg = `${this.mappingData.length} Package Mapping records will be updated. Do you want to continue?`
+    this.confirmationDialogService.confirm('Please confirm..', `${confirmationMsg}`)
+      .then((confirmed) => (confirmed) ? this.apply(2) : console.log(confirmed))
+      .catch(() => console.log('Attribute dismissed the dialog.'));
+  }
+
   apply(type) {
 
     let applyApi: any;
@@ -134,11 +147,13 @@ export class WorksordersPackageMappingComponent implements OnInit {
     //type 1 is form selected and type 2 is for all
     if (type == 1) {
       if (this.mySelection.length == 0) {
-        this.alertService.error("Please select atleast one package mapping record.");
+        this.alertService.error("Please select at least one package mapping record.");
         return
       }
 
-      let selectedData = this.mappingData.filter(x => this.mySelection.includes(x.wphcode));
+    
+      let selectedData = this.mappingData.filter(x => this.mySelection.includes(`${x.wphcode}_${x.ataid}_${x.cttsurcde}`));
+
       let wphcode = [];
       let ataid = [];
 
@@ -182,7 +197,7 @@ export class WorksordersPackageMappingComponent implements OnInit {
             return;
           }
 
-          this.templateid = 0;
+          // this.templateid = 0;
           this.mySelection = [];
           this.getWorksPackages();
         },

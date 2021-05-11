@@ -1,4 +1,4 @@
-.radioDiv, .actionDiv, .actionDiv #nesting-dropdown-demo{
+.radioDiv, .actionDiv, .actionDiv #nesting-dropdown-demo {
     display: inline-block;
 }
 
@@ -20,7 +20,26 @@
     position: absolute !important;
 }
 
-li.level2Menu{
-    color: #e4287e;
+.level1 {
+    background-color: rgba(230, 0, 126, 0.2) !important;
 }
 
+.level2 {
+    background-color: rgba(230, 0, 126, 0.1) !important;
+}
+
+.level3 {
+    background-color: white !important;
+}
+
+.k-grid .k-grid-content-locked .k-state-hover td, .k-grid .k-grid-content-locked tr:hover td {
+    background-color: transparent !important;
+}
+
+.k-grid .k-grid-content-locked .k-state-selected td, .k-grid .k-grid-content-locked .k-state-selected:hover td {
+    background-color: #d4cdcd!important;
+}
+
+/* .k-grid .k-grid-content-locked .k-state-selected td:hover {
+    
+} */

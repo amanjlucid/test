@@ -8,7 +8,7 @@
         </div>
 
         <div class="col-md-10 col-sm-9 ">
-            <button (click)="openHnsForm('new')" class="pull-right btn btn-sm themeButton mt-3"
+            <button (click)="openHnsForm('','new')" class="pull-right btn btn-sm themeButton mt-3"
                 *ngIf="hnsPermission.indexOf('New') != -1">New
             </button>
         </div>
@@ -57,37 +57,39 @@
                 scrollable="virtual" [sort]="state.sort" [filter]="state.filter" (sortChange)="sortChange($event)"
                 (filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)" [navigable]="true">
 
-                <kendo-grid-column title=" " width="37" [filterable]="false">
+                <kendo-grid-column title=" " width="37" [filterable]="false"  (mousedown)="cellClickHandler($event)" >
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <li (click)="triggerLi($event)" class="nav-item dropdown list-unstyled"
                             style="margin-top: -7px;">
                             <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
                             <div class="dropdown-menu">
-                                <!-- <a class="dropdown-item" (click)="openHnsForm('new')" href="javascript:void(0)">New</a> -->
-                                <a class="dropdown-item" (click)="openHnsForm('copy')" href="javascript:void(0)"
+                                <a class="dropdown-item" (click)="openHnsForm(dataItem, 'copy')" href="javascript:void(0)"
                                     *ngIf="hnsPermission.indexOf('Copy') != -1">Copy</a>
+                                <a *ngIf="dataItem.hasstatus == 'I' && hnsPermission.indexOf('Activate') != -1"
+                                    class="dropdown-item" (click)="onSelect(dataItem, 'Activate')"
+                                    href="javascript:void(0)">Activate</a>
+                                <a *ngIf="dataItem.hasstatus == 'A' && hnsPermission.indexOf('Inactivate') != -1"
+                                    class="dropdown-item" (click)="onSelect(dataItem, 'Inactivate')"
+                                    href="javascript:void(0)">Inactivate</a>
                                 <a *ngIf="dataItem.hasinuse == 'N' && hnsPermission.indexOf('Edit') != -1"
-                                    class="dropdown-item" (click)="openHnsForm('edit')"
+                                    class="dropdown-item" (click)="openHnsForm(dataItem,'edit')"
                                     href="javascript:void(0)">Edit</a>
-                                <!-- <a *ngIf="dataItem.hasinuse == 'N' && hnsPermission.indexOf('Edit') == -1"
-                                    class="dropdown-item" (click)="openHnsForm('edit')"
-                                    href="javascript:void(0)">View</a> -->
                                 <a *ngIf="dataItem.hasinuse == 'Y' && hnsPermission.indexOf('Edit') != -1"
-                                    class="dropdown-item" (click)="openHnsForm('view')"
+                                    class="dropdown-item" (click)="openHnsForm(dataItem, 'view')"
                                     href="javascript:void(0)">View</a>
                                 <a class="dropdown-item" (click)="openConfirmationDialog(dataItem)"
                                     href="javascript:void(0)" *ngIf="hnsPermission.indexOf('Delete') != -1">Delete</a>
-                                <a class="dropdown-item" *ngIf="hnsPermission.indexOf('Definitions') != -1"
+                                <a class="dropdown-item" *ngIf="hnsPermission.indexOf('Definition Detail') != -1"
                                     (click)="openDefinitionDetailPopUp(dataItem, true)"
                                     href="javascript:void(0)">Definition</a>
                                 <a class="dropdown-item" *ngIf="hnsPermission.indexOf('Edit Priority List') != -1"
-                                    (click)="priorityList()" href="javascript:void(0)">Edit
+                                    (click)="priorityList(dataItem)" href="javascript:void(0)">Edit
                                     Priority List</a>
                                 <a class="dropdown-item" *ngIf="hnsPermission.indexOf('Edit Budget List') != -1"
-                                    (click)="budgetList()" href="javascript:void(0)">Edit
+                                    (click)="budgetList(dataItem)" href="javascript:void(0)">Edit
                                     Budget List</a>
-                                <a class="dropdown-item" *ngIf="hnsPermission.indexOf('Edit Scoring Band') != -1"
-                                    [ngClass]="{'disabled' : dataItem.hasscoring != 1}" (click)="scoringBands($event)"
+                                <a class="dropdown-item" *ngIf="hnsPermission.indexOf('Edit Scoring Bands') != -1"
+                                    [ngClass]="{'disabled' : dataItem.hasscoring != 1}" (click)="scoringBands(dataItem, $event)"
                                     href="javascript:void(0)">Edit
                                     Scoring Bands</a>
 
@@ -97,17 +99,17 @@
                                         Risk Matrix List</div>
                                     <div class="dropdown-menu">
                                         <a *ngIf="hnsPermission.indexOf('Edit Severity List') != -1"
-                                            class="dropdown-item" (click)="openSeverityListMethod()"
+                                            class="dropdown-item" (click)="openSeverityListMethod(dataItem)"
                                             href="javascript:void(0)">Edit
                                             Severity List</a>
                                         <a *ngIf="hnsPermission.indexOf('Edit Probability List') != -1"
-                                            class="dropdown-item" (click)="openProbabilityListMethod()"
+                                            class="dropdown-item" (click)="openProbabilityListMethod(dataItem)"
                                             href="javascript:void(0)">Edit Probablity List</a>
 
                                     </div>
                                 </div>
                                 <a class="dropdown-item" [ngClass]="{'disabled' : dataItem.hasscoring != 1}"
-                                    (click)="recalculateScores()" href="javascript:void(0)"
+                                    (click)="recalculateScores(dataItem)" href="javascript:void(0)"
                                     *ngIf="hnsPermission.indexOf('Recalculate Scores') != -1">Recalculate Scores</a>
 
 
@@ -117,26 +119,14 @@
                                     <div class="dropdown-menu">
                                         <a class="dropdown-item"
                                             *ngIf="hnsPermission.indexOf('Definition Report') != -1"
-                                            (click)="report(false)" href="javascript:void(0)">Definition Report...</a>
+                                            (click)="report(dataItem, false)" href="javascript:void(0)">Definition Report...</a>
                                         <a class="dropdown-item"
                                             *ngIf="hnsPermission.indexOf('Definition Report With Dependencies') != -1"
-                                            (click)="report(true)" href="javascript:void(0)">Definition with Question
+                                            (click)="report(dataItem, true)" href="javascript:void(0)">Definition with Question
                                             Dependencies...</a>
 
                                     </div>
                                 </div>
-
-                                <!-- <a class="nav-link dropdown-toggle dropright" data-trigger="hover" aria-expanded="false"
-                                    data-toggle="dropdown" [ngClass]="{'disabled' : dataItem.hasscoring != 2}"
-                                    (click)="priorityList()" href="javascript:void(0)">Edit
-                                    Risk Matrix List</a>
-
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-item" (click)="openSeverityList()" href="javascript:void(0)">Edit
-                                        Severity List</a>
-                                    <a class="dropdown-item" (click)="openProbabilityList()"
-                                        href="javascript:void(0)">Edit Probablity List</a>
-                                </div> -->
 
                             </div>
                         </li>
@@ -184,7 +174,7 @@
                         <!-- <app-dropdown (filterGrid)="filterGrid($event)" [filter]="state.filter" [data]="filterDropDown"
                             field="valid" textField="val" valueField="valid">
                         </app-dropdown> -->
-                     
+
                         <multicheck-filter
                             [isPrimitive]="false"
                             [field]="column.field"
@@ -266,7 +256,7 @@
                         </span>
                     </ng-template>
                 </kendo-grid-column>
-                
+
                 <kendo-grid-column field="srtcode" title="Survey Type" width="130">
                     <ng-template kendoGridFilterMenuTemplate
                     let-column="column"
@@ -332,8 +322,6 @@
 
             <div *ngIf="loading" class="k-i-loading"></div>
 
-            <grid-context-menu [for]="grid" [menuItems]="contextMenus" (select)="onSelect($event)">
-            </grid-context-menu>
         </div>
     </div>
 </div>

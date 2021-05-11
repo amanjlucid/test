@@ -1,7 +1,7 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
-import { SelectableSettings, PageChangeEvent, RowArgs } from '@progress/kendo-angular-grid';
+import { SelectableSettings, PageChangeEvent, RowArgs, GridComponent } from '@progress/kendo-angular-grid';
 import { AlertService, HelperService, WorksorderManagementService } from 'src/app/_services';
 import { forkJoin } from 'rxjs';
 
@@ -16,6 +16,8 @@ export class WorksordersAddPackageToWorklistComponent implements OnInit {
   @Input() packageToWorklistWindow: boolean = false;
   @Input() selectedWorkOrder: any;
   @Output() closePackageWindowEvent = new EventEmitter<boolean>();
+  @Input() actualSelectedRow: any;
+  @Input() addWorkorderType: any;
 
   subs = new SubSink();
   state: State = {
@@ -39,6 +41,8 @@ export class WorksordersAddPackageToWorklistComponent implements OnInit {
   mySelection: any[] = [];
   packageQuantityWindow = false;
 
+  @ViewChild(GridComponent) grid: GridComponent;
+
   constructor(
     private chRef: ChangeDetectorRef,
     private worksorderManagementService: WorksorderManagementService,
@@ -48,6 +52,9 @@ export class WorksordersAddPackageToWorklistComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // console.log(this.selectedWorkOrder)
+    // console.log(this.actualSelectedRow)
+    // console.log(this.addWorkorderType)
 
     this.subs.add(
       forkJoin([
@@ -73,9 +80,10 @@ export class WorksordersAddPackageToWorklistComponent implements OnInit {
       CTTSURCDE: this.worksOrder.cttsurcde,
       WOSEQUENCE: this.selectedWorkOrder.wosequence,
       PlANYEAR: this.planYear,
-      WOCHECKSURCDE: 0,
+      WOCHECKSURCDE: this.addWorkorderType == "single" ? this.actualSelectedRow?.wochecksurcde : 0,
       WLATAID: 0,
     }
+
     this.subs.add(
       this.worksorderManagementService.getWorksPackagesForAssets(params).subscribe(
         data => {
@@ -84,6 +92,9 @@ export class WorksordersAddPackageToWorklistComponent implements OnInit {
             this.packageData = data.data;
             this.gridView = process(this.packageData, this.state);
             this.gridLoading = false;
+            setTimeout(() => {
+              this.grid.autoFitColumns();
+            }, 100);
           } else {
             this.alertService.error(data.message);
           }
@@ -158,9 +169,16 @@ export class WorksordersAddPackageToWorklistComponent implements OnInit {
     $('.worklistPackageOvrlay').removeClass('ovrlay');
   }
 
-  refreshPackageList(eve){
-    this.mySelection = [];
+  refreshPackageList(eve) {
+    // this.mySelection = [];
     this.getPackageList();
+    this.chRef.detectChanges();
+  }
+
+  checkPackageExist(item) {
+    if (item.attributeexists == 'Work Package Exists') return false;
+    if (item.exclusionreason != '') return false;
+    return true;
   }
 
 }

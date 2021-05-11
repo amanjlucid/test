@@ -1,0 +1,318 @@
+<kendo-window title="{{title}}" *ngIf="phaseChecklist" (close)="closePhaseChecklist()" [top]="20" [minWidth]="700"
+    [width]="1250" [height]="auto" [minHeight]="350">
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group form-row firstHeadingRow">
+                <div class="col-md-1">
+                    <label for="programme">Works Order</label>
+                </div>
+
+                <div class="col-md-5">
+                    <input type="text" value="{{worksOrderData?.woname}} ({{worksOrderData?.wosequence}})"
+                        class="form-control form-control-sm" [readonly]="readonly">
+                </div>
+                <div class="col-md-1 text-right">
+                    <label for="phase">Phase:</label>
+                </div>
+                <div class="col-md-5">
+                    <input type="text" class="form-control form-control-sm" [readonly]="readonly"
+                        value="{{phaseFromApi?.woname}}">
+                </div>
+            </div>
+
+            <div class="form-row">
+
+                <div class="col-md-1">
+                    <label>Phase Budget:</label>
+                    <input type="text" class="form-control form-control-sm" readonly="true"
+                        value="{{phaseFromApi?.wobudget | currency:'GBP':'symbol'}}">
+                </div>
+
+                <div class="col-md-1">
+                    <label>Forecast:</label>
+                    <input type="text" class="form-control form-control-sm" readonly="true"
+                        value="{{phaseFromApi?.woforecast | currency:'GBP':'symbol'}}">
+                </div>
+
+                <div class="col-md-1">
+                    <label>Committed:</label>
+                    <input type="text" class="form-control form-control-sm" readonly="true"
+                        value="{{phaseFromApi?.wocommitted | currency:'GBP':'symbol'}}">
+                </div>
+
+                <div class="col-md-1">
+                    <label>Approved:</label>
+                    <input type="text" class="form-control form-control-sm" readonly="true"
+                        value="{{phaseFromApi?.woapproved | currency:'GBP':'symbol'}}">
+                </div>
+
+                <div class="col-md-1">
+                    <label>Pending:</label>
+                    <input type="text" class="form-control form-control-sm" readonly="true"
+                        value="{{phaseFromApi?.wopending | currency:'GBP':'symbol'}}">
+                </div>
+
+                <div class="col-md-1">
+                    <label>Actual:</label>
+                    <input type="text" class="form-control form-control-sm" readonly="true"
+                        value="{{phaseFromApi?.woactual | currency:'GBP':'symbol'}}">
+                </div>
+
+                <div class="col-md-2">
+                    <label>Unallocated Budget:</label>
+                    <input type="text" class="form-control form-control-sm" readonly="true"
+                        value="{{phaseFromApi?.wobudget-phaseFromApi?.woacceptedvalue | currency:'GBP':'symbol'}}">
+                </div>
+
+                <div class="col-md-2">
+                    <label>Phase Target Date:</label>
+                    <input type="text" class="form-control form-control-sm" readonly="true"
+                        value="{{phaseFromApi?.targetdate | dateFormat : 'DD-MMM-YYYY'}}">
+                </div>
+
+                <div class="col-md-2">
+                    <label></label>
+                    <button style="margin-top: 25px;" type="button" (click)="clearFilters()" class="btn btn-sm">Clear
+                        Filters</button>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col-md-12 mt-4">
+            <kendo-grid #grid [data]="query | async" [loading]="loading" [skip]="headerFilters.CurrentPage"
+                [pageSize]="headerFilters.PageSize" filterable="menu" [resizable]="true" [sortable]="{
+    allowUnsort: true, mode: 'multiple' }" [sort]="state.sort" (sortChange)="sortChange($event)"
+                (filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)" [filter]="state.filter"
+                scrollable="virtual" [rowHeight]="36" [height]="550" (pageChange)="pageChange($event)"
+                [navigable]="false" [selectedKeys]="mySelection" [selectable]="selectableSettings"
+                [kendoGridSelectBy]="mySelectionKey" [groupable]="false">
+
+                <kendo-grid-column field="dependenciesIndicator" title="" width="40" [filterable]="false">
+                    <ng-template kendoGridHeaderTemplate>
+                        <i class="fa fa-list" aria-hidden="true"></i>
+                    </ng-template>
+
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <i (click)="openPredecessors(dataItem)" class="fa fa-list"
+                            *ngIf="dataItem.dependenciesIndicator == 'I' || dataItem.dependenciesIndicator == 'C'"
+                            aria-hidden="true"></i>
+                    </ng-template>
+                </kendo-grid-column>
+
+                <kendo-grid-column field="itemIsCompleted" title="" width="40" [filterable]="false">
+                    <ng-template kendoGridHeaderTemplate>
+                        <img style="height: 14px;" src="assets/img/icons/tick.png" />
+                    </ng-template>
+
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <img style="height: 14px;" *ngIf="dataItem.itemIsCompleted != 'N'"
+                            src="assets/img/icons/tick.png" />
+                    </ng-template>
+                </kendo-grid-column>
+
+                <kendo-grid-column field="worksOrderAssetChecklistFileCount" title="" width="40" [filterable]="false">
+                    <ng-template kendoGridHeaderTemplate>
+                        <img style="height: 14px;" src="assets/img/icons/attach.png" />
+                    </ng-template>
+
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <div style="width:100%; text-align: center;">
+                            <img style="height:16px;" *ngIf="dataItem.worksOrderAssetChecklistFileCount != 0"
+                                src="assets/img/icons/attach.png" />
+                        </div>
+                    </ng-template>
+                </kendo-grid-column>
+
+                <kendo-grid-column field="assid" title="Asset" width="120">
+                    <ng-template kendoGridFilterMenuTemplate let-filter let-column="column"
+                        let-filterService="filterService">
+                        <simple-text-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
+                        </simple-text-filter>
+                    </ng-template>
+                </kendo-grid-column>
+
+
+
+                <kendo-grid-column field="woassstatus" title="Asset Status" width="120">
+                    <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
+                        let-filterService="filterService">
+                        <multicheck-filter [isPrimitive]="true" [field]="column.field" [filterService]="filterService"
+                            [currentFilter]="filter" [data]="colFilters?.assetStatus">
+                        </multicheck-filter>
+                    </ng-template>
+                </kendo-grid-column>
+
+
+                <kendo-grid-column field="astconcataddress" title="Address" width="280">
+                    <ng-template kendoGridFilterMenuTemplate let-filter let-column="column"
+                        let-filterService="filterService">
+                        <simple-text-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
+                        </simple-text-filter>
+                    </ng-template>
+                </kendo-grid-column>
+
+                <kendo-grid-column field="wostagename" title="Stage" width="120">
+                    <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
+                        let-filterService="filterService">
+                        <multicheck-filter [isPrimitive]="true" [field]="column.field" [filterService]="filterService"
+                            [currentFilter]="filter" [data]="colFilters?.stageName">
+                        </multicheck-filter>
+                    </ng-template>
+                </kendo-grid-column>
+                <kendo-grid-column field="wocheckname" title="Name" width="120">
+                    <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
+                        let-filterService="filterService">
+                        <multicheck-filter [isPrimitive]="true" [field]="column.field" [filterService]="filterService"
+                            [currentFilter]="filter" [data]="colFilters?.checkName">
+                        </multicheck-filter>
+                    </ng-template>
+                </kendo-grid-column>
+                <kendo-grid-column field="wocheckresp" title="Responsibility" width="120">
+                    <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
+                        let-filterService="filterService">
+                        <multicheck-filter [isPrimitive]="true" [field]="column.field" [filterService]="filterService"
+                            [currentFilter]="filter" [data]="colFilters?.responsibility">
+                        </multicheck-filter>
+                    </ng-template>
+                </kendo-grid-column>
+                <kendo-grid-column field="wocheckspeciaL1" title="Special" width="120">
+                    <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
+                        let-filterService="filterService">
+                        <multicheck-filter [isPrimitive]="true" [field]="column.field" [filterService]="filterService"
+                            [currentFilter]="filter" [data]="colFilters?.special">
+                        </multicheck-filter>
+                    </ng-template>
+                </kendo-grid-column>
+                <kendo-grid-column field="woasscheckstatus" title="Status" width="120">
+                    <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
+                        let-filterService="filterService">
+                        <multicheck-filter [isPrimitive]="true" [field]="column.field" [filterService]="filterService"
+                            [currentFilter]="filter" [data]="colFilters?.checkListStatus">
+                        </multicheck-filter>
+                    </ng-template>
+                </kendo-grid-column>
+                <kendo-grid-column field="detailCount" title="# Work" width="120" [filterable]=false>
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.detailCount != 0 ? dataItem.detailCount : '' }}
+                        </span>
+                    </ng-template>
+                </kendo-grid-column>
+                <kendo-grid-column field="woacactualstartdate" title="Start Date" width="180" format="{0:dd/MM/yyyy}">
+                    <ng-template kendoGridFilterMenuTemplate let-filter let-column="column"
+                        let-filterService="filterService">
+                        <date-range-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
+                        </date-range-filter>
+                    </ng-template>
+
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.woacactualstartdate | dateFormat : 'DD-MMM-YYYY' }}
+                        </span>
+                    </ng-template>
+                </kendo-grid-column>
+                <kendo-grid-column field="woactargetcompletiondate" title="Target Date" width="180"
+                    format="{0:dd/MM/yyyy}">
+                    <ng-template kendoGridFilterMenuTemplate let-filter let-column="column"
+                        let-filterService="filterService">
+                        <date-range-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
+                        </date-range-filter>
+                    </ng-template>
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.woactargetcompletiondate | dateFormat : 'DD-MMM-YYYY' }}
+                        </span>
+                    </ng-template>
+                </kendo-grid-column>
+                <kendo-grid-column field="woaccontractorissuedate" title="Issue Date" width="180"
+                    format="{0:dd/MM/yyyy}">
+                    <ng-template kendoGridFilterMenuTemplate let-filter let-column="column"
+                        let-filterService="filterService">
+                        <date-range-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
+                        </date-range-filter>
+                    </ng-template>
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.woaccontractorissuedate | dateFormat : 'DD-MMM-YYYY' }}
+                        </span>
+                    </ng-template>
+                </kendo-grid-column>
+                <kendo-grid-column field="woacactualenddate" title="Completion Date" width="180"
+                    format="{0:dd/MM/yyyy}">
+                    <ng-template kendoGridFilterMenuTemplate let-filter let-column="column"
+                        let-filterService="filterService">
+                        <date-range-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
+                        </date-range-filter>
+                    </ng-template>
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.woacactualenddate | dateFormat : 'DD-MMM-YYYY' }}
+                        </span>
+                    </ng-template>
+                </kendo-grid-column>
+                <kendo-grid-column field="woacforecastplusfee" title="Forecast" width="180" [filterable]="false"
+                    [style]="{'text-align': 'right'}">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.woacforecastplusfee | currency:'GBP':'symbol' }}
+                        </span>
+                    </ng-template>
+                </kendo-grid-column>
+                <kendo-grid-column field="woaccommittedplusfee" title="Committed" width="180" [filterable]="false"
+                    [style]="{'text-align': 'right'}">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.woaccommittedplusfee | currency:'GBP':'symbol' }}
+                        </span>
+                    </ng-template>
+                </kendo-grid-column>
+                <kendo-grid-column field="woacactualplusfee" title="Actual" width="180" [filterable]="false"
+                    [style]="{'text-align': 'right'}">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.woacactualplusfee | currency:'GBP':'symbol' }}
+                        </span>
+                    </ng-template>
+                </kendo-grid-column>
+                <kendo-grid-column field="woacapprovedplusfee" title="Approved" width="180" [filterable]="false"
+                    [style]="{'text-align': 'right'}">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.woacapprovedplusfee | currency:'GBP':'symbol' }}
+                        </span>
+                    </ng-template>
+                </kendo-grid-column>
+                <kendo-grid-column field="woacpendingplusfee" title="Pending" width="180" [filterable]="false"
+                    [style]="{'text-align': 'right'}">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.woacpendingplusfee | currency:'GBP':'symbol' }}
+                        </span>
+                    </ng-template>
+                </kendo-grid-column>
+                <kendo-grid-column field="woacplanstartdate" title="Plan Start Date" width="180" [filterable]="false">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.woacplanstartdate | dateFormat : 'DD-MMM-YYYY' }}
+                        </span>
+                    </ng-template>
+                </kendo-grid-column>
+                <kendo-grid-column field="woacplanenddate" title="Plan End Date" width="180" [filterable]="false">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.woacplanenddate | dateFormat : 'DD-MMM-YYYY' }}
+                        </span>
+                    </ng-template>
+                </kendo-grid-column>
+                <kendo-grid-column field="woasscheckcomment" title="Comments(s)" width="180" [filterable]="false">
+                </kendo-grid-column>
+
+
+            </kendo-grid>
+        </div>
+
+    </div>
+
+</kendo-window>

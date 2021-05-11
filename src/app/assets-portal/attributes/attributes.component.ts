@@ -145,7 +145,7 @@ export class AttributesComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    
+
     this.helper.assetManagementSecurityObs.subscribe(data => this.assetManagement = data)
     this.loaderService.pageShow();
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
@@ -268,7 +268,7 @@ export class AttributesComponent implements OnInit, OnDestroy {
             s.dateModified = (s.dateModified != "") ? DateFormatPipe.prototype.transform(s.dateModified, 'DD-MMM-YYYY') : s.dateModified;
           });
           this.attributeLists = tempData;
-         
+
           this.actualAttributeLists = tempData;
           this.filterAttributes('ALL')
           this.loaderService.pageHide();
@@ -442,8 +442,8 @@ export class AttributesComponent implements OnInit, OnDestroy {
       this.notesDetails = true;
     } else if (this.selectedNotes.linkType == 'L') {
       let lnk = this.selectedNotes.link;
-   
-      
+
+
       let fileExt = lnk.substring(lnk.lastIndexOf(".") + 1).toLowerCase();
       this.assetAttributeService.getMimeType(fileExt).subscribe(
         mimedata => {
@@ -514,7 +514,7 @@ export class AttributesComponent implements OnInit, OnDestroy {
   openServicingDetail(attr, service) {
     $('.portalwBlur').addClass('ovrlay');
     this.selectedAttribute = attr;
-    this.selectedAttribute.job_Number = service.job_Number; 
+    this.selectedAttribute.job_Number = service.job_Number;
     //this.servicingDetailWindow = true; // single window of servicing detail
     this.serviceServicingDetailWindow = true;
   }
@@ -659,7 +659,7 @@ export class AttributesComponent implements OnInit, OnDestroy {
 
   onSubmit() {
     this.submitted = true;
-    this.formErrorObject(); // empty form error 
+    this.formErrorObject(); // empty form error
     this.logValidationErrors(this.createAttributeForm);
 
     if (this.createAttributeForm.invalid) {
@@ -675,7 +675,7 @@ export class AttributesComponent implements OnInit, OnDestroy {
     formObj.ASSID = encodeURIComponent(this.assetId);;
     formObj.InstallDate = this.dateFormate(this.createAttributeForm.value.installationDate);
     formObj.ServeyDate = this.dateFormate(this.createAttributeForm.value.surveyDate);
-    formObj.ServiceDate = (this.createAttributeForm.value.serviceDate != "" && this.createAttributeForm.value.serviceDate != null) ? this.dateFormate(this.createAttributeForm.value.serviceDate) : "01-01-1753";
+    formObj.ServiceDate = (this.createAttributeForm.value.serviceDate != "" && this.createAttributeForm.value.serviceDate != null) ? this.dateFormate(this.createAttributeForm.value.serviceDate) : "1753-01-01";
     formObj.UOM = this.createAttributeForm.value.uom != '' ? this.createAttributeForm.value.uom.trim() : '';
     formObj.Quantity = this.createAttributeForm.value.quantity;
     formObj.Source = this.createAttributeForm.value.dataSource;
@@ -726,7 +726,7 @@ export class AttributesComponent implements OnInit, OnDestroy {
   }
 
   dateFormate(value) {
-    return `${value.month}-${value.day}-${value.year}`
+    return `${value.year}-${value.month}-${value.day}`
   }
 
   formErrorObject() {

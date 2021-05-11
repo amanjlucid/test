@@ -1,11 +1,11 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef, ViewEncapsulation, ViewChild } from '@angular/core';
 import { SubSink } from 'subsink';
 import { State, SortDescriptor } from '@progress/kendo-data-query';
-import { SelectableSettings, PageChangeEvent, RowArgs } from '@progress/kendo-angular-grid';
-import { AlertService, AssetAttributeService, ConfirmationDialogService, HelperService, LoaderService, PropertySecurityGroupService, WorksorderManagementService } from 'src/app/_services';
+import { SelectableSettings, PageChangeEvent, RowArgs, GridComponent } from '@progress/kendo-angular-grid';
+import { AlertService, AssetAttributeService, ConfirmationDialogService, HelperService, LoaderService, PropertySecurityGroupService, SharedService, WorksorderManagementService } from 'src/app/_services';
 import { WorkordersAddAssetworklistModel } from '../../_models'
 import { tap, switchMap } from 'rxjs/operators';
-import { BehaviorSubject, forkJoin } from 'rxjs';
+import { BehaviorSubject, combineLatest, forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-worksorders-add-assetsworklist',
@@ -26,16 +26,21 @@ export class WorksordersAddAssetsworklistComponent implements OnInit {
   hiearchyWindow = false;
   //hierarchy variable ends here
 
+  @Input() addWorkorderType = "single"
+  @Input() addWorkFrom = '';
   @Input() addAssetWorklistWindow: boolean = false;
   @Output() closeAddAssetWorkListEvent = new EventEmitter<boolean>();
   @Output() refreshWorkOrderDetails = new EventEmitter<boolean>();
   @Input() actualSelectedRow: any;
-  currentUser = JSON.parse(localStorage.getItem('currentUser'));
-  subs = new SubSink();
+  @Input() selectedAssetChecklist: any = [];
 
-  readonly = true;
-  assetTypes: any;
   title = 'Add Assets from Work List';
+  subs = new SubSink();
+  currentUser = JSON.parse(localStorage.getItem('currentUser'));
+  readonly = true;
+
+  assetTypes: any;
+
   headerFilters: WorkordersAddAssetworklistModel = new WorkordersAddAssetworklistModel()
   public query: any;
   private stateChange = new BehaviorSubject<any>(this.headerFilters);
@@ -60,11 +65,14 @@ export class WorksordersAddAssetsworklistComponent implements OnInit {
   packageToWorklistWindow = false;
   selectedRow: any = [];
   planYear: any;
+  worksOrderAccess: any = [];
+  userType: any = [];
+  @ViewChild(GridComponent) grid: GridComponent;
 
   constructor(
     private propSecGrpService: PropertySecurityGroupService,
     private loaderService: LoaderService,
-    private helperService: HelperService,
+    private sharedService: SharedService,
     private alertService: AlertService,
     private chRef: ChangeDetectorRef,
     private assetAttributeService: AssetAttributeService,
@@ -74,13 +82,45 @@ export class WorksordersAddAssetsworklistComponent implements OnInit {
     this.setSelectableSettings();
   }
 
+
+
   ngOnInit(): void {
-    // console.log(this.actualSelectedRow)
+    // console.log(this.addWorkorderType)
+    // console.log(this.addWorkFrom)
+    // console.log({ selected: this.actualSelectedRow })
+    // console.log({ checklist: this.selectedAssetChecklist })
+
+    //works order security access
+    this.subs.add(
+      combineLatest([
+        this.sharedService.woUserSecObs,
+        this.sharedService.worksOrdersAccess,
+        this.sharedService.userTypeObs
+      ]).subscribe(
+        data => {
+          this.userType = data[2][0];
+          if (this.userType?.wourroletype == "Dual Role") {
+            this.worksOrderAccess = [...data[0], ...data[1]];
+          } else {
+            this.worksOrderAccess = data[0]
+          }
+        }
+      )
+    )
+
+
+    if (this.addWorkFrom == 'assetchecklist') {
+      this.title = 'Add Work'
+
+      if (this.addWorkorderType == 'single') {
+        this.headerFilters.matcheckCHECKSURCDE = this.actualSelectedRow.wochecksurcde
+        this.headerFilters.matchedSTAGESURCDE = this.actualSelectedRow.wostagesurcde
+      }
+    }
+
+    this.headerFilters.wlassid = this.actualSelectedRow.assid
     this.headerFilters.wopsequence = this.actualSelectedRow.wopsequence;
     this.headerFilters.wosequence = this.actualSelectedRow.wosequence;
-    if (this.actualSelectedRow.treelevel == 3) {
-      this.headerFilters.wlassid = this.actualSelectedRow.assid
-    }
 
     this.subs.add(
       forkJoin([
@@ -114,7 +154,13 @@ export class WorksordersAddAssetsworklistComponent implements OnInit {
                 // console.log(res);
                 this.totalCount = (res.total != undefined) ? res.total : 0;
                 this.loading = false;
+
+                setTimeout(() => {
+                  this.grid.autoFitColumns();
+                }, 500);
+
                 this.chRef.detectChanges();
+
               })
             );
           }
@@ -123,6 +169,8 @@ export class WorksordersAddAssetsworklistComponent implements OnInit {
         }
       )
     )
+
+
 
   }
 
@@ -274,7 +322,7 @@ export class WorksordersAddAssetsworklistComponent implements OnInit {
   }
 
   mySelectionKey(context: RowArgs): string {
-    return context.dataItem.wlcomppackage;
+    return `${context.dataItem.wlataid}_${context.dataItem.wlcode}`;
   }
 
   addTickedToWorksOrder(type = 1, strCheckOrProcess = "C") {
@@ -347,6 +395,7 @@ export class WorksordersAddAssetsworklistComponent implements OnInit {
             this.alertService.success(data.data['validationMessage']);
             this.refreshWorkOrderDetails.emit(true);
             this.searchGrid();
+            this.mySelection = [];
           } else if (data.data[0].pRETURNSTATUS != "S") {
             this.alertService.error(data.data['validYN'])
           }
@@ -370,20 +419,23 @@ export class WorksordersAddAssetsworklistComponent implements OnInit {
 
   selectionChange(item) {
     // console.log(item)
-    if (this.mySelection.includes(item.wlcomppackage)) {
-      this.mySelection = this.mySelection.filter(x => x != item.wlcomppackage);
-    } else {
-      this.mySelection.push(item.wlcomppackage);
-    }
 
-    const checkObj = this.selectedRow.find(x => x.wlcomppackage == item.wlcomppackage);
-
-    if (checkObj) {
-      this.selectedRow = this.selectedRow.filter(x => x.wlcomppackage != item.wlcomppackage);
+    if (this.mySelection.includes(`${item.wlataid}_${item.wlcode}`)) {
+      this.mySelection = this.mySelection.filter(x => x != `${item.wlataid}_${item.wlcode}`);
+      this.selectedRow = this.selectedRow.filter(x => this.mySelection.includes(`${x.wlataid}_${x.wlcode}`));
     } else {
+      this.mySelection.push(`${item.wlataid}_${item.wlcode}`);
       this.selectedRow.push(item);
     }
 
+    // const checkObj = this.selectedRow.find(x => x.wlataid == item.wlataid && x.wlcode == item.wlcode);
+    // if (checkObj) {
+    //   this.selectedRow = this.selectedRow.filter(x => x.wlataid != item.wlataid && x.wlcode == item.wlcode);
+    // } else {
+    //   this.selectedRow.push(item);
+    // }
+
+    // console.log(this.mySelection)
     // console.log(this.selectedRow)
   }
 

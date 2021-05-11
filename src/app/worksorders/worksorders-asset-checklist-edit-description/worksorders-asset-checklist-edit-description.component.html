@@ -1,0 +1,26 @@
+<kendo-window title="{{title}}" *ngIf="showEditDoc" (close)="closeEditDocMethod()" [top]="30" [minWidth]="500"
+  [width]="650" [height]="auto" [minHeight]="200">
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="row">
+        <div class="col-md-2">
+          <label class="col-form-label">Description</label>
+        </div>
+
+        <div class="col-md-10">
+          <input type="text" name="description" [(ngModel)]="description" class="form-control">
+        </div>
+      </div>
+
+      <div class="row mt-2">
+        <div class="col-md-12 text-right actionBtn">
+          <button class="btn btn-sm themeButton" (click)="updateDescription()">Apply</button>
+          <button class="btn btn-sm themeButton" (click)="closeEditDocMethod()">Cancel</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</kendo-window>

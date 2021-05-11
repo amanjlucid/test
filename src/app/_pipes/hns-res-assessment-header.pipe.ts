@@ -12,20 +12,28 @@ export class AssessmentHeaderPipe implements PipeTransform {
             if (vl[columnName] == value) {
                 if (columnName == "concatgroup") {
                     if (vl.hasrepeatable == "Y") {
-                        colName = `${vl.hasgroupid} ${vl.groupName}  - (${vl.hasALocation}) (${vl.hasAFloor})`;
+                        if (vl.hasALocation != "" && vl.hasAFloor != "")
+                        {
+                          colName = `${vl.hasgroupseq} ${vl.groupName}  - (${vl.hasALocation}) (${vl.hasAFloor})`;
+                        }
+                        else
+                        {
+                          colName = `${vl.hasgroupseq} ${vl.groupName}`;
+                        }
+
                     } else {
-                        colName = `${vl.hasgroupid} ${vl.groupName}`;
+                        colName = `${vl.hasgroupseq} ${vl.groupName}`;
                     }
 
                     break;
                 }
                 if (columnName == "concateheading") {
-                    colName = `${vl.hasgroupid}.${vl.hasheadingid} ${vl.hasheadingname}`;
+                    colName = `${vl.hasgroupseq}.${vl.hasheadingseq} ${vl.hasheadingname}`;
                     break;
                 }
 
                 if (columnName == "concatquestion") {
-                    colName = `${vl.hasgroupid}.${vl.hasheadingid}.${vl.hasquestionid} (${vl.hasquestioncode}) ${vl.hasquestiontext}`;
+                    colName = `${vl.hasgroupseq}.${vl.hasheadingseq}.${vl.hasquestionseq} (${vl.hasquestioncode}) ${vl.hasquestiontext}`;
                     break;
                 }
 

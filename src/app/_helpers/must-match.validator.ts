@@ -160,6 +160,8 @@ export function OrderDateValidator(controlName: any, matchingControlName1: any) 
         if (matchingControl1.value == null || control.value == null) {
             return;
         }
+
+
         const date1 = `${control.value.year}/${control.value.month}/${control.value.day}`
         const date2 = `${matchingControl1.value.year}/${matchingControl1.value.month}/${matchingControl1.value.day}`
         let dateOne = new Date(date1);
@@ -178,7 +180,8 @@ export function IsGreaterDateValidator(controlName: any, matchingControlName1: a
         const control = formGroup.controls[controlName];
         const matchingControl1 = formGroup.controls[matchingControlName1];
 
-        if (control.errors && !control.errors.isLower) {
+
+        if (control.errors && !control.errors.isGreaterDate) {
             // return if another validator has already found an error on the matchingControl
             return;
         }
@@ -231,7 +234,7 @@ export function SimpleDateValidator(format = "DD/MM/YYYY"): any {
 export function onlyImageType(): any {
     return (control: FormControl): { [key: string]: any } => {
         if (control.value != null && control.value != "") {
-            let fileExt = "JPG, GIF, PNG, PDF";
+            let fileExt = "JPG, GIF, PNG, PDF, JPEG";
             let extensions = (fileExt.split(','))
                 .map(function (x) { return x.toLocaleUpperCase().trim() });
             let ext = control.value.toUpperCase().split('.').pop();
@@ -279,6 +282,9 @@ export function MustbeTodayOrGreater(format = "DD/MM/YYYY"): any {
 
 export function isNumberCheck(): ValidatorFn {
     return (control: FormControl): { [key: string]: boolean } | null => {
+        if (control.errors && !control.errors.isNotNumber) {
+            return;
+        }
         if (control.value != null && control.value != "") {
             let number = /^[.\d]+$/.test(control.value) ? +control.value : NaN;
             if (number !== number) {
@@ -288,6 +294,107 @@ export function isNumberCheck(): ValidatorFn {
 
         return null;
     };
+}
+
+export function shouldNotZero(): ValidatorFn {
+    return (control: FormControl): { [key: string]: boolean } | null => {
+
+        if (control.errors && !control.errors.shouldNotZero) {
+            return;
+        }
+
+        let number = control.value.toString().replace(/[^0-9.]+/g, '');
+
+        if (number == 0) {
+            return { 'shouldNotZero': true };
+        }
+
+
+        return null;
+    };
+}
+
+
+export function yearFormatValidator(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+        if (control.errors && !control.errors.invalidYear) {
+            return;
+        }
+
+        const dateRegEx = new RegExp('/^[0-9]+$/');;
+        const dateInput = control.value;
+        const match = dateInput.length != 4 || !dateRegEx.test(dateInput)
+        return match ? null : { 'invalidYear': { value: control.value } };
+
+    };
+}
+
+export function checkFirstDateisLower(controlName1: any, controlName2: any) {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+
+        if (control.errors && !control.errors.isLower) {
+            return;
+        }
+
+        if (controlName2.value == null || controlName1.value == null) {
+            return;
+        }
+
+
+        const date1 = `${controlName1.value.year}/${controlName1.value.month}/${controlName1.value.day}`
+        const date2 = `${controlName2.value.year}/${controlName2.value.month}/${controlName2.value.day}`
+
+
+        let dateOne = new Date(date1);
+        let dateTwo = new Date(date2);
+
+        if (dateOne < dateTwo) {
+
+            return controlName1.setErrors({ isLower: true });
+        }
+
+        return controlName1.setErrors(null);
+
+    };
+
+
+}
+
+
+export function firstDateIsLower(controlName: any, matchingControlName1: any) {
+    return (formGroup: FormGroup) => {
+        const control = formGroup.controls[controlName];
+        const matchingControl1 = formGroup.controls[matchingControlName1];
+       
+        // if (control.errors && !control.errors.isLower) {
+        //     // return if another validator has already found an error on the matchingControl
+        //     return;
+        // }
+
+        if ((matchingControl1.value == null && control.value == null) || matchingControl1.value == '' && control.value == '') {
+            return;
+        }
+
+
+        if ((matchingControl1.value == null || matchingControl1.value == '') && control.value != null) {
+            return control.setErrors({ isLower: true });
+        }
+
+        if ((control.value == null || control.value == '') && matchingControl1.value != null) {
+            return control.setErrors({ isLower: true });
+        }
+
+        const date1 = `${control.value.year}/${control.value.month}/${control.value.day}`
+        const date2 = `${matchingControl1.value.year}/${matchingControl1.value.month}/${matchingControl1.value.day}`
+        let dateOne = new Date(date1);
+        let dateTwo = new Date(date2);
+
+        if (dateOne < dateTwo) {
+            return control.setErrors({ isLower: true });
+        }
+
+        return control.setErrors(null);
+    }
 }
 
 

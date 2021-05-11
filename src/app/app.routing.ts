@@ -32,6 +32,9 @@ import { SurveyDashboardComponent } from './survey-portal/survey-dashboard/surve
 import { SurveyCbcreportComponent } from './survey-portal/survey-cbcreport/survey-cbcreport.component';
 // import {WorkorderListComponent} from './worksorders/workorder-list/workorder-list.component';
 
+// import { WopmTemplatesComponent } from './worksorders/Config/wopm-templates/wopm-templates.component';
+// import { WopmConfigComponent } from './worksorders/Config/wopm-config/wopm-config.component';
+// import { WopmMasterstagesComponent } from './worksorders/Config/wopm-masterstages/wopm-masterstages.component';
 
 const appRoutes: Routes = [
 
@@ -81,19 +84,8 @@ const appRoutes: Routes = [
                     { path: 'dashboard', component: AssetEpcDashboardComponent, canActivate: [AuthGuard] },
                 ]
             },
-            // {
-            //     path: 'worksorders',
-            //     component: WorksordersRouterComponent,
-            //     children: [
-            //         { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-            //         { path: 'dashboard', component: WorksordersDashboardComponent, canActivate: [AuthGuard] },
-            //         { path: 'management', component: WorksordersManagementComponent },
-            //     ]
-            // },
-            { path: 'worksorders', canActivate: [AuthGuard], loadChildren: () => import('./worksorders/worksorders-router/worksorders.module').then(m => m.WorksOrderModule) },
             
-
-
+            { path: 'worksorders', loadChildren: () => import('./worksorders/worksorders-router/worksorders.module').then(m => m.WorksOrderModule) },
             { path: 'health&safety', loadChildren: () => import('./hns-portal/hns.module').then(m => m.HnsModule) },
             { path: 'tasks', loadChildren: () => import('./event-manager/eventmanager.module').then(m => m.EventManagerModule) },
 

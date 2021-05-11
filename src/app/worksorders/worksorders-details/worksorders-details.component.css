@@ -16,6 +16,14 @@
   position: absolute !important;
 }
 
+.dropdown-menu .show {
+  position: fixed !important;
+}
+
+.addAssetMenu {
+  top: -45px !important;
+}
+
 .k-treelist tbody td {
   white-space: nowrap !important;
   line-height: 20px;
@@ -26,7 +34,7 @@
   pointer-events: none;
 }
 
-.headerBtnArea .actionBtnArea, .headerBtnArea .administrationBtnAera{
+.headerBtnArea .actionBtnArea, .headerBtnArea .administrationBtnAera {
   display: inline-block;
 }
 
@@ -45,6 +53,22 @@
 
 .assetLabel {
   max-width: 11%;
+}
+
+.level2 {
+  background-color: rgba(230, 0, 126, 0.1) !important;
+}
+
+.dropdown-toggle.disabled {
+  color: #d1d2d3;
+  background-color: transparent;
+  pointer-events: none;
+}
+
+.dropdown-toggle.disabled .dropdown-item {
+  color: #d1d2d3;
+  background-color: transparent;
+  pointer-events: none;
 }
 
 /*------------------   Heiarchy css             ------------------------- */
@@ -257,8 +281,6 @@ label.tree_label:after {
   margin: 0px 5px;
 }
 
-
-
 .filtersection {
   padding: 10px 0px;
   border-top: 1px solid gray;
@@ -269,11 +291,11 @@ label.tree_label:after {
   font-size: 18px;
 }
 
-.assetTbl td{
+.assetTbl td {
   word-break: break-all;
 }
 
-.readonlyCl{
+.readonlyCl {
   background: #eee2e2;
 }
 
@@ -300,12 +322,11 @@ label.radio-inline {
   margin-right: 3px;
 }
 
-
-.gridStateDiv{
-display: inline-block;
+.gridStateDiv {
+  display: inline-block;
 }
 
-.goBtnDiv{
+.goBtnDiv {
   padding-left: 6px;
 }
 
@@ -345,8 +366,6 @@ display: inline-block;
   }
 }
 
-
-
 @media only screen and (max-width: 768px) {
   .hiearchyDiv label {
     text-align: left !important;
@@ -356,6 +375,20 @@ display: inline-block;
     min-width: 16% !important;
     max-width: 16% !important;
   }
-  
-  
+}
+
+.level3 {
+  background-color: white !important;
+}
+
+.k-grid .k-grid-content-locked .k-state-hover td, .k-grid .k-grid-content-locked tr:hover td {
+  background-color: transparent !important;
+}
+
+.k-grid .k-grid-content-locked .k-state-selected td, .k-grid .k-grid-content-locked .k-state-selected:hover td {
+  background-color: #d4cdcd!important;
+}
+
+.actionToggle .actionMenu {
+  top: -82px !important;
 }

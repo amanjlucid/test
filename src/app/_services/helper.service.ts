@@ -9,6 +9,7 @@ import * as moment from "moment";
 import { anyChanged } from '@progress/kendo-angular-grid/dist/es2015/utils';
 import { SubSink } from 'subsink';
 import { EventService } from './event.service';
+import { WorksorderManagementService } from './works-order/worksorder-management.service';
 
 
 
@@ -26,7 +27,8 @@ export class HelperService {
 
     constructor(
         private sharedService: SharedService,
-        private notificationService: EventService
+        private notificationService: EventService,
+        private worksorderManagementService: WorksorderManagementService,
     ) { }
 
     public exportAsExcelFile(json: any[], excelFileName: string, labels): void {
@@ -651,6 +653,11 @@ export class HelperService {
         return date
     }
 
+    convertMoneyToFlatFormat(val) {
+        val = typeof val == "number" ? val.toString() : val;
+        return val == "" ? val : val.replace(/[^0-9.]+/g, '');
+    }
+
 
     updateNotificationOnTop() {
         let currentUser = JSON.parse(localStorage.getItem('currentUser'));
@@ -662,5 +669,55 @@ export class HelperService {
             )
         )
     }
+
+    getWorkOrderSecurity(wo) {
+        let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        this.subs.add(
+            this.worksorderManagementService.workOrderUserSecurity(currentUser.userId, wo).subscribe(
+                wosecurtiy => {
+                    // console.log(wosecurtiy)
+                    this.sharedService.changeWoSecurity(wosecurtiy.data)
+                }
+            )
+        )
+    }
+
+
+    getUserTypeWithWOAndWp(wo, wp) {
+        let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        this.subs.add(
+            this.worksorderManagementService.getUserTypeDetails(wo, wp, currentUser.userId).subscribe(
+                userType => {
+                    // console.log(wosecurtiy)
+                    this.sharedService.changeUserType(userType.data)
+                }
+            )
+        )
+    }
+
+
+    yesterday() {
+        const today = new Date()
+        const yesterday = new Date(today)
+        yesterday.setDate(yesterday.getDate() - 1)
+
+        let yesterdayObj = {
+            year: yesterday.getFullYear(),
+            month: yesterday.getMonth() + 1,
+            day: yesterday.getDate()
+        }
+
+        return yesterdayObj;
+    }
+
+
+    dateObjToString(value) {
+        if (value == undefined || typeof value == 'undefined' || typeof value == 'string') {
+          return new Date('1753-01-01').toJSON()
+        }
+        const dateStr = `${value.year}-${this.zeorBeforeSingleDigit(value.month)}-${this.zeorBeforeSingleDigit(value.day)}`;
+        return new Date(dateStr).toJSON()
+      }
+
 
 }

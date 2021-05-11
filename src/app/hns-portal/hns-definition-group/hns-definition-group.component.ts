@@ -59,7 +59,7 @@ export class HnsDefinitionGroupComponent implements OnInit {
     //this.title = this.defGrpFormMode == "new" ? "New Health and Safety Group" : "Change Health and Safety Group";
 
     this.definitionGrpForm = this.fb.group({
-      group: ['', [Validators.required, Validators.maxLength(20)]],
+      group: ['', [Validators.required]],
       isRepeatable: [''],
       status: ['A', [Validators.required]],
       createdBy: [''],

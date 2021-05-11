@@ -1,0 +1,23 @@
+.k-window{
+    position: fixed !important;
+    /* padding: 0 !important; */
+
+}
+
+
+.buttonDiv button{
+    margin-left: 5px;
+}
+
+
+#checklistgrid
+{ 
+    padding-top: 50px;
+    border-width: 1;
+    height: 100%; 
+}
+
+/* 
+.k-dialog-wrapper {
+    z-index: 12001
+} */
