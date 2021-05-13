@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef, ViewEncapsulation } from '@angular/core';
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
-import { SelectableSettings, PageChangeEvent, RowArgs, GridComponent } from '@progress/kendo-angular-grid';
+import { SelectableSettings, PageChangeEvent } from '@progress/kendo-angular-grid';
 import { AlertService, HelperService, WorksorderManagementService } from 'src/app/_services';
 import { forkJoin } from 'rxjs';
 
@@ -42,26 +42,25 @@ export class VariationListComponent implements OnInit {
   worksOrderData: any;
   phaseData: any;
   assetDetails: any;
+  woAsset: any;
   selectedSingleVariation: any;
   openVariationWorkList: boolean = false;
-
-
+  openNewVariation: boolean = false;
+  formMode = 'new'
 
   constructor(
     private chRef: ChangeDetectorRef,
     private workOrderProgrammeService: WorksorderManagementService,
     private alertService: AlertService,
-    // private confirmationDialogService: ConfirmationDialogService,
     private helperService: HelperService,
-    // private sharedService: SharedService,
+    
   ) {
     this.setSelectableSettings();
   }
 
   ngOnInit(): void {
-    console.log(this.selectedAsset);
+    // console.log(this.selectedAsset);
     this.getVariationPageDataWithGrid();
-    // this.getGridData();
   }
 
   ngOnDestroy() {
@@ -71,7 +70,7 @@ export class VariationListComponent implements OnInit {
   setSelectableSettings(): void {
     this.selectableSettings = {
       checkboxOnly: true,
-      mode: 'multiple'
+      mode: 'single'
     };
   }
 
@@ -94,16 +93,18 @@ export class VariationListComponent implements OnInit {
         this.workOrderProgrammeService.getWorksOrderByWOsequence(wosequence),
         this.workOrderProgrammeService.getPhase(wosequence, wopsequence),
         this.workOrderProgrammeService.getAssetAddressByAsset(assid),
-        this.workOrderProgrammeService.getWEBWorksOrdersVariationList(wosequence, wopsequence, assid)
+        this.workOrderProgrammeService.getWEBWorksOrdersVariationList(wosequence, wopsequence, assid),
+        this.workOrderProgrammeService.specificWorkOrderAssets(wosequence, assid, wopsequence),
       ]).subscribe(
         data => {
-          console.log(data)
+          // console.log(data)
 
           this.worksOrderData = data[0].data;
           this.phaseData = data[1].data;
           this.assetDetails = data[2].data[0];
-
           const variationData = data[3];
+          this.woAsset = data[4].data[0];
+
 
           if (variationData.isSuccess) {
             this.variationData = variationData.data;
@@ -113,7 +114,7 @@ export class VariationListComponent implements OnInit {
           this.loading = false;
           this.chRef.detectChanges();
 
-        }
+        }, err => this.alertService.error(err)
       )
     )
   }
@@ -149,6 +150,16 @@ export class VariationListComponent implements OnInit {
 
   closeVariationDetails(eve) {
     this.openVariationWorkList = eve;
+    $('.variationListOverlay').removeClass('ovrlay');
+  }
+
+  newVariation() {
+    this.openNewVariation = true;
+    $('.variationListOverlay').addClass('ovrlay');
+  }
+
+  closeNewVariation(eve) {
+    this.openNewVariation = eve;
     $('.variationListOverlay').removeClass('ovrlay');
   }
 

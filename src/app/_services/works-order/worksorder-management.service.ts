@@ -339,6 +339,14 @@ export class WorksorderManagementService {
         return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWEBWorksOrdersVariationList?WOSEQUENCE=${WOSEQUENCE}&WOPSEQUENCE=${WOPSEQUENCE}&assId=${assId}`, this.httpOptions);
     }
 
+    getWEBWorksOrdersAssetDetailAndVariation(WOSEQUENCE, WOPSEQUENCE, assId) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWEBWorksOrdersAssetDetailAndVariation?WOSEQUENCE=${WOSEQUENCE}&WOPSEQUENCE=${WOPSEQUENCE}&assId=${assId}`, this.httpOptions);
+    }
+
+    getWEBWorksOrdersAssetChecklistAndVariation(WOSEQUENCE, WOPSEQUENCE, assId) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWEBWorksOrdersAssetChecklistAndVariation?WOSEQUENCE=${WOSEQUENCE}&WOPSEQUENCE=${WOPSEQUENCE}&assId=${assId}`, this.httpOptions);
+    }
+
 
 
 

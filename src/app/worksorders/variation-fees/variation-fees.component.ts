@@ -6,19 +6,19 @@ import { AlertService, HelperService, WorksorderManagementService } from 'src/ap
 import { forkJoin } from 'rxjs';
 
 @Component({
-  selector: 'app-variation-work-list',
-  templateUrl: './variation-work-list.component.html',
-  styleUrls: ['./variation-work-list.component.css'],
+  selector: 'app-variation-fees',
+  templateUrl: './variation-fees.component.html',
+  styleUrls: ['./variation-fees.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None
 })
 
-export class VariationWorkListComponent implements OnInit {
-  @Input() openVariationWorkList: boolean = false;
+export class VariationFeesComponent implements OnInit {
+  @Input() openFees: boolean = false;
+  @Input() singleVariation: any = [];
   @Input() openedFrom = 'assetchecklist';
   @Input() openedFor = 'details';
-  @Input() singleVariation: any = [];
-  @Output() closeWorkListEvent = new EventEmitter<boolean>();
+  @Output() closeFeesEvent = new EventEmitter<boolean>();
   title = '';
   subs = new SubSink();
   state: State = {
@@ -31,32 +31,34 @@ export class VariationWorkListComponent implements OnInit {
       filters: []
     }
   }
-  variationWorkListData: any;
+  variationFeesData: any;
   gridView: DataResult;
   loading = true
   pageSize = 25;
   selectableSettings: SelectableSettings;
   mySelection: any[] = [];
-  selectedSingleVarWorkList: any;
-  openFees = false;
-
+  selectedSingleFees: any;
 
   constructor(
     private chRef: ChangeDetectorRef,
     private workOrderProgrammeService: WorksorderManagementService,
     private alertService: AlertService,
-  ) {
-    this.setSelectableSettings();
-   }
+  ) { 
+    this.setSelectableSettings()
+  }
 
   ngOnInit(): void {
-
+    
     if (this.openedFor == "details") {
-      this.title = `Variation: ${this.singleVariation?.woiissuereason} (${this.singleVariation?.wopsequence})`;
+      this.title = `Variation Fees: ${this.singleVariation?.woiissuereason} (${this.singleVariation?.wopsequence})`;
     }
 
-    this.getVariationWorkList();
+    this.getVariationFees();
+  }
 
+  closeFees() {
+    this.openFees = false;
+    this.closeFeesEvent.emit(false);
   }
 
   ngOnDestroy() {
@@ -70,16 +72,16 @@ export class VariationWorkListComponent implements OnInit {
     };
   }
 
-  getVariationWorkList() {
+  getVariationFees() {
     const { wosequence, assid, wopsequence } = this.singleVariation;
 
     this.subs.add(
-      this.workOrderProgrammeService.getWEBWorksOrdersAssetDetailAndVariation(wosequence, wopsequence, assid).subscribe(
+      this.workOrderProgrammeService.getWEBWorksOrdersAssetChecklistAndVariation(wosequence, wopsequence, assid).subscribe(
         data => {
           // console.log(data);
           if (data.isSuccess) {
-            this.variationWorkListData = data.data;
-            this.gridView = process(this.variationWorkListData, this.state);
+            this.variationFeesData = data.data;
+            this.gridView = process(this.variationFeesData, this.state);
           } else this.alertService.error(data.message);
 
           this.loading = false;
@@ -89,47 +91,29 @@ export class VariationWorkListComponent implements OnInit {
 
       )
     )
+
   }
 
   sortChange(sort: SortDescriptor[]): void {
     this.state.sort = sort;
-    this.gridView = process(this.variationWorkListData, this.state);
+    this.gridView = process(this.variationFeesData, this.state);
   }
 
   filterChange(filter: any): void {
     this.state.filter = filter;
-    this.gridView = process(this.variationWorkListData, this.state);
+    this.gridView = process(this.variationFeesData, this.state);
   }
 
   pageChange(event: PageChangeEvent): void {
     this.state.skip = event.skip;
     this.gridView = {
-      data: this.variationWorkListData.slice(this.state.skip, this.state.skip + this.pageSize),
-      total: this.variationWorkListData.length
+      data: this.variationFeesData.slice(this.state.skip, this.state.skip + this.pageSize),
+      total: this.variationFeesData.length
     };
   }
 
   cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
-    this.selectedSingleVarWorkList = dataItem;
-  }
-
-  closeWorkList() {
-    this.openVariationWorkList = false;
-    this.closeWorkListEvent.emit(false);
-  }
-
-  openFeesMethod() {
-    $('.variationWorkListOverlay').addClass('ovrlay')
-    this.openFees = true;
-  }
-
-  closeOpenFees(eve) {
-    this.openFees = eve;
-    $('.variationWorkListOverlay').removeClass('ovrlay')
-  }
-
-  openAdditionalWorkItem() {
-
+    this.variationFeesData = dataItem;
   }
 
 }

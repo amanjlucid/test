@@ -1,11 +1,24 @@
 <kendo-window title="{{title}}" *ngIf="openVariationWorkList" (close)="closeWorkList()" [top]="20" [minWidth]="700"
     [width]="980" [height]="auto" [minHeight]="350">
-    <div class="row">
+    <!-- <div class="row">
         <div class="col-md-2">Works Order: </div>
         <div class="col-md-10">
             <input type="text"
                 value="{{singleVariation?.woiissuereason}} (Variation No: {{singleVariation?.wopsequence}})"
                 class="form-control form-control-sm" [readonly]="true">
+        </div>
+    </div> -->
+
+    <div class="row">
+        <div class="col-md-12 text-right">
+            <button type="button" class="btn btn-sm themeButton mr-1" (click)="openFeesMethod()">
+                Fees
+            </button>
+
+            <button *ngIf="openedFor == 'edit' || openedFor == 'new'" type="button" class="btn btn-sm themeButton"
+                (click)="openAdditionalWorkItem()">
+                New
+            </button>
         </div>
     </div>
 
@@ -23,95 +36,97 @@
                 (cellClick)="cellClickHandler($event)" [navigable]="false">
 
 
-                <kendo-grid-column title=" " width="37" [filterable]="false" [sortable]="false">
-                    <ng-template kendoGridCellTemplate let-dataItem>
-                        <li class="nav-item dropdown list-unstyled" style="margin-top: -7px;">
-                            <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
-
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" href="javascript:void(0)"
-                                    >Details</a>
-
-                                <div class="dropdown-toggle">
-                                    <div class="dropdown-item">Send</div>
-                                    <div class="dropdown-menu">
-                                        <a class="dropdown-item" (click)="setComplete('CIY', dataItem)"
-                                            href="javascript:void(0)">Customer</a>
-                                        <a class="dropdown-item" (click)="setComplete('CIT', dataItem)"
-                                            href="javascript:void(0)">Contractor</a>
-
-                                    </div>
-                                </div>
-
-
-
-                            </div>
-                        </li>
-
-                    </ng-template>
+                <kendo-grid-column field="variationAction" title="Action" width="130">
                 </kendo-grid-column>
 
-
-                <kendo-grid-column field="wopsequence" title="Sequence" width="130" [filterable]="false">
+                <kendo-grid-column field="wlataid" title="Attr Id" width="100">
                 </kendo-grid-column>
 
-                <kendo-grid-column field="woirequesttype" title="Request Type" width="130" [filterable]="false">
+                <kendo-grid-column title="Checklist" field="wocheckname" width="130">
                 </kendo-grid-column>
 
-                <kendo-grid-column title="Created By" field="woirequestuser" width="130" [filterable]="false">
+                <kendo-grid-column title="Description" field="wphname" width="280">
                 </kendo-grid-column>
 
-                <kendo-grid-column title="Created Date" field="woirequestdate" width="280">
+                <kendo-grid-column title="Qty" field="asaquantity" width="100">
+                </kendo-grid-column>
+
+                <kendo-grid-column title="UOM" field="asauom" width="100">
+                </kendo-grid-column>
+
+                <kendo-grid-column title="Status" field="woadstatus" width="120">
+                </kendo-grid-column>
+
+                <kendo-grid-column title="Package Code" field="wlcomppackage" width="120">
+
+                </kendo-grid-column>
+
+                <kendo-grid-column title="Package Name" field="wphname" width="120">
+                </kendo-grid-column>
+
+                <kendo-grid-column title="Comment" field="woadcomment" width="120">
+                </kendo-grid-column>
+
+                <kendo-grid-column title="Forecast" field="woadforecast" width="120" [style]="{'text-align': 'right'}">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <span>
-                            {{ dataItem.woirequestdate | dateFormat : 'DD-MMM-YYYY' }}
+                            {{ dataItem.woadforecast | currency:'GBP':'symbol' }}
                         </span>
                     </ng-template>
                 </kendo-grid-column>
 
-                <kendo-grid-column title="Status" field="woiissuestatus" width="280">
-                </kendo-grid-column>
-
-                <kendo-grid-column title="Issue User" field="woiissueuser" width="140">
-                </kendo-grid-column>
-
-                <kendo-grid-column title="Issue User Type" field="woiissueusertype" width="120">
-                </kendo-grid-column>
-
-                <kendo-grid-column title="Issue Date" field="woiissuedate" width="120">
+                <kendo-grid-column title="Committed" field="woadcommitted" width="120"
+                    [style]="{'text-align': 'right'}">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <span>
-                            {{ dataItem.woiissuedate | dateFormat : 'DD-MMM-YYYY' }}
+                            {{ dataItem.woadcommitted | currency:'GBP':'symbol' }}
                         </span>
                     </ng-template>
                 </kendo-grid-column>
 
-                <kendo-grid-column title="Issue Reason" field="woiissuereason" width="120">
-                </kendo-grid-column>
-
-                <kendo-grid-column title="Fee Cost" field="woifeecost" width="120" [style]="{'text-align': 'right'}">
+                <kendo-grid-column title="Actual" field="woadactual" width="120" [style]="{'text-align': 'right'}">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <span>
-                            {{ dataItem.woifeecost | currency:'GBP':'symbol' }}
+                            {{ dataItem.woadactual | currency:'GBP':'symbol' }}
+                        </span>
+                    </ng-template>
+
+                </kendo-grid-column>
+
+                <kendo-grid-column title="Approved" field="woadapproved" width="120" [style]="{'text-align': 'right'}">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.woadapproved | currency:'GBP':'symbol' }}
                         </span>
                     </ng-template>
                 </kendo-grid-column>
 
-                <kendo-grid-column title="Work Cost" field="woiworkcost" width="120" [style]="{'text-align': 'right'}">
+                <kendo-grid-column title="Pending" field="woadpending" width="120" [style]="{'text-align': 'right'}">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <span>
-                            {{ dataItem.woiworkcost | currency:'GBP':'symbol' }}
+                            {{ dataItem.woadpending | currency:'GBP':'symbol' }}
                         </span>
                     </ng-template>
                 </kendo-grid-column>
 
-                <kendo-grid-column title="Accept User" field="woiacceptuser" width="120">
+                <kendo-grid-column title="Created By" field="mPgoA" width="120">
                 </kendo-grid-column>
 
-                <kendo-grid-column title="Accept Date" field="woiacceptdate" width="120">
+                <kendo-grid-column title="Created" field="mPgqA" width="120">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <span>
-                            {{ dataItem.woiacceptdate | dateFormat : 'DD-MMM-YYYY' }}
+                            {{ dataItem.mPgqA | dateFormat : 'DD-MMM-YYYY' }}
+                        </span>
+                    </ng-template>
+                </kendo-grid-column>
+
+                <kendo-grid-column title="Updated By" field="mPgrA" width="120">
+                </kendo-grid-column>
+
+                <kendo-grid-column title="Updated" field="mPgtA" width="120">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.mPgtA | dateFormat : 'DD-MMM-YYYY' }}
                         </span>
                     </ng-template>
                 </kendo-grid-column>
@@ -125,4 +140,9 @@
             <button (click)="closeWorkList()" class="btn btn-sm themeButton ml-1">Close</button>
         </div>
     </div>
+
+
+    <div class="variationWorkListOverlay"></div>
+
+    <app-variation-fees *ngIf="openFees" [openFees]="openFees" [openedFrom]="openedFrom" [openedFor]="openedFor" [singleVariation]="singleVariation" (closeFeesEvent)="closeOpenFees($event)"></app-variation-fees>
 </kendo-window>

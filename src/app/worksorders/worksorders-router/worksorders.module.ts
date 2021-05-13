@@ -48,6 +48,8 @@ import { PhaseChecklistComponent } from '../phase-checklist/phase-checklist.comp
 import { AssetRemoveReasonComponent } from '../asset-remove-reason/asset-remove-reason.component';
 import { VariationListComponent } from '../variation-list/variation-list.component';
 import { VariationWorkListComponent } from '../variation-work-list/variation-work-list.component';
+import { VariationFeesComponent } from '../variation-fees/variation-fees.component';
+import { VariationNewComponent } from '../variation-new/variation-new.component';
 
 @NgModule({
   declarations: [
@@ -86,7 +88,9 @@ import { VariationWorkListComponent } from '../variation-work-list/variation-wor
     PhaseChecklistComponent,
     AssetRemoveReasonComponent,
     VariationListComponent,
-    VariationWorkListComponent
+    VariationWorkListComponent,
+    VariationFeesComponent,
+    VariationNewComponent
   ],
 
   imports: [

@@ -7,14 +7,14 @@
             </button>
 
             <div class="dropdown mr-1" id="nesting-dropdown-demo">
-                <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown"
-                    aria-expanded="false">New</button>
+                <button  type="button" class="btn btn-sm dropdown-toggle"
+                    data-toggle="dropdown" aria-expanded="false">New</button>
 
                 <div class="dropdown-menu" x-placement="bottom-start"
                     style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
-                    <a class="dropdown-item" href="javascript:void(0)">
+                    <a [ngClass]="{'disabled' : woAsset?.woassstatus != 'Accepted'}" class="dropdown-item" href="javascript:void(0)" (click)="newVariation()">
                         New</a>
-                    <a class="dropdown-item" href="javascript:void(0)">
+                    <a [ngClass]="{'disabled' : woAsset?.woassstatus != 'Accepted'}" class="dropdown-item" href="javascript:void(0)">
                         Append</a>
                 </div>
             </div>
@@ -106,7 +106,7 @@
                 </kendo-grid-column>
 
 
-                <kendo-grid-column field="wopsequence" title="Sequence" width="130" [filterable]="false">
+                <kendo-grid-column field="woisequence" title="Sequence" width="130" [filterable]="false">
                 </kendo-grid-column>
 
                 <kendo-grid-column field="woirequesttype" title="Request Type" width="130" [filterable]="false">
@@ -184,6 +184,12 @@
     <div class="variationListOverlay"></div>
 
     <app-variation-work-list *ngIf="openVariationWorkList" [openVariationWorkList]="openVariationWorkList"
-        [openedFrom]="openedFrom" [openedFor]="'details'" [singleVariation]="selectedSingleVariation">
+        [openedFrom]="openedFrom" [openedFor]="'details'" [singleVariation]="selectedSingleVariation"
+        (closeWorkListEvent)="closeVariationDetails($event)">
     </app-variation-work-list>
+
+    <app-variation-new *ngIf="openNewVariation" [openNewVariation]="openNewVariation"
+        [singleVariation]="selectedSingleVariation" [openedFrom]="openedFrom" [formMode]="formMode"
+        [selectedAsset]="selectedAsset" (closeNewVariationEvent)="closeNewVariation($event)">
+    </app-variation-new>
 </kendo-window>

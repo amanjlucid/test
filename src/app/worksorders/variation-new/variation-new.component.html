@@ -1,0 +1,70 @@
+<kendo-window title="{{title}}" *ngIf="openNewVariation" (close)="closeNewVariation()" [top]="35" [minWidth]="600"
+    [width]="800" [height]="auto" [minHeight]="300">
+
+    <form [formGroup]="variationForm" (ngSubmit)="onSubmit()" autocomplete="off" class="variationForm">
+        <div class="row formRow">
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-2"><label>Works Order: </label></div>
+                    <div class="col-md-10">
+                        <input type="text" value="{{worksOrderData?.woname}} ({{worksOrderData?.wosequence}})"
+                            class="form-control form-control-sm" [readonly]="true">
+                    </div>
+                </div>
+
+                <div class="row mt-1" *ngIf="formMode == 'edit'">
+                    <div class="col-md-2"><label>Variation:</label> </div>
+                    <div class="col-md-10">
+                        <input type="text" value="{{worksOrderData?.woname}} ({{worksOrderData?.wosequence}})"
+                            class="form-control form-control-sm" [readonly]="true">
+                    </div>
+                </div>
+
+                <div class="row mt-2">
+                    <div class="col-md-2"><label for="">Asset:</label> </div>
+                    <div class="col-md-2">
+                        <input type="text" class="form-control form-control-sm" [readonly]="true"
+                            value="{{assetDetails?.assid }}">
+                    </div>
+                    <div class="col-md-4">
+                        <input type="text" class="form-control form-control-sm" [readonly]="true"
+                            value="{{assetDetails?.assid }} - {{assetDetails?.astconcataddress }}">
+                    </div>
+                    <div class="col-md-1"><label for="">Phase:</label> </div>
+                    <div class="col-md-3">
+                        <input type="text" value="{{phaseData?.wopname }}" class="form-control form-control-sm"
+                            [readonly]="true">
+                    </div>
+                </div>
+
+
+            </div>
+
+
+
+            <div class="col-md-12 mt-4">
+                <div class="row">
+                    <div class="col-md-2">
+                        <label>Reason:</label>
+                    </div>
+
+                    <div class="col-md-10">
+                        <textarea class="form-control" formControlName="reason"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.reason }" autocomplete="off" rows="4">
+                    </textarea>
+
+                        <div *ngIf="submitted && formErrors.reason" class="invalid-feedback">
+                            <div *ngIf="formErrors.reason">{{ formErrors.reason }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-md-12 mt-2 text-right">
+                <button type="submit" class="btn btn-sm themeButton mr-1">Apply</button>
+                <button type="button" class="btn btn-sm themeButton" (click)="closeNewVariation()">Cancel</button>
+            </div>
+        </div>
+    </form>
+</kendo-window>

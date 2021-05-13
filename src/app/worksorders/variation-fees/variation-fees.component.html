@@ -1,0 +1,76 @@
+<kendo-window title="{{title}}" *ngIf="openFees" (close)="closeFees()" [top]="35" [minWidth]="700" [width]="980"
+    [height]="auto" [minHeight]="350">
+
+
+    <div class="row">
+        <div class="col-md-12 mt-2">
+            <kendo-grid #grid [data]="gridView" [height]="600" [selectable]="{
+                mode: 'multiple'
+              }" filterable="menu" [resizable]="true" [sortable]="{
+                allowUnsort: true,
+                mode: 'multiple'
+                }" [skip]="state.skip" [loading]="loading" [pageSize]="pageSize" [rowHeight]="36"
+                (pageChange)="pageChange($event)" scrollable="virtual" [sort]="state.sort" [filter]="state.filter"
+                (sortChange)="sortChange($event)" (filterChange)="filterChange($event)"
+                (cellClick)="cellClickHandler($event)" [navigable]="false">
+
+                <kendo-grid-column title="Previous Variations" field="olD_VARIATIONS"  width="130">
+                </kendo-grid-column>
+
+                <kendo-grid-column title="Stage" field="wostagename"  width="100">
+                </kendo-grid-column>
+
+                <kendo-grid-column title="Name" field="wocheckname" width="130">
+                </kendo-grid-column>
+
+                <kendo-grid-column title="Responsibility" field="wocheckresp" width="280">
+                </kendo-grid-column>
+
+                <kendo-grid-column title="Special" field="wocheckspeciaL1" width="100">
+                </kendo-grid-column>
+
+                <kendo-grid-column title="Status" field="woasscheckstatus" width="100">
+                </kendo-grid-column>
+
+               
+
+                <kendo-grid-column title="Forecast Fee" field="woacforecastfee" width="120" [style]="{'text-align': 'right'}">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.woacforecastfee | currency:'GBP':'symbol' }}
+                        </span>
+                    </ng-template>
+                </kendo-grid-column>
+
+                <kendo-grid-column title="Committed Fee" field="woaccommittedfee" width="120"
+                    [style]="{'text-align': 'right'}">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.woaccommittedfee | currency:'GBP':'symbol' }}
+                        </span>
+                    </ng-template>
+                </kendo-grid-column>
+
+                <kendo-grid-column title="Override Fee" field="woiadfeecost" width="120" [style]="{'text-align': 'right'}">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.woiadfeecost | currency:'GBP':'symbol' }}
+                        </span>
+                    </ng-template>
+
+                </kendo-grid-column>
+
+                <kendo-grid-column title="Variation/Checklist Comment" field="woiadcomment" width="120">
+                </kendo-grid-column>
+
+
+            </kendo-grid>
+
+        </div>
+
+        <div class="col-md-12 text-right mt-2">
+            <button (click)="closeFees()" class="btn btn-sm themeButton ml-1">Close</button>
+        </div>
+    </div>
+
+</kendo-window>
