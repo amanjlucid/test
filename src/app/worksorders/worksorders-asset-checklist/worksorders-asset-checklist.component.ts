@@ -65,6 +65,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
   noaccessHistory: boolean = false;
   openAssetRemoveReason = false;
   reason: string = '';
+  openVariationList: boolean = false;
 
   constructor(
     private chRef: ChangeDetectorRef,
@@ -76,7 +77,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-
+    // console.log(this.selectedChildRow);
     //subscribe for work order security access
     this.subs.add(
       combineLatest([
@@ -1317,6 +1318,16 @@ export class WorksordersAssetChecklistComponent implements OnInit {
       this.reason = reason;
       this.setAsset(this.chooseDateType, "C")
     }
+  }
+
+  openVariationFun() {
+    this.openVariationList = true;
+    $('.checklistOverlay').addClass('ovrlay');
+  }
+
+  closeVariation(eve) {
+    this.openVariationList = eve;
+    $('.checklistOverlay').removeClass('ovrlay');
   }
 
 }

@@ -14,7 +14,7 @@ export class WorkordersPhaseChecklistModel {
   CurrentPage: number = 0;
   PageSize: number = 50;
 
-
+  StageCategory:string = ''
   AssId: string = ''
   Address: string = ''
   // StartDate: string = ''

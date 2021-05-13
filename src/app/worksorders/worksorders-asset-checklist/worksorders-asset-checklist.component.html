@@ -6,7 +6,7 @@
         </div>
 
         <div class="col-md-12 actionBtnDiv text-right">
-            <button type="submit" class="btn btn-sm themeButton mr-1 headin_section" (click)="slideToggle()">
+            <button type="button" class="btn btn-sm themeButton mr-1 headin_section" (click)="slideToggle()">
                 <i class="fa" [ngClass]="(filterToggle) ? 'fa-minus':'fa-plus'"></i>
             </button>
 
@@ -14,7 +14,7 @@
                 [disabled]="!selectedChecklistsingleItem || mySelection.length != 1" class="btn btn-sm themeButton mr-1"
                 (click)="openChecklistDoc()">Documents</button>
 
-            <div class="dropdown" id="nesting-dropdown-demo">
+            <div class="dropdown mr-1" id="nesting-dropdown-demo">
                 <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown"
                     aria-expanded="false">Work</button>
                 <div class="dropdown-menu" x-placement="bottom-start"
@@ -38,6 +38,11 @@
 
                 </div>
             </div>
+
+            <button type="button" class="btn btn-sm themeButton mr-1 headin_section" (click)="openVariationFun()">
+                Variations
+            </button>
+
 
             <div class="dropdown" id="nesting-dropdown-demo">
                 <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown"
@@ -79,7 +84,8 @@
                                 Date</a>
                         </div>
                     </div>
-                    <a [ngClass]="{'disabled' : disableMainActions('CANCEL')}" *ngIf="woMenuBtnSecurityAccess('Cancel Asset')"
+                    <a [ngClass]="{'disabled' : disableMainActions('CANCEL')}"
+                        *ngIf="woMenuBtnSecurityAccess('Cancel Asset')"
                         (click)="openRemoveReasonPanel('multiple', 'CANCEL')" class="dropdown-item"
                         href="javascript:void(0)">Cancel</a>
 
@@ -700,5 +706,9 @@
     <app-asset-remove-reason *ngIf="openAssetRemoveReason" [openAssetRemoveReason]="openAssetRemoveReason"
         [reasonType]="'CANCEL'" (closeReasonEvent)="closeReasonPanel($event)" (outputReason)="getReason($event)">
     </app-asset-remove-reason>
+
+    <app-variation-list *ngIf="openVariationList" [openVariationList]="openVariationList"
+        [openedFrom]="'assetchecklist'" [selectedAsset]="selectedChildRow"
+        (closeVariationListEvent)="closeVariation($event)"></app-variation-list>
 
 </kendo-window>

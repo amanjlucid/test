@@ -15,3 +15,47 @@
     line-height: 20px !important;
     padding: 8px 12px !important;
 }
+
+.actionBtnDiv .headin_section, .actionBtnDiv #nesting-dropdown-demo{
+    display: inline-block;
+}
+
+.actionDrp .handoverDrp, .actionDrp .signOffDrp{
+    left: -160px;
+} 
+
+.actionDrp .statusfirstLvl{
+    left: -172px;
+} 
+
+.actionDrp .statusfirstLvl .statusSecondLvl{
+    left: -159px;
+}
+
+
+.actionDrp .completeFirstLvl{
+    left: -159px;
+}
+
+.actionDrp .dateFirstLvl{
+    left: -219px;
+}
+
+.actionDrp .dateFirstLvl .dateSecondLvl{
+    left: -160px;
+    top:-73px;
+}
+
+ng-multiselect-dropdown {
+    background-color: white;
+    min-width: 168px;
+    margin-left: 20px;
+}
+
+/* ng-multiselect-dropdown .dropdown-btn span:nth-child(2) {
+    margin-left: 6px;
+} */
+
+.multiselect-dropdown .dropdown-btn .dropdown-multiselect__caret{
+    right: -7px !important;
+}

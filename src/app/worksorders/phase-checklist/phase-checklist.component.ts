@@ -3,9 +3,9 @@ import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { SelectableSettings, PageChangeEvent, RowArgs, GridComponent, FilterService, BaseFilterCellComponent } from '@progress/kendo-angular-grid';
 import { AlertService, ConfirmationDialogService, HelperService, SharedService, WorksorderManagementService } from '../../_services'
-import { combineLatest, forkJoin, BehaviorSubject } from 'rxjs';
+import { combineLatest, forkJoin, BehaviorSubject, of, from } from 'rxjs';
 import { WorkordersPhaseChecklistModel } from '../../_models';
-import { tap, switchMap } from 'rxjs/operators';
+import { tap, switchMap, distinct } from 'rxjs/operators';
 
 
 @Component({
@@ -59,6 +59,30 @@ export class PhaseChecklistComponent implements OnInit {
   selectedChecklistList = [];
   singlePhaseChecklist: any;
   chooseDateWindow: boolean = false;
+  reason: string = '';
+  openAssetRemoveReason = false;
+  stageNames: any;
+  mulitSelectDropdownSettings = {
+    singleSelection: false,
+    idField: 'item_id',
+    textField: 'item_text',
+    enableCheckAll: true,
+    selectAllText: 'Select All',
+    unSelectAllText: 'Unselect All',
+    allowSearchFilter: true,
+    limitSelection: -1,
+    clearSearchFilter: true,
+    maxHeight: 157,
+    itemsShowLimit: 3,
+    searchPlaceholderText: '',
+    noDataAvailablePlaceholderText: 'No Record',
+    closeDropDownOnSelection: false,
+    showSelectedItemsAtTop: false,
+    defaultOpen: false
+  }
+  selectedStages = [];
+  @ViewChild('stagesMultiSelect') stagesMultiSelect;
+  predecessors: boolean = false;
 
 
   constructor(
@@ -80,7 +104,7 @@ export class PhaseChecklistComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log(this.selectedPhase)
+    // console.log(this.selectedPhase)
     this.phaseFromApi = this.selectedPhase;
 
     const { wopsequence, wosequence } = this.phaseFromApi;
@@ -115,7 +139,7 @@ export class PhaseChecklistComponent implements OnInit {
       }),
       switchMap(state => this.worksorderManagementService.workOrderPhaseCheckList(state)),
       tap((res) => {
-        console.log(res);
+        // console.log(res);
         this.totalCount = (res.total != undefined) ? res.total : 0;
         this.loading = false;
         setTimeout(() => {
@@ -125,7 +149,7 @@ export class PhaseChecklistComponent implements OnInit {
 
       })
     );
-    console.log(this.selectedPhase)
+    // console.log(this.selectedPhase)
   }
 
   ngOnDestroy() {
@@ -139,12 +163,14 @@ export class PhaseChecklistComponent implements OnInit {
         this.worksorderManagementService.getWorksOrderByWOsequence(wosequence),
         this.worksorderManagementService.getPhaseCheckListFiltersList(wosequence, false),
         this.worksorderManagementService.specificWorkOrderAssets(wosequence, assid, wopsequence),
+        this.worksorderManagementService.getStageNameList(wosequence),
       ]).subscribe(
         data => {
-          console.log(data)
+          // console.log(data)
           const wo = data[0];
           const colFilters = data[1];
           const workorderAsset = data[2];
+          const stageList = data[3];
 
           if (wo.isSuccess) this.worksOrderData = wo.data;
           else this.alertService.error(wo.message)
@@ -154,6 +180,11 @@ export class PhaseChecklistComponent implements OnInit {
 
           if (workorderAsset.isSuccess) this.workorderAsset = workorderAsset.data[0];
 
+          if (stageList.isSuccess) {
+            this.stageNames = stageList.data.map((x: any) => {
+              return { item_id: x, item_text: x }
+            });
+          }
           this.chRef.detectChanges();
 
         },
@@ -162,6 +193,19 @@ export class PhaseChecklistComponent implements OnInit {
     )
 
   }
+
+  onStagesSingleSelectionChange(item: any) {
+    this.headerFilters.StageCategory = this.selectedStages.map(x => x.item_id).toString();
+    this.stateChange.next(this.headerFilters);
+  }
+
+  onStagesSelectionAllChange(items: any) {
+    this.selectedStages = items;
+    this.headerFilters.StageCategory = this.selectedStages.map(x => x.item_id).toString();
+    this.stateChange.next(this.headerFilters);
+  }
+
+
 
   sortChange(sort: SortDescriptor[]): void {
     this.mySelection = [];
@@ -191,7 +235,7 @@ export class PhaseChecklistComponent implements OnInit {
         if (this.state.filter.filters.length > 0) {
           let distincFitler = this.changeFilterState(this.state.filter.filters);
           distincFitler.then(filter => {
-            console.log(filter)
+            // console.log(filter)
             if (filter.length > 0) {
               this.resetGridFilter()
               for (let ob of filter) {
@@ -391,7 +435,18 @@ export class PhaseChecklistComponent implements OnInit {
   }
 
   cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
-    // console.log(this.mySelection)
+    this.singlePhaseChecklist = dataItem;
+
+    setTimeout(() => {
+      const checkSrcAssidExist = this.selectedChecklistList.find(x => x.wochecksurcde == dataItem.wochecksurcde && x.assid == dataItem.assid);
+
+      if (checkSrcAssidExist) {
+        this.selectedChecklistList = this.selectedChecklistList.filter(x => this.mySelection.includes(`${x.wochecksurcde}_${x.assid}`))
+      } else {
+        this.selectedChecklistList.push(dataItem)
+      }
+
+    }, 200);
   }
 
   closePhaseChecklist() {
@@ -474,15 +529,29 @@ export class PhaseChecklistComponent implements OnInit {
       return this.workorderAsset?.woassstatus != 'Issued'
     }
 
-    if (name == "na" || name == "STIP" || name == "NS" || name == "RCI" || name == "COMP") {
-      return this.mySelection.length == 0 || this.workorderAsset?.woassstatus == 'Pending' || this.workorderAsset?.woassstatus == 'Issued'
+    if (this.actionType == 'single') {
+      if (name == "na" || name == "STIP" || name == "NS" || name == "RCI" || name == "COMP") {
+        return this.workorderAsset?.woassstatus == 'Pending' || this.workorderAsset?.woassstatus == 'Issued'
+      }
+    } else {
+      if (name == "na" || name == "STIP" || name == "NS" || name == "RCI" || name == "COMP") {
+        return this.mySelection.length == 0 || this.workorderAsset?.woassstatus == 'Pending' || this.workorderAsset?.woassstatus == 'Issued'
+      }
     }
+
+
 
     return false
   }
 
 
   openChooseDate(type, actionType, item = null, checkOrProcess = "C") {
+    if (actionType == 'multiple') {
+      if (this.mySelection.length == 0) {
+        this.alertService.error("Please select atleast one record from phase checklist.")
+        return
+      }
+    }
     this.actionName = type;
     this.actionType = actionType;
     this.singlePhaseChecklist = item;
@@ -527,9 +596,20 @@ export class PhaseChecklistComponent implements OnInit {
         params.strASSID_STAGESURCDE_CHECKSURCDE = [item?.assid, item?.wostagesurcde, item?.wochecksurcde];
       }
 
-      //Complete action condition
-      if (type == "CIY" || type == "CIT" || type == "CIPICK") {
+
+      //Status & Complete action condition
+      if (type == "CIY" || type == "CIT" || type == "CIPICK" || type == 'IPY' || type == 'IPT' || type == 'IPD') {
         params.CheckName = item.wocheckname
+      }
+
+      if (type == "CSDY" || type == "CSDT" || type == "CSDPICK") {
+        delete params.UserId;
+        delete params.CHECKORPROCESS;
+        delete params.ASSID_STAGESURCDE_CHECKSURCDE;
+
+        params.strUserId = this.currentUser.userId;
+        params.strCheckOrProcess = checkOrProcess;
+        params.strASSID_STAGE_CHECK = [item.assid, item.wostagesurcde, item.wochecksurcde]
       }
 
 
@@ -541,14 +621,132 @@ export class PhaseChecklistComponent implements OnInit {
         return
       }
 
-      // let filterChecklist = this.assetCheckListData.filter(x => this.mySelection.includes(x.wochecksurcde))
+      let phaseChecklist = this.selectedChecklistList.filter(x => this.mySelection.includes(`${x.wochecksurcde}_${x.assid}`));
+
+      if (phaseChecklist.length == 0) {
+        return
+      }
+
+      let ASSID_STAGESURCDE_CHECKSURCDE = [];
+      let assetIdArr = [];
+
+      for (const checklist of phaseChecklist) {
+        ASSID_STAGESURCDE_CHECKSURCDE.push(checklist.assid)
+        ASSID_STAGESURCDE_CHECKSURCDE.push(checklist.wostagesurcde)
+        ASSID_STAGESURCDE_CHECKSURCDE.push(checklist.wochecksurcde)
+
+        assetIdArr.push(checklist.assid)
+      }
+
+
+      params.WOSEQUENCE = phaseChecklist[0].wosequence;
+      params.WOPSEQUENCE = phaseChecklist[0].wopsequence;
+
+
+      if (type == "RELEASE" || type == "ACCEPT" || type == "ISSUE" || type == "HY" || type == "HT" || type == "HCD" || type == "SOY" || type == "SOT" || type == "SOCD" || type == "CANCEL") {
+        params.strASSID = assetIdArr;
+        params.strUserId = this.currentUser.userId;
+        params.strCheckOrProcess = checkOrProcess;
+
+      } else {
+
+        params.ASSID_STAGESURCDE_CHECKSURCDE = ASSID_STAGESURCDE_CHECKSURCDE
+        params.UserId = this.currentUser.userId;
+        params.CHECKORPROCESS = checkOrProcess;
+
+        params.RecordCount = this.mySelection.length;
+        params.CheckName = this.mySelection.length == 1 ? phaseChecklist[0].wocheckname : ''
+
+        //Status condition
+        // if(type == 'NA' || type == 'RESET' || type == 'NOT STARTED' || type == 'IPY' || type == 'IPT' || type == 'IPDM' || type == 'CIY' || type == 'CIT' || type == 'CIPICKM'){
+        //   params.RecordCount = this.mySelection.length;
+        //   params.CheckName = this.mySelection.length == 1 ? phaseChecklist[0].wocheckname : ''
+        // }
+
+        //
+        if (type == 'SE' || type == 'TCY' || type == 'TCTOD' || type == 'TCTOM' || type == 'TC7' || type == 'TCPICK' || type == 'CSDY' || type == 'CSDT' || type == 'CSDPICK' || type == 'CCDY' || type == 'CCDT' || type == 'CCDPICK') {
+          delete params.UserId;
+          delete params.CHECKORPROCESS;
+          delete params.ASSID_STAGESURCDE_CHECKSURCDE;
+
+          params.strUserId = this.currentUser.userId;
+          params.strCheckOrProcess = checkOrProcess;
+          params.strASSID_STAGESURCDE_CHECKSURCDE = ASSID_STAGESURCDE_CHECKSURCDE;
+        }
+
+        if (type == "CSDY" || type == "CSDT" || type == "CSDPICK") {
+          delete params.UserId;
+          delete params.CHECKORPROCESS;
+          delete params.ASSID_STAGESURCDE_CHECKSURCDE;
+
+          params.strUserId = this.currentUser.userId;
+          params.strCheckOrProcess = checkOrProcess;
+          params.strASSID_STAGE_CHECK = ASSID_STAGESURCDE_CHECKSURCDE
+        }
+
+
+      }
+
+
+
 
     } else {
       return;
     }
 
+    //Set phase asset action
+    if (type == "RELEASE") {
+      apiName = 'WorksOrderReleaseAsset'
+    } else if (type == "ACCEPT") {
+      apiName = 'WorksOrderAcceptAsset';
+    } else if (type == "ISSUE") {
+      apiName = 'WorksOrderIssueAsset'
+      params.UserName = this.currentUser.userName;
+    }
+
+    //####################
+    else if (type == "HY") {
+      apiName = 'WorksOrderHandoverAsset'
+      params.dtDate = this.helperService.getDateString('Yesterday')
+    }
+
+    else if (type == "HT") {
+      apiName = 'WorksOrderHandoverAsset'
+      params.dtDate = this.helperService.getDateString('Today')
+    }
+
+    else if (type == "HCD") {
+      apiName = 'WorksOrderHandoverAsset'
+      params.dtDate = this.helperService.dateObjToString(this.selectedDate.selectedDate);
+    }
+
+    else if (type == "SOY") {
+      apiName = 'WorksOrderAssetSignOff'
+      params.UserName = this.currentUser.userName;
+      params.dtDate = this.helperService.getDateString('Yesterday')
+    }
+
+    else if (type == "SOT") {
+      apiName = 'WorksOrderAssetSignOff'
+      params.UserName = this.currentUser.userName;
+      params.dtDate = this.helperService.getDateString('Today')
+    }
+
+    else if (type == "SOCD") {
+      apiName = 'WorksOrderAssetSignOff'
+      params.UserName = this.currentUser.userName;
+      params.dtDate = this.helperService.dateObjToString(this.selectedDate.selectedDate);
+    }
+
+    else if (type == "CANCEL") {
+      apiName = 'WorksOrderCancelAsset'
+      params.strRefusalReason = this.reason;
+    }
+    //############
+
+
     // Set Status
-    if (type == 'NA') {
+    else if (type == 'NA') {
       apiName = 'SetWorksOrderCheckListStatusToNA'
     } else if (type == 'RESET') {
       apiName = 'ResetChecklistItem'
@@ -557,15 +755,12 @@ export class PhaseChecklistComponent implements OnInit {
     } else if (type == 'IPY') {
       apiName = 'SetWorksOrderCheckListStatusToInProgress'
       params.dtDate = this.helperService.getDateString('Yesterday');
-      params.CheckName = item.wocheckname
     } else if (type == 'IPT') {
       apiName = 'SetWorksOrderCheckListStatusToInProgress'
       params.dtDate = this.helperService.getDateString('Today');
-      params.CheckName = item.wocheckname
     } else if (type == 'IPD') {
       apiName = 'SetWorksOrderCheckListStatusToInProgress'
       params.dtDate = this.helperService.dateObjToString(this.selectedDate.selectedDate);
-      params.CheckName = item.wocheckname
     }
 
 
@@ -595,30 +790,12 @@ export class PhaseChecklistComponent implements OnInit {
     // Reset params for some date action
     else if (type == 'CSDY') {
       apiName = 'UpdateChecklistStartDate'
-      params = {};
-      params.WOSEQUENCE = item.wosequence;
-      params.WOPSEQUENCE = item.wopsequence;
-      params.strASSID_STAGE_CHECK = [item.assid, item.wostagesurcde, item.wochecksurcde]
-      params.strUserId = this.currentUser.userId;
-      params.strCheckOrProcess = checkOrProcess;
       params.NewDate = this.helperService.getDateString('Yesterday');
     } else if (type == 'CSDT') {
       apiName = 'UpdateChecklistStartDate'
-      params = {};
-      params.WOSEQUENCE = item.wosequence;
-      params.WOPSEQUENCE = item.wopsequence;
-      params.strASSID_STAGE_CHECK = [item.assid, item.wostagesurcde, item.wochecksurcde]
-      params.strUserId = this.currentUser.userId;
-      params.strCheckOrProcess = checkOrProcess;
       params.NewDate = this.helperService.getDateString('Today');
     } else if (type == 'CSDPICK') {
       apiName = 'UpdateChecklistStartDate'
-      params = {};
-      params.WOSEQUENCE = item.wosequence;
-      params.WOPSEQUENCE = item.wopsequence;
-      params.strASSID_STAGE_CHECK = [item.assid, item.wostagesurcde, item.wochecksurcde]
-      params.strUserId = this.currentUser.userId;
-      params.strCheckOrProcess = checkOrProcess;
       params.NewDate = this.helperService.dateObjToString(this.selectedDate.selectedDate);
     }
 
@@ -650,7 +827,7 @@ export class PhaseChecklistComponent implements OnInit {
     this.subs.add(
       this.worksorderManagementService.setStatus(apiName, params).subscribe(
         data => {
-          console.log(data)
+          // console.log(data)
           if (data.isSuccess) {
             let resp: any;
             if (data.data[0] == undefined) {
@@ -697,70 +874,57 @@ export class PhaseChecklistComponent implements OnInit {
       .catch(() => console.log('Attribute dismissed the dialog.'));
   }
 
+  openRemoveReasonPanel(actionName, actionType = "single", item = null) {
+    if (this.mySelection.length == 0) {
+      this.alertService.error("Please select atleast one record from phase checklist.")
+      return
+    }
+    this.actionName = actionName;
+    this.actionType = actionType;
+    this.openAssetRemoveReason = true;
+    // this.actualSelectedRow = item;
+    $('.phaseChecklistovrlay').addClass('ovrlay');
+  }
+
+  closeReasonPanel(eve) {
+    this.openAssetRemoveReason = false;
+    $('.phaseChecklistovrlay').removeClass('ovrlay');
+  }
+
+  getReason(reason) {
+    if (reason != "") {
+      this.reason = reason;
+      this.assetActions(this.actionName, this.actionType, null, "C")
+    }
+  }
+
 
 
   setSeletedRow(dataItem) {
     this.mySelection = [];
     this.selectedChecklistList = [];
+    this.actionType = 'single';
     // this.mySelection.push(dataItem.eventSequence)
     this.selectedChecklistList.push(dataItem)
   }
 
 
+  openPredecessors(item) {
+    this.selectedChecklistList = [];
+    $('.phaseChecklistovrlay').addClass('ovrlay');
+    this.predecessors = true;
+    this.selectedChecklistList.push(item)
+  }
 
-  // disableMainActions(type) {
-  //   if (type == "woAdd") {
-  //     return this.workorderAsset?.woassstatus != 'New'
-  //   }
-
-  //   if (type == "release") {
-  //     return this.workorderAsset?.woassstatus != 'New'
-  //   }
-
-  //   if (type == "issue") {
-  //     return this.workorderAsset?.woassstatus != 'Pending'
-  //   }
-
-  //   if (type == "accept") {
-  //     return this.workorderAsset?.woassstatus != 'Issued'
-  //   }
-
-  //   if (type == "na" || type == "STIP" || type == "NS" || type == "RCI" || type == "COMP") {
-  //     return this.mySelection.length == 0 || this.workorderAsset?.woassstatus == 'Pending' || this.workorderAsset?.woassstatus == 'Issued'
-  //   }
-
-  // }
+  closePredecessors(eve) {
+    this.selectedChecklistList = [];
+    $('.phaseChecklistovrlay').removeClass('ovrlay');
+    this.predecessors = false;
+  }
 
 
 
-  // disableBtnsIndividualMenu(name) {
-
-  //   if (name == "status") {
-  //     return this.workorderAsset?.woassstatus == 'Pending' || this.workorderAsset?.woassstatus == 'Issued'
-  //   }
-
-  //   if (name == "SE") {
-  //     return this.workorderAsset?.woassstatus == 'Pending' || this.workorderAsset?.woassstatus == 'Final Completion'
-  //   }
-
-  //   if (name == "STCD") {
-  //     return this.workorderAsset?.woassstatus == 'Pending' || this.workorderAsset?.woassstatus == 'Issued' || this.workorderAsset?.woassstatus == 'Final Completion'
-  //   }
-
-  //   if (name == "CSD") {
-  //     return this.workorderAsset?.woassstatus == 'Pending' || this.workorderAsset?.woassstatus == 'Issued' || this.workorderAsset?.woassstatus == 'Final Completion'
-  //   }
-
-  //   if (name == "CCD") {
-  //     return this.workorderAsset?.woassstatus == 'Pending' || this.workorderAsset?.woassstatus == 'Issued'
-  //   }
-
-  //   if (name == "CMP") {
-  //     return this.workorderAsset?.woassstatus == 'Pending' || this.workorderAsset?.woassstatus == 'Issued'
-  //   }
 
 
-  //   return false
-  // }
 
 }

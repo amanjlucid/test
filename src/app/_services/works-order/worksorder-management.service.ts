@@ -331,6 +331,14 @@ export class WorksorderManagementService {
         return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/WorkOrderRefusalCodes?ClearRefusal=${ClearRefusal}`, this.httpOptions);
     }
 
+    getStageNameList(WOSEQUENCE) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetStageNameList?WOSEQUENCE=${WOSEQUENCE}`, this.httpOptions);
+    }
+
+    getWEBWorksOrdersVariationList(WOSEQUENCE, WOPSEQUENCE, assId) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWEBWorksOrdersVariationList?WOSEQUENCE=${WOSEQUENCE}&WOPSEQUENCE=${WOPSEQUENCE}&assId=${assId}`, this.httpOptions);
+    }
+
 
 
 
