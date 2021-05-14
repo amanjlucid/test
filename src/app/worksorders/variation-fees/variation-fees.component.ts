@@ -38,6 +38,7 @@ export class VariationFeesComponent implements OnInit {
   selectableSettings: SelectableSettings;
   mySelection: any[] = [];
   selectedSingleFees: any;
+  openChangeFee = false;
 
   constructor(
     private chRef: ChangeDetectorRef,
@@ -51,9 +52,10 @@ export class VariationFeesComponent implements OnInit {
     
     if (this.openedFor == "details") {
       this.title = `Variation Fees: ${this.singleVariation?.woiissuereason} (${this.singleVariation?.wopsequence})`;
+      this.getVariationFees();
     }
 
-    this.getVariationFees();
+    
   }
 
   closeFees() {
@@ -113,7 +115,21 @@ export class VariationFeesComponent implements OnInit {
   }
 
   cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
-    this.variationFeesData = dataItem;
+    this.selectedSingleFees = dataItem;
   }
+
+
+  openChangeFeeMethod(item){
+    this.selectableSettings = item;
+    $('.variationFeeOvrlay').addClass('ovrlay');
+    this.openChangeFee = true;
+  }
+
+  closeVariationFeeMethod(eve){
+    this.openChangeFee = eve;
+    $('.variationFeeOvrlay').removeClass('ovrlay');
+  }
+
+
 
 }

@@ -47,13 +47,14 @@ export class VariationListComponent implements OnInit {
   openVariationWorkList: boolean = false;
   openNewVariation: boolean = false;
   formMode = 'new'
+  openedFor = 'details'
 
   constructor(
     private chRef: ChangeDetectorRef,
     private workOrderProgrammeService: WorksorderManagementService,
     private alertService: AlertService,
     private helperService: HelperService,
-    
+
   ) {
     this.setSelectableSettings();
   }
@@ -156,11 +157,24 @@ export class VariationListComponent implements OnInit {
   newVariation() {
     this.openNewVariation = true;
     $('.variationListOverlay').addClass('ovrlay');
+    setTimeout(() => {
+      this.chRef.detectChanges();
+    }, 100);
   }
 
   closeNewVariation(eve) {
     this.openNewVariation = eve;
     $('.variationListOverlay').removeClass('ovrlay');
+  }
+
+  getVariationReason(reason) {
+    if (reason != "") {
+      if (this.openedFrom == "assetchecklist" && this.formMode == "new") {
+        this.openedFor = 'edit';
+        this.openVariationDetails(undefined);
+      }
+
+    }
   }
 
 

@@ -39,6 +39,7 @@ export class VariationWorkListComponent implements OnInit {
   mySelection: any[] = [];
   selectedSingleVarWorkList: any;
   openFees = false;
+  openadditionalWork = false;
 
 
   constructor(
@@ -47,15 +48,21 @@ export class VariationWorkListComponent implements OnInit {
     private alertService: AlertService,
   ) {
     this.setSelectableSettings();
-   }
+  }
 
   ngOnInit(): void {
 
     if (this.openedFor == "details") {
       this.title = `Variation: ${this.singleVariation?.woiissuereason} (${this.singleVariation?.wopsequence})`;
+      this.getVariationWorkList();
+    } else {
+      console.log('in')
+      this.title = `Edit Variation Items`;
+      this.loading = false;
+      this.chRef.detectChanges();
     }
 
-    this.getVariationWorkList();
+
 
   }
 
@@ -129,7 +136,13 @@ export class VariationWorkListComponent implements OnInit {
   }
 
   openAdditionalWorkItem() {
+    $('.variationWorkListOverlay').addClass('ovrlay')
+    this.openadditionalWork = true
+  }
 
+  closeAdditionalWorkItem(eve) {
+    this.openadditionalWork = eve;
+    $('.variationWorkListOverlay').removeClass('ovrlay')
   }
 
 }

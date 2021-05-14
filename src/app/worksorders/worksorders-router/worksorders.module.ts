@@ -50,6 +50,8 @@ import { VariationListComponent } from '../variation-list/variation-list.compone
 import { VariationWorkListComponent } from '../variation-work-list/variation-work-list.component';
 import { VariationFeesComponent } from '../variation-fees/variation-fees.component';
 import { VariationNewComponent } from '../variation-new/variation-new.component';
+import { VariationAdditionalWorkItemComponent } from '../variation-additional-work-item/variation-additional-work-item.component';
+import { VariationChangefeeComponent } from '../variation-changefee/variation-changefee.component';
 
 @NgModule({
   declarations: [
@@ -90,7 +92,9 @@ import { VariationNewComponent } from '../variation-new/variation-new.component'
     VariationListComponent,
     VariationWorkListComponent,
     VariationFeesComponent,
-    VariationNewComponent
+    VariationNewComponent,
+    VariationAdditionalWorkItemComponent,
+    VariationChangefeeComponent
   ],
 
   imports: [

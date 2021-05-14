@@ -184,12 +184,13 @@
     <div class="variationListOverlay"></div>
 
     <app-variation-work-list *ngIf="openVariationWorkList" [openVariationWorkList]="openVariationWorkList"
-        [openedFrom]="openedFrom" [openedFor]="'details'" [singleVariation]="selectedSingleVariation"
+        [openedFrom]="openedFrom" [openedFor]="openedFor" [singleVariation]="selectedSingleVariation"
         (closeWorkListEvent)="closeVariationDetails($event)">
     </app-variation-work-list>
 
     <app-variation-new *ngIf="openNewVariation" [openNewVariation]="openNewVariation"
         [singleVariation]="selectedSingleVariation" [openedFrom]="openedFrom" [formMode]="formMode"
-        [selectedAsset]="selectedAsset" (closeNewVariationEvent)="closeNewVariation($event)">
+        [selectedAsset]="selectedAsset" (closeNewVariationEvent)="closeNewVariation($event)" (outputReason)="getVariationReason($event)">
     </app-variation-new>
+    
 </kendo-window>

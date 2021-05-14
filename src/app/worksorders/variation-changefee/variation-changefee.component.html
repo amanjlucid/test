@@ -1,0 +1,36 @@
+<kendo-window title="{{title}}" *ngIf="openChangeFee" (close)="closeChangeFee()" [top]="35" [minWidth]="600"
+    [width]="800" [height]="auto" [minHeight]="300">
+
+    <form [formGroup]="variationFeeForm" (ngSubmit)="onSubmit()" autocomplete="off" class="variationForm">
+        <div class="row formRow">
+
+
+            <div class="col-md-12 mt-4">
+                <div class="row">
+                    <div class="col-md-2">
+                        <label>Comment:</label>
+                    </div>
+
+                    <div class="col-md-10">
+                        <textarea class="form-control" formControlName="comment"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.comment }" autocomplete="off" rows="4">
+                    </textarea>
+
+                        <div *ngIf="submitted && formErrors.comment" class="invalid-feedback">
+                            <div *ngIf="formErrors.comment">{{ formErrors.comment }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12 mt-2 text-right">
+                <button type="submit" class="btn btn-sm themeButton mr-1">Apply</button>
+                <button type="button" class="btn btn-sm themeButton" (click)="closeChangeFee()">Cancel</button>
+            </div>
+        </div>
+
+    </form>
+
+
+
+</kendo-window>

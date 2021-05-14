@@ -18,6 +18,7 @@ export class VariationNewComponent implements OnInit {
   @Input() formMode = 'new';
   @Input() selectedAsset: any = [];
   @Output() closeNewVariationEvent = new EventEmitter<boolean>();
+  @Output() outputReason = new EventEmitter<string>();
 
   subs = new SubSink(); // to unsubscribe services
   title = 'New Variation';
@@ -33,6 +34,7 @@ export class VariationNewComponent implements OnInit {
   worksOrderData: any;
   phaseData: any;
   assetDetails: any;
+  // openVariationWorkList = false;
 
   constructor(
     private chRef: ChangeDetectorRef,
@@ -121,9 +123,31 @@ export class VariationNewComponent implements OnInit {
     if (this.variationForm.invalid) {
       return;
     }
-    
+
     let formRawVal = this.variationForm.getRawValue();
+
+    if (this.formMode == 'new') {
+      this.closeNewVariation();
+      this.outputReason.emit(formRawVal.reason);
+    } else if(this.formMode == 'edit'){
+
+    }
+
+    // this.openVariationDetails()
   }
+
+
+
+  // openVariationDetails() {
+  //   // this.selectedSingleVariation = item;
+  //   this.openVariationWorkList = true;
+  //   $('.variationFormOverlay').addClass('ovrlay');
+  // }
+
+  // closeVariationDetails(eve) {
+  //   this.openVariationWorkList = eve;
+  //   $('.variationFormOverlay').removeClass('ovrlay');
+  // }
 
 
 

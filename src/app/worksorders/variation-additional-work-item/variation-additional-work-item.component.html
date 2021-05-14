@@ -1,15 +1,8 @@
-<kendo-window title="{{title}}" *ngIf="openVariationWorkList" (close)="closeWorkList()" [top]="20" [minWidth]="700"
+<kendo-window title="{{title}}" *ngIf="openadditionalWork" (close)="closeAdditionalWork()" [top]="20" [minWidth]="700"
     [width]="980" [height]="auto" [minHeight]="350">
-    <!-- <div class="row">
-        <div class="col-md-2">Works Order: </div>
-        <div class="col-md-10">
-            <input type="text"
-                value="{{singleVariation?.woiissuereason}} (Variation No: {{singleVariation?.wopsequence}})"
-                class="form-control form-control-sm" [readonly]="true">
-        </div>
-    </div> -->
+   
 
-    <div class="row">
+    <!-- <div class="row">
         <div class="col-md-12 text-right">
             <button type="button" class="btn btn-sm themeButton mr-1" (click)="openFeesMethod()">
                 Fees
@@ -20,7 +13,7 @@
                 New
             </button>
         </div>
-    </div>
+    </div> -->
 
 
     <div class="row">
@@ -137,15 +130,10 @@
         </div>
 
         <div class="col-md-12 text-right mt-2">
-            <button (click)="closeWorkList()" class="btn btn-sm themeButton ml-1">Close</button>
+            <button (click)="closeAdditionalWork()" class="btn btn-sm themeButton ml-1">Close</button>
         </div>
     </div>
 
 
-    <div class="variationWorkListOverlay"></div>
-
-    <app-variation-fees *ngIf="openFees" [openFees]="openFees" [openedFrom]="openedFrom" [openedFor]="openedFor" [singleVariation]="singleVariation" (closeFeesEvent)="closeOpenFees($event)"></app-variation-fees>
-
-    <app-variation-additional-work-item *ngIf="openadditionalWork" [openedFrom]="openedFrom" [openedFor]="openedFor" [openadditionalWork]="openadditionalWork" (closeAdditionalWorkEvent)="closeAdditionalWorkItem($event)"></app-variation-additional-work-item>
     
 </kendo-window>
