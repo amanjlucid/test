@@ -120,7 +120,7 @@ export class VariationFeesComponent implements OnInit {
 
 
   openChangeFeeMethod(item){
-    this.selectableSettings = item;
+    this.selectedSingleFees = item;
     $('.variationFeeOvrlay').addClass('ovrlay');
     this.openChangeFee = true;
   }

@@ -69,6 +69,7 @@ export class WorkorderListComponent implements OnInit {
   userType: any = [];
 
   mousePositioin: any = 0;
+  openVariationListAll: boolean;
 
 
   constructor(
@@ -583,17 +584,19 @@ export class WorkorderListComponent implements OnInit {
     //   return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf('Edit Works Order') != -1 || this.worksOrderUsrAccess.indexOf('Delete Works Order') != -1 || this.worksOrderUsrAccess.indexOf('Works Order Detail') != -1
     // }
 
-
-
-
-
-
   }
 
 
+  openVariationList(item) {
+    $('.worksOrderOverlay').addClass('ovrlay');
+    this.selectedWorksOrder = item;
+    this.openVariationListAll = true;
 
-  getTop(e) {
-    console.log(e)
+  }
+
+  closeVariationAll(eve) {
+    $('.worksOrderOverlay').removeClass('ovrlay');
+    this.openVariationListAll = eve;
   }
 
 

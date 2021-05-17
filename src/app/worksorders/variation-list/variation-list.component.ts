@@ -19,7 +19,7 @@ export class VariationListComponent implements OnInit {
   @Input() selectedAsset: any = [];
   @Output() closeVariationListEvent = new EventEmitter<boolean>();
 
-  title = 'List Variations';
+  title = 'Variation Assets';
   subs = new SubSink();
   state: State = {
     skip: 0,
@@ -155,6 +155,7 @@ export class VariationListComponent implements OnInit {
   }
 
   newVariation() {
+    this.formMode = 'new';
     this.openNewVariation = true;
     $('.variationListOverlay').addClass('ovrlay');
     setTimeout(() => {
@@ -175,6 +176,24 @@ export class VariationListComponent implements OnInit {
       }
 
     }
+  }
+
+  editVariation(item) {
+    this.formMode = 'edit';
+    this.selectedSingleVariation = item;
+    this.openNewVariation = true;
+    $('.variationListOverlay').addClass('ovrlay');
+  }
+
+  disableVariationBtns(btnType, item) {
+    if (btnType == 'Edit') {
+      return item.woiissuestatus == 'New' ? false : true;
+    } else if (btnType == 'Customer') {
+      return item.woiissuestatus == 'New' ? false : true;
+    } else if (btnType == 'Contractor' || btnType == 'Issue') {
+      return item.woiissuestatus == 'Customer Review' || item.woiissuestatus == 'New' ? false : true;
+    }
+    
   }
 
 

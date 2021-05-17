@@ -79,4 +79,8 @@
 
     <div class="variationFeeOvrlay"></div>
 
+    <app-variation-changefee *ngIf="openChangeFee" [openChangeFee]="openChangeFee" [selectedSingleFees]="selectedSingleFees" (closeChangeFeeEvent)="closeVariationFeeMethod($event)"></app-variation-changefee>
+
+
+
 </kendo-window>

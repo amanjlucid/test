@@ -1,10 +1,10 @@
-<kendo-window title="{{title}}" *ngIf="openVariationList" (close)="closeVariationList()" [top]="20" [minWidth]="700"
-    [width]="980" [height]="auto" [minHeight]="350">
+<kendo-window title="{{title}}" *ngIf="openVariationListAll" (close)="closeVariationListAll()" [top]="20"
+    [minWidth]="700" [width]="980" [height]="auto" [minHeight]="350">
     <div class="row">
         <div class="col-md-12 actionBtnDiv text-right">
-            <button type="button" class="btn btn-sm themeButton mr-1 headin_section" (click)="slideToggle()">
+            <!-- <button type="button" class="btn btn-sm themeButton mr-1 headin_section" (click)="slideToggle()">
                 <i class="fa" [ngClass]="(filterToggle) ? 'fa-minus':'fa-plus'"></i>
-            </button>
+            </button> -->
 
             <div class="dropdown mr-1" id="nesting-dropdown-demo">
                 <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown"
@@ -12,22 +12,20 @@
 
                 <div class="dropdown-menu" x-placement="bottom-start"
                     style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
-                    <a [ngClass]="{'disabled' : woAsset?.woassstatus != 'Accepted'}" class="dropdown-item"
-                        href="javascript:void(0)" (click)="newVariation()">
-                        New</a>
-                    <a [ngClass]="{'disabled' : woAsset?.woassstatus != 'Accepted'}" class="dropdown-item"
-                        href="javascript:void(0)">
-                        Append</a>
+                    <a class="dropdown-item" href="javascript:void(0)" (click)="newBlankVariation()">
+                        Variation</a>
+                    <a class="dropdown-item" href="javascript:void(0)">
+                        Bulk Variation</a>
                 </div>
             </div>
 
 
         </div>
 
-        <div class="col-md-12 mt-2">
+        <!-- <div class="col-md-12 mt-2">
             <div class="cont">
                 <div id="wrapper">
-                    <div class="worksorder-variation-header" style="display: none;">
+                    <div class="worksorder-variationall-header" style="display: none;">
                         <div class="row">
                             <div class="col-md-2">Works Order: </div>
                             <div class="col-md-10">
@@ -62,7 +60,7 @@
                 </div>
             </div>
 
-        </div>
+        </div> -->
     </div>
 
 
@@ -86,11 +84,11 @@
 
                             <div class="dropdown-menu">
                                 <a class="dropdown-item" href="javascript:void(0)"
-                                    (click)="openVariationDetails(dataItem)">Details</a>
+                                    (click)="openVariationlist(dataItem)">Assets</a>
 
                                 <a [ngClass]="{'disabled' : disableVariationBtns('Edit', dataItem)}"
                                     class="dropdown-item" href="javascript:void(0)"
-                                    (click)="editVariation(dataItem)">Edit</a>
+                                    (click)="editVariation(dataItem)">Details</a>
 
 
                                 <div class="dropdown-toggle">
@@ -108,6 +106,10 @@
                                     class="dropdown-item" href="javascript:void(0)"
                                     (click)="editVariation(dataItem)">Issue</a>
 
+                                <a [ngClass]="{'disabled' : disableVariationBtns('Issue', dataItem)}"
+                                    class="dropdown-item" href="javascript:void(0)"
+                                    (click)="editVariation(dataItem)">Delete</a>
+
 
 
 
@@ -118,16 +120,19 @@
                 </kendo-grid-column>
 
 
-                <kendo-grid-column field="woisequence" title="Sequence" width="130" [filterable]="false">
+                <kendo-grid-column field="woisequence" title="No." width="80" [filterable]="false">
                 </kendo-grid-column>
 
                 <kendo-grid-column field="woirequesttype" title="Request Type" width="130" [filterable]="false">
                 </kendo-grid-column>
 
-                <kendo-grid-column title="Created By" field="woirequestuser" width="130" [filterable]="false">
+                <kendo-grid-column title="Status" field="woiissuestatus" width="110">
                 </kendo-grid-column>
 
-                <kendo-grid-column title="Created Date" field="woirequestdate" width="280">
+                <kendo-grid-column title="Requested by" field="woirequestuser" width="140" [filterable]="false">
+                </kendo-grid-column>
+
+                <kendo-grid-column title="Requested on" field="woirequestdate" width="140">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <span>
                             {{ dataItem.woirequestdate | dateFormat : 'DD-MMM-YYYY' }}
@@ -135,27 +140,10 @@
                     </ng-template>
                 </kendo-grid-column>
 
-                <kendo-grid-column title="Status" field="woiissuestatus" width="280">
+                <kendo-grid-column title="Issue Reason" field="woiissuereason" width="250">
                 </kendo-grid-column>
 
-                <kendo-grid-column title="Issue User" field="woiissueuser" width="140">
-                </kendo-grid-column>
-
-                <kendo-grid-column title="Issue User Type" field="woiissueusertype" width="120">
-                </kendo-grid-column>
-
-                <kendo-grid-column title="Issue Date" field="woiissuedate" width="120">
-                    <ng-template kendoGridCellTemplate let-dataItem>
-                        <span>
-                            {{ dataItem.woiissuedate | dateFormat : 'DD-MMM-YYYY' }}
-                        </span>
-                    </ng-template>
-                </kendo-grid-column>
-
-                <kendo-grid-column title="Issue Reason" field="woiissuereason" width="120">
-                </kendo-grid-column>
-
-                <kendo-grid-column title="Fee Cost" field="woifeecost" width="120" [style]="{'text-align': 'right'}">
+                <kendo-grid-column title="Fee" field="woifeecost" width="150" [style]="{'text-align': 'right'}">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <span>
                             {{ dataItem.woifeecost | currency:'GBP':'symbol' }}
@@ -163,7 +151,7 @@
                     </ng-template>
                 </kendo-grid-column>
 
-                <kendo-grid-column title="Work Cost" field="woiworkcost" width="120" [style]="{'text-align': 'right'}">
+                <kendo-grid-column title="Work" field="woiworkcost" width="150" [style]="{'text-align': 'right'}">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <span>
                             {{ dataItem.woiworkcost | currency:'GBP':'symbol' }}
@@ -171,10 +159,10 @@
                     </ng-template>
                 </kendo-grid-column>
 
-                <kendo-grid-column title="Accept User" field="woiacceptuser" width="120">
+                <kendo-grid-column title="Accepted by" field="woiacceptuser" width="140" [filterable]="false">
                 </kendo-grid-column>
 
-                <kendo-grid-column title="Accept Date" field="woiacceptdate" width="120">
+                <kendo-grid-column title="Accepted on" field="woiacceptdate" width="140">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <span>
                             {{ dataItem.woiacceptdate | dateFormat : 'DD-MMM-YYYY' }}
@@ -188,14 +176,14 @@
         </div>
 
         <div class="col-md-12 text-right mt-2">
-            <button (click)="closeVariationList()" class="btn btn-sm themeButton ml-1">Close</button>
+            <button (click)="closeVariationListAll()" class="btn btn-sm themeButton ml-1">Close</button>
         </div>
     </div>
 
 
-    <div class="variationListOverlay"></div>
+    <div class="variationListAllOverlay"></div>
 
-    <app-variation-work-list *ngIf="openVariationWorkList" [openVariationWorkList]="openVariationWorkList"
+    <!-- <app-variation-work-list *ngIf="openVariationWorkList" [openVariationWorkList]="openVariationWorkList"
         [openedFrom]="openedFrom" [openedFor]="openedFor" [singleVariation]="selectedSingleVariation"
         (closeWorkListEvent)="closeVariationDetails($event)">
     </app-variation-work-list>
@@ -204,6 +192,12 @@
         [singleVariation]="selectedSingleVariation" [openedFrom]="openedFrom" [formMode]="formMode"
         [selectedAsset]="selectedAsset" (closeNewVariationEvent)="closeNewVariation($event)"
         (outputReason)="getVariationReason($event)">
-    </app-variation-new>
+    </app-variation-new> -->
+
+    <app-variation-list *ngIf="openVariationList" [openVariationList]="openVariationList"
+        [openedFrom]="openedFrom" [selectedAsset]="selectedChildRow"
+        (closeVariationListEvent)="closeVariation($event)"></app-variation-list>
+
+    <app-blank-variation *ngIf="opneBlankVariation" [opneBlankVariation]="opneBlankVariation" [openedFrom]="openedFrom" (closeBlankVariation)="closeBlankVariation($event)"></app-blank-variation>
 
 </kendo-window>

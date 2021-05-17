@@ -1,0 +1,70 @@
+<kendo-window title="{{title}}" *ngIf="opneBlankVariation" (close)="closeBlankVariationMethod()" [top]="35"
+    [minWidth]="600" [width]="800" [height]="auto" [minHeight]="300">
+
+    <form [formGroup]="variationForm" (ngSubmit)="onSubmit()" autocomplete="off" class="variationForm">
+        <div class="row formRow">
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-2"><label>Works Order: </label></div>
+                    <div class="col-md-10">
+                        <select class="form-control" formControlName="worksorder"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.worksorder }">
+
+                        </select>
+
+                        <div *ngIf="submitted && formErrors.worksorder" class="invalid-feedback">
+                            <div *ngIf="formErrors.worksorder">{{ formErrors.worksorder }}</div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="row mt-2">
+                    <div class="col-md-2"><label>Phase: </label></div>
+                    <div class="col-md-10">
+                        <select class="form-control" formControlName="phase"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.phase }">
+
+                        </select>
+
+                        <div *ngIf="submitted && formErrors.phase" class="invalid-feedback">
+                            <div *ngIf="formErrors.phase">{{ formErrors.phase }}</div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+
+
+
+            <div class="col-md-12 mt-4">
+                <div class="row">
+                    <div class="col-md-2">
+                        <label>Reason:</label>
+                    </div>
+
+                    <div class="col-md-10">
+                        <textarea class="form-control" formControlName="reason"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.reason }" autocomplete="off" rows="4">
+                    </textarea>
+
+                        <div *ngIf="submitted && formErrors.reason" class="invalid-feedback">
+                            <div *ngIf="formErrors.reason">{{ formErrors.reason }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-md-12 mt-2 text-right">
+                <button type="submit" class="btn btn-sm themeButton mr-1">Apply</button>
+                <button type="button" class="btn btn-sm themeButton"
+                    (click)="closeBlankVariationMethod()">Cancel</button>
+            </div>
+        </div>
+    </form>
+
+
+
+</kendo-window>
