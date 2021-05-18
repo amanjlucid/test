@@ -97,18 +97,23 @@
                                     <div class="dropdown-item">Send</div>
                                     <div class="dropdown-menu">
                                         <a [ngClass]="{'disabled' : disableVariationBtns('Customer', dataItem)}"
-                                            class="dropdown-item" href="javascript:void(0)">Customer</a>
+                                            class="dropdown-item" href="javascript:void(0)"
+                                            (click)="sendVariation('customer', dataItem)">Customer</a>
                                         <a [ngClass]="{'disabled' : disableVariationBtns('Contractor', dataItem)}"
-                                            class="dropdown-item" href="javascript:void(0)">Contractor</a>
+                                            class="dropdown-item" href="javascript:void(0)"
+                                            (click)="sendVariation('contractor', dataItem)">Contractor</a>
 
                                     </div>
                                 </div>
 
                                 <a [ngClass]="{'disabled' : disableVariationBtns('Issue', dataItem)}"
                                     class="dropdown-item" href="javascript:void(0)"
-                                    (click)="editVariation(dataItem)">Issue</a>
+                                    (click)="issueVariation(dataItem)">Issue</a>
 
 
+                                <a [ngClass]="{'disabled' : disableVariationBtns('Accept', dataItem)}"
+                                    class="dropdown-item" href="javascript:void(0)"
+                                    (click)="accetpVariationAsset(dataItem)">Accept</a>
 
 
                             </div>

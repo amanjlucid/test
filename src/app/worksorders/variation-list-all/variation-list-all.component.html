@@ -2,9 +2,9 @@
     [minWidth]="700" [width]="980" [height]="auto" [minHeight]="350">
     <div class="row">
         <div class="col-md-12 actionBtnDiv text-right">
-            <!-- <button type="button" class="btn btn-sm themeButton mr-1 headin_section" (click)="slideToggle()">
+            <button type="button" class="btn btn-sm themeButton mr-1 headin_section" (click)="slideToggle()">
                 <i class="fa" [ngClass]="(filterToggle) ? 'fa-minus':'fa-plus'"></i>
-            </button> -->
+            </button>
 
             <div class="dropdown mr-1" id="nesting-dropdown-demo">
                 <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown"
@@ -14,7 +14,8 @@
                     style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
                     <a class="dropdown-item" href="javascript:void(0)" (click)="newBlankVariation()">
                         Variation</a>
-                    <a class="dropdown-item" href="javascript:void(0)">
+                    <a [ngClass]="{'disabled' : !selectedSingleInstructionVariation}" class="dropdown-item"
+                        href="javascript:void(0)" (click)="bulkVariation()">
                         Bulk Variation</a>
                 </div>
             </div>
@@ -22,45 +23,24 @@
 
         </div>
 
-        <!-- <div class="col-md-12 mt-2">
+        <div class="col-md-12 mt-2">
             <div class="cont">
+
                 <div id="wrapper">
                     <div class="worksorder-variationall-header" style="display: none;">
                         <div class="row">
                             <div class="col-md-2">Works Order: </div>
                             <div class="col-md-10">
-                                <input type="text" value="{{worksOrderData?.woname}} ({{worksOrderData?.wosequence}})"
+                                <input type="text"
+                                    value="{{singleWorksOrder?.woname}} ({{singleWorksOrder?.wosequence}})"
                                     class="form-control form-control-sm" [readonly]="true">
                             </div>
                         </div>
-
-                        <div class="row mt-1">
-                            <div class="col-md-2">Asset: </div>
-                            <div class="col-md-2">
-                                <input type="text" class="form-control form-control-sm" [readonly]="true"
-                                    value="{{assetDetails?.assid }}">
-                            </div>
-                            <div class="col-md-8">
-                                <input type="text" class="form-control form-control-sm" [readonly]="true"
-                                    value="{{assetDetails?.assid }} - {{assetDetails?.astconcataddress }}">
-                            </div>
-                        </div>
-
-                        <div class="row mt-1">
-                            <div class="col-md-2">Phase: </div>
-                            <div class="col-md-10">
-                                <input type="text" value="{{phaseData?.wopname }}" class="form-control form-control-sm"
-                                    [readonly]="true">
-                            </div>
-                        </div>
-
                     </div>
-
-
                 </div>
-            </div>
 
-        </div> -->
+            </div>
+        </div>
     </div>
 
 
@@ -83,32 +63,35 @@
                             <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
 
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" href="javascript:void(0)"
+                                <a [ngClass]="{'disabled' : disableVariationBtns('Assets', dataItem)}"
+                                    class="dropdown-item" href="javascript:void(0)"
                                     (click)="openVariationlist(dataItem)">Assets</a>
 
-                                <a [ngClass]="{'disabled' : disableVariationBtns('Edit', dataItem)}"
+                                <a [ngClass]="{'disabled' : disableVariationBtns('Details', dataItem)}"
                                     class="dropdown-item" href="javascript:void(0)"
-                                    (click)="editVariation(dataItem)">Details</a>
+                                    (click)="openVariationDetailMethod(dataItem)">Details</a>
 
 
                                 <div class="dropdown-toggle">
                                     <div class="dropdown-item">Send</div>
                                     <div class="dropdown-menu">
                                         <a [ngClass]="{'disabled' : disableVariationBtns('Customer', dataItem)}"
-                                            class="dropdown-item" href="javascript:void(0)">Customer</a>
+                                            class="dropdown-item" href="javascript:void(0)"
+                                            (click)="sendVariation('customer', dataItem)">Customer</a>
                                         <a [ngClass]="{'disabled' : disableVariationBtns('Contractor', dataItem)}"
-                                            class="dropdown-item" href="javascript:void(0)">Contractor</a>
+                                            class="dropdown-item" href="javascript:void(0)"
+                                            (click)="sendVariation('contractor', dataItem)">Contractor</a>
 
                                     </div>
                                 </div>
 
                                 <a [ngClass]="{'disabled' : disableVariationBtns('Issue', dataItem)}"
                                     class="dropdown-item" href="javascript:void(0)"
-                                    (click)="editVariation(dataItem)">Issue</a>
+                                    (click)="issueVariation(dataItem)">Issue</a>
 
-                                <a [ngClass]="{'disabled' : disableVariationBtns('Issue', dataItem)}"
+                                <a [ngClass]="{'disabled' : disableVariationBtns('Delete', dataItem)}"
                                     class="dropdown-item" href="javascript:void(0)"
-                                    (click)="editVariation(dataItem)">Delete</a>
+                                    (click)="deleteVariationConfirm(dataItem)">Delete</a>
 
 
 
@@ -126,13 +109,16 @@
                 <kendo-grid-column field="woirequesttype" title="Request Type" width="130" [filterable]="false">
                 </kendo-grid-column>
 
-                <kendo-grid-column title="Status" field="woiissuestatus" width="110">
+                <kendo-grid-column title="Status" field="woiissuestatus" width="140">
                 </kendo-grid-column>
 
-                <kendo-grid-column title="Requested by" field="woirequestuser" width="140" [filterable]="false">
+                <kendo-grid-column title="Request User Type" field="woiissueusertype" width="130">
                 </kendo-grid-column>
 
-                <kendo-grid-column title="Requested on" field="woirequestdate" width="140">
+                <kendo-grid-column title="Created By" field="woirequestuser" width="140" [filterable]="false">
+                </kendo-grid-column>
+
+                <kendo-grid-column title="Created Date" field="woirequestdate" width="140">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <span>
                             {{ dataItem.woirequestdate | dateFormat : 'DD-MMM-YYYY' }}
@@ -140,7 +126,19 @@
                     </ng-template>
                 </kendo-grid-column>
 
-                <kendo-grid-column title="Issue Reason" field="woiissuereason" width="250">
+                <kendo-grid-column title="Issued By" field="woiissueuser" width="140" [filterable]="false">
+                </kendo-grid-column>
+
+                <kendo-grid-column title="Issued Date" field="woiissuedate" width="140">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.woiissuedate | dateFormat : 'DD-MMM-YYYY' }}
+                        </span>
+                    </ng-template>
+                </kendo-grid-column>
+
+
+                <kendo-grid-column title="Request Reason" field="woiissuereason" width="250">
                 </kendo-grid-column>
 
                 <kendo-grid-column title="Fee" field="woifeecost" width="150" [style]="{'text-align': 'right'}">
@@ -183,21 +181,19 @@
 
     <div class="variationListAllOverlay"></div>
 
-    <!-- <app-variation-work-list *ngIf="openVariationWorkList" [openVariationWorkList]="openVariationWorkList"
-        [openedFrom]="openedFrom" [openedFor]="openedFor" [singleVariation]="selectedSingleVariation"
-        (closeWorkListEvent)="closeVariationDetails($event)">
-    </app-variation-work-list>
 
-    <app-variation-new *ngIf="openNewVariation" [openNewVariation]="openNewVariation"
-        [singleVariation]="selectedSingleVariation" [openedFrom]="openedFrom" [formMode]="formMode"
-        [selectedAsset]="selectedAsset" (closeNewVariationEvent)="closeNewVariation($event)"
-        (outputReason)="getVariationReason($event)">
-    </app-variation-new> -->
+    <app-variation-detail *ngIf="openVariationDetail" [openVariationDetail]="openVariationDetail"
+        [openedFrom]="openedFrom" [openedFor]="openedFor" [singleVariation]="selectedSingleInstructionVariation"
+        (closeVariationDetailEvent)="closeVariationDetails($event)">
+    </app-variation-detail>
 
-    <app-variation-list *ngIf="openVariationList" [openVariationList]="openVariationList"
-        [openedFrom]="openedFrom" [selectedAsset]="selectedChildRow"
-        (closeVariationListEvent)="closeVariation($event)"></app-variation-list>
 
-    <app-blank-variation *ngIf="opneBlankVariation" [opneBlankVariation]="opneBlankVariation" [openedFrom]="openedFrom" (closeBlankVariation)="closeBlankVariation($event)"></app-blank-variation>
+    <app-variation-asset *ngIf="openVariationAsset" [openVariationAsset]="openVariationAsset" [openedFrom]="openedFrom"
+        [selectedVariationInp]="selectedSingleInstructionVariation" [selectedWOInp]="singleWorksOrder"
+        (closeVariationAssetEvent)="closeVariation($event)" (refreshParentComponent)="refreshComponent($event)">
+    </app-variation-asset>
+
+    <app-blank-variation *ngIf="opneBlankVariation" [opneBlankVariation]="opneBlankVariation" [openedFrom]="openedFrom"
+        (closeBlankVariation)="closeBlankVariation($event)"></app-blank-variation>
 
 </kendo-window>

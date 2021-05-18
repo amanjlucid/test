@@ -110,5 +110,7 @@ export class WorksOrdersService {
         return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWEBWorksOrdersInstructionsForUser?WPRSEQUENCE=${WPRSEQUENCE}&iWOSeq=${iWOSeq}&strUserId=${strUserId}&Instructions=${Instructions}`, this.httpOptions);
     }
 
+ 
+
 
 }

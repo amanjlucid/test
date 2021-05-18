@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { SelectableSettings, PageChangeEvent, RowArgs, GridComponent } from '@progress/kendo-angular-grid';
-import { AlertService, HelperService, WorksorderManagementService } from 'src/app/_services';
+import { AlertService, HelperService, WorksorderManagementService, WorksOrdersService } from 'src/app/_services';
 import { forkJoin } from 'rxjs';
 
 @Component({
@@ -40,36 +40,36 @@ export class VariationWorkListComponent implements OnInit {
   selectedSingleVarWorkList: any;
   openFees = false;
   openadditionalWork = false;
-
+  currentUser = JSON.parse(localStorage.getItem('currentUser'));
 
   constructor(
     private chRef: ChangeDetectorRef,
     private workOrderProgrammeService: WorksorderManagementService,
     private alertService: AlertService,
+    private worksOrdersService: WorksOrdersService,
   ) {
     this.setSelectableSettings();
   }
 
   ngOnInit(): void {
 
-    if (this.openedFor == "details") {
-      this.title = `Variation: ${this.singleVariation?.woiissuereason} (${this.singleVariation?.wopsequence})`;
+    if (this.openedFor == "details" && this.openedFrom == "assetchecklist") {
+      this.title = `Variation: ${this.singleVariation?.woiissuereason} (${this.singleVariation?.woisequence})`;
       this.getVariationWorkList();
-    } else {
+    } else if (this.openedFor == "edit" && this.openedFrom == "assetchecklist") {
       console.log('in')
       this.title = `Edit Variation Items`;
-      this.loading = false;
-      this.chRef.detectChanges();
+      this.getVariationWorkList();
     }
 
-
-
   }
+
 
   ngOnDestroy() {
     this.subs.unsubscribe();
   }
 
+  
   setSelectableSettings(): void {
     this.selectableSettings = {
       checkboxOnly: true,
@@ -83,7 +83,7 @@ export class VariationWorkListComponent implements OnInit {
     this.subs.add(
       this.workOrderProgrammeService.getWEBWorksOrdersAssetDetailAndVariation(wosequence, wopsequence, assid).subscribe(
         data => {
-          // console.log(data);
+          console.log(data);
           if (data.isSuccess) {
             this.variationWorkListData = data.data;
             this.gridView = process(this.variationWorkListData, this.state);
@@ -143,6 +143,46 @@ export class VariationWorkListComponent implements OnInit {
   closeAdditionalWorkItem(eve) {
     this.openadditionalWork = eve;
     $('.variationWorkListOverlay').removeClass('ovrlay')
+  }
+
+
+  rechargeToggle(item, recharge) {
+    if (item.woadstatus != 'New') {
+      this.alertService.error("No Access");
+      return
+    }
+
+    const params = {
+      "WOSEQUENCE": item.wosequence,
+      "WOPSEQUENCE": item.wopsequence,
+      "assid": item.assid,
+      "WLCODE": item.wlcode,
+      "ATAID": item.wlataid,
+      "Recharge": item.woadrechargeyn == 'N' ? 'Y' : 'N',
+      "UserID": this.currentUser.userId,
+      "PlanYear": item.wlplanyear,
+    };
+
+    return ;
+    this.subs.add(
+      this.worksOrdersService.RechargeToggle(params).subscribe(
+        data => {
+          // console.log(data);
+          if (data.isSuccess) {
+            let success_msg = "Recharge Successfully Set";
+            if (!recharge) {
+              success_msg = "Recharge Successfully Cleared";
+            }
+            this.alertService.success(success_msg);
+            this.loading = false;
+
+            this.getVariationWorkList();
+
+          } else this.alertService.error(data.message);
+        }, err => this.alertService.error(err)
+      )
+    )
+
   }
 
 }

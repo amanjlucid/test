@@ -47,14 +47,14 @@ export class VariationNewComponent implements OnInit {
 
     this.getVariationPageData();
 
-    if (this.formMode == 'edit') {
-      this.title = "Edit Variation"
-    }
-
     this.variationForm = this.fb.group({
       reason: ['', [Validators.required, Validators.maxLength(250)]],
     });
 
+    if (this.formMode == 'edit') {
+      this.title = "Edit Variation";
+      this.variationForm.patchValue({ reason: this.singleVariation?.woiissuereason })
+    }
 
   }
 
@@ -129,7 +129,7 @@ export class VariationNewComponent implements OnInit {
     if (this.formMode == 'new') {
       this.closeNewVariation();
       this.outputReason.emit(formRawVal.reason);
-    } else if(this.formMode == 'edit'){
+    } else if (this.formMode == 'edit') {
 
     }
 

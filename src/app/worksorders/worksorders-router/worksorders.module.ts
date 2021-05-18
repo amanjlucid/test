@@ -54,6 +54,8 @@ import { VariationAdditionalWorkItemComponent } from '../variation-additional-wo
 import { VariationChangefeeComponent } from '../variation-changefee/variation-changefee.component';
 import { VariationListAllComponent } from '../variation-list-all/variation-list-all.component';
 import { BlankVariationComponent } from '../blank-variation/blank-variation.component';
+import { VariationAssetComponent } from '../variation-asset/variation-asset.component';
+import { VariationDetailComponent } from '../variation-detail/variation-detail.component';
 
 @NgModule({
   declarations: [
@@ -98,7 +100,9 @@ import { BlankVariationComponent } from '../blank-variation/blank-variation.comp
     VariationAdditionalWorkItemComponent,
     VariationChangefeeComponent,
     VariationListAllComponent,
-    BlankVariationComponent
+    BlankVariationComponent,
+    VariationAssetComponent,
+    VariationDetailComponent
   ],
 
   imports: [

@@ -7,7 +7,3 @@
     line-height: 20px;
     padding: 8px 12px;
 }
-
-.actionBtnDiv button, .actionBtnDiv #nesting-dropdown-demo {
-    display: inline-block;
-}

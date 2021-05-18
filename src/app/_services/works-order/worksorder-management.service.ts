@@ -347,6 +347,45 @@ export class WorksorderManagementService {
         return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWEBWorksOrdersAssetChecklistAndVariation?WOSEQUENCE=${WOSEQUENCE}&WOPSEQUENCE=${WOPSEQUENCE}&assId=${assId}`, this.httpOptions);
     }
 
+    getVW_WOUserSecurity(userId, WOSEQUENCE, WPRSEQUENCE) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetVW_WOUserSecurity?userId=${userId}&WOSEQUENCE=${WOSEQUENCE}&WPRSEQUENCE=${WPRSEQUENCE}`, this.httpOptions);
+    }
+
+    getWOInstructionAssets(WOSEQUENCE, WOISEQUENCE) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWOInstructionAssets?WOSEQUENCE=${WOSEQUENCE}&WOSEQUENCE=${WOSEQUENCE}&WOISEQUENCE=${WOISEQUENCE}`, this.httpOptions);
+    }
+
+    worksOrderAcceptVariation(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WorksOrderAcceptVariation`, body, this.httpOptions);
+    }
+
+    
+    worksOrderIssueVariation(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WorksOrderIssueVariation`, body, this.httpOptions);
+    }
+
+    sendVariationToCustomerForReview(WOSEQUENCE, WOISEQUENCE, WONAME, WOIISSUEREASON, strUser) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/SendVariationToCustomerForReview?WOSEQUENCE=${WOSEQUENCE}&WOISEQUENCE=${WOISEQUENCE}&WONAME=${WONAME}&WOIISSUEREASON=${WOIISSUEREASON}&strUser=${strUser}`, this.httpOptions);
+    }
+
+    emailVariationToContractorForReview(WOSEQUENCE, WOISEQUENCE, WONAME, WOIISSUEREASON, strUser) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/EmailVariationToContractorForReview?WOSEQUENCE=${WOSEQUENCE}&WOISEQUENCE=${WOISEQUENCE}&WONAME=${WONAME}&WOIISSUEREASON=${WOIISSUEREASON}&strUser=${strUser}`, this.httpOptions);
+    }
+
+    deleteBlankVariation(WOSEQUENCE, WOISEQUENCE) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/DeleteBlankVariation?WOSEQUENCE=${WOSEQUENCE}&WOSEQUENCE=${WOSEQUENCE}&WOISEQUENCE=${WOISEQUENCE}`, this.httpOptions);
+    }
+
+    getWOInstructionAssetsDetails(WOSEQUENCE, WOISEQUENCE) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWOInstructionAssetsDetails?WOSEQUENCE=${WOSEQUENCE}&WOSEQUENCE=${WOSEQUENCE}&WOISEQUENCE=${WOISEQUENCE}`, this.httpOptions);
+    }
+
+    addBulkVariation(WOSEQUENCE, WOISEQUENCE) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/AddBulkVariation?WOSEQUENCE=${WOSEQUENCE}&WOSEQUENCE=${WOSEQUENCE}&WOISEQUENCE=${WOISEQUENCE}`, this.httpOptions);
+    }
+
 
 
 
