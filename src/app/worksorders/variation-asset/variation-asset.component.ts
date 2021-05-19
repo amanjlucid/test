@@ -73,7 +73,7 @@ export class VariationAssetComponent implements OnInit {
 
   setSelectableSettings(): void {
     this.selectableSettings = {
-      checkboxOnly: true,
+      checkboxOnly: false,
       mode: 'single'
     };
   }

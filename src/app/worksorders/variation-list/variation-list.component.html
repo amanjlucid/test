@@ -12,11 +12,11 @@
 
                 <div class="dropdown-menu" x-placement="bottom-start"
                     style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
-                    <a [ngClass]="{'disabled' : woAsset?.woassstatus != 'Accepted'}" class="dropdown-item"
-                        href="javascript:void(0)" (click)="newVariation()">
+                    <a [ngClass]="{'disabled' : woAsset?.woassstatus != 'Accepted' && woAsset?.phaseOrAsset != 'P'}"
+                        class="dropdown-item" href="javascript:void(0)" (click)="newVariation()">
                         New</a>
-                    <a [ngClass]="{'disabled' : woAsset?.woassstatus != 'Accepted'}" class="dropdown-item"
-                        href="javascript:void(0)">
+                    <a [ngClass]="{'disabled' : disableAppendBtn() }" class="dropdown-item" href="javascript:void(0)"
+                        (click)="append()">
                         Append</a>
                 </div>
             </div>
@@ -68,9 +68,8 @@
 
     <div class="row">
         <div class="col-md-12 mt-2">
-            <kendo-grid #grid [data]="gridView" [height]="600" [selectable]="{
-                mode: 'multiple'
-              }" filterable="menu" [resizable]="true" [sortable]="{
+            <kendo-grid #grid [data]="gridView" [height]="600" [selectable]="selectableSettings" filterable="menu"
+                [resizable]="true" [sortable]="{
                 allowUnsort: true,
                 mode: 'multiple'
                 }" [skip]="state.skip" [loading]="loading" [pageSize]="pageSize" [rowHeight]="36"
@@ -210,5 +209,11 @@
         [selectedAsset]="selectedAsset" (closeNewVariationEvent)="closeNewVariation($event)"
         (outputReason)="getVariationReason($event)">
     </app-variation-new>
+
+
+    <app-variation-append *ngIf="openAppendVariation" [openAppendVariation]="openAppendVariation"
+        [openedFrom]="openedFrom" [openedFor]="openedFor" [selectedAssetInp]="selectedAsset"
+        (closeAppendVariation)="closeAppendVariation($event)">
+    </app-variation-append>
 
 </kendo-window>

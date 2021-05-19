@@ -41,6 +41,9 @@ export class VariationWorkListComponent implements OnInit {
   openFees = false;
   openadditionalWork = false;
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
+  SetToRefusalWindow = false;
+  refusalCodeList: any;
+  refusalReason: any;
 
   constructor(
     private chRef: ChangeDetectorRef,
@@ -69,10 +72,10 @@ export class VariationWorkListComponent implements OnInit {
     this.subs.unsubscribe();
   }
 
-  
+
   setSelectableSettings(): void {
     this.selectableSettings = {
-      checkboxOnly: true,
+      checkboxOnly: false,
       mode: 'single'
     };
   }
@@ -163,7 +166,7 @@ export class VariationWorkListComponent implements OnInit {
       "PlanYear": item.wlplanyear,
     };
 
-    return ;
+    return;
     this.subs.add(
       this.worksOrdersService.RechargeToggle(params).subscribe(
         data => {
@@ -184,5 +187,102 @@ export class VariationWorkListComponent implements OnInit {
     )
 
   }
+
+
+  openRefusalReason(item) {
+    this.selectedSingleVarWorkList = item;
+    $('.variationWorkListOverlay').addClass('ovrlay')
+    this.SetToRefusalWindow = true;
+    const param = "ClearRefusal=false";
+    this.subs.add(
+      this.worksOrdersService.WorkOrderRefusalCodes(param).subscribe(
+        data => {
+          console.log(data)
+          if (data.isSuccess) this.refusalCodeList = data.data;
+          else this.alertService.error(data.message);
+          this.chRef.detectChanges();
+        },
+        err => this.alertService.error(err)
+      )
+    )
+  }
+
+  closeSetToRefusalWindow() {
+    this.SetToRefusalWindow = false;
+    $('.variationWorkListOverlay').removeClass('ovrlay')
+  }
+
+  clearRefusal(item){
+    this.selectedSingleVarWorkList = item;
+    this.SetToRefusalSave(item, false)
+  }
+
+  SetToRefusalSave(item, refusal = true) {
+
+    if (refusal) {
+      if (this.refusalReason == '') {
+        this.alertService.error("Please select refusal reason");
+        return
+      }
+
+      this.closeSetToRefusalWindow();
+
+    }
+
+    console.log(this.refusalReason);
+    return;
+    // console.log('SetToRefusalSave itemDat' + JSON.stringify(this.itemData));
+    const params = {
+      // "WOSEQUENCE": this.selectedItem.wosequence,
+      // "assid": this.selectedItem.assid,
+      // "WOPSEQUENCE": this.selectedItem.wopsequence,
+      // "WLCODE": this.selectedItem.wlcode,
+      // "ATAID": this.selectedItem.wlataid,
+      // "PlanYear": this.selectedItem.wlplanyear,
+      // "Refusal": this.itemData.refusal_code,
+      // "UserID": this.currentUser.userId,
+    };
+
+    this.subs.add(
+      this.worksOrdersService.SetRefusal(params).subscribe(
+        data => {
+          if (data.isSuccess) {
+            let success_msg = "Refusal Successfully Set";
+            if (!refusal) {
+              success_msg = "Refusal Successfully Cleared";
+            }
+
+            this.alertService.success(success_msg);
+            this.loading = false;
+            // this.getData();
+
+            this.closeSetToRefusalWindow();
+          } else {
+            this.alertService.error(data.message);
+            this.loading = false
+          }
+
+          this.chRef.detectChanges();
+
+          // console.log('WorkOrderUpdateCommentForAttribute api reponse'+ JSON.stringify(data));
+        },
+        err => this.alertService.error(err)
+      )
+    )
+
+
+
+
+  }
+
+
+  removeItemVariation(item){
+    // this.selectedSingleVarWorkList = item;
+  }
+
+  deleteWork(item){
+    // this.selectedSingleVarWorkList = item;
+  }
+
 
 }

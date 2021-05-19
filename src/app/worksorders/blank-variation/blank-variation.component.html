@@ -7,10 +7,9 @@
                 <div class="row">
                     <div class="col-md-2"><label>Works Order: </label></div>
                     <div class="col-md-10">
-                        <select class="form-control" formControlName="worksorder"
+                        <input type="text" class="form-control" formControlName="worksorder"
                             [ngClass]="{ 'is-invalid': submitted && formErrors.worksorder }">
 
-                        </select>
 
                         <div *ngIf="submitted && formErrors.worksorder" class="invalid-feedback">
                             <div *ngIf="formErrors.worksorder">{{ formErrors.worksorder }}</div>
@@ -24,7 +23,8 @@
                     <div class="col-md-10">
                         <select class="form-control" formControlName="phase"
                             [ngClass]="{ 'is-invalid': submitted && formErrors.phase }">
-
+                            <option *ngFor="let phase of phaseData" value="{{phase.wopsequence}}">{{phase.wopname}}
+                            </option>
                         </select>
 
                         <div *ngIf="submitted && formErrors.phase" class="invalid-feedback">

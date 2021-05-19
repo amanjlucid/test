@@ -69,7 +69,7 @@ export class VariationListAllComponent implements OnInit {
 
   ngOnInit(): void {
     // console.log(this.singleWorksOrder);
-    // this.getPageData();
+    // this.getUserWOSecurityData();
     this.getAllVariations();
   }
 
@@ -83,7 +83,7 @@ export class VariationListAllComponent implements OnInit {
 
   setSelectableSettings(): void {
     this.selectableSettings = {
-      checkboxOnly: true,
+      checkboxOnly: false,
       mode: 'single'
     };
   }
@@ -99,7 +99,7 @@ export class VariationListAllComponent implements OnInit {
     this.chRef.detectChanges();
   }
 
-  getPageData() {
+  getUserWOSecurityData() {
     const { wprsequence, wosequence } = this.singleWorksOrder;
     this.subs.add(
       forkJoin([
@@ -181,9 +181,10 @@ export class VariationListAllComponent implements OnInit {
     this.openVariationAsset = true;
   }
 
-  closeVariation(eve) {
+  closeAssetVariation(eve) {
     this.openVariationAsset = eve;
     $('.variationListAllOverlay').removeClass('ovrlay');
+    this.getAllVariations();
   }
 
   newBlankVariation() {
@@ -194,6 +195,7 @@ export class VariationListAllComponent implements OnInit {
   closeBlankVariation(eve) {
     this.opneBlankVariation = eve;
     $('.variationListAllOverlay').removeClass('ovrlay');
+    this.getAllVariations();
   }
 
   openVariationDetailMethod(item) {
@@ -205,6 +207,7 @@ export class VariationListAllComponent implements OnInit {
   closeVariationDetails(eve) {
     this.openVariationDetail = eve;
     $('.variationListAllOverlay').removeClass('ovrlay');
+    this.getAllVariations();
   }
 
 
@@ -353,5 +356,15 @@ export class VariationListAllComponent implements OnInit {
 
   }
 
+
+  disableBulkVaritionBtn() {
+    if (this.selectedSingleInstructionVariation != undefined) {
+      if (this.selectedSingleInstructionVariation.isBulkVariation == 'N') {
+        return false
+      }
+    }
+
+    return true;
+  }
 
 }

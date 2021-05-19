@@ -56,6 +56,7 @@ import { VariationListAllComponent } from '../variation-list-all/variation-list-
 import { BlankVariationComponent } from '../blank-variation/blank-variation.component';
 import { VariationAssetComponent } from '../variation-asset/variation-asset.component';
 import { VariationDetailComponent } from '../variation-detail/variation-detail.component';
+import { VariationAppendComponent } from '../variation-append/variation-append.component';
 
 @NgModule({
   declarations: [
@@ -102,7 +103,8 @@ import { VariationDetailComponent } from '../variation-detail/variation-detail.c
     VariationListAllComponent,
     BlankVariationComponent,
     VariationAssetComponent,
-    VariationDetailComponent
+    VariationDetailComponent,
+    VariationAppendComponent
   ],
 
   imports: [

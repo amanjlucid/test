@@ -14,7 +14,9 @@
                     style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
                     <a class="dropdown-item" href="javascript:void(0)" (click)="newBlankVariation()">
                         Variation</a>
-                    <a [ngClass]="{'disabled' : !selectedSingleInstructionVariation}" class="dropdown-item"
+                    <!-- <a class="dropdown-item" href="javascript:void(0)" (click)="bulkVariation()">
+                        Bulk Variation</a> -->
+                    <a [ngClass]="{'disabled' : disableBulkVaritionBtn() }" class="dropdown-item"
                         href="javascript:void(0)" (click)="bulkVariation()">
                         Bulk Variation</a>
                 </div>
@@ -46,9 +48,8 @@
 
     <div class="row">
         <div class="col-md-12 mt-2">
-            <kendo-grid #grid [data]="gridView" [height]="600" [selectable]="{
-                mode: 'multiple'
-              }" filterable="menu" [resizable]="true" [sortable]="{
+            <kendo-grid #grid [data]="gridView" [height]="600" [selectable]="selectableSettings" filterable="menu"
+                [resizable]="true" [sortable]="{
                 allowUnsort: true,
                 mode: 'multiple'
                 }" [skip]="state.skip" [loading]="loading" [pageSize]="pageSize" [rowHeight]="36"
@@ -190,10 +191,11 @@
 
     <app-variation-asset *ngIf="openVariationAsset" [openVariationAsset]="openVariationAsset" [openedFrom]="openedFrom"
         [selectedVariationInp]="selectedSingleInstructionVariation" [selectedWOInp]="singleWorksOrder"
-        (closeVariationAssetEvent)="closeVariation($event)" (refreshParentComponent)="refreshComponent($event)">
+        (closeVariationAssetEvent)="closeAssetVariation($event)" (refreshParentComponent)="refreshComponent($event)">
     </app-variation-asset>
 
     <app-blank-variation *ngIf="opneBlankVariation" [opneBlankVariation]="opneBlankVariation" [openedFrom]="openedFrom"
+        [singleWorksOrder]="singleWorksOrder" [selectedSingleVariationInp]="selectedSingleInstructionVariation"
         (closeBlankVariation)="closeBlankVariation($event)"></app-blank-variation>
 
 </kendo-window>

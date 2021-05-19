@@ -305,10 +305,10 @@ export class WorksorderManagementService {
         return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WorkOrderPhaseCheckList `, body, this.httpOptions).pipe(
             map(response => (<any>{
                 data: (response.data != null) ? response.data.phaseCheckList : [],
-                total: (response.data != null) ? response.data.totalCount  : 0
+                total: (response.data != null) ? response.data.totalCount : 0
             }))
         );
-       
+
     }
 
     getPhaseCheckListFiltersList(WOSEQUENCE, workOnly) {
@@ -360,7 +360,7 @@ export class WorksorderManagementService {
         return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WorksOrderAcceptVariation`, body, this.httpOptions);
     }
 
-    
+
     worksOrderIssueVariation(params) {
         let body = JSON.stringify(params);
         return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WorksOrderIssueVariation`, body, this.httpOptions);
@@ -383,7 +383,25 @@ export class WorksorderManagementService {
     }
 
     addBulkVariation(WOSEQUENCE, WOISEQUENCE) {
-        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/AddBulkVariation?WOSEQUENCE=${WOSEQUENCE}&WOSEQUENCE=${WOSEQUENCE}&WOISEQUENCE=${WOISEQUENCE}`, this.httpOptions);
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/AddBulkVariation?WOSEQUENCE=${WOSEQUENCE}&WOISEQUENCE=${WOISEQUENCE}`, this.httpOptions);
+    }
+
+    getWorkPackagesForAssetVariation(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWORKS_Packages_for_asset_variation`, body, this.httpOptions);
+    }
+
+    insertWorksOrderInstruction(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/InsertWorksOrderInstruction`, body, this.httpOptions);
+    }
+
+    updateWorksOrderInstruction(WOSEQUENCE, WOISEQUENCE, WOPSEQUENCE, WOIISSUEREASON) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/UpdateWorksOrderInstruction?WOSEQUENCE=${WOSEQUENCE}&WOISEQUENCE=${WOISEQUENCE}&WOPSEQUENCE=${WOPSEQUENCE}&WOIISSUEREASON=${WOIISSUEREASON}`, this.httpOptions);
+    }
+
+    getAppendVariationList(WOSEQUENCE, WOPSEQUENCE) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetAppendVariationList?WOSEQUENCE=${WOSEQUENCE}&WOPSEQUENCE=${WOPSEQUENCE}`, this.httpOptions);
     }
 
 

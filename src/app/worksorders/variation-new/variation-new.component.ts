@@ -52,6 +52,7 @@ export class VariationNewComponent implements OnInit {
     });
 
     if (this.formMode == 'edit') {
+      console.log(this.singleVariation)
       this.title = "Edit Variation";
       this.variationForm.patchValue({ reason: this.singleVariation?.woiissuereason })
     }
@@ -130,8 +131,18 @@ export class VariationNewComponent implements OnInit {
       this.closeNewVariation();
       this.outputReason.emit(formRawVal.reason);
     } else if (this.formMode == 'edit') {
-
+      const { wosequence, woisequence, wopsequence } = this.singleVariation;
+      this.workOrderProgrammeService.updateWorksOrderInstruction(wosequence, woisequence, wopsequence, formRawVal.reason).subscribe(
+        data => {
+          if (data.isSuccess) {
+            this.alertService.success(data.message);
+            this.closeNewVariation();
+            console.log(data);
+          } else this.alertService.error(data.message)
+        }, err => this.alertService.error(err)
+      );
     }
+
 
     // this.openVariationDetails()
   }

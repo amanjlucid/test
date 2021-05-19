@@ -1,25 +1,25 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef, ViewEncapsulation, ViewChild } from '@angular/core';
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { SelectableSettings, PageChangeEvent, RowArgs, GridComponent } from '@progress/kendo-angular-grid';
-import { AlertService, HelperService, WorksorderManagementService } from 'src/app/_services';
+import { AlertService, HelperService, WorksorderManagementService, WorksOrdersService } from 'src/app/_services';
 import { forkJoin } from 'rxjs';
 
 @Component({
-  selector: 'app-variation-detail',
-  templateUrl: './variation-detail.component.html',
-  styleUrls: ['./variation-detail.component.css'],
+  selector: 'app-variation-append',
+  templateUrl: './variation-append.component.html',
+  styleUrls: ['./variation-append.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None
 })
 
-export class VariationDetailComponent implements OnInit {
-  @Input() openVariationDetail: boolean = false;
-  @Input() openedFrom = 'worksorder';
+export class VariationAppendComponent implements OnInit {
+  @Input() openAppendVariation: boolean = false;
+  @Input() openedFrom = 'assetchecklist';
   @Input() openedFor = 'details';
-  @Input() singleVariation: any = [];
-  @Output() closeVariationDetailEvent = new EventEmitter<boolean>();
-  title = 'Works Order Variation Detail';
+  @Input() selectedAssetInp: any;
+  @Output() closeAppendVariation = new EventEmitter<boolean>();
+  title = 'Select Variation';
   subs = new SubSink();
   state: State = {
     skip: 0,
@@ -31,16 +31,16 @@ export class VariationDetailComponent implements OnInit {
       filters: []
     }
   }
-  variationDetailData: any;
+  gridData: any;
   gridView: DataResult;
   loading = true
   pageSize = 25;
   selectableSettings: SelectableSettings;
   mySelection: any[] = [];
-  filterToggle = false;
   worksOrderData: any;
   phaseData: any;
-
+  @ViewChild(GridComponent) grid: GridComponent;
+  
   constructor(
     private chRef: ChangeDetectorRef,
     private workOrderProgrammeService: WorksorderManagementService,
@@ -49,14 +49,15 @@ export class VariationDetailComponent implements OnInit {
     this.setSelectableSettings();
   }
 
+
   ngOnInit(): void {
-    console.log(this.singleVariation)
-    this.getVariationPageDataWithGrid();
+    this.getRequiredPageData();
   }
 
   ngOnDestroy() {
     this.subs.unsubscribe();
   }
+
 
   setSelectableSettings(): void {
     this.selectableSettings = {
@@ -65,42 +66,45 @@ export class VariationDetailComponent implements OnInit {
     };
   }
 
-  closeVariationDetail() {
-    this.openVariationDetail = false;
-    this.closeVariationDetailEvent.emit(false);
+  closeAppendVariationMethod() {
+    this.openAppendVariation = false;
+    this.closeAppendVariation.emit(false);
   }
 
-  slideToggle() {
-    this.filterToggle = !this.filterToggle;
-    $('.worksorder-variationalldetail-header').slideToggle();
-    this.chRef.detectChanges();
-  }
-
-
-  getVariationPageDataWithGrid() {
-    const { wosequence, wopsequence } = this.singleVariation;
+  getRequiredPageData() {
+    const { wosequence, assid, wopsequence } = this.selectedAssetInp;
     this.subs.add(
       forkJoin([
         this.workOrderProgrammeService.getWorksOrderByWOsequence(wosequence),
         this.workOrderProgrammeService.getPhase(wosequence, wopsequence),
-        this.workOrderProgrammeService.getWOInstructionAssetsDetails(wosequence, wopsequence),
-
       ]).subscribe(
         data => {
-          console.log(data)
+          // console.log(data)
           this.worksOrderData = data[0].data;
           this.phaseData = data[1].data;
 
-          const variationData = data[2];
+          this.getVariation()
 
-          if (variationData.isSuccess) {
-            this.variationDetailData = variationData.data;
-            this.gridView = process(this.variationDetailData, this.state);
-          } else this.alertService.error(variationData.message);
 
+        }, err => this.alertService.error(err)
+      )
+    )
+  }
+
+  getVariation() {
+    const { wosequence, wopsequence } = this.selectedAssetInp;
+    this.subs.add(
+      this.workOrderProgrammeService.getAppendVariationList(wosequence, wopsequence).subscribe(
+        data => {
+          // console.log(data)
+          if (data.isSuccess) {
+            this.gridData = data.data;
+            this.gridView = process(this.gridData, this.state);
+          } else this.alertService.error(data.message);
+
+          this.grid.autoFitColumns();
           this.loading = false;
           this.chRef.detectChanges();
-
         }, err => this.alertService.error(err)
       )
     )
@@ -108,19 +112,19 @@ export class VariationDetailComponent implements OnInit {
 
   sortChange(sort: SortDescriptor[]): void {
     this.state.sort = sort;
-    this.gridView = process(this.variationDetailData, this.state);
+    this.gridView = process(this.gridData, this.state);
   }
 
   filterChange(filter: any): void {
     this.state.filter = filter;
-    this.gridView = process(this.variationDetailData, this.state);
+    this.gridView = process(this.gridData, this.state);
   }
 
   pageChange(event: PageChangeEvent): void {
     this.state.skip = event.skip;
     this.gridView = {
-      data: this.variationDetailData.slice(this.state.skip, this.state.skip + this.pageSize),
-      total: this.variationDetailData.length
+      data: this.gridData.slice(this.state.skip, this.state.skip + this.pageSize),
+      total: this.gridData.length
     };
   }
 

@@ -1,13 +1,6 @@
 <kendo-window title="{{title}}" *ngIf="openVariationWorkList" (close)="closeWorkList()" [top]="20" [minWidth]="700"
     [width]="980" [height]="auto" [minHeight]="350">
-    <!-- <div class="row">
-        <div class="col-md-2">Works Order: </div>
-        <div class="col-md-10">
-            <input type="text"
-                value="{{singleVariation?.woiissuereason}} (Variation No: {{singleVariation?.wopsequence}})"
-                class="form-control form-control-sm" [readonly]="true">
-        </div>
-    </div> -->
+   
 
     <div class="row">
         <div class="col-md-12 text-right">
@@ -25,9 +18,7 @@
 
     <div class="row">
         <div class="col-md-12 mt-2">
-            <kendo-grid #grid [data]="gridView" [height]="600" [selectable]="{
-                mode: 'multiple'
-              }" filterable="menu" [resizable]="true" [sortable]="{
+            <kendo-grid #grid [data]="gridView" [height]="600" [selectable]="selectableSettings" filterable="menu" [resizable]="true" [sortable]="{
                 allowUnsort: true,
                 mode: 'multiple'
                 }" [skip]="state.skip" [loading]="loading" [pageSize]="pageSize" [rowHeight]="36"
@@ -45,9 +36,9 @@
                                 <a [ngClass]="{'disabled' : dataItem.woadstatus != 'New'}" class="dropdown-item"
                                     href="javascript:void(0)" (click)="issueVariation(dataItem)">Change Cost/Qty</a>
                                 <a [ngClass]="{'disabled' : dataItem.woadstatus != 'New'}" class="dropdown-item"
-                                    href="javascript:void(0)" (click)="accetpVariationAsset(dataItem)">Delete Work</a>
+                                    href="javascript:void(0)" (click)="deleteWork(dataItem)">Delete Work</a>
                                 <a [ngClass]="{'disabled' : dataItem.woadstatus != 'New'}" class="dropdown-item"
-                                    href="javascript:void(0)" (click)="issueVariation(dataItem)">Remove Item
+                                    href="javascript:void(0)" (click)="removeItemVariation(dataItem)">Remove Item
                                     Variation</a>
                                 <a *ngIf="dataItem.woadrechargeyn == 'N'"
                                     [ngClass]="{'disabled' : dataItem.woadstatus != 'New'}" class="dropdown-item"
@@ -60,7 +51,7 @@
 
                                 <a *ngIf="dataItem.woadrefusaL_YN == 'N'"
                                     [ngClass]="{'disabled' : dataItem.woadstatus != 'New'}" class="dropdown-item"
-                                    href="javascript:void(0)" (click)="refusal(dataItem, 'set')">Set To
+                                    href="javascript:void(0)" (click)="openRefusalReason(dataItem)">Set To
                                     Refusal</a>
 
                                 <a *ngIf="dataItem.woadrefusaL_YN == 'Y'"
@@ -206,7 +197,37 @@
         [singleVariation]="singleVariation" (closeFeesEvent)="closeOpenFees($event)"></app-variation-fees>
 
     <app-variation-additional-work-item *ngIf="openadditionalWork" [openedFrom]="openedFrom" [openedFor]="openedFor"
-        [openadditionalWork]="openadditionalWork" (closeAdditionalWorkEvent)="closeAdditionalWorkItem($event)">
+        [openadditionalWork]="openadditionalWork" [singleVariation]="singleVariation" (closeAdditionalWorkEvent)="closeAdditionalWorkItem($event)">
     </app-variation-additional-work-item>
+
+
+
+    <kendo-window title="Select the Refusal Reason" [top]="25" *ngIf="SetToRefusalWindow"
+        (close)="closeSetToRefusalWindow()" [minWidth]="250" [width]="650">
+
+        <div class="row">
+            <div class="form-group col-md-12">
+                <label class="form-label">Refusal Reason</label>
+                <select class="custom-select" [(ngModel)]="refusalReason">
+                    <option value=""></option>
+                    <option *ngFor="let ref of refusalCodeList" value="{{ref.woadrefusal}}">{{ref.worcrefusaldesc}}
+                    </option>
+
+                </select>
+
+                <div class="invalid-feedback">
+                    <div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="buttonDiv pull-right mb-4">
+            <button type="button" (click)="SetToRefusalSave(true)" class="btn btn-sm themeButton mr-1">Apply</button>
+            <button type="button" (click)="closeSetToRefusalWindow()"
+                class="btn btn-sm themeButton mr-1">Cancel</button>
+
+        </div>
+
+    </kendo-window>
 
 </kendo-window>
