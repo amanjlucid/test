@@ -92,6 +92,19 @@
                   (click)="deleteThis(dataItem)">Delete</a>
                 <a *ngIf="woMenuAccess('Works Order Detail')" class="dropdown-item" href="javascript:void(0)"
                   (click)="redirectToWorksOrder(dataItem)"> Works Order Details</a>
+
+                  <div class="dropdown-toggle" >
+                    <div class="dropdown-item">Programme Management</div>
+                    <div class="dropdown-menu addAssetMenu">
+                      <a (click)="redirectToWoProgramManagmentInstructions(dataItem)" class="dropdown-item"
+                        href="javascript:void(0)">
+                        Instructions</a>
+                      <a  class="dropdown-item"
+                      href="javascript:void(0)">Completions</a>
+
+                    </div>
+                  </div>
+
                 <!-- <a class="dropdown-item" href="javascript:void(0)">Defects </a>
                 <a class="dropdown-item" href="javascript:void(0)">Contract Costs</a>
                 <a class="dropdown-item" href="javascript:void(0)">Variations</a>
@@ -319,3 +332,7 @@
 <app-workorder-form [woFormType]="woFormType" [woFormWindow]="woFormWindow"
   [selectedWorkOrderAddEdit]="selectedWorkOrderAddEdit" *ngIf="woFormWindow" (closeWoFormWin)="closeWoFormWin($event)">
 </app-workorder-form>
+
+<app-wo-program-management-instructions *ngIf="woProgramManagmentInstructionsWindow" [woProgramManagmentInstructionsWindow]="woProgramManagmentInstructionsWindow"
+  [worksOrderData]="selectedWorksOrder" [selectedWorksOrder]="selectedWorksOrder" (WoProgramManagmentInstructionsWinEvent)="closeWoProgramManagmentInstructionsWin($event)">
+</app-wo-program-management-instructions>

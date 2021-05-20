@@ -190,8 +190,8 @@ export class AssetEnergyComponent implements OnInit, OnDestroy {
         //   return x.items;
         // })
         // let energyGrpData = [].concat.apply([],groupData);
-        
-        
+
+
         // if (fileExt == 'html') {
         //   this.helper.exportAsHtmlFile(this.energyTableData, this.fileName, label)
         // } else {

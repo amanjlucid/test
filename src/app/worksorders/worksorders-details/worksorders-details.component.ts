@@ -584,7 +584,7 @@ export class WorksordersDetailsComponent implements OnInit {
     this.autService.validateAssetIDDeepLinkParameters(this.currentUser.userId, item.assid).subscribe(
       data => {
         if (data.validated) {
-          const siteUrl = `${appConfig.appUrl}/asset-list?assetid=${encodeURIComponent(item.assid)}`; // UAT  
+          const siteUrl = `${appConfig.appUrl}/asset-list?assetid=${encodeURIComponent(item.assid)}`; // UAT
           // const siteUrl = `http://localhost:4200/asset-list?assetid=${item.assid}`;
           window.open(siteUrl, "_blank");
 

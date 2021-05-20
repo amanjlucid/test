@@ -45,6 +45,10 @@ import { NoAccessComponent } from '../no-access/no-access.component';
 import { NoAccessHistoryComponent } from '../no-access-history/no-access-history.component';
 import { MoveAssetComponent } from '../move-asset/move-asset.component';
 import { PhaseChecklistComponent } from '../phase-checklist/phase-checklist.component';
+import { WoProgramManagmentInstructionComponent } from '../workorder-program-management/wo-program-management-instructions/wo-program-management-instructions.component';
+import { WoPmInstructionAssetsComponent } from '../workorder-program-management/wo-pm-instruction-assets/wo-pm-instruction-assets.component';
+import { WoPmInstructionAssetsDetailComponent } from '../workorder-program-management/wo-pm-instruction-assets-detail/wo-pm-instruction-assets-detail.component';
+
 
 @NgModule({
   declarations: [
@@ -80,7 +84,10 @@ import { PhaseChecklistComponent } from '../phase-checklist/phase-checklist.comp
     NoAccessComponent,
     NoAccessHistoryComponent,
     MoveAssetComponent,
-    PhaseChecklistComponent
+    PhaseChecklistComponent,
+    WoProgramManagmentInstructionComponent,
+    WoPmInstructionAssetsComponent,
+    WoPmInstructionAssetsDetailComponent
   ],
 
   imports: [
