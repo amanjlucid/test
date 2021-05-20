@@ -17,7 +17,8 @@ export class VariationAdditionalWorkItemComponent implements OnInit {
   @Input() openadditionalWork: boolean = false;
   @Input() openedFrom = 'assetchecklist';
   @Input() openedFor = 'details';
-  @Input() singleVariation: any;
+  @Input() selectedVariationInp: any;
+  @Input() selectedSingleVariationAssetInp: any;
   @Output() closeAdditionalWorkEvent = new EventEmitter<boolean>();
   title = 'Choose Work Packages';
   subs = new SubSink();
@@ -38,7 +39,9 @@ export class VariationAdditionalWorkItemComponent implements OnInit {
   selectableSettings: SelectableSettings;
   mySelection: any[] = [];
   packageQuantityWindow = false;
-  worksOrderData:any;
+  worksOrderData: any;
+
+  @Input() singleVariation: any;
 
   constructor(
     private chRef: ChangeDetectorRef,
@@ -49,39 +52,52 @@ export class VariationAdditionalWorkItemComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log(this.singleVariation);
+    console.log({ openfor: this.openedFor, from: this.openedFrom, variation: this.selectedVariationInp, asset: this.selectedSingleVariationAssetInp })
+
     this.requiredPagedata();
   }
 
 
   requiredPagedata() {
-    const { wosequence, assid, wopsequence } = this.singleVariation;
+    const { wosequence } = this.selectedSingleVariationAssetInp;
+
     this.subs.add(
       forkJoin([
         this.workOrderProgrammeService.getWorksOrderByWOsequence(wosequence),
-        // this.workOrderProgrammeService.specificWorkOrderAssets(wosequence, assid, wopsequence),
         this.workOrderProgrammeService.getPlanYear(wosequence)
       ]).subscribe(
         data => {
           console.log(data)
           this.worksOrderData = data[0].data;
-          // const assetData = data[1].data[0];
           const planYear = data[1].data;
 
-          const { wosequence, woisequence, cttsurcde, assid } = this.singleVariation;
+          let params: any;
 
-          const params = {
-            ASSID: assid,
-            CTTSURCDE: cttsurcde,
-            PLANYEAR: planYear,
-            WOSEQUENCE: wosequence,
-            WOCHECKSURCDE: 0,
-            WOISEQUENCE: woisequence
+          if (this.openedFrom == "worksorder") {
+            const { cttsurcde } = this.selectedVariationInp;
+            const { assid, wosequence, woisequence } = this.selectedSingleVariationAssetInp;
+            params = {
+              ASSID: assid,
+              CTTSURCDE: cttsurcde,
+              PLANYEAR: planYear,
+              WOSEQUENCE: wosequence,
+              WOCHECKSURCDE: 0,
+              WOISEQUENCE: woisequence
+            }
+
+          } else if (this.openedFrom == "assetchecklist") {
+            const { wosequence, woisequence, cttsurcde, assid } = this.selectedSingleVariationAssetInp;
+            params = {
+              ASSID: assid,
+              CTTSURCDE: cttsurcde,
+              PLANYEAR: planYear,
+              WOSEQUENCE: wosequence,
+              WOCHECKSURCDE: 0,
+              WOISEQUENCE: woisequence
+            }
           }
 
           this.getWorkPacakgeData(params);
-
-
 
         }, err => this.alertService.error(err)
       )

@@ -15,7 +15,8 @@ import { forkJoin } from 'rxjs';
 
 export class VariationFeesComponent implements OnInit {
   @Input() openFees: boolean = false;
-  @Input() singleVariation: any = [];
+  @Input() selectedVariationInp: any;
+  @Input() selectedSingleVariationAssetInp: any;
   @Input() openedFrom = 'assetchecklist';
   @Input() openedFor = 'details';
   @Output() closeFeesEvent = new EventEmitter<boolean>();
@@ -39,23 +40,29 @@ export class VariationFeesComponent implements OnInit {
   mySelection: any[] = [];
   selectedSingleFees: any;
   openChangeFee = false;
+  currentUser = JSON.parse(localStorage.getItem('currentUser'));
+
+
+  @Input() singleVariation: any = [];
+
 
   constructor(
     private chRef: ChangeDetectorRef,
     private workOrderProgrammeService: WorksorderManagementService,
     private alertService: AlertService,
-  ) { 
+  ) {
     this.setSelectableSettings()
   }
 
   ngOnInit(): void {
-    
+    //console.log({ openfor: this.openedFor, from: this.openedFrom, variation: this.selectedVariationInp, asset: this.selectedSingleVariationAssetInp })
+
     if (this.openedFor == "details") {
       this.title = `Variation Fees: ${this.singleVariation?.woiissuereason} (${this.singleVariation?.wopsequence})`;
-      this.getVariationFees();
     }
 
-    
+    this.getVariationFees();
+
   }
 
   closeFees() {
@@ -75,7 +82,8 @@ export class VariationFeesComponent implements OnInit {
   }
 
   getVariationFees() {
-    const { wosequence, assid, wopsequence } = this.singleVariation;
+
+    const { wosequence, assid, wopsequence } = this.selectedSingleVariationAssetInp;
 
     this.subs.add(
       this.workOrderProgrammeService.getWEBWorksOrdersAssetChecklistAndVariation(wosequence, wopsequence, assid).subscribe(
@@ -119,15 +127,64 @@ export class VariationFeesComponent implements OnInit {
   }
 
 
-  openChangeFeeMethod(item){
+  openChangeFeeMethod(item) {
     this.selectedSingleFees = item;
     $('.variationFeeOvrlay').addClass('ovrlay');
     this.openChangeFee = true;
   }
 
-  closeVariationFeeMethod(eve){
+  closeVariationFeeMethod(eve) {
     this.openChangeFee = eve;
     $('.variationFeeOvrlay').removeClass('ovrlay');
+    this.getVariationFees();
+  }
+
+  disableGridRowMenu(btnname, item) {
+    return false;
+  }
+
+  removeFeeVariation(item) {
+    const { wosequence, wopsequence, assid, woisequence, wostagesurcde, wochecksurcde } = item;
+
+    this.workOrderProgrammeService.getWEBWorksOrdersAssetDetailAndVariation(wosequence, wopsequence, assid).subscribe(
+      data => {
+      
+        if (data.data.length > 0) {
+          const variaton = data.data[0];
+          const { wlcode, wlataid, wlplanyear } = variaton;
+
+          let params = {
+            WOSEQUENCE: wosequence,
+            WOISEQUENCE: woisequence,
+            ASSID: assid,
+            WOPSEQUENCE: wopsequence,
+
+            WLCODE: wlcode,
+            WLATAID: wlataid,
+            WLPLANYEAR: wlplanyear,
+
+            WOSTAGESURCDE: wostagesurcde,
+            WOCHECKSURCDE: wochecksurcde,
+            UserID: this.currentUser.userId,
+          }
+
+          this.workOrderProgrammeService.wORemoveInstructionAssetDetail(params).subscribe(
+            data => {
+              if (data.isSuccess) {
+                this.alertService.success(`Work Item removed successfully.`);
+                this.getVariationFees();
+              } else this.alertService.error(data.message);
+            }, err => this.alertService.error(err)
+          )
+
+        } else {
+          this.alertService.error("Something went wrong.")
+        }
+      }
+    )
+
+
+
   }
 
 

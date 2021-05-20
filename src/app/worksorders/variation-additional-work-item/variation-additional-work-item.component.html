@@ -96,10 +96,17 @@
     </div>
 
     <div class="worklistPackageOvrlay"></div>
-    <app-worksorders-add-package-enter-quantity *ngIf="packageQuantityWindow"
+    <app-variation-pkz-enter-qty *ngIf="packageQuantityWindow" [pkzQtyWindow]="packageQuantityWindow"
+        [singleVariationInp]="selectedVariationInp" [selectedSingleVariationAssetInp]="selectedSingleVariationAssetInp"
+        [assetDetailInp]="selectedSingleVarWorkList" [openedFrom]="openedFrom" [parentComp]="'additional'"
+        (closePkzQtyEvent)="closePackageQuantiyEvent($event)" [mode]="'edit'" [mySelection]="mySelection">
+    </app-variation-pkz-enter-qty>
+
+
+    <!-- <app-worksorders-add-package-enter-quantity *ngIf="packageQuantityWindow"
         [packageQuantityWindow]="packageQuantityWindow" [selectedWorkOrder]="worksOrderData"
         (closePackageQuantiyEvent)="closePackageQuantiyEvent($event)" (refreshPackageList)="refreshPackageList($event)"
         [mySelection]="mySelection" [packageData]="additionalWorkData" [swapPkz]="'false'">
-    </app-worksorders-add-package-enter-quantity>
+    </app-worksorders-add-package-enter-quantity> -->
 
 </kendo-window>

@@ -57,6 +57,7 @@ import { BlankVariationComponent } from '../blank-variation/blank-variation.comp
 import { VariationAssetComponent } from '../variation-asset/variation-asset.component';
 import { VariationDetailComponent } from '../variation-detail/variation-detail.component';
 import { VariationAppendComponent } from '../variation-append/variation-append.component';
+import { VariationPkzEnterQtyComponent } from '../variation-pkz-enter-qty/variation-pkz-enter-qty.component';
 
 @NgModule({
   declarations: [
@@ -104,7 +105,8 @@ import { VariationAppendComponent } from '../variation-append/variation-append.c
     BlankVariationComponent,
     VariationAssetComponent,
     VariationDetailComponent,
-    VariationAppendComponent
+    VariationAppendComponent,
+    VariationPkzEnterQtyComponent
   ],
 
   imports: [

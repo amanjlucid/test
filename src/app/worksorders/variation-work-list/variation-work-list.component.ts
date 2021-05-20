@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { SelectableSettings, PageChangeEvent, RowArgs, GridComponent } from '@progress/kendo-angular-grid';
-import { AlertService, HelperService, WorksorderManagementService, WorksOrdersService } from 'src/app/_services';
+import { AlertService, ConfirmationDialogService, HelperService, WorksorderManagementService, WorksOrdersService } from 'src/app/_services';
 import { forkJoin } from 'rxjs';
 
 @Component({
@@ -17,7 +17,8 @@ export class VariationWorkListComponent implements OnInit {
   @Input() openVariationWorkList: boolean = false;
   @Input() openedFrom = 'assetchecklist';
   @Input() openedFor = 'details';
-  @Input() singleVariation: any = [];
+  @Input() selectedVariationInp: any = [];
+  @Input() selectedSingleVariationAssetInp: any
   @Output() closeWorkListEvent = new EventEmitter<boolean>();
   title = '';
   subs = new SubSink();
@@ -43,24 +44,30 @@ export class VariationWorkListComponent implements OnInit {
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
   SetToRefusalWindow = false;
   refusalCodeList: any;
-  refusalReason: any;
+  reason: any;
+  reasonWindowtitle = 'Select the Refusal Reason'
+  reasonWindowFor = 'refusal';
+  EditWorkPackageQtyCostWindow = false;
+
+  @Input() singleVariation: any; // need to remove
 
   constructor(
     private chRef: ChangeDetectorRef,
     private workOrderProgrammeService: WorksorderManagementService,
     private alertService: AlertService,
     private worksOrdersService: WorksOrdersService,
+    private confirmationDialogService: ConfirmationDialogService,
   ) {
     this.setSelectableSettings();
   }
 
   ngOnInit(): void {
+    console.log({ openfor: this.openedFor, from: this.openedFrom, variation: this.selectedVariationInp, asset: this.selectedSingleVariationAssetInp })
 
     if (this.openedFor == "details" && this.openedFrom == "assetchecklist") {
-      this.title = `Variation: ${this.singleVariation?.woiissuereason} (${this.singleVariation?.woisequence})`;
+      this.title = `Variation: ${this.selectedVariationInp?.woiissuereason} (${this.selectedVariationInp?.woisequence})`;
       this.getVariationWorkList();
-    } else if (this.openedFor == "edit" && this.openedFrom == "assetchecklist") {
-      console.log('in')
+    } else if (this.openedFor == "edit" && (this.openedFrom == "assetchecklist" || this.openedFrom == "worksorder")) {
       this.title = `Edit Variation Items`;
       this.getVariationWorkList();
     }
@@ -80,13 +87,32 @@ export class VariationWorkListComponent implements OnInit {
     };
   }
 
+
+  disableGridRowMenu(btnname, item) {
+    return false;
+    // if(btnname == 'Change Cost'){
+    //   return item.woadstatus 
+    // }
+    //dataItem.woadstatus != 'New'
+    //dataItem.variationAction == 'Remove Work Item'
+  }
+
   getVariationWorkList() {
-    const { wosequence, assid, wopsequence } = this.singleVariation;
+
+    const { wosequence, wopsequence, assid } = this.selectedSingleVariationAssetInp;
+    // let assid;
+
+    // if (this.openedFrom == "worksorder" && (this.openedFor == 'edit' || this.openedFor == 'details')) {
+    //   assid = this.selectedSingleVariationAssetInp.assid;
+    // } else if (this.openedFrom == "assetchecklist") {
+    //   assid = this.selectedVariationInp.assid
+    // }
 
     this.subs.add(
       this.workOrderProgrammeService.getWEBWorksOrdersAssetDetailAndVariation(wosequence, wopsequence, assid).subscribe(
         data => {
           console.log(data);
+          // console.table(data.data);
           if (data.isSuccess) {
             this.variationWorkListData = data.data;
             this.gridView = process(this.variationWorkListData, this.state);
@@ -155,20 +181,25 @@ export class VariationWorkListComponent implements OnInit {
       return
     }
 
-    const params = {
-      "WOSEQUENCE": item.wosequence,
-      "WOPSEQUENCE": item.wopsequence,
-      "assid": item.assid,
-      "WLCODE": item.wlcode,
-      "ATAID": item.wlataid,
-      "Recharge": item.woadrechargeyn == 'N' ? 'Y' : 'N',
-      "UserID": this.currentUser.userId,
-      "PlanYear": item.wlplanyear,
-    };
+    const { wosequence, woisequence, wopsequence, assid, wlcode, wlataid, wlplanyear, wostagesurcde, wochecksurcde, woadrechargeyn } = item;
 
-    return;
+    const params = {
+      WOSEQUENCE: wosequence,
+      WOISEQUENCE: woisequence,
+      ASSID: assid,
+      WOPSEQUENCE: wopsequence,
+      WLCODE: wlcode,
+      ATAID: wlataid,
+      PlanYear: wlplanyear,
+      WOSTAGESURCDE: wostagesurcde,
+      WOCHECKSURCDE: wochecksurcde,
+      UserID: this.currentUser.userId,
+      Recharge: woadrechargeyn == 'N' ? 'Y' : 'N',
+    }
+
+
     this.subs.add(
-      this.worksOrdersService.RechargeToggle(params).subscribe(
+      this.worksOrdersService.rechargeToggleVariation(params).subscribe(
         data => {
           // console.log(data);
           if (data.isSuccess) {
@@ -177,7 +208,6 @@ export class VariationWorkListComponent implements OnInit {
               success_msg = "Recharge Successfully Cleared";
             }
             this.alertService.success(success_msg);
-            this.loading = false;
 
             this.getVariationWorkList();
 
@@ -189,15 +219,85 @@ export class VariationWorkListComponent implements OnInit {
   }
 
 
+  deleteWorkConfirm(item) {
+    this.selectedSingleVarWorkList = item;
+    $('.k-window').css({ 'z-index': 1000 });
+    this.confirmationDialogService.confirm('Please confirm..', `Remove Work Item ${item.atadescription}?`)
+      .then((confirmed) => (confirmed) ? this.openDeleteWorkReasonWindow() : console.log(confirmed))
+      .catch(() => console.log('Attribute dismissed the dialog.'));
+  }
+
+  openDeleteWorkReasonWindow() {
+    $('.variationWorkListOverlay').addClass('ovrlay');
+    this.reasonWindowtitle = 'Edit Comment for Works Order Instruction Asset Detail'
+    this.reasonWindowFor = 'deletework';
+    this.SetToRefusalWindow = true;
+    this.chRef.detectChanges();
+  }
+
+
+  deleteWork(item) {
+    const { wosequence, woisequence, wopsequence, assid, wlcode, wlataid, wlplanyear } = item;
+
+    const params = {
+      WOSEQUENCE: wosequence,
+      WOISEQUENCE: woisequence,
+      strASSID: assid,
+      WOPSEQUENCE: wopsequence,
+      WLCODE: wlcode,
+      WLATAID: wlataid,
+      WLPLANYEAR: wlplanyear,
+      strWOIADCOMMENT: this.reason,
+      strUser: this.currentUser.userId,
+      Recharge: '',
+    }
+
+
+    this.subs.add(
+      this.workOrderProgrammeService.worksOrdersCreateVariationForRemoveWOAD(params).subscribe(
+        data => {
+          if (data.isSuccess) {
+            this.alertService.success(`Work Item ${item.atadescription} deleted successfully.`);
+            this.getVariationWorkList();
+          } else this.alertService.error(data.message);
+        }, err => this.alertService.error(err)
+      )
+    )
+
+
+  }
+
+
+
+
+  setReason() {
+    this.chRef.detectChanges();
+
+    if (!this.reason || this.reason == '') {
+      this.alertService.error("Please select refusal reason");
+      return
+    }
+
+    this.closeSetToRefusalWindow();
+
+    if (this.reasonWindowFor == 'refusal') {
+      this.SetToRefusalSave(this.selectedSingleVarWorkList, true)
+    } else if (this.reasonWindowFor == 'deletework') {
+      this.deleteWork(this.selectedSingleVarWorkList)
+    }
+
+  }
+
   openRefusalReason(item) {
     this.selectedSingleVarWorkList = item;
     $('.variationWorkListOverlay').addClass('ovrlay')
+    this.reasonWindowtitle = 'Select the Refusal Reason'
+    this.reasonWindowFor = 'refusal';
     this.SetToRefusalWindow = true;
     const param = "ClearRefusal=false";
     this.subs.add(
       this.worksOrdersService.WorkOrderRefusalCodes(param).subscribe(
         data => {
-          console.log(data)
           if (data.isSuccess) this.refusalCodeList = data.data;
           else this.alertService.error(data.message);
           this.chRef.detectChanges();
@@ -212,77 +312,136 @@ export class VariationWorkListComponent implements OnInit {
     $('.variationWorkListOverlay').removeClass('ovrlay')
   }
 
-  clearRefusal(item){
+  clearRefusal(item) {
     this.selectedSingleVarWorkList = item;
     this.SetToRefusalSave(item, false)
   }
 
+
   SetToRefusalSave(item, refusal = true) {
+    const { wosequence, woisequence, wopsequence, assid, wlcode, wlataid, wlplanyear, wostagesurcde, wochecksurcde } = item;
 
-    if (refusal) {
-      if (this.refusalReason == '') {
-        this.alertService.error("Please select refusal reason");
-        return
-      }
-
-      this.closeSetToRefusalWindow();
-
+    const params = {
+      WOSEQUENCE: wosequence,
+      WOISEQUENCE: woisequence,
+      ASSID: assid,
+      WOPSEQUENCE: wopsequence,
+      WLCODE: wlcode,
+      ATAID: wlataid,
+      PlanYear: wlplanyear,
+      WOSTAGESURCDE: wostagesurcde,
+      WOCHECKSURCDE: wochecksurcde,
+      UserID: this.currentUser.userId,
+      Refusal: refusal ? this.reason : '',
     }
 
-    console.log(this.refusalReason);
-    return;
-    // console.log('SetToRefusalSave itemDat' + JSON.stringify(this.itemData));
-    const params = {
-      // "WOSEQUENCE": this.selectedItem.wosequence,
-      // "assid": this.selectedItem.assid,
-      // "WOPSEQUENCE": this.selectedItem.wopsequence,
-      // "WLCODE": this.selectedItem.wlcode,
-      // "ATAID": this.selectedItem.wlataid,
-      // "PlanYear": this.selectedItem.wlplanyear,
-      // "Refusal": this.itemData.refusal_code,
-      // "UserID": this.currentUser.userId,
-    };
 
     this.subs.add(
-      this.worksOrdersService.SetRefusal(params).subscribe(
+      this.worksOrdersService.refusalToggleVariation(params).subscribe(
         data => {
           if (data.isSuccess) {
             let success_msg = "Refusal Successfully Set";
-            if (!refusal) {
-              success_msg = "Refusal Successfully Cleared";
-            }
-
+            if (!refusal) success_msg = "Refusal Successfully Cleared";
             this.alertService.success(success_msg);
-            this.loading = false;
-            // this.getData();
-
-            this.closeSetToRefusalWindow();
-          } else {
-            this.alertService.error(data.message);
-            this.loading = false
-          }
-
-          this.chRef.detectChanges();
-
-          // console.log('WorkOrderUpdateCommentForAttribute api reponse'+ JSON.stringify(data));
-        },
-        err => this.alertService.error(err)
+            this.getVariationWorkList();
+          } else this.alertService.error(data.message);
+        }, err => this.alertService.error(err)
       )
     )
 
 
+  }
 
+
+  openEditWorkPackageQtyCostWindow(item) {
+    this.selectedSingleVarWorkList = item;
+    $('.variationWorkListOverlay').addClass('ovrlay')
+    this.EditWorkPackageQtyCostWindow = true;
+
+  }
+
+  closeEditWorkPackageQtyCostWindow() {
+    this.EditWorkPackageQtyCostWindow = false;
+    $('.variationWorkListOverlay').removeClass('ovrlay');
+    this.getVariationWorkList();
+  }
+
+  removeItemVariationConfirm(item) {
+    this.selectedSingleVarWorkList = item;
+    $('.k-window').css({ 'z-index': 1000 });
+    this.confirmationDialogService.confirm('Please confirm..', `Remove Variation on ${item.atadescription}?`)
+      .then((confirmed) => (confirmed) ? this.removeItemVariation(item) : console.log(confirmed))
+      .catch(() => console.log('Attribute dismissed the dialog.'));
+  }
+
+
+  removeItemVariation(item) {
+    const { wosequence, woisequence, wopsequence, assid, wlcode, wlataid, wlplanyear, wostagesurcde, wochecksurcde } = item;
+
+    const params = {
+      WOSEQUENCE: wosequence,
+      WOISEQUENCE: woisequence,
+      ASSID: assid,
+      WOPSEQUENCE: wopsequence,
+      WLCODE: wlcode,
+      WLATAID: wlataid,
+      WLPLANYEAR: wlplanyear,
+      WOSTAGESURCDE: wostagesurcde,
+      WOCHECKSURCDE: wochecksurcde,
+      UserID: this.currentUser.userId,
+    }
+
+    this.subs.add(
+      this.workOrderProgrammeService.wORemoveInstructionAssetDetail(params).subscribe(
+        data => {
+          if (data.isSuccess) {
+            this.alertService.success(`Work Item ${item.atadescription} removed successfully.`);
+            this.getVariationWorkList();
+          } else this.alertService.error(data.message);
+        }, err => this.alertService.error(err)
+      )
+    )
 
   }
 
 
-  removeItemVariation(item){
-    // this.selectedSingleVarWorkList = item;
+  replaceService(item) {
+    this.selectedSingleVarWorkList = item;
+    const { wosequence, woisequence, wopsequence, assid, wlcode, wlataid, wlplanyear, wostagesurcde, wochecksurcde } = item;
+    let params = {
+      WOSEQUENCE: wosequence,
+      WOPSEQUENCE: wopsequence,
+      WOISEQUENCE: woisequence,
+      ASSID: assid,
+      WLCODE: wlcode,
+      WLATAID: wlataid,
+      WLPLANYEAR: wlplanyear,
+      WLATAID2: '',
+      WLPLANYEAR2: '',
+      WOSTAGE: wostagesurcde,
+      WOCHECK: wochecksurcde,
+      WORKCOST: '',
+      COMMENT: '',
+      QUANTITY: '',
+      UOM: '',
+      WPHCODE: '',
+      RECHARGE: '',
+      strUserId: this.currentUser.userId,
+
+    };
+
+    this.subs.add(
+      this.workOrderProgrammeService.createVariationForSIMReplacement(params).subscribe(
+        data => {
+          console.log(data)
+          if (data.isSuccess) {
+
+          } else this.alertService.error(data.message)
+        }, err => this.alertService.error(err)
+      )
+    )
   }
 
-  deleteWork(item){
-    // this.selectedSingleVarWorkList = item;
-  }
 
 
 }

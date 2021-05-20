@@ -3,10 +3,50 @@
 
     <form [formGroup]="variationFeeForm" (ngSubmit)="onSubmit()" autocomplete="off" class="variationForm">
         <div class="row formRow">
-
-
-            <div class="col-md-12 mt-4">
+            <div class="col-md-12">
                 <div class="row">
+                    <div class="col-md-2">
+                        <label>Stage:</label>
+                    </div>
+
+                    <div class="col-md-2">
+                        <input type="text" class="form-control" formControlName="stage"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.stage }" autocomplete="off">
+                    </div>
+
+                    <div class="col-md-2">
+                        <label>Name:</label>
+                    </div>
+
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" formControlName="name"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.name }" autocomplete="off">
+                    </div>
+
+                </div>
+
+                <div class="row mt-2">
+                    <div class="col-md-2">
+                        <label>Fee Cost:</label>
+                    </div>
+
+                    <div class="col-md-2">
+                        <input appCurrencyMask maxDigits="9" type="text" class="form-control" formControlName="feecost"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.feecost }" autocomplete="off">
+                    </div>
+
+                    <div class="col-md-3">
+                        <label>Fee Cost Override:</label>
+                    </div>
+
+                    <div class="col-md-5">
+                        <input appCurrencyMask maxDigits="9" type="text" class="form-control" formControlName="feecostoverride"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.feecostoverride }" autocomplete="off">
+                    </div>
+                </div>
+
+
+                <div class="row mt-2">
                     <div class="col-md-2">
                         <label>Comment:</label>
                     </div>
@@ -14,14 +54,29 @@
                     <div class="col-md-10">
                         <textarea class="form-control" formControlName="comment"
                             [ngClass]="{ 'is-invalid': submitted && formErrors.comment }" autocomplete="off" rows="4">
-                    </textarea>
+                        </textarea>
 
                         <div *ngIf="submitted && formErrors.comment" class="invalid-feedback">
                             <div *ngIf="formErrors.comment">{{ formErrors.comment }}</div>
                         </div>
+
                     </div>
+
                 </div>
+
             </div>
+
+
+            <!-- <div class="col-md-10">
+                <textarea class="form-control" formControlName="comment"
+                    [ngClass]="{ 'is-invalid': submitted && formErrors.comment }" autocomplete="off" rows="4">
+            </textarea>
+
+                <div *ngIf="submitted && formErrors.comment" class="invalid-feedback">
+                    <div *ngIf="formErrors.comment">{{ formErrors.comment }}</div>
+                </div>
+            </div> -->
+
 
             <div class="col-md-12 mt-2 text-right">
                 <button type="submit" class="btn btn-sm themeButton mr-1">Apply</button>

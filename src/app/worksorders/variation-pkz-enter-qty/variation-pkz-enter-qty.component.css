@@ -1,0 +1,118 @@
+.k-window {
+    position: fixed !important;
+}
+
+.row1, .row2, .row3, .row4 {
+    display: block;
+}
+
+.row1 .blockleft {
+    display: inline-block;
+    width: 30%;
+}
+
+.row1 .blockright {
+    display: inline-block;
+    width: 70%;
+}
+
+.row1 .blockleft .lblDiv, .row1 .blockleft input[type=text] {
+    display: inline-block;
+    width: 20%;
+}
+
+.row1 .blockleft input[type=text] {
+    display: inline-block;
+    width: 65%;
+    margin-left: 10px;
+    margin-right: 20px;
+}
+
+.row1 .blockright .lblDiv {
+    display: inline-block;
+    width: 9%;
+}
+
+.row1 .blockright input[type=text] {
+    display: inline-block;
+    width: 89%;
+    margin-left: 10px;
+}
+
+.row2 .blockleft, .row3 .blockleft {
+    display: inline-block;
+    width: 100%;
+}
+
+.row2 .blockleft .lblDiv {
+    display: inline-block;
+    width: 6%;
+}
+
+.row2 .blockleft input[type=text] {
+    display: inline-block;
+    width: 92%;
+    margin-left: 14px;
+}
+
+.row3 .blockleft .lblDiv {
+    display: inline-block;
+    width: 7%;
+    margin-left: 30px;
+}
+
+.row3 .blockleft .lblDiv1 {
+    display: inline-block;
+    width: 12%;
+    padding-left: 0;
+    margin-left: 0;
+}
+
+.row3 .blockleft .lblDiv2 {
+    display: inline-block;
+    width: 3%;
+    margin-left: 10px;
+}
+
+.row3 .blockleft input[type=text] {
+    display: inline-block;
+    width: 7%;
+    margin-left: 10px;
+}
+
+.row4 .blockleft {
+    display: flex;
+    width: 100%;
+}
+
+.row4 .blockleft .lblDiv {
+    display: inline-block;
+    width: 6%;
+    margin-top: 7px;
+}
+
+.row4 .blockleft .form-group {
+    display: inline-block;
+    width: 92%;
+    margin-left: 14px;
+}
+
+.form-group input[type=text] {
+    width: 100%;
+}
+
+.invalid-feedback {
+    display: block !important;
+}
+
+input[type=text] {
+    height: 27px;
+    font-size: .894rem;
+    line-height: 1.54;
+    color: #4E5155;
+    /* background-color: #fff; */
+    background-clip: padding-box;
+    border: 1px solid rgba(24, 28, 33, 0.1);
+    border-radius: .25rem;
+    /* width: 100%; */
+}

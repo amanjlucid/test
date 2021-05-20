@@ -405,6 +405,48 @@ export class WorksorderManagementService {
     }
 
 
+    worksOrdersCreateVariationForRemoveWOAD(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WorksOrdersCreateVariationForRemoveWOAD`, body, this.httpOptions);
+    }
+
+    
+    worksOrdersCreateVariationForChangeCostQty(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WorksOrdersCreateVariationForChangeCostQty`, body, this.httpOptions);
+    }
+
+    getContractCostsForAssetAndAttribute(CTTSURCDE, ATAID, ASSID, WOSEQUENCE) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetContractCostsForAssetAndAttribute?CTTSURCDE=${CTTSURCDE}&ATAID=${ATAID}&ASSID=${ASSID}&WOSEQUENCE=${WOSEQUENCE}`, this.httpOptions);
+    }
+
+    worksOrdersUpdateWorksOrderInstructionAssetDetail(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WorksOrdersUpdateWorksOrderInstructionAssetDetail`, body, this.httpOptions);
+    }
+
+
+
+
+
+
+
+    wORemoveInstructionAssetDetail(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WORemoveInstructionAssetDetail`, body, this.httpOptions);
+    }
+
+
+    worksOrdersCreateVariationForChangeFee(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WorksOrdersCreateVariationForChangeFee`, body, this.httpOptions);
+    }
+
+    createVariationForSIMReplacement(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/CreateVariationForSIMReplacement`, body, this.httpOptions);
+    }
+
 
 
 

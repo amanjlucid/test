@@ -13,10 +13,10 @@ import { forkJoin } from 'rxjs';
 export class VariationChangefeeComponent implements OnInit {
   @Input() openChangeFee: boolean = false;
   @Input() selectedSingleFees: any;
-
-  
+  @Input() selectedVariationInp: any;
+  @Input() selectedSingleVariationAssetInp: any;
   @Output() closeChangeFeeEvent = new EventEmitter<boolean>();
-  
+
 
   subs = new SubSink(); // to unsubscribe services
   title = 'Variation Fee';
@@ -28,26 +28,52 @@ export class VariationChangefeeComponent implements OnInit {
       'required': 'comment is required.',
       'maxlength': 'Reason must be maximum 250 characters.',
     },
+
+    'feecostoverride': {
+      'required': 'Fee Cost Override is required.',
+
+    },
   };
+  currentUser = JSON.parse(localStorage.getItem('currentUser'));
 
   constructor(
     private chRef: ChangeDetectorRef,
     private fb: FormBuilder,
     private workOrderProgrammeService: WorksorderManagementService,
+    private helperService: HelperService,
     private alertService: AlertService,
   ) { }
 
   ngOnInit(): void {
+    // console.log({ fees: this.selectedSingleFees, variation: this.selectedVariationInp, asset: this.selectedSingleVariationAssetInp })
+
+    const { wostagename, wocheckname, woaccommittedfee, woiadfeecost, woiadcomment } = this.selectedSingleFees;
+
     this.variationFeeForm = this.fb.group({
-      comment: ['', [Validators.required, Validators.maxLength(250)]],
+      stage: [{ value: wostagename, disabled: true }, [Validators.required, Validators.maxLength(250)]],
+      name: [{ value: wocheckname, disabled: true }, [Validators.required, Validators.maxLength(250)]],
+      feecost: [{ value: woaccommittedfee, disabled: true }, [Validators.required, Validators.maxLength(250)]],
+      feecostoverride: [woiadfeecost, [Validators.required, Validators.maxLength(250)]],
+      comment: [woiadcomment, [Validators.required, Validators.maxLength(250)]],
     });
+
+    setTimeout(() => {
+      this.variationFeeForm.patchValue({
+        feecost: woaccommittedfee,
+        feecostoverride: woiadfeecost,
+      })
+    }, 100);
+
+
+    this.chRef.detectChanges();
+
   }
 
   ngOnDestroy() {
     this.subs.unsubscribe();
   }
 
-  closeChangeFee(){
+  closeChangeFee() {
     this.openChangeFee = false;
     this.closeChangeFeeEvent.emit(false);
   }
@@ -73,6 +99,7 @@ export class VariationChangefeeComponent implements OnInit {
   formErrorObject() {
     this.formErrors = {
       'comment': '',
+      'feecostoverride': ''
     }
   }
 
@@ -86,6 +113,35 @@ export class VariationChangefeeComponent implements OnInit {
     if (this.variationFeeForm.invalid) {
       return;
     }
+
+
+    let formRawVal = this.variationFeeForm.getRawValue();
+    const { wosequence, wopsequence, assid, woisequence, wostagesurcde, wochecksurcde } = this.selectedSingleFees;
+
+    let params = {
+      WOSEQUENCE: wosequence,
+      WOPSEQUENCE: wopsequence,
+      ASSID: assid,
+      WOISEQUENCE: woisequence,
+      WOSTAGESURCDE: wostagesurcde,
+      WOCHECKSURCDE: wochecksurcde,
+      UserID: this.currentUser.userId,
+      WOIADFEECOST: this.helperService.convertMoneyToFlatFormat(formRawVal.feecostoverride),
+      WOIADCOMMENT: formRawVal.comment,
+      Recharge: ''
+    }
+
+    this.subs.add(
+      this.workOrderProgrammeService.worksOrdersCreateVariationForChangeFee(params).subscribe(
+        data => {
+          // console.log(data);
+          if (data.isSuccess) {
+            this.alertService.success("Fee updated successfully");
+            this.closeChangeFee();
+          } else this.alertService.error(data.message)
+        }, err => this.alertService.error(err)
+      )
+    )
 
   }
 

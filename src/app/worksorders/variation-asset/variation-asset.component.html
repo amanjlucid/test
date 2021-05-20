@@ -6,7 +6,7 @@
                 <i class="fa" [ngClass]="(filterToggle) ? 'fa-minus':'fa-plus'"></i>
             </button>
 
-            
+
         </div>
 
         <div class="col-md-12 mt-2">
@@ -158,7 +158,8 @@
     <div class="variationAssetListOverlay"></div>
 
     <app-variation-work-list *ngIf="openVariationWorkList" [openVariationWorkList]="openVariationWorkList"
-        [openedFrom]="openedFrom" [openedFor]="openedFor" [singleVariation]="selectedSingleVariationAsset"
+        [openedFrom]="openedFrom" [openedFor]="openedFor" [selectedVariationInp]="selectedVariationInp"
+        [selectedSingleVariationAssetInp]="selectedSingleVariationAsset"
         (closeWorkListEvent)="closeVariationDetails($event)">
     </app-variation-work-list>
 

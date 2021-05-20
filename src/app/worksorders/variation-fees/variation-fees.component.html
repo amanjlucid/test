@@ -1,14 +1,15 @@
 <kendo-window title="{{title}}" *ngIf="openFees" (close)="closeFees()" [top]="35" [minWidth]="700" [width]="980"
     [height]="auto" [minHeight]="350">
-    <div class="row">
+    <!-- <div class="row">
         <div class="col-md-12 mt-2">
             <button type="button" class="btn" (click)="openChangeFeeMethod()"> Change Fee </button>
-            </div>
-            </div>
+        </div>
+    </div> -->
 
     <div class="row">
         <div class="col-md-12 mt-2">
-            <kendo-grid #grid [data]="gridView" [height]="600" [selectable]="selectableSettings" filterable="menu" [resizable]="true" [sortable]="{
+            <kendo-grid #grid [data]="gridView" [height]="600" [selectable]="selectableSettings" filterable="menu"
+                [resizable]="true" [sortable]="{
                 allowUnsort: true,
                 mode: 'multiple'
                 }" [skip]="state.skip" [loading]="loading" [pageSize]="pageSize" [rowHeight]="36"
@@ -16,10 +17,30 @@
                 (sortChange)="sortChange($event)" (filterChange)="filterChange($event)"
                 (cellClick)="cellClickHandler($event)" [navigable]="false">
 
-                <kendo-grid-column title="Previous Variations" field="olD_VARIATIONS"  width="130">
+                <kendo-grid-column title=" " width="37" [filterable]="false" [sortable]="false"
+                    *ngIf="openedFor == 'edit'">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <li class="nav-item dropdown list-unstyled" style="margin-top: -7px;">
+                            <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
+
+                            <div class="dropdown-menu">
+                                <a [ngClass]="{'disabled' : disableGridRowMenu('Change Fee',dataItem) }"
+                                    class="dropdown-item" href="javascript:void(0)"
+                                    (click)="openChangeFeeMethod(dataItem)">Change Fee</a>
+
+                                <a [ngClass]="{'disabled' : disableGridRowMenu('Remove Fee',dataItem)}"
+                                    class="dropdown-item" href="javascript:void(0)"
+                                    (click)="removeFeeVariation(dataItem)">Remove Fee Variation</a>
+                            </div>
+                        </li>
+
+                    </ng-template>
                 </kendo-grid-column>
 
-                <kendo-grid-column title="Stage" field="wostagename"  width="100">
+                <kendo-grid-column title="Previous Variations" field="olD_VARIATIONS" width="130">
+                </kendo-grid-column>
+
+                <kendo-grid-column title="Stage" field="wostagename" width="100">
                 </kendo-grid-column>
 
                 <kendo-grid-column title="Name" field="wocheckname" width="130">
@@ -34,9 +55,10 @@
                 <kendo-grid-column title="Status" field="woasscheckstatus" width="100">
                 </kendo-grid-column>
 
-               
 
-                <kendo-grid-column title="Forecast Fee" field="woacforecastfee" width="120" [style]="{'text-align': 'right'}">
+
+                <kendo-grid-column title="Forecast Fee" field="woacforecastfee" width="120"
+                    [style]="{'text-align': 'right'}">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <span>
                             {{ dataItem.woacforecastfee | currency:'GBP':'symbol' }}
@@ -53,7 +75,8 @@
                     </ng-template>
                 </kendo-grid-column>
 
-                <kendo-grid-column title="Override Fee" field="woiadfeecost" width="120" [style]="{'text-align': 'right'}">
+                <kendo-grid-column title="Override Fee" field="woiadfeecost" width="120"
+                    [style]="{'text-align': 'right'}">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <span>
                             {{ dataItem.woiadfeecost | currency:'GBP':'symbol' }}
@@ -77,7 +100,9 @@
 
     <div class="variationFeeOvrlay"></div>
 
-    <app-variation-changefee *ngIf="openChangeFee" [openChangeFee]="openChangeFee" [selectedSingleFees]="selectedSingleFees" (closeChangeFeeEvent)="closeVariationFeeMethod($event)"></app-variation-changefee>
+    <app-variation-changefee *ngIf="openChangeFee" [openChangeFee]="openChangeFee"
+        [selectedSingleFees]="selectedSingleFees" [selectedVariationInp]="selectedVariationInp" [selectedSingleVariationAssetInp]="selectedSingleVariationAssetInp" (closeChangeFeeEvent)="closeVariationFeeMethod($event)">
+    </app-variation-changefee>
 
 
 

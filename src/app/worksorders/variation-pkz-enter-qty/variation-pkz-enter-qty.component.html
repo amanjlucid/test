@@ -1,0 +1,94 @@
+<kendo-window title="{{title}}" *ngIf="pkzQtyWindow" (close)="closeVariatioPkzQty()" [top]="20" [minWidth]="700"
+    [width]="1400" [height]="auto" [minHeight]="200">
+    <form [formGroup]="pakzQuantityForm" (ngSubmit)="onSubmit()" autocomplete="off" class="managementForm">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="row1">
+                    <div class="blockleft">
+                        <div class="lblDiv">Code</div>
+                        <input type="text" formControlName="code"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.code }" autocomplete="off">
+
+                    </div>
+                    <div class="blockright">
+                        <div class="lblDiv">Name</div>
+                        <input type="text" formControlName="name"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.name }" autocomplete="off">
+
+                    </div>
+                </div>
+
+                <div class="row2 mt-2">
+                    <div class="blockleft">
+                        <div class="lblDiv">Attr Desc</div>
+                        <input type="text" formControlName="desc"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.desc }" autocomplete="off">
+
+                    </div>
+
+                </div>
+
+                <div class="row3 mt-2">
+                    <div class="blockleft">
+                        <div class="lblDiv lblDiv1">Please Provide Quantity:</div>
+                        <input type="text" numberDecimal maxDigits="5" formControlName="quantity"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.quantity }" autocomplete="off">
+
+                        <div class="lblDiv lblDiv2">UOM:</div>
+                        <input type="text" formControlName="uom"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.uom }" autocomplete="off">
+
+                        <div class="lblDiv">SOR Rate:</div>
+                        <input appCurrencyMask maxDigits="20" type="text" formControlName="sorRate"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.sorRate }" autocomplete="off">
+
+                        <div class="lblDiv">Contract Rate:</div>
+                        <input appCurrencyMask maxDigits="20" type="text" formControlName="contractorRate"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.contractorRate }" autocomplete="off">
+
+                        <div class="lblDiv">Work Cost:</div>
+                        <input appCurrencyMask maxDigits="20" type="text" formControlName="workCost"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.workCost }" autocomplete="off">
+
+                        <div class="lblDiv">Cost Override:</div>
+                        <input appCurrencyMask maxDigits="20" type="text" formControlName="costOverride"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.costOverride }" autocomplete="off">
+
+
+                    </div>
+
+                </div>
+
+                <div class="row4 mt-2">
+                    <div class="blockleft">
+                        <div class="lblDiv">Comment:</div>
+                        <div class="form-group">
+                            <input type="text" formControlName="comment"
+                                [ngClass]="{ 'is-invalid': submitted && formErrors.comment }" autocomplete="off">
+                            <div *ngIf="submitted && formErrors.comment" class="invalid-feedback">
+                                <div *ngIf="formErrors.comment">{{ formErrors.comment }}</div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+            <div class="col-md-4 mt-3 text-left">
+                <button type="button" class="btn btn-sm themeButton ml-1" (click)="defaultToOne()">Default to 1</button>
+            </div>
+            
+            <div class="col-md-8 mt-3 text-right">
+                <button type="button" class="btn btn-sm themeButton ml-1" (click)="selectApply(1)">Apply</button>
+                <button type="button" *ngIf="parentComp == 'additionalwork'" [disabled]="checkApplyAllDisable()"
+                    class="btn btn-sm themeButton ml-1" (click)="selectApply(2)">Apply To All</button>
+                <button type="button" (click)="closeVariatioPkzQty()"
+                    class="btn btn-sm themeButton ml-1">Cancel</button>
+            </div>
+
+        </div>
+    </form>
+</kendo-window>

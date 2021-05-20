@@ -51,6 +51,7 @@ export class VariationAssetComponent implements OnInit {
   formMode = 'new'
   openedFor = 'details'
 
+
   constructor(
     private chRef: ChangeDetectorRef,
     private workOrderProgrammeService: WorksorderManagementService,
@@ -62,7 +63,7 @@ export class VariationAssetComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // console.log(this.selectedVariationInp)
+    console.log(this.selectedVariationInp)
     // console.log(this.selectedWOInp)
     this.getVariationPageDataWithVariationAssetFromWO()
   }
