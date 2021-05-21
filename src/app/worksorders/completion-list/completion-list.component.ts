@@ -1,16 +1,16 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectorRef, ViewChild, OnDestroy, OnChanges, SimpleChanges, SimpleChange } from '@angular/core';
 import { DataResult, process, State, CompositeFilterDescriptor, SortDescriptor, GroupDescriptor } from '@progress/kendo-data-query';
 import { GridComponent, RowArgs } from '@progress/kendo-angular-grid';
-import {  AlertService, WorksOrdersService } from '../../../_services';
+import {  AlertService, WorksorderManagementService } from '../../_services';
 import { SubSink } from 'subsink';
 
 @Component({
-    selector: 'app-workorder-completion',
-    templateUrl: './workorder-completion.component.html',
-    styleUrls: ['./workorder-completion.component.css']
+    selector: 'app-completion-list',
+    templateUrl: './completion-list.component.html',
+    styleUrls: ['./completion-list.component.css']
 })
 
-export class WorkOrderCompletionComponent implements OnInit, OnChanges, OnDestroy {  
+export class CompletionListComponent implements OnInit, OnChanges, OnDestroy {  
 
   workOrderProgrammeData;
   subs = new SubSink(); // to unsubscribe services
@@ -62,7 +62,7 @@ export class WorkOrderCompletionComponent implements OnInit, OnChanges, OnDestro
   }
 
   constructor(
-    private worksOrderService: WorksOrdersService,
+    private workOrderProgrammeService: WorksorderManagementService,
     private alertService: AlertService,
     private chRef: ChangeDetectorRef
 ) {
@@ -83,7 +83,7 @@ export class WorkOrderCompletionComponent implements OnInit, OnChanges, OnDestro
 
   getWorkOrderGetWorksOrderCompletionsList() {
     this.subs.add(
-      this.worksOrderService.GetWorkOrderGetWorksOrderCompletions(this.workOrderId, this.currentUser.userId)
+      this.workOrderProgrammeService.GetWorkOrderGetWorksOrderCompletions(this.workOrderId, this.currentUser.userId)
         .subscribe(
           data => {     
             if (data && data.isSuccess) {
@@ -125,7 +125,7 @@ export class WorkOrderCompletionComponent implements OnInit, OnChanges, OnDestro
 
   viewWorkOrderCompletionsReport(wosequence, wocosequence, userId) {
     this.subs.add(
-      this.worksOrderService.viewWorkOrderCompletionCertificate(wosequence, wocosequence, userId).subscribe(
+      this.workOrderProgrammeService.viewWorkOrderCompletionCertificate(wosequence, wocosequence, userId).subscribe(
           data => {        
             if (data && data.isSuccess) {
               let tempData = data.data;
@@ -155,7 +155,7 @@ export class WorkOrderCompletionComponent implements OnInit, OnChanges, OnDestro
 
   saveSendCompletionReport(){
     this.subs.add(
-      this.worksOrderService.saveSendWorkOrderCompletionCertificate(this.selectedCompletionsList.wosequence, this.selectedCompletionsList.wocosequence, this.currentUser.userId).subscribe(
+      this.workOrderProgrammeService.saveSendWorkOrderCompletionCertificate(this.selectedCompletionsList.wosequence, this.selectedCompletionsList.wocosequence, this.currentUser.userId).subscribe(
           data => {        
             if (data && data.isSuccess) {
               let tempMessage = data.message;

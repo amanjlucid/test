@@ -94,6 +94,7 @@ export class WorksOrdersService {
     WorkOrderRefusalCodes(qs) {
         return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/WorkOrderRefusalCodes?${qs}`, this.httpOptions);
     }
+  
     SetRefusal(params) {
         return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/SetRefusal`, params, this.httpOptions);
     }
@@ -106,16 +107,42 @@ export class WorksOrdersService {
         return this.http.post<any>(`${appConfig.apiUrl}/api/WorkordersPortal/WEBWorksOrdersValidateNewWorksOrder`, params, this.httpOptions).toPromise();
     }
 
-    GetWorkOrderGetWorksOrderCompletions(wosequence, userId) {
-        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWorksOrderCompletions?wosequence=${wosequence}&struser=${userId}`, this.httpOptions);
+    getWEBWorksOrdersInstructionsForUser(WPRSEQUENCE, iWOSeq, strUserId, Instructions) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWEBWorksOrdersInstructionsForUser?WPRSEQUENCE=${WPRSEQUENCE}&iWOSeq=${iWOSeq}&strUserId=${strUserId}&Instructions=${Instructions}`, this.httpOptions);
     }
 
-    viewWorkOrderCompletionCertificate(wosequence, wocosequence, userId) {
-        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/ViewCompletionCertificate?wosequence=${wosequence}&wocosequence=${wocosequence}&userid=${userId}`, this.httpOptions);
+    rechargeToggleVariation(params) {
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/RechargeToggleVariation`, params, this.httpOptions);
     }
 
-    saveSendWorkOrderCompletionCertificate(wosequence, wocosequence, userId) {
-        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/ProcessCompletionReport?wosequence=${wosequence}&wocosequence=${wocosequence}&userid=${userId}`, this.httpOptions);
+
+    refusalToggleVariation(params) {
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/RefusalToggleVariation`, params, this.httpOptions);
+    }
+
+
+    
+
+ 
+    GetWEBWorksOrdersInstructionsForUser(qs) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWEBWorksOrdersInstructionsForUser?${qs}`, this.httpOptions);
+    }
+    GetWOInstructionAssets(qs) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWOInstructionAssets?${qs}`, this.httpOptions);
+    }
+    GetWOInstructionAssetsDetails(qs) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWOInstructionAssetsDetails?${qs}`, this.httpOptions);
+    }
+
+    WorksOrderAcceptAsset(params) {
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WorksOrderAcceptAsset`, params, this.httpOptions);
+    }
+
+    ContractInstructionReport(qs) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/ContractInstructionReport?${qs}`, this.httpOptions);
+    }
+    EmailContractInstructionReport(params) {
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/EmailContractInstructionReport`, params, this.httpOptions);
     }
 
 
