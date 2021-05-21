@@ -11,3 +11,7 @@
 .actionBtnDiv button, .actionBtnDiv #nesting-dropdown-demo {
     display: inline-block;
 }
+
+.disabled{
+    pointer-events: none !important;
+}

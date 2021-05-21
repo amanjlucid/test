@@ -75,13 +75,13 @@
                                     (click)="openVariationDetails(dataItem)">Details</a> -->
 
                                 <a [ngClass]="{'disabled' : disableVariationBtns('Edit', dataItem)}"
-                                    class="dropdown-item" href="javascript:void(0)"
-                                    (click)="editVariation(dataItem)">Edit</a>
+                                    *ngIf="woMenuAccess('Edit Variation')" class="dropdown-item"
+                                    href="javascript:void(0)" (click)="editVariation(dataItem)">Edit</a>
 
 
                                 <a [ngClass]="{'disabled' : disableVariationBtns('Accept', dataItem)}"
-                                    class="dropdown-item" href="javascript:void(0)"
-                                    (click)="accetpVariationAsset(dataItem)">Accept</a>
+                                    *ngIf="woMenuAccess('Accept Variation')" class="dropdown-item"
+                                    href="javascript:void(0)" (click)="accetpVariationAsset(dataItem)">Accept</a>
 
 
                             </div>
@@ -140,8 +140,6 @@
 
                 <kendo-grid-column title="WO Status" field="woassstatus" width="140">
                 </kendo-grid-column>
-
-
 
 
 

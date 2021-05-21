@@ -39,7 +39,8 @@
                 </div>
             </div>
 
-            <button type="button" class="btn btn-sm themeButton mr-1 headin_section" (click)="openVariationFun()">
+            <button *ngIf="woMenuBtnSecurityAccess('Variations')" type="button"
+                class="btn btn-sm themeButton mr-1 headin_section" (click)="openVariationFun()">
                 Variations
             </button>
 

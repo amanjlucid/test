@@ -2,8 +2,8 @@ import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { SelectableSettings, PageChangeEvent } from '@progress/kendo-angular-grid';
-import { AlertService, ConfirmationDialogService, HelperService, WorksorderManagementService } from 'src/app/_services';
-import { forkJoin } from 'rxjs';
+import { AlertService, ConfirmationDialogService, HelperService, SharedService, WorksorderManagementService } from 'src/app/_services';
+import { combineLatest, forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-variation-list',
@@ -52,18 +52,34 @@ export class VariationListComponent implements OnInit {
   confirmationType = '';
   openAppendVariation = false;
 
+  worksOrderAccess = [];
+  worksOrderUsrAccess: any = [];
+  userType: any = [];
+
   constructor(
     private chRef: ChangeDetectorRef,
     private workOrderProgrammeService: WorksorderManagementService,
     private alertService: AlertService,
     private confirmationDialogService: ConfirmationDialogService,
-
+    private sharedService: SharedService
   ) {
     this.setSelectableSettings();
   }
 
   ngOnInit(): void {
-    console.log(this.selectedAsset);
+    this.subs.add(
+      combineLatest([
+        this.sharedService.worksOrdersAccess,
+        this.sharedService.woUserSecObs,
+        this.sharedService.userTypeObs
+      ]).subscribe(
+        data => {
+          this.worksOrderAccess = data[0];
+          this.worksOrderUsrAccess = data[1];
+          this.userType = data[2][0];
+        }
+      )
+    )
 
     this.getVariationPageDataWithGrid();
 
@@ -107,8 +123,7 @@ export class VariationListComponent implements OnInit {
           this.workOrderProgrammeService.specificWorkOrderAssets(wosequence, assid, wopsequence),
         ]).subscribe(
           data => {
-            console.log(data)
-
+            
             this.worksOrderData = data[0].data;
             this.phaseData = data[1].data;
             this.assetDetails = data[2].data[0];
@@ -152,6 +167,7 @@ export class VariationListComponent implements OnInit {
 
   cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
     this.selectedSingleVariation = dataItem;
+    // console.log(dataItem)
   }
 
   openVariationDetails(item) {
@@ -191,13 +207,11 @@ export class VariationListComponent implements OnInit {
     this.getVariationPageDataWithGrid();
   }
 
-  getVariationReason(reason) {
-    if (reason != "") {
+  getVariationReason(variation) {
+    if (variation != "") {
       if (this.openedFrom == "assetchecklist" && this.formMode == "new") {
-        this.openedFor = 'new';
-        this.openVariationDetails(undefined);
+        this.appendVariation(variation);
       }
-
     }
   }
 
@@ -208,6 +222,10 @@ export class VariationListComponent implements OnInit {
     $('.variationListOverlay').addClass('ovrlay');
   }
 
+
+  woMenuAccess(menuName) {
+    return this.worksOrderUsrAccess.indexOf(menuName) != -1
+  }
 
   disableAppendBtn() {
     // woAsset?.woassstatus != 'Accepted'
@@ -392,7 +410,7 @@ export class VariationListComponent implements OnInit {
     this.selectedSingleVariation = eve;
     this.selectedSingleVariation.assid = this.selectedAsset.assid
     this.openVariationDetails(undefined)
-    console.log(eve);
+
   }
 
 }

@@ -410,7 +410,7 @@ export class WorksorderManagementService {
         return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WorksOrdersCreateVariationForRemoveWOAD`, body, this.httpOptions);
     }
 
-    
+
     worksOrdersCreateVariationForChangeCostQty(params) {
         let body = JSON.stringify(params);
         return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WorksOrdersCreateVariationForChangeCostQty`, body, this.httpOptions);
@@ -441,10 +441,14 @@ export class WorksorderManagementService {
         return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/CreateVariationForSIMReplacement`, body, this.httpOptions);
     }
 
-    
+
     worksOrdersCreateVariationForAddWOAD(params) {
         let body = JSON.stringify(params);
         return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WorksOrdersCreateVariationForAddWOAD`, body, this.httpOptions);
+    }
+
+    getLatestVariationData(WOSEQUENCE, WOPSEQUENCE, reason) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetLatestVariationData?WOSEQUENCE=${WOSEQUENCE}&WOPSEQUENCE=${WOPSEQUENCE}&reason=${reason}`, this.httpOptions);
     }
 
 

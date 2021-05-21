@@ -2,8 +2,8 @@ import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { SelectableSettings, PageChangeEvent, RowArgs, GridComponent } from '@progress/kendo-angular-grid';
-import { AlertService, ConfirmationDialogService, HelperService, WorksorderManagementService, WorksOrdersService } from 'src/app/_services';
-import { forkJoin } from 'rxjs';
+import { AlertService, ConfirmationDialogService, HelperService, SharedService, WorksorderManagementService, WorksOrdersService } from 'src/app/_services';
+import { combineLatest, forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-variation-work-list',
@@ -49,7 +49,9 @@ export class VariationWorkListComponent implements OnInit {
   reasonWindowFor = 'refusal';
   EditWorkPackageQtyCostWindow = false;
 
-  // @Input() singleVariation: any; // need to remove
+  worksOrderAccess = [];
+  worksOrderUsrAccess: any = [];
+  userType: any = [];
 
   constructor(
     private chRef: ChangeDetectorRef,
@@ -57,18 +59,33 @@ export class VariationWorkListComponent implements OnInit {
     private alertService: AlertService,
     private worksOrdersService: WorksOrdersService,
     private confirmationDialogService: ConfirmationDialogService,
+    private sharedService: SharedService,
   ) {
     this.setSelectableSettings();
   }
 
   ngOnInit(): void {
-    console.log({ openfor: this.openedFor, from: this.openedFrom, variation: this.selectedVariationInp, asset: this.selectedSingleVariationAssetInp })
+    //console.log({ openfor: this.openedFor, from: this.openedFrom, variation: this.selectedVariationInp, asset: this.selectedSingleVariationAssetInp })
+    this.subs.add(
+      combineLatest([
+        this.sharedService.woUserSecObs,
+        this.sharedService.worksOrdersAccess,
+        this.sharedService.userTypeObs
+      ]).subscribe(
+        data => {
+          // console.log(data);
+          this.worksOrderUsrAccess = data[0];
+          this.worksOrderAccess = data[1];
+          this.userType = data[2][0];
+        }
+      )
+    )
 
     if (this.openedFor == "details" && this.openedFrom == "assetchecklist") {
       const { woiissuereason, woisequence } = this.selectedSingleVariationAssetInp
       this.title = `Variation: ${woiissuereason} (${woisequence})`;
       this.getVariationWorkList();
-    } else if ((this.openedFor == "edit" || this.openedFor == "append")  && (this.openedFrom == "assetchecklist" || this.openedFrom == "worksorder")) {
+    } else if ((this.openedFor == "edit" || this.openedFor == "append") && (this.openedFrom == "assetchecklist" || this.openedFrom == "worksorder")) {
       this.title = `Edit Work List Variation Items`;
       this.getVariationWorkList();
     }
@@ -89,24 +106,39 @@ export class VariationWorkListComponent implements OnInit {
   }
 
 
+  woMenuAccess(menuName) {
+    return this.worksOrderUsrAccess.indexOf(menuName) != -1
+  }
+
+
   disableGridRowMenu(btnname, item) {
-    return false;
-    // if(btnname == 'Change Cost'){
-    //   return item.woadstatus 
-    // }
-    //dataItem.woadstatus != 'New'
-    //dataItem.variationAction == 'Remove Work Item'
+    if (btnname == "Change Cost/Qty" || btnname == "Refusal" || btnname == "Recharge") {
+      return false;
+    }
+
+    if (btnname == "Change Cost/Qty") {
+      return false;
+    }
+
+    if (btnname == "Replace Service Package") {
+      if (item.wlcomppackage == "SERVICING") {
+        return false;
+      }
+    }
+
+    return true;
+
   }
 
   getVariationWorkList() {
 
     const { wosequence, wopsequence, assid } = this.selectedSingleVariationAssetInp;
-    
+
 
     this.subs.add(
       this.workOrderProgrammeService.getWEBWorksOrdersAssetDetailAndVariation(wosequence, wopsequence, assid).subscribe(
         data => {
-          console.log(data);
+          // console.log(data);
           // console.table(data.data);
           if (data.isSuccess) {
             this.variationWorkListData = data.data;
@@ -142,6 +174,7 @@ export class VariationWorkListComponent implements OnInit {
 
   cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
     this.selectedSingleVarWorkList = dataItem;
+    // console.log(dataItem)
   }
 
   closeWorkList() {

@@ -7,15 +7,17 @@
             </button>
 
             <div class="dropdown mr-1" id="nesting-dropdown-demo">
-                <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown"
+                <button *ngIf="woMenuAccess('New Variation')" type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown"
                     aria-expanded="false">New</button>
 
                 <div class="dropdown-menu" x-placement="bottom-start"
                     style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
-                    <a [ngClass]="{'disabled' : woAsset?.woassstatus != 'Accepted' && woAsset?.phaseOrAsset != 'P'}"
+                    <!-- <a [ngClass]="{'disabled' : woAsset?.woassstatus != 'Accepted' && woAsset?.phaseOrAsset != 'P'}"
                         class="dropdown-item" href="javascript:void(0)" (click)="newVariation()">
+                        New</a> -->
+                    <a *ngIf="woMenuAccess('New Variation')" class="dropdown-item" href="javascript:void(0)" (click)="newVariation()">
                         New</a>
-                    <a [ngClass]="{'disabled' : disableAppendBtn() }" class="dropdown-item" href="javascript:void(0)"
+                    <a *ngIf="woMenuAccess('Append To Variation')" [ngClass]="{'disabled' : disableAppendBtn() }" class="dropdown-item" href="javascript:void(0)"
                         (click)="append()">
                         Append</a>
                 </div>
@@ -207,7 +209,7 @@
     <app-variation-new *ngIf="openNewVariation" [openNewVariation]="openNewVariation"
         [singleVariation]="selectedSingleVariation" [openedFrom]="openedFrom" [formMode]="formMode"
         [selectedAsset]="selectedAsset" (closeNewVariationEvent)="closeNewVariation($event)"
-        (outputReason)="getVariationReason($event)">
+        (outputVariation)="getVariationReason($event)">
     </app-variation-new>
 
 

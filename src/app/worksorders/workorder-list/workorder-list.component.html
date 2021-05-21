@@ -93,7 +93,8 @@
                   (click)="deleteThis(dataItem)">Delete</a>
                 <a *ngIf="woMenuAccess('Works Order Detail')" class="dropdown-item" href="javascript:void(0)"
                   (click)="redirectToWorksOrder(dataItem)"> Works Order Details</a>
-                <a class="dropdown-item" href="javascript:void(0)" (click)="openVariationList(dataItem)">Variations</a>
+
+                <a *ngIf="woMenuAccess('Variations')" class="dropdown-item" href="javascript:void(0)" (click)="openVariationList(dataItem)">Variations</a>
 
                   <div class="dropdown-toggle" >
                     <div class="dropdown-item">Programme Management</div>

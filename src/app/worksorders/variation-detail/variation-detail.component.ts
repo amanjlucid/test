@@ -50,7 +50,6 @@ export class VariationDetailComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log(this.singleVariation)
     this.getVariationPageDataWithGrid();
   }
 
@@ -87,7 +86,6 @@ export class VariationDetailComponent implements OnInit {
 
       ]).subscribe(
         data => {
-          console.log(data)
           this.worksOrderData = data[0].data;
           this.phaseData = data[1].data;
 
