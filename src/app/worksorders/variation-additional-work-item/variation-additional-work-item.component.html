@@ -1,21 +1,6 @@
 <kendo-window title="{{title}}" *ngIf="openadditionalWork" (close)="closeAdditionalWork()" [top]="20" [minWidth]="700"
     [width]="980" [height]="auto" [minHeight]="350">
 
-
-    <!-- <div class="row">
-        <div class="col-md-12 text-right">
-            <button type="button" class="btn btn-sm themeButton mr-1" (click)="openFeesMethod()">
-                Fees
-            </button>
-
-            <button *ngIf="openedFor == 'edit'" type="button" class="btn btn-sm themeButton"
-                (click)="openAdditionalWorkItem()">
-                New
-            </button>
-        </div>
-    </div> -->
-
-
     <div class="row">
         <div class="col-md-12 mt-2">
             <kendo-grid #grid [data]="gridView" [height]="600" [selectable]="{
@@ -99,7 +84,7 @@
     <app-variation-pkz-enter-qty *ngIf="packageQuantityWindow" [pkzQtyWindow]="packageQuantityWindow"
         [singleVariationInp]="selectedVariationInp" [selectedSingleVariationAssetInp]="selectedSingleVariationAssetInp"
         [assetDetailInp]="selectedSingleVarWorkList" [openedFrom]="openedFrom" [parentComp]="'additional'"
-        (closePkzQtyEvent)="closePackageQuantiyEvent($event)" [mode]="'edit'" [mySelection]="mySelection">
+        (closePkzQtyEvent)="closePackageQuantiyEvent($event)" [mode]="'new'" [selectedPkzs]="selectedPackagesArr">
     </app-variation-pkz-enter-qty>
 
 

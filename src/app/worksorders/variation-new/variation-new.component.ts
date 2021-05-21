@@ -52,7 +52,6 @@ export class VariationNewComponent implements OnInit {
     });
 
     if (this.formMode == 'edit') {
-      console.log(this.singleVariation)
       this.title = "Edit Variation";
       this.variationForm.patchValue({ reason: this.singleVariation?.woiissuereason })
     }
@@ -143,22 +142,8 @@ export class VariationNewComponent implements OnInit {
       );
     }
 
-
-    // this.openVariationDetails()
   }
 
-
-
-  // openVariationDetails() {
-  //   // this.selectedSingleVariation = item;
-  //   this.openVariationWorkList = true;
-  //   $('.variationFormOverlay').addClass('ovrlay');
-  // }
-
-  // closeVariationDetails(eve) {
-  //   this.openVariationWorkList = eve;
-  //   $('.variationFormOverlay').removeClass('ovrlay');
-  // }
 
 
 

@@ -19,6 +19,7 @@ export class VariationAppendComponent implements OnInit {
   @Input() openedFor = 'details';
   @Input() selectedAssetInp: any;
   @Output() closeAppendVariation = new EventEmitter<boolean>();
+  @Output() appededVariation = new EventEmitter<any>();
   title = 'Select Variation';
   subs = new SubSink();
   state: State = {
@@ -40,7 +41,8 @@ export class VariationAppendComponent implements OnInit {
   worksOrderData: any;
   phaseData: any;
   @ViewChild(GridComponent) grid: GridComponent;
-  
+  selectedAppendVariation: any;
+
   constructor(
     private chRef: ChangeDetectorRef,
     private workOrderProgrammeService: WorksorderManagementService,
@@ -96,7 +98,7 @@ export class VariationAppendComponent implements OnInit {
     this.subs.add(
       this.workOrderProgrammeService.getAppendVariationList(wosequence, wopsequence).subscribe(
         data => {
-          // console.log(data)
+          console.log(data)
           if (data.isSuccess) {
             this.gridData = data.data;
             this.gridView = process(this.gridData, this.state);
@@ -129,7 +131,18 @@ export class VariationAppendComponent implements OnInit {
   }
 
   cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
-    // this.selectedSingleVarWorkList = dataItem;
+    this.selectedAppendVariation = dataItem;
+  }
+
+  setVariation() {
+    if (!this.selectedAppendVariation) {
+      this.alertService.error("Please select variation.");
+      return
+    }
+
+    this.closeAppendVariationMethod();
+    this.appededVariation.emit(this.selectedAppendVariation)
+
   }
 
 }

@@ -18,7 +18,7 @@
                 (cellClick)="cellClickHandler($event)" [navigable]="false">
 
                 <kendo-grid-column title=" " width="37" [filterable]="false" [sortable]="false"
-                    *ngIf="openedFor == 'edit'">
+                    *ngIf="openedFor != 'details'">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <li class="nav-item dropdown list-unstyled" style="margin-top: -7px;">
                             <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>

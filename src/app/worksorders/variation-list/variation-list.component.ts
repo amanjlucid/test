@@ -63,7 +63,7 @@ export class VariationListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // console.log(this.selectedAsset);
+    console.log(this.selectedAsset);
 
     this.getVariationPageDataWithGrid();
 
@@ -161,9 +161,11 @@ export class VariationListComponent implements OnInit {
       } else {
         this.openedFor = 'details';
       }
+
+      this.selectedSingleVariation = item;
     }
 
-    this.selectedSingleVariation = item;
+
     this.openVariationWorkList = true;
     $('.variationListOverlay').addClass('ovrlay');
   }
@@ -192,7 +194,7 @@ export class VariationListComponent implements OnInit {
   getVariationReason(reason) {
     if (reason != "") {
       if (this.openedFrom == "assetchecklist" && this.formMode == "new") {
-        this.openedFor = 'edit';
+        this.openedFor = 'new';
         this.openVariationDetails(undefined);
       }
 
@@ -382,6 +384,15 @@ export class VariationListComponent implements OnInit {
   closeAppendVariation(eve) {
     this.openAppendVariation = eve;
     $('.variationListOverlay').removeClass('ovrlay');
+  }
+
+
+  appendVariation(eve) {
+    this.openedFor = 'edit';
+    this.selectedSingleVariation = eve;
+    this.selectedSingleVariation.assid = this.selectedAsset.assid
+    this.openVariationDetails(undefined)
+    console.log(eve);
   }
 
 }

@@ -49,7 +49,7 @@ export class VariationWorkListComponent implements OnInit {
   reasonWindowFor = 'refusal';
   EditWorkPackageQtyCostWindow = false;
 
-  @Input() singleVariation: any; // need to remove
+  // @Input() singleVariation: any; // need to remove
 
   constructor(
     private chRef: ChangeDetectorRef,
@@ -65,10 +65,11 @@ export class VariationWorkListComponent implements OnInit {
     console.log({ openfor: this.openedFor, from: this.openedFrom, variation: this.selectedVariationInp, asset: this.selectedSingleVariationAssetInp })
 
     if (this.openedFor == "details" && this.openedFrom == "assetchecklist") {
-      this.title = `Variation: ${this.selectedVariationInp?.woiissuereason} (${this.selectedVariationInp?.woisequence})`;
+      const { woiissuereason, woisequence } = this.selectedSingleVariationAssetInp
+      this.title = `Variation: ${woiissuereason} (${woisequence})`;
       this.getVariationWorkList();
-    } else if (this.openedFor == "edit" && (this.openedFrom == "assetchecklist" || this.openedFrom == "worksorder")) {
-      this.title = `Edit Variation Items`;
+    } else if ((this.openedFor == "edit" || this.openedFor == "append")  && (this.openedFrom == "assetchecklist" || this.openedFrom == "worksorder")) {
+      this.title = `Edit Work List Variation Items`;
       this.getVariationWorkList();
     }
 
@@ -100,13 +101,7 @@ export class VariationWorkListComponent implements OnInit {
   getVariationWorkList() {
 
     const { wosequence, wopsequence, assid } = this.selectedSingleVariationAssetInp;
-    // let assid;
-
-    // if (this.openedFrom == "worksorder" && (this.openedFor == 'edit' || this.openedFor == 'details')) {
-    //   assid = this.selectedSingleVariationAssetInp.assid;
-    // } else if (this.openedFrom == "assetchecklist") {
-    //   assid = this.selectedVariationInp.assid
-    // }
+    
 
     this.subs.add(
       this.workOrderProgrammeService.getWEBWorksOrdersAssetDetailAndVariation(wosequence, wopsequence, assid).subscribe(
@@ -162,6 +157,7 @@ export class VariationWorkListComponent implements OnInit {
   closeOpenFees(eve) {
     this.openFees = eve;
     $('.variationWorkListOverlay').removeClass('ovrlay')
+    this.getVariationWorkList();
   }
 
   openAdditionalWorkItem() {
@@ -172,6 +168,7 @@ export class VariationWorkListComponent implements OnInit {
   closeAdditionalWorkItem(eve) {
     this.openadditionalWork = eve;
     $('.variationWorkListOverlay').removeClass('ovrlay')
+    this.getVariationWorkList();
   }
 
 
@@ -237,7 +234,7 @@ export class VariationWorkListComponent implements OnInit {
 
 
   deleteWork(item) {
-    const { wosequence, woisequence, wopsequence, assid, wlcode, wlataid, wlplanyear } = item;
+    const { wosequence, woisequence, wopsequence, assid, wlcode, wlataid, wlplanyear, woadrechargeyn } = item;
 
     const params = {
       WOSEQUENCE: wosequence,
@@ -249,7 +246,7 @@ export class VariationWorkListComponent implements OnInit {
       WLPLANYEAR: wlplanyear,
       strWOIADCOMMENT: this.reason,
       strUser: this.currentUser.userId,
-      Recharge: '',
+      Recharge: woadrechargeyn,
     }
 
 
@@ -407,7 +404,7 @@ export class VariationWorkListComponent implements OnInit {
 
   replaceService(item) {
     this.selectedSingleVarWorkList = item;
-    const { wosequence, woisequence, wopsequence, assid, wlcode, wlataid, wlplanyear, wostagesurcde, wochecksurcde } = item;
+    const { wosequence, woisequence, wopsequence, assid, wlcode, wlataid, wlplanyear, wostagesurcde, wochecksurcde, woadrechargeyn } = item;
     let params = {
       WOSEQUENCE: wosequence,
       WOPSEQUENCE: wopsequence,
@@ -425,7 +422,7 @@ export class VariationWorkListComponent implements OnInit {
       QUANTITY: '',
       UOM: '',
       WPHCODE: '',
-      RECHARGE: '',
+      RECHARGE: woadrechargeyn,
       strUserId: this.currentUser.userId,
 
     };

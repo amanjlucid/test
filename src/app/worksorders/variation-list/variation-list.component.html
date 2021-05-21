@@ -200,7 +200,7 @@
     <div class="variationListOverlay"></div>
 
     <app-variation-work-list *ngIf="openVariationWorkList" [openVariationWorkList]="openVariationWorkList"
-        [openedFrom]="openedFrom" [openedFor]="openedFor" [singleVariation]="selectedSingleVariation"
+        [openedFrom]="openedFrom" [openedFor]="openedFor" [selectedSingleVariationAssetInp]="selectedSingleVariation"
         (closeWorkListEvent)="closeVariationDetails($event)">
     </app-variation-work-list>
 
@@ -213,7 +213,7 @@
 
     <app-variation-append *ngIf="openAppendVariation" [openAppendVariation]="openAppendVariation"
         [openedFrom]="openedFrom" [openedFor]="openedFor" [selectedAssetInp]="selectedAsset"
-        (closeAppendVariation)="closeAppendVariation($event)">
+        (closeAppendVariation)="closeAppendVariation($event)" (appededVariation)="appendVariation($event)">
     </app-variation-append>
 
 </kendo-window>

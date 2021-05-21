@@ -8,7 +8,7 @@
                 Fees
             </button>
 
-            <button *ngIf="openedFor == 'edit'" type="button" class="btn btn-sm themeButton"
+            <button *ngIf="openedFor != 'details'" type="button" class="btn btn-sm themeButton"
                 (click)="openAdditionalWorkItem()">
                 New
             </button>
@@ -28,7 +28,7 @@
                 (cellClick)="cellClickHandler($event)" [navigable]="false">
 
                 <kendo-grid-column title=" " width="37" [filterable]="false" [sortable]="false"
-                    *ngIf="openedFor == 'edit'">
+                    *ngIf="openedFor != 'details'">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <li class="nav-item dropdown list-unstyled" style="margin-top: -7px;">
                             <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
@@ -80,7 +80,7 @@
                     </ng-template>
                 </kendo-grid-column>
 
-                <kendo-grid-column *ngIf="openedFor == 'edit'" field="woisequence" title="Sequence" width="130">
+                <kendo-grid-column *ngIf="openedFor != 'details'" field="woisequence" title="Sequence" width="130">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <span>
                             {{dataItem.woisequence != 0 ? dataItem.woisequence : ''}}
@@ -97,7 +97,7 @@
                 <kendo-grid-column title="Checklist" field="wocheckname" width="130">
                 </kendo-grid-column>
 
-                <kendo-grid-column *ngIf="openedFor == 'edit'" title="Recharge" field="woadrechargeyn" width="120"
+                <kendo-grid-column *ngIf="openedFor != 'details'" title="Recharge" field="woadrechargeyn" width="120"
                     [style]="{'text-align': 'center'}">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <span>
@@ -108,7 +108,7 @@
                     </ng-template>
                 </kendo-grid-column>
 
-                <kendo-grid-column *ngIf="openedFor == 'edit'" field="refusaL_REASON" title="Refusal" width="130">
+                <kendo-grid-column *ngIf="openedFor != 'details'" field="refusaL_REASON" title="Refusal" width="130">
                 </kendo-grid-column>
 
                 <kendo-grid-column title="Description" field="wphname" width="280">
@@ -223,8 +223,8 @@
 
 
     <app-variation-pkz-enter-qty *ngIf="EditWorkPackageQtyCostWindow" [pkzQtyWindow]="EditWorkPackageQtyCostWindow"
-        [singleVariationInp]="selectedVariationInp" [selectedSingleVariationAssetInp]="selectedSingleVariationAssetInp" [assetDetailInp]="selectedSingleVarWorkList"
-        [openedFrom]="openedFrom" [parentComp]="'worklist'"
+        [singleVariationInp]="selectedVariationInp" [selectedSingleVariationAssetInp]="selectedSingleVariationAssetInp"
+        [assetDetailInp]="selectedSingleVarWorkList" [openedFrom]="openedFrom" [parentComp]="'worklist'"
         (closePkzQtyEvent)="closeEditWorkPackageQtyCostWindow($event)" [mode]="'edit'">
     </app-variation-pkz-enter-qty>
 
