@@ -92,6 +92,7 @@
                   (click)="deleteThis(dataItem)">Delete</a>
                 <a *ngIf="woMenuAccess('Works Order Detail')" class="dropdown-item" href="javascript:void(0)"
                   (click)="redirectToWorksOrder(dataItem)"> Works Order Details</a>
+                <a class="dropdown-item" (click)="openProgrammeTab(dataItem)" href="javascript:void(0)">Programme Management</a>
                 <!-- <a class="dropdown-item" href="javascript:void(0)">Defects </a>
                 <a class="dropdown-item" href="javascript:void(0)">Contract Costs</a>
                 <a class="dropdown-item" href="javascript:void(0)">Variations</a>
@@ -279,6 +280,12 @@
     </div>
   </div>
 
+
+</div>
+
+<div class="example-wrapper">
+    <app-workorder-programme
+    *ngIf="tabWindow" [workOrderId]="workOrderId" [programmeWin] = "programmeWindow" (closeProgrammeWin)="closeProgrammeWindow($event)" ></app-workorder-programme>
 
 </div>
 

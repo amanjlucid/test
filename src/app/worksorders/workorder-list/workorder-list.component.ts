@@ -7,6 +7,7 @@ import { combineLatest, Subject } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { WorkordersListFilterModel } from '../../_models';
 import { debounceTime } from 'rxjs/operators';
+import { WorkOrderProgrammeManagementComponent } from '../workorder-list/workorder-programme-management/workorder-programme.component';
 
 
 @Component({
@@ -69,6 +70,11 @@ export class WorkorderListComponent implements OnInit {
   userType: any = [];
 
   mousePositioin: any = 0;
+
+  tabWindow = false;
+  programmeWindow = false;
+
+  workOrderId : number;
 
 
   constructor(
@@ -298,7 +304,6 @@ export class WorkorderListComponent implements OnInit {
   }
 
   setSeletedRow(dataItem, event) {
-    // console.log(event)
 
     if (dataItem != undefined) {
       setTimeout(() => {
@@ -333,6 +338,23 @@ export class WorkorderListComponent implements OnInit {
     this.woFormType = action;
     this.selectedWorkOrderAddEdit = item;
     this.woFormWindow = true;
+  }
+
+  openProgrammeTab(item) {
+    $('.bgblur').addClass('ovrlay');
+    this.tabWindow = true;
+    this.programmeWindow = true;
+    this.workOrderId = item.wosequence;
+  }
+
+  closeTabWindow($event) {
+    this.tabWindow = $event;
+    $('.bgblur').removeClass('ovrlay');
+  }
+
+  closeProgrammeWindow($event) {
+    this.programmeWindow = $event;
+    $('.bgblur').removeClass('ovrlay');
   }
 
   resetFilter() {
