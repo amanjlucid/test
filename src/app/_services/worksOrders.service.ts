@@ -124,6 +124,26 @@ export class WorksOrdersService {
     
 
  
+    GetWEBWorksOrdersInstructionsForUser(qs) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWEBWorksOrdersInstructionsForUser?${qs}`, this.httpOptions);
+    }
+    GetWOInstructionAssets(qs) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWOInstructionAssets?${qs}`, this.httpOptions);
+    }
+    GetWOInstructionAssetsDetails(qs) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWOInstructionAssetsDetails?${qs}`, this.httpOptions);
+    }
+
+    WorksOrderAcceptAsset(params) {
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WorksOrderAcceptAsset`, params, this.httpOptions);
+    }
+
+    ContractInstructionReport(qs) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/ContractInstructionReport?${qs}`, this.httpOptions);
+    }
+    EmailContractInstructionReport(params) {
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/EmailContractInstructionReport`, params, this.httpOptions);
+    }
 
 
 }

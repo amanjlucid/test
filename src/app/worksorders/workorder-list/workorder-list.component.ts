@@ -71,6 +71,7 @@ export class WorkorderListComponent implements OnInit {
   mousePositioin: any = 0;
   openVariationListAll: boolean;
 
+  woProgramManagmentInstructionsWindow = false;
 
   constructor(
     private worksOrderService: WorksOrdersService,
@@ -232,7 +233,7 @@ export class WorkorderListComponent implements OnInit {
     this.resetGrid()
     this.state.filter = filter;
     this.tempState.filter = filter;
-    this.worksorderTempData = process(this.worksOrderData, this.tempState).data //filter without skipping and pagination 
+    this.worksorderTempData = process(this.worksOrderData, this.tempState).data //filter without skipping and pagination
     this.gridView = process(this.worksorderTempData, this.state);
   }
 
@@ -598,6 +599,25 @@ export class WorkorderListComponent implements OnInit {
     $('.worksOrderOverlay').removeClass('ovrlay');
     this.openVariationListAll = eve;
   }
+
+
+  redirectToWoProgramManagmentInstructions(item) {
+
+
+  //console.log('wo data '+ JSON.stringify(item));
+    this.selectedWorksOrder = item;
+    this.woProgramManagmentInstructionsWindow = true;
+
+
+      $('.worksOrderOverlay').addClass('ovrlay');
+  }
+
+  closeWoProgramManagmentInstructionsWin(eve) {
+    this.woProgramManagmentInstructionsWindow = eve;
+    $('.worksOrderOverlay').removeClass('ovrlay');
+  }
+
+
 
 
 }

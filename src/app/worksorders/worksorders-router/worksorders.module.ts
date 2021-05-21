@@ -58,6 +58,10 @@ import { VariationAssetComponent } from '../variation-asset/variation-asset.comp
 import { VariationDetailComponent } from '../variation-detail/variation-detail.component';
 import { VariationAppendComponent } from '../variation-append/variation-append.component';
 import { VariationPkzEnterQtyComponent } from '../variation-pkz-enter-qty/variation-pkz-enter-qty.component';
+import { WoProgramManagmentInstructionComponent } from '../workorder-program-management/wo-program-management-instructions/wo-program-management-instructions.component';
+import { WoPmInstructionAssetsComponent } from '../workorder-program-management/wo-pm-instruction-assets/wo-pm-instruction-assets.component';
+import { WoPmInstructionAssetsDetailComponent } from '../workorder-program-management/wo-pm-instruction-assets-detail/wo-pm-instruction-assets-detail.component';
+
 
 @NgModule({
   declarations: [
@@ -106,7 +110,10 @@ import { VariationPkzEnterQtyComponent } from '../variation-pkz-enter-qty/variat
     VariationAssetComponent,
     VariationDetailComponent,
     VariationAppendComponent,
-    VariationPkzEnterQtyComponent
+    VariationPkzEnterQtyComponent,
+    WoProgramManagmentInstructionComponent,
+    WoPmInstructionAssetsComponent,
+    WoPmInstructionAssetsDetailComponent
   ],
 
   imports: [

@@ -94,6 +94,19 @@
                 <a *ngIf="woMenuAccess('Works Order Detail')" class="dropdown-item" href="javascript:void(0)"
                   (click)="redirectToWorksOrder(dataItem)"> Works Order Details</a>
                 <a class="dropdown-item" href="javascript:void(0)" (click)="openVariationList(dataItem)">Variations</a>
+
+                  <div class="dropdown-toggle" >
+                    <div class="dropdown-item">Programme Management</div>
+                    <div class="dropdown-menu addAssetMenu">
+                      <a (click)="redirectToWoProgramManagmentInstructions(dataItem)" class="dropdown-item"
+                        href="javascript:void(0)">
+                        Instructions</a>
+                      <a  class="dropdown-item"
+                      href="javascript:void(0)">Completions</a>
+
+                    </div>
+                  </div>
+
                 <!-- <a class="dropdown-item" href="javascript:void(0)">Defects </a>
                 <a class="dropdown-item" href="javascript:void(0)">Contract Costs</a>
                 <a class="dropdown-item" href="javascript:void(0)">Variations</a>
@@ -324,3 +337,6 @@
 </app-workorder-form>
 
 <app-variation-list-all *ngIf="openVariationListAll" [openVariationListAll]="openVariationListAll" [openedFrom]="'worksorder'" [singleWorksOrder]="selectedWorksOrder" (closeVariationAllListEvent)="closeVariationAll($event)"></app-variation-list-all>
+<app-wo-program-management-instructions *ngIf="woProgramManagmentInstructionsWindow" [woProgramManagmentInstructionsWindow]="woProgramManagmentInstructionsWindow"
+  [worksOrderData]="selectedWorksOrder" [selectedWorksOrder]="selectedWorksOrder" (WoProgramManagmentInstructionsWinEvent)="closeWoProgramManagmentInstructionsWin($event)">
+</app-wo-program-management-instructions>
