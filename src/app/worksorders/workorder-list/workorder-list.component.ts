@@ -7,7 +7,7 @@ import { combineLatest, Subject } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { WorkordersListFilterModel } from '../../_models';
 import { debounceTime } from 'rxjs/operators';
-import { WorkOrderProgrammeManagementComponent } from '../workorder-list/workorder-programme-management/workorder-programme.component';
+import { WorkOrderCompletionComponent } from '../workorder-list/workorder-completion/workorder-completion.component';
 
 
 @Component({
@@ -72,7 +72,7 @@ export class WorkorderListComponent implements OnInit {
   mousePositioin: any = 0;
 
   tabWindow = false;
-  programmeWindow = false;
+  completionWindow = false;
 
   workOrderId : number;
 
@@ -340,10 +340,10 @@ export class WorkorderListComponent implements OnInit {
     this.woFormWindow = true;
   }
 
-  openProgrammeTab(item) {
+  openCompletionWindow(item) {
     $('.bgblur').addClass('ovrlay');
     this.tabWindow = true;
-    this.programmeWindow = true;
+    this.completionWindow = true;
     this.workOrderId = item.wosequence;
   }
 
@@ -352,8 +352,8 @@ export class WorkorderListComponent implements OnInit {
     $('.bgblur').removeClass('ovrlay');
   }
 
-  closeProgrammeWindow($event) {
-    this.programmeWindow = $event;
+  closeCompletionWindow($event) {
+    this.completionWindow = $event;
     $('.bgblur').removeClass('ovrlay');
   }
 

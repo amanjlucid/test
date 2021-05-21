@@ -18,6 +18,7 @@ import { WorksordersNewmanagementComponent } from '../worksorders-newmanagement/
 import { WorksordersAssetChecklistComponent } from '../worksorders-asset-checklist/worksorders-asset-checklist.component';
 import { WorkorderListComponent } from '../workorder-list/workorder-list.component';
 import { WorkOrderFormComponent } from '../workorder-list/workorder-form/workorder-form.component';
+import { WorkOrderCompletionComponent } from '../workorder-list/workorder-completion/workorder-completion.component';
 import { WorksordersDetailsComponent } from '../worksorders-details/worksorders-details.component';
 import { WorksordersNewPhaseComponent } from '../worksorders-new-phase/worksorders-new-phase.component';
 import { WorksordersPackageMappingComponent } from '../worksorders-package-mapping/worksorders-package-mapping.component';
@@ -62,6 +63,7 @@ import { VariationChangefeeComponent } from '../variation-changefee/variation-ch
     WorksordersAssetChecklistComponent,
     WorkorderListComponent,
     WorkOrderFormComponent,
+    WorkOrderCompletionComponent,
     WorksordersDetailsComponent,
     WorksordersNewPhaseComponent,
     WorksordersPackageMappingComponent,

@@ -106,5 +106,17 @@ export class WorksOrdersService {
         return this.http.post<any>(`${appConfig.apiUrl}/api/WorkordersPortal/WEBWorksOrdersValidateNewWorksOrder`, params, this.httpOptions).toPromise();
     }
 
+    GetWorkOrderGetWorksOrderCompletions(wosequence, userId) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWorksOrderCompletions?wosequence=${wosequence}&struser=${userId}`, this.httpOptions);
+    }
+
+    viewWorkOrderCompletionCertificate(wosequence, wocosequence, userId) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/ViewCompletionCertificate?wosequence=${wosequence}&wocosequence=${wocosequence}&userid=${userId}`, this.httpOptions);
+    }
+
+    saveSendWorkOrderCompletionCertificate(wosequence, wocosequence, userId) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/ProcessCompletionReport?wosequence=${wosequence}&wocosequence=${wocosequence}&userid=${userId}`, this.httpOptions);
+    }
+
 
 }
