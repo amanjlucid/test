@@ -43,7 +43,7 @@ export class VariationFeesComponent implements OnInit {
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
 
 
-  @Input() singleVariation: any = [];
+  // @Input() singleVariation: any = [];
 
 
   constructor(
@@ -58,7 +58,7 @@ export class VariationFeesComponent implements OnInit {
     //console.log({ openfor: this.openedFor, from: this.openedFrom, variation: this.selectedVariationInp, asset: this.selectedSingleVariationAssetInp })
 
     if (this.openedFor == "details") {
-      this.title = `Variation Fees: ${this.singleVariation?.woiissuereason} (${this.singleVariation?.wopsequence})`;
+      this.title = `Variation Fees: ${this.selectedSingleVariationAssetInp?.woiissuereason} (${this.selectedSingleVariationAssetInp?.wopsequence})`;
     }
 
     this.getVariationFees();

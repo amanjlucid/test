@@ -40,8 +40,9 @@ export class VariationAdditionalWorkItemComponent implements OnInit {
   mySelection: any[] = [];
   packageQuantityWindow = false;
   worksOrderData: any;
+  selectedPackagesArr: any = [];;
 
-  @Input() singleVariation: any;
+  // @Input() singleVariation: any;
 
   constructor(
     private chRef: ChangeDetectorRef,
@@ -161,11 +162,16 @@ export class VariationAdditionalWorkItemComponent implements OnInit {
   }
 
   selectionChange(item) {
-    if (this.mySelection.includes(item.wphcode)) {
-      this.mySelection = this.mySelection.filter(x => x != item.wphcode);
+    const findRow = this.selectedPackagesArr.find(x => JSON.stringify(x) == JSON.stringify(item));
+    
+    if (findRow) {
+      this.selectedPackagesArr = this.selectedPackagesArr.filter(x => JSON.stringify(x) != JSON.stringify(item))
+      this.mySelection = this.selectedPackagesArr.map(x => x.wphcode);
     } else {
+      this.selectedPackagesArr.push(item);
       this.mySelection.push(item.wphcode);
     }
+
 
     this.chRef.detectChanges();
   }
@@ -185,6 +191,7 @@ export class VariationAdditionalWorkItemComponent implements OnInit {
   closePackageQuantiyEvent(eve) {
     this.packageQuantityWindow = eve;
     $('.worklistPackageOvrlay').removeClass('ovrlay');
+    this.requiredPagedata();
   }
 
   refreshPackageList(eve) {

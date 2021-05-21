@@ -7,7 +7,6 @@ import { combineLatest, Subject } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { WorkordersListFilterModel } from '../../_models';
 import { debounceTime } from 'rxjs/operators';
-import { CompletionListComponent } from '../completion-list/completion-list.component';
 
 
 @Component({
@@ -77,6 +76,7 @@ export class WorkorderListComponent implements OnInit {
 
   workOrderId : number;
 
+  woProgramManagmentInstructionsWindow = false;
 
   constructor(
     private worksOrderService: WorksOrdersService,
@@ -238,7 +238,7 @@ export class WorkorderListComponent implements OnInit {
     this.resetGrid()
     this.state.filter = filter;
     this.tempState.filter = filter;
-    this.worksorderTempData = process(this.worksOrderData, this.tempState).data //filter without skipping and pagination 
+    this.worksorderTempData = process(this.worksOrderData, this.tempState).data //filter without skipping and pagination
     this.gridView = process(this.worksorderTempData, this.state);
   }
 
@@ -305,6 +305,7 @@ export class WorkorderListComponent implements OnInit {
   }
 
   setSeletedRow(dataItem, event) {
+    // console.log(event)
 
     if (dataItem != undefined) {
       setTimeout(() => {
@@ -339,23 +340,6 @@ export class WorkorderListComponent implements OnInit {
     this.woFormType = action;
     this.selectedWorkOrderAddEdit = item;
     this.woFormWindow = true;
-  }
-
-  openCompletionList(item) {
-    $('.bgblur').addClass('ovrlay');
-    this.tabWindow = true;
-    this.completionList = true;
-    this.workOrderId = item.wosequence;
-  }
-
-  closeTabWindow($event) {
-    this.tabWindow = $event;
-    $('.bgblur').removeClass('ovrlay');
-  }
-
-  closeCompletionList($event) {
-    this.completionList = $event;
-    $('.bgblur').removeClass('ovrlay');
   }
 
   resetFilter() {
@@ -620,6 +604,42 @@ export class WorkorderListComponent implements OnInit {
     $('.worksOrderOverlay').removeClass('ovrlay');
     this.openVariationListAll = eve;
   }
+
+
+  redirectToWoProgramManagmentInstructions(item) {
+
+
+  //console.log('wo data '+ JSON.stringify(item));
+    this.selectedWorksOrder = item;
+    this.woProgramManagmentInstructionsWindow = true;
+
+
+      $('.worksOrderOverlay').addClass('ovrlay');
+  }
+
+  closeWoProgramManagmentInstructionsWin(eve) {
+    this.woProgramManagmentInstructionsWindow = eve;
+    $('.worksOrderOverlay').removeClass('ovrlay');
+  }
+
+  openCompletionList(item) {
+    $('.bgblur').addClass('ovrlay');
+    this.tabWindow = true;
+    this.completionList = true;
+    this.workOrderId = item.wosequence;
+  }
+
+  closeTabWindow($event) {
+    this.tabWindow = $event;
+    $('.bgblur').removeClass('ovrlay');
+  }
+
+  closeCompletionList($event) {
+    this.completionList = $event;
+    $('.bgblur').removeClass('ovrlay');
+  }
+
+
 
 
 }

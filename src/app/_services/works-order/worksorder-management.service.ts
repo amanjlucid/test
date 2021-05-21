@@ -439,12 +439,6 @@ export class WorksorderManagementService {
         return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WorksOrdersUpdateWorksOrderInstructionAssetDetail`, body, this.httpOptions);
     }
 
-
-
-
-
-
-
     wORemoveInstructionAssetDetail(params) {
         let body = JSON.stringify(params);
         return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WORemoveInstructionAssetDetail`, body, this.httpOptions);
@@ -459,6 +453,12 @@ export class WorksorderManagementService {
     createVariationForSIMReplacement(params) {
         let body = JSON.stringify(params);
         return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/CreateVariationForSIMReplacement`, body, this.httpOptions);
+    }
+
+    
+    worksOrdersCreateVariationForAddWOAD(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WorksOrdersCreateVariationForAddWOAD`, body, this.httpOptions);
     }
 
 

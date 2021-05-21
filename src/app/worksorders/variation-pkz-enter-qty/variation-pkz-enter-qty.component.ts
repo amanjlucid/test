@@ -10,6 +10,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
   styleUrls: ['./variation-pkz-enter-qty.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
+
+
 export class VariationPkzEnterQtyComponent implements OnInit {
   subs = new SubSink();
   @Input() pkzQtyWindow = false;
@@ -19,7 +21,7 @@ export class VariationPkzEnterQtyComponent implements OnInit {
   @Input() singleVariationInp: any;
   @Input() selectedSingleVariationAssetInp: any;
   @Input() assetDetailInp: any;
-  @Input() mySelection: any;
+  @Input() selectedPkzs: any;
   @Output() closePkzQtyEvent = new EventEmitter<boolean>();
 
   title = '';
@@ -35,9 +37,10 @@ export class VariationPkzEnterQtyComponent implements OnInit {
   }
   worksOrder: any;
   planYear: any;
-  selectedPackages: any;
+  // selectedPackages: any;
   applyCount = 0
   submitType = 1 // apply one
+  displayHighestPkz: any;
 
   constructor(
     private chRef: ChangeDetectorRef,
@@ -59,7 +62,9 @@ export class VariationPkzEnterQtyComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log({ variation: this.singleVariationInp, assetDetail: this.assetDetailInp, asset: this.selectedSingleVariationAssetInp })
+    console.log({ mode: this.mode, parnetcomp: this.parentComp, openedFrom: this.openedFrom, variation: this.singleVariationInp, assetDetail: this.assetDetailInp, asset: this.selectedSingleVariationAssetInp })
+
+    console.log({ selection: this.selectedPkzs })
 
     if (this.parentComp == 'worklist') {
       this.title = 'Variation Cost/Qantity';
@@ -110,7 +115,7 @@ export class VariationPkzEnterQtyComponent implements OnInit {
   }
 
   getRequiredPageData() {
-    const { wosequence } = this.singleVariationInp;
+    const { wosequence } = this.selectedSingleVariationAssetInp;
 
     this.subs.add(
       forkJoin([
@@ -121,10 +126,26 @@ export class VariationPkzEnterQtyComponent implements OnInit {
           this.worksOrder = data[0].data;
           this.planYear = data[1].data;
 
+          if (this.mode == "new") {
+
+            this.displayHighestPkz = this.selectedPkzs[this.selectedPkzs.length - 1];
+            this.applyCount = this.selectedPkzs.length;
+            this.populateForm(this.displayHighestPkz);
+            // this.pakzQuantityForm.get('quantity').valueChanges.subscribe(
+            //   qty => {
+            //     this.pakzQuantityForm.patchValue({
+            //       workCost: qty * this.displayHighestPkz?.defaultcost,
+            //       costOverride: qty * this.displayHighestPkz?.defaultcost,
+            //     })
+            //   }
+            // )
+
+          }
+
+
+
           if (this.mode == 'edit') {
-            if (this.parentComp == 'worklist') {
-              this.getPkzQtyDataForAssetDetail();
-            }
+            this.getPkzQtyDataForAssetDetail();
           }
 
         }
@@ -132,40 +153,60 @@ export class VariationPkzEnterQtyComponent implements OnInit {
     )
   }
 
+  populateForm(displayHighestPkz) {
+    this.pakzQuantityForm.patchValue({
+      code: displayHighestPkz?.wphcode,
+      name: displayHighestPkz?.wphname,
+      desc: displayHighestPkz?.atadescription,
+      quantity: displayHighestPkz?.asaquantity,
+      uom: displayHighestPkz?.uom,
+      sorRate: displayHighestPkz?.defaultcost,
+      contractorRate: displayHighestPkz?.contractrate,
+      workCost: displayHighestPkz?.asaquantity * displayHighestPkz?.defaultcost,
+      costOverride: displayHighestPkz?.asaquantity * displayHighestPkz?.defaultcost,
+      comment: '',
+    })
+  }
 
 
   getPkzQtyDataForAssetDetail() {
-    if (this.parentComp == 'worklist') {
-      const { cttsurcde } = this.singleVariationInp;
-      const { wlataid, assid, wosequence } = this.assetDetailInp;
+    let cttsurcde;
 
-      this.subs.add(
-        this.worksorderManagementService.getContractCostsForAssetAndAttribute(cttsurcde, wlataid, assid, wosequence).subscribe(
-          data => {
-            console.log(data);
-            if (data.isSuccess) {
-              const pkz = data.data;
-             
-              this.pakzQuantityForm.patchValue({
-                code: this.assetDetailInp?.wlcomppackage,
-                name: this.assetDetailInp?.wphname,
-                desc: this.assetDetailInp?.atadescription,
-                quantity: this.assetDetailInp?.asaquantity,
-                uom: this.assetDetailInp?.asauom,
-                comment: this.assetDetailInp?.woadcomment,
-                sorRate: pkz?.soR_RATE,
-                contractorRate: pkz?.soR_RATE,
-                workCost: pkz?.cost,
-                costOverride: pkz?.overridE_COST == null ? 0 : pkz?.overridE_COST,
-              });
-
-              this.chRef.detectChanges();
-            }
-          }
-        )
-      )
-
+    if (this.parentComp == 'worklist' && this.openedFrom == 'worksorder') {
+      cttsurcde = this.singleVariationInp.cttsurcde;
+    } else if (this.parentComp == 'worklist' && this.openedFrom == 'assetchecklist') {
+      cttsurcde = this.selectedSingleVariationAssetInp.cttsurcde;
     }
+
+    const { wlataid, assid, wosequence } = this.assetDetailInp;
+
+    this.subs.add(
+      this.worksorderManagementService.getContractCostsForAssetAndAttribute(cttsurcde, wlataid, assid, wosequence).subscribe(
+        data => {
+          console.log(data);
+          if (data.isSuccess) {
+            const pkz = data.data;
+
+            this.pakzQuantityForm.patchValue({
+              code: this.assetDetailInp?.wlcomppackage,
+              name: this.assetDetailInp?.wphname,
+              desc: this.assetDetailInp?.atadescription,
+              quantity: this.assetDetailInp?.asaquantity,
+              uom: this.assetDetailInp?.asauom,
+              comment: this.assetDetailInp?.woadcomment,
+              sorRate: pkz?.soR_RATE,
+              contractorRate: pkz?.soR_RATE,
+              workCost: pkz?.cost,
+              costOverride: pkz?.overridE_COST == null ? 0 : pkz?.overridE_COST,
+            });
+
+            this.chRef.detectChanges();
+          }
+        }
+      )
+    )
+
+
 
   }
 
@@ -252,10 +293,63 @@ export class VariationPkzEnterQtyComponent implements OnInit {
     }
 
     if (type == 1) {
-      if (this.parentComp == 'worklist') {
+      if (this.parentComp == 'additional' && this.mode == "new") {
+        const { wosequence, wopsequence, assid, woisequence } = this.selectedSingleVariationAssetInp
+        const { ataid, wphcode, wostagesurcde, wochecksurcde, woifeecost, uom } = this.displayHighestPkz;
+        let params = {
+          WOSEQUENCE: wosequence,
+          WOPSEQUENCE: wopsequence,
+          ASSID: assid,
+          WOISEQUENCE: woisequence,
+          WLATAID: ataid,
+          WLPLANYEAR: this.planYear,
+          WOSTAGESURCDE: wostagesurcde,
+          WOCHECKSURCDE: wochecksurcde,
+          User: this.currentUser.userId,
+          WOIADWORKCOST: this.helperService.convertMoneyToFlatFormat(formRawVal.workCost),
+          WOIADFEECOST: woifeecost,
+          WOIADCOMMENT: formRawVal.comment,
+          ASAQUANTITY: formRawVal.quantity,
+          ASAUOM: uom,
+          WPHCODE: wphcode,
+
+          Recharge: "N",
+          WLCODE: 0,
+
+        }
+
+        // console.log(params);
+        if (this.applyCount > 0) {
+
+          this.subs.add(
+            this.worksorderManagementService.worksOrdersCreateVariationForAddWOAD(params).subscribe(
+              data => {
+                if (data.isSuccess == false) {
+                  this.alertService.error(data.message)
+                  return
+                }
+
+                this.applyCount--
+                this.displayHighestPkz = this.selectedPkzs[this.applyCount - 1];
+                this.populateForm(this.displayHighestPkz)
+                this.chRef.detectChanges();
+                if (this.applyCount == 0) {
+                  this.closeVariatioPkzQty();
+                  return
+                }
+
+              }
+            )
+          )
+        }
+      }
+
+
+      if (this.parentComp == 'worklist' && this.mode == 'edit') {
         let params = {
           WOSEQUENCE: this.assetDetailInp.wosequence,
           WOPSEQUENCE: this.assetDetailInp.wopsequence,
+          WOISEQUENCE: this.assetDetailInp.woisequence,
           ASSID: this.assetDetailInp.assid,
           WLCODE: this.assetDetailInp.wlcode,
           WLATAID: this.assetDetailInp.wlataid,
@@ -263,8 +357,8 @@ export class VariationPkzEnterQtyComponent implements OnInit {
           WOSTAGESURCDE: this.assetDetailInp.wostagesurcde,
           WOCHECKSURCDE: this.assetDetailInp.wochecksurcde,
           User: this.assetDetailInp.userName,
-          WOIADWORKCOST: this.helperService.convertMoneyToFlatFormat(formRawVal.costOverride),
-          WOIADFEECOST: this.selectedSingleVariationAssetInp.woiafeecost,
+          WOIADWORKCOST: this.helperService.convertMoneyToFlatFormat(formRawVal.workCost),//
+          WOIADFEECOST: this.assetDetailInp.woadcommitted,//
           WOIADCOMMENT: formRawVal.comment,
           ASAQUANTITY: formRawVal.quantity,
           ASAUOM: this.assetDetailInp.asauom,
@@ -287,6 +381,53 @@ export class VariationPkzEnterQtyComponent implements OnInit {
         )
 
 
+      }
+
+    }
+
+
+    if (type == 2) {
+      if (this.parentComp == 'additional' && this.mode == "new") {
+        const { wosequence, wopsequence, assid, woisequence } = this.selectedSingleVariationAssetInp
+
+        let req: any = [];
+        for (let pkz of this.selectedPkzs) {
+          const { ataid, wphcode, wostagesurcde, wochecksurcde, woifeecost, uom, defaultcost } = pkz;
+
+          let params = {
+            WOSEQUENCE: wosequence,
+            WOPSEQUENCE: wopsequence,
+            ASSID: assid,
+            WOISEQUENCE: woisequence,
+            WLATAID: ataid,
+            WLPLANYEAR: this.planYear,
+            WOSTAGESURCDE: wostagesurcde,
+            WOCHECKSURCDE: wochecksurcde,
+            User: this.currentUser.userId,
+            WOIADWORKCOST: defaultcost,
+            WOIADFEECOST: woifeecost,
+            WOIADCOMMENT: formRawVal.comment,
+            ASAQUANTITY: formRawVal.quantity,
+            ASAUOM: uom,
+            WPHCODE: wphcode,
+
+            Recharge: "N",
+            WLCODE: 0,
+
+          }
+
+          req.push(this.worksorderManagementService.worksOrdersCreateVariationForAddWOAD(params))
+
+        }
+
+        this.subs.add(
+          forkJoin(req).subscribe(
+            data => {
+              this.closeVariatioPkzQty();
+            },
+            err => this.alertService.error(err)
+          )
+        )
       }
     }
 

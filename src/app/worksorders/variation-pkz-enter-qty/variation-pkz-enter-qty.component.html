@@ -80,11 +80,11 @@
             <div class="col-md-4 mt-3 text-left">
                 <button type="button" class="btn btn-sm themeButton ml-1" (click)="defaultToOne()">Default to 1</button>
             </div>
-            
+
             <div class="col-md-8 mt-3 text-right">
                 <button type="button" class="btn btn-sm themeButton ml-1" (click)="selectApply(1)">Apply</button>
-                <button type="button" *ngIf="parentComp == 'additionalwork'" [disabled]="checkApplyAllDisable()"
-                    class="btn btn-sm themeButton ml-1" (click)="selectApply(2)">Apply To All</button>
+                <button type="button" *ngIf="parentComp == 'additional'" class="btn btn-sm themeButton ml-1"
+                    (click)="selectApply(2)">Apply To All</button>
                 <button type="button" (click)="closeVariatioPkzQty()"
                     class="btn btn-sm themeButton ml-1">Cancel</button>
             </div>
