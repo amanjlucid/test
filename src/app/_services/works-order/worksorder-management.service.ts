@@ -400,6 +400,20 @@ export class WorksorderManagementService {
         return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/UpdateWorksOrderInstruction?WOSEQUENCE=${WOSEQUENCE}&WOISEQUENCE=${WOISEQUENCE}&WOPSEQUENCE=${WOPSEQUENCE}&WOIISSUEREASON=${WOIISSUEREASON}`, this.httpOptions);
     }
 
+    GetWorkOrderGetWorksOrderCompletions(wosequence, userId) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWorksOrderCompletions?wosequence=${wosequence}&struser=${userId}`, this.httpOptions);
+    }
+
+
+
+    viewWorkOrderCompletionCertificate(wosequence, wocosequence, userId) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/ViewCompletionCertificate?wosequence=${wosequence}&wocosequence=${wocosequence}&userid=${userId}`, this.httpOptions);
+    }
+
+    saveSendWorkOrderCompletionCertificate(wosequence, wocosequence, userId) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/ProcessCompletionReport?wosequence=${wosequence}&wocosequence=${wocosequence}&userid=${userId}`, this.httpOptions);
+    }
+
     getAppendVariationList(WOSEQUENCE, WOPSEQUENCE) {
         return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetAppendVariationList?WOSEQUENCE=${WOSEQUENCE}&WOPSEQUENCE=${WOPSEQUENCE}`, this.httpOptions);
     }

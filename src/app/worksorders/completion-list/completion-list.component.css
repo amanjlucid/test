@@ -1,0 +1,12 @@
+.headingDiv {
+    background-color: #dbdbdb;
+    padding: 3px;
+}
+.heading{
+    font-weight: 600;
+}
+
+.k-window{
+    position: fixed !important;
+    padding: 0;
+}

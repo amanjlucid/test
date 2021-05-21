@@ -71,6 +71,11 @@ export class WorkorderListComponent implements OnInit {
   mousePositioin: any = 0;
   openVariationListAll: boolean;
 
+  tabWindow = false;
+  completionList = false;
+
+  workOrderId : number;
+
   woProgramManagmentInstructionsWindow = false;
 
   constructor(
@@ -560,6 +565,23 @@ export class WorkorderListComponent implements OnInit {
   closeWoProgramManagmentInstructionsWin(eve) {
     this.woProgramManagmentInstructionsWindow = eve;
     $('.worksOrderOverlay').removeClass('ovrlay');
+  }
+
+  openCompletionList(item) {
+    $('.bgblur').addClass('ovrlay');
+    this.tabWindow = true;
+    this.completionList = true;
+    this.workOrderId = item.wosequence;
+  }
+
+  closeTabWindow($event) {
+    this.tabWindow = $event;
+    $('.bgblur').removeClass('ovrlay');
+  }
+
+  closeCompletionList($event) {
+    this.completionList = $event;
+    $('.bgblur').removeClass('ovrlay');
   }
 
 

@@ -46,6 +46,7 @@ import { NoAccessHistoryComponent } from '../no-access-history/no-access-history
 import { MoveAssetComponent } from '../move-asset/move-asset.component';
 import { PhaseChecklistComponent } from '../phase-checklist/phase-checklist.component';
 import { AssetRemoveReasonComponent } from '../asset-remove-reason/asset-remove-reason.component';
+import { CompletionListComponent } from '../completion-list/completion-list.component';
 import { VariationListComponent } from '../variation-list/variation-list.component';
 import { VariationWorkListComponent } from '../variation-work-list/variation-work-list.component';
 import { VariationFeesComponent } from '../variation-fees/variation-fees.component';
@@ -99,6 +100,7 @@ import { WoPmInstructionAssetsDetailComponent } from '../workorder-program-manag
     MoveAssetComponent,
     PhaseChecklistComponent,
     AssetRemoveReasonComponent,
+    CompletionListComponent,
     VariationListComponent,
     VariationWorkListComponent,
     VariationFeesComponent,

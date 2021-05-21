@@ -93,20 +93,21 @@
                   (click)="deleteThis(dataItem)">Delete</a>
                 <a *ngIf="woMenuAccess('Works Order Detail')" class="dropdown-item" href="javascript:void(0)"
                   (click)="redirectToWorksOrder(dataItem)"> Works Order Details</a>
+                <a class="dropdown-item" href="javascript:void(0)" (click)="openVariationList(dataItem)">Variations</a>
+                <!-- <a class="dropdown-item" (click)="openCompletionList(dataItem)"
+                  href="javascript:void(0)">Completions</a> -->
 
-                <a *ngIf="woMenuAccess('Variations')" class="dropdown-item" href="javascript:void(0)" (click)="openVariationList(dataItem)">Variations</a>
-
-                  <div class="dropdown-toggle" >
-                    <div class="dropdown-item">Programme Management</div>
-                    <div class="dropdown-menu addAssetMenu">
-                      <a (click)="redirectToWoProgramManagmentInstructions(dataItem)" class="dropdown-item"
-                        href="javascript:void(0)">
-                        Instructions</a>
-                      <a  class="dropdown-item"
+                <div class="dropdown-toggle">
+                  <div class="dropdown-item">Programme Management</div>
+                  <div class="dropdown-menu addAssetMenu">
+                    <a (click)="redirectToWoProgramManagmentInstructions(dataItem)" class="dropdown-item"
+                      href="javascript:void(0)">
+                      Instructions</a>
+                    <a class="dropdown-item" (click)="openCompletionList(dataItem)"
                       href="javascript:void(0)">Completions</a>
 
-                    </div>
                   </div>
+                </div>
 
                 <!-- <a class="dropdown-item" href="javascript:void(0)">Defects </a>
                 <a class="dropdown-item" href="javascript:void(0)">Contract Costs</a>
@@ -337,7 +338,14 @@
   [selectedWorkOrderAddEdit]="selectedWorkOrderAddEdit" *ngIf="woFormWindow" (closeWoFormWin)="closeWoFormWin($event)">
 </app-workorder-form>
 
-<app-variation-list-all *ngIf="openVariationListAll" [openVariationListAll]="openVariationListAll" [openedFrom]="'worksorder'" [singleWorksOrder]="selectedWorksOrder" (closeVariationAllListEvent)="closeVariationAll($event)"></app-variation-list-all>
-<app-wo-program-management-instructions *ngIf="woProgramManagmentInstructionsWindow" [woProgramManagmentInstructionsWindow]="woProgramManagmentInstructionsWindow"
-  [worksOrderData]="selectedWorksOrder" [selectedWorksOrder]="selectedWorksOrder" (WoProgramManagmentInstructionsWinEvent)="closeWoProgramManagmentInstructionsWin($event)">
+<app-completion-list *ngIf="tabWindow" [workOrderId]="workOrderId" [completionWin]="completionList"
+  (closeCompletionWin)="closeCompletionList($event)"></app-completion-list>
+
+<app-variation-list-all *ngIf="openVariationListAll" [openVariationListAll]="openVariationListAll"
+  [openedFrom]="'worksorder'" [singleWorksOrder]="selectedWorksOrder"
+  (closeVariationAllListEvent)="closeVariationAll($event)"></app-variation-list-all>
+<app-wo-program-management-instructions *ngIf="woProgramManagmentInstructionsWindow"
+  [woProgramManagmentInstructionsWindow]="woProgramManagmentInstructionsWindow" [worksOrderData]="selectedWorksOrder"
+  [selectedWorksOrder]="selectedWorksOrder"
+  (WoProgramManagmentInstructionsWinEvent)="closeWoProgramManagmentInstructionsWin($event)">
 </app-wo-program-management-instructions>

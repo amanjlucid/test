@@ -1,0 +1,82 @@
+<kendo-window title="Work Order - Completions" [(state)]="windowState" [(top)]="windowTop" *ngIf="completionWin"
+  [minWidth]="500" [width]="980" (close)="closeCompletionWindow()">
+  <div class="row mt-2">
+
+
+    <div class="col-md-12">
+      <span *ngIf="workOrderProgrammeData?.length > 0"
+        class="heading headingDiv p-2 d-block">{{workOrderProgrammeData[0].woname}} (Works Order No:
+        {{workOrderProgrammeData[0].wosequence}})</span>
+    </div>
+
+    <div class="col-md-12 mt-3">
+      <kendo-grid #grid="kendoGrid" (cellClick)="getSelectedCell($event)" [data]="gridView" [selectable]="{
+          mode: 'single'
+        }" [groupable]="false" (groupChange)="groupChange($event)" [group]="state.group"
+        [kendoGridSelectBy]="mySelectionKey" [selectedKeys]="mySelection" [resizable]="true" [skip]="state.skip"
+        [sort]="state.sort" [filter]="state.filter" filterable="menu" [sortable]="{
+              allowUnsort: allowUnsort,
+              mode: multiple ? 'multiple' : 'single'
+              }" (sortChange)="sortChange($event)" (filterChange)="filterChange($event)" [height]="400">
+
+        <kendo-grid-column field="wopname" title="Phase" width="90">
+        </kendo-grid-column>
+        <kendo-grid-column field="wocosequence" title="Completion ID" width="130" filter="numeric">
+        </kendo-grid-column>
+        <kendo-grid-column field="wocodate" title="Completion Date" width="160">
+          <ng-template kendoGridCellTemplate let-gridView>
+            <span>
+              {{ gridView.wocodate | dateFormat : 'DD-MMM-YYYY' }}
+            </span>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column field="completedByName" title="Completed By" width="130">
+        </kendo-grid-column>
+        <kendo-grid-column field="assetCount" title="Asset Count" width="110" filter="numeric">
+        </kendo-grid-column>
+        <kendo-grid-column field="feecostsum" title="Fee Cost" width="140" filter="numeric">
+          <ng-template kendoGridCellTemplate let-gridView>
+            <span>
+              {{ gridView.feecostsum | currency:"GBP":"symbol" }}
+            </span>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column field="workcostsum" title="Work Cost" width="120" filter="numeric">
+          <ng-template kendoGridCellTemplate let-gridView>
+            <span>
+              {{ gridView.workcostsum | currency:"GBP":"symbol" }}
+            </span>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column field="assid" title="Asset ID" width="160">
+        </kendo-grid-column>
+        <kendo-grid-column field="address" title="Address" width="220">
+        </kendo-grid-column>
+
+      </kendo-grid>
+
+    </div>
+
+    <div style="height:5%; min-height:10" class="col-md-12 text-right actionArea pt-3">
+      <button type="button" class="btn btn-sm themeButton mr-2" [disabled]="disableBtn"
+        (click)="previewCompletionReport()">Preview Completion Report</button>
+      <button type="submit" class="btn btn-sm themeButton mr-2" (click)="saveSendCompletionReport()"
+        [disabled]="disableBtn">Save and Send Completion Report</button>
+      <button type="submit" class="btn btn-sm themeButton" (click)="closeCompletionWindow()">Close</button>
+    </div>
+
+
+  </div>
+
+</kendo-window>
+<!-- <kendo-dialog title="Work Order" *ngIf="saveSendSuccessPopup && saveSendPopupMessage != ''" (close)="closeSaveSendPopup()"
+    [minWidth]="250" [width]="400">
+
+    <p style="margin: 30px; text-align: center; font-weight: 600;">{{saveSendPopupMessage}}</p>
+    <div class="row">
+      <div class="col-md-12 text-right">
+        <button class="btn btn-sm btn btn-sm themeButton" (click)="closeSaveSendPopup()"
+          primary="true">Ok</button>
+      </div>
+    </div>
+  </kendo-dialog> -->
