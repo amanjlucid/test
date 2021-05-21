@@ -7,7 +7,7 @@ import { combineLatest, Subject } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { WorkordersListFilterModel } from '../../_models';
 import { debounceTime } from 'rxjs/operators';
-import { WorkOrderCompletionComponent } from '../workorder-list/workorder-completion/workorder-completion.component';
+import { CompletionListComponent } from '../completion-list/completion-list.component';
 
 
 @Component({
@@ -70,9 +70,10 @@ export class WorkorderListComponent implements OnInit {
   userType: any = [];
 
   mousePositioin: any = 0;
+  openVariationListAll: boolean;
 
   tabWindow = false;
-  completionWindow = false;
+  completionList = false;
 
   workOrderId : number;
 
@@ -340,10 +341,10 @@ export class WorkorderListComponent implements OnInit {
     this.woFormWindow = true;
   }
 
-  openCompletionWindow(item) {
+  openCompletionList(item) {
     $('.bgblur').addClass('ovrlay');
     this.tabWindow = true;
-    this.completionWindow = true;
+    this.completionList = true;
     this.workOrderId = item.wosequence;
   }
 
@@ -352,8 +353,8 @@ export class WorkorderListComponent implements OnInit {
     $('.bgblur').removeClass('ovrlay');
   }
 
-  closeCompletionWindow($event) {
-    this.completionWindow = $event;
+  closeCompletionList($event) {
+    this.completionList = $event;
     $('.bgblur').removeClass('ovrlay');
   }
 
@@ -605,17 +606,19 @@ export class WorkorderListComponent implements OnInit {
     //   return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf('Edit Works Order') != -1 || this.worksOrderUsrAccess.indexOf('Delete Works Order') != -1 || this.worksOrderUsrAccess.indexOf('Works Order Detail') != -1
     // }
 
-
-
-
-
-
   }
 
 
+  openVariationList(item) {
+    $('.worksOrderOverlay').addClass('ovrlay');
+    this.selectedWorksOrder = item;
+    this.openVariationListAll = true;
 
-  getTop(e) {
-    console.log(e)
+  }
+
+  closeVariationAll(eve) {
+    $('.worksOrderOverlay').removeClass('ovrlay');
+    this.openVariationListAll = eve;
   }
 
 

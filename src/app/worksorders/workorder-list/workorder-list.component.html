@@ -83,7 +83,8 @@
           <ng-template kendoGridCellTemplate let-dataItem>
             <li #li class="nav-item dropdown list-unstyled" style="margin-top: -7px;"
               (click)="setSeletedRow(dataItem, li)">
-              <i #ii data-toggle="dropdown" aria-expanded="false" class="fas fa-bars" (click)="setSeletedRow(dataItem, ii)"></i>
+              <i #ii data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"
+                (click)="setSeletedRow(dataItem, ii)"></i>
               <div #elm class="dropdown-menu selectedMenuBar{{dataItem.wosequence}} drpMenu">
 
                 <a *ngIf="woMenuAccess('Edit Works Order')" class="dropdown-item" href="javascript:void(0)"
@@ -92,7 +93,8 @@
                   (click)="deleteThis(dataItem)">Delete</a>
                 <a *ngIf="woMenuAccess('Works Order Detail')" class="dropdown-item" href="javascript:void(0)"
                   (click)="redirectToWorksOrder(dataItem)"> Works Order Details</a>
-                <a class="dropdown-item" (click)="openCompletionWindow(dataItem)" href="javascript:void(0)">Completions</a>
+                <a class="dropdown-item" href="javascript:void(0)" (click)="openVariationList(dataItem)">Variations</a>
+                <a class="dropdown-item" (click)="openCompletionList(dataItem)" href="javascript:void(0)">Completions</a>
                 <!-- <a class="dropdown-item" href="javascript:void(0)">Defects </a>
                 <a class="dropdown-item" href="javascript:void(0)">Contract Costs</a>
                 <a class="dropdown-item" href="javascript:void(0)">Variations</a>
@@ -283,12 +285,6 @@
 
 </div>
 
-<div class="example-wrapper">
-    <app-workorder-completion
-    *ngIf="tabWindow" [workOrderId]="workOrderId" [completionWin] = "completionWindow" (closeCompletionWin)="closeCompletionWindow($event)" ></app-workorder-completion>
-
-</div>
-
 
 <kendo-dialog title="Delete Works Order" *ngIf="woFormDeleteWindow" (close)="closewoFormDeleteWindow()" [minWidth]="250"
   [width]="450">
@@ -323,6 +319,11 @@
 
 
 <div class="worksOrderOverlay"></div>
+
 <app-workorder-form [woFormType]="woFormType" [woFormWindow]="woFormWindow"
   [selectedWorkOrderAddEdit]="selectedWorkOrderAddEdit" *ngIf="woFormWindow" (closeWoFormWin)="closeWoFormWin($event)">
 </app-workorder-form>
+
+<app-variation-list-all *ngIf="openVariationListAll" [openVariationListAll]="openVariationListAll" [openedFrom]="'worksorder'" [singleWorksOrder]="selectedWorksOrder" (closeVariationAllListEvent)="closeVariationAll($event)"></app-variation-list-all>
+
+<app-completion-list *ngIf="tabWindow" [workOrderId]="workOrderId" [completionWin] = "completionList" (closeCompletionWin)="closeCompletionList($event)" ></app-completion-list>

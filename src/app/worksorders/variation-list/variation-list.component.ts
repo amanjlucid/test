@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { SelectableSettings, PageChangeEvent } from '@progress/kendo-angular-grid';
-import { AlertService, HelperService, WorksorderManagementService } from 'src/app/_services';
+import { AlertService, ConfirmationDialogService, HelperService, WorksorderManagementService } from 'src/app/_services';
 import { forkJoin } from 'rxjs';
 
 @Component({
@@ -19,7 +19,7 @@ export class VariationListComponent implements OnInit {
   @Input() selectedAsset: any = [];
   @Output() closeVariationListEvent = new EventEmitter<boolean>();
 
-  title = 'List Variations';
+  title = 'Variations';
   subs = new SubSink();
   state: State = {
     skip: 0,
@@ -48,12 +48,15 @@ export class VariationListComponent implements OnInit {
   openNewVariation: boolean = false;
   formMode = 'new'
   openedFor = 'details'
+  currentUser = JSON.parse(localStorage.getItem('currentUser'));
+  confirmationType = '';
+  openAppendVariation = false;
 
   constructor(
     private chRef: ChangeDetectorRef,
     private workOrderProgrammeService: WorksorderManagementService,
     private alertService: AlertService,
-    private helperService: HelperService,
+    private confirmationDialogService: ConfirmationDialogService,
 
   ) {
     this.setSelectableSettings();
@@ -61,7 +64,10 @@ export class VariationListComponent implements OnInit {
 
   ngOnInit(): void {
     // console.log(this.selectedAsset);
+
     this.getVariationPageDataWithGrid();
+
+
   }
 
   ngOnDestroy() {
@@ -70,7 +76,7 @@ export class VariationListComponent implements OnInit {
 
   setSelectableSettings(): void {
     this.selectableSettings = {
-      checkboxOnly: true,
+      checkboxOnly: false,
       mode: 'single'
     };
   }
@@ -87,37 +93,42 @@ export class VariationListComponent implements OnInit {
     this.chRef.detectChanges();
   }
 
+
   getVariationPageDataWithGrid() {
-    const { wosequence, assid, wopsequence } = this.selectedAsset;
-    this.subs.add(
-      forkJoin([
-        this.workOrderProgrammeService.getWorksOrderByWOsequence(wosequence),
-        this.workOrderProgrammeService.getPhase(wosequence, wopsequence),
-        this.workOrderProgrammeService.getAssetAddressByAsset(assid),
-        this.workOrderProgrammeService.getWEBWorksOrdersVariationList(wosequence, wopsequence, assid),
-        this.workOrderProgrammeService.specificWorkOrderAssets(wosequence, assid, wopsequence),
-      ]).subscribe(
-        data => {
-          // console.log(data)
 
-          this.worksOrderData = data[0].data;
-          this.phaseData = data[1].data;
-          this.assetDetails = data[2].data[0];
-          const variationData = data[3];
-          this.woAsset = data[4].data[0];
+    if (this.openedFrom == 'assetchecklist') {
+      const { wosequence, assid, wopsequence } = this.selectedAsset;
+      this.subs.add(
+        forkJoin([
+          this.workOrderProgrammeService.getWorksOrderByWOsequence(wosequence),
+          this.workOrderProgrammeService.getPhase(wosequence, wopsequence),
+          this.workOrderProgrammeService.getAssetAddressByAsset(assid),
+          this.workOrderProgrammeService.getWEBWorksOrdersVariationList(wosequence, wopsequence, assid),
+          this.workOrderProgrammeService.specificWorkOrderAssets(wosequence, assid, wopsequence),
+        ]).subscribe(
+          data => {
+            console.log(data)
+
+            this.worksOrderData = data[0].data;
+            this.phaseData = data[1].data;
+            this.assetDetails = data[2].data[0];
+            const variationData = data[3];
+            this.woAsset = data[4].data[0];
 
 
-          if (variationData.isSuccess) {
-            this.variationData = variationData.data;
-            this.gridView = process(this.variationData, this.state);
-          } else this.alertService.error(variationData.message);
+            if (variationData.isSuccess) {
+              this.variationData = variationData.data;
+              this.gridView = process(this.variationData, this.state);
+            } else this.alertService.error(variationData.message);
 
-          this.loading = false;
-          this.chRef.detectChanges();
+            this.loading = false;
+            this.chRef.detectChanges();
 
-        }, err => this.alertService.error(err)
+          }, err => this.alertService.error(err)
+        )
       )
-    )
+    }
+
   }
 
 
@@ -144,6 +155,14 @@ export class VariationListComponent implements OnInit {
   }
 
   openVariationDetails(item) {
+    if (item != undefined) {
+      if (item.woiissuestatus == "New") {
+        this.openedFor = 'edit';
+      } else {
+        this.openedFor = 'details';
+      }
+    }
+
     this.selectedSingleVariation = item;
     this.openVariationWorkList = true;
     $('.variationListOverlay').addClass('ovrlay');
@@ -152,9 +171,11 @@ export class VariationListComponent implements OnInit {
   closeVariationDetails(eve) {
     this.openVariationWorkList = eve;
     $('.variationListOverlay').removeClass('ovrlay');
+    this.getVariationPageDataWithGrid();
   }
 
   newVariation() {
+    this.formMode = 'new';
     this.openNewVariation = true;
     $('.variationListOverlay').addClass('ovrlay');
     setTimeout(() => {
@@ -165,6 +186,7 @@ export class VariationListComponent implements OnInit {
   closeNewVariation(eve) {
     this.openNewVariation = eve;
     $('.variationListOverlay').removeClass('ovrlay');
+    this.getVariationPageDataWithGrid();
   }
 
   getVariationReason(reason) {
@@ -177,6 +199,189 @@ export class VariationListComponent implements OnInit {
     }
   }
 
+  editVariation(item) {
+    this.formMode = 'edit';
+    this.selectedSingleVariation = item;
+    this.openNewVariation = true;
+    $('.variationListOverlay').addClass('ovrlay');
+  }
 
+
+  disableAppendBtn() {
+    // woAsset?.woassstatus != 'Accepted'
+    return false;
+  }
+
+  disableVariationBtns(btnType, item) {
+    if (btnType == 'Edit') {
+      return item.woiissuestatus == 'New' || item.woiissuestatus == 'Contractor Review' ? false : true;
+    } else if (btnType == 'Customer') {
+      return item.woiissuestatus == 'New' || item.woiissuestatus == 'Contractor Review' ? false : true;
+    } else if (btnType == 'Contractor' || btnType == 'Issue') {
+      return item.woiissuestatus == 'Customer Review' || item.woiissuestatus == 'New' ? false : true;
+    } else if (btnType == 'Issue') {
+      return item.woiissuestatus == 'New' ? false : true;
+    } else if (btnType == 'Accept') {
+      return item.woiissuestatus == 'Issued' ? false : true;
+    }
+
+  }
+
+
+  sendVariation(to = "customer", item) {
+
+    const { wosequence, woisequence, woiissuereason } = item;
+    const { woname } = this.worksOrderData
+
+    let apiCall: any;
+    let msg = '';
+
+    if (to == 'customer') {
+      apiCall = this.workOrderProgrammeService.sendVariationToCustomerForReview(wosequence, woisequence, woname, woiissuereason, this.currentUser.userName)
+      msg = 'Variation sent to customer.'
+    } else if (to == 'contractor') {
+      apiCall = this.workOrderProgrammeService.emailVariationToContractorForReview(wosequence, woisequence, woname, woiissuereason, this.currentUser.userName)
+      msg = 'Variation sent to contractor.'
+    } else {
+      return
+    }
+
+
+    this.subs.add(
+      apiCall.subscribe(
+        data => {
+          // console.log(data)
+          if (data.isSuccess) {
+            this.alertService.success(msg)
+          } else this.alertService.error(data.message)
+        }, err => this.alertService.error(err)
+      )
+    )
+
+  }
+
+  issueVariation(item, checkOrProcess = "C") {
+
+    if (this.disableVariationBtns('Issue', item)) {
+      this.alertService.error("No Access");
+      return;
+    }
+
+    this.confirmationType = 'Issue'
+    const { wosequence, woisequence, wopsequence } = item;
+    const params: any = {};
+    params.WOSEQUENCE = wosequence;
+    params.WOPSEQUENCE = wopsequence;
+    params.WOISEQUENCE = woisequence;
+    params.strUserId = this.currentUser.userId;
+    params.strUserName = this.currentUser.userName;
+    params.strCheckOrProcess = checkOrProcess;
+
+    this.subs.add(
+      this.workOrderProgrammeService.worksOrderIssueVariation(params).subscribe(
+        data => {
+          // console.log(data);
+          if (data.isSuccess) {
+            let resp: any;
+            if (data.data[0] == undefined) {
+              resp = data.data;
+            } else {
+              resp = data.data[0];
+            }
+
+            if (checkOrProcess == "C" && (resp.pRETURNSTATUS == "E" || resp.pRETURNSTATUS == "S")) {
+              this.openConfirmationDialog(item, resp)
+            } else {
+              this.alertService.success(resp.pRETURNMESSAGE)
+              this.getVariationPageDataWithGrid();
+            }
+
+
+          } else {
+            this.alertService.error(data.message);
+          }
+        }
+      )
+    )
+
+  }
+
+
+  openConfirmationDialog(item, res) {
+    let checkstatus = "C";
+    if (res.pRETURNSTATUS == 'S') {
+      checkstatus = "P"
+    }
+
+    $('.k-window').css({ 'z-index': 1000 });
+    this.confirmationDialogService.confirm('Please confirm..', `${res.pRETURNMESSAGE}`)
+      .then((confirmed) => {
+        if (confirmed) {
+          if (res.pRETURNSTATUS == 'E') return;
+
+          if (this.confirmationType == "Issue") this.issueVariation(item, checkstatus)
+          if (this.confirmationType == "Accept") this.accetpVariationAsset(item, checkstatus)
+        }
+      })
+      .catch(() => console.log('Attribute dismissed the dialog.'));
+  }
+
+
+  accetpVariationAsset(item, checkOrProcess = "C") {
+
+    if (this.disableVariationBtns('Accept', item)) {
+      this.alertService.error("No Access");
+      return;
+    }
+
+    this.confirmationType = 'Accept'
+    const { wosequence, wopsequence, woisequence, assid } = item;
+    const params: any = {};
+    params.WOSEQUENCE = wosequence;
+    params.WOPSEQUENCE = wopsequence;
+    params.WOISEQUENCE = woisequence;
+    params.strUserId = this.currentUser.userId;
+    params.strCheckOrProcess = checkOrProcess;
+    params.strASSID = [assid];
+
+    this.subs.add(
+      this.workOrderProgrammeService.worksOrderAcceptVariation(params).subscribe(
+        data => {
+          // console.log(data);
+          if (data.isSuccess) {
+            let resp: any;
+            if (data.data[0] == undefined) {
+              resp = data.data;
+            } else {
+              resp = data.data[0];
+            }
+
+            if (checkOrProcess == "C" && (resp.pRETURNSTATUS == "E" || resp.pRETURNSTATUS == "S")) {
+              this.openConfirmationDialog(item, resp)
+            } else {
+              this.alertService.success(resp.pRETURNMESSAGE)
+              this.getVariationPageDataWithGrid();
+            }
+
+
+          } else this.alertService.error(data.message);
+        }, err => this.alertService.error(err)
+      )
+    )
+
+
+  }
+
+
+  append() {
+    $('.variationListOverlay').addClass('ovrlay');
+    this.openAppendVariation = true;
+
+  }
+
+  closeAppendVariation(eve) {
+    this.openAppendVariation = eve;
+    $('.variationListOverlay').removeClass('ovrlay');
+  }
 
 }

@@ -1,0 +1,167 @@
+<kendo-window title="{{title}}" *ngIf="openVariationAsset" (close)="closeVariationAsset()" [top]="30" [minWidth]="700"
+    [width]="980" [height]="auto" [minHeight]="350">
+    <div class="row">
+        <div class="col-md-12 actionBtnDiv text-right">
+            <button type="button" class="btn btn-sm themeButton mr-1 headin_section" (click)="slideToggle()">
+                <i class="fa" [ngClass]="(filterToggle) ? 'fa-minus':'fa-plus'"></i>
+            </button>
+
+
+        </div>
+
+        <div class="col-md-12 mt-2">
+            <div class="cont">
+                <div id="wrapper">
+                    <div class="worksorder-variationasset-header" style="display: none;">
+                        <div class="row">
+                            <div class="col-md-2">Programme: </div>
+                            <div class="col-md-10">
+                                <input type="text" value="{{programData?.wprdesc}}" class="form-control form-control-sm"
+                                    [readonly]="true">
+                            </div>
+                        </div>
+
+                        <div class="row mt-1">
+                            <div class="col-md-2">Works Order: </div>
+                            <div class="col-md-10">
+                                <input type="text" value="{{worksOrderData?.woname}} ({{worksOrderData?.wosequence}})"
+                                    class="form-control form-control-sm" [readonly]="true">
+                            </div>
+                        </div>
+
+                        <div class="row mt-1">
+                            <div class="col-md-2">Phase: </div>
+                            <div class="col-md-8">
+                                <input type="text" value="{{phaseData?.wopname }}" class="form-control form-control-sm"
+                                    [readonly]="true">
+                            </div>
+
+                            <div class="col-md-2">
+                                <input type="text" value="{{selectedVariationInp?.woisequence}}"
+                                    class="form-control form-control-sm" [readonly]="true">
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <kendo-grid #grid [data]="gridView" [height]="600" [selectable]="{
+                mode: 'multiple'
+              }" filterable="menu" [resizable]="true" [sortable]="{
+                allowUnsort: true,
+                mode: 'multiple'
+                }" [skip]="state.skip" [loading]="loading" [pageSize]="pageSize" [rowHeight]="36"
+                (pageChange)="pageChange($event)" scrollable="virtual" [sort]="state.sort" [filter]="state.filter"
+                (sortChange)="sortChange($event)" (filterChange)="filterChange($event)"
+                (cellClick)="cellClickHandler($event)" [navigable]="false">
+
+
+                <kendo-grid-column title=" " width="37" [filterable]="false" [sortable]="false">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <li class="nav-item dropdown list-unstyled" style="margin-top: -7px;">
+                            <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
+
+                            <div class="dropdown-menu">
+                                <!-- <a class="dropdown-item" href="javascript:void(0)"
+                                    (click)="openVariationDetails(dataItem)">Details</a> -->
+
+                                <a [ngClass]="{'disabled' : disableVariationBtns('Edit', dataItem)}"
+                                    class="dropdown-item" href="javascript:void(0)"
+                                    (click)="editVariation(dataItem)">Edit</a>
+
+
+                                <a [ngClass]="{'disabled' : disableVariationBtns('Accept', dataItem)}"
+                                    class="dropdown-item" href="javascript:void(0)"
+                                    (click)="accetpVariationAsset(dataItem)">Accept</a>
+
+
+                            </div>
+                        </li>
+
+                    </ng-template>
+                </kendo-grid-column>
+
+
+                <kendo-grid-column title="Asset ID" field="assid" width="110" [filterable]="false">
+                </kendo-grid-column>
+
+                <kendo-grid-column title="Address" field="address" width="150" [filterable]="false">
+                </kendo-grid-column>
+
+                <kendo-grid-column title="Status" field="woiaissuestatus" width="110" [filterable]="false">
+                </kendo-grid-column>
+
+                <kendo-grid-column title="Created By" field="woiaissueuser" width="130" [filterable]="false">
+                </kendo-grid-column>
+
+                <kendo-grid-column title="Created Date" field="woiaissuedate" width="130">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.woiaissuedate | dateFormat : 'DD-MMM-YYYY' }}
+                        </span>
+                    </ng-template>
+                </kendo-grid-column>
+
+                <kendo-grid-column title="Fee" field="woiafeecost" width="90" [style]="{'text-align': 'right'}">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.woiafeecost | currency:'GBP':'symbol' }}
+                        </span>
+                    </ng-template>
+                </kendo-grid-column>
+
+                <kendo-grid-column title="Work" field="woiaworkcost" width="90" [style]="{'text-align': 'right'}">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.woiaworkcost | currency:'GBP':'symbol' }}
+                        </span>
+                    </ng-template>
+                </kendo-grid-column>
+
+                <kendo-grid-column title="Accepted by" field="woiaacceptuser" width="140">
+                </kendo-grid-column>
+
+                <kendo-grid-column title="Accepted on" field="woiaacceptdate" width="140">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.woiaacceptdate | dateFormat : 'DD-MMM-YYYY' }}
+                        </span>
+                    </ng-template>
+                </kendo-grid-column>
+
+                <kendo-grid-column title="WO Status" field="woassstatus" width="140">
+                </kendo-grid-column>
+
+
+
+
+
+            </kendo-grid>
+
+        </div>
+
+        <div class="col-md-12 text-right mt-2">
+            <button (click)="closeVariationAsset()" class="btn btn-sm themeButton ml-1">Close</button>
+        </div>
+    </div>
+
+
+    <div class="variationAssetListOverlay"></div>
+
+    <app-variation-work-list *ngIf="openVariationWorkList" [openVariationWorkList]="openVariationWorkList"
+        [openedFrom]="openedFrom" [openedFor]="openedFor" [selectedVariationInp]="selectedVariationInp"
+        [selectedSingleVariationAssetInp]="selectedSingleVariationAsset"
+        (closeWorkListEvent)="closeVariationDetails($event)">
+    </app-variation-work-list>
+
+
+</kendo-window>

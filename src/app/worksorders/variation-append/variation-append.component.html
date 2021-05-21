@@ -1,0 +1,95 @@
+<kendo-window title="{{title}}" *ngIf="openAppendVariation" (close)="closeAppendVariationMethod()" [top]="20"
+    [minWidth]="700" [width]="980" [height]="auto" [minHeight]="350">
+    <div class="row">
+        <div class="col-md-12 mt-2">
+            <div class="cont">
+                <div id="wrapper">
+                    <div class="worksorder-variation-header">
+                        <div class="row">
+                            <div class="col-md-2">Works Order: </div>
+                            <div class="col-md-10">
+                                <input type="text" value="{{worksOrderData?.woname}} ({{worksOrderData?.wosequence}})"
+                                    class="form-control form-control-sm" [readonly]="true">
+                            </div>
+                        </div>
+
+
+                        <div class="row mt-1">
+                            <div class="col-md-2">Phase: </div>
+                            <div class="col-md-10">
+                                <input type="text" value="{{phaseData?.wopname }}" class="form-control form-control-sm"
+                                    [readonly]="true">
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <div class="row mt-3">
+        <div class="col-md-12 ">
+            <kendo-grid #grid [data]="gridView" [height]="600" [selectable]="selectableSettings" filterable="menu"
+                [resizable]="true" [sortable]="{
+                allowUnsort: true,
+                mode: 'multiple'
+                }" [skip]="state.skip" [loading]="loading" [pageSize]="pageSize" [rowHeight]="36"
+                (pageChange)="pageChange($event)" scrollable="virtual" [sort]="state.sort" [filter]="state.filter"
+                (sortChange)="sortChange($event)" (filterChange)="filterChange($event)"
+                (cellClick)="cellClickHandler($event)" [navigable]="false">
+
+                <kendo-grid-column title="Sequence" field="woisequence" width="130" [filterable]="false">
+                </kendo-grid-column>
+
+                <kendo-grid-column title="Issue Status" field="woiissuestatus" width="130" [filterable]="false">
+                </kendo-grid-column>
+
+                <kendo-grid-column title="Issue User" field="woiissueuser" width="130" [filterable]="false">
+                </kendo-grid-column>
+
+                <kendo-grid-column title="Issue Date" field="woiissuedate" width="280">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.woiissuedate | dateFormat : 'DD-MMM-YYYY' }}
+                        </span>
+                    </ng-template>
+                </kendo-grid-column>
+
+                <kendo-grid-column title="Issue Reason" field="woiissuereason" width="280">
+                </kendo-grid-column>
+
+                <kendo-grid-column title="Accept Status" field="woiacceptstatus" width="140">
+                </kendo-grid-column>
+
+                <kendo-grid-column title="Accept User" field="woiacceptuser" width="120">
+                </kendo-grid-column>
+
+                <kendo-grid-column title="Accept Date" field="woiacceptdate" width="120">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.woiissuedate | dateFormat : 'DD-MMM-YYYY' }}
+                        </span>
+                    </ng-template>
+                </kendo-grid-column>
+
+                <kendo-grid-column title="Accept Reason" field="woiacceptreason" width="120">
+                </kendo-grid-column>
+
+            </kendo-grid>
+
+        </div>
+
+        <div class="col-md-12 text-right mt-2">
+            <button (click)="closeAppendVariationMethod()" class="btn btn-sm themeButton ml-1">Close</button>
+        </div>
+    </div>
+
+
+
+
+</kendo-window>

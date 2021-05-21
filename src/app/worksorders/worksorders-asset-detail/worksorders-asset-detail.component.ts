@@ -528,8 +528,8 @@ export class WorksordersAssetDetailComponent implements OnInit {
 
     closeSetToRefusalWindow() {
         this.SetToRefusalWindow = false;
-
     }
+    
     openEditCommentForWoAssetWindow(item) {
         this.selectedItem = item;
         this.EditCommentForWoAssetWindow = true;

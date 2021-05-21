@@ -18,7 +18,6 @@ import { WorksordersNewmanagementComponent } from '../worksorders-newmanagement/
 import { WorksordersAssetChecklistComponent } from '../worksorders-asset-checklist/worksorders-asset-checklist.component';
 import { WorkorderListComponent } from '../workorder-list/workorder-list.component';
 import { WorkOrderFormComponent } from '../workorder-list/workorder-form/workorder-form.component';
-import { WorkOrderCompletionComponent } from '../workorder-list/workorder-completion/workorder-completion.component';
 import { WorksordersDetailsComponent } from '../worksorders-details/worksorders-details.component';
 import { WorksordersNewPhaseComponent } from '../worksorders-new-phase/worksorders-new-phase.component';
 import { WorksordersPackageMappingComponent } from '../worksorders-package-mapping/worksorders-package-mapping.component';
@@ -47,12 +46,19 @@ import { NoAccessHistoryComponent } from '../no-access-history/no-access-history
 import { MoveAssetComponent } from '../move-asset/move-asset.component';
 import { PhaseChecklistComponent } from '../phase-checklist/phase-checklist.component';
 import { AssetRemoveReasonComponent } from '../asset-remove-reason/asset-remove-reason.component';
+import { CompletionListComponent } from '../completion-list/completion-list.component';
 import { VariationListComponent } from '../variation-list/variation-list.component';
 import { VariationWorkListComponent } from '../variation-work-list/variation-work-list.component';
 import { VariationFeesComponent } from '../variation-fees/variation-fees.component';
 import { VariationNewComponent } from '../variation-new/variation-new.component';
 import { VariationAdditionalWorkItemComponent } from '../variation-additional-work-item/variation-additional-work-item.component';
 import { VariationChangefeeComponent } from '../variation-changefee/variation-changefee.component';
+import { VariationListAllComponent } from '../variation-list-all/variation-list-all.component';
+import { BlankVariationComponent } from '../blank-variation/blank-variation.component';
+import { VariationAssetComponent } from '../variation-asset/variation-asset.component';
+import { VariationDetailComponent } from '../variation-detail/variation-detail.component';
+import { VariationAppendComponent } from '../variation-append/variation-append.component';
+import { VariationPkzEnterQtyComponent } from '../variation-pkz-enter-qty/variation-pkz-enter-qty.component';
 
 @NgModule({
   declarations: [
@@ -63,7 +69,6 @@ import { VariationChangefeeComponent } from '../variation-changefee/variation-ch
     WorksordersAssetChecklistComponent,
     WorkorderListComponent,
     WorkOrderFormComponent,
-    WorkOrderCompletionComponent,
     WorksordersDetailsComponent,
     WorksordersNewPhaseComponent,
     WorksordersPackageMappingComponent,
@@ -91,12 +96,19 @@ import { VariationChangefeeComponent } from '../variation-changefee/variation-ch
     MoveAssetComponent,
     PhaseChecklistComponent,
     AssetRemoveReasonComponent,
+    CompletionListComponent,
     VariationListComponent,
     VariationWorkListComponent,
     VariationFeesComponent,
     VariationNewComponent,
     VariationAdditionalWorkItemComponent,
-    VariationChangefeeComponent
+    VariationChangefeeComponent,
+    VariationListAllComponent,
+    BlankVariationComponent,
+    VariationAssetComponent,
+    VariationDetailComponent,
+    VariationAppendComponent,
+    VariationPkzEnterQtyComponent
   ],
 
   imports: [

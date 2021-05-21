@@ -17,6 +17,8 @@ export class VariationAdditionalWorkItemComponent implements OnInit {
   @Input() openadditionalWork: boolean = false;
   @Input() openedFrom = 'assetchecklist';
   @Input() openedFor = 'details';
+  @Input() selectedVariationInp: any;
+  @Input() selectedSingleVariationAssetInp: any;
   @Output() closeAdditionalWorkEvent = new EventEmitter<boolean>();
   title = 'Choose Work Packages';
   subs = new SubSink();
@@ -36,7 +38,10 @@ export class VariationAdditionalWorkItemComponent implements OnInit {
   pageSize = 25;
   selectableSettings: SelectableSettings;
   mySelection: any[] = [];
+  packageQuantityWindow = false;
+  worksOrderData: any;
 
+  @Input() singleVariation: any;
 
   constructor(
     private chRef: ChangeDetectorRef,
@@ -47,6 +52,74 @@ export class VariationAdditionalWorkItemComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    console.log({ openfor: this.openedFor, from: this.openedFrom, variation: this.selectedVariationInp, asset: this.selectedSingleVariationAssetInp })
+
+    this.requiredPagedata();
+  }
+
+
+  requiredPagedata() {
+    const { wosequence } = this.selectedSingleVariationAssetInp;
+
+    this.subs.add(
+      forkJoin([
+        this.workOrderProgrammeService.getWorksOrderByWOsequence(wosequence),
+        this.workOrderProgrammeService.getPlanYear(wosequence)
+      ]).subscribe(
+        data => {
+          console.log(data)
+          this.worksOrderData = data[0].data;
+          const planYear = data[1].data;
+
+          let params: any;
+
+          if (this.openedFrom == "worksorder") {
+            const { cttsurcde } = this.selectedVariationInp;
+            const { assid, wosequence, woisequence } = this.selectedSingleVariationAssetInp;
+            params = {
+              ASSID: assid,
+              CTTSURCDE: cttsurcde,
+              PLANYEAR: planYear,
+              WOSEQUENCE: wosequence,
+              WOCHECKSURCDE: 0,
+              WOISEQUENCE: woisequence
+            }
+
+          } else if (this.openedFrom == "assetchecklist") {
+            const { wosequence, woisequence, cttsurcde, assid } = this.selectedSingleVariationAssetInp;
+            params = {
+              ASSID: assid,
+              CTTSURCDE: cttsurcde,
+              PLANYEAR: planYear,
+              WOSEQUENCE: wosequence,
+              WOCHECKSURCDE: 0,
+              WOISEQUENCE: woisequence
+            }
+          }
+
+          this.getWorkPacakgeData(params);
+
+        }, err => this.alertService.error(err)
+      )
+    )
+  }
+
+
+  getWorkPacakgeData(params) {
+    this.subs.add(
+      this.workOrderProgrammeService.getWorkPackagesForAssetVariation(params).subscribe(
+        data => {
+          console.log(data)
+          if (data.isSuccess) {
+            this.additionalWorkData = data.data;
+            this.gridView = process(this.additionalWorkData, this.state);
+          } else this.alertService.error(data.message);
+
+          this.loading = false;
+          this.chRef.detectChanges();
+        }
+      )
+    )
   }
 
   ngOnDestroy() {
@@ -61,7 +134,7 @@ export class VariationAdditionalWorkItemComponent implements OnInit {
   setSelectableSettings(): void {
     this.selectableSettings = {
       checkboxOnly: true,
-      mode: 'single'
+      mode: 'multiple'
     };
   }
 
@@ -85,6 +158,39 @@ export class VariationAdditionalWorkItemComponent implements OnInit {
 
   cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
     // this.selectedSingleVarWorkList = dataItem;
+  }
+
+  selectionChange(item) {
+    if (this.mySelection.includes(item.wphcode)) {
+      this.mySelection = this.mySelection.filter(x => x != item.wphcode);
+    } else {
+      this.mySelection.push(item.wphcode);
+    }
+
+    this.chRef.detectChanges();
+  }
+
+
+  checkPackageExist(item) {
+    if (item.attributeexists == 'Variation Exists' || item.attributeexists == 'Work Package Exists') return false;
+    if (item.exclusionreason == 'Work Package already exists on Work List' || item.exclusionreason == 'Work Package already exists as Variation') return false;
+    return true;
+  }
+
+  addTickedToVariation() {
+    this.packageQuantityWindow = true;
+    $('.worklistPackageOvrlay').addClass('ovrlay');
+  }
+
+  closePackageQuantiyEvent(eve) {
+    this.packageQuantityWindow = eve;
+    $('.worklistPackageOvrlay').removeClass('ovrlay');
+  }
+
+  refreshPackageList(eve) {
+    // this.mySelection = [];
+    this.requiredPagedata();
+    this.chRef.detectChanges();
   }
 
 }

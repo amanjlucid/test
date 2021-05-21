@@ -305,10 +305,10 @@ export class WorksorderManagementService {
         return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WorkOrderPhaseCheckList `, body, this.httpOptions).pipe(
             map(response => (<any>{
                 data: (response.data != null) ? response.data.phaseCheckList : [],
-                total: (response.data != null) ? response.data.totalCount  : 0
+                total: (response.data != null) ? response.data.totalCount : 0
             }))
         );
-       
+
     }
 
     getPhaseCheckListFiltersList(WOSEQUENCE, workOnly) {
@@ -347,6 +347,119 @@ export class WorksorderManagementService {
         return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWEBWorksOrdersAssetChecklistAndVariation?WOSEQUENCE=${WOSEQUENCE}&WOPSEQUENCE=${WOPSEQUENCE}&assId=${assId}`, this.httpOptions);
     }
 
+    getVW_WOUserSecurity(userId, WOSEQUENCE, WPRSEQUENCE) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetVW_WOUserSecurity?userId=${userId}&WOSEQUENCE=${WOSEQUENCE}&WPRSEQUENCE=${WPRSEQUENCE}`, this.httpOptions);
+    }
+
+    getWOInstructionAssets(WOSEQUENCE, WOISEQUENCE) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWOInstructionAssets?WOSEQUENCE=${WOSEQUENCE}&WOSEQUENCE=${WOSEQUENCE}&WOISEQUENCE=${WOISEQUENCE}`, this.httpOptions);
+    }
+
+    worksOrderAcceptVariation(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WorksOrderAcceptVariation`, body, this.httpOptions);
+    }
+
+
+    worksOrderIssueVariation(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WorksOrderIssueVariation`, body, this.httpOptions);
+    }
+
+    sendVariationToCustomerForReview(WOSEQUENCE, WOISEQUENCE, WONAME, WOIISSUEREASON, strUser) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/SendVariationToCustomerForReview?WOSEQUENCE=${WOSEQUENCE}&WOISEQUENCE=${WOISEQUENCE}&WONAME=${WONAME}&WOIISSUEREASON=${WOIISSUEREASON}&strUser=${strUser}`, this.httpOptions);
+    }
+
+    emailVariationToContractorForReview(WOSEQUENCE, WOISEQUENCE, WONAME, WOIISSUEREASON, strUser) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/EmailVariationToContractorForReview?WOSEQUENCE=${WOSEQUENCE}&WOISEQUENCE=${WOISEQUENCE}&WONAME=${WONAME}&WOIISSUEREASON=${WOIISSUEREASON}&strUser=${strUser}`, this.httpOptions);
+    }
+
+    deleteBlankVariation(WOSEQUENCE, WOISEQUENCE) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/DeleteBlankVariation?WOSEQUENCE=${WOSEQUENCE}&WOSEQUENCE=${WOSEQUENCE}&WOISEQUENCE=${WOISEQUENCE}`, this.httpOptions);
+    }
+
+    getWOInstructionAssetsDetails(WOSEQUENCE, WOISEQUENCE) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWOInstructionAssetsDetails?WOSEQUENCE=${WOSEQUENCE}&WOSEQUENCE=${WOSEQUENCE}&WOISEQUENCE=${WOISEQUENCE}`, this.httpOptions);
+    }
+
+    addBulkVariation(WOSEQUENCE, WOISEQUENCE) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/AddBulkVariation?WOSEQUENCE=${WOSEQUENCE}&WOISEQUENCE=${WOISEQUENCE}`, this.httpOptions);
+    }
+
+    getWorkPackagesForAssetVariation(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWORKS_Packages_for_asset_variation`, body, this.httpOptions);
+    }
+
+    insertWorksOrderInstruction(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/InsertWorksOrderInstruction`, body, this.httpOptions);
+    }
+
+    updateWorksOrderInstruction(WOSEQUENCE, WOISEQUENCE, WOPSEQUENCE, WOIISSUEREASON) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/UpdateWorksOrderInstruction?WOSEQUENCE=${WOSEQUENCE}&WOISEQUENCE=${WOISEQUENCE}&WOPSEQUENCE=${WOPSEQUENCE}&WOIISSUEREASON=${WOIISSUEREASON}`, this.httpOptions);
+    }
+
+    GetWorkOrderGetWorksOrderCompletions(wosequence, userId) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWorksOrderCompletions?wosequence=${wosequence}&struser=${userId}`, this.httpOptions);
+    }
+
+
+
+    viewWorkOrderCompletionCertificate(wosequence, wocosequence, userId) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/ViewCompletionCertificate?wosequence=${wosequence}&wocosequence=${wocosequence}&userid=${userId}`, this.httpOptions);
+    }
+
+    saveSendWorkOrderCompletionCertificate(wosequence, wocosequence, userId) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/ProcessCompletionReport?wosequence=${wosequence}&wocosequence=${wocosequence}&userid=${userId}`, this.httpOptions);
+    }
+
+    getAppendVariationList(WOSEQUENCE, WOPSEQUENCE) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetAppendVariationList?WOSEQUENCE=${WOSEQUENCE}&WOPSEQUENCE=${WOPSEQUENCE}`, this.httpOptions);
+    }
+
+
+    worksOrdersCreateVariationForRemoveWOAD(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WorksOrdersCreateVariationForRemoveWOAD`, body, this.httpOptions);
+    }
+
+    
+    worksOrdersCreateVariationForChangeCostQty(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WorksOrdersCreateVariationForChangeCostQty`, body, this.httpOptions);
+    }
+
+    getContractCostsForAssetAndAttribute(CTTSURCDE, ATAID, ASSID, WOSEQUENCE) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetContractCostsForAssetAndAttribute?CTTSURCDE=${CTTSURCDE}&ATAID=${ATAID}&ASSID=${ASSID}&WOSEQUENCE=${WOSEQUENCE}`, this.httpOptions);
+    }
+
+    worksOrdersUpdateWorksOrderInstructionAssetDetail(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WorksOrdersUpdateWorksOrderInstructionAssetDetail`, body, this.httpOptions);
+    }
+
+
+
+
+
+
+
+    wORemoveInstructionAssetDetail(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WORemoveInstructionAssetDetail`, body, this.httpOptions);
+    }
+
+
+    worksOrdersCreateVariationForChangeFee(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WorksOrdersCreateVariationForChangeFee`, body, this.httpOptions);
+    }
+
+    createVariationForSIMReplacement(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/CreateVariationForSIMReplacement`, body, this.httpOptions);
+    }
 
 
 
