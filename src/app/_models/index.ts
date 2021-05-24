@@ -34,3 +34,7 @@ export * from './wopm-masterstage.model';
 export * from './wopm-checklistmaster.model';
 export * from './wopm-checklist-dependency.model';
 export * from './workorders/workorders-phasechecklist-asset.model';
+export * from './wopm-jobrole.model';
+export * from './wopm-refusalcode.model';
+export * from './wopm-ragstatus.model';
+export * from './wopm-contractterm.model';

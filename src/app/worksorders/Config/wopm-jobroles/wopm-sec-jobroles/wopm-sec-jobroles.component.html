@@ -1,0 +1,62 @@
+<kendo-window   title ="Security Functions by Job Role"  [width]="650"  *ngIf="securityFunctionWindow" (close)="closeSecFunctionWindow()" [top]="20">
+  <div class="flex-grow-1 userFrm">
+
+<!--  <div class="row">
+      <div class="col-md-2 col-sm-3">
+          <h4 class="font-weight-bold py-3 mb-1">
+              Security Functions by Job Role
+          </h4>
+      </div>
+
+      <div class="col-md-10 text-right" >
+
+               <button type="button" class="btn btn-sm themeButton mr-1" (click)="export()">Export Data</button>
+      </div>
+  </div>-->
+
+  <div class="row mt-2">
+    <div class="col-md-2">
+        <label>Role Type:</label>
+     </div>
+     <div class="col-md-8">
+      <label>{{RoleType}}</label>
+    </div>
+    <div class="col-md-2 text-right" >
+       <button type="button" class="btn btn-sm themeButton mr-1" (click)="export()">Export Data</button>
+    </div>
+
+  </div>
+  <div class="row mt-2">
+    <div class="col-md-2">
+      <label>Job Role:</label>
+    </div>
+    <div class="col-md-8">
+      <label>{{JobRole}}</label>
+    </div>
+  </div>
+
+  <div class="row mt-2">
+      <div class="col-md-12">
+
+          <kendo-grid [groupable]="false" [data]="gridView"  [height]="500" filterable="menu" [loading]="loading" [resizable]="true"
+          [sortable]="{allowUnsort: allowUnsort, mode: multiple ? 'multiple' : 'single' }"
+          [skip]="state.skip" [sort]="state.sort"  [filter]="state.filter" (sortChange)="sortChange($event)" (filterChange)="filterChange($event)"
+               [navigable]="true" >
+              <kendo-grid-column field="function" title="Function" width="280">
+              </kendo-grid-column>
+              <kendo-grid-column field="portalArea" title="Portal Area" width="280">
+              </kendo-grid-column>
+
+          </kendo-grid>
+
+      </div>
+  </div>
+
+
+
+</div>
+</kendo-window>
+
+
+
+

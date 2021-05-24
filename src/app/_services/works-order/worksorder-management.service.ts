@@ -118,6 +118,7 @@ export class WorksorderManagementService {
         );
     }
 
+
     getWorksPackagesForAssets(params) {
         let body = JSON.stringify(params);
         return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWorksPackagesForAssets `, body, this.httpOptions)

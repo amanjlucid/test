@@ -32,6 +32,15 @@ import { WorksordersAssetChecklistEditDescriptionComponent } from '../worksorder
 import { WorksordersAssetChecklistUploadDocComponent } from '../worksorders-asset-checklist-upload-doc/worksorders-asset-checklist-upload-doc.component';
 import { PickDateComponent } from '../pick-date/pick-date.component';
 import { WopmTemplatesComponent } from '../Config/wopm-templates/wopm-templates.component';
+import { WopmJobrolesComponent } from '../Config/wopm-jobroles/wopm-jobroles.component';
+import { WopmEditJobrolesComponent } from '../Config/wopm-jobroles/wopm-edit-jobroles/wopm-edit-jobroles.component';
+import { WopmContractTermsComponent } from '../Config/wopm-contract-terms/wopm-contract-terms.component';
+import { WopmEditRagStatusComponent } from '../Config/wopm-rag-status/wopm-edit-rag-status/wopm-edit-rag-status.component';
+import { WopmRagStatusComponent } from '../Config/wopm-rag-status/wopm-rag-status.component';
+import { WopmEditRefusalCodesComponent } from '../Config/wopm-refusal-codes/wopm-edit-refusal-codes/wopm-edit-refusal-codes.component';
+import { WopmRefusalCodesComponent } from '../Config/wopm-refusal-codes/wopm-refusal-codes.component';
+import { WopmSecJobrolesComponent } from '../Config/wopm-jobroles/wopm-sec-jobroles/wopm-sec-jobroles.component';
+
 import { WopmConfigComponent } from '../Config/wopm-config/wopm-config.component';
 import { WopmMasterstagesComponent } from '../Config/wopm-masterstages/wopm-masterstages.component';
 import { WopmEditTemplateComponent } from '../Config/wopm-templates/wopm-edit-template/wopm-edit-template.component';
@@ -40,6 +49,7 @@ import { WopmChecklistMasterComponent } from '../Config/wopm-templates/wopm-chec
 import { WopmEditChecklistMasterComponent } from '../Config/wopm-templates/wopm-checklist-master/wopm-edit-checklist-master/wopm-edit-checklist-master.component';
 import { WopmEditChecklistDependenciesComponent } from '../Config/wopm-templates/wopm-edit-checklist-dependencies/wopm-edit-checklist-dependencies.component';
 import { MultiSelectModule } from '@progress/kendo-angular-dropdowns';
+import { WorklistComponent } from '../worklist/worklist.component';
 import { SwapPackageComponent } from '../swap-package/swap-package.component';
 import { NoAccessComponent } from '../no-access/no-access.component';
 import { NoAccessHistoryComponent } from '../no-access-history/no-access-history.component';
@@ -115,7 +125,17 @@ import { WoPmInstructionAssetsDetailComponent } from '../workorder-program-manag
     VariationPkzEnterQtyComponent,
     WoProgramManagmentInstructionComponent,
     WoPmInstructionAssetsComponent,
-    WoPmInstructionAssetsDetailComponent
+    WoPmInstructionAssetsDetailComponent,
+    WorklistComponent,
+    SwapPackageComponent,
+	  WopmJobrolesComponent,
+    WopmEditJobrolesComponent,
+    WopmContractTermsComponent,
+    WopmEditRagStatusComponent,
+    WopmRagStatusComponent,
+    WopmEditRefusalCodesComponent,
+    WopmRefusalCodesComponent,
+    WopmSecJobrolesComponent
   ],
 
   imports: [

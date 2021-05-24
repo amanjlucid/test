@@ -265,7 +265,8 @@ import { CurrencyPipe } from '@angular/common';
     TooltipModule,
     MatExpansionModule,
     TreeListModule,
-    HttpClientJsonpModule
+    HttpClientJsonpModule,
+    
   ],
 
   providers: [

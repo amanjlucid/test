@@ -372,6 +372,7 @@ export class WopmTemplatesComponent implements OnInit {
   }
 
   public exportTemplate(dataItem) {
+
     $('.disabledBackground').addClass('ovrlay');
     var params = ['Template', dataItem.wotsequence];
     this.selectedXport = {'XportID' : 556, 'ReportTitle':'Works Order Checklist Extract for Template : ' + dataItem.wotname, 'Params': params }

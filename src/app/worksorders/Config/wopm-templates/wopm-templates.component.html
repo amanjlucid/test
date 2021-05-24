@@ -8,48 +8,16 @@
         </div>
 
         <div class="col-md-10 text-right" >
-<!--             <button *ngIf="taskSecurityList.indexOf('Edit') != -1" type="button" class="btn btn-sm themeButton mr-1"
-                (click)="editEventMethod('edit')">Edit</button>
-            <button *ngIf="taskSecurityList.indexOf('Edit') != -1" type="button" class="btn btn-sm themeButton mr-1"
-                (click)="editEventMethod('escalation')">Escalation</button>
-            <button *ngIf="taskSecurityList.indexOf('Edit') != -1" type="button" class="btn btn-sm themeButton mr-1"
-                (click)="addEvent()">Schedule</button>
-            <button *ngIf="taskSecurityList.indexOf('Notify') != -1" type="button" class="btn btn-sm themeButton mr-1"
-                (click)="opneNotifyWindow()">Notify</button>
-            <button type="button" class="btn btn-sm themeButton mr-1" (click)="runEvent()">Run</button>
-            <button type="button" class="btn btn-sm themeButton mr-1" (click)="copyEvent()">Copy</button>
-            <button type="button" *ngIf="checkUserEvents" class="btn btn-sm themeButton"
-                (click)="openConfirmationDialog()">Delete</button> -->
+
                 <button *ngIf="checkWorksOrdersAccess('New Template')"
                  type="button" class="btn btn-sm themeButton mr-1" (click)="openEditTemplate('new', null)">New</button>
 
-                 <!-- <button *ngIf="checkWorksOrdersAccess('Import Template')"
+                <button *ngIf="checkWorksOrdersAccess('Import Template')"
                  type="button" class="btn btn-sm themeButton mr-1" (click)="openFile()">Import Template
                  <input type="file" [(ngModel)]="fileValue" accept=".csv" style="display:none" (change)="handleFile($event)"></button>
 
-                <button *ngIf="checkWorksOrdersAccess('Export Template')"
-                 type="button" class="btn btn-sm themeButton mr-1" (click)="export()">Export Data</button> -->
-
-
-
-                 <button *ngIf="checkWorksOrdersAccess('Export Template') || checkWorksOrdersAccess('Import Template')"
-                   type="button" class="btn btn-sm themeButton mr-1 dropdown-toggle" data-toggle="dropdown"
-                     aria-expanded="false">Template</button>
-                 <div class="dropdown-menu" x-placement="bottom-start"
-                     style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
-                     <a *ngIf="checkWorksOrdersAccess('Import Template')" class="dropdown-item"
-                         (click)="openFile()" href="javascript:void(0)">Import
-                         <input type="file" [(ngModel)]="fileValue" accept=".csv" style="display:none" (change)="handleFile($event)"></a>
-                     <a class="dropdown-item" *ngIf="checkWorksOrdersAccess('Export Template')"
-                     (click)="export()" href="javascript:void(0)">Export</a>
-
-                 </div>
-
-
-
-
-
-
+                 <button 
+                 type="button" class="btn btn-sm themeButton mr-1" (click)="export()">Export</button>
 
                 <button id="showFilePanel" (click)="openSearchBar()" class="btn btn-sm themeButton"><i
                         class="fa fa-search"></i>

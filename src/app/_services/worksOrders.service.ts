@@ -1,6 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { appConfig } from '../app.config';
+import { Observable, BehaviorSubject } from 'rxjs';
+import { map } from 'rxjs/operators';
+
+
+
+
+
 
 @Injectable()
 export class WorksOrdersService {
@@ -16,7 +23,6 @@ export class WorksOrdersService {
     getListOfUserWorksOrderByUserId(params) {
         let body = JSON.stringify(params);
         return this.http.post<any>(`${appConfig.apiUrl}/api/WorkordersPortal/UserWorksOrdersList`, body, this.httpOptions)
-
     }
 
     getAssetTemplateList() {
@@ -55,7 +61,6 @@ export class WorksOrdersService {
         return this.http.get<any>(`${appConfig.apiUrl}/api/WorkordersPortal/GetWorksOrderByWOsequence?WOSequence=${WOSequence}`, this.httpOptions);
     }
 
-
     UpdateWorksOrder(params) {
         return this.http.post<any>(`${appConfig.apiUrl}/api/WorkordersPortal/UpdateWorksOrder`, params, this.httpOptions);
     }
@@ -91,13 +96,12 @@ export class WorksOrdersService {
         return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/RechargeToggle`, params, this.httpOptions);
     }
 
-    WorkOrderRefusalCodes(qs) {
-        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/WorkOrderRefusalCodes?${qs}`, this.httpOptions);
-    }
-  
-    SetRefusal(params) {
-        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/SetRefusal`, params, this.httpOptions);
-    }
+    //   WorkOrderRefusalCodes(qs) {
+    //   return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/WorkOrderRefusalCodes?${qs}`, this.httpOptions);
+    //   }
+    //   SetRefusal(params) {
+    //   return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/SetRefusal`, params, this.httpOptions);
+    //   }
 
     GetWorksPackagesForAssets(params) {
         return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWorksPackagesForAssets`, params, this.httpOptions);
@@ -105,6 +109,54 @@ export class WorksOrdersService {
 
     WEBWorksOrdersValidateNewWorksOrder(params) {
         return this.http.post<any>(`${appConfig.apiUrl}/api/WorkordersPortal/WEBWorksOrdersValidateNewWorksOrder`, params, this.httpOptions).toPromise();
+    }
+
+
+    GetWorkListPage(params): Observable<any> {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/WorkordersPortal/GetWorkListPage `, body, this.httpOptions).pipe(
+            map(response => (<any>{
+                data: (response.data != null) ? response.data.data : [],
+                total: (response.data != null) ? response.data.count : 0
+            }))
+        );
+
+
+        // .map(item => {
+        //     item.plaN_START_DATE = new Date(item.plaN_START_DATE);
+        //     item.plaN_END_DATE = new Date(item.plaN_END_DATE);
+        //     item.completeD_DATE = new Date(item.completeD_DATE);})
+    }
+
+
+    // realDates(dataList : any[]) : any[] {
+    //     return      dataList.map(item => {
+    //         item.plaN_START_DATE = new Date(item.plaN_START_DATE);
+    //         item.plaN_END_DATE = new Date(item.plaN_END_DATE);
+    //         item.completeD_DATE = new Date(item.completeD_DATE);})
+    // }
+
+    GetWorksOrderPhases(WOSEQUENCE) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/WorkordersPortal/GetWorksOrderPhases?WOSEQUENCE=${WOSEQUENCE}`, this.httpOptions);
+    }
+
+    WorkOrderRefusalCodes(qs) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/WorkOrderRefusalCodes?${qs}`, this.httpOptions);
+    }
+
+    SetRefusal(params) {
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/SetRefusal`, params, this.httpOptions);
+    }
+    SetClearWorkListTag(params) {
+        return this.http.post<any>(`${appConfig.apiUrl}/api/WorkordersPortal/SetClearWorkListTag`, params, this.httpOptions);
+    }
+
+    DetachWorkListItem(params) {
+        return this.http.post<any>(`${appConfig.apiUrl}/api/WorkordersPortal/DetachWorkListItem`, params, this.httpOptions);
+    }
+
+    CancelWorkListItem(params) {
+        return this.http.post<any>(`${appConfig.apiUrl}/api/WorkordersPortal/CancelWorkListItem`, params, this.httpOptions);
     }
 
     getWEBWorksOrdersInstructionsForUser(WPRSEQUENCE, iWOSeq, strUserId, Instructions) {
@@ -121,9 +173,9 @@ export class WorksOrdersService {
     }
 
 
-    
 
- 
+
+
     GetWEBWorksOrdersInstructionsForUser(qs) {
         return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWEBWorksOrdersInstructionsForUser?${qs}`, this.httpOptions);
     }
@@ -147,3 +199,4 @@ export class WorksOrdersService {
 
 
 }
+

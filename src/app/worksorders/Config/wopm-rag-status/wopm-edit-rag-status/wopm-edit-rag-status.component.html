@@ -1,0 +1,184 @@
+<kendo-window [title]="windowTitle"  *ngIf="editFormWindow" (close)="closeEditFormWin()"  [width]="800"  resizable="false" [top]="20">
+  <div class="flex-grow-1 userFrm">
+     <form [formGroup]="ragStatusForm" (ngSubmit)="onSubmit()" autocomplete="off">
+
+      <div class="form-row">
+        <div class="form-group col-md-12">
+          <label class="form-label">Name</label>
+          <input type="text" class="form-control" formControlName="compareName" maxlength="50" *ngIf="!EditMode"
+            [ngClass]="{ 'is-invalid': submitted && formErrors.compareName }">
+          <input type="text" class="form-control" formControlName="compareName" *ngIf="EditMode"
+            readonly>
+          <div *ngIf="submitted && formErrors.compareName" class="invalid-feedback">
+            <div *ngIf="formErrors.compareName">{{ formErrors.compareName }}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group col-md-12">
+          <label class="form-label">Type</label>
+          <select class="custom-select" formControlName="compareType" *ngIf="!EditMode" (change)=changeType($event.target.value)
+            [ngClass]="{ 'is-invalid': submitted && formErrors.compareType}">
+            <option value=""></option>
+            <option value="Percentage">Percentage</option>
+            <option value="Value">Value</option>
+            <option value="Survey">Survey</option>
+            <option value="Date">Date</option>
+          </select>
+          <input type="text" class="form-control" formControlName="compareType" *ngIf="EditMode"
+           readonly>
+          <div *ngIf="submitted && formErrors.compareType" class="invalid-feedback">
+            <div *ngIf="formErrors.compareType">{{ formErrors.compareType }}</div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="TypeSelected" >
+
+        <div class="form-row" *ngIf="DisplayCompare" >
+          <div class="form-group col-md-12">
+            <label class="form-label">{{compareLabel}}</label>
+            <select class="custom-select" formControlName="compareField" *ngIf="ragStatusForm.controls.compareType.value != 'Survey'"
+              [ngClass]="{ 'is-invalid': submitted && formErrors.compareField }">
+              <option value=""></option>
+              <option *ngFor="let item of compareList" [value]="item" >{{item}}</option>
+            </select>
+            <select class="custom-select" formControlName="compareField" *ngIf="ragStatusForm.controls.compareType.value == 'Survey'"
+              [ngClass]="{ 'is-invalid': submitted && formErrors.compareField }" (change)="updateSurveyQuestionText($event.target.value)" >
+              <option value=""></option>
+              <option *ngFor="let item of compareList" [value]="item.questionNo" >{{item.questionText}}</option>
+            </select>
+            <div *ngIf="submitted && formErrors.compareField" class="invalid-feedback">
+              <div *ngIf="formErrors.compareField">{{ formErrors.compareField }}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row" *ngIf="DisplayCompareTo" >
+          <div class="form-group col-md-12">
+            <label class="form-label">{{compareToLabel}}</label>
+            <select class="custom-select" formControlName="compareToField"
+              [ngClass]="{ 'is-invalid': submitted && formErrors.compareToField }">
+              <option value=""></option>
+              <option *ngFor="let item of compareToList" [value]="item" >{{item}}</option>
+            </select>
+            <div *ngIf="submitted && formErrors.compareToField" class="invalid-feedback">
+              <div *ngIf="formErrors.compareToField">{{ formErrors.compareToField }}</div>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="DisplaySurveyQuestion">
+             <div class="row ml-2"><label>Survey Response Values: </label></div>
+             <div class="row ml-4"><label>{{quesAnswer1}}</label></div>
+             <div class="row ml-4"><label>{{quesAnswer2}}</label></div>
+             <div class="row ml-4"><label>{{quesAnswer3}}</label></div>
+             <div class="row ml-4"><label>{{quesAnswer4}}</label></div>
+             <div class="row ml-4"><label>{{quesAnswer5}}</label></div>
+        </div>
+
+        <div class="form-row"  >
+          <div class="form-group col-md-12">
+            <label class="form-label">{{infoLabel}}</label>
+           </div>
+        </div>
+
+        <div *ngIf="DisplayFinance" >
+          <div class="form-row"   >
+            <div class="form-group col-md-6">
+              <label class="form-label">Green Value</label>
+              <input appCurrencyMask maxDigits="9" type="text" class="form-control"
+              formControlName="greenMax"
+              [ngClass]="{ 'is-invalid': submitted && formErrors.greenMax }" autocomplete="off">
+              <div *ngIf="submitted && formErrors.greenMax" class="invalid-feedback">
+                <div *ngIf="formErrors.greenMax">{{ formErrors.greenMax }}</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row"   >
+            <div class="form-group col-md-6">
+              <label class="form-label">Amber Value</label>
+              <input appCurrencyMask maxDigits="9" type="text" class="form-control"
+              formControlName="amberMax"
+              [ngClass]="{ 'is-invalid': submitted && formErrors.amberMax }" autocomplete="off">
+              <div *ngIf="submitted && formErrors.amberMax" class="invalid-feedback">
+                <div *ngIf="formErrors.amberMax">{{ formErrors.amberMax }}</div>
+              </div>
+             </div>
+          </div>
+        </div>
+
+        <div *ngIf="DisplayDates || DisplayValues" >
+          <div class="form-row"   >
+            <div class="form-group col-md-2">
+              <label class="form-label">Green Value</label>
+              <input type="number" class="numberInput form-control" formControlName="greenMax" [min]="SliderMin" [max]="SliderMax" (keyup)="numberKeyUp('green')"
+              [ngClass]="{ 'is-invalid': submitted && formErrors.greenMax }">
+              <div *ngIf="submitted && formErrors.greenMax" class="invalid-feedback col-md-12">
+                <div *ngIf="formErrors.greenMax">{{ formErrors.greenMax }}</div>
+              </div>
+            </div>
+            <div class="form-row col-md-10 mt-4" *ngIf="DisplaySliders" >
+              <div class="ml-2">
+              <kendo-slider
+              [min] ="SliderMin"
+              [max] ="SliderMax"
+              [fixedTickWidth]="TickWidth"
+              [smallStep] ="SliderStep"
+                [value]= "ragStatusForm.controls.greenMax.value"
+                (valueChange)="changeMaxValue($event, 'green')" >
+              </kendo-slider></div>
+            </div>
+          </div>
+
+          <div class="form-row"   >
+            <div class="form-group col-md-2">
+              <label class="form-label">Amber Value</label>
+              <input type="number" class="numberInput form-control" formControlName="amberMax" [min]="SliderMin" [max]="SliderMax" (keyup)="numberKeyUp('amber')"
+              [ngClass]="{ 'is-invalid': submitted && formErrors.amberMax }">
+              <div *ngIf="submitted && formErrors.amberMax" class="invalid-feedback col-md-12">
+                <div *ngIf="formErrors.amberMax">{{ formErrors.amberMax }}</div>
+              </div>
+            </div>
+            <div class="form-row col-md-10 mt-4 " *ngIf="DisplaySliders" >
+              <div class="ml-2">
+              <kendo-slider
+              [min] ="SliderMin"
+              [max] ="SliderMax"
+              [fixedTickWidth]="TickWidth"
+              [smallStep] ="SliderStep"
+                [value]= "ragStatusForm.controls.amberMax.value"
+                (valueChange)="changeMaxValue($event, 'amber')" >
+              </kendo-slider></div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="form-row" *ngIf="DisplayDecimal">
+          <div class="form-group col-md-2">
+            <label class="form-label">Decimal Places</label>
+            <select class="custom-select" formControlName="decimalPlaces" (change)="changeDecimal()" >
+              <option value="0">0</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+            </select>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="buttonDiv  mt-2">
+        <button type="button" *ngIf="DisplaySlidersButton" (click)="displaySlidersForEdit()" class="btn btn-sm themeButton m-1">Sliders</button>
+        <div class="pull-right">
+          <button type="button" (click)="closeEditFormWin()" class="btn btn-sm themeButton m-1">Cancel</button>
+          <button type="submit"  class="btn btn-sm themeButton m-1">Ok</button>
+        </div>
+      </div>
+    </form>
+
+
+  </div>
+</kendo-window>

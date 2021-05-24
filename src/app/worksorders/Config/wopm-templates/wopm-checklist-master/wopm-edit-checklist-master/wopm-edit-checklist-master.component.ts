@@ -186,7 +186,7 @@ fileValue: any;
       useref4: (this.editType == "new") ? '' : checklist.useref4,
       useref5: (this.editType == "new") ? '' : checklist.useref5,
       checklisttype: (this.editType == "new") ? '' : checklist.checklisttype,
-      mailmergedoc: (this.editType == "new") ? '' : checklist.mailmergedoc,
+      mailmergedoc: (this.editType == "new") ? '' : (checklist.checklisttype != "LETTER") ? "" :checklist.mailmergedoc,
       attachmentrequired: (this.editType == "new") ? 'No' : checklist.attachmentrequired,
 
     })
@@ -428,6 +428,15 @@ fileValue: any;
     if (event.target.files.length > 0) {
       this.uploadFile(event.target.files[0])
     }
+
+  }
+
+
+  changeType(item){
+    if (item != "LETTER") {
+      this.checklistForm.controls['mailmergedoc'].setValue("")
+    }
+
 
   }
 

@@ -173,5 +173,90 @@ export class WopmConfigurationService {
   UploadMergeMailDoc(params) {
     return this.http.post<any>(`${appConfig.apiUrl}/api/WOPMConfiguration/UploadMergeMailDoc`, params)
 }
+
+  getWorksOrderJobRolesPanelItems() {
+    return this.http.get<any>(`${appConfig.apiUrl}/api/WOPMConfiguration/GetWorksOrderJobRolesPanelItems?`, this.httpOptions);
+  }
+
+  getWorksOrdersRefusalCodesList() {
+    return this.http.get<any>(`${appConfig.apiUrl}/api/WOPMConfiguration/GetWorksOrdersRefusalCodesList?`, this.httpOptions);
+  }
+
+  getWorksOrdersContractTermsList() {
+    return this.http.get<any>(`${appConfig.apiUrl}/api/WOPMConfiguration/GetWorksOrdersContractTermsList?`, this.httpOptions);
+  }
+
+  getWorksOrdersRAGStatusList() {
+    return this.http.get<any>(`${appConfig.apiUrl}/api/WOPMConfiguration/GetWorksOrdersRAGStatusList?`, this.httpOptions);
+  }
+
+  getWorksOrderSecurityFunctionsForJobRole(RoleType: string, JobRole: string) {
+    return this.http.get<any>(`${appConfig.apiUrl}/api/WOPMConfiguration/GetWorksOrderSecurityFunctionsForJobRole?roletype=${RoleType}&jobrole=${JobRole}`, this.httpOptions);
+  }
+
+  updateJobRole(jobRole) {
+    var httpOptions = {
+        headers: new HttpHeaders({
+            'Content-Type': 'application/json'
+        }),
+    };
+    let body = JSON.stringify(jobRole);
+    return this.http.post<any>(`${appConfig.apiUrl}/api/WOPMConfiguration/UpdateWOPMJobRole`, body, httpOptions);
+  }
+
+  deleteJobRole(jobRole) {
+    let body = JSON.stringify(jobRole);
+    return this.http.post<any>(`${appConfig.apiUrl}/api/WOPMConfiguration/DeleteWOPMJobRole`, body, this.httpOptions);
+  }
+
+  updateRefusalCode(refusalCode) {
+    var httpOptions = {
+        headers: new HttpHeaders({
+            'Content-Type': 'application/json'
+        }),
+    };
+    let body = JSON.stringify(refusalCode);
+    return this.http.post<any>(`${appConfig.apiUrl}/api/WOPMConfiguration/UpdateWOPMRefusalCode`, body, httpOptions);
+  }
+
+  updateContractTerm(contractTerm) {
+    var httpOptions = {
+        headers: new HttpHeaders({
+            'Content-Type': 'application/json'
+        }),
+    };
+    let body = JSON.stringify(contractTerm);
+    return this.http.post<any>(`${appConfig.apiUrl}/api/WOPMConfiguration/UpdateWOPMContractTerm`, body, httpOptions);
+  }
+
+  UpdateRAGStatus(ragStatus) {
+    var httpOptions = {
+        headers: new HttpHeaders({
+            'Content-Type': 'application/json'
+        }),
+    };
+    let body = JSON.stringify(ragStatus);
+    return this.http.post<any>(`${appConfig.apiUrl}/api/WOPMConfiguration/UpdateWOPMRAGStatus`, body, httpOptions);
+  }
+
+  DeleteRAGStatus(ragStatus) {
+    var httpOptions = {
+        headers: new HttpHeaders({
+            'Content-Type': 'application/json'
+        }),
+    };
+    let body = JSON.stringify(ragStatus);
+    return this.http.post<any>(`${appConfig.apiUrl}/api/WOPMConfiguration/DeleteWOPMRAGStatus`, body, httpOptions);
+  }
+
+  ActivateRAGStatus(ragStatus) {
+    var httpOptions = {
+        headers: new HttpHeaders({
+            'Content-Type': 'application/json'
+        }),
+    };
+    let body = JSON.stringify(ragStatus);
+    return this.http.post<any>(`${appConfig.apiUrl}/api/WOPMConfiguration/ActivateWOPMRAGStatus`, body, httpOptions);
+  }
   
 }

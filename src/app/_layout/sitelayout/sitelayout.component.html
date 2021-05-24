@@ -246,14 +246,21 @@
                                 <div>Works Orders</div>
                             </a>
                         </li>
-                       
+                                          
                         <li style="display: none;" class="sidenav-item" [routerLinkActive]="['active']">
                             <a [routerLink]="['/worksorders/details']" class="sidenav-link">
                                 <div>Works Order Detail</div>
                             </a>
                         </li>
 
-                        <!-- <li class="sidenav-item" [routerLinkActive]="['open']"
+                        <!-- <li class="sidenav-item" [routerLinkActive]="['active']"
+                        *ngIf="checkWorksOrdersAccess('Work List Menu')">
+                            <a [routerLink]="['/worksorders/worklist']" class="sidenav-link">
+                                <div>Work List</div>
+                            </a>
+                        </li>
+
+                        <li class="sidenav-item" [routerLinkActive]="['open']"
                             *ngIf="checkWorksOrdersAccess('Config Menu')">
                             <a href="javascript:void(0)" class="sidenav-link sidenav-toggle">
                                 <div>Configuration</div>
@@ -272,6 +279,29 @@
                                         <div>Master Stages</div>
                                     </a>
                                 </li>
+                                <li class="sidenav-item" [routerLinkActive]="['active']"
+                                *ngIf="checkWorksOrdersAccess('Config Job Roles Tab')">
+                                <a [routerLink]="['/worksorders/config/jobroles']" class="sidenav-link">
+                                    <div>Job Roles</div>
+                                </a>
+                                </li>
+                                <li class="sidenav-item" [routerLinkActive]="['active']"
+                                *ngIf="checkWorksOrdersAccess('Config Refusal Codes Tab')">
+                                <a [routerLink]="['/worksorders/config/refusalcodes']" class="sidenav-link">
+                                    <div>Refusal Codes</div>
+                                </a></li>
+
+                                <li class="sidenav-item" [routerLinkActive]="['active']"
+                                *ngIf="checkWorksOrdersAccess('Config Contract Terms Tab')">
+                                <a [routerLink]="['/worksorders/config/contractterms']" class="sidenav-link">
+                                    <div>Contract Terms</div>
+                                </a></li>
+
+                                <li class="sidenav-item" [routerLinkActive]="['active']"
+                                *ngIf="checkWorksOrdersAccess('Config RAG Status Tab')">
+                                <a [routerLink]="['/worksorders/config/ragstatus']" class="sidenav-link">
+                                    <div>RAG Status Setup</div>
+                                </a></li>
                             </ul>
 
                         </li> -->
@@ -888,12 +918,9 @@
                             <span class="footer-text font-weight-bolder">Rowanwood Professional Services Limited</span>
                             ©
                         </div>
-                        <!-- <div>
-                            <a href="javascript:void(0)" class="footer-link pt-3">About Us</a>
-                            <a href="javascript:void(0)" class="footer-link pt-3 ml-4">Help</a>
-                            <a href="javascript:void(0)" class="footer-link pt-3 ml-4">Contact</a>
-                            <a href="javascript:void(0)" class="footer-link pt-3 ml-4">Terms &amp; Conditions</a>
-                        </div> -->
+                        <div class="pt-3 mr-0">
+                          <span class="footer-text">Version 17.1.0</span>
+                        </div>
                     </div>
                 </nav>
                 <!-- / Layout footer -->

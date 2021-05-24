@@ -208,7 +208,7 @@
                   <label class="col-form-label">Checklist Type</label>
                 </div>
                 <div class="col-md-9">
-                  <select class="custom-select" formControlName="checklisttype"
+                  <select class="custom-select" formControlName="checklisttype" (change)="changeType($event.target.value)"
                     [ngClass]="{ 'is-invalid': submitted && formErrors.checklisttype }">
                     <option value=""></option>
                     <option value="ACCESS">ACCESS</option>
@@ -255,7 +255,8 @@
                 <div class="col-md-9 row m-0">
                     <input type="text" class="form-control col textWithButton" placeholder="Mail Merge Document" formControlName="mailmergedoc"  maxlength="1024"
                       [ngClass]="{ 'is-invalid': submitted && formErrors.mailmergedoc }" readonly>
-                    <button type="button" class="btn btn-sm themeButton col smallButton" (click)="file.click()">...
+                    <button type="button" class="btn btn-sm themeButton col smallButton" (click)="file.click()"
+                    [disabled]="checklistForm.controls['checklisttype'].value != 'LETTER'">...
                       <!-- <input type="file" [(ngModel)]="fileValue" accept=".csv" style="display:none" (change)="handleFile($event)"> -->
                       <input type="file" #file [(ngModel)]="fileValue" [ngModelOptions]="{standalone: true}" [multiple]="false" (change)="onFileChange($event)" 
                       style="display:none"  accept=".docx,.dotx,.doc,.dot"/>

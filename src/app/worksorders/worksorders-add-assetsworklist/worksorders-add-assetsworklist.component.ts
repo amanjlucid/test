@@ -69,6 +69,7 @@ export class WorksordersAddAssetsworklistComponent implements OnInit {
   userType: any = [];
   @ViewChild(GridComponent) grid: GridComponent;
 
+
   constructor(
     private propSecGrpService: PropertySecurityGroupService,
     private loaderService: LoaderService,
