@@ -112,12 +112,14 @@ export class VariationListAllComponent implements OnInit {
     const { wprsequence, wosequence } = this.singleWorksOrder;
     this.subs.add(
       forkJoin([
-        this.workOrderProgrammeService.getVW_WOUserSecurity(this.currentUser.userId, wosequence, wprsequence)
+        this.workOrderProgrammeService.getVW_WOUserSecurity(this.currentUser.userId, wosequence, wprsequence),
+        // this.workOrderProgrammeService.getWorksOrderByWOsequence(wosequence),
       ]).subscribe(
         data => {
-          console.log(data);
-          let sec = data[0].data.map(x => `${x.spffunction} - ${x.spjrftype}`)
-          console.log(sec);
+          // console.log(data);
+          
+          // let sec = data[0].data.map(x => `${x.spffunction} - ${x.spjrftype}`)
+          // console.log(sec);
         }
       )
     )

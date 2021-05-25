@@ -46,7 +46,8 @@ export class VariationNewComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    
+    console.log(this.selectedAsset);
+
     this.getVariationPageData();
 
     this.variationForm = this.fb.group({
@@ -74,6 +75,7 @@ export class VariationNewComponent implements OnInit {
 
       ]).subscribe(
         data => {
+          console.log(data);
           this.worksOrderData = data[0].data;
           this.phaseData = data[1].data;
           this.assetDetails = data[2].data[0];
@@ -130,32 +132,48 @@ export class VariationNewComponent implements OnInit {
 
     if (this.formMode == 'new') {
       let params = {
+        // ASSID: this.assetDetails.assid,
+        // WLCODE: '',
+        // WLATAID: '',
+        // WLPLANYEAR: '',
+        // WOSTAGESURCDE: '',
+        // WOCHECKSURCDE: '',
+        // WOIADISSUESTATUS: '',
+        // WOIADCOMMENT: '',
+        // WPHCODE: '',
+        // ASAQUANTITY: '',
+        // ASAUOM: '',
+        // WOIADRECHARGEYN: '',
+        // WOIADREFUSAL: '',
+
+
+
+        WOPSEQUENCE: wopsequence,
         CTTSURCDE: this.worksOrderData.cttsurcde,
         WOIACCEPTREASON: '',
-        WOIACCEPTSTATUS: '',
-        WOIACCEPTUSER: '',
-        WOICURRENTCONTRACTSUM: 0,
-        WOIFEECOST: 0,
-        WOIINITIALCONTRACTSUM: 0,
-        WOIISSUEDATE: this.helperService.dateObjToString(undefined),
         WOIACCEPTDATE: this.helperService.dateObjToString(undefined),
-        WOIISSUEREASON: formRawVal.reason,
-        WOIISSUESTATUS: 'New',
-        WOIISSUEUSER: '',
-        WOIISSUEUSERTYPE: 'Customer',
-        WOIREQUESTDATE: this.helperService.getDateString('Today'),
-        WOIREQUESTTYPE: 'Variation',
-        WOIREQUESTUSER: this.currentUser.userId,
-        WOISEQUENCE: '',
+        WOIACCEPTUSER: '',
+        WOIACCEPTSTATUS: '',
+        WOICURRENTCONTRACTSUM: 0,
+        WOIINITIALCONTRACTSUM: 0,
         WOIWORKCOST: 0,
-        WOPSEQUENCE: wopsequence,
+        WOIFEECOST: 0,
+        WOIISSUEUSERTYPE: 'Customer',
+        WOIISSUEREASON: formRawVal.reason,
+        WOIISSUEDATE: this.helperService.dateObjToString(undefined),
+        WOIISSUEUSER: '',
+        WOIISSUESTATUS: 'New',
+        WOIREQUESTDATE: this.helperService.getDateString('Today'),
+        WOIREQUESTUSER: this.currentUser.userId,
+        WOIREQUESTTYPE: 'Variation',
+        WOISEQUENCE: '',
         WOSEQUENCE: wosequence
       }
 
       this.subs.add(
         this.workOrderProgrammeService.insertWorksOrderInstruction(params).subscribe(
           data => {
-          
+
             if (data.isSuccess) {
               this.workOrderProgrammeService.getLatestVariationData(wosequence, wopsequence, formRawVal.reason).subscribe(
                 variation => {
@@ -165,7 +183,7 @@ export class VariationNewComponent implements OnInit {
                   }
                 }
               )
-           
+
             } else this.alertService.error(data.message)
           }, err => this.alertService.error(err)
         )
@@ -179,7 +197,7 @@ export class VariationNewComponent implements OnInit {
           if (data.isSuccess) {
             this.alertService.success(data.message);
             this.closeNewVariation();
-            
+
           } else this.alertService.error(data.message)
         }, err => this.alertService.error(err)
       );

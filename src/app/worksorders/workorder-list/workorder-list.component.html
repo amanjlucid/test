@@ -94,20 +94,11 @@
                 <a *ngIf="woMenuAccess('Works Order Detail')" class="dropdown-item" href="javascript:void(0)"
                   (click)="redirectToWorksOrder(dataItem)"> Works Order Details</a>
                 <a class="dropdown-item" href="javascript:void(0)" (click)="openVariationList(dataItem)">Variations</a>
-                <!-- <a class="dropdown-item" (click)="openCompletionList(dataItem)"
-                  href="javascript:void(0)">Completions</a> -->
-
-                <div class="dropdown-toggle">
-                  <div class="dropdown-item">Programme Management</div>
-                  <div class="dropdown-menu addAssetMenu">
-                    <a (click)="redirectToWoProgramManagmentInstructions(dataItem)" class="dropdown-item"
-                      href="javascript:void(0)">
-                      Instructions</a>
-                    <a class="dropdown-item" (click)="openCompletionList(dataItem)"
-                      href="javascript:void(0)">Completions</a>
-
-                  </div>
-                </div>
+                <a (click)="redirectToWoProgramManagmentInstructions(dataItem)" class="dropdown-item"
+                  href="javascript:void(0)">
+                  Instructions</a>
+                <a class="dropdown-item" (click)="openCompletionList(dataItem)"
+                  href="javascript:void(0)">Completions</a>
 
                 <!-- <a class="dropdown-item" href="javascript:void(0)">Defects </a>
                 <a class="dropdown-item" href="javascript:void(0)">Contract Costs</a>

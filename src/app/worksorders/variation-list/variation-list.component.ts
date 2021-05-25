@@ -123,7 +123,7 @@ export class VariationListComponent implements OnInit {
           this.workOrderProgrammeService.specificWorkOrderAssets(wosequence, assid, wopsequence),
         ]).subscribe(
           data => {
-            
+            // console.log(data)
             this.worksOrderData = data[0].data;
             this.phaseData = data[1].data;
             this.assetDetails = data[2].data[0];
@@ -248,7 +248,7 @@ export class VariationListComponent implements OnInit {
   }
 
 
-  sendVariation(to = "customer", item) {
+  sendVariation(to = "Customer", item) {
 
     const { wosequence, woisequence, woiissuereason } = item;
     const { woname } = this.worksOrderData
@@ -256,10 +256,10 @@ export class VariationListComponent implements OnInit {
     let apiCall: any;
     let msg = '';
 
-    if (to == 'customer') {
+    if (to == 'Customer') {
       apiCall = this.workOrderProgrammeService.sendVariationToCustomerForReview(wosequence, woisequence, woname, woiissuereason, this.currentUser.userName)
       msg = 'Variation sent to customer.'
-    } else if (to == 'contractor') {
+    } else if (to == 'Contractor') {
       apiCall = this.workOrderProgrammeService.emailVariationToContractorForReview(wosequence, woisequence, woname, woiissuereason, this.currentUser.userName)
       msg = 'Variation sent to contractor.'
     } else {

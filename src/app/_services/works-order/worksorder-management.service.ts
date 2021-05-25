@@ -466,6 +466,12 @@ export class WorksorderManagementService {
         return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetLatestVariationData?WOSEQUENCE=${WOSEQUENCE}&WOPSEQUENCE=${WOPSEQUENCE}&reason=${reason}`, this.httpOptions);
     }
 
+    variationWorkListButtonsAccess(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/VariationWorkListButtonsAccess`, body, this.httpOptions);
+    }
+
+
 
 
 

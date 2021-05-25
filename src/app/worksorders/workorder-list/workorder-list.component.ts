@@ -74,7 +74,7 @@ export class WorkorderListComponent implements OnInit {
   tabWindow = false;
   completionList = false;
 
-  workOrderId : number;
+  workOrderId: number;
 
   woProgramManagmentInstructionsWindow = false;
 
@@ -265,20 +265,13 @@ export class WorkorderListComponent implements OnInit {
   }
 
   setSeletedRow(dataItem, event) {
-    // console.log(event)
 
     if (dataItem != undefined) {
       setTimeout(() => {
-        // let div: any = $(event).find('.selectedMenuBar' + dataItem.wosequence);
         let att = $('.selectedMenuBar' + dataItem.wosequence)[0].getAttribute("x-placement");
-        // console.log($(event).find('.selectedMenuBar' + dataItem.wosequence))
-        // console.log(att);
-        // console.log(this.mousePositioin.y);
         if (att == "bottom-start" && this.mousePositioin.y > 600) {
-          // console.log($('.selectedMenuBar' + dataItem.wosequence))
           $('.selectedMenuBar' + dataItem.wosequence).css("top", "-116px")
         }
-
       }, 50);
 
 

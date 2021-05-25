@@ -72,6 +72,7 @@ import { VariationPkzEnterQtyComponent } from '../variation-pkz-enter-qty/variat
 import { WoProgramManagmentInstructionComponent } from '../workorder-program-management/wo-program-management-instructions/wo-program-management-instructions.component';
 import { WoPmInstructionAssetsComponent } from '../workorder-program-management/wo-pm-instruction-assets/wo-pm-instruction-assets.component';
 import { WoPmInstructionAssetsDetailComponent } from '../workorder-program-management/wo-pm-instruction-assets-detail/wo-pm-instruction-assets-detail.component';
+import { AssetDefectsListComponent } from '../asset-defects-list/asset-defects-list.component';
 
 
 @NgModule({
@@ -135,7 +136,8 @@ import { WoPmInstructionAssetsDetailComponent } from '../workorder-program-manag
     WopmRagStatusComponent,
     WopmEditRefusalCodesComponent,
     WopmRefusalCodesComponent,
-    WopmSecJobrolesComponent
+    WopmSecJobrolesComponent,
+    AssetDefectsListComponent
   ],
 
   imports: [

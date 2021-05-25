@@ -62,9 +62,8 @@ export class VariationPkzEnterQtyComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log({ mode: this.mode, parnetcomp: this.parentComp, openedFrom: this.openedFrom, variation: this.singleVariationInp, assetDetail: this.assetDetailInp, asset: this.selectedSingleVariationAssetInp })
-
-    console.log({ selection: this.selectedPkzs })
+    // console.log({ mode: this.mode, parnetcomp: this.parentComp, openedFrom: this.openedFrom, variation: this.singleVariationInp, assetDetail: this.assetDetailInp, asset: this.selectedSingleVariationAssetInp })
+    // console.log({ selection: this.selectedPkzs })
 
     if (this.parentComp == 'worklist') {
       this.title = 'Variation Cost/Qantity';
@@ -183,7 +182,7 @@ export class VariationPkzEnterQtyComponent implements OnInit {
     this.subs.add(
       this.worksorderManagementService.getContractCostsForAssetAndAttribute(cttsurcde, wlataid, assid, wosequence).subscribe(
         data => {
-          console.log(data);
+          // console.log(data);
           if (data.isSuccess) {
             const pkz = data.data;
 
@@ -197,7 +196,7 @@ export class VariationPkzEnterQtyComponent implements OnInit {
               sorRate: pkz?.soR_RATE,
               contractorRate: pkz?.soR_RATE,
               workCost: pkz?.cost,
-              costOverride: pkz?.overridE_COST == null ? 0 : pkz?.overridE_COST,
+              costOverride: pkz?.cost//pkz?.overridE_COST == null ? 0 : pkz?.overridE_COST,
             });
 
             this.chRef.detectChanges();

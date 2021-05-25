@@ -1,9 +1,10 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef, ViewEncapsulation } from '@angular/core';
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
-import { SelectableSettings, PageChangeEvent, RowArgs, GridComponent } from '@progress/kendo-angular-grid';
+import { SelectableSettings, PageChangeEvent, RowArgs, RowClassArgs, GridComponent } from '@progress/kendo-angular-grid';
 import { AlertService, ConfirmationDialogService, HelperService, SharedService, WorksorderManagementService, WorksOrdersService } from 'src/app/_services';
 import { combineLatest, forkJoin } from 'rxjs';
+import { VariationWorkListModel } from 'src/app/_models';
 
 @Component({
   selector: 'app-variation-work-list',
@@ -53,6 +54,9 @@ export class VariationWorkListComponent implements OnInit {
   worksOrderUsrAccess: any = [];
   userType: any = [];
 
+  worksOrderData: any;
+  workListBtnAccess: any;
+
   constructor(
     private chRef: ChangeDetectorRef,
     private workOrderProgrammeService: WorksorderManagementService,
@@ -88,7 +92,10 @@ export class VariationWorkListComponent implements OnInit {
     } else if ((this.openedFor == "edit" || this.openedFor == "append") && (this.openedFrom == "assetchecklist" || this.openedFrom == "worksorder")) {
       this.title = `Edit Work List Variation Items`;
       this.getVariationWorkList();
+      this.getRequiredPageData();
     }
+
+
 
   }
 
@@ -112,28 +119,55 @@ export class VariationWorkListComponent implements OnInit {
 
 
   disableGridRowMenu(btnname, item) {
-    if (btnname == "Change Cost/Qty" || btnname == "Refusal" || btnname == "Recharge") {
-      return false;
+    if (this.workListBtnAccess == undefined) {
+      return true;
     }
 
     if (btnname == "Change Cost/Qty") {
-      return false;
+      return this.workListBtnAccess.changeCostQty == true ? false : true
+    }
+
+    if (btnname == "Refusal") {
+      return this.workListBtnAccess.refusal == true ? false : true
+    }
+
+    if (btnname == "Recharge") {
+      return this.workListBtnAccess.recharge == true ? false : true
+    }
+
+    if (btnname == "Delete Work") {
+      return this.workListBtnAccess.deleteWork == true ? false : true
+    }
+
+    if (btnname == "Remove Item Variation") {
+      return this.workListBtnAccess.removeItemVariation == true ? false : true
     }
 
     if (btnname == "Replace Service Package") {
-      if (item.wlcomppackage == "SERVICING") {
-        return false;
-      }
+      return this.workListBtnAccess.replace == true ? false : true
     }
 
     return true;
-
   }
+
+  getRequiredPageData() {
+    const { wosequence } = this.selectedSingleVariationAssetInp;
+    this.subs.add(
+      forkJoin([
+        this.workOrderProgrammeService.getWorksOrderByWOsequence(wosequence),
+      ]).subscribe(
+        data => {
+          // console.log(data);
+          this.worksOrderData = data[0].data;
+        }
+      )
+    )
+  }
+
 
   getVariationWorkList() {
 
     const { wosequence, wopsequence, assid } = this.selectedSingleVariationAssetInp;
-
 
     this.subs.add(
       this.workOrderProgrammeService.getWEBWorksOrdersAssetDetailAndVariation(wosequence, wopsequence, assid).subscribe(
@@ -152,6 +186,14 @@ export class VariationWorkListComponent implements OnInit {
 
       )
     )
+  }
+
+
+
+  rowCallback(context: RowClassArgs) {
+    return {
+      'k-state-disabled': context.dataItem.woadstatus === "Accepted"
+    };
   }
 
   sortChange(sort: SortDescriptor[]): void {
@@ -174,6 +216,7 @@ export class VariationWorkListComponent implements OnInit {
 
   cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
     this.selectedSingleVarWorkList = dataItem;
+    this.setSeletedRow(dataItem);
     // console.log(dataItem)
   }
 
@@ -470,6 +513,46 @@ export class VariationWorkListComponent implements OnInit {
         }, err => this.alertService.error(err)
       )
     )
+  }
+
+  setSeletedRow(item) {
+    if (item != undefined) {
+
+      const { wlcomppackage, recordsource, wosequence, assid, wopsequence, wlcode, wlataid, wlplanyear, wostagesurcde, wochecksurcde, woadrefusaL_YN, woadrechargeyn, woadstatus, variationAction } = item;
+      const { wocodE6 } = this.worksOrderData;
+
+      let params: VariationWorkListModel = {
+        WLCOMPPACKAGE: wlcomppackage,
+        RECORDSOURCE: recordsource,
+        WOSEQUENCE: wosequence,
+        ASSID: assid,
+        WOPSEQUENCE: wopsequence,
+        WLCODE: wlcode,
+        WLATAID: wlataid,
+        WLPLANYEAR: wlplanyear,
+        WOSTAGESURCDE: wostagesurcde,
+        WOCHECKSURCDE: wochecksurcde,
+        WOADREFUSAL_YN: woadrefusaL_YN,
+        WOADRECHARGEYN: woadrechargeyn,
+        WOADSTATUS: woadstatus,
+        VariationAction: variationAction,
+        WOCODE6: wocodE6
+      }
+
+
+      this.subs.add(
+        this.workOrderProgrammeService.variationWorkListButtonsAccess(params).subscribe(
+          data => {
+            if (data.isSuccess) {
+              this.workListBtnAccess = data.data;
+              this.chRef.detectChanges();
+            }
+          }
+        )
+      )
+
+    }
+
   }
 
 

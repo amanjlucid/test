@@ -38,3 +38,4 @@ export * from './wopm-jobrole.model';
 export * from './wopm-refusalcode.model';
 export * from './wopm-ragstatus.model';
 export * from './wopm-contractterm.model';
+export * from './workorders/variation-worklist.model'

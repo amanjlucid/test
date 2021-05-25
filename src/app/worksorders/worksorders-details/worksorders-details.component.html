@@ -335,7 +335,7 @@
 
                     <div class="dropdown-toggle" *ngIf="woMenuBtnSecurityAccess('Handover Asset')">
                       <div class="dropdown-item">Handover</div>
-                      <div class="dropdown-menu">
+                      <div class="dropdown-menu HandoverMenu">
                         <a class="dropdown-item" href="javascript:void(0)"
                           (click)="assetAction(dataItem, 'HY', 'single')">Yesterday</a>
                         <a class="dropdown-item" href="javascript:void(0)"
@@ -348,7 +348,7 @@
 
                     <div class="dropdown-toggle" *ngIf="woMenuBtnSecurityAccess('Signoff Asset')">
                       <div class="dropdown-item">Sign Off</div>
-                      <div class="dropdown-menu">
+                      <div class="dropdown-menu signoffMenu">
                         <a class="dropdown-item" href="javascript:void(0)"
                           (click)="assetAction(dataItem, 'SOY', 'single')">Yesterday</a>
                         <a class="dropdown-item" href="javascript:void(0)"
