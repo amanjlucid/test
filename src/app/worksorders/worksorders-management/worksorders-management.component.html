@@ -340,7 +340,7 @@
   (WoProgramManagmentInstructionsWinEvent)="closeWoProgramManagmentInstructionsWin($event)">
 </app-wo-program-management-instructions>
 
-<app-completion-list *ngIf="tabWindow" [workOrderId]="workOrderId" [completionWin]="completionList"
+<app-completion-list *ngIf="completionList" [worksOrderData]="selctedWorksOrder" [completionWin]="completionList"
   (closeCompletionWin)="closeCompletionList($event)"></app-completion-list>
 
 <kendo-dialog title="DELETE WORKS ORDERS" *ngIf="deleteWorksOrderReasonWindow" (close)="closeWorksorderReasonWindow()"

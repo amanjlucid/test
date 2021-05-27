@@ -12,7 +12,7 @@ import { combineLatest, forkJoin } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 
-export class CompletionListComponent implements OnInit, OnChanges, OnDestroy {
+export class CompletionListComponent implements OnInit, OnDestroy {
 
   workOrderProgrammeData;
   subs = new SubSink(); // to unsubscribe services
@@ -36,14 +36,12 @@ export class CompletionListComponent implements OnInit, OnChanges, OnDestroy {
   public windowTop = '15';
   disableBtn: boolean = true;
   selectedCompletionsList: any;
-
   @ViewChild(GridComponent) grid: GridComponent;
 
   @Input() completionWin: boolean = false;
   @Output() closeCompletionWin = new EventEmitter<boolean>();
-
-  @Input() workOrderId: number;
-  worksOrderData: any;
+  @Input() worksOrderData: any;
+  // worksOrderData: any;
   title = '';
   worksOrderAccess = [];
   worksOrderUsrAccess: any = [];
@@ -54,18 +52,20 @@ export class CompletionListComponent implements OnInit, OnChanges, OnDestroy {
     private alertService: AlertService,
     private chRef: ChangeDetectorRef,
     private sharedService: SharedService,
-  ) {
+  ) { }
 
-  }
-
-  ngOnChanges(changes: { [propName: string]: SimpleChange }) {
-    // console.log(changes);
-    if (this.completionWin) {
-      this.getWorkOrderGetWorksOrderCompletionsList();
-    }
-  }
+  // ngOnChanges(changes: { [propName: string]: SimpleChange }) {
+  //   // console.log(changes);
+  //   if (this.completionWin) {
+  //     this.getWorkOrderGetWorksOrderCompletionsList();
+  //   }
+  // }
 
   ngOnInit() {
+   
+    let woname = this.worksOrderData.woname || this.worksOrderData.name 
+    this.title = `Completions: ${this.worksOrderData?.wosequence} - ${woname}`
+
     this.subs.add(
       combineLatest([
         this.sharedService.worksOrdersAccess,
@@ -80,33 +80,33 @@ export class CompletionListComponent implements OnInit, OnChanges, OnDestroy {
       )
     )
 
-    this.pageRequiredData();
+    // this.pageRequiredData();
     this.getWorkOrderGetWorksOrderCompletionsList();
   }
 
   ngOnDestroy() {
     //console.log("Destroy");
-    if (this.completionWin == true) {
-      this.closeCompletionWindow();
-    }
+    // if (this.completionWin == true) {
+    //   this.closeCompletionWindow();
+    // }
     this.subs.unsubscribe();
   }
 
 
-  pageRequiredData() {
-    this.subs.add(
-      forkJoin([
-        this.workOrderProgrammeService.getWorksOrderByWOsequence(this.workOrderId)
-      ]).subscribe(
-        data => {
-          const worksOrderData = data[0];
+  // pageRequiredData() {
+  //   this.subs.add(
+  //     forkJoin([
+  //       this.workOrderProgrammeService.getWorksOrderByWOsequence(this.workOrderId)
+  //     ]).subscribe(
+  //       data => {
+  //         const worksOrderData = data[0];
 
-          if (worksOrderData.isSuccess) this.worksOrderData = worksOrderData.data;
-          this.title = `Completions: ${this.worksOrderData?.wosequence} - ${this.worksOrderData?.woname}`
-        }
-      )
-    )
-  }
+  //         if (worksOrderData.isSuccess) this.worksOrderData = worksOrderData.data;
+  //         this.title = `Completions: ${this.worksOrderData?.wosequence} - ${this.worksOrderData?.woname}`
+  //       }
+  //     )
+  //   )
+  // }
   // this.worksorderManagementService.getWorksOrderByWOsequence(intWOSEQUENCE),
 
   public mySelectionKey(context: RowArgs) {
@@ -118,12 +118,11 @@ export class CompletionListComponent implements OnInit, OnChanges, OnDestroy {
     this.mySelection = [];
     this.completionWin = false;
     this.closeCompletionWin.emit(this.completionWin);
-    $('.bgblur').removeClass('ovrlay');
   }
 
   getWorkOrderGetWorksOrderCompletionsList() {
     this.subs.add(
-      this.workOrderProgrammeService.GetWorkOrderGetWorksOrderCompletions(this.workOrderId, this.currentUser.userId)
+      this.workOrderProgrammeService.GetWorkOrderGetWorksOrderCompletions(this.worksOrderData.wosequence, this.currentUser.userId)
         .subscribe(
           data => {
             if (data && data.isSuccess) {

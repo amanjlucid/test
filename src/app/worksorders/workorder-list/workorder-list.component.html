@@ -331,7 +331,7 @@
   [selectedWorkOrderAddEdit]="selectedWorkOrderAddEdit" *ngIf="woFormWindow" (closeWoFormWin)="closeWoFormWin($event)">
 </app-workorder-form>
 
-<app-completion-list *ngIf="tabWindow" [workOrderId]="workOrderId" [completionWin]="completionList"
+<app-completion-list *ngIf="completionList" [worksOrderData]="selectedWorksOrder" [completionWin]="completionList"
   (closeCompletionWin)="closeCompletionList($event)"></app-completion-list>
 
 <app-variation-list-all *ngIf="openVariationListAll" [openVariationListAll]="openVariationListAll"

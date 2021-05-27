@@ -59,7 +59,7 @@ export class WorksordersManagementComponent implements OnInit {
   userType: any = []
 
   woProgramManagmentInstructionsWindow = false;
-  tabWindow = false;
+  // tabWindow = false;
   completionList = false;
 
   workOrderId: number;
@@ -496,15 +496,12 @@ export class WorksordersManagementComponent implements OnInit {
 
   openCompletionList(item) {
     $('.newManagementOverlay').addClass('ovrlay');
-    this.tabWindow = true;
+    this.selctedWorksOrder = item;
+    // this.tabWindow = true;
     this.completionList = true;
-    this.workOrderId = item.wosequence;
+    // this.workOrderId = item.wosequence;
   }
 
-  closeTabWindow($event) {
-    this.tabWindow = $event;
-    $('.newManagementOverlay').removeClass('ovrlay');
-  }
 
   closeCompletionList($event) {
     this.completionList = $event;

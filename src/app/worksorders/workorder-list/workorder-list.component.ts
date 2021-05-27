@@ -71,7 +71,7 @@ export class WorkorderListComponent implements OnInit {
   mousePositioin: any = 0;
   openVariationListAll: boolean;
 
-  tabWindow = false;
+  // tabWindow = false;
   completionList = false;
 
   workOrderId: number;
@@ -154,7 +154,7 @@ export class WorkorderListComponent implements OnInit {
     this.columnLocked = !this.columnLocked;
   }
 
-  
+
   resetGrid() {
     this.state.skip = 0;
   }
@@ -549,20 +549,17 @@ export class WorkorderListComponent implements OnInit {
   }
 
   openCompletionList(item) {
-    $('.bgblur').addClass('ovrlay');
-    this.tabWindow = true;
+    $('.worksOrderOverlay').addClass('ovrlay');
+    this.selectedWorksOrder = item;
+    // this.tabWindow = true;
     this.completionList = true;
-    this.workOrderId = item.wosequence;
-  }
 
-  closeTabWindow($event) {
-    this.tabWindow = $event;
-    $('.bgblur').removeClass('ovrlay');
+    // this.workOrderId = item.wosequence;
   }
 
   closeCompletionList($event) {
     this.completionList = $event;
-    $('.bgblur').removeClass('ovrlay');
+    $('.worksOrderOverlay').removeClass('ovrlay');
   }
 
 
