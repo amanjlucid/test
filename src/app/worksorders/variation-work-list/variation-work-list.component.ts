@@ -114,7 +114,14 @@ export class VariationWorkListComponent implements OnInit {
 
 
   woMenuAccess(menuName) {
+    if (this.userType == undefined) return true;
+
+    if (this.userType?.wourroletype == "Dual Role") {
+      return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
+    }
+
     return this.worksOrderUsrAccess.indexOf(menuName) != -1
+
   }
 
 
@@ -249,11 +256,6 @@ export class VariationWorkListComponent implements OnInit {
 
 
   rechargeToggle(item, recharge) {
-    if (item.woadstatus != 'New') {
-      this.alertService.error("No Access");
-      return
-    }
-
     const { wosequence, woisequence, wopsequence, assid, wlcode, wlataid, wlplanyear, wostagesurcde, wochecksurcde, woadrechargeyn } = item;
 
     const params = {

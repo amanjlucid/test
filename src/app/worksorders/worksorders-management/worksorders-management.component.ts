@@ -58,6 +58,12 @@ export class WorksordersManagementComponent implements OnInit {
   worksOrderUsrAccess: any = [];
   userType: any = []
 
+  woProgramManagmentInstructionsWindow = false;
+  tabWindow = false;
+  completionList = false;
+
+  workOrderId: number;
+
   constructor(
     private worksorderManagementService: WorksorderManagementService,
     private helperService: HelperService,
@@ -474,5 +480,36 @@ export class WorksordersManagementComponent implements OnInit {
 
     return this.worksOrderUsrAccess.indexOf(menuName) != -1
   }
+
+
+  redirectToWoProgramManagmentInstructions(item) {
+    this.selctedWorksOrder = item;
+    this.woProgramManagmentInstructionsWindow = true;
+    $('.newManagementOverlay').addClass('ovrlay');
+  }
+
+  closeWoProgramManagmentInstructionsWin(eve) {
+    this.woProgramManagmentInstructionsWindow = eve;
+    $('.newManagementOverlay').removeClass('ovrlay');
+  }
+
+
+  openCompletionList(item) {
+    $('.newManagementOverlay').addClass('ovrlay');
+    this.tabWindow = true;
+    this.completionList = true;
+    this.workOrderId = item.wosequence;
+  }
+
+  closeTabWindow($event) {
+    this.tabWindow = $event;
+    $('.newManagementOverlay').removeClass('ovrlay');
+  }
+
+  closeCompletionList($event) {
+    this.completionList = $event;
+    $('.newManagementOverlay').removeClass('ovrlay');
+  }
+
 
 }

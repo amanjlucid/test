@@ -93,7 +93,9 @@
                   (click)="deleteThis(dataItem)">Delete</a>
                 <a *ngIf="woMenuAccess('Works Order Detail')" class="dropdown-item" href="javascript:void(0)"
                   (click)="redirectToWorksOrder(dataItem)"> Works Order Details</a>
-                <a class="dropdown-item" href="javascript:void(0)" (click)="openVariationList(dataItem)">Variations</a>
+
+                <a *ngIf="woMenuAccess('Variations')" class="dropdown-item" href="javascript:void(0)"
+                  (click)="openVariationList(dataItem)">Variations</a>
                 <a (click)="redirectToWoProgramManagmentInstructions(dataItem)" class="dropdown-item"
                   href="javascript:void(0)">
                   Instructions</a>
@@ -335,6 +337,7 @@
 <app-variation-list-all *ngIf="openVariationListAll" [openVariationListAll]="openVariationListAll"
   [openedFrom]="'worksorder'" [singleWorksOrder]="selectedWorksOrder"
   (closeVariationAllListEvent)="closeVariationAll($event)"></app-variation-list-all>
+
 <app-wo-program-management-instructions *ngIf="woProgramManagmentInstructionsWindow"
   [woProgramManagmentInstructionsWindow]="woProgramManagmentInstructionsWindow" [worksOrderData]="selectedWorksOrder"
   [selectedWorksOrder]="selectedWorksOrder"

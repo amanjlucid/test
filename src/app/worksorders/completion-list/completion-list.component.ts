@@ -1,17 +1,18 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectorRef, ViewChild, OnDestroy, OnChanges, SimpleChanges, SimpleChange, ChangeDetectionStrategy } from '@angular/core';
 import { DataResult, process, State, CompositeFilterDescriptor, SortDescriptor, GroupDescriptor } from '@progress/kendo-data-query';
 import { GridComponent, RowArgs } from '@progress/kendo-angular-grid';
-import {  AlertService, WorksorderManagementService } from '../../_services';
+import { AlertService, SharedService, WorksorderManagementService } from '../../_services';
 import { SubSink } from 'subsink';
+import { combineLatest, forkJoin } from 'rxjs';
 
 @Component({
-    selector: 'app-completion-list',
-    templateUrl: './completion-list.component.html',
-    styleUrls: ['./completion-list.component.css'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+  selector: 'app-completion-list',
+  templateUrl: './completion-list.component.html',
+  styleUrls: ['./completion-list.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 
-export class CompletionListComponent implements OnInit, OnChanges, OnDestroy {  
+export class CompletionListComponent implements OnInit, OnChanges, OnDestroy {
 
   workOrderProgrammeData;
   subs = new SubSink(); // to unsubscribe services
@@ -33,42 +34,80 @@ export class CompletionListComponent implements OnInit, OnChanges, OnDestroy {
   public multiple = false;
   public windowState = 'default';
   public windowTop = '15';
-  disableBtn : boolean = true;
+  disableBtn: boolean = true;
   selectedCompletionsList: any;
 
   @ViewChild(GridComponent) grid: GridComponent;
-  
+
   @Input() completionWin: boolean = false;
   @Output() closeCompletionWin = new EventEmitter<boolean>();
 
   @Input() workOrderId: number;
+  worksOrderData: any;
+  title = '';
+  worksOrderAccess = [];
+  worksOrderUsrAccess: any = [];
+  userType: any = [];
+
+  constructor(
+    private workOrderProgrammeService: WorksorderManagementService,
+    private alertService: AlertService,
+    private chRef: ChangeDetectorRef,
+    private sharedService: SharedService,
+  ) {
+
+  }
 
   ngOnChanges(changes: { [propName: string]: SimpleChange }) {
     // console.log(changes);
-    if(this.completionWin){
-       this.getWorkOrderGetWorksOrderCompletionsList();
+    if (this.completionWin) {
+      this.getWorkOrderGetWorksOrderCompletionsList();
     }
   }
 
   ngOnInit() {
+    this.subs.add(
+      combineLatest([
+        this.sharedService.worksOrdersAccess,
+        this.sharedService.woUserSecObs,
+        this.sharedService.userTypeObs
+      ]).subscribe(
+        data => {
+          this.worksOrderAccess = data[0];
+          this.worksOrderUsrAccess = data[1];
+          this.userType = data[2][0];
+        }
+      )
+    )
+
+    this.pageRequiredData();
     this.getWorkOrderGetWorksOrderCompletionsList();
   }
 
   ngOnDestroy() {
     //console.log("Destroy");
-    if(this.completionWin == true){
+    if (this.completionWin == true) {
       this.closeCompletionWindow();
     }
     this.subs.unsubscribe();
   }
 
-  constructor(
-    private workOrderProgrammeService: WorksorderManagementService,
-    private alertService: AlertService,
-    private chRef: ChangeDetectorRef
-) {
-    
+
+  pageRequiredData() {
+    this.subs.add(
+      forkJoin([
+        this.workOrderProgrammeService.getWorksOrderByWOsequence(this.workOrderId)
+      ]).subscribe(
+        data => {
+          const worksOrderData = data[0];
+
+          if (worksOrderData.isSuccess) this.worksOrderData = worksOrderData.data;
+          this.title = `Completions: ${this.worksOrderData?.wosequence} - ${this.worksOrderData?.woname}`
+        }
+      )
+    )
   }
+  // this.worksorderManagementService.getWorksOrderByWOsequence(intWOSEQUENCE),
 
   public mySelectionKey(context: RowArgs) {
     return context.dataItem.wocosequence;
@@ -86,7 +125,7 @@ export class CompletionListComponent implements OnInit, OnChanges, OnDestroy {
     this.subs.add(
       this.workOrderProgrammeService.GetWorkOrderGetWorksOrderCompletions(this.workOrderId, this.currentUser.userId)
         .subscribe(
-          data => {     
+          data => {
             if (data && data.isSuccess) {
               let tempData = data.data;
               this.workOrderProgrammeData = tempData;
@@ -116,8 +155,8 @@ export class CompletionListComponent implements OnInit, OnChanges, OnDestroy {
     this.gridView = process(this.workOrderProgrammeData, this.state);
   }
 
-  getSelectedCell({dataItem, type}){
-    if(type == "click" && dataItem != ""){
+  getSelectedCell({ dataItem, type }) {
+    if (type == "click" && dataItem != "") {
       this.disableBtn = false;
       this.selectedCompletionsList = dataItem;
       this.mySelection = [dataItem.wosequence, dataItem.wocosequence];
@@ -127,18 +166,18 @@ export class CompletionListComponent implements OnInit, OnChanges, OnDestroy {
   viewWorkOrderCompletionsReport(wosequence, wocosequence, userId) {
     this.subs.add(
       this.workOrderProgrammeService.viewWorkOrderCompletionCertificate(wosequence, wocosequence, userId).subscribe(
-          data => {        
-            if (data && data.isSuccess) {
-              let tempData = data.data;
-              let tempMessage = data.message;
-              let filename = wosequence + '_' +wocosequence + '_Report';
-              this.downloadPdf(tempData, filename);
-              this.alertService.success("Completion Report Downloaded.");
-            }else{
-              this.alertService.error(data.message);
-            }
+        data => {
+          if (data && data.isSuccess) {
+            let tempData = data.data;
+            let tempMessage = data.message;
+            let filename = wosequence + '_' + wocosequence + '_Report';
+            this.downloadPdf(tempData, filename);
+            this.alertService.success("Completion Report Downloaded.");
+          } else {
+            this.alertService.error(data.message);
           }
-        )
+        }
+      )
     )
   }
 
@@ -150,23 +189,35 @@ export class CompletionListComponent implements OnInit, OnChanges, OnDestroy {
     link.click();
   }
 
-  previewCompletionReport(){
+  previewCompletionReport() {
     this.viewWorkOrderCompletionsReport(this.selectedCompletionsList.wosequence, this.selectedCompletionsList.wocosequence, this.currentUser.userId);
   }
 
-  saveSendCompletionReport(){
+  saveSendCompletionReport() {
     this.subs.add(
       this.workOrderProgrammeService.saveSendWorkOrderCompletionCertificate(this.selectedCompletionsList.wosequence, this.selectedCompletionsList.wocosequence, this.currentUser.userId).subscribe(
-          data => {        
-            if (data && data.isSuccess) {
-              let tempMessage = data.message;
-              this.alertService.success("Completion Report Successfully Saved.");
-            }else{
-              this.alertService.error(data.message);
-            }
+        data => {
+          if (data && data.isSuccess) {
+            let tempMessage = data.message;
+            this.alertService.success("Completion Report Successfully Saved.");
+          } else {
+            this.alertService.error(data.message);
           }
-        )
+        }
+      )
     )
   }
-  
+
+
+  woMenuAccess(menuName) {
+    if (this.userType == undefined) return true;
+
+    if (this.userType?.wourroletype == "Dual Role") {
+      return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
+    }
+
+    return this.worksOrderUsrAccess.indexOf(menuName) != -1
+
+  }
+
 }

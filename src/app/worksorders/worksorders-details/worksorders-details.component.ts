@@ -272,7 +272,7 @@ export class WorksordersDetailsComponent implements OnInit {
       pHandover: false,
       pFromDate: "1753-01-01",
       pToDate: "1753-01-01",
-      pContractor: false
+      pContractor: this.userType?.wourroletype == "Contractor" ? true : false
     }
   }
 

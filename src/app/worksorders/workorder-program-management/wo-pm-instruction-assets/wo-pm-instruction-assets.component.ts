@@ -31,7 +31,7 @@ export class WoPmInstructionAssetsComponent implements OnInit {
         }
     }
 
-   public filter: CompositeFilterDescriptor;
+    public filter: CompositeFilterDescriptor;
     pageSize = 25;
     title = 'Work Order Instruction Assets';
 
@@ -42,8 +42,14 @@ export class WoPmInstructionAssetsComponent implements OnInit {
     programmeData: any;
     gridView: DataResult;
     selectedItem: any;
-    instructionAssetsDetailWindow  = false;
-    selectedInstructionAssetRow :any ;
+    instructionAssetsDetailWindow = false;
+    selectedInstructionAssetRow: any;
+
+    worksOrderAccess = [];
+    worksOrderUsrAccess: any = [];
+    userType: any = [];
+
+
     constructor(
         private worksOrdersService: WorksOrdersService,
         private worksorderManagementService: WorksorderManagementService,
@@ -55,15 +61,29 @@ export class WoPmInstructionAssetsComponent implements OnInit {
     ) { }
 
     ngOnInit(): void {
+        this.subs.add(
+            combineLatest([
+                this.sharedService.worksOrdersAccess,
+                this.sharedService.woUserSecObs,
+                this.sharedService.userTypeObs
+            ]).subscribe(
+                data => {
+                    this.worksOrderAccess = data[0];
+                    this.worksOrderUsrAccess = data[1];
+                    this.userType = data[2][0];
+                }
+            )
+        )
 
-      this.programmeData = {
-          wprname: ''
 
-      };
-       this.GetWOProgramme();
-       this.GetWOInstructionAssets();
-       //console.log('worksOrderData 1 ' + JSON.stringify(this.worksOrderData));
-    //   console.log('selectedInstructionRow ' + JSON.stringify(this.selectedInstructionRow));
+        this.programmeData = {
+            wprname: ''
+
+        };
+        this.GetWOProgramme();
+        this.GetWOInstructionAssets();
+        //console.log('worksOrderData 1 ' + JSON.stringify(this.worksOrderData));
+        //   console.log('selectedInstructionRow ' + JSON.stringify(this.selectedInstructionRow));
     }
 
 
@@ -175,21 +195,32 @@ export class WoPmInstructionAssetsComponent implements OnInit {
 
     closeInstructionAssetsWindow() {
         this.woPmInstructionAssetsWindow = false;
-        $('.wopminstructionoverlay').removeClass('ovrlay');
+        $('.woassetdetailoverlay').removeClass('ovrlay');
         this.woPmInstructionAssetsEvent.emit(this.woPmInstructionAssetsWindow);
     }
 
     openShowInstAssetsDetail(item) {
         this.selectedInstructionAssetRow = item;
         this.instructionAssetsDetailWindow = true;
-        $('.wopminstructionoverlay').addClass('ovrlay');
+        $('.woassetdetailoverlay').addClass('ovrlay');
     }
 
 
     closeInstructionAssetsDetailWindow(eve) {
         this.instructionAssetsDetailWindow = eve;
-        $('.worksOrderOverlay').removeClass('ovrlay');
+        $('.woassetdetailoverlay').removeClass('ovrlay');
 
     }
 
+    woMenuAccess(menuName) {
+        if (this.userType == undefined) return true;
+
+        if (this.userType?.wourroletype == "Dual Role") {
+            return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
+        }
+
+        return this.worksOrderUsrAccess.indexOf(menuName) != -1
+
     }
+
+}

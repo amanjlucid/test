@@ -17,7 +17,7 @@ export class NoAccessComponent implements OnInit {
   @Input() selectedChecklistsingleItem: any;
   @Output() closeNoAccessWinEvent = new EventEmitter<boolean>();
   @Output() refreshChecklist = new EventEmitter<boolean>();
-  title = "'No Access'";
+  title = "No Access";
 
   subs = new SubSink();
   submitted = false;

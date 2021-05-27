@@ -1,5 +1,5 @@
-<kendo-window title="Work Order - Completions" [(state)]="windowState" [(top)]="windowTop" *ngIf="completionWin"
-  [minWidth]="500" [width]="980" (close)="closeCompletionWindow()">
+<kendo-window title="{{title}}" [(state)]="windowState" [(top)]="windowTop" *ngIf="completionWin" [minWidth]="500"
+  [width]="980" (close)="closeCompletionWindow()">
   <div class="row mt-2">
 
 
@@ -18,6 +18,26 @@
               allowUnsort: allowUnsort,
               mode: multiple ? 'multiple' : 'single'
               }" (sortChange)="sortChange($event)" (filterChange)="filterChange($event)" [height]="400">
+
+        <kendo-grid-column title=" " width="37" [filterable]="false" [sortable]="false">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <li class="nav-item dropdown list-unstyled" style="margin-top: -7px;">
+              <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
+
+              <div class="dropdown-menu">
+                <a *ngIf="woMenuAccess('Preview Completion Report')" (click)="previewCompletionReport(dataItem)"
+                  class="dropdown-item" href="javascript:void(0)">Report
+                </a>
+                <a *ngIf="woMenuAccess('Save and Send Completion Report')" (click)="saveSendCompletionReport(dataItem)"
+                  class="dropdown-item" href="javascript:void(0)">Send
+                </a>
+
+              </div>
+
+            </li>
+
+          </ng-template>
+        </kendo-grid-column>
 
         <kendo-grid-column field="wopname" title="Phase" width="90">
         </kendo-grid-column>
@@ -58,10 +78,10 @@
     </div>
 
     <div style="height:5%; min-height:10" class="col-md-12 text-right actionArea pt-3">
-      <button type="button" class="btn btn-sm themeButton mr-2" [disabled]="disableBtn"
+      <!-- <button type="button" class="btn btn-sm themeButton mr-2" [disabled]="disableBtn"
         (click)="previewCompletionReport()">Preview Completion Report</button>
       <button type="submit" class="btn btn-sm themeButton mr-2" (click)="saveSendCompletionReport()"
-        [disabled]="disableBtn">Save and Send Completion Report</button>
+        [disabled]="disableBtn">Save and Send Completion Report</button> -->
       <button type="submit" class="btn btn-sm themeButton" (click)="closeCompletionWindow()">Close</button>
     </div>
 

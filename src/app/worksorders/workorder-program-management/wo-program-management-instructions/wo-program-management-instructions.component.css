@@ -80,3 +80,7 @@
 .pointerEvent{
     pointer-events: none;
 }
+
+.lbl{
+    margin-top: 12px;
+}

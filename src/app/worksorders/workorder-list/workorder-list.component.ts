@@ -133,8 +133,6 @@ export class WorkorderListComponent implements OnInit {
     )
 
 
-
-
   }
 
 
@@ -143,6 +141,7 @@ export class WorkorderListComponent implements OnInit {
     this.subs.unsubscribe();
   }
 
+
   keyDownFunction(event) {
     if (event.keyCode == 13) {
       this.loading = false
@@ -150,10 +149,12 @@ export class WorkorderListComponent implements OnInit {
     }
   }
 
+
   lockUnlockColumn() {
     this.columnLocked = !this.columnLocked;
   }
 
+  
   resetGrid() {
     this.state.skip = 0;
   }
@@ -265,7 +266,6 @@ export class WorkorderListComponent implements OnInit {
   }
 
   setSeletedRow(dataItem, event) {
-
     if (dataItem != undefined) {
       setTimeout(() => {
         let att = $('.selectedMenuBar' + dataItem.wosequence)[0].getAttribute("x-placement");
@@ -273,7 +273,6 @@ export class WorkorderListComponent implements OnInit {
           $('.selectedMenuBar' + dataItem.wosequence).css("top", "-116px")
         }
       }, 50);
-
 
       if (this.selectedWorksOrder?.wosequence != dataItem.wosequence) {
         this.helperService.getWorkOrderSecurity(dataItem.wosequence);
@@ -283,10 +282,8 @@ export class WorkorderListComponent implements OnInit {
       this.selectedWorksOrder = dataItem;
       this.mySelection = [this.selectedWorksOrder.wosequence];
     }
-
-
-
   }
+
 
   openUserPopup(action, item = null) {
     $('.bgblur').addClass('ovrlay');
@@ -324,7 +321,7 @@ export class WorkorderListComponent implements OnInit {
 
     this.selectedWorksOrder = item;
     this.sharedService.changeWorksOrderSingleData(item);
-    localStorage.setItem('worksOrderSingleData', JSON.stringify(item)); // remove code on logout service
+    localStorage.setItem('worksOrderSingleData', JSON.stringify(item)); // clear storage from logout service as well
     this.router.navigate(['worksorders/details']);
   }
 
@@ -427,8 +424,6 @@ export class WorkorderListComponent implements OnInit {
 
           }
 
-          // console.log('Final Delete ' + JSON.stringify(data.data));
-
         },
         error => {
           this.alertService.error(error);
@@ -441,12 +436,6 @@ export class WorkorderListComponent implements OnInit {
   }
 
 
-  // public close() {
-  //   $('.bgblur').removeClass('ovrlay');
-  //   this.windowOpened = false;
-  // }
-
-
   closeWoFormWin($event) {
     this.woFormWindow = $event;
     $('.bgblur').removeClass('ovrlay');
@@ -456,7 +445,6 @@ export class WorkorderListComponent implements OnInit {
   export() {
 
     if (this.gridView.total > 0 && this.gridView.data) {
-      // let tempData = this.gridView.data;
       let tempData = Object.assign([], this.worksorderTempData);
       tempData.map((x: any) => {
         x.wocontractorissuedate = this.helperService.formatDateWithoutTime(x.wocontractorissuedate)
