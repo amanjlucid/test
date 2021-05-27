@@ -2,7 +2,7 @@ import { Component, OnInit, ViewEncapsulation, ChangeDetectorRef, ViewChild } fr
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { SelectableSettings, RowClassArgs, RowArgs, PageChangeEvent, GridComponent } from '@progress/kendo-angular-grid';
-import { AlertService, HelperService, SharedService, WorksOrdersService } from '../../_services'
+import { AlertService, HelperService, SharedService, WorksOrdersService, WorksorderReportService } from '../../_services'
 import { combineLatest, Subject } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { WorkordersListFilterModel } from '../../_models';
@@ -74,12 +74,13 @@ export class WorkorderListComponent implements OnInit {
   tabWindow = false;
   completionList = false;
 
-  workOrderId : number;
+  workOrderId: number;
 
   woProgramManagmentInstructionsWindow = false;
 
   constructor(
     private worksOrderService: WorksOrdersService,
+    private worksOrderReportService: WorksorderReportService,
     private activeRoute: ActivatedRoute,
     private alertService: AlertService,
     private helperService: HelperService,
@@ -609,12 +610,12 @@ export class WorkorderListComponent implements OnInit {
   redirectToWoProgramManagmentInstructions(item) {
 
 
-  //console.log('wo data '+ JSON.stringify(item));
+    //console.log('wo data '+ JSON.stringify(item));
     this.selectedWorksOrder = item;
     this.woProgramManagmentInstructionsWindow = true;
 
 
-      $('.worksOrderOverlay').addClass('ovrlay');
+    $('.worksOrderOverlay').addClass('ovrlay');
   }
 
   closeWoProgramManagmentInstructionsWin(eve) {
@@ -639,7 +640,88 @@ export class WorkorderListComponent implements OnInit {
     $('.bgblur').removeClass('ovrlay');
   }
 
+  WOContractorAssetReport() {
+    //console.log(this.mySelection);
+    let params = {
+      "intXportId": 580,
+      "lstParamNameValue": ["Works Order Number", this.selectedWorksOrder.wosequence],
+      "lngMaxRows": 40000
+    };
+    this.worksOrderReportService.viewContractorReport(params).subscribe(
+      (data) => {
 
+        const { columns, rows } = data[0];
+        const tempCol = columns.map(x => x.columnName);
+        const tempRow = rows.map(x => x.values);
+        let result : any;
+        let label : any;
+
+        if(tempRow.length > 0){
+          result = tempRow.map(x => x.reduce(function (result, field, index) {
+            var fieldKey = tempCol[index].replace(new RegExp(" ", 'g'), "");
+            result[fieldKey] = field;
+            return result;
+          }, {}));
+
+          label = tempCol.reduce(function(result, field){
+            var fieldKey = field.replace(new RegExp(" ", 'g'), "");
+            result[fieldKey] = field;
+            return result;
+          }, {})
+
+        } 
+        let fileName = "ContractorAssetsReport-"+this.selectedWorksOrder.wosequence
+        this.helperService.exportAsExcelFile(result, fileName, label);
+        this.chRef.detectChanges();
+      },
+      error => {
+        this.alertService.error(error);
+
+      }
+    )
+
+  }
+
+  WOContractorWorkReport() {
+    //console.log(this.mySelection);
+    let params = {
+      "intXportId": 581,
+      "lstParamNameValue": ["Works Order Number", this.selectedWorksOrder.wosequence],
+      "lngMaxRows": 40000
+    };
+    this.worksOrderReportService.viewContractorReport(params).subscribe(
+      (data) => {
+        const { columns, rows } = data[0];
+        const tempCol = columns.map(x => x.columnName);
+        const tempRow = rows.map(x => x.values);
+        let result : any;
+        let label : any;
+
+        if(tempRow.length > 0){
+          result = tempRow.map(x => x.reduce(function (result, field, index) {
+            var fieldKey = tempCol[index].replace(new RegExp(" ", 'g'), "");
+            result[fieldKey] = field;
+            return result;
+          }, {}));
+
+          label = tempCol.reduce(function(result, field){
+            var fieldKey = field.replace(new RegExp(" ", 'g'), "");
+            result[fieldKey] = field;
+            return result;
+          }, {})
+
+        } 
+        let fileName = "ContractorWorksReport-"+this.selectedWorksOrder.wosequence
+        this.helperService.exportAsExcelFile(result, fileName, label);
+        this.chRef.detectChanges();
+      },
+      error => {
+        this.alertService.error(error);
+
+      }
+    )
+
+  }
 
 
 }

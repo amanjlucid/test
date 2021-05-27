@@ -96,7 +96,7 @@
                 <a class="dropdown-item" href="javascript:void(0)" (click)="openVariationList(dataItem)">Variations</a>
                 <a class="dropdown-item" (click)="openCompletionList(dataItem)" href="javascript:void(0)">Completions</a>
 
-                  <div class="dropdown-toggle" >
+                  <!-- <div class="dropdown-toggle" >
                     <div class="dropdown-item">Programme Management</div>
                     <div class="dropdown-menu addAssetMenu">
                       <a (click)="redirectToWoProgramManagmentInstructions(dataItem)" class="dropdown-item"
@@ -106,7 +106,14 @@
                       href="javascript:void(0)">Completions</a>
 
                     </div>
+                  </div> -->
+                <div class="dropdown-toggle" >
+                  <div class="dropdown-item">Contractor Reports</div>
+                  <div class="dropdown-menu addAssetMenu">
+                    <a class="dropdown-item" href="javascript:void(0)" (click)="WOContractorAssetReport()">Asset Report</a>
+                    <a class="dropdown-item" href="javascript:void(0)" (click)="WOContractorWorkReport()">Work Report</a>
                   </div>
+                </div>
 
                 <!-- <a class="dropdown-item" href="javascript:void(0)">Defects </a>
                 <a class="dropdown-item" href="javascript:void(0)">Contract Costs</a>
