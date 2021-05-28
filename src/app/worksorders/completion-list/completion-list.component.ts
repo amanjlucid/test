@@ -62,8 +62,8 @@ export class CompletionListComponent implements OnInit, OnDestroy {
   // }
 
   ngOnInit() {
-   
-    let woname = this.worksOrderData.woname || this.worksOrderData.name 
+
+    let woname = this.worksOrderData.woname || this.worksOrderData.name
     this.title = `Completions: ${this.worksOrderData?.wosequence} - ${woname}`
 
     this.subs.add(
@@ -163,6 +163,8 @@ export class CompletionListComponent implements OnInit, OnDestroy {
   }
 
   viewWorkOrderCompletionsReport(wosequence, wocosequence, userId) {
+    this.alertService.success("Generating Report Please Wait...")
+
     this.subs.add(
       this.workOrderProgrammeService.viewWorkOrderCompletionCertificate(wosequence, wocosequence, userId).subscribe(
         data => {
@@ -171,10 +173,13 @@ export class CompletionListComponent implements OnInit, OnDestroy {
             let tempMessage = data.message;
             let filename = wosequence + '_' + wocosequence + '_Report';
             this.downloadPdf(tempData, filename);
-            this.alertService.success("Completion Report Downloaded.");
+
+            // this.alertService.success("Completion Report Downloaded.");
           } else {
             this.alertService.error(data.message);
           }
+
+          this.chRef.detectChanges();
         }
       )
     )

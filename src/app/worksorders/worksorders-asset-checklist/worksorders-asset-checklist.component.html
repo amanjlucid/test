@@ -40,7 +40,8 @@
             </div>
 
             <button *ngIf="woMenuBtnSecurityAccess('Variations')" type="button"
-                class="btn btn-sm themeButton mr-1 headin_section" (click)="openVariationFun()">
+                class="btn btn-sm themeButton mr-1 headin_section variationBtn" (click)="openVariationFun()">
+                <span *ngIf="variationNewOrIssue" class="badge badge-primary badge-dot indicator"></span>
                 Variations
             </button>
 
@@ -66,10 +67,12 @@
                         Accept</a>
 
 
-                    <div class="dropdown-toggle" *ngIf="woMenuBtnSecurityAccess('Handover Asset')">
+                    <div [ngClass]="{'disabled' : disableMainActions('handover')}" class="dropdown-toggle"
+                        *ngIf="woMenuBtnSecurityAccess('Handover Asset')">
                         <div class="dropdown-item">Handover</div>
                         <div class="dropdown-menu handoverDrp">
-                            <a (click)="setAsset('HY')" class="dropdown-item" href="javascript:void(0)">Yesterday</a>
+                            <a [ngClass]="{'disabled' : disableMainActions('handover')}" (click)="setAsset('HY')"
+                                class="dropdown-item" href="javascript:void(0)">Yesterday</a>
                             <a (click)="setAsset('HT')" class="dropdown-item" href="javascript:void(0)">Today</a>
                             <a (click)="selectDate('HCD')" class="dropdown-item" href="javascript:void(0)">Choose
                                 Date</a>

@@ -139,7 +139,7 @@ export class VariationAssetComponent implements OnInit {
         this.workOrderProgrammeService.getWOInstructionAssets(wosequence, woisequence),
       ]).subscribe(
         data => {
-          // console.log(data)
+          console.log(data)
           this.worksOrderData = data[0].data;
           this.phaseData = data[1].data;
           this.programData = data[2].data[0];

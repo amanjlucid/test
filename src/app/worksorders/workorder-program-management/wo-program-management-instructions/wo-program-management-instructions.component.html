@@ -30,21 +30,20 @@
               allowUnsort: allowUnsort,
               mode: multiple ? 'multiple' : 'single'
               }" [sort]="state.sort" [skip]="state.skip" [loading]="loading" [height]="520">
-        <!-- <ng-template kendoGridToolbarTemplate>
-                    <button type="button" kendoGridExcelCommand icon="file-excel">Export to Excel</button>
-                </ng-template> -->
-
 
         <kendo-grid-column title=" " width="37" [filterable]="false" [sortable]="false">
           <ng-template kendoGridCellTemplate let-dataItem>
             <li class="nav-item dropdown list-unstyled" style="margin-top: -7px;">
               <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
               <div class="dropdown-menu">
-                <a *ngIf="woMenuAccess('Show Instruction Assets')" (click)="openShowinstructionAssets(dataItem)" class="dropdown-item" href="javascript:void(0)">Assets
+                <a *ngIf="woMenuAccess('Show Instruction Assets')" (click)="openShowinstructionAssets(dataItem)"
+                  class="dropdown-item" href="javascript:void(0)">Assets
                 </a>
-                <a *ngIf="woMenuAccess('Email Instruction Report')" (click)="openViewInstructionReport(dataItem)" class="dropdown-item" href="javascript:void(0)">Report
+                <a *ngIf="woMenuAccess('Email Instruction Report')" (click)="openViewInstructionReport(dataItem)"
+                  class="dropdown-item" href="javascript:void(0)">Report
                 </a>
-                <a *ngIf="woMenuAccess('Email Instruction Report')" (click)="openEmailInstructionReport(dataItem)" class="dropdown-item" href="javascript:void(0)">Send
+                <a *ngIf="woMenuAccess('Email Instruction Report')" (click)="openEmailInstructionReport(dataItem)"
+                  class="dropdown-item" href="javascript:void(0)">Send
                 </a>
               </div>
             </li>
@@ -147,21 +146,12 @@
 
 
     </div>
+
+    <div class="col-md-12 text-right mt-2">
+      <button type="button" class="btn btn-sm themeButton" (click)="closeWoProgramManagmentInstructionsWin()">Close</button>
+    </div>
   </div>
 
-
-
-
-  <!-- <kendo-dialog title="Generating Report" *ngIf="ViewInsReportWindow"
-    (close)="closeViewInsReportWindow()" [minWidth]="250" [width]="650">
-
-
-    <div class="row">
-
-        <h3>Generating Report Please Wait ................</h3>
-    </div>
-
-  </kendo-dialog> -->
 
   <div class="reportBgblur"></div>
 
@@ -208,7 +198,8 @@
 
           <div class="form-group row">
             <div class="col-sm-10 ml-sm-auto reportingPrevBtn text-right">
-              <button type="button" (click)="closeEmailWithReportWindow()" class="btn btn-sm themeButton">Cancel</button>
+              <button type="button" (click)="closeEmailWithReportWindow()"
+                class="btn btn-sm themeButton">Cancel</button>
               <button type="submit" class="btn btn-sm btn-default themeButton">Ok</button>
 
             </div>

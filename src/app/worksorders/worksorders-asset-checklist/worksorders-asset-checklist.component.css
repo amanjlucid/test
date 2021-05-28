@@ -67,3 +67,10 @@
 .inlineRow .col-md-1, .inlineRow .col-md-2{
     padding-top: 6px;
 }
+
+.variationBtn .badge-primary{
+    font-size: 19px;
+    top: -16px;
+    position: relative;
+    left: 72px;
+}

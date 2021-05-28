@@ -117,7 +117,7 @@ export class VariationListAllComponent implements OnInit {
       ]).subscribe(
         data => {
           // console.log(data);
-          
+
           // let sec = data[0].data.map(x => `${x.spffunction} - ${x.spjrftype}`)
           // console.log(sec);
         }
@@ -130,7 +130,7 @@ export class VariationListAllComponent implements OnInit {
     this.subs.add(
       this.worksOrderService.getWEBWorksOrdersInstructionsForUser(wprsequence, wosequence, this.currentUser.userId, false).subscribe(
         data => {
-          // console.log(data);
+          console.log(data);
           if (data.isSuccess) {
             this.variationData = data.data;
             this.gridView = process(this.variationData, this.state);
@@ -165,18 +165,31 @@ export class VariationListAllComponent implements OnInit {
 
   cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
     this.selectedSingleInstructionVariation = dataItem;
-   
+
   }
 
   woMenuAccess(menuName) {
+    if (this.userType == undefined) return true;
+
+    if (this.userType?.wourroletype == "Dual Role") {
+      return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
+    }
+
     return this.worksOrderUsrAccess.indexOf(menuName) != -1
+
   }
 
 
   disableVariationBtns(btnType, item) {
 
-    if (btnType == 'Assets' || btnType == 'Details') {
+    if (btnType == 'Assets') {
       return false;
+    }
+
+    if (btnType == 'Details') {
+      if (item.isEmptyVariation == "N") {
+        return false;
+      }
     }
 
     else if (btnType == 'Customer') {

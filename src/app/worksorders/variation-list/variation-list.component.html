@@ -15,9 +15,9 @@
                     <!-- <a [ngClass]="{'disabled' : woAsset?.woassstatus != 'Accepted' && woAsset?.phaseOrAsset != 'P'}"
                         class="dropdown-item" href="javascript:void(0)" (click)="newVariation()">
                         New</a> -->
-                    <a *ngIf="woMenuAccess('New Variation')" class="dropdown-item" href="javascript:void(0)" (click)="newVariation()">
+                    <a *ngIf="woMenuAccess('New Variation')" [ngClass]="{'disabled' : disableNewAndAppendBtn('new') }" class="dropdown-item" href="javascript:void(0)" (click)="newVariation()">
                         New</a>
-                    <a *ngIf="woMenuAccess('Append To Variation')" [ngClass]="{'disabled' : disableAppendBtn() }" class="dropdown-item" href="javascript:void(0)"
+                    <a *ngIf="woMenuAccess('Append To Variation')" [ngClass]="{'disabled' : disableNewAndAppendBtn('append') }" class="dropdown-item" href="javascript:void(0)"
                         (click)="append()">
                         Append</a>
                 </div>

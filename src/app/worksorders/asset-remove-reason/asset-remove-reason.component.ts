@@ -68,7 +68,7 @@ export class AssetRemoveReasonComponent implements OnInit {
 
   cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
     // this.selectedSingleNoAccessData = dataItem;
-    this.reason = dataItem.worcrefusaldesc
+    this.reason = dataItem.woadrefusal
   }
 
   closeReason() {

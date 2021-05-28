@@ -55,6 +55,7 @@ export class VariationListComponent implements OnInit {
   worksOrderAccess = [];
   worksOrderUsrAccess: any = [];
   userType: any = [];
+  variationIssuedAndAccepted:boolean = true;
 
   constructor(
     private chRef: ChangeDetectorRef,
@@ -67,6 +68,7 @@ export class VariationListComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    console.log(this.selectedAsset);
     this.subs.add(
       combineLatest([
         this.sharedService.worksOrdersAccess,
@@ -130,9 +132,12 @@ export class VariationListComponent implements OnInit {
             const variationData = data[3];
             this.woAsset = data[4].data[0];
 
-
             if (variationData.isSuccess) {
               this.variationData = variationData.data;
+
+              //check if variation in asset has accepted and issued status
+              this.variationIssuedAndAccepted = variationData.data.some(x => x.woiissuestatus == "Accepted" || x.woiissuestatus == "Issued")
+             
               this.gridView = process(this.variationData, this.state);
             } else this.alertService.error(variationData.message);
 
@@ -224,12 +229,33 @@ export class VariationListComponent implements OnInit {
 
 
   woMenuAccess(menuName) {
+    if (this.userType == undefined) return true;
+
+    if (this.userType?.wourroletype == "Dual Role") {
+      return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
+    }
+
     return this.worksOrderUsrAccess.indexOf(menuName) != -1
+
   }
 
-  disableAppendBtn() {
+  disableNewAndAppendBtn(btnName) {
+    const { wostatus } = this.selectedAsset
+    if (btnName == "new" || btnName == "append") {
+      if ((wostatus == "In Progress" || wostatus == "Accepted") && this.variationIssuedAndAccepted == false) {
+        return false;
+      }
+    }
+
+    // if (btnName == "append") {
+    //   if ((wostatus == "In Progress" || wostatus == "Accepted") && this.variationIssuedAndAccepted == false) {
+    //     return false;
+    //   }
+    // }
+
+
     // woAsset?.woassstatus != 'Accepted'
-    return false;
+    return true;
   }
 
   disableVariationBtns(btnType, item) {
@@ -263,7 +289,7 @@ export class VariationListComponent implements OnInit {
       apiCall = this.workOrderProgrammeService.emailVariationToContractorForReview(wosequence, woisequence, woname, woiissuereason, this.currentUser.userName)
       msg = 'Variation sent to contractor.'
     } else {
-      return
+      this.alertService.error("Something went wrong.")
     }
 
 

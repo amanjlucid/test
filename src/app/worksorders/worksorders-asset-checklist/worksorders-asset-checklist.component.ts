@@ -66,6 +66,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
   openAssetRemoveReason = false;
   reason: string = '';
   openVariationList: boolean = false;
+  variationNewOrIssue = false;
 
   constructor(
     private chRef: ChangeDetectorRef,
@@ -77,7 +78,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    // console.log(this.selectedChildRow);
+    console.log(this.selectedChildRow);
     //subscribe for work order security access
     this.subs.add(
       combineLatest([
@@ -120,7 +121,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
 
       ]).subscribe(
         data => {
-          // console.log(data)
+          console.log(data)
           const programmeData = data[0];
           const worksOrderData = data[1];
           const phaseData = data[2];
@@ -132,6 +133,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
           if (workorderAsset.isSuccess) this.workorderAsset = workorderAsset.data[0];
 
           this.checkListGridData();
+          // this.getVariationIndicator();
 
         }
       )
@@ -155,6 +157,19 @@ export class WorksordersAssetChecklistComponent implements OnInit {
           }
           this.loading = false
           this.resetSelections()
+          this.chRef.detectChanges();
+        }
+      )
+    )
+  }
+
+  getVariationIndicator() {
+    const { wosequence, assid, wopsequence } = this.selectedChildRow;
+    this.subs.add(
+      this.worksorderManagementService.getVariationIndicator(wosequence, wopsequence, assid).subscribe(
+        data => {
+          if (data.isSuccess) this.variationNewOrIssue = data.data;
+          else this.alertService.error(data.message);
           this.chRef.detectChanges();
         }
       )
@@ -1261,6 +1276,25 @@ export class WorksordersAssetChecklistComponent implements OnInit {
 
     if (type == "na" || type == "STIP" || type == "NS" || type == "RCI" || type == "COMP") {
       return this.mySelection.length == 0 || this.workorderAsset?.woassstatus == 'Pending' || this.workorderAsset?.woassstatus == 'Issued'
+    }
+
+
+    if (type == "handover") {
+      if (this.worksOrderData != undefined && this.workorderAsset != undefined) {
+        const { wocodE6 } = this.worksOrderData;
+        const { woassstatus } = this.workorderAsset;
+
+        if (wocodE6 == "ROCC URM INTEGRATION") {
+          if (woassstatus == "In Progress" || woassstatus == "Issued" || woassstatus == "Accepted" || woassstatus == "Handover") {
+            return true;
+          } else {
+            return false;
+          }
+        } else {
+          return false;
+        }
+      }
+
     }
 
   }

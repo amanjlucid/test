@@ -364,6 +364,7 @@ export class WoProgramManagmentInstructionComponent implements OnInit {
     link.click();//console.log('openViewInstructionReport item '+ JSON.stringify(item));
     this.ViewInsReportWindow = false;
   }
+  
   onClickDownloadPdf(base64_string, filename) {
     let base64String = base64_string;
     this.downloadPdf(base64String, filename);

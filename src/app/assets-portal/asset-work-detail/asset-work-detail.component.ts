@@ -30,7 +30,7 @@ export class AssetWorkDetailComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnDestroy() {
-    console.log('leave')
+    // console.log('leave')
     this.subs.unsubscribe();
   }
 

@@ -472,6 +472,11 @@ export class WorksorderManagementService {
     }
 
 
+    getVariationIndicator(WOSEQUENCE, WOPSEQUENCE, assId) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetVariationIndicator?WOSEQUENCE=${WOSEQUENCE}&WOPSEQUENCE=${WOPSEQUENCE}&assId=${assId}`, this.httpOptions);
+    }
+
+
 
 
 

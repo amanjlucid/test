@@ -78,25 +78,10 @@
     </div>
 
     <div style="height:5%; min-height:10" class="col-md-12 text-right actionArea pt-3">
-      <!-- <button type="button" class="btn btn-sm themeButton mr-2" [disabled]="disableBtn"
-        (click)="previewCompletionReport()">Preview Completion Report</button>
-      <button type="submit" class="btn btn-sm themeButton mr-2" (click)="saveSendCompletionReport()"
-        [disabled]="disableBtn">Save and Send Completion Report</button> -->
-      <button type="submit" class="btn btn-sm themeButton" (click)="closeCompletionWindow()">Close</button>
+      <button type="button" class="btn btn-sm themeButton" (click)="closeCompletionWindow()">Close</button>
     </div>
 
 
   </div>
 
 </kendo-window>
-<!-- <kendo-dialog title="Work Order" *ngIf="saveSendSuccessPopup && saveSendPopupMessage != ''" (close)="closeSaveSendPopup()"
-    [minWidth]="250" [width]="400">
-
-    <p style="margin: 30px; text-align: center; font-weight: 600;">{{saveSendPopupMessage}}</p>
-    <div class="row">
-      <div class="col-md-12 text-right">
-        <button class="btn btn-sm btn btn-sm themeButton" (click)="closeSaveSendPopup()"
-          primary="true">Ok</button>
-      </div>
-    </div>
-  </kendo-dialog> -->
