@@ -50,7 +50,7 @@ export class PhaseChecklistComponent implements OnInit {
   worksOrderUsrAccess: any = [];
   worksOrderAccess: any = [];
   userType: any = [];
-  workorderAsset: any = [];
+  // workorderAsset: any = [];
   // gridHeight = 680;
   filterToggle = false;
   actionType: string = 'single';
@@ -61,7 +61,7 @@ export class PhaseChecklistComponent implements OnInit {
   chooseDateWindow: boolean = false;
   reason: string = '';
   openAssetRemoveReason = false;
-  stageNames: any;
+  checkNames: any;
   mulitSelectDropdownSettings = {
     singleSelection: false,
     idField: 'item_id',
@@ -80,7 +80,7 @@ export class PhaseChecklistComponent implements OnInit {
     showSelectedItemsAtTop: false,
     defaultOpen: false
   }
-  selectedStages = [];
+  selectedCheckList = [];
   @ViewChild('stagesMultiSelect') stagesMultiSelect;
   predecessors: boolean = false;
 
@@ -162,15 +162,15 @@ export class PhaseChecklistComponent implements OnInit {
       forkJoin([
         this.worksorderManagementService.getWorksOrderByWOsequence(wosequence),
         this.worksorderManagementService.getPhaseCheckListFiltersList(wosequence, false),
-        this.worksorderManagementService.specificWorkOrderAssets(wosequence, assid, wopsequence),
-        this.worksorderManagementService.getStageNameList(wosequence),
+        // this.worksorderManagementService.specificWorkOrderAssets(wosequence, assid, wopsequence),
+        this.worksorderManagementService.getCheckListName(wosequence),
       ]).subscribe(
         data => {
           // console.log(data)
           const wo = data[0];
           const colFilters = data[1];
-          const workorderAsset = data[2];
-          const stageList = data[3];
+          // const workorderAsset = data[2];
+          const checkList = data[2];
 
           if (wo.isSuccess) this.worksOrderData = wo.data;
           else this.alertService.error(wo.message)
@@ -178,10 +178,10 @@ export class PhaseChecklistComponent implements OnInit {
           if (colFilters.isSuccess) this.colFilters = colFilters.data;
           else this.alertService.error(colFilters.message)
 
-          if (workorderAsset.isSuccess) this.workorderAsset = workorderAsset.data[0];
+          // if (workorderAsset.isSuccess) this.workorderAsset = workorderAsset.data[0];
 
-          if (stageList.isSuccess) {
-            this.stageNames = stageList.data.map((x: any) => {
+          if (checkList.isSuccess) {
+            this.checkNames = checkList.data.map((x: any) => {
               return { item_id: x, item_text: x }
             });
           }
@@ -195,13 +195,13 @@ export class PhaseChecklistComponent implements OnInit {
   }
 
   onStagesSingleSelectionChange(item: any) {
-    this.headerFilters.StageCategory = this.selectedStages.map(x => x.item_id).toString();
+    this.headerFilters.StageCategory = this.selectedCheckList.map(x => x.item_id).toString();
     this.stateChange.next(this.headerFilters);
   }
 
   onStagesSelectionAllChange(items: any) {
-    this.selectedStages = items;
-    this.headerFilters.StageCategory = this.selectedStages.map(x => x.item_id).toString();
+    this.selectedCheckList = items;
+    this.headerFilters.StageCategory = this.selectedCheckList.map(x => x.item_id).toString();
     this.stateChange.next(this.headerFilters);
   }
 
@@ -435,6 +435,7 @@ export class PhaseChecklistComponent implements OnInit {
   }
 
   cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
+    // console.log(dataItem)
     this.singlePhaseChecklist = dataItem;
 
     setTimeout(() => {
@@ -446,6 +447,7 @@ export class PhaseChecklistComponent implements OnInit {
         this.selectedChecklistList.push(dataItem)
       }
 
+      this.chRef.detectChanges();
     }, 200);
   }
 
@@ -489,54 +491,63 @@ export class PhaseChecklistComponent implements OnInit {
 
   disableButtons(name) {
     if (name == "status") {
-      return this.workorderAsset?.woassstatus == 'Pending' || this.workorderAsset?.woassstatus == 'Issued'
+      return this.singlePhaseChecklist?.woassstatus == 'Pending' || this.singlePhaseChecklist?.woassstatus == 'Issued'
     }
 
     if (name == "SE") {
-      return this.workorderAsset?.woassstatus == 'Pending' || this.workorderAsset?.woassstatus == 'Final Completion'
+      return this.singlePhaseChecklist?.woassstatus == 'Pending' || this.singlePhaseChecklist?.woassstatus == 'Final Completion'
     }
 
     if (name == "STCD") {
-      return this.workorderAsset?.woassstatus == 'Pending' || this.workorderAsset?.woassstatus == 'Issued' || this.workorderAsset?.woassstatus == 'Final Completion'
+      return this.singlePhaseChecklist?.woassstatus == 'Pending' || this.singlePhaseChecklist?.woassstatus == 'Issued' || this.singlePhaseChecklist?.woassstatus == 'Final Completion'
     }
 
     if (name == "CSD") {
-      return this.workorderAsset?.woassstatus == 'Pending' || this.workorderAsset?.woassstatus == 'Issued' || this.workorderAsset?.woassstatus == 'Final Completion'
+      return this.singlePhaseChecklist?.woassstatus == 'Pending' || this.singlePhaseChecklist?.woassstatus == 'Issued' || this.singlePhaseChecklist?.woassstatus == 'Final Completion'
     }
 
     if (name == "CCD") {
-      return this.workorderAsset?.woassstatus == 'Pending' || this.workorderAsset?.woassstatus == 'Issued'
+      return this.singlePhaseChecklist?.woassstatus == 'Pending' || this.singlePhaseChecklist?.woassstatus == 'Issued'
     }
 
     if (name == "CMP") {
-      return this.workorderAsset?.woassstatus == 'Pending' || this.workorderAsset?.woassstatus == 'Issued'
+      return this.singlePhaseChecklist?.woassstatus == 'Pending' || this.singlePhaseChecklist?.woassstatus == 'Issued'
     }
 
 
     if (name == "woAdd") {
-      return this.workorderAsset?.woassstatus != 'New'
+      return this.singlePhaseChecklist?.woassstatus != 'New'
     }
 
     if (name == "release") {
-      return this.workorderAsset?.woassstatus != 'New'
+      return this.singlePhaseChecklist?.woassstatus != 'New'
     }
 
     if (name == "issue") {
-      return this.workorderAsset?.woassstatus != 'Pending'
+      return this.singlePhaseChecklist?.woassstatus != 'Pending'
     }
 
     if (name == "accept") {
-      return this.workorderAsset?.woassstatus != 'Issued'
+      return this.singlePhaseChecklist?.woassstatus != 'Issued'
     }
 
     if (this.actionType == 'single') {
       if (name == "na" || name == "STIP" || name == "NS" || name == "RCI" || name == "COMP") {
-        return this.workorderAsset?.woassstatus == 'Pending' || this.workorderAsset?.woassstatus == 'Issued'
+        return this.singlePhaseChecklist?.woassstatus == 'Pending' || this.singlePhaseChecklist?.woassstatus == 'Issued'
+      }
+
+      if(name == "DATES"){
+        return this.singlePhaseChecklist?.woassstatus == 'Pending'
       }
     } else {
       if (name == "na" || name == "STIP" || name == "NS" || name == "RCI" || name == "COMP") {
-        return this.mySelection.length == 0 || this.workorderAsset?.woassstatus == 'Pending' || this.workorderAsset?.woassstatus == 'Issued'
+        return this.mySelection.length == 0 || this.singlePhaseChecklist?.woassstatus == 'Pending' || this.singlePhaseChecklist?.woassstatus == 'Issued'
       }
+
+      if(name == "DATES"){
+        return this.mySelection.length == 0 || this.singlePhaseChecklist?.woassstatus == 'Pending'
+      }
+
     }
 
 

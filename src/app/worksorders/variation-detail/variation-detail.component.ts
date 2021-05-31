@@ -50,6 +50,7 @@ export class VariationDetailComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // console.log(this.singleVariation)
     this.getVariationPageDataWithGrid();
   }
 
@@ -77,12 +78,12 @@ export class VariationDetailComponent implements OnInit {
 
 
   getVariationPageDataWithGrid() {
-    const { wosequence, wopsequence } = this.singleVariation;
+    const { wosequence, wopsequence, woisequence } = this.singleVariation;
     this.subs.add(
       forkJoin([
         this.workOrderProgrammeService.getWorksOrderByWOsequence(wosequence),
         this.workOrderProgrammeService.getPhase(wosequence, wopsequence),
-        this.workOrderProgrammeService.getWOInstructionAssetsDetails(wosequence, wopsequence),
+        this.workOrderProgrammeService.getWOInstructionAssetsDetails(wosequence, woisequence),
 
       ]).subscribe(
         data => {

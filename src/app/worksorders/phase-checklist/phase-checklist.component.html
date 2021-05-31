@@ -7,7 +7,7 @@
                 <i class="fa" [ngClass]="(filterToggle) ? 'fa-minus':'fa-plus'"></i>
             </button>
 
-          
+
 
             <div class="dropdown" id="nesting-dropdown-demo">
                 <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown"
@@ -113,7 +113,7 @@
 
 
 
-                    <div [ngClass]="{'disabled' : workorderAsset?.woassstatus == 'Pending'}" class="dropdown-toggle">
+                    <div [ngClass]="{'disabled' : disableButtons('DATES') }" class="dropdown-toggle">
                         <div class="dropdown-item" *ngIf="woMenuBtnSecurityAccess('Set Dates')">Dates
                         </div>
                         <div class="dropdown-menu dateFirstLvl">
@@ -271,12 +271,12 @@
         <div class="col-md-12 mt-2">
             <div class="form-inline">
                 <label>Stages</label>
-                <ng-multiselect-dropdown [placeholder]="'Select Stages'" [data]="stageNames"
+                <ng-multiselect-dropdown [placeholder]="'Select Stages'" [data]="checkNames"
                     [settings]="mulitSelectDropdownSettings" [disabled]="false"
                     (onSelect)="onStagesSingleSelectionChange($event)"
                     (onDeSelect)="onStagesSingleSelectionChange($event)"
                     (onSelectAll)="onStagesSelectionAllChange($event)"
-                    (onDeSelectAll)="onStagesSelectionAllChange($event)" [(ngModel)]="selectedStages"
+                    (onDeSelectAll)="onStagesSelectionAllChange($event)" [(ngModel)]="selectedCheckList"
                     #stagesMultiSelect>
                 </ng-multiselect-dropdown>
             </div>
@@ -345,8 +345,7 @@
                                     </div>
                                 </div>
 
-                                <div [ngClass]="{'disabled' : workorderAsset?.woassstatus == 'Pending'}"
-                                    class="dropdown-toggle">
+                                <div [ngClass]="{'disabled' : disableButtons('DATES')}" class="dropdown-toggle">
                                     <div class="dropdown-item" *ngIf="woMenuBtnSecurityAccess('Set Dates')">Dates
                                     </div>
                                     <div class="dropdown-menu">
@@ -684,6 +683,6 @@
         (closePredecessorsEvent)="closePredecessors($event)">
     </app-worksorders-asset-checklist-predecessors>
 
-   
+
 
 </kendo-window>

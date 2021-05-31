@@ -50,12 +50,12 @@ export class MoveAssetComponent implements OnInit {
   }
 
   getPhase() {
-    const { wosequence } = this.selectedAssetList[0];
+    const { wosequence, wopsequence, parentWoName } = this.selectedAssetList[0];
     this.subs.add(
       this.worksorderManagementService.getWorksOrderPhaseLevelTwo(wosequence).subscribe(
-        data => {
+        async data => {
           if (data.isSuccess) {
-            this.phaseData = data.data;
+            this.phaseData = await data.data.filter(x => x.wopsequence != wopsequence && x.wopname != parentWoName);
             this.gridView = process(this.phaseData, this.state);
           } else this.alertService.error(data.message)
 
@@ -65,7 +65,6 @@ export class MoveAssetComponent implements OnInit {
       )
     )
 
-    this.gridLoading = false;
   }
 
   closeMoveAsset() {

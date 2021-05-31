@@ -42,10 +42,6 @@ export class VariationFeesComponent implements OnInit {
   openChangeFee = false;
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
 
-
-  // @Input() singleVariation: any = [];
-
-
   constructor(
     private chRef: ChangeDetectorRef,
     private workOrderProgrammeService: WorksorderManagementService,
@@ -55,8 +51,6 @@ export class VariationFeesComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    //console.log({ openfor: this.openedFor, from: this.openedFrom, variation: this.selectedVariationInp, asset: this.selectedSingleVariationAssetInp })
-
     if (this.openedFor == "details") {
       this.title = `Variation Fees: ${this.selectedSingleVariationAssetInp?.woiissuereason} (${this.selectedSingleVariationAssetInp?.wopsequence})`;
     }
@@ -83,10 +77,10 @@ export class VariationFeesComponent implements OnInit {
 
   getVariationFees() {
 
-    const { wosequence, assid, wopsequence } = this.selectedSingleVariationAssetInp;
+    const { wosequence, assid, wopsequence, woisequence } = this.selectedSingleVariationAssetInp;
 
     this.subs.add(
-      this.workOrderProgrammeService.getWEBWorksOrdersAssetChecklistAndVariation(wosequence, wopsequence, assid).subscribe(
+      this.workOrderProgrammeService.getWEBWorksOrdersAssetChecklistAndVariation(wosequence, wopsequence, woisequence,assid).subscribe(
         data => {
           // console.log(data);
           if (data.isSuccess) {

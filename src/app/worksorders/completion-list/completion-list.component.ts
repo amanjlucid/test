@@ -1,9 +1,10 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectorRef, ViewChild, OnDestroy, OnChanges, SimpleChanges, SimpleChange, ChangeDetectionStrategy } from '@angular/core';
 import { DataResult, process, State, CompositeFilterDescriptor, SortDescriptor, GroupDescriptor } from '@progress/kendo-data-query';
 import { GridComponent, RowArgs } from '@progress/kendo-angular-grid';
-import { AlertService, SharedService, WorksorderManagementService } from '../../_services';
+import { AlertService, ReportingGroupService, SharedService, WorksorderManagementService } from '../../_services';
 import { SubSink } from 'subsink';
 import { combineLatest, forkJoin } from 'rxjs';
+import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-completion-list',
@@ -47,11 +48,41 @@ export class CompletionListComponent implements OnInit, OnDestroy {
   worksOrderUsrAccess: any = [];
   userType: any = [];
 
+  emailReportForm: FormGroup;
+  submitted = false;
+  formErrors: any;
+  selectedUsersToMail: any = [];
+  public dropdownSettings = {
+    singleSelection: false,
+    idField: 'item_id',
+    textField: 'item_text',
+    selectAllText: 'Select All',
+    unSelectAllText: 'UnSelect All',
+    itemsShowLimit: 3,
+    allowSearchFilter: true
+  };
+  validationMessage = {
+    'subject': {
+      'required': 'An Email Subject is required.'
+    },
+    'emailText': {
+      'required': 'Email text is required.'
+    }
+  };
+  userList: any;
+  SendEmailInsReportWindow = false;
+  userNameCommaSeprted = '';
+  userListToMail: any;
+  loading = false;
+
+
   constructor(
     private workOrderProgrammeService: WorksorderManagementService,
     private alertService: AlertService,
     private chRef: ChangeDetectorRef,
     private sharedService: SharedService,
+    private fb: FormBuilder,
+    private reportingGrpService: ReportingGroupService,
   ) { }
 
   // ngOnChanges(changes: { [propName: string]: SimpleChange }) {
@@ -80,8 +111,16 @@ export class CompletionListComponent implements OnInit, OnDestroy {
       )
     )
 
+    this.emailReportForm = this.fb.group({
+      subject: ['', [Validators.required]],
+      emailText: ['', Validators.required],
+      userlist: [''],
+    });
+
     // this.pageRequiredData();
     this.getWorkOrderGetWorksOrderCompletionsList();
+    this.getUserList();
+
   }
 
   ngOnDestroy() {
@@ -155,6 +194,7 @@ export class CompletionListComponent implements OnInit, OnDestroy {
   }
 
   getSelectedCell({ dataItem, type }) {
+    // console.log(dataItem)
     if (type == "click" && dataItem != "") {
       this.disableBtn = false;
       this.selectedCompletionsList = dataItem;
@@ -193,9 +233,148 @@ export class CompletionListComponent implements OnInit, OnDestroy {
     link.click();
   }
 
-  previewCompletionReport() {
-    this.viewWorkOrderCompletionsReport(this.selectedCompletionsList.wosequence, this.selectedCompletionsList.wocosequence, this.currentUser.userId);
+  previewCompletionReport(item) {
+    const { wosequence, wocosequence } = item;
+    this.viewWorkOrderCompletionsReport(wosequence, wocosequence, this.currentUser.userId);
   }
+
+
+
+
+  woMenuAccess(menuName) {
+    if (this.userType == undefined) return true;
+
+    if (this.userType?.wourroletype == "Dual Role") {
+      return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
+    }
+
+    return this.worksOrderUsrAccess.indexOf(menuName) != -1
+
+  }
+
+
+
+
+
+  public onItemSelect(item: any) {
+    this.selectedUsersToMail.push(item);
+    this.setParamsForUserName();
+  }
+
+  public onSelectAll(items: any) {
+    this.selectedUsersToMail = items;
+    this.setParamsForUserName();
+  }
+
+  public onItemDeSelect(item: any) {
+    this.selectedUsersToMail = this.selectedUsersToMail.filter(x => x.item_id != item.item_id);
+    this.setParamsForUserName();
+
+  }
+
+  public onItemDeSelectAll(items: any) {
+    this.selectedUsersToMail = items;
+    this.userNameCommaSeprted = '';
+
+  }
+
+  public setParamsForUserName() {
+    this.userNameCommaSeprted = this.createString(this.selectedUsersToMail, 'item_id');
+  }
+
+  createString(arr, key) {
+    return arr.map(function (obj) {
+      return obj[key];
+    }).join(',');
+  }
+
+
+  openEmailInstructionReport(item) {
+    $('.completionListOverlay').addClass('ovrlay');
+    this.selectedCompletionsList = item;
+    this.SendEmailInsReportWindow = true;
+
+  }
+
+
+  closeEmailWithReportWindow() {
+    this.SendEmailInsReportWindow = false;
+    this.emailReportForm.reset();
+    this.selectedUsersToMail = [];
+    $('.completionListOverlay').removeClass('ovrlay');
+    // $('.reportingDiv').removeClass('pointerEvent');
+  }
+
+
+  getUserList() {
+    this.reportingGrpService.userListToMail().subscribe(
+      data => {
+        this.userListToMail = data.data;
+      }
+    );
+  }
+
+
+  formErrorObject() {
+    this.formErrors = {
+      'subject': '',
+      'emailText': ''
+    }
+  }
+
+  logValidationErrors(group: FormGroup): void {
+    Object.keys(group.controls).forEach((key: string) => {
+      const abstractControl = group.get(key);
+      if (abstractControl instanceof FormGroup) {
+        this.logValidationErrors(abstractControl);
+      } else {
+        if (abstractControl && !abstractControl.valid) {
+          const messages = this.validationMessage[key];
+          for (const errorKey in abstractControl.errors) {
+            if (errorKey) {
+              this.formErrors[key] += messages[errorKey] + ' ';
+            }
+          }
+        }
+      }
+    })
+  }
+
+  get emailReportCon() { return this.emailReportForm.controls; }
+
+  onEmailReportSubmit() {
+
+    this.loading = true;
+    this.submitted = true;
+    this.formErrorObject(); // empty form error
+    this.logValidationErrors(this.emailReportForm);
+
+    if (this.emailReportForm.invalid) {
+      return;
+    }
+
+    if (this.selectedUsersToMail.length == 0) {
+      this.alertService.error('Please select atleast one user to send mail');
+      return
+    }
+
+    //console.log('selectedUsersToMail  '+ JSON.stringify(this.selectedUsersToMail));
+    //console.log('subject for Email  '+ JSON.stringify(this.emailReportCon.subject.value));
+    //console.log('emailText for Email  '+ JSON.stringify(this.emailReportCon.emailText.value));
+
+    let params = {
+
+      "USERID": this.currentUser.userId,
+      "WOSEQUENCE": this.selectedCompletionsList.wosequence,
+      "WOISEQUENCE": this.selectedCompletionsList.woisequence,
+      "Body": this.emailReportCon.emailText.value,
+      "Subject": this.emailReportCon.subject.value,
+      "UserName": this.userNameCommaSeprted
+    }
+
+    // this.EmailContractInstructionReport(params);
+  }
+
 
   saveSendCompletionReport() {
     this.subs.add(
@@ -210,18 +389,6 @@ export class CompletionListComponent implements OnInit, OnDestroy {
         }
       )
     )
-  }
-
-
-  woMenuAccess(menuName) {
-    if (this.userType == undefined) return true;
-
-    if (this.userType?.wourroletype == "Dual Role") {
-      return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
-    }
-
-    return this.worksOrderUsrAccess.indexOf(menuName) != -1
-
   }
 
 }

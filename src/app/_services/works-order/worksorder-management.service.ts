@@ -332,7 +332,8 @@ export class WorksorderManagementService {
         return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/WorkOrderRefusalCodes?ClearRefusal=${ClearRefusal}`, this.httpOptions);
     }
 
-    getStageNameList(WOSEQUENCE) {
+    getCheckListName(WOSEQUENCE) {
+        // return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetStageNameList?WOSEQUENCE=${WOSEQUENCE}`, this.httpOptions);
         return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetStageNameList?WOSEQUENCE=${WOSEQUENCE}`, this.httpOptions);
     }
 
@@ -344,8 +345,8 @@ export class WorksorderManagementService {
         return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWEBWorksOrdersAssetDetailAndVariation?WOSEQUENCE=${WOSEQUENCE}&WOPSEQUENCE=${WOPSEQUENCE}&assId=${assId}`, this.httpOptions);
     }
 
-    getWEBWorksOrdersAssetChecklistAndVariation(WOSEQUENCE, WOPSEQUENCE, assId) {
-        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWEBWorksOrdersAssetChecklistAndVariation?WOSEQUENCE=${WOSEQUENCE}&WOPSEQUENCE=${WOPSEQUENCE}&assId=${assId}`, this.httpOptions);
+    getWEBWorksOrdersAssetChecklistAndVariation(WOSEQUENCE, WOPSEQUENCE,WOISEQUENCE, assId) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWEBWorksOrdersAssetChecklistAndVariation?WOSEQUENCE=${WOSEQUENCE}&WOPSEQUENCE=${WOPSEQUENCE}&WOISEQUENCE=${WOISEQUENCE}&assId=${assId}`, this.httpOptions);
     }
 
     getVW_WOUserSecurity(userId, WOSEQUENCE, WPRSEQUENCE) {
@@ -380,7 +381,7 @@ export class WorksorderManagementService {
     }
 
     getWOInstructionAssetsDetails(WOSEQUENCE, WOISEQUENCE) {
-        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWOInstructionAssetsDetails?WOSEQUENCE=${WOSEQUENCE}&WOSEQUENCE=${WOSEQUENCE}&WOISEQUENCE=${WOISEQUENCE}`, this.httpOptions);
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWOInstructionAssetsDetails?WOSEQUENCE=${WOSEQUENCE}&WOISEQUENCE=${WOISEQUENCE}`, this.httpOptions);
     }
 
     addBulkVariation(WOSEQUENCE, WOISEQUENCE) {
@@ -475,6 +476,10 @@ export class WorksorderManagementService {
     getVariationIndicator(WOSEQUENCE, WOPSEQUENCE, assId) {
         return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetVariationIndicator?WOSEQUENCE=${WOSEQUENCE}&WOPSEQUENCE=${WOPSEQUENCE}&assId=${assId}`, this.httpOptions);
     }
+
+    // getWEBWorksOrdersAssetChecklistAndVariation(WOSEQUENCE, WOPSEQUENCE, assId) {
+    //     return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWEBWorksOrdersAssetChecklistAndVariation?WOSEQUENCE=${WOSEQUENCE}&WOPSEQUENCE=${WOPSEQUENCE}&assId=${assId}`, this.httpOptions);
+    // }
 
 
 

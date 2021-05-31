@@ -179,8 +179,7 @@ export class VariationWorkListComponent implements OnInit {
     this.subs.add(
       this.workOrderProgrammeService.getWEBWorksOrdersAssetDetailAndVariation(wosequence, wopsequence, assid).subscribe(
         data => {
-          // console.log(data);
-          // console.table(data.data);
+         
           if (data.isSuccess) {
             this.variationWorkListData = data.data;
             this.gridView = process(this.variationWorkListData, this.state);
@@ -508,7 +507,7 @@ export class VariationWorkListComponent implements OnInit {
     this.subs.add(
       this.workOrderProgrammeService.createVariationForSIMReplacement(params).subscribe(
         data => {
-          console.log(data)
+          // console.log(data)
           if (data.isSuccess) {
 
           } else this.alertService.error(data.message)

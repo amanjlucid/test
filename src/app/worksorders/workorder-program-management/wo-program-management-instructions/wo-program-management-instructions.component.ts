@@ -187,7 +187,7 @@ export class WoProgramManagmentInstructionComponent implements OnInit {
   openEmailInstructionReport(item) {
     this.SendEmailInsReportWindow = true;
     this.selectedInstructionRow = item;
-    $('.reportBgblur').addClass('overlay');
+    $('.reportBgblur').addClass('ovrlay');
   }
 
 
@@ -195,7 +195,7 @@ export class WoProgramManagmentInstructionComponent implements OnInit {
     this.SendEmailInsReportWindow = false;
     this.emailReportForm.reset();
     this.selectedUsersToMail = [];
-    $('.reportBgblur').removeClass('overlay');
+    $('.reportBgblur').removeClass('ovrlay');
     $('.reportingDiv').removeClass('pointerEvent');
   }
 
@@ -286,35 +286,12 @@ export class WoProgramManagmentInstructionComponent implements OnInit {
     this.subs.add(
       this.worksOrdersService.GetWEBWorksOrdersInstructionsForUser(qs).subscribe(
         data => {
-          //console.log('GetWEBWorksOrdersInstructionsForUser api data '+ JSON.stringify(data));
-
+        //  console.log(data); 
           if (data.isSuccess) {
             this.instructionData = data.data;
             this.gridView = process(this.instructionData, this.state);
             this.loading = false;
 
-            // this.instructionData = data.data;
-            // let gd = process(this.instructionData, this.state);
-            // this.gridView = gd;
-            // let tempData: any = gd;
-            // this.loadData = true;
-
-            // let groupingKey: any[] = [];
-            // this.instructionData.forEach(element => {
-            //   if (!groupingKey.includes(element.woname)) {
-            //     groupingKey.push(element.woname);
-            //   }
-            // });
-
-            // let afterGrouping = groupingKey.map((v, k) => {
-            //   let cell = tempData.data.filter((val, key) => {
-            //     if (val.value == v) {
-            //       return val;
-            //     }
-            //   })
-            //   return cell[0];
-            // })
-            // this.gridView.data = afterGrouping;
 
           } else {
             this.alertService.error(data.message);
@@ -346,6 +323,7 @@ export class WoProgramManagmentInstructionComponent implements OnInit {
     this.selectedInstructionRow = item;
     $('.wopminstructionoverlay').addClass('ovrlay');
   }
+
   closeWoPmInstructionAssetsWindow() {
     this.woPmInstructionAssetsWindow = false;
     $('.wopminstructionoverlay').addClass('ovrlay');

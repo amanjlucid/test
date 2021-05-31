@@ -210,7 +210,8 @@ export class WorksordersDetailsComponent implements OnInit {
             //Find parent and Set parent id in each row wopsequence
             tempData.forEach((value, index) => {
               if (value.treelevel == 2) {
-                value.parentId = null
+                value.parentId = null;
+                value.parentWoName = '';
                 value.id = `${value.wopsequence}${value.wosequence}${value.wprsequence}${this.helperService.replaceAll(value.assid, " ", "")}`;
                 value.parentData = JSON.stringify(value);
                 const valueWithDateObj = this.addDateObjectFields(value, ['targetdate', 'woacompletiondate', 'planstartdate', 'planenddate']); //Converting date object for filter from grid
@@ -221,6 +222,7 @@ export class WorksordersDetailsComponent implements OnInit {
               if (value.treelevel == 3) {
                 const parent = tempData.find(x => x.treelevel == 2 && x.wprsequence == value.wprsequence && x.wosequence == value.wosequence && x.wopsequence == value.wopsequence);
                 if (parent) {
+                  value.parentWoName = parent.woname;
                   value.parentId = `${parent.wopsequence}${parent.wosequence}${parent.wprsequence}${this.helperService.replaceAll(parent.assid, " ", "")}`;
                   value.id = `${value.wopsequence}${value.wosequence}${value.wprsequence}${this.helperService.replaceAll(value.assid, " ", "")}${index}`;
 
