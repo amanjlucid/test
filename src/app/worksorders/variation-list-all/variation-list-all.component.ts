@@ -130,7 +130,7 @@ export class VariationListAllComponent implements OnInit {
     this.subs.add(
       this.worksOrderService.getWEBWorksOrdersInstructionsForUser(wprsequence, wosequence, this.currentUser.userId, false).subscribe(
         data => {
-          // console.log(data);
+          console.log({variation : data.data, wo : this.singleWorksOrder})
           if (data.isSuccess) {
             this.variationData = data.data;
             this.gridView = process(this.variationData, this.state);

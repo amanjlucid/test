@@ -66,8 +66,8 @@
               </div>
             </div>
 
-            <a *ngIf="woMenuBtnSecurityAccess('Cancel Asset')" (click)="openRemoveReasonPanel('multiple', 'CANCEL')" class="dropdown-item"
-              href="javascript:void(0)">Cancel</a>
+            <a *ngIf="woMenuBtnSecurityAccess('Cancel Asset')" (click)="openRemoveReasonPanel('multiple', 'CANCEL')"
+              class="dropdown-item" href="javascript:void(0)">Cancel</a>
             <a *ngIf="woMenuBtnSecurityAccess('Remove Asset')" class="dropdown-item" href="javascript:void(0)"
               (click)="openRemoveReasonPanel('multiple', 'REMOVE')">Remove</a>
 
@@ -77,6 +77,9 @@
 
       <button *ngIf="woMenuBtnSecurityAccess('Add Phase')" (click)="openNewphase('new')"
         class="btn btn-sm themeButton">New Phase</button>
+
+      <button *ngIf="woMenuBtnSecurityAccess('Defects')" (click)="openDefectsMethod()"
+        class="btn btn-sm themeButton ml-1">Defects</button>
 
       <button id="showFilePanel" (click)="lockUnlockColumn()" class="btn btn-sm themeButton ml-1">
         <i *ngIf="!columnLocked" class="fa fa-lock" aria-hidden="true"></i>
@@ -359,7 +362,8 @@
                       </div>
                     </div>
 
-                    <a *ngIf="woMenuBtnSecurityAccess('Cancel Asset')" [ngClass]="{'disabled' : dataItem.wostatus != 'Accepted' && dataItem.wostatus != 'Issued'}"
+                    <a *ngIf="woMenuBtnSecurityAccess('Cancel Asset')"
+                      [ngClass]="{'disabled' : dataItem.wostatus != 'Accepted' && dataItem.wostatus != 'Issued'}"
                       (click)="openRemoveReasonPanel('single', 'CANCEL', dataItem)" class="dropdown-item"
                       href="javascript:void(0)">Cancel</a>
                     <a *ngIf="woMenuBtnSecurityAccess('Remove Asset')" class="dropdown-item" href="javascript:void(0)"
@@ -605,3 +609,6 @@
   <app-asset-remove-reason *ngIf="openAssetRemoveReason" [openAssetRemoveReason]="openAssetRemoveReason"
     [reasonType]="chooseDateType" (closeReasonEvent)="closeReasonPanel($event)" (outputReason)="getReason($event)">
   </app-asset-remove-reason>
+
+
+  <app-asset-defects-list *ngIf="openDefectsList" [openDefectsList]="openDefectsList" [singleWorkOrderInp]="worksOrderSingleData" [openedFrom]="'workdetail'" (closeDefectsListEvent)="closeDefectList($event)"></app-asset-defects-list>

@@ -94,6 +94,8 @@ export class WorksordersDetailsComponent implements OnInit {
   openAssetRemoveReason = false;
   reason = '';
 
+  openDefectsList = false;
+
   constructor(
     private sharedService: SharedService,
     private worksorderManagementService: WorksorderManagementService,
@@ -913,6 +915,17 @@ export class WorksordersDetailsComponent implements OnInit {
       this.reason = reason;
       this.assetAction(this.actualSelectedRow, this.chooseDateType, this.actionType, "C")
     }
+  }
+
+
+  openDefectsMethod(){
+    $('.worksOrderDetailOvrlay').addClass('ovrlay');
+    this.openDefectsList = true;
+  }
+
+  closeDefectList(eve){
+    this.openDefectsList = eve;
+    $('.worksOrderDetailOvrlay').removeClass('ovrlay');
   }
 
 

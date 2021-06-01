@@ -254,8 +254,6 @@ export class CompletionListComponent implements OnInit, OnDestroy {
 
 
 
-
-
   public onItemSelect(item: any) {
     this.selectedUsersToMail.push(item);
     this.setParamsForUserName();
@@ -358,37 +356,49 @@ export class CompletionListComponent implements OnInit, OnDestroy {
       return
     }
 
-    //console.log('selectedUsersToMail  '+ JSON.stringify(this.selectedUsersToMail));
-    //console.log('subject for Email  '+ JSON.stringify(this.emailReportCon.subject.value));
-    //console.log('emailText for Email  '+ JSON.stringify(this.emailReportCon.emailText.value));
-
     let params = {
-
-      "USERID": this.currentUser.userId,
+      // "USERID": this.currentUser.userId,
       "WOSEQUENCE": this.selectedCompletionsList.wosequence,
-      "WOISEQUENCE": this.selectedCompletionsList.woisequence,
+      "WOCOSEQUENCE ": this.selectedCompletionsList.wocosequence,
       "Body": this.emailReportCon.emailText.value,
       "Subject": this.emailReportCon.subject.value,
-      "UserName": this.userNameCommaSeprted
+      "USERID": this.userNameCommaSeprted,
+      "ModuleName": 'Completion Report'
     }
 
-    // this.EmailContractInstructionReport(params);
+    // this.subs.add(
+    //   this.workOrderProgrammeService.processCompletionReport(params).subscribe(
+    //     data => {
+    //       console.log(data);
+    //       if (data.isSuccess) {
+    //         this.closeEmailWithReportWindow();
+    //         this.alertService.success('Report Sent Successfully');
+    //       } else this.alertService.error(data.message);
+
+    //       this.chRef.detectChanges();
+    //     }, error => {
+    //       this.alertService.error(error);
+    //     }
+    //   )
+    // )
+
+    
   }
 
 
-  saveSendCompletionReport() {
-    this.subs.add(
-      this.workOrderProgrammeService.saveSendWorkOrderCompletionCertificate(this.selectedCompletionsList.wosequence, this.selectedCompletionsList.wocosequence, this.currentUser.userId).subscribe(
-        data => {
-          if (data && data.isSuccess) {
-            let tempMessage = data.message;
-            this.alertService.success("Completion Report Successfully Saved.");
-          } else {
-            this.alertService.error(data.message);
-          }
-        }
-      )
-    )
-  }
+  // saveSendCompletionReport() {
+  //   this.subs.add(
+  //     this.workOrderProgrammeService.saveSendWorkOrderCompletionCertificate(this.selectedCompletionsList.wosequence, this.selectedCompletionsList.wocosequence, this.currentUser.userId).subscribe(
+  //       data => {
+  //         if (data && data.isSuccess) {
+  //           let tempMessage = data.message;
+  //           this.alertService.success("Completion Report Successfully Saved.");
+  //         } else {
+  //           this.alertService.error(data.message);
+  //         }
+  //       }
+  //     )
+  //   )
+  // }
 
 }

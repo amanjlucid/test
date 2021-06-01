@@ -69,7 +69,7 @@ export class VariationWorkListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    //console.log({ openfor: this.openedFor, from: this.openedFrom, variation: this.selectedVariationInp, asset: this.selectedSingleVariationAssetInp })
+    // console.log({ openfor: this.openedFor, from: this.openedFrom, variation: this.selectedVariationInp, asset: this.selectedSingleVariationAssetInp })
     this.subs.add(
       combineLatest([
         this.sharedService.woUserSecObs,
@@ -179,7 +179,7 @@ export class VariationWorkListComponent implements OnInit {
     this.subs.add(
       this.workOrderProgrammeService.getWEBWorksOrdersAssetDetailAndVariation(wosequence, wopsequence, assid).subscribe(
         data => {
-         
+          // console.log({ worklist: data.data });
           if (data.isSuccess) {
             this.variationWorkListData = data.data;
             this.gridView = process(this.variationWorkListData, this.state);
@@ -481,7 +481,7 @@ export class VariationWorkListComponent implements OnInit {
 
   replaceService(item) {
     this.selectedSingleVarWorkList = item;
-    const { wosequence, woisequence, wopsequence, assid, wlcode, wlataid, wlplanyear, wostagesurcde, wochecksurcde, woadrechargeyn } = item;
+    const { wosequence, woisequence, wopsequence, assid, wlcode, wlataid, wlplanyear, wostagesurcde, wochecksurcde, woadrechargeyn, asauom, wlcomppackage, asaquantity, woadcomment } = item;
     let params = {
       WOSEQUENCE: wosequence,
       WOPSEQUENCE: wopsequence,
@@ -494,11 +494,11 @@ export class VariationWorkListComponent implements OnInit {
       WLPLANYEAR2: '',
       WOSTAGE: wostagesurcde,
       WOCHECK: wochecksurcde,
-      WORKCOST: '',
-      COMMENT: '',
-      QUANTITY: '',
-      UOM: '',
-      WPHCODE: '',
+      WORKCOST: this.openedFrom == "assetchecklist" ? this.selectedSingleVariationAssetInp?.woiaworkcost : this.selectedVariationInp?.woiworkcost,
+      COMMENT: woadcomment,
+      QUANTITY: asaquantity,
+      UOM: asauom,
+      WPHCODE: wlcomppackage,
       RECHARGE: woadrechargeyn,
       strUserId: this.currentUser.userId,
 

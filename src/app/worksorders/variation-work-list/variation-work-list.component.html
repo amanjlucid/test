@@ -241,7 +241,7 @@
         <div class="row">
             <div class="form-group col-md-12" *ngIf="reasonWindowFor == 'refusal'">
                 <label class="form-label">Refusal Reason</label>
-                <select class="custom-select" [(ngModel)]="reason">
+                <select class="custom-select form-control" [(ngModel)]="reason">
                     <option value=""></option>
                     <option *ngFor="let ref of refusalCodeList" value="{{ref.woadrefusal}}">{{ref.worcrefusaldesc}}
                     </option>

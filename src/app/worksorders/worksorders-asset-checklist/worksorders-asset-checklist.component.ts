@@ -78,7 +78,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    console.log(this.selectedChildRow);
+    // console.log(this.selectedChildRow);
     //subscribe for work order security access
     this.subs.add(
       combineLatest([
@@ -121,7 +121,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
 
       ]).subscribe(
         data => {
-          console.log(data)
+          // console.log(data)
           const programmeData = data[0];
           const worksOrderData = data[1];
           const phaseData = data[2];

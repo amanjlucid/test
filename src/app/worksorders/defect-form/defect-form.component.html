@@ -1,0 +1,257 @@
+<kendo-window title="{{title}}" *ngIf="openDefectform" (close)="closeDefectForm()" [top]="25" [minWidth]="600"
+    [width]="980" [height]="auto" [minHeight]="300">
+
+
+    <div class="row formRow">
+        <div class="col-md-12">
+            <div class="row defectDetailRow">
+                <div class="col-md-6">
+                    <div class="defectdetail">
+                        <span class="fieldName">Works Order: </span> <span> 4545 </span>
+                    </div>
+                    <div class="defectdetail">
+                        <span class="fieldName">Phase: </span> <span> 4545 </span>
+                    </div>
+                    <div class="defectdetail">
+                        <span class="fieldName">Asset: </span> <span> 4545 </span>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="defectdetail">
+                        <span class="fieldName">Defect: </span> <span> 4545 </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12 mt-2">
+            <kendo-grid #grid [data]="gridView" [height]="180" [selectable]="selectableSettings" filterable="menu"
+                [resizable]="true" [sortable]="{
+                    allowUnsort: true,
+                    mode: 'multiple'
+                    }" [skip]="state.skip" [pageSize]="pageSize" [rowHeight]="36" (pageChange)="pageChange($event)"
+                scrollable="virtual" [sort]="state.sort" [filter]="state.filter" (sortChange)="sortChange($event)"
+                (filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)" [navigable]="false"
+                kendoGridSelectBy="ProductID" [selectedKeys]="mySelection"
+                (selectedKeysChange)="onSelectedKeysChange($event)">
+
+                <!-- <kendo-grid-checkbox-column width="40">
+                        <ng-template kendoGridCellTemplate let-dataItem>
+                            <input (click)="selectionChange(dataItem)" class="k-checkbox" type="checkbox"
+                                *ngIf="checkPackageExist(dataItem)">
+                        </ng-template>
+                    </kendo-grid-checkbox-column> -->
+
+                <kendo-grid-checkbox-column>
+                    <!-- <ng-template kendoGridHeaderTemplate>
+                          <input
+                            class="k-checkbox"
+                            id="selectAllCheckboxId"
+                            kendoGridSelectAllCheckbox
+                            [state]="selectAllState"
+                            (selectAllChange)="onSelectAllChange($event)"
+                          />
+                          <label class="k-checkbox-label" for="selectAllCheckboxId"></label>
+                        </ng-template> -->
+                </kendo-grid-checkbox-column>
+
+
+                <kendo-grid-column field="wphcode" title="Attr Id" width="140">
+                </kendo-grid-column>
+                <kendo-grid-column field="wphname" title="Description" width="160">
+                </kendo-grid-column>
+                <kendo-grid-column field="wlcomppackagedesc" title="Qty" width="100">
+                </kendo-grid-column>
+                <kendo-grid-column field="atadescription" title="UOM" width="100">
+                </kendo-grid-column>
+                <kendo-grid-column field="asaquantity" title="Status" width="120">
+                </kendo-grid-column>
+
+                <kendo-grid-column field="uom" title="Package Code" width="120">
+                </kendo-grid-column>
+                <kendo-grid-column field="defaultcost" title="Package Name" width="120">
+                </kendo-grid-column>
+                <kendo-grid-column field="contractrate" title="Comment" width="120">
+
+                </kendo-grid-column>
+                <kendo-grid-column field="cost" title="Forecast" width="120" [style]="{'text-align': 'right'}">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.cost | currency:"GBP":"symbol" }}
+                        </span>
+                    </ng-template>
+                </kendo-grid-column>
+                <kendo-grid-column field="attributeexists" title="Committed" width="140">
+                </kendo-grid-column>
+                <kendo-grid-column field="exclusionreason" title="Actual" width="140">
+                </kendo-grid-column>
+
+                <kendo-grid-column field="exclusionreason" title="Approved" width="140">
+                </kendo-grid-column>
+
+                <kendo-grid-column field="exclusionreason" title="Pending" width="140">
+                </kendo-grid-column>
+                <kendo-grid-column field="exclusionreason" title="Created By" width="140">
+                </kendo-grid-column>
+                <kendo-grid-column field="exclusionreason" title="Created" width="140">
+                </kendo-grid-column>
+                <kendo-grid-column field="exclusionreason" title="Updated By" width="140">
+                </kendo-grid-column>
+                <kendo-grid-column field="exclusionreason" title="Updated" width="140">
+                </kendo-grid-column>
+
+
+            </kendo-grid>
+        </div>
+
+        <form autocomplete="off" class="defectForm">
+            <div class="col-md-12 mt-2 formFieldArea">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-md-3"><label class="col-form-label">Status:</label></div>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control input-sm">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+
+                    </div>
+                </div>
+
+                <div class="row mt-1">
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-md-3"><label class="col-form-label">Identified Date:</label></div>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control input-sm">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-md-3"><label class="col-form-label">Reported By:</label></div>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control input-sm">
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row mt-1">
+                    <div class="col-md-12">
+                        <div class="row textareaDiv">
+                            <div class="col-md-2"><label class="col-form-label">Description:</label></div>
+                            <div class="col-md-10">
+                                <textarea class="form-control"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="row mt-1">
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-md-3"><label class="col-form-label">Cost:</label></div>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control input-sm">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+
+                    </div>
+                </div>
+
+
+                <div class="row mt-1">
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-md-3"><label class="col-form-label">Score Date:</label></div>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control input-sm">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+
+                    </div>
+
+                </div>
+
+                <div class="row mt-1">
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-md-3"><label class="col-form-label">Resolution Date:</label></div>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control input-sm">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-md-3"><label class="col-form-label">Resolved By:</label></div>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control input-sm">
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <div class="row mt-1">
+                    <div class="col-md-12">
+                        <div class="row textareaDiv">
+                            <div class="col-md-2"><label class="col-form-label">Resolution Details:</label></div>
+                            <div class="col-md-10">
+                                <textarea class="form-control"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-1">
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-md-3"><label class="col-form-label">Sign Off Date:</label></div>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control input-sm">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-md-3"><label class="col-form-label">Sign Off By:</label></div>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control input-sm">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+
+
+            <div class="col-md-12 mt-3 text-right">
+                <button type="submit" class="btn btn-sm themeButton mr-1">Apply</button>
+                <button type="button" class="btn btn-sm themeButton" (click)="closeDefectForm()">Cancel</button>
+            </div>
+
+        </form>
+    </div>
+
+
+
+</kendo-window>

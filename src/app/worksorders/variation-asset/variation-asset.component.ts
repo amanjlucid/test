@@ -61,7 +61,7 @@ export class VariationAssetComponent implements OnInit {
     private alertService: AlertService,
     private helperService: HelperService,
     private confirmationDialogService: ConfirmationDialogService,
-    private sharedService : SharedService
+    private sharedService: SharedService
   ) {
     this.setSelectableSettings();
   }
@@ -80,7 +80,7 @@ export class VariationAssetComponent implements OnInit {
         }
       )
     )
-    
+
     this.getVariationPageDataWithVariationAssetFromWO()
   }
 
@@ -146,6 +146,8 @@ export class VariationAssetComponent implements OnInit {
 
           // variation asset data and grid render
           const variationAssetdata = data[3];
+          // console.log({ varasset: variationAssetdata.data });
+          
           if (variationAssetdata.isSuccess) {
             this.variationData = variationAssetdata.data;
             this.gridView = process(this.variationData, this.state);
@@ -238,12 +240,12 @@ export class VariationAssetComponent implements OnInit {
 
 
   disableVariationBtns(btnType, item) {
-   
+
     if (btnType == 'Edit') {
       if (this.selectedVariationInp.responsibility == "ALL" && this.selectedVariationInp.woiissuestatus != "Accepted" && this.selectedVariationInp.woiissuestatus != "Issued") {
         return false
       }
-     
+
     } else if (btnType == 'Accept') {
       if (this.selectedVariationInp.woiissuestatus == "Issued" && this.selectedVariationInp.responsibility == "ALL") {
         return false;
