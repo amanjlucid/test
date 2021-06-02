@@ -46,7 +46,7 @@ export class VariationNewComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    console.log(this.selectedAsset);
+    // console.log(this.selectedAsset);
 
     this.getVariationPageData();
 
@@ -75,7 +75,7 @@ export class VariationNewComponent implements OnInit {
 
       ]).subscribe(
         data => {
-          console.log(data);
+          // console.log(data);
           this.worksOrderData = data[0].data;
           this.phaseData = data[1].data;
           this.assetDetails = data[2].data[0];

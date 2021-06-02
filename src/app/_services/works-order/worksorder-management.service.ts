@@ -334,7 +334,7 @@ export class WorksorderManagementService {
 
     getCheckListName(WOSEQUENCE) {
         // return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetStageNameList?WOSEQUENCE=${WOSEQUENCE}`, this.httpOptions);
-        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetStageNameList?WOSEQUENCE=${WOSEQUENCE}`, this.httpOptions);
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetCheckNameList?WOSEQUENCE=${WOSEQUENCE}`, this.httpOptions);
     }
 
     getWEBWorksOrdersVariationList(WOSEQUENCE, WOPSEQUENCE, assId) {
@@ -481,6 +481,12 @@ export class WorksorderManagementService {
         let body = JSON.stringify(params);
         return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/ProcessCompletionReport`, body, this.httpOptions);
     }
+
+
+    getVW_PROGRAMMES_WORKS_ORDERs(ProgrammesStatus, MPUSID) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/Programmes/GetVW_PROGRAMMES_WORKS_ORDERs?ProgrammesStatus=${ProgrammesStatus}&MPUSID=${MPUSID}`, this.httpOptions);
+    }
+
 
 
 

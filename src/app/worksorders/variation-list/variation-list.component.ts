@@ -68,7 +68,7 @@ export class VariationListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log(this.selectedAsset);
+    // console.log(this.selectedAsset);
     this.subs.add(
       combineLatest([
         this.sharedService.worksOrdersAccess,

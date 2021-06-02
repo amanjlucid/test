@@ -59,7 +59,7 @@ export class WorksordersManagementComponent implements OnInit {
   userType: any = []
 
   woProgramManagmentInstructionsWindow = false;
-  // tabWindow = false;
+
   completionList = false;
 
   workOrderId: number;
@@ -80,6 +80,7 @@ export class WorksordersManagementComponent implements OnInit {
     //update notification on top
     this.helperService.updateNotificationOnTop();
 
+    // console.log(this.currentUser)
     this.subs.add(
       combineLatest([
         this.sharedService.worksOrdersAccess,
@@ -88,7 +89,6 @@ export class WorksordersManagementComponent implements OnInit {
       ]).subscribe(
         data => {
           // console.log(data);
-
           this.worksOrderAccess = data[0];
           this.worksOrderUsrAccess = data[1];
           this.userType = data[2][0];
@@ -104,28 +104,6 @@ export class WorksordersManagementComponent implements OnInit {
       )
     )
 
-    // this.subs.add(
-    //   this.sharedService.woUserSecObs.subscribe(
-    //     data => {
-    //       this.worksOrderUsrAccess = data;
-    //       // console.log(this.worksOrderUsrAccess)
-    //     }
-    //   )
-    // )
-
-    // this.subs.add(
-    //   this.sharedService.worksOrdersAccess.subscribe(
-    //     data => {
-    //       this.worksOrderAccess = data;
-    //       // console.log(this.worksOrderAccess);
-    //       if (this.worksOrderAccess.length > 0) {
-    //         if (!this.worksOrderAccess.includes("Programme Management")) {
-    //           this.router.navigate(['login']);
-    //         }
-    //       }
-    //     }
-    //   )
-    // )
 
     this.getManagement();
   }
@@ -148,7 +126,7 @@ export class WorksordersManagementComponent implements OnInit {
 
   getManagement(status = "A") {
     this.subs.add(
-      this.worksorderManagementService.getManagementData(status).subscribe(
+      this.worksorderManagementService.getVW_PROGRAMMES_WORKS_ORDERs(status, this.currentUser.userId).subscribe(
         data => {
           // console.log(data);
           if (data.isSuccess) {
@@ -164,7 +142,7 @@ export class WorksordersManagementComponent implements OnInit {
 
             //Find parent and Set parent id in each row
             tempData.forEach((value, index) => {
-              // if(value.name == "Test New Special Items 1"){
+              // if(value.name == "00JBPROGANG"){
               //   console.log(value)
               // }
 
@@ -196,6 +174,7 @@ export class WorksordersManagementComponent implements OnInit {
             })
 
             setTimeout(() => {
+              // console.log(gridData);
               this.gridData = [...gridData];
               this.loading = false
             }, 100);
@@ -457,7 +436,7 @@ export class WorksordersManagementComponent implements OnInit {
 
 
   setSeletedWORow(dataItem) {
-   
+
     if (this.selctedWorksOrder?.wosequence != dataItem.wosequence) {
       this.helperService.getWorkOrderSecurity(dataItem.wosequence)
       this.helperService.getUserTypeWithWOAndWp(dataItem.wosequence, dataItem.wprsequence);
@@ -466,7 +445,7 @@ export class WorksordersManagementComponent implements OnInit {
     this.selctedWorksOrder = dataItem;
   }
 
-  programmeMenuAccess(menuName){
+  programmeMenuAccess(menuName) {
     return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
   }
 

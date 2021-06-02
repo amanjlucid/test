@@ -347,6 +347,7 @@ export class CompletionListComponent implements OnInit, OnDestroy {
     this.formErrorObject(); // empty form error
     this.logValidationErrors(this.emailReportForm);
 
+    console.log(this.emailReportForm)
     if (this.emailReportForm.invalid) {
       return;
     }
@@ -366,21 +367,21 @@ export class CompletionListComponent implements OnInit, OnDestroy {
       "ModuleName": 'Completion Report'
     }
 
-    // this.subs.add(
-    //   this.workOrderProgrammeService.processCompletionReport(params).subscribe(
-    //     data => {
-    //       console.log(data);
-    //       if (data.isSuccess) {
-    //         this.closeEmailWithReportWindow();
-    //         this.alertService.success('Report Sent Successfully');
-    //       } else this.alertService.error(data.message);
+    this.subs.add(
+      this.workOrderProgrammeService.processCompletionReport(params).subscribe(
+        data => {
+          // console.log(data);
+          if (data.isSuccess) {
+            this.closeEmailWithReportWindow();
+            this.alertService.success('Report Sent Successfully');
+          } else this.alertService.error(data.message);
 
-    //       this.chRef.detectChanges();
-    //     }, error => {
-    //       this.alertService.error(error);
-    //     }
-    //   )
-    // )
+          this.chRef.detectChanges();
+        }, error => {
+          this.alertService.error(error);
+        }
+      )
+    )
 
     
   }

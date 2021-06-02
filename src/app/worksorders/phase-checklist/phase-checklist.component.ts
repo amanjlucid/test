@@ -195,13 +195,13 @@ export class PhaseChecklistComponent implements OnInit {
   }
 
   onStagesSingleSelectionChange(item: any) {
-    this.headerFilters.StageCategory = this.selectedCheckList.map(x => x.item_id).toString();
+    this.headerFilters.CheckListCategory = this.selectedCheckList.map(x => x.item_id).toString();
     this.stateChange.next(this.headerFilters);
   }
 
   onStagesSelectionAllChange(items: any) {
     this.selectedCheckList = items;
-    this.headerFilters.StageCategory = this.selectedCheckList.map(x => x.item_id).toString();
+    this.headerFilters.CheckListCategory = this.selectedCheckList.map(x => x.item_id).toString();
     this.stateChange.next(this.headerFilters);
   }
 
