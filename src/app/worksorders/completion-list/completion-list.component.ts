@@ -48,32 +48,32 @@ export class CompletionListComponent implements OnInit, OnDestroy {
   worksOrderUsrAccess: any = [];
   userType: any = [];
 
-  emailReportForm: FormGroup;
-  submitted = false;
-  formErrors: any;
-  selectedUsersToMail: any = [];
-  public dropdownSettings = {
-    singleSelection: false,
-    idField: 'item_id',
-    textField: 'item_text',
-    selectAllText: 'Select All',
-    unSelectAllText: 'UnSelect All',
-    itemsShowLimit: 3,
-    allowSearchFilter: true
-  };
-  validationMessage = {
-    'subject': {
-      'required': 'An Email Subject is required.'
-    },
-    'emailText': {
-      'required': 'Email text is required.'
-    }
-  };
-  userList: any;
+  // emailReportForm: FormGroup;
+  // submitted = false;
+  // formErrors: any;
+  // selectedUsersToMail: any = [];
+  // public dropdownSettings = {
+  //   singleSelection: false,
+  //   idField: 'item_id',
+  //   textField: 'item_text',
+  //   selectAllText: 'Select All',
+  //   unSelectAllText: 'UnSelect All',
+  //   itemsShowLimit: 3,
+  //   allowSearchFilter: true
+  // };
+  // validationMessage = {
+  //   'subject': {
+  //     'required': 'An Email Subject is required.'
+  //   },
+  //   'emailText': {
+  //     'required': 'Email text is required.'
+  //   }
+  // };
+  // userList: any;
   SendEmailInsReportWindow = false;
-  userNameCommaSeprted = '';
-  userListToMail: any;
-  loading = false;
+  // userNameCommaSeprted = '';
+  // userListToMail: any;
+  // loading = false;
 
 
   constructor(
@@ -111,15 +111,15 @@ export class CompletionListComponent implements OnInit, OnDestroy {
       )
     )
 
-    this.emailReportForm = this.fb.group({
-      subject: ['', [Validators.required]],
-      emailText: ['', Validators.required],
-      userlist: [''],
-    });
+    // this.emailReportForm = this.fb.group({
+    //   subject: ['', [Validators.required]],
+    //   emailText: ['', Validators.required],
+    //   userlist: [''],
+    // });
 
     // this.pageRequiredData();
     this.getWorkOrderGetWorksOrderCompletionsList();
-    this.getUserList();
+    // this.getUserList();
 
   }
 
@@ -254,37 +254,37 @@ export class CompletionListComponent implements OnInit, OnDestroy {
 
 
 
-  public onItemSelect(item: any) {
-    this.selectedUsersToMail.push(item);
-    this.setParamsForUserName();
-  }
+  // public onItemSelect(item: any) {
+  //   this.selectedUsersToMail.push(item);
+  //   this.setParamsForUserName();
+  // }
 
-  public onSelectAll(items: any) {
-    this.selectedUsersToMail = items;
-    this.setParamsForUserName();
-  }
+  // public onSelectAll(items: any) {
+  //   this.selectedUsersToMail = items;
+  //   this.setParamsForUserName();
+  // }
 
-  public onItemDeSelect(item: any) {
-    this.selectedUsersToMail = this.selectedUsersToMail.filter(x => x.item_id != item.item_id);
-    this.setParamsForUserName();
+  // public onItemDeSelect(item: any) {
+  //   this.selectedUsersToMail = this.selectedUsersToMail.filter(x => x.item_id != item.item_id);
+  //   this.setParamsForUserName();
 
-  }
+  // }
 
-  public onItemDeSelectAll(items: any) {
-    this.selectedUsersToMail = items;
-    this.userNameCommaSeprted = '';
+  // public onItemDeSelectAll(items: any) {
+  //   this.selectedUsersToMail = items;
+  //   this.userNameCommaSeprted = '';
 
-  }
+  // }
 
-  public setParamsForUserName() {
-    this.userNameCommaSeprted = this.createString(this.selectedUsersToMail, 'item_id');
-  }
+  // public setParamsForUserName() {
+  //   this.userNameCommaSeprted = this.createString(this.selectedUsersToMail, 'item_id');
+  // }
 
-  createString(arr, key) {
-    return arr.map(function (obj) {
-      return obj[key];
-    }).join(',');
-  }
+  // createString(arr, key) {
+  //   return arr.map(function (obj) {
+  //     return obj[key];
+  //   }).join(',');
+  // }
 
 
   openEmailInstructionReport(item) {
@@ -295,96 +295,96 @@ export class CompletionListComponent implements OnInit, OnDestroy {
   }
 
 
-  closeEmailWithReportWindow() {
+  closeEmailWithReportWindow(eve) {
     this.SendEmailInsReportWindow = false;
-    this.emailReportForm.reset();
-    this.selectedUsersToMail = [];
+    // this.emailReportForm.reset();
+    // this.selectedUsersToMail = [];
     $('.completionListOverlay').removeClass('ovrlay');
     // $('.reportingDiv').removeClass('pointerEvent');
   }
 
 
-  getUserList() {
-    this.reportingGrpService.userListToMail().subscribe(
-      data => {
-        this.userListToMail = data.data;
-      }
-    );
-  }
+  // getUserList() {
+  //   this.reportingGrpService.userListToMail().subscribe(
+  //     data => {
+  //       this.userListToMail = data.data;
+  //     }
+  //   );
+  // }
 
 
-  formErrorObject() {
-    this.formErrors = {
-      'subject': '',
-      'emailText': ''
-    }
-  }
+  // formErrorObject() {
+  //   this.formErrors = {
+  //     'subject': '',
+  //     'emailText': ''
+  //   }
+  // }
 
-  logValidationErrors(group: FormGroup): void {
-    Object.keys(group.controls).forEach((key: string) => {
-      const abstractControl = group.get(key);
-      if (abstractControl instanceof FormGroup) {
-        this.logValidationErrors(abstractControl);
-      } else {
-        if (abstractControl && !abstractControl.valid) {
-          const messages = this.validationMessage[key];
-          for (const errorKey in abstractControl.errors) {
-            if (errorKey) {
-              this.formErrors[key] += messages[errorKey] + ' ';
-            }
-          }
-        }
-      }
-    })
-  }
+  // logValidationErrors(group: FormGroup): void {
+  //   Object.keys(group.controls).forEach((key: string) => {
+  //     const abstractControl = group.get(key);
+  //     if (abstractControl instanceof FormGroup) {
+  //       this.logValidationErrors(abstractControl);
+  //     } else {
+  //       if (abstractControl && !abstractControl.valid) {
+  //         const messages = this.validationMessage[key];
+  //         for (const errorKey in abstractControl.errors) {
+  //           if (errorKey) {
+  //             this.formErrors[key] += messages[errorKey] + ' ';
+  //           }
+  //         }
+  //       }
+  //     }
+  //   })
+  // }
 
-  get emailReportCon() { return this.emailReportForm.controls; }
+  // get emailReportCon() { return this.emailReportForm.controls; }
 
-  onEmailReportSubmit() {
+  // onEmailReportSubmit() {
 
-    this.loading = true;
-    this.submitted = true;
-    this.formErrorObject(); // empty form error
-    this.logValidationErrors(this.emailReportForm);
+  //   this.loading = true;
+  //   this.submitted = true;
+  //   this.formErrorObject(); // empty form error
+  //   this.logValidationErrors(this.emailReportForm);
 
-    console.log(this.emailReportForm)
-    if (this.emailReportForm.invalid) {
-      return;
-    }
+  //   console.log(this.emailReportForm)
+  //   if (this.emailReportForm.invalid) {
+  //     return;
+  //   }
 
-    if (this.selectedUsersToMail.length == 0) {
-      this.alertService.error('Please select atleast one user to send mail');
-      return
-    }
+  //   if (this.selectedUsersToMail.length == 0) {
+  //     this.alertService.error('Please select atleast one user to send mail');
+  //     return
+  //   }
 
-    let params = {
-      // "USERID": this.currentUser.userId,
-      "WOSEQUENCE": this.selectedCompletionsList.wosequence,
-      "WOCOSEQUENCE ": this.selectedCompletionsList.wocosequence,
-      "Body": this.emailReportCon.emailText.value,
-      "Subject": this.emailReportCon.subject.value,
-      "USERID": this.userNameCommaSeprted,
-      "ModuleName": 'Completion Report'
-    }
+  //   let params = {
+  //     // "USERID": this.currentUser.userId,
+  //     "WOSEQUENCE": this.selectedCompletionsList.wosequence,
+  //     "WOCOSEQUENCE ": this.selectedCompletionsList.wocosequence,
+  //     "Body": this.emailReportCon.emailText.value,
+  //     "Subject": this.emailReportCon.subject.value,
+  //     "USERID": this.userNameCommaSeprted,
+  //     "ModuleName": 'Completion Report'
+  //   }
 
-    this.subs.add(
-      this.workOrderProgrammeService.processCompletionReport(params).subscribe(
-        data => {
-          // console.log(data);
-          if (data.isSuccess) {
-            this.closeEmailWithReportWindow();
-            this.alertService.success('Report Sent Successfully');
-          } else this.alertService.error(data.message);
+  //   this.subs.add(
+  //     this.workOrderProgrammeService.processCompletionReport(params).subscribe(
+  //       data => {
+  //         // console.log(data);
+  //         if (data.isSuccess) {
+  //           this.closeEmailWithReportWindow();
+  //           this.alertService.success('Report Sent Successfully');
+  //         } else this.alertService.error(data.message);
 
-          this.chRef.detectChanges();
-        }, error => {
-          this.alertService.error(error);
-        }
-      )
-    )
+  //         this.chRef.detectChanges();
+  //       }, error => {
+  //         this.alertService.error(error);
+  //       }
+  //     )
+  //   )
 
     
-  }
+  // }
 
 
   // saveSendCompletionReport() {

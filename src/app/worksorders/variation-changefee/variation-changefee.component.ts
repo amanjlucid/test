@@ -47,20 +47,20 @@ export class VariationChangefeeComponent implements OnInit {
   ngOnInit(): void {
     // console.log({ fees: this.selectedSingleFees, variation: this.selectedVariationInp, asset: this.selectedSingleVariationAssetInp })
 
-    const { wostagename, wocheckname, woaccommittedfee, woiadfeecost, woiadcomment } = this.selectedSingleFees;
+    const { wostagename, wocheckname, woaccommittedfee, woacpendingfee, woiadcomment } = this.selectedSingleFees;
 
     this.variationFeeForm = this.fb.group({
       stage: [{ value: wostagename, disabled: true }, [Validators.required, Validators.maxLength(250)]],
       name: [{ value: wocheckname, disabled: true }, [Validators.required, Validators.maxLength(250)]],
       feecost: [{ value: woaccommittedfee, disabled: true }, [Validators.required, Validators.maxLength(250)]],
-      feecostoverride: [woiadfeecost, [Validators.required, Validators.maxLength(250)]],
+      feecostoverride: [woacpendingfee, [Validators.required, Validators.maxLength(250)]],
       comment: [woiadcomment, [Validators.required, Validators.maxLength(250)]],
     });
 
     setTimeout(() => {
       this.variationFeeForm.patchValue({
         feecost: woaccommittedfee,
-        feecostoverride: woiadfeecost,
+        feecostoverride: woacpendingfee,
       })
     }, 100);
 

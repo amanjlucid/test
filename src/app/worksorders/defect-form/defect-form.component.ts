@@ -16,9 +16,10 @@ import { forkJoin } from 'rxjs';
 
 export class DefectFormComponent implements OnInit {
   @Input() openDefectform: boolean = false;
-  @Input() defectInp: any;
-  @Input() defectFormMode:string = 'new';
-  @Input() openedFrom:string;
+  @Input() defectFormMode: string = 'new';
+  @Input() openedFrom: string;
+  @Input() singleWorkOrderAssetInp: any;
+  @Input() selectedDefectInp: any;
   @Output() closeDefectFormEvent = new EventEmitter<boolean>();
 
   subs = new SubSink(); // to unsubscribe services
@@ -47,9 +48,14 @@ export class DefectFormComponent implements OnInit {
   gridLoading = true
   pageSize = 25;
   mySelection: number[] = [];
-  packageData:any;
+  packageData: any;
   @ViewChild(GridComponent) grid: GridComponent;
   selectableSettings: SelectableSettings;
+
+  programmeData: any;
+  worksOrderData: any;
+  phaseData: any;
+  workorderAsset: any;
 
   constructor(
     private chRef: ChangeDetectorRef,
@@ -59,7 +65,7 @@ export class DefectFormComponent implements OnInit {
     private helperService: HelperService
   ) {
     this.setSelectableSettings();
-   }
+  }
 
   setSelectableSettings(): void {
     this.selectableSettings = {
@@ -75,7 +81,7 @@ export class DefectFormComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  closeDefectForm(){
+  closeDefectForm() {
     this.openDefectform = false;
     this.closeDefectFormEvent.emit(false);
   }
@@ -102,6 +108,37 @@ export class DefectFormComponent implements OnInit {
   }
 
   cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
+
+  }
+
+  requiredPageData() {
+    const { wprsequence, wosequence, wopsequence, assid } = this.singleWorkOrderAssetInp;
+    let pageReq = [
+      this.workOrderProgrammeService.getWorkProgrammesByWprsequence(wprsequence),
+      this.workOrderProgrammeService.getWorksOrderByWOsequence(wosequence),
+      this.workOrderProgrammeService.getPhase(wosequence, wopsequence),
+      this.workOrderProgrammeService.getAssetAddressByAsset(assid),
+    ];
+
+    this.subs.add(
+      forkJoin(pageReq).subscribe(
+        (data: any) => {
+          console.log(data);
+          const programmeData = data[0];
+          const worksOrderData = data[1];
+          const phaseData = data[2];
+          const workorderAsset = data[3];
+
+          if (programmeData.isSuccess) this.programmeData = programmeData.data[0];
+          if (worksOrderData.isSuccess) this.worksOrderData = worksOrderData.data;
+          if (phaseData.isSuccess) this.phaseData = phaseData.data;
+          if (workorderAsset.isSuccess) this.workorderAsset = workorderAsset.data[0];
+
+          // this.getDefectList();
+
+        }
+      )
+    )
     
   }
 
@@ -119,6 +156,10 @@ export class DefectFormComponent implements OnInit {
     if (item.attributeexists == 'Work Package Exists') return false;
     if (item.exclusionreason == 'Work Package already exists on Work List') return false;
     return true;
+  }
+
+  openCalendar(obj) {
+    obj.toggle()
   }
 
 }

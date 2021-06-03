@@ -74,6 +74,7 @@ import { WoPmInstructionAssetsComponent } from '../workorder-program-management/
 import { WoPmInstructionAssetsDetailComponent } from '../workorder-program-management/wo-pm-instruction-assets-detail/wo-pm-instruction-assets-detail.component';
 import { AssetDefectsListComponent } from '../asset-defects-list/asset-defects-list.component';
 import { DefectFormComponent } from '../defect-form/defect-form.component';
+import { SendEmailComponent } from '../send-email/send-email.component';
 
 
 @NgModule({
@@ -139,7 +140,8 @@ import { DefectFormComponent } from '../defect-form/defect-form.component';
     WopmRefusalCodesComponent,
     WopmSecJobrolesComponent,
     AssetDefectsListComponent,
-    DefectFormComponent
+    DefectFormComponent,
+    SendEmailComponent
   ],
 
   imports: [

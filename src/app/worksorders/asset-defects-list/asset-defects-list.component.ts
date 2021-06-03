@@ -51,7 +51,7 @@ export class AssetDefectsListComponent implements OnInit {
   userType: any = [];
   defectFormMode = 'new';
   openDefectform = false;
-  selectedSingleDefect:any;
+  selectedSingleDefect: any;
 
   constructor(
     private chRef: ChangeDetectorRef,
@@ -69,7 +69,9 @@ export class AssetDefectsListComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    console.log(this.singleWorkOrderAssetInp)
     console.log(this.singleWorkOrderInp);
+
     this.subs.add(
       combineLatest([
         this.sharedService.worksOrdersAccess,
@@ -102,14 +104,21 @@ export class AssetDefectsListComponent implements OnInit {
     let pageReq = [];
 
     if (this.openedFrom == "assetchecklist") {
+      const { wprsequence, wosequence, wopsequence, assid } = this.singleWorkOrderAssetInp;
+      pageReq = [
+        this.workOrderProgrammeService.getWorkProgrammesByWprsequence(wprsequence),
+        this.workOrderProgrammeService.getWorksOrderByWOsequence(wosequence),
+        this.workOrderProgrammeService.getPhase(wosequence, wopsequence),
+        this.workOrderProgrammeService.getAssetAddressByAsset(assid),
+      ];
+    }
 
-    } else if (this.openedFrom == "workdetail") {
+    else if (this.openedFrom == "workdetail") {
       const { wprsequence, wosequence } = this.singleWorkOrderInp;
       pageReq = [
         this.workOrderProgrammeService.getWorkProgrammesByWprsequence(wprsequence),
         this.workOrderProgrammeService.getWorksOrderByWOsequence(wosequence),
-        // this.workOrderProgrammeService.getPhase(wosequence, wopsequence),
-      ]
+      ];
     }
 
     this.subs.add(
@@ -125,8 +134,9 @@ export class AssetDefectsListComponent implements OnInit {
           if (this.openedFrom == "assetchecklist") {
             const phaseData = data[2];
             const workorderAsset = data[3];
-            if (workorderAsset.isSuccess) this.workorderAsset = workorderAsset.data[0];
             if (phaseData.isSuccess) this.phaseData = phaseData.data;
+            if (workorderAsset.isSuccess) this.workorderAsset = workorderAsset.data[0];
+
           }
 
           this.getDefectList();
@@ -171,7 +181,7 @@ export class AssetDefectsListComponent implements OnInit {
     this.selectedSingleDefect = dataItem;
   }
 
-  woMenuAccess(menuName:string) {
+  woMenuAccess(menuName: string) {
     if (this.userType == undefined) return true;
 
     if (this.userType?.wourroletype == "Dual Role") {
@@ -183,14 +193,14 @@ export class AssetDefectsListComponent implements OnInit {
   }
 
 
-  openDefectForm(mode:string, item = null){
+  openDefectForm(mode: string, item = null) {
     $('.defectListoverlay').addClass('ovrlay');
     this.defectFormMode = mode;
     this.selectedSingleDefect = item;
     this.openDefectform = true;
   }
 
-  closeDefectForm(event){
+  closeDefectForm(event) {
     this.openDefectform = event;
     $('.defectListoverlay').removeClass('ovrlay');
   }

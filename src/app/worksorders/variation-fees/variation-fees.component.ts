@@ -20,7 +20,7 @@ export class VariationFeesComponent implements OnInit {
   @Input() openedFrom = 'assetchecklist';
   @Input() openedFor = 'details';
   @Output() closeFeesEvent = new EventEmitter<boolean>();
-  title = '';
+  title = 'Variation Fees';
   subs = new SubSink();
   state: State = {
     skip: 0,

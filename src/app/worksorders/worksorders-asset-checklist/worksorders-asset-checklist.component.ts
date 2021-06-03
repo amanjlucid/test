@@ -67,6 +67,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
   reason: string = '';
   openVariationList: boolean = false;
   variationNewOrIssue = false;
+  openDefectsList = false;
 
   constructor(
     private chRef: ChangeDetectorRef,
@@ -78,7 +79,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    // console.log(this.selectedChildRow);
+    console.log(this.selectedChildRow);
     //subscribe for work order security access
     this.subs.add(
       combineLatest([
@@ -133,7 +134,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
           if (workorderAsset.isSuccess) this.workorderAsset = workorderAsset.data[0];
 
           this.checkListGridData();
-          // this.getVariationIndicator();
+          this.getVariationIndicator();
 
         }
       )
@@ -1361,6 +1362,17 @@ export class WorksordersAssetChecklistComponent implements OnInit {
 
   closeVariation(eve) {
     this.openVariationList = eve;
+    $('.checklistOverlay').removeClass('ovrlay');
+  }
+
+
+  openDefectsMethod(){
+    $('.checklistOverlay').addClass('ovrlay');
+    this.openDefectsList = true;
+  }
+
+  closeDefectList(eve){
+    this.openDefectsList = eve;
     $('.checklistOverlay').removeClass('ovrlay');
   }
 

@@ -69,7 +69,8 @@ export class VariationWorkListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // console.log({ openfor: this.openedFor, from: this.openedFrom, variation: this.selectedVariationInp, asset: this.selectedSingleVariationAssetInp })
+    console.log({ openfor: this.openedFor, from: this.openedFrom, variation: this.selectedVariationInp, asset: this.selectedSingleVariationAssetInp })
+
     this.subs.add(
       combineLatest([
         this.sharedService.woUserSecObs,
@@ -77,7 +78,6 @@ export class VariationWorkListComponent implements OnInit {
         this.sharedService.userTypeObs
       ]).subscribe(
         data => {
-          // console.log(data);
           this.worksOrderUsrAccess = data[0];
           this.worksOrderAccess = data[1];
           this.userType = data[2][0];
@@ -89,12 +89,15 @@ export class VariationWorkListComponent implements OnInit {
       const { woiissuereason, woisequence } = this.selectedSingleVariationAssetInp
       this.title = `Variation: ${woiissuereason} (${woisequence})`;
       this.getVariationWorkList();
+
     } else if ((this.openedFor == "edit" || this.openedFor == "append") && (this.openedFrom == "assetchecklist" || this.openedFrom == "worksorder")) {
       this.title = `Edit Work List Variation Items`;
       this.getVariationWorkList();
       this.getRequiredPageData();
+
     }
 
+    this.chRef.detectChanges();
 
 
   }
@@ -164,7 +167,6 @@ export class VariationWorkListComponent implements OnInit {
         this.workOrderProgrammeService.getWorksOrderByWOsequence(wosequence),
       ]).subscribe(
         data => {
-          // console.log(data);
           this.worksOrderData = data[0].data;
         }
       )
@@ -173,13 +175,10 @@ export class VariationWorkListComponent implements OnInit {
 
 
   getVariationWorkList() {
-
     const { wosequence, wopsequence, assid } = this.selectedSingleVariationAssetInp;
-
     this.subs.add(
-      this.workOrderProgrammeService.getWEBWorksOrdersAssetDetailAndVariation(wosequence, wopsequence, assid).subscribe(
+      this.workOrderProgrammeService.getWEBWorksOrdersAssetDetailAndVariation(wosequence, wopsequence, assid, 0).subscribe(
         data => {
-          // console.log({ worklist: data.data });
           if (data.isSuccess) {
             this.variationWorkListData = data.data;
             this.gridView = process(this.variationWorkListData, this.state);
@@ -198,7 +197,7 @@ export class VariationWorkListComponent implements OnInit {
 
   rowCallback(context: RowClassArgs) {
     return {
-      'k-state-disabled': context.dataItem.woadstatus === "Accepted"
+      'k-state-disabled': false//context.dataItem.woadstatus === "Accepted"
     };
   }
 
@@ -223,7 +222,6 @@ export class VariationWorkListComponent implements OnInit {
   cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
     this.selectedSingleVarWorkList = dataItem;
     this.setSeletedRow(dataItem);
-    // console.log(dataItem)
   }
 
   closeWorkList() {
@@ -275,7 +273,6 @@ export class VariationWorkListComponent implements OnInit {
     this.subs.add(
       this.worksOrdersService.rechargeToggleVariation(params).subscribe(
         data => {
-          // console.log(data);
           if (data.isSuccess) {
             let success_msg = "Recharge Successfully Set";
             if (!recharge) {
@@ -507,9 +504,8 @@ export class VariationWorkListComponent implements OnInit {
     this.subs.add(
       this.workOrderProgrammeService.createVariationForSIMReplacement(params).subscribe(
         data => {
-          // console.log(data)
           if (data.isSuccess) {
-
+            this.getVariationWorkList();
           } else this.alertService.error(data.message)
         }, err => this.alertService.error(err)
       )

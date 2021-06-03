@@ -86,8 +86,8 @@
 
   <div class="completionListOverlay"></div>
 
- 
-
+ <app-send-email *ngIf="SendEmailInsReportWindow" [SendEmailInsReportWindow]="SendEmailInsReportWindow" (closeEmailReportEvent)="closeEmailWithReportWindow($event)" [selectedObj]="selectedCompletionsList" [opendFrom]="'completion'"></app-send-email>
+<!-- 
     <kendo-window title="Send Report" [top]="25" *ngIf="SendEmailInsReportWindow" (close)="closeEmailWithReportWindow()"
       [minWidth]="800" [height]="auto" [minHeight]="300" [width]="650">
 
@@ -141,7 +141,7 @@
         </div>
       </div>
 
-    </kendo-window>
+    </kendo-window> -->
 
 
 

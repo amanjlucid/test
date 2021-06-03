@@ -1,0 +1,8 @@
+.k-window{
+    position: fixed !important;
+    padding: 0;
+}
+
+.k-window-content, .k-prompt-container {
+    overflow: inherit !important;
+}

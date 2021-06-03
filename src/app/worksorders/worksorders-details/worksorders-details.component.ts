@@ -228,10 +228,6 @@ export class WorksordersDetailsComponent implements OnInit {
                   value.parentId = `${parent.wopsequence}${parent.wosequence}${parent.wprsequence}${this.helperService.replaceAll(parent.assid, " ", "")}`;
                   value.id = `${value.wopsequence}${value.wosequence}${value.wprsequence}${this.helperService.replaceAll(value.assid, " ", "")}${index}`;
 
-
-                  //  let Form = JSON.stringify(this.myForm.value);
-
-
                   value.parentData = JSON.stringify(parent);
                   value.assid = value.assid;
 
@@ -866,6 +862,7 @@ export class WorksordersDetailsComponent implements OnInit {
   closePhaseChecklist(eve) {
     this.phaseChecklist = eve;
     $('.worksOrderDetailOvrlay').removeClass('ovrlay');
+    this.worksOrderDetailPageData();
     // this.selectedRow = undefined;
   }
 

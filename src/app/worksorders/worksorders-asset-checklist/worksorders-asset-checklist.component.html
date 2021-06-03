@@ -39,6 +39,9 @@
                 </div>
             </div>
 
+            <button *ngIf="woMenuBtnSecurityAccess('Defects')" (click)="openDefectsMethod()"
+                class="btn btn-sm themeButton mr-1">Defects</button>
+
             <button *ngIf="woMenuBtnSecurityAccess('Variations')" type="button"
                 class="btn btn-sm themeButton mr-1 headin_section variationBtn" (click)="openVariationFun()">
                 <span *ngIf="variationNewOrIssue" class="badge badge-primary badge-dot indicator"></span>
@@ -713,6 +716,12 @@
 
     <app-variation-list *ngIf="openVariationList" [openVariationList]="openVariationList"
         [openedFrom]="'assetchecklist'" [selectedAsset]="selectedChildRow"
-        (closeVariationListEvent)="closeVariation($event)"></app-variation-list>
+        (closeVariationListEvent)="closeVariation($event)">
+    </app-variation-list>
+
+    <app-asset-defects-list *ngIf="openDefectsList" [openDefectsList]="openDefectsList"
+        [singleWorkOrderAssetInp]="selectedChildRow" [openedFrom]="'assetchecklist'"
+        (closeDefectsListEvent)="closeDefectList($event)">
+    </app-asset-defects-list>
 
 </kendo-window>

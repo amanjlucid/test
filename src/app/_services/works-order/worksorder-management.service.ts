@@ -341,8 +341,8 @@ export class WorksorderManagementService {
         return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWEBWorksOrdersVariationList?WOSEQUENCE=${WOSEQUENCE}&WOPSEQUENCE=${WOPSEQUENCE}&assId=${assId}`, this.httpOptions);
     }
 
-    getWEBWorksOrdersAssetDetailAndVariation(WOSEQUENCE, WOPSEQUENCE, assId) {
-        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWEBWorksOrdersAssetDetailAndVariation?WOSEQUENCE=${WOSEQUENCE}&WOPSEQUENCE=${WOPSEQUENCE}&assId=${assId}`, this.httpOptions);
+    getWEBWorksOrdersAssetDetailAndVariation(WOSEQUENCE, WOPSEQUENCE, assId, WOCHECKSURCDE = 0) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWEBWorksOrdersAssetDetailAndVariation?WOSEQUENCE=${WOSEQUENCE}&WOPSEQUENCE=${WOPSEQUENCE}&assId=${assId}&WOCHECKSURCDE=${WOCHECKSURCDE}`, this.httpOptions);
     }
 
     getWEBWorksOrdersAssetChecklistAndVariation(WOSEQUENCE, WOPSEQUENCE,WOISEQUENCE, assId) {
@@ -485,6 +485,11 @@ export class WorksorderManagementService {
 
     getVW_PROGRAMMES_WORKS_ORDERs(ProgrammesStatus, MPUSID) {
         return this.http.get<any>(`${appConfig.apiUrl}/api/Programmes/GetVW_PROGRAMMES_WORKS_ORDERs?ProgrammesStatus=${ProgrammesStatus}&MPUSID=${MPUSID}`, this.httpOptions);
+    }
+
+    insertWorksOrderInstructionAssetDetails(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/InsertWorksOrderInstructionAssetDetails`, body, this.httpOptions);
     }
 
 

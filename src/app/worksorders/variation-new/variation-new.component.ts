@@ -146,8 +146,6 @@ export class VariationNewComponent implements OnInit {
         // WOIADRECHARGEYN: '',
         // WOIADREFUSAL: '',
 
-
-
         WOPSEQUENCE: wopsequence,
         CTTSURCDE: this.worksOrderData.cttsurcde,
         WOIACCEPTREASON: '',
@@ -166,7 +164,7 @@ export class VariationNewComponent implements OnInit {
         WOIREQUESTDATE: this.helperService.getDateString('Today'),
         WOIREQUESTUSER: this.currentUser.userId,
         WOIREQUESTTYPE: 'Variation',
-        WOISEQUENCE: '',
+        WOISEQUENCE: 0,
         WOSEQUENCE: wosequence
       }
 

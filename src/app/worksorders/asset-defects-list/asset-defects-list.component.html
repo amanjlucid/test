@@ -37,16 +37,22 @@
                             <div class="col-md-2"><label class="lbl">Phase: </label></div>
                             <div class="col-md-10">
                                 <input type="text"
-                                    value="{{singleWorksOrder?.woname}} ({{singleWorksOrder?.wosequence}})"
+                                    value="{{phaseData?.wopname}}"
                                     class="form-control form-control-sm" [readonly]="true">
                             </div>
                         </div>
 
                         <div class="row mt-1" *ngIf="openedFrom == 'assetchecklist'">
                             <div class="col-md-2"><label class="lbl">Asset:</label> </div>
-                            <div class="col-md-10">
+                            <div class="col-md-3">
                                 <input type="text"
-                                    value="{{singleWorksOrder?.woname}} ({{singleWorksOrder?.wosequence}})"
+                                    value="{{workorderAsset?.assid}}"
+                                    class="form-control form-control-sm" [readonly]="true">
+                            </div>
+
+                            <div class="col-md-7">
+                                <input type="text"
+                                    value="{{workorderAsset?.assid}} - {{workorderAsset?.astconcataddress}}"
                                     class="form-control form-control-sm" [readonly]="true">
                             </div>
                         </div>
@@ -167,4 +173,4 @@
 </kendo-window>
 
 <app-defect-form *ngIf="openDefectform" [openDefectform]="openDefectform" [defectFormMode]="defectFormMode"
-    [openedFrom]="openedFrom" (closeDefectFormEvent)="closeDefectForm($event)"></app-defect-form>
+    [openedFrom]="openedFrom" [singleWorkOrderAssetInp]="singleWorkOrderAssetInp" (closeDefectFormEvent)="closeDefectForm($event)"></app-defect-form>

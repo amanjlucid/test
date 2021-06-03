@@ -679,7 +679,7 @@
     </app-asset-remove-reason>
 
     <app-worksorders-asset-checklist-predecessors *ngIf="predecessors" [predecessors]="predecessors"
-        [predecessorsWindowFrom]="'phasechecklist'" [selectedChecklist]="selectedChecklistList"
+        [predecessorsWindowFrom]="'phasechecklist'" [selectedChecklist]="singlePhaseChecklist"
         (closePredecessorsEvent)="closePredecessors($event)">
     </app-worksorders-asset-checklist-predecessors>
 

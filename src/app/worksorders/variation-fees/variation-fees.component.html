@@ -75,11 +75,11 @@
                     </ng-template>
                 </kendo-grid-column>
 
-                <kendo-grid-column title="Override Fee" field="woiadfeecost" width="120"
+                <kendo-grid-column title="Override Fee" field="woacpendingfee" width="120"
                     [style]="{'text-align': 'right'}">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <span>
-                            {{ dataItem.woiadfeecost | currency:'GBP':'symbol' }}
+                            {{ dataItem.woacpendingfee | currency:'GBP':'symbol' }}
                         </span>
                     </ng-template>
 
