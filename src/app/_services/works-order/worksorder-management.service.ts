@@ -493,6 +493,12 @@ export class WorksorderManagementService {
     }
 
 
+    worksOrdersOutstandingVariationExistsForAsset(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WorksOrdersOutstandingVariationExistsForAsset`, body, this.httpOptions);
+    }
+
+
 
 
 

@@ -56,6 +56,7 @@ export class VariationListComponent implements OnInit {
   worksOrderUsrAccess: any = [];
   userType: any = [];
   variationIssuedAndAccepted:boolean = true;
+  outstandingVariation: boolean = true;
 
   constructor(
     private chRef: ChangeDetectorRef,
@@ -116,6 +117,7 @@ export class VariationListComponent implements OnInit {
 
     if (this.openedFrom == 'assetchecklist') {
       const { wosequence, assid, wopsequence } = this.selectedAsset;
+      const params = { WOSEQUENCE: wosequence, strASSID: assid, WOPSEQUENCE: wopsequence }
       this.subs.add(
         forkJoin([
           this.workOrderProgrammeService.getWorksOrderByWOsequence(wosequence),
@@ -123,9 +125,9 @@ export class VariationListComponent implements OnInit {
           this.workOrderProgrammeService.getAssetAddressByAsset(assid),
           this.workOrderProgrammeService.getWEBWorksOrdersVariationList(wosequence, wopsequence, assid),
           this.workOrderProgrammeService.specificWorkOrderAssets(wosequence, assid, wopsequence),
+          this.workOrderProgrammeService.worksOrdersOutstandingVariationExistsForAsset(params),
         ]).subscribe(
           data => {
-            // console.log(data)
             this.worksOrderData = data[0].data;
             this.phaseData = data[1].data;
             this.assetDetails = data[2].data[0];
@@ -135,9 +137,10 @@ export class VariationListComponent implements OnInit {
             if (variationData.isSuccess) {
               this.variationData = variationData.data;
 
+              this.outstandingVariation = data[5].data.result;
               //check if variation in asset has accepted and issued status
-              this.variationIssuedAndAccepted = variationData.data.some(x => x.woiissuestatus == "Accepted" || x.woiissuestatus == "Issued")
-             
+              this.variationIssuedAndAccepted = variationData.data.some(x =>  x.woirequesttype == "Variation")
+
               this.gridView = process(this.variationData, this.state);
             } else this.alertService.error(variationData.message);
 
@@ -240,22 +243,15 @@ export class VariationListComponent implements OnInit {
   }
 
   disableNewAndAppendBtn(btnName) {
-    const { wostatus } = this.selectedAsset
+    const { wostatus } = this.selectedAsset;
     if (btnName == "new" || btnName == "append") {
       if ((wostatus == "In Progress" || wostatus == "Accepted") && this.variationIssuedAndAccepted == false) {
         return false;
       }
     }
 
-    // if (btnName == "append") {
-    //   if ((wostatus == "In Progress" || wostatus == "Accepted") && this.variationIssuedAndAccepted == false) {
-    //     return false;
-    //   }
-    // }
-
-
-    // woAsset?.woassstatus != 'Accepted'
     return true;
+
   }
 
   disableVariationBtns(btnType, item) {

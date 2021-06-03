@@ -179,6 +179,7 @@ export class VariationWorkListComponent implements OnInit {
     this.subs.add(
       this.workOrderProgrammeService.getWEBWorksOrdersAssetDetailAndVariation(wosequence, wopsequence, assid, 0).subscribe(
         data => {
+          console.log(data)
           if (data.isSuccess) {
             this.variationWorkListData = data.data;
             this.gridView = process(this.variationWorkListData, this.state);
@@ -197,7 +198,7 @@ export class VariationWorkListComponent implements OnInit {
 
   rowCallback(context: RowClassArgs) {
     return {
-      'k-state-disabled': false//context.dataItem.woadstatus === "Accepted"
+      'k-state-disabled': context.dataItem.woadstatus === "Accepted"
     };
   }
 

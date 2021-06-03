@@ -134,18 +134,8 @@ export class VariationPkzEnterQtyComponent implements OnInit {
             this.displayHighestPkz = this.selectedPkzs[this.selectedPkzs.length - 1];
             this.applyCount = this.selectedPkzs.length;
             this.populateForm(this.displayHighestPkz);
-            // this.pakzQuantityForm.get('quantity').valueChanges.subscribe(
-            //   qty => {
-            //     this.pakzQuantityForm.patchValue({
-            //       workCost: qty * this.displayHighestPkz?.defaultcost,
-            //       costOverride: qty * this.displayHighestPkz?.defaultcost,
-            //     })
-            //   }
-            // )
-
+            
           }
-
-
 
           if (this.mode == 'edit') {
             this.getPkzQtyDataForAssetDetail();
@@ -295,9 +285,6 @@ export class VariationPkzEnterQtyComponent implements OnInit {
       return
     }
 
-
-    // return;
-
     if (type == 1) {
       if (this.parentComp == 'additional' && this.mode == "new") {
 
@@ -314,15 +301,8 @@ export class VariationPkzEnterQtyComponent implements OnInit {
                   return
                 }
 
-                this.applyCount--
-
-                // //Insert data for work asset
-                // const workAssetParams = this.createAssetDetailParam(this.selectedSingleVariationAssetInp, this.displayHighestPkz, formRawVal);
-                // const insertForWorkasset = await this.worksorderManagementService.insertWorksOrderInstructionAssetDetails(workAssetParams).toPromise();
-
-                // console.log(insertForWorkasset)
-
                 //reset form value for next record
+                this.applyCount--
                 this.displayHighestPkz = this.selectedPkzs[this.applyCount - 1];
                 if (this.applyCount == 0) {
                   this.closeVariatioPkzQty();
@@ -338,8 +318,6 @@ export class VariationPkzEnterQtyComponent implements OnInit {
           )
         }
       }
-
-
 
 
 
@@ -386,10 +364,7 @@ export class VariationPkzEnterQtyComponent implements OnInit {
 
     if (type == 2) {
       if (this.parentComp == 'additional' && this.mode == "new") {
-        // const { wosequence, wopsequence, assid, woisequence } = this.selectedSingleVariationAssetInp
-
         let req: any = [];
-       
         for (let pkz of this.selectedPkzs) {
           const params = this.createPkzVariationParam(this.selectedSingleVariationAssetInp, pkz, formRawVal, type);
           req.push(this.worksorderManagementService.worksOrdersCreateVariationForAddWOAD(params));
