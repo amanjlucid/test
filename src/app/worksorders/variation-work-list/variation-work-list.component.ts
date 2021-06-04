@@ -56,6 +56,7 @@ export class VariationWorkListComponent implements OnInit {
 
   worksOrderData: any;
   workListBtnAccess: any;
+  hamBurgerMenuClick = 0;
 
   constructor(
     private chRef: ChangeDetectorRef,
@@ -69,7 +70,7 @@ export class VariationWorkListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log({ openfor: this.openedFor, from: this.openedFrom, variation: this.selectedVariationInp, asset: this.selectedSingleVariationAssetInp })
+    // console.log({ openfor: this.openedFor, from: this.openedFrom, variation: this.selectedVariationInp, asset: this.selectedSingleVariationAssetInp })
 
     this.subs.add(
       combineLatest([
@@ -179,7 +180,7 @@ export class VariationWorkListComponent implements OnInit {
     this.subs.add(
       this.workOrderProgrammeService.getWEBWorksOrdersAssetDetailAndVariation(wosequence, wopsequence, assid, 0).subscribe(
         data => {
-          console.log(data)
+          // console.log(data)
           if (data.isSuccess) {
             this.variationWorkListData = data.data;
             this.gridView = process(this.variationWorkListData, this.state);
@@ -197,8 +198,9 @@ export class VariationWorkListComponent implements OnInit {
 
 
   rowCallback(context: RowClassArgs) {
+    const { woadstatus, woisequence } = context.dataItem;
     return {
-      'k-state-disabled': context.dataItem.woadstatus === "Accepted"
+      'k-state-disabled': woadstatus === "Accepted" && woisequence != 0
     };
   }
 
@@ -514,42 +516,51 @@ export class VariationWorkListComponent implements OnInit {
   }
 
   setSeletedRow(item) {
-    if (item != undefined) {
+    if (this.hamBurgerMenuClick == 0) { // restrict menu enable api call for 1 time if multiple time clicked
+      this.hamBurgerMenuClick++;
 
-      const { wlcomppackage, recordsource, wosequence, assid, wopsequence, wlcode, wlataid, wlplanyear, wostagesurcde, wochecksurcde, woadrefusaL_YN, woadrechargeyn, woadstatus, variationAction } = item;
-      const { wocodE6 } = this.worksOrderData;
+      if (item != undefined) {
 
-      let params: VariationWorkListModel = {
-        WLCOMPPACKAGE: wlcomppackage,
-        RECORDSOURCE: recordsource,
-        WOSEQUENCE: wosequence,
-        ASSID: assid,
-        WOPSEQUENCE: wopsequence,
-        WLCODE: wlcode,
-        WLATAID: wlataid,
-        WLPLANYEAR: wlplanyear,
-        WOSTAGESURCDE: wostagesurcde,
-        WOCHECKSURCDE: wochecksurcde,
-        WOADREFUSAL_YN: woadrefusaL_YN,
-        WOADRECHARGEYN: woadrechargeyn,
-        WOADSTATUS: woadstatus,
-        VariationAction: variationAction,
-        WOCODE6: wocodE6
-      }
+        const { wlcomppackage, recordsource, wosequence, assid, wopsequence, wlcode, wlataid, wlplanyear, wostagesurcde, wochecksurcde, woadrefusaL_YN, woadrechargeyn, woadstatus, variationAction } = item;
+        const { wocodE6 } = this.worksOrderData;
+
+        let params: VariationWorkListModel = {
+          WLCOMPPACKAGE: wlcomppackage,
+          RECORDSOURCE: recordsource,
+          WOSEQUENCE: wosequence,
+          ASSID: assid,
+          WOPSEQUENCE: wopsequence,
+          WLCODE: wlcode,
+          WLATAID: wlataid,
+          WLPLANYEAR: wlplanyear,
+          WOSTAGESURCDE: wostagesurcde,
+          WOCHECKSURCDE: wochecksurcde,
+          WOADREFUSAL_YN: woadrefusaL_YN,
+          WOADRECHARGEYN: woadrechargeyn,
+          WOADSTATUS: woadstatus,
+          VariationAction: variationAction,
+          WOCODE6: wocodE6
+        }
 
 
-      this.subs.add(
-        this.workOrderProgrammeService.variationWorkListButtonsAccess(params).subscribe(
-          data => {
-            if (data.isSuccess) {
-              this.workListBtnAccess = data.data;
-              this.chRef.detectChanges();
+        this.subs.add(
+          this.workOrderProgrammeService.variationWorkListButtonsAccess(params).subscribe(
+            data => {
+              if (data.isSuccess) {
+                this.workListBtnAccess = data.data;
+                this.chRef.detectChanges();
+              }
+
+              setTimeout(() => {
+                this.hamBurgerMenuClick = 0;
+              }, 600);
             }
-          }
+          )
         )
-      )
 
+      }
     }
+
 
   }
 

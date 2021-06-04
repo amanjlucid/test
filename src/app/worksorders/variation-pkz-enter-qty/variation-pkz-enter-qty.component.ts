@@ -62,8 +62,8 @@ export class VariationPkzEnterQtyComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log({ mode: this.mode, parnetcomp: this.parentComp, openedFrom: this.openedFrom, variation: this.singleVariationInp, assetDetail: this.assetDetailInp, asset: this.selectedSingleVariationAssetInp })
-    console.log({ selection: this.selectedPkzs })
+    // console.log({ mode: this.mode, parnetcomp: this.parentComp, openedFrom: this.openedFrom, variation: this.singleVariationInp, assetDetail: this.assetDetailInp, asset: this.selectedSingleVariationAssetInp })
+    // console.log({ selection: this.selectedPkzs })
 
     if (this.parentComp == 'worklist') {
       this.title = 'Variation Cost/Qantity';
@@ -125,7 +125,7 @@ export class VariationPkzEnterQtyComponent implements OnInit {
         // this.worksorderManagementService.getWEBWorksOrdersAssetDetailAndVariation(wosequence, wopsequence, assid)
       ]).subscribe(
         data => {
-          console.log(data);
+          // console.log(data);
           this.worksOrder = data[0].data;
           this.planYear = data[1].data;
 

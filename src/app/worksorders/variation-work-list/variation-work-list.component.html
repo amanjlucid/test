@@ -17,7 +17,7 @@
 
 
     <div class="row">
-        <div class="col-md-12 mt-2">
+        <div class="col-md-12 mt-2 varWorkListGrid">
             <kendo-grid #grid [data]="gridView" [height]="600" [selectable]="selectableSettings" filterable="menu"
                 [resizable]="true" [sortable]="{
                 allowUnsort: true,
@@ -31,8 +31,9 @@
                     *ngIf="openedFor != 'details'">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <li class="nav-item dropdown list-unstyled" style="margin-top: -7px;"
-                            (click)="setSeletedRow(dataItem)" *ngIf="dataItem.woadstatus != 'Accepted'">
-                            <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
+                            (click)="setSeletedRow(dataItem)"
+                            *ngIf="dataItem.woadstatus != 'Accepted' || (dataItem.woadstatus == 'Accepted' && dataItem.woisequence == 0)">
+                            <i (click)="setSeletedRow(dataItem)" data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
 
                             <div class="dropdown-menu">
                                 <a [ngClass]="{'disabled' : disableGridRowMenu('Change Cost/Qty',dataItem) }"

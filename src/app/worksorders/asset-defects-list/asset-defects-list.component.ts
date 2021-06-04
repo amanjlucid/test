@@ -3,7 +3,7 @@ import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { SelectableSettings, PageChangeEvent } from '@progress/kendo-angular-grid';
 import { AlertService, ConfirmationDialogService, HelperService, SharedService, WorksorderManagementService, WorksOrdersService } from 'src/app/_services';
-import { combineLatest, forkJoin } from 'rxjs';
+import { combineLatest, forkJoin, Observable } from 'rxjs';
 
 @Component({
   selector: 'app-asset-defects-list',
@@ -69,8 +69,9 @@ export class AssetDefectsListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log(this.singleWorkOrderAssetInp)
-    console.log(this.singleWorkOrderInp);
+    console.log({ openedFrom: this.openedFrom, singleWorkOrderInp: this.singleWorkOrderInp, singleWorkOrderAssetInp: this.singleWorkOrderAssetInp, })
+    // console.log(this.singleWorkOrderAssetInp)
+    // console.log(this.singleWorkOrderInp);
 
     this.subs.add(
       combineLatest([
@@ -148,8 +149,33 @@ export class AssetDefectsListComponent implements OnInit {
 
 
   getDefectList() {
-    this.gridLoading = false;
-    this.chRef.detectChanges();
+    let woDefectsApiCall: Observable<any>;
+
+    if (this.openedFrom == "assetchecklist") {
+      const { wosequence, wopsequence, assid } = this.singleWorkOrderAssetInp;
+      woDefectsApiCall = this.workOrderProgrammeService.workOrderDefectForAssets(wosequence, assid, wopsequence);
+    } else if (this.openedFrom == "workdetail") {
+
+    } else {
+      this.alertService.error("No Access");
+      return;
+    }
+
+    this.subs.add(
+      woDefectsApiCall.subscribe(
+        data => {
+          console.log(data);
+          if (data.isSuccess) {
+            this.gridData = data.data;
+            this.gridView = process(this.gridData, this.state);
+          } else this.alertService.error(data.message)
+          
+          this.gridLoading = false;
+          this.chRef.detectChanges();
+        }, err => this.alertService.error(err)
+
+      )
+    )
   }
 
   setSelectableSettings(): void {

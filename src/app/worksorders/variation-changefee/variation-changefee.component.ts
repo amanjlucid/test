@@ -116,7 +116,8 @@ export class VariationChangefeeComponent implements OnInit {
 
 
     let formRawVal = this.variationFeeForm.getRawValue();
-    const { wosequence, wopsequence, assid, woisequence, wostagesurcde, wochecksurcde } = this.selectedSingleFees;
+    const { wosequence, wopsequence, assid, wostagesurcde, wochecksurcde } = this.selectedSingleFees;
+    const { woisequence } = this.selectedVariationInp;
 
     let params = {
       WOSEQUENCE: wosequence,
@@ -128,7 +129,7 @@ export class VariationChangefeeComponent implements OnInit {
       UserID: this.currentUser.userId,
       WOIADFEECOST: this.helperService.convertMoneyToFlatFormat(formRawVal.feecostoverride),
       WOIADCOMMENT: formRawVal.comment,
-      Recharge: ''
+      Recharge: 'N'
     }
 
     this.subs.add(

@@ -79,6 +79,10 @@ export class DefectFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.defectForm = this.fb.group({
+      signOffBy:'',
+      WOPDESC: ''
+    })
   }
 
   closeDefectForm() {
@@ -139,7 +143,7 @@ export class DefectFormComponent implements OnInit {
         }
       )
     )
-    
+
   }
 
   // selectionChange(item) {

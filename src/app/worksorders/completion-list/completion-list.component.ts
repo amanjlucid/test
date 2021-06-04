@@ -1,10 +1,10 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectorRef, ViewChild, OnDestroy, OnChanges, SimpleChanges, SimpleChange, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectorRef, ViewChild, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { DataResult, process, State, CompositeFilterDescriptor, SortDescriptor, GroupDescriptor } from '@progress/kendo-data-query';
 import { GridComponent, RowArgs } from '@progress/kendo-angular-grid';
-import { AlertService, ReportingGroupService, SharedService, WorksorderManagementService } from '../../_services';
+import { AlertService, SharedService, WorksorderManagementService } from '../../_services';
 import { SubSink } from 'subsink';
-import { combineLatest, forkJoin } from 'rxjs';
-import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
+import { combineLatest } from 'rxjs';
+
 
 @Component({
   selector: 'app-completion-list',
@@ -42,38 +42,14 @@ export class CompletionListComponent implements OnInit, OnDestroy {
   @Input() completionWin: boolean = false;
   @Output() closeCompletionWin = new EventEmitter<boolean>();
   @Input() worksOrderData: any;
-  // worksOrderData: any;
+
   title = '';
   worksOrderAccess = [];
   worksOrderUsrAccess: any = [];
   userType: any = [];
 
-  // emailReportForm: FormGroup;
-  // submitted = false;
-  // formErrors: any;
-  // selectedUsersToMail: any = [];
-  // public dropdownSettings = {
-  //   singleSelection: false,
-  //   idField: 'item_id',
-  //   textField: 'item_text',
-  //   selectAllText: 'Select All',
-  //   unSelectAllText: 'UnSelect All',
-  //   itemsShowLimit: 3,
-  //   allowSearchFilter: true
-  // };
-  // validationMessage = {
-  //   'subject': {
-  //     'required': 'An Email Subject is required.'
-  //   },
-  //   'emailText': {
-  //     'required': 'Email text is required.'
-  //   }
-  // };
-  // userList: any;
   SendEmailInsReportWindow = false;
-  // userNameCommaSeprted = '';
-  // userListToMail: any;
-  // loading = false;
+
 
 
   constructor(
@@ -81,16 +57,8 @@ export class CompletionListComponent implements OnInit, OnDestroy {
     private alertService: AlertService,
     private chRef: ChangeDetectorRef,
     private sharedService: SharedService,
-    private fb: FormBuilder,
-    private reportingGrpService: ReportingGroupService,
   ) { }
 
-  // ngOnChanges(changes: { [propName: string]: SimpleChange }) {
-  //   // console.log(changes);
-  //   if (this.completionWin) {
-  //     this.getWorkOrderGetWorksOrderCompletionsList();
-  //   }
-  // }
 
   ngOnInit() {
 
@@ -111,42 +79,17 @@ export class CompletionListComponent implements OnInit, OnDestroy {
       )
     )
 
-    // this.emailReportForm = this.fb.group({
-    //   subject: ['', [Validators.required]],
-    //   emailText: ['', Validators.required],
-    //   userlist: [''],
-    // });
 
-    // this.pageRequiredData();
     this.getWorkOrderGetWorksOrderCompletionsList();
-    // this.getUserList();
+
 
   }
 
   ngOnDestroy() {
-    //console.log("Destroy");
-    // if (this.completionWin == true) {
-    //   this.closeCompletionWindow();
-    // }
     this.subs.unsubscribe();
   }
 
 
-  // pageRequiredData() {
-  //   this.subs.add(
-  //     forkJoin([
-  //       this.workOrderProgrammeService.getWorksOrderByWOsequence(this.workOrderId)
-  //     ]).subscribe(
-  //       data => {
-  //         const worksOrderData = data[0];
-
-  //         if (worksOrderData.isSuccess) this.worksOrderData = worksOrderData.data;
-  //         this.title = `Completions: ${this.worksOrderData?.wosequence} - ${this.worksOrderData?.woname}`
-  //       }
-  //     )
-  //   )
-  // }
-  // this.worksorderManagementService.getWorksOrderByWOsequence(intWOSEQUENCE),
 
   public mySelectionKey(context: RowArgs) {
     return context.dataItem.wocosequence;
@@ -194,7 +137,6 @@ export class CompletionListComponent implements OnInit, OnDestroy {
   }
 
   getSelectedCell({ dataItem, type }) {
-    // console.log(dataItem)
     if (type == "click" && dataItem != "") {
       this.disableBtn = false;
       this.selectedCompletionsList = dataItem;
@@ -210,11 +152,9 @@ export class CompletionListComponent implements OnInit, OnDestroy {
         data => {
           if (data && data.isSuccess) {
             let tempData = data.data;
-            let tempMessage = data.message;
+            // let tempMessage = data.message;
             let filename = wosequence + '_' + wocosequence + '_Report';
             this.downloadPdf(tempData, filename);
-
-            // this.alertService.success("Completion Report Downloaded.");
           } else {
             this.alertService.error(data.message);
           }
@@ -252,41 +192,6 @@ export class CompletionListComponent implements OnInit, OnDestroy {
 
   }
 
-
-
-  // public onItemSelect(item: any) {
-  //   this.selectedUsersToMail.push(item);
-  //   this.setParamsForUserName();
-  // }
-
-  // public onSelectAll(items: any) {
-  //   this.selectedUsersToMail = items;
-  //   this.setParamsForUserName();
-  // }
-
-  // public onItemDeSelect(item: any) {
-  //   this.selectedUsersToMail = this.selectedUsersToMail.filter(x => x.item_id != item.item_id);
-  //   this.setParamsForUserName();
-
-  // }
-
-  // public onItemDeSelectAll(items: any) {
-  //   this.selectedUsersToMail = items;
-  //   this.userNameCommaSeprted = '';
-
-  // }
-
-  // public setParamsForUserName() {
-  //   this.userNameCommaSeprted = this.createString(this.selectedUsersToMail, 'item_id');
-  // }
-
-  // createString(arr, key) {
-  //   return arr.map(function (obj) {
-  //     return obj[key];
-  //   }).join(',');
-  // }
-
-
   openEmailInstructionReport(item) {
     $('.completionListOverlay').addClass('ovrlay');
     this.selectedCompletionsList = item;
@@ -297,109 +202,10 @@ export class CompletionListComponent implements OnInit, OnDestroy {
 
   closeEmailWithReportWindow(eve) {
     this.SendEmailInsReportWindow = false;
-    // this.emailReportForm.reset();
-    // this.selectedUsersToMail = [];
     $('.completionListOverlay').removeClass('ovrlay');
-    // $('.reportingDiv').removeClass('pointerEvent');
+
   }
 
 
-  // getUserList() {
-  //   this.reportingGrpService.userListToMail().subscribe(
-  //     data => {
-  //       this.userListToMail = data.data;
-  //     }
-  //   );
-  // }
-
-
-  // formErrorObject() {
-  //   this.formErrors = {
-  //     'subject': '',
-  //     'emailText': ''
-  //   }
-  // }
-
-  // logValidationErrors(group: FormGroup): void {
-  //   Object.keys(group.controls).forEach((key: string) => {
-  //     const abstractControl = group.get(key);
-  //     if (abstractControl instanceof FormGroup) {
-  //       this.logValidationErrors(abstractControl);
-  //     } else {
-  //       if (abstractControl && !abstractControl.valid) {
-  //         const messages = this.validationMessage[key];
-  //         for (const errorKey in abstractControl.errors) {
-  //           if (errorKey) {
-  //             this.formErrors[key] += messages[errorKey] + ' ';
-  //           }
-  //         }
-  //       }
-  //     }
-  //   })
-  // }
-
-  // get emailReportCon() { return this.emailReportForm.controls; }
-
-  // onEmailReportSubmit() {
-
-  //   this.loading = true;
-  //   this.submitted = true;
-  //   this.formErrorObject(); // empty form error
-  //   this.logValidationErrors(this.emailReportForm);
-
-  //   console.log(this.emailReportForm)
-  //   if (this.emailReportForm.invalid) {
-  //     return;
-  //   }
-
-  //   if (this.selectedUsersToMail.length == 0) {
-  //     this.alertService.error('Please select atleast one user to send mail');
-  //     return
-  //   }
-
-  //   let params = {
-  //     // "USERID": this.currentUser.userId,
-  //     "WOSEQUENCE": this.selectedCompletionsList.wosequence,
-  //     "WOCOSEQUENCE ": this.selectedCompletionsList.wocosequence,
-  //     "Body": this.emailReportCon.emailText.value,
-  //     "Subject": this.emailReportCon.subject.value,
-  //     "USERID": this.userNameCommaSeprted,
-  //     "ModuleName": 'Completion Report'
-  //   }
-
-  //   this.subs.add(
-  //     this.workOrderProgrammeService.processCompletionReport(params).subscribe(
-  //       data => {
-  //         // console.log(data);
-  //         if (data.isSuccess) {
-  //           this.closeEmailWithReportWindow();
-  //           this.alertService.success('Report Sent Successfully');
-  //         } else this.alertService.error(data.message);
-
-  //         this.chRef.detectChanges();
-  //       }, error => {
-  //         this.alertService.error(error);
-  //       }
-  //     )
-  //   )
-
-    
-  // }
-
-
-  // saveSendCompletionReport() {
-  //   this.subs.add(
-  //     this.workOrderProgrammeService.saveSendWorkOrderCompletionCertificate(this.selectedCompletionsList.wosequence, this.selectedCompletionsList.wocosequence, this.currentUser.userId).subscribe(
-  //       data => {
-  //         if (data && data.isSuccess) {
-  //           let tempMessage = data.message;
-  //           this.alertService.success("Completion Report Successfully Saved.");
-  //         } else {
-  //           this.alertService.error(data.message);
-  //         }
-  //       }
-  //     )
-  //   )
-  // }
 
 }

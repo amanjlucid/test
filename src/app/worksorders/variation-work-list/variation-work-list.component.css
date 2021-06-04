@@ -8,6 +8,14 @@
     padding: 8px 12px;
 }
 
-.disabled{
+.disabled {
     pointer-events: none !important;
+}
+
+/* .varWorkListGrid .k-grid tr {
+    background-color: white;
+} */
+
+.varWorkListGrid .k-state-disabled, .varWorkListGrid .k-widget[disabled] {
+    background-color: #cdcdcd !important;
 }

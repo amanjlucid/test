@@ -39,8 +39,8 @@
                 </div>
             </div>
 
-            <button *ngIf="woMenuBtnSecurityAccess('Defects')" (click)="openDefectsMethod()"
-                class="btn btn-sm themeButton mr-1">Defects</button>
+            <!-- <button *ngIf="woMenuBtnSecurityAccess('Defects')" (click)="openDefectsMethod()"
+                class="btn btn-sm themeButton mr-1">Defects</button> -->
 
             <button *ngIf="woMenuBtnSecurityAccess('Variations')" type="button"
                 class="btn btn-sm themeButton mr-1 headin_section variationBtn" (click)="openVariationFun()">
@@ -82,7 +82,7 @@
                         </div>
                     </div>
 
-                    <div class="dropdown-toggle" *ngIf="woMenuBtnSecurityAccess('Signoff Asset')">
+                    <div [ngClass]="{'disabled' : disableMainActions('signoff')}" class="dropdown-toggle" *ngIf="woMenuBtnSecurityAccess('Signoff Asset')">
                         <div class="dropdown-item">Sign Off</div>
                         <div class="dropdown-menu signOffDrp">
                             <a (click)="setAsset('SOY')" class="dropdown-item" href="javascript:void(0)">Yesterday</a>
@@ -91,6 +91,7 @@
                                 Date</a>
                         </div>
                     </div>
+                    
                     <a [ngClass]="{'disabled' : disableMainActions('CANCEL')}"
                         *ngIf="woMenuBtnSecurityAccess('Cancel Asset')"
                         (click)="openRemoveReasonPanel('multiple', 'CANCEL')" class="dropdown-item"

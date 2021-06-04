@@ -4,7 +4,7 @@ import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data
 import { AlertService, ReportingGroupService, HelperService, LoaderService, ConfirmationDialogService, WorksOrdersService, PropertySecurityGroupService, SharedService } from 'src/app/_services';
 import { combineLatest } from 'rxjs';
 import { GridComponent, RowArgs } from '@progress/kendo-angular-grid';
-import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
+// import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-wo-program-management-instructions',
@@ -63,7 +63,7 @@ export class WoProgramManagmentInstructionComponent implements OnInit {
   SendEmailInsReportWindow = false;
   userNameCommaSeprted = '';
   userListToMail: any;
-  emailReportForm: FormGroup;
+  // emailReportForm: FormGroup;
   selectedUsersToMail: any = [];
   submitted = false;
   formErrors: any;
@@ -91,7 +91,6 @@ export class WoProgramManagmentInstructionComponent implements OnInit {
     private chRef: ChangeDetectorRef,
     private sharedService: SharedService,
     private confirmationDialogService: ConfirmationDialogService,
-    private fb: FormBuilder
   ) { }
 
   ngOnInit(): void {
@@ -112,78 +111,12 @@ export class WoProgramManagmentInstructionComponent implements OnInit {
 
     let woname = this.worksOrderData.woname || this.worksOrderData.name
     this.title = `Instructions: ${this.selectedWorksOrder?.wosequence} - ${woname}`
-    // this.emailReportForm = this.fb.group({
-    //   subject: ['', [Validators.required]],
-    //   emailText: ['', Validators.required],
-    //   userlist: [''],
-    // });
-
+   
     this.GetWEBWorksOrdersInstructionsForUser();
-    // this.getUserList();
+    
 
   }
 
-
-  // formErrorObject() {
-  //   this.formErrors = {
-  //     'subject': '',
-  //     'emailText': ''
-  //   }
-  // }
-
-  // get emailReportCon() { return this.emailReportForm.controls; }
-
-  // validationMessage = {
-  //   'subject': {
-  //     'required': 'An Email Subject is required.'
-  //   },
-  //   'emailText': {
-  //     'required': 'Email text is required.'
-  //   }
-  // };
-  // logValidationErrors(group: FormGroup): void {
-  //   Object.keys(group.controls).forEach((key: string) => {
-  //     const abstractControl = group.get(key);
-  //     if (abstractControl instanceof FormGroup) {
-  //       this.logValidationErrors(abstractControl);
-  //     } else {
-  //       if (abstractControl && !abstractControl.valid) {
-  //         const messages = this.validationMessage[key];
-  //         for (const errorKey in abstractControl.errors) {
-  //           if (errorKey) {
-  //             this.formErrors[key] += messages[errorKey] + ' ';
-  //           }
-  //         }
-  //       }
-  //     }
-  //   })
-  // }
-
-  // public onItemSelect(item: any) {
-  //   this.selectedUsersToMail.push(item);
-  //   this.setParamsForUserName();
-  // }
-
-  // public onSelectAll(items: any) {
-  //   this.selectedUsersToMail = items;
-  //   this.setParamsForUserName();
-  // }
-
-  // public onItemDeSelect(item: any) {
-  //   this.selectedUsersToMail = this.selectedUsersToMail.filter(x => x.item_id != item.item_id);
-  //   this.setParamsForUserName();
-
-  // }
-
-  // public onItemDeSelectAll(items: any) {
-  //   this.selectedUsersToMail = items;
-  //   this.userNameCommaSeprted = '';
-
-  // }
-
-  // public setParamsForUserName() {
-  //   this.userNameCommaSeprted = this.createString(this.selectedUsersToMail, 'item_id');
-  // }
 
   openEmailInstructionReport(item) {
     this.SendEmailInsReportWindow = true;
@@ -194,76 +127,11 @@ export class WoProgramManagmentInstructionComponent implements OnInit {
 
   closeEmailWithReportWindow(eve) {
     this.SendEmailInsReportWindow = false;
-    // this.emailReportForm.reset();
-    // this.selectedUsersToMail = [];
+   
     $('.reportBgblur').removeClass('ovrlay');
     $('.reportingDiv').removeClass('pointerEvent');
   }
 
-
-  // onEmailReportSubmit() {
-
-  //   this.loading = true;
-  //   this.submitted = true;
-  //   this.formErrorObject(); // empty form error
-  //   this.logValidationErrors(this.emailReportForm);
-
-  //   if (this.emailReportForm.invalid) {
-  //     return;
-  //   }
-
-  //   if (this.selectedUsersToMail.length == 0) {
-  //     this.alertService.error('Please select atleast one user to send mail');
-  //     return
-  //   }
-
-  //   //console.log('selectedUsersToMail  '+ JSON.stringify(this.selectedUsersToMail));
-  //   //console.log('subject for Email  '+ JSON.stringify(this.emailReportCon.subject.value));
-  //   //console.log('emailText for Email  '+ JSON.stringify(this.emailReportCon.emailText.value));
-
-  //   let params = {
-
-  //     "USERID": this.currentUser.userId,
-  //     "WOSEQUENCE": this.selectedWorksOrder.wosequence,
-  //     "WOISEQUENCE": this.selectedInstructionRow.woisequence,
-  //     "Body": this.emailReportCon.emailText.value,
-  //     "Subject": this.emailReportCon.subject.value,
-  //     "UserName": this.userNameCommaSeprted
-  //   }
-
-  //   this.EmailContractInstructionReport(params);
-  // }
-
-
-
-  // createString(arr, key) {
-  //   return arr.map(function (obj) {
-  //     return obj[key];
-  //   }).join(',');
-  // }
-
-
-  // EmailContractInstructionReport(params) {
-
-  //   this.worksOrdersService.EmailContractInstructionReport(params).subscribe(
-  //     (data) => {
-  //       //console.log("EmailContractInstructionReport response "+ JSON.stringify(data))
-  //       this.loading = false;
-  //       if (data.isSuccess) {
-  //         // this.closeEmailWithReportWindow();
-
-  //         this.alertService.success('Report Sent Successfully');
-  //         this.chRef.detectChanges();
-  //       } else {
-  //         this.alertService.error(data.message);
-  //       }
-  //     },
-  //     error => {
-  //       this.alertService.error(error);
-  //     }
-  //   )
-
-  // }
 
   ngOnDestroy() {
     this.subs.unsubscribe();

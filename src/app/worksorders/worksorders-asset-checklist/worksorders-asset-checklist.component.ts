@@ -79,7 +79,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    console.log(this.selectedChildRow);
+    // console.log(this.selectedChildRow);
     //subscribe for work order security access
     this.subs.add(
       combineLatest([
@@ -1281,21 +1281,24 @@ export class WorksordersAssetChecklistComponent implements OnInit {
 
 
     if (type == "handover") {
-      if (this.worksOrderData != undefined && this.workorderAsset != undefined) {
-        const { wocodE6 } = this.worksOrderData;
+      if (this.workorderAsset != undefined) {
         const { woassstatus } = this.workorderAsset;
-
-        if (wocodE6 == "ROCC URM INTEGRATION") {
-          if (woassstatus == "In Progress" || woassstatus == "Issued" || woassstatus == "Accepted" || woassstatus == "Handover") {
-            return true;
-          } else {
-            return false;
-          }
-        } else {
-          return false;
-        }
+        if (woassstatus == "In Progress") return false;
+        // if (woassstatus == "In Progress" || woassstatus == "Issued" || woassstatus == "Accepted" || woassstatus == "Handover") {
+        //   return true;
+        // }
       }
 
+      return true;
+    }
+
+    if (type == "signoff") {
+      if (this.workorderAsset != undefined) {
+        const { woassstatus } = this.workorderAsset;
+        if (woassstatus == "Handover") return false;
+      }
+
+      return true;
     }
 
   }
@@ -1366,12 +1369,12 @@ export class WorksordersAssetChecklistComponent implements OnInit {
   }
 
 
-  openDefectsMethod(){
+  openDefectsMethod() {
     $('.checklistOverlay').addClass('ovrlay');
     this.openDefectsList = true;
   }
 
-  closeDefectList(eve){
+  closeDefectList(eve) {
     this.openDefectsList = eve;
     $('.checklistOverlay').removeClass('ovrlay');
   }

@@ -345,7 +345,7 @@ export class WorksorderManagementService {
         return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWEBWorksOrdersAssetDetailAndVariation?WOSEQUENCE=${WOSEQUENCE}&WOPSEQUENCE=${WOPSEQUENCE}&assId=${assId}&WOCHECKSURCDE=${WOCHECKSURCDE}`, this.httpOptions);
     }
 
-    getWEBWorksOrdersAssetChecklistAndVariation(WOSEQUENCE, WOPSEQUENCE,WOISEQUENCE, assId) {
+    getWEBWorksOrdersAssetChecklistAndVariation(WOSEQUENCE, WOPSEQUENCE, WOISEQUENCE, assId) {
         return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWEBWorksOrdersAssetChecklistAndVariation?WOSEQUENCE=${WOSEQUENCE}&WOPSEQUENCE=${WOPSEQUENCE}&WOISEQUENCE=${WOISEQUENCE}&assId=${assId}`, this.httpOptions);
     }
 
@@ -497,6 +497,11 @@ export class WorksorderManagementService {
         let body = JSON.stringify(params);
         return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WorksOrdersOutstandingVariationExistsForAsset`, body, this.httpOptions);
     }
+
+    workOrderDefectForAssets(wosequence, assid, wopsequence) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/WorkOrderDefectForAssets?wosequence=${wosequence}&assid=${assid}&wopsequence=${wopsequence}`, this.httpOptions);
+    }
+
 
 
 

@@ -55,7 +55,7 @@ export class VariationListComponent implements OnInit {
   worksOrderAccess = [];
   worksOrderUsrAccess: any = [];
   userType: any = [];
-  variationIssuedAndAccepted:boolean = true;
+  variationIssuedAndAccepted: boolean = true;
   outstandingVariation: boolean = true;
 
   constructor(
@@ -128,6 +128,7 @@ export class VariationListComponent implements OnInit {
           this.workOrderProgrammeService.worksOrdersOutstandingVariationExistsForAsset(params),
         ]).subscribe(
           data => {
+            // console.log(data);
             this.worksOrderData = data[0].data;
             this.phaseData = data[1].data;
             this.assetDetails = data[2].data[0];
@@ -139,7 +140,7 @@ export class VariationListComponent implements OnInit {
 
               this.outstandingVariation = data[5].data.result;
               //check if variation in asset has accepted and issued status
-              this.variationIssuedAndAccepted = variationData.data.some(x =>  x.woirequesttype == "Variation")
+              this.variationIssuedAndAccepted = variationData.data.some(x => x.woirequesttype == "Variation")
 
               this.gridView = process(this.variationData, this.state);
             } else this.alertService.error(variationData.message);
@@ -243,15 +244,15 @@ export class VariationListComponent implements OnInit {
   }
 
   disableNewAndAppendBtn(btnName) {
-    const { wostatus } = this.selectedAsset;
-    if (btnName == "new" || btnName == "append") {
-      if ((wostatus == "In Progress" || wostatus == "Accepted") && this.variationIssuedAndAccepted == false) {
-        return false;
+    if (this.assetDetails) {
+      const { woassstatus } = this.assetDetails;
+      if (btnName == "new" || btnName == "append") {
+        if ((woassstatus == "In Progress" || woassstatus == "Accepted") && this.variationIssuedAndAccepted == false) {
+          return false;
+        }
       }
     }
-
     return true;
-
   }
 
   disableVariationBtns(btnType, item) {

@@ -68,9 +68,11 @@
     padding-top: 6px;
 }
 
+.variationBtn{position: relative;}
+
 .variationBtn .badge-primary{
     font-size: 19px;
-    top: -16px;
-    position: relative;
+    top: -8px;
+    position: absolute;
     left: 72px;
 }
