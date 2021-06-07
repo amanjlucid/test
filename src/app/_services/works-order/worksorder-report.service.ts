@@ -14,7 +14,7 @@ export class WorksorderReportService {
 
     constructor(private http: HttpClient) { }
 
-    viewContractorReport(params) {
+    WOCreateXportOutput(params) {
         let body = JSON.stringify(params);
         return this.http.post<any>(`${appConfig.apiUrl}/api/Report/CreateXportOutput`, body, this.httpOptions);
     }
@@ -23,12 +23,17 @@ export class WorksorderReportService {
         return this.http.get<any>(`${appConfig.apiUrl}/api/WorkOrderDetails/GetWorkChecklistReport?wprsequence=${wprsequence}&wosequence=${wosequence}&wopsequence=${wopsequence}&report_level=${report_level}&asset_id=${asset_id}`, this.httpOptions);
     }
 
-    getWOReportForFinancialStatus(wprsequence, wosequence, level) {
-        return this.http.get<any>(`${appConfig.apiUrl}/api/WorkOrderDetails/GetWorkReportingProgSummaryTree?wprsequence=${wprsequence}&wosequence=${wosequence}&level=${level}`, this.httpOptions);
+    getWOReportingProgSummaryTree(wprsequence, wosequence, level) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/WorkOrderDetails/WOReportingProgSummaryTree?wprsequence=${wprsequence}&wosequence=${wosequence}&reporttype=${level}`, this.httpOptions);
     }
 
     getWOReportForAssetLevel(wprsequence, wosequence, wopsequence, level) {
-        return this.http.get<any>(`${appConfig.apiUrl}/api/WorkOrderDetails/GetWorksReportingAsset?wprsequence=${wprsequence}&wosequence=${wosequence}&wopsequence=${wopsequence}&level=${level}`, this.httpOptions);
+        return this.http.get<any>(`${appConfig.apiUrl}/api/WorkOrderDetails/WOReportingAsset?wprsequence=${wprsequence}&wosequence=${wosequence}&wopsequence=${wopsequence}&level=${level}`, this.httpOptions);
     }
+
+    getWOReportingAsset(wprsequence, wosequence, wopsequence, level) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/WorkOrderDetails/WOReportingAsset?wprsequence=${wprsequence}&wosequence=${wosequence}&wopsequence=${wopsequence}&level=${level}`, this.httpOptions);
+    }
+
 
 }

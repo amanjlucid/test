@@ -286,19 +286,18 @@
                     <div class="dropdown-toggle">
                       <div class="dropdown-item">Works Order</div>
                       <div class="dropdown-menu addAssetMenu">
-                        <a class="dropdown-item" (click)="viewCheckListOrderReport(2, dataItem)" href="javascript:void(0)">Financial And Status</a>
-                        <a class="dropdown-item" (click)="viewCheckListOrderReport(3, dataItem)" href="javascript:void(0)">Asset Level</a>
-                        <a class="dropdown-item" (click)="viewCheckListOrderReport(3, dataItem)" href="javascript:void(0)">Asset Level (For Selected Phase)</a>
+                        <a class="dropdown-item" (click)="viewWOReportingProgSummaryTree('WOD Report Financial And Status', 2, dataItem)" href="javascript:void(0)">Financial And Status</a>
+                        <a class="dropdown-item" (click)="viewWOReportingAsset('WOD Report Asset Level', 2, dataItem)" href="javascript:void(0)">Asset Level</a>
+                        <a class="dropdown-item" (click)="viewWOReportingAsset('WOD Report Asset Level Selected Phase)', 3, dataItem)" href="javascript:void(0)">Asset Level (For Selected Phase)</a>
                       </div>
                     </div>
                     <div class="dropdown-toggle">
                       <div class="dropdown-item">Checklist</div>
                       <div class="dropdown-menu addAssetMenu">
-                        <a class="dropdown-item" (click)="viewCheckListOrderReport(2, dataItem)" href="javascript:void(0)">For Order</a>
-                        <a class="dropdown-item" (click)="viewCheckListOrderReport(3, dataItem)" href="javascript:void(0)">For Selected Phase</a>
+                        <a class="dropdown-item" (click)="viewCheckListOrderReport('WOD Report Checklist For Order', 2)" href="javascript:void(0)">For Order</a>
+                        <a class="dropdown-item" (click)="viewCheckListOrderReport('WOD Report Checklist For Phase', 3, dataItem)" href="javascript:void(0)">For Selected Phase</a>
                       </div>
                     </div>
-                    <div class="dropdown-item">Logs</div>
                   </div>
                 </div>
 
