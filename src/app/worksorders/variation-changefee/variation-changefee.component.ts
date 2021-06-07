@@ -117,7 +117,7 @@ export class VariationChangefeeComponent implements OnInit {
 
     let formRawVal = this.variationFeeForm.getRawValue();
     const { wosequence, wopsequence, assid, wostagesurcde, wochecksurcde } = this.selectedSingleFees;
-    const { woisequence } = this.selectedVariationInp;
+    const { woisequence } = this.selectedSingleVariationAssetInp;
 
     let params = {
       WOSEQUENCE: wosequence,

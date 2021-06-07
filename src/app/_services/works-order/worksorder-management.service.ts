@@ -499,7 +499,11 @@ export class WorksorderManagementService {
     }
 
     workOrderDefectForAssets(wosequence, assid, wopsequence) {
-        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/WorkOrderDefectForAssets?wosequence=${wosequence}&assid=${assid}&wopsequence=${wopsequence}`, this.httpOptions);
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/WorkOrderDefectAssets?wosequence=${wosequence}&assid=${assid}&wopsequence=${wopsequence}`, this.httpOptions);
+    }
+
+    getWEBWorksOrdersDefectsForProgrammeAndUserSingleWO(WPRSEQUENCE, WOSEQUENCE, UserId) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWEBWorksOrdersDefects_ForProgrammeAndUserSingleWO?WPRSEQUENCE=${WPRSEQUENCE}&WOSEQUENCE=${WOSEQUENCE}&UserId=${UserId}`, this.httpOptions);
     }
 
 

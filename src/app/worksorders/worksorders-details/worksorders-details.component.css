@@ -393,6 +393,11 @@ label.radio-inline {
   top: -187px !important;
 }
 
-.actionToggle .actionMenu .HandoverMenu, .actionToggle .actionMenu .signoffMenu{
+.actionToggle .actionMenu .HandoverMenu, .actionToggle .actionMenu .signoffMenu {
   top: -66px !important;
+}
+
+.workorderDetailGrid .asbestosIcon {
+  position: relative;
+  top: -2px !important;
 }

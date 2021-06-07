@@ -1327,6 +1327,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
   closeNoAccessWin(eve) {
     this.noaccessWindow = eve;
     $('.checklistOverlay').removeClass('ovrlay');
+    this.worksOrderDetailPageData()
   }
 
   openNoAccessHistory() {
@@ -1337,6 +1338,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
   closeNoAccessHistory(eve) {
     this.noaccessHistory = eve;
     $('.checklistOverlay').removeClass('ovrlay');
+    this.worksOrderDetailPageData()
   }
 
 
@@ -1366,6 +1368,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
   closeVariation(eve) {
     this.openVariationList = eve;
     $('.checklistOverlay').removeClass('ovrlay');
+    this.worksOrderDetailPageData()
   }
 
 
@@ -1377,6 +1380,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
   closeDefectList(eve) {
     this.openDefectsList = eve;
     $('.checklistOverlay').removeClass('ovrlay');
+    this.worksOrderDetailPageData();
   }
 
 }

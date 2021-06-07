@@ -139,8 +139,10 @@ export class VariationListComponent implements OnInit {
               this.variationData = variationData.data;
 
               this.outstandingVariation = data[5].data.result;
-              //check if variation in asset has accepted and issued status
-              this.variationIssuedAndAccepted = variationData.data.some(x => x.woirequesttype == "Variation")
+              //check if request type is variation 
+              this.variationIssuedAndAccepted = variationData.data.some(x => x.woirequesttype == "Variation" && (x.woiissuestatus == "New" || x.woiissuestatus == "Issued" || x.woiissuestatus == "Contractor Review" || x.woiissuestatus == "Customer Review"))
+
+              // console.log(this.variationIssuedAndAccepted)
 
               this.gridView = process(this.variationData, this.state);
             } else this.alertService.error(variationData.message);
@@ -181,18 +183,27 @@ export class VariationListComponent implements OnInit {
 
   openVariationDetails(item) {
     if (item != undefined) {
-      if (item.woiissuestatus == "New") {
-        this.openedFor = 'edit';
-      } else {
-        this.openedFor = 'details';
+      this.openedFor = 'details'; // default will be detail view
+      if (this.userType != undefined) {
+        const { woiissuestatus } = item;
+        const { wourroletype } = this.userType;
+        if (
+          wourroletype == "Dual Role" ||
+          woiissuestatus == "New" ||
+          (wourroletype == "Customer" && woiissuestatus == "Customer Review") ||
+          (wourroletype == "Contractor" && woiissuestatus == "Contractor Review")
+        ) {
+          this.openedFor = 'edit';
+        }
+
       }
 
       this.selectedSingleVariation = item;
     }
 
-
     this.openVariationWorkList = true;
     $('.variationListOverlay').addClass('ovrlay');
+
   }
 
   closeVariationDetails(eve) {
@@ -244,9 +255,11 @@ export class VariationListComponent implements OnInit {
   }
 
   disableNewAndAppendBtn(btnName) {
-    if (this.assetDetails) {
-      const { woassstatus } = this.assetDetails;
+    // console.log(this.woAsset)
+    if (this.woAsset) {
+      const { woassstatus } = this.woAsset;
       if (btnName == "new" || btnName == "append") {
+        // console.log(woassstatus)
         if ((woassstatus == "In Progress" || woassstatus == "Accepted") && this.variationIssuedAndAccepted == false) {
           return false;
         }
@@ -295,7 +308,8 @@ export class VariationListComponent implements OnInit {
         data => {
           // console.log(data)
           if (data.isSuccess) {
-            this.alertService.success(msg)
+            this.alertService.success(msg);
+            this.getVariationPageDataWithGrid();
           } else this.alertService.error(data.message)
         }, err => this.alertService.error(err)
       )

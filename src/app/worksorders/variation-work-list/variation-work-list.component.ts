@@ -79,6 +79,7 @@ export class VariationWorkListComponent implements OnInit {
         this.sharedService.userTypeObs
       ]).subscribe(
         data => {
+          // console.log(data)
           this.worksOrderUsrAccess = data[0];
           this.worksOrderAccess = data[1];
           this.userType = data[2][0];
@@ -256,7 +257,8 @@ export class VariationWorkListComponent implements OnInit {
 
 
   rechargeToggle(item, recharge) {
-    const { wosequence, woisequence, wopsequence, assid, wlcode, wlataid, wlplanyear, wostagesurcde, wochecksurcde, woadrechargeyn } = item;
+    const { wosequence, wopsequence, assid, wlcode, wlataid, wlplanyear, wostagesurcde, wochecksurcde, woadrechargeyn } = item;
+    const { woisequence } = this.selectedSingleVariationAssetInp;
 
     const params = {
       WOSEQUENCE: wosequence,
@@ -305,13 +307,15 @@ export class VariationWorkListComponent implements OnInit {
     $('.variationWorkListOverlay').addClass('ovrlay');
     this.reasonWindowtitle = 'Edit Comment for Works Order Instruction Asset Detail'
     this.reasonWindowFor = 'deletework';
+    this.reason = '';
     this.SetToRefusalWindow = true;
     this.chRef.detectChanges();
   }
 
 
   deleteWork(item) {
-    const { wosequence, woisequence, wopsequence, assid, wlcode, wlataid, wlplanyear, woadrechargeyn } = item;
+    const { wosequence, wopsequence, assid, wlcode, wlataid, wlplanyear, woadrechargeyn } = item;
+    const { woisequence } = this.selectedSingleVariationAssetInp;
 
     const params = {
       WOSEQUENCE: wosequence,
@@ -393,7 +397,8 @@ export class VariationWorkListComponent implements OnInit {
 
 
   SetToRefusalSave(item, refusal = true) {
-    const { wosequence, woisequence, wopsequence, assid, wlcode, wlataid, wlplanyear, wostagesurcde, wochecksurcde } = item;
+    const { wosequence, wopsequence, assid, wlcode, wlataid, wlplanyear, wostagesurcde, wochecksurcde } = item;
+    const { woisequence } = this.selectedSingleVariationAssetInp;
 
     const params = {
       WOSEQUENCE: wosequence,
@@ -450,7 +455,8 @@ export class VariationWorkListComponent implements OnInit {
 
 
   removeItemVariation(item) {
-    const { wosequence, woisequence, wopsequence, assid, wlcode, wlataid, wlplanyear, wostagesurcde, wochecksurcde } = item;
+    const { wosequence, wopsequence, assid, wlcode, wlataid, wlplanyear, wostagesurcde, wochecksurcde } = item;
+    const { woisequence } = this.selectedSingleVariationAssetInp;
 
     const params = {
       WOSEQUENCE: wosequence,
@@ -481,7 +487,9 @@ export class VariationWorkListComponent implements OnInit {
 
   replaceService(item) {
     this.selectedSingleVarWorkList = item;
-    const { wosequence, woisequence, wopsequence, assid, wlcode, wlataid, wlplanyear, wostagesurcde, wochecksurcde, woadrechargeyn, asauom, wlcomppackage, asaquantity, woadcomment } = item;
+    const { wosequence, wopsequence, assid, wlcode, wlataid, wlplanyear, wostagesurcde, wochecksurcde, woadrechargeyn, asauom, wlcomppackage, asaquantity, woadcomment } = item;
+    const { woisequence } = this.selectedSingleVariationAssetInp;
+
     let params = {
       WOSEQUENCE: wosequence,
       WOPSEQUENCE: wopsequence,

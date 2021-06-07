@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { SelectableSettings, PageChangeEvent, RowArgs, GridComponent } from '@progress/kendo-angular-grid';
 
-import { WorksorderManagementService, AlertService, HelperService, LoaderService } from '../../_services'
+import { WorksorderManagementService, AlertService, HelperService, LoaderService, ReportingGroupService } from '../../_services'
 import { forkJoin } from 'rxjs';
 
 @Component({
@@ -28,9 +28,38 @@ export class DefectFormComponent implements OnInit {
   submitted = false;
   formErrors: any;
   validationMessage = {
-    'reason': {
-      'required': 'Reason is required.',
-      'maxlength': 'Reason must be maximum 250 characters.',
+    'status': {
+      'required': 'Status is required.',
+    },
+    'IdentifiedDate': {
+      'required': 'Identified Date is required.',
+    },
+    'reportedBy': {
+      'required': 'Reported By is required.',
+    },
+    'description': {
+      'required': 'Description is required.',
+    },
+    'cost': {
+      'required': 'Cost is required.',
+    },
+    'score': {
+      'required': 'Score is required.',
+    },
+    'resolutionDate': {
+      'required': 'Resolution Date is required.',
+    },
+    'resolvedBy': {
+      'required': 'Resolved By is required.',
+    },
+    'resolutionDetails': {
+      'required': 'Resolution Detail is required.',
+    },
+    'signOffDate': {
+      'required': 'Sign Off Date is required.',
+    },
+    'signOffBy': {
+      'required': 'Sign Off By is required.',
     },
   };
 
@@ -62,7 +91,8 @@ export class DefectFormComponent implements OnInit {
     private fb: FormBuilder,
     private workOrderProgrammeService: WorksorderManagementService,
     private alertService: AlertService,
-    private helperService: HelperService
+    private helperService: HelperService,
+    private reportingGrpService: ReportingGroupService,
   ) {
     this.setSelectableSettings();
   }
@@ -79,10 +109,57 @@ export class DefectFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    console.log({ opendFrom: this.openedFrom, asset: this.singleWorkOrderAssetInp, def: this.selectedDefectInp })
+
     this.defectForm = this.fb.group({
-      signOffBy:'',
-      WOPDESC: ''
-    })
+      status: ['', [Validators.required]],
+      IdentifiedDate: ['', [Validators.required]],
+      reportedBy: ['', [Validators.required]],
+      description: ['', [Validators.required]],
+      cost: ['', [Validators.required]],
+      score: ['', [Validators.required]],
+      resolutionDate: ['', [Validators.required]],
+      resolvedBy: ['', [Validators.required]],
+      resolutionDetails: ['', [Validators.required]],
+      signOffDate: ['', [Validators.required]],
+      signOffBy: ['', [Validators.required]],
+    });
+
+    this.populateForm();
+    this.requiredPageData();
+
+  }
+
+  populateForm() {
+
+    if (this.defectFormMode == "new") {
+
+    }
+
+    if (this.defectFormMode == "edit") {
+      const { wodstatus, woddate, wodmpusid, woddescription, wodapproxcost, wodresolveddate, wodresolvedmpusid, wodresolveddescription, wodsignoffmpusid, wodsignoffdate } = this.selectedDefectInp;
+
+      this.defectForm.patchValue({
+        status: wodstatus,
+        IdentifiedDate: this.helperService.ngbDatepickerFormat(woddate),
+        reportedBy: wodmpusid,
+        description: woddescription,
+        cost: wodapproxcost,
+        score: '',
+        resolutionDate: this.helperService.ngbDatepickerFormat(wodresolveddate),
+        resolvedBy: wodresolvedmpusid,
+        resolutionDetails: wodresolveddescription,
+        signOffDate: this.helperService.ngbDatepickerFormat(wodsignoffdate),
+        signOffBy: wodsignoffmpusid,
+      });
+
+      const disableFields = ['status', 'IdentifiedDate', 'reportedBy', 'resolutionDate', 'resolvedBy', 'signOffDate', 'signOffBy'];
+      for (const disableField of disableFields) {
+        this.defectForm.get(disableField).disable();
+      }
+
+    }
+
   }
 
   closeDefectForm() {
@@ -116,12 +193,22 @@ export class DefectFormComponent implements OnInit {
   }
 
   requiredPageData() {
-    const { wprsequence, wosequence, wopsequence, assid } = this.singleWorkOrderAssetInp;
+    let pagaRequiredParams: any;
+    if (this.openedFrom == 'assetchecklist') {
+      pagaRequiredParams = this.singleWorkOrderAssetInp
+    }
+
+    if (this.openedFrom == 'workdetail') {
+      pagaRequiredParams = this.selectedDefectInp
+    }
+
+    const { wprsequence, wosequence, wopsequence, assid } = pagaRequiredParams;
     let pageReq = [
       this.workOrderProgrammeService.getWorkProgrammesByWprsequence(wprsequence),
       this.workOrderProgrammeService.getWorksOrderByWOsequence(wosequence),
       this.workOrderProgrammeService.getPhase(wosequence, wopsequence),
       this.workOrderProgrammeService.getAssetAddressByAsset(assid),
+      this.reportingGrpService.userListToMail()
     ];
 
     this.subs.add(
@@ -164,6 +251,64 @@ export class DefectFormComponent implements OnInit {
 
   openCalendar(obj) {
     obj.toggle()
+  }
+
+
+  formErrorObject() {
+    this.formErrors = {
+      'status': '',
+      'IdentifiedDate': '',
+      'reportedBy': '',
+      'description': '',
+      'cost': '',
+      'score': '',
+      'resolutionDate': '',
+      'resolvedBy': '',
+      'resolutionDetails': '',
+      'signOffDate': '',
+      'signOffBy': '',
+    }
+  }
+
+
+  logValidationErrors(group: FormGroup): void {
+    Object.keys(group.controls).forEach((key: string) => {
+      const abstractControl = group.get(key);
+      if (abstractControl instanceof FormGroup) {
+        this.logValidationErrors(abstractControl);
+      } else {
+        if (abstractControl && !abstractControl.valid && abstractControl.errors != null) {
+          if (abstractControl.errors.hasOwnProperty('ngbDate')) {
+            delete abstractControl.errors['ngbDate'];
+
+            if (Object.keys(abstractControl.errors).length == 0) {
+              abstractControl.setErrors(null)
+            }
+          }
+          const messages = this.validationMessage[key];
+          for (const errorKey in abstractControl.errors) {
+            if (errorKey) {
+              this.formErrors[key] += messages[errorKey] + ' ';
+            }
+          }
+        }
+      }
+    })
+  }
+
+
+  onSubmit() {
+    this.submitted = true;
+    this.formErrorObject(); // empty form error 
+    this.logValidationErrors(this.defectForm);
+
+    this.chRef.detectChanges();
+
+    if (this.defectForm.invalid) {
+      return;
+    }
+
+
   }
 
 }

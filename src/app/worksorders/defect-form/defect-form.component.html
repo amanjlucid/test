@@ -1,4 +1,4 @@
-<kendo-window title="{{title}}" *ngIf="openDefectform" (close)="closeDefectForm()" [top]="25" [minWidth]="600"
+<kendo-window title="{{title}}" *ngIf="openDefectform" (close)="closeDefectForm()" [top]="5" [minWidth]="600"
     [width]="980" [height]="auto" [minHeight]="300">
 
 
@@ -26,7 +26,7 @@
         </div>
 
         <div class="col-md-12 mt-2">
-            <kendo-grid #grid [data]="gridView" [height]="180" [selectable]="selectableSettings" filterable="menu"
+            <kendo-grid #grid [data]="gridView" [height]="160" [selectable]="selectableSettings" filterable="menu"
                 [resizable]="true" [sortable]="{
                     allowUnsort: true,
                     mode: 'multiple'
@@ -114,9 +114,16 @@
                                 <div class="row">
                                     <div class="col-md-3"><label class="col-form-label">Status:</label></div>
                                     <div class="col-md-9">
-                                        <input type="text" formControlName="WOPDESC"
-                                            [ngClass]="{ 'is-invalid': submitted && formErrors.WOPDESC }"
-                                            autocomplete="off" class="form-control input-sm">
+                                        <select formControlName="status"
+                                            [ngClass]="{ 'is-invalid': submitted && formErrors.status }"
+                                            autocomplete="off" class="form-control input-sm"> 
+                                            <option> </option>
+                                        </select>
+
+
+                                        <div *ngIf="submitted && formErrors.status" class="invalid-feedback">
+                                            <div *ngIf="formErrors.status">{{ formErrors.status }}</div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -131,11 +138,15 @@
                                 <div class="row">
                                     <div class="col-md-3"><label class="col-form-label">Identified Date:</label></div>
                                     <div class="col-md-9">
-                                        <input formControlName="WOPDESC"
-                                            [ngClass]="{ 'is-invalid': submitted && formErrors.WOPDESC }"
+                                        <input formControlName="IdentifiedDate"
+                                            [ngClass]="{ 'is-invalid': submitted && formErrors.IdentifiedDate }"
                                             autocomplete="off" autocomplete="off" (click)="openCalendar(ifd)"
                                             [minDate]="minDate" ngbDatepicker #ifd="ngbDatepicker"
                                             [placement]="'bottom'" type="text" class="form-control input-sm">
+
+                                        <div *ngIf="submitted && formErrors.IdentifiedDate" class="invalid-feedback">
+                                            <div *ngIf="formErrors.IdentifiedDate">{{ formErrors.IdentifiedDate }}</div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -144,9 +155,13 @@
                                 <div class="row">
                                     <div class="col-md-3"><label class="col-form-label">Reported By:</label></div>
                                     <div class="col-md-9">
-                                        <input formControlName="WOPDESC"
-                                            [ngClass]="{ 'is-invalid': submitted && formErrors.WOPDESC }"
+                                        <input formControlName="reportedBy"
+                                            [ngClass]="{ 'is-invalid': submitted && formErrors.reportedBy }"
                                             autocomplete="off" type="text" class="form-control input-sm">
+
+                                        <div *ngIf="submitted && formErrors.reportedBy" class="invalid-feedback">
+                                            <div *ngIf="formErrors.reportedBy">{{ formErrors.reportedBy }}</div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -158,9 +173,13 @@
                                 <div class="row textareaDiv">
                                     <div class="col-md-2"><label class="col-form-label">Description:</label></div>
                                     <div class="col-md-10">
-                                        <textarea formControlName="WOPDESC"
-                                            [ngClass]="{ 'is-invalid': submitted && formErrors.WOPDESC }"
+                                        <textarea formControlName="description"
+                                            [ngClass]="{ 'is-invalid': submitted && formErrors.description }"
                                             autocomplete="off" class="form-control"></textarea>
+
+                                        <div *ngIf="submitted && formErrors.description" class="invalid-feedback">
+                                            <div *ngIf="formErrors.description">{{ formErrors.description }}</div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -172,49 +191,51 @@
                                 <div class="row">
                                     <div class="col-md-3"><label class="col-form-label">Cost:</label></div>
                                     <div class="col-md-9">
-                                        <input formControlName="WOPDESC"
-                                            [ngClass]="{ 'is-invalid': submitted && formErrors.WOPDESC }"
+                                        <input formControlName="cost"
+                                            [ngClass]="{ 'is-invalid': submitted && formErrors.cost }"
                                             autocomplete="off" appCurrencyMask maxDigits="9" type="text"
                                             class="form-control input-sm">
+
+                                        <div *ngIf="submitted && formErrors.cost" class="invalid-feedback">
+                                            <div *ngIf="formErrors.cost">{{ formErrors.cost }}</div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="col-md-6">
-
-                            </div>
-                        </div>
-
-
-                        <div class="row mt-1">
-                            <div class="col-md-6">
                                 <div class="row">
-                                    <div class="col-md-3"><label class="col-form-label">Score Date:</label></div>
+                                    <div class="col-md-3"><label class="col-form-label">Score:</label></div>
                                     <div class="col-md-9">
-                                        <input formControlName="WOPDESC"
-                                            [ngClass]="{ 'is-invalid': submitted && formErrors.WOPDESC }"
+                                        <input formControlName="score"
+                                            [ngClass]="{ 'is-invalid': submitted && formErrors.score }"
                                             autocomplete="off" autocomplete="off" (click)="openCalendar(sd)"
                                             [minDate]="minDate" ngbDatepicker #sd="ngbDatepicker" [placement]="'top'"
                                             type="text" class="form-control input-sm">
+
+                                        <div *ngIf="submitted && formErrors.score" class="invalid-feedback">
+                                            <div *ngIf="formErrors.score">{{ formErrors.score }}</div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-
-                            <div class="col-md-6">
-                            </div>
-
                         </div>
+
 
                         <div class="row mt-1">
                             <div class="col-md-6">
                                 <div class="row">
                                     <div class="col-md-3"><label class="col-form-label">Resolution Date:</label></div>
                                     <div class="col-md-9">
-                                        <input formControlName="WOPDESC"
-                                            [ngClass]="{ 'is-invalid': submitted && formErrors.WOPDESC }"
+                                        <input formControlName="resolutionDate"
+                                            [ngClass]="{ 'is-invalid': submitted && formErrors.resolutionDate }"
                                             autocomplete="off" autocomplete="off" (click)="openCalendar(rd)"
                                             [minDate]="minDate" ngbDatepicker #rd="ngbDatepicker" [placement]="'top'"
                                             type="text" class="form-control input-sm">
+
+                                        <div *ngIf="submitted && formErrors.resolutionDate" class="invalid-feedback">
+                                            <div *ngIf="formErrors.resolutionDate">{{ formErrors.resolutionDate }}</div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -223,9 +244,13 @@
                                 <div class="row">
                                     <div class="col-md-3"><label class="col-form-label">Resolved By:</label></div>
                                     <div class="col-md-9">
-                                        <input formControlName="WOPDESC"
-                                            [ngClass]="{ 'is-invalid': submitted && formErrors.WOPDESC }"
+                                        <input formControlName="resolvedBy"
+                                            [ngClass]="{ 'is-invalid': submitted && formErrors.resolvedBy }"
                                             autocomplete="off" type="text" class="form-control input-sm">
+
+                                        <div *ngIf="submitted && formErrors.resolvedBy" class="invalid-feedback">
+                                            <div *ngIf="formErrors.resolvedBy">{{ formErrors.resolvedBy }}</div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -239,9 +264,14 @@
                                     <div class="col-md-2"><label class="col-form-label">Resolution Details:</label>
                                     </div>
                                     <div class="col-md-10">
-                                        <textarea formControlName="WOPDESC"
-                                            [ngClass]="{ 'is-invalid': submitted && formErrors.WOPDESC }"
+                                        <textarea formControlName="resolutionDetails"
+                                            [ngClass]="{ 'is-invalid': submitted && formErrors.resolutionDetails }"
                                             autocomplete="off" class="form-control"></textarea>
+
+                                        <div *ngIf="submitted && formErrors.resolutionDetails" class="invalid-feedback">
+                                            <div *ngIf="formErrors.resolutionDetails">{{ formErrors.resolutionDetails }}
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -252,11 +282,15 @@
                                 <div class="row">
                                     <div class="col-md-3"><label class="col-form-label">Sign Off Date:</label></div>
                                     <div class="col-md-9">
-                                        <input formControlName="WOPDESC"
-                                            [ngClass]="{ 'is-invalid': submitted && formErrors.WOPDESC }"
+                                        <input formControlName="signOffDate"
+                                            [ngClass]="{ 'is-invalid': submitted && formErrors.signOffDate }"
                                             autocomplete="off" autocomplete="off" (click)="openCalendar(sod)"
                                             [minDate]="minDate" ngbDatepicker #sod="ngbDatepicker" [placement]="'top'"
                                             type="text" class="form-control input-sm">
+
+                                        <div *ngIf="submitted && formErrors.signOffDate" class="invalid-feedback">
+                                            <div *ngIf="formErrors.signOffDate">{{ formErrors.signOffDate }}</div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

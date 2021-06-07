@@ -283,7 +283,8 @@ export class VariationListAllComponent implements OnInit {
         data => {
           // console.log(data)
           if (data.isSuccess) {
-            this.alertService.success(msg)
+            this.alertService.success(msg);
+            this.getAllVariations();
           } else this.alertService.error(data.message)
         }, err => this.alertService.error(err)
       )

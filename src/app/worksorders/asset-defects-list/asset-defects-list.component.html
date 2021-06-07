@@ -7,7 +7,8 @@
             </button>
 
             <!-- need to use this button from asset checklist page -->
-            <button (click)="openDefectForm('new')" type="button" class="btn btn-sm themeButton" *ngIf="openedFrom == 'assetchecklist'">
+            <button (click)="openDefectForm('new')" type="button" class="btn btn-sm themeButton"
+                *ngIf="openedFrom == 'assetchecklist'">
                 New Defect
             </button>
         </div>
@@ -36,17 +37,15 @@
                         <div class="row mt-1" *ngIf="openedFrom == 'assetchecklist'">
                             <div class="col-md-2"><label class="lbl">Phase: </label></div>
                             <div class="col-md-10">
-                                <input type="text"
-                                    value="{{phaseData?.wopname}}"
-                                    class="form-control form-control-sm" [readonly]="true">
+                                <input type="text" value="{{phaseData?.wopname}}" class="form-control form-control-sm"
+                                    [readonly]="true">
                             </div>
                         </div>
 
                         <div class="row mt-1" *ngIf="openedFrom == 'assetchecklist'">
                             <div class="col-md-2"><label class="lbl">Asset:</label> </div>
                             <div class="col-md-3">
-                                <input type="text"
-                                    value="{{workorderAsset?.assid}}"
+                                <input type="text" value="{{workorderAsset?.assid}}"
                                     class="form-control form-control-sm" [readonly]="true">
                             </div>
 
@@ -100,60 +99,76 @@
                 </kendo-grid-column>
 
 
-                <kendo-grid-column title="No." field="woisequence" width="80" [filterable]="false">
+                <kendo-grid-column title="No." field="wodsequence" width="60" *ngIf="openedFrom == 'assetchecklist'">
                 </kendo-grid-column>
 
-                <kendo-grid-column title="Status" field="woirequesttype" width="130" [filterable]="false">
+                <kendo-grid-column title="Phase" field="wopname" width="130" *ngIf="openedFrom == 'workdetail'">
                 </kendo-grid-column>
 
-                <kendo-grid-column title="Work Package" field="woiissuestatus" width="140">
+                <kendo-grid-column title="Asset ID" field="assid" width="130" *ngIf="openedFrom == 'workdetail'">
                 </kendo-grid-column>
 
-                <kendo-grid-column title="Identified Date" field="woiissueusertype" width="130">
+                <kendo-grid-column title="Address" field="astconcataddress" width="170"
+                    *ngIf="openedFrom == 'workdetail'">
                 </kendo-grid-column>
 
-                <kendo-grid-column title="Reported By" field="woirequestuser" width="140" [filterable]="false">
+                <kendo-grid-column title="Status" field="wodstatus" width="130">
                 </kendo-grid-column>
 
-                <kendo-grid-column title="Description" field="woirequestdate" width="140">
-
+                <kendo-grid-column title="Work Package" field="wphcode" width="150">
                 </kendo-grid-column>
 
-                <kendo-grid-column title="Score" field="woiissueuser" width="140" [filterable]="false">
-                </kendo-grid-column>
-
-                <kendo-grid-column title="Resolved Date" field="woiissuereason" width="250">
-                </kendo-grid-column>
-
-                <kendo-grid-column title="Resolved By" field="woifeecost" width="150" [style]="{'text-align': 'right'}">
+                <kendo-grid-column title="Identified Date" field="woddate" width="150">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <span>
-                            {{ dataItem.woifeecost | currency:'GBP':'symbol' }}
+                            {{ dataItem.woddate | dateFormat : 'DD-MMM-YYYY' }}
                         </span>
                     </ng-template>
                 </kendo-grid-column>
 
-                <kendo-grid-column title="Resolved description" field="woiworkcost" width="150"
+                <kendo-grid-column title="Reported By" field="wodmpusid" width="140">
+                </kendo-grid-column>
+
+                <kendo-grid-column title="Description" field="woddescription" width="160">
+                </kendo-grid-column>
+
+                <kendo-grid-column title="Score" field="wodscore" width="110">
+                </kendo-grid-column>
+
+                <kendo-grid-column title="Resolved Date" field="wodresolveddate" width="160">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.wodresolveddate | dateFormat : 'DD-MMM-YYYY' }}
+                        </span>
+                    </ng-template>
+                </kendo-grid-column>
+
+                <kendo-grid-column title="Resolved By" field="wodresolvedmpusid" width="150">
+
+                </kendo-grid-column>
+
+                <kendo-grid-column title="Resolved description" field="wodresolveddescription" width="200">
+
+                </kendo-grid-column>
+
+                <kendo-grid-column title="Signoff Date" field="wodsignoffdate" width="140">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.wodsignoffdate | dateFormat : 'DD-MMM-YYYY' }}
+                        </span>
+                    </ng-template>
+                </kendo-grid-column>
+
+                <kendo-grid-column title="Signoff by" field="wodsignoffmpusid" width="140">
+                </kendo-grid-column>
+
+                <kendo-grid-column title="Approximate Cost" field="wodapproxcost" width="160"
                     [style]="{'text-align': 'right'}">
-                    <!-- <ng-template kendoGridCellTemplate let-dataItem>
-                        <span>
-                            {{ dataItem.woiworkcost | currency:'GBP':'symbol' }}
-                        </span>
-                    </ng-template> -->
-                </kendo-grid-column>
-
-                <kendo-grid-column title="Signoff Date" field="woiacceptuser" width="140" [filterable]="false">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <span>
-                            {{ dataItem.woiacceptdate | dateFormat : 'DD-MMM-YYYY' }}
+                            {{ dataItem.wodapproxcost | currency:'GBP':'symbol' }}
                         </span>
                     </ng-template>
-                </kendo-grid-column>
-
-                <kendo-grid-column title="Signoff by" field="woiacceptdate" width="140">
-                </kendo-grid-column>
-
-                <kendo-grid-column title="Approximate Cost" field="woiacceptdate" width="140">
                 </kendo-grid-column>
 
 
@@ -173,4 +188,5 @@
 </kendo-window>
 
 <app-defect-form *ngIf="openDefectform" [openDefectform]="openDefectform" [defectFormMode]="defectFormMode"
-    [openedFrom]="openedFrom" [singleWorkOrderAssetInp]="singleWorkOrderAssetInp" (closeDefectFormEvent)="closeDefectForm($event)"></app-defect-form>
+    [openedFrom]="openedFrom" [selectedDefectInp]="selectedSingleDefect" [singleWorkOrderAssetInp]="singleWorkOrderAssetInp"
+    (closeDefectFormEvent)="closeDefectForm($event)"></app-defect-form>

@@ -239,6 +239,7 @@ export class WorksordersDetailsComponent implements OnInit {
             })
 
             setTimeout(() => {
+              // console.log(gridData)
               this.gridData = [...gridData];
               this.loading = false;
               this.chRef.detectChanges();

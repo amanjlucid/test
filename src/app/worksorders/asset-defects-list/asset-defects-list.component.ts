@@ -21,6 +21,7 @@ export class AssetDefectsListComponent implements OnInit {
   @Input() singleWorkOrderInp: any = [];
   @Output() closeDefectsListEvent = new EventEmitter<boolean>();
 
+  currentUser = JSON.parse(localStorage.getItem('currentUser'));
   title = 'Show Defects for Asset';
   subs = new SubSink();
   state: State = {
@@ -71,7 +72,7 @@ export class AssetDefectsListComponent implements OnInit {
   ngOnInit(): void {
     console.log({ openedFrom: this.openedFrom, singleWorkOrderInp: this.singleWorkOrderInp, singleWorkOrderAssetInp: this.singleWorkOrderAssetInp, })
     // console.log(this.singleWorkOrderAssetInp)
-    // console.log(this.singleWorkOrderInp);
+    console.log(this.singleWorkOrderInp);
 
     this.subs.add(
       combineLatest([
@@ -155,7 +156,8 @@ export class AssetDefectsListComponent implements OnInit {
       const { wosequence, wopsequence, assid } = this.singleWorkOrderAssetInp;
       woDefectsApiCall = this.workOrderProgrammeService.workOrderDefectForAssets(wosequence, assid, wopsequence);
     } else if (this.openedFrom == "workdetail") {
-
+      const { wprsequence, wosequence } = this.singleWorkOrderInp;
+      woDefectsApiCall = this.workOrderProgrammeService.getWEBWorksOrdersDefectsForProgrammeAndUserSingleWO(wprsequence, wosequence, this.currentUser.userId);
     } else {
       this.alertService.error("No Access");
       return;
