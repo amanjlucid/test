@@ -77,6 +77,7 @@ export class VariationListComponent implements OnInit {
         this.sharedService.userTypeObs
       ]).subscribe(
         data => {
+          // console.log(data);
           this.worksOrderAccess = data[0];
           this.worksOrderUsrAccess = data[1];
           this.userType = data[2][0];
@@ -183,9 +184,9 @@ export class VariationListComponent implements OnInit {
 
   openVariationDetails(item) {
     if (item != undefined) {
+      const { woiissuestatus } = item;
       this.openedFor = 'details'; // default will be detail view
       if (this.userType != undefined) {
-        const { woiissuestatus } = item;
         const { wourroletype } = this.userType;
         if (
           wourroletype == "Dual Role" ||
@@ -196,6 +197,16 @@ export class VariationListComponent implements OnInit {
           this.openedFor = 'edit';
         }
 
+      } else {
+        if (this.currentUser.admin == "Y") {
+          if (woiissuestatus == "New" || woiissuestatus == "Customer Review" || woiissuestatus == "Contractor Review") {
+            this.openedFor = 'edit';
+          }
+        } else {
+          if (woiissuestatus == "New") {
+            this.openedFor = 'edit';
+          }
+        }
       }
 
       this.selectedSingleVariation = item;
@@ -224,7 +235,7 @@ export class VariationListComponent implements OnInit {
   closeNewVariation(eve) {
     this.openNewVariation = eve;
     $('.variationListOverlay').removeClass('ovrlay');
-    this.getVariationPageDataWithGrid();
+    // this.getVariationPageDataWithGrid();
   }
 
   getVariationReason(variation) {

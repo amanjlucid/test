@@ -50,6 +50,7 @@ export class VariationAssetComponent implements OnInit {
   openVariationWorkList: boolean = false;
   formMode = 'new'
   openedFor = 'details'
+  openVariationDetail = false;
 
   worksOrderAccess = [];
   worksOrderUsrAccess: any = [];
@@ -252,12 +253,30 @@ export class VariationAssetComponent implements OnInit {
       }
     }
 
+    if (btnType == 'Details') {
+      if (this.selectedVariationInp.isEmptyVariation == "N") {
+        return false;
+      }
+    }
+
     return true;
 
   }
 
   woMenuAccess(menuName) {
     return this.worksOrderUsrAccess.indexOf(menuName) != -1
+  }
+
+  openVariationDetailMethod() {
+    // this.selectedSingleInstructionVariation = this.selectedVariationInp;
+    $('.variationAssetListOverlay').addClass('ovrlay');
+    this.openVariationDetail = true;
+  }
+
+  closeVarDetails(eve) {
+    this.openVariationDetail = eve;
+    $('.variationAssetListOverlay').removeClass('ovrlay');
+    // this.getAllVariations();
   }
 
 }

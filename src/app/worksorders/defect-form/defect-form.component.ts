@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { SelectableSettings, PageChangeEvent, RowArgs, GridComponent } from '@progress/kendo-angular-grid';
 
-import { WorksorderManagementService, AlertService, HelperService, LoaderService, ReportingGroupService } from '../../_services'
+import { WorksorderManagementService, AlertService, HelperService, LoaderService, ReportingGroupService, WorksOrdersService } from '../../_services'
 import { forkJoin } from 'rxjs';
 
 @Component({
@@ -85,6 +85,8 @@ export class DefectFormComponent implements OnInit {
   worksOrderData: any;
   phaseData: any;
   workorderAsset: any;
+  userList;
+  selectedPkzSingle;
 
   constructor(
     private chRef: ChangeDetectorRef,
@@ -93,13 +95,15 @@ export class DefectFormComponent implements OnInit {
     private alertService: AlertService,
     private helperService: HelperService,
     private reportingGrpService: ReportingGroupService,
+    private worksOrdersService: WorksOrdersService,
+
   ) {
     this.setSelectableSettings();
   }
 
   setSelectableSettings(): void {
     this.selectableSettings = {
-      checkboxOnly: true,
+      checkboxOnly: false,
       mode: 'single'
     };
   }
@@ -137,29 +141,47 @@ export class DefectFormComponent implements OnInit {
     }
 
     if (this.defectFormMode == "edit") {
-      const { wodstatus, woddate, wodmpusid, woddescription, wodapproxcost, wodresolveddate, wodresolvedmpusid, wodresolveddescription, wodsignoffmpusid, wodsignoffdate } = this.selectedDefectInp;
-
-      this.defectForm.patchValue({
-        status: wodstatus,
-        IdentifiedDate: this.helperService.ngbDatepickerFormat(woddate),
-        reportedBy: wodmpusid,
-        description: woddescription,
-        cost: wodapproxcost,
-        score: '',
-        resolutionDate: this.helperService.ngbDatepickerFormat(wodresolveddate),
-        resolvedBy: wodresolvedmpusid,
-        resolutionDetails: wodresolveddescription,
-        signOffDate: this.helperService.ngbDatepickerFormat(wodsignoffdate),
-        signOffBy: wodsignoffmpusid,
-      });
-
-      const disableFields = ['status', 'IdentifiedDate', 'reportedBy', 'resolutionDate', 'resolvedBy', 'signOffDate', 'signOffBy'];
-      for (const disableField of disableFields) {
-        this.defectForm.get(disableField).disable();
-      }
-
+      this.getDefect();
     }
 
+  }
+
+  getDefect() {
+    const { wprsequence, wosequence, assid, wodsequence } = this.selectedDefectInp;
+    this.subs.add(
+      this.workOrderProgrammeService.getWorksOrderDefect(wprsequence, wosequence, assid, wodsequence).subscribe(
+        data => {
+          console.log(data);
+          if (data.isSuccess) {
+            const { wodstatus, woddate, wodmpusid, woddescription, wodapproxcost, wodresolveddate, wodresolvedmpusid, wodresolveddescription, wodsignoffmpusid, wodsignoffdate } = data.data;
+
+            this.defectForm.patchValue({
+              status: wodstatus,
+              IdentifiedDate: this.helperService.ngbDatepickerFormat(woddate),
+              reportedBy: wodmpusid,
+              description: woddescription,
+              cost: wodapproxcost,
+              score: '',
+              resolutionDate: this.helperService.ngbDatepickerFormat(wodresolveddate),
+              resolvedBy: wodresolvedmpusid,
+              resolutionDetails: wodresolveddescription,
+              signOffDate: this.helperService.ngbDatepickerFormat(wodsignoffdate),
+              signOffBy: wodsignoffmpusid,
+            });
+
+
+            const disableFields = ['status', 'IdentifiedDate', 'reportedBy', 'resolutionDate', 'resolvedBy', 'signOffDate', 'signOffBy'];
+
+            for (const disableField of disableFields) {
+              this.defectForm.get(disableField).disable();
+            }
+
+
+          } else this.alertService.error(data.message);
+
+        }, err => this.alertService.error(err)
+      )
+    )
   }
 
   closeDefectForm() {
@@ -189,7 +211,7 @@ export class DefectFormComponent implements OnInit {
   }
 
   cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
-
+    this.selectedPkzSingle = dataItem;
   }
 
   requiredPageData() {
@@ -208,7 +230,8 @@ export class DefectFormComponent implements OnInit {
       this.workOrderProgrammeService.getWorksOrderByWOsequence(wosequence),
       this.workOrderProgrammeService.getPhase(wosequence, wopsequence),
       this.workOrderProgrammeService.getAssetAddressByAsset(assid),
-      this.reportingGrpService.userListToMail()
+      this.reportingGrpService.userListToMail(),
+      this.worksOrdersService.WorkOrderAssetDetail(wosequence, wopsequence, assid, 0)
     ];
 
     this.subs.add(
@@ -219,11 +242,21 @@ export class DefectFormComponent implements OnInit {
           const worksOrderData = data[1];
           const phaseData = data[2];
           const workorderAsset = data[3];
+          const userList = data[4];
+          const pkzdata = data[5];
 
           if (programmeData.isSuccess) this.programmeData = programmeData.data[0];
           if (worksOrderData.isSuccess) this.worksOrderData = worksOrderData.data;
           if (phaseData.isSuccess) this.phaseData = phaseData.data;
           if (workorderAsset.isSuccess) this.workorderAsset = workorderAsset.data[0];
+          if (userList.isSuccess) this.userList = userList.data;
+
+          if (pkzdata.isSuccess) {
+            this.packageData = pkzdata.data;
+            this.gridView = process(this.packageData, this.state);
+            this.gridLoading = false;
+            this.chRef.detectChanges();
+          }
 
           // this.getDefectList();
 

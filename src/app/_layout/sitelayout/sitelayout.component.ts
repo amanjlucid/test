@@ -61,7 +61,7 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
     },
     {
       menuName: "Works Orders",
-      silverLightLink: `${appConfig.silverLightUrl}/WorksOrders`,
+      silverLightLink: `${appConfig.silverLightUrl}/WorksOrdersPortal`,
       grpPermissionName: "Works Order Portal Access",
     }
   ];

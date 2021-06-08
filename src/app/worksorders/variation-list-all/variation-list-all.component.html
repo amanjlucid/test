@@ -70,9 +70,9 @@
                                     class="dropdown-item" href="javascript:void(0)"
                                     (click)="openVariationlist(dataItem)">Assets</a>
 
-                                <a [ngClass]="{'disabled' : disableVariationBtns('Details', dataItem)}"
+                                <!-- <a [ngClass]="{'disabled' : disableVariationBtns('Details', dataItem)}"
                                     class="dropdown-item" href="javascript:void(0)"
-                                    (click)="openVariationDetailMethod(dataItem)">Details</a>
+                                    (click)="openVariationDetailMethod(dataItem)">Details</a> -->
 
 
                                 <div class="dropdown-toggle">
@@ -188,10 +188,10 @@
     <div class="variationListAllOverlay"></div>
 
 
-    <app-variation-detail *ngIf="openVariationDetail" [openVariationDetail]="openVariationDetail"
+    <!-- <app-variation-detail *ngIf="openVariationDetail" [openVariationDetail]="openVariationDetail"
         [openedFrom]="openedFrom" [openedFor]="openedFor" [singleVariation]="selectedSingleInstructionVariation"
         (closeVariationDetailEvent)="closeVariationDetails($event)">
-    </app-variation-detail>
+    </app-variation-detail> -->
 
 
     <app-variation-asset *ngIf="openVariationAsset" [openVariationAsset]="openVariationAsset" [openedFrom]="openedFrom"

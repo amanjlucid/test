@@ -147,7 +147,7 @@ export class VariationWorkListComponent implements OnInit {
       return this.workListBtnAccess.recharge == true ? false : true
     }
 
-    if (btnname == "Delete Work") {
+    if (btnname == "Remove Work") {
       return this.workListBtnAccess.deleteWork == true ? false : true
     }
 

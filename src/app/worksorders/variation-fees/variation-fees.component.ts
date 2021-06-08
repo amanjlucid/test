@@ -1,9 +1,9 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef, ViewEncapsulation } from '@angular/core';
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
-import { SelectableSettings, PageChangeEvent, RowArgs, GridComponent } from '@progress/kendo-angular-grid';
-import { AlertService, HelperService, WorksorderManagementService } from 'src/app/_services';
-import { forkJoin } from 'rxjs';
+import { SelectableSettings, PageChangeEvent, RowClassArgs } from '@progress/kendo-angular-grid';
+import { AlertService, WorksorderManagementService } from 'src/app/_services';
+
 
 @Component({
   selector: 'app-variation-fees',
@@ -51,6 +51,7 @@ export class VariationFeesComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // console.log({ asset: this.selectedSingleVariationAssetInp, sele: this.selectedVariationInp })
     if (this.openedFor == "details") {
       this.title = `Variation Fees: ${this.selectedSingleVariationAssetInp?.woiissuereason} (${this.selectedSingleVariationAssetInp?.wopsequence})`;
     }
@@ -68,6 +69,17 @@ export class VariationFeesComponent implements OnInit {
     this.subs.unsubscribe();
   }
 
+
+  rowCallback(context: RowClassArgs) {
+    const { woacpendingfee, woiadcomment } = context.dataItem;
+    if (woacpendingfee != 0 && woiadcomment != "") {
+      return { notNew: true }
+    } else {
+      return { notNew: false }
+    }
+
+  }
+
   setSelectableSettings(): void {
     this.selectableSettings = {
       checkboxOnly: false,
@@ -80,7 +92,7 @@ export class VariationFeesComponent implements OnInit {
     const { wosequence, assid, wopsequence, woisequence } = this.selectedSingleVariationAssetInp;
 
     this.subs.add(
-      this.workOrderProgrammeService.getWEBWorksOrdersAssetChecklistAndVariation(wosequence, wopsequence, woisequence,assid).subscribe(
+      this.workOrderProgrammeService.getWEBWorksOrdersAssetChecklistAndVariation(wosequence, wopsequence, woisequence, assid).subscribe(
         data => {
           // console.log(data);
           if (data.isSuccess) {
@@ -138,45 +150,31 @@ export class VariationFeesComponent implements OnInit {
   }
 
   removeFeeVariation(item) {
-    const { wosequence, wopsequence, assid, woisequence, wostagesurcde, wochecksurcde } = item;
+    const { wosequence, wopsequence, assid, wostagesurcde, wochecksurcde } = item;
+    const { woisequence } = this.selectedSingleVariationAssetInp;
+    let params = {
+      WOSEQUENCE: wosequence,
+      WOISEQUENCE: woisequence,
+      ASSID: assid,
+      WOPSEQUENCE: wopsequence,
+      WLCODE: 0,
+      WLATAID: 0,
+      WLPLANYEAR: 0,
+      WOSTAGESURCDE: wostagesurcde,
+      WOCHECKSURCDE: wochecksurcde,
+      UserID: this.currentUser.userId,
+    }
 
-    this.workOrderProgrammeService.getWEBWorksOrdersAssetDetailAndVariation(wosequence, wopsequence, assid).subscribe(
+    // debugger;
+    // return;
+    this.workOrderProgrammeService.wORemoveInstructionAssetDetail(params).subscribe(
       data => {
-      
-        if (data.data.length > 0) {
-          const variaton = data.data[0];
-          const { wlcode, wlataid, wlplanyear } = variaton;
-
-          let params = {
-            WOSEQUENCE: wosequence,
-            WOISEQUENCE: woisequence,
-            ASSID: assid,
-            WOPSEQUENCE: wopsequence,
-
-            WLCODE: wlcode,
-            WLATAID: wlataid,
-            WLPLANYEAR: wlplanyear,
-
-            WOSTAGESURCDE: wostagesurcde,
-            WOCHECKSURCDE: wochecksurcde,
-            UserID: this.currentUser.userId,
-          }
-
-          this.workOrderProgrammeService.wORemoveInstructionAssetDetail(params).subscribe(
-            data => {
-              if (data.isSuccess) {
-                this.alertService.success(`Work Item removed successfully.`);
-                this.getVariationFees();
-              } else this.alertService.error(data.message);
-            }, err => this.alertService.error(err)
-          )
-
-        } else {
-          this.alertService.error("Something went wrong.")
-        }
-      }
+        if (data.isSuccess) {
+          this.alertService.success(`Work Item removed successfully.`);
+          this.getVariationFees();
+        } else this.alertService.error(data.message);
+      }, err => this.alertService.error(err)
     )
-
 
 
   }

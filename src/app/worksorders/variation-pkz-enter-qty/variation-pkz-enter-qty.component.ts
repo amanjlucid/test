@@ -108,6 +108,8 @@ export class VariationPkzEnterQtyComponent implements OnInit {
     )
 
 
+    this.chRef.detectChanges();
+
     //get page required data
     this.getRequiredPageData();
 
@@ -134,7 +136,7 @@ export class VariationPkzEnterQtyComponent implements OnInit {
             this.displayHighestPkz = this.selectedPkzs[this.selectedPkzs.length - 1];
             this.applyCount = this.selectedPkzs.length;
             this.populateForm(this.displayHighestPkz);
-            
+
           }
 
           if (this.mode == 'edit') {
@@ -158,7 +160,9 @@ export class VariationPkzEnterQtyComponent implements OnInit {
       workCost: displayHighestPkz?.asaquantity * displayHighestPkz?.defaultcost,
       costOverride: displayHighestPkz?.asaquantity * displayHighestPkz?.defaultcost,
       comment: '',
-    })
+    });
+
+    this.chRef.detectChanges();
   }
 
 
@@ -189,9 +193,11 @@ export class VariationPkzEnterQtyComponent implements OnInit {
               comment: this.assetDetailInp?.woadcomment,
               sorRate: pkz?.soR_RATE,
               contractorRate: pkz?.soR_RATE,
-              workCost: pkz?.cost,
-              costOverride: pkz?.cost//pkz?.overridE_COST == null ? 0 : pkz?.overridE_COST,
+              workCost: pkz?.cost * this.assetDetailInp?.asaquantity,
+              costOverride: pkz?.cost * this.assetDetailInp?.asaquantity//pkz?.overridE_COST == null ? 0 : pkz?.overridE_COST,
             });
+
+
 
             this.chRef.detectChanges();
           }
@@ -312,7 +318,6 @@ export class VariationPkzEnterQtyComponent implements OnInit {
                 this.populateForm(this.displayHighestPkz)
                 this.chRef.detectChanges();
 
-
               }
             )
           )
@@ -322,29 +327,42 @@ export class VariationPkzEnterQtyComponent implements OnInit {
 
 
       if (this.parentComp == 'worklist' && this.mode == 'edit') {
-        let params = {
-          WOSEQUENCE: this.assetDetailInp.wosequence,
-          WOPSEQUENCE: this.assetDetailInp.wopsequence,
-          WOISEQUENCE: this.assetDetailInp.woisequence,
-          ASSID: this.assetDetailInp.assid,
-          WLCODE: this.assetDetailInp.wlcode,
-          WLATAID: this.assetDetailInp.wlataid,
-          WLPLANYEAR: this.assetDetailInp.wlplanyear,
-          WOSTAGESURCDE: this.assetDetailInp.wostagesurcde,
-          WOCHECKSURCDE: this.assetDetailInp.wochecksurcde,
-          User: this.assetDetailInp.userName,
-          WOIADWORKCOST: this.helperService.convertMoneyToFlatFormat(formRawVal.workCost),//
-          WOIADFEECOST: this.assetDetailInp.woadcommitted,//
-          WOIADCOMMENT: formRawVal.comment,
-          ASAQUANTITY: formRawVal.quantity,
-          ASAUOM: this.assetDetailInp.asauom,
-          Recharge: this.assetDetailInp.woadrechargeyn,
-          Refusal: this.assetDetailInp.woadrefusal,
-          UserID: this.currentUser.userId,
-          WPHCODE: this.assetDetailInp.wlcomppackage
-        };
+        let apiCall: any;
+        let params: any;
 
-        this.worksorderManagementService.worksOrdersUpdateWorksOrderInstructionAssetDetail(params).subscribe(
+        if (this.assetDetailInp.woisequence == 0) {
+          params = this.createVariationForChangeCostQtyParams(formRawVal);
+          console.log(params);
+
+          apiCall = this.worksorderManagementService.worksOrdersCreateVariationForChangeCostQty(params)
+        } else {
+          params = {
+            WOSEQUENCE: this.assetDetailInp.wosequence,
+            WOPSEQUENCE: this.assetDetailInp.wopsequence,
+            WOISEQUENCE: this.selectedSingleVariationAssetInp.woisequence,
+            ASSID: this.assetDetailInp.assid,
+            WLCODE: this.assetDetailInp.wlcode,
+            WLATAID: this.assetDetailInp.wlataid,
+            WLPLANYEAR: this.assetDetailInp.wlplanyear,
+            WOSTAGESURCDE: this.assetDetailInp.wostagesurcde,
+            WOCHECKSURCDE: this.assetDetailInp.wochecksurcde,
+            User: this.assetDetailInp.userName,
+            WOIADWORKCOST: this.helperService.convertMoneyToFlatFormat(formRawVal.workCost),//
+            WOIADFEECOST: this.assetDetailInp.woadcommitted,//
+            WOIADCOMMENT: formRawVal.comment,
+            ASAQUANTITY: formRawVal.quantity,
+            ASAUOM: this.assetDetailInp.asauom,
+            Recharge: this.assetDetailInp.woadrechargeyn,
+            Refusal: this.assetDetailInp.woadrefusal,
+            UserID: this.currentUser.userId,
+            WPHCODE: this.assetDetailInp.wlcomppackage
+          };
+
+          apiCall = this.worksorderManagementService.worksOrdersUpdateWorksOrderInstructionAssetDetail(params);
+
+        }
+
+        apiCall.subscribe(
           data => {
             if (data.isSuccess) {
               let success_msg = "Work Updated Successfully";
@@ -407,6 +425,30 @@ export class VariationPkzEnterQtyComponent implements OnInit {
       WPHCODE: wphcode,
       Recharge: "N",
       WLCODE: 0,
+    }
+  }
+
+
+  createVariationForChangeCostQtyParams(formRawVal) {
+    // const {wosequence, wopsequence, assid, wlcode, wlataid, wlplanyear, wostagesurcde} = this.assetDetailInp;
+    return {
+      WOSEQUENCE: this.assetDetailInp.wosequence,
+      WOISEQUENCE: this.selectedSingleVariationAssetInp.woisequence,
+      ASSID: this.assetDetailInp.assid,
+      WOPSEQUENCE: this.assetDetailInp.wopsequence,
+      WLCODE: this.assetDetailInp.wlcode,
+      WLATAID: this.assetDetailInp.wlataid,
+      WLPLANYEAR: this.assetDetailInp.wlplanyear,
+      WOSTAGESURCDE: this.assetDetailInp.wostagesurcde,
+      WOCHECKSURCDE: this.assetDetailInp.wochecksurcde,
+      User: this.currentUser.userId,
+      WOIADWORKCOST: this.helperService.convertMoneyToFlatFormat(formRawVal.workCost),//
+      WOIADFEECOST: this.assetDetailInp.woadcommitted,//
+      WOIADCOMMENT: formRawVal.comment,
+      ASAQUANTITY: formRawVal.quantity,
+      ASAUOM: this.assetDetailInp.asauom,
+      WPHCODE: this.assetDetailInp.wlcomppackage,
+      Recharge: this.assetDetailInp.woadrechargeyn,
     }
   }
 

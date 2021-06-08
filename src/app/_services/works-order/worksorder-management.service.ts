@@ -441,6 +441,11 @@ export class WorksorderManagementService {
         return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WorksOrdersUpdateWorksOrderInstructionAssetDetail`, body, this.httpOptions);
     }
 
+    // worksOrdersCreateVariationForChangeCostQty(params) {
+    //     let body = JSON.stringify(params);
+    //     return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WorksOrdersCreateVariationForChangeCostQty`, body, this.httpOptions);
+    // }
+
     wORemoveInstructionAssetDetail(params) {
         let body = JSON.stringify(params);
         return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WORemoveInstructionAssetDetail`, body, this.httpOptions);
@@ -504,6 +509,10 @@ export class WorksorderManagementService {
 
     getWEBWorksOrdersDefectsForProgrammeAndUserSingleWO(WPRSEQUENCE, WOSEQUENCE, UserId) {
         return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWEBWorksOrdersDefects_ForProgrammeAndUserSingleWO?WPRSEQUENCE=${WPRSEQUENCE}&WOSEQUENCE=${WOSEQUENCE}&UserId=${UserId}`, this.httpOptions);
+    }
+
+    getWorksOrderDefect(WPRSEQUENCE, WOSEQUENCE, ASSID, WODSEQUENCE) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWorksOrderDefect?WPRSEQUENCE=${WPRSEQUENCE}&WOSEQUENCE=${WOSEQUENCE}&ASSID=${ASSID}&WODSEQUENCE=${WODSEQUENCE}`, this.httpOptions);
     }
 
 

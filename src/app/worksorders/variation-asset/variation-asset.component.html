@@ -83,6 +83,10 @@
                                     *ngIf="woMenuAccess('Accept Variation')" class="dropdown-item"
                                     href="javascript:void(0)" (click)="accetpVariationAsset(dataItem)">Accept</a>
 
+                                <a [ngClass]="{'disabled' : disableVariationBtns('Details', dataItem)}"
+                                    class="dropdown-item" href="javascript:void(0)"
+                                    (click)="openVariationDetailMethod(dataItem)">Details</a>
+
 
                             </div>
                         </li>
@@ -160,6 +164,11 @@
         [selectedSingleVariationAssetInp]="selectedSingleVariationAsset"
         (closeWorkListEvent)="closeVariationDetails($event)">
     </app-variation-work-list>
+
+    <app-variation-detail *ngIf="openVariationDetail" [openVariationDetail]="openVariationDetail"
+        [openedFrom]="openedFrom" [openedFor]="openedFor" [singleVariation]="selectedVariationInp"
+        (closeVariationDetailEvent)="closeVarDetails($event)">
+    </app-variation-detail>
 
 
 </kendo-window>

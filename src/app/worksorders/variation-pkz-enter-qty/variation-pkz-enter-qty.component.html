@@ -31,7 +31,7 @@
                 <div class="row3 mt-2">
                     <div class="blockleft">
                         <div class="lblDiv lblDiv1">Please Provide Quantity:</div>
-                        <input type="text" numberDecimal maxDigits="5" formControlName="quantity"
+                        <input class="qty" type="text" numberDecimal maxDigits="5" formControlName="quantity"
                             [ngClass]="{ 'is-invalid': submitted && formErrors.quantity }" autocomplete="off">
 
                         <div class="lblDiv lblDiv2">UOM:</div>
@@ -39,7 +39,7 @@
                             [ngClass]="{ 'is-invalid': submitted && formErrors.uom }" autocomplete="off">
 
                         <div class="lblDiv">SOR Rate:</div>
-                        <input appCurrencyMask maxDigits="20" type="text" formControlName="sorRate"
+                        <input class="sorRate" appCurrencyMask maxDigits="20" type="text" formControlName="sorRate"
                             [ngClass]="{ 'is-invalid': submitted && formErrors.sorRate }" autocomplete="off">
 
                         <div class="lblDiv">Contract Rate:</div>

@@ -244,17 +244,17 @@ export class VariationListAllComponent implements OnInit {
     this.getAllVariations();
   }
 
-  openVariationDetailMethod(item) {
-    this.selectedSingleInstructionVariation = item;
-    $('.variationListAllOverlay').addClass('ovrlay');
-    this.openVariationDetail = true;
-  }
+  // openVariationDetailMethod(item) {
+  //   this.selectedSingleInstructionVariation = item;
+  //   $('.variationListAllOverlay').addClass('ovrlay');
+  //   this.openVariationDetail = true;
+  // }
 
-  closeVariationDetails(eve) {
-    this.openVariationDetail = eve;
-    $('.variationListAllOverlay').removeClass('ovrlay');
-    this.getAllVariations();
-  }
+  // closeVariationDetails(eve) {
+  //   this.openVariationDetail = eve;
+  //   $('.variationListAllOverlay').removeClass('ovrlay');
+  //   this.getAllVariations();
+  // }
 
 
 

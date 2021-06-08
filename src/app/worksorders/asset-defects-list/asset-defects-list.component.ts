@@ -171,7 +171,7 @@ export class AssetDefectsListComponent implements OnInit {
             this.gridData = data.data;
             this.gridView = process(this.gridData, this.state);
           } else this.alertService.error(data.message)
-          
+
           this.gridLoading = false;
           this.chRef.detectChanges();
         }, err => this.alertService.error(err)
