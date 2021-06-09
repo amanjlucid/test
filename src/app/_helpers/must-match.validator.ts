@@ -365,7 +365,7 @@ export function firstDateIsLower(controlName: any, matchingControlName1: any) {
     return (formGroup: FormGroup) => {
         const control = formGroup.controls[controlName];
         const matchingControl1 = formGroup.controls[matchingControlName1];
-       
+
         // if (control.errors && !control.errors.isLower) {
         //     // return if another validator has already found an error on the matchingControl
         //     return;
@@ -395,6 +395,28 @@ export function firstDateIsLower(controlName: any, matchingControlName1: any) {
 
         return control.setErrors(null);
     }
+}
+
+
+export function numberRange(min: number = 0, max: number = 99999) {
+    return (control: FormControl): { [key: string]: any } => {
+        if (control.errors && !control.errors.invalidRange) {
+            return;
+        }
+
+        let val: number = control.value;
+        if (isNaN(val) || /\D/.test(val.toString())) {
+            return { "invalidRange": true };
+        } else if (!isNaN(min) && !isNaN(max)) {
+            return val < min || val > max ? { "invalidRange": true } : null;
+        } else if (!isNaN(min)) {
+            return val < min ? { "invalidRange": true } : null;
+        } else if (!isNaN(max)) {
+            return val > max ? { "invalidRange": true } : null;
+        } else {
+            return null;
+        }
+    };
 }
 
 

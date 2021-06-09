@@ -233,4 +233,52 @@ export class AssetDefectsListComponent implements OnInit {
     $('.defectListoverlay').removeClass('ovrlay');
   }
 
+
+
+
+  confirm(item, confirmType = "signOff") {
+    $('.k-window').css({ 'z-index': 1000 });
+
+    if (confirmType == "signOff") {
+      this.confirmationDialogService.confirm('Please confirm..', 'Signoff selected defects ?')
+        .then((confirmed) => (confirmed) ? this.signOff(item) : console.log(confirmed))
+        .catch(() => console.log('Attribute dismissed the dialog.'));
+    } else {
+      this.confirmationDialogService.confirm('Please confirm..', 'Do you really want to delete this record ?')
+        .then((confirmed) => (confirmed) ? this.deleteDefect(item) : console.log(confirmed))
+        .catch(() => console.log('Attribute dismissed the dialog.'));
+    }
+
+
+  }
+
+  signOff(item) {
+    const { assid, wprsequence, wosequence, wopsequence, wodsequence } = item;
+    const params = {
+      wprsequence: wprsequence,
+      wosequence: wosequence,
+      assId: assid,
+      wopsequence: wopsequence,
+      wodsequence: wodsequence,
+      userId: this.currentUser.userId,
+    }
+
+    this.subs.add(
+      this.workOrderProgrammeService.signOffDefect(params).subscribe(
+        data => {
+          console.log(data);
+          if (data.isSuccess) {
+            this.alertService.success("Signed off successfully");
+            this.requiredPageData();
+          } else this.alertService.error(data.message)
+        }, err => this.alertService.error(err)
+      )
+    )
+
+  }
+
+  deleteDefect(item) {
+
+  }
+
 }

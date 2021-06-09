@@ -124,7 +124,7 @@
                 </kendo-grid-column>
 
 
-                <kendo-grid-column field="woisequence" title="Sequence" width="130" [filterable]="false">
+                <kendo-grid-column field="woisequence" title="Sequence" width="120" [filterable]="false">
                 </kendo-grid-column>
 
                 <kendo-grid-column field="woirequesttype" title="Request Type" width="130" [filterable]="false">
@@ -133,7 +133,7 @@
                 <kendo-grid-column title="Created By" field="woirequestuser" width="130" [filterable]="false">
                 </kendo-grid-column>
 
-                <kendo-grid-column title="Created Date" field="woirequestdate" width="280">
+                <kendo-grid-column title="Created Date" field="woirequestdate" width="140">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <span>
                             {{ dataItem.woirequestdate | dateFormat : 'DD-MMM-YYYY' }}
@@ -141,7 +141,7 @@
                     </ng-template>
                 </kendo-grid-column>
 
-                <kendo-grid-column title="Status" field="woiissuestatus" width="280">
+                <kendo-grid-column title="Status" field="woiaissuestatus" width="120">
                 </kendo-grid-column>
 
                 <kendo-grid-column title="Issue User" field="woiissueuser" width="140">

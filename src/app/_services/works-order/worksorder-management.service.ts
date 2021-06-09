@@ -515,6 +515,24 @@ export class WorksorderManagementService {
         return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWorksOrderDefect?WPRSEQUENCE=${WPRSEQUENCE}&WOSEQUENCE=${WOSEQUENCE}&ASSID=${ASSID}&WODSEQUENCE=${WODSEQUENCE}`, this.httpOptions);
     }
 
+    getServicePkz(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWorkPackagesforAssetSIM_Replacement`, body, this.httpOptions);
+    }
+
+    updateWorksOrderDefect(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/UpdateWorksOrderDefect`, body, this.httpOptions);
+    }
+
+    getWOInstructionSpecificAssetsDetails(WOSEQUENCE, WOISEQUENCE, assid) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWOInstructionSpecificAssetsDetails?WOSEQUENCE=${WOSEQUENCE}&WOISEQUENCE=${WOISEQUENCE}&assid=${assid}`, this.httpOptions);
+    }
+
+    signOffDefect(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/SignOffDefect`, body, this.httpOptions);
+    }
 
 
 

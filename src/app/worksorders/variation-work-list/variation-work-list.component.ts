@@ -57,6 +57,21 @@ export class VariationWorkListComponent implements OnInit {
   worksOrderData: any;
   workListBtnAccess: any;
   hamBurgerMenuClick = 0;
+  servicePkzOpen = false;
+  servicePkzGrid: any;
+  servicePkzData: any;
+  selectedSingleServicePkz: any
+  servicePkzstate: State = {
+    skip: 0,
+    sort: [],
+    take: 25,
+    group: [],
+    filter: {
+      logic: "or",
+      filters: []
+    }
+  }
+  pkzQtyMode = 'edit';
 
   constructor(
     private chRef: ChangeDetectorRef,
@@ -439,10 +454,16 @@ export class VariationWorkListComponent implements OnInit {
 
   }
 
-  closeEditWorkPackageQtyCostWindow() {
+  closeEditWorkPackageQtyCostWindow(eve) {
     this.EditWorkPackageQtyCostWindow = false;
-    $('.variationWorkListOverlay').removeClass('ovrlay');
+    if (this.pkzQtyMode == "service") {
+      $('.variationWorkListOverlaypkz').removeClass('ovrlay');
+    } else {
+      $('.variationWorkListOverlay').removeClass('ovrlay');
+    }
+
     this.getVariationWorkList();
+
   }
 
   removeItemVariationConfirm(item) {
@@ -485,42 +506,54 @@ export class VariationWorkListComponent implements OnInit {
   }
 
 
-  replaceService(item) {
+  replaceService() {
+    if (this.selectedSingleServicePkz == undefined) {
+      this.alertService.error("Please select a record")
+      return
+    }
+
+    $('.variationWorkListOverlaypkz').addClass('ovrlay');
+    this.pkzQtyMode = 'service';
+    this.openEditWorkPackageQtyCostWindow(this.selectedSingleVarWorkList);
+
+  }
+
+  openServicePkzMethod(item) {
     this.selectedSingleVarWorkList = item;
-    const { wosequence, wopsequence, assid, wlcode, wlataid, wlplanyear, wostagesurcde, wochecksurcde, woadrechargeyn, asauom, wlcomppackage, asaquantity, woadcomment } = item;
-    const { woisequence } = this.selectedSingleVariationAssetInp;
+    $('.variationWorkListOverlay').addClass('ovrlay');
+    this.servicePkzOpen = true;
+    const { wosequence, assid, wlataid, wlplanyear, wochecksurcde } = item;
+
 
     let params = {
-      WOSEQUENCE: wosequence,
-      WOPSEQUENCE: wopsequence,
-      WOISEQUENCE: woisequence,
       ASSID: assid,
-      WLCODE: wlcode,
-      WLATAID: wlataid,
-      WLPLANYEAR: wlplanyear,
-      WLATAID2: '',
-      WLPLANYEAR2: '',
-      WOSTAGE: wostagesurcde,
-      WOCHECK: wochecksurcde,
-      WORKCOST: this.openedFrom == "assetchecklist" ? this.selectedSingleVariationAssetInp?.woiaworkcost : this.selectedVariationInp?.woiworkcost,
-      COMMENT: woadcomment,
-      QUANTITY: asaquantity,
-      UOM: asauom,
-      WPHCODE: wlcomppackage,
-      RECHARGE: woadrechargeyn,
-      strUserId: this.currentUser.userId,
-
+      CTTSURCDE: this.worksOrderData?.cttsurcde,
+      PLANYEAR: wlplanyear,
+      WOSEQUENCE: wosequence,
+      WOCHECKSURCDE: wochecksurcde,
+      ATAID: wlataid
     };
 
+
     this.subs.add(
-      this.workOrderProgrammeService.createVariationForSIMReplacement(params).subscribe(
+      this.workOrderProgrammeService.getServicePkz(params).subscribe(
         data => {
           if (data.isSuccess) {
-            this.getVariationWorkList();
-          } else this.alertService.error(data.message)
-        }, err => this.alertService.error(err)
+            this.servicePkzData = data.data;
+            this.servicePkzGrid = process(this.servicePkzData, this.servicePkzstate);
+            this.chRef.detectChanges();
+          }
+        }
       )
     )
+  }
+
+  closeServicePkzWindow(eve = null) {
+    this.selectedSingleServicePkz = undefined
+    this.servicePkzOpen = false;
+    this.pkzQtyMode = 'edit';
+    $('.variationWorkListOverlay').removeClass('ovrlay');
+    $('.variationWorkListOverlaypkz').removeClass('ovrlay');
   }
 
   setSeletedRow(item) {
@@ -572,6 +605,31 @@ export class VariationWorkListComponent implements OnInit {
 
   }
 
+
+
+  sortChangeService(sort: SortDescriptor[]): void {
+    this.servicePkzstate.sort = sort;
+    this.gridView = process(this.servicePkzData, this.servicePkzstate);
+  }
+
+  filterChangeService(filter: any): void {
+    this.servicePkzstate.filter = filter;
+    this.gridView = process(this.servicePkzData, this.servicePkzstate);
+  }
+
+  pageChangeService(event: PageChangeEvent): void {
+    this.servicePkzstate.skip = event.skip;
+    this.gridView = {
+      data: this.servicePkzData.slice(this.servicePkzstate.skip, this.servicePkzstate.skip + this.pageSize),
+      total: this.servicePkzData.length
+    };
+  }
+
+  cellClickHandlerService({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
+    this.selectedSingleServicePkz = dataItem
+    // this.selectedSingleVarWorkList = dataItem;
+    // this.setSeletedRow(dataItem);
+  }
 
 
 }

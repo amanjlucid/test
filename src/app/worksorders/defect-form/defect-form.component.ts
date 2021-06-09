@@ -2,10 +2,10 @@ import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy
 import { SubSink } from 'subsink';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
-import { SelectableSettings, PageChangeEvent, RowArgs, GridComponent } from '@progress/kendo-angular-grid';
-
-import { WorksorderManagementService, AlertService, HelperService, LoaderService, ReportingGroupService, WorksOrdersService } from '../../_services'
-import { forkJoin } from 'rxjs';
+import { SelectableSettings, PageChangeEvent, GridComponent, RowClassArgs } from '@progress/kendo-angular-grid';
+import { WorksorderManagementService, AlertService, HelperService, ReportingGroupService, WorksOrdersService } from '../../_services'
+import { forkJoin, Observable } from 'rxjs';
+import { firstDateIsLower, numberRange, SimpleDateValidator } from 'src/app/_helpers';
 
 @Component({
   selector: 'app-defect-form',
@@ -33,6 +33,7 @@ export class DefectFormComponent implements OnInit {
     },
     'IdentifiedDate': {
       'required': 'Identified Date is required.',
+      'invalidDate': 'Identified Date in dd/mm/yyyy format.',
     },
     'reportedBy': {
       'required': 'Reported By is required.',
@@ -45,9 +46,12 @@ export class DefectFormComponent implements OnInit {
     },
     'score': {
       'required': 'Score is required.',
+      'invalidRange': 'Score value between 0 and 99999 inclusive'
     },
     'resolutionDate': {
       'required': 'Resolution Date is required.',
+      'invalidDate': 'Resolution Date in dd/mm/yyyy format.',
+      'isLower': 'Resolution Date must be on or after the Identified Date.',
     },
     'resolvedBy': {
       'required': 'Resolved By is required.',
@@ -57,6 +61,7 @@ export class DefectFormComponent implements OnInit {
     },
     'signOffDate': {
       'required': 'Sign Off Date is required.',
+      'invalidDate': 'Sign Off Date in dd/mm/yyyy format.',
     },
     'signOffBy': {
       'required': 'Sign Off By is required.',
@@ -117,17 +122,22 @@ export class DefectFormComponent implements OnInit {
 
     this.defectForm = this.fb.group({
       status: ['', [Validators.required]],
-      IdentifiedDate: ['', [Validators.required]],
+      IdentifiedDate: ['', [Validators.required, SimpleDateValidator()]],
       reportedBy: ['', [Validators.required]],
       description: ['', [Validators.required]],
       cost: ['', [Validators.required]],
-      score: ['', [Validators.required]],
-      resolutionDate: ['', [Validators.required]],
+      score: ['', [Validators.required, numberRange(0, 99999)]],
+      resolutionDate: ['', [Validators.required, SimpleDateValidator()]],
       resolvedBy: ['', [Validators.required]],
       resolutionDetails: ['', [Validators.required]],
-      signOffDate: ['', [Validators.required]],
-      signOffBy: ['', [Validators.required]],
-    });
+      signOffDate: ['', [SimpleDateValidator()]],
+      signOffBy: [''],
+    },
+      {
+        validator: [
+          firstDateIsLower('resolutionDate', 'IdentifiedDate'),
+        ],
+      });
 
     this.populateForm();
     this.requiredPageData();
@@ -137,7 +147,10 @@ export class DefectFormComponent implements OnInit {
   populateForm() {
 
     if (this.defectFormMode == "new") {
-
+      const disableFields = ['signOffDate', 'signOffBy'];
+      for (const disableField of disableFields) {
+        this.defectForm.get(disableField).disable();
+      }
     }
 
     if (this.defectFormMode == "edit") {
@@ -154,7 +167,7 @@ export class DefectFormComponent implements OnInit {
           console.log(data);
           if (data.isSuccess) {
             const { wodstatus, woddate, wodmpusid, woddescription, wodapproxcost, wodresolveddate, wodresolvedmpusid, wodresolveddescription, wodsignoffmpusid, wodsignoffdate } = data.data;
-
+            // this.mySelection = [wlataid]
             this.defectForm.patchValue({
               status: wodstatus,
               IdentifiedDate: this.helperService.ngbDatepickerFormat(woddate),
@@ -169,16 +182,25 @@ export class DefectFormComponent implements OnInit {
               signOffBy: wodsignoffmpusid,
             });
 
-
-            const disableFields = ['status', 'IdentifiedDate', 'reportedBy', 'resolutionDate', 'resolvedBy', 'signOffDate', 'signOffBy'];
-
-            for (const disableField of disableFields) {
-              this.defectForm.get(disableField).disable();
+            if (wodstatus == "Signed Off") {
+              this.defectForm.disable();
+            } else if (wodstatus == "New") {
+              const disableFields = ['signOffDate', 'signOffBy'];
+              for (const disableField of disableFields) {
+                this.defectForm.get(disableField).disable();
+              }
             }
 
+            // else {
+            //   const disableFields = ['status', 'IdentifiedDate', 'reportedBy', 'resolutionDate', 'resolvedBy', 'signOffDate', 'signOffBy'];
+
+            //   for (const disableField of disableFields) {
+            //     this.defectForm.get(disableField).disable();
+            //   }
+            // }
 
           } else this.alertService.error(data.message);
-
+          this.chRef.detectChanges();
         }, err => this.alertService.error(err)
       )
     )
@@ -212,6 +234,14 @@ export class DefectFormComponent implements OnInit {
 
   cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
     this.selectedPkzSingle = dataItem;
+  }
+
+  rowCallback(context: RowClassArgs) {
+    // const { woadstatus, woisequence } = context.dataItem;
+    console.log(this.selectedDefectInp);
+    return {
+      'k-state-disabled': this.selectedDefectInp?.wodstatus == "Signed Off"
+    };
   }
 
   requiredPageData() {
@@ -340,6 +370,49 @@ export class DefectFormComponent implements OnInit {
     if (this.defectForm.invalid) {
       return;
     }
+
+    debugger;
+
+    let apiCall: Observable<any>;
+    let formRawVal = this.defectForm.getRawValue();
+
+    if (this.defectFormMode == "new") {
+
+    } else if (this.defectFormMode == "edit") {
+      const { status, IdentifiedDate, reportedBy, description, cost, score, resolutionDate, resolvedBy, resolutionDetails, signOffDate, signOffBy } = formRawVal;
+
+      const { wlataid, wlcode, wlplanyear } = this.selectedDefectInp
+
+      const params = {
+        WLATAID: wlataid,
+        WLCODE: wlcode,
+        WLPLANYEAR: wlplanyear,
+        WODAPPROXCOST: cost,
+        WODDATE: this.helperService.ngbDatepickerFormat(IdentifiedDate),
+        WODDESCRIPTION: description,
+        WODMPUSID: reportedBy,
+        WODRESOLVEDDATE: this.helperService.ngbDatepickerFormat(resolutionDate),
+        WODRESOLVEDDESCRIPTION: resolutionDetails,
+        WODRESOLVEDMPUSID: resolvedBy,
+        WODSCORE: score,
+        WODSIGNOFFDATE: this.helperService.ngbDatepickerFormat(signOffDate),
+        WODSIGNOFFMPUSID: signOffBy,
+        WODSTATUS: status,
+      }
+
+      apiCall = this.workOrderProgrammeService.updateWorksOrderDefect(params);
+    }
+
+    return;
+    this.subs.add(
+      apiCall.subscribe(
+        data => {
+          console.log(data);
+        }
+      )
+    )
+
+
 
 
   }

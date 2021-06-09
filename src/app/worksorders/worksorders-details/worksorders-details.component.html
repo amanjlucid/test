@@ -384,18 +384,18 @@
         <kendo-treelist-column [expandable]="true" [minResizableWidth]="200" field="woname" title="Name" [width]="450"
           [locked]="columnLocked">
           <ng-template kendoTreeListCellTemplate let-dataItem>
-            <!-- <span class="asbestosIcon">
-              <img title="Medium/High Asbestos" *ngIf="dataItem.acmColour != '' && dataItem.acmColour == 'Red'"
-                class="table-icon-wr" src="assets/img/icons/asbestos-red.png" />
-              <img title="No Asbestos" *ngIf="dataItem.acmColour != '' && dataItem.acmColour == 'Black'"
-                class="table-icon-wr" src="assets/img/icons/asbestos-black.png" />
-              <img title="Very Low/Low Asbestos" *ngIf="dataItem.acmColour != '' && dataItem.acmColour == 'Green'"
-                class="table-icon-wr" src="assets/img/icons/asbestos-green.png" />
-            </span> -->
-
-
             <span>
               {{ dataItem.woname }}
+            </span>
+
+            <span class="asbestosIcon">
+              <img (click)="openAsbestos(dataItem)" title="Medium/High Asbestos"
+                *ngIf="dataItem.acmColour != '' && dataItem.acmColour == 'Red'" class="table-icon-wr"
+                src="assets/img/icons/asbestos-red.png" />
+              <!-- <img title="No Asbestos" *ngIf="dataItem.acmColour != '' && dataItem.acmColour == 'Black'"
+                class="table-icon-wr" src="assets/img/icons/asbestos-black.png" />
+              <img title="Very Low/Low Asbestos" *ngIf="dataItem.acmColour != '' && dataItem.acmColour == 'Green'"
+                class="table-icon-wr" src="assets/img/icons/asbestos-green.png" /> -->
             </span>
           </ng-template>
 

@@ -23,6 +23,7 @@ export class VariationPkzEnterQtyComponent implements OnInit {
   @Input() assetDetailInp: any;
   @Input() selectedPkzs: any;
   @Output() closePkzQtyEvent = new EventEmitter<boolean>();
+  @Output() closeServicePkz = new EventEmitter<boolean>();
 
   title = '';
   readonly = true;
@@ -62,8 +63,8 @@ export class VariationPkzEnterQtyComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // console.log({ mode: this.mode, parnetcomp: this.parentComp, openedFrom: this.openedFrom, variation: this.singleVariationInp, assetDetail: this.assetDetailInp, asset: this.selectedSingleVariationAssetInp })
-    // console.log({ selection: this.selectedPkzs })
+    console.log({ mode: this.mode, parnetcomp: this.parentComp, openedFrom: this.openedFrom, variation: this.singleVariationInp, assetDetail: this.assetDetailInp, asset: this.selectedSingleVariationAssetInp })
+    console.log({ selection: this.selectedPkzs })
 
     if (this.parentComp == 'worklist') {
       this.title = 'Variation Cost/Qantity';
@@ -131,7 +132,12 @@ export class VariationPkzEnterQtyComponent implements OnInit {
           this.worksOrder = data[0].data;
           this.planYear = data[1].data;
 
-          if (this.mode == "new") {
+          if (this.mode == "new" || this.mode == 'service') {
+            console.log(typeof this.selectedPkzs)
+            if (typeof this.selectedPkzs == "object") {
+              this.selectedPkzs = [...this.selectedPkzs];
+              console.log(this.selectedPkzs)
+            }
 
             this.displayHighestPkz = this.selectedPkzs[this.selectedPkzs.length - 1];
             this.applyCount = this.selectedPkzs.length;
@@ -156,7 +162,7 @@ export class VariationPkzEnterQtyComponent implements OnInit {
       quantity: displayHighestPkz?.asaquantity,
       uom: displayHighestPkz?.uom,
       sorRate: displayHighestPkz?.defaultcost,
-      contractorRate: displayHighestPkz?.contractrate,
+      contractorRate: displayHighestPkz?.contractrate ?? displayHighestPkz?.defaultcost,
       workCost: displayHighestPkz?.asaquantity * displayHighestPkz?.defaultcost,
       costOverride: displayHighestPkz?.asaquantity * displayHighestPkz?.defaultcost,
       comment: '',
@@ -332,8 +338,6 @@ export class VariationPkzEnterQtyComponent implements OnInit {
 
         if (this.assetDetailInp.woisequence == 0) {
           params = this.createVariationForChangeCostQtyParams(formRawVal);
-          console.log(params);
-
           apiCall = this.worksorderManagementService.worksOrdersCreateVariationForChangeCostQty(params)
         } else {
           params = {
@@ -377,6 +381,24 @@ export class VariationPkzEnterQtyComponent implements OnInit {
 
       }
 
+      if (this.parentComp == 'worklist' && this.mode == 'service') {
+        const params = this.createServicePkzVariationParam(this.assetDetailInp, this.displayHighestPkz, formRawVal, type);
+        console.log(params)
+        console.log(this.assetDetailInp)
+        // debugger;
+        this.subs.add(
+          this.worksorderManagementService.createVariationForSIMReplacement(params).subscribe(
+            data => {
+              if (data.isSuccess) {
+                this.closeVariatioPkzQty();
+                this.closeServicePkz.emit(false)
+              } else this.alertService.error(data.message)
+            }, err => this.alertService.error(err)
+          )
+        )
+      }
+
+
     }
 
 
@@ -402,6 +424,33 @@ export class VariationPkzEnterQtyComponent implements OnInit {
 
 
   }
+
+  createServicePkzVariationParam(assetDetail, pkz, formRawVal, type = 1) {
+    const { wosequence, wopsequence, assid, woisequence, wostagesurcde, wochecksurcde, wlcode, wlataid, wlplanyear } = assetDetail;
+    const { ataid, wphcode, uom } = pkz;
+
+    return {
+      WOSEQUENCE: wosequence,
+      WOPSEQUENCE: wopsequence,
+      WOISEQUENCE: woisequence,
+      ASSID: assid,
+      WLCODE: wlcode,
+      WLATAID: wlataid,
+      WLPLANYEAR: wlplanyear,
+      WLATAID2: ataid,
+      WLPLANYEAR2: 0,
+      WOSTAGE: wostagesurcde,
+      WOCHECK: wochecksurcde,
+      WORKCOST: this.helperService.convertMoneyToFlatFormat(formRawVal.workCost),
+      COMMENT: formRawVal.comment,
+      QUANTITY: formRawVal.quantity,
+      UOM: uom,
+      WPHCODE: wphcode,
+      RECHARGE: "N",
+      strUserId: this.currentUser.userId,
+    }
+  }
+
 
   createPkzVariationParam(variation, pkz, formRawVal, type = 1) {
     const { wosequence, wopsequence, assid, woisequence } = variation;

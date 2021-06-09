@@ -80,7 +80,7 @@
                                 <a *ngIf="woMenuAccess('Replace Service Package')"
                                     [ngClass]="{'disabled' : disableGridRowMenu('Replace Service Package',dataItem)}"
                                     class="dropdown-item" href="javascript:void(0)"
-                                    (click)="replaceService(dataItem)">Replace Service
+                                    (click)="openServicePkzMethod(dataItem)">Replace Service
                                     Package</a>
                             </div>
                         </li>
@@ -233,7 +233,8 @@
     <app-variation-pkz-enter-qty *ngIf="EditWorkPackageQtyCostWindow" [pkzQtyWindow]="EditWorkPackageQtyCostWindow"
         [singleVariationInp]="selectedVariationInp" [selectedSingleVariationAssetInp]="selectedSingleVariationAssetInp"
         [assetDetailInp]="selectedSingleVarWorkList" [openedFrom]="openedFrom" [parentComp]="'worklist'"
-        (closePkzQtyEvent)="closeEditWorkPackageQtyCostWindow($event)" [mode]="'edit'">
+        (closePkzQtyEvent)="closeEditWorkPackageQtyCostWindow($event)" [mode]="pkzQtyMode"
+        [selectedPkzs]="selectedSingleServicePkz" (closeServicePkz)="closeServicePkzWindow($event)">
     </app-variation-pkz-enter-qty>
 
 
@@ -267,5 +268,62 @@
         </div>
 
     </kendo-window>
+
+
+    <kendo-window class="servicePkzGrid" title="Select Replacement Service Package" *ngIf="servicePkzOpen"
+        (close)="closeServicePkzWindow()" [top]="20" [minWidth]="700" [width]="800" [height]="auto" [minHeight]="350">
+        <div class="row">
+            <div class="col-md-12">
+                <kendo-grid [data]="servicePkzGrid" [height]="410" [selectable]="selectableSettings" filterable="menu"
+                    [resizable]="true" [sortable]="{
+                allowUnsort: true,
+                mode: 'multiple'
+                }" [skip]="servicePkzstate.skip" [loading]="loading" [pageSize]="pageSize" [rowHeight]="36"
+                    (pageChange)="pageChangeService($event)" scrollable="virtual" [sort]="servicePkzstate.sort"
+                    [filter]="servicePkzstate.filter" (sortChange)="sortChangeService($event)"
+                    (filterChange)="filterChangeService($event)" (cellClick)="cellClickHandlerService($event)"
+                    [navigable]="false">
+                    <kendo-grid-column field="wphcode" title="Package Code" width="120">
+                    </kendo-grid-column>
+                    <kendo-grid-column field="wphname" title="Package Name" width="120">
+                    </kendo-grid-column>
+                    <kendo-grid-column field="atadescription" title="Attribute Description" width="120">
+                    </kendo-grid-column>
+                    <kendo-grid-column field="asaquantity" title="Quantity" width="120">
+                    </kendo-grid-column>
+                    <kendo-grid-column field="uom" title="UOM" width="120">
+                    </kendo-grid-column>
+                    <kendo-grid-column field="defaultcost" title="Default Cost" width="120"
+                        [style]="{'text-align': 'right'}">
+                        <ng-template kendoGridCellTemplate let-dataItem>
+                            <span>
+                                {{ dataItem.defaultcost | currency:'GBP':'symbol' }}
+                            </span>
+                        </ng-template>
+                    </kendo-grid-column>
+                    <kendo-grid-column field="cost" title="Cost" width="120" [style]="{'text-align': 'right'}">
+                        <ng-template kendoGridCellTemplate let-dataItem>
+                            <span>
+                                {{ dataItem.cost | currency:'GBP':'symbol' }}
+                            </span>
+                        </ng-template>
+                    </kendo-grid-column>
+                    <kendo-grid-column field="exclusionreason" title="Exclusion Reason" width="120">
+                    </kendo-grid-column>
+
+                </kendo-grid>
+
+            </div>
+
+            <div class="col-md-12 mt-2 text-right">
+                <button type="button" (click)="replaceService()" class="btn btn-sm themeButton mr-1">Select</button>
+                <button type="button" (click)="closeServicePkzWindow()" class="btn btn-sm themeButton">Cancel</button>
+            </div>
+        </div>
+
+        <div class="variationWorkListOverlaypkz"></div>
+    </kendo-window>
+
+
 
 </kendo-window>

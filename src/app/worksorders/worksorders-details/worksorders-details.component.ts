@@ -95,6 +95,7 @@ export class WorksordersDetailsComponent implements OnInit {
   reason = '';
 
   openDefectsList = false;
+  asebestosDoubleClick = 0;
 
   constructor(
     private sharedService: SharedService,
@@ -594,8 +595,8 @@ export class WorksordersDetailsComponent implements OnInit {
     this.autService.validateAssetIDDeepLinkParameters(this.currentUser.userId, item.assid).subscribe(
       data => {
         if (data.validated) {
-          const siteUrl = `${appConfig.appUrl}/asset-list?assetid=${encodeURIComponent(item.assid)}`; // UAT
-          // const siteUrl = `http://localhost:4200/asset-list?assetid=${item.assid}`;
+          // const siteUrl = `${appConfig.appUrl}/asset-list?assetid=${encodeURIComponent(item.assid)}`; // UAT
+          const siteUrl = `http://localhost:4200/asset-list?assetid=${item.assid}`;
           window.open(siteUrl, "_blank");
 
         } else {
@@ -916,14 +917,44 @@ export class WorksordersDetailsComponent implements OnInit {
   }
 
 
-  openDefectsMethod(){
+  openDefectsMethod() {
     $('.worksOrderDetailOvrlay').addClass('ovrlay');
     this.openDefectsList = true;
   }
 
-  closeDefectList(eve){
+  closeDefectList(eve) {
     this.openDefectsList = eve;
     $('.worksOrderDetailOvrlay').removeClass('ovrlay');
+  }
+
+
+  openAsbestos(item) {
+    if (this.asebestosDoubleClick == 0) {
+      this.asebestosDoubleClick = new Date().getTime();
+    } else {
+
+      if (((new Date().getTime()) - this.asebestosDoubleClick) < 400) {
+        this.autService.validateAssetIDDeepLinkParameters(this.currentUser.userId, item.assid).subscribe(
+          data => {
+            if (data.validated) {
+              // const siteUrl = `${appConfig.appUrl}/asset-list?assetid=${encodeURIComponent(item.assid)}`; // UAT
+              const siteUrl = `http://localhost:4200/asset-list?assetid=${encodeURIComponent(item.assid)}&openTab=Asbestos`;
+              window.open(siteUrl, "_blank");
+
+            } else {
+              const errMsg = `${data.errorCode} : ${data.errorMessage}`
+              this.alertService.error(errMsg);
+            }
+          }
+        )
+
+        this.asebestosDoubleClick = 0;
+      } else {
+        // not a double click so set as a new first click
+        this.asebestosDoubleClick = new Date().getTime();
+      }
+
+    }
   }
 
 

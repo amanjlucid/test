@@ -34,7 +34,8 @@
 }
 
 .defectDetailRow .defectdetail .fieldName {
-    font-weight: 500;
+    font-weight: 600;
+    margin-right: 5px;
 }
 
 .defectForm {
@@ -47,4 +48,6 @@
     margin-left: -3px;
     margin-right: -3px;
     border-radius: 5px;
+    padding-top: 10px;
+    padding-bottom: 10px;
 }

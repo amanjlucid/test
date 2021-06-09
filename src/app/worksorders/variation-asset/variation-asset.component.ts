@@ -148,7 +148,7 @@ export class VariationAssetComponent implements OnInit {
           // variation asset data and grid render
           const variationAssetdata = data[3];
           // console.log({ varasset: variationAssetdata.data });
-          
+
           if (variationAssetdata.isSuccess) {
             this.variationData = variationAssetdata.data;
             this.gridView = process(this.variationData, this.state);
@@ -248,7 +248,7 @@ export class VariationAssetComponent implements OnInit {
       }
 
     } else if (btnType == 'Accept') {
-      if (this.selectedVariationInp.woiissuestatus == "Issued" && this.selectedVariationInp.responsibility == "ALL") {
+      if (this.selectedVariationInp.woiissuestatus == "Issued" && this.selectedVariationInp.responsibility == "ALL" && item.woiaissuestatus != "Accepted") {
         return false;
       }
     }

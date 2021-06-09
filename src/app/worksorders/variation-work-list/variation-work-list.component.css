@@ -19,3 +19,7 @@
 .varWorkListGrid .k-state-disabled, .varWorkListGrid .k-widget[disabled] {
     background-color: #cdcdcd !important;
 }
+
+kendo-window.servicePkzGrid.k-widget.k-window {
+    z-index: 999 !important;
+}
