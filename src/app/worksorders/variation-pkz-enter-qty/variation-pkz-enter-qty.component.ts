@@ -63,8 +63,8 @@ export class VariationPkzEnterQtyComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log({ mode: this.mode, parnetcomp: this.parentComp, openedFrom: this.openedFrom, variation: this.singleVariationInp, assetDetail: this.assetDetailInp, asset: this.selectedSingleVariationAssetInp })
-    console.log({ selection: this.selectedPkzs })
+    // console.log({ mode: this.mode, parnetcomp: this.parentComp, openedFrom: this.openedFrom, variation: this.singleVariationInp, assetDetail: this.assetDetailInp, asset: this.selectedSingleVariationAssetInp })
+    // console.log({ selection: this.selectedPkzs })
 
     if (this.parentComp == 'worklist') {
       this.title = 'Variation Cost/Qantity';
@@ -133,10 +133,10 @@ export class VariationPkzEnterQtyComponent implements OnInit {
           this.planYear = data[1].data;
 
           if (this.mode == "new" || this.mode == 'service') {
-            console.log(typeof this.selectedPkzs)
+            // console.log(typeof this.selectedPkzs)
             if (typeof this.selectedPkzs == "object") {
               this.selectedPkzs = [...this.selectedPkzs];
-              console.log(this.selectedPkzs)
+              // console.log(this.selectedPkzs)
             }
 
             this.displayHighestPkz = this.selectedPkzs[this.selectedPkzs.length - 1];
@@ -351,8 +351,8 @@ export class VariationPkzEnterQtyComponent implements OnInit {
             WOSTAGESURCDE: this.assetDetailInp.wostagesurcde,
             WOCHECKSURCDE: this.assetDetailInp.wochecksurcde,
             User: this.assetDetailInp.userName,
-            WOIADWORKCOST: this.helperService.convertMoneyToFlatFormat(formRawVal.workCost),//
-            WOIADFEECOST: this.assetDetailInp.woadcommitted,//
+            WOIADWORKCOST: this.helperService.convertMoneyToFlatFormat(formRawVal.costOverride),//
+            WOIADFEECOST: this.selectedSingleVariationAssetInp?.woifeecost ?? 0,//
             WOIADCOMMENT: formRawVal.comment,
             ASAQUANTITY: formRawVal.quantity,
             ASAUOM: this.assetDetailInp.asauom,
@@ -383,8 +383,8 @@ export class VariationPkzEnterQtyComponent implements OnInit {
 
       if (this.parentComp == 'worklist' && this.mode == 'service') {
         const params = this.createServicePkzVariationParam(this.assetDetailInp, this.displayHighestPkz, formRawVal, type);
-        console.log(params)
-        console.log(this.assetDetailInp)
+        // console.log(params)
+        // console.log(this.assetDetailInp)
         // debugger;
         this.subs.add(
           this.worksorderManagementService.createVariationForSIMReplacement(params).subscribe(
@@ -426,7 +426,8 @@ export class VariationPkzEnterQtyComponent implements OnInit {
   }
 
   createServicePkzVariationParam(assetDetail, pkz, formRawVal, type = 1) {
-    const { wosequence, wopsequence, assid, woisequence, wostagesurcde, wochecksurcde, wlcode, wlataid, wlplanyear } = assetDetail;
+    const { wosequence, wopsequence, assid, wostagesurcde, wochecksurcde, wlcode, wlataid, wlplanyear } = assetDetail;
+    const { woisequence } = this.selectedSingleVariationAssetInp;
     const { ataid, wphcode, uom } = pkz;
 
     return {
@@ -441,7 +442,7 @@ export class VariationPkzEnterQtyComponent implements OnInit {
       WLPLANYEAR2: 0,
       WOSTAGE: wostagesurcde,
       WOCHECK: wochecksurcde,
-      WORKCOST: this.helperService.convertMoneyToFlatFormat(formRawVal.workCost),
+      WORKCOST: this.helperService.convertMoneyToFlatFormat(formRawVal.costOverride),
       COMMENT: formRawVal.comment,
       QUANTITY: formRawVal.quantity,
       UOM: uom,
@@ -456,6 +457,12 @@ export class VariationPkzEnterQtyComponent implements OnInit {
     const { wosequence, wopsequence, assid, woisequence } = variation;
     const { ataid, wphcode, wostagesurcde, wochecksurcde, woifeecost, uom, defaultcost } = pkz;
 
+    let cost = this.helperService.convertMoneyToFlatFormat(formRawVal.costOverride);
+    if (formRawVal.costOverride == 0 || formRawVal.costOverride == "") {
+      cost = defaultcost
+    }
+
+
     return {
       WOSEQUENCE: wosequence,
       WOPSEQUENCE: wopsequence,
@@ -466,7 +473,7 @@ export class VariationPkzEnterQtyComponent implements OnInit {
       WOSTAGESURCDE: wostagesurcde,
       WOCHECKSURCDE: wochecksurcde,
       User: this.currentUser.userId,
-      WOIADWORKCOST: type == 1 ? this.helperService.convertMoneyToFlatFormat(formRawVal.workCost) : defaultcost,
+      WOIADWORKCOST: cost,
       WOIADFEECOST: woifeecost,
       WOIADCOMMENT: formRawVal.comment,
       ASAQUANTITY: formRawVal.quantity,
@@ -480,6 +487,7 @@ export class VariationPkzEnterQtyComponent implements OnInit {
 
   createVariationForChangeCostQtyParams(formRawVal) {
     // const {wosequence, wopsequence, assid, wlcode, wlataid, wlplanyear, wostagesurcde} = this.assetDetailInp;
+
     return {
       WOSEQUENCE: this.assetDetailInp.wosequence,
       WOISEQUENCE: this.selectedSingleVariationAssetInp.woisequence,
@@ -491,8 +499,8 @@ export class VariationPkzEnterQtyComponent implements OnInit {
       WOSTAGESURCDE: this.assetDetailInp.wostagesurcde,
       WOCHECKSURCDE: this.assetDetailInp.wochecksurcde,
       User: this.currentUser.userId,
-      WOIADWORKCOST: this.helperService.convertMoneyToFlatFormat(formRawVal.workCost),//
-      WOIADFEECOST: this.assetDetailInp.woadcommitted,//
+      WOIADWORKCOST: this.helperService.convertMoneyToFlatFormat(formRawVal.costOverride),//
+      WOIADFEECOST: this.selectedSingleVariationAssetInp?.woifeecost ?? 0,
       WOIADCOMMENT: formRawVal.comment,
       ASAQUANTITY: formRawVal.quantity,
       ASAUOM: this.assetDetailInp.asauom,

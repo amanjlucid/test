@@ -21,12 +21,15 @@ export class WorksordersAssetChecklistEditDescriptionComponent implements OnInit
   description: any;
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
 
+  @Input() editDesFor = 'assetchecklist'
+
   constructor(
     private worksorderManagementService: WorksorderManagementService,
     private alertService: AlertService
   ) { }
 
   ngOnInit() {
+    console.log(this.editDesFor);
     this.description = this.selectedDoc.description
   }
 

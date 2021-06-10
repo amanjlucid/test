@@ -2,24 +2,22 @@ import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { AlertService, AssetAttributeService, ConfirmationDialogService, HelperService, LoaderService, SharedService, WorksorderManagementService } from 'src/app/_services';
-import { combineLatest } from 'rxjs';
+import { combineLatest, forkJoin } from 'rxjs';
 import { GridComponent } from '@progress/kendo-angular-grid';
 
-
-
 @Component({
-  selector: 'app-worksorders-asset-checklist-document',
-  templateUrl: './worksorders-asset-checklist-document.component.html',
-  styleUrls: ['./worksorders-asset-checklist-document.component.css'],
+  selector: 'app-wo-document-list',
+  templateUrl: './wo-document-list.component.html',
+  styleUrls: ['./wo-document-list.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 
-export class WorksordersAssetChecklistDocumentComponent implements OnInit {
+export class WoDocumentListComponent implements OnInit {
   @ViewChild('addDoc') input;
-  @Input() checklistDocWindow: boolean = false;
-  @Input() selectedChecklist: any;
-  @Input() selectedChildRow: any
-  @Output() closeAssetchecklistDocEvent = new EventEmitter<boolean>();
+  @Input() documentWindow: boolean = false;
+  @Input() selectedWorksOrder: any;
+
+  @Output() closeDocument = new EventEmitter<boolean>();
   title = 'Documents for Works Order Asset Checklist item';
   subs = new SubSink();
   state: State = {
@@ -49,6 +47,7 @@ export class WorksordersAssetChecklistDocumentComponent implements OnInit {
   userType: any = [];
   @ViewChild(GridComponent) grid: GridComponent;
 
+
   constructor(
     private chRef: ChangeDetectorRef,
     private alertService: AlertService,
@@ -58,16 +57,15 @@ export class WorksordersAssetChecklistDocumentComponent implements OnInit {
     private loaderService: LoaderService,
     private worksorderManagementService: WorksorderManagementService,
     private assetAttributeService: AssetAttributeService,
-
-
   ) { }
 
-  ngOnInit(): void {
-    // console.log(this.selectedChecklist); 
-    // debugger;
+  ngOnDestroy() {
+    this.subs.unsubscribe();
+  }
 
-    this.worksOrderDetailPageData();
-    this.getDocumentData();
+  ngOnInit(): void {
+    console.log(this.selectedWorksOrder);
+    this.requiredPageData();
 
     this.subs.add(
       this.worksorderManagementService.getListOfSystemValuesByCode().subscribe(
@@ -101,63 +99,31 @@ export class WorksordersAssetChecklistDocumentComponent implements OnInit {
       )
     )
 
-    // this.subs.add(
-    //   this.sharedService.worksOrdersAccess.subscribe(
-    //     data => {
-    //       this.worksOrderAccess = data;
-    //     }
-    //   )
-    // )
-  }
-
-  worksOrderDetailPageData() {
-    const intWOSEQUENCE = this.selectedChecklist.wosequence;
-
-    this.subs.add(
-      this.worksorderManagementService.getWorksOrderByWOsequence(intWOSEQUENCE).subscribe(
-        data => {
-          if (data.isSuccess) {
-            this.worksOrderData = data.data;
-            this.worksorderManagementService.getWorkProgrammesByWprsequence(data.data.wprsequence).subscribe(
-              prdata => {
-                if (prdata.isSuccess) this.programmeData = prdata.data[0]
-                else this.alertService.error(prdata.message)
-                this.chRef.detectChanges();
-              },
-              err => this.alertService.error(err)
-            )
-          }
-          else this.alertService.error(data.message);
-        },
-        err => this.alertService.error(err)
-      )
-    )
 
   }
 
-  getDocumentData() {
-    this.selectedDoc = undefined;
-    const Assid_WOPSequence_CheckSurcde = `${this.selectedChecklist.assid}-${this.selectedChecklist.wopsequence}-${this.selectedChecklist.wochecksurcde}`;
-    const woseq = this.selectedChecklist.wosequence;
-
+  requiredPageData() {
+    const { wprsequence, wosequence } = this.selectedWorksOrder;
     this.subs.add(
-      this.worksorderManagementService.getWOPAssetChecklistDoc(woseq, Assid_WOPSequence_CheckSurcde).subscribe(
+      forkJoin([
+        this.worksorderManagementService.getWorkProgrammesByWprsequence(wprsequence),
+        this.worksorderManagementService.getWorksOrderByWOsequence(wosequence),
+      ]).subscribe(
         data => {
-          // console.log(data);
-          if (data.isSuccess) {
-            this.gridData = data.data;
-            this.gridView = process(this.gridData, this.state);
-
-            setTimeout(() => {
-              this.grid.autoFitColumns();
-            }, 100);
-
-          } else this.alertService.error(data.message)
+          const programmeData = data[0];
+          const worksOrderData = data[1];
+          if (programmeData.isSuccess) this.programmeData = programmeData.data[0];
+          if (worksOrderData.isSuccess) this.worksOrderData = worksOrderData.data;
           this.chRef.detectChanges();
         }
       )
     )
   }
+
+  getDocumentData() {
+
+  }
+
 
   sortChange(sort: SortDescriptor[]): void {
     this.state.sort = sort;
@@ -169,42 +135,39 @@ export class WorksordersAssetChecklistDocumentComponent implements OnInit {
     this.gridView = process(this.gridData, this.state);
   }
 
-  public cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
+  cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
     this.selectedDoc = dataItem;
   }
 
-  closeChecklistDoc() {
-    this.checklistDocWindow = false;
-    this.closeAssetchecklistDocEvent.emit(this.checklistDocWindow);
+  closeDocumentWindow() {
+    this.documentWindow = false;
+    this.closeDocument.emit(false);
   }
 
 
-  ngOnDestroy() {
-    this.subs.unsubscribe();
-  }
 
   openEditDoc() {
     if (this.selectedDoc) {
       this.showEditDoc = true;
-      $('.docOvrlay').addClass('ovrlay');
+      $('.wodocOvrlay').addClass('ovrlay');
     }
   }
 
   closeEditDoc(event) {
     this.showEditDoc = event;
-    $('.docOvrlay').removeClass('ovrlay');
+    $('.wodocOvrlay').removeClass('ovrlay');
     this.getDocumentData();
 
   }
 
 
   closeAttachment($event) {
-    $('.docOvrlay').removeClass('ovrlay');
+    $('.wodocOvrlay').removeClass('ovrlay');
     this.uploadAttachment = $event
   }
 
   uploadImage(imageFor) {
-    $('.docOvrlay').addClass('ovrlay');
+    $('.wodocOvrlay').addClass('ovrlay');
     this.uploadAttachment = true
 
   }
@@ -222,7 +185,7 @@ export class WorksordersAssetChecklistDocumentComponent implements OnInit {
 
   removeDocument() {
     if (this.selectedDoc) {
-      const checklistdata = this.selectedChecklist;
+      const checklistdata = this.selectedWorksOrder;
       let params = {
         WOSEQUENCE: checklistdata.wosequence,
         ASSID: checklistdata.assid,
@@ -393,29 +356,14 @@ export class WorksordersAssetChecklistDocumentComponent implements OnInit {
 
           const formData = new FormData();
 
-          // let params = {
-          //   WO_FILEPATH: this.filePath,
-          //   WO_LEVEL: this.selectedChildRow.treelevel,
-          //   WO_SEQNO: this.selectedChildRow.wosequence,
-          //   WOP_SEQNO: this.selectedChildRow.wopsequence,
-          //   ASSID: this.selectedChildRow.assid,
-          //   CHECKSURCDE: this.selectedChecklist.wochecksurcde,
-          //   CurrentUser: this.currentUser.userId
-          // }
-
-          // console.log(params);
-
           formData.append('file', file[0], file[0].name);
           formData.append('WO_FILEPATH', this.filePath);
           formData.append('WO_LEVEL', '2');
-          formData.append('WO_SEQNO', this.selectedChildRow.wosequence);
-          formData.append('WOP_SEQNO', this.selectedChildRow.wopsequence);
-          formData.append('ASSID', this.selectedChildRow.assid);
-          formData.append('CHECKSURCDE', this.selectedChecklist.wochecksurcde);
+          // formData.append('WO_SEQNO', this.selectedChildRow.wosequence);
+          // formData.append('WOP_SEQNO', this.selectedChildRow.wopsequence);
+          // formData.append('ASSID', this.selectedChildRow.assid);
+          // formData.append('CHECKSURCDE', this.selectedChecklist.wochecksurcde);
           formData.append('CurrentUser', this.currentUser.userId);
-
-
-
 
 
           this.worksorderManagementService.workOrderUploadDocument(formData).subscribe(

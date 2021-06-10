@@ -249,8 +249,8 @@ export class AssetDefectsListComponent implements OnInit {
         .catch(() => console.log('Attribute dismissed the dialog.'));
     }
 
-
   }
+
 
   signOff(item) {
     const { assid, wprsequence, wosequence, wopsequence, wodsequence } = item;
@@ -278,7 +278,27 @@ export class AssetDefectsListComponent implements OnInit {
   }
 
   deleteDefect(item) {
+    const { assid, wprsequence, wosequence, wopsequence, wodsequence } = item;
+    const params = {
+      wprsequence: wprsequence,
+      wosequence: wosequence,
+      assId: assid,
+      wopsequence: wopsequence,
+      wodsequence: wodsequence,
+      // userId: this.currentUser.userId,
+    }
 
+    this.subs.add(
+      this.workOrderProgrammeService.deleteWorksOrderDefect(params).subscribe(
+        data => {
+          console.log(data);
+          if (data.isSuccess) {
+            this.alertService.success("Defect delete successfully");
+            this.requiredPageData();
+          } else this.alertService.error(data.message)
+        }, err => this.alertService.error(err)
+      )
+    )
   }
 
 }

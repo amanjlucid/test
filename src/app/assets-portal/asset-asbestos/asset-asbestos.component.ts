@@ -108,7 +108,7 @@ export class AssetAsbestosComponent implements OnInit, OnDestroy {
         data => {
           if (data && data.isSuccess) {
             let tempAsbestos = Object.assign({}, data.data);
-           // console.log(tempAsbestos)
+          //  console.log(tempAsbestos)
             // tempAsbestos.forEach(element => {
 
             // });

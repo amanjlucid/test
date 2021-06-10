@@ -406,8 +406,6 @@ export class WorksorderManagementService {
         return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWorksOrderCompletions?wosequence=${wosequence}&struser=${userId}`, this.httpOptions);
     }
 
-
-
     viewWorkOrderCompletionCertificate(wosequence, wocosequence, userId) {
         return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/ViewCompletionCertificate?wosequence=${wosequence}&wocosequence=${wocosequence}&userid=${userId}`, this.httpOptions);
     }
@@ -532,6 +530,15 @@ export class WorksorderManagementService {
     signOffDefect(params) {
         let body = JSON.stringify(params);
         return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/SignOffDefect`, body, this.httpOptions);
+    }
+
+    deleteWorksOrderDefect(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/DeleteWorksOrderDefect`, body, this.httpOptions);
+    }
+
+    getDefectScoreLimits() {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetDefectScoreLimits`, this.httpOptions);
     }
 
 

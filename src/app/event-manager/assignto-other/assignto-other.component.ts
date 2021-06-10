@@ -44,7 +44,7 @@ export class AssigntoOtherComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    console.log(this.selectedEvent);
+    // console.log(this.selectedEvent);
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.getUserList();
   }

@@ -396,9 +396,19 @@ export class VariationListAllComponent implements OnInit {
     this.subs.add(
       this.workOrderProgrammeService.addBulkVariation(wosequence, woisequence).subscribe(
         data => {
+          // console.log(data);
           if (data.isSuccess) {
-            this.alertService.success(`Bulk variation created successfully`)
-            this.getAllVariations();
+            if (data.data[0] != undefined) {
+              if (data.data[0].pRETURNSTATUS.trim() == "Y") {
+                this.alertService.success(`Bulk variation created successfully`)
+                this.getAllVariations();
+              } else {
+                this.alertService.error(`Variation exist`);
+              }
+            } else {
+              this.alertService.error(`Something went wrong.`)
+            }
+
           } else this.alertService.error(data.message)
         }, err => this.alertService.error(err)
       )

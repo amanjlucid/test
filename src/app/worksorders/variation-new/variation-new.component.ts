@@ -132,20 +132,6 @@ export class VariationNewComponent implements OnInit {
 
     if (this.formMode == 'new') {
       let params = {
-        // ASSID: this.assetDetails.assid,
-        // WLCODE: '',
-        // WLATAID: '',
-        // WLPLANYEAR: '',
-        // WOSTAGESURCDE: '',
-        // WOCHECKSURCDE: '',
-        // WOIADISSUESTATUS: '',
-        // WOIADCOMMENT: '',
-        // WPHCODE: '',
-        // ASAQUANTITY: '',
-        // ASAUOM: '',
-        // WOIADRECHARGEYN: '',
-        // WOIADREFUSAL: '',
-
         WOPSEQUENCE: wopsequence,
         CTTSURCDE: this.worksOrderData.cttsurcde,
         WOIACCEPTREASON: '',

@@ -77,7 +77,7 @@ export class WorkorderListComponent implements OnInit {
   workOrderId: number;
 
   woProgramManagmentInstructionsWindow = false;
-
+  documentWindow = false;
   constructor(
     private worksOrderService: WorksOrdersService,
     private activeRoute: ActivatedRoute,
@@ -563,6 +563,15 @@ export class WorkorderListComponent implements OnInit {
   }
 
 
+  openDocumentMethod(item){
+    this.selectedWorksOrder = item;
+    $('.worksOrderOverlay').addClass('ovrlay');
+    this.documentWindow = true;
+  }
 
+  closeDocumentWindow(eve){
+    this.documentWindow = eve;
+    $('.worksOrderOverlay').removeClass('ovrlay');
+  }
 
 }

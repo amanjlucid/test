@@ -54,12 +54,15 @@ export class WorksordersAssetChecklistPredecessorsComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    // if (this.predecessorsWindowFrom == 'inner') {
-    //   this.commonParams = this.selectedChecklist;
-    // } else {
-    //   this.commonParams = this.selectedChecklist[0]
-    // }
-    this.commonParams = this.selectedChecklist;
+    // console.log(this.selectedChecklist)
+    // console.log(this.predecessorsWindowFrom)
+    // this.commonParams = this.selectedChecklist;
+    if (this.predecessorsWindowFrom == 'inner') {
+      this.commonParams = this.selectedChecklist;
+    } else {
+      this.commonParams = this.selectedChecklist[0]
+    }
+    
     let params = {
       WOSEQUENCE: this.commonParams.wosequence,
       ASSID: this.commonParams.assid,
@@ -88,7 +91,7 @@ export class WorksordersAssetChecklistPredecessorsComponent implements OnInit {
 
       ]).subscribe(
         data => {
-          console.log(data)
+          // console.log(data)
           // const programmeData = data[0];
           const worksOrderData = data[0];
           const phaseData = data[1];

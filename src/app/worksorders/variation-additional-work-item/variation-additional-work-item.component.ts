@@ -178,9 +178,10 @@ export class VariationAdditionalWorkItemComponent implements OnInit {
 
 
   checkPackageExist(item) {
-    if (item.attributeexists == 'Variation Exists'||item.attributeexists == 'Attribute exists' || item.attributeexists == 'Work Package Exists') return false;
+    if(item.exclusionreason != "") return false;
+    // if (item.attributeexists == 'Variation Exists'||item.attributeexists == 'Attribute exists' || item.attributeexists == 'Work Package Exists') return false;
 
-    if (item.exclusionreason == 'Work Package already exists on Work List'|| item.exclusionreason == 'Attribute already exists on Work List' || item.exclusionreason == 'Work Package already exists as Variation') return false;
+    // if (item.exclusionreason == 'Work Package already exists on Work List'|| item.exclusionreason == 'Attribute already exists on Work List' || item.exclusionreason == 'Work Package already exists as Variation') return false;
     
     return true;
   }

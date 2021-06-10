@@ -102,10 +102,11 @@
                 <a class="dropdown-item" (click)="openCompletionList(dataItem)"
                   href="javascript:void(0)">Completions</a>
 
+                <!-- <a class="dropdown-item" (click)="openDocumentMethod(dataItem)" href="javascript:void(0)">Documents</a> -->
                 <!-- <a class="dropdown-item" href="javascript:void(0)">Defects </a>
                 <a class="dropdown-item" href="javascript:void(0)">Contract Costs</a>
                 <a class="dropdown-item" href="javascript:void(0)">Variations</a>
-                <a class="dropdown-item" href="javascript:void(0)">Documents</a>
+               
                 <a class="dropdown-item" href="javascript:void(0)">Payment Schedule </a>
                 <a class="dropdown-item" href="javascript:void(0)">Works Order Reports</a>
                 <a class="dropdown-item" href="javascript:void(0)">Contractor Reports </a>  -->
@@ -343,3 +344,5 @@
   [selectedWorksOrder]="selectedWorksOrder"
   (WoProgramManagmentInstructionsWinEvent)="closeWoProgramManagmentInstructionsWin($event)">
 </app-wo-program-management-instructions>
+
+<app-wo-document-list *ngIf="documentWindow" [documentWindow]="documentWindow" (closeDocument)="closeDocumentWindow($event)" [selectedWorksOrder]="selectedWorksOrder"></app-wo-document-list>

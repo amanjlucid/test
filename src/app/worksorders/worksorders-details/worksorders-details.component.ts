@@ -929,6 +929,7 @@ export class WorksordersDetailsComponent implements OnInit {
 
 
   openAsbestos(item) {
+    this.touchtime = 0;
     if (this.asebestosDoubleClick == 0) {
       this.asebestosDoubleClick = new Date().getTime();
     } else {

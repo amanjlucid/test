@@ -236,11 +236,16 @@ export class AssetsComponent implements OnInit, OnDestroy, AfterViewInit {
         const sapBand = params['sapBand'];
         const epcStatus = params['epcStatus'];
         const openTab = params['openTab'];
+       
         if (assetid != undefined) {
           this.autService.validateAssetIDDeepLinkParameters(this.currentUser.userId, assetid).subscribe(
             data => {
               if (data.validated) {
-                this.openLinkTabs(data, openTab);
+                if (openTab != undefined) {
+                  this.openTabFromUrl(data, openTab);
+                } else {
+                  this.openLinkTabs(data);
+                }
               } else {
                 this.assetList.AssetId = this.assetFilterId = assetid;
                 const errMsg = `${data.errorCode} : ${data.errorMessage}`
@@ -335,7 +340,7 @@ export class AssetsComponent implements OnInit, OnDestroy, AfterViewInit {
     //console.log(newDate);
   }
 
-  openLinkTabs(validationObj, openTab = null) {
+  openTabFromUrl(validationObj, openTab) {
     this.assetFilterId = validationObj.assid;
     this.assetFilterAddress = validationObj.astconcataddress;
     this.assetList.AssetId = this.assetFilterId;
@@ -346,14 +351,69 @@ export class AssetsComponent implements OnInit, OnDestroy, AfterViewInit {
         // console.log(data);
         if (data && data.isSuccess) {
           this.attributeLists = data.data;
-
-          let tabToOpen = this.attributeLists.fistTab
-          if (openTab != null) {
-            tabToOpen = openTab;
-          }
-
           if (this.attributeLists != undefined && this.attributeLists.length == 1) {
-            switch (tabToOpen) {
+            switch (openTab) {
+              case 'Asbestos':
+                this.tabName = "asbestos";
+                break;
+              case 'Attributes':
+                this.tabName = "attributes";
+                break;
+              case 'Characteristics':
+                this.tabName = "characteristics";
+                break;
+              case 'Energy':
+                this.tabName = "energy";
+                break;
+              case 'EPC':
+                this.tabName = "epc";
+                break;
+              case 'Health and Safety':
+                this.tabName = "assessments";
+                break;
+              case 'HHSRS':
+                this.tabName = "hhrs";
+                break;
+              case 'Notepad':
+                this.tabName = "notepad";
+              case 'Quality':
+                this.tabName = "quality";
+              case 'Servicing':
+                this.tabName = "servicing";
+              case 'Surveys':
+                this.tabName = "surveys";
+              case 'Works Management':
+                this.tabName = "workmanagement";
+            }
+          } else {
+            alert('Please select one record');
+          }
+          const selectedAttribute = this.attributeLists[0];
+          this.loaderService.pageHide();
+          this.openTabWindow(this.tabName, selectedAttribute);
+        }
+      },
+      error => {
+        this.loaderService.hide();
+        this.loaderService.pageHide();
+        //this.alertService.error(error);
+      }
+    )
+  }
+
+  openLinkTabs(validationObj) {
+    this.assetFilterId = validationObj.assid;
+    this.assetFilterAddress = validationObj.astconcataddress;
+    this.assetList.AssetId = this.assetFilterId;
+    this.assetList.Address = this.assetFilterAddress;
+    this.attributeLists = [];
+    this.assetAttributeService.getAllAssets(this.assetList).subscribe(
+      data => {
+        // console.log(data);
+        if (data && data.isSuccess) {
+          this.attributeLists = data.data;
+          if (this.attributeLists != undefined && this.attributeLists.length == 1) {
+            switch (this.attributeLists.fistTab) {
               case 'Asbestos':
                 this.tabName = "asbestos";
                 break;
