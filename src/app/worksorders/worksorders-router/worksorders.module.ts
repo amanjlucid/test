@@ -62,6 +62,8 @@ import { VariationPkzEnterQtyComponent } from '../variation-pkz-enter-qty/variat
 import { WoProgramManagmentInstructionComponent } from '../workorder-program-management/wo-program-management-instructions/wo-program-management-instructions.component';
 import { WoPmInstructionAssetsComponent } from '../workorder-program-management/wo-pm-instruction-assets/wo-pm-instruction-assets.component';
 import { WoPmInstructionAssetsDetailComponent } from '../workorder-program-management/wo-pm-instruction-assets-detail/wo-pm-instruction-assets-detail.component';
+import { ManageMilestonesComponent } from '../manage-milestones/manage-milestones.component';
+import { ManageMilestonesEditComponent } from '../manage-milestones-edit/manage-milestones-edit.component';
 
 
 @NgModule({
@@ -115,7 +117,9 @@ import { WoPmInstructionAssetsDetailComponent } from '../workorder-program-manag
     VariationPkzEnterQtyComponent,
     WoProgramManagmentInstructionComponent,
     WoPmInstructionAssetsComponent,
-    WoPmInstructionAssetsDetailComponent
+    WoPmInstructionAssetsDetailComponent,
+    ManageMilestonesComponent,
+    ManageMilestonesEditComponent
   ],
 
   imports: [

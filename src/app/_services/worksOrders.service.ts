@@ -145,5 +145,17 @@ export class WorksOrdersService {
         return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/EmailContractInstructionReport`, params, this.httpOptions);
     }
 
+    getManageMilestoneData(wosequence) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetManageMilestone?wosequence=${wosequence}`, this.httpOptions);
+    }
+
+    getWorkOrderClientUserNames(wosequence){
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/WorkOrderClientUserNames?wosequence=${wosequence}`, this.httpOptions);        
+    }
+
+    updateWorksOrderMilestone(wosequence, wochecksurcde, wocheckspecial2, worespuser, strUserId){
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/UpdateWorksOrderMilestone?wosequence=${wosequence}&wochecksurcde=${wochecksurcde}&wocheckspecial2=${wocheckspecial2} &worespuser=${worespuser}&strUserId=${strUserId}`, this.httpOptions);
+    }
+
 
 }

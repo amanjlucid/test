@@ -12,6 +12,10 @@
         class="btn btn-sm themeButton ">
         New Works Order
       </button>
+      <button [disabled]="disabledMilestone" (click)="openManageMilestonePopup()"
+        class="btn btn-sm themeButton ml-1">
+        Manage Milestones
+      </button>
       <button (click)="export()" class="btn btn-sm themeButton ml-1"> Export</button>
       <button id="showFilePanel" (click)="lockUnlockColumn()" class="btn btn-sm themeButton ml-1">
         <i *ngIf="!columnLocked" class="fa fa-lock" aria-hidden="true"></i>
@@ -369,3 +373,4 @@
 <app-wo-program-management-instructions *ngIf="woProgramManagmentInstructionsWindow" [woProgramManagmentInstructionsWindow]="woProgramManagmentInstructionsWindow"
   [worksOrderData]="selectedWorksOrder" [selectedWorksOrder]="selectedWorksOrder" (WoProgramManagmentInstructionsWinEvent)="closeWoProgramManagmentInstructionsWin($event)">
 </app-wo-program-management-instructions>
+<app-manage-milestones *ngIf="openManageMilestone" [worksOrderData]="selectedWorksOrder" [openManageMilestone]="openManageMilestone" (closeManageMilestoneEvent)="closeManageMilestone($event)"></app-manage-milestones>

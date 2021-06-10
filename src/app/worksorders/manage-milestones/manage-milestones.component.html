@@ -1,0 +1,66 @@
+<kendo-window title="{{title}}" *ngIf="openManageMilestone" (close)="closeManageMilestones()" [top]="20" [minWidth]="800"
+    [width]="1100" [height]="auto" [minHeight]="350">
+
+    <div class="row">
+        <div class="col-md-12">
+            <span *ngIf="worksOrderData != ''" class="heading headingDiv p-2 d-block">Works Order : {{worksOrderData.woname}}</span>
+        </div>
+        <div class="col-md-12 mt-2">
+            <kendo-grid #grid [data]="gridView" [height]="500" [selectable]="selectableSettings" filterable="menu"
+                [resizable]="true" [sortable]="{
+                allowUnsort: true,
+                mode: 'multiple'
+                }" [skip]="state.skip" [loading]="loading" [pageSize]="pageSize" [rowHeight]="36"
+                (pageChange)="pageChange($event)" scrollable="virtual" [sort]="state.sort" [filter]="state.filter"
+                (sortChange)="sortChange($event)" (filterChange)="filterChange($event)"
+                (cellClick)="cellClickHandler($event)" [navigable]="false">
+
+                <kendo-grid-column field="wostagename" title="Stage" width="130" [filterable]="false">
+                </kendo-grid-column>
+
+                <kendo-grid-column field="wocheckname" title="Milestone" width="130" [filterable]="false">
+                </kendo-grid-column>
+
+                <kendo-grid-column field="wocheckspeciaL1" title="Checklist Type" width="130" [filterable]="false">
+                </kendo-grid-column>
+
+                <kendo-grid-column field="wocheckresp" title="Responsibility" width="130" [filterable]="false">
+                </kendo-grid-column>
+
+                <kendo-grid-column field="woresponsibleusername" title="Responsible User" width="130" [filterable]="false">
+                </kendo-grid-column>
+
+                <kendo-grid-column field="wocheckspeciaL2" title="Attachment Req'd" width="130" [filterable]="false">
+                    <ng-template kendoGridCellTemplate let-gridView>
+                        <span *ngIf="gridView.wocheckspeciaL2==='Y'">Yes</span> 
+                        <span *ngIf="gridView.wocheckspeciaL2==='N'">No</span>
+                    </ng-template>
+                </kendo-grid-column>
+                
+                <kendo-grid-column field="womileupdateuser" title="Updated By" width="130">
+                </kendo-grid-column>
+
+                <kendo-grid-column field="womileupdatedatetime" title="Updated Date" width="130">
+                    <ng-template kendoGridCellTemplate let-gridView>
+                        <span>
+                            {{ gridView.womileupdatedatetime | dateFormat : 'DD-MMM-YYYY' }}
+                        </span>
+                    </ng-template>
+                </kendo-grid-column>                
+
+
+            </kendo-grid>
+
+        </div>
+
+        <div class="col-md-12 text-right mt-2">
+            <button (click)="confirmEditMilestones()" [disabled]="editMilestone" class="btn btn-sm themeButton ml-1">Edit</button>
+            <button (click)="closeManageMilestones()" class="btn btn-sm themeButton ml-1">Close</button>
+        </div>
+    </div>
+
+    <div class="milestoneOverlay"></div>
+
+    <app-manage-milestones-edit *ngIf="openMilestoneEdit" [singleMilestone] = "singleMilestone" [woClientUserList]="woClientUserList" [openMilestoneEdit]="openMilestoneEdit" (closeMilestoneEditEvent)="closeMilestoneEdit($event)"></app-manage-milestones-edit>
+
+</kendo-window>

@@ -78,6 +78,8 @@ export class WorkorderListComponent implements OnInit {
   workOrderId: number;
 
   woProgramManagmentInstructionsWindow = false;
+  openManageMilestone : boolean;
+  disabledMilestone : boolean = true;
 
   constructor(
     private worksOrderService: WorksOrdersService,
@@ -262,6 +264,8 @@ export class WorkorderListComponent implements OnInit {
     }
 
     this.selectedWorksOrder = dataItem;
+
+    this.disabledMilestone = this.selectedWorksOrder.wottemplatetype === "Works Order Milestone" ? false : true;
 
     if (columnIndex > 0) {
       if (this.selectedWorksOrder.wosequence)
@@ -851,5 +855,16 @@ export class WorkorderListComponent implements OnInit {
     )
 
   }
+
+  openManageMilestonePopup() {
+    $('.worksOrderOverlay').addClass('ovrlay');
+    this.openManageMilestone = true;
+  }
+
+  closeManageMilestone($event){
+    $('.worksOrderOverlay').removeClass('ovrlay');
+    this.openManageMilestone = $event;
+  }
+
 
 }
