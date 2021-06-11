@@ -71,6 +71,8 @@ export class WorkorderListComponent implements OnInit {
   mousePositioin: any = 0;
   woProgramManagmentInstructionsWindow = false;
 
+  ProgrammeLogWindow = false;
+  WoAssociationsManageWindow = false;
   constructor(
     private worksOrderService: WorksOrdersService,
     private activeRoute: ActivatedRoute,
@@ -598,14 +600,9 @@ export class WorkorderListComponent implements OnInit {
 
 
   redirectToWoProgramManagmentInstructions(item) {
-
-
-  //console.log('wo data '+ JSON.stringify(item));
     this.selectedWorksOrder = item;
     this.woProgramManagmentInstructionsWindow = true;
-
-
-      $('.worksOrderOverlay').addClass('ovrlay');
+    $('.worksOrderOverlay').addClass('ovrlay');
   }
 
   closeWoProgramManagmentInstructionsWin(eve) {
@@ -613,7 +610,30 @@ export class WorkorderListComponent implements OnInit {
     $('.worksOrderOverlay').removeClass('ovrlay');
   }
 
+  openProgrammeLog(item) {
+      this.selectedWorksOrder = item;
+      this.ProgrammeLogWindow = true;
 
+        $('.worksOrderOverlay').addClass('ovrlay');
+    }
+
+    closeProgrammeLogWindow(eve) {
+      this.ProgrammeLogWindow = eve;
+      $('.worksOrderOverlay').removeClass('ovrlay');
+    }
+
+
+    openWoAssociationsManage(item) {
+        this.selectedWorksOrder = item;
+        this.WoAssociationsManageWindow = true;
+
+          $('.worksOrderOverlay').addClass('ovrlay');
+      }
+
+      closeWoAssociationsManageWindowMain(eve) {
+        this.WoAssociationsManageWindow = eve;
+        $('.worksOrderOverlay').removeClass('ovrlay');
+      }
 
 
 }

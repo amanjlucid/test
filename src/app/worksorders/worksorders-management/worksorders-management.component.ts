@@ -57,7 +57,9 @@ export class WorksordersManagementComponent implements OnInit {
 
   worksOrderUsrAccess: any = [];
   userType: any = []
-
+  selectedWorksOrder :any;
+   ProgrammeLogWindow = false;
+   WoAssociationsManageWindow = false;
   constructor(
     private worksorderManagementService: WorksorderManagementService,
     private helperService: HelperService,
@@ -451,7 +453,7 @@ export class WorksordersManagementComponent implements OnInit {
 
 
   setSeletedWORow(dataItem) {
-   
+
     if (this.selctedWorksOrder?.wosequence != dataItem.wosequence) {
       this.helperService.getWorkOrderSecurity(dataItem.wosequence)
       this.helperService.getUserTypeWithWOAndWp(dataItem.wosequence, dataItem.wprsequence);
@@ -474,5 +476,31 @@ export class WorksordersManagementComponent implements OnInit {
 
     return this.worksOrderUsrAccess.indexOf(menuName) != -1
   }
+
+  openProgrammeLog(item) {
+      this.selectedWorksOrder = item;
+      this.ProgrammeLogWindow = true;
+
+        $('.newManagementOverlay').addClass('ovrlay');
+    }
+
+    closeProgrammeLogWindow(eve) {
+      this.ProgrammeLogWindow = eve;
+      $('.newManagementOverlay').removeClass('ovrlay');
+    }
+
+
+    openWoAssociationsManage(item) {
+      this.selectedWorksOrder = item;
+      this.WoAssociationsManageWindow = true;
+
+        $('.worksOrderOverlay').addClass('ovrlay');
+    }
+
+    closeWoAssociationsManageWindowMain(eve) {
+      this.WoAssociationsManageWindow = eve;
+      $('.worksOrderOverlay').removeClass('ovrlay');
+    }
+
 
 }

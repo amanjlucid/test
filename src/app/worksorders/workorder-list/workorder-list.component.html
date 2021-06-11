@@ -93,6 +93,12 @@
                 <a *ngIf="woMenuAccess('Works Order Detail')" class="dropdown-item" href="javascript:void(0)"
                   (click)="redirectToWorksOrder(dataItem)"> Works Order Details</a>
 
+                  <a  class="dropdown-item" href="javascript:void(0)"
+                    (click)="openProgrammeLog(dataItem)">View Programme Log</a>
+
+                    <a  class="dropdown-item" href="javascript:void(0)"
+                      (click)="openWoAssociationsManage(dataItem)">Associations</a>
+
                   <div class="dropdown-toggle" >
                     <div class="dropdown-item">Programme Management</div>
                     <div class="dropdown-menu addAssetMenu">
@@ -336,3 +342,11 @@
 <app-wo-program-management-instructions *ngIf="woProgramManagmentInstructionsWindow" [woProgramManagmentInstructionsWindow]="woProgramManagmentInstructionsWindow"
   [worksOrderData]="selectedWorksOrder" [selectedWorksOrder]="selectedWorksOrder" (WoProgramManagmentInstructionsWinEvent)="closeWoProgramManagmentInstructionsWin($event)">
 </app-wo-program-management-instructions>
+
+<app-programme-log *ngIf="ProgrammeLogWindow" [ProgrammeLogWindow]="ProgrammeLogWindow"
+  [worksOrderData]="selectedWorksOrder"  (ProgrammeLogWindowEvent)="closeProgrammeLogWindow($event)">
+</app-programme-log>
+
+<app-wo-association-manage *ngIf="WoAssociationsManageWindow" [WoAssociationsManageWindow]="WoAssociationsManageWindow"
+  [worksOrderData]="selectedWorksOrder"  (WoAssociationsManageWindowEvent)="closeWoAssociationsManageWindowMain($event)">
+</app-wo-association-manage>

@@ -48,6 +48,9 @@ import { PhaseChecklistComponent } from '../phase-checklist/phase-checklist.comp
 import { WoProgramManagmentInstructionComponent } from '../workorder-program-management/wo-program-management-instructions/wo-program-management-instructions.component';
 import { WoPmInstructionAssetsComponent } from '../workorder-program-management/wo-pm-instruction-assets/wo-pm-instruction-assets.component';
 import { WoPmInstructionAssetsDetailComponent } from '../workorder-program-management/wo-pm-instruction-assets-detail/wo-pm-instruction-assets-detail.component';
+import { ProgramLogComponent } from '../programme-log/programme-log/programme-log.component';
+import { ProgramTransactionsComponent } from '../programme-log/programme-transactions/programme-transactions.component';
+import { WoAssociationsManageComponent } from '../wo-association/wo-association-manage/wo-association-manage.component';
 
 
 @NgModule({
@@ -87,8 +90,12 @@ import { WoPmInstructionAssetsDetailComponent } from '../workorder-program-manag
     PhaseChecklistComponent,
     WoProgramManagmentInstructionComponent,
     WoPmInstructionAssetsComponent,
-    WoPmInstructionAssetsDetailComponent
+    WoPmInstructionAssetsDetailComponent,
+    ProgramLogComponent,
+    ProgramTransactionsComponent,
+    WoAssociationsManageComponent
   ],
+
 
   imports: [
     CommonModule,

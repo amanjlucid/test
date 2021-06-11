@@ -126,6 +126,45 @@ export class WorksOrdersService {
     EmailContractInstructionReport(params) {
         return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/EmailContractInstructionReport`, params, this.httpOptions);
     }
+    WEBWorksOrdersWorksProgrammeLog(qs) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/WEBWorksOrdersWorksProgrammeLog?${qs}`, this.httpOptions);
+    }
+
+    GetVW_WOReportingProgrammeLog(params) {
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/GetVW_WOReportingProgrammeLog`, params, this.httpOptions);
+    }
+
+
+    WOReportingProgrammeLogDetail(params) {
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WOReportingProgrammeLogDetail`, params, this.httpOptions);
+    }
+
+
+
+    WEBWorksOrdersWorksProgrammeLogDetails(qs) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/WEBWorksOrdersWorksProgrammeLogDetails?${qs}`, this.httpOptions);
+    }
+
+    GetWEBWorksOrdersAssociations(qs) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWEBWorksOrdersAssociations?${qs}`, this.httpOptions);
+    }
+
+    AddAssociation(params) {
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/AddAssociation`, params, this.httpOptions);
+    }
+
+    EditAssociation(params) {
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/EditAssociation`, params, this.httpOptions);
+    }
+
+    DeleteAssociation(params) {
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/DeleteAssociation`, params, this.httpOptions);
+    }
+    AddPhaseCostStructure(params) {
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/AddPhaseCostStructure`, params, this.httpOptions);
+    }
+
+    
 
 
 }

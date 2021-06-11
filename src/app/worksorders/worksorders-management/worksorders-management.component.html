@@ -98,6 +98,10 @@
                                 <a class="dropdown-item" href="javascript:void(0)"
                                     (click)="openPackageMappingWindow(dataItem)"
                                     *ngIf="woMenuAccess('Package Mapping')">Package Mapping</a>
+                                    <a  class="dropdown-item" href="javascript:void(0)"
+                                      (click)="openProgrammeLog(dataItem)">View Programme Log</a>
+                                      <a  class="dropdown-item" href="javascript:void(0)"
+                                        (click)="openWoAssociationsManage(dataItem)">Associations</a>
 
                             </div>
 
@@ -327,6 +331,14 @@
     [selectedWorkOrderAddEdit]="selctedWorksOrder" [selectedProgramme]="selectedProgramme" *ngIf="woFormWindow"
     (closeWoFormWin)="closeWoFormWin($event)">
 </app-workorder-form>
+
+<app-programme-log *ngIf="ProgrammeLogWindow" [ProgrammeLogWindow]="ProgrammeLogWindow"
+  [worksOrderData]="selectedWorksOrder"  (ProgrammeLogWindowEvent)="closeProgrammeLogWindow($event)">
+</app-programme-log>
+
+<app-wo-association-manage *ngIf="WoAssociationsManageWindow" [WoAssociationsManageWindow]="WoAssociationsManageWindow"
+  [worksOrderData]="selectedWorksOrder"  (WoAssociationsManageWindowEvent)="closeWoAssociationsManageWindowMain($event)">
+</app-wo-association-manage>
 
 <kendo-dialog title="DELETE WORKS ORDERS" *ngIf="deleteWorksOrderReasonWindow" (close)="closeWorksorderReasonWindow()"
     [minWidth]="250" [width]="450">
