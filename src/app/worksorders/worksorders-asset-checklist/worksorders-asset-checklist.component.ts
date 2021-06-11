@@ -2,8 +2,9 @@ import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { PageChangeEvent, RowArgs } from '@progress/kendo-angular-grid';
-import { AlertService, ConfirmationDialogService, HelperService, SharedService, WorksorderManagementService } from '../../_services'
+import { AlertService, ConfirmationDialogService, HelperService, SharedService, WorksorderManagementService, WorksorderReportService } from '../../_services'
 import { combineLatest, forkJoin } from 'rxjs';
+import { CurrencyPipe } from '@angular/common';
 
 @Component({
   selector: 'app-worksorders-asset-checklist',
@@ -76,6 +77,8 @@ export class WorksordersAssetChecklistComponent implements OnInit {
     private confirmationDialogService: ConfirmationDialogService,
     private helperService: HelperService,
     private sharedService: SharedService,
+    private worksOrderReportService: WorksorderReportService,
+    private currencyPipe : CurrencyPipe
   ) { }
 
   ngOnInit(): void {
@@ -1380,6 +1383,95 @@ export class WorksordersAssetChecklistComponent implements OnInit {
     this.openDefectsList = eve;
     $('.checklistOverlay').removeClass('ovrlay');
     this.worksOrderDetailPageData();
+  }
+
+viewCheckListOrderReport(reportLevel, dataItem:any=null){  
+
+    const wprsequence = (dataItem != null) ? dataItem.wprsequence : this.selectedChildRow.wprsequence;
+    const wosequence = (dataItem != null) ? dataItem.wosequence : this.selectedChildRow.wosequence;
+    const wopsequence = (dataItem != null) ? dataItem.wopsequence : 0;
+    let report_level = reportLevel;
+    const asset_id =  (dataItem != null && dataItem.assid != undefined) ? dataItem.assid : "";
+
+    const label = {
+      programme: "Programme",
+      contractor: "Contractor",
+      works_Order: "Works Order",
+      phase: "Phase",
+      incomplete_Dependencies: "Dependencies",
+      complete: "Complete Status",
+      doc_Count: "Doc Count",
+      stage: "Stage",
+      name: "Checklist",
+      responsibility: "Responsibility",
+      special_Items: "Special Items",
+      attachment_Required: "Attachments",
+      work_Count: "Work Count",
+      asset: "Asset",
+      address: "Address",
+      checklist_Status: "Checklist Status",
+      comment: "Comment",
+      forecast: "Forecast",
+      committed: "Committed",
+      approved: "Approved",
+      pending: "Pending",
+      actual: "Actual",
+      forecast_Fee: "Forecast Fee",
+      committed_Fee: "Committed Fee",
+      approved_Fee: "Approved Fee",
+      pending_Fee: "Pending Fee",
+      actual_Fee: "Actual Fee",
+      issue_Date: "Issue Date",
+      target_Date: "Target Date",
+      acceptance_Date: "Acceptance Date",
+      plan_Start_Date: "Plan Start Date",
+      plan_End_Date: "Plan End Date",
+      actual_Start_Date: "Actual Start Date",
+      actual_End_Date: "Actual End Date",
+      updated_by: "Updated By",
+      updated_On: "Updated On"
+    }
+
+    this.worksOrderReportService.getChecklistReportForOrder(wprsequence, wosequence, wopsequence, report_level, asset_id).subscribe(
+      (data) => {
+        if(data.isSuccess == true){          
+          let tempData = [...data.data];
+          if(tempData.length > 0){
+            tempData.map((x: any) => {
+              x.forecast = this.currencyPipe.transform(x.forecast,"GBP", "symbol");
+              x.committed = this.currencyPipe.transform(x.committed,"GBP", "symbol");
+              x.approved = this.currencyPipe.transform(x.approved,"GBP", "symbol");
+              x.pending = this.currencyPipe.transform(x.pending,"GBP", "symbol");
+              x.actual = this.currencyPipe.transform(x.actual,"GBP", "symbol");
+              x.forecast_Fee = this.currencyPipe.transform(x.forecast_Fee,"GBP", "symbol");
+              x.committed_Fee = this.currencyPipe.transform(x.committed_Fee,"GBP", "symbol");
+              x.approved_Fee = this.currencyPipe.transform(x.approved_Fee,"GBP", "symbol");
+              x.pending_Fee = this.currencyPipe.transform(x.pending_Fee,"GBP", "symbol");
+              x.actual_Fee = this.currencyPipe.transform(x.actual_Fee,"GBP", "symbol");
+              x.issue_Date = (this.helperService.formatDateWithoutTime(x.issue_Date) != null) ? this.helperService.formatDateWithoutTime(x.issue_Date) : "";
+              x.target_Date = (this.helperService.formatDateWithoutTime(x.target_Date) != null) ? this.helperService.formatDateWithoutTime(x.target_Date) : "";
+              x.acceptance_Date = (this.helperService.formatDateWithoutTime(x.acceptance_Date) != null) ? this.helperService.formatDateWithoutTime(x.acceptance_Date) : "";
+              x.plan_Start_Date = (this.helperService.formatDateWithoutTime(x.plan_Start_Date) != null) ? this.helperService.formatDateWithoutTime(x.plan_Start_Date) : "";
+              x.plan_End_Date = (this.helperService.formatDateWithoutTime(x.plan_End_Date) != null) ?this.helperService.formatDateWithoutTime(x.plan_End_Date) : "";
+              x.actual_Start_Date = (this.helperService.formatDateWithoutTime(x.actual_Start_Date) != null) ? this.helperService.formatDateWithoutTime(x.actual_Start_Date) : "";
+              x.actual_End_Date = (this.helperService.formatDateWithoutTime(x.actual_End_Date) != null) ? this.helperService.formatDateWithoutTime(x.actual_End_Date) : "";
+              x.updated_On = (this.helperService.formatDateWithoutTime(x.updated_On) != null) ? this.helperService.formatDateTime(x.updated_On) : "";
+            })
+            let fileName = "Asset_Checklist_Report_"+wosequence+"_"+wopsequence+"_"+report_level;
+            this.helperService.exportAsExcelFile(tempData, fileName, label);
+          }else{
+            this.alertService.error("No Record Found.");            
+          }
+          this.chRef.detectChanges();
+        }else{
+          this.alertService.error(data.message);            
+        } 
+      },
+      error => {
+        this.alertService.error(error);
+      }
+    )
+
   }
 
 }

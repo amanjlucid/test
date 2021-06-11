@@ -2,11 +2,12 @@ import { Component, OnInit, ViewEncapsulation, ChangeDetectorRef, ViewChild } fr
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { SelectableSettings, RowClassArgs, RowArgs, PageChangeEvent, GridComponent } from '@progress/kendo-angular-grid';
-import { AlertService, HelperService, SharedService, WorksOrdersService } from '../../_services'
+import { AlertService, HelperService, SharedService, WorksOrdersService, WorksorderReportService } from '../../_services'
 import { combineLatest, Subject } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { WorkordersListFilterModel } from '../../_models';
 import { debounceTime } from 'rxjs/operators';
+import { CurrencyPipe } from '@angular/common';
 
 
 @Component({
@@ -80,9 +81,12 @@ export class WorkorderListComponent implements OnInit {
   documentWindow = false;
   ProgrammeLogWindow = false;
   WoAssociationsManageWindow = false;
+  openManageMilestone: boolean;
+  disabledMilestone: boolean = true;
 
   constructor(
     private worksOrderService: WorksOrdersService,
+    private worksOrderReportService: WorksorderReportService,
     private activeRoute: ActivatedRoute,
     private alertService: AlertService,
     private helperService: HelperService,
@@ -90,6 +94,7 @@ export class WorkorderListComponent implements OnInit {
     private router: Router,
     private helper: HelperService,
     private chRef: ChangeDetectorRef,
+    private currencyPipe: CurrencyPipe
   ) {
     this.setSelectableSettings();
     this.setInitialFilterValue();
@@ -224,6 +229,7 @@ export class WorkorderListComponent implements OnInit {
 
     this.selectedWorksOrder = dataItem;
 
+    this.disabledMilestone = this.selectedWorksOrder.wottemplatetype === "Works Order Milestone" ? false : true;
     if (columnIndex > 0) {
       if (this.selectedWorksOrder.wosequence)
 
@@ -565,12 +571,58 @@ export class WorkorderListComponent implements OnInit {
     $('.worksOrderOverlay').removeClass('ovrlay');
   }
 
+  WOCreateXportOutputReport(xPortId, reportName) {
+    let params = {
+      "intXportId": xPortId,
+      "lstParamNameValue": ["Works Order Number", this.selectedWorksOrder.wosequence],
+      "lngMaxRows": 40000
+    };
+    if (xPortId == 587 || xPortId == 588) {
+      params.lstParamNameValue = ["Master Works Order", this.selectedWorksOrder.wosequence];
+    }
+    this.worksOrderReportService.WOCreateXportOutput(params).subscribe(
+      (data) => {
+
+        const { columns, rows } = data[0];
+        const tempCol = columns.map(x => x.columnName);
+        const tempRow = rows.map(x => x.values);
+        let result: any;
+        let label: any;
+
+        if (tempRow.length > 0) {
+          result = tempRow.map(x => x.reduce(function (result, field, index) {
+            var fieldKey = tempCol[index].replace(new RegExp(" ", 'g'), "");
+            result[fieldKey] = field;
+            return result;
+          }, {}));
+
+          label = tempCol.reduce(function (result, field) {
+            var fieldKey = field.replace(new RegExp(" ", 'g'), "");
+            result[fieldKey] = field;
+            return result;
+          }, {});
+
+          let fileName = reportName + " " + this.selectedWorksOrder.wosequence;
+          this.helperService.exportAsExcelFile(result, fileName, label);
+        } else {
+          this.alertService.error("No Record Found.");
+        }
+        this.chRef.detectChanges();
+      },
+      error => {
+        this.alertService.error(error);
+
+      }
+    )
+  }
+
 
   openDocumentMethod(item) {
     this.selectedWorksOrder = item;
     $('.worksOrderOverlay').addClass('ovrlay');
     this.documentWindow = true;
   }
+
   openProgrammeLog(item) {
     this.selectedWorksOrder = item;
     this.ProgrammeLogWindow = true;
@@ -601,4 +653,177 @@ export class WorkorderListComponent implements OnInit {
     $('.worksOrderOverlay').removeClass('ovrlay');
   }
 
+  viewWOReportingAsset(reportLevel, dataItem: any = null) {
+
+    const wprsequence = (dataItem != null) ? dataItem.wprsequence : 0;
+    const wosequence = (dataItem != null) ? dataItem.wosequence : 0;
+    const wopsequence = 0;
+    let level = reportLevel;
+
+    const label = {
+      programme: "Programme",
+      contractor: "Contractor",
+      works_Order: "Work Order",
+      phase: "Phase",
+      asset: "Asset",
+      asset_Type: "Asset Type",
+      address: "Addess",
+      asset_Status: "Asset Status",
+      comment: "Comment",
+      forecast: "Forecast",
+      committed: "Committed",
+      approved: "Approved",
+      pending: "Pending",
+      actual: "Actual",
+      forecast_Fee: "Forecast Fee",
+      committed_Fee: "Committed Fee",
+      approved_Fee: "Approved Fee",
+      pending_Fee: "Pending Fee",
+      actual_Fee: "Actual Fee",
+      payment: "Payment",
+      updated_by: "Updated By",
+      updated_On: "Updated On",
+      variation_Count: "Variation Count",
+      work_Count: "Work Count",
+      fee_Count: "Fee Count",
+      defect_Count: "Defect Count",
+      doc_Count: "Doc Count",
+      recharge_Count: "Recharge Count",
+      refusal_Count: "Refusal Count",
+      customer_Satisfaction: "Customer Satisfaction",
+      derived_Status: "Derived Status",
+      refusal_Status: "Refusal Status",
+      issuedaterep: "Issue Date",
+      targetcomdaterep: "Target Date",
+      acceptdaterep: "Accept Date",
+      planstartdaterep: "Plan Start Date",
+      planenddaterep: "Plan End Date",
+      startdaterep: "Actual start Date",
+      enddaterep: "Actual End Date",
+      handoverdaterep: "Handover Date",
+      completiondaterep: "Completion Date",
+      paymentdaterep: "Payment Date"
+    }
+
+    this.worksOrderReportService.getWOReportingAsset(wprsequence, wosequence, wopsequence, level).subscribe(
+      (data) => {
+        if (data.isSuccess == true) {
+          let tempData = [...data.data];
+          if (tempData.length > 0) {
+            tempData.map((x: any) => {
+              x.forecast = this.currencyPipe.transform(x.forecast, "GBP", "symbol");
+              x.committed = this.currencyPipe.transform(x.committed, "GBP", "symbol");
+              x.approved = this.currencyPipe.transform(x.approved, "GBP", "symbol");
+              x.pending = this.currencyPipe.transform(x.pending, "GBP", "symbol");
+              x.actual = this.currencyPipe.transform(x.actual, "GBP", "symbol");
+              x.forecast_Fee = this.currencyPipe.transform(x.forecast_Fee, "GBP", "symbol");
+              x.committed_Fee = this.currencyPipe.transform(x.committed_Fee, "GBP", "symbol");
+              x.approved_Fee = this.currencyPipe.transform(x.approved_Fee, "GBP", "symbol");
+              x.pending_Fee = this.currencyPipe.transform(x.pending_Fee, "GBP", "symbol");
+              x.actual_Fee = this.currencyPipe.transform(x.actual_Fee, "GBP", "symbol");
+              x.payment = this.currencyPipe.transform(x.payment, "GBP", "symbol");
+              x.updated_On = (this.helperService.formatDateWithoutTime(x.updated_On) != null) ? this.helperService.formatDateTime(x.updated_On) : "";
+              x.issuedaterep = (this.helperService.formatDateWithoutTime(x.issuedaterep) != null) ? this.helperService.formatDateWithoutTime(x.issuedaterep) : "";
+              x.targetcomdaterep = (this.helperService.formatDateWithoutTime(x.targetcomdaterep) != null) ? this.helperService.formatDateWithoutTime(x.targetcomdaterep) : "";
+              x.acceptdaterep = (this.helperService.formatDateWithoutTime(x.acceptdaterep) != null) ? this.helperService.formatDateWithoutTime(x.acceptdaterep) : "";
+              x.planstartdaterep = (this.helperService.formatDateWithoutTime(x.planstartdaterep) != null) ? this.helperService.formatDateWithoutTime(x.planstartdaterep) : "";
+              x.planenddaterep = (this.helperService.formatDateWithoutTime(x.planenddaterep) != null) ? this.helperService.formatDateWithoutTime(x.planenddaterep) : "";
+              x.startdaterep = (this.helperService.formatDateWithoutTime(x.startdaterep) != null) ? this.helperService.formatDateWithoutTime(x.startdaterep) : "";
+              x.enddaterep = (this.helperService.formatDateWithoutTime(x.enddaterep) != null) ? this.helperService.formatDateWithoutTime(x.enddaterep) : "";
+              x.handoverdaterep = (this.helperService.formatDateWithoutTime(x.handoverdaterep) != null) ? this.helperService.formatDateWithoutTime(x.handoverdaterep) : "";
+              x.completiondaterep = (this.helperService.formatDateWithoutTime(x.completiondaterep) != null) ? this.helperService.formatDateWithoutTime(x.completiondaterep) : "";
+              x.paymentdaterep = (this.helperService.formatDateWithoutTime(x.paymentdaterep) != null) ? this.helperService.formatDateWithoutTime(x.paymentdaterep) : "";
+            })
+            let fileName = "WOReportAsset_" + wosequence + "_" + wprsequence + "_" + level;
+            this.helperService.exportAsExcelFile(tempData, fileName, label);
+          } else {
+            this.alertService.error("No Record Found.");
+          }
+          this.chRef.detectChanges();
+        } else {
+          this.alertService.error(data.message);
+        }
+      },
+      error => {
+        this.alertService.error(error);
+      }
+    )
+
+  }
+
+  viewWOReportingProgSummaryTree(reportType, dataItem: any = null) {
+
+    const wprsequence = (dataItem != null) ? dataItem.wprsequence : 0;
+    const wosequence = (dataItem != null) ? dataItem.wosequence : 0;
+    let level = reportType;
+
+    const label = {
+      programme: "Programme",
+      works_Order: "Works Order",
+      phase: "Phase",
+      budget: "Budget",
+      forecast: "Forecast",
+      committed: "Committed",
+      accepted: "Accepted",
+      actual: "Actual",
+      approved: "Approved",
+      pending: "Pending",
+      payments: "Payments",
+      actual___Planned_Start_Date: "Start Date",
+      actual___Planned_End_Date: "End Date",
+      target_Date: "Target Date",
+      new: "New Count",
+      issued: "Issued Count",
+      wip: "In Progress Count",
+      handover: "Handover Count",
+      pc: "Practical Comp Count",
+      fc: "Final Comp Count",
+      status: "Status",
+      counts: "Counts"
+    }
+
+    this.worksOrderReportService.getWOReportingProgSummaryTree(wprsequence, wosequence, level).subscribe(
+      (data) => {
+        if (data.isSuccess == true) {
+          let tempData = [...data.data];
+          if (tempData.length > 0) {
+            tempData.map((x: any) => {
+              x.budget = this.currencyPipe.transform(x.budget, "GBP", "symbol");
+              x.forecast = this.currencyPipe.transform(x.forecast, "GBP", "symbol");
+              x.committed = this.currencyPipe.transform(x.committed, "GBP", "symbol");
+              x.accepted = this.currencyPipe.transform(x.accepted, "GBP", "symbol");
+              x.actual = this.currencyPipe.transform(x.actual, "GBP", "symbol");
+              x.approved = this.currencyPipe.transform(x.approved, "GBP", "symbol");
+              x.pending = this.currencyPipe.transform(x.pending, "GBP", "symbol");
+              x.payments = this.currencyPipe.transform(x.payments, "GBP", "symbol");
+              x.actual___Planned_Start_Date = (this.helperService.formatDateWithoutTime(x.actual___Planned_Start_Date) != null) ? this.helperService.formatDateWithoutTime(x.actual___Planned_Start_Date) : "";
+              x.actual___Planned_End_Date = (this.helperService.formatDateWithoutTime(x.actual___Planned_End_Date) != null) ? this.helperService.formatDateWithoutTime(x.actual___Planned_End_Date) : "";
+              x.target_Date = (this.helperService.formatDateWithoutTime(x.target_Date) != null) ? this.helperService.formatDateWithoutTime(x.target_Date) : "";
+            })
+            let fileName = "WOReport_" + wosequence + "_" + wprsequence + "_" + level;
+            this.helperService.exportAsExcelFile(tempData, fileName, label);
+          } else {
+            this.alertService.error("No Record Found.");
+          }
+          this.chRef.detectChanges();
+        } else {
+          this.alertService.error(data.message);
+        }
+      },
+      error => {
+        this.alertService.error(error);
+      }
+    )
+
+  }
+
+  openManageMilestonePopup() {
+    $('.worksOrderOverlay').addClass('ovrlay');
+    this.openManageMilestone = true;
+  }
+
+  closeManageMilestone($event) {
+    $('.worksOrderOverlay').removeClass('ovrlay');
+    this.openManageMilestone = $event;
+  }
 }

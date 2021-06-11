@@ -1,0 +1,65 @@
+<kendo-window title="{{title}}" *ngIf="openMilestoneEdit" (close)="closeMilestoneEdit()" [top]="35" [minWidth]="600"
+    [width]="800" [height]="auto" [minHeight]="300">
+
+    <form (ngSubmit)="onSubmit()" autocomplete="off" class="milestoneForm" [formGroup]="milestoneForm">
+        <div class="row formRow">
+            <div class="col-md-12">
+                <div class="row form-group">
+                    <div class="col-md-3"><label>Works Order: </label></div>
+                    <div class="col-md-9">
+                        <input type="text" value="{{singleMilestone?.woname}}" class="form-control form-control-sm" [readonly]="true">
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-md-3"><label>Stage: </label></div>
+                    <div class="col-md-9">
+                        <input type="text" value="{{singleMilestone?.wostagename}}" class="form-control form-control-sm" [readonly]="true">
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-md-3"><label>Milestone: </label></div>
+                    <div class="col-md-9">
+                        <input type="text" value="{{singleMilestone?.wocheckname}}" class="form-control form-control-sm" [readonly]="true">
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-md-3"><label>Checklist Type: </label></div>
+                    <div class="col-md-6">
+                        <input type="text" value="{{singleMilestone?.wocheckspeciaL1}}" class="form-control form-control-sm" [readonly]="true">
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-md-3"><label>Responsibility: </label></div>
+                    <div class="col-md-6">
+                        <input type="text" value="{{singleMilestone?.wocheckresp}}" class="form-control form-control-sm" [readonly]="true">
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-md-3"><label>Responsible User: </label></div>
+                    <div class="col-md-6">
+                        <select class="form-control form-control-sm" formControlName="resUserVal">
+                            <option value="">N/A</option>
+                            <option *ngFor="let clientList of woClientUserList" [value]="clientList.mpusid">{{clientList.m_USERNAME}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3"><label>Attachment Required: </label></div>
+                    <div class="col-md-6">
+                        <select class="form-control form-control-sm" formControlName="attReqVal">
+                            <option value=""></option>
+                            <option value="N">No</option>
+                            <option value="Y">Yes</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12 mt-2 text-right">
+                <button type="submit" class="btn btn-sm themeButton mr-1">Apply</button>
+                <button type="button" class="btn btn-sm themeButton" (click)="closeMilestoneEdit()">Cancel</button>
+            </div>
+        </div>
+    </form> 
+
+</kendo-window>

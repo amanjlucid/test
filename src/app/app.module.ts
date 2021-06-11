@@ -10,10 +10,7 @@ import { LoginComponent } from './login';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { AuthGuard } from './_guards';
 import { JwtInterceptor, ErrorInterceptor, LoaderInterceptorService, NgbDateCustomParserFormatter, CustomPreloadingStrategy } from './_helpers';
-import { AlertService, AuthenticationService, UserService, LoaderService, GroupService, CharacteristicGroupService, ElementGroupService, AttributeGroupService, PortalGroupService, FunctionSecurityService, PropertySecurityGroupService, ReportingGroupService, ConfirmationDialogService, EventService, AssetAttributeService, SharedService, ServicePortalService, SettingsService, HnsPortalService, HnsResultsService, EventManagerDashboardService, EventManagerService, WebReporterService, SurveyPortalService, WorksorderManagementService, WorksOrdersService, WopmConfigurationService } from './_services';
-
-
-// import { AlertService, AuthenticationService, UserService, LoaderService, GroupService, CharacteristicGroupService, ElementGroupService, AttributeGroupService, PortalGroupService, FunctionSecurityService, PropertySecurityGroupService, ReportingGroupService, ConfirmationDialogService, EventService, AssetAttributeService, SharedService, ServicePortalService, SettingsService, HnsPortalService, HnsResultsService, EventManagerDashboardService, EventManagerService, WebReporterService, SurveyPortalService,  WopmConfigurationService} from './_services';
+import { AlertService, AuthenticationService, UserService, LoaderService, GroupService, CharacteristicGroupService, ElementGroupService, AttributeGroupService, PortalGroupService, FunctionSecurityService, PropertySecurityGroupService, ReportingGroupService, ConfirmationDialogService, EventService, AssetAttributeService, SharedService, ServicePortalService, SettingsService, HnsPortalService, HnsResultsService, EventManagerDashboardService, EventManagerService, WebReporterService, SurveyPortalService, WorksorderManagementService, WorksorderReportService, WorksOrdersService, WopmConfigurationService } from './_services';
 import { AlertComponent, LoaderComponent, KendoGridColor, KendoZindex, MyDatePicker, DecimalValidation } from './_directives';
 import { GridModule, ExcelModule } from '@progress/kendo-angular-grid';
 import { InputsModule } from '@progress/kendo-angular-inputs';
@@ -31,9 +28,7 @@ import { ElementsGroupComponent } from './security-portal/groups/elements-group/
 import { AttributeGroupComponent } from './security-portal/groups/attribute-group/attribute-group.component';
 import { PortalTabsComponent } from './security-portal/groups/portal-tabs/portal-tabs.component';
 import { PropertySecurityComponent } from './security-portal/groups/property-security/property-security.component';
-// import { ReportingComponent } from './security-portal/groups/reporting/reporting.component';
 import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
-// import { DateFormatPipe } from './_pipes/date-format.pipe';
 import { AsbestosRefDetailPipe } from './_pipes/asbestos-ref-detail.pipe'
 import { NumberFormatPipe } from './_pipes/number-format.pipe';
 import { RoundOffPipe } from './_pipes/round-off.pipe';
@@ -102,9 +97,6 @@ import { WebReporterSettingComponent } from './setting/web-reporter-setting/web-
 import { MatExpansionModule } from '@angular/material/expansion';
 import { AssetEpcDashboardComponent } from './assets-portal/asset-energy/asset-epc-dashboard/asset-epc-dashboard.component';
 import { AssetEpcRouterComponent } from './assets-portal/asset-energy/asset-epc-router/asset-epc-router.component';
-// import { RetrievedEpcGridComponent } from './assets-portal/asset-energy/retrieved-epc-grid/retrieved-epc-grid.component';
-// import { WorksordersDashboardComponent } from './worksorders/worksorders-dashboard/worksorders-dashboard.component';
-// import { WorksordersRouterComponent } from './worksorders/worksorders-router/worksorders-router.component';
 import { SurveyProjectsComponent } from './survey-portal/survey-projects/survey-projects.component';
 import { SurveyProjectSurveysComponent } from './survey-portal/survey-project-surveys/survey-project-surveys.component';
 import { SurveyBatchesComponent } from './survey-portal/survey-batches/survey-batches.component';
@@ -116,18 +108,8 @@ import { SurveyCbcreportComponent } from './survey-portal/survey-cbcreport/surve
 import { SurveyCbcreportSelectPDFComponent } from './survey-portal/survey-cbcreport-select-pdf/survey-cbcreport-select-pdf.component';
 import { SurveyCbcreportSelectImageComponent } from './survey-portal/survey-cbcreport-select-image/survey-cbcreport-select-image.component';
 import { SurveyCbcreportSignatureImageComponent } from './survey-portal/survey-cbcreport-signature-image/survey-cbcreport-signature-image.component';
-// import { WorksordersManagementComponent } from './worksorders/worksorders-management/worksorders-management.component';
 import { TreeListModule } from '@progress/kendo-angular-treelist';
 import { CurrencyPipe } from '@angular/common';
-
-// import { WopmTemplatesComponent } from './worksorders/Config/wopm-templates/wopm-templates.component';
-// import { WopmConfigComponent } from './worksorders/Config/wopm-config/wopm-config.component';
-// import { WopmMasterstagesComponent } from './worksorders/Config/wopm-masterstages/wopm-masterstages.component';
-// import { WopmEditTemplateComponent } from './worksorders/Config/wopm-templates/wopm-edit-template/wopm-edit-template.component';
-// import { WopmEditMasterstageComponent } from './worksorders/Config/wopm-masterstages/wopm-edit-masterstage/wopm-edit-masterstage.component';
-// import { WopmChecklistMasterComponent } from './worksorders/Config/wopm-templates/wopm-checklist-master/wopm-checklist-master.component';
-// import { WopmEditChecklistMasterComponent } from './worksorders/Config/wopm-templates/wopm-checklist-master/wopm-edit-checklist-master/wopm-edit-checklist-master.component';
-// import { WopmEditChecklistDependenciesComponent } from './worksorders/Config/wopm-templates/wopm-edit-checklist-dependencies/wopm-edit-checklist-dependencies.component';
 
 
 
@@ -148,9 +130,7 @@ import { CurrencyPipe } from '@angular/common';
     AttributeGroupComponent,
     PortalTabsComponent,
     PropertySecurityComponent,
-    // ReportingComponent,
     ConfirmationDialogComponent,
-    // DateFormatPipe,
     AsbestosRefDetailPipe,
     NumberFormatPipe,
     UserFormComponent,
@@ -214,9 +194,6 @@ import { CurrencyPipe } from '@angular/common';
     WebReporterSettingComponent,
     AssetEpcDashboardComponent,
     AssetEpcRouterComponent,
-    // RetrievedEpcGridComponent,
-    // WorksordersDashboardComponent,
-    // WorksordersRouterComponent,
     SurveyProjectsComponent,
     SurveyProjectSurveysComponent,
     SurveyBatchesComponent,
@@ -228,16 +205,6 @@ import { CurrencyPipe } from '@angular/common';
     SurveyCbcreportSelectImageComponent,
     SurveyCbcreportSelectPDFComponent,
     SurveyCbcreportSignatureImageComponent,
-
-
-    // WopmTemplatesComponent,
-    // WopmConfigComponent,
-    // WopmMasterstagesComponent,
-    // WopmEditTemplateComponent,
-    // WopmEditMasterstageComponent,
-    // WopmChecklistMasterComponent,
-    // WopmEditChecklistMasterComponent,
-    // WopmEditChecklistDependenciesComponent
 
   ],
 
@@ -297,6 +264,7 @@ import { CurrencyPipe } from '@angular/common';
     WebReporterService,
     SurveyPortalService,
     WorksorderManagementService,
+    WorksorderReportService,
     WopmConfigurationService,
     CustomPreloadingStrategy,
     CurrencyPipe,

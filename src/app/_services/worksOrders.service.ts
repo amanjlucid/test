@@ -5,10 +5,6 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 
-
-
-
-
 @Injectable()
 export class WorksOrdersService {
     httpOptions = {
@@ -180,7 +176,7 @@ export class WorksOrdersService {
     GetWOInstructionAssets(qs) {
         return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWOInstructionAssets?${qs}`, this.httpOptions);
     }
-    
+
     GetWOInstructionAssetsDetails(qs) {
         return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWOInstructionAssetsDetails?${qs}`, this.httpOptions);
     }
@@ -234,7 +230,19 @@ export class WorksOrdersService {
         return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/AddPhaseCostStructure`, params, this.httpOptions);
     }
 
-    
+
+
+    getManageMilestoneData(wosequence) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetManageMilestone?wosequence=${wosequence}`, this.httpOptions);
+    }
+
+    getWorkOrderClientUserNames(wosequence) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/WorkOrderClientUserNames?wosequence=${wosequence}`, this.httpOptions);
+    }
+
+    updateWorksOrderMilestone(params) {
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/UpdateWorksOrderMilestone`, params, this.httpOptions);
+    }
 
 
 }

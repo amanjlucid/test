@@ -72,6 +72,8 @@ import { VariationPkzEnterQtyComponent } from '../variation-pkz-enter-qty/variat
 import { WoProgramManagmentInstructionComponent } from '../workorder-program-management/wo-program-management-instructions/wo-program-management-instructions.component';
 import { WoPmInstructionAssetsComponent } from '../workorder-program-management/wo-pm-instruction-assets/wo-pm-instruction-assets.component';
 import { WoPmInstructionAssetsDetailComponent } from '../workorder-program-management/wo-pm-instruction-assets-detail/wo-pm-instruction-assets-detail.component';
+import { ManageMilestonesComponent } from '../manage-milestones/manage-milestones.component';
+import { ManageMilestonesEditComponent } from '../manage-milestones-edit/manage-milestones-edit.component';
 import { AssetDefectsListComponent } from '../asset-defects-list/asset-defects-list.component';
 import { DefectFormComponent } from '../defect-form/defect-form.component';
 import { SendEmailComponent } from '../send-email/send-email.component';
@@ -135,7 +137,7 @@ import { WoDocumentListComponent } from '../wo-document-list/wo-document-list.co
     WoPmInstructionAssetsDetailComponent,
     WorklistComponent,
     SwapPackageComponent,
-	  WopmJobrolesComponent,
+    WopmJobrolesComponent,
     WopmEditJobrolesComponent,
     WopmContractTermsComponent,
     WopmEditRagStatusComponent,
@@ -149,7 +151,9 @@ import { WoDocumentListComponent } from '../wo-document-list/wo-document-list.co
     WoDocumentListComponent,
     ProgramLogComponent,
     ProgramTransactionsComponent,
-    WoAssociationsManageComponent
+    WoAssociationsManageComponent,
+    ManageMilestonesComponent,
+    ManageMilestonesEditComponent
   ],
 
 

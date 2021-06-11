@@ -12,6 +12,10 @@
         class="btn btn-sm themeButton ">
         New Works Order
       </button>
+      <button [disabled]="disabledMilestone" (click)="openManageMilestonePopup()"
+        class="btn btn-sm themeButton ml-1">
+        Manage Milestones
+      </button>
       <button (click)="export()" class="btn btn-sm themeButton ml-1"> Export</button>
       <button id="showFilePanel" (click)="lockUnlockColumn()" class="btn btn-sm themeButton ml-1">
         <i *ngIf="!columnLocked" class="fa fa-lock" aria-hidden="true"></i>
@@ -119,6 +123,32 @@
                 <a *ngIf="woMenuAccess('Works Order Documents')" [ngClass]="{'disabled': dataItem.worksOrderFileCount == 0}" class="dropdown-item"
                   (click)="openDocumentMethod(dataItem)" href="javascript:void(0)">Documents</a>
 
+                <div class="dropdown-toggle" >
+                  <div class="dropdown-item">Contractor Reports</div>
+                  <div class="dropdown-menu addAssetMenu">
+                    <a class="dropdown-item" href="javascript:void(0)" (click)="WOCreateXportOutputReport(580, 'Contractor Asset Report')">Asset Report</a>
+                    <a class="dropdown-item" href="javascript:void(0)" (click)="WOCreateXportOutputReport(581, 'Contractor Work Report')">Work Report</a>
+                  </div>
+                </div>
+                <div class="dropdown-toggle" >
+                  <div class="dropdown-item">Works Order Report</div>
+                  <div class="dropdown-menu addAssetMenu">
+                    <a class="dropdown-item" href="javascript:void(0)" (click)="viewWOReportingProgSummaryTree(2, selectedWorksOrder)">Selected Order</a>
+                    <a class="dropdown-item" href="javascript:void(0)" (click)="viewWOReportingProgSummaryTree(3)">All Orders</a>
+                    <a class="dropdown-item" href="javascript:void(0)" (click)="viewWOReportingProgSummaryTree(4)">All Orders (Including Phase)</a>
+                    <a class="dropdown-item" href="javascript:void(0)" (click)="viewWOReportingAsset(2, selectedWorksOrder)">Selected Order (including Assets)</a>
+                    <!-- <a class="dropdown-item" href="javascript:void(0)" (click)="viewWOReportingAsset(0)">All Orders (including Assets)</a> -->
+                    <a class="dropdown-item" href="javascript:void(0)" (click)="WOCreateXportOutputReport(505, 'WO Selected Asset Report')">Asset Report (Selected Order)</a>
+                    <a class="dropdown-item" href="javascript:void(0)" (click)="WOCreateXportOutputReport(506, 'WO Selected Work Report')">Work Report (Selected Order)</a>
+                  </div>
+                </div>
+                <div class="dropdown-toggle" >
+                  <div class="dropdown-item">Associations</div>
+                  <div class="dropdown-menu addAssetMenu">
+                    <a class="dropdown-item" href="javascript:void(0)" (click)="WOCreateXportOutputReport(587, 'Associations Works Order Level')">Works Order Level</a>
+                    <a class="dropdown-item" href="javascript:void(0)" (click)="WOCreateXportOutputReport(588, 'Associations Asset Level')">Asset Level</a>
+                  </div>
+                </div>
                 <!-- <a class="dropdown-item" href="javascript:void(0)">Defects </a>
                 <a class="dropdown-item" href="javascript:void(0)">Contract Costs</a>
                 <a class="dropdown-item" href="javascript:void(0)">Variations</a>
@@ -382,3 +412,4 @@
 <app-wo-association-manage *ngIf="WoAssociationsManageWindow" [WoAssociationsManageWindow]="WoAssociationsManageWindow"
   [worksOrderData]="selectedWorksOrder"  (WoAssociationsManageWindowEvent)="closeWoAssociationsManageWindowMain($event)">
 </app-wo-association-manage>
+<app-manage-milestones *ngIf="openManageMilestone" [worksOrderData]="selectedWorksOrder" [openManageMilestone]="openManageMilestone" (closeManageMilestoneEvent)="closeManageMilestone($event)"></app-manage-milestones>
