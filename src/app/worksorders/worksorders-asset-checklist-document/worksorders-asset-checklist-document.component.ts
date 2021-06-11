@@ -393,18 +393,6 @@ export class WorksordersAssetChecklistDocumentComponent implements OnInit {
 
           const formData = new FormData();
 
-          // let params = {
-          //   WO_FILEPATH: this.filePath,
-          //   WO_LEVEL: this.selectedChildRow.treelevel,
-          //   WO_SEQNO: this.selectedChildRow.wosequence,
-          //   WOP_SEQNO: this.selectedChildRow.wopsequence,
-          //   ASSID: this.selectedChildRow.assid,
-          //   CHECKSURCDE: this.selectedChecklist.wochecksurcde,
-          //   CurrentUser: this.currentUser.userId
-          // }
-
-          // console.log(params);
-
           formData.append('file', file[0], file[0].name);
           formData.append('WO_FILEPATH', this.filePath);
           formData.append('WO_LEVEL', '2');
@@ -413,10 +401,6 @@ export class WorksordersAssetChecklistDocumentComponent implements OnInit {
           formData.append('ASSID', this.selectedChildRow.assid);
           formData.append('CHECKSURCDE', this.selectedChecklist.wochecksurcde);
           formData.append('CurrentUser', this.currentUser.userId);
-
-
-
-
 
           this.worksorderManagementService.workOrderUploadDocument(formData).subscribe(
             data => {

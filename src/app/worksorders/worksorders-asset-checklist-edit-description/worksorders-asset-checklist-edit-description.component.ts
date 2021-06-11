@@ -22,6 +22,7 @@ export class WorksordersAssetChecklistEditDescriptionComponent implements OnInit
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
 
   @Input() editDesFor = 'assetchecklist'
+  @Input() worksOrder: any;
 
   constructor(
     private worksorderManagementService: WorksorderManagementService,
@@ -29,7 +30,10 @@ export class WorksordersAssetChecklistEditDescriptionComponent implements OnInit
   ) { }
 
   ngOnInit() {
-    console.log(this.editDesFor);
+    /**
+     * This component is user for edit asset checklist document description 
+     * and edit workorder document description
+     */
     this.description = this.selectedDoc.description
   }
 
@@ -39,19 +43,32 @@ export class WorksordersAssetChecklistEditDescriptionComponent implements OnInit
   }
 
   updateDescription() {
-    const checklistdata = this.selectedChecklist;
-    let params = {
-      WOSEQUENCE: checklistdata.wosequence,
-      ASSID: checklistdata.assid,
-      WOPSEQUENCE: checklistdata.wopsequence,
-      CHECKSURCDE: checklistdata.wochecksurcde,
-      NTPSEQUENCE: this.selectedDoc.ntpsequence,
-      NEWDESCRIPTION: this.description,
-      UserId: this.currentUser.userId
+    let apiCall: any;
+
+    if (this.editDesFor == "wo") {
+      //update doc description for WO
+      const { wosequence } = this.worksOrder;
+      const { ntpsequence } = this.selectedDoc;
+      apiCall = this.worksorderManagementService.updateWorksOrderDocument(wosequence, ntpsequence, this.description, this.currentUser.userId)
+    } else {
+      //update doc description for asset checklist
+      const checklistdata = this.selectedChecklist;
+      let params = {
+        WOSEQUENCE: checklistdata.wosequence,
+        ASSID: checklistdata.assid,
+        WOPSEQUENCE: checklistdata.wopsequence,
+        CHECKSURCDE: checklistdata.wochecksurcde,
+        NTPSEQUENCE: this.selectedDoc.ntpsequence,
+        NEWDESCRIPTION: this.description,
+        UserId: this.currentUser.userId
+      }
+
+      apiCall = this.worksorderManagementService.updateWorksOrderAssetChecklistDocument(params)
+
     }
 
     this.subs.add(
-      this.worksorderManagementService.updateWorksOrderAssetChecklistDocument(params).subscribe(
+      apiCall.subscribe(
         data => {
           if (data.isSuccess) {
             this.alertService.success("Description updated successfully.")
@@ -61,7 +78,10 @@ export class WorksordersAssetChecklistEditDescriptionComponent implements OnInit
           }
         }
       )
+
     )
+
+
   }
 
 }

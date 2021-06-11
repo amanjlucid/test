@@ -18,7 +18,7 @@ export class WoDocumentListComponent implements OnInit {
   @Input() selectedWorksOrder: any;
 
   @Output() closeDocument = new EventEmitter<boolean>();
-  title = 'Documents for Works Order Asset Checklist item';
+  title = 'Documents for Works Order';
   subs = new SubSink();
   state: State = {
     skip: 0,
@@ -42,7 +42,7 @@ export class WoDocumentListComponent implements OnInit {
   fileExt: string = "JPG, GIF, PNG, PDF";
   maxSize: number = 5; // 5MB
   filePath;
-
+  loading = true;
   worksOrderAccess: any = [];
   userType: any = [];
   @ViewChild(GridComponent) grid: GridComponent;
@@ -64,7 +64,7 @@ export class WoDocumentListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log(this.selectedWorksOrder);
+    // console.log(this.selectedWorksOrder);
     this.requiredPageData();
 
     this.subs.add(
@@ -99,6 +99,7 @@ export class WoDocumentListComponent implements OnInit {
       )
     )
 
+    this.getDocumentData();
 
   }
 
@@ -121,7 +122,26 @@ export class WoDocumentListComponent implements OnInit {
   }
 
   getDocumentData() {
+    const { wosequence } = this.selectedWorksOrder;
+    this.subs.add(
+      this.worksorderManagementService.getWEBWorksOrdersFilenameList(wosequence).subscribe(
+        data => {
+          // console.log(data);
+          if (data.isSuccess) {
+            this.gridData = data.data;
+            this.gridView = process(this.gridData, this.state);
 
+            setTimeout(() => {
+              this.grid.autoFitColumns();
+            }, 100);
+
+          } else this.alertService.error(data.message)
+
+          this.loading = false;
+          this.chRef.detectChanges();
+        }
+      )
+    )
   }
 
 
@@ -185,17 +205,11 @@ export class WoDocumentListComponent implements OnInit {
 
   removeDocument() {
     if (this.selectedDoc) {
-      const checklistdata = this.selectedWorksOrder;
-      let params = {
-        WOSEQUENCE: checklistdata.wosequence,
-        ASSID: checklistdata.assid,
-        WOPSEQUENCE: checklistdata.wopsequence,
-        CHECKSURCDE: checklistdata.wochecksurcde,
-        NTPSEQUENCE: this.selectedDoc.ntpsequence,
-        UserId: this.currentUser.userId
-      }
+      const { wosequence } = this.selectedWorksOrder;
+      const { ntpsequence } = this.selectedDoc;
+      const { userId } = this.currentUser;
       this.subs.add(
-        this.worksorderManagementService.removeWorksOrderAssetChecklistDocument(params).subscribe(
+        this.worksorderManagementService.removeWorksOrderDocument(wosequence, ntpsequence, userId).subscribe(
           data => {
             if (data.isSuccess) {
               this.alertService.success("Document deleted successfully.");
@@ -225,7 +239,7 @@ export class WoDocumentListComponent implements OnInit {
 
 
       this.subs.add(
-        this.worksorderManagementService.viewDoc(param).subscribe(
+        this.worksorderManagementService.viewWODoc(param).subscribe(
           data => {
             // console.log(data);
             this.loaderService.pageHide()
@@ -291,12 +305,7 @@ export class WoDocumentListComponent implements OnInit {
   private isValidFileExtension(files) {
     // Make array of file extensions
     let extensions: any;
-    // if (this.fileType != "P") {
-    //   let fileExt = "PDF";
-    //   extensions = (fileExt.split(',')).map(function (x) { return x.toLocaleUpperCase().trim() });
-    // } else {
-    //   extensions = (this.fileExt.split(',')).map(function (x) { return x.toLocaleUpperCase().trim() });
-    // }
+
     extensions = (this.fileExt.split(',')).map(function (x) { return x.toLocaleUpperCase().trim() });
 
     for (let i = 0; i < files.length; i++) {
@@ -338,7 +347,6 @@ export class WoDocumentListComponent implements OnInit {
 
   onFileChange(event) {
     const file = event.target.files;
-    // console.log(file)
 
     if (file.length > 0 && this.validateFile(file) == false) {
       return;
@@ -348,7 +356,7 @@ export class WoDocumentListComponent implements OnInit {
       const fullFilePath = `${this.filePath}\\${file[0].name}`
       this.worksorderManagementService.attachmentExists(fullFilePath).subscribe(
         fileExist => {
-          // console.log(fileExist);
+
           if (!fileExist.isSuccess) {
             this.openFileNotExistConfirmationOnAdd();
             return;
@@ -358,17 +366,15 @@ export class WoDocumentListComponent implements OnInit {
 
           formData.append('file', file[0], file[0].name);
           formData.append('WO_FILEPATH', this.filePath);
-          formData.append('WO_LEVEL', '2');
-          // formData.append('WO_SEQNO', this.selectedChildRow.wosequence);
-          // formData.append('WOP_SEQNO', this.selectedChildRow.wopsequence);
-          // formData.append('ASSID', this.selectedChildRow.assid);
-          // formData.append('CHECKSURCDE', this.selectedChecklist.wochecksurcde);
+          formData.append('WO_LEVEL', '0');
+          formData.append('WO_SEQNO', this.selectedWorksOrder.wosequence);
+          formData.append('WOP_SEQNO', '0');
+          formData.append('ASSID', '');
+          formData.append('CHECKSURCDE', '0');
           formData.append('CurrentUser', this.currentUser.userId);
-
 
           this.worksorderManagementService.workOrderUploadDocument(formData).subscribe(
             data => {
-              // console.log(data)
               if (data) {
                 this.getDocumentData()
               } else {

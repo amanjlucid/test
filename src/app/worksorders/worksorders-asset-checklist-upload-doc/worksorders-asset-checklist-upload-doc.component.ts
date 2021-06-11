@@ -31,7 +31,10 @@ export class WorksordersAssetChecklistUploadDocComponent implements OnInit {
   uploadStatus = false;
   currentUser: any;
   // systemValues: any;
-  filePath: any
+  filePath: any;
+
+  @Input() uploadDocFor = 'assetchecklist'
+  @Input() worksOrder: any;
 
   @HostListener('dragover', ['$event']) onDragOver(event) {
     this.dragAreaClass = "droparea";
@@ -69,7 +72,10 @@ export class WorksordersAssetChecklistUploadDocComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    // console.log(this.selectedChecklist)
+    /**
+    * This component is user for upload asset checklist document 
+    * and upload workorder document
+    */
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.getPath();
   }
@@ -140,11 +146,22 @@ export class WorksordersAssetChecklistUploadDocComponent implements OnInit {
         const formData = new FormData();
         formData.append('file', file, file.name);
         formData.append('WO_FILEPATH', this.filePath);
-        formData.append('WO_LEVEL', '2');
-        formData.append('WO_SEQNO', this.selectedChecklist.wosequence);
-        formData.append('WOP_SEQNO', this.selectedChecklist.wopsequence);
-        formData.append('ASSID', this.selectedChecklist.assid);
-        formData.append('CHECKSURCDE', this.selectedChecklist.wochecksurcde);
+
+        if (this.uploadDocFor == "wo") {
+          formData.append('WO_LEVEL', '0');
+          formData.append('WO_SEQNO', this.worksOrder.wosequence);
+          formData.append('WOP_SEQNO', '0');
+          formData.append('ASSID', '');
+          formData.append('CHECKSURCDE', '0');
+        } else {
+          formData.append('WO_LEVEL', '2');
+          formData.append('WO_SEQNO', this.selectedChecklist.wosequence);
+          formData.append('WOP_SEQNO', this.selectedChecklist.wopsequence);
+          formData.append('ASSID', this.selectedChecklist.assid);
+          formData.append('CHECKSURCDE', this.selectedChecklist.wochecksurcde);
+        }
+
+
         formData.append('CurrentUser', this.currentUser.userId);
 
         this.loaderService.pageShow();

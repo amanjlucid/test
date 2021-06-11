@@ -13,10 +13,10 @@
             </div>
 
             <div class="row mt-2">
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <label class="lbl" for="">Work Order: </label>
                 </div>
-                <div class="col-md-8">
+                <div class="col-md-9">
                     <input type="text" class="form-control form-control-sm" [readonly]="readonly"
                         value="{{worksOrderData?.woname}} ({{worksOrderData?.wosequence}})">
                 </div>
@@ -35,7 +35,7 @@
         allowUnsort: allowUnsort,
         mode: multiple ? 'multiple' : 'single'
         }" [sort]="state.sort" (sortChange)="sortChange($event)" (filterChange)="filterChange($event)"
-                (cellClick)="cellClickHandler($event)" [filter]="state.filter">
+                (cellClick)="cellClickHandler($event)" [filter]="state.filter" [loading]="loading">
 
 
                 <kendo-grid-column field="description" title="" width="25" [filterable]="false">
@@ -67,18 +67,19 @@
     <div class="row mt-2">
         <div class="col-md-9 text-left leftSideBtn">
             <input (change)="onFileChange($event)" type="file" #addDoc id="addDoc" style="display: none;">
-            <button *ngIf="worksOrderAccess.indexOf('View Checklist Document') != -1" class="btn btn-sm themeButton"
+            <button *ngIf="worksOrderAccess.indexOf('View Document') != -1" class="btn btn-sm themeButton"
                 (click)="viewDocument()" [disabled]="!selectedDoc">View
                 Document</button>
-            <button *ngIf="worksOrderAccess.indexOf('Edit Checklist Document Description') != -1"
-                class="btn btn-sm themeButton" (click)="openEditDoc()" [disabled]="!selectedDoc">Edit
+            <button *ngIf="worksOrderAccess.indexOf('Edit Document Description') != -1" class="btn btn-sm themeButton"
+                (click)="openEditDoc()" [disabled]="!selectedDoc">Edit
                 Description</button>
-            <button *ngIf="worksOrderAccess.indexOf('Add Checklist Document') != -1" class="btn btn-sm themeButton"
+            <button *ngIf="worksOrderAccess.indexOf('Add Document') != -1" class="btn btn-sm themeButton"
                 (click)="addDocument()">Add Document</button>
 
-            <button *ngIf="worksOrderAccess.indexOf('Upload Checklist Document') != -1"
+            <button *ngIf="worksOrderAccess.indexOf('Upload Document') != -1"
                 class="btn btn-sm themeButton uploadDocBtn" (click)="uploadImage()">Upload Document</button>
-            <button *ngIf="worksOrderAccess.indexOf('Remove Checklist Document') != -1" class="btn btn-sm themeButton"
+
+            <button *ngIf="worksOrderAccess.indexOf('Remove Document') != -1" class="btn btn-sm themeButton"
                 (click)="openConfirmationDialog()" [disabled]="!selectedDoc">Remove
                 Document</button>
         </div>
@@ -92,14 +93,15 @@
 
     <div class="wodocOvrlay"></div>
 
-     <app-worksorders-asset-checklist-edit-description *ngIf="showEditDoc" [showEditDoc]="showEditDoc"
-        [selectedChecklist]="selectedChecklist" [selectedDoc]="selectedDoc" (closeEditDoc)="closeEditDoc($event)" [editDesFor]="'wo'">
+    <app-worksorders-asset-checklist-edit-description *ngIf="showEditDoc" [showEditDoc]="showEditDoc"
+        [selectedChecklist]="selectedChecklist" [selectedDoc]="selectedDoc" (closeEditDoc)="closeEditDoc($event)"
+        [editDesFor]="'wo'" [worksOrder]="selectedWorksOrder">
     </app-worksorders-asset-checklist-edit-description>
 
-   <!-- <app-worksorders-asset-checklist-upload-doc *ngIf="uploadAttachment" [uploadAttachment]="uploadAttachment"
+    <app-worksorders-asset-checklist-upload-doc *ngIf="uploadAttachment" [uploadAttachment]="uploadAttachment"
         [selectedChecklist]="selectedChecklist" (closeAttachment)="closeAttachment($event)"
-        (complete)="complete($event)">
-    </app-worksorders-asset-checklist-upload-doc> -->
+        (complete)="complete($event)" [uploadDocFor]="'wo'" [worksOrder]="selectedWorksOrder">
+    </app-worksorders-asset-checklist-upload-doc>
 
 
 </kendo-window>

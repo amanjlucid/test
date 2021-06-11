@@ -190,8 +190,6 @@ export class WorksorderManagementService {
     viewDoc(params) {
         // let body = JSON.stringify(params);
         return this.http.post<any>(`${appConfig.apiUrl}/api/HealthSafetyResult/GetDcocument`, params, this.httpOptions);
-        // return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWorkOrderDcocument`, params, this.httpOptions);
-
     }
 
     updateWorksOrderAssetChecklistDocument(params) {
@@ -550,7 +548,21 @@ export class WorksorderManagementService {
         return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/WorksOrdersSecurityUsersList?wosequence=${wosequence}`, this.httpOptions);
     }
 
+    getWEBWorksOrdersFilenameList(WOSEQUENCE) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWEBWorksOrdersFilenameList?WOSEQUENCE=${WOSEQUENCE}`, this.httpOptions);
+    }
 
+    viewWODoc(params) {
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWorkOrderDcocument`, params, this.httpOptions);
+    }
+
+    updateWorksOrderDocument(WOSEQUENCE, NTPSEQUENCE, NewDescription, UserId) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/UpdateWorksOrderDocument?WOSEQUENCE=${WOSEQUENCE}&NTPSEQUENCE=${NTPSEQUENCE}&NewDescription=${NewDescription}&UserId=${UserId}`, this.httpOptions);
+    }
+
+    removeWorksOrderDocument(WOSEQUENCE, NTPSEQUENCE, UserId) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/RemoveWorksOrderDocument?WOSEQUENCE=${WOSEQUENCE}&NTPSEQUENCE=${NTPSEQUENCE}&UserId=${UserId}`, this.httpOptions);
+    }
 
 
 
