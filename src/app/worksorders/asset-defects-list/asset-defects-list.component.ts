@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { SelectableSettings, PageChangeEvent } from '@progress/kendo-angular-grid';
-import { AlertService, ConfirmationDialogService, HelperService, SharedService, WorksorderManagementService, WorksOrdersService } from 'src/app/_services';
+import { AlertService, ConfirmationDialogService, SharedService, WorksorderManagementService, WorksOrdersService } from 'src/app/_services';
 import { combineLatest, forkJoin, Observable } from 'rxjs';
 
 @Component({
@@ -70,9 +70,9 @@ export class AssetDefectsListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log({ openedFrom: this.openedFrom, singleWorkOrderInp: this.singleWorkOrderInp, singleWorkOrderAssetInp: this.singleWorkOrderAssetInp, })
+    // console.log({ openedFrom: this.openedFrom, singleWorkOrderInp: this.singleWorkOrderInp, singleWorkOrderAssetInp: this.singleWorkOrderAssetInp, })
     // console.log(this.singleWorkOrderAssetInp)
-    console.log(this.singleWorkOrderInp);
+    // console.log(this.singleWorkOrderInp);
 
     this.subs.add(
       combineLatest([
@@ -126,7 +126,7 @@ export class AssetDefectsListComponent implements OnInit {
     this.subs.add(
       forkJoin(pageReq).subscribe(
         (data: any) => {
-          console.log(data);
+          // console.log(data);
           const programmeData = data[0];
           const worksOrderData = data[1];
 
@@ -166,10 +166,12 @@ export class AssetDefectsListComponent implements OnInit {
     this.subs.add(
       woDefectsApiCall.subscribe(
         data => {
-          console.log(data);
+          // console.log(data);
           if (data.isSuccess) {
             this.gridData = data.data;
             this.gridView = process(this.gridData, this.state);
+            this.selectedSingleDefect = undefined;
+            this.mySelection = [];
           } else this.alertService.error(data.message)
 
           this.gridLoading = false;
@@ -231,14 +233,12 @@ export class AssetDefectsListComponent implements OnInit {
   closeDefectForm(event) {
     this.openDefectform = event;
     $('.defectListoverlay').removeClass('ovrlay');
+    this.requiredPageData();
   }
-
-
 
 
   confirm(item, confirmType = "signOff") {
     $('.k-window').css({ 'z-index': 1000 });
-
     if (confirmType == "signOff") {
       this.confirmationDialogService.confirm('Please confirm..', 'Signoff selected defects ?')
         .then((confirmed) => (confirmed) ? this.signOff(item) : console.log(confirmed))
@@ -266,9 +266,8 @@ export class AssetDefectsListComponent implements OnInit {
     this.subs.add(
       this.workOrderProgrammeService.signOffDefect(params).subscribe(
         data => {
-          console.log(data);
           if (data.isSuccess) {
-            this.alertService.success("Signed off successfully");
+            this.alertService.success("Defect Signed off successfully");
             this.requiredPageData();
           } else this.alertService.error(data.message)
         }, err => this.alertService.error(err)
@@ -285,20 +284,27 @@ export class AssetDefectsListComponent implements OnInit {
       assId: assid,
       wopsequence: wopsequence,
       wodsequence: wodsequence,
-      // userId: this.currentUser.userId,
     }
 
     this.subs.add(
       this.workOrderProgrammeService.deleteWorksOrderDefect(params).subscribe(
         data => {
-          console.log(data);
           if (data.isSuccess) {
-            this.alertService.success("Defect delete successfully");
+            this.alertService.success("Defect deleted successfully");
             this.requiredPageData();
           } else this.alertService.error(data.message)
         }, err => this.alertService.error(err)
       )
     )
+  }
+
+
+  woMenuBtnSecurityAccess(menuName) {
+    if (this.userType?.wourroletype == "Dual Role") {
+      return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
+    }
+
+    return this.worksOrderUsrAccess.indexOf(menuName) != -1
   }
 
 }

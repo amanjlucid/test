@@ -30,6 +30,7 @@ import { SurveyProjectAccessComponent } from './survey-portal/survey-project-acc
 import { SurveyProjectSettingsComponent } from './survey-portal/survey-project-settings/survey-project-settings.component';
 import { SurveyDashboardComponent } from './survey-portal/survey-dashboard/survey-dashboard.component';
 import { SurveyCbcreportComponent } from './survey-portal/survey-cbcreport/survey-cbcreport.component';
+import { CustomPreloadingStrategy } from './_helpers/custom-preloading-strategy';
 // import {WorkorderListComponent} from './worksorders/workorder-list/workorder-list.component';
 
 // import { WopmTemplatesComponent } from './worksorders/Config/wopm-templates/wopm-templates.component';
@@ -84,8 +85,9 @@ const appRoutes: Routes = [
                     { path: 'dashboard', component: AssetEpcDashboardComponent, canActivate: [AuthGuard] },
                 ]
             },
-            
-            { path: 'worksorders', loadChildren: () => import('./worksorders/worksorders-router/worksorders.module').then(m => m.WorksOrderModule) },
+
+            { path: 'worksorders', loadChildren: () => import('./worksorders/worksorders-router/worksorders.module').then(m => m.WorksOrderModule), data: { preload: true } },
+
             { path: 'health&safety', loadChildren: () => import('./hns-portal/hns.module').then(m => m.HnsModule) },
             { path: 'tasks', loadChildren: () => import('./event-manager/eventmanager.module').then(m => m.EventManagerModule) },
 
@@ -123,4 +125,4 @@ const appRoutes: Routes = [
     { path: '**', redirectTo: '/login' }
 ];
 
-export const routing = RouterModule.forRoot(appRoutes);
+export const routing = RouterModule.forRoot(appRoutes, { preloadingStrategy: CustomPreloadingStrategy });

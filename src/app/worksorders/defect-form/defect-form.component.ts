@@ -3,9 +3,9 @@ import { SubSink } from 'subsink';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { SelectableSettings, PageChangeEvent, GridComponent, RowClassArgs } from '@progress/kendo-angular-grid';
-import { WorksorderManagementService, AlertService, HelperService, ReportingGroupService, WorksOrdersService } from '../../_services'
+import { WorksorderManagementService, AlertService, HelperService, ReportingGroupService, WorksOrdersService, LoaderService } from '../../_services'
 import { forkJoin, Observable } from 'rxjs';
-import { firstDateIsLower, SimpleDateValidator } from 'src/app/_helpers';
+import { checkFirstDateisLower, firstDateIsLower, SimpleDateValidator } from 'src/app/_helpers';
 
 @Component({
   selector: 'app-defect-form',
@@ -94,6 +94,7 @@ export class DefectFormComponent implements OnInit {
   workorderAsset: any;
   userList;
   selectedPkzSingle;
+  // planYear: any;
 
   constructor(
     private chRef: ChangeDetectorRef,
@@ -101,9 +102,8 @@ export class DefectFormComponent implements OnInit {
     private workOrderProgrammeService: WorksorderManagementService,
     private alertService: AlertService,
     private helperService: HelperService,
-    private reportingGrpService: ReportingGroupService,
     private worksOrdersService: WorksOrdersService,
-
+    private loaderService: LoaderService
   ) {
     this.setSelectableSettings();
   }
@@ -120,36 +120,64 @@ export class DefectFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log({ opendFrom: this.openedFrom, asset: this.singleWorkOrderAssetInp, def: this.selectedDefectInp })
-
+    // console.log({ opendFrom: this.openedFrom, asset: this.singleWorkOrderAssetInp, def: this.selectedDefectInp })
     this.defectForm = this.fb.group({
-      status: ['', [Validators.required]],
-      IdentifiedDate: ['', [Validators.required, SimpleDateValidator()]],
-      reportedBy: ['', [Validators.required]],
-      description: ['', [Validators.required]],
-      cost: ['', [Validators.required]],
-      score: [0, [Validators.required]],
-      resolutionDate: ['', [Validators.required, SimpleDateValidator()]],
-      resolvedBy: ['', [Validators.required]],
-      resolutionDetails: ['', [Validators.required]],
+      status: ['New', [Validators.required]],
+      IdentifiedDate: ['', [Validators.required, SimpleDateValidator()]], //n
+      reportedBy: ['', [Validators.required]],//n
+      description: ['', [Validators.required]],//n
+      cost: [0, [Validators.required]],
+      score: ['', [Validators.required]],//n
+
+      resolutionDate: ['', [SimpleDateValidator()]],
+      resolvedBy: [''],
+      resolutionDetails: [''],
       signOffDate: ['', [SimpleDateValidator()]],
       signOffBy: [''],
-    },
-      {
-        validator: [
-          firstDateIsLower('resolutionDate', 'IdentifiedDate'),
-        ],
-      });
+    });
+
+    // Change validation on status change  
+    const resDateCtr: any = this.defectForm.get('resolutionDate');
+    const resByCtr: any = this.defectForm.get('resolvedBy');
+    const resDetCtr: any = this.defectForm.get('resolutionDetails');
+    const IdeDateCtr: any = this.defectForm.get('IdentifiedDate');
+
+    this.subs.add(
+      this.defectForm.get('status').valueChanges.subscribe(
+        val => {
+          if (val == "New") {
+            resDetCtr.setErrors(null);
+            resDetCtr.clearValidators();
+            resByCtr.setErrors(null);
+            resByCtr.clearValidators();
+            resDateCtr.setValidators([SimpleDateValidator(), checkFirstDateisLower(resDateCtr, IdeDateCtr)]);
+          } else if (val == "Resolved") {
+            resDateCtr.setValidators([Validators.required, SimpleDateValidator(), checkFirstDateisLower(resDateCtr, IdeDateCtr)]);
+            resByCtr.setValidators([Validators.required]);
+            resDetCtr.setValidators([Validators.required]);
+          }
+
+          resDateCtr.updateValueAndValidity();
+          resByCtr.updateValueAndValidity();
+          resDetCtr.updateValueAndValidity();
+          IdeDateCtr.updateValueAndValidity();
+        }
+      )
+    )
+
+    // this.subs.add(
+    //   IdeDateCtr.valueChanges.subscribe(val => val != "" ? resDateCtr.updateValueAndValidity() : ''),
+    //   resDateCtr.valueChanges.subscribe(val => val != "" ? resDateCtr.updateValueAndValidity() : '')
+    // )
 
 
-    this.populateForm();
     this.requiredPageData();
 
   }
 
   populateForm() {
-
     if (this.defectFormMode == "new") {
+      this.defectForm.patchValue({ score: 0 });
       const disableFields = ['signOffDate', 'signOffBy'];
       for (const disableField of disableFields) {
         this.defectForm.get(disableField).disable();
@@ -157,20 +185,23 @@ export class DefectFormComponent implements OnInit {
     }
 
     if (this.defectFormMode == "edit") {
+      this.title = "Edit Defect"
       this.getDefect();
     }
 
   }
+
 
   getDefect() {
     const { wprsequence, wosequence, assid, wodsequence } = this.selectedDefectInp;
     this.subs.add(
       this.workOrderProgrammeService.getWorksOrderDefect(wprsequence, wosequence, assid, wodsequence).subscribe(
         data => {
-          console.log(data);
+          // console.log(data);
           if (data.isSuccess) {
-            const { wodstatus, woddate, wodmpusid, woddescription, wodapproxcost, wodresolveddate, wodresolvedmpusid, wodresolveddescription, wodsignoffmpusid, wodsignoffdate, wodscore } = data.data;
-            // this.mySelection = [wlataid]
+            const { wodstatus, woddate, wodmpusid, woddescription, wodapproxcost, wodresolveddate, wodresolvedmpusid, wodresolveddescription, wodsignoffmpusid, wodsignoffdate, wodscore, wlataid } = data.data;
+            this.mySelection = [wlataid];
+
             this.defectForm.patchValue({
               status: wodstatus,
               IdentifiedDate: this.helperService.ngbDatepickerFormat(woddate),
@@ -185,28 +216,89 @@ export class DefectFormComponent implements OnInit {
               signOffBy: wodsignoffmpusid,
             });
 
+            //disable fields
             if (wodstatus == "Signed Off") {
               this.defectForm.disable();
-            } else if (wodstatus == "New") {
+            } else if (wodstatus == "New" || wodstatus == "Resolved By") {
               const disableFields = ['signOffDate', 'signOffBy'];
               for (const disableField of disableFields) {
                 this.defectForm.get(disableField).disable();
               }
             }
 
-            // else {
-            //   const disableFields = ['status', 'IdentifiedDate', 'reportedBy', 'resolutionDate', 'resolvedBy', 'signOffDate', 'signOffBy'];
-
-            //   for (const disableField of disableFields) {
-            //     this.defectForm.get(disableField).disable();
-            //   }
-            // }
-
           } else this.alertService.error(data.message);
           this.chRef.detectChanges();
         }, err => this.alertService.error(err)
       )
     )
+  }
+
+
+  requiredPageData() {
+    this.loaderService.pageShow();
+    let pagaRequiredParams: any;
+    if (this.openedFrom == 'assetchecklist') {
+      pagaRequiredParams = this.singleWorkOrderAssetInp
+    }
+
+    if (this.openedFrom == 'workdetail') {
+      pagaRequiredParams = this.selectedDefectInp
+    }
+
+    const { wprsequence, wosequence, wopsequence, assid } = pagaRequiredParams;
+    let pageReq = [
+      this.workOrderProgrammeService.getWorkProgrammesByWprsequence(wprsequence),
+      this.workOrderProgrammeService.getWorksOrderByWOsequence(wosequence),
+      this.workOrderProgrammeService.getPhase(wosequence, wopsequence),
+      this.workOrderProgrammeService.getAssetAddressByAsset(assid),
+      this.workOrderProgrammeService.worksOrdersSecurityUsersList(wosequence),
+      this.worksOrdersService.WorkOrderAssetDetail(wosequence, wopsequence, assid, 0),
+      this.workOrderProgrammeService.getDefectScoreLimits(),
+    ];
+
+    this.subs.add(
+      forkJoin(pageReq).subscribe(
+        (data: any) => {
+          // console.log(data);
+          const programmeData = data[0];
+          const worksOrderData = data[1];
+          const phaseData = data[2];
+          const workorderAsset = data[3];
+          const userList = data[4];
+          const pkzdata = data[5];
+          const scoreLimit = data[6].data;
+
+
+          //set min and max score validation and rule dynamically  
+          const { defectmin, defectmax } = scoreLimit
+          const scoreCtr: any = this.defectForm.get('score')
+          scoreCtr.setValidators([Validators.required, Validators.min(defectmin), Validators.max(defectmax)]);
+          this.validationMessage.score.max = this.validationMessage.score.min = `Score value between ${defectmin} and ${defectmax} inclusive`
+
+          //othere reuired page data
+          if (programmeData.isSuccess) this.programmeData = programmeData.data[0];
+          if (worksOrderData.isSuccess) this.worksOrderData = worksOrderData.data;
+          if (phaseData.isSuccess) this.phaseData = phaseData.data;
+          if (workorderAsset.isSuccess) this.workorderAsset = workorderAsset.data[0];
+          if (userList.isSuccess) this.userList = userList.data;
+
+          if (pkzdata.isSuccess) {
+            this.packageData = pkzdata.data;
+            this.gridView = process(this.packageData, this.state);
+            this.gridLoading = false;
+          }
+
+          this.populateForm();
+          this.loaderService.pageHide();
+          this.chRef.detectChanges();
+
+        }, err => {
+          this.alertService.error(err);
+          this.loaderService.pageHide();
+        }
+      )
+    )
+
   }
 
   closeDefectForm() {
@@ -237,6 +329,7 @@ export class DefectFormComponent implements OnInit {
 
   cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
     if (this.selectedDefectInp?.wodstatus == "Signed Off") {
+      this.mySelection = [];
       return
     }
 
@@ -244,81 +337,11 @@ export class DefectFormComponent implements OnInit {
   }
 
   rowCallback(context: RowClassArgs) {
-    // // const { woadstatus, woisequence } = context.dataItem;
-    // console.log(this);
-    // console.log(context);
     return {
       'k-state-disabled': false//this.selectedDefectInp?.wodstatus == "Signed Off"
     };
   }
 
-  requiredPageData() {
-    let pagaRequiredParams: any;
-    if (this.openedFrom == 'assetchecklist') {
-      pagaRequiredParams = this.singleWorkOrderAssetInp
-    }
-
-    if (this.openedFrom == 'workdetail') {
-      pagaRequiredParams = this.selectedDefectInp
-    }
-
-    const { wprsequence, wosequence, wopsequence, assid } = pagaRequiredParams;
-    let pageReq = [
-      this.workOrderProgrammeService.getWorkProgrammesByWprsequence(wprsequence),
-      this.workOrderProgrammeService.getWorksOrderByWOsequence(wosequence),
-      this.workOrderProgrammeService.getPhase(wosequence, wopsequence),
-      this.workOrderProgrammeService.getAssetAddressByAsset(assid),
-      this.reportingGrpService.userListToMail(),
-      this.worksOrdersService.WorkOrderAssetDetail(wosequence, wopsequence, assid, 0),
-      this.workOrderProgrammeService.getDefectScoreLimits()
-    ];
-
-    this.subs.add(
-      forkJoin(pageReq).subscribe(
-        (data: any) => {
-          console.log(data);
-          const programmeData = data[0];
-          const worksOrderData = data[1];
-          const phaseData = data[2];
-          const workorderAsset = data[3];
-          const userList = data[4];
-          const pkzdata = data[5];
-          const scoreLimit = data[6].data;
-
-          const { defectmin, defectmax } = scoreLimit
-          const scoreCtr: any = this.defectForm.get('score')
-          scoreCtr.setValidators([Validators.required, Validators.min(defectmin), Validators.max(defectmax)]);
-
-          this.validationMessage.score.max = this.validationMessage.score.min = `Score value between ${defectmin} and ${defectmax} inclusive`
-
-          if (programmeData.isSuccess) this.programmeData = programmeData.data[0];
-          if (worksOrderData.isSuccess) this.worksOrderData = worksOrderData.data;
-          if (phaseData.isSuccess) this.phaseData = phaseData.data;
-          if (workorderAsset.isSuccess) this.workorderAsset = workorderAsset.data[0];
-          if (userList.isSuccess) this.userList = userList.data;
-
-          if (pkzdata.isSuccess) {
-            this.packageData = pkzdata.data;
-            this.gridView = process(this.packageData, this.state);
-            this.gridLoading = false;
-          }
-
-          this.chRef.detectChanges();
-        }
-      )
-    )
-
-  }
-
-  // selectionChange(item) {
-  //   if (this.mySelection.includes(item.wphcode)) {
-  //     this.mySelection = this.mySelection.filter(x => x != item.wphcode);
-  //   } else {
-  //     this.mySelection.push(item.wphcode);
-  //   }
-
-  //   this.chRef.detectChanges();
-  // }
 
   checkPackageExist(item) {
     if (item.attributeexists == 'Work Package Exists') return false;
@@ -380,53 +403,87 @@ export class DefectFormComponent implements OnInit {
     this.logValidationErrors(this.defectForm);
 
     // this.chRef.detectChanges();
-    console.log(this.defectForm)
+    // console.log(this.defectForm)
     if (this.defectForm.invalid) {
       return;
     }
 
-
-
     let apiCall: Observable<any>;
     let formRawVal = this.defectForm.getRawValue();
     let successMsg = '';
+    let params: any = {};
+
+    const { status, IdentifiedDate, reportedBy, description, cost, score, resolutionDate, resolvedBy, resolutionDetails, signOffDate, signOffBy } = formRawVal;
+
+    //set common form data for new and edit case
+    params.WODDATE = this.helperService.dateObjToString(IdentifiedDate);
+    params.WODMPUSID = reportedBy;
+    params.WODDESCRIPTION = description;
+    params.WODRESOLVEDDATE = this.helperService.dateObjToString(resolutionDate);
+    params.WODRESOLVEDMPUSID = resolvedBy;
+    params.WODRESOLVEDDESCRIPTION = resolutionDetails;
+    params.WODSIGNOFFDATE = this.helperService.dateObjToString(signOffDate);
+    params.WODSIGNOFFMPUSID = signOffBy;
+    params.WODSTATUS = status;
+    params.WODAPPROXCOST = cost;
+    params.WODSCORE = score;
 
     if (this.defectFormMode == "new") {
-      successMsg = "New Defect created successfully.";
-    } else if (this.defectFormMode == "edit") {
-      const { status, IdentifiedDate, reportedBy, description, cost, score, resolutionDate, resolvedBy, resolutionDetails, signOffDate, signOffBy } = formRawVal;
-      const { wlataid, wlcode, wlplanyear, wprsequence, wosequence, assid, wodsequence } = this.selectedDefectInp
+      const { wprsequence, wosequence, assid, wopsequence } = this.singleWorkOrderAssetInp;
+      params.WPRSEQUENCE = wprsequence;
+      params.WOSEQUENCE = wosequence;
+      params.ASSID = assid;
+      params.WOPSEQUENCE = wopsequence;
+      params.WLCODE = this.selectedPkzSingle?.wlcode ?? 0;
+      params.WLATAID = this.selectedPkzSingle?.wlataid ?? 0;
+      params.WLPLANYEAR = this.selectedPkzSingle?.wlplanyear ?? 0;
 
-      const params = {
-        WLATAID: wlataid,
-        WLCODE: wlcode,
-        WLPLANYEAR: wlplanyear,
-        WODAPPROXCOST: cost,
-        WODDATE: this.helperService.dateObjToString(IdentifiedDate),
-        WODDESCRIPTION: description,
-        WODMPUSID: reportedBy,
-        WODRESOLVEDDATE: this.helperService.dateObjToString(resolutionDate),
-        WODRESOLVEDDESCRIPTION: resolutionDetails,
-        WODRESOLVEDMPUSID: resolvedBy,
-        WODSCORE: score,
-        WODSIGNOFFDATE: this.helperService.dateObjToString(signOffDate),
-        WODSIGNOFFMPUSID: signOffBy,
-        WODSTATUS: status,
-        WPRSEQUENCE: wprsequence,
-        WOSEQUENCE: wosequence,
-        ASSID: assid,
-        WODSEQUENCE: wodsequence
-      }
+      apiCall = this.workOrderProgrammeService.insertWorksOrderDefect(params);
+      successMsg = "New Defect created successfully.";
+
+    } else if (this.defectFormMode == "edit") {
+      const { wlataid, wlcode, wlplanyear, wprsequence, wosequence, assid, wodsequence } = this.selectedDefectInp
+      params.WLATAID = this.selectedPkzSingle?.wlataid ?? wlataid;
+      params.WLCODE = this.selectedPkzSingle?.wlcode ?? wlcode;
+      params.WLPLANYEAR = this.selectedPkzSingle?.wlplanyear ?? wlplanyear;
+      params.WODSTATUS = status;
+      params.WPRSEQUENCE = wprsequence;
+      params.WOSEQUENCE = wosequence;
+      params.ASSID = assid;
+      params.WODSEQUENCE = wodsequence;
+
+      // const params = {
+      //   WLATAID: wlataid,
+      //   WLCODE: wlcode,
+      //   WLPLANYEAR: wlplanyear,
+      //   // WODAPPROXCOST: cost,
+      //   // WODDATE: this.helperService.dateObjToString(IdentifiedDate),
+      //   // WODDESCRIPTION: description,
+      //   // WODMPUSID: reportedBy,
+      //   // WODRESOLVEDDATE: this.helperService.dateObjToString(resolutionDate),
+      //   // WODRESOLVEDDESCRIPTION: resolutionDetails,
+      //   // WODRESOLVEDMPUSID: resolvedBy,
+      //   // WODSCORE: score,
+      //   // WODSIGNOFFDATE: this.helperService.dateObjToString(signOffDate),
+      //   // WODSIGNOFFMPUSID: signOffBy,
+      //   WODSTATUS: status,
+      //   WPRSEQUENCE: wprsequence,
+      //   WOSEQUENCE: wosequence,
+      //   ASSID: assid,
+      //   WODSEQUENCE: wodsequence
+      // }
 
       apiCall = this.workOrderProgrammeService.updateWorksOrderDefect(params);
       successMsg = "Defect updated successfully.";
     }
 
+    // console.log(params);
+    // return;
     // debugger;
     this.subs.add(
       apiCall.subscribe(
         data => {
-          console.log(data);
+          // console.log(data);
           if (data.isSuccess) {
             this.alertService.success(successMsg);
             this.closeDefectForm();

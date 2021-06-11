@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule, HTTP_INTERCEPTORS, HttpClientJsonpModule  } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS, HttpClientJsonpModule } from '@angular/common/http';
 import { routing } from './app.routing';
 import { NgbModule, NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import { AppComponent } from './app.component';
@@ -9,7 +9,7 @@ import { SitelayoutComponent } from './_layout/sitelayout/sitelayout.component';
 import { LoginComponent } from './login';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { AuthGuard } from './_guards';
-import { JwtInterceptor, ErrorInterceptor, LoaderInterceptorService, NgbDateCustomParserFormatter } from './_helpers';
+import { JwtInterceptor, ErrorInterceptor, LoaderInterceptorService, NgbDateCustomParserFormatter, CustomPreloadingStrategy } from './_helpers';
 import { AlertService, AuthenticationService, UserService, LoaderService, GroupService, CharacteristicGroupService, ElementGroupService, AttributeGroupService, PortalGroupService, FunctionSecurityService, PropertySecurityGroupService, ReportingGroupService, ConfirmationDialogService, EventService, AssetAttributeService, SharedService, ServicePortalService, SettingsService, HnsPortalService, HnsResultsService, EventManagerDashboardService, EventManagerService, WebReporterService, SurveyPortalService, WorksorderManagementService, WorksOrdersService, WopmConfigurationService } from './_services';
 
 
@@ -228,8 +228,8 @@ import { CurrencyPipe } from '@angular/common';
     SurveyCbcreportSelectImageComponent,
     SurveyCbcreportSelectPDFComponent,
     SurveyCbcreportSignatureImageComponent,
-  
-  
+
+
     // WopmTemplatesComponent,
     // WopmConfigComponent,
     // WopmMasterstagesComponent,
@@ -266,7 +266,7 @@ import { CurrencyPipe } from '@angular/common';
     MatExpansionModule,
     TreeListModule,
     HttpClientJsonpModule,
-    
+
   ],
 
   providers: [
@@ -298,6 +298,7 @@ import { CurrencyPipe } from '@angular/common';
     SurveyPortalService,
     WorksorderManagementService,
     WopmConfigurationService,
+    CustomPreloadingStrategy,
     CurrencyPipe,
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },

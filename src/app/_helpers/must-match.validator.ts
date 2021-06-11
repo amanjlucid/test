@@ -348,8 +348,10 @@ export function checkFirstDateisLower(controlName1: any, controlName2: any) {
         let dateOne = new Date(date1);
         let dateTwo = new Date(date2);
 
-        if (dateOne < dateTwo) {
+        console.log(dateOne)
+        console.log(dateTwo)
 
+        if (dateOne < dateTwo) {
             return controlName1.setErrors({ isLower: true });
         }
 

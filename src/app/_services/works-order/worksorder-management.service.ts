@@ -523,6 +523,11 @@ export class WorksorderManagementService {
         return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/UpdateWorksOrderDefect`, body, this.httpOptions);
     }
 
+    insertWorksOrderDefect(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/InsertWorksOrderDefect`, body, this.httpOptions);
+    }
+
     getWOInstructionSpecificAssetsDetails(WOSEQUENCE, WOISEQUENCE, assid) {
         return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWOInstructionSpecificAssetsDetails?WOSEQUENCE=${WOSEQUENCE}&WOISEQUENCE=${WOISEQUENCE}&assid=${assid}`, this.httpOptions);
     }
@@ -539,6 +544,10 @@ export class WorksorderManagementService {
 
     getDefectScoreLimits() {
         return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetDefectScoreLimits`, this.httpOptions);
+    }
+
+    worksOrdersSecurityUsersList(wosequence) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/WorksOrdersSecurityUsersList?wosequence=${wosequence}`, this.httpOptions);
     }
 
 

@@ -39,7 +39,7 @@
                     }" [skip]="state.skip" [pageSize]="pageSize" [rowHeight]="36" (pageChange)="pageChange($event)"
                 scrollable="virtual" [sort]="state.sort" [filter]="state.filter" (sortChange)="sortChange($event)"
                 (filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)" [navigable]="false"
-                kendoGridSelectBy="wlataid" [selectedKeys]="mySelection" [rowClass]="rowCallback">
+                kendoGridSelectBy="wlataid" [selectedKeys]="mySelection">
 
 
                 <kendo-grid-column field="wlataid" title="Attr Id" width="140">
@@ -136,7 +136,7 @@
                                             <option value="New">New </option>
                                             <option value="Resolved">Resolved</option>
                                             <option
-                                                *ngIf="defectFormMode == 'edit' && (selectedDefectInp?.wodstatus == 'Signed Off' || selectedDefectInp?.wodstatus == 'Resolved')"
+                                                *ngIf="defectFormMode == 'edit' && (selectedDefectInp?.wodstatus == 'Signed Off')"
                                                 value="Signed Off">Signed Off</option>
                                         </select>
 
@@ -179,14 +179,10 @@
                                             [ngClass]="{ 'is-invalid': submitted && formErrors.reportedBy }"
                                             autocomplete="off" class="form-control input-sm">
                                             <option value=""></option>
-                                            <option *ngFor="let user of userList" [ngValue]="user.item_id">
-                                                {{user.item_id}}
+                                            <option *ngFor="let user of userList" [ngValue]="user.mpusid">
+                                                {{user.m_USERNAME}}
                                             </option>
                                         </select>
-
-                                        <!-- <input formControlName="reportedBy"
-                                            [ngClass]="{ 'is-invalid': submitted && formErrors.reportedBy }"
-                                            autocomplete="off" type="text" class="form-control input-sm"> -->
 
                                         <div *ngIf="submitted && formErrors.reportedBy" class="invalid-feedback">
                                             <div *ngIf="formErrors.reportedBy">{{ formErrors.reportedBy }}</div>
@@ -275,14 +271,10 @@
                                             [ngClass]="{ 'is-invalid': submitted && formErrors.resolvedBy }"
                                             autocomplete="off" class="form-control input-sm">
                                             <option value=""></option>
-                                            <option *ngFor="let user of userList" [ngValue]="user.item_id">
-                                                {{user.item_id}}
+                                            <option *ngFor="let user of userList" [ngValue]="user.mpusid">
+                                                {{user.m_USERNAME}}
                                             </option>
                                         </select>
-
-                                        <!-- <input formControlName="resolvedBy"
-                                            [ngClass]="{ 'is-invalid': submitted && formErrors.resolvedBy }"
-                                            autocomplete="off" type="text" class="form-control input-sm"> -->
 
                                         <div *ngIf="submitted && formErrors.resolvedBy" class="invalid-feedback">
                                             <div *ngIf="formErrors.resolvedBy">{{ formErrors.resolvedBy }}</div>
