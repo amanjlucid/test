@@ -1,0 +1,152 @@
+<kendo-window title="{{title}}" [top]="10" [minWidth]="700"
+  [width]="1050" [minHeight]="350" (close)="closeWoAssociationsManageWindow()" >
+
+  <div class="row headerArea">
+
+  <div class="col-md-12 headerRow12">
+
+      <div class="row">
+        <div class="col-md-2">
+          <label for="">Works Order: </label>
+        </div>
+        <div class="col-md-10">
+          <input [readonly]="true" type="text" class="form-control" placeholder=""
+              value="{{ worksOrderData.woname }}">
+        </div>
+      </div>
+  </div>
+
+
+
+
+
+
+
+
+  </div>
+
+
+
+
+  <div class="row mt-2">
+    <div class="col-md-12">
+
+
+      <div class="actionBtnArea mr-1" *ngIf="selectedRows.length >= 1">
+        <div class="dropdown" id="nesting-dropdown-demo">
+          <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown"
+            aria-expanded="false">Actions</button>
+          <div class="dropdown-menu" x-placement="bottom-start"
+            style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
+            <a (click)="addAssociations()"
+              class="dropdown-item" href="javascript:void(0)">Add
+            </a>
+            <a (click)="updateAssociations()"
+              class="dropdown-item" href="javascript:void(0)">Update</a>
+            <a (click)="deleteAssociations()"
+              class="dropdown-item" href="javascript:void(0)">Delete</a>
+
+
+
+          </div>
+        </div>
+      </div>
+
+
+
+
+      <kendo-grid [kendoGridGroupBinding]="gridData" [data]="gridView" [height]="570"  (selectedKeysChange)="keyChange($event)"
+            kendoGridSelectBy="wosequence"
+            [selectedKeys]="mySelection"
+            filterable="menu" [resizable]="true"
+             [sortable]="{
+              allowUnsort: true,
+              mode: 'multiple'
+              }" [skip]="state.skip" [sort]="state.sort" [filter]="state.filter"
+  (sortChange)="sortChange($event)" (filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)"
+  [navigable]="false" >
+
+
+        <kendo-grid-checkbox-column width="40"
+               showSelectAll="false"
+             ></kendo-grid-checkbox-column>
+
+        <kendo-grid-column field="wosequence" title="Work Order" width="100">
+        </kendo-grid-column>
+
+        <kendo-grid-column field="woname" title="Name" width="100">
+        </kendo-grid-column>
+
+        <kendo-grid-column field="woassociationreason" title="Association Reason" width="100">
+        </kendo-grid-column>
+
+
+                <kendo-grid-column field="createuser" title="Created By" width="100">
+                </kendo-grid-column>
+
+
+        <kendo-grid-column field="createdatetime" title="Created Date" [width]="140" [filterable]="false" [sortable]="false">
+            <ng-template kendoGridCellTemplate let-dataItem>
+                <span  >
+                    {{ dataItem.createdatetime | dateFormat : 'DD-MMM-YYYY' }}
+                </span>
+              </ng-template>
+        </kendo-grid-column>
+
+
+
+
+
+        <kendo-grid-column field="updateuser" title="Updated By" width="100">
+        </kendo-grid-column>
+
+
+                <kendo-grid-column field="updatedatetime" title="Updated Date" [width]="140" [filterable]="false" [sortable]="false">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span  >
+                            {{ dataItem.updatedatetime | dateFormat : 'DD-MMM-YYYY' }}
+                        </span>
+                      </ng-template>
+                </kendo-grid-column>
+
+
+
+
+
+
+
+
+      </kendo-grid>
+
+
+
+
+    </div>
+  </div>
+
+
+
+
+
+
+  <div class="woAssociationoverlay"></div>
+
+  <kendo-window title="{{ HeaderTitle }}" *ngIf="ReasonAssociationWindow" (close)="closeAddUpdateAssociationWindow()" [top]="35"
+      [minWidth]="400" [width]="450" [height]="auto" [minHeight]="200">
+
+      <div class="row">
+          <div class="col-md-12">
+              <textarea [(ngModel)]="reason" class="form-control" rows="5"></textarea>
+          </div>
+
+          <div class="col-md-12 mt-4 text-right">
+              <button *ngIf="AddAssociationWindow"  type="button" (click)="AddAssociationSubmit()" class="btn btn-sm themeButton">Add</button>
+              <button *ngIf="UpdateAssociationWindow"  type="button" (click)="UpdateAssociationSubmit()" class="btn btn-sm themeButton">Update</button>
+              <button type="button" (click)="closeAddUpdateAssociationWindow()" class="btn btn-sm themeButton ml-1">Close</button>
+          </div>
+
+      </div>
+
+  </kendo-window>
+
+</kendo-window>

@@ -78,6 +78,9 @@ export class WorkorderListComponent implements OnInit {
 
   woProgramManagmentInstructionsWindow = false;
   documentWindow = false;
+  ProgrammeLogWindow = false;
+  WoAssociationsManageWindow = false;
+
   constructor(
     private worksOrderService: WorksOrdersService,
     private activeRoute: ActivatedRoute,
@@ -563,13 +566,37 @@ export class WorkorderListComponent implements OnInit {
   }
 
 
-  openDocumentMethod(item){
+  openDocumentMethod(item) {
     this.selectedWorksOrder = item;
     $('.worksOrderOverlay').addClass('ovrlay');
     this.documentWindow = true;
   }
+  openProgrammeLog(item) {
+    this.selectedWorksOrder = item;
+    this.ProgrammeLogWindow = true;
 
-  closeDocumentWindow(eve){
+    $('.worksOrderOverlay').addClass('ovrlay');
+  }
+
+  closeProgrammeLogWindow(eve) {
+    this.ProgrammeLogWindow = eve;
+    $('.worksOrderOverlay').removeClass('ovrlay');
+  }
+
+
+  openWoAssociationsManage(item) {
+    this.selectedWorksOrder = item;
+    this.WoAssociationsManageWindow = true;
+
+    $('.worksOrderOverlay').addClass('ovrlay');
+  }
+
+  closeWoAssociationsManageWindowMain(eve) {
+    this.WoAssociationsManageWindow = eve;
+    $('.worksOrderOverlay').removeClass('ovrlay');
+  }
+
+  closeDocumentWindow(eve) {
     this.documentWindow = eve;
     $('.worksOrderOverlay').removeClass('ovrlay');
   }

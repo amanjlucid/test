@@ -2,7 +2,7 @@ import { Component, OnInit, ViewEncapsulation, ViewChild, ChangeDetectorRef } fr
 import { SubSink } from 'subsink';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { FilterService, SelectableSettings, TreeListComponent, RowClassArgs } from '@progress/kendo-angular-treelist';
-import { AlertService, LoaderService, ConfirmationDialogService, HelperService, WorksorderManagementService, SharedService, PropertySecurityGroupService, AuthenticationService } from '../../_services'
+import { AlertService, LoaderService, ConfirmationDialogService, WorksOrdersService, HelperService, WorksorderManagementService, SharedService, PropertySecurityGroupService, AuthenticationService } from '../../_services'
 import { combineLatest, forkJoin } from 'rxjs';
 import { WorkordersDetailModel } from 'src/app/_models';
 import { appConfig } from '../../app.config';
@@ -96,6 +96,7 @@ export class WorksordersDetailsComponent implements OnInit {
 
   openDefectsList = false;
   asebestosDoubleClick = 0;
+  AddPhaseCostStructureWindow = false;
 
   constructor(
     private sharedService: SharedService,
@@ -107,6 +108,7 @@ export class WorksordersDetailsComponent implements OnInit {
     private chRef: ChangeDetectorRef,
     private confirmationDialogService: ConfirmationDialogService,
     private autService: AuthenticationService,
+    private worksOrdersService: WorksOrdersService,
   ) { }
 
 
@@ -595,8 +597,8 @@ export class WorksordersDetailsComponent implements OnInit {
     this.autService.validateAssetIDDeepLinkParameters(this.currentUser.userId, item.assid).subscribe(
       data => {
         if (data.validated) {
-          // const siteUrl = `${appConfig.appUrl}/asset-list?assetid=${encodeURIComponent(item.assid)}`; // UAT
-          const siteUrl = `http://localhost:4200/asset-list?assetid=${item.assid}`;
+          const siteUrl = `${appConfig.appUrl}/asset-list?assetid=${encodeURIComponent(item.assid)}`; // UAT
+          // const siteUrl = `http://localhost:4200/asset-list?assetid=${item.assid}`;
           window.open(siteUrl, "_blank");
 
         } else {
@@ -867,7 +869,97 @@ export class WorksordersDetailsComponent implements OnInit {
     this.worksOrderDetailPageData();
     // this.selectedRow = undefined;
   }
+  openAddPhaseCostStructure(item) {
+    this.actualSelectedRow = item;
+    console.log('actualSelectedRow ' + JSON.stringify(this.actualSelectedRow));
+    this.AddPhaseCostStructureWindow = true;
+  }
+  closeAddPhaseCostStructure() {
+    this.AddPhaseCostStructureWindow = false;
+  }
+  addPhaseCostConfirm(msg, params) {
+    $('.k-window').css({
+      'z-index': 1000
+    });
+    this.confirmationDialogService.confirm('Please confirm..', msg)
+      .then((confirmed) => (confirmed) ? this.FinaladdPhaseCostConfirm(params) : this.closeAddPhaseCostStructure())
+      .catch(() => this.closeAddPhaseCostStructure());
+  }
+  FinaladdPhaseCostConfirm(params) {
+    console.log('actualSelectedRow ' + JSON.stringify(this.actualSelectedRow));
+    this.loading = true;
+    const params2 = {
+      "WOSEQUENCE": params.WOSEQUENCE,
+      "WOPSEQUENCE": params.WOPSEQUENCE,
+      "strUserId": this.currentUser.userId,
+      "strCheckOrProcess": "P",
+      "strPhaseName": params.strPhaseName
+    };
+    this.subs.add(
+      this.worksOrdersService.AddPhaseCostStructure(params2).subscribe(
+        data => {
+          this.loading = false;
+          if (data.isSuccess) {
 
+            this.loading = false;
+            this.closeAddPhaseCostStructure();
+
+            let resultData = data.data[0];
+            if (resultData.pRETURNSTATUS == 'S') {
+                 this.alertService.success(resultData.pRETURNMESSAGE);
+            }
+            if (resultData.pRETURNSTATUS == 'E') {
+              this.alertService.error(resultData.pRETURNMESSAGE);
+            }
+
+           this.worksOrderDetailPageData();
+
+          } else {
+            this.alertService.error(data.message);
+            this.loading = false
+          }
+          this.chRef.detectChanges();
+        //  console.log('Final AddPhaseCostStructure api reponse' + JSON.stringify(data));
+        },
+        err => this.alertService.error(err)
+      )
+    )
+  }
+  addPhaseCost(input) {
+    console.log('actualSelectedRow ' + JSON.stringify(this.actualSelectedRow));
+    this.loading = true;
+    const params = {
+      "WOSEQUENCE": this.actualSelectedRow.wosequence,
+      "WOPSEQUENCE": this.actualSelectedRow.wopsequence,
+      "strUserId": this.currentUser.userId,
+      "strCheckOrProcess": "C",
+      "strPhaseName": input
+    };
+    this.subs.add(
+      this.worksOrdersService.AddPhaseCostStructure(params).subscribe(
+        data => {
+          this.loading = false;
+          if (data.isSuccess) {
+            let resultData = data.data[0];
+            if (resultData.pRETURNSTATUS == 'S') {
+              this.addPhaseCostConfirm(resultData.pRETURNMESSAGE, params);
+            }
+            if (resultData.pRETURNSTATUS == 'E') {
+              this.alertService.error(resultData.pRETURNMESSAGE);
+            }
+            this.loading = false;
+          } else {
+            this.alertService.error(data.message);
+            this.loading = false
+          }
+          this.chRef.detectChanges();
+        //  console.log('AddPhaseCostStructure api reponse' + JSON.stringify(data));
+        },
+        err => this.alertService.error(err)
+      )
+    )
+    //console.log(input);
+  }
 
   closeChooseDate(event) {
     this.chooseDateWindow = event;
@@ -938,8 +1030,8 @@ export class WorksordersDetailsComponent implements OnInit {
         this.autService.validateAssetIDDeepLinkParameters(this.currentUser.userId, item.assid).subscribe(
           data => {
             if (data.validated) {
-              // const siteUrl = `${appConfig.appUrl}/asset-list?assetid=${encodeURIComponent(item.assid)}`; // UAT
-              const siteUrl = `http://localhost:4200/asset-list?assetid=${encodeURIComponent(item.assid)}&openTab=Asbestos`;
+               const siteUrl = `${appConfig.appUrl}/asset-list?assetid=${encodeURIComponent(item.assid)}`; // UAT
+              //const siteUrl = `http://localhost:4200/asset-list?assetid=${encodeURIComponent(item.assid)}&openTab=Asbestos`;
               window.open(siteUrl, "_blank");
 
             } else {

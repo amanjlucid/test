@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { WoPmInstructionAssetsDetailComponent } from './wo-pm-instruction-assets-detail.component';
 
-describe('WoPmInstructionAssetsComponent', () => {
+describe('WoPmInstructionAssetsDetailComponent', () => {
   let component: WoPmInstructionAssetsDetailComponent;
   let fixture: ComponentFixture<WoPmInstructionAssetsDetailComponent>;
 

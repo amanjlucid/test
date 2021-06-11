@@ -101,6 +101,20 @@
                   Instructions</a>
                 <a class="dropdown-item" (click)="openCompletionList(dataItem)"
                   href="javascript:void(0)">Completions</a>
+                  <a  class="dropdown-item" href="javascript:void(0)"
+                    (click)="openProgrammeLog(dataItem)">View Programme Log</a>
+
+                    <a  class="dropdown-item" href="javascript:void(0)"
+                      (click)="openWoAssociationsManage(dataItem)">Associations</a>
+
+                  <div class="dropdown-toggle" >
+                    <div class="dropdown-item">Programme Management</div>
+                    <div class="dropdown-menu addAssetMenu">
+                      <a (click)="redirectToWoProgramManagmentInstructions(dataItem)" class="dropdown-item"
+                        href="javascript:void(0)">
+                        Instructions</a>
+                      <a  class="dropdown-item"
+                      href="javascript:void(0)">Completions</a>
 
                 <a *ngIf="woMenuAccess('Works Order Documents')" [ngClass]="{'disabled': dataItem.worksOrderFileCount == 0}" class="dropdown-item"
                   (click)="openDocumentMethod(dataItem)" href="javascript:void(0)">Documents</a>
@@ -361,3 +375,10 @@
 
 <app-wo-document-list *ngIf="documentWindow" [documentWindow]="documentWindow"
   (closeDocument)="closeDocumentWindow($event)" [selectedWorksOrder]="selectedWorksOrder"></app-wo-document-list>
+<app-programme-log *ngIf="ProgrammeLogWindow" [ProgrammeLogWindow]="ProgrammeLogWindow"
+  [worksOrderData]="selectedWorksOrder"  (ProgrammeLogWindowEvent)="closeProgrammeLogWindow($event)">
+</app-programme-log>
+
+<app-wo-association-manage *ngIf="WoAssociationsManageWindow" [WoAssociationsManageWindow]="WoAssociationsManageWindow"
+  [worksOrderData]="selectedWorksOrder"  (WoAssociationsManageWindowEvent)="closeWoAssociationsManageWindowMain($event)">
+</app-wo-association-manage>

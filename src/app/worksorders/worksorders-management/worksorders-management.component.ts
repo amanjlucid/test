@@ -64,6 +64,10 @@ export class WorksordersManagementComponent implements OnInit {
 
   workOrderId: number;
 
+  selectedWorksOrder: any;
+  ProgrammeLogWindow = false;
+  WoAssociationsManageWindow = false;
+
   constructor(
     private worksorderManagementService: WorksorderManagementService,
     private helperService: HelperService,
@@ -485,6 +489,30 @@ export class WorksordersManagementComponent implements OnInit {
   closeCompletionList($event) {
     this.completionList = $event;
     $('.newManagementOverlay').removeClass('ovrlay');
+  }
+  openProgrammeLog(item) {
+    this.selectedWorksOrder = item;
+    this.ProgrammeLogWindow = true;
+
+    $('.newManagementOverlay').addClass('ovrlay');
+  }
+
+  closeProgrammeLogWindow(eve) {
+    this.ProgrammeLogWindow = eve;
+    $('.newManagementOverlay').removeClass('ovrlay');
+  }
+
+
+  openWoAssociationsManage(item) {
+    this.selectedWorksOrder = item;
+    this.WoAssociationsManageWindow = true;
+
+    $('.worksOrderOverlay').addClass('ovrlay');
+  }
+
+  closeWoAssociationsManageWindowMain(eve) {
+    this.WoAssociationsManageWindow = eve;
+    $('.worksOrderOverlay').removeClass('ovrlay');
   }
 
 

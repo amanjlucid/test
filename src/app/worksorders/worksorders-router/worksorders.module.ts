@@ -75,6 +75,9 @@ import { WoPmInstructionAssetsDetailComponent } from '../workorder-program-manag
 import { AssetDefectsListComponent } from '../asset-defects-list/asset-defects-list.component';
 import { DefectFormComponent } from '../defect-form/defect-form.component';
 import { SendEmailComponent } from '../send-email/send-email.component';
+import { ProgramLogComponent } from '../programme-log/programme-log/programme-log.component';
+import { ProgramTransactionsComponent } from '../programme-log/programme-transactions/programme-transactions.component';
+import { WoAssociationsManageComponent } from '../wo-association/wo-association-manage/wo-association-manage.component';
 import { WoDocumentListComponent } from '../wo-document-list/wo-document-list.component';
 
 
@@ -143,8 +146,12 @@ import { WoDocumentListComponent } from '../wo-document-list/wo-document-list.co
     AssetDefectsListComponent,
     DefectFormComponent,
     SendEmailComponent,
-    WoDocumentListComponent
+    WoDocumentListComponent,
+    ProgramLogComponent,
+    ProgramTransactionsComponent,
+    WoAssociationsManageComponent
   ],
+
 
   imports: [
     CommonModule,
