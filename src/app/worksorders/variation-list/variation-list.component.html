@@ -7,15 +7,17 @@
             </button>
 
             <div class="dropdown mr-1" id="nesting-dropdown-demo">
-                <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown"
+                <button *ngIf="woMenuAccess('New Variation')" type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown"
                     aria-expanded="false">New</button>
 
                 <div class="dropdown-menu" x-placement="bottom-start"
                     style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
-                    <a [ngClass]="{'disabled' : woAsset?.woassstatus != 'Accepted' && woAsset?.phaseOrAsset != 'P'}"
+                    <!-- <a [ngClass]="{'disabled' : woAsset?.woassstatus != 'Accepted' && woAsset?.phaseOrAsset != 'P'}"
                         class="dropdown-item" href="javascript:void(0)" (click)="newVariation()">
+                        New</a> -->
+                    <a *ngIf="woMenuAccess('New Variation')" [ngClass]="{'disabled' : disableNewAndAppendBtn('new') }" class="dropdown-item" href="javascript:void(0)" (click)="newVariation()">
                         New</a>
-                    <a [ngClass]="{'disabled' : disableAppendBtn() }" class="dropdown-item" href="javascript:void(0)"
+                    <a *ngIf="woMenuAccess('Append To Variation')" [ngClass]="{'disabled' : disableNewAndAppendBtn('append') }" class="dropdown-item" href="javascript:void(0)"
                         (click)="append()">
                         Append</a>
                 </div>
@@ -97,10 +99,10 @@
                                     <div class="dropdown-menu">
                                         <a [ngClass]="{'disabled' : disableVariationBtns('Customer', dataItem)}"
                                             class="dropdown-item" href="javascript:void(0)"
-                                            (click)="sendVariation('customer', dataItem)">Customer</a>
+                                            (click)="sendVariation('Customer', dataItem)">Customer</a>
                                         <a [ngClass]="{'disabled' : disableVariationBtns('Contractor', dataItem)}"
                                             class="dropdown-item" href="javascript:void(0)"
-                                            (click)="sendVariation('contractor', dataItem)">Contractor</a>
+                                            (click)="sendVariation('Contractor', dataItem)">Contractor</a>
 
                                     </div>
                                 </div>
@@ -122,7 +124,7 @@
                 </kendo-grid-column>
 
 
-                <kendo-grid-column field="woisequence" title="Sequence" width="130" [filterable]="false">
+                <kendo-grid-column field="woisequence" title="Sequence" width="120" [filterable]="false">
                 </kendo-grid-column>
 
                 <kendo-grid-column field="woirequesttype" title="Request Type" width="130" [filterable]="false">
@@ -131,7 +133,7 @@
                 <kendo-grid-column title="Created By" field="woirequestuser" width="130" [filterable]="false">
                 </kendo-grid-column>
 
-                <kendo-grid-column title="Created Date" field="woirequestdate" width="280">
+                <kendo-grid-column title="Created Date" field="woirequestdate" width="140">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <span>
                             {{ dataItem.woirequestdate | dateFormat : 'DD-MMM-YYYY' }}
@@ -139,7 +141,7 @@
                     </ng-template>
                 </kendo-grid-column>
 
-                <kendo-grid-column title="Status" field="woiissuestatus" width="280">
+                <kendo-grid-column title="Status" field="woiaissuestatus" width="120">
                 </kendo-grid-column>
 
                 <kendo-grid-column title="Issue User" field="woiissueuser" width="140">
@@ -207,7 +209,7 @@
     <app-variation-new *ngIf="openNewVariation" [openNewVariation]="openNewVariation"
         [singleVariation]="selectedSingleVariation" [openedFrom]="openedFrom" [formMode]="formMode"
         [selectedAsset]="selectedAsset" (closeNewVariationEvent)="closeNewVariation($event)"
-        (outputReason)="getVariationReason($event)">
+        (outputVariation)="getVariationReason($event)">
     </app-variation-new>
 
 

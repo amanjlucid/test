@@ -47,20 +47,20 @@ export class VariationChangefeeComponent implements OnInit {
   ngOnInit(): void {
     // console.log({ fees: this.selectedSingleFees, variation: this.selectedVariationInp, asset: this.selectedSingleVariationAssetInp })
 
-    const { wostagename, wocheckname, woaccommittedfee, woiadfeecost, woiadcomment } = this.selectedSingleFees;
+    const { wostagename, wocheckname, woaccommittedfee, woacpendingfee, woiadcomment } = this.selectedSingleFees;
 
     this.variationFeeForm = this.fb.group({
       stage: [{ value: wostagename, disabled: true }, [Validators.required, Validators.maxLength(250)]],
       name: [{ value: wocheckname, disabled: true }, [Validators.required, Validators.maxLength(250)]],
       feecost: [{ value: woaccommittedfee, disabled: true }, [Validators.required, Validators.maxLength(250)]],
-      feecostoverride: [woiadfeecost, [Validators.required, Validators.maxLength(250)]],
+      feecostoverride: [woacpendingfee, [Validators.required, Validators.maxLength(250)]],
       comment: [woiadcomment, [Validators.required, Validators.maxLength(250)]],
     });
 
     setTimeout(() => {
       this.variationFeeForm.patchValue({
         feecost: woaccommittedfee,
-        feecostoverride: woiadfeecost,
+        feecostoverride: woacpendingfee,
       })
     }, 100);
 
@@ -116,7 +116,8 @@ export class VariationChangefeeComponent implements OnInit {
 
 
     let formRawVal = this.variationFeeForm.getRawValue();
-    const { wosequence, wopsequence, assid, woisequence, wostagesurcde, wochecksurcde } = this.selectedSingleFees;
+    const { wosequence, wopsequence, assid, wostagesurcde, wochecksurcde } = this.selectedSingleFees;
+    const { woisequence } = this.selectedSingleVariationAssetInp;
 
     let params = {
       WOSEQUENCE: wosequence,
@@ -128,9 +129,11 @@ export class VariationChangefeeComponent implements OnInit {
       UserID: this.currentUser.userId,
       WOIADFEECOST: this.helperService.convertMoneyToFlatFormat(formRawVal.feecostoverride),
       WOIADCOMMENT: formRawVal.comment,
-      Recharge: ''
+      Recharge: 'N'
     }
 
+    // debugger;
+    // return;
     this.subs.add(
       this.workOrderProgrammeService.worksOrdersCreateVariationForChangeFee(params).subscribe(
         data => {

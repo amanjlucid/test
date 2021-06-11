@@ -1,9 +1,10 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef, ViewEncapsulation } from '@angular/core';
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
-import { SelectableSettings, PageChangeEvent, RowArgs, GridComponent } from '@progress/kendo-angular-grid';
-import { AlertService, ConfirmationDialogService, HelperService, WorksorderManagementService, WorksOrdersService } from 'src/app/_services';
-import { forkJoin } from 'rxjs';
+import { SelectableSettings, PageChangeEvent, RowArgs, RowClassArgs, GridComponent } from '@progress/kendo-angular-grid';
+import { AlertService, ConfirmationDialogService, HelperService, SharedService, WorksorderManagementService, WorksOrdersService } from 'src/app/_services';
+import { combineLatest, forkJoin } from 'rxjs';
+import { VariationWorkListModel } from 'src/app/_models';
 
 @Component({
   selector: 'app-variation-work-list',
@@ -49,7 +50,28 @@ export class VariationWorkListComponent implements OnInit {
   reasonWindowFor = 'refusal';
   EditWorkPackageQtyCostWindow = false;
 
-  // @Input() singleVariation: any; // need to remove
+  worksOrderAccess = [];
+  worksOrderUsrAccess: any = [];
+  userType: any = [];
+
+  worksOrderData: any;
+  workListBtnAccess: any;
+  hamBurgerMenuClick = 0;
+  servicePkzOpen = false;
+  servicePkzGrid: any;
+  servicePkzData: any;
+  selectedSingleServicePkz: any
+  servicePkzstate: State = {
+    skip: 0,
+    sort: [],
+    take: 25,
+    group: [],
+    filter: {
+      logic: "or",
+      filters: []
+    }
+  }
+  pkzQtyMode = 'edit';
 
   constructor(
     private chRef: ChangeDetectorRef,
@@ -57,21 +79,43 @@ export class VariationWorkListComponent implements OnInit {
     private alertService: AlertService,
     private worksOrdersService: WorksOrdersService,
     private confirmationDialogService: ConfirmationDialogService,
+    private sharedService: SharedService,
   ) {
     this.setSelectableSettings();
   }
 
   ngOnInit(): void {
-    console.log({ openfor: this.openedFor, from: this.openedFrom, variation: this.selectedVariationInp, asset: this.selectedSingleVariationAssetInp })
+    // console.log({ openfor: this.openedFor, from: this.openedFrom, variation: this.selectedVariationInp, asset: this.selectedSingleVariationAssetInp })
+
+    this.subs.add(
+      combineLatest([
+        this.sharedService.woUserSecObs,
+        this.sharedService.worksOrdersAccess,
+        this.sharedService.userTypeObs
+      ]).subscribe(
+        data => {
+          // console.log(data)
+          this.worksOrderUsrAccess = data[0];
+          this.worksOrderAccess = data[1];
+          this.userType = data[2][0];
+        }
+      )
+    )
 
     if (this.openedFor == "details" && this.openedFrom == "assetchecklist") {
       const { woiissuereason, woisequence } = this.selectedSingleVariationAssetInp
       this.title = `Variation: ${woiissuereason} (${woisequence})`;
       this.getVariationWorkList();
-    } else if ((this.openedFor == "edit" || this.openedFor == "append")  && (this.openedFrom == "assetchecklist" || this.openedFrom == "worksorder")) {
+
+    } else if ((this.openedFor == "edit" || this.openedFor == "append") && (this.openedFrom == "assetchecklist" || this.openedFrom == "worksorder")) {
       this.title = `Edit Work List Variation Items`;
       this.getVariationWorkList();
+      this.getRequiredPageData();
+
     }
+
+    this.chRef.detectChanges();
+
 
   }
 
@@ -89,25 +133,70 @@ export class VariationWorkListComponent implements OnInit {
   }
 
 
-  disableGridRowMenu(btnname, item) {
-    return false;
-    // if(btnname == 'Change Cost'){
-    //   return item.woadstatus 
-    // }
-    //dataItem.woadstatus != 'New'
-    //dataItem.variationAction == 'Remove Work Item'
+  woMenuAccess(menuName) {
+    if (this.userType == undefined) return true;
+
+    if (this.userType?.wourroletype == "Dual Role") {
+      return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
+    }
+
+    return this.worksOrderUsrAccess.indexOf(menuName) != -1
+
   }
 
-  getVariationWorkList() {
 
-    const { wosequence, wopsequence, assid } = this.selectedSingleVariationAssetInp;
-    
+  disableGridRowMenu(btnname, item) {
+    if (this.workListBtnAccess == undefined) {
+      return true;
+    }
 
+    if (btnname == "Change Cost/Qty") {
+      return this.workListBtnAccess.changeCostQty == true ? false : true
+    }
+
+    if (btnname == "Refusal") {
+      return this.workListBtnAccess.refusal == true ? false : true
+    }
+
+    if (btnname == "Recharge") {
+      return this.workListBtnAccess.recharge == true ? false : true
+    }
+
+    if (btnname == "Remove Work") {
+      return this.workListBtnAccess.deleteWork == true ? false : true
+    }
+
+    if (btnname == "Remove Item Variation") {
+      return this.workListBtnAccess.removeItemVariation == true ? false : true
+    }
+
+    if (btnname == "Replace Service Package") {
+      return this.workListBtnAccess.replace == true ? false : true
+    }
+
+    return true;
+  }
+
+  getRequiredPageData() {
+    const { wosequence } = this.selectedSingleVariationAssetInp;
     this.subs.add(
-      this.workOrderProgrammeService.getWEBWorksOrdersAssetDetailAndVariation(wosequence, wopsequence, assid).subscribe(
+      forkJoin([
+        this.workOrderProgrammeService.getWorksOrderByWOsequence(wosequence),
+      ]).subscribe(
         data => {
-          console.log(data);
-          // console.table(data.data);
+          this.worksOrderData = data[0].data;
+        }
+      )
+    )
+  }
+
+
+  getVariationWorkList() {
+    const { wosequence, wopsequence, assid } = this.selectedSingleVariationAssetInp;
+    this.subs.add(
+      this.workOrderProgrammeService.getWEBWorksOrdersAssetDetailAndVariation(wosequence, wopsequence, assid, 0).subscribe(
+        data => {
+          // console.log(data)
           if (data.isSuccess) {
             this.variationWorkListData = data.data;
             this.gridView = process(this.variationWorkListData, this.state);
@@ -120,6 +209,15 @@ export class VariationWorkListComponent implements OnInit {
 
       )
     )
+  }
+
+
+
+  rowCallback(context: RowClassArgs) {
+    const { woadstatus, woisequence } = context.dataItem;
+    return {
+      'k-state-disabled': woadstatus === "Accepted" && woisequence != 0
+    };
   }
 
   sortChange(sort: SortDescriptor[]): void {
@@ -142,6 +240,7 @@ export class VariationWorkListComponent implements OnInit {
 
   cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
     this.selectedSingleVarWorkList = dataItem;
+    this.setSeletedRow(dataItem);
   }
 
   closeWorkList() {
@@ -173,12 +272,8 @@ export class VariationWorkListComponent implements OnInit {
 
 
   rechargeToggle(item, recharge) {
-    if (item.woadstatus != 'New') {
-      this.alertService.error("No Access");
-      return
-    }
-
-    const { wosequence, woisequence, wopsequence, assid, wlcode, wlataid, wlplanyear, wostagesurcde, wochecksurcde, woadrechargeyn } = item;
+    const { wosequence, wopsequence, assid, wlcode, wlataid, wlplanyear, wostagesurcde, wochecksurcde, woadrechargeyn } = item;
+    const { woisequence } = this.selectedSingleVariationAssetInp;
 
     const params = {
       WOSEQUENCE: wosequence,
@@ -198,7 +293,6 @@ export class VariationWorkListComponent implements OnInit {
     this.subs.add(
       this.worksOrdersService.rechargeToggleVariation(params).subscribe(
         data => {
-          // console.log(data);
           if (data.isSuccess) {
             let success_msg = "Recharge Successfully Set";
             if (!recharge) {
@@ -228,13 +322,15 @@ export class VariationWorkListComponent implements OnInit {
     $('.variationWorkListOverlay').addClass('ovrlay');
     this.reasonWindowtitle = 'Edit Comment for Works Order Instruction Asset Detail'
     this.reasonWindowFor = 'deletework';
+    this.reason = '';
     this.SetToRefusalWindow = true;
     this.chRef.detectChanges();
   }
 
 
   deleteWork(item) {
-    const { wosequence, woisequence, wopsequence, assid, wlcode, wlataid, wlplanyear, woadrechargeyn } = item;
+    const { wosequence, wopsequence, assid, wlcode, wlataid, wlplanyear, woadrechargeyn } = item;
+    const { woisequence } = this.selectedSingleVariationAssetInp;
 
     const params = {
       WOSEQUENCE: wosequence,
@@ -316,7 +412,8 @@ export class VariationWorkListComponent implements OnInit {
 
 
   SetToRefusalSave(item, refusal = true) {
-    const { wosequence, woisequence, wopsequence, assid, wlcode, wlataid, wlplanyear, wostagesurcde, wochecksurcde } = item;
+    const { wosequence, wopsequence, assid, wlcode, wlataid, wlplanyear, wostagesurcde, wochecksurcde } = item;
+    const { woisequence } = this.selectedSingleVariationAssetInp;
 
     const params = {
       WOSEQUENCE: wosequence,
@@ -357,10 +454,16 @@ export class VariationWorkListComponent implements OnInit {
 
   }
 
-  closeEditWorkPackageQtyCostWindow() {
+  closeEditWorkPackageQtyCostWindow(eve) {
     this.EditWorkPackageQtyCostWindow = false;
-    $('.variationWorkListOverlay').removeClass('ovrlay');
+    if (this.pkzQtyMode == "service") {
+      $('.variationWorkListOverlaypkz').removeClass('ovrlay');
+    } else {
+      $('.variationWorkListOverlay').removeClass('ovrlay');
+    }
+
     this.getVariationWorkList();
+
   }
 
   removeItemVariationConfirm(item) {
@@ -373,7 +476,8 @@ export class VariationWorkListComponent implements OnInit {
 
 
   removeItemVariation(item) {
-    const { wosequence, woisequence, wopsequence, assid, wlcode, wlataid, wlplanyear, wostagesurcde, wochecksurcde } = item;
+    const { wosequence, wopsequence, assid, wlcode, wlataid, wlplanyear, wostagesurcde, wochecksurcde } = item;
+    const { woisequence } = this.selectedSingleVariationAssetInp;
 
     const params = {
       WOSEQUENCE: wosequence,
@@ -402,43 +506,130 @@ export class VariationWorkListComponent implements OnInit {
   }
 
 
-  replaceService(item) {
-    this.selectedSingleVarWorkList = item;
-    const { wosequence, woisequence, wopsequence, assid, wlcode, wlataid, wlplanyear, wostagesurcde, wochecksurcde, woadrechargeyn } = item;
-    let params = {
-      WOSEQUENCE: wosequence,
-      WOPSEQUENCE: wopsequence,
-      WOISEQUENCE: woisequence,
-      ASSID: assid,
-      WLCODE: wlcode,
-      WLATAID: wlataid,
-      WLPLANYEAR: wlplanyear,
-      WLATAID2: '',
-      WLPLANYEAR2: '',
-      WOSTAGE: wostagesurcde,
-      WOCHECK: wochecksurcde,
-      WORKCOST: '',
-      COMMENT: '',
-      QUANTITY: '',
-      UOM: '',
-      WPHCODE: '',
-      RECHARGE: woadrechargeyn,
-      strUserId: this.currentUser.userId,
+  replaceService() {
+    if (this.selectedSingleServicePkz == undefined) {
+      this.alertService.error("Please select a record")
+      return
+    }
 
+    $('.variationWorkListOverlaypkz').addClass('ovrlay');
+    this.pkzQtyMode = 'service';
+    this.openEditWorkPackageQtyCostWindow(this.selectedSingleVarWorkList);
+
+  }
+
+  openServicePkzMethod(item) {
+    this.selectedSingleVarWorkList = item;
+    $('.variationWorkListOverlay').addClass('ovrlay');
+    this.servicePkzOpen = true;
+    const { wosequence, assid, wlataid, wlplanyear, wochecksurcde } = item;
+
+
+    let params = {
+      ASSID: assid,
+      CTTSURCDE: this.worksOrderData?.cttsurcde,
+      PLANYEAR: wlplanyear,
+      WOSEQUENCE: wosequence,
+      WOCHECKSURCDE: wochecksurcde,
+      ATAID: wlataid
     };
 
-    this.subs.add(
-      this.workOrderProgrammeService.createVariationForSIMReplacement(params).subscribe(
-        data => {
-          console.log(data)
-          if (data.isSuccess) {
 
-          } else this.alertService.error(data.message)
-        }, err => this.alertService.error(err)
+    this.subs.add(
+      this.workOrderProgrammeService.getServicePkz(params).subscribe(
+        data => {
+          if (data.isSuccess) {
+            this.servicePkzData = data.data;
+            this.servicePkzGrid = process(this.servicePkzData, this.servicePkzstate);
+            this.chRef.detectChanges();
+          }
+        }
       )
     )
   }
 
+  closeServicePkzWindow(eve = null) {
+    this.selectedSingleServicePkz = undefined
+    this.servicePkzOpen = false;
+    this.pkzQtyMode = 'edit';
+    $('.variationWorkListOverlay').removeClass('ovrlay');
+    $('.variationWorkListOverlaypkz').removeClass('ovrlay');
+  }
+
+  setSeletedRow(item) {
+    if (this.hamBurgerMenuClick == 0) { // restrict menu enable api call for 1 time if multiple time clicked
+      this.hamBurgerMenuClick++;
+
+      if (item != undefined) {
+
+        const { wlcomppackage, recordsource, wosequence, assid, wopsequence, wlcode, wlataid, wlplanyear, wostagesurcde, wochecksurcde, woadrefusaL_YN, woadrechargeyn, woadstatus, variationAction } = item;
+        const { wocodE6 } = this.worksOrderData;
+
+        let params: VariationWorkListModel = {
+          WLCOMPPACKAGE: wlcomppackage,
+          RECORDSOURCE: recordsource,
+          WOSEQUENCE: wosequence,
+          ASSID: assid,
+          WOPSEQUENCE: wopsequence,
+          WLCODE: wlcode,
+          WLATAID: wlataid,
+          WLPLANYEAR: wlplanyear,
+          WOSTAGESURCDE: wostagesurcde,
+          WOCHECKSURCDE: wochecksurcde,
+          WOADREFUSAL_YN: woadrefusaL_YN,
+          WOADRECHARGEYN: woadrechargeyn,
+          WOADSTATUS: woadstatus,
+          VariationAction: variationAction,
+          WOCODE6: wocodE6
+        }
+
+
+        this.subs.add(
+          this.workOrderProgrammeService.variationWorkListButtonsAccess(params).subscribe(
+            data => {
+              if (data.isSuccess) {
+                this.workListBtnAccess = data.data;
+                this.chRef.detectChanges();
+              }
+
+              setTimeout(() => {
+                this.hamBurgerMenuClick = 0;
+              }, 600);
+            }
+          )
+        )
+
+      }
+    }
+
+
+  }
+
+
+
+  sortChangeService(sort: SortDescriptor[]): void {
+    this.servicePkzstate.sort = sort;
+    this.gridView = process(this.servicePkzData, this.servicePkzstate);
+  }
+
+  filterChangeService(filter: any): void {
+    this.servicePkzstate.filter = filter;
+    this.gridView = process(this.servicePkzData, this.servicePkzstate);
+  }
+
+  pageChangeService(event: PageChangeEvent): void {
+    this.servicePkzstate.skip = event.skip;
+    this.gridView = {
+      data: this.servicePkzData.slice(this.servicePkzstate.skip, this.servicePkzstate.skip + this.pageSize),
+      total: this.servicePkzData.length
+    };
+  }
+
+  cellClickHandlerService({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
+    this.selectedSingleServicePkz = dataItem
+    // this.selectedSingleVarWorkList = dataItem;
+    // this.setSeletedRow(dataItem);
+  }
 
 
 }

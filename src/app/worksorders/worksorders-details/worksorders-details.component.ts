@@ -95,6 +95,9 @@ export class WorksordersDetailsComponent implements OnInit {
   openAssetRemoveReason = false;
   reason = '';
 
+  openDefectsList = false;
+  asebestosDoubleClick = 0;
+
   constructor(
     private sharedService: SharedService,
     private worksorderManagementService: WorksorderManagementService,
@@ -213,7 +216,8 @@ export class WorksordersDetailsComponent implements OnInit {
             //Find parent and Set parent id in each row wopsequence
             tempData.forEach((value, index) => {
               if (value.treelevel == 2) {
-                value.parentId = null
+                value.parentId = null;
+                value.parentWoName = '';
                 value.id = `${value.wopsequence}${value.wosequence}${value.wprsequence}${this.helperService.replaceAll(value.assid, " ", "")}`;
                 value.parentData = JSON.stringify(value);
                 const valueWithDateObj = this.addDateObjectFields(value, ['targetdate', 'woacompletiondate', 'planstartdate', 'planenddate']); //Converting date object for filter from grid
@@ -224,12 +228,9 @@ export class WorksordersDetailsComponent implements OnInit {
               if (value.treelevel == 3) {
                 const parent = tempData.find(x => x.treelevel == 2 && x.wprsequence == value.wprsequence && x.wosequence == value.wosequence && x.wopsequence == value.wopsequence);
                 if (parent) {
+                  value.parentWoName = parent.woname;
                   value.parentId = `${parent.wopsequence}${parent.wosequence}${parent.wprsequence}${this.helperService.replaceAll(parent.assid, " ", "")}`;
                   value.id = `${value.wopsequence}${value.wosequence}${value.wprsequence}${this.helperService.replaceAll(value.assid, " ", "")}${index}`;
-
-
-                  //  let Form = JSON.stringify(this.myForm.value);
-
 
                   value.parentData = JSON.stringify(parent);
                   value.assid = value.assid;
@@ -242,6 +243,7 @@ export class WorksordersDetailsComponent implements OnInit {
             })
 
             setTimeout(() => {
+              // console.log(gridData)
               this.gridData = [...gridData];
               this.loading = false;
               this.chRef.detectChanges();
@@ -275,7 +277,7 @@ export class WorksordersDetailsComponent implements OnInit {
       pHandover: false,
       pFromDate: "1753-01-01",
       pToDate: "1753-01-01",
-      pContractor: false
+      pContractor: this.userType?.wourroletype == "Contractor" ? true : false
     }
   }
 
@@ -596,8 +598,8 @@ export class WorksordersDetailsComponent implements OnInit {
     this.autService.validateAssetIDDeepLinkParameters(this.currentUser.userId, item.assid).subscribe(
       data => {
         if (data.validated) {
-          const siteUrl = `${appConfig.appUrl}/asset-list?assetid=${encodeURIComponent(item.assid)}`; // UAT
-          // const siteUrl = `http://localhost:4200/asset-list?assetid=${item.assid}`;
+          // const siteUrl = `${appConfig.appUrl}/asset-list?assetid=${encodeURIComponent(item.assid)}`; // UAT
+          const siteUrl = `http://localhost:4200/asset-list?assetid=${item.assid}`;
           window.open(siteUrl, "_blank");
 
         } else {
@@ -865,6 +867,7 @@ export class WorksordersDetailsComponent implements OnInit {
   closePhaseChecklist(eve) {
     this.phaseChecklist = eve;
     $('.worksOrderDetailOvrlay').removeClass('ovrlay');
+    this.worksOrderDetailPageData();
     // this.selectedRow = undefined;
   }
 
@@ -917,8 +920,47 @@ export class WorksordersDetailsComponent implements OnInit {
   }
 
 
+  openDefectsMethod() {
+    $('.worksOrderDetailOvrlay').addClass('ovrlay');
+    this.openDefectsList = true;
+  }
 
-  /********** WOD Reports Function Start **********/
+  closeDefectList(eve) {
+    this.openDefectsList = eve;
+    $('.worksOrderDetailOvrlay').removeClass('ovrlay');
+  }
+
+
+  openAsbestos(item) {
+    if (this.asebestosDoubleClick == 0) {
+      this.asebestosDoubleClick = new Date().getTime();
+    } else {
+
+      if (((new Date().getTime()) - this.asebestosDoubleClick) < 400) {
+        this.autService.validateAssetIDDeepLinkParameters(this.currentUser.userId, item.assid).subscribe(
+          data => {
+            if (data.validated) {
+              // const siteUrl = `${appConfig.appUrl}/asset-list?assetid=${encodeURIComponent(item.assid)}`; // UAT
+              const siteUrl = `http://localhost:4200/asset-list?assetid=${encodeURIComponent(item.assid)}&openTab=Asbestos`;
+              window.open(siteUrl, "_blank");
+
+            } else {
+              const errMsg = `${data.errorCode} : ${data.errorMessage}`
+              this.alertService.error(errMsg);
+            }
+          }
+        )
+
+        this.asebestosDoubleClick = 0;
+      } else {
+        // not a double click so set as a new first click
+        this.asebestosDoubleClick = new Date().getTime();
+      }
+
+    }
+  }
+
+/********** WOD Reports Function Start **********/
 
   viewWOReportingProgSummaryTree(reportName, reportType, dataItem:any=null){ 
 
@@ -1175,6 +1217,4 @@ export class WorksordersDetailsComponent implements OnInit {
 
 
   /********** WOD Reports Function End *********/
-
-
 }

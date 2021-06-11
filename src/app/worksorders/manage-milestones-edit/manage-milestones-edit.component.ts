@@ -56,13 +56,19 @@ export class ManageMilestonesEditComponent implements OnInit {
   
   onSubmit(){
     const formValue = this.milestoneForm.value;
-    const wosequence = this.singleMilestone.wosequence, wochecksurcde = this.singleMilestone.wochecksurcde, wocheckspecial2 = formValue.attReqVal.trim(), worespuser = formValue.resUserVal, strUserId = this.currentUser.userId;
+    let params = {
+      wosequence: this.singleMilestone.wosequence,
+      wochecksurcde: this.singleMilestone.wochecksurcde,
+      wocheckspecial2: formValue.attReqVal.trim(),
+      worespuser: formValue.resUserVal,
+      strUserId: this.currentUser.userId
+    }
     $('.k-window').css({ 'z-index': 1000 });
     this.confirmationDialogService.confirm('Please confirm..', "Are you sure you want to update the Milestone '"+this.singleMilestone.wocheckname+"'")
     .then((confirmed) => {
       if(confirmed){
         this.subs.add(
-          this.worksOrdersService.updateWorksOrderMilestone(wosequence, wochecksurcde, wocheckspecial2, worespuser, strUserId).subscribe(
+          this.worksOrdersService.updateWorksOrderMilestone(params).subscribe(
           data => {
             if (data.isSuccess) {
               this.closeMilestoneEdit();

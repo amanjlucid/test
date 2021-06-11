@@ -39,15 +39,18 @@
                 </div>
             </div>
 
-            <button type="button" class="btn btn-sm themeButton mr-1 headin_section" (click)="openVariationFun()">
+            <button *ngIf="woMenuBtnSecurityAccess('Defects')" (click)="openDefectsMethod()"
+                class="btn btn-sm themeButton mr-1">Defects</button>
+
+            <button *ngIf="woMenuBtnSecurityAccess('Variations')" type="button"
+                class="btn btn-sm themeButton mr-1 headin_section variationBtn" (click)="openVariationFun()">
+                <span *ngIf="variationNewOrIssue" class="badge badge-primary badge-dot indicator"></span>
                 Variations
             </button>
 
-            <button type="button" class="btn btn-sm themeButton mr-1 headin_section" (click)="viewCheckListOrderReport(4, selectedChildRow)">
+			<button type="button" class="btn btn-sm themeButton mr-1 headin_section" (click)="viewCheckListOrderReport(4, selectedChildRow)">
                 Checklist Report
             </button>
-
-
             <div class="dropdown" id="nesting-dropdown-demo">
                 <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown"
                     aria-expanded="false">Action</button>
@@ -69,17 +72,19 @@
                         Accept</a>
 
 
-                    <div class="dropdown-toggle" *ngIf="woMenuBtnSecurityAccess('Handover Asset')">
+                    <div [ngClass]="{'disabled' : disableMainActions('handover')}" class="dropdown-toggle"
+                        *ngIf="woMenuBtnSecurityAccess('Handover Asset')">
                         <div class="dropdown-item">Handover</div>
                         <div class="dropdown-menu handoverDrp">
-                            <a (click)="setAsset('HY')" class="dropdown-item" href="javascript:void(0)">Yesterday</a>
+                            <a [ngClass]="{'disabled' : disableMainActions('handover')}" (click)="setAsset('HY')"
+                                class="dropdown-item" href="javascript:void(0)">Yesterday</a>
                             <a (click)="setAsset('HT')" class="dropdown-item" href="javascript:void(0)">Today</a>
                             <a (click)="selectDate('HCD')" class="dropdown-item" href="javascript:void(0)">Choose
                                 Date</a>
                         </div>
                     </div>
 
-                    <div class="dropdown-toggle" *ngIf="woMenuBtnSecurityAccess('Signoff Asset')">
+                    <div [ngClass]="{'disabled' : disableMainActions('signoff')}" class="dropdown-toggle" *ngIf="woMenuBtnSecurityAccess('Signoff Asset')">
                         <div class="dropdown-item">Sign Off</div>
                         <div class="dropdown-menu signOffDrp">
                             <a (click)="setAsset('SOY')" class="dropdown-item" href="javascript:void(0)">Yesterday</a>
@@ -88,6 +93,7 @@
                                 Date</a>
                         </div>
                     </div>
+                    
                     <a [ngClass]="{'disabled' : disableMainActions('CANCEL')}"
                         *ngIf="woMenuBtnSecurityAccess('Cancel Asset')"
                         (click)="openRemoveReasonPanel('multiple', 'CANCEL')" class="dropdown-item"
@@ -713,6 +719,12 @@
 
     <app-variation-list *ngIf="openVariationList" [openVariationList]="openVariationList"
         [openedFrom]="'assetchecklist'" [selectedAsset]="selectedChildRow"
-        (closeVariationListEvent)="closeVariation($event)"></app-variation-list>
+        (closeVariationListEvent)="closeVariation($event)">
+    </app-variation-list>
+
+    <app-asset-defects-list *ngIf="openDefectsList" [openDefectsList]="openDefectsList"
+        [singleWorkOrderAssetInp]="selectedChildRow" [openedFrom]="'assetchecklist'"
+        (closeDefectsListEvent)="closeDefectList($event)">
+    </app-asset-defects-list>
 
 </kendo-window>

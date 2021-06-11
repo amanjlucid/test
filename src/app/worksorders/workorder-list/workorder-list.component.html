@@ -97,20 +97,15 @@
                   (click)="deleteThis(dataItem)">Delete</a>
                 <a *ngIf="woMenuAccess('Works Order Detail')" class="dropdown-item" href="javascript:void(0)"
                   (click)="redirectToWorksOrder(dataItem)"> Works Order Details</a>
-                <a class="dropdown-item" href="javascript:void(0)" (click)="openVariationList(dataItem)">Variations</a>
-                <a class="dropdown-item" (click)="openCompletionList(dataItem)" href="javascript:void(0)">Completions</a>
 
-                  <!-- <div class="dropdown-toggle" >
-                    <div class="dropdown-item">Programme Management</div>
-                    <div class="dropdown-menu addAssetMenu">
-                      <a (click)="redirectToWoProgramManagmentInstructions(dataItem)" class="dropdown-item"
-                        href="javascript:void(0)">
-                        Instructions</a>
-                      <a  class="dropdown-item"
-                      href="javascript:void(0)">Completions</a>
+                <a *ngIf="woMenuAccess('Variations')" class="dropdown-item" href="javascript:void(0)"
+                  (click)="openVariationList(dataItem)">Variations</a>
+                <a (click)="redirectToWoProgramManagmentInstructions(dataItem)" class="dropdown-item"
+                  href="javascript:void(0)">
+                  Instructions</a>
+                <a class="dropdown-item" (click)="openCompletionList(dataItem)"
+                  href="javascript:void(0)">Completions</a>
 
-                    </div>
-                  </div> -->
                 <div class="dropdown-toggle" >
                   <div class="dropdown-item">Contractor Reports</div>
                   <div class="dropdown-menu addAssetMenu">
@@ -137,7 +132,6 @@
                     <a class="dropdown-item" href="javascript:void(0)" (click)="WOCreateXportOutputReport(588, 'Associations Asset Level')">Asset Level</a>
                   </div>
                 </div>
-
                 <!-- <a class="dropdown-item" href="javascript:void(0)">Defects </a>
                 <a class="dropdown-item" href="javascript:void(0)">Contract Costs</a>
                 <a class="dropdown-item" href="javascript:void(0)">Variations</a>
@@ -367,10 +361,16 @@
   [selectedWorkOrderAddEdit]="selectedWorkOrderAddEdit" *ngIf="woFormWindow" (closeWoFormWin)="closeWoFormWin($event)">
 </app-workorder-form>
 
-<app-completion-list *ngIf="tabWindow" [workOrderId]="workOrderId" [completionWin] = "completionList" (closeCompletionWin)="closeCompletionList($event)" ></app-completion-list>
+<app-completion-list *ngIf="completionList" [worksOrderData]="selectedWorksOrder" [completionWin]="completionList"
+  (closeCompletionWin)="closeCompletionList($event)"></app-completion-list>
 
-<app-variation-list-all *ngIf="openVariationListAll" [openVariationListAll]="openVariationListAll" [openedFrom]="'worksorder'" [singleWorksOrder]="selectedWorksOrder" (closeVariationAllListEvent)="closeVariationAll($event)"></app-variation-list-all>
-<app-wo-program-management-instructions *ngIf="woProgramManagmentInstructionsWindow" [woProgramManagmentInstructionsWindow]="woProgramManagmentInstructionsWindow"
-  [worksOrderData]="selectedWorksOrder" [selectedWorksOrder]="selectedWorksOrder" (WoProgramManagmentInstructionsWinEvent)="closeWoProgramManagmentInstructionsWin($event)">
+<app-variation-list-all *ngIf="openVariationListAll" [openVariationListAll]="openVariationListAll"
+  [openedFrom]="'worksorder'" [singleWorksOrder]="selectedWorksOrder"
+  (closeVariationAllListEvent)="closeVariationAll($event)"></app-variation-list-all>
+
+<app-wo-program-management-instructions *ngIf="woProgramManagmentInstructionsWindow"
+  [woProgramManagmentInstructionsWindow]="woProgramManagmentInstructionsWindow" [worksOrderData]="selectedWorksOrder"
+  [selectedWorksOrder]="selectedWorksOrder"
+  (WoProgramManagmentInstructionsWinEvent)="closeWoProgramManagmentInstructionsWin($event)">
 </app-wo-program-management-instructions>
 <app-manage-milestones *ngIf="openManageMilestone" [worksOrderData]="selectedWorksOrder" [openManageMilestone]="openManageMilestone" (closeManageMilestoneEvent)="closeManageMilestone($event)"></app-manage-milestones>

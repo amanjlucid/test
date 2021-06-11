@@ -18,7 +18,7 @@ export class VariationNewComponent implements OnInit {
   @Input() formMode = 'new';
   @Input() selectedAsset: any = [];
   @Output() closeNewVariationEvent = new EventEmitter<boolean>();
-  @Output() outputReason = new EventEmitter<string>();
+  @Output() outputVariation = new EventEmitter<any>();
 
   subs = new SubSink(); // to unsubscribe services
   title = 'New Variation';
@@ -34,6 +34,7 @@ export class VariationNewComponent implements OnInit {
   worksOrderData: any;
   phaseData: any;
   assetDetails: any;
+  currentUser = JSON.parse(localStorage.getItem('currentUser'));
   // openVariationWorkList = false;
 
   constructor(
@@ -41,9 +42,11 @@ export class VariationNewComponent implements OnInit {
     private fb: FormBuilder,
     private workOrderProgrammeService: WorksorderManagementService,
     private alertService: AlertService,
+    private helperService: HelperService
   ) { }
 
   ngOnInit(): void {
+    // console.log(this.selectedAsset);
 
     this.getVariationPageData();
 
@@ -72,7 +75,7 @@ export class VariationNewComponent implements OnInit {
 
       ]).subscribe(
         data => {
-          // console.log(data)
+          // console.log(data);
           this.worksOrderData = data[0].data;
           this.phaseData = data[1].data;
           this.assetDetails = data[2].data[0];
@@ -125,10 +128,66 @@ export class VariationNewComponent implements OnInit {
     }
 
     let formRawVal = this.variationForm.getRawValue();
+    const { wopsequence, wosequence } = this.phaseData
 
     if (this.formMode == 'new') {
-      this.closeNewVariation();
-      this.outputReason.emit(formRawVal.reason);
+      let params = {
+        // ASSID: this.assetDetails.assid,
+        // WLCODE: '',
+        // WLATAID: '',
+        // WLPLANYEAR: '',
+        // WOSTAGESURCDE: '',
+        // WOCHECKSURCDE: '',
+        // WOIADISSUESTATUS: '',
+        // WOIADCOMMENT: '',
+        // WPHCODE: '',
+        // ASAQUANTITY: '',
+        // ASAUOM: '',
+        // WOIADRECHARGEYN: '',
+        // WOIADREFUSAL: '',
+
+        WOPSEQUENCE: wopsequence,
+        CTTSURCDE: this.worksOrderData.cttsurcde,
+        WOIACCEPTREASON: '',
+        WOIACCEPTDATE: this.helperService.dateObjToString(undefined),
+        WOIACCEPTUSER: '',
+        WOIACCEPTSTATUS: '',
+        WOICURRENTCONTRACTSUM: 0,
+        WOIINITIALCONTRACTSUM: 0,
+        WOIWORKCOST: 0,
+        WOIFEECOST: 0,
+        WOIISSUEUSERTYPE: 'Customer',
+        WOIISSUEREASON: formRawVal.reason,
+        WOIISSUEDATE: this.helperService.dateObjToString(undefined),
+        WOIISSUEUSER: '',
+        WOIISSUESTATUS: 'New',
+        WOIREQUESTDATE: this.helperService.getDateString('Today'),
+        WOIREQUESTUSER: this.currentUser.userId,
+        WOIREQUESTTYPE: 'Variation',
+        WOISEQUENCE: 0,
+        WOSEQUENCE: wosequence
+      }
+
+      this.subs.add(
+        this.workOrderProgrammeService.insertWorksOrderInstruction(params).subscribe(
+          data => {
+
+            if (data.isSuccess) {
+              this.workOrderProgrammeService.getLatestVariationData(wosequence, wopsequence, formRawVal.reason).subscribe(
+                variation => {
+                  if (variation.isSuccess) {
+                    this.closeNewVariation();
+                    this.outputVariation.emit(variation.data);
+                  }
+                }
+              )
+
+            } else this.alertService.error(data.message)
+          }, err => this.alertService.error(err)
+        )
+      )
+
+
     } else if (this.formMode == 'edit') {
       const { wosequence, woisequence, wopsequence } = this.singleVariation;
       this.workOrderProgrammeService.updateWorksOrderInstruction(wosequence, woisequence, wopsequence, formRawVal.reason).subscribe(
@@ -136,7 +195,7 @@ export class VariationNewComponent implements OnInit {
           if (data.isSuccess) {
             this.alertService.success(data.message);
             this.closeNewVariation();
-            console.log(data);
+
           } else this.alertService.error(data.message)
         }, err => this.alertService.error(err)
       );

@@ -8,7 +8,11 @@ import { WorksordersDetailsComponent } from '../worksorders-details/worksorders-
 import { WopmConfigComponent } from '../Config/wopm-config/wopm-config.component';
 import { WopmTemplatesComponent } from '../Config/wopm-templates/wopm-templates.component';
 import { WopmMasterstagesComponent } from '../Config/wopm-masterstages/wopm-masterstages.component';
-
+import { WorklistComponent } from '../worklist/worklist.component';
+import { WopmJobrolesComponent } from '../Config/wopm-jobroles/wopm-jobroles.component';
+import { WopmContractTermsComponent } from '../Config/wopm-contract-terms/wopm-contract-terms.component';
+import { WopmRefusalCodesComponent } from '../Config/wopm-refusal-codes/wopm-refusal-codes.component';
+import { WopmRagStatusComponent } from '../Config/wopm-rag-status/wopm-rag-status.component';
 
 const routes: Routes = [
   {
@@ -20,7 +24,7 @@ const routes: Routes = [
       { path: 'management', component: WorksordersManagementComponent },
       { path: 'list', component: WorkorderListComponent },
       { path: 'details', component: WorksordersDetailsComponent },
-      { path: 'templates', component: WopmTemplatesComponent },
+      { path: 'worklist', component: WorklistComponent },
       {
         path: 'config',
         component: WopmConfigComponent,
@@ -28,6 +32,10 @@ const routes: Routes = [
           { path: '', redirectTo: 'templates', pathMatch: 'full' },
           { path: 'templates', component: WopmTemplatesComponent },
           { path: 'masterstages', component: WopmMasterstagesComponent },
+          { path: 'jobroles', component: WopmJobrolesComponent },
+          { path: 'refusalcodes', component: WopmRefusalCodesComponent },
+          { path: 'contractterms', component: WopmContractTermsComponent },
+          { path: 'ragstatus', component: WopmRagStatusComponent },
         ]
       },
 

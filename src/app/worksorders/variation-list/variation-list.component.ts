@@ -2,8 +2,8 @@ import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { SelectableSettings, PageChangeEvent } from '@progress/kendo-angular-grid';
-import { AlertService, ConfirmationDialogService, HelperService, WorksorderManagementService } from 'src/app/_services';
-import { forkJoin } from 'rxjs';
+import { AlertService, ConfirmationDialogService, HelperService, SharedService, WorksorderManagementService } from 'src/app/_services';
+import { combineLatest, forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-variation-list',
@@ -52,18 +52,38 @@ export class VariationListComponent implements OnInit {
   confirmationType = '';
   openAppendVariation = false;
 
+  worksOrderAccess = [];
+  worksOrderUsrAccess: any = [];
+  userType: any = [];
+  variationIssuedAndAccepted: boolean = true;
+  outstandingVariation: boolean = true;
+
   constructor(
     private chRef: ChangeDetectorRef,
     private workOrderProgrammeService: WorksorderManagementService,
     private alertService: AlertService,
     private confirmationDialogService: ConfirmationDialogService,
-
+    private sharedService: SharedService
   ) {
     this.setSelectableSettings();
   }
 
   ngOnInit(): void {
-    console.log(this.selectedAsset);
+    // console.log(this.selectedAsset);
+    this.subs.add(
+      combineLatest([
+        this.sharedService.worksOrdersAccess,
+        this.sharedService.woUserSecObs,
+        this.sharedService.userTypeObs
+      ]).subscribe(
+        data => {
+          // console.log(data);
+          this.worksOrderAccess = data[0];
+          this.worksOrderUsrAccess = data[1];
+          this.userType = data[2][0];
+        }
+      )
+    )
 
     this.getVariationPageDataWithGrid();
 
@@ -98,6 +118,7 @@ export class VariationListComponent implements OnInit {
 
     if (this.openedFrom == 'assetchecklist') {
       const { wosequence, assid, wopsequence } = this.selectedAsset;
+      const params = { WOSEQUENCE: wosequence, strASSID: assid, WOPSEQUENCE: wopsequence }
       this.subs.add(
         forkJoin([
           this.workOrderProgrammeService.getWorksOrderByWOsequence(wosequence),
@@ -105,19 +126,25 @@ export class VariationListComponent implements OnInit {
           this.workOrderProgrammeService.getAssetAddressByAsset(assid),
           this.workOrderProgrammeService.getWEBWorksOrdersVariationList(wosequence, wopsequence, assid),
           this.workOrderProgrammeService.specificWorkOrderAssets(wosequence, assid, wopsequence),
+          this.workOrderProgrammeService.worksOrdersOutstandingVariationExistsForAsset(params),
         ]).subscribe(
           data => {
-            console.log(data)
-
+            // console.log(data);
             this.worksOrderData = data[0].data;
             this.phaseData = data[1].data;
             this.assetDetails = data[2].data[0];
             const variationData = data[3];
             this.woAsset = data[4].data[0];
 
-
             if (variationData.isSuccess) {
               this.variationData = variationData.data;
+
+              this.outstandingVariation = data[5].data.result;
+              //check if request type is variation 
+              this.variationIssuedAndAccepted = variationData.data.some(x => x.woirequesttype == "Variation" && (x.woiissuestatus == "New" || x.woiissuestatus == "Issued" || x.woiissuestatus == "Contractor Review" || x.woiissuestatus == "Customer Review"))
+
+              // console.log(this.variationIssuedAndAccepted)
+
               this.gridView = process(this.variationData, this.state);
             } else this.alertService.error(variationData.message);
 
@@ -152,22 +179,42 @@ export class VariationListComponent implements OnInit {
 
   cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
     this.selectedSingleVariation = dataItem;
+    // console.log(dataItem)
   }
 
   openVariationDetails(item) {
     if (item != undefined) {
-      if (item.woiissuestatus == "New") {
-        this.openedFor = 'edit';
+      const { woiissuestatus } = item;
+      this.openedFor = 'details'; // default will be detail view
+      if (this.userType != undefined) {
+        const { wourroletype } = this.userType;
+        if (
+          wourroletype == "Dual Role" ||
+          woiissuestatus == "New" ||
+          (wourroletype == "Customer" && woiissuestatus == "Customer Review") ||
+          (wourroletype == "Contractor" && woiissuestatus == "Contractor Review")
+        ) {
+          this.openedFor = 'edit';
+        }
+
       } else {
-        this.openedFor = 'details';
+        if (this.currentUser.admin == "Y") {
+          if (woiissuestatus == "New" || woiissuestatus == "Customer Review" || woiissuestatus == "Contractor Review") {
+            this.openedFor = 'edit';
+          }
+        } else {
+          if (woiissuestatus == "New") {
+            this.openedFor = 'edit';
+          }
+        }
       }
 
       this.selectedSingleVariation = item;
     }
 
-
     this.openVariationWorkList = true;
     $('.variationListOverlay').addClass('ovrlay');
+
   }
 
   closeVariationDetails(eve) {
@@ -188,16 +235,14 @@ export class VariationListComponent implements OnInit {
   closeNewVariation(eve) {
     this.openNewVariation = eve;
     $('.variationListOverlay').removeClass('ovrlay');
-    this.getVariationPageDataWithGrid();
+    // this.getVariationPageDataWithGrid();
   }
 
-  getVariationReason(reason) {
-    if (reason != "") {
+  getVariationReason(variation) {
+    if (variation != "") {
       if (this.openedFrom == "assetchecklist" && this.formMode == "new") {
-        this.openedFor = 'new';
-        this.openVariationDetails(undefined);
+        this.appendVariation(variation);
       }
-
     }
   }
 
@@ -209,9 +254,29 @@ export class VariationListComponent implements OnInit {
   }
 
 
-  disableAppendBtn() {
-    // woAsset?.woassstatus != 'Accepted'
-    return false;
+  woMenuAccess(menuName) {
+    if (this.userType == undefined) return true;
+
+    if (this.userType?.wourroletype == "Dual Role") {
+      return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
+    }
+
+    return this.worksOrderUsrAccess.indexOf(menuName) != -1
+
+  }
+
+  disableNewAndAppendBtn(btnName) {
+    // console.log(this.woAsset)
+    if (this.woAsset) {
+      const { woassstatus } = this.woAsset;
+      if (btnName == "new" || btnName == "append") {
+        // console.log(woassstatus)
+        if ((woassstatus == "In Progress" || woassstatus == "Accepted") && this.variationIssuedAndAccepted == false) {
+          return false;
+        }
+      }
+    }
+    return true;
   }
 
   disableVariationBtns(btnType, item) {
@@ -230,7 +295,7 @@ export class VariationListComponent implements OnInit {
   }
 
 
-  sendVariation(to = "customer", item) {
+  sendVariation(to = "Customer", item) {
 
     const { wosequence, woisequence, woiissuereason } = item;
     const { woname } = this.worksOrderData
@@ -238,14 +303,14 @@ export class VariationListComponent implements OnInit {
     let apiCall: any;
     let msg = '';
 
-    if (to == 'customer') {
+    if (to == 'Customer') {
       apiCall = this.workOrderProgrammeService.sendVariationToCustomerForReview(wosequence, woisequence, woname, woiissuereason, this.currentUser.userName)
       msg = 'Variation sent to customer.'
-    } else if (to == 'contractor') {
+    } else if (to == 'Contractor') {
       apiCall = this.workOrderProgrammeService.emailVariationToContractorForReview(wosequence, woisequence, woname, woiissuereason, this.currentUser.userName)
       msg = 'Variation sent to contractor.'
     } else {
-      return
+      this.alertService.error("Something went wrong.")
     }
 
 
@@ -254,7 +319,8 @@ export class VariationListComponent implements OnInit {
         data => {
           // console.log(data)
           if (data.isSuccess) {
-            this.alertService.success(msg)
+            this.alertService.success(msg);
+            this.getVariationPageDataWithGrid();
           } else this.alertService.error(data.message)
         }, err => this.alertService.error(err)
       )
@@ -392,7 +458,7 @@ export class VariationListComponent implements OnInit {
     this.selectedSingleVariation = eve;
     this.selectedSingleVariation.assid = this.selectedAsset.assid
     this.openVariationDetails(undefined)
-    console.log(eve);
+
   }
 
 }

@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { SelectableSettings, PageChangeEvent, RowArgs, GridComponent, FilterService, BaseFilterCellComponent } from '@progress/kendo-angular-grid';
-import { AlertService, ConfirmationDialogService, HelperService, SharedService, WorksorderManagementService } from '../../_services'
+import { AlertService, ConfirmationDialogService, HelperService, LoaderService, SharedService, WorksorderManagementService } from '../../_services'
 import { combineLatest, forkJoin, BehaviorSubject, of, from } from 'rxjs';
 import { WorkordersPhaseChecklistModel } from '../../_models';
 import { tap, switchMap, distinct } from 'rxjs/operators';
@@ -50,18 +50,18 @@ export class PhaseChecklistComponent implements OnInit {
   worksOrderUsrAccess: any = [];
   worksOrderAccess: any = [];
   userType: any = [];
-  workorderAsset: any = [];
+  // workorderAsset: any = [];
   // gridHeight = 680;
   filterToggle = false;
   actionType: string = 'single';
   actionName: string = '';
   selectedDate: any;
-  selectedChecklistList = [];
+  // selectedChecklistList = [];
   singlePhaseChecklist: any;
   chooseDateWindow: boolean = false;
   reason: string = '';
   openAssetRemoveReason = false;
-  stageNames: any;
+  checkNames: any;
   mulitSelectDropdownSettings = {
     singleSelection: false,
     idField: 'item_id',
@@ -80,7 +80,7 @@ export class PhaseChecklistComponent implements OnInit {
     showSelectedItemsAtTop: false,
     defaultOpen: false
   }
-  selectedStages = [];
+  selectedCheckList = [];
   @ViewChild('stagesMultiSelect') stagesMultiSelect;
   predecessors: boolean = false;
 
@@ -92,6 +92,7 @@ export class PhaseChecklistComponent implements OnInit {
     private alertService: AlertService,
     private chRef: ChangeDetectorRef,
     private confirmationDialogService: ConfirmationDialogService,
+    private loaderService: LoaderService
   ) {
     this.setSelectableSettings();
   }
@@ -157,20 +158,22 @@ export class PhaseChecklistComponent implements OnInit {
   }
 
   getProgrammeAndWo() {
+    this.loaderService.pageShow();
     const { wosequence, assid, wopsequence } = this.selectedPhase;
     this.subs.add(
       forkJoin([
+        this.worksorderManagementService.getCheckListName(wosequence),
         this.worksorderManagementService.getWorksOrderByWOsequence(wosequence),
         this.worksorderManagementService.getPhaseCheckListFiltersList(wosequence, false),
-        this.worksorderManagementService.specificWorkOrderAssets(wosequence, assid, wopsequence),
-        this.worksorderManagementService.getStageNameList(wosequence),
+        // this.worksorderManagementService.specificWorkOrderAssets(wosequence, assid, wopsequence),
+
       ]).subscribe(
         data => {
           // console.log(data)
-          const wo = data[0];
-          const colFilters = data[1];
-          const workorderAsset = data[2];
-          const stageList = data[3];
+          const wo = data[1];
+          const colFilters = data[2];
+          // const workorderAsset = data[2];
+          const checkList = data[0];
 
           if (wo.isSuccess) this.worksOrderData = wo.data;
           else this.alertService.error(wo.message)
@@ -178,13 +181,15 @@ export class PhaseChecklistComponent implements OnInit {
           if (colFilters.isSuccess) this.colFilters = colFilters.data;
           else this.alertService.error(colFilters.message)
 
-          if (workorderAsset.isSuccess) this.workorderAsset = workorderAsset.data[0];
+          // if (workorderAsset.isSuccess) this.workorderAsset = workorderAsset.data[0];
 
-          if (stageList.isSuccess) {
-            this.stageNames = stageList.data.map((x: any) => {
+          if (checkList.isSuccess) {
+            this.checkNames = checkList.data.map((x: any) => {
               return { item_id: x, item_text: x }
             });
           }
+
+          this.loaderService.pageHide();
           this.chRef.detectChanges();
 
         },
@@ -195,13 +200,13 @@ export class PhaseChecklistComponent implements OnInit {
   }
 
   onStagesSingleSelectionChange(item: any) {
-    this.headerFilters.StageCategory = this.selectedStages.map(x => x.item_id).toString();
+    this.headerFilters.CheckListCategory = this.selectedCheckList.map(x => x.item_id).toString();
     this.stateChange.next(this.headerFilters);
   }
 
   onStagesSelectionAllChange(items: any) {
-    this.selectedStages = items;
-    this.headerFilters.StageCategory = this.selectedStages.map(x => x.item_id).toString();
+    this.selectedCheckList = items;
+    this.headerFilters.CheckListCategory = this.selectedCheckList.map(x => x.item_id).toString();
     this.stateChange.next(this.headerFilters);
   }
 
@@ -431,22 +436,24 @@ export class PhaseChecklistComponent implements OnInit {
   }
 
   mySelectionKey(context: RowArgs): string {
-    return encodeURIComponent(`${context.dataItem.wochecksurcde}_${context.dataItem.assid}`);
+    return encodeURIComponent(`${context.dataItem.assid}_${context.dataItem.wostagesurcde}_${context.dataItem.wochecksurcde}`);
   }
 
   cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
+    // console.log(dataItem)
     this.singlePhaseChecklist = dataItem;
+    this.chRef.detectChanges();
+    // setTimeout(() => {
+    //   const checkSrcAssidExist = this.selectedChecklistList.find(x => x.wochecksurcde == dataItem.wochecksurcde && x.assid == dataItem.assid);
 
-    setTimeout(() => {
-      const checkSrcAssidExist = this.selectedChecklistList.find(x => x.wochecksurcde == dataItem.wochecksurcde && x.assid == dataItem.assid);
+    //   if (checkSrcAssidExist) {
+    //     this.selectedChecklistList = this.selectedChecklistList.filter(x => this.mySelection.includes(`${x.wochecksurcde}_${x.assid}`))
+    //   } else {
+    //     this.selectedChecklistList.push(dataItem)
+    //   }
 
-      if (checkSrcAssidExist) {
-        this.selectedChecklistList = this.selectedChecklistList.filter(x => this.mySelection.includes(`${x.wochecksurcde}_${x.assid}`))
-      } else {
-        this.selectedChecklistList.push(dataItem)
-      }
-
-    }, 200);
+    //   this.chRef.detectChanges();
+    // }, 200);
   }
 
   closePhaseChecklist() {
@@ -489,54 +496,63 @@ export class PhaseChecklistComponent implements OnInit {
 
   disableButtons(name) {
     if (name == "status") {
-      return this.workorderAsset?.woassstatus == 'Pending' || this.workorderAsset?.woassstatus == 'Issued'
+      return this.singlePhaseChecklist?.woassstatus == 'Pending' || this.singlePhaseChecklist?.woassstatus == 'Issued'
     }
 
     if (name == "SE") {
-      return this.workorderAsset?.woassstatus == 'Pending' || this.workorderAsset?.woassstatus == 'Final Completion'
+      return this.singlePhaseChecklist?.woassstatus == 'Pending' || this.singlePhaseChecklist?.woassstatus == 'Final Completion'
     }
 
     if (name == "STCD") {
-      return this.workorderAsset?.woassstatus == 'Pending' || this.workorderAsset?.woassstatus == 'Issued' || this.workorderAsset?.woassstatus == 'Final Completion'
+      return this.singlePhaseChecklist?.woassstatus == 'Pending' || this.singlePhaseChecklist?.woassstatus == 'Issued' || this.singlePhaseChecklist?.woassstatus == 'Final Completion'
     }
 
     if (name == "CSD") {
-      return this.workorderAsset?.woassstatus == 'Pending' || this.workorderAsset?.woassstatus == 'Issued' || this.workorderAsset?.woassstatus == 'Final Completion'
+      return this.singlePhaseChecklist?.woassstatus == 'Pending' || this.singlePhaseChecklist?.woassstatus == 'Issued' || this.singlePhaseChecklist?.woassstatus == 'Final Completion'
     }
 
     if (name == "CCD") {
-      return this.workorderAsset?.woassstatus == 'Pending' || this.workorderAsset?.woassstatus == 'Issued'
+      return this.singlePhaseChecklist?.woassstatus == 'Pending' || this.singlePhaseChecklist?.woassstatus == 'Issued'
     }
 
     if (name == "CMP") {
-      return this.workorderAsset?.woassstatus == 'Pending' || this.workorderAsset?.woassstatus == 'Issued'
+      return this.singlePhaseChecklist?.woassstatus == 'Pending' || this.singlePhaseChecklist?.woassstatus == 'Issued'
     }
 
 
     if (name == "woAdd") {
-      return this.workorderAsset?.woassstatus != 'New'
+      return this.singlePhaseChecklist?.woassstatus != 'New'
     }
 
     if (name == "release") {
-      return this.workorderAsset?.woassstatus != 'New'
+      return this.singlePhaseChecklist?.woassstatus != 'New'
     }
 
     if (name == "issue") {
-      return this.workorderAsset?.woassstatus != 'Pending'
+      return this.singlePhaseChecklist?.woassstatus != 'Pending'
     }
 
     if (name == "accept") {
-      return this.workorderAsset?.woassstatus != 'Issued'
+      return this.singlePhaseChecklist?.woassstatus != 'Issued'
     }
 
     if (this.actionType == 'single') {
       if (name == "na" || name == "STIP" || name == "NS" || name == "RCI" || name == "COMP") {
-        return this.workorderAsset?.woassstatus == 'Pending' || this.workorderAsset?.woassstatus == 'Issued'
+        return this.singlePhaseChecklist?.woassstatus == 'Pending' || this.singlePhaseChecklist?.woassstatus == 'Issued'
+      }
+
+      if (name == "DATES") {
+        return this.singlePhaseChecklist?.woassstatus == 'Pending'
       }
     } else {
       if (name == "na" || name == "STIP" || name == "NS" || name == "RCI" || name == "COMP") {
-        return this.mySelection.length == 0 || this.workorderAsset?.woassstatus == 'Pending' || this.workorderAsset?.woassstatus == 'Issued'
+        return this.mySelection.length == 0 || this.singlePhaseChecklist?.woassstatus == 'Pending' || this.singlePhaseChecklist?.woassstatus == 'Issued'
       }
+
+      if (name == "DATES") {
+        return this.mySelection.length == 0 || this.singlePhaseChecklist?.woassstatus == 'Pending'
+      }
+
     }
 
 
@@ -621,26 +637,31 @@ export class PhaseChecklistComponent implements OnInit {
         return
       }
 
-      let phaseChecklist = this.selectedChecklistList.filter(x => this.mySelection.includes(`${x.wochecksurcde}_${x.assid}`));
+      // let phaseChecklist = this.selectedChecklistList.filter(x => this.mySelection.includes(`${x.wochecksurcde}_${x.assid}`));
 
-      if (phaseChecklist.length == 0) {
-        return
-      }
+      // if (phaseChecklist.length == 0) {
+      //   return
+      // }
 
       let ASSID_STAGESURCDE_CHECKSURCDE = [];
       let assetIdArr = [];
 
-      for (const checklist of phaseChecklist) {
-        ASSID_STAGESURCDE_CHECKSURCDE.push(checklist.assid)
-        ASSID_STAGESURCDE_CHECKSURCDE.push(checklist.wostagesurcde)
-        ASSID_STAGESURCDE_CHECKSURCDE.push(checklist.wochecksurcde)
+      for (const checklist of this.mySelection) {
+        const splitSelection = checklist.split('_');
+        ASSID_STAGESURCDE_CHECKSURCDE.push(splitSelection[0])
+        ASSID_STAGESURCDE_CHECKSURCDE.push(splitSelection[1])
+        ASSID_STAGESURCDE_CHECKSURCDE.push(splitSelection[2])
+        // ASSID_STAGESURCDE_CHECKSURCDE.push(checklist.assid)
+        // ASSID_STAGESURCDE_CHECKSURCDE.push(checklist.wostagesurcde)
+        // ASSID_STAGESURCDE_CHECKSURCDE.push(checklist.wochecksurcde)
 
-        assetIdArr.push(checklist.assid)
+        assetIdArr.push(splitSelection[0])
       }
 
+      const { wosequence, wopsequence, wocheckname } = this.singlePhaseChecklist
+      params.WOSEQUENCE = wosequence;
+      params.WOPSEQUENCE = wopsequence;
 
-      params.WOSEQUENCE = phaseChecklist[0].wosequence;
-      params.WOPSEQUENCE = phaseChecklist[0].wopsequence;
 
 
       if (type == "RELEASE" || type == "ACCEPT" || type == "ISSUE" || type == "HY" || type == "HT" || type == "HCD" || type == "SOY" || type == "SOT" || type == "SOCD" || type == "CANCEL") {
@@ -655,7 +676,7 @@ export class PhaseChecklistComponent implements OnInit {
         params.CHECKORPROCESS = checkOrProcess;
 
         params.RecordCount = this.mySelection.length;
-        params.CheckName = this.mySelection.length == 1 ? phaseChecklist[0].wocheckname : ''
+        params.CheckName = this.mySelection.length == 1 ? wocheckname : ''
 
         //Status condition
         // if(type == 'NA' || type == 'RESET' || type == 'NOT STARTED' || type == 'IPY' || type == 'IPT' || type == 'IPDM' || type == 'CIY' || type == 'CIT' || type == 'CIPICKM'){
@@ -687,10 +708,8 @@ export class PhaseChecklistComponent implements OnInit {
 
       }
 
-
-
-
     } else {
+      this.alertService.error("Please select a record.")
       return;
     }
 
@@ -824,6 +843,8 @@ export class PhaseChecklistComponent implements OnInit {
     }
 
 
+    // console.log(this.mySelection)
+    // console.log(params);
     this.subs.add(
       this.worksorderManagementService.setStatus(apiName, params).subscribe(
         data => {
@@ -902,22 +923,22 @@ export class PhaseChecklistComponent implements OnInit {
 
   setSeletedRow(dataItem) {
     this.mySelection = [];
-    this.selectedChecklistList = [];
+    // this.selectedChecklistList = [];
     this.actionType = 'single';
-    // this.mySelection.push(dataItem.eventSequence)
-    this.selectedChecklistList.push(dataItem)
+    this.mySelection.push(dataItem.eventSequence)
+    // this.selectedChecklistList.push(dataItem)
   }
 
 
   openPredecessors(item) {
-    this.selectedChecklistList = [];
+    // this.selectedChecklistList = [];
     $('.phaseChecklistovrlay').addClass('ovrlay');
     this.predecessors = true;
-    this.selectedChecklistList.push(item)
+    // this.selectedChecklistList.push(item)
   }
 
   closePredecessors(eve) {
-    this.selectedChecklistList = [];
+    // this.selectedChecklistList = [];
     $('.phaseChecklistovrlay').removeClass('ovrlay');
     this.predecessors = false;
   }

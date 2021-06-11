@@ -12,12 +12,13 @@
 
                 <div class="dropdown-menu" x-placement="bottom-start"
                     style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
-                    <a class="dropdown-item" href="javascript:void(0)" (click)="newBlankVariation()">
+                    <a *ngIf="woMenuAccess('Create Blank Variation')" class="dropdown-item" href="javascript:void(0)"
+                        (click)="newBlankVariation()">
                         Variation</a>
                     <!-- <a class="dropdown-item" href="javascript:void(0)" (click)="bulkVariation()">
                         Bulk Variation</a> -->
-                    <a [ngClass]="{'disabled' : disableBulkVaritionBtn() }" class="dropdown-item"
-                        href="javascript:void(0)" (click)="bulkVariation()">
+                    <a [ngClass]="{'disabled' : disableBulkVaritionBtn() }" *ngIf="woMenuAccess('Edit Bulk Variation')"
+                        class="dropdown-item" href="javascript:void(0)" (click)="bulkVariation()">
                         Bulk Variation</a>
                 </div>
             </div>
@@ -64,34 +65,38 @@
                             <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
 
                             <div class="dropdown-menu">
-                                <a [ngClass]="{'disabled' : disableVariationBtns('Assets', dataItem)}"
+                                <a *ngIf="woMenuAccess('Show Variation Assets')"
+                                    [ngClass]="{'disabled' : disableVariationBtns('Assets', dataItem)}"
                                     class="dropdown-item" href="javascript:void(0)"
                                     (click)="openVariationlist(dataItem)">Assets</a>
 
-                                <a [ngClass]="{'disabled' : disableVariationBtns('Details', dataItem)}"
+                                <!-- <a [ngClass]="{'disabled' : disableVariationBtns('Details', dataItem)}"
                                     class="dropdown-item" href="javascript:void(0)"
-                                    (click)="openVariationDetailMethod(dataItem)">Details</a>
+                                    (click)="openVariationDetailMethod(dataItem)">Details</a> -->
 
 
                                 <div class="dropdown-toggle">
                                     <div class="dropdown-item">Send</div>
                                     <div class="dropdown-menu">
-                                        <a [ngClass]="{'disabled' : disableVariationBtns('Customer', dataItem)}"
+                                        <a *ngIf="woMenuAccess('Send Variation To Customer')"
+                                            [ngClass]="{'disabled' : disableVariationBtns('Customer', dataItem)}"
                                             class="dropdown-item" href="javascript:void(0)"
-                                            (click)="sendVariation('customer', dataItem)">Customer</a>
+                                            (click)="sendVariation('Customer', dataItem)">Customer</a>
                                         <a [ngClass]="{'disabled' : disableVariationBtns('Contractor', dataItem)}"
-                                            class="dropdown-item" href="javascript:void(0)"
-                                            (click)="sendVariation('contractor', dataItem)">Contractor</a>
+                                            *ngIf="woMenuAccess('Send Variation To Contractor')" class="dropdown-item"
+                                            href="javascript:void(0)"
+                                            (click)="sendVariation('Contractor', dataItem)">Contractor</a>
 
                                     </div>
                                 </div>
 
-                                <a [ngClass]="{'disabled' : disableVariationBtns('Issue', dataItem)}"
+                                <a *ngIf="woMenuAccess('Issue Variation')"
+                                    [ngClass]="{'disabled' : disableVariationBtns('Issue', dataItem)}"
                                     class="dropdown-item" href="javascript:void(0)"
                                     (click)="issueVariation(dataItem)">Issue</a>
 
                                 <a [ngClass]="{'disabled' : disableVariationBtns('Delete', dataItem)}"
-                                    class="dropdown-item" href="javascript:void(0)"
+                                *ngIf="woMenuAccess('Delete Variation')" class="dropdown-item" href="javascript:void(0)"
                                     (click)="deleteVariationConfirm(dataItem)">Delete</a>
 
 
@@ -183,10 +188,10 @@
     <div class="variationListAllOverlay"></div>
 
 
-    <app-variation-detail *ngIf="openVariationDetail" [openVariationDetail]="openVariationDetail"
+    <!-- <app-variation-detail *ngIf="openVariationDetail" [openVariationDetail]="openVariationDetail"
         [openedFrom]="openedFrom" [openedFor]="openedFor" [singleVariation]="selectedSingleInstructionVariation"
         (closeVariationDetailEvent)="closeVariationDetails($event)">
-    </app-variation-detail>
+    </app-variation-detail> -->
 
 
     <app-variation-asset *ngIf="openVariationAsset" [openVariationAsset]="openVariationAsset" [openedFrom]="openedFrom"

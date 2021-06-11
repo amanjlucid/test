@@ -58,6 +58,7 @@
 
 .filterArea .filterdiv1 .filterLbl {
     width: 34%;
+    margin-right: 10px;
 }
 
 .filterArea .filterdiv1 input[type=text] {
@@ -75,6 +76,7 @@
 
 .filterArea .filterdiv3 .filterLbl {
     width: 36%;
+    margin-right: 10px;
 }
 
 .filterArea .filterdiv3 input[type=text] {
@@ -83,6 +85,7 @@
 
 .filterArea .filterdiv4 .filterLbl {
     width: 24%;
+    margin-right: 10px;
 }
 
 .filterArea .filterdiv4 input[type=text] {
@@ -94,15 +97,15 @@
 }
 
 .filterdiv2, .filterdiv4 {
-    width: 19%;
+    width: 17%;
 }
 
 .filterdiv5 {
-    width: 21%;
+    width: 25%;
 }
 
 .filterdiv1 {
-    width: 15%;
+    width: 13%;
 }
 
 .filterdiv3 {
@@ -110,7 +113,7 @@
 }
 
 .filterdiv6 {
-    width: 8%;
+    width: 11%;
 }
 
 .filterArea .radioDiv {

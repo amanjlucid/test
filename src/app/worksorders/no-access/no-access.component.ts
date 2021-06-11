@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef, ViewEncapsulation } from '@angular/core';
 import { SubSink } from 'subsink';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { WorksorderManagementService, AlertService, HelperService, LoaderService } from '../../_services'
@@ -8,7 +8,8 @@ import { ShouldGreaterThanYesterday, SimpleDateValidator } from 'src/app/_helper
   selector: 'app-no-access',
   templateUrl: './no-access.component.html',
   styleUrls: ['./no-access.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  encapsulation: ViewEncapsulation.None
 })
 
 export class NoAccessComponent implements OnInit {
@@ -16,7 +17,7 @@ export class NoAccessComponent implements OnInit {
   @Input() selectedChecklistsingleItem: any;
   @Output() closeNoAccessWinEvent = new EventEmitter<boolean>();
   @Output() refreshChecklist = new EventEmitter<boolean>();
-  title = 'No Access Window';
+  title = "No Access";
 
   subs = new SubSink();
   submitted = false;

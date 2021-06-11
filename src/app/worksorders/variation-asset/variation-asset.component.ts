@@ -2,8 +2,8 @@ import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { SelectableSettings, PageChangeEvent } from '@progress/kendo-angular-grid';
-import { AlertService, ConfirmationDialogService, HelperService, WorksorderManagementService } from 'src/app/_services';
-import { forkJoin } from 'rxjs';
+import { AlertService, ConfirmationDialogService, HelperService, SharedService, WorksorderManagementService } from 'src/app/_services';
+import { combineLatest, forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-variation-asset',
@@ -50,7 +50,11 @@ export class VariationAssetComponent implements OnInit {
   openVariationWorkList: boolean = false;
   formMode = 'new'
   openedFor = 'details'
+  openVariationDetail = false;
 
+  worksOrderAccess = [];
+  worksOrderUsrAccess: any = [];
+  userType: any = [];
 
   constructor(
     private chRef: ChangeDetectorRef,
@@ -58,13 +62,26 @@ export class VariationAssetComponent implements OnInit {
     private alertService: AlertService,
     private helperService: HelperService,
     private confirmationDialogService: ConfirmationDialogService,
+    private sharedService: SharedService
   ) {
     this.setSelectableSettings();
   }
 
   ngOnInit(): void {
-    console.log(this.selectedVariationInp)
-    // console.log(this.selectedWOInp)
+    this.subs.add(
+      combineLatest([
+        this.sharedService.worksOrdersAccess,
+        this.sharedService.woUserSecObs,
+        this.sharedService.userTypeObs
+      ]).subscribe(
+        data => {
+          this.worksOrderAccess = data[0];
+          this.worksOrderUsrAccess = data[1];
+          this.userType = data[2][0];
+        }
+      )
+    )
+
     this.getVariationPageDataWithVariationAssetFromWO()
   }
 
@@ -130,6 +147,8 @@ export class VariationAssetComponent implements OnInit {
 
           // variation asset data and grid render
           const variationAssetdata = data[3];
+          // console.log({ varasset: variationAssetdata.data });
+
           if (variationAssetdata.isSuccess) {
             this.variationData = variationAssetdata.data;
             this.gridView = process(this.variationData, this.state);
@@ -222,12 +241,42 @@ export class VariationAssetComponent implements OnInit {
 
 
   disableVariationBtns(btnType, item) {
+
     if (btnType == 'Edit') {
-      return this.selectedVariationInp.woiissuestatus == 'Customer Review' || this.selectedVariationInp.woiissuestatus == 'New' ? false : true;
+      if (this.selectedVariationInp.responsibility == "ALL" && this.selectedVariationInp.woiissuestatus != "Accepted" && this.selectedVariationInp.woiissuestatus != "Issued") {
+        return false
+      }
+
     } else if (btnType == 'Accept') {
-      return this.selectedVariationInp.woiissuestatus == 'Issued' ? false : true;
+      if (this.selectedVariationInp.woiissuestatus == "Issued" && this.selectedVariationInp.responsibility == "ALL" && item.woiaissuestatus != "Accepted") {
+        return false;
+      }
     }
 
+    if (btnType == 'Details') {
+      if (this.selectedVariationInp.isEmptyVariation == "N") {
+        return false;
+      }
+    }
+
+    return true;
+
+  }
+
+  woMenuAccess(menuName) {
+    return this.worksOrderUsrAccess.indexOf(menuName) != -1
+  }
+
+  openVariationDetailMethod() {
+    // this.selectedSingleInstructionVariation = this.selectedVariationInp;
+    $('.variationAssetListOverlay').addClass('ovrlay');
+    this.openVariationDetail = true;
+  }
+
+  closeVarDetails(eve) {
+    this.openVariationDetail = eve;
+    $('.variationAssetListOverlay').removeClass('ovrlay');
+    // this.getAllVariations();
   }
 
 }

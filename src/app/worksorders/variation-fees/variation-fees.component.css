@@ -7,3 +7,7 @@
     line-height: 20px;
     padding: 8px 12px;
 }
+
+.variationFeeGrid .k-grid tr.notNew {
+    background-color: rgba(230, 0, 126, 0.1) !important
+}

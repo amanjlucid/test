@@ -72,7 +72,7 @@ export class WorkorderListComponent implements OnInit {
   mousePositioin: any = 0;
   openVariationListAll: boolean;
 
-  tabWindow = false;
+  // tabWindow = false;
   completionList = false;
 
   workOrderId: number;
@@ -110,7 +110,7 @@ export class WorkorderListComponent implements OnInit {
         this.sharedService.userTypeObs
       ]).subscribe(
         data => {
-
+          // console.log(data);
           this.worksOrderAccess = data[0];
           this.worksOrderUsrAccess = data[1];
           this.userType = data[2][0];
@@ -127,26 +127,6 @@ export class WorkorderListComponent implements OnInit {
     )
 
 
-    // this.subs.add(
-    //   this.sharedService.woUserSecObs.subscribe(
-    //     data => {
-    //       this.worksOrderUsrAccess = data;
-    //       console.log(this.worksOrderUsrAccess)
-    //     }
-    //   )
-    // )
-
-    // this.subs.add(
-    //   this.sharedService.worksOrdersAccess.subscribe(
-    //     data => {
-    //       this.worksOrderAccess = data;
-    //       console.log(this.worksOrderAccess)
-
-    //     }
-    //   )
-    // )
-
-
     this.getUserWorksOrdersList(this.filterObject, "menuOpen");
 
     // Filter grid from header filter area
@@ -158,8 +138,6 @@ export class WorkorderListComponent implements OnInit {
     )
 
 
-
-
   }
 
 
@@ -168,6 +146,7 @@ export class WorkorderListComponent implements OnInit {
     this.subs.unsubscribe();
   }
 
+
   keyDownFunction(event) {
     if (event.keyCode == 13) {
       this.loading = false
@@ -175,9 +154,11 @@ export class WorkorderListComponent implements OnInit {
     }
   }
 
+
   lockUnlockColumn() {
     this.columnLocked = !this.columnLocked;
   }
+
 
   resetGrid() {
     this.state.skip = 0;
@@ -201,26 +182,6 @@ export class WorkorderListComponent implements OnInit {
           }
 
           this.loading = false;
-
-          //select the row if item exist in local storage
-          // if (menuOpen == "menuOpen") {
-          //   this.selectedWorksOrder = JSON.parse(localStorage.getItem('worksOrderSingleData'));
-          //   this.mySelection = [this.selectedWorksOrder.wosequence];
-          //   console.log(this.selectedWorksOrder);
-          //   console.log(this.mySelection);
-          //   if (this.selectedWorksOrder) {
-          //     setTimeout(() => {
-
-          //       setTimeout(() => {
-          //         document.querySelector('.k-state-selected').scrollIntoView();
-          //         setTimeout(() => {
-          //           $('.selectedMenuBar' + this.selectedWorksOrder.wosequence).prev().trigger('click');
-          //         }, 200);
-          //       }, 100);
-
-          //     }, 2000);
-          //   }
-          // }
 
           this.chRef.detectChanges();
         },
@@ -266,7 +227,6 @@ export class WorkorderListComponent implements OnInit {
     this.selectedWorksOrder = dataItem;
 
     this.disabledMilestone = this.selectedWorksOrder.wottemplatetype === "Works Order Milestone" ? false : true;
-
     if (columnIndex > 0) {
       if (this.selectedWorksOrder.wosequence)
 
@@ -312,22 +272,13 @@ export class WorkorderListComponent implements OnInit {
   }
 
   setSeletedRow(dataItem, event) {
-    // console.log(event)
-
     if (dataItem != undefined) {
       setTimeout(() => {
-        // let div: any = $(event).find('.selectedMenuBar' + dataItem.wosequence);
         let att = $('.selectedMenuBar' + dataItem.wosequence)[0].getAttribute("x-placement");
-        // console.log($(event).find('.selectedMenuBar' + dataItem.wosequence))
-        // console.log(att);
-        // console.log(this.mousePositioin.y);
         if (att == "bottom-start" && this.mousePositioin.y > 600) {
-          // console.log($('.selectedMenuBar' + dataItem.wosequence))
           $('.selectedMenuBar' + dataItem.wosequence).css("top", "-116px")
         }
-
       }, 50);
-
 
       if (this.selectedWorksOrder?.wosequence != dataItem.wosequence) {
         this.helperService.getWorkOrderSecurity(dataItem.wosequence);
@@ -337,10 +288,8 @@ export class WorkorderListComponent implements OnInit {
       this.selectedWorksOrder = dataItem;
       this.mySelection = [this.selectedWorksOrder.wosequence];
     }
-
-
-
   }
+
 
   openUserPopup(action, item = null) {
     $('.bgblur').addClass('ovrlay');
@@ -378,7 +327,7 @@ export class WorkorderListComponent implements OnInit {
 
     this.selectedWorksOrder = item;
     this.sharedService.changeWorksOrderSingleData(item);
-    localStorage.setItem('worksOrderSingleData', JSON.stringify(item)); // remove code on logout service
+    localStorage.setItem('worksOrderSingleData', JSON.stringify(item)); // clear storage from logout service as well
     this.router.navigate(['worksorders/details']);
   }
 
@@ -431,8 +380,7 @@ export class WorkorderListComponent implements OnInit {
           if (data.data.pRETURNSTATUS == 'E') {
             this.alertService.error(data.data.pRETURNMESSAGE);
             return
-            // this.errorDeleteMsg = data.data.pRETURNMESSAGE;
-            // this.deleteReasonMsgInput = false;
+
           } else if (data.data.pRETURNSTATUS == 'S') {
             this.errorDeleteMsg = '';
             this.deleteReasonMsgInput = true;
@@ -440,8 +388,6 @@ export class WorkorderListComponent implements OnInit {
           }
 
         }
-
-        // console.log('Delete Data Return ' + JSON.stringify(data.data));
 
       },
       error => {
@@ -484,8 +430,6 @@ export class WorkorderListComponent implements OnInit {
 
           }
 
-          // console.log('Final Delete ' + JSON.stringify(data.data));
-
         },
         error => {
           this.alertService.error(error);
@@ -498,12 +442,6 @@ export class WorkorderListComponent implements OnInit {
   }
 
 
-  // public close() {
-  //   $('.bgblur').removeClass('ovrlay');
-  //   this.windowOpened = false;
-  // }
-
-
   closeWoFormWin($event) {
     this.woFormWindow = $event;
     $('.bgblur').removeClass('ovrlay');
@@ -513,7 +451,6 @@ export class WorkorderListComponent implements OnInit {
   export() {
 
     if (this.gridView.total > 0 && this.gridView.data) {
-      // let tempData = this.gridView.data;
       let tempData = Object.assign([], this.worksorderTempData);
       tempData.map((x: any) => {
         x.wocontractorissuedate = this.helperService.formatDateWithoutTime(x.wocontractorissuedate)
@@ -590,13 +527,6 @@ export class WorkorderListComponent implements OnInit {
     return this.worksOrderUsrAccess.indexOf(menuName) != -1
 
 
-    // if (menuName == "Works Orders Menu") {
-    //   if(this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1){
-
-    //   }
-    //   return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf('Edit Works Order') != -1 || this.worksOrderUsrAccess.indexOf('Delete Works Order') != -1 || this.worksOrderUsrAccess.indexOf('Works Order Detail') != -1
-    // }
-
   }
 
 
@@ -614,13 +544,8 @@ export class WorkorderListComponent implements OnInit {
 
 
   redirectToWoProgramManagmentInstructions(item) {
-
-
-    //console.log('wo data '+ JSON.stringify(item));
     this.selectedWorksOrder = item;
     this.woProgramManagmentInstructionsWindow = true;
-
-
     $('.worksOrderOverlay').addClass('ovrlay');
   }
 
@@ -630,20 +555,17 @@ export class WorkorderListComponent implements OnInit {
   }
 
   openCompletionList(item) {
-    $('.bgblur').addClass('ovrlay');
-    this.tabWindow = true;
+    $('.worksOrderOverlay').addClass('ovrlay');
+    this.selectedWorksOrder = item;
+    // this.tabWindow = true;
     this.completionList = true;
-    this.workOrderId = item.wosequence;
-  }
 
-  closeTabWindow($event) {
-    this.tabWindow = $event;
-    $('.bgblur').removeClass('ovrlay');
+    // this.workOrderId = item.wosequence;
   }
 
   closeCompletionList($event) {
     this.completionList = $event;
-    $('.bgblur').removeClass('ovrlay');
+    $('.worksOrderOverlay').removeClass('ovrlay');
   }
 
   WOCreateXportOutputReport(xPortId, reportName) {
@@ -773,7 +695,7 @@ export class WorkorderListComponent implements OnInit {
               x.completiondaterep = (this.helperService.formatDateWithoutTime(x.completiondaterep) != null) ? this.helperService.formatDateWithoutTime(x.completiondaterep) : "";
               x.paymentdaterep = (this.helperService.formatDateWithoutTime(x.paymentdaterep) != null) ? this.helperService.formatDateWithoutTime(x.paymentdaterep) : "";
             })
-            let fileName = "WOReportChecklist_"+wosequence+"_"+wprsequence+"_"+level;
+            let fileName = "WOReportAsset_"+wosequence+"_"+wprsequence+"_"+level;
             this.helperService.exportAsExcelFile(tempData, fileName, label);
           }else{
             this.alertService.error("No Record Found.");            
@@ -865,6 +787,4 @@ export class WorkorderListComponent implements OnInit {
     $('.worksOrderOverlay').removeClass('ovrlay');
     this.openManageMilestone = $event;
   }
-
-
 }

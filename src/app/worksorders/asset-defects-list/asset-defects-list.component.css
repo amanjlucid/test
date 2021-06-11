@@ -1,0 +1,22 @@
+.k-window {
+    position: fixed !important;
+}
+
+.k-grid tbody td {
+    white-space: nowrap;
+    line-height: 20px;
+    padding: 8px 12px;
+}
+
+/* .actionBtnDiv button, .actionBtnDiv #nesting-dropdown-demo {
+    display: inline-block;
+} */
+
+.disabled {
+    pointer-events: none !important;
+}
+
+.worksorder-defectlist-header .lbl {
+    padding-top: 6px;
+    position: absolute;
+}

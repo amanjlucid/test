@@ -17,7 +17,7 @@ export class VariationDetailComponent implements OnInit {
   @Input() openVariationDetail: boolean = false;
   @Input() openedFrom = 'worksorder';
   @Input() openedFor = 'details';
-  @Input() singleVariation: any = [];
+  @Input() singleVariationAsset: any = [];
   @Output() closeVariationDetailEvent = new EventEmitter<boolean>();
   title = 'Works Order Variation Detail';
   subs = new SubSink();
@@ -50,7 +50,7 @@ export class VariationDetailComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log(this.singleVariation)
+    // console.log(this.singleVariationAsset)
     this.getVariationPageDataWithGrid();
   }
 
@@ -78,16 +78,16 @@ export class VariationDetailComponent implements OnInit {
 
 
   getVariationPageDataWithGrid() {
-    const { wosequence, wopsequence } = this.singleVariation;
+    const { wosequence, wopsequence, woisequence, assid } = this.singleVariationAsset;
     this.subs.add(
       forkJoin([
         this.workOrderProgrammeService.getWorksOrderByWOsequence(wosequence),
         this.workOrderProgrammeService.getPhase(wosequence, wopsequence),
-        this.workOrderProgrammeService.getWOInstructionAssetsDetails(wosequence, wopsequence),
+        this.workOrderProgrammeService.getWOInstructionSpecificAssetsDetails(wosequence, woisequence, assid),
 
       ]).subscribe(
         data => {
-          console.log(data)
+          // console.log(data);
           this.worksOrderData = data[0].data;
           this.phaseData = data[1].data;
 

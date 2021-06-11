@@ -67,6 +67,8 @@ export class WorksordersAssetChecklistComponent implements OnInit {
   openAssetRemoveReason = false;
   reason: string = '';
   openVariationList: boolean = false;
+  variationNewOrIssue = false;
+  openDefectsList = false;
 
   constructor(
     private chRef: ChangeDetectorRef,
@@ -135,6 +137,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
           if (workorderAsset.isSuccess) this.workorderAsset = workorderAsset.data[0];
 
           this.checkListGridData();
+          this.getVariationIndicator();
 
         }
       )
@@ -158,6 +161,19 @@ export class WorksordersAssetChecklistComponent implements OnInit {
           }
           this.loading = false
           this.resetSelections()
+          this.chRef.detectChanges();
+        }
+      )
+    )
+  }
+
+  getVariationIndicator() {
+    const { wosequence, assid, wopsequence } = this.selectedChildRow;
+    this.subs.add(
+      this.worksorderManagementService.getVariationIndicator(wosequence, wopsequence, assid).subscribe(
+        data => {
+          if (data.isSuccess) this.variationNewOrIssue = data.data;
+          else this.alertService.error(data.message);
           this.chRef.detectChanges();
         }
       )
@@ -1266,6 +1282,28 @@ export class WorksordersAssetChecklistComponent implements OnInit {
       return this.mySelection.length == 0 || this.workorderAsset?.woassstatus == 'Pending' || this.workorderAsset?.woassstatus == 'Issued'
     }
 
+
+    if (type == "handover") {
+      if (this.workorderAsset != undefined) {
+        const { woassstatus } = this.workorderAsset;
+        if (woassstatus == "In Progress") return false;
+        // if (woassstatus == "In Progress" || woassstatus == "Issued" || woassstatus == "Accepted" || woassstatus == "Handover") {
+        //   return true;
+        // }
+      }
+
+      return true;
+    }
+
+    if (type == "signoff") {
+      if (this.workorderAsset != undefined) {
+        const { woassstatus } = this.workorderAsset;
+        if (woassstatus == "Handover") return false;
+      }
+
+      return true;
+    }
+
   }
 
 
@@ -1292,6 +1330,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
   closeNoAccessWin(eve) {
     this.noaccessWindow = eve;
     $('.checklistOverlay').removeClass('ovrlay');
+    this.worksOrderDetailPageData()
   }
 
   openNoAccessHistory() {
@@ -1302,6 +1341,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
   closeNoAccessHistory(eve) {
     this.noaccessHistory = eve;
     $('.checklistOverlay').removeClass('ovrlay');
+    this.worksOrderDetailPageData()
   }
 
 
@@ -1331,9 +1371,22 @@ export class WorksordersAssetChecklistComponent implements OnInit {
   closeVariation(eve) {
     this.openVariationList = eve;
     $('.checklistOverlay').removeClass('ovrlay');
+    this.worksOrderDetailPageData()
   }
 
-  viewCheckListOrderReport(reportLevel, dataItem:any=null){  
+
+  openDefectsMethod() {
+    $('.checklistOverlay').addClass('ovrlay');
+    this.openDefectsList = true;
+  }
+
+  closeDefectList(eve) {
+    this.openDefectsList = eve;
+    $('.checklistOverlay').removeClass('ovrlay');
+    this.worksOrderDetailPageData();
+  }
+
+viewCheckListOrderReport(reportLevel, dataItem:any=null){  
 
     const wprsequence = (dataItem != null) ? dataItem.wprsequence : this.selectedChildRow.wprsequence;
     const wosequence = (dataItem != null) ? dataItem.wosequence : this.selectedChildRow.wosequence;

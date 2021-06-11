@@ -7,3 +7,19 @@
     line-height: 20px;
     padding: 8px 12px;
 }
+
+.disabled {
+    pointer-events: none !important;
+}
+
+/* .varWorkListGrid .k-grid tr {
+    background-color: white;
+} */
+
+.varWorkListGrid .k-state-disabled, .varWorkListGrid .k-widget[disabled] {
+    background-color: #cdcdcd !important;
+}
+
+kendo-window.servicePkzGrid.k-widget.k-window {
+    z-index: 999 !important;
+}

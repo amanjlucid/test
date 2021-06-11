@@ -69,6 +69,7 @@ export class WorksordersAddAssetsworklistComponent implements OnInit {
   userType: any = [];
   @ViewChild(GridComponent) grid: GridComponent;
 
+
   constructor(
     private propSecGrpService: PropertySecurityGroupService,
     private loaderService: LoaderService,
@@ -85,11 +86,6 @@ export class WorksordersAddAssetsworklistComponent implements OnInit {
 
 
   ngOnInit(): void {
-    // console.log(this.addWorkorderType)
-    // console.log(this.addWorkFrom)
-    // console.log({ selected: this.actualSelectedRow })
-    // console.log({ checklist: this.selectedAssetChecklist })
-
     //works order security access
     this.subs.add(
       combineLatest([
@@ -322,7 +318,7 @@ export class WorksordersAddAssetsworklistComponent implements OnInit {
   }
 
   mySelectionKey(context: RowArgs): string {
-    return `${context.dataItem.wlataid}_${context.dataItem.wlcode}`;
+    return `${context.dataItem.wlassid}_${context.dataItem.wlataid}_${context.dataItem.wlcode}_${context.dataItem.cttsurcde}_${context.dataItem.matchedCHECKSURCDE}_${context.dataItem.matchedSTAGESURCDE}`;
   }
 
   addTickedToWorksOrder(type = 1, strCheckOrProcess = "C") {
@@ -418,22 +414,21 @@ export class WorksordersAddAssetsworklistComponent implements OnInit {
   }
 
   selectionChange(item) {
-    // console.log(item)
 
-    if (this.mySelection.includes(`${item.wlataid}_${item.wlcode}`)) {
-      this.mySelection = this.mySelection.filter(x => x != `${item.wlataid}_${item.wlcode}`);
-      this.selectedRow = this.selectedRow.filter(x => this.mySelection.includes(`${x.wlataid}_${x.wlcode}`));
+    if (
+      this.mySelection.includes(`${item.wlassid}_${item.wlataid}_${item.wlcode}_${item.cttsurcde}_${item.matchedCHECKSURCDE}_${item.matchedSTAGESURCDE}`)
+    ) {
+
+      this.mySelection = this.mySelection.filter(x => x != `${item.wlassid}_${item.wlataid}_${item.wlcode}_${item.cttsurcde}_${item.matchedCHECKSURCDE}_${item.matchedSTAGESURCDE}`);
+      this.selectedRow = this.selectedRow.filter(x => this.mySelection.includes(`${x.wlassid}_${x.wlataid}_${x.wlcode}_${x.cttsurcde}_${x.matchedCHECKSURCDE}_${x.matchedSTAGESURCDE}`));
+
     } else {
-      this.mySelection.push(`${item.wlataid}_${item.wlcode}`);
+
+      this.mySelection.push(`${item.wlassid}_${item.wlataid}_${item.wlcode}_${item.cttsurcde}_${item.matchedCHECKSURCDE}_${item.matchedSTAGESURCDE}`);
       this.selectedRow.push(item);
+
     }
 
-    // const checkObj = this.selectedRow.find(x => x.wlataid == item.wlataid && x.wlcode == item.wlcode);
-    // if (checkObj) {
-    //   this.selectedRow = this.selectedRow.filter(x => x.wlataid != item.wlataid && x.wlcode == item.wlcode);
-    // } else {
-    //   this.selectedRow.push(item);
-    // }
 
     // console.log(this.mySelection)
     // console.log(this.selectedRow)

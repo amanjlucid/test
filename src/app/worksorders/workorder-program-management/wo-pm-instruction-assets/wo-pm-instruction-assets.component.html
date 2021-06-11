@@ -1,33 +1,31 @@
-<kendo-window title="{{title}}" [top]="10" [minWidth]="700"
-  [width]="1050" [minHeight]="350" (close)="closeInstructionAssetsWindow()" >
+<kendo-window title="{{title}}" [top]="10" [minWidth]="700" [width]="1050" [minHeight]="350"
+  (close)="closeInstructionAssetsWindow()">
 
   <div class="row headerArea">
     <div class="col-md-12 headerRow12">
 
       <div class="row">
         <div class="col-md-2">
-          <label for="">Programme: </label>
+          <label class="lbl" for="">Programme: </label>
         </div>
         <div class="col-md-10">
-          <input [readonly]="true" type="text" class="form-control" placeholder=""
-            value="{{ programmeData.wprname }}">
+          <input [readonly]="true" type="text" class="form-control" placeholder="" value="{{ programmeData.wprname }}">
         </div>
       </div>
 
 
-      <div class="row">
+      <div class="row mt-1">
         <div class="col-md-2">
-          <label for="">Works Order: </label>
+          <label class="lbl" for="">Works Order: </label>
         </div>
         <div class="col-md-10">
-          <input [readonly]="true" type="text" class="form-control" placeholder=""
-            value="{{ worksOrderData.woname }}">
+          <input [readonly]="true" type="text" class="form-control" placeholder="" value="{{ worksOrderData.woname }}">
         </div>
       </div>
 
-      <div class="row">
+      <div class="row mt-1">
         <div class="col-md-2">
-          <label for="">Phase: </label>
+          <label class="lbl" for="">Phase: </label>
         </div>
         <div class="col-md-10">
           <input [readonly]="true" type="text" class="form-control" placeholder=""
@@ -39,13 +37,6 @@
     </div>
 
 
-
-
-
-
-
-
-
   </div>
 
 
@@ -53,7 +44,6 @@
 
   <div class="row mt-2">
     <div class="col-md-12">
-
 
       <kendo-grid [kendoGridGroupBinding]="gridData" [data]="gridView" [height]="570" [selectable]="{
                     mode: 'single'
@@ -67,9 +57,10 @@
         <kendo-grid-column title=" " width="37" [filterable]="false" [sortable]="false">
           <ng-template kendoGridCellTemplate let-dataItem>
             <li class="nav-item dropdown list-unstyled" style="margin-top: -7px;">
-              <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars" ></i>
+              <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
               <div class="dropdown-menu">
-                <a (click)="openShowInstAssetsDetail(dataItem)" class="dropdown-item" href="javascript:void(0)" >Show Details</a>
+                <a *ngIf="woMenuAccess('Show Instruction Detail')" (click)="openShowInstAssetsDetail(dataItem)"
+                  class="dropdown-item" href="javascript:void(0)">Show Details</a>
 
 
               </div>
@@ -79,79 +70,82 @@
         </kendo-grid-column>
 
 
-        <kendo-grid-column field="assid" title="Asset Id" width="100">
+        <kendo-grid-column field="assid" title="Asset Id" width="130">
         </kendo-grid-column>
 
-        <kendo-grid-column field="address" title="Address" width="100">
+        <kendo-grid-column field="address" title="Address" width="140">
         </kendo-grid-column>
 
         <kendo-grid-column field="woiaissuestatus" title="Status" width="100">
         </kendo-grid-column>
 
-        <kendo-grid-column field="woiaissueuser" title="Requested By" width="100">
+        <kendo-grid-column field="woiaissueuser" title="Requested By" width="140">
         </kendo-grid-column>
 
-        <kendo-grid-column field="woiaissuedate" title="Requested On" [width]="140" [filterable]="false" [sortable]="false">
-            <ng-template kendoGridCellTemplate let-dataItem>
-                <span  >
-                    {{ dataItem.woiaissuedate | dateFormat : 'DD-MMM-YYYY' }}
-                </span>
-              </ng-template>
+        <kendo-grid-column field="woiaissuedate" title="Requested On" [width]="140" [filterable]="false"
+          [sortable]="false">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span>
+              {{ dataItem.woiaissuedate | dateFormat : 'DD-MMM-YYYY' }}
+            </span>
+          </ng-template>
         </kendo-grid-column>
 
-        <kendo-grid-column field="woiafeecost" title="Fee" [width]="140" [filterable]="false" [sortable]="false">
-            <ng-template kendoGridCellTemplate let-dataItem>
-                <span  >
-                  {{ dataItem.woiafeecost }}
-                </span>
-              </ng-template>
+        <kendo-grid-column field="woiafeecost" title="Fee" [width]="120" [filterable]="false" [sortable]="false"
+          [style]="{'text-align': 'right'}">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span>
+              {{ dataItem.woiafeecost | currency:'GBP':'symbol' }}
+            </span>
+          </ng-template>
         </kendo-grid-column>
-        <kendo-grid-column field="woiaworkcost" title="Work" [width]="140" [filterable]="false" [sortable]="false">
-            <ng-template kendoGridCellTemplate let-dataItem>
-                <span  >
-                  {{ dataItem.woiaworkcost }}
-                </span>
-              </ng-template>
-        </kendo-grid-column>
-
-        <kendo-grid-column field="woiaacceptuser" title="Accepted By" [width]="140" [filterable]="false" [sortable]="false">
-            <ng-template kendoGridCellTemplate let-dataItem>
-                <span  >
-                  {{ dataItem.woiaacceptuser }}
-                </span>
-              </ng-template>
+        <kendo-grid-column field="woiaworkcost" title="Work" [width]="120" [filterable]="false" [sortable]="false"
+          [style]="{'text-align': 'right'}">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span>
+              {{ dataItem.woiaworkcost | currency:'GBP':'symbol'}}
+            </span>
+          </ng-template>
         </kendo-grid-column>
 
-        <kendo-grid-column field="woiaacceptdate" title="Accepted On" [width]="140" [filterable]="false" [sortable]="false">
-            <ng-template kendoGridCellTemplate let-dataItem>
-                <span  >
-                    {{ dataItem.woiaacceptdate | dateFormat : 'DD-MMM-YYYY' }}
-                </span>
-              </ng-template>
+        <kendo-grid-column field="woiaacceptuser" title="Accepted By" [width]="140" [filterable]="false"
+          [sortable]="false">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span>
+              {{ dataItem.woiaacceptuser }}
+            </span>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column field="woiaacceptdate" title="Accepted On" [width]="140" [filterable]="false"
+          [sortable]="false">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span>
+              {{ dataItem.woiaacceptdate | dateFormat : 'DD-MMM-YYYY' }}
+            </span>
+          </ng-template>
         </kendo-grid-column>
 
 
-        <kendo-grid-column field="woassstatus" title="Wo Status" width="100">
+        <kendo-grid-column field="woassstatus" title="Status" width="140">
         </kendo-grid-column>
 
 
       </kendo-grid>
 
-
-
-
     </div>
+
+
+   
   </div>
 
 
-
-
-
-
   <div class="woassetdetailoverlay"></div>
+
+  <app-wo-pm-instruction-assets-detail *ngIf="instructionAssetsDetailWindow"
+    [instructionAssetsDetailWindow]="instructionAssetsDetailWindow" [selectedInstructionRow]="selectedInstructionRow"
+    [programmeData]="programmeData" [selectedInstructionAssetRow]="selectedInstructionAssetRow"
+    [worksOrderData]="worksOrderData" (instructionAssetsDetailEvent)="closeInstructionAssetsDetailWindow($event)">
+  </app-wo-pm-instruction-assets-detail>
+
 </kendo-window>
-
-
-<app-wo-pm-instruction-assets-detail *ngIf="instructionAssetsDetailWindow" [instructionAssetsDetailWindow]="instructionAssetsDetailWindow"
-[selectedInstructionRow]="selectedInstructionRow" [programmeData]="programmeData" [selectedInstructionAssetRow]="selectedInstructionAssetRow" [worksOrderData]="worksOrderData" (instructionAssetsDetailEvent)="closeInstructionAssetsDetailWindow($event)">
-</app-wo-pm-instruction-assets-detail>

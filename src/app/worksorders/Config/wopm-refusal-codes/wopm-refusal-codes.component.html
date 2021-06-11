@@ -1,0 +1,88 @@
+<div class="container-fluid flex-grow-1 container-p-y">
+
+  <div class="row">
+      <div class="col-md-2 col-sm-3">
+          <h4 class="font-weight-bold py-3 mb-1">
+              Refusal Codes
+          </h4>
+      </div>
+
+      <div class="col-md-10 text-right" >
+
+              <button *ngIf="checkWorksOrdersAccess('Config New Refusal Code')"
+               type="button" class="btn btn-sm themeButton mr-1" (click)="openEditForm('new', null)">New</button>
+
+               <button *ngIf="checkWorksOrdersAccess('Config Edit Refusal Code')"
+               type="button" class="btn btn-sm themeButton mr-1" (click)="export()">Export Data</button>
+      </div>
+  </div>
+
+  <div class="row mt-2">
+      <div class="col-md-12">
+
+          <kendo-grid [groupable]="false" [data]="gridView"  [height]="720" filterable="menu" [loading]="loading" [resizable]="true"
+          [sortable]="{allowUnsort: allowUnsort, mode: multiple ? 'multiple' : 'single' }"
+          [skip]="state.skip" [sort]="state.sort"  [filter]="state.filter" (sortChange)="sortChange($event)" (filterChange)="filterChange($event)"
+               [navigable]="true" (cellClick)="cellClickHandler($event)">
+
+               <kendo-grid-column title=" " width="37" maxwidth="37" [filterable]="false">
+                <ng-template kendoGridCellTemplate let-dataItem>
+                    <li  class="nav-item dropdown list-unstyled"
+                        style="margin-top: -7px;">
+                        <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"
+                            (click)="setSeletedRow(dataItem)"></i>
+                        <div class="dropdown-menu"
+                        *ngIf="checkWorksOrdersAccess('Config Edit Refusal Code')"
+                        >
+                            <a class="dropdown-item" href="javascript:void(0)"
+                            (click)="openEditForm('edit', dataItem)">Edit</a>
+                        </div>
+                    </li>
+
+                </ng-template>
+            </kendo-grid-column>
+              <kendo-grid-column field="refusalCode" title="Refusal Code" width="150">
+                <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
+                let-filterService="filterService" >
+                <multicheck-filter  [isPrimitive]="false" [field]="column.field" [currentFilter]="filter"
+                    [filterService]="filterService" textField="text" valueField="val"
+                    [data]="distinctPrimitive(column.field)">
+                </multicheck-filter>
+              </ng-template>
+              </kendo-grid-column>
+              <kendo-grid-column field="refusalDesc" title="Description" width="300">
+                <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
+                let-filterService="filterService">
+                <multicheck-filter [isPrimitive]="false" [field]="column.field" [currentFilter]="filter"
+                    [filterService]="filterService" textField="text" valueField="val"
+                    [data]="distinctPrimitive(column.field)">
+                </multicheck-filter>
+              </ng-template>
+              </kendo-grid-column>
+              <kendo-grid-column field="refusalStatus" title="Status" width="110">
+                <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
+                let-filterService="filterService">
+                <multicheck-filter [isPrimitive]="false" [field]="column.field" [currentFilter]="filter"
+                    [filterService]="filterService" textField="text" valueField="val"
+                    [data]="distinctPrimitive(column.field)">
+                </multicheck-filter>
+              </ng-template>
+              </kendo-grid-column>
+              <kendo-grid-column  title="" minwidth="200"></kendo-grid-column>
+          </kendo-grid>
+
+      </div>
+  </div>
+
+ </div>
+
+<div class="disabledBackground"></div>
+
+
+ <app-wopm-edit-refusal-codes [editFormWindow]="editFormWindow" [editFormType]="editFormType" [refusal]="wopmRefusalcodeModel"
+ *ngIf="editFormWindow" (closeRefusalCodeFormWindow)="closeEditFormWin($event)">
+</app-wopm-edit-refusal-codes>
+
+
+
+

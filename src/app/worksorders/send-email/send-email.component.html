@@ -1,0 +1,54 @@
+<kendo-window title="Send Report" [top]="25" *ngIf="SendEmailInsReportWindow" (close)="closeEmailWithReportWindow()"
+[minWidth]="800" [height]="auto" [minHeight]="300" [width]="650">
+
+<div class="row sendEmailWithReportDiv">
+  <div class="container pl-0">
+    <form [formGroup]="emailReportForm" (ngSubmit)="onEmailReportSubmit()">
+      <div class="form-group row">
+        <label class="col-form-label col-sm-2 text-sm-right">To</label>
+        <div class="col-sm-10 emailReport">
+
+          <ng-multiselect-dropdown [placeholder]="'Select Users'" [data]="userListToMail"
+            [(ngModel)]="selectedItems" formControlName="userlist" [settings]="dropdownSettings"
+            (onSelect)="onItemSelect($event)" (onDeSelect)="onItemDeSelect($event)" name="users"
+            (onSelectAll)="onSelectAll($event)" (onDeSelectAll)="onItemDeSelectAll($event)">
+          </ng-multiselect-dropdown>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-form-label col-sm-2 text-sm-right">Subject</label>
+        <div class="col-sm-10">
+          <input type="text" class="form-control" placeholder="Subject" formControlName="subject"
+            [ngClass]="{ 'is-invalid': submitted && formErrors.subject }">
+
+          <div *ngIf="submitted && formErrors.subject" class="invalid-feedback">
+            <div *ngIf="formErrors.subject">{{ formErrors.subject }}</div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-form-label col-sm-2 text-sm-right">Email Text</label>
+        <div class="col-sm-10">
+          <textarea class="form-control" placeholder="Email Text" formControlName="emailText"
+            [ngClass]="{ 'is-invalid': submitted && formErrors.emailText }"></textarea>
+          <div *ngIf="submitted && formErrors.emailText" class="invalid-feedback">
+            <div *ngIf="formErrors.emailText">{{ formErrors.emailText }}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <div class="col-sm-10 ml-sm-auto reportingPrevBtn text-right">
+          <button type="button" (click)="closeEmailWithReportWindow()"
+            class="btn btn-sm themeButton">Cancel</button>
+          <button type="submit" class="btn btn-sm btn-default themeButton ml-1">Ok</button>
+
+        </div>
+      </div>
+    </form>
+
+
+  </div>
+</div>
+
+</kendo-window>

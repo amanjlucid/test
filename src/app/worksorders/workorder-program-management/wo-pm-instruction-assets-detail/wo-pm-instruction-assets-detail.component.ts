@@ -34,7 +34,7 @@ export class WoPmInstructionAssetsDetailComponent implements OnInit {
         }
     }
 
-   public filter: CompositeFilterDescriptor;
+    public filter: CompositeFilterDescriptor;
     pageSize = 25;
     title = 'Work Order Instruction Detail';
 
@@ -45,6 +45,9 @@ export class WoPmInstructionAssetsDetailComponent implements OnInit {
     gridView: DataResult;
     selectedItem: any;
 
+    worksOrderAccess = [];
+    worksOrderUsrAccess: any = [];
+    userType: any = [];
 
     constructor(
         private worksOrdersService: WorksOrdersService,
@@ -55,196 +58,222 @@ export class WoPmInstructionAssetsDetailComponent implements OnInit {
     ) { }
 
     ngOnInit(): void {
+        this.subs.add(
+            combineLatest([
+                this.sharedService.worksOrdersAccess,
+                this.sharedService.woUserSecObs,
+                this.sharedService.userTypeObs
+            ]).subscribe(
+                data => {
+                    this.worksOrderAccess = data[0];
+                    this.worksOrderUsrAccess = data[1];
+                    this.userType = data[2][0];
+                }
+            )
+        )
+
         this.GetWOInstructionAssetsDetails();
     }
 
     ngOnDestroy() {
-      this.subs.unsubscribe();
-  }
+        this.subs.unsubscribe();
+    }
 
-  sortChange(sort: SortDescriptor[]): void {
-      this.state.sort = sort;
-      this.gridView = process(this.gridData, this.state);
-      this.chRef.detectChanges();
-  }
+    sortChange(sort: SortDescriptor[]): void {
+        this.state.sort = sort;
+        this.gridView = process(this.gridData, this.state);
+        this.chRef.detectChanges();
+    }
 
-  filterChange(filter: any): void {
-      this.state.filter = filter;
-      this.gridView = process(this.gridData, this.state);
-      this.chRef.detectChanges();
-  }
+    filterChange(filter: any): void {
+        this.state.filter = filter;
+        this.gridView = process(this.gridData, this.state);
+        this.chRef.detectChanges();
+    }
 
-  pageChange(event: PageChangeEvent): void {
-      this.state.skip = event.skip;
-      this.gridView = {
-          data: this.gridData.slice(this.state.skip, this.state.skip + this.pageSize),
-          total: this.gridData.length
-      };
-      this.chRef.detectChanges();
-  }
+    pageChange(event: PageChangeEvent): void {
+        this.state.skip = event.skip;
+        this.gridView = {
+            data: this.gridData.slice(this.state.skip, this.state.skip + this.pageSize),
+            total: this.gridData.length
+        };
+        this.chRef.detectChanges();
+    }
 
-  cellClickHandler({
-      sender,
-      column,
-      rowIndex,
-      columnIndex,
-      dataItem,
-      isEditedselectedInstructionRow
-  }) {
-      this.selectedItem = dataItem;
-  }
+    cellClickHandler({
+        sender,
+        column,
+        rowIndex,
+        columnIndex,
+        dataItem,
+        isEditedselectedInstructionRow
+    }) {
+        this.selectedItem = dataItem;
+    }
 
-  GetWOInstructionAssetsDetails() {
-
-
-      const params = {
-          "WOSEQUENCE": this.selectedInstructionAssetRow.wosequence,
-          "WOISEQUENCE": this.selectedInstructionAssetRow.woisequence,
-      };
-
-      const qs = Object.keys(params).map(key => `${key}=${params[key]}`).join('&');
+    GetWOInstructionAssetsDetails() {
 
 
+        const params = {
+            "WOSEQUENCE": this.selectedInstructionAssetRow.wosequence,
+            "WOISEQUENCE": this.selectedInstructionAssetRow.woisequence,
+        };
 
-      this.subs.add(
-          this.worksOrdersService.GetWOInstructionAssetsDetails(qs).subscribe(
-              data => {
-
-
-                //  console.log('GetWOInstructionAssets api data ' + JSON.stringify(data));
-
-                  if (data.isSuccess) {
-
-                      this.gridData = data.data;
-
-
-                  } else {
-                      this.alertService.error(data.message);
-                      this.loading = false
-                  }
-
-                  this.chRef.detectChanges();
-
-                  // console.log('WorkOrderRefusalCodes api reponse' + JSON.stringify(data));
-              },
-              err => this.alertService.error(err)
-          )
-      )
+        const qs = Object.keys(params).map(key => `${key}=${params[key]}`).join('&');
 
 
 
-
-  }
-
-  closeInstructionAssetsDetailWindow() {
-      this.instructionAssetsDetailWindow = false;
-      this.instructionAssetsDetailEvent.emit(this.instructionAssetsDetailWindow);
-  }
+        this.subs.add(
+            this.worksOrdersService.GetWOInstructionAssetsDetails(qs).subscribe(
+                data => {
 
 
-  openAcceptInstruction(item) {
+                    //  console.log('GetWOInstructionAssets api data ' + JSON.stringify(data));
 
-      this.selectedItem = item;
+                    if (data.isSuccess) {
 
-      //console.log("WorksOrderAcceptAsset item " + JSON.stringify(item))
-
-
-      let strCheckOrProcess = 'C';
-
-      let strASSID = [item.assid];
-
-      let params = {
-          strCheckOrProcess: strCheckOrProcess,
-          WOSEQUENCE: item.wosequence,
-          WOPSEQUENCE: item.wopsequence,
-          strASSID: strASSID,
-          strUserId: this.currentUser.userId
-      }
-
-      this.worksOrdersService.WorksOrderAcceptAsset(params).subscribe(
-          (data) => {
-
-            //  console.log("WorksOrderAcceptAsset response " + JSON.stringify(data))
-
-              if (!data.isSuccess) {
-                  this.alertService.error(data.message)
-                  return
-              }
-              if (strCheckOrProcess == "C" && data.data[0].pRETURNSTATUS == "S") {
-                  this.openConfirmationDialog(data.data)
-              } else if (strCheckOrProcess == "P" && data.data[0].pRETURNSTATUS == "S") {
-                  this.alertService.success(data.data[0].pRETURNMESSAGE);
-                  //   this.refreshWorkOrderDetails.emit(true);
-                  //   this.searchGrid();
-              } else if (data.data[0].pRETURNSTATUS != "S") {
-                  this.alertService.error(data.data[0].pRETURNMESSAGE)
-              }
+                        this.gridData = data.data;
 
 
-          },
-          error => {
-              this.alertService.error(error);
+                    } else {
+                        this.alertService.error(data.message);
+                        this.loading = false
+                    }
 
-          }
-      )
+                    this.chRef.detectChanges();
 
-  }
-
-
-  openConfirmationDialog(resp) {
-      let strCheckOrProcess = "N";
-      let res = resp[0]
-      if (res.pRETURNSTATUS == "S" && res.pWPLSEQUENCE == 0 && res.pWPRSEQUENCE == 0) {
-          strCheckOrProcess = "P"
-      }
-      $('.k-window').css({
-          'z-index': 1000
-      });
-      this.confirmationDialogService.confirm('Please confirm..', `${res.pRETURNMESSAGE}`)
-          .then((confirmed) => (confirmed) ? this.AcceptInstructionFinal(strCheckOrProcess) : console.log(confirmed))
-          .catch(() => console.log('Attribute dismissed the dialog.'));
-  }
+                    // console.log('WorkOrderRefusalCodes api reponse' + JSON.stringify(data));
+                },
+                err => this.alertService.error(err)
+            )
+        )
 
 
-  AcceptInstructionFinal(strCheckOrProcess = "C") {
-
-    //  console.log("this.selectedItem in PRocess " + JSON.stringify(this.selectedItem))
-
-      if (strCheckOrProcess != "C" && strCheckOrProcess != "P") {
-          return
-      }
-
-      let strASSID = [this.selectedItem.assid];
-      let params = {
-          strCheckOrProcess: strCheckOrProcess,
-          WOSEQUENCE: this.selectedItem.wosequence,
-          WOPSEQUENCE: this.selectedItem.wopsequence,
-          strASSID: strASSID,
-          strUserId: this.currentUser.userId
-      }
-
-      this.subs.add(
-          this.worksOrdersService.WorksOrderAcceptAsset(params).subscribe(
-              data => {
-                  if (!data.isSuccess) {
-                      this.alertService.error(data.message)
-                      return
-                  }
-                  if (strCheckOrProcess == "C" && data.data[0].pRETURNSTATUS == "S") {
-                      this.openConfirmationDialog(data.data)
-                  } else if (strCheckOrProcess == "P" && data.data[0].pRETURNSTATUS == "S") {
-                      this.alertService.success(data.data[0].pRETURNMESSAGE);
-                      //  this.refreshWorkOrderDetails.emit(true);
-                      this.GetWOInstructionAssetsDetails();
-                  } else if (data.data[0].pRETURNSTATUS != "S") {
-                      this.alertService.error(data.data[0].pRETURNMESSAGE)
-                  }
-              },
-              err => this.alertService.error(err)
-          )
-      )
 
 
-  }
+    }
 
-  }
+    closeInstructionAssetsDetailWindow() {
+        this.instructionAssetsDetailWindow = false;
+        this.instructionAssetsDetailEvent.emit(this.instructionAssetsDetailWindow);
+    }
+
+
+    openAcceptInstruction(item) {
+
+        this.selectedItem = item;
+
+        //console.log("WorksOrderAcceptAsset item " + JSON.stringify(item))
+
+
+        let strCheckOrProcess = 'C';
+
+        let strASSID = [item.assid];
+
+        let params = {
+            strCheckOrProcess: strCheckOrProcess,
+            WOSEQUENCE: item.wosequence,
+            WOPSEQUENCE: item.wopsequence,
+            strASSID: strASSID,
+            strUserId: this.currentUser.userId
+        }
+
+        this.worksOrdersService.WorksOrderAcceptAsset(params).subscribe(
+            (data) => {
+
+                //  console.log("WorksOrderAcceptAsset response " + JSON.stringify(data))
+
+                if (!data.isSuccess) {
+                    this.alertService.error(data.message)
+                    return
+                }
+                if (strCheckOrProcess == "C" && data.data[0].pRETURNSTATUS == "S") {
+                    this.openConfirmationDialog(data.data)
+                } else if (strCheckOrProcess == "P" && data.data[0].pRETURNSTATUS == "S") {
+                    this.alertService.success(data.data[0].pRETURNMESSAGE);
+                    //   this.refreshWorkOrderDetails.emit(true);
+                    //   this.searchGrid();
+                } else if (data.data[0].pRETURNSTATUS != "S") {
+                    this.alertService.error(data.data[0].pRETURNMESSAGE)
+                }
+
+
+            },
+            error => {
+                this.alertService.error(error);
+
+            }
+        )
+
+    }
+
+
+    openConfirmationDialog(resp) {
+        let strCheckOrProcess = "N";
+        let res = resp[0]
+        if (res.pRETURNSTATUS == "S" && res.pWPLSEQUENCE == 0 && res.pWPRSEQUENCE == 0) {
+            strCheckOrProcess = "P"
+        }
+        $('.k-window').css({
+            'z-index': 1000
+        });
+        this.confirmationDialogService.confirm('Please confirm..', `${res.pRETURNMESSAGE}`)
+            .then((confirmed) => (confirmed) ? this.AcceptInstructionFinal(strCheckOrProcess) : console.log(confirmed))
+            .catch(() => console.log('Attribute dismissed the dialog.'));
+    }
+
+
+    AcceptInstructionFinal(strCheckOrProcess = "C") {
+
+        //  console.log("this.selectedItem in PRocess " + JSON.stringify(this.selectedItem))
+
+        if (strCheckOrProcess != "C" && strCheckOrProcess != "P") {
+            return
+        }
+
+        let strASSID = [this.selectedItem.assid];
+        let params = {
+            strCheckOrProcess: strCheckOrProcess,
+            WOSEQUENCE: this.selectedItem.wosequence,
+            WOPSEQUENCE: this.selectedItem.wopsequence,
+            strASSID: strASSID,
+            strUserId: this.currentUser.userId
+        }
+
+        this.subs.add(
+            this.worksOrdersService.WorksOrderAcceptAsset(params).subscribe(
+                data => {
+                    if (!data.isSuccess) {
+                        this.alertService.error(data.message)
+                        return
+                    }
+                    if (strCheckOrProcess == "C" && data.data[0].pRETURNSTATUS == "S") {
+                        this.openConfirmationDialog(data.data)
+                    } else if (strCheckOrProcess == "P" && data.data[0].pRETURNSTATUS == "S") {
+                        this.alertService.success(data.data[0].pRETURNMESSAGE);
+                        //  this.refreshWorkOrderDetails.emit(true);
+                        this.GetWOInstructionAssetsDetails();
+                    } else if (data.data[0].pRETURNSTATUS != "S") {
+                        this.alertService.error(data.data[0].pRETURNMESSAGE)
+                    }
+                },
+                err => this.alertService.error(err)
+            )
+        )
+
+
+    }
+
+
+    woMenuAccess(menuName) {
+        if (this.userType == undefined) return true;
+
+        if (this.userType?.wourroletype == "Dual Role") {
+            return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
+        }
+
+        return this.worksOrderUsrAccess.indexOf(menuName) != -1
+
+    }
+
+}

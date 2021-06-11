@@ -98,7 +98,7 @@ export class VariationAppendComponent implements OnInit {
     this.subs.add(
       this.workOrderProgrammeService.getAppendVariationList(wosequence, wopsequence).subscribe(
         data => {
-          console.log(data)
+          // console.log(data)
           if (data.isSuccess) {
             this.gridData = data.data;
             this.gridView = process(this.gridData, this.state);

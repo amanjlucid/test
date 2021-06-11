@@ -152,6 +152,15 @@ export class ReportingComponent implements OnInit {
           this.renderTable(data);
         }
       )
+    } else if (this.reportingAction == "runExport") {
+      this.exportId =  this.surveyPortalXport.XportID;;
+      this.reportParams = this.surveyPortalXport.Params;
+      this.reportingType = this.surveyPortalXport.ReportTitle;
+      this.reportingGrpService.RunSurveyPortalXports(this.exportId, this.reportParams, this.preview).subscribe(
+        data => {
+          this.renderTable(data);
+        }
+      )
     }
   }
 

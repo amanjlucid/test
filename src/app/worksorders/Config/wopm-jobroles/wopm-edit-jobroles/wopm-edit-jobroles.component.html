@@ -1,0 +1,107 @@
+<kendo-window [title]="windowTitle"  *ngIf="editFormWindow" (close)="closeEditFormWin()"  [width]="650" [height]="620" resizable="false" [top]="20">
+  <div class="flex-grow-1 userFrm">
+     <form [formGroup]="jobRoleForm" (ngSubmit)="onSubmit()" autocomplete="off">
+
+      <div class="form-row">
+        <div class="form-group col-md-12">
+          <label class="form-label">Role Type</label>
+          <select class="custom-select" formControlName="jobRoleType" *ngIf="!disableRoleType"
+            [ngClass]="{ 'is-invalid': submitted && formErrors.jobRoleType }">
+            <option value="Customer">Customer</option>
+            <option value="Consultant">Consultant</option>
+            <option value="Contractor">Contractor</option>
+            <option value="Dual Role">Dual Role</option>
+          </select>
+          <input type="text" class="form-control" formControlName="jobRoleType" *ngIf="disableRoleType"
+           readonly>
+          <div *ngIf="submitted && formErrors.jobRoleType" class="invalid-feedback">
+            <div *ngIf="formErrors.jobRoleType">{{ formErrors.jobRoleType }}</div>
+          </div>
+        </div>
+      </div>
+
+        <div class="form-row">
+          <div class="form-group col-md-12">
+            <label class="form-label">Job Role</label>
+            <input type="text" class="form-control"   formControlName="jobRole" maxlength="50"
+              [ngClass]="{ 'is-invalid': submitted && formErrors.jobRole }">
+            <div *ngIf="submitted && formErrors.jobRole" class="invalid-feedback">
+              <div *ngIf="formErrors.jobRole">{{ formErrors.jobRole }}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-md-8">
+            <label class="form-label">Security Group</label>
+            <select class="custom-select" formControlName="securityGroup"
+              [ngClass]="{ 'is-invalid': submitted && formErrors.securityGroup }">
+              <option value=""></option>
+              <option *ngFor="let secGroup of securityGroups" [value]="secGroup.groupID" >{{secGroup.groupName}}</option>
+            </select>
+            <div *ngIf="submitted && formErrors.securityGroup" class="invalid-feedback">
+              <div *ngIf="formErrors.securityGroup">{{ formErrors.securityGroup }}</div>
+            </div>
+          </div>
+
+          <div class="form-group col-md-4 text-right">
+              <label class="form-label  mr-4 text-right">Default Role (Y/N)</label>
+              <div class="mt-2">
+                <label class="switcher">
+                  <input type="checkbox" class="switcher-input" formControlName="defaultJobRole">
+                  <span class="switcher-indicator">
+                    <span class="switcher-yes"><span class="ion ion-md-checkmark"></span></span>
+                    <span class="switcher-no"><span class="ion ion-md-close"></span></span>
+                  </span>
+                </label>
+              </div>
+          </div>
+        </div>
+
+
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label class="form-label">Variation Limit</label>
+            <input class="numberInput form-control" type="number"   (keyup)="numberKeyUp('Variation')" formControlName="variationLimit" max="999999999.99" min="0" >
+          </div>
+
+          <div class="form-group col-md-6">
+            <label class="form-label">Issue Limit</label>
+            <input class="numberInput form-control" type="number"  (keyup)="numberKeyUp('Issue')" formControlName="issueLimit" max="999999999.99" min="0" >
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label class="form-label">Request Payment Limit</label>
+            <input class="numberInput form-control" type="number"  (keyup)="numberKeyUp('Request Payment')"  formControlName="requestPaymentLimit" max="999999999.99" min="0" >
+          </div>
+
+          <div class="form-group col-md-6">
+            <label class="form-label">Authorise Payment Limit</label>
+            <input class="numberInput form-control" type="number"   (keyup)="numberKeyUp('Authorise Payment')" formControlName="authPaymentLimit" max="999999999.99" min="0" >
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label class="form-label">Request Fee Limit</label>
+            <input class="numberInput form-control" type="number"   (keyup)="numberKeyUp('Request Fee')" formControlName="requestFeeLimit" max="999999999.99" min="0" >
+          </div>
+
+          <div class="form-group col-md-6">
+            <label class="form-label">Authorise Fee Limit</label>
+            <input class="numberInput form-control" type="number"   (keyup)="numberKeyUp('Authorise Fee')"  formControlName="authFeeLimit" max="999999999.99" min="0" >
+          </div>
+        </div>
+
+
+      <div class="buttonDiv pull-right mt-2">
+        <button type="button" (click)="closeEditFormWin()" class="btn btn-sm themeButton m-1">Cancel</button>
+        <button type="submit"  class="btn btn-sm themeButton m-1">Ok</button>
+      </div>
+    </form>
+
+
+  </div>
+</kendo-window>

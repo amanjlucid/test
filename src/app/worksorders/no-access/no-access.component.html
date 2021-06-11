@@ -25,8 +25,7 @@
                     <div class="col-md-9">
                         <input type="text" class="form-control" formControlName="noaccessdate"
                             [ngClass]="{ 'is-invalid': submitted && formErrors.noaccessdate }" autocomplete="off"
-                            (click)="openCalendar(nad)" ngbDatepicker #nad="ngbDatepicker"
-                            [placement]="'top'">
+                            (click)="openCalendar(nad)" ngbDatepicker #nad="ngbDatepicker" [placement]="'bottom'">
 
                         <div *ngIf="submitted && formErrors.noaccessdate" class="invalid-feedback">
                             <div *ngIf="formErrors.noaccessdate">{{ formErrors.noaccessdate }}</div>
@@ -54,11 +53,10 @@
                     <div class="col-md-3">
                         <label class="col-form-label">Next Access Date:</label>
                     </div>
-                    <div class="col-md-9">
-                        <input type="text" class="form-control" formControlName="nextaccessdate"
+                    <div class="col-md-9 noaccessDate">
+                        <input [placement]="'bottom'" type="text" class="form-control" formControlName="nextaccessdate"
                             [ngClass]="{ 'is-invalid': submitted && formErrors.nextaccessdate }" autocomplete="off"
-                            (click)="openCalendar(nxad)" [minDate]="minDate" ngbDatepicker #nxad="ngbDatepicker"
-                            [placement]="'top'">
+                            (click)="openCalendar(nxad)" [minDate]="minDate" ngbDatepicker #nxad="ngbDatepicker">
 
                         <div *ngIf="submitted && formErrors.nextaccessdate" class="invalid-feedback">
                             <div *ngIf="formErrors.nextaccessdate">{{ formErrors.nextaccessdate }}</div>

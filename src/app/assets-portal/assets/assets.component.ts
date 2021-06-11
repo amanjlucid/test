@@ -235,11 +235,12 @@ export class AssetsComponent implements OnInit, OnDestroy, AfterViewInit {
         const taskData = params['taskData'];
         const sapBand = params['sapBand'];
         const epcStatus = params['epcStatus'];
+        const openTab = params['openTab'];
         if (assetid != undefined) {
           this.autService.validateAssetIDDeepLinkParameters(this.currentUser.userId, assetid).subscribe(
             data => {
               if (data.validated) {
-                this.openLinkTabs(data);
+                this.openLinkTabs(data, openTab);
               } else {
                 this.assetList.AssetId = this.assetFilterId = assetid;
                 const errMsg = `${data.errorCode} : ${data.errorMessage}`
@@ -334,7 +335,7 @@ export class AssetsComponent implements OnInit, OnDestroy, AfterViewInit {
     //console.log(newDate);
   }
 
-  openLinkTabs(validationObj) {
+  openLinkTabs(validationObj, openTab = null) {
     this.assetFilterId = validationObj.assid;
     this.assetFilterAddress = validationObj.astconcataddress;
     this.assetList.AssetId = this.assetFilterId;
@@ -342,10 +343,17 @@ export class AssetsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.attributeLists = [];
     this.assetAttributeService.getAllAssets(this.assetList).subscribe(
       data => {
+        // console.log(data);
         if (data && data.isSuccess) {
           this.attributeLists = data.data;
+
+          let tabToOpen = this.attributeLists.fistTab
+          if (openTab != null) {
+            tabToOpen = openTab;
+          }
+
           if (this.attributeLists != undefined && this.attributeLists.length == 1) {
-            switch (this.attributeLists.fistTab) {
+            switch (tabToOpen) {
               case 'Asbestos':
                 this.tabName = "asbestos";
                 break;

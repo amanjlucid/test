@@ -284,7 +284,6 @@ export class WorkOrderFormComponent implements OnInit {
                 this.windowTitle = "Edit Works Order";
             }
 
-            // this.woForm2 = this.fb.group(this.stage2FormSetting);
 
             this.woForm2 = this.fb.group(this.stage2FormSetting,
                 {

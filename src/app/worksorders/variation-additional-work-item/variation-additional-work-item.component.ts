@@ -53,7 +53,7 @@ export class VariationAdditionalWorkItemComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log({ openfor: this.openedFor, from: this.openedFrom, variation: this.selectedVariationInp, asset: this.selectedSingleVariationAssetInp })
+    // console.log({ openfor: this.openedFor, from: this.openedFrom, variation: this.selectedVariationInp, asset: this.selectedSingleVariationAssetInp })
 
     this.requiredPagedata();
   }
@@ -68,7 +68,7 @@ export class VariationAdditionalWorkItemComponent implements OnInit {
         this.workOrderProgrammeService.getPlanYear(wosequence)
       ]).subscribe(
         data => {
-          console.log(data)
+          // console.log(data)
           this.worksOrderData = data[0].data;
           const planYear = data[1].data;
 
@@ -110,7 +110,7 @@ export class VariationAdditionalWorkItemComponent implements OnInit {
     this.subs.add(
       this.workOrderProgrammeService.getWorkPackagesForAssetVariation(params).subscribe(
         data => {
-          console.log(data)
+          // console.log(data)
           if (data.isSuccess) {
             this.additionalWorkData = data.data;
             this.gridView = process(this.additionalWorkData, this.state);
@@ -178,8 +178,10 @@ export class VariationAdditionalWorkItemComponent implements OnInit {
 
 
   checkPackageExist(item) {
-    if (item.attributeexists == 'Variation Exists' || item.attributeexists == 'Work Package Exists') return false;
-    if (item.exclusionreason == 'Work Package already exists on Work List' || item.exclusionreason == 'Work Package already exists as Variation') return false;
+    if (item.attributeexists == 'Variation Exists'||item.attributeexists == 'Attribute exists' || item.attributeexists == 'Work Package Exists') return false;
+
+    if (item.exclusionreason == 'Work Package already exists on Work List'|| item.exclusionreason == 'Attribute already exists on Work List' || item.exclusionreason == 'Work Package already exists as Variation') return false;
+    
     return true;
   }
 

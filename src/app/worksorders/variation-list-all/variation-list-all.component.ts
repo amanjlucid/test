@@ -2,8 +2,8 @@ import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { SelectableSettings, PageChangeEvent } from '@progress/kendo-angular-grid';
-import { AlertService, ConfirmationDialogService, HelperService, WorksorderManagementService, WorksOrdersService } from 'src/app/_services';
-import { forkJoin } from 'rxjs';
+import { AlertService, ConfirmationDialogService, HelperService, SharedService, WorksorderManagementService, WorksOrdersService } from 'src/app/_services';
+import { combineLatest, forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-variation-list-all',
@@ -46,16 +46,9 @@ export class VariationListAllComponent implements OnInit {
   openVariationDetail: boolean = false;
   openedFor = 'details'
 
-  // worksOrderData: any;
-  // phaseData: any;
-  // assetDetails: any;
-  // woAsset: any;
-
-  // selectedSingleVariation: any;
-
-  // openNewVariation: boolean = false;
-  // formMode = 'new'
-
+  worksOrderAccess = [];
+  worksOrderUsrAccess: any = [];
+  userType: any = [];
 
   constructor(
     private chRef: ChangeDetectorRef,
@@ -63,6 +56,7 @@ export class VariationListAllComponent implements OnInit {
     private worksOrderService: WorksOrdersService,
     private alertService: AlertService,
     private confirmationDialogService: ConfirmationDialogService,
+    private sharedService: SharedService
   ) {
     this.setSelectableSettings();
   }
@@ -70,6 +64,21 @@ export class VariationListAllComponent implements OnInit {
   ngOnInit(): void {
     // console.log(this.singleWorksOrder);
     // this.getUserWOSecurityData();
+    this.subs.add(
+      combineLatest([
+        this.sharedService.worksOrdersAccess,
+        this.sharedService.woUserSecObs,
+        this.sharedService.userTypeObs
+      ]).subscribe(
+        data => {
+          this.worksOrderAccess = data[0];
+          this.worksOrderUsrAccess = data[1];
+          this.userType = data[2][0];
+        }
+      )
+    )
+
+
     this.getAllVariations();
   }
 
@@ -103,12 +112,14 @@ export class VariationListAllComponent implements OnInit {
     const { wprsequence, wosequence } = this.singleWorksOrder;
     this.subs.add(
       forkJoin([
-        this.workOrderProgrammeService.getVW_WOUserSecurity(this.currentUser.userId, wosequence, wprsequence)
+        this.workOrderProgrammeService.getVW_WOUserSecurity(this.currentUser.userId, wosequence, wprsequence),
+        // this.workOrderProgrammeService.getWorksOrderByWOsequence(wosequence),
       ]).subscribe(
         data => {
-          console.log(data);
-          let sec = data[0].data.map(x => `${x.spffunction} - ${x.spjrftype}`)
-          console.log(sec);
+          // console.log(data);
+
+          // let sec = data[0].data.map(x => `${x.spffunction} - ${x.spjrftype}`)
+          // console.log(sec);
         }
       )
     )
@@ -119,7 +130,7 @@ export class VariationListAllComponent implements OnInit {
     this.subs.add(
       this.worksOrderService.getWEBWorksOrdersInstructionsForUser(wprsequence, wosequence, this.currentUser.userId, false).subscribe(
         data => {
-          // console.log(data);
+          // console.log({variation : data.data, wo : this.singleWorksOrder})
           if (data.isSuccess) {
             this.variationData = data.data;
             this.gridView = process(this.variationData, this.state);
@@ -154,24 +165,59 @@ export class VariationListAllComponent implements OnInit {
 
   cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
     this.selectedSingleInstructionVariation = dataItem;
+
   }
+
+  woMenuAccess(menuName) {
+    if (this.userType == undefined) return true;
+
+    if (this.userType?.wourroletype == "Dual Role") {
+      return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
+    }
+
+    return this.worksOrderUsrAccess.indexOf(menuName) != -1
+
+  }
+
 
   disableVariationBtns(btnType, item) {
 
-    if (btnType == 'Assets' || btnType == 'Details') {
+    if (btnType == 'Assets') {
       return false;
-    } else if (btnType == 'Customer') {
-      return item.woiissuestatus == 'Contractor Review' ? false : true;
-    } else if (btnType == 'Contractor') {
-      return item.woiissuestatus == 'Customer Review' ? false : true;
-    } else if (btnType == 'Issue') {
-      return item.woiissuestatus == 'New' ? false : true;
-    } else if (btnType == 'Delete') {
-      return item.woiissuestatus == 'New' ? false : true;
+    }
+
+    if (btnType == 'Details') {
+      if (item.isEmptyVariation == "N") {
+        return false;
+      }
+    }
+
+    else if (btnType == 'Customer') {
+      if (item.woiissuestatus == 'Contractor Review' && item.responsibility == "ALL" && item.isEmptyVariation == "N") {
+        return false;
+      }
+    }
+
+    else if (btnType == 'Contractor') {
+      if (item.woiissuestatus == 'Customer Review' && item.responsibility == "ALL" && item.isEmptyVariation == "N") {
+        return false;
+      }
+    }
+
+    else if (btnType == 'Issue') {
+      if ((item.woiissuestatus == 'New' || item.woiissuestatus == 'Customer Review') && item.isEmptyVariation == "N") {
+        return false;
+      }
+    }
+
+    else if (btnType == 'Delete') {
+      if (item.isEmptyVariation == "Y") {
+        return false;
+      }
     }
 
 
-    return false
+    return true;
   }
 
 
@@ -198,30 +244,33 @@ export class VariationListAllComponent implements OnInit {
     this.getAllVariations();
   }
 
-  openVariationDetailMethod(item) {
-    this.selectedSingleInstructionVariation = item;
-    $('.variationListAllOverlay').addClass('ovrlay');
-    this.openVariationDetail = true;
-  }
+  // openVariationDetailMethod(item) {
+  //   this.selectedSingleInstructionVariation = item;
+  //   $('.variationListAllOverlay').addClass('ovrlay');
+  //   this.openVariationDetail = true;
+  // }
 
-  closeVariationDetails(eve) {
-    this.openVariationDetail = eve;
-    $('.variationListAllOverlay').removeClass('ovrlay');
-    this.getAllVariations();
-  }
+  // closeVariationDetails(eve) {
+  //   this.openVariationDetail = eve;
+  //   $('.variationListAllOverlay').removeClass('ovrlay');
+  //   this.getAllVariations();
+  // }
 
 
 
-  sendVariation(to = "customer", item) {
+  sendVariation(to = "Customer", item) {
+    if (this.disableVariationBtns(to, item)) {
+      return
+    }
 
     const { wosequence, woisequence, woname, woiissuereason } = item;
 
     let apiCall: any;
     let msg = '';
-    if (to == 'customer') {
+    if (to == 'Customer') {
       apiCall = this.workOrderProgrammeService.sendVariationToCustomerForReview(wosequence, woisequence, woname, woiissuereason, this.currentUser.userName)
       msg = 'Variation sent to customer.'
-    } else if (to == 'contractor') {
+    } else if (to == 'Contractor') {
       apiCall = this.workOrderProgrammeService.emailVariationToContractorForReview(wosequence, woisequence, woname, woiissuereason, this.currentUser.userName)
       msg = 'Variation sent to contractor.'
     } else {
@@ -234,7 +283,8 @@ export class VariationListAllComponent implements OnInit {
         data => {
           // console.log(data)
           if (data.isSuccess) {
-            this.alertService.success(msg)
+            this.alertService.success(msg);
+            this.getAllVariations();
           } else this.alertService.error(data.message)
         }, err => this.alertService.error(err)
       )
@@ -247,7 +297,7 @@ export class VariationListAllComponent implements OnInit {
   issueVariation(item, checkOrProcess = "C") {
 
     if (this.disableVariationBtns('Issue', item)) {
-      this.alertService.error("Error");
+      // this.alertService.error("Error");
       return;
     }
 
@@ -313,7 +363,7 @@ export class VariationListAllComponent implements OnInit {
 
   deleteVariationConfirm(item) {
     if (this.disableVariationBtns('Delete', item)) {
-      this.alertService.error("Error");
+      // this.alertService.error("Error");
       return;
     }
 
@@ -359,9 +409,16 @@ export class VariationListAllComponent implements OnInit {
 
   disableBulkVaritionBtn() {
     if (this.selectedSingleInstructionVariation != undefined) {
-      if (this.selectedSingleInstructionVariation.isBulkVariation == 'N') {
-        return false
+
+      if (this.selectedSingleInstructionVariation.woiissuestatus == "Accepted" || this.selectedSingleInstructionVariation.woiissuestatus == "Issued") {
+        return false;
+      } else {
+        if (this.selectedSingleInstructionVariation.isBulkVariation == 'N') {
+          return false
+        }
       }
+
+
     }
 
     return true;

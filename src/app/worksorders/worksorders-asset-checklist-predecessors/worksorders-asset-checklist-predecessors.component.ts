@@ -54,12 +54,12 @@ export class WorksordersAssetChecklistPredecessorsComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    if (this.predecessorsWindowFrom == 'inner') {
-      this.commonParams = this.selectedChecklist;
-    } else {
-      this.commonParams = this.selectedChecklist[0]
-    }
-
+    // if (this.predecessorsWindowFrom == 'inner') {
+    //   this.commonParams = this.selectedChecklist;
+    // } else {
+    //   this.commonParams = this.selectedChecklist[0]
+    // }
+    this.commonParams = this.selectedChecklist;
     let params = {
       WOSEQUENCE: this.commonParams.wosequence,
       ASSID: this.commonParams.assid,

@@ -17,7 +17,7 @@
 
 
     <div class="row">
-        <div class="col-md-12 mt-2">
+        <div class="col-md-12 mt-2 varWorkListGrid">
             <kendo-grid #grid [data]="gridView" [height]="600" [selectable]="selectableSettings" filterable="menu"
                 [resizable]="true" [sortable]="{
                 allowUnsort: true,
@@ -25,54 +25,62 @@
                 }" [skip]="state.skip" [loading]="loading" [pageSize]="pageSize" [rowHeight]="36"
                 (pageChange)="pageChange($event)" scrollable="virtual" [sort]="state.sort" [filter]="state.filter"
                 (sortChange)="sortChange($event)" (filterChange)="filterChange($event)"
-                (cellClick)="cellClickHandler($event)" [navigable]="false">
+                (cellClick)="cellClickHandler($event)" [navigable]="false" [rowClass]="rowCallback">
 
                 <kendo-grid-column title=" " width="37" [filterable]="false" [sortable]="false"
                     *ngIf="openedFor != 'details'">
                     <ng-template kendoGridCellTemplate let-dataItem>
-                        <li class="nav-item dropdown list-unstyled" style="margin-top: -7px;">
-                            <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
+                        <li class="nav-item dropdown list-unstyled" style="margin-top: -7px;"
+                            (click)="setSeletedRow(dataItem)"
+                            *ngIf="dataItem.woadstatus != 'Accepted' || (dataItem.woadstatus == 'Accepted' && dataItem.woisequence == 0)">
+                            <i (click)="setSeletedRow(dataItem)" data-toggle="dropdown" aria-expanded="false"
+                                class="fas fa-bars"></i>
 
                             <div class="dropdown-menu">
-                                <a [ngClass]="{'disabled' : disableGridRowMenu('Change Cost',dataItem) }"
-                                    class="dropdown-item" href="javascript:void(0)"
+                                <a [ngClass]="{'disabled' : disableGridRowMenu('Change Cost/Qty',dataItem) }"
+                                    *ngIf="woMenuAccess('Change Cost/Qty')" class="dropdown-item"
+                                    href="javascript:void(0)"
                                     (click)="openEditWorkPackageQtyCostWindow(dataItem)">Change Cost/Qty</a>
 
-                                <a [ngClass]="{'disabled' : disableGridRowMenu('Delete Work',dataItem)}"
+                                <a *ngIf="woMenuAccess('Remove Work (Var)')"
+                                    [ngClass]="{'disabled' : disableGridRowMenu('Remove Work',dataItem)}"
                                     class="dropdown-item" href="javascript:void(0)"
-                                    (click)="deleteWorkConfirm(dataItem)">Delete Work</a>
+                                    (click)="deleteWorkConfirm(dataItem)">Remove Work</a>
 
 
-                                <a [ngClass]="{'disabled' : disableGridRowMenu('Remove Item Variation',dataItem)}"
+                                <a *ngIf="woMenuAccess('Remove Item Variation')"
+                                    [ngClass]="{'disabled' : disableGridRowMenu('Remove Item Variation',dataItem)}"
                                     class="dropdown-item" href="javascript:void(0)"
                                     (click)="removeItemVariationConfirm(dataItem)">Remove Item Variation</a>
 
-                                <a *ngIf="dataItem.woadrechargeyn == 'N' || dataItem.variationAction == 'Remove Work Item'"
+                                <a *ngIf="woMenuAccess('Recharge (Var)') && dataItem.woadrechargeyn == 'N' || dataItem.variationAction == 'Remove Work Item'"
                                     [ngClass]="{'disabled' : disableGridRowMenu('Recharge',dataItem) }"
                                     class="dropdown-item" href="javascript:void(0)"
                                     (click)="rechargeToggle(dataItem, true)">Recharge</a>
 
-                                <a *ngIf="dataItem.woadrechargeyn == 'Y' &&  dataItem.variationAction != 'Remove Work Item'"
-                                    [ngClass]="{'disabled' : dataItem.woadstatus != 'New'}" class="dropdown-item"
-                                    href="javascript:void(0)" (click)="rechargeToggle(dataItem, false)">Clear
+                                <a *ngIf="woMenuAccess('Recharge (Var)') && dataItem.woadrechargeyn == 'Y' &&  dataItem.variationAction != 'Remove Work Item'"
+                                    [ngClass]="{'disabled' : disableGridRowMenu('Recharge',dataItem) }"
+                                    class="dropdown-item" href="javascript:void(0)"
+                                    (click)="rechargeToggle(dataItem, false)">Clear
                                     Recharge</a>
 
 
-                                <a *ngIf="dataItem.woadrefusaL_YN == 'N'"
-                                    [ngClass]="{'disabled' : disableGridRowMenu('Set Refusal',dataItem)}"
+                                <a *ngIf="woMenuAccess('Refusal (Var)') && dataItem.woadrefusaL_YN == 'N'"
+                                    [ngClass]="{'disabled' : disableGridRowMenu('Refusal',dataItem)}"
                                     class="dropdown-item" href="javascript:void(0)"
                                     (click)="openRefusalReason(dataItem)">Set To
                                     Refusal</a>
 
-                                <a *ngIf="dataItem.woadrefusaL_YN == 'Y' && dataItem.variationAction != 'Remove Work Item'"
-                                    [ngClass]="{'disabled' : disableGridRowMenu('Clear Refusal',dataItem)}"
+                                <a *ngIf="woMenuAccess('Refusal (Var)') && dataItem.woadrefusaL_YN == 'Y' && dataItem.variationAction != 'Remove Work Item'"
+                                    [ngClass]="{'disabled' : disableGridRowMenu('Refusal',dataItem)}"
                                     class="dropdown-item" href="javascript:void(0)"
                                     (click)="clearRefusal(dataItem, 'clear')">Clear
                                     Refusal</a>
 
-                                <a [ngClass]="{'disabled' : disableGridRowMenu('Replace',dataItem)}"
+                                <a *ngIf="woMenuAccess('Replace Service Package')"
+                                    [ngClass]="{'disabled' : disableGridRowMenu('Replace Service Package',dataItem)}"
                                     class="dropdown-item" href="javascript:void(0)"
-                                    (click)="replaceService(dataItem)">Replace Service
+                                    (click)="openServicePkzMethod(dataItem)">Replace Service
                                     Package</a>
                             </div>
                         </li>
@@ -225,7 +233,8 @@
     <app-variation-pkz-enter-qty *ngIf="EditWorkPackageQtyCostWindow" [pkzQtyWindow]="EditWorkPackageQtyCostWindow"
         [singleVariationInp]="selectedVariationInp" [selectedSingleVariationAssetInp]="selectedSingleVariationAssetInp"
         [assetDetailInp]="selectedSingleVarWorkList" [openedFrom]="openedFrom" [parentComp]="'worklist'"
-        (closePkzQtyEvent)="closeEditWorkPackageQtyCostWindow($event)" [mode]="'edit'">
+        (closePkzQtyEvent)="closeEditWorkPackageQtyCostWindow($event)" [mode]="pkzQtyMode"
+        [selectedPkzs]="selectedSingleServicePkz" (closeServicePkz)="closeServicePkzWindow($event)">
     </app-variation-pkz-enter-qty>
 
 
@@ -236,7 +245,7 @@
         <div class="row">
             <div class="form-group col-md-12" *ngIf="reasonWindowFor == 'refusal'">
                 <label class="form-label">Refusal Reason</label>
-                <select class="custom-select" [(ngModel)]="reason">
+                <select class="custom-select form-control" [(ngModel)]="reason">
                     <option value=""></option>
                     <option *ngFor="let ref of refusalCodeList" value="{{ref.woadrefusal}}">{{ref.worcrefusaldesc}}
                     </option>
@@ -259,5 +268,62 @@
         </div>
 
     </kendo-window>
+
+
+    <kendo-window class="servicePkzGrid" title="Select Replacement Service Package" *ngIf="servicePkzOpen"
+        (close)="closeServicePkzWindow()" [top]="20" [minWidth]="700" [width]="800" [height]="auto" [minHeight]="350">
+        <div class="row">
+            <div class="col-md-12">
+                <kendo-grid [data]="servicePkzGrid" [height]="410" [selectable]="selectableSettings" filterable="menu"
+                    [resizable]="true" [sortable]="{
+                allowUnsort: true,
+                mode: 'multiple'
+                }" [skip]="servicePkzstate.skip" [loading]="loading" [pageSize]="pageSize" [rowHeight]="36"
+                    (pageChange)="pageChangeService($event)" scrollable="virtual" [sort]="servicePkzstate.sort"
+                    [filter]="servicePkzstate.filter" (sortChange)="sortChangeService($event)"
+                    (filterChange)="filterChangeService($event)" (cellClick)="cellClickHandlerService($event)"
+                    [navigable]="false">
+                    <kendo-grid-column field="wphcode" title="Package Code" width="120">
+                    </kendo-grid-column>
+                    <kendo-grid-column field="wphname" title="Package Name" width="120">
+                    </kendo-grid-column>
+                    <kendo-grid-column field="atadescription" title="Attribute Description" width="120">
+                    </kendo-grid-column>
+                    <kendo-grid-column field="asaquantity" title="Quantity" width="120">
+                    </kendo-grid-column>
+                    <kendo-grid-column field="uom" title="UOM" width="120">
+                    </kendo-grid-column>
+                    <kendo-grid-column field="defaultcost" title="Default Cost" width="120"
+                        [style]="{'text-align': 'right'}">
+                        <ng-template kendoGridCellTemplate let-dataItem>
+                            <span>
+                                {{ dataItem.defaultcost | currency:'GBP':'symbol' }}
+                            </span>
+                        </ng-template>
+                    </kendo-grid-column>
+                    <kendo-grid-column field="cost" title="Cost" width="120" [style]="{'text-align': 'right'}">
+                        <ng-template kendoGridCellTemplate let-dataItem>
+                            <span>
+                                {{ dataItem.cost | currency:'GBP':'symbol' }}
+                            </span>
+                        </ng-template>
+                    </kendo-grid-column>
+                    <kendo-grid-column field="exclusionreason" title="Exclusion Reason" width="120">
+                    </kendo-grid-column>
+
+                </kendo-grid>
+
+            </div>
+
+            <div class="col-md-12 mt-2 text-right">
+                <button type="button" (click)="replaceService()" class="btn btn-sm themeButton mr-1">Select</button>
+                <button type="button" (click)="closeServicePkzWindow()" class="btn btn-sm themeButton">Cancel</button>
+            </div>
+        </div>
+
+        <div class="variationWorkListOverlaypkz"></div>
+    </kendo-window>
+
+
 
 </kendo-window>

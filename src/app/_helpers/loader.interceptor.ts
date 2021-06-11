@@ -16,7 +16,7 @@ export class LoaderInterceptorService implements HttpInterceptor {
         return next.handle(req);
       }
       
-      if (req.url.indexOf("RunEventManagerProcessAsync") !== -1 || req.url.indexOf("GetEventTypeParameterAndNotify") !== -1 || req.url.indexOf("CreateXportWebReport") !== -1 || req.url.indexOf("EmailReport") !== -1 || req.url.indexOf("WorkOrderUserSecurity") !== -1 || req.url.indexOf("GetUserDetail") !== -1) {
+      if (req.url.indexOf("RunEventManagerProcessAsync") !== -1 || req.url.indexOf("GetEventTypeParameterAndNotify") !== -1 || req.url.indexOf("CreateXportWebReport") !== -1 || req.url.indexOf("EmailReport") !== -1 || req.url.indexOf("WorkOrderUserSecurity") !== -1 || req.url.indexOf("GetUserDetail") !== -1 || req.url.indexOf("VariationWorkListButtonsAccess") !== -1) {
         return next.handle(req)
       }
       

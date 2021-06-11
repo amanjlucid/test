@@ -21,29 +21,29 @@
 }
 
 .actionDrp .handoverDrp, .actionDrp .signOffDrp{
-    left: -160px;
+    left: -160px !important;
 } 
 
 .actionDrp .statusfirstLvl{
-    left: -172px;
+    left: -172px !important;
 } 
 
 .actionDrp .statusfirstLvl .statusSecondLvl{
-    left: -159px;
+    left: -159px !important;
 }
 
 
 .actionDrp .completeFirstLvl{
-    left: -159px;
+    left: -159px !important;
 }
 
 .actionDrp .dateFirstLvl{
-    left: -219px;
+    left: -219px !important;
 }
 
 .actionDrp .dateFirstLvl .dateSecondLvl{
-    left: -160px;
-    top:-73px;
+    left: -160px !important;
+    top:-73px !important;
 }
 
 ng-multiselect-dropdown {

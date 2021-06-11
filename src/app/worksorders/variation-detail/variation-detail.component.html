@@ -42,7 +42,8 @@
 
     <div class="row  mt-4">
         <div class="col-md-12">
-            <kendo-grid #grid [data]="gridView" [height]="600" [selectable]="selectableSettings" filterable="menu" [resizable]="true" [sortable]="{
+            <kendo-grid #grid [data]="gridView" [height]="600" [selectable]="selectableSettings" filterable="menu"
+                [resizable]="true" [sortable]="{
                 allowUnsort: true,
                 mode: 'multiple'
                 }" [skip]="state.skip" [loading]="loading" [pageSize]="pageSize" [rowHeight]="36"
@@ -71,37 +72,41 @@
                 <kendo-grid-column title="Fee" field="fee" width="90" [style]="{'text-align': 'right'}">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <span>
-                            {{ dataItem.woadforecast | currency:'GBP':'symbol' }}
+                            {{ dataItem.fee | currency:'GBP':'symbol' }}
                         </span>
                     </ng-template>
                 </kendo-grid-column>
 
-                <kendo-grid-column title="Work" field="woiadfeecost" width="90">
-
-                </kendo-grid-column>
-
-             
-
-                <kendo-grid-column title="Requested by" field="woadcomment" width="130">
-                </kendo-grid-column>
-
-                <kendo-grid-column title="Requested on" field="woadforecast" width="130">
+                <kendo-grid-column title="Work" field="woiadworkcost" width="90" [style]="{'text-align': 'right'}">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <span>
-                            {{ dataItem.woiissuedate | dateFormat : 'DD-MMM-YYYY' }}
+                            {{ dataItem.woiadworkcost | currency:'GBP':'symbol' }}
+                        </span>
+                    </ng-template>
+                </kendo-grid-column>
+
+
+
+                <kendo-grid-column title="Requested by" field="woiadissueuser" width="130">
+                </kendo-grid-column>
+
+                <kendo-grid-column title="Requested on" field="woiadissuedate" width="130">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.woiadissuedate | dateFormat : 'DD-MMM-YYYY' }}
                         </span>
                     </ng-template>
                 </kendo-grid-column>
 
                 <kendo-grid-column title="Issue Reason" field="woiadissuereason" width="130">
-                   
-                </kendo-grid-column>
-
-                <kendo-grid-column title="Status" field="woadactual" width="120">
 
                 </kendo-grid-column>
 
-                <kendo-grid-column title="Comment" field="woadapproved" width="140">
+                <kendo-grid-column title="Status" field="woiadissuestatus" width="120">
+
+                </kendo-grid-column>
+
+                <kendo-grid-column title="Comment" field="woiadcomment" width="140">
 
                 </kendo-grid-column>
 

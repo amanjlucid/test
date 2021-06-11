@@ -16,7 +16,7 @@
                         <div class="row">
                             <div class="col-md-2">Programme: </div>
                             <div class="col-md-10">
-                                <input type="text" value="{{programData?.wprdesc}}" class="form-control form-control-sm"
+                                <input type="text" value="{{programData?.wprname}}" class="form-control form-control-sm"
                                     [readonly]="true">
                             </div>
                         </div>
@@ -75,13 +75,17 @@
                                     (click)="openVariationDetails(dataItem)">Details</a> -->
 
                                 <a [ngClass]="{'disabled' : disableVariationBtns('Edit', dataItem)}"
-                                    class="dropdown-item" href="javascript:void(0)"
-                                    (click)="editVariation(dataItem)">Edit</a>
+                                    *ngIf="woMenuAccess('Edit Variation')" class="dropdown-item"
+                                    href="javascript:void(0)" (click)="editVariation(dataItem)">Edit</a>
 
 
                                 <a [ngClass]="{'disabled' : disableVariationBtns('Accept', dataItem)}"
+                                    *ngIf="woMenuAccess('Accept Variation')" class="dropdown-item"
+                                    href="javascript:void(0)" (click)="accetpVariationAsset(dataItem)">Accept</a>
+
+                                <a [ngClass]="{'disabled' : disableVariationBtns('Details', dataItem)}"
                                     class="dropdown-item" href="javascript:void(0)"
-                                    (click)="accetpVariationAsset(dataItem)">Accept</a>
+                                    (click)="openVariationDetailMethod(dataItem)">Details</a>
 
 
                             </div>
@@ -143,8 +147,6 @@
 
 
 
-
-
             </kendo-grid>
 
         </div>
@@ -162,6 +164,11 @@
         [selectedSingleVariationAssetInp]="selectedSingleVariationAsset"
         (closeWorkListEvent)="closeVariationDetails($event)">
     </app-variation-work-list>
+
+    <app-variation-detail *ngIf="openVariationDetail" [openVariationDetail]="openVariationDetail"
+        [openedFrom]="openedFrom" [openedFor]="openedFor" [singleVariationAsset]="selectedSingleVariationAsset"
+        (closeVariationDetailEvent)="closeVarDetails($event)">
+    </app-variation-detail>
 
 
 </kendo-window>

@@ -30,15 +30,15 @@ export class WorkordersAddAssetworklistModel {
   wltransfdate: any = ''
   wlttagcode: string = ''
 
-
+  astcode: string = ''
 
 
   wlworkstatus: string = ''
   woChecklistMatchCount: string = ''
   works_Order_Checklist_Name: string = ''
   wphname: any = ''
-  wosequence: number = 0
-  wopsequence: number = 0
+  wosequence: number = null
+  wopsequence: number = null
 
   wildcrdaddress: string = '';
 
@@ -46,9 +46,14 @@ export class WorkordersAddAssetworklistModel {
   ownassid: string = ''
   CurrentPage: number = 0
   PageSize: number = 50
+  Skip: number = 0
   OrderType: string = 'Ascending'
   OrderBy: string = 'wlassid'
 
+  workStatusNew: boolean = true;
+  workStatusTransferred: boolean = true;
+  workStatusCompleted: boolean = false;
+  workStatusCancelled: boolean = false;
 
 
 

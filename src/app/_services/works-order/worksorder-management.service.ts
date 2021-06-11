@@ -118,6 +118,7 @@ export class WorksorderManagementService {
         );
     }
 
+
     getWorksPackagesForAssets(params) {
         let body = JSON.stringify(params);
         return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWorksPackagesForAssets `, body, this.httpOptions)
@@ -331,20 +332,21 @@ export class WorksorderManagementService {
         return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/WorkOrderRefusalCodes?ClearRefusal=${ClearRefusal}`, this.httpOptions);
     }
 
-    getStageNameList(WOSEQUENCE) {
-        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetStageNameList?WOSEQUENCE=${WOSEQUENCE}`, this.httpOptions);
+    getCheckListName(WOSEQUENCE) {
+        // return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetStageNameList?WOSEQUENCE=${WOSEQUENCE}`, this.httpOptions);
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetCheckNameList?WOSEQUENCE=${WOSEQUENCE}`, this.httpOptions);
     }
 
     getWEBWorksOrdersVariationList(WOSEQUENCE, WOPSEQUENCE, assId) {
         return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWEBWorksOrdersVariationList?WOSEQUENCE=${WOSEQUENCE}&WOPSEQUENCE=${WOPSEQUENCE}&assId=${assId}`, this.httpOptions);
     }
 
-    getWEBWorksOrdersAssetDetailAndVariation(WOSEQUENCE, WOPSEQUENCE, assId) {
-        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWEBWorksOrdersAssetDetailAndVariation?WOSEQUENCE=${WOSEQUENCE}&WOPSEQUENCE=${WOPSEQUENCE}&assId=${assId}`, this.httpOptions);
+    getWEBWorksOrdersAssetDetailAndVariation(WOSEQUENCE, WOPSEQUENCE, assId, WOCHECKSURCDE = 0) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWEBWorksOrdersAssetDetailAndVariation?WOSEQUENCE=${WOSEQUENCE}&WOPSEQUENCE=${WOPSEQUENCE}&assId=${assId}&WOCHECKSURCDE=${WOCHECKSURCDE}`, this.httpOptions);
     }
 
-    getWEBWorksOrdersAssetChecklistAndVariation(WOSEQUENCE, WOPSEQUENCE, assId) {
-        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWEBWorksOrdersAssetChecklistAndVariation?WOSEQUENCE=${WOSEQUENCE}&WOPSEQUENCE=${WOPSEQUENCE}&assId=${assId}`, this.httpOptions);
+    getWEBWorksOrdersAssetChecklistAndVariation(WOSEQUENCE, WOPSEQUENCE, WOISEQUENCE, assId) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWEBWorksOrdersAssetChecklistAndVariation?WOSEQUENCE=${WOSEQUENCE}&WOPSEQUENCE=${WOPSEQUENCE}&WOISEQUENCE=${WOISEQUENCE}&assId=${assId}`, this.httpOptions);
     }
 
     getVW_WOUserSecurity(userId, WOSEQUENCE, WPRSEQUENCE) {
@@ -379,7 +381,7 @@ export class WorksorderManagementService {
     }
 
     getWOInstructionAssetsDetails(WOSEQUENCE, WOISEQUENCE) {
-        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWOInstructionAssetsDetails?WOSEQUENCE=${WOSEQUENCE}&WOSEQUENCE=${WOSEQUENCE}&WOISEQUENCE=${WOISEQUENCE}`, this.httpOptions);
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWOInstructionAssetsDetails?WOSEQUENCE=${WOSEQUENCE}&WOISEQUENCE=${WOISEQUENCE}`, this.httpOptions);
     }
 
     addBulkVariation(WOSEQUENCE, WOISEQUENCE) {
@@ -424,7 +426,7 @@ export class WorksorderManagementService {
         return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WorksOrdersCreateVariationForRemoveWOAD`, body, this.httpOptions);
     }
 
-    
+
     worksOrdersCreateVariationForChangeCostQty(params) {
         let body = JSON.stringify(params);
         return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WorksOrdersCreateVariationForChangeCostQty`, body, this.httpOptions);
@@ -438,6 +440,11 @@ export class WorksorderManagementService {
         let body = JSON.stringify(params);
         return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WorksOrdersUpdateWorksOrderInstructionAssetDetail`, body, this.httpOptions);
     }
+
+    // worksOrdersCreateVariationForChangeCostQty(params) {
+    //     let body = JSON.stringify(params);
+    //     return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WorksOrdersCreateVariationForChangeCostQty`, body, this.httpOptions);
+    // }
 
     wORemoveInstructionAssetDetail(params) {
         let body = JSON.stringify(params);
@@ -455,11 +462,79 @@ export class WorksorderManagementService {
         return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/CreateVariationForSIMReplacement`, body, this.httpOptions);
     }
 
-    
+
     worksOrdersCreateVariationForAddWOAD(params) {
         let body = JSON.stringify(params);
         return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WorksOrdersCreateVariationForAddWOAD`, body, this.httpOptions);
     }
+
+    getLatestVariationData(WOSEQUENCE, WOPSEQUENCE, reason) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetLatestVariationData?WOSEQUENCE=${WOSEQUENCE}&WOPSEQUENCE=${WOPSEQUENCE}&reason=${reason}`, this.httpOptions);
+    }
+
+    variationWorkListButtonsAccess(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/VariationWorkListButtonsAccess`, body, this.httpOptions);
+    }
+
+
+    getVariationIndicator(WOSEQUENCE, WOPSEQUENCE, assId) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetVariationIndicator?WOSEQUENCE=${WOSEQUENCE}&WOPSEQUENCE=${WOPSEQUENCE}&assId=${assId}`, this.httpOptions);
+    }
+
+    processCompletionReport(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/ProcessCompletionReport`, body, this.httpOptions);
+    }
+
+
+    getVW_PROGRAMMES_WORKS_ORDERs(ProgrammesStatus, MPUSID) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/Programmes/GetVW_PROGRAMMES_WORKS_ORDERs?ProgrammesStatus=${ProgrammesStatus}&MPUSID=${MPUSID}`, this.httpOptions);
+    }
+
+    insertWorksOrderInstructionAssetDetails(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/InsertWorksOrderInstructionAssetDetails`, body, this.httpOptions);
+    }
+
+
+    worksOrdersOutstandingVariationExistsForAsset(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WorksOrdersOutstandingVariationExistsForAsset`, body, this.httpOptions);
+    }
+
+    workOrderDefectForAssets(wosequence, assid, wopsequence) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/WorkOrderDefectAssets?wosequence=${wosequence}&assid=${assid}&wopsequence=${wopsequence}`, this.httpOptions);
+    }
+
+    getWEBWorksOrdersDefectsForProgrammeAndUserSingleWO(WPRSEQUENCE, WOSEQUENCE, UserId) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWEBWorksOrdersDefects_ForProgrammeAndUserSingleWO?WPRSEQUENCE=${WPRSEQUENCE}&WOSEQUENCE=${WOSEQUENCE}&UserId=${UserId}`, this.httpOptions);
+    }
+
+    getWorksOrderDefect(WPRSEQUENCE, WOSEQUENCE, ASSID, WODSEQUENCE) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWorksOrderDefect?WPRSEQUENCE=${WPRSEQUENCE}&WOSEQUENCE=${WOSEQUENCE}&ASSID=${ASSID}&WODSEQUENCE=${WODSEQUENCE}`, this.httpOptions);
+    }
+
+    getServicePkz(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWorkPackagesforAssetSIM_Replacement`, body, this.httpOptions);
+    }
+
+    updateWorksOrderDefect(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/UpdateWorksOrderDefect`, body, this.httpOptions);
+    }
+
+    getWOInstructionSpecificAssetsDetails(WOSEQUENCE, WOISEQUENCE, assid) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWOInstructionSpecificAssetsDetails?WOSEQUENCE=${WOSEQUENCE}&WOISEQUENCE=${WOISEQUENCE}&assid=${assid}`, this.httpOptions);
+    }
+
+    signOffDefect(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/SignOffDefect`, body, this.httpOptions);
+    }
+
+
 
 
 

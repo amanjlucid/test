@@ -384,7 +384,7 @@ export class HnsResInformationComponent implements OnInit {
   closeInfoChangeAnswer(event) {
     this.showInfoEditAns = false;
     $('.actionOverlay').removeClass('ovrlay');
-    this.searchActionGrid();
+    this.stateChange.next(this.headerFilters);
   }
 
   closeEditAnswer(event) {

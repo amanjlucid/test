@@ -86,7 +86,8 @@
 
                         <li *ngIf="dataItem.treelevel == 2" class="nav-item dropdown list-unstyled level2Menu"
                             style="margin-top: -7px;" (click)="setSeletedWORow(dataItem)">
-                            <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars" (click)="setSeletedWORow(dataItem)"></i>
+                            <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"
+                                (click)="setSeletedWORow(dataItem)"></i>
                             <div class="dropdown-menu">
                                 <a class="dropdown-item" *ngIf="woMenuAccess('Edit Works Order')"
                                     href="javascript:void(0)" (click)="openWorksOrderForm('edit', dataItem)">Edit</a>
@@ -98,6 +99,11 @@
                                 <a class="dropdown-item" href="javascript:void(0)"
                                     (click)="openPackageMappingWindow(dataItem)"
                                     *ngIf="woMenuAccess('Package Mapping')">Package Mapping</a>
+                                <a (click)="redirectToWoProgramManagmentInstructions(dataItem)" class="dropdown-item"
+                                    href="javascript:void(0)">
+                                    Instructions</a>
+                                <a class="dropdown-item" (click)="openCompletionList(dataItem)"
+                                    href="javascript:void(0)">Completions</a>
 
                             </div>
 
@@ -327,6 +333,15 @@
     [selectedWorkOrderAddEdit]="selctedWorksOrder" [selectedProgramme]="selectedProgramme" *ngIf="woFormWindow"
     (closeWoFormWin)="closeWoFormWin($event)">
 </app-workorder-form>
+
+<app-wo-program-management-instructions *ngIf="woProgramManagmentInstructionsWindow"
+  [woProgramManagmentInstructionsWindow]="woProgramManagmentInstructionsWindow" [worksOrderData]="selctedWorksOrder"
+  [selectedWorksOrder]="selctedWorksOrder"
+  (WoProgramManagmentInstructionsWinEvent)="closeWoProgramManagmentInstructionsWin($event)">
+</app-wo-program-management-instructions>
+
+<app-completion-list *ngIf="completionList" [worksOrderData]="selctedWorksOrder" [completionWin]="completionList"
+  (closeCompletionWin)="closeCompletionList($event)"></app-completion-list>
 
 <kendo-dialog title="DELETE WORKS ORDERS" *ngIf="deleteWorksOrderReasonWindow" (close)="closeWorksorderReasonWindow()"
     [minWidth]="250" [width]="450">

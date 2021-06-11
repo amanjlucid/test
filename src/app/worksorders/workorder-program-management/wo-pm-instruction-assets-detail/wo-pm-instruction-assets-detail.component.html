@@ -6,39 +6,39 @@
 
       <div class="row">
         <div class="col-md-2">
-          <label for="">Programme: </label>
+          <label class="lbl" for="">Programme: </label>
         </div>
         <div class="col-md-10">
-          <input [readonly]="true" type="text" class="form-control" placeholder=""
+          <input [readonly]="true" type="text" class="form-control form-control-sm" placeholder=""
             value="{{ programmeData.wprname }}">
         </div>
       </div>
 
 
-      <div class="row">
+      <div class="row ">
         <div class="col-md-2">
-          <label for="">Works Order: </label>
+          <label class="lbl" for="">Works Order: </label>
         </div>
         <div class="col-md-10">
-          <input [readonly]="true" type="text" class="form-control" placeholder=""
+          <input [readonly]="true" type="text" class="form-control form-control-sm" placeholder=""
               value="{{ worksOrderData.woname }}">
         </div>
       </div>
 
-      <div class="row">
+      <div class="row ">
         <div class="col-md-2">
-          <label for="">Phase: </label>
+          <label class="lbl" for="">Phase: </label>
         </div>
         <div class="col-md-6">
-          <input [readonly]="true" type="text" class="form-control" placeholder=""
+          <input [readonly]="true" type="text" class="form-control form-control-sm" placeholder=""
               value="{{ selectedInstructionRow.wopname }}">
         </div>
 
         <div class="col-md-2">
-          <label for="">Instruction: </label>
+          <label class="lbl" for="">Instruction: </label>
         </div>
         <div class="col-md-2">
-          <input [readonly]="true" type="text" class="form-control" placeholder=""
+          <input [readonly]="true" type="text" class="form-control form-control-sm" placeholder=""
               value="{{ selectedInstructionAssetRow.woisequence }}">
         </div>
 
@@ -48,15 +48,15 @@
 
       <div class="row">
         <div class="col-md-2">
-          <label for="">Asset: </label>
+          <label class="lbl" for="">Asset: </label>
         </div>
         <div class="col-md-4">
-          <input [readonly]="true" type="text" class="form-control" placeholder=""
+          <input [readonly]="true" type="text" class="form-control form-control-sm" placeholder=""
               value="{{ selectedInstructionAssetRow.assid }}">
         </div>
 
         <div class="col-md-6">
-          <input [readonly]="true" type="text" class="form-control" placeholder=""
+          <input [readonly]="true" type="text" class="form-control form-control-sm" placeholder=""
               value="{{ selectedInstructionAssetRow.address }}">
         </div>
 
@@ -64,11 +64,6 @@
 
 
     </div>
-
-
-
-
-
 
 
 
@@ -96,7 +91,7 @@
             <li class="nav-item dropdown list-unstyled" style="margin-top: -7px;">
               <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars" ></i>
               <div class="dropdown-menu">
-                <a (click)="openAcceptInstruction(dataItem)" class="dropdown-item" href="javascript:void(0)" >Accept Instruction</a>
+                <a *ngIf="woMenuAccess('Accept Instruction')" (click)="openAcceptInstruction(dataItem)" class="dropdown-item" href="javascript:void(0)" >Accept Instruction</a>
 
               </div>
             </li>
@@ -105,30 +100,40 @@
         </kendo-grid-column>
 
 
-        <kendo-grid-column field="woiadrequesttype" title="Requested Type" width="100">
+        <kendo-grid-column field="woiadrequesttype" title="Requested Type" width="150">
         </kendo-grid-column>
 
-        <kendo-grid-column field="BATHROOM" title="Description" width="100">
+        <kendo-grid-column field="BATHROOM" title="Description" width="140">
         </kendo-grid-column>
 
-        <kendo-grid-column field="attribute" title="Attribute" width="100">
+        <kendo-grid-column field="attribute" title="Attribute" width="150">
         </kendo-grid-column>
 
-        <kendo-grid-column field="quantity" title="Quantity By" width="100">
+        <kendo-grid-column field="quantity" title="Quantity" width="140">
         </kendo-grid-column>
 
         <kendo-grid-column field="uom" title="UOM" width="100">
         </kendo-grid-column>
 
 
-        <kendo-grid-column field="fee" title="Fee" width="100">
+        <kendo-grid-column field="fee" title="Fee" width="100" [style]="{'text-align': 'right'}">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span  >
+              {{ dataItem.fee | currency:'GBP':'symbol' }}
+            </span>
+          </ng-template>
         </kendo-grid-column>
 
-        <kendo-grid-column field="cost" title="Work" width="100">
+        <kendo-grid-column field="cost" title="Work" width="100" [style]="{'text-align': 'right'}">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span  >
+              {{ dataItem.cost | currency:'GBP':'symbol' }}
+            </span>
+          </ng-template>
         </kendo-grid-column>
 
 
-        <kendo-grid-column field="woiadissueuser" title="Requested By" width="100">
+        <kendo-grid-column field="woiadissueuser" title="Requested By" width="140">
         </kendo-grid-column>
 
 
@@ -141,13 +146,13 @@
               </ng-template>
         </kendo-grid-column>
 
-        <kendo-grid-column field="woiadissuereason" title="Issue Reason" width="100">
+        <kendo-grid-column field="woiadissuereason" title="Issue Reason" width="140">
         </kendo-grid-column>
 
-        <kendo-grid-column field="woiadissuestatus" title="Status" width="100">
+        <kendo-grid-column field="woiadissuestatus" title="Status" width="140">
         </kendo-grid-column>
 
-        <kendo-grid-column field="woiadcomment" title="Comment" width="100">
+        <kendo-grid-column field="woiadcomment" title="Comment" width="140">
         </kendo-grid-column>
 
 

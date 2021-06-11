@@ -1,0 +1,53 @@
+.k-window {
+    position: fixed !important;
+}
+
+.k-grid tbody td {
+    white-space: nowrap;
+    line-height: 20px;
+    padding: 8px 12px;
+}
+
+.textareaDiv .col-md-2 {
+    width: 121px;
+    flex: inherit !important;
+}
+
+.textareaDiv .col-md-10 {
+    width: 86%;
+    max-width: 87%;
+    flex: inherit !important;
+    padding-left: 9px;
+    padding-right: 0px;
+}
+
+.defectDetailRow {
+    border: 1px solid #d7d1d1;
+    padding: 6px;
+    margin-left: -3px;
+    margin-right: -3px;
+    border-radius: 5px;
+}
+
+.defectDetailRow .defectdetail {
+    padding: 2px;
+}
+
+.defectDetailRow .defectdetail .fieldName {
+    font-weight: 600;
+    margin-right: 5px;
+}
+
+.defectForm {
+    width: 100%;
+}
+
+.defectForm .formFieldArea {
+    border: 1px solid #d7d1d1;
+    padding: 6px;
+    margin-left: -3px;
+    margin-right: -3px;
+    border-radius: 5px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}

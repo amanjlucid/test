@@ -66,8 +66,8 @@
               </div>
             </div>
 
-            <a *ngIf="woMenuBtnSecurityAccess('Cancel Asset')" (click)="openRemoveReasonPanel('multiple', 'CANCEL')" class="dropdown-item"
-              href="javascript:void(0)">Cancel</a>
+            <a *ngIf="woMenuBtnSecurityAccess('Cancel Asset')" (click)="openRemoveReasonPanel('multiple', 'CANCEL')"
+              class="dropdown-item" href="javascript:void(0)">Cancel</a>
             <a *ngIf="woMenuBtnSecurityAccess('Remove Asset')" class="dropdown-item" href="javascript:void(0)"
               (click)="openRemoveReasonPanel('multiple', 'REMOVE')">Remove</a>
 
@@ -77,6 +77,9 @@
 
       <button *ngIf="woMenuBtnSecurityAccess('Add Phase')" (click)="openNewphase('new')"
         class="btn btn-sm themeButton">New Phase</button>
+
+      <!-- <button *ngIf="woMenuBtnSecurityAccess('Defects')" (click)="openDefectsMethod()"
+        class="btn btn-sm themeButton ml-1">Defects</button> -->
 
       <button id="showFilePanel" (click)="lockUnlockColumn()" class="btn btn-sm themeButton ml-1">
         <i *ngIf="!columnLocked" class="fa fa-lock" aria-hidden="true"></i>
@@ -230,7 +233,7 @@
 
   <div class="row">
 
-    <div class="col-md-12 mt-2" (mouseover)="getMouseroverEve($event)">
+    <div class="col-md-12 mt-2 workorderDetailGrid" (mouseover)="getMouseroverEve($event)">
 
       <kendo-treelist #grid [kendoTreeListFlatBinding]="gridData" idField="id" parentIdField="parentId"
         scrollable="virtual" [rowHeight]="36" kendoTreeListExpandable [initiallyExpanded]="true" [sortable]="true"
@@ -356,7 +359,7 @@
 
                     <div class="dropdown-toggle" *ngIf="woMenuBtnSecurityAccess('Handover Asset')">
                       <div class="dropdown-item">Handover</div>
-                      <div class="dropdown-menu">
+                      <div class="dropdown-menu HandoverMenu">
                         <a class="dropdown-item" href="javascript:void(0)"
                           (click)="assetAction(dataItem, 'HY', 'single')">Yesterday</a>
                         <a class="dropdown-item" href="javascript:void(0)"
@@ -369,7 +372,7 @@
 
                     <div class="dropdown-toggle" *ngIf="woMenuBtnSecurityAccess('Signoff Asset')">
                       <div class="dropdown-item">Sign Off</div>
-                      <div class="dropdown-menu">
+                      <div class="dropdown-menu signoffMenu">
                         <a class="dropdown-item" href="javascript:void(0)"
                           (click)="assetAction(dataItem, 'SOY', 'single')">Yesterday</a>
                         <a class="dropdown-item" href="javascript:void(0)"
@@ -380,7 +383,8 @@
                       </div>
                     </div>
 
-                    <a *ngIf="woMenuBtnSecurityAccess('Cancel Asset')" [ngClass]="{'disabled' : dataItem.wostatus != 'Accepted' && dataItem.wostatus != 'Issued'}"
+                    <a *ngIf="woMenuBtnSecurityAccess('Cancel Asset')"
+                      [ngClass]="{'disabled' : dataItem.wostatus != 'Accepted' && dataItem.wostatus != 'Issued'}"
                       (click)="openRemoveReasonPanel('single', 'CANCEL', dataItem)" class="dropdown-item"
                       href="javascript:void(0)">Cancel</a>
                     <a *ngIf="woMenuBtnSecurityAccess('Remove Asset')" class="dropdown-item" href="javascript:void(0)"
@@ -400,6 +404,24 @@
 
         <kendo-treelist-column [expandable]="true" [minResizableWidth]="200" field="woname" title="Name" [width]="450"
           [locked]="columnLocked">
+          <ng-template kendoTreeListCellTemplate let-dataItem>
+            <span>
+              {{ dataItem.woname }}
+            </span>
+
+            <span class="asbestosIcon">
+              <img (click)="openAsbestos(dataItem)" title="Medium/High Asbestos"
+                *ngIf="dataItem.acmColour != '' && dataItem.acmColour == 'Red'" class="table-icon-wr"
+                src="assets/img/icons/asbestos-red.png" />
+              <!-- <img title="No Asbestos" *ngIf="dataItem.acmColour != '' && dataItem.acmColour == 'Black'"
+                class="table-icon-wr" src="assets/img/icons/asbestos-black.png" />
+              <img title="Very Low/Low Asbestos" *ngIf="dataItem.acmColour != '' && dataItem.acmColour == 'Green'"
+                class="table-icon-wr" src="assets/img/icons/asbestos-green.png" /> -->
+            </span>
+          </ng-template>
+
+
+
         </kendo-treelist-column>
         <kendo-treelist-column field="wostatus" title="Status" [width]="120" [locked]="columnLocked">
         </kendo-treelist-column>
@@ -481,7 +503,7 @@
         <kendo-treelist-column field="wopending" title="Pending" [width]="130" [style]="{'text-align': 'right'}">
           <ng-template kendoTreeListCellTemplate let-dataItem>
             <span>
-              {{ dataItem.pending | currency:"GBP":"symbol" }}
+              {{ dataItem.wopending | currency:"GBP":"symbol" }}
             </span>
           </ng-template>
         </kendo-treelist-column>
@@ -626,3 +648,9 @@
   <app-asset-remove-reason *ngIf="openAssetRemoveReason" [openAssetRemoveReason]="openAssetRemoveReason"
     [reasonType]="chooseDateType" (closeReasonEvent)="closeReasonPanel($event)" (outputReason)="getReason($event)">
   </app-asset-remove-reason>
+
+
+  <app-asset-defects-list *ngIf="openDefectsList" [openDefectsList]="openDefectsList"
+    [singleWorkOrderInp]="worksOrderSingleData" [openedFrom]="'workdetail'"
+    (closeDefectsListEvent)="closeDefectList($event)">
+  </app-asset-defects-list>

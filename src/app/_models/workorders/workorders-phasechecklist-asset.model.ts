@@ -14,7 +14,8 @@ export class WorkordersPhaseChecklistModel {
   CurrentPage: number = 0;
   PageSize: number = 50;
 
-  StageCategory:string = ''
+  // StageCategory:string = ''// need to remove
+  CheckListCategory:string = ''
   AssId: string = ''
   Address: string = ''
   // StartDate: string = ''
