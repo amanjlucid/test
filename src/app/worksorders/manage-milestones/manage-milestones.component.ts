@@ -14,10 +14,10 @@ import { AlertService, ConfirmationDialogService, HelperService, WorksOrdersServ
 
 export class ManageMilestonesComponent implements OnInit {
   @Input() openManageMilestone: boolean = false;
-  @Input() worksOrderData : any;
+  @Input() worksOrderData: any;
   @Output() closeManageMilestoneEvent = new EventEmitter<boolean>();
 
-  openMilestoneEdit : boolean;
+  openMilestoneEdit: boolean;
 
   title = 'Manage Milestones';
   subs = new SubSink();
@@ -39,13 +39,13 @@ export class ManageMilestonesComponent implements OnInit {
   mySelection: any[] = [];
 
   filterToggle = false;
-  
-  currentUser = JSON.parse(localStorage.getItem('currentUser'));
-  milestonesData : any;
-  singleMilestone : any;
-  woClientUserList : any;
 
-  editMilestone : boolean = true;
+  currentUser = JSON.parse(localStorage.getItem('currentUser'));
+  milestonesData: any;
+  singleMilestone: any;
+  woClientUserList: any;
+
+  editMilestone: boolean = true;
 
   constructor(
     private chRef: ChangeDetectorRef,
@@ -72,7 +72,7 @@ export class ManageMilestonesComponent implements OnInit {
     };
   }
 
-  cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }){
+  cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
     this.editMilestone = false;
     this.singleMilestone = dataItem;
   }
@@ -84,31 +84,31 @@ export class ManageMilestonesComponent implements OnInit {
   }
 
   getManageMilestonesList() {
-      const wosequence = this.worksOrderData.wosequence;
-      this.subs.add(
-          this.worksOrdersService.getManageMilestoneData(wosequence).subscribe(
-          data => {
-            if (data.isSuccess) {
-              this.getWorkOrderClientUserList(wosequence);
-              this.milestonesData = [...data.data];
-              this.milestonesData.map(x=>{
-                x.wocheckspeciaL2 = x.wocheckspeciaL2.trim();
-              });
-              this.gridView = process(this.milestonesData, this.state);
-            } else this.alertService.error(data.message);
+    const wosequence = this.worksOrderData.wosequence;
+    this.subs.add(
+      this.worksOrdersService.getManageMilestoneData(wosequence).subscribe(
+        data => {
+          if (data.isSuccess) {
+            this.getWorkOrderClientUserList(wosequence);
+            this.milestonesData = [...data.data];
+            this.milestonesData.map(x => {
+              x.wocheckspeciaL2 = x.wocheckspeciaL2.trim();
+            });
+            this.gridView = process(this.milestonesData, this.state);
+          } else this.alertService.error(data.message);
 
-            this.loading = false;
-            this.chRef.detectChanges();
+          this.loading = false;
+          this.chRef.detectChanges();
 
-          }, err => this.alertService.error(err)
-        )
+        }, err => this.alertService.error(err)
       )
+    )
 
   }
 
-  getWorkOrderClientUserList(wosequence:number) {
+  getWorkOrderClientUserList(wosequence: number) {
     this.subs.add(
-        this.worksOrdersService.getWorkOrderClientUserNames(wosequence).subscribe(
+      this.worksOrdersService.getWorkOrderClientUserNames(wosequence).subscribe(
         data => {
           if (data.isSuccess) {
             this.woClientUserList = [...data.data];
@@ -119,7 +119,7 @@ export class ManageMilestonesComponent implements OnInit {
       )
     )
 
-}
+  }
 
 
   sortChange(sort: SortDescriptor[]): void {
@@ -140,23 +140,25 @@ export class ManageMilestonesComponent implements OnInit {
     };
   }
 
-  confirmEditMilestones(){
-    if(this.currentUser.userId !== this.singleMilestone.woresponsibleuser){
+  confirmEditMilestones() {
+    if (this.currentUser.userId !== this.singleMilestone.woresponsibleuser) {
       $('.k-window').css({ 'z-index': 1000 });
       this.confirmationDialogService.confirm('Please confirm..', "You are not listed as being responsible for this milestone, do you want to continue and edit it?")
-          .then((confirmed) => (confirmed) ? this.openMilestonesEdit() : console.log(confirmed) )
-          .catch(() => console.log('Attribute dismissed the dialog.'));
-    }else{
+        .then((confirmed) => (confirmed) ? this.openMilestonesEdit() : console.log(confirmed))
+        .catch(() => console.log('Attribute dismissed the dialog.'));
+    } else {
       this.openMilestonesEdit();
+
     }
   }
 
-  openMilestonesEdit(){
+  openMilestonesEdit() {
     this.openMilestoneEdit = true;
     $('.milestoneOverlay').addClass('ovrlay');
+    this.chRef.detectChanges();
   }
 
-  closeMilestoneEdit($event){
+  closeMilestoneEdit($event) {
     this.getManageMilestonesList();
     this.openMilestoneEdit = $event;
     $('.milestoneOverlay').removeClass('ovrlay');

@@ -618,6 +618,7 @@ export class WorkorderListComponent implements OnInit {
 
 
   openDocumentMethod(item) {
+    if (item.worksOrderFileCount == 0) return;
     this.selectedWorksOrder = item;
     $('.worksOrderOverlay').addClass('ovrlay');
     this.documentWindow = true;

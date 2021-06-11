@@ -12,8 +12,7 @@
         class="btn btn-sm themeButton ">
         New Works Order
       </button>
-      <button [disabled]="disabledMilestone" (click)="openManageMilestonePopup()"
-        class="btn btn-sm themeButton ml-1">
+      <button [disabled]="disabledMilestone" (click)="openManageMilestonePopup()" class="btn btn-sm themeButton ml-1">
         Manage Milestones
       </button>
       <button (click)="export()" class="btn btn-sm themeButton ml-1"> Export</button>
@@ -105,64 +104,65 @@
                   Instructions</a>
                 <a class="dropdown-item" (click)="openCompletionList(dataItem)"
                   href="javascript:void(0)">Completions</a>
-                  <a  class="dropdown-item" href="javascript:void(0)"
-                    (click)="openProgrammeLog(dataItem)">View Programme Log</a>
+                <a class="dropdown-item" href="javascript:void(0)" (click)="openProgrammeLog(dataItem)">View Programme
+                  Log</a>
 
-                    <a  class="dropdown-item" href="javascript:void(0)"
-                      (click)="openWoAssociationsManage(dataItem)">Associations</a>
+                <a class="dropdown-item" href="javascript:void(0)"
+                  (click)="openWoAssociationsManage(dataItem)">Associations</a>
 
-                  <div class="dropdown-toggle" >
-                    <div class="dropdown-item">Programme Management</div>
-                    <div class="dropdown-menu addAssetMenu">
-                      <a (click)="redirectToWoProgramManagmentInstructions(dataItem)" class="dropdown-item"
-                        href="javascript:void(0)">
-                        Instructions</a>
-                      <a  class="dropdown-item"
-                      href="javascript:void(0)">Completions</a>
-
-                <a *ngIf="woMenuAccess('Works Order Documents')" [ngClass]="{'disabled': dataItem.worksOrderFileCount == 0}" class="dropdown-item"
+                <a *ngIf="woMenuAccess('Works Order Documents')"
+                  [ngClass]="{'disabled': dataItem.worksOrderFileCount == 0}" class="dropdown-item"
                   (click)="openDocumentMethod(dataItem)" href="javascript:void(0)">Documents</a>
 
-                <div class="dropdown-toggle" >
+                <div class="dropdown-toggle">
                   <div class="dropdown-item">Contractor Reports</div>
                   <div class="dropdown-menu addAssetMenu">
-                    <a class="dropdown-item" href="javascript:void(0)" (click)="WOCreateXportOutputReport(580, 'Contractor Asset Report')">Asset Report</a>
-                    <a class="dropdown-item" href="javascript:void(0)" (click)="WOCreateXportOutputReport(581, 'Contractor Work Report')">Work Report</a>
+                    <a class="dropdown-item" href="javascript:void(0)"
+                      (click)="WOCreateXportOutputReport(580, 'Contractor Asset Report')">Asset Report</a>
+                    <a class="dropdown-item" href="javascript:void(0)"
+                      (click)="WOCreateXportOutputReport(581, 'Contractor Work Report')">Work Report</a>
                   </div>
                 </div>
-                <div class="dropdown-toggle" >
+
+
+                <div class="dropdown-toggle">
                   <div class="dropdown-item">Works Order Report</div>
-                  <div class="dropdown-menu addAssetMenu">
-                    <a class="dropdown-item" href="javascript:void(0)" (click)="viewWOReportingProgSummaryTree(2, selectedWorksOrder)">Selected Order</a>
-                    <a class="dropdown-item" href="javascript:void(0)" (click)="viewWOReportingProgSummaryTree(3)">All Orders</a>
-                    <a class="dropdown-item" href="javascript:void(0)" (click)="viewWOReportingProgSummaryTree(4)">All Orders (Including Phase)</a>
-                    <a class="dropdown-item" href="javascript:void(0)" (click)="viewWOReportingAsset(2, selectedWorksOrder)">Selected Order (including Assets)</a>
+                  <div class="dropdown-menu woReport">
+                    <a class="dropdown-item" href="javascript:void(0)"
+                      (click)="viewWOReportingProgSummaryTree(2, selectedWorksOrder)">Selected Order</a>
+                    <a class="dropdown-item" href="javascript:void(0)" (click)="viewWOReportingProgSummaryTree(3)">All
+                      Orders</a>
+                    <a class="dropdown-item" href="javascript:void(0)" (click)="viewWOReportingProgSummaryTree(4)">All
+                      Orders (Including Phase)</a>
+                    <a class="dropdown-item" href="javascript:void(0)"
+                      (click)="viewWOReportingAsset(2, selectedWorksOrder)">Selected Order (including Assets)</a>
                     <!-- <a class="dropdown-item" href="javascript:void(0)" (click)="viewWOReportingAsset(0)">All Orders (including Assets)</a> -->
-                    <a class="dropdown-item" href="javascript:void(0)" (click)="WOCreateXportOutputReport(505, 'WO Selected Asset Report')">Asset Report (Selected Order)</a>
-                    <a class="dropdown-item" href="javascript:void(0)" (click)="WOCreateXportOutputReport(506, 'WO Selected Work Report')">Work Report (Selected Order)</a>
+                    <a class="dropdown-item" href="javascript:void(0)"
+                      (click)="WOCreateXportOutputReport(505, 'WO Selected Asset Report')">Asset Report (Selected
+                      Order)</a>
+                    <a class="dropdown-item" href="javascript:void(0)"
+                      (click)="WOCreateXportOutputReport(506, 'WO Selected Work Report')">Work Report (Selected
+                      Order)</a>
+
+                    <a class="dropdown-item" href="javascript:void(0)"
+                      (click)="WOCreateXportOutputReport(587, 'Associations Works Order Level')">Works Order Level</a>
+                    <a class="dropdown-item" href="javascript:void(0)"
+                      (click)="WOCreateXportOutputReport(588, 'Associations Asset Level')">Asset Level</a>
                   </div>
                 </div>
-                <div class="dropdown-toggle" >
+
+
+                <!-- <div class="dropdown-toggle">
                   <div class="dropdown-item">Associations</div>
                   <div class="dropdown-menu addAssetMenu">
-                    <a class="dropdown-item" href="javascript:void(0)" (click)="WOCreateXportOutputReport(587, 'Associations Works Order Level')">Works Order Level</a>
-                    <a class="dropdown-item" href="javascript:void(0)" (click)="WOCreateXportOutputReport(588, 'Associations Asset Level')">Asset Level</a>
+                    <a class="dropdown-item" href="javascript:void(0)"
+                      (click)="WOCreateXportOutputReport(587, 'Associations Works Order Level')">Works Order Level</a>
+                    <a class="dropdown-item" href="javascript:void(0)"
+                      (click)="WOCreateXportOutputReport(588, 'Associations Asset Level')">Asset Level</a>
                   </div>
-                </div>
-                <!-- <a class="dropdown-item" href="javascript:void(0)">Defects </a>
-                <a class="dropdown-item" href="javascript:void(0)">Contract Costs</a>
-                <a class="dropdown-item" href="javascript:void(0)">Variations</a>
-               
-                <a class="dropdown-item" href="javascript:void(0)">Payment Schedule </a>
-                <a class="dropdown-item" href="javascript:void(0)">Works Order Reports</a>
-                <a class="dropdown-item" href="javascript:void(0)">Contractor Reports </a>  -->
-              </div>
+                </div> -->
 
-              <!-- <ng-template #elseBlock>
-                <div class="dropdown-menu selectedMenuBar{{dataItem.wosequence}}">
-                  <a class="dropdown-item" href="javascript:void(0)">No Menu Access</a>
-                </div>
-              </ng-template> -->
+              </div>
 
             </li>
 
@@ -184,7 +184,7 @@
 
         <kendo-grid-column field="wosequence" title="Work Order" width="140" [locked]="columnLocked">
         </kendo-grid-column>
-        <kendo-grid-column field="woname" title="Name" width="160" [locked]="columnLocked">
+        <kendo-grid-column field="woname" title="Name" width="300" [minResizableWidth]="200" [locked]="columnLocked">
         </kendo-grid-column>
         <kendo-grid-column field="wostatus" title="Status" width="160">
         </kendo-grid-column>
@@ -331,6 +331,7 @@
 
         <kendo-grid-column field="mPgrA" title="Amended By" width="120">
         </kendo-grid-column>
+
         <kendo-grid-column field="mPgsA" title="Amended Date" width="150" filter="date" format="{0:dd-MM-yyyy}">
           <ng-template kendoGridFilterMenuTemplate let-filter let-column="column" let-filterService="filterService">
             <date-range-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
@@ -406,10 +407,13 @@
 <app-wo-document-list *ngIf="documentWindow" [documentWindow]="documentWindow"
   (closeDocument)="closeDocumentWindow($event)" [selectedWorksOrder]="selectedWorksOrder"></app-wo-document-list>
 <app-programme-log *ngIf="ProgrammeLogWindow" [ProgrammeLogWindow]="ProgrammeLogWindow"
-  [worksOrderData]="selectedWorksOrder"  (ProgrammeLogWindowEvent)="closeProgrammeLogWindow($event)">
+  [worksOrderData]="selectedWorksOrder" (ProgrammeLogWindowEvent)="closeProgrammeLogWindow($event)">
 </app-programme-log>
 
 <app-wo-association-manage *ngIf="WoAssociationsManageWindow" [WoAssociationsManageWindow]="WoAssociationsManageWindow"
-  [worksOrderData]="selectedWorksOrder"  (WoAssociationsManageWindowEvent)="closeWoAssociationsManageWindowMain($event)">
+  [worksOrderData]="selectedWorksOrder" (WoAssociationsManageWindowEvent)="closeWoAssociationsManageWindowMain($event)">
 </app-wo-association-manage>
-<app-manage-milestones *ngIf="openManageMilestone" [worksOrderData]="selectedWorksOrder" [openManageMilestone]="openManageMilestone" (closeManageMilestoneEvent)="closeManageMilestone($event)"></app-manage-milestones>
+
+<app-manage-milestones *ngIf="openManageMilestone" [worksOrderData]="selectedWorksOrder"
+  [openManageMilestone]="openManageMilestone" (closeManageMilestoneEvent)="closeManageMilestone($event)">
+</app-manage-milestones>

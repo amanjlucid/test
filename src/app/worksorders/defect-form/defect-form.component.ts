@@ -402,8 +402,6 @@ export class DefectFormComponent implements OnInit {
     this.formErrorObject(); // empty form error 
     this.logValidationErrors(this.defectForm);
 
-    // this.chRef.detectChanges();
-    // console.log(this.defectForm)
     if (this.defectForm.invalid) {
       return;
     }
@@ -452,38 +450,13 @@ export class DefectFormComponent implements OnInit {
       params.ASSID = assid;
       params.WODSEQUENCE = wodsequence;
 
-      // const params = {
-      //   WLATAID: wlataid,
-      //   WLCODE: wlcode,
-      //   WLPLANYEAR: wlplanyear,
-      //   // WODAPPROXCOST: cost,
-      //   // WODDATE: this.helperService.dateObjToString(IdentifiedDate),
-      //   // WODDESCRIPTION: description,
-      //   // WODMPUSID: reportedBy,
-      //   // WODRESOLVEDDATE: this.helperService.dateObjToString(resolutionDate),
-      //   // WODRESOLVEDDESCRIPTION: resolutionDetails,
-      //   // WODRESOLVEDMPUSID: resolvedBy,
-      //   // WODSCORE: score,
-      //   // WODSIGNOFFDATE: this.helperService.dateObjToString(signOffDate),
-      //   // WODSIGNOFFMPUSID: signOffBy,
-      //   WODSTATUS: status,
-      //   WPRSEQUENCE: wprsequence,
-      //   WOSEQUENCE: wosequence,
-      //   ASSID: assid,
-      //   WODSEQUENCE: wodsequence
-      // }
-
       apiCall = this.workOrderProgrammeService.updateWorksOrderDefect(params);
       successMsg = "Defect updated successfully.";
     }
 
-    // console.log(params);
-    // return;
-    // debugger;
     this.subs.add(
       apiCall.subscribe(
         data => {
-          // console.log(data);
           if (data.isSuccess) {
             this.alertService.success(successMsg);
             this.closeDefectForm();

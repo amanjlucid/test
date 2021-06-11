@@ -138,9 +138,20 @@
     font-size: 17px;
 }
 
-.dropdown-menu.show{
+.dropdown-menu.show {
     margin-bottom: 10px;
 }
+
+.dropdown-menu.woReport {
+    top: -259px !important;
+}
+
+.disabled .dropdown-item{
+    color: #d1d2d3;
+    background-color: transparent;
+    pointer-events: none;
+}
+
 
 /** media query **/
 

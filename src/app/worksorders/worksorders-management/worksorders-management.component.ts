@@ -505,14 +505,13 @@ export class WorksordersManagementComponent implements OnInit {
 
   openWoAssociationsManage(item) {
     this.selectedWorksOrder = item;
+    $('.newManagementOverlay').addClass('ovrlay');
     this.WoAssociationsManageWindow = true;
-
-    $('.worksOrderOverlay').addClass('ovrlay');
   }
 
   closeWoAssociationsManageWindowMain(eve) {
     this.WoAssociationsManageWindow = eve;
-    $('.worksOrderOverlay').removeClass('ovrlay');
+    $('.newManagementOverlay').removeClass('ovrlay');
   }
 
 

@@ -338,41 +338,41 @@
     (closeWoFormWin)="closeWoFormWin($event)">
 </app-workorder-form>
 
-<<<<<<< HEAD <app-wo-program-management-instructions *ngIf="woProgramManagmentInstructionsWindow"
+<app-wo-program-management-instructions *ngIf="woProgramManagmentInstructionsWindow"
     [woProgramManagmentInstructionsWindow]="woProgramManagmentInstructionsWindow" [worksOrderData]="selctedWorksOrder"
     [selectedWorksOrder]="selctedWorksOrder"
     (WoProgramManagmentInstructionsWinEvent)="closeWoProgramManagmentInstructionsWin($event)">
-    </app-wo-program-management-instructions>
+</app-wo-program-management-instructions>
 
-    <app-completion-list *ngIf="completionList" [worksOrderData]="selctedWorksOrder" [completionWin]="completionList"
-        (closeCompletionWin)="closeCompletionList($event)"></app-completion-list>
-    =======
-    <app-programme-log *ngIf="ProgrammeLogWindow" [ProgrammeLogWindow]="ProgrammeLogWindow"
-        [worksOrderData]="selectedWorksOrder" (ProgrammeLogWindowEvent)="closeProgrammeLogWindow($event)">
-    </app-programme-log>
+<app-completion-list *ngIf="completionList" [worksOrderData]="selctedWorksOrder" [completionWin]="completionList"
+    (closeCompletionWin)="closeCompletionList($event)"></app-completion-list>
 
-    <app-wo-association-manage *ngIf="WoAssociationsManageWindow"
-        [WoAssociationsManageWindow]="WoAssociationsManageWindow" [worksOrderData]="selectedWorksOrder"
-        (WoAssociationsManageWindowEvent)="closeWoAssociationsManageWindowMain($event)">
-    </app-wo-association-manage>
-    >>>>>>> 848f443e47cec82c8504e163da7fdd9bebe92227
+<app-programme-log *ngIf="ProgrammeLogWindow" [ProgrammeLogWindow]="ProgrammeLogWindow"
+    [worksOrderData]="selectedWorksOrder" (ProgrammeLogWindowEvent)="closeProgrammeLogWindow($event)">
+</app-programme-log>
 
-    <kendo-dialog title="DELETE WORKS ORDERS" *ngIf="deleteWorksOrderReasonWindow"
-        (close)="closeWorksorderReasonWindow()" [minWidth]="250" [width]="450">
+<app-wo-association-manage *ngIf="WoAssociationsManageWindow" [WoAssociationsManageWindow]="WoAssociationsManageWindow"
+    [worksOrderData]="selectedWorksOrder"
+    (WoAssociationsManageWindowEvent)="closeWoAssociationsManageWindowMain($event)">
+</app-wo-association-manage>
 
-        <div class="row">
 
-            <div class="form-group col-md-12">
-                <label class="form-label">Enter Reason For Deleting</label>
-                <textarea type="text" class="form-control" placeholder="" [(ngModel)]="reasonToDeleteWO"></textarea>
+<kendo-dialog title="DELETE WORKS ORDERS" *ngIf="deleteWorksOrderReasonWindow" (close)="closeWorksorderReasonWindow()"
+    [minWidth]="250" [width]="450">
 
-                <div class="invalid-feedback">
-                    <div></div>
-                </div>
-            </div>
+    <div class="row">
 
-            <div class="col-md-12 text-right">
-                <button (click)="finalDelete()" type="button" class="btn btn-sm themeButton mr-1">Delete</button>
+        <div class="form-group col-md-12">
+            <label class="form-label">Enter Reason For Deleting</label>
+            <textarea type="text" class="form-control" placeholder="" [(ngModel)]="reasonToDeleteWO"></textarea>
+
+            <div class="invalid-feedback">
+                <div></div>
             </div>
         </div>
-    </kendo-dialog>
+
+        <div class="col-md-12 text-right">
+            <button (click)="finalDelete()" type="button" class="btn btn-sm themeButton mr-1">Delete</button>
+        </div>
+    </div>
+</kendo-dialog>
