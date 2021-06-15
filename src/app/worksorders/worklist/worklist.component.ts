@@ -1,14 +1,13 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef, ViewEncapsulation } from '@angular/core';
 import { SubSink } from 'subsink';
 import { State, SortDescriptor } from '@progress/kendo-data-query';
-import { SelectableSettings, PageChangeEvent, RowArgs , GridDataResult } from '@progress/kendo-angular-grid';
-import { AlertService, HelperService, SharedService, WorksOrdersService, PropertySecurityGroupService, LoaderService, AssetAttributeService, ConfirmationDialogService } from '../../_services'
+import { SelectableSettings, PageChangeEvent, RowArgs, RowClassArgs, GridDataResult } from '@progress/kendo-angular-grid';
+import { AlertService, HelperService, SharedService, WorksOrdersService, PropertySecurityGroupService, AuthenticationService, LoaderService, AssetAttributeService, ConfirmationDialogService } from '../../_services'
 import { Subject, BehaviorSubject, forkJoin } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
-import { WorkordersAddAssetworklistModel, SurveyPortalXports } from '../../_models'
-import { debounceTime, tap, switchMap  } from 'rxjs/operators';
-
-
+import { WorkOrdersWorkListFilterModel, SurveyPortalXports } from '../../_models'
+import { debounceTime, tap, switchMap } from 'rxjs/operators';
+import { appConfig } from '../../app.config';
 
 @Component({
   selector: 'app-worklist',
@@ -16,11 +15,12 @@ import { debounceTime, tap, switchMap  } from 'rxjs/operators';
   styleUrls: ['./worklist.component.css'],
   encapsulation: ViewEncapsulation.None
 })
+
 export class WorklistComponent implements OnInit {
   subs = new SubSink();
   state: State = {
     skip: 0,
-    take:100,
+    take: 50,
     sort: [],
     group: [],
     filter: {
@@ -29,7 +29,7 @@ export class WorklistComponent implements OnInit {
     }
   }
 
-  
+
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
   public workListData: any;
   public query: any;
@@ -59,14 +59,18 @@ export class WorklistComponent implements OnInit {
   planYear: any;
   assetTypes: any;
   phases: any;
-  headerFilters: WorkordersAddAssetworklistModel = new WorkordersAddAssetworklistModel()
+  headerFilters: WorkOrdersWorkListFilterModel = new WorkOrdersWorkListFilterModel()
   private stateChange = new BehaviorSubject<any>(this.headerFilters);
   tagText: string = "";
   wopmSecurityList: any = [];
-  SetTagStringArray : string[];
+  SetTagStringArray: string[];
   dialogCancellationReason: boolean = false;
   cancellationText: string = "";
-  detaching:boolean = false;
+  detaching: boolean = false;
+
+  asbestosPortalAccess: any = [];
+  modulesEnabled = [];
+  assetTabs = [];
 
   public openReports = false;
   public reportingAction = "";
@@ -86,24 +90,25 @@ export class WorklistComponent implements OnInit {
     private loaderService: LoaderService,
     private assetAttributeService: AssetAttributeService,
     private confirmationDialogService: ConfirmationDialogService,
+    private autService: AuthenticationService,
   ) {
 
     this.query = this.stateChange.pipe(
       tap(state => {
-          this.state = state;
-          this.loading = true;
+        this.state = state;
+        this.loading = true;
       }),
       switchMap(state => worksOrdersService.GetWorkListPage(state)),
       tap(() => {
-          this.loading = false;
-          this.chRef.detectChanges();
-          if (this.headerFilters.wosequence > 0) {
-            this.GetWorksOrderPhases(this.headerFilters.wosequence);
-          } else {
-            this.phases = [];
-          }
+        this.loading = false;
+        this.chRef.detectChanges();
+        if (this.headerFilters.wosequence > 0) {
+          this.GetWorksOrderPhases(this.headerFilters.wosequence);
+        } else {
+          this.phases = [];
+        }
       })
-  );
+    );
 
 
     this.setSelectableSettings();
@@ -120,6 +125,17 @@ export class WorklistComponent implements OnInit {
         }
       )
     )
+
+    this.subs.add(this.sharedService.realModulesEnabled.subscribe(data => {
+      this.modulesEnabled = data;
+    }));
+    this.subs.add(this.sharedService.asbestosPortalAccess.subscribe(data => {
+      this.asbestosPortalAccess = data;
+    }));
+    this.subs.add(this.assetAttributeService.getAssetTabsList(this.currentUser.userId).subscribe(
+      tabData => {
+        this.assetTabs = tabData.toString().split(',');
+      }))
 
 
     this.subs.add(
@@ -142,7 +158,7 @@ export class WorklistComponent implements OnInit {
           // if (worksOrder.isSuccess) {
           //   this.worksOrder = worksOrder.data;
           //   this.headerFilters.cttsurcde = this.worksOrder.cttsurcde;
-         // }
+          // }
 
           this.chRef.detectChanges();
         }
@@ -162,6 +178,7 @@ export class WorklistComponent implements OnInit {
         data => {
           if (data) {
             this.wopmSecurityList = data;
+            this.chRef.detectChanges();
             if (this.wopmSecurityList.length > 0) {
               if (!(this.checkWorksOrdersAccess("Config Templates Tab") && this.checkWorksOrdersAccess("Works Order Portal Access"))) {
                 this.router.navigate(['/dashboard']);
@@ -175,9 +192,32 @@ export class WorklistComponent implements OnInit {
     )
   }
 
+  rowKey(dataItem) {
+    let paddedAssid = "                    " + dataItem.wlassid;
+    paddedAssid = paddedAssid.substr(paddedAssid.length - 20);
+    let paddedwlcode = "          " + dataItem.wlcode;
+    paddedwlcode = paddedwlcode.substr(paddedwlcode.length - 10);
+    let paddedwlataid = "          " + dataItem.wlataid;
+    paddedwlataid = paddedwlataid.substr(paddedwlataid.length - 10);
+    let paddedwlplanyear = "    " + dataItem.wlplanyear;
+    paddedwlplanyear = paddedwlplanyear.substr(paddedwlplanyear.length - 4);
+    let paddedwosequence = "          " + dataItem.wosequence;
+    paddedwosequence = paddedwosequence.substr(paddedwosequence.length - 10);
+    let paddedwopsequence = "          " + dataItem.wopsequence;
+    paddedwopsequence = paddedwopsequence.substr(paddedwopsequence.length - 10);
+    return paddedAssid + paddedwlcode + paddedwlataid + paddedwlplanyear + paddedwosequence + paddedwopsequence;
+  }
 
-  cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
+  cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited, originalEvent }) {
+    if (originalEvent.ctrlKey == false) {
+      if (this.mySelection.length > 0) {
+        this.mySelection = [this.rowKey(dataItem)];
+        this.chRef.detectChanges();
+      }
+    }
+
     this.selectedWorksOrder = dataItem;
+
   }
 
   setSelectableSettings(): void {
@@ -187,161 +227,170 @@ export class WorklistComponent implements OnInit {
     };
   }
 
-sortChange(sort: SortDescriptor[]): void {
-  this.mySelection = [];
-  if (sort.length > 0) {
-    if (sort[0].dir == undefined) {
-      sort[0].dir = "asc";
+  sortChange(sort: SortDescriptor[]): void {
+    this.mySelection = [];
+    if (sort.length > 0) {
+      if (sort[0].dir == undefined) {
+        sort[0].dir = "asc";
+      }
+
+      this.headerFilters.OrderType = "Ascending";
+
+      if (sort[0].dir != "asc") {
+        this.headerFilters.OrderType = "descending";
+      }
+
+      this.headerFilters.OrderBy = sort[0].field;
+      this.state.sort = sort;
+      this.searchGrid()
     }
-
-    this.headerFilters.OrderType = "Ascending";
-
-    if (sort[0].dir != "asc") {
-      this.headerFilters.OrderType = "descending";
-    }
-
-    this.headerFilters.OrderBy = sort[0].field;
-    this.state.sort = sort;
-    this.searchGrid()
   }
-}
 
-filterChange(filter: any): void {
-  this.state.filter = filter;
-  this.mySelection = [];
+  filterChange(filter: any): void {
+    this.state.filter = filter;
+    this.mySelection = [];
 
-  if (this.state.filter) {
-    // this.headerFilters.isFilter = true;
-    if (this.state.filter.filters.length > 0) {
-      let distincFitler = this.changeFilterState(this.state.filter.filters);
-      distincFitler.then(filter => {
-        if (filter.length > 0) {
-          this.resetGridFilter()
-          for (let ob of filter) {
-            this.setGridFilter(ob);
+    if (this.state.filter) {
+      // this.headerFilters.isFilter = true;
+      if (this.state.filter.filters.length > 0) {
+        let distincFitler = this.changeFilterState(this.state.filter.filters);
+        distincFitler.then(filter => {
+          if (filter.length > 0) {
+            this.resetGridFilter()
+            for (let ob of filter) {
+              this.setGridFilter(ob);
+            }
+            setTimeout(() => {
+              this.searchGrid()
+            }, 500);
           }
-          setTimeout(() => {
-            this.searchGrid()
-          }, 500);
-        }
-      })
+        })
+      } else {
+        // this.headerFilters.isFilter = false;
+        this.resetGridFilter()
+        this.searchGrid()
+      }
     } else {
       // this.headerFilters.isFilter = false;
       this.resetGridFilter()
       this.searchGrid()
     }
-  } else {
-    // this.headerFilters.isFilter = false;
-    this.resetGridFilter()
-    this.searchGrid()
   }
-}
 
 
-changeFilterState(obj) {
-  return Promise.resolve().then(x => {
-    for (let f of obj) {
-      if (f.hasOwnProperty("field")) {
-        if (this.containsObject(f, this.filters) == false) {
-          this.filters.push(f);
+  changeFilterState(obj) {
+    return Promise.resolve().then(x => {
+      for (let f of obj) {
+        if (f.hasOwnProperty("field")) {
+          if (this.containsObject(f, this.filters) == false) {
+            this.filters.push(f);
+          }
+
+        } else if (f.hasOwnProperty("filters")) {
+          this.changeFilterState(f.filters)
         }
+      }
+      return this.filters
+    })
+  }
 
-      } else if (f.hasOwnProperty("filters")) {
-        this.changeFilterState(f.filters)
+  containsFilterObject(obj, list) {
+    let i;
+    for (i = 0; i < list.length; i++) {
+      if (list[i].field === obj.field && list[i].operator === obj.operator) {
+        return true;
       }
     }
-    return this.filters
-  })
-}
 
-containsFilterObject(obj, list) {
-  let i;
-  for (i = 0; i < list.length; i++) {
-    if (list[i].field === obj.field && list[i].operator === obj.operator) {
-      return true;
-    }
+    return false;
   }
 
-  return false;
-}
-
-containsObject(obj, list) {
-  let i;
-  for (i = 0; i < list.length; i++) {
-    if (list[i] === obj) {
-      return true;
-    }
-  }
-
-  return false;
-}
-
-
-setGridFilter(obj) {
-  if (this.headerFilters[obj.field] != undefined) {
-    this.headerFilters[obj.field] = obj.value
-  }
-}
-
-resetGridFilter() {
-  this.headerFilters.wlplanyear = '';
-  this.headerFilters.wphname = '';
-  this.headerFilters.astconcataddress = '';
-  this.headerFilters.hittypecode = '';
-  this.headerFilters.ownassid = '';
-  this.headerFilters.astconcataddress = '';
-  this.headerFilters.wlttagcode = '';
-  this.headerFilters.wlassid = '';
-  this.headerFilters.wlcomppackage = '';
-  this.headerFilters.elecode = ''
-
-}
-
-pageChange(state: PageChangeEvent): void {
-  this.headerFilters.Skip = state.skip;
-  this.stateChange.next(this.headerFilters);
-}
-
-searchGrid() {
-  this.mySelection =[];
-  this.headerFilters.Skip = 0;
-  this.state.skip = 0;
-  this.stateChange.next(this.headerFilters);
-}
-
-mySelectionKey(context: RowArgs): any {
-  var paddedAssid = "                    " + context.dataItem.wlassid;
-  paddedAssid = paddedAssid.substr(paddedAssid.length - 20);
-  var paddedwlcode = "          " + context.dataItem.wlcode;
-  paddedwlcode = paddedwlcode.substr(paddedwlcode.length - 10);
-  var paddedwlataid = "          " + context.dataItem.wlataid;
-  paddedwlataid = paddedwlataid.substr(paddedwlataid.length - 10);
-  var paddedwlplanyear = "    " + context.dataItem.wlplanyear;
-  paddedwlplanyear = paddedwlplanyear.substr(paddedwlplanyear.length - 4);
-  var paddedwosequence = "          " + context.dataItem.wosequence;
-  paddedwosequence = paddedwosequence.substr(paddedwosequence.length - 10);
-  var paddedwopsequence = "          " + context.dataItem.wopsequence;
-  paddedwopsequence = paddedwopsequence.substr(paddedwopsequence.length - 10);
-  return paddedAssid + paddedwlcode + paddedwlataid + paddedwlplanyear + paddedwosequence + paddedwopsequence;
-}
-
-// ASSID_WLCODE_WLATAID_WLPLANYEAR
-
-
-getYear(initialDate){
-  var properDate = new Date(initialDate);
-  var yearValue = properDate.getFullYear();
-  return yearValue;
-  }
-
-GetWorksOrderPhases(WOSEQUENCE){
-  this.worksOrdersService.GetWorksOrderPhases(WOSEQUENCE).subscribe(
-    data => {
-      if (data && data.isSuccess) {
-        this.phases = data.data;
+  containsObject(obj, list) {
+    let i;
+    for (i = 0; i < list.length; i++) {
+      if (list[i] === obj) {
+        return true;
       }
-    } )
-}
+    }
+
+    return false;
+  }
+
+
+  setGridFilter(obj) {
+    if (this.headerFilters[obj.field] != undefined) {
+      this.headerFilters[obj.field] = obj.value
+    }
+  }
+
+  resetGridFilter() {
+    this.headerFilters.wildcrdaddress = '';
+    this.headerFilters.workStatusNew = true;
+    this.headerFilters.workStatusTransferred = true;
+    this.headerFilters.workStatusCompleted = false;
+    this.headerFilters.workStatusCancelled = false;
+    this.headerFilters.wlassid = '';
+    this.headerFilters.hittypecode = '';
+    this.headerFilters.ownassid = '';
+    this.headerFilters.astcode = '';
+    this.headerFilters.wlttagcode = '';
+    this.headerFilters.concode = '';
+    this.headerFilters.cttsurcde = 0;
+    this.headerFilters.wosequence = 0
+    this.headerFilters.wopsequence = 0
+  }
+
+  pageChange(state: PageChangeEvent): void {
+    this.headerFilters.skip = state.skip;
+    this.stateChange.next(this.headerFilters);
+  }
+
+  searchGrid() {
+    this.mySelection = [];
+    this.headerFilters.skip = 0;
+    this.state.skip = 0;
+    this.stateChange.next(this.headerFilters);
+  }
+
+  keyDownFunction(event) {
+    if (event.keyCode == 13) {
+      this.searchGrid();
+    }
+  }
+
+  mySelectionKey(context: RowArgs): any {
+    var paddedAssid = "                    " + context.dataItem.wlassid;
+    paddedAssid = paddedAssid.substr(paddedAssid.length - 20);
+    var paddedwlcode = "          " + context.dataItem.wlcode;
+    paddedwlcode = paddedwlcode.substr(paddedwlcode.length - 10);
+    var paddedwlataid = "          " + context.dataItem.wlataid;
+    paddedwlataid = paddedwlataid.substr(paddedwlataid.length - 10);
+    var paddedwlplanyear = "    " + context.dataItem.wlplanyear;
+    paddedwlplanyear = paddedwlplanyear.substr(paddedwlplanyear.length - 4);
+    var paddedwosequence = "          " + context.dataItem.wosequence;
+    paddedwosequence = paddedwosequence.substr(paddedwosequence.length - 10);
+    var paddedwopsequence = "          " + context.dataItem.wopsequence;
+    paddedwopsequence = paddedwopsequence.substr(paddedwopsequence.length - 10);
+    return paddedAssid + paddedwlcode + paddedwlataid + paddedwlplanyear + paddedwosequence + paddedwopsequence;
+  }
+
+  // ASSID_WLCODE_WLATAID_WLPLANYEAR
+
+
+  getYear(initialDate) {
+    var properDate = new Date(initialDate);
+    var yearValue = properDate.getFullYear();
+    return yearValue;
+  }
+
+  GetWorksOrderPhases(WOSEQUENCE) {
+    this.worksOrdersService.GetWorksOrderPhases(WOSEQUENCE).subscribe(
+      data => {
+        if (data && data.isSuccess) {
+          this.phases = data.data;
+        }
+      })
+  }
 
 
 
@@ -444,7 +493,7 @@ GetWorksOrderPhases(WOSEQUENCE){
   //##################### hierarchy function end ######################################//
 
   ShowReports(dataItem) {
-    
+
   }
 
 
@@ -474,9 +523,9 @@ GetWorksOrderPhases(WOSEQUENCE){
         data => {
           if (data.isSuccess) {
             if (data.data.returnStatus == "S") {
-              this.confirmationDialogService.confirm('Please confirm..',data.data.returnMessage)
-              .then((confirmed) => (confirmed) ? this.confirmSetTag() : console.log(confirmed))
-              .catch(() => console.log('User dismissed the dialog.'));
+              this.confirmationDialogService.confirm('Please confirm..', data.data.returnMessage)
+                .then((confirmed) => (confirmed) ? this.confirmSetTag() : console.log(confirmed))
+                .catch(() => console.log('User dismissed the dialog.'));
             } else {
               this.alertService.error(data.data.returnMessage)
             }
@@ -523,17 +572,19 @@ GetWorksOrderPhases(WOSEQUENCE){
     this.SetTagStringArray.push(dataItem.wlataid);
     this.SetTagStringArray.push(dataItem.wlplanyear);
     this.openSetTag();
-    }
-  
+  }
+
   MultipleSetTag() {
     this.SetTagStringArray = [];
     this.mySelection.forEach(gridKey => {
-    this.SetTagStringArray.push(gridKey.substr(0, 20).trim());
-    this.SetTagStringArray.push(gridKey.substr(20, 10).trim());
-    this.SetTagStringArray.push(gridKey.substr(30, 10).trim());
-    this.SetTagStringArray.push(gridKey.substr(40, 4).trim());
+      this.SetTagStringArray.push(gridKey.substr(0, 20).trim());
+      this.SetTagStringArray.push(gridKey.substr(20, 10).trim());
+      this.SetTagStringArray.push(gridKey.substr(30, 10).trim());
+      this.SetTagStringArray.push(gridKey.substr(40, 4).trim());
     }
     );
+
+    // console.log(this.mySelection)
     this.openSetTag();
   }
 
@@ -545,15 +596,15 @@ GetWorksOrderPhases(WOSEQUENCE){
     this.SetTagStringArray.push(dataItem.wlataid);
     this.SetTagStringArray.push(dataItem.wlplanyear);
     this.clearTag();
-    }
-  
+  }
+
   MultipleClearTag() {
     this.SetTagStringArray = [];
     this.mySelection.forEach(gridKey => {
-    this.SetTagStringArray.push(gridKey.substr(0, 20).trim());
-    this.SetTagStringArray.push(gridKey.substr(20, 10).trim());
-    this.SetTagStringArray.push(gridKey.substr(30, 10).trim());
-    this.SetTagStringArray.push(gridKey.substr(40, 4).trim());
+      this.SetTagStringArray.push(gridKey.substr(0, 20).trim());
+      this.SetTagStringArray.push(gridKey.substr(20, 10).trim());
+      this.SetTagStringArray.push(gridKey.substr(30, 10).trim());
+      this.SetTagStringArray.push(gridKey.substr(40, 4).trim());
     }
     );
     this.clearTag();
@@ -574,9 +625,9 @@ GetWorksOrderPhases(WOSEQUENCE){
         data => {
           if (data.isSuccess) {
             if (data.data.returnStatus == "S") {
-              this.confirmationDialogService.confirm('Please confirm..',data.data.returnMessage)
-              .then((confirmed) => (confirmed) ? this.confirmClearTag() : console.log(confirmed))
-              .catch(() => console.log('User dismissed the dialog.'));
+              this.confirmationDialogService.confirm('Please confirm..', data.data.returnMessage)
+                .then((confirmed) => (confirmed) ? this.confirmClearTag() : console.log(confirmed))
+                .catch(() => console.log('User dismissed the dialog.'));
             } else {
               this.alertService.error(data.data.returnMessage)
             }
@@ -628,15 +679,15 @@ GetWorksOrderPhases(WOSEQUENCE){
     this.SetTagStringArray.push(dataItem.wlataid);
     this.SetTagStringArray.push(dataItem.wlplanyear);
     this.detach();
-    }
-  
+  }
+
   MultipleDetach() {
     this.SetTagStringArray = [];
     this.mySelection.forEach(gridKey => {
-    this.SetTagStringArray.push(gridKey.substr(0, 20).trim());
-    this.SetTagStringArray.push(gridKey.substr(20, 10).trim());
-    this.SetTagStringArray.push(gridKey.substr(30, 10).trim());
-    this.SetTagStringArray.push(gridKey.substr(40, 4).trim());
+      this.SetTagStringArray.push(gridKey.substr(0, 20).trim());
+      this.SetTagStringArray.push(gridKey.substr(20, 10).trim());
+      this.SetTagStringArray.push(gridKey.substr(30, 10).trim());
+      this.SetTagStringArray.push(gridKey.substr(40, 4).trim());
     }
     );
     this.detach();
@@ -655,9 +706,9 @@ GetWorksOrderPhases(WOSEQUENCE){
         data => {
           if (data.isSuccess) {
             if (data.data.returnStatus == "S") {
-              this.confirmationDialogService.confirm('Please confirm..',data.data.returnMessage)
-              .then((confirmed) => (confirmed) ? this.confirmDetach() : console.log(confirmed))
-              .catch(() => console.log('User dismissed the dialog.'));
+              this.confirmationDialogService.confirm('Please confirm..', data.data.returnMessage)
+                .then((confirmed) => (confirmed) ? this.confirmDetach() : console.log(confirmed))
+                .catch(() => console.log('User dismissed the dialog.'));
             } else {
               this.alertService.error(data.data.returnMessage)
             }
@@ -670,16 +721,17 @@ GetWorksOrderPhases(WOSEQUENCE){
     )
   }
 
-confirmDetach() {
-  this.detaching = true;
-  var boolCancel: boolean = false;
-    this.confirmationDialogService.confirm('Please confirm..',"Cancel work items as well?", true, "Yes", "No")
-    .then((confirmed) => (confirmed) ? boolCancel = true : console.log(confirmed))
-    .catch(() => console.log('User dismissed the dialog.'));
+  confirmDetach() {
+    this.detaching = true;
+    var boolCancel: boolean = false;
+    this.confirmationDialogService.confirm('Please confirm..', "Cancel work items as well?", true, "Yes", "No")
+      .then((confirmed) => (confirmed) ? this.openCancellationDialog() : this.detachWithoutCancelling())
+      .catch(() => this.detaching = false);
 
-  if (boolCancel) {
-    this.openCancellationDialog();
-  } else {
+  }
+
+  detachWithoutCancelling() {
+    this.detaching = false;
     const parms = {
       WorkListArray: this.SetTagStringArray,
       Message: "",
@@ -706,27 +758,38 @@ confirmDetach() {
     )
   }
 
-}
 
-setCancellationReason() {
-  if (this.detaching) {
+  openCancellationDialog() {
+    $('.workListOverlay').addClass('ovrlay');
+    this.dialogCancellationReason = true;
+    this.cancellationText = "";
+  }
+
+  closeCancellationWin() {
+    this.detaching = false;
+    $('.workListOverlay').removeClass('ovrlay');
+    this.dialogCancellationReason = false;
+  }
+
+  CancelWorkItem() {
+    this.detaching = false;
     const parms = {
       WorkListArray: this.SetTagStringArray,
-      Message: this.cancellationText,
+      Message: "",
       UserID: this.currentUser.userId,
-      CancelItems: true,
-      CheckOrProcess: "P"
+      CheckOrProcess: "C",
     }
     this.subs.add(
-      this.worksOrdersService.DetachWorkListItem(parms).subscribe(
+      this.worksOrdersService.CancelWorkListItem(parms).subscribe(
         data => {
           if (data.isSuccess) {
             if (data.data.returnStatus == "S") {
-              this.alertService.success(data.data.returnMessage)
+              this.confirmationDialogService.confirm('Please confirm..', data.data.returnMessage)
+                .then((confirmed) => (confirmed) ? this.openCancellationDialog() : console.log(confirmed))
+                .catch(() => console.log('User dismissed the dialog.'));
             } else {
               this.alertService.error(data.data.returnMessage)
             }
-            this.searchGrid()
           }
         },
         error => {
@@ -734,190 +797,236 @@ setCancellationReason() {
         }
       )
     )
-  } else {
-    
   }
-}
 
+  confirmCancelItems() {
 
-
-openCancellationDialog() {
-  $('.workListOverlay').addClass('ovrlay');
-  this.dialogCancellationReason = true;
-  this.cancellationText = "";
-}
-
-closeCancellationWin() {
-  $('.workListOverlay').removeClass('ovrlay');
-  this.dialogCancellationReason = false;
-}
-
-CancelWorkItem() {
-  const parms = {
-    WorkListArray: this.SetTagStringArray,
-    Message: "",
-    UserID: this.currentUser.userId,
-    CheckOrProcess: "C",
-  }
-  this.subs.add(
-    this.worksOrdersService.CancelWorkListItem(parms).subscribe(
-      data => {
-        if (data.isSuccess) {
-          if (data.data.returnStatus == "S") {
-            this.confirmationDialogService.confirm('Please confirm..',data.data.returnMessage)
-            .then((confirmed) => (confirmed) ? this.openCancellationDialog() : console.log(confirmed))
-            .catch(() => console.log('User dismissed the dialog.'));
-          } else {
-            this.alertService.error(data.data.returnMessage)
-          }
-        }
-      },
-      error => {
-        this.alertService.error(error.Message)
+    if (this.detaching) {
+      this.closeCancellationWin();
+      const parms = {
+        WorkListArray: this.SetTagStringArray,
+        Message: this.cancellationText,
+        UserID: this.currentUser.userId,
+        CancelItems: true,
+        CheckOrProcess: "P"
       }
-    )
-  )
-}
-
-confirmCancelItems() {
-  this.closeCancellationWin();
-  const parms = {
-    WorkListArray: this.SetTagStringArray,
-    Message: this.cancellationText,
-    UserID: this.currentUser.userId,
-    CheckOrProcess: "P",
-  }
-  this.subs.add(
-    this.worksOrdersService.CancelWorkListItem(parms).subscribe(
-      data => {
-        if (data.isSuccess) {
-          if (data.data.returnStatus == "S") {
-            this.alertService.success(data.data.returnMessage)
-          } else {
-            this.alertService.error(data.data.returnMessage)
+      this.subs.add(
+        this.worksOrdersService.DetachWorkListItem(parms).subscribe(
+          data => {
+            if (data.isSuccess) {
+              if (data.data.returnStatus == "S") {
+                this.alertService.success(data.data.returnMessage)
+              } else {
+                this.alertService.error(data.data.returnMessage)
+              }
+              this.searchGrid()
+            }
+          },
+          error => {
+            this.alertService.error(error.Message)
           }
-          this.searchGrid()
-        }
-      },
-      error => {
-        this.alertService.error(error.Message)
+        )
+      )
+    } else {
+      this.closeCancellationWin();
+      const parms = {
+        WorkListArray: this.SetTagStringArray,
+        Message: this.cancellationText,
+        UserID: this.currentUser.userId,
+        CheckOrProcess: "P",
       }
-    )
-  )
-}
+      this.subs.add(
+        this.worksOrdersService.CancelWorkListItem(parms).subscribe(
+          data => {
+            if (data.isSuccess) {
+              if (data.data.returnStatus == "S") {
+                this.alertService.success(data.data.returnMessage)
+              } else {
+                this.alertService.error(data.data.returnMessage)
+              }
+              this.searchGrid()
+            }
+          },
+          error => {
+            this.alertService.error(error.Message)
+          }
+        )
+      )
+    }
 
-IndividualCancelWorkItem(dataItem) {
-  this.SetTagStringArray = [];
-  this.SetTagStringArray.push(dataItem.wlassid);
-  this.SetTagStringArray.push(dataItem.wlcode);
-  this.SetTagStringArray.push(dataItem.wlataid);
-  this.SetTagStringArray.push(dataItem.wlplanyear);
-  this.CancelWorkItem();
+
   }
 
-MultipleCancelWorkItem() {
-  this.SetTagStringArray = [];
-  this.mySelection.forEach(gridKey => {
-  this.SetTagStringArray.push(gridKey.substr(0, 20).trim());
-  this.SetTagStringArray.push(gridKey.substr(20, 10).trim());
-  this.SetTagStringArray.push(gridKey.substr(30, 10).trim());
-  this.SetTagStringArray.push(gridKey.substr(40, 4).trim());
-  }
-  );
-  this.CancelWorkItem();
-}
-
-
-
-
-public openReport(XportID: number, ReportTitle: string)  {
-  $('.workListOverlay').addClass('ovrlay');
-  var params = [];
-
-  var NewStatus = ""
-  var TransferStatus = ""
-  var CancelledStatus = ""
-  var CompleteStatus = ""
-  if (this.headerFilters.workStatusNew) {
-    NewStatus = "NEW"
-  }
-  if (this.headerFilters.workStatusTransferred) {
-    TransferStatus = "TRANSFERRED"
-  }
-  if (this.headerFilters.workStatusCancelled) {
-    CancelledStatus = "CANCELLED"
-  }
-  if (this.headerFilters.workStatusCancelled) {
-    CompleteStatus = "COMPLETED"
+  IndividualCancelWorkItem(dataItem) {
+    this.SetTagStringArray = [];
+    this.SetTagStringArray.push(dataItem.wlassid);
+    this.SetTagStringArray.push(dataItem.wlcode);
+    this.SetTagStringArray.push(dataItem.wlataid);
+    this.SetTagStringArray.push(dataItem.wlplanyear);
+    this.CancelWorkItem();
   }
 
-  var wosequence = 0
-  if (this.headerFilters.wosequence != null){
-    wosequence = this.headerFilters.wosequence;
+  MultipleCancelWorkItem() {
+    this.SetTagStringArray = [];
+    this.mySelection.forEach(gridKey => {
+      this.SetTagStringArray.push(gridKey.substr(0, 20).trim());
+      this.SetTagStringArray.push(gridKey.substr(20, 10).trim());
+      this.SetTagStringArray.push(gridKey.substr(30, 10).trim());
+      this.SetTagStringArray.push(gridKey.substr(40, 4).trim());
+    }
+    );
+    this.CancelWorkItem();
   }
-  var wopsequence = 0
-  if (this.headerFilters.wopsequence != null){
-    wopsequence = this.headerFilters.wopsequence;
+
+
+
+
+  public openReport(XportID: number, ReportTitle: string) {
+    $('.workListOverlay').addClass('ovrlay');
+    var params = [];
+
+    var NewStatus = ""
+    var TransferStatus = ""
+    var CancelledStatus = ""
+    var CompleteStatus = ""
+    if (this.headerFilters.workStatusNew) {
+      NewStatus = "NEW"
+    }
+    if (this.headerFilters.workStatusTransferred) {
+      TransferStatus = "TRANSFERRED"
+    }
+    if (this.headerFilters.workStatusCancelled) {
+      CancelledStatus = "CANCELLED"
+    }
+    if (this.headerFilters.workStatusCancelled) {
+      CompleteStatus = "COMPLETED"
+    }
+
+    var wosequence = 0
+    if (this.headerFilters.wosequence != null) {
+      wosequence = this.headerFilters.wosequence;
+    }
+    var wopsequence = 0
+    if (this.headerFilters.wopsequence != null) {
+      wopsequence = this.headerFilters.wopsequence;
+    }
+
+    params.push("Asset ID")
+    params.push(this.headerFilters.wlassid)
+    params.push("Asset Type")
+    params.push(this.headerFilters.astcode)
+    params.push("Contractor")
+    params.push("")
+    params.push("Contract")
+    params.push("0")
+    params.push("Hierarchy Type")
+    params.push(this.headerFilters.hittypecode)
+    params.push("Hierarchy Owner")
+    params.push(this.headerFilters.ownassid)
+    params.push("Recharge")
+    params.push("")
+    params.push("Refusal")
+    params.push("")
+    params.push("Address")
+    params.push(this.headerFilters.wildcrdaddress)
+    params.push("WorkList Status Complete")
+    params.push(CompleteStatus)
+    params.push("WorkList Status New")
+    params.push(NewStatus)
+    params.push("WorkList Status Cancelled")
+    params.push(CancelledStatus)
+    params.push("WorkList Status Transferred")
+    params.push(TransferStatus)
+    params.push("Works Order Asset Status")
+    params.push("")
+    params.push("Tag")
+    params.push(this.headerFilters.wlttagcode)
+    params.push("Works Order No")
+    params.push(wosequence)
+    params.push("Phase No")
+    params.push(wopsequence)
+
+    this.selectedXport = { 'XportID': XportID, 'ReportTitle': ReportTitle, 'Params': params }
+    this.reportingAction = 'runExport';
+    this.openReports = true;
   }
 
-  params.push("Asset ID")
-  params.push(this.headerFilters.wlassid)
-  params.push("Asset Type")
-  params.push(this.headerFilters.astcode)
-  params.push("Contractor")
-  params.push("")
-  params.push("Contract")
-  params.push("0")
-  params.push("Hierarchy Type")
-  params.push(this.headerFilters.hittypecode)
-  params.push("Hierarchy Owner")
-  params.push(this.headerFilters.ownassid)
-  params.push("Recharge")
-  params.push("")
-  params.push("Refusal")
-  params.push("")
-  params.push("Address")
-  params.push(this.headerFilters.wildcrdaddress)
-  params.push("WorkList Status Complete")
-  params.push(CompleteStatus)
-  params.push("WorkList Status New")
-  params.push(NewStatus)
-  params.push("WorkList Status Cancelled")
-  params.push(CancelledStatus)
-  params.push("WorkList Status Transferred")
-  params.push(TransferStatus)
-  params.push("Works Order Asset Status")
-  params.push("")
-  params.push("Tag")
-  params.push(this.headerFilters.wlttagcode)
-  params.push("Works Order No")
-  params.push(wosequence)
-  params.push("Phase No")
-  params.push(wopsequence)
-
-  this.selectedXport = {'XportID' : XportID, 'ReportTitle': ReportTitle, 'Params': params }
-  this.reportingAction = 'runExport';
-  this.openReports = true;
-}
-
-public closeReportingWin() {
-  $('.workListOverlay').removeClass('ovrlay');
-  this.openReports = false;
-}
-
-
-
-
-
-
+  public closeReportingWin() {
+    $('.workListOverlay').removeClass('ovrlay');
+    this.openReports = false;
+  }
 
 
   checkWorksOrdersAccess(val: string): Boolean {
     if (this.wopmSecurityList != undefined) {
-    return this.wopmSecurityList.includes(val);
+      return this.wopmSecurityList.includes(val);
     } else {
       return false;
     }
+  }
+
+
+
+  rowCallback(context: RowClassArgs) {
+    if (context.dataItem.wlworkstatus == "NEW") {
+      return { new: true, transferred: false, completed: false, cancelled: false }
+    } else if (context.dataItem.wlworkstatus == "TRANSFERRED") {
+      return { new: false, transferred: true, completed: false, cancelled: false }
+    } else if (context.dataItem.wlworkstatus == "COMPLETED") {
+      return { new: false, transferred: false, completed: true, cancelled: false }
+    } else if (context.dataItem.wlworkstatus == "CANCELLED") {
+      return { new: false, transferred: false, completed: false, cancelled: true }
+    }
+
+  }
+
+
+
+  openAsbestosDetail(item) {
+
+    this.autService.validateAssetIDDeepLinkParameters(this.currentUser.userId, item.wlassid).subscribe(
+      data => {
+        if (data.validated) {
+          const siteUrl = `${appConfig.appUrl}/asset-list?assetid=${encodeURIComponent(item.wlassid)}&asbestos=Y`;
+          // UAT  const siteUrl = `http://localhost:4200/asset-list?assetid=${item.wlassid}&asbestos=Y`;
+          window.open(siteUrl, "_blank");
+
+        } else {
+          const errMsg = `${data.errorCode} : ${data.errorMessage}`
+          this.alertService.error(errMsg);
+        }
+      }
+    )
+
+    // $('.worksOrderDetailOvrlay').addClass('ovrlay');
+  }
+
+
+
+  checkTabPermission(tab) {
+    if (this.assetTabs != undefined) {
+      return (this.assetTabs.includes("all") || this.assetTabs.includes(tab));
+    }
+    return false;
+  }
+
+
+  checkAsbestosTabAccess(): Boolean {
+    return (this.checkModuleEnabled("Asbestos") && this.checkAsbestosSecurity("Asbestos Details") && this.checkAsbestosSecurity("Asbestos Portal Access") && this.checkTabPermission("Asbestos"));
+  }
+
+  checkModuleEnabled(val: string): Boolean {
+    if (this.modulesEnabled != undefined) {
+      return this.modulesEnabled.includes(val);
+    }
+    return false;
+  }
+
+  checkAsbestosSecurity(val: string): Boolean {
+    if (this.asbestosPortalAccess != undefined) {
+      return this.asbestosPortalAccess.includes(val);
+    }
+    return false;
   }
 
 }

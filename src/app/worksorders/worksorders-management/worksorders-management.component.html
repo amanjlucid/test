@@ -108,6 +108,15 @@
                                     (click)="openProgrammeLog(dataItem)">View Programme Log</a>
                                 <a class="dropdown-item" href="javascript:void(0)"
                                     (click)="openWoAssociationsManage(dataItem)">Associations</a>
+                                <a class="dropdown-item" href="javascript:void(0)"
+                                    (click)="openRolesTab(dataItem)"
+                                    *ngIf="woMenuAccess('Roles Tab')">Roles</a>
+                                <a class="dropdown-item" href="javascript:void(0)"
+                                    (click)="openSORTab(dataItem )"
+                                    *ngIf="woMenuAccess('SOR Tab')">SOR</a>
+                                <a class="dropdown-item" href="javascript:void(0)"
+                                    (click)="openCostsTab(dataItem)"
+                                    *ngIf="woMenuAccess('Contract Costs Tab')">Contract Costs</a>
 
                             </div>
 
@@ -376,3 +385,15 @@
         </div>
     </div>
 </kendo-dialog>
+
+<app-management-roles *ngIf="managementRolesTab" [managementRolesTab]="managementRolesTab"
+    (closeManagementRolesTab)="closeManagementRolesTab($event)" [selectedWorksOrder]="worksOrderSingleData">
+</app-management-roles>
+
+<app-management-costs *ngIf="managementCostsTab" [managementCostsTab]="managementCostsTab"
+    (closeManagementCostsTab)="closeManagementCostsTab($event)" [selectedWorksOrder]="worksOrderSingleData">
+</app-management-costs>
+
+<app-management-sor *ngIf="managementSORTab" [managementSORTab]="managementSORTab"
+    (closeManagementSORTab)="closeManagementSORTab($event)" [selectedWorksOrder]="worksOrderSingleData">
+</app-management-sor>

@@ -274,11 +274,12 @@ label.tree_label:after {
 
 .iconDiv {
   display: inline-block !important;
+  margin: 0px;
 }
 
 .iconDiv i {
   display: inline-block !important;
-  margin: 0px 5px;
+  margin: 0px 0px;
 }
 
 .filtersection {
@@ -399,5 +400,8 @@ label.radio-inline {
 
 .workorderDetailGrid .asbestosIcon {
   position: relative;
-  top: -2px !important;
+  /* top: -2px !important; */
+  top: -82px !important;
 }
+  
+

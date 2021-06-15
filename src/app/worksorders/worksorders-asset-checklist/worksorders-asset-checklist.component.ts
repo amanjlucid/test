@@ -2,9 +2,11 @@ import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { PageChangeEvent, RowArgs } from '@progress/kendo-angular-grid';
-import { AlertService, ConfirmationDialogService, HelperService, SharedService, WorksorderManagementService, WorksorderReportService } from '../../_services'
-import { combineLatest, forkJoin } from 'rxjs';
+import { AlertService, ConfirmationDialogService, HelperService, SharedService, WorksorderManagementService, WorksorderReportService, AuthenticationService } from '../../_services'
 import { CurrencyPipe } from '@angular/common';
+import { combineLatest, forkJoin } from 'rxjs';
+import { Router, ActivatedRoute, RouterEvent } from '@angular/router';
+
 
 @Component({
   selector: 'app-worksorders-asset-checklist',
@@ -69,6 +71,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
   openVariationList: boolean = false;
   variationNewOrIssue = false;
   openDefectsList = false;
+  diplayResInfoMenu: boolean = false;
 
   constructor(
     private chRef: ChangeDetectorRef,
@@ -78,7 +81,9 @@ export class WorksordersAssetChecklistComponent implements OnInit {
     private helperService: HelperService,
     private sharedService: SharedService,
     private worksOrderReportService: WorksorderReportService,
-    private currencyPipe : CurrencyPipe
+    private currencyPipe : CurrencyPipe,
+    private autService: AuthenticationService,
+    private router: Router,
   ) { }
 
   ngOnInit(): void {
@@ -98,7 +103,8 @@ export class WorksordersAssetChecklistComponent implements OnInit {
         }
       )
     )
-
+      let v = this.selectedChildRow
+     this.diplayResInfoMenu = (this.selectedChildRow.residentriskcode > 0);
     this.worksOrderDetailPageData();
 
     // this.subs.add(
@@ -1318,6 +1324,23 @@ export class WorksordersAssetChecklistComponent implements OnInit {
     }
   }
 
+
+  openResidentDetails() {
+    let item = this.selectedChildRow
+    this.autService.validateAssetIDDeepLinkParameters(this.currentUser.userId, item.assid).subscribe(
+      data => {
+        if (data.validated) {
+          let ResidentInfo = {assid: item.assid, calledFrom: 'worksOrderAssetChecklist'};
+          sessionStorage.setItem('ResidentInfo', JSON.stringify(ResidentInfo));
+          this.router.navigate(['/resident-info']);
+          $('.worksOrderDetailOvrlay').addClass('ovrlay');
+        } else {
+          const errMsg = `${data.errorCode} : ${data.errorMessage}`
+          this.alertService.error(errMsg);
+        }
+      }
+    )
+  }
 
   openNoAccessWindow(item) {
     this.selectedChecklistsingleItem = item

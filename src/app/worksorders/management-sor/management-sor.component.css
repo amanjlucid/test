@@ -1,0 +1,116 @@
+
+  .selected {
+    background-color: #cacaca;
+  }
+
+  #myUL {
+    border: 1px solid #e2e2eb;
+    background-color: #fff;
+    list-style: none;
+    font-size: 12px;
+    min-height: 27px;
+    max-height: 58px;
+    overflow-y: scroll;
+    border-radius: 5px;
+    padding: 2px 0px;
+  }
+
+  #myUL li {
+    list-style: none;
+    font-size: 12px;
+  }
+
+  #myUL, #myUL ul {
+    padding-left: 20px !important;
+  }
+
+
+  .k-window {
+    position: fixed !important;
+    z-index: 999;
+}
+
+.k-grid tbody td {
+    white-space: nowrap;
+    line-height: 20px;
+    padding: 8px 12px;
+}
+
+  .btnGrp button {
+    margin-left:3px;
+  }
+
+  /** scroll till window start  **/
+  .projectsGrid {
+    display: block;
+    max-width: 100%;
+  }
+
+  table {
+    border-collapse: collapse;
+    /* width: 340%; */
+    overflow-x: scroll;
+    display: block;
+  }
+
+  thead, tbody {
+    display: block;
+  }
+
+  .fixTbody {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    height: 580px;
+  }
+
+  .smallCol{
+    min-width: 38px;
+    max-width: 38px;
+    width: 38px;
+  }
+
+  .midCol {
+    min-width: 120px;
+    max-width: 120px;
+  }
+
+  .bigCol{
+    min-width: 164px;
+    max-width: 164px;
+  }
+
+  .midBigCol{
+    min-width: 189px;
+    max-width: 189px;
+  }
+
+  .addressCol {
+    min-width: 800px;
+    max-width: 800px;
+  }
+
+  .midAddressCol{
+    min-width: 564px;
+    max-width: 564px;
+  }
+
+  td, th {
+    /* min-width: 100px; */
+    /* height: 25px; */
+    /* overflow: hidden; */
+    text-overflow: ellipsis;
+    /* max-width: 100px; */
+  }
+
+  .readonlyCl{
+    background: #eee2e2;
+  }
+
+  .dropdown.list-unstyled {
+    position: absolute !important;
+}
+
+.disabled {
+    pointer-events: none;
+}
+

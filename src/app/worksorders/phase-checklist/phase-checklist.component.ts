@@ -439,21 +439,21 @@ export class PhaseChecklistComponent implements OnInit {
     return encodeURIComponent(`${context.dataItem.assid}_${context.dataItem.wostagesurcde}_${context.dataItem.wochecksurcde}`);
   }
 
-  cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
-    // console.log(dataItem)
+  keyChange(eve) {
+    // console.log(eve)
+  }
+
+  cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited, originalEvent }) {
+    if (originalEvent.ctrlKey == false) {
+      if (this.mySelection.length > 0) {
+        this.mySelection = [`${dataItem.assid}_${dataItem.wostagesurcde}_${dataItem.wochecksurcde}`];
+        this.chRef.detectChanges();
+      }
+    }
+
     this.singlePhaseChecklist = dataItem;
     this.chRef.detectChanges();
-    // setTimeout(() => {
-    //   const checkSrcAssidExist = this.selectedChecklistList.find(x => x.wochecksurcde == dataItem.wochecksurcde && x.assid == dataItem.assid);
 
-    //   if (checkSrcAssidExist) {
-    //     this.selectedChecklistList = this.selectedChecklistList.filter(x => this.mySelection.includes(`${x.wochecksurcde}_${x.assid}`))
-    //   } else {
-    //     this.selectedChecklistList.push(dataItem)
-    //   }
-
-    //   this.chRef.detectChanges();
-    // }, 200);
   }
 
   closePhaseChecklist() {

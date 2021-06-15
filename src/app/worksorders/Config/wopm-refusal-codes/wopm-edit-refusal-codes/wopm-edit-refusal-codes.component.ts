@@ -79,7 +79,13 @@ export class WopmEditRefusalCodesComponent implements OnInit, OnDestroy {
         .subscribe(
           data => {
             if (data.isSuccess) {
-              this.openConfirmationDialog(data.data, data.message)
+              if(data.data == 'S'){
+                this.alertService.success(data.message)
+                this.closeEditFormWindow();
+              }else
+              {
+                this.openConfirmationDialog(data.data, data.message)
+              }
             } else {
               this.loading = false;
               this.alertService.error(data.message);
@@ -93,19 +99,7 @@ export class WopmEditRefusalCodesComponent implements OnInit, OnDestroy {
   }
 
   completeUpdate(status) {
-    if(status=='S'){
-      this.refusal.checkProcess = 'P';
-      this.wopmConfigurationService.updateRefusalCode(this.refusal)
-      .subscribe(
-        data => {
-          if (data.isSuccess) {
-              this.alertService.success(data.message)
-                this.closeEditFormWindow();
-              } else {
-                this.alertService.error(data.message);
-              }
-        });
-    }
+     //Do nothing now
   }
 
   Validate()

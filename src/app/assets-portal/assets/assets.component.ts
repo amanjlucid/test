@@ -236,16 +236,21 @@ export class AssetsComponent implements OnInit, OnDestroy, AfterViewInit {
         const sapBand = params['sapBand'];
         const epcStatus = params['epcStatus'];
         const openTab = params['openTab'];
-       
+        const asbestos = params['asbestos'];
         if (assetid != undefined) {
           this.autService.validateAssetIDDeepLinkParameters(this.currentUser.userId, assetid).subscribe(
             data => {
               if (data.validated) {
-                if (openTab != undefined) {
-                  this.openTabFromUrl(data, openTab);
+                if (asbestos && asbestos == "Y") {
+                  this.openAsbestosTabs(data);
                 } else {
-                  this.openLinkTabs(data);
+                  if (openTab != undefined) {
+                    this.openTabFromUrl(data, openTab);
+                  } else {
+                    this.openLinkTabs(data);
+                  }
                 }
+
               } else {
                 this.assetList.AssetId = this.assetFilterId = assetid;
                 const errMsg = `${data.errorCode} : ${data.errorMessage}`
@@ -406,6 +411,7 @@ export class AssetsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.assetFilterAddress = validationObj.astconcataddress;
     this.assetList.AssetId = this.assetFilterId;
     this.assetList.Address = this.assetFilterAddress;
+    this.assetList.AssetStatus = ''
     this.attributeLists = [];
     this.assetAttributeService.getAllAssets(this.assetList).subscribe(
       data => {
@@ -457,6 +463,36 @@ export class AssetsComponent implements OnInit, OnDestroy, AfterViewInit {
         this.loaderService.hide();
         this.loaderService.pageHide();
         //this.alertService.error(error);
+      }
+    )
+  }
+
+  openAsbestosTabs(validationObj) {
+    this.assetFilterId = validationObj.assid;
+    this.assetFilterAddress = validationObj.astconcataddress;
+    this.assetList.AssetId = this.assetFilterId;
+    this.assetList.Address = this.assetFilterAddress;
+    this.assetList.AssetStatus = ''
+    this.attributeLists = [];
+    this.assetAttributeService.getAllAssets(this.assetList).subscribe(
+      data => {
+        if (data && data.isSuccess) {
+          this.attributeLists = data.data;
+          if (this.attributeLists != undefined && this.attributeLists.length == 1) {
+            this.tabName = "asbestos";
+            const selectedAttribute = this.attributeLists[0];
+            this.openTabWindow(this.tabName, selectedAttribute);
+          } else {
+            this.alertService.error("Asset is unavailable.");
+          }
+          this.loaderService.hide();
+          this.loaderService.pageHide();
+        }
+      },
+      error => {
+        this.loaderService.hide();
+        this.loaderService.pageHide();
+        this.alertService.error(error);
       }
     )
   }

@@ -32,6 +32,7 @@ import { SurveyDashboardComponent } from './survey-portal/survey-dashboard/surve
 import { SurveyCbcreportComponent } from './survey-portal/survey-cbcreport/survey-cbcreport.component';
 import { CustomPreloadingStrategy } from './_helpers/custom-preloading-strategy';
 // import {WorkorderListComponent} from './worksorders/workorder-list/workorder-list.component';
+import { AssetResidentContainerComponent } from './asset-resident-container/asset-resident-container.component';
 
 // import { WopmTemplatesComponent } from './worksorders/Config/wopm-templates/wopm-templates.component';
 // import { WopmConfigComponent } from './worksorders/Config/wopm-config/wopm-config.component';
@@ -116,6 +117,7 @@ const appRoutes: Routes = [
                     { path: 'cbcreport', component: SurveyCbcreportComponent, canActivate: [AuthGuard] }
                 ]
             },
+            { path: 'resident-info', component: AssetResidentContainerComponent, canActivate: [AuthGuard] },
 
         ]
     },

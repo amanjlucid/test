@@ -1,7 +1,7 @@
-
-  .selected {
-    background-color: #cacaca;
+  .worksorderGrid .k-grid tr {
+    background-color: white
   }
+
 
   #myUL {
     border: 1px solid #e2e2eb;
@@ -52,13 +52,30 @@
 
   .k-window {
     position: fixed !important;
-}
+  }
 
-.k-grid tbody td {
+  .k-grid tbody td {
     white-space: nowrap;
     line-height: 20px;
     padding: 8px 12px;
-}
+  }
+
+  .worksorderGrid .k-grid tr {
+    background-color: white
+  }
+
+  .k-grid tr.notNew {
+    background-color: rgba(230, 0, 126, 0.1) !important
+  }
+
+  .worksorderGrid .gridRow:hover:not(.notNew), .worksorderGrid .gridRow:hover td {
+    background-color: transparent !important;
+    ;
+  }
+
+  .worksorderGrid .k-state-selected.gridRow:hover {
+    background-color: #d4cdcd!important;
+  }
 
   .btnGrp button {
     margin-left:3px;

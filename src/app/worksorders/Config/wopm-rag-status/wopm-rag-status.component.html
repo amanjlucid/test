@@ -13,7 +13,7 @@
                type="button" class="btn btn-sm themeButton mr-1" (click)="openEditRagStatus('new', null)">New</button>
 
                <button
-               type="button" class="btn btn-sm themeButton mr-1" (click)="export()">Export Data</button>
+               type="button" class="btn btn-sm themeButton mr-1" (click)="export()">Export</button>
       </div>
   </div>
 
@@ -73,7 +73,7 @@
                   </multicheck-filter>
                 </ng-template>
               </kendo-grid-column>
-              <kendo-grid-column field="compareField" title="Compare This" width="200">
+              <kendo-grid-column field="compareField" title="Compare This" width="250">
                   <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
                   let-filterService="filterService">
                   <multicheck-filter [isPrimitive]="false" [field]="column.field" [currentFilter]="filter"

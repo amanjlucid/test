@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AlertService, WopmConfigurationService, ConfirmationDialogService } from '../../../../_services';
+import { AlertService, WopmConfigurationService, ConfirmationDialogService, HelperService } from '../../../../_services';
 import { WopmJobroleModel } from '../../../../_models'
 declare var $: any;
 import * as moment from 'moment';
@@ -27,6 +27,7 @@ export class WopmEditJobrolesComponent implements OnInit {
   loading = false;
   submitted = false;
   public windowTitle: string;
+  public pageHeight: number = 580
   //saveMsg: string;
   currentUser;
   formErrors: any;
@@ -37,6 +38,7 @@ export class WopmEditJobrolesComponent implements OnInit {
     private fb: FormBuilder,
     private wopmConfigurationService: WopmConfigurationService,
     private confirmationDialogService: ConfirmationDialogService,
+    private helperService: HelperService,
     private alertService: AlertService
   ) { }
 
@@ -71,7 +73,7 @@ export class WopmEditJobrolesComponent implements OnInit {
       let tempGroups = this.securityGroups;
     }
 
-    this.populateTemplate(this.selectedJobRole);
+    this.dummyLoad();
   }
 
 
@@ -93,6 +95,18 @@ export class WopmEditJobrolesComponent implements OnInit {
       authFeeLimit: jobrole.authFeeLimit,
     })
 
+  }
+
+  dummyLoad(){
+
+    //not sure why we have to do this but it seems that the masked values don't display on the initial
+    //load unless the form values are patched after a server returns from a callback.
+
+    this.wopmConfigurationService.getWorksOrderJobRolesPanelItems()
+    .subscribe(
+      data => {
+        this.populateTemplate(this.selectedJobRole);
+      });
   }
 
   logValidationErrors(group: FormGroup): void {
@@ -127,7 +141,10 @@ export class WopmEditJobrolesComponent implements OnInit {
     this.logValidationErrors(this.jobRoleForm);
 
     if (this.jobRoleForm.invalid) {
+      this.pageHeight = 620;
       return;
+    }else{
+      this.pageHeight = 580;
     }
 
     let formRawVal = this.jobRoleForm.getRawValue();
@@ -145,12 +162,12 @@ export class WopmEditJobrolesComponent implements OnInit {
     }
     this.wopmJobroleModel.jobRoleType = formRawVal.jobRoleType;
     this.wopmJobroleModel.defaultJobRole = formRawVal.defaultJobRole == true? 'Y': 'N';
-    this.wopmJobroleModel.variationLimit = formRawVal.variationLimit;
-    this.wopmJobroleModel.issueLimit = formRawVal.issueLimit;
-    this.wopmJobroleModel.requestPaymentLimit = formRawVal.requestPaymentLimit;
-    this.wopmJobroleModel.authPaymentLimit = formRawVal.authPaymentLimit;
-    this.wopmJobroleModel.requestFeeLimit = formRawVal.requestFeeLimit;
-    this.wopmJobroleModel.authFeeLimit = formRawVal.authFeeLimit;
+    this.wopmJobroleModel.variationLimit = this.helperService.convertMoneyToFlatFormat(formRawVal.variationLimit);
+    this.wopmJobroleModel.issueLimit = this.helperService.convertMoneyToFlatFormat(formRawVal.issueLimit);
+    this.wopmJobroleModel.requestPaymentLimit = this.helperService.convertMoneyToFlatFormat(formRawVal.requestPaymentLimit);
+    this.wopmJobroleModel.authPaymentLimit = this.helperService.convertMoneyToFlatFormat(formRawVal.authPaymentLimit);
+    this.wopmJobroleModel.requestFeeLimit = this.helperService.convertMoneyToFlatFormat(formRawVal.requestFeeLimit);
+    this.wopmJobroleModel.authFeeLimit = this.helperService.convertMoneyToFlatFormat(formRawVal.authFeeLimit);
     this.wopmJobroleModel.securityGroupID = formRawVal.securityGroup;
     this.wopmJobroleModel.userID = this.currentUser.userId;
     this.wopmJobroleModel.checkProcess = 'C';
@@ -158,7 +175,13 @@ export class WopmEditJobrolesComponent implements OnInit {
     .subscribe(
       data => {
         if (data.isSuccess) {
-          this.openConfirmationDialog(data.data, data.message)
+          if(data.data == 'S'){
+            this.alertService.success(data.message)
+            this.closeEditFormWin();
+          }else
+          {
+            this.openConfirmationDialog(data.data, data.message)
+          }
         } else {
           this.loading = false;
           this.alertService.error(data.message);
@@ -178,37 +201,9 @@ export class WopmEditJobrolesComponent implements OnInit {
     }
 
     completeUpdate(status) {
-      if(status=='S'){
-        this.wopmJobroleModel.checkProcess = 'P';
-        this.wopmConfigurationService.updateJobRole(this.wopmJobroleModel)
-        .subscribe(
-          data => {
-            if (data.isSuccess) {
-                this.alertService.success(data.message)
-                this.closeEditFormWin();
-                } else {
-                  this.alertService.error(data.message);
-                }
-          });
-      }
+      //do nothing now
     }
 
-  closeUpdateWin(updateConfirmed:boolean) {
-    this.dialogUpdateJobRole = false;
-    if (updateConfirmed) {
-      this.wopmJobroleModel.checkProcess = 'P';
-      this.wopmConfigurationService.updateJobRole(this.wopmJobroleModel)
-      .subscribe(
-        data => {
-          if (data.isSuccess) {
-              this.alertService.success(data.message)
-                this.closeEditFormWindow;
-              } else {
-                this.alertService.error(data.message);
-              }
-        });
-    }
-  }
 
   refreshForm() {
     // let user:User;
@@ -222,88 +217,5 @@ export class WopmEditJobrolesComponent implements OnInit {
     this.closeEditFormWindow.emit(this.editFormWindow)
   }
 
-   numberKeyUp(value)  {
-    if(value == 'Variation')
-    {
-      if(this.f.variationLimit.value > 999999999.99)
-      {
-        //this.alertService.error("Maximum " + value + " Limit is £999,999,999.99");
-        this.f.variationLimit.setValue(999999999.99);
-      }
-      if(this.f.variationLimit.value < 0 || this.f.variationLimit.value == null)
-      {
-        //this.alertService.error("Minumum " + value + " Limit is £0");
-        this.f.variationLimit.setValue(0.00);
-      }
-    }
-    if(value == 'Issue')
-    {
-      if(this.f.issueLimit.value > 999999999.99)
-      {
-        //this.alertService.error("Maximum " + value + " Limit is £999,999,999.99");
-        this.f.issueLimit.setValue(999999999.99);
-      }
-      if(this.f.issueLimit.value < 0 || this.f.issueLimit.value == null)
-      {
-        //this.alertService.error("Minumum " + value + " Limit is £0");
-        this.f.issueLimit.setValue(0.00);
-      }
-    }
-    if(value == 'Request Payment')
-    {
-      if(this.f.requestPaymentLimit.value > 999999999.99)
-      {
-        //this.alertService.error("Maximum " + value + " Limit is £999,999,999.99");
-        this.f.requestPaymentLimit.setValue(999999999.99);
-      }
-      if(this.f.requestPaymentLimit.value < 0 || this.f.requestPaymentLimit.value == null)
-      {
-        //this.alertService.error("Minumum " + value + " Limit is £0");
-        this.f.requestPaymentLimit.setValue(0.00);
-      }
-    }
-
-    if(value == 'Authorise Payment')
-    {
-      if(this.f.authPaymentLimit.value > 999999999.99)
-      {
-        //this.alertService.error("Maximum " + value + " Limit is £999,999,999.99");
-        this.f.authPaymentLimit.setValue(999999999.99);
-      }
-      if(this.f.authPaymentLimit.value < 0 || this.f.authPaymentLimit.value == null)
-      {
-        //this.alertService.error("Minumum " + value + " Limit is £0");
-        this.f.authPaymentLimit.setValue(0.00);
-      }
-    }
-    if(value == 'Request Fee')
-    {
-      if(this.f.requestFeeLimit.value > 999999999.99)
-      {
-        //this.alertService.error("Maximum " + value + " Limit is £999,999,999.99");
-        this.f.requestFeeLimit.setValue(999999999.99);
-      }
-      if(this.f.requestFeeLimit.value < 0 || this.f.requestFeeLimit.value == null)
-      {
-        //this.alertService.error("Minumum " + value + " Limit is £0");
-        this.f.requestFeeLimit.setValue(0.00);
-      }
-    }
-
-    if(value == 'Authorise Fee')
-    {
-      if(this.f.authFeeLimit.value > 999999999.99)
-      {
-        //this.alertService.error("Maximum " + value + " Limit is £999,999,999.99");
-        this.f.authFeeLimit.setValue(999999999.99);
-      }
-      if(this.f.authFeeLimit.value < 0 || this.f.authFeeLimit.value == null)
-      {
-        //this.alertService.error("Minumum " + value + " Limit is £0");
-        this.f.authFeeLimit.setValue(0.00);
-      }
-    }
-
-  }
 
 }

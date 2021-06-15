@@ -1,0 +1,63 @@
+<kendo-window [title]="windowTitle"  *ngIf="editFormWindow" (close)="closeEditFormWin()"  [width]="650" [height]="380" resizable="false" [top]="50">
+  <div class="flex-grow-1 userFrm">
+     <form [formGroup]="userRoleForm" (ngSubmit)="onSubmit()" autocomplete="off">
+
+      <div class="form-row">
+        <div class="form-group col-md-12">
+          <label class="form-label">Role Type</label>
+          <select class="custom-select" formControlName="userRoleType" (change)="roleTypeChanged($event.target.value)"
+            [ngClass]="{ 'is-invalid': submitted && formErrors.userRoleType }">
+            <option *ngFor="let userRole of userRolesDistinct" [value]="userRole" >{{userRole}}</option>
+          </select>
+          <div *ngIf="submitted && formErrors.userRoleType" class="invalid-feedback">
+            <div *ngIf="formErrors.userRoleType">{{ formErrors.userRoleType }}</div>
+          </div>
+        </div>
+      </div>
+
+        <div class="form-row">
+          <div class="form-group col-md-12">
+            <label class="form-label">Job Role</label>
+            <select *ngIf="roleTypeSelected" class="custom-select" formControlName="userRole" (change)="roleChanged($event.target.value)"
+              [ngClass]="{ 'is-invalid': submitted && formErrors.userRole }">
+               <option value=""></option>
+               <option *ngFor="let userRole of userRoleList" [value]="userRole" >{{userRole}}</option>
+            </select>
+            <input type="text" class="form-control" value="" *ngIf="!roleTypeSelected" formControlName="userRole"
+            readonly>
+            <div *ngIf="submitted && formErrors.userRole" class="invalid-feedback">
+              <div *ngIf="formErrors.userRole">{{ formErrors.userRole }}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-md-8">
+            <label class="form-label">Security User</label>
+            <select class="custom-select" formControlName="securityUser" *ngIf="!disableUser"
+              [ngClass]="{ 'is-invalid': submitted && formErrors.securityUser }">
+              <option value=""></option>
+              <option *ngFor="let secUser of securityUsers" [value]="secUser.userID" >{{secUser.userName}} ({{secUser.userID}})</option>
+            </select>
+            <input type="text" class="form-control" formControlName="securityUser" [value]="secUserNameID" *ngIf="disableUser"
+            readonly>
+            <div *ngIf="submitted && formErrors.securityUser" class="invalid-feedback">
+              <div *ngIf="formErrors.securityUser">{{ formErrors.securityUser }}</div>
+            </div>
+          </div>
+
+          <div class="form-group col-md-4">
+            <label class="form-label">Search</label>
+            <input *ngIf="!disableUser"  class="form-control" (keyup)="searchUsers($event)"  type="text"  >
+            <input *ngIf="disableUser"  class="form-control" type="text" readonly>
+          </div>
+
+        </div>
+
+      <div class="buttonDiv pull-right mt-2">
+        <button type="button" (click)="closeEditFormWin()" class="btn btn-sm themeButton m-1">Cancel</button>
+        <button type="submit"  class="btn btn-sm themeButton m-1">Ok</button>
+      </div>
+    </form>
+  </div>
+</kendo-window>

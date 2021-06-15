@@ -72,8 +72,6 @@ export class WopmRagStatusComponent implements OnInit {
               if (!(this.checkWorksOrdersAccess("Config RAG Status Tab") && this.checkWorksOrdersAccess("Works Order Portal Access"))) {
                 this.router.navigate(['/dashboard']);
               }
-            } else {
-              this.router.navigate(['/dashboard']);
             }
           }
         )
@@ -96,7 +94,7 @@ export class WopmRagStatusComponent implements OnInit {
 
     getGridDataDetails() {
       this.subs.add(
-        this.wopmConfigurationService.getWorksOrdersRAGStatusList().subscribe(
+        this.wopmConfigurationService.getWorksOrdersRAGStatusList('').subscribe(
           data => {
             if (data.isSuccess) {
               const RAGStatus = data.data.worksOrderRAGStatusList;

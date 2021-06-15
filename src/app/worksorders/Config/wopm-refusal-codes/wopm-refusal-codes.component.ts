@@ -68,8 +68,6 @@ export class WopmRefusalCodesComponent implements OnInit {
               if (!(this.checkWorksOrdersAccess("Config Refusal Codes Tab") && this.checkWorksOrdersAccess("Works Order Portal Access"))) {
                 this.router.navigate(['/dashboard']);
               }
-            } else {
-              this.router.navigate(['/dashboard']);
             }
           }
         )

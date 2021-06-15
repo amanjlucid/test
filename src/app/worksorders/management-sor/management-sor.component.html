@@ -1,0 +1,140 @@
+<kendo-window title="{{title}}" *ngIf="managementSORTab" (close)="closeSORTab()" [top]="20"
+    [minWidth]="700" [width]="1050" [height]="750" >
+
+
+  <div style="height:100%;" class="row">
+      <div class="col-md-12 mt-2">
+
+          <kendo-grid style="height:100%;" [groupable]="false" [data]="gridView" filterable="menu" [loading]="loading" [resizable]="true"
+          [sortable]="{allowUnsort: allowUnsort, mode: multiple ? 'multiple' : 'single' }"
+          [skip]="state.skip" [sort]="state.sort"  [filter]="state.filter" (sortChange)="sortChange($event)" (filterChange)="filterChange($event)"
+               [navigable]="true" (cellClick)="cellClickHandler($event)">
+
+              <kendo-grid-column field="worksOrderName" title="Name" width="200">
+                <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
+                let-filterService="filterService" >
+                <multicheck-filter  [isPrimitive]="false" [field]="column.field" [currentFilter]="filter"
+                    [filterService]="filterService" textField="text" valueField="val"
+                    [data]="distinctPrimitive(column.field)">
+                </multicheck-filter>
+              </ng-template>
+              </kendo-grid-column>
+              <kendo-grid-column field="contractorName" title="Contractor Name" width="200">
+                <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
+                let-filterService="filterService" >
+                <multicheck-filter  [isPrimitive]="false" [field]="column.field" [currentFilter]="filter"
+                    [filterService]="filterService" textField="text" valueField="val"
+                    [data]="distinctPrimitive(column.field)">
+                </multicheck-filter>
+              </ng-template>
+              </kendo-grid-column>
+              <kendo-grid-column field="workYear" title="Year" width="100">
+                <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
+                let-filterService="filterService">
+                <multicheck-filter [isPrimitive]="false" [field]="column.field" [currentFilter]="filter"
+                    [filterService]="filterService" textField="text" valueField="val"
+                    [data]="distinctPrimitive(column.field)">
+                </multicheck-filter>
+              </ng-template>
+              </kendo-grid-column>
+              <kendo-grid-column field="charChoice" title="Char Choice" width="200">
+                <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
+                let-filterService="filterService">
+                <multicheck-filter [isPrimitive]="false" [field]="column.field" [currentFilter]="filter"
+                    [filterService]="filterService" textField="text" valueField="val"
+                    [data]="distinctPrimitive(column.field)">
+                </multicheck-filter>
+              </ng-template>
+              </kendo-grid-column>
+              <kendo-grid-column field="desc" title="Desc" width="200">
+                  <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
+                  let-filterService="filterService">
+                  <multicheck-filter [isPrimitive]="false" [field]="column.field" [currentFilter]="filter"
+                      [filterService]="filterService" textField="text" valueField="val"
+                      [data]="distinctPrimitive(column.field)">
+                  </multicheck-filter>
+                </ng-template>
+              </kendo-grid-column>
+              <kendo-grid-column field="packageCode" title="Package Code" width="160" >
+                <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
+                let-filterService="filterService">
+                <multicheck-filter [isPrimitive]="false" [field]="column.field" [currentFilter]="filter"
+                    [filterService]="filterService" textField="text" valueField="val"
+                    [data]="distinctPrimitive(column.field)">
+                </multicheck-filter>
+              </ng-template>
+              </kendo-grid-column>
+              <kendo-grid-column field="packageName" title="Package Name" width="160" >
+                <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
+                let-filterService="filterService">
+                <multicheck-filter [isPrimitive]="false" [field]="column.field" [currentFilter]="filter"
+                    [filterService]="filterService" textField="text" valueField="val"
+                    [data]="distinctPrimitive(column.field)">
+                </multicheck-filter>
+              </ng-template>
+              </kendo-grid-column>
+              <kendo-grid-column field="unitOfMeasure" title="UOM" width="160" >
+                <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
+                let-filterService="filterService">
+                <multicheck-filter [isPrimitive]="false" [field]="column.field" [currentFilter]="filter"
+                    [filterService]="filterService" textField="text" valueField="val"
+                    [data]="distinctPrimitive(column.field)">
+                </multicheck-filter>
+              </ng-template>
+              </kendo-grid-column>
+              <kendo-grid-column field="defaultCost" title="Default Cost" width="160" >
+                <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
+                let-filterService="filterService">
+                <multicheck-filter [isPrimitive]="false" [field]="column.field" [currentFilter]="filter"
+                    [filterService]="filterService" textField="text" valueField="val"
+                    [data]="distinctPrimitive(column.field)">
+                </multicheck-filter>
+              </ng-template>
+              <ng-template kendoGridCellTemplate let-dataItem>
+                <div class="exportDiv">
+                  {{ dataItem.defaultCost | currency:"GBP":"symbol" }}
+                </div>
+            </ng-template>
+              </kendo-grid-column>
+              <kendo-grid-column field="cost" title="Cost" width="180" >
+                <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
+                let-filterService="filterService">
+                <multicheck-filter [isPrimitive]="false" [field]="column.field" [currentFilter]="filter"
+                    [filterService]="filterService" textField="text" valueField="val"
+                    [data]="distinctPrimitive(column.field)">
+                </multicheck-filter>
+              </ng-template>
+              <ng-template kendoGridCellTemplate let-dataItem>
+                <div class="exportDiv">
+                  {{ dataItem.cost | currency:"GBP":"symbol" }}
+                </div>
+            </ng-template>
+              </kendo-grid-column>
+              <kendo-grid-column field="exclusionReason" title="Exclusion Reason" width="180" >
+                <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
+                let-filterService="filterService">
+                <multicheck-filter [isPrimitive]="false" [field]="column.field" [currentFilter]="filter"
+                    [filterService]="filterService" textField="text" valueField="val"
+                    [data]="distinctPrimitive(column.field)">
+                </multicheck-filter>
+              </ng-template>
+              </kendo-grid-column>
+
+          </kendo-grid>
+
+      </div>
+  </div>
+
+ </kendo-window>
+
+
+
+
+
+
+
+
+
+
+
+

@@ -13,17 +13,17 @@
                type="button" class="btn btn-sm themeButton mr-1" (click)="openEditJobRole('new', null)">New</button>
 
                <button *ngIf="checkWorksOrdersAccess('Config Edit Job Role')"
-               type="button" class="btn btn-sm themeButton mr-1" (click)="export()">Export Data</button>
+               type="button" class="btn btn-sm themeButton mr-1" (click)="export()">Export</button>
       </div>
   </div>
 
   <div class="row mt-2">
-      <div class="col-md-12">
+    <div class="col-md-12 worksorderGrid" >
 
           <kendo-grid [groupable]="false" [data]="gridView"  [height]="720" filterable="menu" [loading]="loading" [resizable]="true"
           [sortable]="{allowUnsort: allowUnsort, mode: multiple ? 'multiple' : 'single' }"
           [skip]="state.skip" [sort]="state.sort"  [filter]="state.filter" (sortChange)="sortChange($event)" (filterChange)="filterChange($event)"
-               [navigable]="true" (cellClick)="cellClickHandler($event)">
+               [navigable]="true" (cellClick)="cellClickHandler($event)" [rowClass]="rowCallback" >
 
               <kendo-grid-column title=" " width="37" [filterable]="false">
                   <ng-template kendoGridCellTemplate let-dataItem>

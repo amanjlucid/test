@@ -1,0 +1,22 @@
+<kendo-window [title]="WindowTitle"  *ngIf="displayRiskDetails" (close)=closeRiskDetailsWin()  [width]="750"  [top]="40">
+  <div class="flex-grow-1 userFrm">
+
+    <div class="row mt-2">
+      <div class="col-md-12">
+        <kendo-grid *ngIf="Grid1" [groupable]="false" [data]="riskData"  [height]="600" filterable="menu" [loading]="loading" [resizable]="false"  >
+            <kendo-grid-column field="riskCode" title="Risk Type" width="100" [filterable]="false" >
+            </kendo-grid-column>
+            <kendo-grid-column field="riskText" title="Risk Details" width="550" [filterable]="false" >
+              <ng-template kendoGridCellTemplate let-dataItem>
+                {{ dataItem.riskText}}
+              </ng-template>
+            </kendo-grid-column>
+        </kendo-grid>
+
+      </div>
+  </div>
+
+  </div>
+</kendo-window>
+
+

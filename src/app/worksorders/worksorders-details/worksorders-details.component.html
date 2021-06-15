@@ -22,6 +22,12 @@
               href="javascript:void(0)" (click)="redirectToWorksOrderEdit()">Edit Works Order </a> -->
             <a *ngIf="woMenuBtnSecurityAccess('Package Mapping')" class="dropdown-item" href="javascript:void(0)"
               (click)="openPackageMappingWindow()">Package Mapping</a>
+            <a *ngIf="woMenuBtnSecurityAccess('Roles Tab')" class="dropdown-item" href="javascript:void(0)"
+              (click)="openRolesTab()">Roles</a>
+            <a *ngIf="woMenuBtnSecurityAccess('SOR Tab')" class="dropdown-item" href="javascript:void(0)"
+              (click)="openSORTab()">SOR</a>
+            <a *ngIf="woMenuBtnSecurityAccess('Contract Costs Tab')" class="dropdown-item" href="javascript:void(0)"
+              (click)="openCostsTab()">Contract Costs</a>
           </div>
         </div>
       </div>
@@ -318,7 +324,7 @@
             </li>
 
             <li *ngIf="dataItem.treelevel == 3" class="nav-item dropdown list-unstyled level2Menu"
-              style="margin-top: -7px;" (click)="setSeletedRow(dataItem)">
+              style="margin-top: -10px; " (click)="setSeletedRow(dataItem)">
               <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars" (click)="setSeletedRow(dataItem)"></i>
               <div class="dropdown-menu selectedWodBar{{dataItem.id}} assetLvl">
 
@@ -412,6 +418,9 @@
 
                 <a class="dropdown-item" href="javascript:void(0)"
                   (click)="openAddPhaseCostStructure(dataItem)">Asset(s) for Phase Work Cost</a>
+                <a class="dropdown-item" *ngIf="woMenuBtnSecurityAccess('View Resident Info')" href="javascript:void(0)"
+                  (click)="openResidentDetails(dataItem)">Resident Details</a>
+
 
               </div>
             </li>
@@ -441,6 +450,26 @@
 
 
 
+        </kendo-treelist-column>
+
+        <kendo-treelist-column field="wostatus" title="Status" [width]="120" [locked]="columnLocked">
+        </kendo-treelist-column>
+
+
+        <kendo-treelist-column [expandable]="true" [minResizableWidth]="200" field="woname" title="Name" [width]="500"
+          [locked]="columnLocked">
+          <ng-template kendoTreeListCellTemplate let-dataItem>
+            <span>
+              {{ dataItem.woname }}
+            </span>
+            <div style="margin-left:2px;" class="iconDiv">
+              <img style="margin-top: -4px;" title="Resident Info" *ngIf="dataItem.residentriskcode == 1"
+                class="table-icon-wr" src="assets/img/icons/GreenResident.png" />
+              <img style="margin-top: -4px;" title="Resident Info with Risk" *ngIf="dataItem.residentriskcode == 2"
+                class="table-icon-wr" src="assets/img/icons/RedResident.png" />
+            </div>
+
+          </ng-template>
         </kendo-treelist-column>
         <kendo-treelist-column field="wostatus" title="Status" [width]="120" [locked]="columnLocked">
         </kendo-treelist-column>
@@ -676,6 +705,19 @@
   <app-workorder-form [woFormType]="'edit'" [woFormWindow]="woFormWindow"
     [selectedWorkOrderAddEdit]="worksOrderSingleData" *ngIf="woFormWindow" (closeWoFormWin)="closeWoFormWin($event)">
   </app-workorder-form>
+
+
+  <app-management-roles *ngIf="managementRolesTab" [managementRolesTab]="managementRolesTab"
+    (closeManagementRolesTab)="closeManagementRolesTab($event)" [selectedWorksOrder]="worksOrderSingleData">
+  </app-management-roles>
+
+  <app-management-costs *ngIf="managementCostsTab" [managementCostsTab]="managementCostsTab"
+    (closeManagementCostsTab)="closeManagementCostsTab($event)" [selectedWorksOrder]="worksOrderSingleData">
+  </app-management-costs>
+
+  <app-management-sor *ngIf="managementSORTab" [managementSORTab]="managementSORTab"
+    (closeManagementSORTab)="closeManagementSORTab($event)" [selectedWorksOrder]="worksOrderSingleData">
+  </app-management-sor>
 
 
   <app-move-asset *ngIf="moveAsset" [moveAsset]="moveAsset" [selectedAssetList]="selectedAssetList"

@@ -84,16 +84,38 @@ export class WopmEditRagStatusComponent implements OnInit {
     this.SliderStep = 1;
     this.TickWidth= 5;
 
-    this.populateTemplate(this.selectedRagStatus);
     if (this.editFormType == "new") {
+      this.populateTemplate(this.selectedRagStatus);
       this.windowTitle = "New RAG Status";
     } else if (this.editFormType == "edit") {
+      this.getGridDataDetails()
       this.windowTitle = "Edit RAG Status";
       this.EditMode = true;
       this.changeType(this.selectedRagStatus.compareType)
     }
 
   }
+
+  getGridDataDetails() {
+    this.subs.add(
+      this.wopmConfigurationService.getWorksOrdersRAGStatusList(this.selectedRagStatus.compareName).subscribe(
+        data => {
+          if (data.isSuccess) {
+            let tempData = data.data.worksOrderRAGStatusList[0];
+            this.selectedRagStatus = tempData;
+            this.populateTemplate(tempData);
+            this.loading = false;
+          }
+          else
+          {
+            this.alertService.error(data.message)
+          }
+
+        }
+      )
+    )
+  }
+
 
   ngOnDestroy() {
     this.subs.unsubscribe();
@@ -174,7 +196,7 @@ export class WopmEditRagStatusComponent implements OnInit {
       this.SliderStep = 1;
       this.TickWidth= 5;
       this.DisplaySlidersButton = this.EditMode;
-      this.DisplaySliders  = !this.EditMode;
+      this.DisplaySliders  = true//!this.EditMode;
       this.infoLabel = `Use sliders below to select a percentage value between 0 and 100.  For a 'Percentage' RAG Status the Green value should be lower than the Amber value:`;
     }
     if(value == 'Value')
@@ -198,7 +220,7 @@ export class WopmEditRagStatusComponent implements OnInit {
       this.TickWidth= 20;
       this.DisplaySlidersButton= this.EditMode;
       this.DisplaySurveyQuestion = this.EditMode;
-      this.DisplaySliders  = !this.EditMode;
+      this.DisplaySliders  = true//!this.EditMode;
       this.updateSurveyQuestionText(this.ragStatusForm.controls.compareField.value);
       this.infoLabel = `Use sliders below to select a percentage value between 0 and 5.  For a 'Survey' RAG Status the Green value should be higher than the Amber value:`;
 
@@ -209,6 +231,8 @@ export class WopmEditRagStatusComponent implements OnInit {
       this.DisplayDates = true;
       this.DisplayCompare = false;
       this.DisplayCompareTo = true;
+      this.SliderMax = 999999
+      this.SliderMin = 0
       this.compareToLabel  = 'Compare To Date';
       this.DisplayValues = true;
       this.compareToList = this.compareToDates;
@@ -269,26 +293,27 @@ export class WopmEditRagStatusComponent implements OnInit {
     }
 
     //Validate green value
-    if(formData.greenMax == 0){
+    if(formData.greenMax == 0 ){
       this.formErrors.greenMax = 'Please select an Green RAG Status Value!'
       this.formInvalid = true;
     }
 
-    if(formData.greenMax < 0){
-      this.formErrors.greenMax = 'Invalid Green RAG Status Value!'
+    if(isNaN(formData.greenMax)){
+      this.formErrors.greenMax = 'Please select an Green RAG Status Value!'
       this.formInvalid = true;
     }
 
     //Validate amber value
-    if(formData.amberMax == 0){
+    if(formData.amberMax == 0 ){
       this.formErrors.amberMax = 'Please select an Amber RAG Status Value!'
       this.formInvalid = true;
     }
 
-    if(formData.amberMax < 0){
-      this.formErrors.amberMax = 'Invalid Amber RAG Status Value!'
+    if(isNaN(formData.amberMax)){
+      this.formErrors.amberMax = 'Please select an Amber RAG Status Value!'
       this.formInvalid = true;
     }
+
 
     //Validate green and amber values
     if (formData.greenMax > 0 && formData.amberMax > 0){
@@ -380,6 +405,10 @@ export class WopmEditRagStatusComponent implements OnInit {
     else{
       greenVal = parseFloat(formRawVal.greenMax);
     }
+    if( greenVal > 999999999.99)
+    {
+      greenVal = 999999999.99;
+    }
 
     if(isNaN(parseInt(formRawVal.amberMax)))
     {
@@ -387,6 +416,11 @@ export class WopmEditRagStatusComponent implements OnInit {
       amberVal = parseFloat(aVal);
     } else{
       amberVal = parseFloat(formRawVal.amberMax);
+    }
+
+    if( amberVal > 999999999.99)
+    {
+      amberVal = 999999999.99;
     }
 
     this.wopmRagstatusModel.compareName = formRawVal.compareName;

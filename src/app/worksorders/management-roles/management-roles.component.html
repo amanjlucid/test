@@ -1,0 +1,157 @@
+<kendo-window title="{{title}}" *ngIf="managementRolesTab" (close)="closeRolesTab()" [top]="20"
+    [minWidth]="700" [width]="1050" [height]="750" >
+
+  <div class="row">
+      <div class="col-md-12 text-right" >
+        <button *ngIf="checkWorksOrdersAccess('New User Role')"
+            type="button" class="btn btn-sm themeButton mr-1 pull-right" (click)="openEditJobRole('new', null)">New</button>
+      </div>
+  </div>
+
+  <div style="height:95%;" class="row">
+    <div class="col-md-12 mt-2">
+      <kendo-grid style="height:100%;" [groupable]="false" [data]="gridView"  filterable="menu" [loading]="loading" [resizable]="true"
+      [sortable]="{allowUnsort: allowUnsort, mode: multiple ? 'multiple' : 'single' }"
+      [skip]="state.skip" [sort]="state.sort"  [filter]="state.filter" (sortChange)="sortChange($event)" (filterChange)="filterChange($event)"
+            [navigable]="true" (cellClick)="cellClickHandler($event)">
+
+          <kendo-grid-column title=" " width="37" [filterable]="false">
+              <ng-template kendoGridCellTemplate let-dataItem>
+                  <li  class="nav-item dropdown list-unstyled"
+                      style="margin-top: -7px;">
+                      <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"
+                          (click)="setSeletedRow(dataItem)"></i>
+                      <div class="dropdown-menu"
+                      *ngIf="checkWorksOrdersAccess('Edit User Role') || checkWorksOrdersAccess('Remove User Role') || checkWorksOrdersAccess('Config Security Functions')"
+                      >
+                          <a class="dropdown-item" href="javascript:void(0)" *ngIf="checkWorksOrdersAccess('Edit User Role')"
+                          (click)="openEditJobRole('edit', dataItem)">Edit</a>
+
+                          <a class="dropdown-item" href="javascript:void(0)" *ngIf="checkWorksOrdersAccess('Remove User Role')"
+                          (click)="deleteJobRole(dataItem)">Remove</a>
+
+                          <a class="dropdown-item" href="javascript:void(0)" *ngIf="checkWorksOrdersAccess('Config Security Functions')"
+                          (click)="openSecurityFunctionWindow(dataItem)">Security Functions</a>
+
+                      </div>
+                  </li>
+
+              </ng-template>
+          </kendo-grid-column>
+          <kendo-grid-column field="woUserID" title="User ID" width="200">
+            <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
+            let-filterService="filterService" >
+            <multicheck-filter  [isPrimitive]="false" [field]="column.field" [currentFilter]="filter"
+                [filterService]="filterService" textField="text" valueField="val"
+                [data]="distinctPrimitive(column.field)">
+            </multicheck-filter>
+          </ng-template>
+          </kendo-grid-column>
+          <kendo-grid-column field="woUserName" title="Name" width="200">
+            <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
+            let-filterService="filterService" >
+            <multicheck-filter  [isPrimitive]="false" [field]="column.field" [currentFilter]="filter"
+                [filterService]="filterService" textField="text" valueField="val"
+                [data]="distinctPrimitive(column.field)">
+            </multicheck-filter>
+          </ng-template>
+          </kendo-grid-column>
+          <kendo-grid-column field="jobRoleType" title="Role Type" width="200">
+            <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
+            let-filterService="filterService">
+            <multicheck-filter [isPrimitive]="false" [field]="column.field" [currentFilter]="filter"
+                [filterService]="filterService" textField="text" valueField="val"
+                [data]="distinctPrimitive(column.field)">
+            </multicheck-filter>
+          </ng-template>
+          </kendo-grid-column>
+          <kendo-grid-column field="jobRole" title="Job Role" width="200">
+            <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
+            let-filterService="filterService">
+            <multicheck-filter [isPrimitive]="false" [field]="column.field" [currentFilter]="filter"
+                [filterService]="filterService" textField="text" valueField="val"
+                [data]="distinctPrimitive(column.field)">
+            </multicheck-filter>
+          </ng-template>
+          </kendo-grid-column>
+      <!--    <kendo-grid-column field="conOrgName" title="Cons Org Name" width="200">
+              <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
+              let-filterService="filterService">
+              <multicheck-filter [isPrimitive]="false" [field]="column.field" [currentFilter]="filter"
+                  [filterService]="filterService" textField="text" valueField="val"
+                  [data]="distinctPrimitive(column.field)">
+              </multicheck-filter>
+            </ng-template>
+          </kendo-grid-column> -->
+          <kendo-grid-column field="issueLimit" title="Issue Limit" width="160" [filterable]="false">
+            <ng-template kendoGridCellTemplate let-dataItem>
+                <div class="exportDiv">
+                  {{ dataItem.issueLimit | currency:"GBP":"symbol" }}
+                </div>
+            </ng-template>
+          </kendo-grid-column>
+          <kendo-grid-column field="variationLimit" title="Variation Limit" width="160" [filterable]="false">
+            <ng-template kendoGridCellTemplate let-dataItem>
+                <div class="exportDiv">
+                {{ dataItem.variationLimit | currency:"GBP":"symbol" }}
+              </div>
+            </ng-template>
+          </kendo-grid-column>
+          <kendo-grid-column field="requestFeeLimit" title="Contract Fee Request Limit" width="160" [filterable]="false">
+            <ng-template kendoGridCellTemplate let-dataItem  >
+              <div class="exportDiv">
+                {{ dataItem.requestFeeLimit | currency:"GBP":"symbol" }}
+              </div>
+            </ng-template>
+          </kendo-grid-column>
+          <kendo-grid-column field="authFeeLimit" title="Contract Fee Authorisation Limit" width="160" [filterable]="false">
+            <ng-template kendoGridCellTemplate let-dataItem>
+              <div class="exportDiv">
+                {{ dataItem.authFeeLimit | currency:"GBP":"symbol" }}
+              </div>
+            </ng-template>
+          </kendo-grid-column>
+          <kendo-grid-column field="requestPaymentLimit" title="Payment Request Limit" width="180" [filterable]="false">
+            <ng-template kendoGridCellTemplate let-dataItem>
+                <div class="exportDiv">
+                  {{ dataItem.requestPaymentLimit | currency:"GBP":"symbol" }}
+                </div>
+            </ng-template>
+          </kendo-grid-column>
+          <kendo-grid-column field="authPaymentLimit" title="Payment Authorise Limit" width="180" [filterable]="false">
+            <ng-template kendoGridCellTemplate let-dataItem>
+                <div class="exportDiv">
+                  {{ dataItem.authPaymentLimit | currency:"GBP":"symbol" }}
+                </div>
+            </ng-template>
+          </kendo-grid-column>
+
+      </kendo-grid>
+    </div>
+  </div>
+
+  <div class="disabledBackground"></div>
+
+</kendo-window>
+
+
+
+<app-management-edit-roles [editFormWindow]="editFormWindow" [selectedUserRole]="wopmUserRole"
+[editFormType]="editFormType" [selectedWorksOrder]="selectedWorksOrder"
+*ngIf="editFormWindow" (closeEditFormWindow)="closeEditFormWin($event)">
+</app-management-edit-roles>
+
+<app-wopm-sec-jobroles [securityFunctionWindow]="securityFunctionWindow" [RoleType]="this.RoleType" [JobRole]="this.JobRole"
+*ngIf="securityFunctionWindow" (closeSecurityFunctionWindow)="closeSecurityFunctionWindow($event)">
+</app-wopm-sec-jobroles>
+
+
+
+
+
+
+
+
+
+
+

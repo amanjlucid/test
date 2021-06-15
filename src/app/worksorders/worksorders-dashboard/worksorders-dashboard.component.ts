@@ -754,6 +754,11 @@ export class WorksordersDashboardComponent implements OnInit {
 
   pieChartInit(titleText: any = null, yAxisTitle: string = null, allowPointSelect: boolean = true, selector: any, data: any, chartObj = null) {
     if (data.length > 0) {
+      Highcharts.setOptions({
+        lang: {
+          thousandsSep: ','
+        }
+      });
       Highcharts.chart(
         this.pieChartConfiguration(
           titleText,
@@ -773,12 +778,24 @@ export class WorksordersDashboardComponent implements OnInit {
 
   pieChartConfiguration(titleText: any, seriesName: string, allowPointSelect: boolean = true, selector: any, data: any, chartObj = null) {
     let comp = this
+    let format = "";
+    if (chartObj && chartObj.valueFormat) {
+      format = chartObj.valueFormat;
+    }
+    let prefix = "";
+    if (chartObj && chartObj.valuePrefix) {
+      prefix = chartObj.valuePrefix;
+    }
+    let suffix = "";
+    if (chartObj && chartObj.valueSuffix) {
+      suffix = chartObj.valueSuffix;
+    }
     return {
       title: {
         text: titleText
       },
       tooltip: {
-        pointFormat: 'percentage: <b>{point.percentage:.1f}%</b><br> value: <b>{point.y}</b>'
+         pointFormat: 'percentage: <b>{point.percentage:.1f}%</b><br> value: <b>' + prefix + '{point.y' + format + '}' + suffix + '</b>',
       },
       plotOptions: {
         pie: {
@@ -1044,7 +1061,7 @@ export class WorksordersDashboardComponent implements OnInit {
         }
       },
       tooltip: {
-        pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b><br/>',
+        pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y:.2f}</b><br/>',
         shared: true
       },
       legend: { enabled: false },

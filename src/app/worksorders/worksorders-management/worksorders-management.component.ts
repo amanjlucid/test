@@ -51,6 +51,9 @@ export class WorksordersManagementComponent implements OnInit {
   deleteWorksOrderReasonWindow = false;
   selctedWorksOrder: any;
   reasonToDeleteWO: string;
+  managementRolesTab = false
+  managementSORTab = false
+  managementCostsTab = false
 
   woFormType = 'new';
   woFormWindow: boolean = false;
@@ -512,6 +515,40 @@ export class WorksordersManagementComponent implements OnInit {
   closeWoAssociationsManageWindowMain(eve) {
     this.WoAssociationsManageWindow = eve;
     $('.newManagementOverlay').removeClass('ovrlay');
+  }
+  
+  openRolesTab(dataItem) {
+    this.worksOrderSingleData = dataItem;
+    this.managementRolesTab = true;
+    $('.newManagementOverlay').addClass('ovrlay');
+  }
+  openCostsTab(dataItem) {
+    this.worksOrderSingleData = dataItem;
+    this.managementCostsTab = true;
+    $('.newManagementOverlay').addClass('ovrlay');
+  }
+  openSORTab(dataItem) {
+    this.worksOrderSingleData = dataItem;
+    this.managementSORTab = true;
+    $('.newManagementOverlay').addClass('ovrlay');
+  }
+
+  closeManagementRolesTab($event) {
+    this.managementRolesTab = false;
+    $('.newManagementOverlay').removeClass('ovrlay');
+    //this.refreshManagementGrid(true);
+  }
+
+  closeManagementCostsTab($event) {
+    this.managementCostsTab = false;
+    $('.newManagementOverlay').removeClass('ovrlay');
+    //this.refreshManagementGrid(true);
+  }
+
+  closeManagementSORTab($event) {
+    this.managementSORTab = false;
+    $('.newManagementOverlay').removeClass('ovrlay');
+    //this.refreshManagementGrid(true);
   }
 
 

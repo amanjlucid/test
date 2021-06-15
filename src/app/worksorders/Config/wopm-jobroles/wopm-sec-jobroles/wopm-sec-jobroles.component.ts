@@ -88,7 +88,7 @@ export class WopmSecJobrolesComponent implements OnInit, OnDestroy {
      let tempData = this.securityFunctions;
      let label = {
        'function': 'Function',
-       'portalArea': 'Portal Area',
+       'portalArea': 'Works Order Area',
      }
       this.helper.exportAsExcelFile(tempData, 'Security Functions for Role Type: ' + this.RoleType + ' - Job Role: '+ this.JobRole , label)
     } else {

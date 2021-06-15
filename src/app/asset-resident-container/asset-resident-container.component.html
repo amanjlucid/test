@@ -1,0 +1,14 @@
+
+ <div class="layout-content">
+    <div class="container-fluid flex-grow-1 container-p-y">
+
+    <div class="disabledBackground"></div>
+  </div>
+</div>
+
+
+<app-asset-resident-info [displayResidentDetails]="displayResidentDetails" [assetID]="assetID" [calledFrom]="calledFrom"
+*ngIf="displayResidentDetails" (closeResidentDetailsWindow)="closeResidentInfoDetailsWindow($event)">
+</app-asset-resident-info>
+
+

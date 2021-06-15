@@ -1,0 +1,146 @@
+<kendo-window title="{{title}}" *ngIf="managementCostsTab" (close)="closeCostsTab()" [top]="20"
+    [minWidth]="700" [width]="1050" [height]="750"  >
+
+  <div class="row">
+      <div class="col-md-12 text-right" >
+        <button *ngIf="checkWorksOrdersAccess('New Cost')"
+            type="button" class="btn btn-sm themeButton mr-1 pull-right" (click)="openEditContractCost('new', null)">New</button>
+      </div>
+  </div>
+
+  <div style="height:95%;" class="row">
+      <div class="col-md-12 mt-2">
+
+          <kendo-grid style="height:100%;" [groupable]="false" [data]="gridView"  filterable="menu" [loading]="loading" [resizable]="true"
+          [sortable]="{allowUnsort: allowUnsort, mode: multiple ? 'multiple' : 'single' }"
+          [skip]="state.skip" [sort]="state.sort"  [filter]="state.filter" (sortChange)="sortChange($event)" (filterChange)="filterChange($event)"
+               [navigable]="true" (cellClick)="cellClickHandler($event)">
+
+              <kendo-grid-column title=" " width="37" [filterable]="false">
+                  <ng-template kendoGridCellTemplate let-dataItem>
+                      <li  class="nav-item dropdown list-unstyled"
+                          style="margin-top: -7px;">
+                          <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"
+                              (click)="setSeletedRow(dataItem)"></i>
+                          <div class="dropdown-menu"
+                          *ngIf="checkWorksOrdersAccess('Edit Cost') || checkWorksOrdersAccess('Remove Cost') || checkWorksOrdersAccess('Authorise Cost')"
+                          >
+                              <a class="dropdown-item" href="javascript:void(0)" *ngIf="checkWorksOrdersAccess('Edit Cost') && dataItem.status == 'Unauthorised'  &&  dataItem.paymentStatus != 'Paid'"
+                              (click)="openEditContractCost('edit', dataItem)">Edit</a>
+
+                              <a class="dropdown-item" href="javascript:void(0)" *ngIf="checkWorksOrdersAccess('Authorise Cost')  && dataItem.status == 'Unauthorised' &&  dataItem.paymentStatus != 'Paid'"
+                              (click)="authoriseCost(dataItem, true)">Authorise</a>
+
+                              <a class="dropdown-item" href="javascript:void(0)" *ngIf="checkWorksOrdersAccess('Authorise Cost')  && dataItem.status == 'Authorised' &&  dataItem.paymentStatus != 'Paid'"
+                              (click)="authoriseCost(dataItem, false)">Unauthorise</a>
+
+                              <a class="dropdown-item" href="javascript:void(0)" *ngIf="checkWorksOrdersAccess('Remove Cost') &&  dataItem.paymentStatus == 'Unpaid'"
+                              (click)="deleteCosts(dataItem)">Remove</a>
+
+                          </div>
+                      </li>
+
+                  </ng-template>
+              </kendo-grid-column>
+              <kendo-grid-column field="phaseName" title="Phase" width="180">
+                <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
+                let-filterService="filterService" >
+                <multicheck-filter  [isPrimitive]="false" [field]="column.field" [currentFilter]="filter"
+                    [filterService]="filterService" textField="text" valueField="val"
+                    [data]="distinctPrimitive(column.field)">
+                </multicheck-filter>
+              </ng-template>
+              </kendo-grid-column>
+              <kendo-grid-column field="requestUser" title="Request User" width="180">
+                <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
+                let-filterService="filterService" >
+                <multicheck-filter  [isPrimitive]="false" [field]="column.field" [currentFilter]="filter"
+                    [filterService]="filterService" textField="text" valueField="val"
+                    [data]="distinctPrimitive(column.field)">
+                </multicheck-filter>
+              </ng-template>
+              </kendo-grid-column>
+              <kendo-grid-column field="requestDate" title="Request Date" [width]="180">
+             </kendo-grid-column>
+              <kendo-grid-column field="contractCost" title="Contract Cost" width="180" [filterable]="true">
+                <ng-template kendoGridCellTemplate let-dataItem>
+                  <div class="exportDiv">
+                    {{ dataItem.contractCost | currency:"GBP":"symbol" }}
+                  </div>
+              </ng-template>
+              </kendo-grid-column>
+              <kendo-grid-column field="status" title="Status" width="180">
+                  <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
+                  let-filterService="filterService">
+                  <multicheck-filter [isPrimitive]="false" [field]="column.field" [currentFilter]="filter"
+                      [filterService]="filterService" textField="text" valueField="val"
+                      [data]="distinctPrimitive(column.field)">
+                  </multicheck-filter>
+                </ng-template>
+              </kendo-grid-column>
+              <kendo-grid-column field="requestType" title="Request Type" width="180">
+                <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
+                let-filterService="filterService">
+                <multicheck-filter [isPrimitive]="false" [field]="column.field" [currentFilter]="filter"
+                    [filterService]="filterService" textField="text" valueField="val"
+                    [data]="distinctPrimitive(column.field)">
+                </multicheck-filter>
+              </ng-template>
+            </kendo-grid-column>
+            <kendo-grid-column field="reason" title="Reason" width="180">
+              <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
+              let-filterService="filterService">
+              <multicheck-filter [isPrimitive]="false" [field]="column.field" [currentFilter]="filter"
+                  [filterService]="filterService" textField="text" valueField="val"
+                  [data]="distinctPrimitive(column.field)">
+              </multicheck-filter>
+              </ng-template>
+            </kendo-grid-column>
+            <kendo-grid-column field="paymentDate" title="Payment Date" [width]="180" >
+            </kendo-grid-column>
+            <kendo-grid-column field="approvalUser" title="Approval User" width="180">
+              <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
+              let-filterService="filterService">
+              <multicheck-filter [isPrimitive]="false" [field]="column.field" [currentFilter]="filter"
+                  [filterService]="filterService" textField="text" valueField="val"
+                  [data]="distinctPrimitive(column.field)">
+              </multicheck-filter>
+            </ng-template>
+            </kendo-grid-column>
+            <kendo-grid-column field="approvalDate" title="Approval Date" [width]="180">
+            </kendo-grid-column>
+              <kendo-grid-column field="paymentStatus" title="Payment Status" width="180">
+                <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
+                let-filterService="filterService">
+                <multicheck-filter [isPrimitive]="false" [field]="column.field" [currentFilter]="filter"
+                    [filterService]="filterService" textField="text" valueField="val"
+                    [data]="distinctPrimitive(column.field)">
+                </multicheck-filter>
+              </ng-template>
+            </kendo-grid-column>
+
+          </kendo-grid>
+
+      </div>
+  </div>
+  <div class="ManagementCostsOverlay"></div>
+ </kendo-window>
+
+
+
+<app-management-edit-costs [editFormWindow]="editFormWindow" [selectedContractCost]="wopmContractcost"
+[editFormType]="editFormType" [selectedWorksOrder]="selectedWorksOrder"
+*ngIf="editFormWindow" (closeEditFormWindow)="closeEditFormWin($event)">
+</app-management-edit-costs>
+
+
+
+
+
+
+
+
+
+
+
+

@@ -289,7 +289,7 @@
                 (filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)" [filter]="state.filter"
                 scrollable="virtual" [rowHeight]="36" [height]="600" (pageChange)="pageChange($event)"
                 [navigable]="false" [selectedKeys]="mySelection" [selectable]="selectableSettings"
-                [kendoGridSelectBy]="mySelectionKey" [groupable]="false">
+                [kendoGridSelectBy]="mySelectionKey" [groupable]="false" (selectedKeysChange)="keyChange($event)">
 
 
 

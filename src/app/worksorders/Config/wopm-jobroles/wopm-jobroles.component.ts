@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { SubSink } from 'subsink';
 import { GroupDescriptor, DataResult, process, State, SortDescriptor, distinct } from '@progress/kendo-data-query';
-import { PageChangeEvent, SelectableSettings } from '@progress/kendo-angular-grid';
+import { PageChangeEvent, SelectableSettings, RowClassArgs } from '@progress/kendo-angular-grid';
 import { AlertService, EventManagerService, HelperService, ConfirmationDialogService, SharedService, WopmConfigurationService } from '../../../_services'
 import { forkJoin } from 'rxjs';
 import { Router } from '@angular/router';
@@ -77,8 +77,6 @@ export class WopmJobrolesComponent implements OnInit {
               if (!(this.checkWorksOrdersAccess("Config Job Roles Tab") && this.checkWorksOrdersAccess("Works Order Portal Access"))) {
                 this.router.navigate(['/dashboard']);
               }
-            } else {
-              this.router.navigate(['/dashboard']);
             }
           }
         )
@@ -120,6 +118,15 @@ export class WopmJobrolesComponent implements OnInit {
     public sortChange(sort: SortDescriptor[]): void {
       this.state.sort = sort;
       this.gridView = process(this.jobRoleDetailsTemp, this.state);
+    }
+
+    rowCallback(context: RowClassArgs) {
+      if (context.dataItem.defaultJobRole == 'Y') {
+        return { notNew: true, gridRow: true }
+      } else {
+        return { notNew: false, gridRow: true }
+      }
+
     }
 
     public filterChange(filter: any): void {
@@ -243,6 +250,8 @@ export class WopmJobrolesComponent implements OnInit {
       })
       .catch(() => console.log('User dismissed the dialog.'));
   }
+
+
 
 
   public cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {

@@ -360,7 +360,10 @@ export class WopmTemplatesComponent implements OnInit {
         // compare first click to this click and see if they occurred within double click threshold
         if (((new Date().getTime()) - this.touchtime) < 400) {
           // double click occurred
-          this.openChecklistWindow(dataItem);
+          if (this.checkWorksOrdersAccess('Manage Checklist')) {
+            this.openChecklistWindow(dataItem);
+          }
+
           this.touchtime = 0;
         } else {
           // not a double click so set as a new first click
@@ -411,7 +414,7 @@ s
     var fileExtension : string = file.name.slice(- 4);
     let reader = new FileReader();
     if (fileExtension.toLowerCase() == ".csv") {
-        reader.onload = (function(user, service, alertService){
+        reader.onload = (function(user, service, alertService, localComponent){
           return function(e) {
             var fileContent = reader.result;
             const template = {
@@ -424,6 +427,7 @@ s
               data => {
                 if (data.isSuccess) {
                   alertService.success(data.data);
+                  localComponent.getTemplateDetails();
                 } else {
                   alertService.error(data.message);
                 }
@@ -434,7 +438,7 @@ s
               }
             );
           };
-        })(this.currentUser.userId,this.wopmConfigurationService, this.alertService)
+        })(this.currentUser.userId,this.wopmConfigurationService, this.alertService, this)
 
         reader.onerror = function() {
           console.log(reader.error);

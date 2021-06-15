@@ -56,7 +56,7 @@ export class WopmConfigurationService {
     return this.http.post<any>(`${appConfig.apiUrl}/api/WOPMConfiguration/DeleteTemplate`, body, httpOptions);
   }
 
-  
+
   updateMasterStage(updateMasterStageParms) {
     var httpOptions = {
         headers: new HttpHeaders({
@@ -81,8 +81,8 @@ export class WopmConfigurationService {
     return this.http.get<any>(`${appConfig.apiUrl}/api/WOPMConfiguration/GetChecklistMaster?wotsequence=${wotsequence}`, this.httpOptions);
   }
 
-  
-  
+
+
   updateChecklistMaster(updateChecklistMasterParms) {
     var httpOptions = {
         headers: new HttpHeaders({
@@ -113,7 +113,7 @@ export class WopmConfigurationService {
     return this.http.post<any>(`${appConfig.apiUrl}/api/WOPMConfiguration/ValidateTemplate`, body, httpOptions);
   }
 
-  
+
   deleteChecklist(deleteChecklistParms) {
     var httpOptions = {
         headers: new HttpHeaders({
@@ -148,7 +148,7 @@ export class WopmConfigurationService {
     return this.http.post<any>(`${appConfig.apiUrl}/api/WOPMConfiguration/UpdateChecklistMasterDependencies`, body, httpOptions);
   }
 
-  
+
   UpdateChecklistMasterDependency(updateParms) {
     var httpOptions = {
         headers: new HttpHeaders({
@@ -186,8 +186,8 @@ export class WopmConfigurationService {
     return this.http.get<any>(`${appConfig.apiUrl}/api/WOPMConfiguration/GetWorksOrdersContractTermsList?`, this.httpOptions);
   }
 
-  getWorksOrdersRAGStatusList() {
-    return this.http.get<any>(`${appConfig.apiUrl}/api/WOPMConfiguration/GetWorksOrdersRAGStatusList?`, this.httpOptions);
+  getWorksOrdersRAGStatusList(compare) {
+    return this.http.get<any>(`${appConfig.apiUrl}/api/WOPMConfiguration/GetWorksOrdersRAGStatusList?comparename=${compare}`, this.httpOptions);
   }
 
   getWorksOrderSecurityFunctionsForJobRole(RoleType: string, JobRole: string) {
@@ -258,5 +258,63 @@ export class WopmConfigurationService {
     let body = JSON.stringify(ragStatus);
     return this.http.post<any>(`${appConfig.apiUrl}/api/WOPMConfiguration/ActivateWOPMRAGStatus`, body, httpOptions);
   }
-  
+
+  getWorksOrderUserRoles(wosequence: number) {
+    return this.http.get<any>(`${appConfig.apiUrl}/api/WOPMManagement/GetWorksOrderUserRoleList?woseq=${wosequence}`, this.httpOptions);
+  }
+
+  deleteUserRole(userRole) {
+    let body = JSON.stringify(userRole);
+    return this.http.post<any>(`${appConfig.apiUrl}/api/WOPMManagement/DeleteWOPMUserRole`, body, this.httpOptions);
+  }
+
+  updateUserRole(userRole) {
+    let body = JSON.stringify(userRole);
+    return this.http.post<any>(`${appConfig.apiUrl}/api/WOPMManagement/UpdateWOPMUserRole`, body, this.httpOptions);
+  }
+
+  getWorksOrderContractCosts(wosequence: number) {
+    return this.http.get<any>(`${appConfig.apiUrl}/api/WOPMManagement/GetContractCostsList?woseq=${wosequence}`, this.httpOptions);
+  }
+
+  deleteContractCosts(conCost) {
+    let body = JSON.stringify(conCost);
+    return this.http.post<any>(`${appConfig.apiUrl}/api/WOPMManagement/DeleteWOPMContractCosts`, body, this.httpOptions);
+  }
+
+  updateContractCosts(conCost) {
+    let body = JSON.stringify(conCost);
+    return this.http.post<any>(`${appConfig.apiUrl}/api/WOPMManagement/UpdateWOPMContractCosts`, body, this.httpOptions);
+  }
+
+  authoriseContractCosts(conCost) {
+    let body = JSON.stringify(conCost);
+    return this.http.post<any>(`${appConfig.apiUrl}/api/WOPMManagement/AuthoriseWOPMContractCosts`, body, this.httpOptions);
+  }
+
+  getWorksOrderSOR(wosequence: number) {
+    return this.http.get<any>(`${appConfig.apiUrl}/api/WOPMManagement/GetScheduleOfRatesList?woseq=${wosequence}`, this.httpOptions);
+  }
+
+  getEditRolesUserRolesList(userId) {
+    return this.http.get<any>(`${appConfig.apiUrl}/api/WOPMManagement/GetEditRolesUserRolesList?userid=${userId}`, this.httpOptions);
+  }
+
+  getEditRolesSecurityUsersList(wosequence: number, intExt: string, searchName: string, isAdmin: boolean) {
+    return this.http.get<any>(`${appConfig.apiUrl}/api/WOPMManagement/GetEditRolesSecurityUsersList?woseq=${wosequence}&intext=${intExt}&searchName=${searchName}&isAdmin=${isAdmin}`, this.httpOptions);
+  }
+
+
+  getEditCostsPanelData(wosequence: number) {
+    return this.http.get<any>(`${appConfig.apiUrl}/api/WOPMManagement/GetEditCostsPanelData?woseq=${wosequence}`, this.httpOptions);
+  }
+
+  getAssetResidentDetails(assetID: string) {
+    return this.http.get<any>(`${appConfig.apiUrl}/api/WOPMManagement/GetResidentInfo?assetid=${assetID}`, this.httpOptions);
+  }
+
+  getAssetRiskDetails(assetID: string) {
+    return this.http.get<any>(`${appConfig.apiUrl}/api/WOPMManagement/GetResidentRisk?assetid=${assetID}`, this.httpOptions);
+  }
+
 }

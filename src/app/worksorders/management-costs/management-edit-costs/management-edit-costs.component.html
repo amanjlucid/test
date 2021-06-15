@@ -1,0 +1,101 @@
+<kendo-window [title]="windowTitle"  *ngIf="editFormWindow" (close)="closeEditFormWin()"  [width]="650" resizable="false" [top]="50">
+  <div>
+
+     <form [formGroup]="contractCostForm" (ngSubmit)="onSubmit()" autocomplete="off">
+
+        <div class="form-row">
+          <div class="form-group col-md-12">
+            <label class="form-label">Phase (optional)</label>
+            <select class="custom-select" formControlName="phaseSeq" >
+              <option *ngFor="let phase of phases" [value]="phase.phaseSeq" >{{phase.phaseName}}</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label class="form-label">Contract Cost</label>
+            <input appCurrencyMask maxDigits="9" type="text" class="form-control"
+            formControlName="contractCost"
+            [ngClass]="{ 'is-invalid': submitted && formErrors.contractCost }" >
+            <div *ngIf="submitted && formErrors.contractCost" class="invalid-feedback">
+              <div *ngIf="formErrors.contractCost">{{ formErrors.contractCost }}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label class="form-label">Payment Date</label>
+            <select class="custom-select" formControlName="paymentDate"
+              [ngClass]="{ 'is-invalid': submitted && formErrors.paymentDate }">
+               <option value=""></option>
+               <option *ngFor="let paymentDate of paymentDates" [value]="paymentDate.paymentDate" >{{paymentDate.paymentDate}}</option>
+            </select>
+            <div *ngIf="submitted && formErrors.paymentDate" class="invalid-feedback">
+              <div *ngIf="formErrors.paymentDate">{{ formErrors.paymentDate }}</div>
+            </div>
+          </div>
+          <div class="form-group col-md-6">
+            <label class="form-label">  </label>
+            <div *ngIf="noPaymentDates" class="mt-3 ml-3">
+              <label class="form-label" style="color:red;" >No available Payment Dates</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row"   >
+          <div class="form-group col-md-6">
+            <label class="form-label">Contract Cost Status</label>
+            <input  type="text" class="form-control" readonly
+            formControlName="costStatus">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-md-12">
+            <label class="form-label">Contract Cost Request Type</label>
+            <select *ngIf="editFormType == 'new'" class="custom-select" formControlName="requestType" (change)=changeType($event.target.value)
+              [ngClass]="{ 'is-invalid': submitted && formErrors.requestType }">
+              <option value=""></option>
+              <!--<option value="Consultant">Consultant</option>-->
+              <option value="Contractor">Contractor</option>
+              <option value="External">External</option>
+            </select>
+            <div *ngIf="submitted && formErrors.requestType" class="invalid-feedback">
+              <div *ngIf="formErrors.requestType">{{ formErrors.requestType }}</div>
+            </div>
+            <input *ngIf="editFormType != 'new'" type="text" class="form-control" formControlName="requestType"  readonly>
+          </div>
+        </div>
+
+        <div class="form-row" *ngIf="showOrgName" >
+          <div class="form-group col-md-12">
+            <label class="form-label">Organisation</label>
+            <input  type="text" class="form-control" maxlength="50"
+            formControlName="organisationName" [ngClass]="{ 'is-invalid': submitted && formErrors.organisationName }">
+            <div *ngIf="submitted && formErrors.organisationName" class="invalid-feedback">
+              <div *ngIf="formErrors.organisationName">{{ formErrors.organisationName }}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-md-12">
+            <label class="form-label">Cost Reason</label>
+            <input  type="text" class="form-control" maxlength="50"
+            formControlName="costReason" [ngClass]="{ 'is-invalid': submitted && formErrors.costReason }">
+            <div *ngIf="submitted && formErrors.costReason" class="invalid-feedback">
+              <div *ngIf="formErrors.costReason">{{ formErrors.costReason }}</div>
+            </div>
+          </div>
+        </div>
+
+      <div class="buttonDiv pull-right mt-2">
+        <button type="button" (click)="closeEditFormWin()" class="btn btn-sm themeButton m-1">Cancel</button>
+        <button type="submit"  class="btn btn-sm themeButton m-1">Ok</button>
+      </div>
+    </form>
+
+  </div>
+</kendo-window>

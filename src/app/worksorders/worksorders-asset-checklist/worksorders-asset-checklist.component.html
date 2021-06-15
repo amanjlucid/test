@@ -212,6 +212,7 @@
                 </div>
             </div>
 
+            <button *ngIf="woMenuBtnSecurityAccess('View Resident Info') && diplayResInfoMenu"  (click)="openResidentDetails()" type="button" class="btn btn-sm themeButton ml-1 headin_section">Resident Details</button>
         </div>
 
         <div class="col-md-12 mt-2">

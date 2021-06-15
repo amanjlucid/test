@@ -40,7 +40,7 @@
             <thead>
               <tr>
                 <th>Available Function</th>
-                <th>Portal Area</th>
+                <th>Works Order Area</th>
               </tr>
             </thead>
             <tbody>
@@ -81,8 +81,7 @@
               <tr>
 
                 <th>Assigned Function</th>
-                <th>Portal Area</th>
-
+                <th>Works Order Area</th>
               </tr>
             </thead>
             <tbody>
@@ -104,7 +103,7 @@
     <div class="row mt-10 footerSec">
       <div class="col-md-12 col-sm-12 col-xs-12">
         <div class="pull-right footerButton">
-          
+
           <button (click)="closeFunctionSecWindow()" class="btn btn-sm">Cancel</button>
           <button [disabled]="availableFunctions?.length == 0 && assignedFunctions?.length == 0"
             class="btn btn-sm themeButton" (click)="saveGroupFunction()">Ok</button>

@@ -82,6 +82,11 @@ import { ProgramTransactionsComponent } from '../programme-log/programme-transac
 import { WoAssociationsManageComponent } from '../wo-association/wo-association-manage/wo-association-manage.component';
 import { WoDocumentListComponent } from '../wo-document-list/wo-document-list.component';
 
+import { ManagementRolesComponent } from '../management-roles/management-roles.component';
+import { ManagementSorComponent } from '../management-sor/management-sor.component';
+import { ManagementCostsComponent } from '../management-costs/management-costs.component';
+import { ManagementEditRolesComponent } from '../management-roles/management-edit-roles/management-edit-roles.component';
+import { ManagementEditCostsComponent } from '../management-costs/management-edit-costs/management-edit-costs.component';
 
 @NgModule({
   declarations: [
@@ -153,7 +158,12 @@ import { WoDocumentListComponent } from '../wo-document-list/wo-document-list.co
     ProgramTransactionsComponent,
     WoAssociationsManageComponent,
     ManageMilestonesComponent,
-    ManageMilestonesEditComponent
+    ManageMilestonesEditComponent,
+    ManagementRolesComponent,
+    ManagementSorComponent,
+    ManagementCostsComponent,
+    ManagementEditRolesComponent,
+    ManagementEditCostsComponent
   ],
 
 

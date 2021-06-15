@@ -43,7 +43,7 @@ export class ReportingComponent implements OnInit {
   public windowLeft = 'auto';
   reportingTable: any;
   reportingType: string;
-  preview = 5000;
+  preview = 100;
   public emailWindow = false;
   public emailWithReportWindow = false;
   public selectedItems = [];
@@ -254,6 +254,8 @@ export class ReportingComponent implements OnInit {
       //var exportId = 586;
       var lstParamNameValue: string[] = this.reportParams;
     }else if (this.reportingAction == "runExportTemplate") {
+      var lstParamNameValue: string[] = this.reportParams;
+    }else {
       var lstParamNameValue: string[] = this.reportParams;
     }
 

@@ -1,13 +1,25 @@
 .k-grid tbody td {
-    white-space: nowrap;
-    line-height: 20px;
-    padding: 8px 12px;
+    white-space: nowrap !important;
+    line-height: 20px !important;
+    padding: 8px 12px !important;
 }
 
-.k-grid tr.notNew {
-    background-color: #f8e0dc;
-}
+.k-grid tbody tr{
+  height: 36px;
+} 
 
+.k-grid tr.new {
+    color: rgba(54, 169, 225);
+}
+.k-grid tr.transferred {
+  color: rgba(0, 141, 54);
+}
+.k-grid tr.completed {
+  color: black;
+}
+.k-grid tr.cancelled {
+  color: rgba(237, 19, 19);
+}
 
 
 .dropdown.list-unstyled {

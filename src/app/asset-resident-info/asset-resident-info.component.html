@@ -1,0 +1,153 @@
+<kendo-window title="Asset Resident Information"  *ngIf="displayResidentDetails" (close)=closeResidentDetailsWin()  [width]="900"  [top]="20" [resizable]=false>
+  <div class="flex-grow-1 userFrm">
+     <form [formGroup]="resInfoForm" (ngSubmit)="onSubmit()" autocomplete="off" readonly>
+
+      <div class="form-row">
+        <div  class="form-group col-md-3">
+          <label class="form-label">Asset</label>
+          <input type="text" class="form-control" formControlName="assetID" readonly >
+        </div>
+
+        <div *ngIf="riskExists" class="form-group col-md-9">
+          <label class="form-label">Address</label>
+          <div  class="row">
+            <div style="width:89%; margin-left: 12px;"><input type="text" class="form-control" formControlName="address" readonly  ></div>
+            <div style="width:5%; margin-left: 10px; margin-right: 12px" ><img style="height:38px; width:38px" src="assets/img/icons/RedResident.png" (click)="openRiskInfo()" /> </div>
+          </div>
+        </div>
+
+
+<!--
+        <div class="form-group col-md-1 " *ngIf="riskExists" >
+          <label class="form-label" [textContent]=" ">   </label>
+          <div><img style="height:40px; width:40px; margin-left: 10px;" src="assets/img/icons/RedResident.png" (click)="openRiskInfo()" /> </div>
+        </div>
+      -->
+        <div *ngIf="!riskExists" class="form-group col-md-9">
+          <label class="form-label">Address</label>
+          <input type="text" class="form-control" formControlName="address" readonly  >
+        </div>
+
+
+
+      </div>
+
+      <div class="form-row">
+        <div class="form-group col-md-12">
+          <label class="form-label">Name</label>
+          <input type="text" class="form-control" formControlName="residentName" [readonly]=readonlyForm  >
+          <div *ngIf="submitted && formErrors.residentName" class="invalid-feedback">
+            <div *ngIf="formErrors.residentName">{{ formErrors.residentName }}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group col-md-4">
+          <label class="form-label">Phone 1</label>
+          <input type="text" class="form-control" formControlName="telPhone1" [readonly]=readonlyForm >
+          <div *ngIf="submitted && formErrors.telPhone1" class="invalid-feedback">
+            <div *ngIf="formErrors.telPhone1">{{ formErrors.telPhone1 }}</div>
+          </div>
+        </div>
+
+        <div class="form-group col-md-4">
+          <label class="form-label">Phone 2</label>
+          <input type="text" class="form-control" formControlName="telPhone2" [readonly]=readonlyForm >
+          <div *ngIf="submitted && formErrors.telPhone2" class="invalid-feedback">
+            <div *ngIf="formErrors.telPhone2">{{ formErrors.telPhone2 }}</div>
+          </div>
+        </div>
+
+        <div class="form-group col-md-4">
+          <label class="form-label">Mobile</label>
+          <input type="text" class="form-control" formControlName="mobile" [readonly]=readonlyForm >
+          <div *ngIf="submitted && formErrors.mobile" class="invalid-feedback">
+            <div *ngIf="formErrors.mobile">{{ formErrors.mobile }}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group col-md-12">
+          <label class="form-label">Email</label>
+          <input type="text" class="form-control" formControlName="email" [readonly]=readonlyForm >
+          <div *ngIf="submitted && formErrors.email" class="invalid-feedback">
+            <div *ngIf="formErrors.email">{{ formErrors.email }}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label class="form-label">Contact</label>
+          <input type="text" class="form-control" formControlName="prefContact" [readonly]=readonlyForm >
+          <div *ngIf="submitted && formErrors.prefContact" class="invalid-feedback">
+            <div *ngIf="formErrors.prefContact">{{ formErrors.prefContact }}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label class="form-label">Tenancy Start Date</label>
+          <input type="text" class="form-control" formControlName="tenStartDate" [readonly]=readonlyForm >
+          <div *ngIf="submitted && formErrors.tenStartDate" class="invalid-feedback">
+            <div *ngIf="formErrors.tenStartDate">{{ formErrors.tenStartDate }}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label class="form-label">Access Risk Code</label>
+          <input type="text" class="form-control" formControlName="riskCode" readonly  >
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group col-md-12">
+          <label class="form-label">Contact Instructions</label>
+          <input type="text" class="form-control" formControlName="conInstructions" [readonly]=readonlyForm >
+          <div *ngIf="submitted && formErrors.conInstructions" class="invalid-feedback">
+            <div *ngIf="formErrors.conInstructions">{{ formErrors.conInstructions }}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group col-md-12">
+          <label class="form-label">Access Instructions</label>
+          <input type="text" class="form-control" formControlName="accessInstructions" [readonly]=readonlyForm >
+          <div *ngIf="submitted && formErrors.accessInstructions" class="invalid-feedback">
+            <div *ngIf="formErrors.accessInstructions">{{ formErrors.accessInstructions }}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label class="form-label">Updated On</label>
+          <input type="text" class="form-control" formControlName="updatedOn" readonly >
+        </div>
+      </div>
+
+
+    <!--
+      <div class="buttonDiv pull-right mt-2">
+        <button type="button" (click)="closeEditFormWin()" class="btn btn-sm themeButton m-1">Cancel</button>
+        <button type="submit"  class="btn btn-sm themeButton m-1">Ok</button>
+      </div>
+    -->
+
+    </form>
+
+
+  </div>
+  <div class="disabledBackground"></div>
+
+</kendo-window>
+
+<app-asset-risk [displayRiskDetails]="displayRiskDetails" [assetID]="assetID" [assetAddress]="assetAddress"
+*ngIf="displayRiskDetails" (closeRiskDetailsWindow)="closeRiskDetailsWindow($event)">
+</app-asset-risk>

@@ -14,3 +14,11 @@ export const appConfig = {
     silverLightUrl: `http://${host}/Rowanwood`
 };
 
+
+// export const appConfig = {
+//     apiUrl: `http://localhost:50912`,
+//     appUrl: `http://localhost:4200`,
+//     silverLightUrl: `http://localhost:4200/Rowanwood`
+// };
+
+

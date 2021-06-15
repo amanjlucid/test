@@ -83,8 +83,6 @@ export class WopmContractTermsComponent implements OnInit {
               if (!(this.checkWorksOrdersAccess("Config Contract Terms Tab") && this.checkWorksOrdersAccess("Works Order Portal Access"))) {
                 this.router.navigate(['/dashboard']);
               }
-            } else {
-              this.router.navigate(['/dashboard']);
             }
           }
         )

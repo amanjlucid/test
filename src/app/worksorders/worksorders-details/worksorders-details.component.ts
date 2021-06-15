@@ -5,6 +5,7 @@ import { FilterService, SelectableSettings, TreeListComponent, RowClassArgs } fr
 import { AlertService, LoaderService, ConfirmationDialogService, WorksOrdersService, HelperService, WorksorderManagementService, SharedService, PropertySecurityGroupService, AuthenticationService, WorksorderReportService } from '../../_services'
 import { combineLatest, forkJoin } from 'rxjs';
 import { WorkordersDetailModel } from 'src/app/_models';
+import { Router, ActivatedRoute, RouterEvent } from '@angular/router';
 import { appConfig } from '../../app.config';
 import { CurrencyPipe } from '@angular/common';
 
@@ -63,6 +64,9 @@ export class WorksordersDetailsComponent implements OnInit {
   phaseFormMode = 'new';
 
   packageMappingWindow = false;
+  managementRolesTab = false;
+  managementSORTab = false;
+  managementCostsTab = false;
 
   addAssetWindow = false;
   addAssetWorklistWindow = false;
@@ -111,7 +115,8 @@ export class WorksordersDetailsComponent implements OnInit {
     private autService: AuthenticationService,
     private worksOrdersService: WorksOrdersService,
     private worksOrderReportService: WorksorderReportService,
-    private currencyPipe: CurrencyPipe
+    private currencyPipe: CurrencyPipe,
+    private router: Router,
   ) { }
 
 
@@ -134,7 +139,7 @@ export class WorksordersDetailsComponent implements OnInit {
         this.sharedService.userTypeObs
       ]).subscribe(
         data => {
-          console.log(data);
+          // console.log(data);
           this.worksOrderUsrAccess = data[0];
           this.worksOrderAccess = data[1];
           this.userType = data[2][0];
@@ -161,6 +166,14 @@ export class WorksordersDetailsComponent implements OnInit {
 
   ngOnDestroy() {
     this.subs.unsubscribe();
+  }
+
+  openAssChecklistFromResInfo(){
+    if (sessionStorage.getItem('ResidentInfo')){
+      let assid  = JSON.parse(sessionStorage.getItem('ResidentInfo'));
+      sessionStorage.removeItem('ResidentInfo')
+      this.openAssetChecklistFromResInfo(assid)
+    }
   }
 
 
@@ -206,6 +219,15 @@ export class WorksordersDetailsComponent implements OnInit {
     )
   }
 
+  openAssetChecklistFromResInfo(assid)
+  {
+    this.gridData.forEach((value) => {
+      if (value.assid == assid) {
+        this.openAssetChecklist(value);
+        }
+      });
+  }
+
   getWorkDetails() {
     this.subs.add(
       this.worksorderManagementService.getWorkOrderDetails(this.workorderDetailModel).subscribe(
@@ -248,7 +270,8 @@ export class WorksordersDetailsComponent implements OnInit {
               // console.log(gridData)
               this.gridData = [...gridData];
               this.loading = false;
-              this.chRef.detectChanges();
+              this.chRef.detectChanges()
+              this.openAssChecklistFromResInfo();
             }, 10);
 
           } else {
@@ -300,6 +323,7 @@ export class WorksordersDetailsComponent implements OnInit {
   }
 
   cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
+    // console.log(this.selected)
     if (columnIndex > 0) {
       if (this.touchtime == 0) {
         this.touchtime = new Date().getTime();
@@ -492,6 +516,37 @@ export class WorksordersDetailsComponent implements OnInit {
     $('.worksOrderDetailOvrlay').removeClass('ovrlay');
   }
 
+  openRolesTab() {
+    this.managementRolesTab = true;
+    $('.worksOrderDetailOvrlay').addClass('ovrlay');
+  }
+  openCostsTab() {
+    this.managementCostsTab = true;
+    $('.worksOrderDetailOvrlay').addClass('ovrlay');
+  }
+  openSORTab() {
+    this.managementSORTab = true;
+    $('.worksOrderDetailOvrlay').addClass('ovrlay');
+  }
+
+  closeManagementRolesTab($event) {
+    this.managementRolesTab = false;
+    $('.worksOrderDetailOvrlay').removeClass('ovrlay');
+  }
+
+  closeManagementCostsTab($event) {
+    this.managementCostsTab = false;
+    $('.worksOrderDetailOvrlay').removeClass('ovrlay');
+  }
+
+  closeManagementSORTab($event) {
+    this.managementSORTab = false;
+    $('.worksOrderDetailOvrlay').removeClass('ovrlay');
+  }
+
+
+
+
   openConfirmationDialog(item) {
     $('.k-window').css({ 'z-index': 1000 });
     this.confirmationDialogService.confirm('Please confirm..', `Delete Phase?`)
@@ -614,7 +669,24 @@ export class WorksordersDetailsComponent implements OnInit {
     // $('.worksOrderDetailOvrlay').addClass('ovrlay');
   }
 
+  openResidentDetails(item) {
 
+    this.autService.validateAssetIDDeepLinkParameters(this.currentUser.userId, item.assid).subscribe(
+      data => {
+        if (data.validated) {
+          let ResidentInfo = {assid: item.assid, calledFrom: 'worksOrderDetail'};
+          sessionStorage.setItem('ResidentInfo', JSON.stringify(ResidentInfo));
+          this.router.navigate(['/resident-info']);
+          $('.worksOrderDetailOvrlay').addClass('ovrlay');
+        } else {
+          const errMsg = `${data.errorCode} : ${data.errorMessage}`
+          this.alertService.error(errMsg);
+        }
+      }
+    )
+
+    //$('.worksOrderDetailOvrlay').addClass('ovrlay');
+  }
 
   closeAssetDetailWindow(eve) {
     this.assetDetailWindow = eve;
@@ -891,8 +963,9 @@ export class WorksordersDetailsComponent implements OnInit {
       .then((confirmed) => (confirmed) ? this.FinaladdPhaseCostConfirm(params) : this.closeAddPhaseCostStructure())
       .catch(() => this.closeAddPhaseCostStructure());
   }
+
   FinaladdPhaseCostConfirm(params) {
-    console.log('actualSelectedRow ' + JSON.stringify(this.actualSelectedRow));
+    // console.log('actualSelectedRow ' + JSON.stringify(this.actualSelectedRow));
     this.loading = true;
     const params2 = {
       "WOSEQUENCE": params.WOSEQUENCE,
@@ -932,7 +1005,7 @@ export class WorksordersDetailsComponent implements OnInit {
     )
   }
   addPhaseCost(input) {
-    console.log('actualSelectedRow ' + JSON.stringify(this.actualSelectedRow));
+    // console.log('actualSelectedRow ' + JSON.stringify(this.actualSelectedRow));
     this.loading = true;
     const params = {
       "WOSEQUENCE": this.actualSelectedRow.wosequence,

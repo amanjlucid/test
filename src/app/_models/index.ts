@@ -39,3 +39,8 @@ export * from './wopm-refusalcode.model';
 export * from './wopm-ragstatus.model';
 export * from './wopm-contractterm.model';
 export * from './workorders/variation-worklist.model'
+export * from './workorders/workorders-worklistfilter.model';
+export * from './wopm-userrole.model';
+export * from './wopm-contractcost.model';
+export * from './asset-resident-info.model';
+export * from './asset-risk.model';

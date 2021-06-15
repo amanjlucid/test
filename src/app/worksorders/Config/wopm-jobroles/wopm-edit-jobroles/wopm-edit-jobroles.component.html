@@ -1,4 +1,4 @@
-<kendo-window [title]="windowTitle"  *ngIf="editFormWindow" (close)="closeEditFormWin()"  [width]="650" [height]="620" resizable="false" [top]="20">
+<kendo-window [title]="windowTitle"  *ngIf="editFormWindow" (close)="closeEditFormWin()"  [width]="650"  resizable="false" [top]="20">
   <div class="flex-grow-1 userFrm">
      <form [formGroup]="jobRoleForm" (ngSubmit)="onSubmit()" autocomplete="off">
 
@@ -8,7 +8,6 @@
           <select class="custom-select" formControlName="jobRoleType" *ngIf="!disableRoleType"
             [ngClass]="{ 'is-invalid': submitted && formErrors.jobRoleType }">
             <option value="Customer">Customer</option>
-            <option value="Consultant">Consultant</option>
             <option value="Contractor">Contractor</option>
             <option value="Dual Role">Dual Role</option>
           </select>
@@ -62,36 +61,36 @@
         <div class="form-row">
           <div class="form-group col-md-6">
             <label class="form-label">Variation Limit</label>
-            <input class="numberInput form-control" type="number"   (keyup)="numberKeyUp('Variation')" formControlName="variationLimit" max="999999999.99" min="0" >
+            <input class="form-control" appCurrencyMask maxDigits="9" type="text" formControlName="variationLimit"  >
           </div>
 
           <div class="form-group col-md-6">
             <label class="form-label">Issue Limit</label>
-            <input class="numberInput form-control" type="number"  (keyup)="numberKeyUp('Issue')" formControlName="issueLimit" max="999999999.99" min="0" >
+            <input class="form-control" appCurrencyMask maxDigits="9" type="text" formControlName="issueLimit"  >
           </div>
         </div>
 
         <div class="form-row">
           <div class="form-group col-md-6">
             <label class="form-label">Request Payment Limit</label>
-            <input class="numberInput form-control" type="number"  (keyup)="numberKeyUp('Request Payment')"  formControlName="requestPaymentLimit" max="999999999.99" min="0" >
+            <input class="form-control" appCurrencyMask maxDigits="9" type="text"  formControlName="requestPaymentLimit"  >
           </div>
 
           <div class="form-group col-md-6">
             <label class="form-label">Authorise Payment Limit</label>
-            <input class="numberInput form-control" type="number"   (keyup)="numberKeyUp('Authorise Payment')" formControlName="authPaymentLimit" max="999999999.99" min="0" >
+            <input class="form-control" appCurrencyMask maxDigits="9" type="text" formControlName="authPaymentLimit"  >
           </div>
         </div>
 
         <div class="form-row">
           <div class="form-group col-md-6">
             <label class="form-label">Request Fee Limit</label>
-            <input class="numberInput form-control" type="number"   (keyup)="numberKeyUp('Request Fee')" formControlName="requestFeeLimit" max="999999999.99" min="0" >
+            <input class="form-control" appCurrencyMask maxDigits="9" type="text" formControlName="requestFeeLimit"  >
           </div>
 
           <div class="form-group col-md-6">
             <label class="form-label">Authorise Fee Limit</label>
-            <input class="numberInput form-control" type="number"   (keyup)="numberKeyUp('Authorise Fee')"  formControlName="authFeeLimit" max="999999999.99" min="0" >
+            <input class="form-control" appCurrencyMask maxDigits="9" type="text"  formControlName="authFeeLimit"  >
           </div>
         </div>
 
