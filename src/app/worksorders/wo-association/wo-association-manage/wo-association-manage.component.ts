@@ -110,13 +110,21 @@ export class WoAssociationsManageComponent implements OnInit {
     column,
     rowIndex,
     columnIndex,
-    dataItem
+    dataItem,
+    originalEvent
   }) {
+
+    if (originalEvent.ctrlKey == false) {
+      if (this.mySelection.length > 0) {
+        this.mySelection = [dataItem.wosequence];
+        this.chRef.detectChanges();
+      }
+    }
 
     if (columnIndex > 1)
       this.selectedAssociationSingle = dataItem;
     //console.log('dataItem' + JSON.stringify(dataItem));
-    // console.log(this.mySelection);
+    //console.log(this.mySelection);
   }
 
 

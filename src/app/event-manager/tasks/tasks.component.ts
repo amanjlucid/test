@@ -204,7 +204,13 @@ export class TasksComponent implements OnInit {
     // this.gridView = process(this.userEventList, this.state);
   }
 
-  cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
+  cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited, originalEvent }) {
+    if (originalEvent.ctrlKey == false) {
+      if (this.mySelection.length > 0) {
+        this.mySelection = [dataItem.eventSequence];
+      }
+    }
+
     if (this.mySelection.length > 0) {
       this.selectedEvent = this.userEventList.filter(x => this.mySelection.indexOf(x.eventSequence) !== -1);
 

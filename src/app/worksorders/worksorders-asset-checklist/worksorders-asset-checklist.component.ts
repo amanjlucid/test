@@ -81,7 +81,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
     private helperService: HelperService,
     private sharedService: SharedService,
     private worksOrderReportService: WorksorderReportService,
-    private currencyPipe : CurrencyPipe,
+    private currencyPipe: CurrencyPipe,
     private autService: AuthenticationService,
     private router: Router,
   ) { }
@@ -103,8 +103,8 @@ export class WorksordersAssetChecklistComponent implements OnInit {
         }
       )
     )
-      let v = this.selectedChildRow
-     this.diplayResInfoMenu = (this.selectedChildRow.residentriskcode > 0);
+    let v = this.selectedChildRow
+    this.diplayResInfoMenu = (this.selectedChildRow.residentriskcode > 0);
     this.worksOrderDetailPageData();
 
     // this.subs.add(
@@ -204,8 +204,14 @@ export class WorksordersAssetChecklistComponent implements OnInit {
     };
   }
 
-  cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
-    this.selectedChecklistsingleItem = dataItem
+  cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited, originalEvent }) {
+    this.selectedChecklistsingleItem = dataItem;
+    if (originalEvent.ctrlKey == false) {
+      if (this.mySelection.length > 0) {
+        this.mySelection = [dataItem.wochecksurcde];
+      }
+    }
+
     if (columnIndex > 0) {
       if (this.touchtime == 0) {
         this.touchtime = new Date().getTime();
@@ -1330,7 +1336,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
     this.autService.validateAssetIDDeepLinkParameters(this.currentUser.userId, item.assid).subscribe(
       data => {
         if (data.validated) {
-          let ResidentInfo = {assid: item.assid, calledFrom: 'worksOrderAssetChecklist'};
+          let ResidentInfo = { assid: item.assid, calledFrom: 'worksOrderAssetChecklist' };
           sessionStorage.setItem('ResidentInfo', JSON.stringify(ResidentInfo));
           this.router.navigate(['/resident-info']);
           $('.worksOrderDetailOvrlay').addClass('ovrlay');
@@ -1408,13 +1414,13 @@ export class WorksordersAssetChecklistComponent implements OnInit {
     this.worksOrderDetailPageData();
   }
 
-viewCheckListOrderReport(reportLevel, dataItem:any=null){  
+  viewCheckListOrderReport(reportLevel, dataItem: any = null) {
 
     const wprsequence = (dataItem != null) ? dataItem.wprsequence : this.selectedChildRow.wprsequence;
     const wosequence = (dataItem != null) ? dataItem.wosequence : this.selectedChildRow.wosequence;
     const wopsequence = (dataItem != null) ? dataItem.wopsequence : 0;
     let report_level = reportLevel;
-    const asset_id =  (dataItem != null && dataItem.assid != undefined) ? dataItem.assid : "";
+    const asset_id = (dataItem != null && dataItem.assid != undefined) ? dataItem.assid : "";
 
     const label = {
       programme: "Programme",
@@ -1457,38 +1463,38 @@ viewCheckListOrderReport(reportLevel, dataItem:any=null){
 
     this.worksOrderReportService.getChecklistReportForOrder(wprsequence, wosequence, wopsequence, report_level, asset_id).subscribe(
       (data) => {
-        if(data.isSuccess == true){          
+        if (data.isSuccess == true) {
           let tempData = [...data.data];
-          if(tempData.length > 0){
+          if (tempData.length > 0) {
             tempData.map((x: any) => {
-              x.forecast = this.currencyPipe.transform(x.forecast,"GBP", "symbol");
-              x.committed = this.currencyPipe.transform(x.committed,"GBP", "symbol");
-              x.approved = this.currencyPipe.transform(x.approved,"GBP", "symbol");
-              x.pending = this.currencyPipe.transform(x.pending,"GBP", "symbol");
-              x.actual = this.currencyPipe.transform(x.actual,"GBP", "symbol");
-              x.forecast_Fee = this.currencyPipe.transform(x.forecast_Fee,"GBP", "symbol");
-              x.committed_Fee = this.currencyPipe.transform(x.committed_Fee,"GBP", "symbol");
-              x.approved_Fee = this.currencyPipe.transform(x.approved_Fee,"GBP", "symbol");
-              x.pending_Fee = this.currencyPipe.transform(x.pending_Fee,"GBP", "symbol");
-              x.actual_Fee = this.currencyPipe.transform(x.actual_Fee,"GBP", "symbol");
+              x.forecast = this.currencyPipe.transform(x.forecast, "GBP", "symbol");
+              x.committed = this.currencyPipe.transform(x.committed, "GBP", "symbol");
+              x.approved = this.currencyPipe.transform(x.approved, "GBP", "symbol");
+              x.pending = this.currencyPipe.transform(x.pending, "GBP", "symbol");
+              x.actual = this.currencyPipe.transform(x.actual, "GBP", "symbol");
+              x.forecast_Fee = this.currencyPipe.transform(x.forecast_Fee, "GBP", "symbol");
+              x.committed_Fee = this.currencyPipe.transform(x.committed_Fee, "GBP", "symbol");
+              x.approved_Fee = this.currencyPipe.transform(x.approved_Fee, "GBP", "symbol");
+              x.pending_Fee = this.currencyPipe.transform(x.pending_Fee, "GBP", "symbol");
+              x.actual_Fee = this.currencyPipe.transform(x.actual_Fee, "GBP", "symbol");
               x.issue_Date = (this.helperService.formatDateWithoutTime(x.issue_Date) != null) ? this.helperService.formatDateWithoutTime(x.issue_Date) : "";
               x.target_Date = (this.helperService.formatDateWithoutTime(x.target_Date) != null) ? this.helperService.formatDateWithoutTime(x.target_Date) : "";
               x.acceptance_Date = (this.helperService.formatDateWithoutTime(x.acceptance_Date) != null) ? this.helperService.formatDateWithoutTime(x.acceptance_Date) : "";
               x.plan_Start_Date = (this.helperService.formatDateWithoutTime(x.plan_Start_Date) != null) ? this.helperService.formatDateWithoutTime(x.plan_Start_Date) : "";
-              x.plan_End_Date = (this.helperService.formatDateWithoutTime(x.plan_End_Date) != null) ?this.helperService.formatDateWithoutTime(x.plan_End_Date) : "";
+              x.plan_End_Date = (this.helperService.formatDateWithoutTime(x.plan_End_Date) != null) ? this.helperService.formatDateWithoutTime(x.plan_End_Date) : "";
               x.actual_Start_Date = (this.helperService.formatDateWithoutTime(x.actual_Start_Date) != null) ? this.helperService.formatDateWithoutTime(x.actual_Start_Date) : "";
               x.actual_End_Date = (this.helperService.formatDateWithoutTime(x.actual_End_Date) != null) ? this.helperService.formatDateWithoutTime(x.actual_End_Date) : "";
               x.updated_On = (this.helperService.formatDateWithoutTime(x.updated_On) != null) ? this.helperService.formatDateTime(x.updated_On) : "";
             })
-            let fileName = "Asset_Checklist_Report_"+wosequence+"_"+wopsequence+"_"+report_level;
+            let fileName = "Asset_Checklist_Report_" + wosequence + "_" + wopsequence + "_" + report_level;
             this.helperService.exportAsExcelFile(tempData, fileName, label);
-          }else{
-            this.alertService.error("No Record Found.");            
+          } else {
+            this.alertService.error("No Record Found.");
           }
           this.chRef.detectChanges();
-        }else{
-          this.alertService.error(data.message);            
-        } 
+        } else {
+          this.alertService.error(data.message);
+        }
       },
       error => {
         this.alertService.error(error);

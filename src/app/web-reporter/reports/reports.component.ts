@@ -281,8 +281,15 @@ export class ReportsComponent implements OnInit {
     this.state.group = groups;
   }
 
-  cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
+  cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited, originalEvent }) {
+    if (originalEvent.ctrlKey == false) {
+      if (this.mySelection.length > 0) {
+        this.mySelection = [dataItem.reportId];
+        // this.chRef.detectChanges();
+      }
+    }
     this.selectedReport = dataItem;
+    // console.log(this.mySelection);
   }
 
   onCategoriesSingleSelectionChange(item: any) {

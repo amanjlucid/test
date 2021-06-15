@@ -41,7 +41,7 @@
     }" [skip]="state.skip" [sort]="state.sort" [selectable]="selectableSettings" kendoGridSelectBy="eventSequence"
                 [selectedKeys]="mySelection" (selectedKeysChange)="onSelectedKeysChange($event)" [filter]="state.filter"
                 (sortChange)="sortChange($event)" (filterChange)="filterChange($event)"
-                (cellClick)="cellClickHandler($event)" [navigable]="true" [rowClass]="rowCallback">
+                (cellClick)="cellClickHandler($event)" [navigable]="false" [rowClass]="rowCallback">
 
                 <kendo-grid-column title=" " width="37" [filterable]="false" [sortable]="false">
                     <ng-template kendoGridCellTemplate let-dataItem>

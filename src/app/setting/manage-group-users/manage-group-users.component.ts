@@ -161,6 +161,7 @@ export class ManageGroupUsersComponent implements OnInit {
   }
 
   cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
+    // console.log(this.mySelection)
     this.selectedAvailableUser = [];
     this.pushClickedData.push({ row: rowIndex, data: dataItem });
     for (let ind of this.mySelection) {

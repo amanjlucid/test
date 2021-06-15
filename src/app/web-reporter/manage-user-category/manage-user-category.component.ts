@@ -133,7 +133,14 @@ export class ManageUserCategoryComponent implements OnInit {
     // console.log(this.mySelection)
   }
 
-  cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
+  cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited, originalEvent }) {
+    if (originalEvent.ctrlKey == false) {
+      if (this.mySelection.length > 0) {
+        this.mySelection = [dataItem.reportId];
+        this.chRef.detectChanges();
+      }
+    }
+
     if (this.mySelection.length > 0) {
       setTimeout(() => {
         this.selectedReportList = this.reportList.filter(x => this.mySelection.indexOf(x.reportId) !== -1);
