@@ -165,6 +165,7 @@ export class VariationListAllComponent implements OnInit {
 
   cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
     this.selectedSingleInstructionVariation = dataItem;
+    // console.log(dataItem)
 
   }
 
@@ -391,33 +392,43 @@ export class VariationListAllComponent implements OnInit {
   }
 
 
-  bulkVariation() {
-    const { wosequence, woisequence } = this.selectedSingleInstructionVariation;
-    this.subs.add(
-      this.workOrderProgrammeService.addBulkVariation(wosequence, woisequence).subscribe(
-        data => {
-          // console.log(data);
-          if (data.isSuccess) {
-            if (data.data[0] != undefined) {
-              if (data.data[0].pRETURNSTATUS.trim() == "Y") {
-                this.alertService.success(`Bulk variation created successfully`)
-                this.getAllVariations();
-              } else {
-                this.alertService.error(`Variation exist`);
-              }
-            } else {
-              this.alertService.error(`Something went wrong.`)
-            }
+  editbulkVariation() {
+    this.openedFor = "EBR";//edit bulk variation
+    $('.variationListAllOverlay').addClass('ovrlay');
+    this.openVariationDetail = true;
+    // const { wosequence, woisequence } = this.selectedSingleInstructionVariation;
+    // this.subs.add(
+    //   this.workOrderProgrammeService.addBulkVariation(wosequence, woisequence).subscribe(
+    //     data => {
+    //       // console.log(data);
+    //       if (data.isSuccess) {
+    //         if (data.data[0] != undefined) {
+    //           if (data.data[0].pRETURNSTATUS.trim() == "Y") {
+    //             this.alertService.success(`Bulk variation created successfully`)
+    //             this.getAllVariations();
+    //           } else {
+    //             this.alertService.error(`Variation exist`);
+    //           }
+    //         } else {
+    //           this.alertService.error(`Something went wrong.`)
+    //         }
 
-          } else this.alertService.error(data.message)
-        }, err => this.alertService.error(err)
-      )
-    )
+    //       } else this.alertService.error(data.message)
+    //     }, err => this.alertService.error(err)
+    //   )
+    // )
 
+  }
+
+  closeEditBulkVariation(eve) {
+    this.openVariationDetail = eve;
+    $('.variationListAllOverlay').removeClass('ovrlay');
+    this.getAllVariations();
   }
 
 
   disableBulkVaritionBtn() {
+    return false;
     if (this.selectedSingleInstructionVariation != undefined) {
 
       if (this.selectedSingleInstructionVariation.woiissuestatus == "Accepted" || this.selectedSingleInstructionVariation.woiissuestatus == "Issued") {

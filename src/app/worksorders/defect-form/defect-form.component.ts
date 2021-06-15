@@ -94,6 +94,8 @@ export class DefectFormComponent implements OnInit {
   workorderAsset: any;
   userList;
   selectedPkzSingle;
+  minDate: any;
+  maxDate: any;
   // planYear: any;
 
   constructor(
@@ -106,6 +108,13 @@ export class DefectFormComponent implements OnInit {
     private loaderService: LoaderService
   ) {
     this.setSelectableSettings();
+    const current = new Date();
+    this.maxDate = this.minDate = {
+      year: current.getFullYear(),
+      month: current.getMonth() + 1,
+      day: current.getDate()
+    };
+
   }
 
   setSelectableSettings(): void {
@@ -141,9 +150,10 @@ export class DefectFormComponent implements OnInit {
     const resByCtr: any = this.defectForm.get('resolvedBy');
     const resDetCtr: any = this.defectForm.get('resolutionDetails');
     const IdeDateCtr: any = this.defectForm.get('IdentifiedDate');
+    const status: any = this.defectForm.get('status');
 
     this.subs.add(
-      this.defectForm.get('status').valueChanges.subscribe(
+      status.valueChanges.subscribe(
         val => {
           if (val == "New") {
             resDetCtr.setErrors(null);
@@ -164,6 +174,22 @@ export class DefectFormComponent implements OnInit {
         }
       )
     )
+
+    // this.subs.add(
+    //   resDateCtr.valueChanges.subscribe(
+    //     val => {
+    //       if (val != "") {
+    //         if (status.value == "Resolved") {
+    //           status.setValidators({ invalidRsdStatus: true })
+    //         } else if (status.value != "" && status.value != "Resolved") {
+    //           status.setErrors(null)
+    //         }
+    //       }
+    //       console.log(status.value)
+
+    //     }
+    //   )
+    // )
 
     // this.subs.add(
     //   IdeDateCtr.valueChanges.subscribe(val => val != "" ? resDateCtr.updateValueAndValidity() : ''),
@@ -284,6 +310,10 @@ export class DefectFormComponent implements OnInit {
 
           if (pkzdata.isSuccess) {
             this.packageData = pkzdata.data;
+            if (this.defectFormMode == 'edit') {
+              const { wlataid, wlcode, wlplanyear } = this.selectedDefectInp;
+              this.selectedPkzSingle = this.packageData.find(x => x.wlataid == wlataid && x.wlcode == wlcode && x.wlplanyear == wlplanyear)
+            }
             this.gridView = process(this.packageData, this.state);
             this.gridLoading = false;
           }
@@ -333,7 +363,15 @@ export class DefectFormComponent implements OnInit {
       return
     }
 
+    // when deseclet clear selected item
+    if (this.mySelection.length == 0) {
+      this.selectedPkzSingle = undefined;
+      return;
+    }
+
     this.selectedPkzSingle = dataItem;
+
+
   }
 
   rowCallback(context: RowClassArgs) {
@@ -440,10 +478,10 @@ export class DefectFormComponent implements OnInit {
       successMsg = "New Defect created successfully.";
 
     } else if (this.defectFormMode == "edit") {
-      const { wlataid, wlcode, wlplanyear, wprsequence, wosequence, assid, wodsequence } = this.selectedDefectInp
-      params.WLATAID = this.selectedPkzSingle?.wlataid ?? wlataid;
-      params.WLCODE = this.selectedPkzSingle?.wlcode ?? wlcode;
-      params.WLPLANYEAR = this.selectedPkzSingle?.wlplanyear ?? wlplanyear;
+      const { wlataid, wlcode, wlplanyear, wprsequence, wosequence, assid, wodsequence } = this.selectedDefectInp;
+      params.WLATAID = this.selectedPkzSingle?.wlataid ?? 0;
+      params.WLCODE = this.selectedPkzSingle?.wlcode ?? 0;
+      params.WLPLANYEAR = this.selectedPkzSingle?.wlplanyear ?? 0;
       params.WODSTATUS = status;
       params.WPRSEQUENCE = wprsequence;
       params.WOSEQUENCE = wosequence;

@@ -454,9 +454,14 @@ export class VariationListComponent implements OnInit {
 
 
   appendVariation(eve) {
+    if (eve == null) {
+      this.alertService.error('Variaton not created.');
+      return;
+    }
+   
     this.openedFor = 'edit';
     this.selectedSingleVariation = eve;
-    this.selectedSingleVariation.assid = this.selectedAsset.assid
+    this.selectedSingleVariation.assid = this.selectedAsset.assid;
     this.openVariationDetails(undefined)
 
   }

@@ -446,33 +446,23 @@
                 *ngIf="dataItem.acmColour != '' && dataItem.acmColour == 'Green'" class="table-icon-wr"
                 src="assets/img/icons/asbestos-green.png" />
             </span>
-          </ng-template>
 
-
-
-        </kendo-treelist-column>
-
-        <kendo-treelist-column field="wostatus" title="Status" [width]="120" [locked]="columnLocked">
-        </kendo-treelist-column>
-
-
-        <kendo-treelist-column [expandable]="true" [minResizableWidth]="200" field="woname" title="Name" [width]="500"
-          [locked]="columnLocked">
-          <ng-template kendoTreeListCellTemplate let-dataItem>
-            <span>
-              {{ dataItem.woname }}
-            </span>
             <div style="margin-left:2px;" class="iconDiv">
               <img style="margin-top: -4px;" title="Resident Info" *ngIf="dataItem.residentriskcode == 1"
                 class="table-icon-wr" src="assets/img/icons/GreenResident.png" />
               <img style="margin-top: -4px;" title="Resident Info with Risk" *ngIf="dataItem.residentriskcode == 2"
                 class="table-icon-wr" src="assets/img/icons/RedResident.png" />
             </div>
-
           </ng-template>
+
+
+
         </kendo-treelist-column>
+
         <kendo-treelist-column field="wostatus" title="Status" [width]="120" [locked]="columnLocked">
         </kendo-treelist-column>
+
+
         <kendo-treelist-column field="woaworkaccess" title="Work Access" [width]="180"></kendo-treelist-column>
 
         <kendo-treelist-column field="targetdateobj" title="Target Date" [width]="130" filter="date"

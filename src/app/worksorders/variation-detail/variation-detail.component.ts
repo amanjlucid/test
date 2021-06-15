@@ -18,6 +18,7 @@ export class VariationDetailComponent implements OnInit {
   @Input() openedFrom = 'worksorder';
   @Input() openedFor = 'details';
   @Input() singleVariationAsset: any = [];
+  @Input() singleVariation: any = []; // for edit bulk variation
   @Output() closeVariationDetailEvent = new EventEmitter<boolean>();
   title = 'Works Order Variation Detail';
   subs = new SubSink();
@@ -51,7 +52,13 @@ export class VariationDetailComponent implements OnInit {
 
   ngOnInit(): void {
     // console.log(this.singleVariationAsset)
-    this.getVariationPageDataWithGrid();
+    if (this.openedFor == "details") {
+      this.getVariationPageDataWithGrid();
+    }
+
+    if (this.openedFor == "EBR") {
+      this.getVariationAssetDetails();
+    }
   }
 
   ngOnDestroy() {
@@ -76,6 +83,23 @@ export class VariationDetailComponent implements OnInit {
     this.chRef.detectChanges();
   }
 
+  getVariationAssetDetails() {
+    const { wosequence, wopsequence, woisequence } = this.singleVariation;
+    this.subs.add(
+      this.workOrderProgrammeService.getWEBWorksOrdersPhaseDetailAndVariation(wosequence, wopsequence, woisequence).subscribe(
+        data => {
+          console.log(data)
+          if (data.isSuccess) {
+            this.variationDetailData = data.data;
+            this.gridView = process(this.variationDetailData, this.state);
+          } else this.alertService.error(data.message);
+
+          this.loading = false;
+          this.chRef.detectChanges();
+        }, err => this.alertService.error(err)
+      )
+    )
+  }
 
   getVariationPageDataWithGrid() {
     const { wosequence, wopsequence, woisequence, assid } = this.singleVariationAsset;
@@ -127,5 +151,7 @@ export class VariationDetailComponent implements OnInit {
   cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
     // this.selectedSingleVarWorkList = dataItem;
   }
+
+
 
 }

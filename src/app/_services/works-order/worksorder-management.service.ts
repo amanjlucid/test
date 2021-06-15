@@ -564,6 +564,10 @@ export class WorksorderManagementService {
         return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/RemoveWorksOrderDocument?WOSEQUENCE=${WOSEQUENCE}&NTPSEQUENCE=${NTPSEQUENCE}&UserId=${UserId}`, this.httpOptions);
     }
 
+    getWEBWorksOrdersPhaseDetailAndVariation(WOSEQUENCE, WOPSEQUENCE, WOISEQUENCE) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWEBWorksOrdersPhaseDetailAndVariation?WOSEQUENCE=${WOSEQUENCE}&WOPSEQUENCE=${WOPSEQUENCE}&WOISEQUENCE=${WOISEQUENCE}`, this.httpOptions);
+    }
+
 
 
 

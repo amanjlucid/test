@@ -18,8 +18,8 @@
                     <!-- <a class="dropdown-item" href="javascript:void(0)" (click)="bulkVariation()">
                         Bulk Variation</a> -->
                     <a [ngClass]="{'disabled' : disableBulkVaritionBtn() }" *ngIf="woMenuAccess('Edit Bulk Variation')"
-                        class="dropdown-item" href="javascript:void(0)" (click)="bulkVariation()">
-                        Bulk Variation</a>
+                        class="dropdown-item" href="javascript:void(0)" (click)="editbulkVariation()">
+                        Edit Bulk Variation</a>
                 </div>
             </div>
 
@@ -188,10 +188,10 @@
     <div class="variationListAllOverlay"></div>
 
 
-    <!-- <app-variation-detail *ngIf="openVariationDetail" [openVariationDetail]="openVariationDetail"
+    <app-variation-detail *ngIf="openVariationDetail" [openVariationDetail]="openVariationDetail"
         [openedFrom]="openedFrom" [openedFor]="openedFor" [singleVariation]="selectedSingleInstructionVariation"
-        (closeVariationDetailEvent)="closeVariationDetails($event)">
-    </app-variation-detail> -->
+        (closeVariationDetailEvent)="closeEditBulkVariation($event)">
+    </app-variation-detail>
 
 
     <app-variation-asset *ngIf="openVariationAsset" [openVariationAsset]="openVariationAsset" [openedFrom]="openedFrom"

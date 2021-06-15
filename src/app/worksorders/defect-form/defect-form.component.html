@@ -161,7 +161,7 @@
                                         <input formControlName="IdentifiedDate"
                                             [ngClass]="{ 'is-invalid': submitted && formErrors.IdentifiedDate }"
                                             autocomplete="off" autocomplete="off" (click)="openCalendar(ifd)"
-                                            [minDate]="minDate" ngbDatepicker #ifd="ngbDatepicker"
+                                            [maxDate]="maxDate" ngbDatepicker #ifd="ngbDatepicker"
                                             [placement]="'bottom'" type="text" class="form-control input-sm">
 
                                         <div *ngIf="submitted && formErrors.IdentifiedDate" class="invalid-feedback">
@@ -253,7 +253,7 @@
                                         <input formControlName="resolutionDate"
                                             [ngClass]="{ 'is-invalid': submitted && formErrors.resolutionDate }"
                                             autocomplete="off" autocomplete="off" (click)="openCalendar(rd)"
-                                            [minDate]="minDate" ngbDatepicker #rd="ngbDatepicker" [placement]="'top'"
+                                            [maxDate]="maxDate" ngbDatepicker #rd="ngbDatepicker" [placement]="'top'"
                                             type="text" class="form-control input-sm">
 
                                         <div *ngIf="submitted && formErrors.resolutionDate" class="invalid-feedback">
@@ -313,7 +313,7 @@
                                         <input formControlName="signOffDate"
                                             [ngClass]="{ 'is-invalid': submitted && formErrors.signOffDate }"
                                             autocomplete="off" autocomplete="off" (click)="openCalendar(sod)"
-                                            [minDate]="minDate" ngbDatepicker #sod="ngbDatepicker" [placement]="'top'"
+                                            ngbDatepicker #sod="ngbDatepicker" [placement]="'top'"
                                             type="text" class="form-control input-sm">
 
                                         <div *ngIf="submitted && formErrors.signOffDate" class="invalid-feedback">
