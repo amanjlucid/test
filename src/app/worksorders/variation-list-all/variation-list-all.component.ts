@@ -130,6 +130,7 @@ export class VariationListAllComponent implements OnInit {
     this.subs.add(
       this.worksOrderService.getWEBWorksOrdersInstructionsForUser(wprsequence, wosequence, this.currentUser.userId, false).subscribe(
         data => {
+          // console.log(this.mySelection)
           // console.log({variation : data.data, wo : this.singleWorksOrder})
           if (data.isSuccess) {
             this.variationData = data.data;
@@ -165,6 +166,7 @@ export class VariationListAllComponent implements OnInit {
 
   cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
     this.selectedSingleInstructionVariation = dataItem;
+    // console.log(this.mySelection)
     // console.log(dataItem)
 
   }
@@ -428,21 +430,21 @@ export class VariationListAllComponent implements OnInit {
 
 
   disableBulkVaritionBtn() {
-    return false;
+    // return false;
     if (this.selectedSingleInstructionVariation != undefined) {
-
       if (this.selectedSingleInstructionVariation.woiissuestatus == "Accepted" || this.selectedSingleInstructionVariation.woiissuestatus == "Issued") {
-        return false;
+        return true;
       } else {
-        if (this.selectedSingleInstructionVariation.isBulkVariation == 'N') {
+        if (this.selectedSingleInstructionVariation.isBulkVariation == 'Y') {
           return false
         }
       }
-
-
     }
 
     return true;
   }
+
+
+
 
 }

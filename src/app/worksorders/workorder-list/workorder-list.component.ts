@@ -83,6 +83,7 @@ export class WorkorderListComponent implements OnInit {
   WoAssociationsManageWindow = false;
   openManageMilestone: boolean;
   disabledMilestone: boolean = true;
+  openDefectsList = false;
 
   constructor(
     private worksOrderService: WorksOrdersService,
@@ -827,4 +828,18 @@ export class WorkorderListComponent implements OnInit {
     $('.worksOrderOverlay').removeClass('ovrlay');
     this.openManageMilestone = $event;
   }
+
+  openDefectsMethod(item) {
+    this.selectedWorksOrder = item;
+    $('.worksOrderOverlay').addClass('ovrlay');
+    this.openDefectsList = true;
+  }
+
+  closeDefectList(eve) {
+    this.openDefectsList = eve;
+    $('.worksOrderOverlay').removeClass('ovrlay');
+  }
+
+
+
 }

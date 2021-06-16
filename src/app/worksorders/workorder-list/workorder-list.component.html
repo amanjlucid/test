@@ -110,6 +110,9 @@
                 <a class="dropdown-item" href="javascript:void(0)"
                   (click)="openWoAssociationsManage(dataItem)">Associations</a>
 
+                  <a  *ngIf="woMenuAccess('Defects')" class="dropdown-item" href="javascript:void(0)"
+                  (click)="openDefectsMethod(dataItem)">Defects</a>
+
                 <a *ngIf="woMenuAccess('Works Order Documents')"
                   [ngClass]="{'disabled': dataItem.worksOrderFileCount == 0}" class="dropdown-item"
                   (click)="openDocumentMethod(dataItem)" href="javascript:void(0)">Documents</a>
@@ -417,3 +420,8 @@
 <app-manage-milestones *ngIf="openManageMilestone" [worksOrderData]="selectedWorksOrder"
   [openManageMilestone]="openManageMilestone" (closeManageMilestoneEvent)="closeManageMilestone($event)">
 </app-manage-milestones>
+
+<app-asset-defects-list *ngIf="openDefectsList" [openDefectsList]="openDefectsList"
+[singleWorkOrderInp]="selectedWorksOrder" [openedFrom]="'workorder'"
+(closeDefectsListEvent)="closeDefectList($event)">
+</app-asset-defects-list>

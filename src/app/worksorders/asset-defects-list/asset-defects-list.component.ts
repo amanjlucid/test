@@ -54,10 +54,12 @@ export class AssetDefectsListComponent implements OnInit {
   openDefectform = false;
   selectedSingleDefect: any;
 
+  //asset Defet
+  openAssetDefect = false;
+
   constructor(
     private chRef: ChangeDetectorRef,
     private workOrderProgrammeService: WorksorderManagementService,
-    private worksOrderService: WorksOrdersService,
     private alertService: AlertService,
     private confirmationDialogService: ConfirmationDialogService,
     private sharedService: SharedService
@@ -71,8 +73,10 @@ export class AssetDefectsListComponent implements OnInit {
 
   ngOnInit(): void {
     // console.log({ openedFrom: this.openedFrom, singleWorkOrderInp: this.singleWorkOrderInp, singleWorkOrderAssetInp: this.singleWorkOrderAssetInp, })
-    // console.log(this.singleWorkOrderAssetInp)
-    // console.log(this.singleWorkOrderInp);
+    
+    if (this.openedFrom == "workdetail" || this.openedFrom == "workorder") {
+      this.title = 'Defects';
+    }
 
     this.subs.add(
       combineLatest([
@@ -115,7 +119,7 @@ export class AssetDefectsListComponent implements OnInit {
       ];
     }
 
-    else if (this.openedFrom == "workdetail") {
+    else if (this.openedFrom == "workdetail" || this.openedFrom == "workorder") {
       const { wprsequence, wosequence } = this.singleWorkOrderInp;
       pageReq = [
         this.workOrderProgrammeService.getWorkProgrammesByWprsequence(wprsequence),
@@ -126,7 +130,6 @@ export class AssetDefectsListComponent implements OnInit {
     this.subs.add(
       forkJoin(pageReq).subscribe(
         (data: any) => {
-          // console.log(data);
           const programmeData = data[0];
           const worksOrderData = data[1];
 
@@ -155,7 +158,7 @@ export class AssetDefectsListComponent implements OnInit {
     if (this.openedFrom == "assetchecklist") {
       const { wosequence, wopsequence, assid } = this.singleWorkOrderAssetInp;
       woDefectsApiCall = this.workOrderProgrammeService.workOrderDefectForAssets(wosequence, assid, wopsequence);
-    } else if (this.openedFrom == "workdetail") {
+    } else if (this.openedFrom == "workdetail" || this.openedFrom == "workorder") {
       const { wprsequence, wosequence } = this.singleWorkOrderInp;
       woDefectsApiCall = this.workOrderProgrammeService.getWEBWorksOrdersDefectsForProgrammeAndUserSingleWO(wprsequence, wosequence, this.currentUser.userId);
     } else {
@@ -166,7 +169,6 @@ export class AssetDefectsListComponent implements OnInit {
     this.subs.add(
       woDefectsApiCall.subscribe(
         data => {
-          // console.log(data);
           if (data.isSuccess) {
             this.gridData = data.data;
             this.gridView = process(this.gridData, this.state);
@@ -305,6 +307,19 @@ export class AssetDefectsListComponent implements OnInit {
     }
 
     return this.worksOrderUsrAccess.indexOf(menuName) != -1
+  }
+
+
+  openAssetDefectsMethod(item) {
+    this.selectedSingleDefect = item;
+    $('.defectListoverlayAsset').addClass('ovrlay');
+    this.openAssetDefect = true;
+  }
+
+  closeDefectList(eve) {
+    this.openAssetDefect = eve;
+    $('.defectListoverlayAsset').removeClass('ovrlay');
+    this.requiredPageData();
   }
 
 }

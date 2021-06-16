@@ -1088,15 +1088,15 @@ export class WorksordersDetailsComponent implements OnInit {
   }
 
 
-  openDefectsMethod() {
-    $('.worksOrderDetailOvrlay').addClass('ovrlay');
-    this.openDefectsList = true;
-  }
+  // openDefectsMethod() {
+  //   $('.worksOrderDetailOvrlay').addClass('ovrlay');
+  //   this.openDefectsList = true;
+  // }
 
-  closeDefectList(eve) {
-    this.openDefectsList = eve;
-    $('.worksOrderDetailOvrlay').removeClass('ovrlay');
-  }
+  // closeDefectList(eve) {
+  //   this.openDefectsList = eve;
+  //   $('.worksOrderDetailOvrlay').removeClass('ovrlay');
+  // }
 
 
   openAsbestos(item) {

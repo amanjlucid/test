@@ -1,11 +1,11 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { SubSink } from 'subsink';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { SelectableSettings, PageChangeEvent, GridComponent, RowClassArgs } from '@progress/kendo-angular-grid';
 import { WorksorderManagementService, AlertService, HelperService, ReportingGroupService, WorksOrdersService, LoaderService } from '../../_services'
 import { forkJoin, Observable } from 'rxjs';
-import { checkFirstDateisLower, firstDateIsLower, SimpleDateValidator } from 'src/app/_helpers';
+import { checkFirstDateisLower, MustbeTodayOrLower, SimpleDateValidator } from 'src/app/_helpers';
 
 @Component({
   selector: 'app-defect-form',
@@ -34,6 +34,7 @@ export class DefectFormComponent implements OnInit {
     'IdentifiedDate': {
       'required': 'Identified Date is required.',
       'invalidDate': 'Identified Date in dd/mm/yyyy format.',
+      'futureDate': 'Identified Date cannot be in the future.'
     },
     'reportedBy': {
       'required': 'Reported By is required.',
@@ -54,6 +55,7 @@ export class DefectFormComponent implements OnInit {
       'required': 'Resolution Date is required.',
       'invalidDate': 'Resolution Date in dd/mm/yyyy format.',
       'isLower': 'Resolution Date must be on or after the Identified Date.',
+      'futureDate': 'Resolution Date cannot be in the future.'
     },
     'resolvedBy': {
       'required': 'Resolved By is required.',
@@ -96,6 +98,7 @@ export class DefectFormComponent implements OnInit {
   selectedPkzSingle;
   minDate: any;
   maxDate: any;
+  alreadySelected: number;
   // planYear: any;
 
   constructor(
@@ -130,15 +133,16 @@ export class DefectFormComponent implements OnInit {
 
   ngOnInit(): void {
     // console.log({ opendFrom: this.openedFrom, asset: this.singleWorkOrderAssetInp, def: this.selectedDefectInp })
+
     this.defectForm = this.fb.group({
       status: ['New', [Validators.required]],
-      IdentifiedDate: ['', [Validators.required, SimpleDateValidator()]], //n
+      IdentifiedDate: ['', [Validators.required, SimpleDateValidator(), MustbeTodayOrLower()]], //n
       reportedBy: ['', [Validators.required]],//n
       description: ['', [Validators.required]],//n
       cost: [0, [Validators.required]],
       score: ['', [Validators.required]],//n
 
-      resolutionDate: ['', [SimpleDateValidator()]],
+      resolutionDate: [''],
       resolvedBy: [''],
       resolutionDetails: [''],
       signOffDate: ['', [SimpleDateValidator()]],
@@ -146,12 +150,16 @@ export class DefectFormComponent implements OnInit {
     });
 
     // Change validation on status change  
-    const resDateCtr: any = this.defectForm.get('resolutionDate');
-    const resByCtr: any = this.defectForm.get('resolvedBy');
-    const resDetCtr: any = this.defectForm.get('resolutionDetails');
-    const IdeDateCtr: any = this.defectForm.get('IdentifiedDate');
-    const status: any = this.defectForm.get('status');
+    const resDateCtr = this.defectForm.get('resolutionDate');
+    const resByCtr = this.defectForm.get('resolvedBy');
+    const resDetCtr = this.defectForm.get('resolutionDetails');
+    const IdeDateCtr = this.defectForm.get('IdentifiedDate');
+    const status = this.defectForm.get('status');
 
+    //set defatul validation for resolution date
+    resDateCtr.setValidators([SimpleDateValidator(), checkFirstDateisLower(resDateCtr, IdeDateCtr), MustbeTodayOrLower()]);
+
+    //set validaton on status field change
     this.subs.add(
       status.valueChanges.subscribe(
         val => {
@@ -160,11 +168,11 @@ export class DefectFormComponent implements OnInit {
             resDetCtr.clearValidators();
             resByCtr.setErrors(null);
             resByCtr.clearValidators();
-            resDateCtr.setValidators([SimpleDateValidator(), checkFirstDateisLower(resDateCtr, IdeDateCtr)]);
+            resDateCtr.setValidators([SimpleDateValidator(), checkFirstDateisLower(resDateCtr, IdeDateCtr), MustbeTodayOrLower()]);
           } else if (val == "Resolved") {
-            resDateCtr.setValidators([Validators.required, SimpleDateValidator(), checkFirstDateisLower(resDateCtr, IdeDateCtr)]);
+            resDateCtr.setValidators([Validators.required, SimpleDateValidator(), checkFirstDateisLower(resDateCtr, IdeDateCtr), MustbeTodayOrLower()]);
             resByCtr.setValidators([Validators.required]);
-            resDetCtr.setValidators([Validators.required]);
+            resDetCtr.setValidators([Validators.required, MustbeTodayOrLower()]);
           }
 
           resDateCtr.updateValueAndValidity();
@@ -175,28 +183,6 @@ export class DefectFormComponent implements OnInit {
       )
     )
 
-    // this.subs.add(
-    //   resDateCtr.valueChanges.subscribe(
-    //     val => {
-    //       if (val != "") {
-    //         if (status.value == "Resolved") {
-    //           status.setValidators({ invalidRsdStatus: true })
-    //         } else if (status.value != "" && status.value != "Resolved") {
-    //           status.setErrors(null)
-    //         }
-    //       }
-    //       console.log(status.value)
-
-    //     }
-    //   )
-    // )
-
-    // this.subs.add(
-    //   IdeDateCtr.valueChanges.subscribe(val => val != "" ? resDateCtr.updateValueAndValidity() : ''),
-    //   resDateCtr.valueChanges.subscribe(val => val != "" ? resDateCtr.updateValueAndValidity() : '')
-    // )
-
-
     this.requiredPageData();
 
   }
@@ -204,10 +190,7 @@ export class DefectFormComponent implements OnInit {
   populateForm() {
     if (this.defectFormMode == "new") {
       this.defectForm.patchValue({ score: 0 });
-      const disableFields = ['signOffDate', 'signOffBy'];
-      for (const disableField of disableFields) {
-        this.defectForm.get(disableField).disable();
-      }
+      this.disableFields();
     }
 
     if (this.defectFormMode == "edit") {
@@ -215,6 +198,13 @@ export class DefectFormComponent implements OnInit {
       this.getDefect();
     }
 
+  }
+
+  disableFields() {
+    const disableFields = ['signOffDate', 'signOffBy'];
+    for (const disableField of disableFields) {
+      this.defectForm.get(disableField).disable();
+    }
   }
 
 
@@ -226,7 +216,9 @@ export class DefectFormComponent implements OnInit {
           // console.log(data);
           if (data.isSuccess) {
             const { wodstatus, woddate, wodmpusid, woddescription, wodapproxcost, wodresolveddate, wodresolvedmpusid, wodresolveddescription, wodsignoffmpusid, wodsignoffdate, wodscore, wlataid } = data.data;
+
             this.mySelection = [wlataid];
+            this.alreadySelected = wlataid;
 
             this.defectForm.patchValue({
               status: wodstatus,
@@ -246,10 +238,7 @@ export class DefectFormComponent implements OnInit {
             if (wodstatus == "Signed Off") {
               this.defectForm.disable();
             } else if (wodstatus == "New" || wodstatus == "Resolved By") {
-              const disableFields = ['signOffDate', 'signOffBy'];
-              for (const disableField of disableFields) {
-                this.defectForm.get(disableField).disable();
-              }
+              this.disableFields();
             }
 
           } else this.alertService.error(data.message);
@@ -267,7 +256,7 @@ export class DefectFormComponent implements OnInit {
       pagaRequiredParams = this.singleWorkOrderAssetInp
     }
 
-    if (this.openedFrom == 'workdetail') {
+    if (this.openedFrom == 'workdetail' || this.openedFrom == "workorder") {
       pagaRequiredParams = this.selectedDefectInp
     }
 
@@ -311,8 +300,9 @@ export class DefectFormComponent implements OnInit {
           if (pkzdata.isSuccess) {
             this.packageData = pkzdata.data;
             if (this.defectFormMode == 'edit') {
-              const { wlataid, wlcode, wlplanyear } = this.selectedDefectInp;
-              this.selectedPkzSingle = this.packageData.find(x => x.wlataid == wlataid && x.wlcode == wlcode && x.wlplanyear == wlplanyear)
+              this.selectedPkzSingle = { ...this.selectedDefectInp };
+              // const { wlataid, wlcode, wlplanyear } = this.selectedDefectInp;
+              // this.selectedPkzSingle = this.packageData.find(x => x.wlataid == wlataid && x.wlcode == wlcode && x.wlplanyear == wlplanyear)
             }
             this.gridView = process(this.packageData, this.state);
             this.gridLoading = false;
@@ -363,29 +353,28 @@ export class DefectFormComponent implements OnInit {
       return
     }
 
-    // when deseclet clear selected item
+    // when deselect record with ctr key, clear selected item
     if (this.mySelection.length == 0) {
       this.selectedPkzSingle = undefined;
+      this.alreadySelected = undefined;
       return;
     }
 
+    const { wlataid } = dataItem;
+    // when deselect record on clik of selected record
+    if (this.alreadySelected === wlataid) {
+      this.mySelection = [];
+      this.selectedPkzSingle = undefined;
+      this.alreadySelected = undefined;
+      return;
+    }
+
+    this.alreadySelected = wlataid;
     this.selectedPkzSingle = dataItem;
 
 
   }
 
-  rowCallback(context: RowClassArgs) {
-    return {
-      'k-state-disabled': false//this.selectedDefectInp?.wodstatus == "Signed Off"
-    };
-  }
-
-
-  checkPackageExist(item) {
-    if (item.attributeexists == 'Work Package Exists') return false;
-    if (item.exclusionreason == 'Work Package already exists on Work List') return false;
-    return true;
-  }
 
   openCalendar(obj) {
     obj.toggle()
@@ -450,6 +439,23 @@ export class DefectFormComponent implements OnInit {
     let params: any = {};
 
     const { status, IdentifiedDate, reportedBy, description, cost, score, resolutionDate, resolvedBy, resolutionDetails, signOffDate, signOffBy } = formRawVal;
+
+    //check resolution date, resolved by or resolution text are entered
+    if ((resolutionDate != "" && resolutionDate != null) && status == "New") {
+      this.alertService.error('Resolved Date must only be entered if status is "Resolved".');
+      return;
+    }
+
+    if (resolvedBy != "" && status == "New") {
+      this.alertService.error('Resolved User must only be entered if status is "Resolved".');
+      return;
+    }
+
+    if (resolutionDetails != "" && status == "New") {
+      this.alertService.error('Resolved Description must only be entered if status is "Resolved".');
+      return;
+    }
+
 
     //set common form data for new and edit case
     params.WODDATE = this.helperService.dateObjToString(IdentifiedDate);

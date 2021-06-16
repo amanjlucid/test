@@ -84,8 +84,8 @@
       <button *ngIf="woMenuBtnSecurityAccess('Add Phase')" (click)="openNewphase('new')"
         class="btn btn-sm themeButton">New Phase</button>
 
-      <button *ngIf="woMenuBtnSecurityAccess('Defects')" (click)="openDefectsMethod()"
-        class="btn btn-sm themeButton ml-1">Defects</button>
+      <!-- <button *ngIf="woMenuBtnSecurityAccess('Defects')" (click)="openDefectsMethod()"
+        class="btn btn-sm themeButton ml-1">Defects</button> -->
 
       <button id="showFilePanel" (click)="lockUnlockColumn()" class="btn btn-sm themeButton ml-1">
         <i *ngIf="!columnLocked" class="fa fa-lock" aria-hidden="true"></i>
@@ -729,7 +729,7 @@
   </app-asset-remove-reason>
 
 
-  <app-asset-defects-list *ngIf="openDefectsList" [openDefectsList]="openDefectsList"
+  <!-- <app-asset-defects-list *ngIf="openDefectsList" [openDefectsList]="openDefectsList"
     [singleWorkOrderInp]="worksOrderSingleData" [openedFrom]="'workdetail'"
     (closeDefectsListEvent)="closeDefectList($event)">
-  </app-asset-defects-list>
+  </app-asset-defects-list> -->

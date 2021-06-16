@@ -1,7 +1,7 @@
 import { FormGroup, AbstractControl, ValidatorFn } from '@angular/forms';
 import * as moment from "moment";
 import { FormControl } from "@angular/forms";
-import { retry } from 'rxjs/operators';
+
 // custom validator to check that two fields match
 export function MustMatch(controlName: string, matchingControlName: string) {
     return (formGroup: FormGroup) => {
@@ -348,11 +348,14 @@ export function checkFirstDateisLower(controlName1: any, controlName2: any) {
         let dateOne = new Date(date1);
         let dateTwo = new Date(date2);
 
+
         if (dateOne < dateTwo) {
-            return controlName1.setErrors({ isLower: true });
+            return { isLower: true }
+            // return controlName1.setErrors({ isLower: true });
         }
 
-        return controlName1.setErrors(null);
+        return null;
+        // return controlName1.setErrors(null);
 
     };
 
@@ -415,6 +418,39 @@ export function numberRange(min: number = 0, max: number = 99999) {
         } else {
             return null;
         }
+    };
+}
+
+
+export function MustbeTodayOrLower(format = "DD/MM/YYYY"): any {
+    return (control: FormControl): { [key: string]: any } => {
+        if (control.value != null && control.value != "") {
+            let date;
+            if (control.value.day == undefined) {
+                date = control.value;
+                const dateObj = moment(date, format, true);
+                if (isNaN(dateObj.year()) || isNaN(dateObj.month()) || isNaN(dateObj.date())) {
+                    return { invalidDate: true };
+                }
+                if (dateObj.isValid()) {
+                    const dd = { day: dateObj.date(), month: dateObj.month() + 1, year: dateObj.year() }
+                    control.setValue(dd);
+                }
+            } else {
+                date = `${control.value.day}/${control.value.month}/${control.value.year}`;
+            }
+            const val = moment(date, format, false);
+            if (!val.isValid()) {
+                return { invalidDate: true };
+            }
+            let today = moment().format("YYYY/MM/DD")
+            let givenDate = val.format("YYYY/MM/DD");
+            if (new Date(givenDate) > new Date(today)) {
+                return { futureDate: true }
+            }
+        }
+        return null;
+
     };
 }
 

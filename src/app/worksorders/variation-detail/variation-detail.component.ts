@@ -1,9 +1,9 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef, ViewEncapsulation } from '@angular/core';
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
-import { SelectableSettings, PageChangeEvent, RowArgs, GridComponent } from '@progress/kendo-angular-grid';
-import { AlertService, HelperService, WorksorderManagementService } from 'src/app/_services';
-import { forkJoin } from 'rxjs';
+import { SelectableSettings, PageChangeEvent, RowArgs, GridComponent, RowClassArgs } from '@progress/kendo-angular-grid';
+import { AlertService, ConfirmationDialogService, HelperService, SharedService, WorksorderManagementService } from 'src/app/_services';
+import { combineLatest, forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-variation-detail',
@@ -41,17 +41,40 @@ export class VariationDetailComponent implements OnInit {
   filterToggle = false;
   worksOrderData: any;
   phaseData: any;
-
+  deleteWorkReasonOpen = false;
+  reason = '';
+  currentUser = JSON.parse(localStorage.getItem('currentUser'));
+  selectedAssetDetail: any;
+  worksOrderAccess = [];
+  worksOrderUsrAccess: any = [];
+  userType: any = [];
+  
   constructor(
     private chRef: ChangeDetectorRef,
     private workOrderProgrammeService: WorksorderManagementService,
     private alertService: AlertService,
+    private sharedService: SharedService,
+    private confirmationDialogService: ConfirmationDialogService,
   ) {
     this.setSelectableSettings();
   }
 
   ngOnInit(): void {
-    // console.log(this.singleVariationAsset)
+    
+    this.subs.add(
+      combineLatest([
+        this.sharedService.woUserSecObs,
+        this.sharedService.worksOrdersAccess,
+        this.sharedService.userTypeObs
+      ]).subscribe(
+        data => {
+          this.worksOrderUsrAccess = data[0];
+          this.worksOrderAccess = data[1];
+          this.userType = data[2][0];
+        }
+      )
+    )
+    
     if (this.openedFor == "details") {
       this.getVariationPageDataWithGrid();
     }
@@ -59,6 +82,8 @@ export class VariationDetailComponent implements OnInit {
     if (this.openedFor == "EBR") {
       this.getVariationAssetDetails();
     }
+
+
   }
 
   ngOnDestroy() {
@@ -88,7 +113,6 @@ export class VariationDetailComponent implements OnInit {
     this.subs.add(
       this.workOrderProgrammeService.getWEBWorksOrdersPhaseDetailAndVariation(wosequence, wopsequence, woisequence).subscribe(
         data => {
-          console.log(data)
           if (data.isSuccess) {
             this.variationDetailData = data.data;
             this.gridView = process(this.variationDetailData, this.state);
@@ -150,6 +174,130 @@ export class VariationDetailComponent implements OnInit {
 
   cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
     // this.selectedSingleVarWorkList = dataItem;
+  }
+
+  woMenuAccess(menuName) {
+    if (this.userType == undefined) return true;
+
+    if (this.userType?.wourroletype == "Dual Role") {
+      return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
+    }
+
+    return this.worksOrderUsrAccess.indexOf(menuName) != -1
+
+  }
+
+  openDeleteWorkReasonWindow(item) {
+    this.selectedAssetDetail = item;
+    $('.variationAssetDetailOverlay').addClass('ovrlay');
+    this.reason = '';
+    this.deleteWorkReasonOpen = true;
+    this.chRef.detectChanges();
+  }
+
+  closeDeleteWorkReasonWindo() {
+    this.deleteWorkReasonOpen = false;
+    $('.variationAssetDetailOverlay').removeClass('ovrlay')
+  }
+
+  setReason() {
+    this.chRef.detectChanges();
+    if (!this.reason || this.reason == '') {
+      this.alertService.error("Please select refusal reason");
+      return
+    }
+
+    this.deleteWork()
+  }
+
+  deleteWork() {
+    if (this.singleVariation == undefined) {
+      this.alertService.error('Variation not found');
+      return;
+    }
+
+    const { wosequence, wopsequence, assid, wlcode, wlataid, wlplanyear, woadrechargeyn, atadescription } = this.selectedAssetDetail;
+    const { woisequence } = this.singleVariation;
+
+    const params = {
+      WOSEQUENCE: wosequence,
+      WOISEQUENCE: woisequence,
+      strASSID: assid,
+      WOPSEQUENCE: wopsequence,
+      WLCODE: wlcode,
+      WLATAID: wlataid,
+      WLPLANYEAR: wlplanyear,
+      strWOIADCOMMENT: this.reason,
+      strUser: this.currentUser.userId,
+      Recharge: woadrechargeyn,
+    }
+
+
+    this.subs.add(
+      this.workOrderProgrammeService.worksOrdersCreateVariationForRemoveWOAD(params).subscribe(
+        data => {
+          if (data.isSuccess) {
+            this.alertService.success(`Work Item ${atadescription} deleted successfully.`);
+            this.closeDeleteWorkReasonWindo();
+            this.getVariationAssetDetails();
+          } else this.alertService.error(data.message);
+        }, err => this.alertService.error(err)
+      )
+    )
+
+
+  }
+
+
+
+  removeItemVariationConfirm(item) {
+    this.selectedAssetDetail = item;
+    $('.k-window').css({ 'z-index': 1000 });
+    this.confirmationDialogService.confirm('Please confirm..', `Remove Variation on ${item.atadescription}?`)
+      .then((confirmed) => (confirmed) ? this.removeItemVariation(item) : console.log(confirmed))
+      .catch(() => console.log('Attribute dismissed the dialog.'));
+  }
+
+
+  removeItemVariation(item) {
+    const { wosequence, wopsequence, assid, wlcode, wlataid, wlplanyear, wostagesurcde, wochecksurcde } = item;
+    const { woisequence } = this.singleVariation;
+
+    const params = {
+      WOSEQUENCE: wosequence,
+      WOISEQUENCE: woisequence,
+      ASSID: assid,
+      WOPSEQUENCE: wopsequence,
+      WLCODE: wlcode,
+      WLATAID: wlataid,
+      WLPLANYEAR: wlplanyear,
+      WOSTAGESURCDE: wostagesurcde,
+      WOCHECKSURCDE: wochecksurcde,
+      UserID: this.currentUser.userId,
+    }
+
+    this.subs.add(
+      this.workOrderProgrammeService.wORemoveInstructionAssetDetail(params).subscribe(
+        data => {
+          if (data.isSuccess) {
+            this.alertService.success(`Work Item ${item.atadescription} removed successfully.`);
+            this.getVariationAssetDetails();
+          } else this.alertService.error(data.message);
+        }, err => this.alertService.error(err)
+      )
+    )
+
+  }
+
+
+  rowCallback(context: RowClassArgs) {
+    const { variationAction } = context.dataItem;
+    if (variationAction.trim() != "") {
+      return { notNew: true }
+    } else {
+      return { notNew: false }
+    }
+
   }
 
 

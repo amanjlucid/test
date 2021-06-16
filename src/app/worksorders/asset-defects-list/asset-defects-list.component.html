@@ -85,9 +85,12 @@
                                     href="javascript:void(0)" (click)="openDefectForm('edit',dataItem)">Edit
                                     Defect</a>
 
-                                <a [ngClass]="{'disabled': dataItem.wodstatus == 'Signed Off'}" *ngIf="woMenuBtnSecurityAccess('Remove Defect')" class="dropdown-item"
+                                <a [ngClass]="{'disabled': dataItem.wodstatus == 'Signed Off'}"
+                                    *ngIf="woMenuBtnSecurityAccess('Remove Defect')" class="dropdown-item"
                                     href="javascript:void(0)" (click)="confirm(dataItem, 'delete')">Delete Defect</a>
 
+                                <a class="dropdown-item" href="javascript:void(0)"
+                                    (click)="openAssetDefectsMethod(dataItem)">Show Defects for Asset</a>
 
                                 <a [ngClass]="{'disabled': dataItem.wodstatus != 'Resolved'}" class="dropdown-item"
                                     href="javascript:void(0)" (click)="confirm(dataItem, 'signOff')">Signoff</a>
@@ -102,14 +105,16 @@
                 <kendo-grid-column title="No." field="wodsequence" width="60" *ngIf="openedFrom == 'assetchecklist'">
                 </kendo-grid-column>
 
-                <kendo-grid-column title="Phase" field="wopname" width="130" *ngIf="openedFrom == 'workdetail'">
+                <kendo-grid-column title="Phase" field="wopname" width="130"
+                    *ngIf="openedFrom == 'workdetail' || openedFrom == 'workorder'">
                 </kendo-grid-column>
 
-                <kendo-grid-column title="Asset ID" field="assid" width="130" *ngIf="openedFrom == 'workdetail'">
+                <kendo-grid-column title="Asset ID" field="assid" width="130"
+                    *ngIf="openedFrom == 'workdetail' || openedFrom == 'workorder'">
                 </kendo-grid-column>
 
                 <kendo-grid-column title="Address" field="astconcataddress" width="170"
-                    *ngIf="openedFrom == 'workdetail'">
+                    *ngIf="openedFrom == 'workdetail' || openedFrom == 'workorder'">
                 </kendo-grid-column>
 
                 <kendo-grid-column title="Status" field="wodstatus" width="130">
@@ -183,11 +188,17 @@
 
 
     <div class="defectListoverlay"></div>
+    <div class="defectListoverlayAsset"></div>
+
+    <app-defect-form *ngIf="openDefectform" [openDefectform]="openDefectform" [defectFormMode]="defectFormMode"
+        [openedFrom]="openedFrom" [selectedDefectInp]="selectedSingleDefect"
+        [singleWorkOrderAssetInp]="singleWorkOrderAssetInp" (closeDefectFormEvent)="closeDefectForm($event)">
+    </app-defect-form>
 
 
+    <app-asset-defects-list *ngIf="openAssetDefect" [openDefectsList]="openAssetDefect"
+        [singleWorkOrderAssetInp]="selectedSingleDefect" [openedFrom]="'assetchecklist'"
+        (closeDefectsListEvent)="closeDefectList($event)">
+    </app-asset-defects-list>
+    
 </kendo-window>
-
-<app-defect-form *ngIf="openDefectform" [openDefectform]="openDefectform" [defectFormMode]="defectFormMode"
-    [openedFrom]="openedFrom" [selectedDefectInp]="selectedSingleDefect"
-    [singleWorkOrderAssetInp]="singleWorkOrderAssetInp" (closeDefectFormEvent)="closeDefectForm($event)">
-</app-defect-form>
