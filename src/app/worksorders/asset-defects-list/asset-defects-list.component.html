@@ -7,7 +7,7 @@
             </button>
 
             <!-- need to use this button from asset checklist page -->
-            <button (click)="openDefectForm('new')" type="button" class="btn btn-sm themeButton"
+            <button [disabled]="workorderAssetFullDetail?.woassstatus != 'Handover' && workorderAssetFullDetail?.woassstatus != 'Final Completion'" (click)="openDefectForm('new')" type="button" class="btn btn-sm themeButton"
                 *ngIf="openedFrom == 'assetchecklist' && woMenuBtnSecurityAccess('New Defects')">
                 New Defect
             </button>
@@ -85,7 +85,7 @@
                                     href="javascript:void(0)" (click)="openDefectForm('edit',dataItem)">Edit
                                     Defect</a>
 
-                                <a [ngClass]="{'disabled': dataItem.wodstatus == 'Signed Off'}"
+                                <a [ngClass]="{'disabled': dataItem.wodstatus != 'New'}"
                                     *ngIf="woMenuBtnSecurityAccess('Remove Defect')" class="dropdown-item"
                                     href="javascript:void(0)" (click)="confirm(dataItem, 'delete')">Delete Defect</a>
 

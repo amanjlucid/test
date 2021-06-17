@@ -1,58 +1,169 @@
-<kendo-window title="{{title}}" *ngIf="openMilestoneEdit" (close)="closeMilestoneEdit()" [top]="35" [minWidth]="600"
+<kendo-window title="{{title}}" *ngIf="openMilestoneEdit" (close)="closeMilestoneEdit()" [top]="15" [minWidth]="600"
     [width]="800" [height]="auto" [minHeight]="300">
 
     <form (ngSubmit)="onSubmit()" autocomplete="off" class="milestoneForm" [formGroup]="milestoneForm">
         <div class="row formRow">
             <div class="col-md-12">
-                <div class="row form-group">
-                    <div class="col-md-3"><label>Works Order: </label></div>
+                <div class="row mt-1">
+                    <div class="col-md-3"><label class="col-form-label">Works Order: </label></div>
                     <div class="col-md-9">
-                        <input type="text" value="{{singleMilestone?.woname}}" class="form-control form-control-sm" [readonly]="true">
+                        <input type="text" value="{{singleMilestone?.woname}}" class="form-control " [readonly]="true">
                     </div>
                 </div>
-                <div class="row form-group">
-                    <div class="col-md-3"><label>Stage: </label></div>
+                <div class="row mt-1">
+                    <div class="col-md-3"><label class="col-form-label">Stage: </label></div>
                     <div class="col-md-9">
-                        <input type="text" value="{{singleMilestone?.wostagename}}" class="form-control form-control-sm" [readonly]="true">
+                        <input type="text" value="{{singleMilestone?.wostagename}}" class="form-control "
+                            [readonly]="true">
                     </div>
                 </div>
-                <div class="row form-group">
-                    <div class="col-md-3"><label>Milestone: </label></div>
+                <div class="row mt-1">
+                    <div class="col-md-3"><label class="col-form-label">Milestone: </label></div>
                     <div class="col-md-9">
-                        <input type="text" value="{{singleMilestone?.wocheckname}}" class="form-control form-control-sm" [readonly]="true">
+                        <input type="text" value="{{singleMilestone?.wocheckname}}" class="form-control "
+                            [readonly]="true">
                     </div>
                 </div>
-                <div class="row form-group">
-                    <div class="col-md-3"><label>Checklist Type: </label></div>
-                    <div class="col-md-6">
-                        <input type="text" value="{{singleMilestone?.wocheckspeciaL1}}" class="form-control form-control-sm" [readonly]="true">
+                <div class="row mt-1">
+                    <div class="col-md-3"><label class="col-form-label">Checklist Type: </label></div>
+                    <div class="col-md-4">
+                        <input type="text" value="{{singleMilestone?.wocheckspeciaL1}}" class="form-control "
+                            [readonly]="true">
                     </div>
                 </div>
-                <div class="row form-group">
-                    <div class="col-md-3"><label>Responsibility: </label></div>
-                    <div class="col-md-6">
-                        <input type="text" value="{{singleMilestone?.wocheckresp}}" class="form-control form-control-sm" [readonly]="true">
+                <div class="row mt-1">
+                    <div class="col-md-3"><label class="col-form-label">Responsibility: </label></div>
+                    <div class="col-md-4">
+                        <input type="text" value="{{singleMilestone?.wocheckresp}}" class="form-control "
+                            [readonly]="true">
                     </div>
                 </div>
-                <div class="row form-group">
-                    <div class="col-md-3"><label>Responsible User: </label></div>
-                    <div class="col-md-6">
-                        <select class="form-control form-control-sm" formControlName="resUserVal">
+                <div class="row mt-1">
+                    <div class="col-md-3"><label class="col-form-label">Responsible User: </label></div>
+                    <div class="col-md-4">
+                        <select class="form-control " formControlName="resUserVal"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.resUserVal }">
                             <option value="">N/A</option>
-                            <option *ngFor="let clientList of woClientUserList" [value]="clientList.mpusid">{{clientList.m_USERNAME}}</option>
+                            <option *ngFor="let clientList of woClientUserList" [value]="clientList.mpusid">
+                                {{clientList.m_USERNAME}}</option>
                         </select>
+                        <div *ngIf="submitted && formErrors.resUserVal" class="invalid-feedback">
+                            <div *ngIf="formErrors.resUserVal">{{ formErrors.resUserVal }}</div>
+                        </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-3"><label>Attachment Required: </label></div>
-                    <div class="col-md-6">
-                        <select class="form-control form-control-sm" formControlName="attReqVal">
+
+
+                <div class="row mt-1">
+                    <div class="col-md-3"><label class="col-form-label">Status: </label></div>
+                    <div class="col-md-4">
+                        <select class="form-control " formControlName="status"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.status }">
+                            <option value="">New</option>
+                            <option value="N">N/A</option>
+                            <option value="Y">In Progress</option>
+                            <option value="Y">On Hold</option>
+                            <option value="Y">Completed</option>
+                        </select>
+                        <div *ngIf="submitted && formErrors.status" class="invalid-feedback">
+                            <div *ngIf="formErrors.status">{{ formErrors.status }}</div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="row mt-1">
+                    <div class="col-md-3"><label class="col-form-label">Attachment Required: </label></div>
+                    <div class="col-md-4">
+                        <select class="form-control" formControlName="attReqVal">
                             <option value=""></option>
                             <option value="N">No</option>
                             <option value="Y">Yes</option>
                         </select>
                     </div>
                 </div>
+
+                <div class="row mt-1">
+                    <div class="col-md-3"><label class="col-form-label">Start Date: </label></div>
+                    <div class="col-md-4">
+                        <input formControlName="startDate"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.startDate }" autocomplete="off"
+                            autocomplete="off" (click)="openCalendar(sd)" [maxDate]="maxDate" ngbDatepicker
+                            #sd="ngbDatepicker" [placement]="'top'" type="text" class="form-control ">
+                        <div *ngIf="submitted && formErrors.startDate" class="invalid-feedback">
+                            <div *ngIf="formErrors.startDate">{{ formErrors.startDate }}</div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="row mt-1">
+                    <div class="col-md-3"><label class="col-form-label">Target Date: </label></div>
+                    <div class="col-md-4">
+                        <input formControlName="targetDate"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.targetDate }" autocomplete="off"
+                            autocomplete="off" (click)="openCalendar(td)" [minDate]="minDate" [maxDate]="maxDate"
+                            ngbDatepicker #td="ngbDatepicker" [placement]="'top'" type="text" class="form-control ">
+                        <div *ngIf="submitted && formErrors.targetDate" class="invalid-feedback">
+                            <div *ngIf="formErrors.targetDate">{{ formErrors.targetDate }}</div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="row mt-1">
+                    <div class="col-md-3"><label class="col-form-label">Completion Date: </label></div>
+                    <div class="col-md-4">
+                        <input formControlName="completionDate"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.completionDate }" autocomplete="off"
+                            autocomplete="off" (click)="openCalendar(cd)" [maxDate]="maxDate" ngbDatepicker
+                            #cd="ngbDatepicker" [placement]="'top'" type="text" class="form-control ">
+                        <div *ngIf="submitted && formErrors.completionDate" class="invalid-feedback">
+                            <div *ngIf="formErrors.completionDate">{{ formErrors.completionDate }}</div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="row mt-1">
+                    <div class="col-md-3"><label class="col-form-label">Plan Start Date: </label></div>
+                    <div class="col-md-4">
+                        <input formControlName="planStartDate"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.planStartDate }" autocomplete="off"
+                            autocomplete="off" (click)="openCalendar(psd)" [maxDate]="maxDate" ngbDatepicker
+                            #psd="ngbDatepicker" [placement]="'top'" type="text" class="form-control ">
+                        <div *ngIf="submitted && formErrors.planStartDate" class="invalid-feedback">
+                            <div *ngIf="formErrors.planStartDate">{{ formErrors.planStartDate }}</div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="row mt-1">
+                    <div class="col-md-3"><label class="col-form-label">Plan End Date: </label></div>
+                    <div class="col-md-4">
+                        <input formControlName="planEndDate"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.planEndDate }" autocomplete="off"
+                            autocomplete="off" (click)="openCalendar(ped)" [maxDate]="maxDate" ngbDatepicker
+                            #ped="ngbDatepicker" [placement]="'top'" type="text" class="form-control ">
+                        <div *ngIf="submitted && formErrors.planEndDate" class="invalid-feedback">
+                            <div *ngIf="formErrors.planEndDate">{{ formErrors.planEndDate }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-1">
+                    <div class="col-md-3"><label class="col-form-label">Comment(s): </label></div>
+                    <div class="col-md-9">
+                        <textarea class="form-control" formControlName="comments"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.comments }" rows="2"></textarea>
+                        <div *ngIf="submitted && formErrors.comments" class="invalid-feedback">
+                            <div *ngIf="formErrors.comments">{{ formErrors.comments }}</div>
+                        </div>
+                    </div>
+                </div>
+
+
             </div>
 
             <div class="col-md-12 mt-2 text-right">
@@ -60,6 +171,6 @@
                 <button type="button" class="btn btn-sm themeButton" (click)="closeMilestoneEdit()">Cancel</button>
             </div>
         </div>
-    </form> 
+    </form>
 
 </kendo-window>

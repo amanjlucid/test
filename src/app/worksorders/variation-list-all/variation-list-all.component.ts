@@ -117,7 +117,6 @@ export class VariationListAllComponent implements OnInit {
       ]).subscribe(
         data => {
           // console.log(data);
-
           // let sec = data[0].data.map(x => `${x.spffunction} - ${x.spjrftype}`)
           // console.log(sec);
         }
@@ -130,7 +129,6 @@ export class VariationListAllComponent implements OnInit {
     this.subs.add(
       this.worksOrderService.getWEBWorksOrdersInstructionsForUser(wprsequence, wosequence, this.currentUser.userId, false).subscribe(
         data => {
-          // console.log(this.mySelection)
           // console.log({variation : data.data, wo : this.singleWorksOrder})
           if (data.isSuccess) {
             this.variationData = data.data;
@@ -398,28 +396,6 @@ export class VariationListAllComponent implements OnInit {
     this.openedFor = "EBR";//edit bulk variation
     $('.variationListAllOverlay').addClass('ovrlay');
     this.openVariationDetail = true;
-    // const { wosequence, woisequence } = this.selectedSingleInstructionVariation;
-    // this.subs.add(
-    //   this.workOrderProgrammeService.addBulkVariation(wosequence, woisequence).subscribe(
-    //     data => {
-    //       // console.log(data);
-    //       if (data.isSuccess) {
-    //         if (data.data[0] != undefined) {
-    //           if (data.data[0].pRETURNSTATUS.trim() == "Y") {
-    //             this.alertService.success(`Bulk variation created successfully`)
-    //             this.getAllVariations();
-    //           } else {
-    //             this.alertService.error(`Variation exist`);
-    //           }
-    //         } else {
-    //           this.alertService.error(`Something went wrong.`)
-    //         }
-
-    //       } else this.alertService.error(data.message)
-    //     }, err => this.alertService.error(err)
-    //   )
-    // )
-
   }
 
   closeEditBulkVariation(eve) {
@@ -430,7 +406,6 @@ export class VariationListAllComponent implements OnInit {
 
 
   disableBulkVaritionBtn() {
-    // return false;
     if (this.selectedSingleInstructionVariation != undefined) {
       if (this.selectedSingleInstructionVariation.woiissuestatus == "Accepted" || this.selectedSingleInstructionVariation.woiissuestatus == "Issued") {
         return true;

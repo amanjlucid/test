@@ -1029,4 +1029,8 @@ export class WorklistComponent implements OnInit {
     return false;
   }
 
+  setSeletedRow(item){
+
+  }
+
 }

@@ -5,7 +5,7 @@ import { FilterService, SelectableSettings, TreeListComponent, RowClassArgs } fr
 import { AlertService, LoaderService, ConfirmationDialogService, WorksOrdersService, HelperService, WorksorderManagementService, SharedService, PropertySecurityGroupService, AuthenticationService, WorksorderReportService } from '../../_services'
 import { combineLatest, forkJoin } from 'rxjs';
 import { WorkordersDetailModel } from 'src/app/_models';
-import { Router, ActivatedRoute, RouterEvent } from '@angular/router';
+import { Router} from '@angular/router';
 import { appConfig } from '../../app.config';
 import { CurrencyPipe } from '@angular/common';
 
@@ -25,20 +25,16 @@ export class WorksordersDetailsComponent implements OnInit {
   hierarchyLevels: any;
   selectedhierarchyLevel: any;
   hiearchyWindow = false;
-
   subs = new SubSink();
   filterToggle = false;
   readonly = true;
   worksOrderSingleData = JSON.parse(localStorage.getItem('worksOrderSingleData'));
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
   workorderDetailModel: WorkordersDetailModel;
-
   programmeData: any;
   userSecurityByWO: any;
-
   loading = true;
   public selected: any[] = [];
-
   public filter: CompositeFilterDescriptor;
   public settings: SelectableSettings = {
     mode: 'row',
@@ -47,30 +43,24 @@ export class WorksordersDetailsComponent implements OnInit {
     enabled: true
   };
   gridPageSize = 25;
-
   public groupedData: any = [];
   public gridData: any = [];
   @ViewChild(TreeListComponent) public grid: TreeListComponent;
   gridHeight = 680;
   worksOrderData: any;
-
   assetchecklistWindow = false;
   selectedChildRow: any;
   selectedParentRow: any;
   selectedRow: any;
   actualSelectedRow: any;
-
   newPhasewindow = false;
   phaseFormMode = 'new';
-
   packageMappingWindow = false;
   managementRolesTab = false;
   managementSORTab = false;
   managementCostsTab = false;
-
   addAssetWindow = false;
   addAssetWorklistWindow = false;
-
   assetDetailWindow = false;
   treelevel = 2;
   worksOrderAccess = [];
@@ -78,27 +68,19 @@ export class WorksordersDetailsComponent implements OnInit {
   woFormWindow = false;
   phaseBudgetAvailable: any = 0;
   touchtime = 0;
-
   addWorkFrom: string;
-
   columnLocked: boolean = true;
   userType: any = [];
-
   mousePositioin: any = 0;
   moveAsset: boolean = false;
   phaseChecklist = false;
-
   selectedAssetList: any = [];
-
   chooseDateWindow = false;
   chooseDateType = 'status';
-
   selectedDate: any;
   actionType = 'single';
-
   openAssetRemoveReason = false;
   reason = '';
-
   openDefectsList = false;
   asebestosDoubleClick = 0;
   AddPhaseCostStructureWindow = false;
@@ -139,7 +121,6 @@ export class WorksordersDetailsComponent implements OnInit {
         this.sharedService.userTypeObs
       ]).subscribe(
         data => {
-          // console.log(data);
           this.worksOrderUsrAccess = data[0];
           this.worksOrderAccess = data[1];
           this.userType = data[2][0];
@@ -193,7 +174,6 @@ export class WorksordersDetailsComponent implements OnInit {
         this.worksorderManagementService.getListOfWorksOrderChecklistForWORK(intWOSEQUENCE),
       ]).subscribe(
         data => {
-          // console.log(data)
           const programmeData = data[0];
           const userSecurityByWO = data[1];
           const worksOrderData = data[2];
@@ -232,7 +212,6 @@ export class WorksordersDetailsComponent implements OnInit {
     this.subs.add(
       this.worksorderManagementService.getWorkOrderDetails(this.workorderDetailModel).subscribe(
         data => {
-          // console.log(data);
           if (data.isSuccess) {
             let gridData = [];
             let tempData = [...data.data];
@@ -244,7 +223,7 @@ export class WorksordersDetailsComponent implements OnInit {
                 value.parentWoName = '';
                 value.id = `${value.wopsequence}${value.wosequence}${value.wprsequence}${this.helperService.replaceAll(value.assid, " ", "")}`;
                 value.parentData = JSON.stringify(value);
-                const valueWithDateObj = this.addDateObjectFields(value, ['targetdate', 'woacompletiondate', 'planstartdate', 'planenddate']); //Converting date object for filter from grid
+                const valueWithDateObj = this.addDateObjectFields(value, ['targetdate', 'woacompletiondate', 'planstartdate', 'planenddate']); //Converting to date object for filter from grid
                 gridData.push(valueWithDateObj);
 
               }
@@ -259,7 +238,7 @@ export class WorksordersDetailsComponent implements OnInit {
                   value.parentData = JSON.stringify(parent);
                   value.assid = value.assid;
 
-                  const valueWithDateObj = this.addDateObjectFields(value, ['targetdate', 'woacompletiondate', 'planstartdate', 'planenddate']); //Converting date object for filter from grid
+                  const valueWithDateObj = this.addDateObjectFields(value, ['targetdate', 'woacompletiondate', 'planstartdate', 'planenddate']); //Converting to date object for filter from grid
                   gridData.push(valueWithDateObj);
                 }
               }
@@ -267,7 +246,6 @@ export class WorksordersDetailsComponent implements OnInit {
             })
 
             setTimeout(() => {
-              // console.log(gridData)
               this.gridData = [...gridData];
               this.loading = false;
               this.chRef.detectChanges()
@@ -323,7 +301,6 @@ export class WorksordersDetailsComponent implements OnInit {
   }
 
   cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
-    // console.log(this.selected)
     if (columnIndex > 0) {
       if (this.touchtime == 0) {
         this.touchtime = new Date().getTime();
@@ -353,12 +330,8 @@ export class WorksordersDetailsComponent implements OnInit {
         }
 
       }
-
-
     }
-    // console.log(this.selected);
-    // console.log(dataItem)
-
+   
   }
 
   addDateObjectFields(obj, fieldsArr: Array<any>) {
@@ -545,8 +518,6 @@ export class WorksordersDetailsComponent implements OnInit {
   }
 
 
-
-
   openConfirmationDialog(item) {
     $('.k-window').css({ 'z-index': 1000 });
     this.confirmationDialogService.confirm('Please confirm..', `Delete Phase?`)
@@ -610,7 +581,6 @@ export class WorksordersDetailsComponent implements OnInit {
       return
     }
 
-
     this.addWorkFrom = workOrderType;
     this.actualSelectedRow = item;
     this.addAssetWorklistWindow = true;
@@ -629,9 +599,6 @@ export class WorksordersDetailsComponent implements OnInit {
     this.selectedRow = item;
     this.selectedParentRow = item;
     this.treelevel = 2;
-
-    //  this.worksOrderData
-    //  console.log('selectedParentRow ' + JSON.stringify(this.selectedParentRow));
 
     $('.worksOrderDetailOvrlay').addClass('ovrlay');
   }
@@ -890,7 +857,6 @@ export class WorksordersDetailsComponent implements OnInit {
   }
 
   setSeletedRow(dataItem, event) {
-    // console.log(event)
     if (dataItem != undefined) {
       setTimeout(() => {
         let att = $('.selectedWodBar' + dataItem.id)[0].getAttribute("x-placement");
@@ -1032,7 +998,6 @@ export class WorksordersDetailsComponent implements OnInit {
             this.loading = false
           }
           this.chRef.detectChanges();
-          //  console.log('AddPhaseCostStructure api reponse' + JSON.stringify(data));
         },
         err => this.alertService.error(err)
       )
@@ -1109,7 +1074,7 @@ export class WorksordersDetailsComponent implements OnInit {
         this.autService.validateAssetIDDeepLinkParameters(this.currentUser.userId, item.assid).subscribe(
           data => {
             if (data.validated) {
-              const siteUrl = `${appConfig.appUrl}/asset-list?assetid=${encodeURIComponent(item.assid)}`; // UAT
+              const siteUrl = `${appConfig.appUrl}/asset-list?assetid=${encodeURIComponent(item.assid)}&openTab=Asbestos`; // UAT
               //const siteUrl = `http://localhost:4200/asset-list?assetid=${encodeURIComponent(item.assid)}&openTab=Asbestos`;
               window.open(siteUrl, "_blank");
 

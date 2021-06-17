@@ -1,0 +1,125 @@
+<kendo-window title="{{title}}" *ngIf="documentWindow" (close)="closeDocumentWindow()" [top]="10" [minWidth]="700"
+    [width]="870" [height]="auto" [minHeight]="300">
+    <div class="row">
+        <div class="col-md-12 mt-2">
+            <div class="row">
+                <div class="col-md-2">
+                    <label class="col-form-label" for="">Works Order: </label>
+                </div>
+                <div class="col-md-10">
+                    <input type="text" class="form-control form-control-sm" [readonly]="true"
+                        value="{{selectedMilestoneInp?.woname}}">
+                </div>
+            </div>
+
+            <div class="row mt-2">
+                <div class="col-md-2">
+                    <label class="col-form-label" for="">Stage: </label>
+                </div>
+                <div class="col-md-10">
+                    <input type="text" class="form-control form-control-sm" [readonly]="true"
+                        value="{{selectedMilestoneInp?.wostagename}}">
+                </div>
+            </div>
+
+            <div class="row mt-2">
+                <div class="col-md-2">
+                    <label class="col-form-label" for="">Milestone: </label>
+                </div>
+                <div class="col-md-10">
+                    <input type="text" class="form-control form-control-sm" [readonly]="true"
+                        value="{{selectedMilestoneInp?.wocheckname}}">
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row mt-2">
+        <div class="col-md-12">
+            <kendo-grid #grid [data]="gridView" [height]="410" [selectable]="{
+        mode: 'single'
+      }" filterable="menu" [resizable]="true" [sortable]="{
+        allowUnsort: allowUnsort,
+        mode: multiple ? 'multiple' : 'single'
+        }" [sort]="state.sort" (sortChange)="sortChange($event)" (filterChange)="filterChange($event)"
+                (cellClick)="cellClickHandler($event)" [filter]="state.filter" [loading]="loading">
+
+
+                <kendo-grid-column field="description" title="" width="25" [filterable]="false">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <img data-toggle="dropdown" aria-expanded="true"
+                            style="height:14px; width:16px; margin-top: 0px;" class="attachmentIcon"
+                            src="assets/img/icons/attach.png" />
+                    </ng-template>
+                </kendo-grid-column>
+                <kendo-grid-column field="description" title="Description" width="120">
+                </kendo-grid-column>
+                <kendo-grid-column field="filename" title="Filename" width="220">
+                </kendo-grid-column>
+                <kendo-grid-column field="ntpmodifiedtime" title="Modified" width="100">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.ntpmodifiedtime | dateFormat : 'DD-MMM-YYYY HH:mm:ss' }}
+                        </span>
+                    </ng-template>
+                </kendo-grid-column>
+
+
+            </kendo-grid>
+        </div>
+
+
+    </div>
+
+    <div class="row mt-2">
+        <div class="col-md-9 text-left leftSideBtn">
+            <input (change)="onFileChange($event)" type="file" #addDoc id="addDoc" style="display: none;">
+            <button class="btn btn-sm themeButton" (click)="viewDocument()" [disabled]="!selectedDoc">View
+                Document</button>
+            <button class="btn btn-sm themeButton" (click)="openEditDoc()" [disabled]="!selectedDoc">Edit
+                Description</button>
+            <button class="btn btn-sm themeButton" (click)="addDocument()">Add
+                Document</button>
+
+            <button class="btn btn-sm themeButton" (click)="openConfirmationDialog()" [disabled]="!selectedDoc">Remove
+                Document</button>
+        </div>
+
+        <div class="col-md-3 text-right rightSideBtn">
+            <button class="btn btn-sm themeButton" (click)="closeDocumentWindow()"> Close </button>
+        </div>
+
+    </div>
+
+    <div class="wodocOvrlay"></div>
+
+    <kendo-window title="Edit Description" *ngIf="showEditDoc" (close)="closeEditDocMethod()" [top]="30"
+        [minWidth]="500" [width]="650" [height]="auto" [minHeight]="200">
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-2">
+                        <label class="col-form-label">Description</label>
+                    </div>
+
+                    <div class="col-md-10">
+                        <input type="text" name="description" [(ngModel)]="description" class="form-control">
+                    </div>
+                </div>
+
+                <div class="row mt-4">
+                    <div class="col-md-12 text-right">
+                        <button class="btn btn-sm themeButton" (click)="updateDescription()">Apply</button>
+                        <button class="btn btn-sm themeButton ml-1" (click)="closeEditDocMethod()">Cancel</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </kendo-window>
+
+
+</kendo-window>

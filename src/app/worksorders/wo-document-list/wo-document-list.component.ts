@@ -177,7 +177,6 @@ export class WoDocumentListComponent implements OnInit {
     this.showEditDoc = event;
     $('.wodocOvrlay').removeClass('ovrlay');
     this.getDocumentData();
-
   }
 
 
@@ -200,7 +199,6 @@ export class WoDocumentListComponent implements OnInit {
         .catch(() => console.log('Attribute dismissed the dialog.'));
     }
   }
-
 
 
   removeDocument() {

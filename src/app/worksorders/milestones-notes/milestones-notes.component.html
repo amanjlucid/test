@@ -1,0 +1,63 @@
+<kendo-window title="{{title}}" *ngIf="openMilestoneNotes" (close)="closeMilestoneNotes()" [top]="10" [minWidth]="700"
+    [width]="870" [height]="auto" [minHeight]="300">
+    <div class="row headingDetail">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-1">
+                    <label class="col-form-label">Milestone: </label>
+                </div>
+                <div class="col-md-11">
+                    <input type="text" class="form-control" [readonly]="true"
+                        value="{{selectedMilestoneInp?.wocheckname}}">
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="row mt-2">
+        <div class="col-md-12">
+            <kendo-grid #grid [data]="gridView" [height]="410" [selectable]="selectableSettings" filterable="menu"
+                [resizable]="true" [sortable]="{
+        allowUnsort: allowUnsort,
+        mode: multiple ? 'multiple' : 'single'
+        }" [sort]="state.sort" (sortChange)="sortChange($event)" (filterChange)="filterChange($event)"
+                (cellClick)="cellClickHandler($event)" [filter]="state.filter" [loading]="loading">
+
+
+                <kendo-grid-column field="womilestonenote" title="Note" width="150">
+                </kendo-grid-column>
+                <kendo-grid-column field="securityUserName" title="User" width="110">
+                </kendo-grid-column>
+                <kendo-grid-column field="womilestonenotedatetime" title="Date/Time" width="120">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.womilestonenotedatetime | dateFormat : 'DD-MMM-YYYY HH:mm:ss' }}
+                        </span>
+                    </ng-template>
+                </kendo-grid-column>
+
+
+            </kendo-grid>
+        </div>
+
+    </div>
+
+    <div class="row mt-2">
+        <div class="col-md-12 milestoneAddNotes">
+            <div class="newNoteLbl"> <label class="col-form-label">New Note: </label></div>
+            <input type="text" class="form-control newNote" [(ngModel)]="note">
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-12 text-right">
+            <button class="btn btn-sm themeButton mr-1" (click)="addNotes()"> Add Note </button>
+            <button class="btn btn-sm themeButton" (click)="closeMilestoneNotes()"> Close </button>
+        </div>
+    </div>
+
+
+
+</kendo-window>

@@ -12,9 +12,6 @@
         class="btn btn-sm themeButton ">
         New Works Order
       </button>
-      <button [disabled]="disabledMilestone" (click)="openManageMilestonePopup()" class="btn btn-sm themeButton ml-1">
-        Manage Milestones
-      </button>
       <button (click)="export()" class="btn btn-sm themeButton ml-1"> Export</button>
       <button id="showFilePanel" (click)="lockUnlockColumn()" class="btn btn-sm themeButton ml-1">
         <i *ngIf="!columnLocked" class="fa fa-lock" aria-hidden="true"></i>
@@ -155,6 +152,12 @@
                 </div>
 
 
+                <a [ngClass]="{'disabled' : dataItem.wottemplatetype != 'Works Order Milestone'}"  *ngIf="woMenuAccess('Milestones')" class="dropdown-item" href="javascript:void(0)"
+                  (click)="openManageMilestonePopup(dataItem)">Milestones</a>
+
+                <!-- <button [disabled]="disabledMilestone" (click)="openManageMilestonePopup()" class="btn btn-sm themeButton ml-1">
+                  Manage Milestones
+                </button> -->
                 <!-- <div class="dropdown-toggle">
                   <div class="dropdown-item">Associations</div>
                   <div class="dropdown-menu addAssetMenu">

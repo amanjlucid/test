@@ -146,12 +146,16 @@
     top: -259px !important;
 }
 
-.disabled .dropdown-item{
+.disabled .dropdown-item {
     color: #d1d2d3;
     background-color: transparent;
     pointer-events: none;
 }
 
+/* .worksorderGrid .k-grid-content-locked {
+    z-index: 2 !important;
+    overflow: initial !important;
+} */
 
 /** media query **/
 

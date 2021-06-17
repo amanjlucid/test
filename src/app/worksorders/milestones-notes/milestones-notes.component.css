@@ -1,0 +1,23 @@
+.k-window {
+    position: fixed !important;
+}
+
+.k-grid tbody td {
+    white-space: nowrap;
+    line-height: 20px;
+    padding: 8px 12px;
+}
+
+.milestoneAddNotes{
+    display: block;
+}
+
+.milestoneAddNotes .newNoteLbl{
+    display: inline-block;
+    width: 10%;
+}
+
+.milestoneAddNotes .newNote{
+    display: inline-block;
+    width: 90%;
+}

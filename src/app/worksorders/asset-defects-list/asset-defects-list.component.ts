@@ -40,6 +40,7 @@ export class AssetDefectsListComponent implements OnInit {
   worksOrderData: any;
   phaseData: any;
   workorderAsset: any;
+  workorderAssetFullDetail: any;
   selectableSettings: SelectableSettings;
   gridView: DataResult;
   gridLoading = true
@@ -73,7 +74,7 @@ export class AssetDefectsListComponent implements OnInit {
 
   ngOnInit(): void {
     // console.log({ openedFrom: this.openedFrom, singleWorkOrderInp: this.singleWorkOrderInp, singleWorkOrderAssetInp: this.singleWorkOrderAssetInp, })
-    
+
     if (this.openedFrom == "workdetail" || this.openedFrom == "workorder") {
       this.title = 'Defects';
     }
@@ -116,6 +117,7 @@ export class AssetDefectsListComponent implements OnInit {
         this.workOrderProgrammeService.getWorksOrderByWOsequence(wosequence),
         this.workOrderProgrammeService.getPhase(wosequence, wopsequence),
         this.workOrderProgrammeService.getAssetAddressByAsset(assid),
+        this.workOrderProgrammeService.specificWorkOrderAssets(wosequence, assid, wopsequence),
       ];
     }
 
@@ -139,9 +141,10 @@ export class AssetDefectsListComponent implements OnInit {
           if (this.openedFrom == "assetchecklist") {
             const phaseData = data[2];
             const workorderAsset = data[3];
+            const workorderAssetFullDetail = data[4];
             if (phaseData.isSuccess) this.phaseData = phaseData.data;
             if (workorderAsset.isSuccess) this.workorderAsset = workorderAsset.data[0];
-
+            if (workorderAssetFullDetail) this.workorderAssetFullDetail = workorderAssetFullDetail.data[0];
           }
 
           this.getDefectList();
@@ -219,13 +222,16 @@ export class AssetDefectsListComponent implements OnInit {
     if (this.userType?.wourroletype == "Dual Role") {
       return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
     }
-
     return this.worksOrderUsrAccess.indexOf(menuName) != -1
-
   }
 
 
   openDefectForm(mode: string, item = null) {
+    if (this.workorderAssetFullDetail == undefined) return;
+
+    const { woassstatus } = this.workorderAssetFullDetail;
+    if (woassstatus != "Handover" && woassstatus != "Final Completion") return;
+
     $('.defectListoverlay').addClass('ovrlay');
     this.defectFormMode = mode;
     this.selectedSingleDefect = item;
@@ -246,6 +252,8 @@ export class AssetDefectsListComponent implements OnInit {
         .then((confirmed) => (confirmed) ? this.signOff(item) : console.log(confirmed))
         .catch(() => console.log('Attribute dismissed the dialog.'));
     } else {
+      if (item.wodstatus != 'New') return;
+      
       this.confirmationDialogService.confirm('Please confirm..', 'Do you really want to delete this record ?')
         .then((confirmed) => (confirmed) ? this.deleteDefect(item) : console.log(confirmed))
         .catch(() => console.log('Attribute dismissed the dialog.'));

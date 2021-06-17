@@ -48,7 +48,6 @@ export class BlankVariationComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    // console.log(this.singleWorksOrder);
     this.getPhase()
     this.variationForm = this.fb.group({
       worksorder: [{ value: this.singleWorksOrder.woname, disabled: true }, [Validators.required]],

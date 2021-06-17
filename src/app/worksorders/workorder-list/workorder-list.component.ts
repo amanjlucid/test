@@ -82,7 +82,6 @@ export class WorkorderListComponent implements OnInit {
   ProgrammeLogWindow = false;
   WoAssociationsManageWindow = false;
   openManageMilestone: boolean;
-  disabledMilestone: boolean = true;
   openDefectsList = false;
 
   constructor(
@@ -114,14 +113,12 @@ export class WorkorderListComponent implements OnInit {
         this.sharedService.userTypeObs
       ]).subscribe(
         data => {
-          // console.log(data);
           this.worksOrderAccess = data[0];
           this.worksOrderUsrAccess = data[1];
           this.userType = data[2][0];
 
           if (this.worksOrderAccess.length > 0) {
             if (!this.worksOrderAccess.includes("Works Orders Menu")) {
-              // this.alertService.error("No access")
               this.router.navigate(['login']);
             }
           }
@@ -174,19 +171,16 @@ export class WorkorderListComponent implements OnInit {
       this.worksOrderService.getListOfUserWorksOrderByUserId(filter).subscribe(
         data => {
           this.resetGrid();
-          // console.log(data)
           if (data.isSuccess) {
             this.worksorderTempData = [...data.data]
             this.worksOrderData = [...data.data];
             this.gridView = process(this.worksOrderData, this.state);
-
             this.chRef.detectChanges();
           } else {
             this.alertService.error(data.message);
           }
 
           this.loading = false;
-
           this.chRef.detectChanges();
         },
         err => this.alertService.error(err)
@@ -230,10 +224,8 @@ export class WorkorderListComponent implements OnInit {
 
     this.selectedWorksOrder = dataItem;
 
-    this.disabledMilestone = this.selectedWorksOrder.wottemplatetype === "Works Order Milestone" ? false : true;
     if (columnIndex > 0) {
       if (this.selectedWorksOrder.wosequence)
-
         if (this.touchtime == 0) {
           this.touchtime = new Date().getTime();
         } else {
@@ -819,9 +811,11 @@ export class WorkorderListComponent implements OnInit {
 
   }
 
-  openManageMilestonePopup() {
-    $('.worksOrderOverlay').addClass('ovrlay');
+  openManageMilestonePopup(item) {
+    this.selectedWorksOrder = item;
     this.openManageMilestone = true;
+    $('.worksOrderOverlay').addClass('ovrlay');
+    
   }
 
   closeManageMilestone($event) {

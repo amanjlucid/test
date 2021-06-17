@@ -87,6 +87,9 @@ import { ManagementSorComponent } from '../management-sor/management-sor.compone
 import { ManagementCostsComponent } from '../management-costs/management-costs.component';
 import { ManagementEditRolesComponent } from '../management-roles/management-edit-roles/management-edit-roles.component';
 import { ManagementEditCostsComponent } from '../management-costs/management-edit-costs/management-edit-costs.component';
+import { MilestonesNotesComponent } from '../milestones-notes/milestones-notes.component';
+import { MilestonesDocumentListComponent } from '../milestones-document-list/milestones-document-list.component';
+
 
 @NgModule({
   declarations: [
@@ -163,7 +166,9 @@ import { ManagementEditCostsComponent } from '../management-costs/management-edi
     ManagementSorComponent,
     ManagementCostsComponent,
     ManagementEditRolesComponent,
-    ManagementEditCostsComponent
+    ManagementEditCostsComponent,
+    MilestonesNotesComponent,
+    MilestonesDocumentListComponent
   ],
 
 

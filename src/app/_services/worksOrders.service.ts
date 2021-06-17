@@ -236,12 +236,44 @@ export class WorksOrdersService {
         return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetManageMilestone?wosequence=${wosequence}`, this.httpOptions);
     }
 
+    getMilestoneChecklist(wosequence, wopsequence, checksurcde) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetMilestoneChecklist?wosequence=${wosequence}&wopsequence=${wopsequence}&checksurcde=${checksurcde}`, this.httpOptions);
+    }
+
     getWorkOrderClientUserNames(wosequence) {
         return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/WorkOrderClientUserNames?wosequence=${wosequence}`, this.httpOptions);
     }
 
     updateWorksOrderMilestone(params) {
         return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/UpdateWorksOrderMilestone`, params, this.httpOptions);
+    }
+
+    updateMilestoneItem(params) {
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/UpdateMilestoneItem`, params, this.httpOptions);
+    }
+
+    getWEBWorksOrdersMilestoneNote(WOSEQUENCE, WOPSEQUENCE, WOCHECKSURCDE) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWEBWorksOrdersMilestoneNote?WOSEQUENCE=${WOSEQUENCE}&WOPSEQUENCE=${WOPSEQUENCE}&WOCHECKSURCDE=${WOCHECKSURCDE}`, this.httpOptions);
+    }
+
+    wEBWorksOrdersInsertMilestoneNote(params) {
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WEBWorksOrdersInsertMilestoneNote`, params, this.httpOptions);
+    }
+
+    getWEBWorksOrdersMiletoneFilenameList(wosequence, strWOPandCHECK) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWEBWorksOrdersMiletoneFilenameList?wosequence=${wosequence}&strWOPandCHECK=${strWOPandCHECK}`, this.httpOptions);
+    }
+
+    workOrderMileStoneUploadDocument(params) {
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WorkOrderMileStoneUploadDocument`, params)
+    }
+
+    removeWorksOrderMilestoneDocument(params) {
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/RemoveWorksOrderMilestoneDocument`, params, this.httpOptions);
+    }
+
+    updateWorksOrderMilestoneDocument(params) {
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/UpdateWorksOrderMilestoneDocument`, params, this.httpOptions);
     }
 
 

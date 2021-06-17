@@ -327,12 +327,6 @@
               style="margin-top: -10px; " (click)="setSeletedRow(dataItem)">
               <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars" (click)="setSeletedRow(dataItem)"></i>
               <div class="dropdown-menu selectedWodBar{{dataItem.id}} assetLvl">
-
-
-
-
-
-
                 <a *ngIf="woMenuBtnSecurityAccess('Asset Checklist')" class="dropdown-item" href="javascript:void(0)"
                   (click)="openAssetChecklist(dataItem)">Asset
                   Checklist</a>
@@ -349,7 +343,6 @@
                 <div class="dropdown-toggle">
                   <div class="dropdown-item">Work</div>
                   <div class="dropdown-menu">
-
                     <a *ngIf="woMenuBtnSecurityAccess('Work Details')" class="dropdown-item"
                       (click)="openAssetDetailChild(dataItem)" href="javascript:void(0)">
                       Detail</a>

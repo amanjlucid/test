@@ -70,6 +70,7 @@ export class WorksordersManagementComponent implements OnInit {
   selectedWorksOrder: any;
   ProgrammeLogWindow = false;
   WoAssociationsManageWindow = false;
+  openManageMilestone = false;
 
   constructor(
     private worksorderManagementService: WorksorderManagementService,
@@ -549,6 +550,18 @@ export class WorksordersManagementComponent implements OnInit {
     this.managementSORTab = false;
     $('.newManagementOverlay').removeClass('ovrlay');
     //this.refreshManagementGrid(true);
+  }
+
+  openManageMilestonePopup(item) {
+    this.selectedWorksOrder = item;
+    this.openManageMilestone = true;
+    $('.newManagementOverlay').addClass('ovrlay');
+    
+  }
+
+  closeManageMilestone($event) {
+    $('.newManagementOverlay').removeClass('ovrlay');
+    this.openManageMilestone = $event;
   }
 
 

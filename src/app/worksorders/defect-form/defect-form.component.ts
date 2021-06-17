@@ -133,7 +133,6 @@ export class DefectFormComponent implements OnInit {
 
   ngOnInit(): void {
     // console.log({ opendFrom: this.openedFrom, asset: this.singleWorkOrderAssetInp, def: this.selectedDefectInp })
-
     this.defectForm = this.fb.group({
       status: ['New', [Validators.required]],
       IdentifiedDate: ['', [Validators.required, SimpleDateValidator(), MustbeTodayOrLower()]], //n
@@ -141,7 +140,6 @@ export class DefectFormComponent implements OnInit {
       description: ['', [Validators.required]],//n
       cost: [0, [Validators.required]],
       score: ['', [Validators.required]],//n
-
       resolutionDate: [''],
       resolvedBy: [''],
       resolutionDetails: [''],
@@ -172,7 +170,7 @@ export class DefectFormComponent implements OnInit {
           } else if (val == "Resolved") {
             resDateCtr.setValidators([Validators.required, SimpleDateValidator(), checkFirstDateisLower(resDateCtr, IdeDateCtr), MustbeTodayOrLower()]);
             resByCtr.setValidators([Validators.required]);
-            resDetCtr.setValidators([Validators.required, MustbeTodayOrLower()]);
+            resDetCtr.setValidators([Validators.required]);
           }
 
           resDateCtr.updateValueAndValidity();
@@ -428,7 +426,7 @@ export class DefectFormComponent implements OnInit {
     this.submitted = true;
     this.formErrorObject(); // empty form error 
     this.logValidationErrors(this.defectForm);
-
+    
     if (this.defectForm.invalid) {
       return;
     }
@@ -498,6 +496,7 @@ export class DefectFormComponent implements OnInit {
       successMsg = "Defect updated successfully.";
     }
 
+    
     this.subs.add(
       apiCall.subscribe(
         data => {

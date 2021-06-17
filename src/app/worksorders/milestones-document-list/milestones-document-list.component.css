@@ -8,15 +8,10 @@
     padding: 8px 12px;
 }
 
-.headingDiv {
-    background-color: #dbdbdb;
-    padding: 3px;
+.leftSideBtn button{
+    margin-right: 5px;
 }
 
-.heading {
-    font-weight: 600;
-}
-
-.blue {
-    color: blue;
+#addDoc{
+    display: none;
 }

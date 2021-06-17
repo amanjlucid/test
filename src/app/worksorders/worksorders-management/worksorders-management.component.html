@@ -108,15 +108,15 @@
                                     (click)="openProgrammeLog(dataItem)">View Programme Log</a>
                                 <a class="dropdown-item" href="javascript:void(0)"
                                     (click)="openWoAssociationsManage(dataItem)">Associations</a>
-                                <a class="dropdown-item" href="javascript:void(0)"
-                                    (click)="openRolesTab(dataItem)"
+                                <a class="dropdown-item" href="javascript:void(0)" (click)="openRolesTab(dataItem)"
                                     *ngIf="woMenuAccess('Roles Tab')">Roles</a>
-                                <a class="dropdown-item" href="javascript:void(0)"
-                                    (click)="openSORTab(dataItem )"
+                                <a class="dropdown-item" href="javascript:void(0)" (click)="openSORTab(dataItem )"
                                     *ngIf="woMenuAccess('SOR Tab')">SOR</a>
-                                <a class="dropdown-item" href="javascript:void(0)"
-                                    (click)="openCostsTab(dataItem)"
+                                <a class="dropdown-item" href="javascript:void(0)" (click)="openCostsTab(dataItem)"
                                     *ngIf="woMenuAccess('Contract Costs Tab')">Contract Costs</a>
+
+                                <a *ngIf="woMenuAccess('Milestones')" class="dropdown-item" href="javascript:void(0)"
+                                    (click)="openManageMilestonePopup(dataItem)">Milestones</a>
 
                             </div>
 
@@ -397,3 +397,7 @@
 <app-management-sor *ngIf="managementSORTab" [managementSORTab]="managementSORTab"
     (closeManagementSORTab)="closeManagementSORTab($event)" [selectedWorksOrder]="worksOrderSingleData">
 </app-management-sor>
+
+<app-manage-milestones *ngIf="openManageMilestone" [worksOrderData]="selectedWorksOrder"
+    [openManageMilestone]="openManageMilestone" (closeManageMilestoneEvent)="closeManageMilestone($event)">
+</app-manage-milestones>

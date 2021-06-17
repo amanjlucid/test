@@ -2,7 +2,8 @@ import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { SelectableSettings, PageChangeEvent } from '@progress/kendo-angular-grid';
-import { AlertService, ConfirmationDialogService, HelperService, WorksOrdersService } from 'src/app/_services';
+import { AlertService, SharedService, WorksOrdersService } from 'src/app/_services';
+import { combineLatest } from 'rxjs';
 
 @Component({
   selector: 'app-manage-milestones',
@@ -16,10 +17,11 @@ export class ManageMilestonesComponent implements OnInit {
   @Input() openManageMilestone: boolean = false;
   @Input() worksOrderData: any;
   @Output() closeManageMilestoneEvent = new EventEmitter<boolean>();
-
+  @Input() predecessors = false;
+  @Input() selectedMilestoneInp: any;
+  openPredecessors = false;
   openMilestoneEdit: boolean;
-
-  title = 'Manage Milestones';
+  title = 'Work Order Milestones';
   subs = new SubSink();
   state: State = {
     skip: 0,
@@ -37,28 +39,46 @@ export class ManageMilestonesComponent implements OnInit {
   pageSize = 25;
   selectableSettings: SelectableSettings;
   mySelection: any[] = [];
-
   filterToggle = false;
-
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
   milestonesData: any;
   singleMilestone: any;
-  woClientUserList: any;
 
-  editMilestone: boolean = true;
+  worksOrderAccess = [];
+  worksOrderUsrAccess: any = [];
+  userType: any = [];
+
+  openMilestoneNotes = false;
+  documentWindow = false;
+  woName = '';
 
   constructor(
     private chRef: ChangeDetectorRef,
     private worksOrdersService: WorksOrdersService,
     private alertService: AlertService,
-    private confirmationDialogService: ConfirmationDialogService
+    private sharedService: SharedService
 
   ) {
     this.setSelectableSettings();
   }
 
   ngOnInit(): void {
-    this.getManageMilestonesList();
+    this.subs.add(
+      combineLatest([
+        this.sharedService.worksOrdersAccess,
+        this.sharedService.woUserSecObs,
+        this.sharedService.userTypeObs
+      ]).subscribe(
+        data => {
+          this.worksOrderAccess = data[0];
+          this.worksOrderUsrAccess = data[1];
+          this.userType = data[2][0];
+        }
+      )
+    )
+
+    this.woName = this.worksOrderData?.woname ?? this.worksOrderData?.name;
+    this.getMilestoneChecklist();
   }
 
   ngOnDestroy() {
@@ -72,8 +92,7 @@ export class ManageMilestonesComponent implements OnInit {
     };
   }
 
-  cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
-    this.editMilestone = false;
+  cellClickHandler({ dataItem }) {
     this.singleMilestone = dataItem;
   }
 
@@ -83,43 +102,31 @@ export class ManageMilestonesComponent implements OnInit {
     this.closeManageMilestoneEvent.emit(false);
   }
 
-  getManageMilestonesList() {
-    const wosequence = this.worksOrderData.wosequence;
+
+  getMilestoneChecklist() {
+    const { wosequence } = this.worksOrderData;
+    let wopSeq = 0;
+    let wochecksurcde = 0;
+    if (this.predecessors) {
+      this.title = 'Work Order Milestones Predecessors';
+      wopSeq = this.selectedMilestoneInp.wopsequence;
+      wochecksurcde = this.selectedMilestoneInp.wochecksurcde;
+    }
     this.subs.add(
-      this.worksOrdersService.getManageMilestoneData(wosequence).subscribe(
+      this.worksOrdersService.getMilestoneChecklist(wosequence, wopSeq, wochecksurcde).subscribe(
         data => {
           if (data.isSuccess) {
-            this.getWorkOrderClientUserList(wosequence);
-            this.milestonesData = [...data.data];
-            this.milestonesData.map(x => {
-              x.wocheckspeciaL2 = x.wocheckspeciaL2.trim();
-            });
+            this.milestonesData = data.data;
             this.gridView = process(this.milestonesData, this.state);
           } else this.alertService.error(data.message);
 
           this.loading = false;
           this.chRef.detectChanges();
-
         }, err => this.alertService.error(err)
       )
     )
-
   }
 
-  getWorkOrderClientUserList(wosequence: number) {
-    this.subs.add(
-      this.worksOrdersService.getWorkOrderClientUserNames(wosequence).subscribe(
-        data => {
-          if (data.isSuccess) {
-            this.woClientUserList = [...data.data];
-          } else this.alertService.error(data.message);
-          this.chRef.detectChanges();
-
-        }, err => this.alertService.error(err)
-      )
-    )
-
-  }
 
 
   sortChange(sort: SortDescriptor[]): void {
@@ -140,28 +147,66 @@ export class ManageMilestonesComponent implements OnInit {
     };
   }
 
-  confirmEditMilestones() {
-    if (this.currentUser.userId !== this.singleMilestone.woresponsibleuser) {
-      $('.k-window').css({ 'z-index': 1000 });
-      this.confirmationDialogService.confirm('Please confirm..', "You are not listed as being responsible for this milestone, do you want to continue and edit it?")
-        .then((confirmed) => (confirmed) ? this.openMilestonesEdit() : console.log(confirmed))
-        .catch(() => console.log('Attribute dismissed the dialog.'));
-    } else {
-      this.openMilestonesEdit();
 
-    }
-  }
-
-  openMilestonesEdit() {
-    this.openMilestoneEdit = true;
+  openMilestonesEdit(item) {
+    this.singleMilestone = item;
     $('.milestoneOverlay').addClass('ovrlay');
+    this.openMilestoneEdit = true;
     this.chRef.detectChanges();
   }
 
   closeMilestoneEdit($event) {
-    this.getManageMilestonesList();
     this.openMilestoneEdit = $event;
     $('.milestoneOverlay').removeClass('ovrlay');
+    this.getMilestoneChecklist();
+  }
+
+  openPredecessorsMethod(item) {
+    this.singleMilestone = item;
+    $('.milestonePredecessorsOverlay').addClass('ovrlay');
+    this.openPredecessors = true;
+
+  }
+
+  closePredecessors(eve) {
+    this.openPredecessors = false;
+    $('.milestonePredecessorsOverlay').removeClass('ovrlay');
+  }
+
+
+  woMenuAccess(menuName: string) {
+    if (this.userType == undefined) return true;
+
+    if (this.userType?.wourroletype == "Dual Role") {
+      return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
+    }
+    return this.worksOrderUsrAccess.indexOf(menuName) != -1
+  }
+
+
+  openMilestoneNotesMethod(item) {
+    this.singleMilestone = item;
+    $('.milestoneOverlay').addClass('ovrlay');
+    this.openMilestoneNotes = true;
+  }
+
+
+  closeMilestoneNotes($event) {
+    this.openMilestoneNotes = $event;
+    $('.milestoneOverlay').removeClass('ovrlay');
+    this.getMilestoneChecklist();
+  }
+
+  openDocumentWindow(item) {
+    this.singleMilestone = item;
+    $('.milestoneOverlay').addClass('ovrlay');
+    this.documentWindow = true;
+  }
+
+  closeDocument($event) {
+    this.documentWindow = $event;
+    $('.milestoneOverlay').removeClass('ovrlay');
+    this.getMilestoneChecklist();
   }
 
 }

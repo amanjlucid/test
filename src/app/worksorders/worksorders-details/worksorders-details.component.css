@@ -402,5 +402,8 @@ label.radio-inline {
   position: relative;
   top: -2px !important;
 }
-  
 
+/* .workorderDetailGrid .k-grid-content-locked {
+  z-index: 2 !important;
+  overflow: initial !important;
+} */
