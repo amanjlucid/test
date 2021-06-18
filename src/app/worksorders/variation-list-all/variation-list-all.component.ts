@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { SelectableSettings, PageChangeEvent } from '@progress/kendo-angular-grid';
-import { AlertService, ConfirmationDialogService, HelperService, SharedService, WorksorderManagementService, WorksOrdersService } from 'src/app/_services';
+import { AlertService, ConfirmationDialogService, SharedService, WorksorderManagementService, WorksOrdersService } from 'src/app/_services';
 import { combineLatest, forkJoin } from 'rxjs';
 
 @Component({
@@ -62,8 +62,6 @@ export class VariationListAllComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // console.log(this.singleWorksOrder);
-    // this.getUserWOSecurityData();
     this.subs.add(
       combineLatest([
         this.sharedService.worksOrdersAccess,
@@ -78,7 +76,7 @@ export class VariationListAllComponent implements OnInit {
       )
     )
 
-
+    // this.getUserWOSecurityData();
     this.getAllVariations();
   }
 
@@ -129,13 +127,13 @@ export class VariationListAllComponent implements OnInit {
     this.subs.add(
       this.worksOrderService.getWEBWorksOrdersInstructionsForUser(wprsequence, wosequence, this.currentUser.userId, false).subscribe(
         data => {
-          // console.log({variation : data.data, wo : this.singleWorksOrder})
           if (data.isSuccess) {
             this.variationData = data.data;
             this.gridView = process(this.variationData, this.state);
           } else this.alertService.error(data.message);
 
           this.loading = false;
+          this.selectedSingleInstructionVariation = undefined;
           this.chRef.detectChanges();
 
         }, err => this.alertService.error(err)
@@ -162,22 +160,16 @@ export class VariationListAllComponent implements OnInit {
     };
   }
 
-  cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
+  cellClickHandler({ dataItem }) {
     this.selectedSingleInstructionVariation = dataItem;
-    // console.log(this.mySelection)
-    // console.log(dataItem)
-
   }
 
   woMenuAccess(menuName) {
     if (this.userType == undefined) return true;
-
     if (this.userType?.wourroletype == "Dual Role") {
       return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
     }
-
     return this.worksOrderUsrAccess.indexOf(menuName) != -1
-
   }
 
 
@@ -296,12 +288,10 @@ export class VariationListAllComponent implements OnInit {
 
 
   issueVariation(item, checkOrProcess = "C") {
-
     if (this.disableVariationBtns('Issue', item)) {
       // this.alertService.error("Error");
       return;
     }
-
 
     const { wosequence, woisequence, wopsequence } = item;
     const params: any = {};
@@ -315,7 +305,6 @@ export class VariationListAllComponent implements OnInit {
     this.subs.add(
       this.workOrderProgrammeService.worksOrderIssueVariation(params).subscribe(
         data => {
-          // console.log(data);
           if (data.isSuccess) {
             let resp: any;
             if (data.data[0] == undefined) {
@@ -402,6 +391,7 @@ export class VariationListAllComponent implements OnInit {
     this.openVariationDetail = eve;
     $('.variationListAllOverlay').removeClass('ovrlay');
     this.getAllVariations();
+
   }
 
 

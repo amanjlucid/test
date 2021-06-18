@@ -83,6 +83,7 @@ export class WorkorderListComponent implements OnInit {
   WoAssociationsManageWindow = false;
   openManageMilestone: boolean;
   openDefectsList = false;
+  openMilestoneFor = "checklist";
 
   constructor(
     private worksOrderService: WorksOrdersService,
@@ -113,6 +114,7 @@ export class WorkorderListComponent implements OnInit {
         this.sharedService.userTypeObs
       ]).subscribe(
         data => {
+          console.log(data);
           this.worksOrderAccess = data[0];
           this.worksOrderUsrAccess = data[1];
           this.userType = data[2][0];
@@ -564,50 +566,50 @@ export class WorkorderListComponent implements OnInit {
     $('.worksOrderOverlay').removeClass('ovrlay');
   }
 
-  WOCreateXportOutputReport(xPortId, reportName) {
-    let params = {
-      "intXportId": xPortId,
-      "lstParamNameValue": ["Works Order Number", this.selectedWorksOrder.wosequence],
-      "lngMaxRows": 40000
-    };
-    if (xPortId == 587 || xPortId == 588) {
-      params.lstParamNameValue = ["Master Works Order", this.selectedWorksOrder.wosequence];
-    }
-    this.worksOrderReportService.WOCreateXportOutput(params).subscribe(
-      (data) => {
+  // WOCreateXportOutputReport(xPortId, reportName) {
+  //   let params = {
+  //     "intXportId": xPortId,
+  //     "lstParamNameValue": ["Works Order Number", this.selectedWorksOrder.wosequence],
+  //     "lngMaxRows": 40000
+  //   };
+  //   if (xPortId == 587 || xPortId == 588) {
+  //     params.lstParamNameValue = ["Master Works Order", this.selectedWorksOrder.wosequence];
+  //   }
+  //   this.worksOrderReportService.WOCreateXportOutput(params).subscribe(
+  //     (data) => {
 
-        const { columns, rows } = data[0];
-        const tempCol = columns.map(x => x.columnName);
-        const tempRow = rows.map(x => x.values);
-        let result: any;
-        let label: any;
+  //       const { columns, rows } = data[0];
+  //       const tempCol = columns.map(x => x.columnName);
+  //       const tempRow = rows.map(x => x.values);
+  //       let result: any;
+  //       let label: any;
 
-        if (tempRow.length > 0) {
-          result = tempRow.map(x => x.reduce(function (result, field, index) {
-            var fieldKey = tempCol[index].replace(new RegExp(" ", 'g'), "");
-            result[fieldKey] = field;
-            return result;
-          }, {}));
+  //       if (tempRow.length > 0) {
+  //         result = tempRow.map(x => x.reduce(function (result, field, index) {
+  //           var fieldKey = tempCol[index].replace(new RegExp(" ", 'g'), "");
+  //           result[fieldKey] = field;
+  //           return result;
+  //         }, {}));
 
-          label = tempCol.reduce(function (result, field) {
-            var fieldKey = field.replace(new RegExp(" ", 'g'), "");
-            result[fieldKey] = field;
-            return result;
-          }, {});
+  //         label = tempCol.reduce(function (result, field) {
+  //           var fieldKey = field.replace(new RegExp(" ", 'g'), "");
+  //           result[fieldKey] = field;
+  //           return result;
+  //         }, {});
 
-          let fileName = reportName + " " + this.selectedWorksOrder.wosequence;
-          this.helperService.exportAsExcelFile(result, fileName, label);
-        } else {
-          this.alertService.error("No Record Found.");
-        }
-        this.chRef.detectChanges();
-      },
-      error => {
-        this.alertService.error(error);
+  //         let fileName = reportName + " " + this.selectedWorksOrder.wosequence;
+  //         this.helperService.exportAsExcelFile(result, fileName, label);
+  //       } else {
+  //         this.alertService.error("No Record Found.");
+  //       }
+  //       this.chRef.detectChanges();
+  //     },
+  //     error => {
+  //       this.alertService.error(error);
 
-      }
-    )
-  }
+  //     }
+  //   )
+  // }
 
 
   openDocumentMethod(item) {
@@ -633,7 +635,6 @@ export class WorkorderListComponent implements OnInit {
   openWoAssociationsManage(item) {
     this.selectedWorksOrder = item;
     this.WoAssociationsManageWindow = true;
-
     $('.worksOrderOverlay').addClass('ovrlay');
   }
 
@@ -811,11 +812,12 @@ export class WorkorderListComponent implements OnInit {
 
   }
 
-  openManageMilestonePopup(item) {
+  openManageMilestonePopup(item, openFor) {
+    this.openMilestoneFor = openFor;
     this.selectedWorksOrder = item;
     this.openManageMilestone = true;
     $('.worksOrderOverlay').addClass('ovrlay');
-    
+
   }
 
   closeManageMilestone($event) {

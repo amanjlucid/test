@@ -107,7 +107,7 @@
                 <a class="dropdown-item" href="javascript:void(0)"
                   (click)="openWoAssociationsManage(dataItem)">Associations</a>
 
-                  <a  *ngIf="woMenuAccess('Defects')" class="dropdown-item" href="javascript:void(0)"
+                <a *ngIf="woMenuAccess('Defects')" class="dropdown-item" href="javascript:void(0)"
                   (click)="openDefectsMethod(dataItem)">Defects</a>
 
                 <a *ngIf="woMenuAccess('Works Order Documents')"
@@ -144,29 +144,25 @@
                       (click)="WOCreateXportOutputReport(506, 'WO Selected Work Report')">Work Report (Selected
                       Order)</a>
 
-                    <a class="dropdown-item" href="javascript:void(0)"
+                    <!-- <a class="dropdown-item" href="javascript:void(0)"
                       (click)="WOCreateXportOutputReport(587, 'Associations Works Order Level')">Works Order Level</a>
                     <a class="dropdown-item" href="javascript:void(0)"
-                      (click)="WOCreateXportOutputReport(588, 'Associations Asset Level')">Asset Level</a>
+                      (click)="WOCreateXportOutputReport(588, 'Associations Asset Level')">Asset Level</a> -->
                   </div>
                 </div>
 
 
-                <a [ngClass]="{'disabled' : dataItem.wottemplatetype != 'Works Order Milestone'}"  *ngIf="woMenuAccess('Milestones')" class="dropdown-item" href="javascript:void(0)"
-                  (click)="openManageMilestonePopup(dataItem)">Milestones</a>
-
-                <!-- <button [disabled]="disabledMilestone" (click)="openManageMilestonePopup()" class="btn btn-sm themeButton ml-1">
-                  Manage Milestones
-                </button> -->
-                <!-- <div class="dropdown-toggle">
-                  <div class="dropdown-item">Associations</div>
-                  <div class="dropdown-menu addAssetMenu">
-                    <a class="dropdown-item" href="javascript:void(0)"
-                      (click)="WOCreateXportOutputReport(587, 'Associations Works Order Level')">Works Order Level</a>
-                    <a class="dropdown-item" href="javascript:void(0)"
-                      (click)="WOCreateXportOutputReport(588, 'Associations Asset Level')">Asset Level</a>
+                <div class="dropdown-toggle">
+                  <div [ngClass]="{'disabled' : dataItem.wottemplatetype != 'Works Order Milestone'}"
+                    class="dropdown-item">Milestones</div>
+                  <div class="dropdown-menu milestoneMenu">
+                    <a *ngIf="woMenuAccess('Milestones')" class="dropdown-item" href="javascript:void(0)"
+                      (click)="openManageMilestonePopup(dataItem, 'checklist')">Milestones</a>
+                    <a *ngIf="woMenuAccess('Manage Milestones')" class="dropdown-item" href="javascript:void(0)"
+                      (click)="openManageMilestonePopup(dataItem, 'manage')">Manage Milestones</a>
                   </div>
-                </div> -->
+                </div>
+
 
               </div>
 
@@ -421,10 +417,11 @@
 </app-wo-association-manage>
 
 <app-manage-milestones *ngIf="openManageMilestone" [worksOrderData]="selectedWorksOrder"
-  [openManageMilestone]="openManageMilestone" (closeManageMilestoneEvent)="closeManageMilestone($event)">
+  [openManageMilestone]="openManageMilestone" [openMilestoneFor]="openMilestoneFor"
+  (closeManageMilestoneEvent)="closeManageMilestone($event)">
 </app-manage-milestones>
 
 <app-asset-defects-list *ngIf="openDefectsList" [openDefectsList]="openDefectsList"
-[singleWorkOrderInp]="selectedWorksOrder" [openedFrom]="'workorder'"
-(closeDefectsListEvent)="closeDefectList($event)">
+  [singleWorkOrderInp]="selectedWorksOrder" [openedFrom]="'workorder'"
+  (closeDefectsListEvent)="closeDefectList($event)">
 </app-asset-defects-list>

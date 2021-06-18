@@ -48,19 +48,18 @@ export class VariationDetailComponent implements OnInit {
   worksOrderAccess = [];
   worksOrderUsrAccess: any = [];
   userType: any = [];
-  
+  action = 'single';
+
+
   constructor(
     private chRef: ChangeDetectorRef,
     private workOrderProgrammeService: WorksorderManagementService,
     private alertService: AlertService,
     private sharedService: SharedService,
     private confirmationDialogService: ConfirmationDialogService,
-  ) {
-    this.setSelectableSettings();
-  }
+  ) { }
 
   ngOnInit(): void {
-    
     this.subs.add(
       combineLatest([
         this.sharedService.woUserSecObs,
@@ -74,7 +73,9 @@ export class VariationDetailComponent implements OnInit {
         }
       )
     )
-    
+
+    this.setSelectableSettings();
+
     if (this.openedFor == "details") {
       this.getVariationPageDataWithGrid();
     }
@@ -93,7 +94,7 @@ export class VariationDetailComponent implements OnInit {
   setSelectableSettings(): void {
     this.selectableSettings = {
       checkboxOnly: false,
-      mode: 'single'
+      mode: this.openedFor == 'EBR' ? 'multiple' : 'single'
     };
   }
 
@@ -119,6 +120,7 @@ export class VariationDetailComponent implements OnInit {
           } else this.alertService.error(data.message);
 
           this.loading = false;
+          this.mySelection = [];
           this.chRef.detectChanges();
         }, err => this.alertService.error(err)
       )
@@ -132,13 +134,10 @@ export class VariationDetailComponent implements OnInit {
         this.workOrderProgrammeService.getWorksOrderByWOsequence(wosequence),
         this.workOrderProgrammeService.getPhase(wosequence, wopsequence),
         this.workOrderProgrammeService.getWOInstructionSpecificAssetsDetails(wosequence, woisequence, assid),
-
       ]).subscribe(
         data => {
-          // console.log(data);
           this.worksOrderData = data[0].data;
           this.phaseData = data[1].data;
-
           const variationData = data[2];
 
           if (variationData.isSuccess) {
@@ -172,23 +171,36 @@ export class VariationDetailComponent implements OnInit {
     };
   }
 
-  cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
-    // this.selectedSingleVarWorkList = dataItem;
+  mySelectionKey(context: RowArgs): string {
+    const { wosequence, wopsequence, assid, wlcode, wlataid, wlplanyear, woadrechargeyn, wochecksurcde, wostagesurcde } = context.dataItem;
+    return encodeURIComponent(`${wosequence}_${wopsequence}_${assid}_${wlcode}_${wlataid}_${wlplanyear}_${woadrechargeyn}_${wochecksurcde}_${wostagesurcde}`);
+  }
+
+  cellClickHandler({ dataItem }) {
+
   }
 
   woMenuAccess(menuName) {
     if (this.userType == undefined) return true;
-
     if (this.userType?.wourroletype == "Dual Role") {
       return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
     }
-
     return this.worksOrderUsrAccess.indexOf(menuName) != -1
-
   }
 
-  openDeleteWorkReasonWindow(item) {
+  openDeleteWorkReasonWindow(item, action = 'single') {
+    this.action = action;
     this.selectedAssetDetail = item;
+
+    if (item != null && action == 'single') {
+      const { variationAction } = item;
+      if (variationAction.trim() != "" && variationAction.trim() == "Remove Work Item") {
+        this.alertService.error("No valid items selected for this process");
+        return;
+      }
+    }
+
+
     $('.variationAssetDetailOverlay').addClass('ovrlay');
     this.reason = '';
     this.deleteWorkReasonOpen = true;
@@ -207,7 +219,55 @@ export class VariationDetailComponent implements OnInit {
       return
     }
 
-    this.deleteWork()
+    if (this.action == 'single') {
+      this.deleteWork()
+    } else {
+      this.deleteMultipleWork();
+    }
+
+  }
+
+  deleteMultipleWork() {
+    if (this.mySelection.length < 1) {
+      this.alertService.error("Please select more than one record");
+      return;
+    }
+
+    const { woisequence } = this.singleVariation;
+    let params = [];
+    for (let selection of this.mySelection) {
+      const splitArr = selection.split("_");
+      params.push({
+        WOSEQUENCE: splitArr[0],
+        WOISEQUENCE: woisequence,
+        strASSID: splitArr[2],
+        WOPSEQUENCE: splitArr[1],
+        WLCODE: splitArr[3],
+        WLATAID: splitArr[4],
+        WLPLANYEAR: splitArr[5],
+        strWOIADCOMMENT: this.reason,
+        strUser: this.currentUser.userId,
+        Recharge: splitArr[6],
+      })
+    }
+
+    if (params.length == 0) {
+      this.alertService.error("Something went wrong.")
+      return
+    }
+
+    this.subs.add(
+      this.workOrderProgrammeService.worksOrdersCreateVariationForRemoveWOADForMultiple(params).subscribe(
+        data => {
+          if (data.isSuccess) {
+            this.alertService.success(`${params.length} Work Item deleted successfully.`);
+            this.closeDeleteWorkReasonWindo();
+            this.getVariationAssetDetails();
+          } else this.alertService.error(data.message);
+        }, err => this.alertService.error(err)
+      )
+    )
+
   }
 
   deleteWork() {
@@ -215,6 +275,7 @@ export class VariationDetailComponent implements OnInit {
       this.alertService.error('Variation not found');
       return;
     }
+
 
     const { wosequence, wopsequence, assid, wlcode, wlataid, wlplanyear, woadrechargeyn, atadescription } = this.selectedAssetDetail;
     const { woisequence } = this.singleVariation;
@@ -248,6 +309,56 @@ export class VariationDetailComponent implements OnInit {
 
   }
 
+
+  removeItemVariationConfirmMultiple() {
+    this.action = 'multiple';
+    $('.k-window').css({ 'z-index': 1000 });
+    this.confirmationDialogService.confirm('Please confirm..', `Are you sure you want to Remove Variation?`)
+      .then((confirmed) => (confirmed) ? this.removeItemVariationMultiple() : console.log(confirmed))
+      .catch(() => console.log('Attribute dismissed the dialog.'));
+  }
+
+  removeItemVariationMultiple() {
+    if (this.mySelection.length < 1) {
+      this.alertService.error("Please select more than one record");
+      return;
+    }
+
+    const { woisequence } = this.singleVariation;
+    let params = [];
+    for (let selection of this.mySelection) {
+      const splitArr = selection.split("_");
+      params.push({
+        WOSEQUENCE: splitArr[0],
+        WOISEQUENCE: woisequence,
+        ASSID: splitArr[2],
+        WOPSEQUENCE: splitArr[1],
+        WLCODE: splitArr[3],
+        WLATAID: splitArr[4],
+        WLPLANYEAR: splitArr[5],
+        WOSTAGESURCDE: splitArr[8],
+        WOCHECKSURCDE: splitArr[7],
+        UserID: this.currentUser.userId,
+      })
+    }
+
+    if (params.length == 0) {
+      this.alertService.error("Something went wrong.")
+      return
+    }
+
+    this.subs.add(
+      this.workOrderProgrammeService.wRemoveInstructionAssetDetailForMultiple(params).subscribe(
+        data => {
+          if (data.isSuccess) {
+            this.alertService.success(`${params.length} Work Item removed successfully.`);
+            this.getVariationAssetDetails();
+          } else this.alertService.error(data.message);
+        }, err => this.alertService.error(err)
+      )
+    )
+
+  }
 
 
   removeItemVariationConfirm(item) {

@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { SelectableSettings, PageChangeEvent } from '@progress/kendo-angular-grid';
-import { AlertService, SharedService, WorksOrdersService } from 'src/app/_services';
+import { AlertService, HelperService, ReportingGroupService, SharedService, WorksorderReportService, WorksOrdersService } from 'src/app/_services';
 import { combineLatest } from 'rxjs';
 
 @Component({
@@ -16,6 +16,7 @@ import { combineLatest } from 'rxjs';
 export class ManageMilestonesComponent implements OnInit {
   @Input() openManageMilestone: boolean = false;
   @Input() worksOrderData: any;
+  @Input() openMilestoneFor = 'checklist';
   @Output() closeManageMilestoneEvent = new EventEmitter<boolean>();
   @Input() predecessors = false;
   @Input() selectedMilestoneInp: any;
@@ -56,7 +57,10 @@ export class ManageMilestonesComponent implements OnInit {
     private chRef: ChangeDetectorRef,
     private worksOrdersService: WorksOrdersService,
     private alertService: AlertService,
-    private sharedService: SharedService
+    private sharedService: SharedService,
+    // private worksOrderReportService: WorksorderReportService,
+    private reportingGrpService: ReportingGroupService,
+    private helperService: HelperService
 
   ) {
     this.setSelectableSettings();
@@ -78,7 +82,15 @@ export class ManageMilestonesComponent implements OnInit {
     )
 
     this.woName = this.worksOrderData?.woname ?? this.worksOrderData?.name;
-    this.getMilestoneChecklist();
+
+    if (this.openMilestoneFor == "manage") {
+      this.title = 'Manage Milestones';
+      this.getManageMilestonesList();
+    } else {
+      this.getMilestoneChecklist();
+    }
+
+
   }
 
   ngOnDestroy() {
@@ -102,6 +114,27 @@ export class ManageMilestonesComponent implements OnInit {
     this.closeManageMilestoneEvent.emit(false);
   }
 
+  getManageMilestonesList() {
+    const { wosequence } = this.worksOrderData;
+    this.subs.add(
+      this.worksOrdersService.getManageMilestoneData(wosequence).subscribe(
+        data => {
+          if (data.isSuccess) {
+            this.milestonesData = [...data.data];
+            this.milestonesData.map(x => {
+              x.wocheckspeciaL2 = x.wocheckspeciaL2.trim();
+            });
+            this.gridView = process(this.milestonesData, this.state);
+          } else this.alertService.error(data.message);
+
+          this.loading = false;
+          this.chRef.detectChanges();
+
+        }, err => this.alertService.error(err)
+      )
+    )
+
+  }
 
   getMilestoneChecklist() {
     const { wosequence } = this.worksOrderData;
@@ -158,7 +191,10 @@ export class ManageMilestonesComponent implements OnInit {
   closeMilestoneEdit($event) {
     this.openMilestoneEdit = $event;
     $('.milestoneOverlay').removeClass('ovrlay');
-    this.getMilestoneChecklist();
+
+    if (this.openMilestoneFor == "checklist") this.getMilestoneChecklist();
+    else this.getManageMilestonesList();
+
   }
 
   openPredecessorsMethod(item) {
@@ -190,7 +226,6 @@ export class ManageMilestonesComponent implements OnInit {
     this.openMilestoneNotes = true;
   }
 
-
   closeMilestoneNotes($event) {
     this.openMilestoneNotes = $event;
     $('.milestoneOverlay').removeClass('ovrlay');
@@ -208,5 +243,41 @@ export class ManageMilestonesComponent implements OnInit {
     $('.milestoneOverlay').removeClass('ovrlay');
     this.getMilestoneChecklist();
   }
+
+
+  mileStoneReport(xPortId, reportName) {
+    const { wosequence, wprsequence } = this.worksOrderData;
+    let params;
+
+    if (reportName == "Programme Log") {
+      params = {
+        "intXportId": xPortId,//546
+        "lstParamNameValue": ["Works Order No", wosequence, "Work Programme", wprsequence],
+      };
+    }
+
+    if (reportName == "Milestone Report" || reportName == "Note Report") {
+      params = {
+        "intXportId": xPortId,//milestonre report 544, note report 545
+        "lstParamNameValue": ["Works Order No", wosequence, "Phase No", 0],
+      };
+    }
+
+    this.subs.add(
+      this.reportingGrpService.runReport(xPortId, params.lstParamNameValue, this.currentUser.userId, "EXCEL", false).subscribe(
+        data => {
+          const linkSource = 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' + data;
+          const downloadLink = document.createElement("a");
+          const fileName = `${reportName}_${xPortId}.xlsx`;
+          downloadLink.href = linkSource;
+          downloadLink.download = fileName;
+          downloadLink.click();
+        }
+      )
+    )
+
+    
+  }
+
 
 }

@@ -152,6 +152,11 @@
     pointer-events: none;
 }
 
+.dropdown-menu.milestoneMenu {
+    top: -43px !important;
+}
+
+
 /* .worksorderGrid .k-grid-content-locked {
     z-index: 2 !important;
     overflow: initial !important;

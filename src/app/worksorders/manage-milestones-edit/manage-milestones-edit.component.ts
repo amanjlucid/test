@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy
 import { SubSink } from 'subsink';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { WorksOrdersService, AlertService, HelperService, ConfirmationDialogService } from '../../_services'
-import { firstDateIsLower, IsGreaterDateValidator, ShouldGreaterThanYesterday, SimpleDateValidator } from 'src/app/_helpers';
+import { firstDateIsLower, firstDateIsLowerWithOptionalSecondField, IsGreaterDateValidator, MustbeTodayOrLower, OrderDateValidator, ShouldGreaterThanYesterday, SimpleDateValidator } from 'src/app/_helpers';
 
 @Component({
   selector: 'app-manage-milestones-edit',
@@ -14,6 +14,7 @@ import { firstDateIsLower, IsGreaterDateValidator, ShouldGreaterThanYesterday, S
 export class ManageMilestonesEditComponent implements OnInit {
   @Input() openMilestoneEdit: boolean = false;
   @Input() singleMilestone: any;
+  @Input() openMilestoneFor;
   @Output() closeMilestoneEditEvent = new EventEmitter<boolean>();
 
   subs = new SubSink(); // to unsubscribe services
@@ -28,12 +29,13 @@ export class ManageMilestonesEditComponent implements OnInit {
     'startDate': {
       'required': 'Start Date is required.',
       'invalidDate': 'Start Date in dd/mm/yyyy format.',
+      'futureDate': 'Start Date cannot be in the future.'
     },
     'targetDate': {
       'required': 'Target Date is required.',
       'invalidDate': 'Target Date in dd/mm/yyyy format.',
       'pastDate': 'Target Date cannot be in the past.',
-      'isLower': 'Target Date must be on or after the Plan Start Date.',
+      'isLower': 'Target Date must be on or after the Plan End Date.',
     },
     'completionDate': {
       'required': 'Completion Date is required.',
@@ -75,43 +77,82 @@ export class ManageMilestonesEditComponent implements OnInit {
   ngOnInit(): void {
     this.getWorkOrderClientUserList();
 
-    this.milestoneForm = this.fb.group({
-      resUserVal: [''],
-      attReqVal: [''],
-      status: [''],
-      startDate: ['', [SimpleDateValidator()]],
-      targetDate: ['', [ShouldGreaterThanYesterday(), SimpleDateValidator()]],
-      completionDate: ['', [SimpleDateValidator()]],
-      planStartDate: ['', [SimpleDateValidator()]],
-      planEndDate: ['', [SimpleDateValidator()]],
-      comments: [''],
-    },
-      {
-        validator: [
-          firstDateIsLower('planEndDate', 'planStartDate'),
-          IsGreaterDateValidator('planEndDate', 'targetDate'),
-          firstDateIsLower('targetDate', 'planStartDate'),
-        ],
+    if (this.openMilestoneFor == "checklist") {
+      this.milestoneForm = this.fb.group({
+        resUserVal: [''],
+        attReqVal: [''],
+        status: [''],
+        startDate: ['', [SimpleDateValidator(), MustbeTodayOrLower()]],
+        targetDate: ['', [ShouldGreaterThanYesterday(), SimpleDateValidator()]],
+        completionDate: ['', [SimpleDateValidator()]],
+        planStartDate: ['', [SimpleDateValidator()]],
+        planEndDate: ['', [SimpleDateValidator()]],
+        comments: [''],
+      },
+        {
+          validator: [
+            firstDateIsLower('planEndDate', 'planStartDate'),
+            // OrderDateValidator('targetDate', 'planEndDate'),
+            // firstDateIsLowerWithOptionalSecondField('targetDate', 'planStartDate'),
+          ],
+        });
+
+
+      // const statusCtr = this.milestoneForm.get('status');
+      // const startDateCtr = this.milestoneForm.get('startDate');
+
+      // statusCtr.valueChanges.subscribe(
+      //   val => {
+      //     if (val == "In Progress") {
+      //       startDateCtr.setValidators([SimpleDateValidator(), MustbeTodayOrLower()]);
+      //     } else {
+      //       startDateCtr.setValidators([SimpleDateValidator()]);
+      //     }
+
+      //     startDateCtr.updateValueAndValidity();
+      //   }
+      // )
+
+
+
+
+    } else if (this.openMilestoneFor == "manage") {
+      this.title = 'Edit Milestone';
+      this.milestoneForm = this.fb.group({
+        resUserVal: [''],
+        attReqVal: [''],
       });
+
+    }
 
 
   }
 
+
   populateAndDisableField() {
     const { wocheckspeciaL2, woresponsibleuser, womilestonecomment, womilestonestatus, womilestonestartdate, womilestoneplanstartdate, womilestoneplanenddate, womilestonetargetdate, womilestonecompletiondate } = this.singleMilestone;
-    this.milestoneForm.patchValue({
-      attReqVal: wocheckspeciaL2.trim(),
-      resUserVal: woresponsibleuser,
-      status: womilestonestatus,
-      startDate: this.helperService.ngbDatepickerFormat(womilestonestartdate),
-      targetDate: this.helperService.ngbDatepickerFormat(womilestonetargetdate),
-      completionDate: this.helperService.ngbDatepickerFormat(womilestonecompletiondate),
-      planStartDate: this.helperService.ngbDatepickerFormat(womilestoneplanstartdate),
-      planEndDate: this.helperService.ngbDatepickerFormat(womilestoneplanenddate),
-      comments: womilestonecomment
-    });
+    
+    if (this.openMilestoneFor == "checklist") {
+      this.milestoneForm.patchValue({
+        attReqVal: wocheckspeciaL2.trim(),
+        resUserVal: woresponsibleuser,
+        status: womilestonestatus,
+        startDate: this.helperService.ngbDatepickerFormat(womilestonestartdate),
+        targetDate: this.helperService.ngbDatepickerFormat(womilestonetargetdate),
+        completionDate: this.helperService.ngbDatepickerFormat(womilestonecompletiondate),
+        planStartDate: this.helperService.ngbDatepickerFormat(womilestoneplanstartdate),
+        planEndDate: this.helperService.ngbDatepickerFormat(womilestoneplanenddate),
+        comments: womilestonecomment
+      });
 
-    this.milestoneForm.get('attReqVal').disable();
+      this.milestoneForm.get('attReqVal').disable();
+    } else {
+      this.milestoneForm.patchValue({
+        attReqVal: wocheckspeciaL2.trim(),
+        resUserVal: woresponsibleuser,
+      });
+    }
+
     this.chRef.detectChanges();
   }
 
@@ -189,19 +230,58 @@ export class ManageMilestonesEditComponent implements OnInit {
     this.formErrorObject(); // empty form error 
     this.logValidationErrors(this.milestoneForm);
 
+
     if (this.milestoneForm.invalid) {
       return;
     }
 
-    const formValue = this.milestoneForm.getRawValue();;
-    const { status, startDate, completionDate } = formValue;
+    if (this.openMilestoneFor == "manage") {
+      const formValue = this.milestoneForm.value;
+      let params = {
+        wosequence: this.singleMilestone.wosequence,
+        wochecksurcde: this.singleMilestone.wochecksurcde,
+        wocheckspecial2: formValue.attReqVal.trim(),
+        worespuser: formValue.resUserVal,
+        strUserId: this.currentUser.userId
+      }
+      $('.k-window').css({ 'z-index': 1000 });
+      this.confirmationDialogService.confirm('Please confirm..', "Are you sure you want to update the Milestone '" + this.singleMilestone.wocheckname + "'")
+        .then((confirmed) => {
+          if (confirmed) {
+            this.subs.add(
+              this.worksOrdersService.updateWorksOrderMilestone(params).subscribe(
+                data => {
+                  if (data.isSuccess) {
+                    this.closeMilestoneEdit();
+                    this.alertService.success([...data.data][0].pRETURNMESSAGE);
+                  } else this.alertService.error(data.message);
+                  this.chRef.detectChanges();
+                }, err => this.alertService.error(err)
+              )
+            )
+          }
+        }).catch(() => console.log('Attribute dismissed the dialog.'));
 
-    if (status == "New" && (startDate != "" || completionDate != "")) {
-      this.alertService.error("Start and Completion date must be blank when status is 'New'.");
-      return;
+    } else {
+      //else milestone checklist
+      const formValue = this.milestoneForm.getRawValue();
+      const { wocheckspeciaL1 } = this.singleMilestone;
+      const { status, startDate, completionDate } = formValue;
+     
+      if (status == "New" && (startDate != "" || completionDate != "")) {
+        this.alertService.error("Start and Completion date must be blank when status is 'New'.");
+        return;
+      }
+
+      if (status == "N/A" && (wocheckspeciaL1 == "SIGNOFF" || wocheckspeciaL1 == "RELEASE")) {
+        this.alertService.error(`Milestones Checklist types '${wocheckspeciaL1}' cannot be set to 'N/A'.`);
+        return;
+      }
+
+      this.updateMilestone();
     }
 
-    this.updateMilestone();
+
   }
 
   updateMilestone(checkProcess = "C") {
@@ -224,7 +304,7 @@ export class ManageMilestonesEditComponent implements OnInit {
       strUserId: this.currentUser.userId,
       strCheckOrProcess: checkProcess,
     }
-   
+
     this.subs.add(
       this.worksOrdersService.updateMilestoneItem(params).subscribe(
         data => {

@@ -9,6 +9,26 @@
         <div class="col-md-8">
             <input [readonly]="true" type="text" class="form-control" placeholder="" value="{{ woName}}">
         </div>
+
+        <div class="col-md-2 text-right">
+            <div class="dropdown mr-1 reportBtnArea mt-2" id="nesting-dropdown-demo"
+                *ngIf="openMilestoneFor == 'checklist'">
+                <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown"
+                    aria-expanded="false">Report</button>
+                <div class="dropdown-menu" x-placement="bottom-start"
+                    style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
+
+                    <a class="dropdown-item" href="javascript:void(0)"
+                        (click)="mileStoneReport(546, 'Programme Log')">Programme Log</a>
+                    <a class="dropdown-item" href="javascript:void(0)"
+                        (click)="mileStoneReport(544, 'Milestone Report')">Milestone Report</a>
+                    <a class="dropdown-item" href="javascript:void(0)"
+                        (click)="mileStoneReport(545, 'Note Report')">Note Report</a>
+
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <div class="row mt-2">
@@ -33,11 +53,13 @@
                                     href="javascript:void(0)" (click)="openMilestonesEdit(dataItem)">Edit
                                 </a>
 
-                                <a *ngIf="woMenuAccess('Milestone Documents')" class="dropdown-item"
-                                    href="javascript:void(0)" (click)="openDocumentWindow(dataItem)">Document(s)</a>
+                                <a *ngIf="woMenuAccess('Milestone Documents') && openMilestoneFor == 'checklist'"
+                                    class="dropdown-item" href="javascript:void(0)"
+                                    (click)="openDocumentWindow(dataItem)">Document(s)</a>
 
-                                <a *ngIf="woMenuAccess('Milestone Notes')" class="dropdown-item"
-                                    href="javascript:void(0)" (click)="openMilestoneNotesMethod(dataItem)">Notes</a>
+                                <a *ngIf="woMenuAccess('Milestone Notes') && openMilestoneFor == 'checklist'"
+                                    class="dropdown-item" href="javascript:void(0)"
+                                    (click)="openMilestoneNotesMethod(dataItem)">Notes</a>
 
                             </div>
                         </li>
@@ -47,7 +69,7 @@
 
 
                 <kendo-grid-column field="dependenciesIndicator" title="" width="40" [filterable]="false"
-                    [sortable]="false">
+                    [sortable]="false" *ngIf="openMilestoneFor == 'checklist'">
                     <ng-template kendoGridHeaderTemplate>
                         <i class="fa fa-list" aria-hidden="true"></i>
                     </ng-template>
@@ -60,7 +82,8 @@
                 </kendo-grid-column>
 
 
-                <kendo-grid-column field="itemIsCompleted" title="" width="40" [filterable]="false" [sortable]="false">
+                <kendo-grid-column field="itemIsCompleted" title="" width="40" [filterable]="false" [sortable]="false"
+                    *ngIf="openMilestoneFor == 'checklist'">
                     <ng-template kendoGridHeaderTemplate>
                         <img style="height: 14px;" src="assets/img/icons/tick.png" />
                     </ng-template>
@@ -73,7 +96,7 @@
                 </kendo-grid-column>
 
                 <kendo-grid-column field="milestoneFileCount" title="" width="40" [filterable]="false"
-                    [sortable]="false">
+                    [sortable]="false" *ngIf="openMilestoneFor == 'checklist'">
                     <ng-template kendoGridHeaderTemplate>
                         <img style="height: 14px;" src="assets/img/icons/attach.png" />
                     </ng-template>
@@ -87,7 +110,7 @@
                 </kendo-grid-column>
 
                 <kendo-grid-column field="milestoneNoteCount" title="" width="40" [filterable]="false"
-                    [sortable]="false">
+                    [sortable]="false" *ngIf="openMilestoneFor == 'checklist'">
                     <ng-template kendoGridHeaderTemplate>
                         <i class="blue fa fa-exclamation-circle" aria-hidden="true"></i>
                     </ng-template>
@@ -114,7 +137,8 @@
                     [filterable]="false">
                 </kendo-grid-column>
 
-                <kendo-grid-column field="wostatus" title="Status" width="130" [filterable]="false">
+                <kendo-grid-column field="wostatus" title="Status" width="130" [filterable]="false"
+                    *ngIf="openMilestoneFor == 'checklist'">
                 </kendo-grid-column>
 
                 <kendo-grid-column field="wocheckspeciaL2" title="Attachment Req'd" width="130" [filterable]="false">
@@ -124,10 +148,9 @@
                     </ng-template>
                 </kendo-grid-column>
 
-                <kendo-grid-column field="womileupdateuser" title="Updated By" width="130">
-                </kendo-grid-column>
 
-                <kendo-grid-column field="woactualstartdate" title="Start Date" width="130">
+                <kendo-grid-column field="woactualstartdate" title="Start Date" width="130"
+                    *ngIf="openMilestoneFor == 'checklist'">
                     <ng-template kendoGridCellTemplate let-gridView>
                         <span>
                             {{ gridView.woactualstartdate | dateFormat : 'DD-MMM-YYYY' }}
@@ -135,7 +158,8 @@
                     </ng-template>
                 </kendo-grid-column>
 
-                <kendo-grid-column field="wotargetcompletiondate" title="Target Date" width="130">
+                <kendo-grid-column field="wotargetcompletiondate" title="Target Date" width="130"
+                    *ngIf="openMilestoneFor == 'checklist'">
                     <ng-template kendoGridCellTemplate let-gridView>
                         <span>
                             {{ gridView.wotargetcompletiondate | dateFormat : 'DD-MMM-YYYY' }}
@@ -143,7 +167,8 @@
                     </ng-template>
                 </kendo-grid-column>
 
-                <kendo-grid-column field="woactualenddate" title="Completion Date" width="130">
+                <kendo-grid-column field="woactualenddate" title="Completion Date" width="130"
+                    *ngIf="openMilestoneFor == 'checklist'">
                     <ng-template kendoGridCellTemplate let-gridView>
                         <span>
                             {{ gridView.woactualenddate | dateFormat : 'DD-MMM-YYYY' }}
@@ -151,7 +176,8 @@
                     </ng-template>
                 </kendo-grid-column>
 
-                <kendo-grid-column field="woplanstartdate" title="Plan Start Date" width="130">
+                <kendo-grid-column field="woplanstartdate" title="Plan Start Date" width="130"
+                    *ngIf="openMilestoneFor == 'checklist'">
                     <ng-template kendoGridCellTemplate let-gridView>
                         <span>
                             {{ gridView.woplanstartdate | dateFormat : 'DD-MMM-YYYY' }}
@@ -159,7 +185,8 @@
                     </ng-template>
                 </kendo-grid-column>
 
-                <kendo-grid-column field="woplanenddate" title="Plan End Date" width="130">
+                <kendo-grid-column field="woplanenddate" title="Plan End Date" width="130"
+                    *ngIf="openMilestoneFor == 'checklist'">
                     <ng-template kendoGridCellTemplate let-gridView>
                         <span>
                             {{ gridView.woplanenddate | dateFormat : 'DD-MMM-YYYY' }}
@@ -167,7 +194,11 @@
                     </ng-template>
                 </kendo-grid-column>
 
-                <kendo-grid-column field="womilestonecomment" title="Comment(s)" width="130">
+                <kendo-grid-column field="womilestonecomment" title="Comment(s)" width="130"
+                    *ngIf="openMilestoneFor == 'checklist'">
+                </kendo-grid-column>
+
+                <kendo-grid-column field="womileupdateuser" title="Updated By" width="130">
                 </kendo-grid-column>
 
                 <kendo-grid-column field="womileupdatedatetime" title="Updated Date" width="130">
@@ -192,7 +223,8 @@
     <div class="milestonePredecessorsOverlay"></div>
 
     <app-manage-milestones-edit *ngIf="openMilestoneEdit" [openMilestoneEdit]="openMilestoneEdit"
-        [singleMilestone]="singleMilestone" (closeMilestoneEditEvent)="closeMilestoneEdit($event)">
+        [singleMilestone]="singleMilestone" [openMilestoneFor]="openMilestoneFor"
+        (closeMilestoneEditEvent)="closeMilestoneEdit($event)">
     </app-manage-milestones-edit>
 
     <app-manage-milestones *ngIf="openPredecessors" [worksOrderData]="worksOrderData"

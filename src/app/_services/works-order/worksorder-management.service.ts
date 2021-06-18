@@ -568,6 +568,15 @@ export class WorksorderManagementService {
         return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWEBWorksOrdersPhaseDetailAndVariation?WOSEQUENCE=${WOSEQUENCE}&WOPSEQUENCE=${WOPSEQUENCE}&WOISEQUENCE=${WOISEQUENCE}`, this.httpOptions);
     }
 
+    worksOrdersCreateVariationForRemoveWOADForMultiple(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WorksOrdersCreateVariationForRemoveWOADForMultiple`, body, this.httpOptions);
+    }
+
+    wRemoveInstructionAssetDetailForMultiple(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WORemoveInstructionAssetDetailForMultiple`, body, this.httpOptions);
+    }
 
 
 

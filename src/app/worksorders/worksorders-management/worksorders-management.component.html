@@ -115,8 +115,17 @@
                                 <a class="dropdown-item" href="javascript:void(0)" (click)="openCostsTab(dataItem)"
                                     *ngIf="woMenuAccess('Contract Costs Tab')">Contract Costs</a>
 
-                                <a *ngIf="woMenuAccess('Milestones')" class="dropdown-item" href="javascript:void(0)"
-                                    (click)="openManageMilestonePopup(dataItem)">Milestones</a>
+                                <div class="dropdown-toggle">
+                                    <div class="dropdown-item">Milestones</div>
+                                    <div class="dropdown-menu milestoneMenu">
+                                        <a *ngIf="woMenuAccess('Milestones')" class="dropdown-item"
+                                            href="javascript:void(0)"
+                                            (click)="openManageMilestonePopup(dataItem, 'checklist')">Milestones</a>
+                                        <a *ngIf="woMenuAccess('Manage Milestones')" class="dropdown-item"
+                                            href="javascript:void(0)"
+                                            (click)="openManageMilestonePopup(dataItem, 'manage')">Manage Milestones</a>
+                                    </div>
+                                </div>
 
                             </div>
 
@@ -399,5 +408,6 @@
 </app-management-sor>
 
 <app-manage-milestones *ngIf="openManageMilestone" [worksOrderData]="selectedWorksOrder"
-    [openManageMilestone]="openManageMilestone" (closeManageMilestoneEvent)="closeManageMilestone($event)">
+    [openManageMilestone]="openManageMilestone" [openMilestoneFor]="openMilestoneFor"
+    (closeManageMilestoneEvent)="closeManageMilestone($event)">
 </app-manage-milestones>

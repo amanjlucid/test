@@ -1,6 +1,6 @@
 <kendo-window title="{{title}}" *ngIf="openVariationDetail" (close)="closeVariationDetail()" [top]="25" [minWidth]="700"
     [width]="980" [height]="auto" [minHeight]="350">
-    <div class="row" *ngIf="openedFor == 'details'">
+    <div class="row variationDetailHead" *ngIf="openedFor == 'details'">
         <div class="col-md-12 actionBtnDiv text-right">
             <button type="button" class="btn btn-sm themeButton mr-1 headin_section" (click)="slideToggle()">
                 <i class="fa" [ngClass]="(filterToggle) ? 'fa-minus':'fa-plus'"></i>
@@ -14,7 +14,7 @@
                 <div id="wrapper">
                     <div class="worksorder-variationalldetail-header" style="display: none;">
                         <div class="row">
-                            <div class="col-md-2"><label class="col-form-label">Works Order:</label> </div>
+                            <div class="col-md-2"><label class="">Works Order:</label> </div>
                             <div class="col-md-10">
                                 <input type="text" value="{{worksOrderData?.woname}} ({{worksOrderData?.wosequence}})"
                                     class="form-control form-control-sm" [readonly]="true">
@@ -23,7 +23,7 @@
 
 
                         <div class="row mt-1">
-                            <div class="col-md-2">Phase: </div>
+                            <div class="col-md-2"><label class="">Phase:</label> </div>
                             <div class="col-md-10">
                                 <input type="text" value="{{phaseData?.wopname }}" class="form-control form-control-sm"
                                     [readonly]="true">
@@ -39,15 +39,32 @@
         </div>
     </div>
 
-    <div class="row" *ngIf="openedFor == 'EBR'">
-        <div class="col-md-2">Variation: </div>
-        <div class="col-md-10">
+    <div class="row variationDetailHead" *ngIf="openedFor == 'EBR'">
+        <div class="col-md-1"> <label class="">Variation:</label> </div>
+        <div class="col-md-9">
             <input type="text" value="{{singleVariation?.woiissuereason}} {{singleVariation?.woisequence}}"
                 class="form-control form-control-sm" [readonly]="true">
         </div>
+
+        <div class="col-md-2">
+            <div class="dropdown mr-1" id="nesting-dropdown-demo" *ngIf="mySelection.length > 1">
+                <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown"
+                    aria-expanded="false">Action</button>
+                <div class="dropdown-menu" x-placement="bottom-start"
+                    style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
+                    <a *ngIf="woMenuAccess('Remove Work (Var)')" class="dropdown-item" href="javascript:void(0)"
+                        (click)="openDeleteWorkReasonWindow(null, 'multiple')">Delete
+                        Work</a>
+
+                    <a *ngIf="woMenuAccess('Remove Item Variation')" class="dropdown-item" href="javascript:void(0)"
+                        (click)="removeItemVariationConfirmMultiple()">Remove Item
+                        Variation</a>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="row  mt-4">
+    <div class="row  mt-2">
         <div class="col-md-12" *ngIf="openedFor == 'details'">
             <kendo-grid #grid [data]="gridView" [height]="600" [selectable]="selectableSettings" filterable="menu"
                 [resizable]="true" [sortable]="{
@@ -130,7 +147,8 @@
                 }" [skip]="state.skip" [loading]="loading" [pageSize]="pageSize" [rowHeight]="36"
                 (pageChange)="pageChange($event)" scrollable="virtual" [sort]="state.sort" [filter]="state.filter"
                 (sortChange)="sortChange($event)" (filterChange)="filterChange($event)"
-                (cellClick)="cellClickHandler($event)" [navigable]="false" [virtualColumns]="true" [rowClass]="rowCallback">
+                (cellClick)="cellClickHandler($event)" [navigable]="false" [virtualColumns]="true"
+                [rowClass]="rowCallback" [selectedKeys]="mySelection" [kendoGridSelectBy]="mySelectionKey">
 
                 <kendo-grid-column title=" " width="37" [filterable]="false" [sortable]="false">
                     <ng-template kendoGridCellTemplate let-dataItem>
@@ -145,8 +163,9 @@
                                     href="javascript:void(0)" (click)="openDeleteWorkReasonWindow(dataItem)">Delete
                                     Work</a>
 
-                                <a *ngIf="woMenuAccess('Remove Item Variation')" class="dropdown-item" href="javascript:void(0)"
-                                    (click)="removeItemVariationConfirm(dataItem)">Remove Item Variation</a>
+                                <a *ngIf="woMenuAccess('Remove Item Variation')" class="dropdown-item"
+                                    href="javascript:void(0)" (click)="removeItemVariationConfirm(dataItem)">Remove Item
+                                    Variation</a>
 
                             </div>
                         </li>

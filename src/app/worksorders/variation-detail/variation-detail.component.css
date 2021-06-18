@@ -12,3 +12,7 @@
 .variationAssetDetail .k-grid tr.notNew {
     background-color: rgba(230, 0, 126, 0.1) !important
 }
+
+.variationDetailHead label{
+    margin-top: 5px;
+}

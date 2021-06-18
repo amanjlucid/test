@@ -71,7 +71,8 @@ export class WorksordersManagementComponent implements OnInit {
   ProgrammeLogWindow = false;
   WoAssociationsManageWindow = false;
   openManageMilestone = false;
-
+  openMilestoneFor = "checklist";
+  
   constructor(
     private worksorderManagementService: WorksorderManagementService,
     private helperService: HelperService,
@@ -552,7 +553,8 @@ export class WorksordersManagementComponent implements OnInit {
     //this.refreshManagementGrid(true);
   }
 
-  openManageMilestonePopup(item) {
+  openManageMilestonePopup(item, openFor) {
+    this.openMilestoneFor = openFor;
     this.selectedWorksOrder = item;
     this.openManageMilestone = true;
     $('.newManagementOverlay').addClass('ovrlay');

@@ -15,10 +15,10 @@
                     <a *ngIf="woMenuAccess('Create Blank Variation')" class="dropdown-item" href="javascript:void(0)"
                         (click)="newBlankVariation()">
                         Variation</a>
-                    <!-- <a class="dropdown-item" href="javascript:void(0)" (click)="bulkVariation()">
-                        Bulk Variation</a> -->
-                    <a [ngClass]="{'disabled' : disableBulkVaritionBtn() }" *ngIf="woMenuAccess('Edit Bulk Variation')"
-                        class="dropdown-item" href="javascript:void(0)" (click)="editbulkVariation()">
+                   
+                    <a [ngClass]="{'disabled' : disableBulkVaritionBtn() || !selectedSingleInstructionVariation }"
+                        *ngIf="woMenuAccess('Edit Bulk Variation')" class="dropdown-item" href="javascript:void(0)"
+                        (click)="editbulkVariation()">
                         Edit Bulk Variation</a>
                 </div>
             </div>
@@ -74,7 +74,6 @@
                                     class="dropdown-item" href="javascript:void(0)"
                                     (click)="openVariationDetailMethod(dataItem)">Details</a> -->
 
-
                                 <div class="dropdown-toggle">
                                     <div class="dropdown-item">Send</div>
                                     <div class="dropdown-menu">
@@ -96,18 +95,14 @@
                                     (click)="issueVariation(dataItem)">Issue</a>
 
                                 <a [ngClass]="{'disabled' : disableVariationBtns('Delete', dataItem)}"
-                                *ngIf="woMenuAccess('Delete Variation')" class="dropdown-item" href="javascript:void(0)"
-                                    (click)="deleteVariationConfirm(dataItem)">Delete</a>
-
-
-
+                                    *ngIf="woMenuAccess('Delete Variation')" class="dropdown-item"
+                                    href="javascript:void(0)" (click)="deleteVariationConfirm(dataItem)">Delete</a>
 
                             </div>
                         </li>
 
                     </ng-template>
                 </kendo-grid-column>
-
 
                 <kendo-grid-column field="woisequence" title="No." width="80" [filterable]="false">
                 </kendo-grid-column>

@@ -291,6 +291,7 @@
 
                 <a class="dropdown-item" href="javascript:void(0)"
                   (click)="openAddPhaseCostStructure(dataItem)">Asset(s) for Phase Work Cost</a>
+                  
                 <div class="dropdown-toggle">
                   <div class="dropdown-item">Reports</div>
                   <div class="dropdown-menu addAssetMenu">
@@ -409,8 +410,6 @@
                 <a *ngIf="woMenuBtnSecurityAccess('Move Assets')" class="dropdown-item" href="javascript:void(0)"
                   (click)="moveAssets(dataItem)">Move</a>
 
-                <a class="dropdown-item" href="javascript:void(0)"
-                  (click)="openAddPhaseCostStructure(dataItem)">Asset(s) for Phase Work Cost</a>
                 <a class="dropdown-item" *ngIf="woMenuBtnSecurityAccess('View Resident Info')" href="javascript:void(0)"
                   (click)="openResidentDetails(dataItem)">Resident Details</a>
 

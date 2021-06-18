@@ -7,7 +7,9 @@
             </button>
 
             <!-- need to use this button from asset checklist page -->
-            <button [disabled]="workorderAssetFullDetail?.woassstatus != 'Handover' && workorderAssetFullDetail?.woassstatus != 'Final Completion'" (click)="openDefectForm('new')" type="button" class="btn btn-sm themeButton"
+            <button
+                [disabled]="workorderAssetFullDetail?.woassstatus != 'Handover' && workorderAssetFullDetail?.woassstatus != 'Final Completion'"
+                (click)="openDefectForm('new')" type="button" class="btn btn-sm themeButton"
                 *ngIf="openedFrom == 'assetchecklist' && woMenuBtnSecurityAccess('New Defects')">
                 New Defect
             </button>
@@ -85,12 +87,13 @@
                                     href="javascript:void(0)" (click)="openDefectForm('edit',dataItem)">Edit
                                     Defect</a>
 
-                                <a [ngClass]="{'disabled': dataItem.wodstatus != 'New'}"
+                                <!-- <a [ngClass]="{'disabled': dataItem.wodstatus != 'New'}"
                                     *ngIf="woMenuBtnSecurityAccess('Remove Defect')" class="dropdown-item"
-                                    href="javascript:void(0)" (click)="confirm(dataItem, 'delete')">Delete Defect</a>
+                                    href="javascript:void(0)" (click)="confirm(dataItem, 'delete')">Delete Defect</a> -->
 
-                                <a class="dropdown-item" href="javascript:void(0)"
-                                    (click)="openAssetDefectsMethod(dataItem)">Show Defects for Asset</a>
+                                <a *ngIf="openedFrom == 'workdetail' || openedFrom == 'workorder'" class="dropdown-item"
+                                    href="javascript:void(0)" (click)="openAssetDefectsMethod(dataItem)">Show Defects
+                                    for Asset</a>
 
                                 <a [ngClass]="{'disabled': dataItem.wodstatus != 'Resolved'}" class="dropdown-item"
                                     href="javascript:void(0)" (click)="confirm(dataItem, 'signOff')">Signoff</a>
@@ -200,5 +203,5 @@
         [singleWorkOrderAssetInp]="selectedSingleDefect" [openedFrom]="'assetchecklist'"
         (closeDefectsListEvent)="closeDefectList($event)">
     </app-asset-defects-list>
-    
+
 </kendo-window>

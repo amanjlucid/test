@@ -1,20 +1,34 @@
 <kendo-window title="{{title}}" [top]="10" [minWidth]="700" [width]="1050" [minHeight]="350"
   (close)="closeWoAssociationsManageWindow()">
 
-  <div class="row headerArea">
+  <div class="row associationHeaderArea">
     <div class="col-md-12 headerRow12">
 
       <div class="row">
         <div class="col-md-2">
-          <label for="" class="col-form-label">Parent Works Order: </label>
+          <label for="" class="">Parent Works Order: </label>
         </div>
         <div class="col-md-8">
-          <input [readonly]="true" type="text" class="form-control" placeholder=""
+          <input [readonly]="true" type="text" class="form-control form-control-sm" placeholder=""
             value="{{ worksOrderData.woname }} ({{ worksOrderData.wosequence }})">
         </div>
 
-        <div class="col-md-2 text-right">
-          <div class="actionBtnArea mr-1" *ngIf="mySelection.length >= 1">
+        <div class="col-md-2 pl-0 text-right headerBtnArea">
+          <div class="dropdown mr-1 reportBtnArea" id="nesting-dropdown-demo">
+            <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown"
+              aria-expanded="false">Report</button>
+            <div class="dropdown-menu" x-placement="bottom-start"
+              style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
+
+              <a class="dropdown-item" href="javascript:void(0)"
+                (click)="WOCreateXportOutputReport(587, 'Associations Works Order Level')">Works Order Level</a>
+              <a class="dropdown-item" href="javascript:void(0)"
+                (click)="WOCreateXportOutputReport(588, 'Associations Asset Level')">Asset Level</a>
+
+            </div>
+          </div>
+
+          <div class="actionBtnArea" *ngIf="mySelection.length >= 1">
             <div class="dropdown" id="nesting-dropdown-demo">
               <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown"
                 aria-expanded="false">Actions</button>
@@ -27,9 +41,10 @@
               </div>
             </div>
           </div>
-    
+
+
         </div>
-        
+
       </div>
     </div>
 
@@ -39,14 +54,6 @@
 
   <div class="row mt-2">
     <div class="col-md-12">
-      <!-- <kendo-grid [data]="gridView" [height]="570"
-         filterable="menu" [resizable]="true" [sortable]="{
-              allowUnsort: true,
-              mode: 'multiple'
-              }" [skip]="state.skip" [sort]="state.sort" [filter]="state.filter" [loading]="loading" scrollable="virtual" [pageSize]="pageSize" [rowHeight]="36" (pageChange)="pageChange($event)"
-        (sortChange)="sortChange($event)" (filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)"
-        [navigable]="false" [selectable]="selectableSettings" kendoGridSelectBy="wosequence" [selectedKeys]="mySelection"> -->
-
       <kendo-grid #grid [data]="gridView" [height]="570" [selectable]="selectableSettings" filterable="menu"
         [resizable]="true" [sortable]="{
             allowUnsort: true,
@@ -55,8 +62,6 @@
         (pageChange)="pageChange($event)" scrollable="virtual" [sort]="state.sort" [filter]="state.filter"
         (sortChange)="sortChange($event)" (filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)"
         [navigable]="false" kendoGridSelectBy="wosequence" [selectedKeys]="mySelection">
-
-        <!-- <kendo-grid-checkbox-column width="40" showSelectAll="false"></kendo-grid-checkbox-column> -->
 
         <kendo-grid-column title=" " width="35" [filterable]="false" [sortable]="false">
           <ng-template kendoGridCellTemplate let-dataItem>
@@ -83,10 +88,8 @@
         <kendo-grid-column field="woassociationreason" title="Association Reason" width="100">
         </kendo-grid-column>
 
-
         <kendo-grid-column field="createuser" title="Created By" width="100">
         </kendo-grid-column>
-
 
         <kendo-grid-column field="createdatetime" title="Created Date" [width]="140" [filterable]="false"
           [sortable]="false">
@@ -117,11 +120,7 @@
       <button (click)="closeWoAssociationsManageWindow()" class="btn btn-sm themeButton ml-1">Close</button>
     </div>
 
-
-
   </div>
-
-
 
 
   <div class="woAssociationoverlay"></div>

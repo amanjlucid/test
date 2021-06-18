@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
-import { AlertService, ConfirmationDialogService, WorksOrdersService, SharedService } from 'src/app/_services';
+import { AlertService, ConfirmationDialogService, WorksOrdersService, SharedService, WorksorderReportService, HelperService } from 'src/app/_services';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { SelectableSettings, PageChangeEvent } from '@progress/kendo-angular-grid';
 
@@ -53,7 +53,8 @@ export class WoAssociationsManageComponent implements OnInit {
     private worksOrdersService: WorksOrdersService,
     private alertService: AlertService,
     private chRef: ChangeDetectorRef,
-    private sharedService: SharedService,
+    private helperService: HelperService,
+    private worksOrderReportService: WorksorderReportService,
     private confirmationDialogService: ConfirmationDialogService,
   ) {
     this.setSelectableSettings();
@@ -279,9 +280,7 @@ export class WoAssociationsManageComponent implements OnInit {
     const params = {
       "wosequence": this.worksOrderData.wosequence
     };
-
     const qs = Object.keys(params).map(key => `${key}=${params[key]}`).join('&');
-
     this.subs.add(
       this.worksOrdersService.GetWEBWorksOrdersAssociations(qs).subscribe(
         data => {
@@ -300,14 +299,52 @@ export class WoAssociationsManageComponent implements OnInit {
       )
     )
 
-
-
-
   }
 
 
+  WOCreateXportOutputReport(xPortId, reportName) {
+    const { wosequence } = this.worksOrderData
+    let params = {
+      "intXportId": xPortId,
+      "lstParamNameValue": ["Works Order Number", wosequence],
+      "lngMaxRows": 40000
+    };
+    if (xPortId == 587 || xPortId == 588) {
+      params.lstParamNameValue = ["Master Works Order", wosequence];
+    }
 
+    this.worksOrderReportService.WOCreateXportOutput(params).subscribe(
+      (data) => {
+        const { columns, rows } = data[0];
+        const tempCol = columns.map(x => x.columnName);
+        const tempRow = rows.map(x => x.values);
+        let result: any;
+        let label: any;
 
+        if (tempRow.length > 0) {
+          result = tempRow.map(x => x.reduce(function (result, field, index) {
+            var fieldKey = tempCol[index].replace(new RegExp(" ", 'g'), "");
+            result[fieldKey] = field;
+            return result;
+          }, {}));
+
+          label = tempCol.reduce(function (result, field) {
+            var fieldKey = field.replace(new RegExp(" ", 'g'), "");
+            result[fieldKey] = field;
+            return result;
+          }, {});
+
+          let fileName = reportName + " " + wosequence;
+          this.helperService.exportAsExcelFile(result, fileName, label);
+        } else {
+          this.alertService.error("No Record Found.");
+        }
+        this.chRef.detectChanges();
+      },
+      error => this.alertService.error(error)
+    )
+    
+  }
 
 
 

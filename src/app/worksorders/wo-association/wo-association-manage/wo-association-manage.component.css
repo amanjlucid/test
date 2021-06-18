@@ -1,4 +1,3 @@
-
 .k-window {
     position: fixed !important;
 }
@@ -7,4 +6,16 @@
     white-space: nowrap;
     line-height: 20px;
     padding: 8px 12px;
+}
+
+.associationHeaderArea label {
+    margin-top: 5px;
+}
+
+:host .headerBtnArea {
+    display: inline;
+}
+
+:host .headerBtnArea .reportBtnArea, :host .headerBtnArea .actionBtnArea {
+    display: inline-block;
 }

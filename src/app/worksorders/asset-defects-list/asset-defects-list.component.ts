@@ -227,15 +227,22 @@ export class AssetDefectsListComponent implements OnInit {
 
 
   openDefectForm(mode: string, item = null) {
-    if (this.workorderAssetFullDetail == undefined) return;
-
-    const { woassstatus } = this.workorderAssetFullDetail;
-    if (woassstatus != "Handover" && woassstatus != "Final Completion") return;
-
-    $('.defectListoverlay').addClass('ovrlay');
-    this.defectFormMode = mode;
     this.selectedSingleDefect = item;
+    this.defectFormMode = mode;
+
+    let woassstatus;
+    if (this.openedFrom == "assetchecklist") {
+      if (this.workorderAssetFullDetail == undefined) return;
+      woassstatus = this.workorderAssetFullDetail.woassstatus;
+    } else {
+      //from workorder list 
+      woassstatus = item.woassstatus;
+    }
+
+    if (woassstatus != "Handover" && woassstatus != "Final Completion") return;
+    $('.defectListoverlay').addClass('ovrlay');
     this.openDefectform = true;
+
   }
 
   closeDefectForm(event) {
@@ -253,7 +260,7 @@ export class AssetDefectsListComponent implements OnInit {
         .catch(() => console.log('Attribute dismissed the dialog.'));
     } else {
       if (item.wodstatus != 'New') return;
-      
+
       this.confirmationDialogService.confirm('Please confirm..', 'Do you really want to delete this record ?')
         .then((confirmed) => (confirmed) ? this.deleteDefect(item) : console.log(confirmed))
         .catch(() => console.log('Attribute dismissed the dialog.'));

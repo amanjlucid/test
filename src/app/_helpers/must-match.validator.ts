@@ -399,6 +399,42 @@ export function firstDateIsLower(controlName: any, matchingControlName1: any) {
     }
 }
 
+export function firstDateIsLowerWithOptionalSecondField(controlName: any, matchingControlName1: any) {
+    return (formGroup: FormGroup) => {
+        const control = formGroup.controls[controlName];
+        const matchingControl1 = formGroup.controls[matchingControlName1];
+
+        // if (control.errors && !control.errors.isLower) {
+        //     // return if another validator has already found an error on the matchingControl
+        //     return;
+        // }
+
+        if ((matchingControl1.value == null && control.value == null) || matchingControl1.value == '' && control.value == '') {
+            return;
+        }
+
+
+        if ((matchingControl1.value == null || matchingControl1.value == '') && control.value != null) {
+            return;
+        }
+
+        if ((control.value == null || control.value == '') && matchingControl1.value != null) {
+            return control.setErrors({ isLower: true });
+        }
+
+        const date1 = `${control.value.year}/${control.value.month}/${control.value.day}`
+        const date2 = `${matchingControl1.value.year}/${matchingControl1.value.month}/${matchingControl1.value.day}`
+        let dateOne = new Date(date1);
+        let dateTwo = new Date(date2);
+
+        if (dateOne < dateTwo) {
+            return control.setErrors({ isLower: true });
+        }
+
+        return control.setErrors(null);
+    }
+}
+
 
 export function numberRange(min: number = 0, max: number = 99999) {
     return (control: FormControl): { [key: string]: any } => {
