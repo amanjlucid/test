@@ -99,8 +99,10 @@
                 <a (click)="redirectToWoProgramManagmentInstructions(dataItem)" class="dropdown-item"
                   href="javascript:void(0)">
                   Instructions</a>
+
                 <a class="dropdown-item" (click)="openCompletionList(dataItem)"
                   href="javascript:void(0)">Completions</a>
+
                 <a class="dropdown-item" href="javascript:void(0)" (click)="openProgrammeLog(dataItem)">View Programme
                   Log</a>
 
@@ -184,9 +186,9 @@
           </ng-template>
       </kendo-grid-column> -->
 
-        <kendo-grid-column field="wosequence" title="Work Order" width="140" [locked]="columnLocked">
+        <kendo-grid-column field="wosequence" title="Work Order" width="130" [locked]="columnLocked">
         </kendo-grid-column>
-        <kendo-grid-column field="woname" title="Name" width="300" [minResizableWidth]="200" [locked]="columnLocked">
+        <kendo-grid-column field="woname" title="Name" width="250" [minResizableWidth]="150" [locked]="columnLocked">
         </kendo-grid-column>
         <kendo-grid-column field="wostatus" title="Status" width="160">
         </kendo-grid-column>
@@ -408,6 +410,7 @@
 
 <app-wo-document-list *ngIf="documentWindow" [documentWindow]="documentWindow"
   (closeDocument)="closeDocumentWindow($event)" [selectedWorksOrder]="selectedWorksOrder"></app-wo-document-list>
+  
 <app-programme-log *ngIf="ProgrammeLogWindow" [ProgrammeLogWindow]="ProgrammeLogWindow"
   [worksOrderData]="selectedWorksOrder" (ProgrammeLogWindowEvent)="closeProgrammeLogWindow($event)">
 </app-programme-log>

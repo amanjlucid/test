@@ -157,11 +157,6 @@
 }
 
 
-/* .worksorderGrid .k-grid-content-locked {
-    z-index: 2 !important;
-    overflow: initial !important;
-} */
-
 /** media query **/
 
 @media only screen and (min-device-width: 768px) and (max-device-width: 1366px) {

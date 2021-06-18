@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation, ChangeDetectorRef, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, ChangeDetectorRef, ViewChild, AfterViewInit } from '@angular/core';
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { SelectableSettings, RowClassArgs, RowArgs, PageChangeEvent, GridComponent } from '@progress/kendo-angular-grid';
@@ -17,7 +17,7 @@ import { CurrencyPipe } from '@angular/common';
   encapsulation: ViewEncapsulation.None
 })
 
-export class WorkorderListComponent implements OnInit {
+export class WorkorderListComponent implements OnInit, AfterViewInit {
   subs = new SubSink();
   state: State = {
     skip: 0,
@@ -114,7 +114,7 @@ export class WorkorderListComponent implements OnInit {
         this.sharedService.userTypeObs
       ]).subscribe(
         data => {
-          console.log(data);
+          // console.log(data);
           this.worksOrderAccess = data[0];
           this.worksOrderUsrAccess = data[1];
           this.userType = data[2][0];
@@ -147,6 +147,16 @@ export class WorkorderListComponent implements OnInit {
 
   ngOnDestroy() {
     this.subs.unsubscribe();
+  }
+
+
+  ngAfterViewInit() {
+    // if (this.columnLocked) {
+    //   document.querySelector('.k-grid .k-grid-content').addEventListener('scroll', (e) => {
+    //     // console.log(e)
+    //     $('.k-grid-content-locked').css({ "overflow": "hidden" })
+    //   })
+    // }
   }
 
 
@@ -270,6 +280,13 @@ export class WorkorderListComponent implements OnInit {
   }
 
   setSeletedRow(dataItem, event) {
+    //if menu button clicked and grid column is locked, change overflow for the to display full menu
+    // if (this.columnLocked) {
+    //   const lockedContent = $('.k-grid-content-locked');
+    //   lockedContent.css({ "overflow": "initial", "z-index": "2" });
+    // }
+
+
     if (dataItem != undefined) {
       setTimeout(() => {
         let att = $('.selectedMenuBar' + dataItem.wosequence)[0].getAttribute("x-placement");
@@ -359,7 +376,6 @@ export class WorkorderListComponent implements OnInit {
   closewoFormDeleteWindow() {
     this.woFormDeleteWindow = false;
   }
-
 
 
   deleteThis(item) {
@@ -622,7 +638,6 @@ export class WorkorderListComponent implements OnInit {
   openProgrammeLog(item) {
     this.selectedWorksOrder = item;
     this.ProgrammeLogWindow = true;
-
     $('.worksOrderOverlay').addClass('ovrlay');
   }
 

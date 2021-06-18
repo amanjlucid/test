@@ -1,11 +1,11 @@
-import { Component, OnInit, ViewEncapsulation, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, ViewChild, ChangeDetectorRef, AfterViewInit } from '@angular/core';
 import { SubSink } from 'subsink';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { FilterService, SelectableSettings, TreeListComponent, RowClassArgs } from '@progress/kendo-angular-treelist';
 import { AlertService, LoaderService, ConfirmationDialogService, WorksOrdersService, HelperService, WorksorderManagementService, SharedService, PropertySecurityGroupService, AuthenticationService, WorksorderReportService } from '../../_services'
 import { combineLatest, forkJoin } from 'rxjs';
 import { WorkordersDetailModel } from 'src/app/_models';
-import { Router} from '@angular/router';
+import { Router } from '@angular/router';
 import { appConfig } from '../../app.config';
 import { CurrencyPipe } from '@angular/common';
 
@@ -17,7 +17,7 @@ import { CurrencyPipe } from '@angular/common';
   encapsulation: ViewEncapsulation.None,
 })
 
-export class WorksordersDetailsComponent implements OnInit {
+export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
   printHiearchy: any;
   visitedHierarchy: any[] = [];
   hiearchyTypeLists: any;
@@ -121,7 +121,7 @@ export class WorksordersDetailsComponent implements OnInit {
         this.sharedService.userTypeObs
       ]).subscribe(
         data => {
-          console.log(data)
+          // console.log(data)
           this.worksOrderUsrAccess = data[0];
           this.worksOrderAccess = data[1];
           this.userType = data[2][0];
@@ -150,9 +150,18 @@ export class WorksordersDetailsComponent implements OnInit {
     this.subs.unsubscribe();
   }
 
-  openAssChecklistFromResInfo(){
-    if (sessionStorage.getItem('ResidentInfo')){
-      let assid  = JSON.parse(sessionStorage.getItem('ResidentInfo'));
+  ngAfterViewInit() {
+    // if (this.columnLocked) {
+    //   document.querySelector('.k-grid .k-grid-content').addEventListener('scroll', (e) => {
+    //     // console.log(e)
+    //     $('.k-grid-content-locked').css({ "overflow": "hidden" })
+    //   })
+    // }
+  }
+
+  openAssChecklistFromResInfo() {
+    if (sessionStorage.getItem('ResidentInfo')) {
+      let assid = JSON.parse(sessionStorage.getItem('ResidentInfo'));
       sessionStorage.removeItem('ResidentInfo')
       this.openAssetChecklistFromResInfo(assid)
     }
@@ -200,13 +209,12 @@ export class WorksordersDetailsComponent implements OnInit {
     )
   }
 
-  openAssetChecklistFromResInfo(assid)
-  {
+  openAssetChecklistFromResInfo(assid) {
     this.gridData.forEach((value) => {
       if (value.assid == assid) {
         this.openAssetChecklist(value);
-        }
-      });
+      }
+    });
   }
 
   getWorkDetails() {
@@ -332,7 +340,7 @@ export class WorksordersDetailsComponent implements OnInit {
 
       }
     }
-   
+
   }
 
   addDateObjectFields(obj, fieldsArr: Array<any>) {
@@ -642,7 +650,7 @@ export class WorksordersDetailsComponent implements OnInit {
     this.autService.validateAssetIDDeepLinkParameters(this.currentUser.userId, item.assid).subscribe(
       data => {
         if (data.validated) {
-          let ResidentInfo = {assid: item.assid, calledFrom: 'worksOrderDetail'};
+          let ResidentInfo = { assid: item.assid, calledFrom: 'worksOrderDetail' };
           sessionStorage.setItem('ResidentInfo', JSON.stringify(ResidentInfo));
           this.router.navigate(['/resident-info']);
           $('.worksOrderDetailOvrlay').addClass('ovrlay');
@@ -858,6 +866,13 @@ export class WorksordersDetailsComponent implements OnInit {
   }
 
   setSeletedRow(dataItem, event) {
+    // //if menu button clicked and grid column is locked, change overflow for the to display full menu
+    // if (this.columnLocked) {
+    //   const lockedContent = $('.k-grid-content-locked');
+    //   lockedContent.css({ "overflow": "initial", "z-index": "2" });
+    // }
+
+
     if (dataItem != undefined) {
       setTimeout(() => {
         let att = $('.selectedWodBar' + dataItem.id)[0].getAttribute("x-placement");
@@ -916,7 +931,7 @@ export class WorksordersDetailsComponent implements OnInit {
     $('.worksOrderDetailOvrlay').addClass('ovrlay');
     this.AddPhaseCostStructureWindow = true;
   }
-  
+
   closeAddPhaseCostStructure() {
     this.AddPhaseCostStructureWindow = false;
     $('.worksOrderDetailOvrlay').removeClass('ovrlay');

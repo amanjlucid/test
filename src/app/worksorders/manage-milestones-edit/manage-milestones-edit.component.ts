@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy
 import { SubSink } from 'subsink';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { WorksOrdersService, AlertService, HelperService, ConfirmationDialogService } from '../../_services'
-import { firstDateIsLower, firstDateIsLowerWithOptionalSecondField, IsGreaterDateValidator, MustbeTodayOrLower, OrderDateValidator, ShouldGreaterThanYesterday, SimpleDateValidator } from 'src/app/_helpers';
+import { firstDateIsLower, MustbeTodayOrLower, ShouldGreaterThanYesterday, SimpleDateValidator } from 'src/app/_helpers';
 
 @Component({
   selector: 'app-manage-milestones-edit',
@@ -92,29 +92,8 @@ export class ManageMilestonesEditComponent implements OnInit {
         {
           validator: [
             firstDateIsLower('planEndDate', 'planStartDate'),
-            // OrderDateValidator('targetDate', 'planEndDate'),
-            // firstDateIsLowerWithOptionalSecondField('targetDate', 'planStartDate'),
           ],
         });
-
-
-      // const statusCtr = this.milestoneForm.get('status');
-      // const startDateCtr = this.milestoneForm.get('startDate');
-
-      // statusCtr.valueChanges.subscribe(
-      //   val => {
-      //     if (val == "In Progress") {
-      //       startDateCtr.setValidators([SimpleDateValidator(), MustbeTodayOrLower()]);
-      //     } else {
-      //       startDateCtr.setValidators([SimpleDateValidator()]);
-      //     }
-
-      //     startDateCtr.updateValueAndValidity();
-      //   }
-      // )
-
-
-
 
     } else if (this.openMilestoneFor == "manage") {
       this.title = 'Edit Milestone';
@@ -209,7 +188,6 @@ export class ManageMilestonesEditComponent implements OnInit {
         if (abstractControl && !abstractControl.valid && abstractControl.errors != null) {
           if (abstractControl.errors.hasOwnProperty('ngbDate')) {
             delete abstractControl.errors['ngbDate'];
-
             if (Object.keys(abstractControl.errors).length == 0) {
               abstractControl.setErrors(null)
             }
