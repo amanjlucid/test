@@ -72,7 +72,8 @@ export class WorksordersManagementComponent implements OnInit {
   WoAssociationsManageWindow = false;
   openManageMilestone = false;
   openMilestoneFor = "checklist";
-  
+  programmeLogFor = "workorder"
+
   constructor(
     private worksorderManagementService: WorksorderManagementService,
     private helperService: HelperService,
@@ -459,13 +460,10 @@ export class WorksordersManagementComponent implements OnInit {
   }
 
   woMenuAccess(menuName) {
-    // console.log(this.userType)
     if (this.userType == undefined) return true;
-
     if (this.userType?.wourroletype == "Dual Role") {
       return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
     }
-
     return this.worksOrderUsrAccess.indexOf(menuName) != -1
   }
 
@@ -485,9 +483,7 @@ export class WorksordersManagementComponent implements OnInit {
   openCompletionList(item) {
     $('.newManagementOverlay').addClass('ovrlay');
     this.selctedWorksOrder = item;
-    // this.tabWindow = true;
     this.completionList = true;
-    // this.workOrderId = item.wosequence;
   }
 
 
@@ -495,11 +491,12 @@ export class WorksordersManagementComponent implements OnInit {
     this.completionList = $event;
     $('.newManagementOverlay').removeClass('ovrlay');
   }
-  openProgrammeLog(item) {
-    this.selectedWorksOrder = item;
-    this.ProgrammeLogWindow = true;
 
+  openProgrammeLog(openFor, item) {
+    this.programmeLogFor = openFor;
+    this.selectedWorksOrder = item;
     $('.newManagementOverlay').addClass('ovrlay');
+    this.ProgrammeLogWindow = true;
   }
 
   closeProgrammeLogWindow(eve) {
@@ -518,17 +515,19 @@ export class WorksordersManagementComponent implements OnInit {
     this.WoAssociationsManageWindow = eve;
     $('.newManagementOverlay').removeClass('ovrlay');
   }
-  
+
   openRolesTab(dataItem) {
     this.worksOrderSingleData = dataItem;
     this.managementRolesTab = true;
     $('.newManagementOverlay').addClass('ovrlay');
   }
+  
   openCostsTab(dataItem) {
     this.worksOrderSingleData = dataItem;
     this.managementCostsTab = true;
     $('.newManagementOverlay').addClass('ovrlay');
   }
+
   openSORTab(dataItem) {
     this.worksOrderSingleData = dataItem;
     this.managementSORTab = true;
@@ -558,7 +557,7 @@ export class WorksordersManagementComponent implements OnInit {
     this.selectedWorksOrder = item;
     this.openManageMilestone = true;
     $('.newManagementOverlay').addClass('ovrlay');
-    
+
   }
 
   closeManageMilestone($event) {

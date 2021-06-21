@@ -1,158 +1,145 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef, ViewEncapsulation } from '@angular/core';
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
-import { AlertService, HelperService, LoaderService, ConfirmationDialogService ,WorksorderManagementService , WorksOrdersService, PropertySecurityGroupService, SharedService } from 'src/app/_services';
-import { combineLatest } from 'rxjs';
-import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
-import { SelectableSettings, PageChangeEvent, RowArgs, GridComponent } from '@progress/kendo-angular-grid';
+import { AlertService, WorksOrdersService } from 'src/app/_services';
+import { SelectableSettings, PageChangeEvent } from '@progress/kendo-angular-grid';
 
 @Component({
     selector: 'app-programme-transactions',
     templateUrl: './programme-transactions.component.html',
     styleUrls: ['./programme-transactions.component.css'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    encapsulation: ViewEncapsulation.None
 })
 
 export class ProgramTransactionsComponent implements OnInit {
     @Input() ProgrammeTransactionWindow: boolean = false;
-    @Output() ProgramTransactionsWindowEvent = new EventEmitter<boolean>();
-    @Input() worksOrderData: any;
-    @Input() programLog: any;
+    @Input() singleWorkOrderInp: any;
+    @Input() programLogInp: any;
     @Input() programmeData: any;
-
+    @Input() openedFrom = 'workorder';
+    @Input() phaseData: any;
+    @Output() ProgramTransactionsWindowEvent = new EventEmitter<boolean>();
     subs = new SubSink();
-
+    selectableSettings: SelectableSettings;
     state: State = {
         skip: 0,
         sort: [],
+        take: 25,
         group: [],
         filter: {
             logic: "or",
             filters: []
         }
     }
-
-    public filter: CompositeFilterDescriptor;
     pageSize = 25;
-    title = 'View Programme Transaction';
-
-    currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    loading = false;
-
+    gridLoading = false;
     gridData: any;
     gridView: DataResult;
-    selectedItem: any;
+    title = 'View Programme Transaction';
+    transationDetail: any;
 
+    constructor(
+        private worksOrdersService: WorksOrdersService,
+        private alertService: AlertService,
+        private chRef: ChangeDetectorRef,
+    ) {
+        this.setSelectableSettings();
+    }
 
+    setSelectableSettings(): void {
+        this.selectableSettings = {
+            checkboxOnly: false,
+            mode: 'single'
+        };
+    }
 
-        constructor(
-            private worksOrdersService: WorksOrdersService,
-            private alertService: AlertService,
-            private chRef: ChangeDetectorRef,
-            private sharedService: SharedService,
-            private confirmationDialogService: ConfirmationDialogService,
-        ) { }
+    ngOnInit(): void {
+        // console.log(this.openedFrom)
+        if (this.openedFrom == 'workorder') {
+            const { wprname, wprprogrammetype } = this.programmeData;
+            const { woname } = this.singleWorkOrderInp;
+            const { wopname, wpltransactiontype, wpldatetime, m_USERNAME, wplsummarymessage } = this.programLogInp;
+            this.transationDetail = {
+                wprname,
+                wprprogrammetype,
+                woname,
+                wopname,
+                wpltransactiontype,
+                wpldatetime,
+                m_USERNAME,
+                wplsummarymessage
+            }
 
-
-
-        ngOnInit(): void {
-
-
-        //  console.log('WorkOrder Data : '+  JSON.stringify(this.worksOrderData));
-
-            this.WEBWorksOrdersWorksProgrammeLogDetails();
+            // console.log(this.transationDetail)
         }
 
-        ngOnDestroy() {
-          this.subs.unsubscribe();
-      }
+        if (this.openedFrom == 'assetchecklist') {
+            const { wprname, wprprogrammetype } = this.programmeData;
+            const { woname } = this.singleWorkOrderInp;
+            const { wopname } = this.phaseData;
+            const { wpltransactiontype, wpldtransdatetime, m_USERNAME, wpldmessage } = this.programLogInp;
+            this.transationDetail = {
+                wprname,
+                wprprogrammetype,
+                woname,
+                wopname,
+                wpltransactiontype,
+                wpldatetime: wpldtransdatetime,
+                m_USERNAME,
+                wplsummarymessage: wpldmessage
+            }
 
-      sortChange(sort: SortDescriptor[]): void {
-          this.state.sort = sort;
-          this.gridView = process(this.gridData, this.state);
-          this.chRef.detectChanges();
-      }
+            // console.log(this.transationDetail)
+        }
+        this.WEBWorksOrdersWorksProgrammeLogDetails();
+    }
 
-      filterChange(filter: any): void {
-          this.state.filter = filter;
-          this.gridView = process(this.gridData, this.state);
-          this.chRef.detectChanges();
-      }
+    ngOnDestroy() {
+        this.subs.unsubscribe();
+    }
 
-      pageChange(event: PageChangeEvent): void {
-          this.state.skip = event.skip;
-          this.gridView = {
-              data: this.gridData.slice(this.state.skip, this.state.skip + this.pageSize),
-              total: this.gridData.length
-          };
-          this.chRef.detectChanges();
-      }
+    sortChange(sort: SortDescriptor[]): void {
+        this.state.sort = sort;
+        this.gridView = process(this.gridData, this.state);
+    }
 
-      cellClickHandler({
-          sender,
-          column,
-          rowIndex,
-          columnIndex,
-          dataItem,
-          isEditedselectedInstructionRow
-      }) {
-          this.selectedItem = dataItem;
-      }
+    filterChange(filter: any): void {
+        this.state.filter = filter;
+        this.gridView = process(this.gridData, this.state);
+    }
 
+    pageChange(event: PageChangeEvent): void {
+        this.state.skip = event.skip;
+        this.gridView = {
+            data: this.gridData.slice(this.state.skip, this.state.skip + this.pageSize),
+            total: this.gridData.length
+        };
+    }
 
+    WEBWorksOrdersWorksProgrammeLogDetails() {
+        const { wprsequence, wplsequence } = this.programLogInp
+        this.subs.add(
+            this.worksOrdersService.WEBWorksOrdersWorksProgrammeLogDetails(wprsequence, wplsequence).subscribe(
+                data => {
+                    if (data.isSuccess) {
+                        this.gridData = data.data;
+                        this.gridView = process(this.gridData, this.state);
+                    } else this.alertService.error(data.message);
 
+                    this.gridLoading = false
+                    this.chRef.detectChanges();
+                }, err => this.alertService.error(err)
+            )
+        )
 
-
-      WEBWorksOrdersWorksProgrammeLogDetails() {
-
-
-          const params = {
-              "intWPRSEQUENCE": this.programLog.wprsequence,
-              "intWPLSEQUENCE": this.programLog.wplsequence,
-          };
-
-          const qs = Object.keys(params).map(key => `${key}=${params[key]}`).join('&');
-
-
-
-          this.subs.add(
-              this.worksOrdersService.WEBWorksOrdersWorksProgrammeLogDetails(qs).subscribe(
-                  data => {
-
-
-                    //  console.log('GetWOInstructionAssets api data ' + JSON.stringify(data));
-
-                      if (data.isSuccess) {
-
-                          this.gridData = data.data;
+    }
 
 
-                      } else {
-                          this.alertService.error(data.message);
-                          this.loading = false
-                      }
-
-                      this.chRef.detectChanges();
-
-                      // console.log('WorkOrderRefusalCodes api reponse' + JSON.stringify(data));
-                  },
-                  err => this.alertService.error(err)
-              )
-          )
-
-
-
-
-      }
-
-      CloseProgramLogTransactionsWindow() {
-          this.ProgrammeTransactionWindow = false;
-          this.ProgramTransactionsWindowEvent.emit(this.ProgrammeTransactionWindow);
-      }
-
-
-
-
+    CloseProgramLogTransactionsWindow() {
+        this.ProgrammeTransactionWindow = false;
+        this.ProgramTransactionsWindowEvent.emit(this.ProgrammeTransactionWindow);
+    }
 
 
 }

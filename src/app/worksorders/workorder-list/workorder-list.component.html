@@ -412,7 +412,7 @@
   (closeDocument)="closeDocumentWindow($event)" [selectedWorksOrder]="selectedWorksOrder"></app-wo-document-list>
   
 <app-programme-log *ngIf="ProgrammeLogWindow" [ProgrammeLogWindow]="ProgrammeLogWindow"
-  [worksOrderData]="selectedWorksOrder" (ProgrammeLogWindowEvent)="closeProgrammeLogWindow($event)">
+  [singleWorkOrderInp]="selectedWorksOrder" [openedFrom]="'workorder'" (ProgrammeLogWindowEvent)="closeProgrammeLogWindow($event)">
 </app-programme-log>
 
 <app-wo-association-manage *ngIf="WoAssociationsManageWindow" [WoAssociationsManageWindow]="WoAssociationsManageWindow"

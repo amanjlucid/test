@@ -62,6 +62,7 @@
                 <kendo-treelist-column field="wosequence" title="" [width]="33" [sortable]="false" [resizable]="false"
                     [filterable]="false" [locked]="columnLocked">
                     <ng-template kendoTreeListCellTemplate let-dataItem>
+                        
                         <li *ngIf="dataItem.treelevel == 1" class="nav-item dropdown list-unstyled"
                             style="margin-top: -7px;" (click)="setSeletedRow(dataItem)">
                             <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"
@@ -74,14 +75,10 @@
                                 <a *ngIf="woMenuAccess('New Works Order') && dataItem.wpractinact != 'I'"
                                     class="dropdown-item" href="javascript:void(0)"
                                     (click)="openWorksOrderForm('new', dataItem)">New Works Order</a>
+                                <!-- <a class="dropdown-item" href="javascript:void(0)"
+                                    (click)="openProgrammeLog('programme',dataItem)">View Programme Log</a> -->
 
                             </div>
-
-                            <!-- <ng-template #elsePRBlock>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="javascript:void(0)">No Menu Access</a>
-                                </div>
-                            </ng-template> -->
                         </li>
 
                         <li *ngIf="dataItem.treelevel == 2" class="nav-item dropdown list-unstyled level2Menu"
@@ -105,7 +102,7 @@
                                 <a class="dropdown-item" (click)="openCompletionList(dataItem)"
                                     href="javascript:void(0)">Completions</a>
                                 <a class="dropdown-item" href="javascript:void(0)"
-                                    (click)="openProgrammeLog(dataItem)">View Programme Log</a>
+                                    (click)="openProgrammeLog('workorder',dataItem)">View Programme Log</a>
                                 <a class="dropdown-item" href="javascript:void(0)"
                                     (click)="openWoAssociationsManage(dataItem)">Associations</a>
                                 <a class="dropdown-item" href="javascript:void(0)" (click)="openRolesTab(dataItem)"
@@ -129,13 +126,8 @@
 
                             </div>
 
-                            <!-- <ng-template #elseWOBlock>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="javascript:void(0)">No Menu Access</a>
-                                </div>
-                            </ng-template> -->
-
                         </li>
+
                     </ng-template>
                 </kendo-treelist-column>
 
@@ -366,7 +358,7 @@
     (closeCompletionWin)="closeCompletionList($event)"></app-completion-list>
 
 <app-programme-log *ngIf="ProgrammeLogWindow" [ProgrammeLogWindow]="ProgrammeLogWindow"
-    [worksOrderData]="selectedWorksOrder" (ProgrammeLogWindowEvent)="closeProgrammeLogWindow($event)">
+    [singleWorkOrderInp]="selectedWorksOrder" [openedFrom]="programmeLogFor" (ProgrammeLogWindowEvent)="closeProgrammeLogWindow($event)">
 </app-programme-log>
 
 <app-wo-association-manage *ngIf="WoAssociationsManageWindow" [WoAssociationsManageWindow]="WoAssociationsManageWindow"

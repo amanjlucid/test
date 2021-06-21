@@ -105,7 +105,6 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
     //update notification on top
     this.helper.updateNotificationOnTop();
 
-    // console.log(this.currentUser)
     //subscribe for work order security access
     this.subs.add(
       combineLatest([
@@ -571,61 +570,13 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
   openCompletionList(item) {
     $('.worksOrderOverlay').addClass('ovrlay');
     this.selectedWorksOrder = item;
-    // this.tabWindow = true;
     this.completionList = true;
-
-    // this.workOrderId = item.wosequence;
   }
 
   closeCompletionList($event) {
     this.completionList = $event;
     $('.worksOrderOverlay').removeClass('ovrlay');
   }
-
-  // WOCreateXportOutputReport(xPortId, reportName) {
-  //   let params = {
-  //     "intXportId": xPortId,
-  //     "lstParamNameValue": ["Works Order Number", this.selectedWorksOrder.wosequence],
-  //     "lngMaxRows": 40000
-  //   };
-  //   if (xPortId == 587 || xPortId == 588) {
-  //     params.lstParamNameValue = ["Master Works Order", this.selectedWorksOrder.wosequence];
-  //   }
-  //   this.worksOrderReportService.WOCreateXportOutput(params).subscribe(
-  //     (data) => {
-
-  //       const { columns, rows } = data[0];
-  //       const tempCol = columns.map(x => x.columnName);
-  //       const tempRow = rows.map(x => x.values);
-  //       let result: any;
-  //       let label: any;
-
-  //       if (tempRow.length > 0) {
-  //         result = tempRow.map(x => x.reduce(function (result, field, index) {
-  //           var fieldKey = tempCol[index].replace(new RegExp(" ", 'g'), "");
-  //           result[fieldKey] = field;
-  //           return result;
-  //         }, {}));
-
-  //         label = tempCol.reduce(function (result, field) {
-  //           var fieldKey = field.replace(new RegExp(" ", 'g'), "");
-  //           result[fieldKey] = field;
-  //           return result;
-  //         }, {});
-
-  //         let fileName = reportName + " " + this.selectedWorksOrder.wosequence;
-  //         this.helperService.exportAsExcelFile(result, fileName, label);
-  //       } else {
-  //         this.alertService.error("No Record Found.");
-  //       }
-  //       this.chRef.detectChanges();
-  //     },
-  //     error => {
-  //       this.alertService.error(error);
-
-  //     }
-  //   )
-  // }
 
 
   openDocumentMethod(item) {

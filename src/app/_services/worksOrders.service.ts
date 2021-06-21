@@ -192,8 +192,9 @@ export class WorksOrdersService {
     EmailContractInstructionReport(params) {
         return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/EmailContractInstructionReport`, params, this.httpOptions);
     }
-    WEBWorksOrdersWorksProgrammeLog(qs) {
-        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/WEBWorksOrdersWorksProgrammeLog?${qs}`, this.httpOptions);
+
+    WEBWorksOrdersWorksProgrammeLog(WOSEQUENCE, intWPRSEQUENCE, intWPLSEQUENCE) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/WEBWorksOrdersWorksProgrammeLog?WOSEQUENCE=${WOSEQUENCE}&intWPRSEQUENCE=${intWPRSEQUENCE}&intWPLSEQUENCE=${intWPLSEQUENCE}`, this.httpOptions);
     }
 
     GetVW_WOReportingProgrammeLog(params) {
@@ -205,10 +206,8 @@ export class WorksOrdersService {
         return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WOReportingProgrammeLogDetail`, params, this.httpOptions);
     }
 
-
-
-    WEBWorksOrdersWorksProgrammeLogDetails(qs) {
-        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/WEBWorksOrdersWorksProgrammeLogDetails?${qs}`, this.httpOptions);
+    WEBWorksOrdersWorksProgrammeLogDetails(intWPRSEQUENCE, intWPLSEQUENCE) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/WEBWorksOrdersWorksProgrammeLogDetails?intWPRSEQUENCE=${intWPRSEQUENCE}&intWPLSEQUENCE=${intWPLSEQUENCE}`, this.httpOptions);
     }
 
     GetWEBWorksOrdersAssociations(qs) {
@@ -274,6 +273,10 @@ export class WorksOrdersService {
 
     updateWorksOrderMilestoneDocument(params) {
         return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/UpdateWorksOrderMilestoneDocument`, params, this.httpOptions);
+    }
+
+    WEBWorksOrdersWorksProgrammeLogForAsset(WPRSEQUENCE, WOSEQUENCE, WOPSEQUENCE, ASSID) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/WEBWorksOrdersWorksProgrammeLogForAsset?WPRSEQUENCE=${WPRSEQUENCE}&WOSEQUENCE=${WOSEQUENCE}&WOPSEQUENCE=${WOPSEQUENCE}&ASSID=${ASSID}`, this.httpOptions);
     }
 
 

@@ -137,7 +137,7 @@
                     [filterable]="false">
                 </kendo-grid-column>
 
-                <kendo-grid-column field="wostatus" title="Status" width="130" [filterable]="false"
+                <kendo-grid-column field="womilestonestatus" title="Status" width="130" [filterable]="false"
                     *ngIf="openMilestoneFor == 'checklist'">
                 </kendo-grid-column>
 
@@ -149,47 +149,47 @@
                 </kendo-grid-column>
 
 
-                <kendo-grid-column field="woactualstartdate" title="Start Date" width="130"
+                <kendo-grid-column field="womilestonestartdate" title="Start Date" width="130"
                     *ngIf="openMilestoneFor == 'checklist'">
                     <ng-template kendoGridCellTemplate let-gridView>
                         <span>
-                            {{ gridView.woactualstartdate | dateFormat : 'DD-MMM-YYYY' }}
+                            {{ gridView.womilestonestartdate | dateFormat : 'DD-MMM-YYYY' }}
                         </span>
                     </ng-template>
                 </kendo-grid-column>
 
-                <kendo-grid-column field="wotargetcompletiondate" title="Target Date" width="130"
+                <kendo-grid-column field="womilestonetargetdate" title="Target Date" width="130"
                     *ngIf="openMilestoneFor == 'checklist'">
                     <ng-template kendoGridCellTemplate let-gridView>
                         <span>
-                            {{ gridView.wotargetcompletiondate | dateFormat : 'DD-MMM-YYYY' }}
+                            {{ gridView.womilestonetargetdate | dateFormat : 'DD-MMM-YYYY' }}
                         </span>
                     </ng-template>
                 </kendo-grid-column>
 
-                <kendo-grid-column field="woactualenddate" title="Completion Date" width="130"
+                <kendo-grid-column field="womilestonecompletiondate" title="Completion Date" width="130"
                     *ngIf="openMilestoneFor == 'checklist'">
                     <ng-template kendoGridCellTemplate let-gridView>
                         <span>
-                            {{ gridView.woactualenddate | dateFormat : 'DD-MMM-YYYY' }}
+                            {{ gridView.womilestonecompletiondate | dateFormat : 'DD-MMM-YYYY' }}
                         </span>
                     </ng-template>
                 </kendo-grid-column>
 
-                <kendo-grid-column field="woplanstartdate" title="Plan Start Date" width="130"
+                <kendo-grid-column field="womilestoneplanstartdate" title="Plan Start Date" width="130"
                     *ngIf="openMilestoneFor == 'checklist'">
                     <ng-template kendoGridCellTemplate let-gridView>
                         <span>
-                            {{ gridView.woplanstartdate | dateFormat : 'DD-MMM-YYYY' }}
+                            {{ gridView.womilestoneplanstartdate | dateFormat : 'DD-MMM-YYYY' }}
                         </span>
                     </ng-template>
                 </kendo-grid-column>
 
-                <kendo-grid-column field="woplanenddate" title="Plan End Date" width="130"
+                <kendo-grid-column field="womilestoneplanenddate" title="Plan End Date" width="130"
                     *ngIf="openMilestoneFor == 'checklist'">
                     <ng-template kendoGridCellTemplate let-gridView>
                         <span>
-                            {{ gridView.woplanenddate | dateFormat : 'DD-MMM-YYYY' }}
+                            {{ gridView.womilestoneplanenddate | dateFormat : 'DD-MMM-YYYY' }}
                         </span>
                     </ng-template>
                 </kendo-grid-column>

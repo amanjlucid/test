@@ -1,259 +1,228 @@
-<kendo-window title="{{title}}" [top]="10" [minWidth]="700"
-  [width]="1050" [minHeight]="350" (close)="closeProgrammeLogWindow()" >
+<kendo-window title="{{title}}" [top]="10" [minWidth]="700" [width]="1050" [minHeight]="350"
+  (close)="closeProgrammeLogWindow()" *ngIf="ProgrammeLogWindow">
 
   <div class="row headerArea">
-    <div class="col-md-12 headerRow12">
-
-      <div class="row">
-        <div class="col-md-2">
-          <label for="">Programme: </label>
-        </div>
-        <div class="col-md-10">
-          <input [readonly]="true" type="text" class="form-control" placeholder=""
-              value="{{ programmeData.wprname }}">
-        </div>
-      </div>
-  </div>
-  <div class="col-md-12 headerRow12">
-
-      <div class="row">
-        <div class="col-md-2">
-          <label for="">Works Order: </label>
-        </div>
-        <div class="col-md-10">
-          <input [readonly]="true" type="text" class="form-control" placeholder=""
-              value="{{ worksOrderData.woname }}">
-        </div>
-      </div>
-  </div>
-
-
-
-
-
-
-
-  </div>
-
-
-
-
-  <div class="row mt-2">
     <div class="col-md-12">
 
+      <div class="row">
+        <div class="col-md-2">
+          <label class="col-form-label">Programme: </label>
+        </div>
+        <div class="col-md-10">
+          <input [readonly]="true" type="text" class="form-control" value="{{ programmeData?.wprname }}">
+        </div>
+      </div>
+    </div>
 
-    
+    <div class="col-md-12 mt-1" *ngIf="openedFrom == 'assetchecklist'">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="row">
+            <div class="col-md-4">
+              <label class="col-form-label">Works Order: </label>
+            </div>
+            <div class="col-md-8">
+              <input [readonly]="true" type="text" class="form-control" value="{{ workOrderName() }}">
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="row">
+            <div class="col-md-2">
+              <label class="col-form-label">Phase: </label>
+            </div>
+            <div class="col-md-10">
+              <input [readonly]="true" type="text" class="form-control" value="{{ phaseData?.wopname }}">
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="row mt-1">
+        <div class="col-md-2">
+          <label class="col-form-label">Asset: </label>
+        </div>
+        <div class="col-md-2">
+          <input [readonly]="true" type="text" class="form-control" value="{{ singleWorkOrderAssetInp?.assid }}">
+        </div>
+
+        <div class="col-md-6">
+          <input [readonly]="true" type="text" class="form-control" value="{{ singleWorkOrderAssetInp?.woname }}">
+        </div>
+
+        <div class="col-md-2 text-right">
+          <div class="dropdown mr-1 reportBtnArea mt-2" id="nesting-dropdown-demo">
+            <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown"
+              aria-expanded="false">Report</button>
+            <div class="dropdown-menu" x-placement="bottom-start"
+              style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
+
+              <a class="dropdown-item" href="javascript:void(0)" (click)="programmeLog(1)">Summary
+                by Date</a>
+              <a class="dropdown-item" href="javascript:void(0)" (click)="programmeLog(2)">Summary by Order/Phase and
+                Date</a>
+              <a class="dropdown-item" href="javascript:void(0)" (click)="programmeLog(3)">Detail
+                by Date</a>
+              <a class="dropdown-item" href="javascript:void(0)" (click)="programmeLog(4)">Detail by
+                Order/Phase and Date</a>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-12 mt-1" *ngIf="openedFrom == 'workorder'">
+      <div class="row">
+        <div class="col-md-2">
+          <label class="col-form-label">Works Order: </label>
+        </div>
+        <div class="col-md-8">
+          <input [readonly]="true" type="text" class="form-control" value="{{ workOrderName() }}">
+        </div>
+
+        <div class="col-md-2 text-right">
+          <div class="dropdown mr-1 reportBtnArea mt-2" id="nesting-dropdown-demo">
+            <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown"
+              aria-expanded="false">Report</button>
+            <div class="dropdown-menu" x-placement="bottom-start"
+              style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
+
+              <a class="dropdown-item" href="javascript:void(0)" (click)="programmeLog(1)">Summary
+                by Date</a>
+              <a class="dropdown-item" href="javascript:void(0)" (click)="programmeLog(2)">Summary by Order/Phase and
+                Date</a>
+              <a class="dropdown-item" href="javascript:void(0)" (click)="programmeLog(3)">Detail
+                by Date</a>
+              <a class="dropdown-item" href="javascript:void(0)" (click)="programmeLog(4)">Detail by
+                Order/Phase and Date</a>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
 
 
+  <div class="row mt-3">
+    <div class="col-md-12">
 
-      <kendo-grid [kendoGridGroupBinding]="gridData" [data]="gridView" [height]="570" [selectable]="{
-                    mode: 'single'
-                  }" filterable="menu" [resizable]="true" [sortable]="{
-                    allowUnsort: true,
-                    mode: 'multiple'
-                    }" [skip]="state.skip" [sort]="state.sort" [filter]="state.filter"
+      <kendo-grid #grid [data]="gridView" [height]="600" [selectable]="selectableSettings" filterable="menu"
+        [resizable]="true" [sortable]="{
+                allowUnsort: true,
+                mode: 'multiple'
+                }" [skip]="state.skip" [loading]="gridLoading" [pageSize]="pageSize" [rowHeight]="36"
+        (pageChange)="pageChange($event)" scrollable="virtual" [sort]="state.sort" [filter]="state.filter"
         (sortChange)="sortChange($event)" (filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)"
         [navigable]="false">
+
 
         <kendo-grid-column title=" " width="37" [filterable]="false" [sortable]="false">
           <ng-template kendoGridCellTemplate let-dataItem>
             <li class="nav-item dropdown list-unstyled" style="margin-top: -7px;">
-              <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars" ></i>
+              <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
               <div class="dropdown-menu">
-                <a (click)="openProgramLogTransactionsWindow(dataItem)" class="dropdown-item" href="javascript:void(0)" >View Programme Transaction</a>
-
-
-                <div class="dropdown-toggle" >
-                  <div class="dropdown-item">Log Report</div>
-                  <div class="dropdown-menu addAssetMenu">
-                    <a  (click)="summary_by_date_report(dataItem)" class="dropdown-item"
-                      href="javascript:void(0)">
-                      Summary by Date</a>
-                    <a (click)="summary_by_order_phase_date_report(dataItem)"  class="dropdown-item"
-                    href="javascript:void(0)">Summary by Order/Phase and Date</a>
-
-
-                    <a (click)="detail_by_date_report(dataItem)"  class="dropdown-item"
-                    href="javascript:void(0)">Detail by Date</a>
-
-                    <a (click)="detail_by_order_phase_date_report(dataItem)"  class="dropdown-item"
-                    href="javascript:void(0)">Detail by Order/Phase and Date</a>
-
-                  </div>
-                </div>
-
-
+                <a (click)="openProgramLogTransactionsWindow(dataItem)" class="dropdown-item"
+                  href="javascript:void(0)">View Programme Transaction</a>
               </div>
-
-
-
-
-
-
             </li>
-
           </ng-template>
         </kendo-grid-column>
 
-
-        <kendo-grid-column field="woname" title="Work Order" width="100">
+        <!-- Programme log fields for Work order start-->
+        <kendo-grid-column field="woname" title="Work Order" width="170" *ngIf="openedFrom == 'workorder'">
         </kendo-grid-column>
-
-        <kendo-grid-column field="wopname" title="Phase" width="100">
+        <kendo-grid-column field="wopname" title="Phase" width="120" *ngIf="openedFrom == 'workorder'">
         </kendo-grid-column>
-
-        <kendo-grid-column field="woiaissuedate" title="Date" [width]="140" [filterable]="false" [sortable]="false">
-            <ng-template kendoGridCellTemplate let-dataItem>
-                <span  >
-                    {{ dataItem.wpldatetime | dateFormat : 'DD-MMM-YYYY' }}
-                </span>
-              </ng-template>
+        <kendo-grid-column field="woiaissuedate" title="Date" [width]="140" [filterable]="false" [sortable]="false"
+          *ngIf="openedFrom == 'workorder'">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span>
+              {{ dataItem.wpldatetime | dateFormat : 'DD-MMM-YYYY' }}
+            </span>
+          </ng-template>
         </kendo-grid-column>
-
-
-        <kendo-grid-column field="wpluserid" title="User" width="100">
+        <kendo-grid-column field="m_USERNAME" title="User" width="100" *ngIf="openedFrom == 'workorder'">
         </kendo-grid-column>
-
-        <kendo-grid-column field="wpltransactiontype" title="Transaction Type" width="100">
+        <kendo-grid-column field="wpltransactiontype" title="Transaction Type" width="140"
+          *ngIf="openedFrom == 'workorder'">
         </kendo-grid-column>
-
-        <kendo-grid-column field="wplerrorstatus" title="Status" width="100">
+        <kendo-grid-column field="wplerrorstatus" title="Status" width="100" *ngIf="openedFrom == 'workorder'">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span>
+              {{ dataItem.wplerrorstatus == 'S' ? 'Success' : dataItem.wplerrorstatus }}
+            </span>
+          </ng-template>
         </kendo-grid-column>
-
-        <kendo-grid-column field="wplsummarymessage" title="Summary" width="100">
+        <kendo-grid-column field="wplsummarymessage" title="Summary" width="200" *ngIf="openedFrom == 'workorder'">
         </kendo-grid-column>
+        <!-- Programme log fields for Work order end -->
 
 
-        <kendo-grid-column field="wplinsertedcount" title="Inserted" width="100">
+        <!-- Programme log fields for Asset checklist start -->
+        <kendo-grid-column field="wpltransactiontype" title="Transaction Type" width="180"
+          *ngIf="openedFrom == 'assetchecklist'">
         </kendo-grid-column>
-
-        <kendo-grid-column field="wplupdatedcount" title="Updated" width="100">
+        <kendo-grid-column field="wpldtransdatetime" title="Date" [width]="140" [filterable]="false" [sortable]="false"
+          *ngIf="openedFrom == 'assetchecklist'">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span>
+              {{ dataItem.wpldtransdatetime | dateFormat : 'DD-MMM-YYYY' }}
+            </span>
+          </ng-template>
         </kendo-grid-column>
+        <kendo-grid-column field="m_USERNAME" title="User" width="100" *ngIf="openedFrom == 'assetchecklist'">
+        </kendo-grid-column>
+        <kendo-grid-column field="wpldstatus" title="Status" width="100" *ngIf="openedFrom == 'assetchecklist'">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span>
+              {{ dataItem.wpldstatus == 'S' ? 'Success' : dataItem.wpldstatus }}
+            </span>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column field="wpldmessage" title="Message" width="200" *ngIf="openedFrom == 'assetchecklist'">
+        </kendo-grid-column>
+        <kendo-grid-column field="wpldfinancialvalue" title="Value" width="90" *ngIf="openedFrom == 'assetchecklist'"
+          [style]="{'text-align': 'right'}">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span>
+              {{ dataItem.wpldfinancialvalue | currency:'GBP':'symbol' }}
+            </span>
+          </ng-template>
+        </kendo-grid-column>
+        <!-- Programme log fields for Asset checklist ends -->
 
-
+        <!-- Common fields start -->
+        <kendo-grid-column field="wplinsertedcount" title="Inserted" width="120">
+        </kendo-grid-column>
+        <kendo-grid-column field="wplupdatedcount" title="Updated" width="120">
+        </kendo-grid-column>
         <kendo-grid-column field="wplerrorcount" title="Errors" width="100">
         </kendo-grid-column>
-
-
-
-
-
+        <!-- Common fields end -->
 
       </kendo-grid>
 
-
-
-
     </div>
+
+    <div class="col-md-12 mt-2 text-right">
+      <button type="button" class="btn btn-sm themeButton" (click)="closeProgrammeLogWindow()">Cancel</button>
+    </div>
+
   </div>
-
-
-
-
 
 
   <div class="woaProgramLogoverlay"></div>
 
-
-  <kendo-window title="{{ ReportHeaderTitle }}" *ngIf="ProgrammLogReportWindow" (close)="closeProgrammLogReportWindow()" [top]="35"
-      [minWidth]="400" [height]="auto" [minHeight]="200">
-
-      <div class="row">
-        <div class="col-md-12">
-
-
-          <kendo-grid [kendoGridGroupBinding]="ReportGridData" [data]="ReportgridView" [height]="570" [selectable]="{
-                        mode: 'single'
-                      }" filterable="menu" [resizable]="true" [sortable]="{
-                        allowUnsort: true,
-                        mode: 'multiple'
-                        }" [skip]="report_state.skip" [sort]="report_state.sort" [filter]="report_state.filter"
-            (sortChange)="report_sortChange($event)" (filterChange)="report_filterChange($event)"
-            [navigable]="false">
-
-
-
-
-            <kendo-grid-column field="programme" title="Programme" width="100">
-            </kendo-grid-column>
-
-            <kendo-grid-column field="contract_Code" title="Contract Code" width="100">
-            </kendo-grid-column>
-
-            <kendo-grid-column field="contractor" title="Contractor" width="100">
-            </kendo-grid-column>
-
-            <kendo-grid-column field="works_Order" title="Work Order" width="100">
-            </kendo-grid-column>
-
-            <kendo-grid-column field="order_Status" title="Order Status" width="100">
-            </kendo-grid-column>
-
-            <kendo-grid-column field="phase_Name" title="Phase" width="100">
-            </kendo-grid-column>
-
-
-
-
-
-
-
-
-            <kendo-grid-column field="log_DateTime" title="Log Date Time" [width]="140" [filterable]="false" [sortable]="false">
-                <ng-template kendoGridCellTemplate let-dataItem>
-                    <span  >
-                        {{ dataItem.log_DateTime | dateFormat : 'DD-MMM-YYYY' }}
-                    </span>
-                  </ng-template>
-            </kendo-grid-column>
-
-            <kendo-grid-column field="user_Name" title="User Name" width="100">
-            </kendo-grid-column>
-
-
-            <kendo-grid-column field="transaction_Type" title="Transaction Type" width="100">
-            </kendo-grid-column>
-
-
-            <kendo-grid-column field="log_Status" title="Log Status" width="100">
-            </kendo-grid-column>
-
-
-
-            <kendo-grid-column field="log_Summary" title="Log Summary" width="100">
-            </kendo-grid-column>
-
-
-
-
-            <kendo-grid-column field="insert_Count" title="Insert Count" width="100">
-            </kendo-grid-column>
-
-
-
-            <kendo-grid-column field="update_Count" title="Update Count" width="100">
-            </kendo-grid-column>
-
-            <kendo-grid-column field="error_Count" title="Error Count" width="100">
-            </kendo-grid-column>
-
-
-
-          </kendo-grid>
-
-
-
-
-        </div>
-
-      </div>
-
-  </kendo-window>
-
-
-
 </kendo-window>
 
 <app-programme-transactions *ngIf="ProgrammeTransactionWindow" [ProgrammeTransactionWindow]="ProgrammeTransactionWindow"
-  [worksOrderData]="worksOrderData" [programmeData]="programmeData"  [programLog]="selectedItem"  (ProgramTransactionsWindowEvent)="closeProgramLogTransactionsWindow($event)">
+  [singleWorkOrderInp]="singleWorkOrderInp" [programmeData]="programmeData" [phaseData]="phaseData"
+  [openedFrom]="openedFrom" [programLogInp]="selectedItem"
+  (ProgramTransactionsWindowEvent)="closeProgramLogTransactionsWindow($event)">
 </app-programme-transactions>

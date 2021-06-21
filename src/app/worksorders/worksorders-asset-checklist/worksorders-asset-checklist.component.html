@@ -10,6 +10,16 @@
                 <i class="fa" [ngClass]="(filterToggle) ? 'fa-minus':'fa-plus'"></i>
             </button>
 
+            <div class="dropdown mr-1" id="nesting-dropdown-demo">
+                <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown"
+                    aria-expanded="false">Administration</button>
+                <div class="dropdown-menu" x-placement="bottom-start"
+                    style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
+                    <a class="dropdown-item" href="javascript:void(0)" (click)="openProgrammeLog('assetchecklist')">View
+                        Programme Log</a>
+                </div>
+            </div>
+
             <button *ngIf="woMenuBtnSecurityAccess('Checklist Documents')" type="button"
                 [disabled]="!selectedChecklistsingleItem || mySelection.length != 1" class="btn btn-sm themeButton mr-1"
                 (click)="openChecklistDoc()">Documents</button>
@@ -48,7 +58,8 @@
                 Variations
             </button>
 
-			<button type="button" class="btn btn-sm themeButton mr-1 headin_section" (click)="viewCheckListOrderReport(4, selectedChildRow)">
+            <button type="button" class="btn btn-sm themeButton mr-1 headin_section"
+                (click)="viewCheckListOrderReport(4, selectedChildRow)">
                 Checklist Report
             </button>
             <div class="dropdown" id="nesting-dropdown-demo">
@@ -84,7 +95,8 @@
                         </div>
                     </div>
 
-                    <div [ngClass]="{'disabled' : disableMainActions('signoff')}" class="dropdown-toggle" *ngIf="woMenuBtnSecurityAccess('Signoff Asset')">
+                    <div [ngClass]="{'disabled' : disableMainActions('signoff')}" class="dropdown-toggle"
+                        *ngIf="woMenuBtnSecurityAccess('Signoff Asset')">
                         <div class="dropdown-item">Sign Off</div>
                         <div class="dropdown-menu signOffDrp">
                             <a (click)="setAsset('SOY')" class="dropdown-item" href="javascript:void(0)">Yesterday</a>
@@ -93,7 +105,7 @@
                                 Date</a>
                         </div>
                     </div>
-                    
+
                     <a [ngClass]="{'disabled' : disableMainActions('CANCEL')}"
                         *ngIf="woMenuBtnSecurityAccess('Cancel Asset')"
                         (click)="openRemoveReasonPanel('multiple', 'CANCEL')" class="dropdown-item"
@@ -212,7 +224,9 @@
                 </div>
             </div>
 
-            <button *ngIf="woMenuBtnSecurityAccess('View Resident Info') && diplayResInfoMenu"  (click)="openResidentDetails()" type="button" class="btn btn-sm themeButton ml-1 headin_section">Resident Details</button>
+            <button *ngIf="woMenuBtnSecurityAccess('View Resident Info') && diplayResInfoMenu"
+                (click)="openResidentDetails()" type="button"
+                class="btn btn-sm themeButton ml-1 headin_section">Resident Details</button>
         </div>
 
         <div class="col-md-12 mt-2">
@@ -524,6 +538,8 @@
                                     (click)="openNoAccessWindow(dataItem)">No
                                     Access</a>
 
+
+
                             </div>
                         </li>
 
@@ -727,5 +743,11 @@
         [singleWorkOrderAssetInp]="selectedChildRow" [openedFrom]="'assetchecklist'"
         (closeDefectsListEvent)="closeDefectList($event)">
     </app-asset-defects-list>
+
+
+    <app-programme-log *ngIf="ProgrammeLogWindow" [ProgrammeLogWindow]="ProgrammeLogWindow"
+        [singleWorkOrderInp]="worksOrderData" [singleWorkOrderAssetInp]="selectedChildRow"
+        [openedFrom]="programmeLogFor" (ProgrammeLogWindowEvent)="closeProgrammeLogWindow($event)">
+    </app-programme-log>
 
 </kendo-window>

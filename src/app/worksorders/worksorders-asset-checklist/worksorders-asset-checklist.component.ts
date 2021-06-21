@@ -72,6 +72,9 @@ export class WorksordersAssetChecklistComponent implements OnInit {
   variationNewOrIssue = false;
   openDefectsList = false;
   diplayResInfoMenu: boolean = false;
+  ProgrammeLogWindow = false;
+  programmeLogFor = 'assetchecklist';
+
 
   constructor(
     private chRef: ChangeDetectorRef,
@@ -87,7 +90,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    // console.log(this.selectedChildRow);
+
     //subscribe for work order security access
     this.subs.add(
       combineLatest([
@@ -107,14 +110,6 @@ export class WorksordersAssetChecklistComponent implements OnInit {
     this.diplayResInfoMenu = (this.selectedChildRow.residentriskcode > 0);
     this.worksOrderDetailPageData();
 
-    // this.subs.add(
-    //   this.sharedService.worksOrdersAccess.subscribe(
-    //     data => {
-    //       this.worksOrderAccess = data;
-
-    //     }
-    //   )
-    // )
 
   }
 
@@ -128,10 +123,8 @@ export class WorksordersAssetChecklistComponent implements OnInit {
         this.worksorderManagementService.getWorksOrderByWOsequence(intWOSEQUENCE),
         this.worksorderManagementService.getPhase(this.selectedChildRow.wosequence, this.selectedChildRow.wopsequence),
         this.worksorderManagementService.specificWorkOrderAssets(this.selectedChildRow.wosequence, this.selectedChildRow.assid, this.selectedChildRow.wopsequence),
-
       ]).subscribe(
         data => {
-          // console.log(data)
           const programmeData = data[0];
           const worksOrderData = data[1];
           const phaseData = data[2];
@@ -158,7 +151,6 @@ export class WorksordersAssetChecklistComponent implements OnInit {
     this.subs.add(
       this.worksorderManagementService.assetChecklistGridData(this.selectedChildRow.wosequence, this.selectedChildRow.assid, this.selectedChildRow.wopsequence).subscribe(
         data => {
-          // console.log(data)
           if (data.isSuccess) {
             this.assetCheckListData = data.data;
             this.gridView = process(this.assetCheckListData, this.state);
@@ -1502,5 +1494,18 @@ export class WorksordersAssetChecklistComponent implements OnInit {
     )
 
   }
+
+
+  openProgrammeLog(openFor) {
+    this.programmeLogFor = openFor;
+    $('.checklistOverlay').addClass('ovrlay');
+    this.ProgrammeLogWindow = true;
+  }
+
+  closeProgrammeLogWindow(eve) {
+    this.ProgrammeLogWindow = eve;
+    $('.checklistOverlay').removeClass('ovrlay');
+  }
+
 
 }
