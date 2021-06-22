@@ -225,11 +225,10 @@ export class WorksOrdersService {
     DeleteAssociation(params) {
         return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/DeleteAssociation`, params, this.httpOptions);
     }
+
     AddPhaseCostStructure(params) {
         return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/AddPhaseCostStructure`, params, this.httpOptions);
     }
-
-
 
     getManageMilestoneData(wosequence) {
         return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetManageMilestone?wosequence=${wosequence}`, this.httpOptions);
@@ -278,6 +277,15 @@ export class WorksOrdersService {
     WEBWorksOrdersWorksProgrammeLogForAsset(WPRSEQUENCE, WOSEQUENCE, WOPSEQUENCE, ASSID) {
         return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/WEBWorksOrdersWorksProgrammeLogForAsset?WPRSEQUENCE=${WPRSEQUENCE}&WOSEQUENCE=${WOSEQUENCE}&WOPSEQUENCE=${WOPSEQUENCE}&ASSID=${ASSID}`, this.httpOptions);
     }
+
+    WEBWorksOrdersWorksProgrammeLogProgram(WPRSEQUENCE, WPLSEQUENCE = 0) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/WEBWorksOrdersWorksProgrammeLogProgram?WPRSEQUENCE=${WPRSEQUENCE}&WPLSEQUENCE=${WPLSEQUENCE}`, this.httpOptions);
+    }
+
+    WOReportingProgSummaryTree(wprsequence, wosequence, reporttype) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/WOReportingProgSummaryTree?wprsequence=${wprsequence}&wosequence=${wosequence}&reporttype=${reporttype}`, this.httpOptions);
+    }
+
 
 
 }

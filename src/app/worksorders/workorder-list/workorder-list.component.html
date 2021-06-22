@@ -7,12 +7,25 @@
       </h4>
     </div>
 
-    <div class="col-md-10 text-right">
+    <div class="col-md-10 text-right headerActionBtnArea">
       <button *ngIf="worksOrderAccess.indexOf('New Works Order') != -1" (click)="openUserPopup('new')"
         class="btn btn-sm themeButton ">
         New Works Order
       </button>
       <button (click)="export()" class="btn btn-sm themeButton ml-1"> Export</button>
+      <div class="dropdown ml-1 reportBtnArea" id="nesting-dropdown-demo">
+        <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown"
+          aria-expanded="false">Report</button>
+        <div class="dropdown-menu" x-placement="bottom-start"
+          style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
+          <a class="dropdown-item" href="javascript:void(0)" (click)="viewWOReportingProgSummaryTree(3)">All
+            Orders</a>
+          <a class="dropdown-item" href="javascript:void(0)" (click)="viewWOReportingProgSummaryTree(4)">All
+            Orders (Including Phase)</a>
+          <a class="dropdown-item" href="javascript:void(0)" (click)="viewWOReportingAsset(0)">All Orders (including
+            Assets)</a>
+        </div>
+      </div>
       <button id="showFilePanel" (click)="lockUnlockColumn()" class="btn btn-sm themeButton ml-1">
         <i *ngIf="!columnLocked" class="fa fa-lock" aria-hidden="true"></i>
         <i *ngIf="columnLocked" class="fa fa-unlock" aria-hidden="true"></i>
@@ -132,11 +145,8 @@
                   <div class="dropdown-menu woReport">
                     <a class="dropdown-item" href="javascript:void(0)"
                       (click)="viewWOReportingProgSummaryTree(2, selectedWorksOrder)">Selected Order</a>
-                    <a class="dropdown-item" href="javascript:void(0)" (click)="viewWOReportingProgSummaryTree(3)">All
-                      Orders</a>
-                    <a class="dropdown-item" href="javascript:void(0)" (click)="viewWOReportingProgSummaryTree(4)">All
-                      Orders (Including Phase)</a>
-                    <a class="dropdown-item" href="javascript:void(0)"
+
+                      <a class="dropdown-item" href="javascript:void(0)"
                       (click)="viewWOReportingAsset(2, selectedWorksOrder)">Selected Order (including Assets)</a>
                     <!-- <a class="dropdown-item" href="javascript:void(0)" (click)="viewWOReportingAsset(0)">All Orders (including Assets)</a> -->
                     <a class="dropdown-item" href="javascript:void(0)"
@@ -410,9 +420,10 @@
 
 <app-wo-document-list *ngIf="documentWindow" [documentWindow]="documentWindow"
   (closeDocument)="closeDocumentWindow($event)" [selectedWorksOrder]="selectedWorksOrder"></app-wo-document-list>
-  
+
 <app-programme-log *ngIf="ProgrammeLogWindow" [ProgrammeLogWindow]="ProgrammeLogWindow"
-  [singleWorkOrderInp]="selectedWorksOrder" [openedFrom]="'workorder'" (ProgrammeLogWindowEvent)="closeProgrammeLogWindow($event)">
+  [singleWorkOrderInp]="selectedWorksOrder" [openedFrom]="'workorder'"
+  (ProgrammeLogWindowEvent)="closeProgrammeLogWindow($event)">
 </app-programme-log>
 
 <app-wo-association-manage *ngIf="WoAssociationsManageWindow" [WoAssociationsManageWindow]="WoAssociationsManageWindow"

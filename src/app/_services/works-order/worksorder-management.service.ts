@@ -84,10 +84,6 @@ export class WorksorderManagementService {
         return this.http.post<any>(`${appConfig.apiUrl}/api/WorkOrderDetails/DeleteWorkOrderPhase`, body, this.httpOptions)
     }
 
-    // phaseUpDown(WOSEQUENCE, WOPDISPSEQ, nextPrev) {
-    //     return this.http.get<any>(`${appConfig.apiUrl}/api/WorkOrderDetails/PhaseUpDown?WOSEQUENCE=${WOSEQUENCE}&WOPDISPSEQ=${WOPDISPSEQ}&nextPrev=${nextPrev}`, this.httpOptions);
-    // }
-
     phaseUpDown(WOSEQUENCE, WOPSEQUENCE, nextPrev) {
         return this.http.get<any>(`${appConfig.apiUrl}/api/WorkOrderDetails/PhaseUpDown?WOSEQUENCE=${WOSEQUENCE}&WOPSEQUENCE=${WOPSEQUENCE}&nextPrev=${nextPrev}`, this.httpOptions);
     }

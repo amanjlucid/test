@@ -20,8 +20,6 @@ import { EpcSettingsComponent } from './setting/epc-settings/epc-settings.compon
 import { WebReporterSettingComponent } from './setting/web-reporter-setting/web-reporter-setting.component';
 import { AssetEpcDashboardComponent } from './assets-portal/asset-energy/asset-epc-dashboard/asset-epc-dashboard.component';
 import { AssetEpcRouterComponent } from './assets-portal/asset-energy/asset-epc-router/asset-epc-router.component';
-// import { WorksordersDashboardComponent } from './worksorders/worksorders-dashboard/worksorders-dashboard.component';
-// import { WorksordersRouterComponent } from './worksorders/worksorders-router/worksorders-router.component';
 import { SurveyProjectsComponent } from './survey-portal/survey-projects/survey-projects.component';
 import { SurveyProjectSurveysComponent } from './survey-portal/survey-project-surveys/survey-project-surveys.component';
 import { SurveyBatchesComponent } from './survey-portal/survey-batches/survey-batches.component';
@@ -31,12 +29,9 @@ import { SurveyProjectSettingsComponent } from './survey-portal/survey-project-s
 import { SurveyDashboardComponent } from './survey-portal/survey-dashboard/survey-dashboard.component';
 import { SurveyCbcreportComponent } from './survey-portal/survey-cbcreport/survey-cbcreport.component';
 import { CustomPreloadingStrategy } from './_helpers/custom-preloading-strategy';
-// import {WorkorderListComponent} from './worksorders/workorder-list/workorder-list.component';
 import { AssetResidentContainerComponent } from './asset-resident-container/asset-resident-container.component';
 
-// import { WopmTemplatesComponent } from './worksorders/Config/wopm-templates/wopm-templates.component';
-// import { WopmConfigComponent } from './worksorders/Config/wopm-config/wopm-config.component';
-// import { WopmMasterstagesComponent } from './worksorders/Config/wopm-masterstages/wopm-masterstages.component';
+
 
 const appRoutes: Routes = [
 

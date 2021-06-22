@@ -1068,18 +1068,6 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
     }
   }
 
-
-  // openDefectsMethod() {
-  //   $('.worksOrderDetailOvrlay').addClass('ovrlay');
-  //   this.openDefectsList = true;
-  // }
-
-  // closeDefectList(eve) {
-  //   this.openDefectsList = eve;
-  //   $('.worksOrderDetailOvrlay').removeClass('ovrlay');
-  // }
-
-
   openAsbestos(item) {
     this.touchtime = 0;
     if (this.asebestosDoubleClick == 0) {
@@ -1091,7 +1079,6 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
           data => {
             if (data.validated) {
               const siteUrl = `${appConfig.appUrl}/asset-list?assetid=${encodeURIComponent(item.assid)}&openTab=Asbestos`; // UAT
-              //const siteUrl = `http://localhost:4200/asset-list?assetid=${encodeURIComponent(item.assid)}&openTab=Asbestos`;
               window.open(siteUrl, "_blank");
 
             } else {
@@ -1143,30 +1130,30 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
       counts: "Counts"
     }
 
+    const fieldsToFormat = {
+      'actual___Planned_Start_Date': 'date',
+      'actual___Planned_End_Date': 'date',
+      'budget': 'money',
+      'forecast': 'money',
+      'committed': 'money',
+      'accepted': 'money',
+      'actual': 'money',
+      'approved': 'money',
+      'pending': 'money',
+      'payments': 'money',
+      'target_Date': 'date'
+    }
+
     this.worksOrderReportService.getWOReportingProgSummaryTree(wprsequence, wosequence, level).subscribe(
       (data) => {
         if (data.isSuccess == true) {
-          let tempData = [...data.data];
-          if (tempData.length > 0) {
-            tempData.map((x: any) => {
-              x.budget = this.currencyPipe.transform(x.budget, "GBP", "symbol");
-              x.forecast = this.currencyPipe.transform(x.forecast, "GBP", "symbol");
-              x.committed = this.currencyPipe.transform(x.committed, "GBP", "symbol");
-              x.accepted = this.currencyPipe.transform(x.accepted, "GBP", "symbol");
-              x.actual = this.currencyPipe.transform(x.actual, "GBP", "symbol");
-              x.approved = this.currencyPipe.transform(x.approved, "GBP", "symbol");
-              x.pending = this.currencyPipe.transform(x.pending, "GBP", "symbol");
-              x.payments = this.currencyPipe.transform(x.payments, "GBP", "symbol");
-              x.actual___Planned_Start_Date = (this.helperService.formatDateWithoutTime(x.actual___Planned_Start_Date) != null) ? this.helperService.formatDateWithoutTime(x.actual___Planned_Start_Date) : "";
-              x.actual___Planned_End_Date = (this.helperService.formatDateWithoutTime(x.actual___Planned_End_Date) != null) ? this.helperService.formatDateWithoutTime(x.actual___Planned_End_Date) : "";
-              x.target_Date = (this.helperService.formatDateWithoutTime(x.target_Date) != null) ? this.helperService.formatDateWithoutTime(x.target_Date) : "";
-            })
-            let fileName = reportName + "_" + wosequence + "_" + wprsequence + "_" + level;
-            this.helperService.exportAsExcelFile(tempData, fileName, label);
-          } else {
+          if (data.data.length == 0) {
             this.alertService.error("No Record Found.");
+            return
           }
-          this.chRef.detectChanges();
+          let fileName = "WOReport_" + wosequence + "_" + wprsequence + "_" + level;
+          this.helperService.exportAsExcelFileWithCustomiseFields(data.data, fileName, label, fieldsToFormat)
+
         } else {
           this.alertService.error(data.message);
         }
@@ -1230,41 +1217,42 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
       paymentdaterep: "Payment Date"
     }
 
+    const fieldsToFormat = {
+      forecast: 'money',
+      committed: 'money',
+      approved: 'money',
+      pending: 'money',
+      actual: 'money',
+      forecast_Fee: 'money',
+      committed_Fee: 'money',
+      approved_Fee: 'money',
+      pending_Fee: 'money',
+      actual_Fee: 'money',
+      payment: 'money',
+      updated_On: 'date',
+      issuedaterep: 'date',
+      targetcomdaterep: 'date',
+      acceptdaterep: 'date',
+      planstartdaterep: 'date',
+      planenddaterep: 'date',
+      startdaterep: 'date',
+      enddaterep: 'date',
+      handoverdaterep: 'date',
+      completiondaterep: 'date',
+      paymentdaterep: 'date',
+    }
+
+
     this.worksOrderReportService.getWOReportingAsset(wprsequence, wosequence, wopsequence, level).subscribe(
       (data) => {
         if (data.isSuccess == true) {
-          let tempData = [...data.data];
-          if (tempData.length > 0) {
-            tempData.map((x: any) => {
-              x.forecast = this.currencyPipe.transform(x.forecast, "GBP", "symbol");
-              x.committed = this.currencyPipe.transform(x.committed, "GBP", "symbol");
-              x.approved = this.currencyPipe.transform(x.approved, "GBP", "symbol");
-              x.pending = this.currencyPipe.transform(x.pending, "GBP", "symbol");
-              x.actual = this.currencyPipe.transform(x.actual, "GBP", "symbol");
-              x.forecast_Fee = this.currencyPipe.transform(x.forecast_Fee, "GBP", "symbol");
-              x.committed_Fee = this.currencyPipe.transform(x.committed_Fee, "GBP", "symbol");
-              x.approved_Fee = this.currencyPipe.transform(x.approved_Fee, "GBP", "symbol");
-              x.pending_Fee = this.currencyPipe.transform(x.pending_Fee, "GBP", "symbol");
-              x.actual_Fee = this.currencyPipe.transform(x.actual_Fee, "GBP", "symbol");
-              x.payment = this.currencyPipe.transform(x.payment, "GBP", "symbol");
-              x.updated_On = (this.helperService.formatDateWithoutTime(x.updated_On) != null) ? this.helperService.formatDateTime(x.updated_On) : "";
-              x.issuedaterep = (this.helperService.formatDateWithoutTime(x.issuedaterep) != null) ? this.helperService.formatDateWithoutTime(x.issuedaterep) : "";
-              x.targetcomdaterep = (this.helperService.formatDateWithoutTime(x.targetcomdaterep) != null) ? this.helperService.formatDateWithoutTime(x.targetcomdaterep) : "";
-              x.acceptdaterep = (this.helperService.formatDateWithoutTime(x.acceptdaterep) != null) ? this.helperService.formatDateWithoutTime(x.acceptdaterep) : "";
-              x.planstartdaterep = (this.helperService.formatDateWithoutTime(x.planstartdaterep) != null) ? this.helperService.formatDateWithoutTime(x.planstartdaterep) : "";
-              x.planenddaterep = (this.helperService.formatDateWithoutTime(x.planenddaterep) != null) ? this.helperService.formatDateWithoutTime(x.planenddaterep) : "";
-              x.startdaterep = (this.helperService.formatDateWithoutTime(x.startdaterep) != null) ? this.helperService.formatDateWithoutTime(x.startdaterep) : "";
-              x.enddaterep = (this.helperService.formatDateWithoutTime(x.enddaterep) != null) ? this.helperService.formatDateWithoutTime(x.enddaterep) : "";
-              x.handoverdaterep = (this.helperService.formatDateWithoutTime(x.handoverdaterep) != null) ? this.helperService.formatDateWithoutTime(x.handoverdaterep) : "";
-              x.completiondaterep = (this.helperService.formatDateWithoutTime(x.completiondaterep) != null) ? this.helperService.formatDateWithoutTime(x.completiondaterep) : "";
-              x.paymentdaterep = (this.helperService.formatDateWithoutTime(x.paymentdaterep) != null) ? this.helperService.formatDateWithoutTime(x.paymentdaterep) : "";
-            })
-            let fileName = reportName + "_" + wosequence + "_" + wprsequence + "_" + level;
-            this.helperService.exportAsExcelFile(tempData, fileName, label);
-          } else {
+          if (data.data.length == 0) {
             this.alertService.error("No Record Found.");
+            return
           }
-          this.chRef.detectChanges();
+          let fileName = "WOReport_" + wosequence + "_" + wprsequence + "_" + level;
+          this.helperService.exportAsExcelFileWithCustomiseFields(data.data, fileName, label, fieldsToFormat)
+
         } else {
           this.alertService.error(data.message);
         }
@@ -1323,37 +1311,37 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
       updated_On: "Updated On"
     }
 
+    const fieldsToFormat = {
+      forecast: 'money',
+      committed: 'money',
+      approved: 'money',
+      pending: 'money',
+      actual: 'money',
+      forecast_Fee: 'money',
+      committed_Fee: 'money',
+      approved_Fee: 'money',
+      pending_Fee: 'money',
+      actual_Fee: 'money',
+      issue_Date: 'date',
+      target_Date: 'date',
+      acceptance_Date: 'date',
+      plan_Start_Date: 'date',
+      plan_End_Date: 'date',
+      actual_Start_Date: 'date',
+      actual_End_Date: 'date',
+      updated_On: 'date',
+    }
+
     this.worksOrderReportService.getChecklistReportForOrder(wprsequence, wosequence, wopsequence, report_level, asset_id).subscribe(
       (data) => {
         if (data.isSuccess == true) {
-          let tempData = [...data.data];
-          if (tempData.length > 0) {
-            tempData.map((x: any) => {
-              x.forecast = this.currencyPipe.transform(x.forecast, "GBP", "symbol");
-              x.committed = this.currencyPipe.transform(x.committed, "GBP", "symbol");
-              x.approved = this.currencyPipe.transform(x.approved, "GBP", "symbol");
-              x.pending = this.currencyPipe.transform(x.pending, "GBP", "symbol");
-              x.actual = this.currencyPipe.transform(x.actual, "GBP", "symbol");
-              x.forecast_Fee = this.currencyPipe.transform(x.forecast_Fee, "GBP", "symbol");
-              x.committed_Fee = this.currencyPipe.transform(x.committed_Fee, "GBP", "symbol");
-              x.approved_Fee = this.currencyPipe.transform(x.approved_Fee, "GBP", "symbol");
-              x.pending_Fee = this.currencyPipe.transform(x.pending_Fee, "GBP", "symbol");
-              x.actual_Fee = this.currencyPipe.transform(x.actual_Fee, "GBP", "symbol");
-              x.issue_Date = (this.helperService.formatDateWithoutTime(x.issue_Date) != null) ? this.helperService.formatDateWithoutTime(x.issue_Date) : "";
-              x.target_Date = (this.helperService.formatDateWithoutTime(x.target_Date) != null) ? this.helperService.formatDateWithoutTime(x.target_Date) : "";
-              x.acceptance_Date = (this.helperService.formatDateWithoutTime(x.acceptance_Date) != null) ? this.helperService.formatDateWithoutTime(x.acceptance_Date) : "";
-              x.plan_Start_Date = (this.helperService.formatDateWithoutTime(x.plan_Start_Date) != null) ? this.helperService.formatDateWithoutTime(x.plan_Start_Date) : "";
-              x.plan_End_Date = (this.helperService.formatDateWithoutTime(x.plan_End_Date) != null) ? this.helperService.formatDateWithoutTime(x.plan_End_Date) : "";
-              x.actual_Start_Date = (this.helperService.formatDateWithoutTime(x.actual_Start_Date) != null) ? this.helperService.formatDateWithoutTime(x.actual_Start_Date) : "";
-              x.actual_End_Date = (this.helperService.formatDateWithoutTime(x.actual_End_Date) != null) ? this.helperService.formatDateWithoutTime(x.actual_End_Date) : "";
-              x.updated_On = (this.helperService.formatDateWithoutTime(x.updated_On) != null) ? this.helperService.formatDateTime(x.updated_On) : "";
-            })
-            let fileName = reportName + "_" + wosequence + "_" + wopsequence + "_" + report_level;
-            this.helperService.exportAsExcelFile(tempData, fileName, label);
-          } else {
+          if (data.data.length == 0) {
             this.alertService.error("No Record Found.");
+            return
           }
-          this.chRef.detectChanges();
+          let fileName = "WOReport_" + wosequence + "_" + wprsequence + "_" + report_level;
+          this.helperService.exportAsExcelFileWithCustomiseFields(data.data, fileName, label, fieldsToFormat)
+
         } else {
           this.alertService.error(data.message);
         }

@@ -19,20 +19,21 @@ export class ProgramLogComponent implements OnInit {
     @Input() openedFrom = 'workorder';
     @Input() singleWorkOrderInp: any = [];
     @Input() singleWorkOrderAssetInp: any;
+    @Input() selectedProgrammeInp: any;
     subs = new SubSink();
     title = 'View Programme Log';
     currentUser = JSON.parse(localStorage.getItem('currentUser'));
     state: State = {
         skip: 0,
         sort: [],
-        take: 25,
+        take: 20,
         group: [],
         filter: {
             logic: "or",
             filters: []
         }
     }
-    pageSize = 25;
+    pageSize = 20;
     gridData: any;
     gridView: DataResult;
     gridLoading = false;
@@ -59,7 +60,7 @@ export class ProgramLogComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        // console.log({ openedFrom: this.openedFrom, workorder: this.singleWorkOrderInp, asset: this.singleWorkOrderAssetInp })
+        // console.log({ openedFrom: this.openedFrom, workorder: this.singleWorkOrderInp, asset: this.singleWorkOrderAssetInp, programme: this.selectedProgrammeInp })
 
         if (this.openedFrom == "assetchecklist" && this.singleWorkOrderAssetInp != undefined) {
             this.title = "View Programme Log for Asset";
@@ -80,6 +81,15 @@ export class ProgramLogComponent implements OnInit {
             ];
             this.requiredPageData(pageService);
             this.WEBWorksOrdersWorksProgrammeLog();
+        }
+
+        if (this.openedFrom == "programme" && this.selectedProgrammeInp != undefined) {
+            const { wprsequence } = this.selectedProgrammeInp;
+            const pageService = [
+                this.worksorderManagementService.getWorkProgrammesByWprsequence(wprsequence),
+            ];
+            this.requiredPageData(pageService);
+            this.getProgrammeLog();
         }
 
     }
@@ -113,12 +123,41 @@ export class ProgramLogComponent implements OnInit {
         )
     }
 
+
+    getProgrammeLog() {
+        const { wprsequence } = this.selectedProgrammeInp;
+        this.subs.add(
+            this.worksOrdersService.WEBWorksOrdersWorksProgrammeLogProgram(wprsequence, 0).subscribe(
+                data => {
+                    if (data.isSuccess) {
+                        this.gridData = data.data.map(x => {
+                            if (x.wplerrorstatus == "S") x.wplerrorstatus = "Success";
+                            if (x.wplerrorstatus == "W") x.wplerrorstatus = "Warning";
+                            if (x.wplerrorstatus == "E") x.wplerrorstatus = "Error";
+                            return x;
+                        });
+                        this.gridView = process(this.gridData, this.state);
+                    } else this.alertService.error(data.message);
+
+                    this.gridLoading = false
+                    this.chRef.detectChanges();
+                }, err => this.alertService.error(err)
+            )
+        )
+    }
+
     WEBWorksOrdersWorksProgrammeLog() {
         const { wosequence, wprsequence } = this.singleWorkOrderInp;
         this.subs.add(
             this.worksOrdersService.WEBWorksOrdersWorksProgrammeLog(wosequence, wprsequence, 0).subscribe(
                 data => {
                     if (data.isSuccess) {
+                        this.gridData = data.data.map(x => {
+                            if (x.wplerrorstatus == "S") x.wplerrorstatus = "Success";
+                            if (x.wplerrorstatus == "W") x.wplerrorstatus = "Warning";
+                            if (x.wplerrorstatus == "E") x.wplerrorstatus = "Error";
+                            return x;
+                        });
                         this.gridData = data.data;
                         this.gridView = process(this.gridData, this.state);
                     } else this.alertService.error(data.message);
@@ -137,6 +176,12 @@ export class ProgramLogComponent implements OnInit {
             this.worksOrdersService.WEBWorksOrdersWorksProgrammeLogForAsset(wprsequence, wosequence, wopsequence, assid).subscribe(
                 data => {
                     if (data.isSuccess) {
+                        this.gridData = data.data.map(x => {
+                            if (x.wpldstatus == "S") x.wpldstatus = "Success";
+                            if (x.wpldstatus == "W") x.wpldstatus = "Warning";
+                            if (x.wpldstatus == "E") x.wpldstatus = "Error";
+                            return x;
+                        });
                         this.gridData = data.data;
                         this.gridView = process(this.gridData, this.state);
                     } else this.alertService.error(data.message);
@@ -203,7 +248,7 @@ export class ProgramLogComponent implements OnInit {
     programmeLog(reportType) {
         if (this.openedFrom == "assetchecklist") {
             this.setParamsForAssetReport(reportType);
-        } else if (this.openedFrom == "workorder") {
+        } else if (this.openedFrom == "workorder" || this.openedFrom == "programme") {
             this.setParamsForWOReport(reportType);
         }
     }
@@ -256,7 +301,7 @@ export class ProgramLogComponent implements OnInit {
 
     setParamsForWOReport(reportType) {
         //Summary by Date = 1, Summary by Order/Phase and Date = 2, Detail by Date = 3, Detail by Order/Phase and Date = 4, 
-        const { wprsequence } = this.singleWorkOrderInp;
+        const { wprsequence } = (this.openedFrom == 'workorder') ? this.singleWorkOrderInp : this.selectedProgrammeInp;
 
         let params = {
             "WPRSEQUENCE": wprsequence,

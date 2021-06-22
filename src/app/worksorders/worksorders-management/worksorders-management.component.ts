@@ -205,6 +205,10 @@ export class WorksordersManagementComponent implements OnInit {
   }
 
   cellClickHandler($event) {
+    if ($event.dataItem.treelevel == 1) {
+      this.selectedProgramme = $event.dataItem;
+    }
+
     if ($event.dataItem.treelevel == 2) {
       this.setSeletedWORow($event.dataItem);
     }
@@ -494,7 +498,8 @@ export class WorksordersManagementComponent implements OnInit {
 
   openProgrammeLog(openFor, item) {
     this.programmeLogFor = openFor;
-    this.selectedWorksOrder = item;
+    if (openFor == "programme") this.selectedProgramme = item;
+    if (openFor == "workorder") this.selectedWorksOrder = item;
     $('.newManagementOverlay').addClass('ovrlay');
     this.ProgrammeLogWindow = true;
   }
@@ -521,7 +526,7 @@ export class WorksordersManagementComponent implements OnInit {
     this.managementRolesTab = true;
     $('.newManagementOverlay').addClass('ovrlay');
   }
-  
+
   openCostsTab(dataItem) {
     this.worksOrderSingleData = dataItem;
     this.managementCostsTab = true;
@@ -564,6 +569,76 @@ export class WorksordersManagementComponent implements OnInit {
     $('.newManagementOverlay').removeClass('ovrlay');
     this.openManageMilestone = $event;
   }
+
+  programmeReport(reportType, item = null) {
+    let wprsequence = 0;
+    let wosequence = 0;
+    let reporttype = reportType;
+
+    if (reporttype == 1) {
+      this.selectedProgramme = item;
+      wprsequence = this.selectedProgramme.wprsequence;
+      wosequence = this.selectedProgramme.wosequence;
+    }
+
+    this.subs.add(
+      this.worksOrderService.WOReportingProgSummaryTree(wprsequence, wosequence, reporttype).subscribe(
+        data => {
+          if (data.isSuccess) {
+            this.programmeExport(data.data);
+          } else this.alertService.error(data.message)
+        }, err => this.alertService.error(err)
+      )
+    )
+
+  }
+
+
+  programmeExport(data) {
+    let label = {
+      'programme': 'Programme',
+      'works_Order': 'Works Order',
+      'phase': 'Phase',
+      'budget': 'Budget',
+      'forecast': 'Forecast',
+      'committed': 'Committed',
+      'accepted': 'Accepted',
+      'actual': 'Actual',
+      'approved': 'Approved',
+      'pending': 'Pending',
+      'payments': 'Payments',
+      'actual___Planned_Start_Date': 'Start Date',
+      'actual___Planned_End_Date': 'End Date',
+      'target_Date': 'Target Date',
+      'new': 'New Count',
+      'issued': 'Issued Count',
+      'wip': 'In Progress Count',
+      'handover': 'Handover Count',
+      'pc': 'Practical Comp Count',
+      'fc': 'Final Comp Count',
+      'status': 'Status',
+      'counts': 'Counts',
+    };
+
+    const fieldsToFormat = {
+      'actual___Planned_Start_Date': 'date',
+      'actual___Planned_End_Date': 'date',
+      'budget': 'money',
+      'forecast': 'money',
+      'committed': 'money',
+      'accepted': 'money',
+      'actual': 'money',
+      'approved': 'money',
+      'pending': 'money',
+      'payments': 'money',
+    }
+
+    this.helperService.exportAsExcelFileWithCustomiseFields(data, 'Programme Report', label, fieldsToFormat)
+
+  }
+
+
+
 
 
 }

@@ -25,6 +25,19 @@
 
             <div class="actionDiv">
                 <button type="button" class="btn btn-sm themeButton mr-1" (click)="export()">Export</button>
+
+                <div class="dropdown mr-1 reportBtnArea mt-2" id="nesting-dropdown-demo">
+                    <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown"
+                        aria-expanded="false">Report</button>
+                    <div class="dropdown-menu" x-placement="bottom-start"
+                        style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
+                        <a class="dropdown-item" href="javascript:void(0)" (click)="programmeReport(0)">All
+                            Programme</a>
+
+                    </div>
+                </div>
+
+
                 <div class="dropdown mr-1" id="nesting-dropdown-demo"
                     *ngIf="worksOrderAccess.indexOf('New Programme') != -1 || worksOrderAccess.indexOf('New Works Order') != -1">
                     <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown"
@@ -62,7 +75,7 @@
                 <kendo-treelist-column field="wosequence" title="" [width]="33" [sortable]="false" [resizable]="false"
                     [filterable]="false" [locked]="columnLocked">
                     <ng-template kendoTreeListCellTemplate let-dataItem>
-                        
+
                         <li *ngIf="dataItem.treelevel == 1" class="nav-item dropdown list-unstyled"
                             style="margin-top: -7px;" (click)="setSeletedRow(dataItem)">
                             <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"
@@ -75,8 +88,11 @@
                                 <a *ngIf="woMenuAccess('New Works Order') && dataItem.wpractinact != 'I'"
                                     class="dropdown-item" href="javascript:void(0)"
                                     (click)="openWorksOrderForm('new', dataItem)">New Works Order</a>
-                                <!-- <a class="dropdown-item" href="javascript:void(0)"
-                                    (click)="openProgrammeLog('programme',dataItem)">View Programme Log</a> -->
+                                <a class="dropdown-item" href="javascript:void(0)"
+                                    (click)="openProgrammeLog('programme',dataItem)">View Programme Log</a>
+
+                                <a class="dropdown-item" href="javascript:void(0)" (click)="programmeReport(1, dataItem)">Selected
+                                    Programme Report</a>
 
                             </div>
                         </li>
@@ -358,7 +374,8 @@
     (closeCompletionWin)="closeCompletionList($event)"></app-completion-list>
 
 <app-programme-log *ngIf="ProgrammeLogWindow" [ProgrammeLogWindow]="ProgrammeLogWindow"
-    [singleWorkOrderInp]="selectedWorksOrder" [openedFrom]="programmeLogFor" (ProgrammeLogWindowEvent)="closeProgrammeLogWindow($event)">
+    [singleWorkOrderInp]="selectedWorksOrder" [selectedProgrammeInp]="selectedProgramme" [openedFrom]="programmeLogFor"
+    (ProgrammeLogWindowEvent)="closeProgrammeLogWindow($event)">
 </app-programme-log>
 
 <app-wo-association-manage *ngIf="WoAssociationsManageWindow" [WoAssociationsManageWindow]="WoAssociationsManageWindow"

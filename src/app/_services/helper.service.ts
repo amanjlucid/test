@@ -719,7 +719,7 @@ export class HelperService {
         return new Date(dateStr).toJSON()
     }
 
- 
+
     getDateString(type = "Today") {
         let todayDateObj = new Date();
 
@@ -744,6 +744,44 @@ export class HelperService {
         //Default Today
         return `${this.zeorBeforeSingleDigit(todayDateObj.getFullYear())}-${this.zeorBeforeSingleDigit(todayDateObj.getMonth() + 1)}-${this.zeorBeforeSingleDigit(todayDateObj.getDate())}`;
 
+    }
+
+
+    public exportAsExcelFileWithCustomiseFields(json: any[], excelFileName: string, labels, fieldsToFormat = null): void {
+        const keys = Object.keys(labels);
+        const arrayLen = keys.length - 1;
+        const jsnArr = json.map(row => {
+            const arr = new Object();
+            keys.filter((k, i) => {
+                if (row[k] != null || row[k] != undefined) {
+                    if (fieldsToFormat != null) {
+                        if (fieldsToFormat[k] != undefined) {
+                            if (fieldsToFormat[k] == "date") {
+                                arr[labels[k]] = this.formatDateWithoutTime(row[k]) != null ? this.formatDateWithoutTime(row[k]) : '';
+                            }
+
+                            if (fieldsToFormat[k] == "money") {
+                                arr[labels[k]] = "£"+this.moneyFormat(row[k]);
+                            }
+                        } else {
+                            arr[labels[k]] = row[k];
+                        }
+                    } else {
+                        arr[labels[k]] = row[k];
+                    }
+
+                }
+                if (i == arrayLen) {
+                    return arr;
+                }
+            })
+            return arr;
+        });
+        const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(jsnArr);
+        const workbook: XLSX.WorkBook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
+        const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+
+        this.saveAsExcelFile(excelBuffer, excelFileName);
     }
 
 

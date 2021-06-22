@@ -90,7 +90,6 @@ export class WorksordersAssetChecklistComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-
     //subscribe for work order security access
     this.subs.add(
       combineLatest([
@@ -99,13 +98,13 @@ export class WorksordersAssetChecklistComponent implements OnInit {
         this.sharedService.userTypeObs
       ]).subscribe(
         data => {
-          // console.log(data);
           this.worksOrderUsrAccess = data[0];
           this.worksOrderAccess = data[1];
           this.userType = data[2][0];
         }
       )
     )
+
     let v = this.selectedChildRow
     this.diplayResInfoMenu = (this.selectedChildRow.residentriskcode > 0);
     this.worksOrderDetailPageData();
@@ -227,9 +226,9 @@ export class WorksordersAssetChecklistComponent implements OnInit {
 
       }
     }
-    // console.log(this.selectedChecklistsingleItem);
+
     this.chRef.detectChanges();
-    // console.log(dataItem);
+
   }
 
   mySelectionKey(context: RowArgs): string {
@@ -254,7 +253,6 @@ export class WorksordersAssetChecklistComponent implements OnInit {
   openChecklistDoc() {
     if (this.mySelection.length != 1) return
     $('.checklistOverlay').addClass('ovrlay');
-    // console.log(this.selectedChecklistsingleItem); debugger;
     this.checklistDocWindow = true;
   }
 
@@ -267,7 +265,6 @@ export class WorksordersAssetChecklistComponent implements OnInit {
   setSeletedRow(dataItem) {
     this.mySelection = [];
     this.selectedChecklist = [];
-    // this.mySelection.push(dataItem.eventSequence)
     this.selectedChecklist.push(dataItem)
   }
 
@@ -336,7 +333,6 @@ export class WorksordersAssetChecklistComponent implements OnInit {
             } else {
               this.alertService.success(resp.pRETURNMESSAGE)
               this.worksOrderDetailPageData();
-              // this.selectedChecklistsingleItem = undefined;
             }
           } else {
             this.alertService.error(data.message);
@@ -369,9 +365,8 @@ export class WorksordersAssetChecklistComponent implements OnInit {
           } else if (apiType == 'complete') {
             this.setComplete(type, item, checkstatus);
           }
-
         }
-        //(confirmed) ? this.setStatus(type, item, 'P') : console.log(confirmed)
+
       })
       .catch(() => console.log('Attribute dismissed the dialog.'));
   }
@@ -386,7 +381,6 @@ export class WorksordersAssetChecklistComponent implements OnInit {
   }
 
   openChooseDateMul(type) {
-    // this.selectedChecklistsingleItem = item;
     this.actionType = 'multiple';
     this.chooseDateType = type;
     this.chooseDateWindow = true;
@@ -421,9 +415,6 @@ export class WorksordersAssetChecklistComponent implements OnInit {
       ASSID_STAGESURCDE_CHECKSURCDE.push(checklist.wostagesurcde)
       ASSID_STAGESURCDE_CHECKSURCDE.push(checklist.wochecksurcde)
     }
-    // console.log(filterChecklist)
-    // console.log(ASSID_STAGESURCDE_CHECKSURCDE)
-
 
     this.chooseDateType = type;
     let apiName = '';
@@ -485,9 +476,6 @@ export class WorksordersAssetChecklistComponent implements OnInit {
     }
 
 
-
-
-
     this.subs.add(
       this.worksorderManagementService.setStatus(apiName, params).subscribe(
         data => {
@@ -505,7 +493,6 @@ export class WorksordersAssetChecklistComponent implements OnInit {
             } else {
               this.alertService.success(resp.pRETURNMESSAGE)
               this.worksOrderDetailPageData();
-              // this.selectedChecklistsingleItem = undefined;
             }
           } else {
             this.alertService.error(data.message);
@@ -615,7 +602,6 @@ export class WorksordersAssetChecklistComponent implements OnInit {
             } else {
               this.alertService.success(resp.pRETURNMESSAGE)
               this.worksOrderDetailPageData();
-              // this.selectedChecklistsingleItem = undefined;
             }
           } else {
             this.alertService.error(data.message);
@@ -721,16 +707,12 @@ export class WorksordersAssetChecklistComponent implements OnInit {
   }
 
   selectedDateEvent(event) {
-
     this.selectedDate = event
-    // console.log(this.selectedDate)
-    // console.log(this.chooseDateType)
-    // debugger;
+
     if (this.chooseDateType == "HCD" || this.chooseDateType == "SOCD") {
       this.setAsset(this.chooseDateType, "C");
       return;
     }
-
 
     if (this.actionType == "single") {
       if (this.chooseDateType == "SE") {
@@ -762,18 +744,14 @@ export class WorksordersAssetChecklistComponent implements OnInit {
     }
 
 
-
-
-
-
   }
+
 
   setAsset(type, checkOrProcess = 'C') {
     let params: any = {};
     this.chooseDateType = type;
     let callApi: any;
 
-    //this.selectedChecklistsingleItem = item;
     params.WOSEQUENCE = this.phaseData.wosequence;
     params.WOPSEQUENCE = this.phaseData.wopsequence;
     params.strASSID = [this.selectedChildRow.assid]
@@ -879,14 +857,9 @@ export class WorksordersAssetChecklistComponent implements OnInit {
           if (res.pRETURNSTATUS == 'E') {
             return
           }
-
           this.setAsset(type, checkstatus);
-
-
         }
-        //(confirmed) ? this.setStatus(type, item, 'P') : console.log(confirmed)
-      })
-      .catch(() => console.log('Attribute dismissed the dialog.'));
+      }).catch(() => console.log('Attribute dismissed the dialog.'));
   }
 
 
@@ -907,20 +880,11 @@ export class WorksordersAssetChecklistComponent implements OnInit {
       if (!this.selectedChecklistsingleItem || this.selectedChecklistsingleItem.detailCount == 0) {
         return;
       }
-
       this.selectedChecklistsingleItem = item;
     }
 
-
     $('.checklistOverlay').addClass('ovrlay');
     this.assetDetailWindow = true;
-
-    // this.selectedRow = this.selectedChildRow;
-    // this.selectedChildRow = item;
-    // this.selectedRow = item;
-    // this.treelevel = 3;
-
-    // this.selectedParentRow = JSON.parse(item.parentData);
 
   }
 
@@ -928,7 +892,6 @@ export class WorksordersAssetChecklistComponent implements OnInit {
     this.assetDetailWindow = eve;
     $('.checklistOverlay').removeClass('ovrlay');
     this.worksOrderDetailPageData();
-    // this.selectedChecklistsingleItem = undefined;
   }
 
 
@@ -965,15 +928,9 @@ export class WorksordersAssetChecklistComponent implements OnInit {
   }
 
   removeOrDeletework(type, checkOrProcess = "C") {
-    // if (!this.selectedChecklistsingleItem || this.selectedChecklistsingleItem.detailCount == 0) {
-    //   return;
-    // }
-
     if (this.mySelection.length == 0) {
       return
     }
-
-
 
     let filterChecklist = this.assetCheckListData.filter(x => this.mySelection.includes(x.wochecksurcde));
 
@@ -1004,7 +961,6 @@ export class WorksordersAssetChecklistComponent implements OnInit {
 
     params.WOSEQUENCE = this.selectedChecklistsingleItem.wosequence;
     params.WOPSEQUENCE = this.selectedChecklistsingleItem.wopsequence;
-    // params.ASSID_STAGESURCDE_CHECKSURCDE = [this.selectedChecklistsingleItem.assid, this.selectedChecklistsingleItem.wostagesurcde, this.selectedChecklistsingleItem.wochecksurcde];
     params.ASSID_STAGESURCDE_CHECKSURCDE = ASSID_STAGESURCDE_CHECKSURCDE;
     params.strUserId = this.currentUser.userId;
     params.strCheckOrProcess = checkOrProcess;
@@ -1050,8 +1006,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
           this.removeOrDeletework(type, checkstatus);
         }
 
-      })
-      .catch(() => console.log('Attribute dismissed the dialog.'));
+      }).catch(() => console.log('Attribute dismissed the dialog.'));
   }
 
 
@@ -1074,8 +1029,6 @@ export class WorksordersAssetChecklistComponent implements OnInit {
       ASSID_STAGESURCDE_CHECKSURCDE.push(checklist.wostagesurcde)
       ASSID_STAGESURCDE_CHECKSURCDE.push(checklist.wochecksurcde)
     }
-    // console.log(filterChecklist)
-
 
     this.chooseDateType = type;
     let apiName = '';
@@ -1097,19 +1050,14 @@ export class WorksordersAssetChecklistComponent implements OnInit {
     } else if (type == 'IPY') {
       apiName = 'SetWorksOrderCheckListStatusToInProgress'
       params.dtDate = this.getDateString('Yesterday');
-      // params.CheckName = ''
 
     } else if (type == 'IPT') {
       apiName = 'SetWorksOrderCheckListStatusToInProgress'
       params.dtDate = this.getDateString('Today');
-      // params.CheckName = '';
 
     } else if (type == 'IPDM') {
       apiName = 'SetWorksOrderCheckListStatusToInProgress'
       params.dtDate = this.dateFormate(this.selectedDate.selectedDate);
-      // params.CheckName = ''
-
-
 
     } else if (type == 'CIY') {
       apiName = "WorksOrderCheckListCompleteItem"
@@ -1141,7 +1089,6 @@ export class WorksordersAssetChecklistComponent implements OnInit {
             } else {
               this.alertService.success(resp.pRETURNMESSAGE)
               this.worksOrderDetailPageData();
-              // this.selectedChecklistsingleItem = undefined;
             }
           } else {
             this.alertService.error(data.message);
@@ -1199,14 +1146,11 @@ export class WorksordersAssetChecklistComponent implements OnInit {
 
         }
 
-      })
-      .catch(() => console.log('Attribute dismissed the dialog.'));
+      }).catch(() => console.log('Attribute dismissed the dialog.'));
   }
 
 
   disableBtnsIndividualMenu(name, item) {
-    // this.selectedChecklistsingleItem = item
-
     if (name == "status") {
       return this.workorderAsset?.woassstatus == 'Pending' || this.workorderAsset?.woassstatus == 'Issued'
     }
@@ -1243,6 +1187,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
     return false
   }
 
+
   disableMainActions(type) {
     if (type == "woremoveAll" || type == "wodeleteAll") {
       if (!this.selectedChecklistsingleItem) {
@@ -1258,7 +1203,6 @@ export class WorksordersAssetChecklistComponent implements OnInit {
         return false
       }
 
-      // return !this.selectedChecklistsingleItem || this.selectedChecklistsingleItem.detailCount == 0
     }
 
     if (type == "woAdd") {
@@ -1290,9 +1234,6 @@ export class WorksordersAssetChecklistComponent implements OnInit {
       if (this.workorderAsset != undefined) {
         const { woassstatus } = this.workorderAsset;
         if (woassstatus == "In Progress") return false;
-        // if (woassstatus == "In Progress" || woassstatus == "Issued" || woassstatus == "Accepted" || woassstatus == "Handover") {
-        //   return true;
-        // }
       }
 
       return true;
@@ -1315,9 +1256,6 @@ export class WorksordersAssetChecklistComponent implements OnInit {
     if (this.userType?.wourroletype == "Dual Role") {
       return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
     } else {
-      // if(menuName == "Release Asset"){
-      //   console.log(this.worksOrderUsrAccess.indexOf(menuName) != -1)
-      // }
       return this.worksOrderUsrAccess.indexOf(menuName) != -1
     }
   }
@@ -1406,14 +1344,9 @@ export class WorksordersAssetChecklistComponent implements OnInit {
     this.worksOrderDetailPageData();
   }
 
-  viewCheckListOrderReport(reportLevel, dataItem: any = null) {
-
-    const wprsequence = (dataItem != null) ? dataItem.wprsequence : this.selectedChildRow.wprsequence;
-    const wosequence = (dataItem != null) ? dataItem.wosequence : this.selectedChildRow.wosequence;
-    const wopsequence = (dataItem != null) ? dataItem.wopsequence : 0;
-    let report_level = reportLevel;
-    const asset_id = (dataItem != null && dataItem.assid != undefined) ? dataItem.assid : "";
-
+  viewCheckListOrderReport(reportLevel) {
+    if (this.selectedChildRow == undefined) return
+    const { wprsequence, wosequence, wopsequence, assid } = this.selectedChildRow;
     const label = {
       programme: "Programme",
       contractor: "Contractor",
@@ -1453,44 +1386,39 @@ export class WorksordersAssetChecklistComponent implements OnInit {
       updated_On: "Updated On"
     }
 
-    this.worksOrderReportService.getChecklistReportForOrder(wprsequence, wosequence, wopsequence, report_level, asset_id).subscribe(
+    const fieldsToFormat = {
+      forecast: 'money',
+      committed: 'money',
+      approved: 'money',
+      pending: 'money',
+      actual: 'money',
+      forecast_Fee: 'money',
+      committed_Fee: 'money',
+      approved_Fee: 'money',
+      pending_Fee: 'money',
+      actual_Fee: 'money',
+      issue_Date: 'date',
+      target_Date: 'date',
+      acceptance_Date: 'date',
+      plan_Start_Date: 'date',
+      plan_End_Date: 'date',
+      actual_Start_Date: 'date',
+      actual_End_Date: 'date',
+      updated_On: 'date',
+    }
+
+    this.worksOrderReportService.getChecklistReportForOrder(wprsequence, wosequence, wopsequence, reportLevel, assid).subscribe(
       (data) => {
         if (data.isSuccess == true) {
-          let tempData = [...data.data];
-          if (tempData.length > 0) {
-            tempData.map((x: any) => {
-              x.forecast = this.currencyPipe.transform(x.forecast, "GBP", "symbol");
-              x.committed = this.currencyPipe.transform(x.committed, "GBP", "symbol");
-              x.approved = this.currencyPipe.transform(x.approved, "GBP", "symbol");
-              x.pending = this.currencyPipe.transform(x.pending, "GBP", "symbol");
-              x.actual = this.currencyPipe.transform(x.actual, "GBP", "symbol");
-              x.forecast_Fee = this.currencyPipe.transform(x.forecast_Fee, "GBP", "symbol");
-              x.committed_Fee = this.currencyPipe.transform(x.committed_Fee, "GBP", "symbol");
-              x.approved_Fee = this.currencyPipe.transform(x.approved_Fee, "GBP", "symbol");
-              x.pending_Fee = this.currencyPipe.transform(x.pending_Fee, "GBP", "symbol");
-              x.actual_Fee = this.currencyPipe.transform(x.actual_Fee, "GBP", "symbol");
-              x.issue_Date = (this.helperService.formatDateWithoutTime(x.issue_Date) != null) ? this.helperService.formatDateWithoutTime(x.issue_Date) : "";
-              x.target_Date = (this.helperService.formatDateWithoutTime(x.target_Date) != null) ? this.helperService.formatDateWithoutTime(x.target_Date) : "";
-              x.acceptance_Date = (this.helperService.formatDateWithoutTime(x.acceptance_Date) != null) ? this.helperService.formatDateWithoutTime(x.acceptance_Date) : "";
-              x.plan_Start_Date = (this.helperService.formatDateWithoutTime(x.plan_Start_Date) != null) ? this.helperService.formatDateWithoutTime(x.plan_Start_Date) : "";
-              x.plan_End_Date = (this.helperService.formatDateWithoutTime(x.plan_End_Date) != null) ? this.helperService.formatDateWithoutTime(x.plan_End_Date) : "";
-              x.actual_Start_Date = (this.helperService.formatDateWithoutTime(x.actual_Start_Date) != null) ? this.helperService.formatDateWithoutTime(x.actual_Start_Date) : "";
-              x.actual_End_Date = (this.helperService.formatDateWithoutTime(x.actual_End_Date) != null) ? this.helperService.formatDateWithoutTime(x.actual_End_Date) : "";
-              x.updated_On = (this.helperService.formatDateWithoutTime(x.updated_On) != null) ? this.helperService.formatDateTime(x.updated_On) : "";
-            })
-            let fileName = "Asset_Checklist_Report_" + wosequence + "_" + wopsequence + "_" + report_level;
-            this.helperService.exportAsExcelFile(tempData, fileName, label);
-          } else {
+          if (data.data.length == 0) {
             this.alertService.error("No Record Found.");
+            return
           }
-          this.chRef.detectChanges();
-        } else {
-          this.alertService.error(data.message);
-        }
-      },
-      error => {
-        this.alertService.error(error);
-      }
+          let fileName = "Asset_Checklist_Report_" + wosequence + "_" + wopsequence + "_" + reportLevel;
+          this.helperService.exportAsExcelFileWithCustomiseFields(data.data, fileName, label, fieldsToFormat)
+
+        } else this.alertService.error(data.message);
+      }, error => this.alertService.error(error)
     )
 
   }

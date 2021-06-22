@@ -52,8 +52,6 @@ export class CurrencyMaskDirective {
 
     let rawVal = (cleanValue || this.lastValid)
 
-    // let newVal = event.replace(/\D/g, '');
-
     let newVal = '';
     let splitVal = [];
     if (rawVal.indexOf('.') != -1) {
@@ -63,10 +61,6 @@ export class CurrencyMaskDirective {
       newVal = rawVal;
     }
 
-
-    // if (backspace && newVal.length <= 6) {
-    //   newVal = newVal.substring(0, newVal.length - 1);
-    // }
 
     if (newVal.length === 0) {
       newVal = '';

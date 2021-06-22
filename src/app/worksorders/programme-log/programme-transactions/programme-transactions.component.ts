@@ -55,7 +55,6 @@ export class ProgramTransactionsComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        // console.log(this.openedFrom)
         if (this.openedFrom == 'workorder') {
             const { wprname, wprprogrammetype } = this.programmeData;
             const { woname } = this.singleWorkOrderInp;
@@ -70,8 +69,6 @@ export class ProgramTransactionsComponent implements OnInit {
                 m_USERNAME,
                 wplsummarymessage
             }
-
-            // console.log(this.transationDetail)
         }
 
         if (this.openedFrom == 'assetchecklist') {
@@ -90,8 +87,23 @@ export class ProgramTransactionsComponent implements OnInit {
                 wplsummarymessage: wpldmessage
             }
 
-            // console.log(this.transationDetail)
         }
+
+        if (this.openedFrom == 'programme') {
+            const { wprname, wprprogrammetype } = this.programmeData;
+            const { woname, wopname, wpltransactiontype, wpldatetime, m_USERNAME, wplsummarymessage } = this.programLogInp;
+            this.transationDetail = {
+                wprname,
+                wprprogrammetype,
+                woname,
+                wopname,
+                wpltransactiontype,
+                wpldatetime,
+                m_USERNAME,
+                wplsummarymessage
+            }
+        }
+
         this.WEBWorksOrdersWorksProgrammeLogDetails();
     }
 
@@ -123,7 +135,12 @@ export class ProgramTransactionsComponent implements OnInit {
             this.worksOrdersService.WEBWorksOrdersWorksProgrammeLogDetails(wprsequence, wplsequence).subscribe(
                 data => {
                     if (data.isSuccess) {
-                        this.gridData = data.data;
+                        this.gridData = data.data.map(x => {
+                            if (x.wpldstatus == "S") x.wpldstatus = "Success";
+                            if (x.wpldstatus == "W") x.wpldstatus = "Warning";
+                            if (x.wpldstatus == "E") x.wpldstatus = "Error";
+                            return x;
+                        });
                         this.gridView = process(this.gridData, this.state);
                     } else this.alertService.error(data.message);
 

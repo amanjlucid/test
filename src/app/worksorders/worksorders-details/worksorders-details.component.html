@@ -11,6 +11,37 @@
       <button type="button" class="btn btn-sm themeButton mr-1 headin_section" (click)="slideToggle()"><i class="fa"
           [ngClass]="(filterToggle)? 'fa-minus':'fa-plus'"></i></button>
       <!-- <button (click)="openElmGrpWin('package-mapping')" class="btn btn-sm themeButton mr-1">Package Mapping</button> -->
+      <div class="administrationBtnAera mr-1">
+        <div class="dropdown ml-1 reportBtnArea" id="nesting-dropdown-demo">
+          <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown"
+            aria-expanded="false">Report</button>
+
+          <div class="dropdown-menu" x-placement="bottom-start"
+            style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
+
+            <div class="dropdown-toggle">
+              <div class="dropdown-item">Works Order</div>
+              <div class="dropdown-menu woReportMenu">
+                <a class="dropdown-item" (click)="viewWOReportingProgSummaryTree('WOD Report Financial And Status', 2)"
+                  href="javascript:void(0)">Financial And Status</a>
+                <a class="dropdown-item" (click)="viewWOReportingAsset('WOD Report Asset Level', 2)"
+                  href="javascript:void(0)">Asset Level</a>
+              </div>
+            </div>
+
+
+            <div class="dropdown-toggle">
+              <div class="dropdown-item">Checklist</div>
+              <div class="dropdown-menu checklistReportMenu">
+                <a class="dropdown-item" (click)="viewCheckListOrderReport('WOD Report Checklist For Order', 2)"
+                  href="javascript:void(0)">For Order</a>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
 
       <div class="administrationBtnAera mr-1">
         <div class="dropdown" id="nesting-dropdown-demo">
@@ -291,18 +322,18 @@
 
                 <a class="dropdown-item" href="javascript:void(0)"
                   (click)="openAddPhaseCostStructure(dataItem)">Asset(s) for Phase Work Cost</a>
-                  
+
                 <div class="dropdown-toggle">
                   <div class="dropdown-item">Reports</div>
-                  <div class="dropdown-menu addAssetMenu">
+                  <div class="dropdown-menu singleReportMenu">
                     <div class="dropdown-toggle">
                       <div class="dropdown-item">Works Order</div>
-                      <div class="dropdown-menu addAssetMenu">
-                        <a class="dropdown-item"
+                      <div class="dropdown-menu">
+                        <!-- <a class="dropdown-item"
                           (click)="viewWOReportingProgSummaryTree('WOD Report Financial And Status', 2, dataItem)"
                           href="javascript:void(0)">Financial And Status</a>
                         <a class="dropdown-item" (click)="viewWOReportingAsset('WOD Report Asset Level', 2, dataItem)"
-                          href="javascript:void(0)">Asset Level</a>
+                          href="javascript:void(0)">Asset Level</a> -->
                         <a class="dropdown-item"
                           (click)="viewWOReportingAsset('WOD Report Asset Level Selected Phase)', 3, dataItem)"
                           href="javascript:void(0)">Asset Level (For Selected Phase)</a>
@@ -310,9 +341,9 @@
                     </div>
                     <div class="dropdown-toggle">
                       <div class="dropdown-item">Checklist</div>
-                      <div class="dropdown-menu addAssetMenu">
-                        <a class="dropdown-item" (click)="viewCheckListOrderReport('WOD Report Checklist For Order', 2)"
-                          href="javascript:void(0)">For Order</a>
+                      <div class="dropdown-menu">
+                        <!-- <a class="dropdown-item" (click)="viewCheckListOrderReport('WOD Report Checklist For Order', 2)"
+                          href="javascript:void(0)">For Order</a> -->
                         <a class="dropdown-item"
                           (click)="viewCheckListOrderReport('WOD Report Checklist For Phase', 3, dataItem)"
                           href="javascript:void(0)">For Selected Phase</a>

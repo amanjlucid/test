@@ -8,14 +8,7 @@ import * as moment from 'moment';
 })
 export class DateFormatPipe extends DatePipe implements PipeTransform {
   transform(value: any, args?: any): any {
-    //return super.transform(value, args);
-    //const isIEOrEdge = /msie\s|trident\/|edge\//i.test(window.navigator.userAgent);
-    // if(isIEOrEdge){
-    //   var momentDate = moment(value);
-    // } else {
-    //   var momentDate = moment(new Date(value));
-    // }
-   
+  
     if (value == null) {
       return ' ';
     }

@@ -113,14 +113,7 @@ import { CurrencyPipe } from '@angular/common';
 import { AssetResidentInfoComponent } from './asset-resident-info/asset-resident-info.component';
 import { AssetRiskComponent } from './asset-resident-info/asset-risk/asset-risk.component';
 import { AssetResidentContainerComponent } from './asset-resident-container/asset-resident-container.component';
-// import { WopmTemplatesComponent } from './worksorders/Config/wopm-templates/wopm-templates.component';
-// import { WopmConfigComponent } from './worksorders/Config/wopm-config/wopm-config.component';
-// import { WopmMasterstagesComponent } from './worksorders/Config/wopm-masterstages/wopm-masterstages.component';
-// import { WopmEditTemplateComponent } from './worksorders/Config/wopm-templates/wopm-edit-template/wopm-edit-template.component';
-// import { WopmEditMasterstageComponent } from './worksorders/Config/wopm-masterstages/wopm-edit-masterstage/wopm-edit-masterstage.component';
-// import { WopmChecklistMasterComponent } from './worksorders/Config/wopm-templates/wopm-checklist-master/wopm-checklist-master.component';
-// import { WopmEditChecklistMasterComponent } from './worksorders/Config/wopm-templates/wopm-checklist-master/wopm-edit-checklist-master/wopm-edit-checklist-master.component';
-// import { WopmEditChecklistDependenciesComponent } from './worksorders/Config/wopm-templates/wopm-edit-checklist-dependencies/wopm-edit-checklist-dependencies.component';
+
 
 
 
@@ -219,17 +212,7 @@ import { AssetResidentContainerComponent } from './asset-resident-container/asse
     AssetResidentInfoComponent,
     AssetRiskComponent,
     AssetResidentContainerComponent,
-  
-  
-    // WopmTemplatesComponent,
-    // WopmConfigComponent,
-    // WopmMasterstagesComponent,
-    // WopmEditTemplateComponent,
-    // WopmEditMasterstageComponent,
-    // WopmChecklistMasterComponent,
-    // WopmEditChecklistMasterComponent,
-    // WopmEditChecklistDependenciesComponent
-
+   
   ],
 
   imports: [

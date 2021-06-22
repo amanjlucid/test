@@ -8,9 +8,31 @@
         <div class="col-md-2">
           <label class="col-form-label">Programme: </label>
         </div>
-        <div class="col-md-10">
+        <div [ngClass]="{'col-md-8': openedFrom == 'programme', 'col-md-10' : openedFrom != 'programme'}">
           <input [readonly]="true" type="text" class="form-control" value="{{ programmeData?.wprname }}">
         </div>
+
+        <div class="col-md-2 text-right" *ngIf="openedFrom == 'programme'">
+          <div class="dropdown mr-1 reportBtnArea mt-2" id="nesting-dropdown-demo">
+            <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown"
+              aria-expanded="false">Report</button>
+            <div class="dropdown-menu" x-placement="bottom-start"
+              style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
+
+              <a class="dropdown-item" href="javascript:void(0)" (click)="programmeLog(1)">Summary
+                by Date</a>
+              <a class="dropdown-item" href="javascript:void(0)" (click)="programmeLog(2)">Summary by Order/Phase and
+                Date</a>
+              <a class="dropdown-item" href="javascript:void(0)" (click)="programmeLog(3)">Detail
+                by Date</a>
+              <a class="dropdown-item" href="javascript:void(0)" (click)="programmeLog(4)">Detail by
+                Order/Phase and Date</a>
+
+            </div>
+          </div>
+        </div>
+
+
       </div>
     </div>
 
@@ -134,32 +156,40 @@
           </ng-template>
         </kendo-grid-column>
 
-        <!-- Programme log fields for Work order start-->
-        <kendo-grid-column field="woname" title="Work Order" width="170" *ngIf="openedFrom == 'workorder'">
+        <!-- Programme log fields for Work order and Programme start-->
+        <kendo-grid-column field="woname" title="Work Order" width="170"
+          *ngIf="openedFrom == 'workorder' || openedFrom == 'programme'">
         </kendo-grid-column>
-        <kendo-grid-column field="wopname" title="Phase" width="120" *ngIf="openedFrom == 'workorder'">
+        <kendo-grid-column field="wopname" title="Phase" width="120"
+          *ngIf="openedFrom == 'workorder' || openedFrom == 'programme'">
         </kendo-grid-column>
-        <kendo-grid-column field="woiaissuedate" title="Date" [width]="140" [filterable]="false" [sortable]="false"
-          *ngIf="openedFrom == 'workorder'">
+
+        <kendo-grid-column field="wpldatetime" title="Date" [width]="140" [filterable]="false" [sortable]="false"
+          *ngIf="openedFrom == 'workorder' || openedFrom == 'programme'">
           <ng-template kendoGridCellTemplate let-dataItem>
             <span>
               {{ dataItem.wpldatetime | dateFormat : 'DD-MMM-YYYY' }}
             </span>
           </ng-template>
         </kendo-grid-column>
-        <kendo-grid-column field="m_USERNAME" title="User" width="100" *ngIf="openedFrom == 'workorder'">
+
+
+        <kendo-grid-column field="m_USERNAME" title="User" width="100"
+          *ngIf="openedFrom == 'workorder' || openedFrom == 'programme'">
         </kendo-grid-column>
         <kendo-grid-column field="wpltransactiontype" title="Transaction Type" width="140"
-          *ngIf="openedFrom == 'workorder'">
+          *ngIf="openedFrom == 'workorder' || openedFrom == 'programme'">
         </kendo-grid-column>
-        <kendo-grid-column field="wplerrorstatus" title="Status" width="100" *ngIf="openedFrom == 'workorder'">
-          <ng-template kendoGridCellTemplate let-dataItem>
+        <kendo-grid-column field="wplerrorstatus" title="Status" width="100"
+          *ngIf="openedFrom == 'workorder' || openedFrom == 'programme'">
+          <!-- <ng-template kendoGridCellTemplate let-dataItem>
             <span>
               {{ dataItem.wplerrorstatus == 'S' ? 'Success' : dataItem.wplerrorstatus }}
             </span>
-          </ng-template>
+          </ng-template> -->
         </kendo-grid-column>
-        <kendo-grid-column field="wplsummarymessage" title="Summary" width="200" *ngIf="openedFrom == 'workorder'">
+        <kendo-grid-column field="wplsummarymessage" title="Summary" width="200"
+          *ngIf="openedFrom == 'workorder' || openedFrom == 'programme'">
         </kendo-grid-column>
         <!-- Programme log fields for Work order end -->
 
@@ -179,11 +209,11 @@
         <kendo-grid-column field="m_USERNAME" title="User" width="100" *ngIf="openedFrom == 'assetchecklist'">
         </kendo-grid-column>
         <kendo-grid-column field="wpldstatus" title="Status" width="100" *ngIf="openedFrom == 'assetchecklist'">
-          <ng-template kendoGridCellTemplate let-dataItem>
+          <!-- <ng-template kendoGridCellTemplate let-dataItem>
             <span>
               {{ dataItem.wpldstatus == 'S' ? 'Success' : dataItem.wpldstatus }}
             </span>
-          </ng-template>
+          </ng-template> -->
         </kendo-grid-column>
         <kendo-grid-column field="wpldmessage" title="Message" width="200" *ngIf="openedFrom == 'assetchecklist'">
         </kendo-grid-column>

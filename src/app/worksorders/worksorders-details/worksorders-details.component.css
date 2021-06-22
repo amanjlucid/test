@@ -20,8 +20,16 @@
   position: fixed !important;
 }
 
-.addAssetMenu {
+.workorderDetailGrid .addAssetMenu {
   top: -45px !important;
+}
+
+.workorderDetailGrid .singleReportMenu {
+  top: -45px !important;
+}
+
+.workorderDetailGrid .singleReportMenu .dropdown-menu {
+  top: -12px !important;
 }
 
 .k-treelist tbody td {

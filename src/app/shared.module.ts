@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-// import { GridModule, ExcelModule } from '@progress/kendo-angular-grid';
 import { SimpleTextFilterComponent } from './kendo-component/simple-text-filter.component';
 import { DateFormatPipe } from './_pipes/date-format.pipe'
 import { CurrencyFormatPipe } from './_pipes/currency-format.pipe'

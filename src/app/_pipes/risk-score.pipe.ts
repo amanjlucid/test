@@ -11,18 +11,6 @@ export class RiskScorePipe implements PipeTransform {
         } else {
            return  Math.round(value * 100);
         }
-
-        // let refe = ref.split(":")
-        // let sample: any;
-
-        // item.sampleList.forEach(element => {
-        //     sample = element;
-        // });
-
-
-        // if (sample != undefined) {
-        //     return `Analysis ${sample.sampleReference}, Presence =${sample.presence}`;
-        // }
-
+       
     }
 }

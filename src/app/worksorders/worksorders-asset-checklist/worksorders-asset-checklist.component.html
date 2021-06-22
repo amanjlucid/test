@@ -58,10 +58,18 @@
                 Variations
             </button>
 
-            <button type="button" class="btn btn-sm themeButton mr-1 headin_section"
-                (click)="viewCheckListOrderReport(4, selectedChildRow)">
-                Checklist Report
-            </button>
+            <div class="dropdown reportBtnArea" id="nesting-dropdown-demo">
+                <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown"
+                    aria-expanded="false">Report</button>
+                <div class="dropdown-menu" x-placement="bottom-start"
+                    style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
+                    <a class="dropdown-item" href="javascript:void(0)"
+                        (click)="viewCheckListOrderReport(4)">Checklist Report</a>
+
+                </div>
+            </div>
+
+
             <div class="dropdown" id="nesting-dropdown-demo">
                 <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown"
                     aria-expanded="false">Action</button>
