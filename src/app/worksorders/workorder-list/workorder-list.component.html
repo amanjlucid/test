@@ -97,93 +97,10 @@
           <ng-template kendoGridCellTemplate let-dataItem>
             <i aria-expanded="false" class="fas fa-bars" (click)="openMenu($event, dataItem)"></i>
           </ng-template>
-          <!-- <ng-template kendoGridCellTemplate let-dataItem>
-            <li #li class="nav-item dropdown list-unstyled" style="margin-top: -7px;"
-              (click)="setSeletedRow(dataItem, li)">
-              <i #ii data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"
-                (click)="setSeletedRow(dataItem, ii)"></i>
-              <div #elm class="dropdown-menu selectedMenuBar{{dataItem.wosequence}} drpMenu">
-
-                <a *ngIf="woMenuAccess('Edit Works Order')" class="dropdown-item" href="javascript:void(0)"
-                  (click)="redirectToWorksOrderEdit(dataItem)">Edit</a>
-                <a *ngIf="woMenuAccess('Delete Works Order')" class="dropdown-item" href="javascript:void(0)"
-                  (click)="deleteThis(dataItem)">Delete</a>
-                <a *ngIf="woMenuAccess('Works Order Detail')" class="dropdown-item" href="javascript:void(0)"
-                  (click)="redirectToWorksOrder(dataItem)"> Works Order Details</a>
-
-                <a *ngIf="woMenuAccess('Variations')" class="dropdown-item" href="javascript:void(0)"
-                  (click)="openVariationList(dataItem)">Variations</a>
-                <a (click)="redirectToWoProgramManagmentInstructions(dataItem)" class="dropdown-item"
-                  href="javascript:void(0)">
-                  Instructions</a>
-
-                <a class="dropdown-item" (click)="openCompletionList(dataItem)"
-                  href="javascript:void(0)">Completions</a>
-
-                <a class="dropdown-item" href="javascript:void(0)" (click)="openProgrammeLog(dataItem)">View Programme
-                  Log</a>
-
-                <a class="dropdown-item" href="javascript:void(0)"
-                  (click)="openWoAssociationsManage(dataItem)">Associations</a>
-
-                <a *ngIf="woMenuAccess('Defects')" class="dropdown-item" href="javascript:void(0)"
-                  (click)="openDefectsMethod(dataItem)">Defects</a>
-
-                <a *ngIf="woMenuAccess('Works Order Documents')"
-                  [ngClass]="{'disabled': dataItem.worksOrderFileCount == 0}" class="dropdown-item"
-                  (click)="openDocumentMethod(dataItem)" href="javascript:void(0)">Documents</a>
-
-                <div class="dropdown-toggle">
-                  <div class="dropdown-item">Contractor Reports</div>
-                  <div class="dropdown-menu addAssetMenu">
-                    <a class="dropdown-item" href="javascript:void(0)"
-                      (click)="WOCreateXportOutputReport(580, 'Contractor Asset Report')">Asset Report</a>
-                    <a class="dropdown-item" href="javascript:void(0)"
-                      (click)="WOCreateXportOutputReport(581, 'Contractor Work Report')">Work Report</a>
-                  </div>
-                </div>
-
-
-                <div class="dropdown-toggle">
-                  <div class="dropdown-item">Works Order Report</div>
-                  <div class="dropdown-menu woReport">
-                    <a class="dropdown-item" href="javascript:void(0)"
-                      (click)="viewWOReportingProgSummaryTree(2, selectedWorksOrder)">Selected Order</a>
-
-                    <a class="dropdown-item" href="javascript:void(0)"
-                      (click)="viewWOReportingAsset(2, selectedWorksOrder)">Selected Order (including Assets)</a>
-
-                    <a class="dropdown-item" href="javascript:void(0)"
-                      (click)="WOCreateXportOutputReport(505, 'WO Selected Asset Report')">Asset Report (Selected
-                      Order)</a>
-                    <a class="dropdown-item" href="javascript:void(0)"
-                      (click)="WOCreateXportOutputReport(506, 'WO Selected Work Report')">Work Report (Selected
-                      Order)</a>
-
-
-                  </div>
-                </div>
-
-
-                <div class="dropdown-toggle">
-                  <div [ngClass]="{'disabled' : dataItem.wottemplatetype != 'Works Order Milestone'}"
-                    class="dropdown-item">Milestones</div>
-                  <div class="dropdown-menu milestoneMenu">
-                    <a *ngIf="woMenuAccess('Milestones')" class="dropdown-item" href="javascript:void(0)"
-                      (click)="openManageMilestonePopup(dataItem, 'checklist')">Milestones</a>
-                    <a *ngIf="woMenuAccess('Manage Milestones')" class="dropdown-item" href="javascript:void(0)"
-                      (click)="openManageMilestonePopup(dataItem, 'manage')">Manage Milestones</a>
-                  </div>
-                </div>
-
-              </div>
-
-            </li>
-
-          </ng-template> -->
+          
         </kendo-grid-column>
 
-        <kendo-grid-column field="worksOrderAssetChecklistFileCount" title="" width="40" [filterable]="false"
+        <!-- <kendo-grid-column field="worksOrderAssetChecklistFileCount" title="" width="40" [filterable]="false"
           [locked]="columnLocked">
           <ng-template kendoGridHeaderTemplate>
             <img style="height: 14px;" src="assets/img/icons/attach.png" />
@@ -194,7 +111,7 @@
               <img style="height:16px;" *ngIf="dataItem.worksOrderFileCount > 0" src="assets/img/icons/attach.png" />
             </div>
           </ng-template>
-        </kendo-grid-column>
+        </kendo-grid-column> -->
 
         <kendo-grid-column field="wosequence" title="Work Order" width="130" [locked]="columnLocked">
         </kendo-grid-column>
@@ -394,7 +311,7 @@
 
         <div class="dropdown-toggle">
           <div class="dropdown-item">Contractor Reports</div>
-          <div class="dropdown-menu addAssetMenu">
+          <div class="dropdown-menu contractorReportMenu">
             <a class="dropdown-item" href="javascript:void(0)"
               (click)="WOCreateXportOutputReport(580, 'Contractor Asset Report')">Asset Report</a>
             <a class="dropdown-item" href="javascript:void(0)"

@@ -47,7 +47,7 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
   public groupedData: any = [];
   public gridData: any = [];
   @ViewChild(TreeListComponent) public grid: TreeListComponent;
-  gridHeight = 680;
+  gridHeight = 750;
   worksOrderData: any;
   assetchecklistWindow = false;
   selectedChildRow: any;
@@ -467,10 +467,10 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
     this.filterToggle = !this.filterToggle;
     $('.worksorder-header').slideToggle();
     if (this.filterToggle) {
-      this.gridHeight = 370;
+      this.gridHeight = 430;
     } else {
       setTimeout(() => {
-        this.gridHeight = 680;
+        this.gridHeight = 750;
       }, 500);
     }
   }
@@ -882,19 +882,12 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
   getTopMargin() {
     if (this.mousePositioin == undefined) return;
     return "-100px"
-    // const { y } = this.mousePositioin;
-    // if (y <= 563) return "-133px";
-    // if (y > 563 && y < 640) return "-203px";
-    // if (y > 640 && y < 745) return "-318px";
-    // if (y > 745 && y < 797) return "-364px";
-    // if (y > 797 && y < 900) return "-441px";
   }
 
   openMenu(e, dataItem) {
     if (dataItem != undefined) {
       this.mousePositioin = { x: e.pageX, y: e.pageY };
       const element = e.target as HTMLElement;
-      //console.log(this.tooltipDir)
       this.menuData = dataItem;
       this.tooltipDir.toggle(element);
 
@@ -911,21 +904,6 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
     this.tooltipDir.hide();
     this.menuData = undefined;
   }
-
-  // setSeletedRow(dataItem, event) {
-  //   if (dataItem != undefined) {
-  //     setTimeout(() => {
-  //       let att = $('.selectedWodBar' + dataItem.id)[0].getAttribute("x-placement");
-  //       if (att == "bottom-start" && this.mousePositioin.y > 600) {
-  //         $('.selectedWodBar' + dataItem.id).css({ "top": "-116px", "left": "22px" })
-  //       }
-
-  //     }, 50);
-
-  //   }
-
-  // }
-
 
   moveAssets(item = null) {
     this.selectedAssetList = [];

@@ -301,10 +301,10 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
 
       this.selectedWorksOrder = dataItem;
       this.mySelection = [this.selectedWorksOrder.wosequence];
+
       const element = e.target as HTMLElement;
       this.menuData = dataItem;
       this.tooltipDir.toggle(element);
-
 
       const elements = document.querySelectorAll('.menuDiv .dropdown-item');
       elements.forEach(element => {
@@ -318,27 +318,6 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
     this.tooltipDir.hide();
     this.menuData = undefined;
   }
-
-
-
-  // setSeletedRow(dataItem, event) {
-  //   if (dataItem != undefined) {
-  //     setTimeout(() => {
-  //       let att = $('.selectedMenuBar' + dataItem.wosequence)[0].getAttribute("x-placement");
-  //       if (att == "bottom-start" && this.mousePositioin.y > 600) {
-  //         $('.selectedMenuBar' + dataItem.wosequence).css("top", "-116px")
-  //       }
-  //     }, 50);
-
-  //     if (this.selectedWorksOrder?.wosequence != dataItem.wosequence) {
-  //       this.helperService.getWorkOrderSecurity(dataItem.wosequence);
-  //       this.helperService.getUserTypeWithWOAndWp(dataItem.wosequence, dataItem.wprsequence);
-  //     }
-
-  //     this.selectedWorksOrder = dataItem;
-  //     this.mySelection = [this.selectedWorksOrder.wosequence];
-  //   }
-  // }
 
 
   openUserPopup(action, item = null) {

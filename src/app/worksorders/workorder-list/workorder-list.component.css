@@ -146,6 +146,10 @@
     top: -117px !important;
 }
 
+.dropdown-menu.contractorReportMenu{
+    top: -45px !important;
+}
+
 .disabled .dropdown-item {
     color: #d1d2d3;
     background-color: transparent;
