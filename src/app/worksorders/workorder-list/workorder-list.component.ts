@@ -8,7 +8,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { WorkordersListFilterModel } from '../../_models';
 import { debounceTime } from 'rxjs/operators';
 import { CurrencyPipe } from '@angular/common';
-
+import { TooltipDirective } from '@progress/kendo-angular-tooltip';
 
 @Component({
   selector: 'app-workorder-list',
@@ -18,6 +18,7 @@ import { CurrencyPipe } from '@angular/common';
 })
 
 export class WorkorderListComponent implements OnInit, AfterViewInit {
+  @ViewChild(TooltipDirective) public tooltipDir: TooltipDirective;
   subs = new SubSink();
   state: State = {
     skip: 0,
@@ -84,6 +85,7 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
   openManageMilestone: boolean;
   openDefectsList = false;
   openMilestoneFor = "checklist";
+  menuData: any;
 
   constructor(
     private worksOrderService: WorksOrdersService,
@@ -113,7 +115,7 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
         this.sharedService.userTypeObs
       ]).subscribe(
         data => {
-          // console.log(data);
+          console.log(data);
           this.worksOrderAccess = data[0];
           this.worksOrderUsrAccess = data[1];
           this.userType = data[2][0];
@@ -269,11 +271,23 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
     this.mousePositioin = { x: eve.pageX, y: eve.pageY };
   }
 
+
+  openMenu(e, dataItem) {
+    const element = e.target as HTMLElement;
+    this.menuData = dataItem;
+    this.tooltipDir.toggle(element);
+    $('.menuLi').trigger('click');
+  }
+
+
   setSeletedRow(dataItem, event) {
-    //if menu button clicked and grid column is locked, change overflow for the to display full menu
+
+    // if menu button clicked and grid column is locked, change overflow for the to display full menu
     // if (this.columnLocked) {
     //   const lockedContent = $('.k-grid-content-locked');
-    //   lockedContent.css({ "overflow": "initial", "z-index": "2" });
+    //   const lockedContentGrid = $('.k-grid-content-locked .k-grid-table:first');
+    //   lockedContent.css({ "overflow": "none", "z-index": "2" });
+    //   // lockedContentGrid.css({ 'transform': 'translateY(0px)' })
     // }
 
 
@@ -703,7 +717,6 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
   }
 
   viewWOReportingProgSummaryTree(reportType, dataItem: any = null) {
-
     const wprsequence = (dataItem != null) ? dataItem.wprsequence : 0;
     const wosequence = (dataItem != null) ? dataItem.wosequence : 0;
     let level = reportType;

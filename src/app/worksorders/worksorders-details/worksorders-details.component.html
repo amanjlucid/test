@@ -59,6 +59,16 @@
               (click)="openSORTab()">SOR</a>
             <a *ngIf="woMenuBtnSecurityAccess('Contract Costs Tab')" class="dropdown-item" href="javascript:void(0)"
               (click)="openCostsTab()">Contract Costs</a>
+
+            <a *ngIf="woMenuBtnSecurityAccess('Works Order Documents')"
+              [ngClass]="{'disabled': worksOrderSingleData.worksOrderFileCount == 0}" class="dropdown-item"
+              (click)="openDocumentMethod()" href="javascript:void(0)">Documents</a>
+
+            <a class="dropdown-item" href="javascript:void(0)" (click)="openProgrammeLog('programme')">Programme
+              Log</a>
+            <a class="dropdown-item" href="javascript:void(0)" (click)="openProgrammeLog('workorder')">Works Order
+              Log</a>
+
           </div>
         </div>
       </div>
@@ -751,8 +761,10 @@
     [reasonType]="chooseDateType" (closeReasonEvent)="closeReasonPanel($event)" (outputReason)="getReason($event)">
   </app-asset-remove-reason>
 
+  <app-wo-document-list *ngIf="documentWindow" [documentWindow]="documentWindow"
+    (closeDocument)="closeDocumentWindow($event)" [selectedWorksOrder]="worksOrderSingleData"></app-wo-document-list>
 
-  <!-- <app-asset-defects-list *ngIf="openDefectsList" [openDefectsList]="openDefectsList"
-    [singleWorkOrderInp]="worksOrderSingleData" [openedFrom]="'workdetail'"
-    (closeDefectsListEvent)="closeDefectList($event)">
-  </app-asset-defects-list> -->
+  <app-programme-log *ngIf="ProgrammeLogWindow" [ProgrammeLogWindow]="ProgrammeLogWindow"
+    [singleWorkOrderInp]="worksOrderSingleData" [selectedProgrammeInp]="programmeData" [openedFrom]="programmeLogFor"
+    (ProgrammeLogWindowEvent)="closeProgrammeLogWindow($event)">
+  </app-programme-log>

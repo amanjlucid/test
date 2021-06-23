@@ -84,6 +84,9 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
   openDefectsList = false;
   asebestosDoubleClick = 0;
   AddPhaseCostStructureWindow = false;
+  documentWindow = false;
+  ProgrammeLogWindow = false;
+  programmeLogFor = "workorder"
 
   constructor(
     private sharedService: SharedService,
@@ -642,7 +645,6 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
       }
     )
 
-    // $('.worksOrderDetailOvrlay').addClass('ovrlay');
   }
 
   openResidentDetails(item) {
@@ -661,7 +663,6 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
       }
     )
 
-    //$('.worksOrderDetailOvrlay').addClass('ovrlay');
   }
 
   closeAssetDetailWindow(eve) {
@@ -904,13 +905,12 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
 
     $('.worksOrderDetailOvrlay').addClass('ovrlay');
     this.moveAsset = true;
-
   }
+
 
   closeMoveAsset(eve) {
     this.moveAsset = eve;
     $('.worksOrderDetailOvrlay').removeClass('ovrlay');
-    // this.selectedRow = undefined;
   }
 
 
@@ -924,8 +924,8 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
     this.phaseChecklist = eve;
     $('.worksOrderDetailOvrlay').removeClass('ovrlay');
     this.worksOrderDetailPageData();
-    // this.selectedRow = undefined;
   }
+
   openAddPhaseCostStructure(item) {
     this.actualSelectedRow = item;
     $('.worksOrderDetailOvrlay').addClass('ovrlay');
@@ -947,7 +947,6 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
   }
 
   FinaladdPhaseCostConfirm(params) {
-    // console.log('actualSelectedRow ' + JSON.stringify(this.actualSelectedRow));
     this.loading = true;
     const params2 = {
       "WOSEQUENCE": params.WOSEQUENCE,
@@ -980,14 +979,12 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
             this.loading = false
           }
           this.chRef.detectChanges();
-          //  console.log('Final AddPhaseCostStructure api reponse' + JSON.stringify(data));
         },
         err => this.alertService.error(err)
       )
     )
   }
   addPhaseCost(input) {
-    // console.log('actualSelectedRow ' + JSON.stringify(this.actualSelectedRow));
     this.loading = true;
     const params = {
       "WOSEQUENCE": this.actualSelectedRow.wosequence,
@@ -1018,7 +1015,6 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
         err => this.alertService.error(err)
       )
     )
-    //console.log(input);
   }
 
   closeChooseDate(event) {
@@ -1355,4 +1351,30 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
 
 
   /********** WOD Reports Function End *********/
+
+
+
+  openDocumentMethod() {
+    if (this.worksOrderSingleData.worksOrderFileCount == 0) return;
+    $('.worksOrderDetailOvrlay').addClass('ovrlay');
+    this.documentWindow = true;
+  }
+
+  closeDocumentWindow(eve) {
+    this.documentWindow = eve;
+    $('.worksOrderDetailOvrlay').removeClass('ovrlay');
+  }
+
+
+  openProgrammeLog(openFor) {
+    this.programmeLogFor = openFor;
+    this.ProgrammeLogWindow = true;
+    $('.worksOrderDetailOvrlay').addClass('ovrlay');
+  }
+
+  closeProgrammeLogWindow(eve) {
+    this.ProgrammeLogWindow = eve;
+    $('.worksOrderDetailOvrlay').removeClass('ovrlay');
+  }
+
 }
