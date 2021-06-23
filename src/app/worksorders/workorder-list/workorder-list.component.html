@@ -93,11 +93,11 @@
         [selectedKeys]="mySelection">
 
 
-        <kendo-grid-column title=" " width="35" [filterable]="false" [locked]="columnLocked">
-          <!-- <ng-template kendoGridCellTemplate let-dataItem>
-            <i aria-expanded="false" class="fas fa-bars" (click)="openMenu($event, dataItem)"></i>
-          </ng-template> -->
+        <kendo-grid-column title=" " width="37" [filterable]="false" [locked]="columnLocked">
           <ng-template kendoGridCellTemplate let-dataItem>
+            <i aria-expanded="false" class="fas fa-bars" (click)="openMenu($event, dataItem)"></i>
+          </ng-template>
+          <!-- <ng-template kendoGridCellTemplate let-dataItem>
             <li #li class="nav-item dropdown list-unstyled" style="margin-top: -7px;"
               (click)="setSeletedRow(dataItem, li)">
               <i #ii data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"
@@ -180,21 +180,21 @@
 
             </li>
 
-          </ng-template>
+          </ng-template> -->
         </kendo-grid-column>
 
-        <kendo-grid-column field="worksOrderAssetChecklistFileCount" title="" width="40" [filterable]="false" [locked]="columnLocked">
+        <kendo-grid-column field="worksOrderAssetChecklistFileCount" title="" width="40" [filterable]="false"
+          [locked]="columnLocked">
           <ng-template kendoGridHeaderTemplate>
-              <img style="height: 14px;" src="assets/img/icons/attach.png" />
+            <img style="height: 14px;" src="assets/img/icons/attach.png" />
           </ng-template>
 
           <ng-template kendoGridCellTemplate let-dataItem>
-              <div style="width:100%; text-align: center;">
-                  <img style="height:16px;" *ngIf="dataItem.worksOrderFileCount > 0"
-                      src="assets/img/icons/attach.png" />
-              </div>
+            <div style="width:100%; text-align: center;">
+              <img style="height:16px;" *ngIf="dataItem.worksOrderFileCount > 0" src="assets/img/icons/attach.png" />
+            </div>
           </ng-template>
-      </kendo-grid-column>
+        </kendo-grid-column>
 
         <kendo-grid-column field="wosequence" title="Work Order" width="130" [locked]="columnLocked">
         </kendo-grid-column>
@@ -365,85 +365,79 @@
 
 
   <ng-template #template let-anchor>
-    <!-- <div class="row">
-      <div class="col-md-12">
-        <li #li class="nav-item dropdown list-unstyled menuLi">
-          <div #elm class="dropdown-menu">
-            <a *ngIf="woMenuAccess('Edit Works Order')" class="dropdown-item" href="javascript:void(0)"
-              (click)="redirectToWorksOrderEdit(menuData)">Edit</a>
-            <a *ngIf="woMenuAccess('Delete Works Order')" class="dropdown-item" href="javascript:void(0)"
-              (click)="deleteThis(menuData)">Delete</a>
-            <a *ngIf="woMenuAccess('Works Order Detail')" class="dropdown-item" href="javascript:void(0)"
-              (click)="redirectToWorksOrder(menuData)"> Works Order Details</a>
+    <div class="list-unstyled menuDiv" *ngIf="menuData">
+      <div #elm class="dropdown-menu" style="display: block; margin-left: -1px;" [ngStyle]="{'margin-top':getTopMargin()}">
+        <a *ngIf="woMenuAccess('Edit Works Order')" class="dropdown-item" href="javascript:void(0)"
+          (click)="redirectToWorksOrderEdit(menuData)">Edit</a>
+        <a *ngIf="woMenuAccess('Delete Works Order')" class="dropdown-item" href="javascript:void(0)"
+          (click)="deleteThis(menuData)">Delete</a>
+        <a *ngIf="woMenuAccess('Works Order Detail')" class="dropdown-item" href="javascript:void(0)"
+          (click)="redirectToWorksOrder(menuData)"> Works Order Details</a>
 
-            <a *ngIf="woMenuAccess('Variations')" class="dropdown-item" href="javascript:void(0)"
-              (click)="openVariationList(menuData)">Variations</a>
-            <a (click)="redirectToWoProgramManagmentInstructions(menuData)" class="dropdown-item"
-              href="javascript:void(0)">
-              Instructions</a>
+        <a *ngIf="woMenuAccess('Variations')" class="dropdown-item" href="javascript:void(0)"
+          (click)="openVariationList(menuData)">Variations</a>
+        <a (click)="redirectToWoProgramManagmentInstructions(menuData)" class="dropdown-item" href="javascript:void(0)">
+          Instructions</a>
 
-            <a class="dropdown-item" (click)="openCompletionList(menuData)" href="javascript:void(0)">Completions</a>
+        <a class="dropdown-item" (click)="openCompletionList(menuData)" href="javascript:void(0)">Completions</a>
 
-            <a class="dropdown-item" href="javascript:void(0)" (click)="openProgrammeLog(menuData)">View Programme
-              Log</a>
+        <a class="dropdown-item" href="javascript:void(0)" (click)="openProgrammeLog(menuData)">View Programme
+          Log</a>
+
+        <a class="dropdown-item" href="javascript:void(0)" (click)="openWoAssociationsManage(menuData)">Associations</a>
+
+        <a *ngIf="woMenuAccess('Defects')" class="dropdown-item" href="javascript:void(0)"
+          (click)="openDefectsMethod(menuData)">Defects</a>
+
+        <a *ngIf="woMenuAccess('Works Order Documents')" [ngClass]="{'disabled': menuData.worksOrderFileCount == 0}"
+          class="dropdown-item" (click)="openDocumentMethod(menuData)" href="javascript:void(0)">Documents</a>
+
+        <div class="dropdown-toggle">
+          <div class="dropdown-item">Contractor Reports</div>
+          <div class="dropdown-menu addAssetMenu">
+            <a class="dropdown-item" href="javascript:void(0)"
+              (click)="WOCreateXportOutputReport(580, 'Contractor Asset Report')">Asset Report</a>
+            <a class="dropdown-item" href="javascript:void(0)"
+              (click)="WOCreateXportOutputReport(581, 'Contractor Work Report')">Work Report</a>
+          </div>
+        </div>
+
+
+        <div class="dropdown-toggle">
+          <div class="dropdown-item">Works Order Report</div>
+          <div class="dropdown-menu woReport">
+            <a class="dropdown-item" href="javascript:void(0)"
+              (click)="viewWOReportingProgSummaryTree(2, selectedWorksOrder)">Selected Order</a>
 
             <a class="dropdown-item" href="javascript:void(0)"
-              (click)="openWoAssociationsManage(menuData)">Associations</a>
+              (click)="viewWOReportingAsset(2, selectedWorksOrder)">Selected Order (including Assets)</a>
 
-            <a *ngIf="woMenuAccess('Defects')" class="dropdown-item" href="javascript:void(0)"
-              (click)="openDefectsMethod(menuData)">Defects</a>
-
-            <a *ngIf="woMenuAccess('Works Order Documents')" [ngClass]="{'disabled': menuData.worksOrderFileCount == 0}"
-              class="dropdown-item" (click)="openDocumentMethod(menuData)" href="javascript:void(0)">Documents</a>
-
-            <div class="dropdown-toggle">
-              <div class="dropdown-item">Contractor Reports</div>
-              <div class="dropdown-menu addAssetMenu">
-                <a class="dropdown-item" href="javascript:void(0)"
-                  (click)="WOCreateXportOutputReport(580, 'Contractor Asset Report')">Asset Report</a>
-                <a class="dropdown-item" href="javascript:void(0)"
-                  (click)="WOCreateXportOutputReport(581, 'Contractor Work Report')">Work Report</a>
-              </div>
-            </div>
+            <a class="dropdown-item" href="javascript:void(0)"
+              (click)="WOCreateXportOutputReport(505, 'WO Selected Asset Report')">Asset Report (Selected
+              Order)</a>
+            <a class="dropdown-item" href="javascript:void(0)"
+              (click)="WOCreateXportOutputReport(506, 'WO Selected Work Report')">Work Report (Selected
+              Order)</a>
 
 
-            <div class="dropdown-toggle">
-              <div class="dropdown-item">Works Order Report</div>
-              <div class="dropdown-menu woReport">
-                <a class="dropdown-item" href="javascript:void(0)"
-                  (click)="viewWOReportingProgSummaryTree(2, selectedWorksOrder)">Selected Order</a>
-
-                <a class="dropdown-item" href="javascript:void(0)"
-                  (click)="viewWOReportingAsset(2, selectedWorksOrder)">Selected Order (including Assets)</a>
-
-                <a class="dropdown-item" href="javascript:void(0)"
-                  (click)="WOCreateXportOutputReport(505, 'WO Selected Asset Report')">Asset Report (Selected
-                  Order)</a>
-                <a class="dropdown-item" href="javascript:void(0)"
-                  (click)="WOCreateXportOutputReport(506, 'WO Selected Work Report')">Work Report (Selected
-                  Order)</a>
-
-
-              </div>
-            </div>
-
-
-            <div class="dropdown-toggle">
-              <div [ngClass]="{'disabled' : menuData.wottemplatetype != 'Works Order Milestone'}" class="dropdown-item">
-                Milestones</div>
-              <div class="dropdown-menu milestoneMenu">
-                <a *ngIf="woMenuAccess('Milestones')" class="dropdown-item" href="javascript:void(0)"
-                  (click)="openManageMilestonePopup(menuData, 'checklist')">Milestones</a>
-                <a *ngIf="woMenuAccess('Manage Milestones')" class="dropdown-item" href="javascript:void(0)"
-                  (click)="openManageMilestonePopup(menuData, 'manage')">Manage Milestones</a>
-              </div>
-            </div>
           </div>
-        </li>
+        </div>
 
 
+        <div class="dropdown-toggle">
+          <div [ngClass]="{'disabled' : menuData.wottemplatetype != 'Works Order Milestone'}" class="dropdown-item">
+            Milestones</div>
+          <div class="dropdown-menu milestoneMenu">
+            <a *ngIf="woMenuAccess('Milestones')" class="dropdown-item" href="javascript:void(0)"
+              (click)="openManageMilestonePopup(menuData, 'checklist')">Milestones</a>
+            <a *ngIf="woMenuAccess('Manage Milestones')" class="dropdown-item" href="javascript:void(0)"
+              (click)="openManageMilestonePopup(menuData, 'manage')">Manage Milestones</a>
+          </div>
+        </div>
       </div>
-    </div> -->
+
+    </div>
+
   </ng-template>
 
 

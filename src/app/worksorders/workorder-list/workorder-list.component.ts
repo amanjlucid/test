@@ -1,8 +1,8 @@
-import { Component, OnInit, ViewEncapsulation, ChangeDetectorRef, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, ChangeDetectorRef, ViewChild, AfterViewInit, HostListener } from '@angular/core';
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { SelectableSettings, RowClassArgs, RowArgs, PageChangeEvent, GridComponent } from '@progress/kendo-angular-grid';
-import { AlertService, HelperService, SharedService, WorksOrdersService, WorksorderReportService } from '../../_services'
+import { AlertService, HelperService, SharedService, WorksOrdersService, WorksorderReportService, ReportingGroupService } from '../../_services'
 import { combineLatest, Subject } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { WorkordersListFilterModel } from '../../_models';
@@ -18,7 +18,6 @@ import { TooltipDirective } from '@progress/kendo-angular-tooltip';
 })
 
 export class WorkorderListComponent implements OnInit, AfterViewInit {
-  @ViewChild(TooltipDirective) public tooltipDir: TooltipDirective;
   subs = new SubSink();
   state: State = {
     skip: 0,
@@ -86,6 +85,14 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
   openDefectsList = false;
   openMilestoneFor = "checklist";
   menuData: any;
+  @ViewChild(TooltipDirective) public tooltipDir: TooltipDirective;
+  @HostListener('click', ['$event']) onClick(event) {
+    const element = event.target as HTMLElement;
+    if (element.className.indexOf('fas fa-bars') == -1) {
+      this.hideMenu();
+    }
+    event.preventDefault();
+  }
 
   constructor(
     private worksOrderService: WorksOrdersService,
@@ -97,7 +104,8 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
     private router: Router,
     private helper: HelperService,
     private chRef: ChangeDetectorRef,
-    private currencyPipe: CurrencyPipe
+    private currencyPipe: CurrencyPipe,
+    private reportingGrpService: ReportingGroupService,
   ) {
     this.setSelectableSettings();
     this.setInitialFilterValue();
@@ -115,7 +123,7 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
         this.sharedService.userTypeObs
       ]).subscribe(
         data => {
-          console.log(data);
+          // console.log(data);
           this.worksOrderAccess = data[0];
           this.worksOrderUsrAccess = data[1];
           this.userType = data[2][0];
@@ -148,16 +156,17 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
 
   ngOnDestroy() {
     this.subs.unsubscribe();
+    const elements = document.querySelectorAll('.menuDiv .dropdown-item');
+    elements.forEach(element => {
+      element.removeEventListener("click", (e) => { this.hideMenu() });
+    });
   }
 
 
   ngAfterViewInit() {
-    // if (this.columnLocked) {
-    //   document.querySelector('.k-grid .k-grid-content').addEventListener('scroll', (e) => {
-    //     // console.log(e)
-    //     $('.k-grid-content-locked').css({ "overflow": "hidden" })
-    //   })
-    // }
+    document.querySelector('.k-grid .k-grid-content').addEventListener('scroll', (e) => {
+      this.tooltipDir.hide();
+    });
   }
 
 
@@ -267,38 +276,24 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
   }
 
 
+
   getMouseroverEve(eve) {
-    this.mousePositioin = { x: eve.pageX, y: eve.pageY };
+    // this.mousePositioin = { x: eve.pageX, y: eve.pageY };
   }
 
+  getTopMargin() {
+    if (this.mousePositioin == undefined) return;
+    const { y } = this.mousePositioin;
+    if (y <= 563) return "-133px";
+    if (y > 563 && y < 640) return "-203px";
+    if (y > 640 && y < 745) return "-318px";
+    if (y > 745 && y < 797) return "-364px";
+    if (y > 797 && y < 900) return "-441px";
+  }
 
   openMenu(e, dataItem) {
-    const element = e.target as HTMLElement;
-    this.menuData = dataItem;
-    this.tooltipDir.toggle(element);
-    $('.menuLi').trigger('click');
-  }
-
-
-  setSeletedRow(dataItem, event) {
-
-    // if menu button clicked and grid column is locked, change overflow for the to display full menu
-    // if (this.columnLocked) {
-    //   const lockedContent = $('.k-grid-content-locked');
-    //   const lockedContentGrid = $('.k-grid-content-locked .k-grid-table:first');
-    //   lockedContent.css({ "overflow": "none", "z-index": "2" });
-    //   // lockedContentGrid.css({ 'transform': 'translateY(0px)' })
-    // }
-
-
     if (dataItem != undefined) {
-      setTimeout(() => {
-        let att = $('.selectedMenuBar' + dataItem.wosequence)[0].getAttribute("x-placement");
-        if (att == "bottom-start" && this.mousePositioin.y > 600) {
-          $('.selectedMenuBar' + dataItem.wosequence).css("top", "-116px")
-        }
-      }, 50);
-
+      this.mousePositioin = { x: e.pageX, y: e.pageY };
       if (this.selectedWorksOrder?.wosequence != dataItem.wosequence) {
         this.helperService.getWorkOrderSecurity(dataItem.wosequence);
         this.helperService.getUserTypeWithWOAndWp(dataItem.wosequence, dataItem.wprsequence);
@@ -306,8 +301,44 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
 
       this.selectedWorksOrder = dataItem;
       this.mySelection = [this.selectedWorksOrder.wosequence];
+      const element = e.target as HTMLElement;
+      this.menuData = dataItem;
+      this.tooltipDir.toggle(element);
+
+
+      const elements = document.querySelectorAll('.menuDiv .dropdown-item');
+      elements.forEach(element => {
+        element.addEventListener("click", (e) => { this.hideMenu() });
+      });
     }
+
   }
+
+  hideMenu() {
+    this.tooltipDir.hide();
+    this.menuData = undefined;
+  }
+
+
+
+  // setSeletedRow(dataItem, event) {
+  //   if (dataItem != undefined) {
+  //     setTimeout(() => {
+  //       let att = $('.selectedMenuBar' + dataItem.wosequence)[0].getAttribute("x-placement");
+  //       if (att == "bottom-start" && this.mousePositioin.y > 600) {
+  //         $('.selectedMenuBar' + dataItem.wosequence).css("top", "-116px")
+  //       }
+  //     }, 50);
+
+  //     if (this.selectedWorksOrder?.wosequence != dataItem.wosequence) {
+  //       this.helperService.getWorkOrderSecurity(dataItem.wosequence);
+  //       this.helperService.getUserTypeWithWOAndWp(dataItem.wosequence, dataItem.wprsequence);
+  //     }
+
+  //     this.selectedWorksOrder = dataItem;
+  //     this.mySelection = [this.selectedWorksOrder.wosequence];
+  //   }
+  // }
 
 
   openUserPopup(action, item = null) {
@@ -801,6 +832,31 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
   closeDefectList(eve) {
     this.openDefectsList = eve;
     $('.worksOrderOverlay').removeClass('ovrlay');
+  }
+
+
+  WOCreateXportOutputReport(xPortId, reportName) {
+    let params = {
+      "intXportId": xPortId,
+      "lstParamNameValue": ["Works Order Number", this.selectedWorksOrder.wosequence],
+      "lngMaxRows": 40000
+    };
+    if (xPortId == 587 || xPortId == 588) {
+      params.lstParamNameValue = ["Master Works Order", this.selectedWorksOrder.wosequence];
+    }
+
+    this.subs.add(
+      this.reportingGrpService.runReport(xPortId, params.lstParamNameValue, this.currentUser.userId, "EXCEL", false).subscribe(
+        data => {
+          const linkSource = 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' + data;
+          const downloadLink = document.createElement("a");
+          const fileName = `${reportName}_${xPortId}.xlsx`;
+          downloadLink.href = linkSource;
+          downloadLink.download = fileName;
+          downloadLink.click();
+        }
+      )
+    )
   }
 
 

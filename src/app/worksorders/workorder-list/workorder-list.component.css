@@ -165,12 +165,6 @@
 }
 
 
-.tooltip-class * {
-    background: white !important;
-    color: black !important;
-    z-index: 99999 !important;
-}
-
 .tooltip-class .k-callout {
     background-color: transparent !important;
     color: white !important;

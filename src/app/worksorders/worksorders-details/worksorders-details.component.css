@@ -399,7 +399,7 @@ label.radio-inline {
 }
 
 .actionToggle .actionMenu {
-  top: -187px !important;
+  top: -152px !important;
 }
 
 .actionToggle .actionMenu .HandoverMenu, .actionToggle .actionMenu .signoffMenu {
@@ -409,6 +409,11 @@ label.radio-inline {
 .workorderDetailGrid .asbestosIcon {
   position: relative;
   top: -2px !important;
+}
+
+.tooltip-class .k-callout {
+  background-color: transparent !important;
+  color: white !important;
 }
 
 /* .workorderDetailGrid .k-grid-content-locked {
