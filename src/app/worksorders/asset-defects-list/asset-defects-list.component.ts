@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { SelectableSettings, PageChangeEvent } from '@progress/kendo-angular-grid';
-import { AlertService, ConfirmationDialogService, SharedService, WorksorderManagementService, WorksOrdersService } from 'src/app/_services';
+import { AlertService, ConfirmationDialogService, HelperService, SharedService, WorksorderManagementService, WorksOrdersService } from 'src/app/_services';
 import { combineLatest, forkJoin, Observable } from 'rxjs';
 
 @Component({
@@ -63,7 +63,8 @@ export class AssetDefectsListComponent implements OnInit {
     private workOrderProgrammeService: WorksorderManagementService,
     private alertService: AlertService,
     private confirmationDialogService: ConfirmationDialogService,
-    private sharedService: SharedService
+    private sharedService: SharedService,
+    private helperService : HelperService
   ) {
     this.setSelectableSettings();
   }
@@ -217,12 +218,12 @@ export class AssetDefectsListComponent implements OnInit {
   }
 
   woMenuAccess(menuName: string) {
-    if (this.userType == undefined) return true;
-
-    if (this.userType?.wourroletype == "Dual Role") {
-      return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
-    }
-    return this.worksOrderUsrAccess.indexOf(menuName) != -1
+    return this.helperService.checkWorkOrderAreaAccess(this.userType, this.worksOrderAccess, this.worksOrderUsrAccess, menuName)
+    // if (this.userType == undefined) return true;
+    // if (this.userType?.wourroletype == "Dual Role") {
+    //   return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
+    // }
+    // return this.worksOrderUsrAccess.indexOf(menuName) != -1
   }
 
 
@@ -317,11 +318,12 @@ export class AssetDefectsListComponent implements OnInit {
 
 
   woMenuBtnSecurityAccess(menuName) {
-    if (this.userType?.wourroletype == "Dual Role") {
-      return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
-    }
+    return this.helperService.checkWorkOrderAreaAccess(this.userType, this.worksOrderAccess, this.worksOrderUsrAccess, menuName)
+    // if (this.userType?.wourroletype == "Dual Role") {
+    //   return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
+    // }
 
-    return this.worksOrderUsrAccess.indexOf(menuName) != -1
+    // return this.worksOrderUsrAccess.indexOf(menuName) != -1
   }
 
 

@@ -483,14 +483,15 @@ export class PhaseChecklistComponent implements OnInit {
 
 
   woMenuBtnSecurityAccess(menuName) {
-    if (this.userType?.wourroletype == "Dual Role") {
-      return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
-    } else {
-      // if(menuName == "Release Asset"){
-      //   console.log(this.worksOrderUsrAccess.indexOf(menuName) != -1)
-      // }
-      return this.worksOrderUsrAccess.indexOf(menuName) != -1
-    }
+    return this.helperService.checkWorkOrderAreaAccess(this.userType, this.worksOrderAccess, this.worksOrderUsrAccess, menuName)
+    // if (this.userType?.wourroletype == "Dual Role") {
+    //   return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
+    // } else {
+    //   // if(menuName == "Release Asset"){
+    //   //   console.log(this.worksOrderUsrAccess.indexOf(menuName) != -1)
+    //   // }
+    //   return this.worksOrderUsrAccess.indexOf(menuName) != -1
+    // }
   }
 
 

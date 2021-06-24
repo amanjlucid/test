@@ -80,13 +80,12 @@ export class VariationWorkListComponent implements OnInit {
     private worksOrdersService: WorksOrdersService,
     private confirmationDialogService: ConfirmationDialogService,
     private sharedService: SharedService,
+    private helperService: HelperService
   ) {
     this.setSelectableSettings();
   }
 
   ngOnInit(): void {
-    // console.log({ openfor: this.openedFor, from: this.openedFrom, variation: this.selectedVariationInp, asset: this.selectedSingleVariationAssetInp })
-
     this.subs.add(
       combineLatest([
         this.sharedService.woUserSecObs,
@@ -94,7 +93,6 @@ export class VariationWorkListComponent implements OnInit {
         this.sharedService.userTypeObs
       ]).subscribe(
         data => {
-          // console.log(data)
           this.worksOrderUsrAccess = data[0];
           this.worksOrderAccess = data[1];
           this.userType = data[2][0];
@@ -134,14 +132,13 @@ export class VariationWorkListComponent implements OnInit {
 
 
   woMenuAccess(menuName) {
-    if (this.userType == undefined) return true;
-
-    if (this.userType?.wourroletype == "Dual Role") {
-      return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
-    }
-
-    return this.worksOrderUsrAccess.indexOf(menuName) != -1
-
+    return this.helperService.checkWorkOrderAreaAccess(this.userType, this.worksOrderAccess, this.worksOrderUsrAccess, menuName)
+    // if (this.userType == undefined) return this.worksOrderUsrAccess.indexOf(menuName) != -1;
+    // console.log(menuName)
+    // if (this.userType?.wourroletype == "Dual Role") {
+    //   return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
+    // }
+    // return this.worksOrderUsrAccess.indexOf(menuName) != -1
   }
 
 
@@ -561,7 +558,7 @@ export class VariationWorkListComponent implements OnInit {
       this.hamBurgerMenuClick++;
 
       if (item != undefined) {
-
+        this.chRef.detectChanges();
         const { wlcomppackage, recordsource, wosequence, assid, wopsequence, wlcode, wlataid, wlplanyear, wostagesurcde, wochecksurcde, woadrefusaL_YN, woadrechargeyn, woadstatus, variationAction } = item;
         const { wocodE6 } = this.worksOrderData;
 

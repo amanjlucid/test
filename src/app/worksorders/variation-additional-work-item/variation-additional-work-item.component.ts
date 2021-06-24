@@ -2,8 +2,8 @@ import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { SelectableSettings, PageChangeEvent, RowArgs, GridComponent } from '@progress/kendo-angular-grid';
-import { AlertService, HelperService, WorksorderManagementService } from 'src/app/_services';
-import { forkJoin } from 'rxjs';
+import { AlertService, HelperService, SharedService, WorksorderManagementService } from 'src/app/_services';
+import { combineLatest, forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-variation-additional-work-item',
@@ -42,22 +42,46 @@ export class VariationAdditionalWorkItemComponent implements OnInit {
   worksOrderData: any;
   selectedPackagesArr: any = [];;
 
-  // @Input() singleVariation: any;
+  worksOrderAccess = [];
+  worksOrderUsrAccess: any = [];
+  userType: any = [];
 
   constructor(
     private chRef: ChangeDetectorRef,
     private workOrderProgrammeService: WorksorderManagementService,
     private alertService: AlertService,
+    private sharedService: SharedService,
+    private helperService: HelperService
   ) {
     this.setSelectableSettings();
   }
 
   ngOnInit(): void {
-    // console.log({ openfor: this.openedFor, from: this.openedFrom, variation: this.selectedVariationInp, asset: this.selectedSingleVariationAssetInp })
+    this.subs.add(
+      combineLatest([
+        this.sharedService.worksOrdersAccess,
+        this.sharedService.woUserSecObs,
+        this.sharedService.userTypeObs
+      ]).subscribe(
+        data => {
+          this.worksOrderAccess = data[0];
+          this.worksOrderUsrAccess = data[1];
+          this.userType = data[2][0];
+        }
+      )
+    )
 
     this.requiredPagedata();
   }
 
+  woMenuAccess(menuName) {
+    return this.helperService.checkWorkOrderAreaAccess(this.userType, this.worksOrderAccess, this.worksOrderUsrAccess, menuName)
+    // if (this.userType == undefined) return this.worksOrderUsrAccess.indexOf(menuName) != -1;
+    // if (this.userType?.wourroletype == "Dual Role") {
+    //   return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1;
+    // }
+    // return this.worksOrderUsrAccess.indexOf(menuName) != -1;
+  }
 
   requiredPagedata() {
     const { wosequence } = this.selectedSingleVariationAssetInp;
@@ -163,7 +187,7 @@ export class VariationAdditionalWorkItemComponent implements OnInit {
 
   selectionChange(item) {
     const findRow = this.selectedPackagesArr.find(x => JSON.stringify(x) == JSON.stringify(item));
-    
+
     if (findRow) {
       this.selectedPackagesArr = this.selectedPackagesArr.filter(x => JSON.stringify(x) != JSON.stringify(item))
       this.mySelection = this.selectedPackagesArr.map(x => x.wphcode);
@@ -178,11 +202,11 @@ export class VariationAdditionalWorkItemComponent implements OnInit {
 
 
   checkPackageExist(item) {
-    if(item.exclusionreason != "") return false;
+    if (item.exclusionreason != "") return false;
     // if (item.attributeexists == 'Variation Exists'||item.attributeexists == 'Attribute exists' || item.attributeexists == 'Work Package Exists') return false;
 
     // if (item.exclusionreason == 'Work Package already exists on Work List'|| item.exclusionreason == 'Attribute already exists on Work List' || item.exclusionreason == 'Work Package already exists as Variation') return false;
-    
+
     return true;
   }
 

@@ -761,7 +761,7 @@ export class HelperService {
                             }
 
                             if (fieldsToFormat[k] == "money") {
-                                arr[labels[k]] = "£"+this.moneyFormat(row[k]);
+                                arr[labels[k]] = "£" + this.moneyFormat(row[k]);
                             }
                         } else {
                             arr[labels[k]] = row[k];
@@ -785,6 +785,14 @@ export class HelperService {
     }
 
 
+    checkWorkOrderAreaAccess(userType, worksOrderAccess, worksOrderUsrAccess, menuName) {
+        // workorder list page has own security check method
+        if (userType == undefined) return worksOrderUsrAccess.indexOf(menuName) != -1;
+        if (userType?.wourroletype == "Dual Role") {
+            return worksOrderAccess.indexOf(menuName) != -1 || worksOrderUsrAccess.indexOf(menuName) != -1
+        }
+        return worksOrderUsrAccess.indexOf(menuName) != -1
+    }
 
 
 

@@ -74,7 +74,7 @@
         </div>
 
         <div class="col-md-12 text-right mt-2">
-            <button (click)="addTickedToVariation()" [disabled]="mySelection.length == 0"
+            <button *ngIf="woMenuAccess('Add Ticked To Variation')" (click)="addTickedToVariation()" [disabled]="mySelection.length == 0"
                 class="btn btn-sm themeButton ml-1">Add Ticked To Variation</button>
             <button (click)="closeAdditionalWork()" class="btn btn-sm themeButton ml-1">Close</button>
         </div>

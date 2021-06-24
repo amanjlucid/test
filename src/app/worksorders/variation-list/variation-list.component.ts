@@ -63,7 +63,8 @@ export class VariationListComponent implements OnInit {
     private workOrderProgrammeService: WorksorderManagementService,
     private alertService: AlertService,
     private confirmationDialogService: ConfirmationDialogService,
-    private sharedService: SharedService
+    private sharedService: SharedService,
+    private helperService : HelperService
   ) {
     this.setSelectableSettings();
   }
@@ -129,7 +130,6 @@ export class VariationListComponent implements OnInit {
           this.workOrderProgrammeService.worksOrdersOutstandingVariationExistsForAsset(params),
         ]).subscribe(
           data => {
-            // console.log(data);
             this.worksOrderData = data[0].data;
             this.phaseData = data[1].data;
             this.assetDetails = data[2].data[0];
@@ -142,8 +142,6 @@ export class VariationListComponent implements OnInit {
               this.outstandingVariation = data[5].data.result;
               //check if request type is variation 
               this.variationIssuedAndAccepted = variationData.data.some(x => x.woirequesttype == "Variation" && (x.woiissuestatus == "New" || x.woiissuestatus == "Issued" || x.woiissuestatus == "Contractor Review" || x.woiissuestatus == "Customer Review"))
-
-              // console.log(this.variationIssuedAndAccepted)
 
               this.gridView = process(this.variationData, this.state);
             } else this.alertService.error(variationData.message);
@@ -255,13 +253,14 @@ export class VariationListComponent implements OnInit {
 
 
   woMenuAccess(menuName) {
-    if (this.userType == undefined) return true;
+    return this.helperService.checkWorkOrderAreaAccess(this.userType, this.worksOrderAccess, this.worksOrderUsrAccess, menuName)
+    // if (this.userType == undefined) return true;
 
-    if (this.userType?.wourroletype == "Dual Role") {
-      return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
-    }
+    // if (this.userType?.wourroletype == "Dual Role") {
+    //   return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
+    // }
 
-    return this.worksOrderUsrAccess.indexOf(menuName) != -1
+    // return this.worksOrderUsrAccess.indexOf(menuName) != -1
 
   }
 

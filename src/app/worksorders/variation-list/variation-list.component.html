@@ -7,18 +7,19 @@
             </button>
 
             <div class="dropdown mr-1" id="nesting-dropdown-demo">
-                <button *ngIf="woMenuAccess('New Variation')" type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown"
-                    aria-expanded="false">New</button>
+                <button *ngIf="woMenuAccess('New Variation')" type="button" class="btn btn-sm dropdown-toggle"
+                    data-toggle="dropdown" aria-expanded="false">New</button>
 
                 <div class="dropdown-menu" x-placement="bottom-start"
-                    style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
-                    <!-- <a [ngClass]="{'disabled' : woAsset?.woassstatus != 'Accepted' && woAsset?.phaseOrAsset != 'P'}"
+                    style="position: absolute; will-change: top, left; top: 38px; left: 0px;"
+                    *ngIf="woMenuAccess('New Variation')">
+
+                    <a *ngIf="woMenuAccess('New Variation')" [ngClass]="{'disabled' : disableNewAndAppendBtn('new') }"
                         class="dropdown-item" href="javascript:void(0)" (click)="newVariation()">
-                        New</a> -->
-                    <a *ngIf="woMenuAccess('New Variation')" [ngClass]="{'disabled' : disableNewAndAppendBtn('new') }" class="dropdown-item" href="javascript:void(0)" (click)="newVariation()">
                         New</a>
-                    <a *ngIf="woMenuAccess('Append To Variation')" [ngClass]="{'disabled' : disableNewAndAppendBtn('append') }" class="dropdown-item" href="javascript:void(0)"
-                        (click)="append()">
+                    <a *ngIf="woMenuAccess('Append To Variation')"
+                        [ngClass]="{'disabled' : disableNewAndAppendBtn('append') }" class="dropdown-item"
+                        href="javascript:void(0)" (click)="append()">
                         Append</a>
                 </div>
             </div>
@@ -86,10 +87,10 @@
                             <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
 
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" href="javascript:void(0)"
-                                    (click)="openVariationDetails(dataItem)">Details</a>
+                                <a *ngIf="woMenuAccess('Variation Details')" class="dropdown-item"
+                                    href="javascript:void(0)" (click)="openVariationDetails(dataItem)">Details</a>
 
-                                <a [ngClass]="{'disabled' : disableVariationBtns('Edit', dataItem)}"
+                                <a *ngIf="woMenuAccess('Edit Variation')" [ngClass]="{'disabled' : disableVariationBtns('Edit', dataItem)}"
                                     class="dropdown-item" href="javascript:void(0)"
                                     (click)="editVariation(dataItem)">Edit</a>
 
@@ -97,22 +98,26 @@
                                 <div class="dropdown-toggle">
                                     <div class="dropdown-item">Send</div>
                                     <div class="dropdown-menu">
-                                        <a [ngClass]="{'disabled' : disableVariationBtns('Customer', dataItem)}"
+                                        <a *ngIf="woMenuAccess('Send Variation To Customer')"
+                                            [ngClass]="{'disabled' : disableVariationBtns('Customer', dataItem)}"
                                             class="dropdown-item" href="javascript:void(0)"
                                             (click)="sendVariation('Customer', dataItem)">Customer</a>
-                                        <a [ngClass]="{'disabled' : disableVariationBtns('Contractor', dataItem)}"
+                                        <a *ngIf="woMenuAccess('Send Variation To Contractor')"
+                                            [ngClass]="{'disabled' : disableVariationBtns('Contractor', dataItem)}"
                                             class="dropdown-item" href="javascript:void(0)"
                                             (click)="sendVariation('Contractor', dataItem)">Contractor</a>
 
                                     </div>
                                 </div>
 
-                                <a [ngClass]="{'disabled' : disableVariationBtns('Issue', dataItem)}"
+                                <a *ngIf="woMenuAccess('Issue Variation')"
+                                    [ngClass]="{'disabled' : disableVariationBtns('Issue', dataItem)}"
                                     class="dropdown-item" href="javascript:void(0)"
                                     (click)="issueVariation(dataItem)">Issue</a>
 
 
-                                <a [ngClass]="{'disabled' : disableVariationBtns('Accept', dataItem)}"
+                                <a *ngIf="woMenuAccess('Accept Variation')"
+                                    [ngClass]="{'disabled' : disableVariationBtns('Accept', dataItem)}"
                                     class="dropdown-item" href="javascript:void(0)"
                                     (click)="accetpVariationAsset(dataItem)">Accept</a>
 

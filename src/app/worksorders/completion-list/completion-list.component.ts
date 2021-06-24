@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectorRef, ViewChild, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { DataResult, process, State, CompositeFilterDescriptor, SortDescriptor, GroupDescriptor } from '@progress/kendo-data-query';
 import { GridComponent, RowArgs } from '@progress/kendo-angular-grid';
-import { AlertService, SharedService, WorksorderManagementService } from '../../_services';
+import { AlertService, HelperService, SharedService, WorksorderManagementService } from '../../_services';
 import { SubSink } from 'subsink';
 import { combineLatest } from 'rxjs';
 
@@ -57,6 +57,7 @@ export class CompletionListComponent implements OnInit, OnDestroy {
     private alertService: AlertService,
     private chRef: ChangeDetectorRef,
     private sharedService: SharedService,
+    private helperService : HelperService
   ) { }
 
 
@@ -182,13 +183,14 @@ export class CompletionListComponent implements OnInit, OnDestroy {
 
 
   woMenuAccess(menuName) {
-    if (this.userType == undefined) return true;
+    return this.helperService.checkWorkOrderAreaAccess(this.userType, this.worksOrderAccess, this.worksOrderUsrAccess, menuName)
+    // if (this.userType == undefined) return true;
 
-    if (this.userType?.wourroletype == "Dual Role") {
-      return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
-    }
+    // if (this.userType?.wourroletype == "Dual Role") {
+    //   return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
+    // }
 
-    return this.worksOrderUsrAccess.indexOf(menuName) != -1
+    // return this.worksOrderUsrAccess.indexOf(menuName) != -1
 
   }
 

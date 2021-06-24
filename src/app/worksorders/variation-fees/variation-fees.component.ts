@@ -2,7 +2,8 @@ import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { SelectableSettings, PageChangeEvent, RowClassArgs } from '@progress/kendo-angular-grid';
-import { AlertService, WorksorderManagementService } from 'src/app/_services';
+import { AlertService, HelperService, SharedService, WorksorderManagementService } from 'src/app/_services';
+import { combineLatest } from 'rxjs';
 
 
 @Component({
@@ -41,17 +42,35 @@ export class VariationFeesComponent implements OnInit {
   selectedSingleFees: any;
   openChangeFee = false;
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
+  worksOrderAccess = [];
+  worksOrderUsrAccess: any = [];
+  userType: any = [];
 
   constructor(
     private chRef: ChangeDetectorRef,
     private workOrderProgrammeService: WorksorderManagementService,
     private alertService: AlertService,
+    private sharedService: SharedService,
+    private helperService : HelperService
   ) {
     this.setSelectableSettings()
   }
 
   ngOnInit(): void {
-    // console.log({ asset: this.selectedSingleVariationAssetInp, sele: this.selectedVariationInp })
+    this.subs.add(
+      combineLatest([
+        this.sharedService.woUserSecObs,
+        this.sharedService.worksOrdersAccess,
+        this.sharedService.userTypeObs
+      ]).subscribe(
+        data => {
+          this.worksOrderUsrAccess = data[0];
+          this.worksOrderAccess = data[1];
+          this.userType = data[2][0];
+        }
+      )
+    )
+    
     if (this.openedFor == "details") {
       this.title = `Variation Fees: ${this.selectedSingleVariationAssetInp?.woiissuereason} (${this.selectedSingleVariationAssetInp?.wopsequence})`;
     }
@@ -179,6 +198,15 @@ export class VariationFeesComponent implements OnInit {
 
   }
 
+
+  woMenuAccess(menuName) {
+    return this.helperService.checkWorkOrderAreaAccess(this.userType, this.worksOrderAccess, this.worksOrderUsrAccess, menuName)
+    // if (this.userType == undefined) return true;
+    // if (this.userType?.wourroletype == "Dual Role") {
+    //   return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
+    // }
+    // return this.worksOrderUsrAccess.indexOf(menuName) != -1
+  }
 
 
 }

@@ -135,7 +135,7 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
         this.sharedService.userTypeObs
       ]).subscribe(
         data => {
-          // console.log(data)
+          console.log(data)
           this.worksOrderUsrAccess = data[0];
           this.worksOrderAccess = data[1];
           this.userType = data[2][0];
@@ -861,11 +861,12 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
 
 
   woMenuBtnSecurityAccess(menuName) {
-    if (this.userType?.wourroletype == "Dual Role") {
-      return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
-    } else {
-      return this.worksOrderUsrAccess.indexOf(menuName) != -1
-    }
+    return this.helperService.checkWorkOrderAreaAccess(this.userType, this.worksOrderAccess, this.worksOrderUsrAccess, menuName)
+    // if (this.userType?.wourroletype == "Dual Role") {
+    //   return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
+    // } else {
+    //   return this.worksOrderUsrAccess.indexOf(menuName) != -1
+    // }
 
   }
 

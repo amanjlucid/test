@@ -57,7 +57,8 @@ export class WoPmInstructionAssetsComponent implements OnInit {
         private alertService: AlertService,
         private chRef: ChangeDetectorRef,
         private sharedService: SharedService,
-        private confirmationDialogService: ConfirmationDialogService
+        private confirmationDialogService: ConfirmationDialogService,
+        private helperService: HelperService
     ) { }
 
     ngOnInit(): void {
@@ -213,13 +214,14 @@ export class WoPmInstructionAssetsComponent implements OnInit {
     }
 
     woMenuAccess(menuName) {
-        if (this.userType == undefined) return true;
+        return this.helperService.checkWorkOrderAreaAccess(this.userType, this.worksOrderAccess, this.worksOrderUsrAccess, menuName)
+        // if (this.userType == undefined) return true;
 
-        if (this.userType?.wourroletype == "Dual Role") {
-            return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
-        }
+        // if (this.userType?.wourroletype == "Dual Role") {
+        //     return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
+        // }
 
-        return this.worksOrderUsrAccess.indexOf(menuName) != -1
+        // return this.worksOrderUsrAccess.indexOf(menuName) != -1
 
     }
 

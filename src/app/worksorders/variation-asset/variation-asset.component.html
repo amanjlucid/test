@@ -83,7 +83,7 @@
                                     *ngIf="woMenuAccess('Accept Variation')" class="dropdown-item"
                                     href="javascript:void(0)" (click)="accetpVariationAsset(dataItem)">Accept</a>
 
-                                <a [ngClass]="{'disabled' : disableVariationBtns('Details', dataItem)}"
+                                <a *ngIf="woMenuAccess('Show Variation Detail')" [ngClass]="{'disabled' : disableVariationBtns('Details', dataItem)}"
                                     class="dropdown-item" href="javascript:void(0)"
                                     (click)="openVariationDetailMethod(dataItem)">Details</a>
 

@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { SelectableSettings, PageChangeEvent } from '@progress/kendo-angular-grid';
-import { AlertService, ConfirmationDialogService, SharedService, WorksorderManagementService, WorksOrdersService } from 'src/app/_services';
+import { AlertService, ConfirmationDialogService, HelperService, SharedService, WorksorderManagementService, WorksOrdersService } from 'src/app/_services';
 import { combineLatest, forkJoin } from 'rxjs';
 
 @Component({
@@ -56,7 +56,8 @@ export class VariationListAllComponent implements OnInit {
     private worksOrderService: WorksOrdersService,
     private alertService: AlertService,
     private confirmationDialogService: ConfirmationDialogService,
-    private sharedService: SharedService
+    private sharedService: SharedService,
+    private helperService : HelperService
   ) {
     this.setSelectableSettings();
   }
@@ -114,7 +115,7 @@ export class VariationListAllComponent implements OnInit {
         // this.workOrderProgrammeService.getWorksOrderByWOsequence(wosequence),
       ]).subscribe(
         data => {
-          // console.log(data);
+          console.log(data);
           // let sec = data[0].data.map(x => `${x.spffunction} - ${x.spjrftype}`)
           // console.log(sec);
         }
@@ -165,11 +166,12 @@ export class VariationListAllComponent implements OnInit {
   }
 
   woMenuAccess(menuName) {
-    if (this.userType == undefined) return true;
-    if (this.userType?.wourroletype == "Dual Role") {
-      return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
-    }
-    return this.worksOrderUsrAccess.indexOf(menuName) != -1
+    return this.helperService.checkWorkOrderAreaAccess(this.userType, this.worksOrderAccess, this.worksOrderUsrAccess, menuName)
+    // if (this.userType == undefined) return true;
+    // if (this.userType?.wourroletype == "Dual Role") {
+    //   return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
+    // }
+    // return this.worksOrderUsrAccess.indexOf(menuName) != -1
   }
 
 

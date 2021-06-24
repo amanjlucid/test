@@ -57,6 +57,7 @@ export class VariationDetailComponent implements OnInit {
     private alertService: AlertService,
     private sharedService: SharedService,
     private confirmationDialogService: ConfirmationDialogService,
+    private helperService : HelperService
   ) { }
 
   ngOnInit(): void {
@@ -181,11 +182,12 @@ export class VariationDetailComponent implements OnInit {
   }
 
   woMenuAccess(menuName) {
-    if (this.userType == undefined) return true;
-    if (this.userType?.wourroletype == "Dual Role") {
-      return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
-    }
-    return this.worksOrderUsrAccess.indexOf(menuName) != -1
+    return this.helperService.checkWorkOrderAreaAccess(this.userType, this.worksOrderAccess, this.worksOrderUsrAccess, menuName)
+    // if (this.userType == undefined) return true;
+    // if (this.userType?.wourroletype == "Dual Role") {
+    //   return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
+    // }
+    // return this.worksOrderUsrAccess.indexOf(menuName) != -1
   }
 
   openDeleteWorkReasonWindow(item, action = 'single') {

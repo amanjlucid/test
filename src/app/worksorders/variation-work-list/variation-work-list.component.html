@@ -53,12 +53,12 @@
                                     class="dropdown-item" href="javascript:void(0)"
                                     (click)="removeItemVariationConfirm(dataItem)">Remove Item Variation</a>
 
-                                <a *ngIf="woMenuAccess('Recharge (Var)') && dataItem.woadrechargeyn == 'N' || dataItem.variationAction == 'Remove Work Item'"
+                                <a *ngIf="woMenuAccess('Recharge (Var)') && (dataItem.woadrechargeyn == 'N' || dataItem.variationAction == 'Remove Work Item')"
                                     [ngClass]="{'disabled' : disableGridRowMenu('Recharge',dataItem) }"
                                     class="dropdown-item" href="javascript:void(0)"
                                     (click)="rechargeToggle(dataItem, true)">Recharge</a>
 
-                                <a *ngIf="woMenuAccess('Recharge (Var)') && dataItem.woadrechargeyn == 'Y' &&  dataItem.variationAction != 'Remove Work Item'"
+                                <a *ngIf="woMenuAccess('Recharge (Var)') && (dataItem.woadrechargeyn == 'Y' &&  dataItem.variationAction != 'Remove Work Item')"
                                     [ngClass]="{'disabled' : disableGridRowMenu('Recharge',dataItem) }"
                                     class="dropdown-item" href="javascript:void(0)"
                                     (click)="rechargeToggle(dataItem, false)">Clear

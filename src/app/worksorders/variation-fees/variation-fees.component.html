@@ -24,11 +24,11 @@
                             <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
 
                             <div class="dropdown-menu">
-                                <a [ngClass]="{'disabled' : disableGridRowMenu('Change Fee',dataItem) }"
+                                <a *ngIf="woMenuAccess('Change Fee')" [ngClass]="{'disabled' : disableGridRowMenu('Change Fee',dataItem) }"
                                     class="dropdown-item" href="javascript:void(0)"
                                     (click)="openChangeFeeMethod(dataItem)">Change Fee</a>
 
-                                <a [ngClass]="{'disabled' : disableGridRowMenu('Remove Fee',dataItem)}"
+                                <a *ngIf="woMenuAccess('Remove Fee Variation')" [ngClass]="{'disabled' : disableGridRowMenu('Remove Fee',dataItem)}"
                                     class="dropdown-item" href="javascript:void(0)"
                                     (click)="removeFeeVariation(dataItem)">Remove Fee Variation</a>
                             </div>
