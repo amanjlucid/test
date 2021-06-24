@@ -1,0 +1,143 @@
+<kendo-window title="{{title}}" *ngIf="openWOCreatePaymentScheduleWindow"
+  (close)="closeCreatePaymentScheduleWin()" [top]="10" [minWidth]="500" [width]="700" [height]="auto"
+  [minHeight]="400">
+
+  <form [formGroup]="createScheduleForm" id="addScheduleForm" (ngSubmit)="onSubmit()" autocomplete="off">
+    <div class="row mt-2">
+      <div class="col-md-3">
+          <label class="py-2">Works Order:</label>
+      </div>
+      <div class="col-md-9">
+          <input type="text" value="" class="form-control" formControlName="worksOrder" [readonly]="true">
+      </div>
+    </div>
+    <div class="row mt-2">
+      <div class="col-6">
+        <div class="row">
+          <div class="col-md-6">
+              <label class="py-2">Period Start Date:</label>
+          </div>
+          <div class="col-md-6">
+            <input type="text" class="form-control" ngbDatepicker
+            #j="ngbDatepicker" (click)="openCalendar(j)" formControlName="pStartDate" [ngClass]="{ 'is-invalid': submitted && formErrors.pStartDate }" autocomplete="off" >
+            <div *ngIf="submitted && formErrors.pStartDate" class="invalid-feedback">
+              <div *ngIf="formErrors.pStartDate">{{ formErrors.pStartDate }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="row">
+          <div class="col-md-6">
+              <label class="py-2">Period End Date:</label>
+          </div>
+          <div class="col-md-6">
+              <input type="text" class="form-control" [minDate]="minDate" ngbDatepicker
+                  #i="ngbDatepicker" (click)="openCalendar(i)" formControlName="pEndDate" [ngClass]="{ 'is-invalid': submitted && formErrors.pEndDate }" autocomplete="off">
+              <div *ngIf="submitted && formErrors.pEndDate" class="invalid-feedback">
+                <div *ngIf="formErrors.pEndDate">{{ formErrors.pEndDate }}</div>
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row mt-2">
+      <div class="col-md-3">
+          <label class="py-2">Payment Frequency:</label>
+      </div>
+      <div class="col-md-9">
+        <select class="form-control" formControlName="pFrequency" [ngClass]="{ 'is-invalid': submitted && formErrors.pFrequency }">
+          <option value="Weekly">Weekly</option>
+          <option value="Monthly">Monthly</option>
+        </select>
+        <div *ngIf="submitted && formErrors.pFrequency" class="invalid-feedback">
+            <div *ngIf="formErrors.pFrequency">{{ formErrors.pFrequency }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="row mt-2">
+      <div class="col-6">
+        <div class="row">
+          <div class="col-md-6">
+              <label class="py-2">Payment Type:</label>
+          </div>
+          <div class="col-md-6">
+            <select class="form-control" formControlName="pType" (change)="changePaymentType($event)" [ngClass]="{ 'is-invalid': submitted && formErrors.pType }">
+              <option value="End Date">End Date</option>
+              <option value="Next Month">Next Month</option>
+              <option value="Days">Specific Number of Days...</option>
+            </select>
+            <div *ngIf="submitted && formErrors.pType" class="invalid-feedback">
+              <div *ngIf="formErrors.pType">{{ formErrors.pType }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="row">
+          <div class="col-md-6">
+              <label class="py-2">Specific Days:</label>
+          </div>
+          <div class="col-md-6">
+              <input type="text" class="form-control" formControlName="specificDays" [ngClass]="{ 'is-invalid': submitted && formErrors.specificDays }">
+              <div *ngIf="submitted && formErrors.specificDays" class="invalid-feedback">
+                  <div *ngIf="formErrors.specificDays">{{ formErrors.specificDays }}</div>
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row mt-2">
+      <div class="col-6">
+        <div class="row">
+          <div class="col-md-6">
+              <label class="py-2">Retention Type:</label>
+          </div>
+          <div class="col-md-6">
+            <div class="form-check-inline">
+              <label class="form-check-label">
+                <input type="radio" class="form-check-input" [value]="1" [checked]="true" name="retentionType" formControlName="retentionType" (click)="changeRetentionType(1)">Percentage
+              </label>
+            </div>
+            <div class="form-check-inline mt-2">
+                <label class="form-check-label">
+                    <input type="radio" class="form-check-input" [value]="2" name="retentionType" formControlName="retentionType" (click)="changeRetentionType(2)">Value
+                </label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="row">
+          <div class="col-md-6">
+            <label class="py-2">Retention %:</label>
+          </div>
+          <div class="col-md-6">
+            <input type="text" class="form-control" autocomplete="off" formControlName="retentionPct" [readonly]="readonlyRetentionPct" [ngClass]="{'is-invalid':submitted && formErrors.retentionPct}">
+            <div *ngIf="submitted && formErrors.retentionPct" class="invalid-feedback">
+              <div *ngIf="formErrors.retentionPct">{{ formErrors.retentionPct }}</div>
+            </div>
+          </div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-md-6">
+            <label class="py-2">Retention Value:</label>
+          </div>
+          <div class="col-md-6">
+            <input appCurrencyMask maxDigits="9" autocomplete="off" type="text" class="form-control" formControlName="retentionValue" [readonly]="readonlyRetentionValue" [ngClass]="{'is-invalid':submitted && formErrors.retentionValue}">
+            <div *ngIf="submitted && formErrors.retentionValue" class="invalid-feedback">
+              <div *ngIf="formErrors.retentionValue">{{ formErrors.retentionValue }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="text-right mt-3 pt-2 border-top">
+      <button type="submit" class="btn btn-sm themeButton mr-1">Submit</button>
+      <button type="button" class="btn btn-sm themeButton" (click)="closeCreatePaymentScheduleWin()">Cancel</button>        
+    </div>
+</form>
+
+</kendo-window>
+
+<div class="wopmcreatepaymentoverlay"></div>

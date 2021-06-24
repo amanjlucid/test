@@ -1,0 +1,207 @@
+<kendo-window title="{{title}}" *ngIf="openWOPaymentScheduleWindow"
+  (close)="closePaymentScheduleWin()" [top]="10" [minWidth]="700" [width]="1050" [height]="auto"
+  [minHeight]="300">
+
+  <div class="row headerArea">
+    <div class="col-md-12 headerRow12">
+      <div class="row align-items-center">
+        <div class="col-md-auto">
+          <label for="" class="lbl">Works Order: </label>
+        </div>
+        <div class="col-md">
+          <input [readonly]="true" type="text" class="form-control" placeholder=""
+            value="{{ worksOrderData.woname }} (Works Order No : {{ worksOrderData.wosequence}})">
+        </div>
+
+
+      </div>
+    </div>
+
+  </div>
+  
+  <div class="row mt-2">
+    <div class="col-md-12">
+      <kendo-grid #grid="kendoGrid" [data]="gridView" [selectable]="{
+        mode: 'multiple'
+      }" [kendoGridSelectBy]="mySelectionKey" [selectedKeys]="mySelection" [groupable]="false" [sortable]="{
+              allowUnsort: allowUnsort,
+              mode: multiple ? 'multiple' : 'single'
+              }" [sort]="state.sort" [skip]="state.skip" [loading]="loading" [height]="400">
+
+        <kendo-grid-column field="woname" title="Work Order" [width]="80" [filterable]="false" [sortable]="false">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span>
+              {{ dataItem.woname }}
+            </span>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column field="wpsstartdate" title="Period Start Date" [width]="140" [filterable]="false"
+          [sortable]="false">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span>
+              {{ dataItem.wpsstartdate | dateFormat : 'DD-MMM-YYYY' }}
+            </span>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column field="wpsenddate" title="Period End Date" [width]="140" [filterable]="false" [sortable]="false">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span>
+              {{ dataItem.wpsenddate | dateFormat : 'DD-MMM-YYYY' }}
+            </span>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column field="wpspaymentdate" title="Payment Date" [width]="110" [filterable]="false"
+          [sortable]="false">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span>
+              {{ dataItem.wpspaymentdate | dateFormat : 'DD-MMM-YYYY' }}
+            </span>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column field="wpstargetcount" title="Target # Assets" [width]="140" [filterable]="false"
+          [sortable]="false">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span>
+              {{ dataItem.wpstargetcount }}
+            </span>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column field="wpstargetworkvalue" title="Target Work / Fee Payment" [width]="140" [filterable]="false" [sortable]="false">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span>
+              {{ dataItem.wpstargetworkvalue | currency:'GBP':'symbol' }}
+            </span>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column field="wpsplannedcount" title="Planned # Assets" [width]="130" [filterable]="false" [sortable]="false">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span>
+              {{ dataItem.wpsplannedcount }}
+            </span>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column field="wpsplannedworkvalue" title="Planned Work / Fee Payment" [width]="140" [filterable]="false" [sortable]="false">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span>
+              {{ dataItem.wpsplannedworkvalue | currency:'GBP':'symbol' }}
+            </span>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column field="wpsactualcount" title="Actual # Assets" [width]="120" [filterable]="false" [sortable]="false">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span>
+              {{ dataItem.wpsactualcount }}
+            </span>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column field="wpsactualworkvalue" title="Actual Work / Fee Payment" [width]="140" [filterable]="false" [sortable]="false">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span>
+              {{ dataItem.wpsactualworkvalue | currency:'GBP':'symbol' }}
+            </span>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column field="wpsvaluation" title="Valuation" [width]="90" [filterable]="false" [sortable]="false">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span>
+              {{ dataItem.wpsvaluation | currency:'GBP':'symbol' }}
+            </span>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column field="wpsfixedpaymentvalue" title="Stage Payment" [width]="120" [filterable]="false" [sortable]="false">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span>
+              {{ dataItem.wpsfixedpaymentvalue | currency:'GBP':'symbol' }}
+            </span>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column field="wpspaymentstatus" title="Payment Status" [width]="130" [filterable]="false" [sortable]="false">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span>
+              {{ dataItem.wpspaymentstatus }}
+            </span>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column field="wpsretentionpct" title="Retention %" [width]="110" [filterable]="false" [sortable]="false">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span>
+              {{ dataItem.wpsretentionpct }}
+            </span>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column field="wpsretentionvalue" title="Retention Value" [width]="120" [filterable]="false" [sortable]="false">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span>
+              {{ dataItem.wpsretentionvalue | currency:'GBP':'symbol' }}
+            </span>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column field="wpsestimatedretentionvalue" title="Estimated Retention Value" [width]="140" [filterable]="false" [sortable]="false">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span>
+              {{ dataItem.wpsestimatedretentionvalue | currency:'GBP':'symbol' }}
+            </span>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column field="wpsreleasedretentionvalue" title="Release Retention Value" [width]="140" [filterable]="false" [sortable]="false">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span>
+              {{ dataItem.wpsreleasedretentionvalue | currency:'GBP':'symbol' }}
+            </span>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column field="wpscontractcostvalue" title="Contract Cost" [width]="120" [filterable]="false" [sortable]="false">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span>
+              {{ dataItem.wpscontractcostvalue | currency:'GBP':'symbol' }}
+            </span>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column field="wpsestimatedpaymentvalue" title="Actual/Estimated Payment Cost" [width]="140" [filterable]="false" [sortable]="false">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span>
+              {{ dataItem.wpsestimatedpaymentvalue | currency:'GBP':'symbol' }}
+            </span>
+          </ng-template>
+        </kendo-grid-column>
+        
+      </kendo-grid>
+
+
+    </div>
+
+    <div class="col-md-12 border-bottom mt-2">
+      <ul class="list-inline">
+        <li class="list-inline-item mb-2"><button type="button" class="btn btn-sm themeButton" (click)="openWOCreatePaymentSchedule()">Create Schedule</button></li>
+        <li class="list-inline-item mb-2"><button type="button" class="btn btn-sm themeButton" (click)="openWOAddPaymentSchedule()">Add New Schedule To:</button></li>
+        <li class="list-inline-item mb-2">
+          <select class="btn btn-sm themeButton">
+            <option>Select</option>
+            <option>Test One X</option>
+          </select>
+        </li>
+        <li class="list-inline-item mb-2"><button type="button" class="btn btn-sm themeButton" (click)="openWOEditPaymentSchedule()">Edit Schedule</button></li>
+        <li class="list-inline-item mb-2"><button type="button" class="btn btn-sm themeButton">Refresh Schedule</button></li>
+        <li class="list-inline-item mb-2"><button type="button" class="btn btn-sm themeButton">Request Schedule</button></li>
+        <li class="list-inline-item mb-2"><button type="button" class="btn btn-sm themeButton">Enter Valuations</button></li>
+        <li class="list-inline-item mb-2"><button type="button" class="btn btn-sm themeButton">Reset Pending Schedule</button></li>
+        <li class="list-inline-item mb-2"><button type="button" class="btn btn-sm themeButton">Valution Report </button></li>
+        <li class="list-inline-item mb-2"><button type="button" class="btn btn-sm themeButton">Schedule Report (Order)</button></li>
+        <li class="list-inline-item mb-2"><button type="button" class="btn btn-sm themeButton">Schedule Report (Programme)</button></li>
+        <li class="list-inline-item mb-2"><button type="button" class="btn btn-sm themeButton">Display Payment Schedule Assets</button></li>
+        <li class="list-inline-item mb-2"><button type="button" class="btn btn-sm themeButton">Payment Reconciliation</button></li>
+      </ul>
+    </div>
+
+    <div class="col-md-12 text-right mt-2">
+      <button type="button" class="btn btn-sm themeButton" (click)="closePaymentScheduleWin()">Close</button>
+    </div>
+  </div>
+
+</kendo-window>
+
+<div class="wopmpaymentoverlay"></div>
+
+<app-wo-program-management-edit-payment-schedule *ngIf="openWOEditPaymentScheduleWindow" [worksOrderData] = "worksOrderData" [openWOEditPaymentScheduleWindow]="openWOEditPaymentScheduleWindow" (closeEditPaymentScheduleWindowEvent)="closeEditPaymentScheduleWindow($event)"></app-wo-program-management-edit-payment-schedule>
+<app-wo-program-management-add-payment-schedule *ngIf="openWOAddPaymentScheduleWindow" [worksOrderData] = "worksOrderData" [openWOAddPaymentScheduleWindow]="openWOAddPaymentScheduleWindow" (closeAddPaymentScheduleWindowEvent)="closeAddPaymentScheduleWindow($event)"></app-wo-program-management-add-payment-schedule>
+<app-wo-program-management-create-payment-schedule *ngIf="openWOCreatePaymentScheduleWindow" [worksOrderData] = "worksOrderData" [openWOCreatePaymentScheduleWindow]="openWOCreatePaymentScheduleWindow" (closeCreatePaymentScheduleWindowEvent)="closeCreatePaymentScheduleWindow($event)"></app-wo-program-management-create-payment-schedule>
