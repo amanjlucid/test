@@ -81,7 +81,7 @@ import { ProgramLogComponent } from '../programme-log/programme-log/programme-lo
 import { ProgramTransactionsComponent } from '../programme-log/programme-transactions/programme-transactions.component';
 import { WoAssociationsManageComponent } from '../wo-association/wo-association-manage/wo-association-manage.component';
 import { WoDocumentListComponent } from '../wo-document-list/wo-document-list.component';
-
+import { WoProgramManagmentPaymentScheduleComponent } from '../workorder-program-management/wo-pm-payment-schedule/wo-pm-payment-schedule.component';
 
 @NgModule({
   declarations: [
@@ -153,7 +153,8 @@ import { WoDocumentListComponent } from '../wo-document-list/wo-document-list.co
     ProgramTransactionsComponent,
     WoAssociationsManageComponent,
     ManageMilestonesComponent,
-    ManageMilestonesEditComponent
+    ManageMilestonesEditComponent,
+    WoProgramManagmentPaymentScheduleComponent
   ],
 
 

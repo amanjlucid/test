@@ -245,5 +245,38 @@ export class WorksOrdersService {
     }
 
 
-}
+    GetWEBWorksOrdersPaymentScheduleForWorksOrder(qs) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWEBWorksOrdersPaymentScheduleForWorksOrder?${qs}`, this.httpOptions);
+    }
 
+    WorksRefreshPaymentSchedule(qs) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/WorksRefreshPaymentSchedule?${qs}`, this.httpOptions);
+    }
+
+
+    WorksOrdersValidateInsertPayment(params) {
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WorksOrdersValidateInsertPayment`, params, this.httpOptions);
+    }
+    WebWorksOrdersInsertPayment(params) {
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WebWorksOrdersInsertPayment`, params, this.httpOptions);
+    }
+    WorksOrderRefreshAssetValuation(params) {
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WorksOrderRefreshAssetValuation`, params, this.httpOptions);
+    }
+
+    GetWebWorksOrdersAssetValuationTotal(qs) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWebWorksOrdersAssetValuationTotal?${qs}`, this.httpOptions);
+    }
+    GetWebWorksOrdersAssetValuation(qs) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWebWorksOrdersAssetValuation?${qs}`, this.httpOptions);
+    }
+    SetValuationToZeroPayment(params) {
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/SetValuationToZeroPayment`, params, this.httpOptions);
+    }
+    WorksResetPendingSchedule(params) {
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WorksResetPendingSchedule`, params, this.httpOptions);
+    }
+    GetWebWorksOrderPaymentScheduleDetails(qs) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWebWorksOrderPaymentScheduleDetails?${qs}`, this.httpOptions);
+    }
+}

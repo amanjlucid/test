@@ -152,6 +152,14 @@
                 </div>
 
 
+                <a class="dropdown-item" href="javascript:void(0)"
+                  (click)="openWOPMPaymentSchedule(dataItem)">Payment Schedule</a>
+
+
+
+
+
+
                 <!-- <div class="dropdown-toggle">
                   <div class="dropdown-item">Associations</div>
                   <div class="dropdown-menu addAssetMenu">
@@ -417,3 +425,7 @@
 <app-manage-milestones *ngIf="openManageMilestone" [worksOrderData]="selectedWorksOrder"
   [openManageMilestone]="openManageMilestone" (closeManageMilestoneEvent)="closeManageMilestone($event)">
 </app-manage-milestones>
+
+<app-wo-program-management-payment-schedule *ngIf="openWOPaymentScheduleWindow" [worksOrderData]="selectedWorksOrder"
+  [openWOPaymentScheduleWindow]="openWOPaymentScheduleWindow" (closePaymentScheduleWindowEvent)="closePaymentScheduleWindow($event)">
+</app-wo-program-management-payment-schedule>

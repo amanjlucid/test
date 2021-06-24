@@ -719,7 +719,7 @@ export class HelperService {
         return new Date(dateStr).toJSON()
     }
 
- 
+
     getDateString(type = "Today") {
         let todayDateObj = new Date();
 
@@ -749,5 +749,9 @@ export class HelperService {
 
 
 
+  getFormattedDate(date) {
+   let rDate =  ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + date.getFullYear()
 
+return rDate;
+   }
 }
