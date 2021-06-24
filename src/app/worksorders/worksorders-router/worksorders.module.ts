@@ -81,6 +81,10 @@ import { ProgramLogComponent } from '../programme-log/programme-log/programme-lo
 import { ProgramTransactionsComponent } from '../programme-log/programme-transactions/programme-transactions.component';
 import { WoAssociationsManageComponent } from '../wo-association/wo-association-manage/wo-association-manage.component';
 import { WoDocumentListComponent } from '../wo-document-list/wo-document-list.component';
+import { WoProgramManagmentPaymentScheduleComponent } from '../workorder-program-management/wo-pm-payment-schedule/wo-pm-payment-schedule.component';
+import { WoProgramManagmentEditPaymentScheduleComponent } from '../workorder-program-management/wo-pm-edit-payment-schedule/wo-pm-edit-payment-schedule.component';
+import { WoProgramManagmentAddPaymentScheduleComponent } from '../workorder-program-management/wo-pm-add-payment-schedule/wo-pm-add-payment-schedule.component';
+import { WoProgramManagmentCreatePaymentScheduleComponent } from '../workorder-program-management/wo-pm-create-payment-schedule/wo-pm-create-payment-schedule.component';
 
 
 @NgModule({
@@ -153,7 +157,11 @@ import { WoDocumentListComponent } from '../wo-document-list/wo-document-list.co
     ProgramTransactionsComponent,
     WoAssociationsManageComponent,
     ManageMilestonesComponent,
-    ManageMilestonesEditComponent
+    ManageMilestonesEditComponent,
+    WoProgramManagmentPaymentScheduleComponent,
+    WoProgramManagmentEditPaymentScheduleComponent,
+    WoProgramManagmentAddPaymentScheduleComponent,
+    WoProgramManagmentCreatePaymentScheduleComponent
   ],
 
 
@@ -172,7 +180,7 @@ import { WoDocumentListComponent } from '../wo-document-list/wo-document-list.co
     NgbModule,
     TreeListModule,
     NgMultiSelectDropDownModule.forRoot(),
-    MultiSelectModule
+    MultiSelectModule,
 
   ]
 
