@@ -91,7 +91,7 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
     if (element.className.indexOf('fas fa-bars') == -1) {
       this.hideMenu();
     }
-    event.preventDefault();
+    // event.preventDefault();
   }
 
   constructor(

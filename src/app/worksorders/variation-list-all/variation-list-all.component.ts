@@ -57,7 +57,7 @@ export class VariationListAllComponent implements OnInit {
     private alertService: AlertService,
     private confirmationDialogService: ConfirmationDialogService,
     private sharedService: SharedService,
-    private helperService : HelperService
+    private helperService: HelperService
   ) {
     this.setSelectableSettings();
   }
@@ -409,6 +409,49 @@ export class VariationListAllComponent implements OnInit {
     }
 
     return true;
+  }
+
+
+
+  openViewInstructionReport(item) {
+    if (item.woiissuestatus == 'New') {
+      this.alertService.error("This record is new");
+      return;
+    }
+
+
+    let params = {
+      WOSEQUENCE: item.wosequence,
+      WOISEQUENCE: item.woisequence,
+      USERID: this.currentUser.userId
+    }
+
+
+    const qs = Object.keys(params).map(key => `${key}=${params[key]}`).join('&');
+
+    this.alertService.success("Generating Report Please Wait...")
+
+    this.subs.add(
+      this.worksOrderService.ContractInstructionReport(qs).subscribe(
+        data => {
+          if (data.isSuccess) {
+
+            let filename = item.wosequence + '_' + item.woisequence + '_Report';
+            const source = `data:application/pdf;base64,${data.data}`;
+            const link = document.createElement("a");
+            link.href = source;
+            link.download = `${filename}.pdf`
+            link.click();
+            this.chRef.detectChanges();
+          } else {
+            this.alertService.error(data.message);
+          }
+
+        },
+        err => this.alertService.error(err)
+      )
+    )
+
   }
 
 
