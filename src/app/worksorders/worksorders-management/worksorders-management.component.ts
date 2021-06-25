@@ -150,11 +150,12 @@ export class WorksordersManagementComponent implements OnInit {
 
             this.groupedData = [...groupBywprsequence];
 
+            // console.log(this.groupedData)
             //Find parent and Set parent id in each row
             tempData.forEach((value, index) => {
-              // if(value.name == "00JBPROGANG"){
-              //   console.log(value)
-              // }
+              if(value.name == "phase 2"){
+                console.log(value)
+              }
 
               if (value.treelevel == 1) {
                 value.parentId = null;

@@ -135,7 +135,7 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
         this.sharedService.userTypeObs
       ]).subscribe(
         data => {
-          console.log(data)
+          // console.log(data)
           this.worksOrderUsrAccess = data[0];
           this.worksOrderAccess = data[1];
           this.userType = data[2][0];
@@ -1113,10 +1113,8 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
 
   /********** WOD Reports Function Start **********/
 
-  viewWOReportingProgSummaryTree(reportName, reportType, dataItem: any = null) {
-
-    const wprsequence = (dataItem != null) ? dataItem.wprsequence : 0;
-    const wosequence = (dataItem != null) ? dataItem.wosequence : 0;
+  viewWOReportingProgSummaryTree(reportName, reportType) {
+    const { wprsequence, wosequence } = this.worksOrderSingleData;
     let level = reportType;
 
     const label = {
