@@ -97,7 +97,7 @@
           <ng-template kendoGridCellTemplate let-dataItem>
             <i aria-expanded="false" class="fas fa-bars" (click)="openMenu($event, dataItem)"></i>
           </ng-template>
-          
+
         </kendo-grid-column>
 
         <!-- <kendo-grid-column field="worksOrderAssetChecklistFileCount" title="" width="40" [filterable]="false"
@@ -283,7 +283,8 @@
 
   <ng-template #template let-anchor>
     <div class="list-unstyled menuDiv" *ngIf="menuData">
-      <div #elm class="dropdown-menu" style="display: block; margin-left: -1px;" [ngStyle]="{'margin-top':getTopMargin()}">
+      <div #elm class="dropdown-menu" style="display: block; margin-left: -1px;"
+        [ngStyle]="{'margin-top':getTopMargin()}">
         <a *ngIf="woMenuAccess('Edit Works Order')" class="dropdown-item" href="javascript:void(0)"
           (click)="redirectToWorksOrderEdit(menuData)">Edit</a>
         <a *ngIf="woMenuAccess('Delete Works Order')" class="dropdown-item" href="javascript:void(0)"
@@ -351,6 +352,11 @@
               (click)="openManageMilestonePopup(menuData, 'manage')">Manage Milestones</a>
           </div>
         </div>
+
+        <a class="dropdown-item" href="javascript:void(0)" (click)="openWOPMPaymentSchedule(dataItem)">Payment
+          Schedule</a>
+
+
       </div>
 
     </div>
@@ -433,3 +439,8 @@
   [singleWorkOrderInp]="selectedWorksOrder" [openedFrom]="'workorder'"
   (closeDefectsListEvent)="closeDefectList($event)">
 </app-asset-defects-list>
+
+<app-wo-program-management-payment-schedule *ngIf="openWOPaymentScheduleWindow" [worksOrderData]="selectedWorksOrder"
+  [openWOPaymentScheduleWindow]="openWOPaymentScheduleWindow"
+  (closePaymentScheduleWindowEvent)="closePaymentScheduleWindow($event)">
+</app-wo-program-management-payment-schedule>

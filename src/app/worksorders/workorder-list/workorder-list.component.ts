@@ -93,6 +93,8 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
     }
     event.preventDefault();
   }
+  // disabledMilestone: boolean = true;
+  openWOPaymentScheduleWindow: boolean;
 
   constructor(
     private worksOrderService: WorksOrdersService,
@@ -840,5 +842,16 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
   }
 
 
+
+  openWOPMPaymentSchedule(item) {
+    this.selectedWorksOrder = item;
+    $('.wopmpaymentoverlay').addClass('ovrlay');
+    this.openWOPaymentScheduleWindow = true;
+  }
+
+  closePaymentScheduleWindow($event) {
+    $('.wopmpaymentoverlay').removeClass('ovrlay');
+    this.openWOPaymentScheduleWindow = $event;
+  }
 
 }

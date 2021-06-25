@@ -90,6 +90,7 @@ import { ManagementEditCostsComponent } from '../management-costs/management-edi
 import { MilestonesNotesComponent } from '../milestones-notes/milestones-notes.component';
 import { MilestonesDocumentListComponent } from '../milestones-document-list/milestones-document-list.component';
 
+import { WoProgramManagmentPaymentScheduleComponent } from '../workorder-program-management/wo-pm-payment-schedule/wo-pm-payment-schedule.component';
 
 @NgModule({
   declarations: [
@@ -168,7 +169,8 @@ import { MilestonesDocumentListComponent } from '../milestones-document-list/mil
     ManagementEditRolesComponent,
     ManagementEditCostsComponent,
     MilestonesNotesComponent,
-    MilestonesDocumentListComponent
+    MilestonesDocumentListComponent,
+    WoProgramManagmentPaymentScheduleComponent
   ],
 
 
