@@ -250,6 +250,21 @@ export class WorksOrdersService {
         return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/UpdateMilestoneItem`, params, this.httpOptions);
     }
 
+    // GetWEBWorksOrdersPaymentScheduleForWorksOrder(wprsequence, wosequence){
+    //     return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWEBWorksOrdersPaymentScheduleForWorksOrder?wprsequence=${wprsequence}&wosequence=${wosequence}`, this.httpOptions);
+    // }
+    
+    bulkUpdateWorksOrderPaymentSchedule(params){
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/BulkUpdateWorksOrderPaymentSchedule`, params, this.httpOptions);
+    }
+    insertWebWorksOrdersPaymentSchedule(params){
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/InsertWebWorksOrdersPaymentSchedule`, params, this.httpOptions);
+    }
+    createWebWorksOrdersPaymentSchedule(params){
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WORKSCreatePaymentSchedule`, params, this.httpOptions);
+    }
+
+
     getWEBWorksOrdersMilestoneNote(WOSEQUENCE, WOPSEQUENCE, WOCHECKSURCDE) {
         return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWEBWorksOrdersMilestoneNote?WOSEQUENCE=${WOSEQUENCE}&WOPSEQUENCE=${WOPSEQUENCE}&WOCHECKSURCDE=${WOCHECKSURCDE}`, this.httpOptions);
     }

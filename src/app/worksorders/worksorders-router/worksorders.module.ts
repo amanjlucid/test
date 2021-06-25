@@ -81,6 +81,10 @@ import { ProgramLogComponent } from '../programme-log/programme-log/programme-lo
 import { ProgramTransactionsComponent } from '../programme-log/programme-transactions/programme-transactions.component';
 import { WoAssociationsManageComponent } from '../wo-association/wo-association-manage/wo-association-manage.component';
 import { WoDocumentListComponent } from '../wo-document-list/wo-document-list.component';
+import { WoProgramManagmentPaymentScheduleComponent } from '../workorder-program-management/wo-pm-payment-schedule/wo-pm-payment-schedule.component';
+import { WoProgramManagmentEditPaymentScheduleComponent } from '../workorder-program-management/wo-pm-edit-payment-schedule/wo-pm-edit-payment-schedule.component';
+import { WoProgramManagmentAddPaymentScheduleComponent } from '../workorder-program-management/wo-pm-add-payment-schedule/wo-pm-add-payment-schedule.component';
+import { WoProgramManagmentCreatePaymentScheduleComponent } from '../workorder-program-management/wo-pm-create-payment-schedule/wo-pm-create-payment-schedule.component';
 
 import { ManagementRolesComponent } from '../management-roles/management-roles.component';
 import { ManagementSorComponent } from '../management-sor/management-sor.component';
@@ -90,7 +94,6 @@ import { ManagementEditCostsComponent } from '../management-costs/management-edi
 import { MilestonesNotesComponent } from '../milestones-notes/milestones-notes.component';
 import { MilestonesDocumentListComponent } from '../milestones-document-list/milestones-document-list.component';
 
-import { WoProgramManagmentPaymentScheduleComponent } from '../workorder-program-management/wo-pm-payment-schedule/wo-pm-payment-schedule.component';
 
 @NgModule({
   declarations: [
@@ -170,7 +173,10 @@ import { WoProgramManagmentPaymentScheduleComponent } from '../workorder-program
     ManagementEditCostsComponent,
     MilestonesNotesComponent,
     MilestonesDocumentListComponent,
-    WoProgramManagmentPaymentScheduleComponent
+    WoProgramManagmentPaymentScheduleComponent,
+    WoProgramManagmentEditPaymentScheduleComponent,
+    WoProgramManagmentAddPaymentScheduleComponent,
+    WoProgramManagmentCreatePaymentScheduleComponent
   ],
 
 
@@ -189,7 +195,7 @@ import { WoProgramManagmentPaymentScheduleComponent } from '../workorder-program
     NgbModule,
     TreeListModule,
     NgMultiSelectDropDownModule.forRoot(),
-    MultiSelectModule
+    MultiSelectModule,
 
   ]
 

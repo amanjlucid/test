@@ -19,6 +19,7 @@
 
   </div>
 
+  
   <div class="row mt-2">
     <div class="col-md-12">
       <kendo-grid #grid="kendoGrid" [data]="gridView" [selectable]="{
@@ -191,6 +192,7 @@
           </ng-template>
         </kendo-grid-column>
 
+        
       </kendo-grid>
 
 
@@ -198,14 +200,23 @@
 
     <div class="col-md-12 border-bottom mt-2">
       <ul class="list-inline">
-        <li class="list-inline-item mb-2"><button type="button" class="btn btn-sm themeButton">Create Schedule</button></li>
-        <li class="list-inline-item mb-2"><button type="button" class="btn btn-sm themeButton">Add New Schedule To:</button></li>
+        <li class="list-inline-item mb-2"><button type="button" class="btn btn-sm themeButton" (click)="openWOCreatePaymentSchedule()">Create Schedule</button></li>
+        <li class="list-inline-item mb-2"><button type="button" class="btn btn-sm themeButton" (click)="openWOAddPaymentSchedule()">Add New Schedule To:</button></li>
         <li class="list-inline-item mb-2">
           <select class="btn btn-sm themeButton">
             <option>Select</option>
             <option>Test One X</option>
           </select>
         </li>
+        <li class="list-inline-item mb-2"><button type="button" class="btn btn-sm themeButton" (click)="openWOEditPaymentSchedule()">Edit Schedule</button></li>
+        <li class="list-inline-item mb-2"><button type="button" class="btn btn-sm themeButton">Refresh Schedule</button></li>
+        <li class="list-inline-item mb-2"><button type="button" class="btn btn-sm themeButton">Request Schedule</button></li>
+        <li class="list-inline-item mb-2"><button type="button" class="btn btn-sm themeButton">Enter Valuations</button></li>
+        <li class="list-inline-item mb-2"><button type="button" class="btn btn-sm themeButton">Reset Pending Schedule</button></li>
+        <li class="list-inline-item mb-2"><button type="button" class="btn btn-sm themeButton">Valution Report </button></li>
+        <li class="list-inline-item mb-2"><button type="button" class="btn btn-sm themeButton">Schedule Report (Order)</button></li>
+        <li class="list-inline-item mb-2"><button type="button" class="btn btn-sm themeButton">Schedule Report (Programme)</button></li>
+        <li class="list-inline-item mb-2"><button type="button" class="btn btn-sm themeButton">Display Payment Schedule Assets</button></li>
         <li class="list-inline-item mb-2"><button type="button" class="btn btn-sm themeButton">Payment Reconciliation</button></li>
       </ul>
     </div>
@@ -620,3 +631,11 @@
         </kendo-window>
 
 </kendo-window>
+
+</kendo-window>
+
+<div class="wopmpaymentoverlay"></div>
+
+<app-wo-program-management-edit-payment-schedule *ngIf="openWOEditPaymentScheduleWindow" [worksOrderData] = "worksOrderData" [openWOEditPaymentScheduleWindow]="openWOEditPaymentScheduleWindow" (closeEditPaymentScheduleWindowEvent)="closeEditPaymentScheduleWindow($event)"></app-wo-program-management-edit-payment-schedule>
+<app-wo-program-management-add-payment-schedule *ngIf="openWOAddPaymentScheduleWindow" [worksOrderData] = "worksOrderData" [openWOAddPaymentScheduleWindow]="openWOAddPaymentScheduleWindow" (closeAddPaymentScheduleWindowEvent)="closeAddPaymentScheduleWindow($event)"></app-wo-program-management-add-payment-schedule>
+<app-wo-program-management-create-payment-schedule *ngIf="openWOCreatePaymentScheduleWindow" [worksOrderData] = "worksOrderData" [openWOCreatePaymentScheduleWindow]="openWOCreatePaymentScheduleWindow" (closeCreatePaymentScheduleWindowEvent)="closeCreatePaymentScheduleWindow($event)"></app-wo-program-management-create-payment-schedule>

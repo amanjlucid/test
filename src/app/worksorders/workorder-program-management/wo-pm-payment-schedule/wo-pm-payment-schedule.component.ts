@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef, ElementRef, ViewChild } from '@angular/core';
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
-import { AlertService, ReportingGroupService, HelperService,WorksorderReportService, LoaderService, ConfirmationDialogService, WorksOrdersService, PropertySecurityGroupService, SharedService } from 'src/app/_services';
+import { AlertService, ReportingGroupService, HelperService, WorksorderReportService, LoaderService, ConfirmationDialogService, WorksOrdersService, PropertySecurityGroupService, SharedService } from 'src/app/_services';
 import { combineLatest } from 'rxjs';
 import { GridComponent, RowArgs } from '@progress/kendo-angular-grid';
 import { DateFormatPipe } from 'src/app/_pipes/date-format.pipe';
@@ -43,41 +43,41 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
   loading = false;
   selectedItem: any;
-  AssetValuationTotal :any;
+  AssetValuationTotal: any;
 
 
   enterValuationWindow = false;
 
 
   valuation_state: State = {
-      skip: 0,
-      sort: [],
-      group: [],
-      filter: {
-          logic: "or",
-          filters: []
-      }
+    skip: 0,
+    sort: [],
+    group: [],
+    filter: {
+      logic: "or",
+      filters: []
+    }
   }
 
-  ValuationGridData :any;
-  ValuationgridView : DataResult;
-   selectedValuationItem :any;
+  ValuationGridData: any;
+  ValuationgridView: DataResult;
+  selectedValuationItem: any;
 
 
 
-  DisplayPaymentAssetsWindow  = false;
+  DisplayPaymentAssetsWindow = false;
   display_payment_asset_state: State = {
-       skip: 0,
-       sort: [],
-       group: [],
-       filter: {
-           logic: "or",
-           filters: []
-       }
-   }
+    skip: 0,
+    sort: [],
+    group: [],
+    filter: {
+      logic: "or",
+      filters: []
+    }
+  }
 
-   DisplayPaymentAssetsData :any;
-   DisplayPaymentAssetsView : DataResult;
+  DisplayPaymentAssetsData: any;
+  DisplayPaymentAssetsView: DataResult;
 
 
 
@@ -92,6 +92,9 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
   };
 
   public paymentScheduleData;
+  openWOEditPaymentScheduleWindow: boolean;
+  openWOAddPaymentScheduleWindow: boolean;
+  openWOCreatePaymentScheduleWindow: boolean;
 
   constructor(
     private worksOrdersService: WorksOrdersService,
@@ -105,101 +108,101 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
 
   ngOnInit(): void {
 
-        this.AssetValuationTotal = {
-            "wosequence": '',
-            "wpspaymentdate": '',
-            "totalcommittedvalue": '',
-            "totalpendingvalue": 0,
-            "totalpaymenttodate": 0,
-            "totalpaymentpcttodate": 0,
-            "totalcontractorvaluation": 0,
-            "totalcontractorvaluationpct": 0,
-            "totalagreedvaluation": 0,
-            "totalagreedvaluationpct": 0,
-            "totalcalcpaymentvalue": 0,
-            "totaloutstandingpaymentvalue": 0
-        };
+    this.AssetValuationTotal = {
+      "wosequence": '',
+      "wpspaymentdate": '',
+      "totalcommittedvalue": '',
+      "totalpendingvalue": 0,
+      "totalpaymenttodate": 0,
+      "totalpaymentpcttodate": 0,
+      "totalcontractorvaluation": 0,
+      "totalcontractorvaluationpct": 0,
+      "totalagreedvaluation": 0,
+      "totalagreedvaluationpct": 0,
+      "totalcalcpaymentvalue": 0,
+      "totaloutstandingpaymentvalue": 0
+    };
 
     //  console.log('worksOrderData ' + JSON.stringify(this.worksOrderData) );
 
-        this.GetWEBWorksOrdersPaymentScheduleForWorksOrder();
+    this.GetWEBWorksOrdersPaymentScheduleForWorksOrder();
   }
 
 
- todayDate(){
+  todayDate() {
 
-       var today = new Date();
-       var dd = String(today.getDate()).padStart(2, '0');
-       var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-       var yyyy = today.getFullYear();
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    var yyyy = today.getFullYear();
 
-       let today2 = mm + '/' + dd + '/' + yyyy;
+    let today2 = mm + '/' + dd + '/' + yyyy;
 
-       return today2;
+    return today2;
 
- }
+  }
   ngOnDestroy() {
     this.subs.unsubscribe();
   }
 
   display_payment_asset__sortChange(sort: SortDescriptor[]): void {
-      this.display_payment_asset_state.sort = sort;
-      this.DisplayPaymentAssetsView = process(this.DisplayPaymentAssetsData, this.display_payment_asset_state);
-      this.chRef.detectChanges();
+    this.display_payment_asset_state.sort = sort;
+    this.DisplayPaymentAssetsView = process(this.DisplayPaymentAssetsData, this.display_payment_asset_state);
+    this.chRef.detectChanges();
   }
 
   display_payment_asset_filterChange(filter: any): void {
-      this.display_payment_asset_state.filter = filter;
-      this.DisplayPaymentAssetsView = process(this.DisplayPaymentAssetsData, this.display_payment_asset_state);
-      this.chRef.detectChanges();
+    this.display_payment_asset_state.filter = filter;
+    this.DisplayPaymentAssetsView = process(this.DisplayPaymentAssetsData, this.display_payment_asset_state);
+    this.chRef.detectChanges();
   }
 
 
 
 
   valuation_sortChange(sort: SortDescriptor[]): void {
-      this.valuation_state.sort = sort;
-      this.ValuationgridView = process(this.ValuationGridData, this.valuation_state);
-      this.chRef.detectChanges();
+    this.valuation_state.sort = sort;
+    this.ValuationgridView = process(this.ValuationGridData, this.valuation_state);
+    this.chRef.detectChanges();
   }
 
   valuation_filterChange(filter: any): void {
-      this.valuation_state.filter = filter;
-      this.ValuationgridView = process(this.ValuationGridData, this.valuation_state);
-      this.chRef.detectChanges();
+    this.valuation_state.filter = filter;
+    this.ValuationgridView = process(this.ValuationGridData, this.valuation_state);
+    this.chRef.detectChanges();
   }
 
 
   valuation_cellClickHandler({
-      sender,
-      column,
-      rowIndex,
-      columnIndex,
-      dataItem,
-      isEditedselectedInstructionRow
+    sender,
+    column,
+    rowIndex,
+    columnIndex,
+    dataItem,
+    isEditedselectedInstructionRow
   }) {
-      this.selectedValuationItem = dataItem;
+    this.selectedValuationItem = dataItem;
   }
 
 
-  closGetWebWorksOrderPaymentScheduleDetailsWindow(){
+  closGetWebWorksOrderPaymentScheduleDetailsWindow() {
 
     this.DisplayPaymentAssetsWindow = false;
   }
 
-  GetWebWorksOrderPaymentScheduleDetailsClick(item){
+  GetWebWorksOrderPaymentScheduleDetailsClick(item) {
 
     this.DisplayPaymentAssetsWindow = true;
 
-     this.selectedItem = item;
+    this.selectedItem = item;
 
     var date = new Date(this.selectedItem.wpspaymentdate);
-        let startdate = (((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + date.getFullYear());
+    let startdate = (((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + date.getFullYear());
 
 
     const params = {
-        "wosequence": this.selectedItem.wosequence,
-        "paymentdate": startdate,
+      "wosequence": this.selectedItem.wosequence,
+      "paymentdate": startdate,
     };
 
     const qs = Object.keys(params).map(key => `${key}=${params[key]}`).join('&');
@@ -207,117 +210,117 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
 
 
     this.subs.add(
-        this.worksOrdersService.GetWebWorksOrderPaymentScheduleDetails(qs).subscribe(
-            data => {
+      this.worksOrdersService.GetWebWorksOrderPaymentScheduleDetails(qs).subscribe(
+        data => {
 
 
-                ///  console.log('GetWebWorksOrdersAssetValuationTotal api response ' + JSON.stringify(data));
+          ///  console.log('GetWebWorksOrdersAssetValuationTotal api response ' + JSON.stringify(data));
 
-                if (data.isSuccess) {
+          if (data.isSuccess) {
 
-                   let resultData = data.data;
-
-
-                   this.DisplayPaymentAssetsData =resultData;
+            let resultData = data.data;
 
 
-                } else {
-                    this.alertService.error(data.message);
-                    this.loading = false
-                }
+            this.DisplayPaymentAssetsData = resultData;
 
-                this.chRef.detectChanges();
 
-                // console.log('WorkOrderRefusalCodes api reponse' + JSON.stringify(data));
-            },
-            err => this.alertService.error(err)
-        )
+          } else {
+            this.alertService.error(data.message);
+            this.loading = false
+          }
+
+          this.chRef.detectChanges();
+
+          // console.log('WorkOrderRefusalCodes api reponse' + JSON.stringify(data));
+        },
+        err => this.alertService.error(err)
+      )
     )
 
 
 
   }
- WorksResetPendingScheduleCall(item){
+  WorksResetPendingScheduleCall(item) {
 
-      this.selectedItem = item;
+    this.selectedItem = item;
 
-       var date = new Date(this.selectedItem.wpspaymentdate);
-           let startdate = (((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + date.getFullYear());
-
-
-      const params = {
-      "WPRSEQUENCE":this.selectedItem.wprsequence,
-      "WOSEQUENCE":this.selectedItem.wosequence,
-      "WPSPAYMENTDATE":startdate,
-      "strUser":this.currentUser.userId,
-
-      };
+    var date = new Date(this.selectedItem.wpspaymentdate);
+    let startdate = (((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + date.getFullYear());
 
 
-       this.subs.add(
-           this.worksOrdersService.WorksResetPendingSchedule(params).subscribe(
-               data => {
+    const params = {
+      "WPRSEQUENCE": this.selectedItem.wprsequence,
+      "WOSEQUENCE": this.selectedItem.wosequence,
+      "WPSPAYMENTDATE": startdate,
+      "strUser": this.currentUser.userId,
+
+    };
 
 
-                 if (data.isSuccess) {
-
-                    let resultData = data.data;
-                     if(resultData.validYN == 'Y'){
-
-                         this.alertService.success(resultData.validationMessage);
-
-                         this.GetWEBWorksOrdersPaymentScheduleForWorksOrder();
-
-                     }else{
-                       this.alertService.error(resultData.validationMessage);
-
-                     }
+    this.subs.add(
+      this.worksOrdersService.WorksResetPendingSchedule(params).subscribe(
+        data => {
 
 
-                 } else {
-                     this.alertService.error(data.message);
-                     this.loading = false
-                 }
+          if (data.isSuccess) {
 
-                   this.chRef.detectChanges();
+            let resultData = data.data;
+            if (resultData.validYN == 'Y') {
 
-                   // console.log('WorkOrderRefusalCodes api reponse' + JSON.stringify(data));
-               },
-               err => this.alertService.error(err)
-           )
-       )
+              this.alertService.success(resultData.validationMessage);
 
+              this.GetWEBWorksOrdersPaymentScheduleForWorksOrder();
 
+            } else {
+              this.alertService.error(resultData.validationMessage);
 
-
- }
+            }
 
 
-PaymentReconcillationClick(item,xPortId, reportName){
+          } else {
+            this.alertService.error(data.message);
+            this.loading = false
+          }
 
-     this.selectedItem = item;
+          this.chRef.detectChanges();
 
-     this.chRef.detectChanges();
-
-
-   let start_date   = DateFormatPipe.prototype.transform(this.selectedItem.wpsstartdate, 'YYYYMMDD');
-   let end_date   = DateFormatPipe.prototype.transform(this.selectedItem.wpsenddate, 'YYYYMMDD');
-
-   console.log('start_date is ' + start_date);
-   console.log('end_date is ' + end_date);
-
-
-  this.selectedItem.wpsstartdate_YYYYMMDD = start_date
-  this.selectedItem.wpsenddate_YYYYMMDD = end_date
-
-  this.chRef.detectChanges();
+          // console.log('WorkOrderRefusalCodes api reponse' + JSON.stringify(data));
+        },
+        err => this.alertService.error(err)
+      )
+    )
 
 
-  console.log('selectedItem new  ' + JSON.stringify(this.selectedItem));
 
-  this.WOCreateXportOutputReport(xPortId, reportName);
 
-}
+  }
+
+
+  PaymentReconcillationClick(item, xPortId, reportName) {
+
+    this.selectedItem = item;
+
+    this.chRef.detectChanges();
+
+
+    let start_date = DateFormatPipe.prototype.transform(this.selectedItem.wpsstartdate, 'YYYYMMDD');
+    let end_date = DateFormatPipe.prototype.transform(this.selectedItem.wpsenddate, 'YYYYMMDD');
+
+    console.log('start_date is ' + start_date);
+    console.log('end_date is ' + end_date);
+
+
+    this.selectedItem.wpsstartdate_YYYYMMDD = start_date
+    this.selectedItem.wpsenddate_YYYYMMDD = end_date
+
+    this.chRef.detectChanges();
+
+
+    console.log('selectedItem new  ' + JSON.stringify(this.selectedItem));
+
+    this.WOCreateXportOutputReport(xPortId, reportName);
+
+  }
 
   WOCreateXportOutputReport(xPortId, reportName) {
 
@@ -337,7 +340,7 @@ PaymentReconcillationClick(item,xPortId, reportName){
 
 
     if (xPortId == 529) {
-      params.lstParamNameValue = ["Payment Rec to YYYYMMDD",this.selectedItem.wpsenddate_YYYYMMDD,"Payment Rec from YYYYMMDD",this.selectedItem.wpsstartdate_YYYYMMDD,"Works Order Number",this.worksOrderData.wosequence];
+      params.lstParamNameValue = ["Payment Rec to YYYYMMDD", this.selectedItem.wpsenddate_YYYYMMDD, "Payment Rec from YYYYMMDD", this.selectedItem.wpsstartdate_YYYYMMDD, "Works Order Number", this.worksOrderData.wosequence];
 
 
 
@@ -383,7 +386,7 @@ PaymentReconcillationClick(item,xPortId, reportName){
   }
 
 
-  SetValuationToZeroPaymentClick(item){
+  SetValuationToZeroPaymentClick(item) {
 
     this.selectedValuationItem = item;
 
@@ -391,61 +394,61 @@ PaymentReconcillationClick(item,xPortId, reportName){
 
 
     var date = new Date(this.selectedValuationItem.wpspaymentdate);
-        let startdate = (((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + date.getFullYear());
+    let startdate = (((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + date.getFullYear());
 
 
 
-     let model = [{
-          "wopsequence":this.selectedValuationItem.wopsequence,
-       		"wosequence":this.selectedValuationItem.wosequence,
-       		"wpspaymentdate":startdate,
-       		"assid":this.selectedValuationItem.assid,
+    let model = [{
+      "wopsequence": this.selectedValuationItem.wopsequence,
+      "wosequence": this.selectedValuationItem.wosequence,
+      "wpspaymentdate": startdate,
+      "assid": this.selectedValuationItem.assid,
 
 
-     }];
+    }];
 
     const params = {
-        "struserid": this.currentUser.userId,
-        "model": model,
+      "struserid": this.currentUser.userId,
+      "model": model,
     };
 
 
 
     this.subs.add(
-        this.worksOrdersService.SetValuationToZeroPayment(params).subscribe(
-            data => {
+      this.worksOrdersService.SetValuationToZeroPayment(params).subscribe(
+        data => {
 
 
-              if (data.isSuccess) {
+          if (data.isSuccess) {
 
-                 let resultData = data.data;
-                  if(resultData.validYN == 'Y'){
+            let resultData = data.data;
+            if (resultData.validYN == 'Y') {
 
-                      this.alertService.success(resultData.validationMessage);
+              this.alertService.success(resultData.validationMessage);
 
-                      this.GetWebWorksOrdersAssetValuationTotal();
-                      this.GetWebWorksOrdersAssetValuation();
+              this.GetWebWorksOrdersAssetValuationTotal();
+              this.GetWebWorksOrdersAssetValuation();
 
-                  }else{
-                    this.alertService.error(resultData.validationMessage);
+            } else {
+              this.alertService.error(resultData.validationMessage);
 
-                  }
-
-
-              } else {
-                  this.alertService.error(data.message);
-                  this.loading = false
-              }
+            }
 
 
+          } else {
+            this.alertService.error(data.message);
+            this.loading = false
+          }
 
 
-                this.chRef.detectChanges();
 
-                // console.log('WorkOrderRefusalCodes api reponse' + JSON.stringify(data));
-            },
-            err => this.alertService.error(err)
-        )
+
+          this.chRef.detectChanges();
+
+          // console.log('WorkOrderRefusalCodes api reponse' + JSON.stringify(data));
+        },
+        err => this.alertService.error(err)
+      )
     )
 
 
@@ -453,16 +456,16 @@ PaymentReconcillationClick(item,xPortId, reportName){
 
 
   }
-  GetWebWorksOrdersAssetValuationTotal(){
+  GetWebWorksOrdersAssetValuationTotal() {
 
 
     var date = new Date(this.selectedItem.wpspaymentdate);
-        let startdate = (((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + date.getFullYear());
+    let startdate = (((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + date.getFullYear());
 
 
     const params = {
-        "wosequence": this.selectedItem.wosequence,
-        "paymentdate": startdate,
+      "wosequence": this.selectedItem.wosequence,
+      "paymentdate": startdate,
     };
 
     const qs = Object.keys(params).map(key => `${key}=${params[key]}`).join('&');
@@ -470,46 +473,46 @@ PaymentReconcillationClick(item,xPortId, reportName){
 
 
     this.subs.add(
-        this.worksOrdersService.GetWebWorksOrdersAssetValuationTotal(qs).subscribe(
-            data => {
+      this.worksOrdersService.GetWebWorksOrdersAssetValuationTotal(qs).subscribe(
+        data => {
 
 
-                ///  console.log('GetWebWorksOrdersAssetValuationTotal api response ' + JSON.stringify(data));
+          ///  console.log('GetWebWorksOrdersAssetValuationTotal api response ' + JSON.stringify(data));
 
-                if (data.isSuccess) {
+          if (data.isSuccess) {
 
-                   let resultData = data.data;
-
-
-                   this.AssetValuationTotal =resultData[0];
+            let resultData = data.data;
 
 
-                } else {
-                    this.alertService.error(data.message);
-                    this.loading = false
-                }
+            this.AssetValuationTotal = resultData[0];
 
-                this.chRef.detectChanges();
 
-                // console.log('WorkOrderRefusalCodes api reponse' + JSON.stringify(data));
-            },
-            err => this.alertService.error(err)
-        )
+          } else {
+            this.alertService.error(data.message);
+            this.loading = false
+          }
+
+          this.chRef.detectChanges();
+
+          // console.log('WorkOrderRefusalCodes api reponse' + JSON.stringify(data));
+        },
+        err => this.alertService.error(err)
+      )
     )
 
 
   }
 
-  GetWebWorksOrdersAssetValuation(){
+  GetWebWorksOrdersAssetValuation() {
 
 
     var date = new Date(this.selectedItem.wpspaymentdate);
-        let startdate = (((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + date.getFullYear());
+    let startdate = (((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + date.getFullYear());
 
 
     const params = {
-        "wosequence": this.selectedItem.wosequence,
-        "paymentdate": startdate,
+      "wosequence": this.selectedItem.wosequence,
+      "paymentdate": startdate,
     };
 
     const qs = Object.keys(params).map(key => `${key}=${params[key]}`).join('&');
@@ -517,309 +520,309 @@ PaymentReconcillationClick(item,xPortId, reportName){
 
 
     this.subs.add(
-        this.worksOrdersService.GetWebWorksOrdersAssetValuation(qs).subscribe(
-            data => {
+      this.worksOrdersService.GetWebWorksOrdersAssetValuation(qs).subscribe(
+        data => {
 
 
-                //  console.log('GetWebWorksOrdersAssetValuation api response ' + JSON.stringify(data));
+          //  console.log('GetWebWorksOrdersAssetValuation api response ' + JSON.stringify(data));
 
-                if (data.isSuccess) {
-
-
-                   this.ValuationGridData = data.data;
+          if (data.isSuccess) {
 
 
+            this.ValuationGridData = data.data;
 
-                } else {
-                    this.alertService.error(data.message);
-                    this.loading = false
-                }
 
-                this.chRef.detectChanges();
 
-                // console.log('WorkOrderRefusalCodes api reponse' + JSON.stringify(data));
-            },
-            err => this.alertService.error(err)
-        )
+          } else {
+            this.alertService.error(data.message);
+            this.loading = false
+          }
+
+          this.chRef.detectChanges();
+
+          // console.log('WorkOrderRefusalCodes api reponse' + JSON.stringify(data));
+        },
+        err => this.alertService.error(err)
+      )
     )
 
 
   }
 
 
- enterValuation(item){
+  enterValuation(item) {
 
-   this.selectedItem =  item;
-   this.enterValuationWindow =  true;
-
-
-
-
-  //let startdate =  this.helperService.ddmmyyywithslash(this.selectedItem.wpspaymentdate , true);
-
-// alert(this.selectedItem.wpspaymentdate);
- //this.helperService.getFormattedDate(this.selectedItem.wpspaymentdate);
-
-  var date = new Date(this.selectedItem.wpspaymentdate);
-      let startdate = (((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + date.getFullYear());
-
-
-      //alert(startdate);
-
-
-
-   const params = {
-       "WOSEQUENCE": this.selectedItem.wosequence,
-       "WPSPAYMENTDATE": startdate,
-       "strUser":this.currentUser.userId
-   };
-
-
-
-     this.subs.add(
-         this.worksOrdersService.WorksOrderRefreshAssetValuation(params).subscribe(
-             data => {
-
-
-                  // console.log('WorksOrderRefreshAssetValuation api response ' + JSON.stringify(data));
-
-                 if (data.isSuccess) {
-
-                    let resultData = data.data;
-
-                    // alert(resultData.validYN);
-
-                     if(resultData.validYN == 'Y'){
-
-
-                         this.alertService.warning(resultData.validationMessage);
-                        // this.alertService.success('Payment Requested');
-
-                          this.GetWebWorksOrdersAssetValuationTotal();
-                          this.GetWebWorksOrdersAssetValuation();
-
-                     }else{
-                       this.alertService.error(resultData.validationMessage);
-
-                     }
-
-
-                 } else {
-                     this.alertService.error(data.message);
-                     this.loading = false
-                 }
-
-                 this.chRef.detectChanges();
-
-                 // console.log('WorkOrderRefusalCodes api reponse' + JSON.stringify(data));
-             },
-             err => this.alertService.error(err)
-         )
-     )
-
-
-//   console.log('selectedItem  ' + JSON.stringify(this.selectedItem));
-
-
-
- }
- closeEnterValuationWindowWindow(){
-
-   this.enterValuationWindow =  false;
+    this.selectedItem = item;
+    this.enterValuationWindow = true;
 
 
 
 
- }
+    //let startdate =  this.helperService.ddmmyyywithslash(this.selectedItem.wpspaymentdate , true);
+
+    // alert(this.selectedItem.wpspaymentdate);
+    //this.helperService.getFormattedDate(this.selectedItem.wpspaymentdate);
+
+    var date = new Date(this.selectedItem.wpspaymentdate);
+    let startdate = (((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + date.getFullYear());
+
+
+    //alert(startdate);
 
 
 
-WorksRefreshPaymentSchedule(item){
+    const params = {
+      "WOSEQUENCE": this.selectedItem.wosequence,
+      "WPSPAYMENTDATE": startdate,
+      "strUser": this.currentUser.userId
+    };
 
-  this.selectedItem =  item;
 
-  const params = {
+
+    this.subs.add(
+      this.worksOrdersService.WorksOrderRefreshAssetValuation(params).subscribe(
+        data => {
+
+
+          // console.log('WorksOrderRefreshAssetValuation api response ' + JSON.stringify(data));
+
+          if (data.isSuccess) {
+
+            let resultData = data.data;
+
+            // alert(resultData.validYN);
+
+            if (resultData.validYN == 'Y') {
+
+
+              this.alertService.warning(resultData.validationMessage);
+              // this.alertService.success('Payment Requested');
+
+              this.GetWebWorksOrdersAssetValuationTotal();
+              this.GetWebWorksOrdersAssetValuation();
+
+            } else {
+              this.alertService.error(resultData.validationMessage);
+
+            }
+
+
+          } else {
+            this.alertService.error(data.message);
+            this.loading = false
+          }
+
+          this.chRef.detectChanges();
+
+          // console.log('WorkOrderRefusalCodes api reponse' + JSON.stringify(data));
+        },
+        err => this.alertService.error(err)
+      )
+    )
+
+
+    //   console.log('selectedItem  ' + JSON.stringify(this.selectedItem));
+
+
+
+  }
+  closeEnterValuationWindowWindow() {
+
+    this.enterValuationWindow = false;
+
+
+
+
+  }
+
+
+
+  WorksRefreshPaymentSchedule(item) {
+
+    this.selectedItem = item;
+
+    const params = {
       "wosequence": item.wosequence,
       "wprsequence": item.wprsequence,
-  };
+    };
 
-  const qs = Object.keys(params).map(key => `${key}=${params[key]}`).join('&');
-
-
-
-  this.subs.add(
-      this.worksOrdersService.WorksRefreshPaymentSchedule(qs).subscribe(
-          data => {
-
-
-                //console.log('WorksRefreshPaymentSchedule api response ' + JSON.stringify(data));
-
-              if (data.isSuccess) {
-
-                 let resultData = data.data;
-
-                  //alert(resultData.validYN);
-
-                if(resultData.validYN == 'Y'){
-
-
-                   this.GetWEBWorksOrdersPaymentScheduleForWorksOrder();
-
-                }
-
-
-
-              } else {
-                  this.alertService.error(data.message);
-                  this.loading = false
-              }
-
-              this.chRef.detectChanges();
-
-              // console.log('WorkOrderRefusalCodes api reponse' + JSON.stringify(data));
-          },
-          err => this.alertService.error(err)
-      )
-  )
-
-
-
-}
-
-
-WebWorksOrdersInsertPayment(){
-
-
-  let paymentDate =  this.todayDate();
-
-  const params = {
-      "wosequence": this.selectedItem.wosequence,
-      "wprsequence": this.selectedItem.wprsequence,
-      "wpspaymentdate":paymentDate,
-	     "strUser":this.currentUser.userId
-  };
+    const qs = Object.keys(params).map(key => `${key}=${params[key]}`).join('&');
 
 
 
     this.subs.add(
-        this.worksOrdersService.WebWorksOrdersInsertPayment(params).subscribe(
-            data => {
+      this.worksOrdersService.WorksRefreshPaymentSchedule(qs).subscribe(
+        data => {
 
 
-                //  console.log('WebWorksOrdersInsertPayment api response ' + JSON.stringify(data));
+          //console.log('WorksRefreshPaymentSchedule api response ' + JSON.stringify(data));
 
-                if (data.isSuccess) {
+          if (data.isSuccess) {
 
-                   let resultData = data.data;
+            let resultData = data.data;
 
-                    //alert(resultData.validYN);
+            //alert(resultData.validYN);
 
-                    if(resultData.validYN == 'Y'){
-
-
-                      //  this.alertService.success(resultData.validationMessage);
-                        this.alertService.success('Payment Requested');
-
-                        this.GetWEBWorksOrdersPaymentScheduleForWorksOrder();
-
-                    }else{
-                      this.alertService.error(resultData.validationMessage);
-
-                    }
+            if (resultData.validYN == 'Y') {
 
 
-                } else {
-                    this.alertService.error(data.message);
-                    this.loading = false
-                }
+              this.GetWEBWorksOrdersPaymentScheduleForWorksOrder();
 
-                this.chRef.detectChanges();
+            }
 
-                // console.log('WorkOrderRefusalCodes api reponse' + JSON.stringify(data));
-            },
-            err => this.alertService.error(err)
-        )
+
+
+          } else {
+            this.alertService.error(data.message);
+            this.loading = false
+          }
+
+          this.chRef.detectChanges();
+
+          // console.log('WorkOrderRefusalCodes api reponse' + JSON.stringify(data));
+        },
+        err => this.alertService.error(err)
+      )
     )
 
 
 
-}
+  }
 
-openConfirmationDialog(resp) {
 
-    $('.k-window').css({
-        'z-index': 1000
-    });
-    this.confirmationDialogService.confirm('Please confirm..', `${resp.validationMessage}`)
-        .then((confirmed) => (confirmed) ? this.WebWorksOrdersInsertPayment() : console.log(confirmed))
-        .catch(() => console.log('Attribute dismissed the dialog.'));
-}
+  WebWorksOrdersInsertPayment() {
 
-WorksOrdersValidateInsertPayment(item){
 
-  this.selectedItem =  item;
+    let paymentDate = this.todayDate();
 
-  let paymentDate =  this.todayDate();
-
-  const params = {
+    const params = {
       "wosequence": this.selectedItem.wosequence,
       "wprsequence": this.selectedItem.wprsequence,
-      "wpspaymentdate":paymentDate,
-	     "strUser":this.currentUser.userId
-  };
+      "wpspaymentdate": paymentDate,
+      "strUser": this.currentUser.userId
+    };
 
 
 
-  this.subs.add(
-      this.worksOrdersService.WorksOrdersValidateInsertPayment(params).subscribe(
-          data => {
+    this.subs.add(
+      this.worksOrdersService.WebWorksOrdersInsertPayment(params).subscribe(
+        data => {
 
 
-            //    console.log('WorksOrdersValidateInsertPayment api response ' + JSON.stringify(data));
+          //  console.log('WebWorksOrdersInsertPayment api response ' + JSON.stringify(data));
 
-              if (data.isSuccess) {
+          if (data.isSuccess) {
 
-                 let resultData = data.data;
+            let resultData = data.data;
 
-                //  alert(resultData.validYN);
+            //alert(resultData.validYN);
 
-                if(resultData.validYN == 'Y'){
-
-
-                  this.openConfirmationDialog(resultData);
-
-                }else{
-                //   this.alertService.error(resultData.validationMessage);
-
-                }
-
-                 this.openConfirmationDialog(resultData);
+            if (resultData.validYN == 'Y') {
 
 
-              } else {
-                  this.alertService.error(data.message);
-                  this.loading = false
-              }
+              //  this.alertService.success(resultData.validationMessage);
+              this.alertService.success('Payment Requested');
 
-              this.chRef.detectChanges();
+              this.GetWEBWorksOrdersPaymentScheduleForWorksOrder();
 
-              // console.log('WorkOrderRefusalCodes api reponse' + JSON.stringify(data));
-          },
-          err => this.alertService.error(err)
+            } else {
+              this.alertService.error(resultData.validationMessage);
+
+            }
+
+
+          } else {
+            this.alertService.error(data.message);
+            this.loading = false
+          }
+
+          this.chRef.detectChanges();
+
+          // console.log('WorkOrderRefusalCodes api reponse' + JSON.stringify(data));
+        },
+        err => this.alertService.error(err)
       )
-  )
+    )
 
 
 
-}
+  }
+
+  openConfirmationDialog(resp) {
+
+    $('.k-window').css({
+      'z-index': 1000
+    });
+    this.confirmationDialogService.confirm('Please confirm..', `${resp.validationMessage}`)
+      .then((confirmed) => (confirmed) ? this.WebWorksOrdersInsertPayment() : console.log(confirmed))
+      .catch(() => console.log('Attribute dismissed the dialog.'));
+  }
+
+  WorksOrdersValidateInsertPayment(item) {
+
+    this.selectedItem = item;
+
+    let paymentDate = this.todayDate();
+
+    const params = {
+      "wosequence": this.selectedItem.wosequence,
+      "wprsequence": this.selectedItem.wprsequence,
+      "wpspaymentdate": paymentDate,
+      "strUser": this.currentUser.userId
+    };
+
+
+
+    this.subs.add(
+      this.worksOrdersService.WorksOrdersValidateInsertPayment(params).subscribe(
+        data => {
+
+
+          //    console.log('WorksOrdersValidateInsertPayment api response ' + JSON.stringify(data));
+
+          if (data.isSuccess) {
+
+            let resultData = data.data;
+
+            //  alert(resultData.validYN);
+
+            if (resultData.validYN == 'Y') {
+
+
+              this.openConfirmationDialog(resultData);
+
+            } else {
+              //   this.alertService.error(resultData.validationMessage);
+
+            }
+
+            this.openConfirmationDialog(resultData);
+
+
+          } else {
+            this.alertService.error(data.message);
+            this.loading = false
+          }
+
+          this.chRef.detectChanges();
+
+          // console.log('WorkOrderRefusalCodes api reponse' + JSON.stringify(data));
+        },
+        err => this.alertService.error(err)
+      )
+    )
+
+
+
+  }
 
 
   GetWEBWorksOrdersPaymentScheduleForWorksOrder() {
 
 
     const params = {
-        "wprsequence": this.worksOrderData.wprsequence,
-        "wosequence": this.worksOrderData.wosequence
+      "wprsequence": this.worksOrderData.wprsequence,
+      "wosequence": this.worksOrderData.wosequence
     };
 
     const qs = Object.keys(params).map(key => `${key}=${params[key]}`).join('&');
@@ -827,28 +830,28 @@ WorksOrdersValidateInsertPayment(item){
 
 
     this.subs.add(
-        this.worksOrdersService.GetWEBWorksOrdersPaymentScheduleForWorksOrder(qs).subscribe(
-            data => {
+      this.worksOrdersService.GetWEBWorksOrdersPaymentScheduleForWorksOrder(qs).subscribe(
+        data => {
 
 
-            //      console.log('GetWEBWorksOrdersPaymentScheduleForWorksOrder api response ' + JSON.stringify(data));
+          //      console.log('GetWEBWorksOrdersPaymentScheduleForWorksOrder api response ' + JSON.stringify(data));
 
-                if (data.isSuccess) {
+          if (data.isSuccess) {
 
-                    this.gridView = data.data;
+            this.gridView = data.data;
 
 
-                } else {
-                    this.alertService.error(data.message);
-                    this.loading = false
-                }
+          } else {
+            this.alertService.error(data.message);
+            this.loading = false
+          }
 
-                this.chRef.detectChanges();
+          this.chRef.detectChanges();
 
-                // console.log('WorkOrderRefusalCodes api reponse' + JSON.stringify(data));
-            },
-            err => this.alertService.error(err)
-        )
+          // console.log('WorkOrderRefusalCodes api reponse' + JSON.stringify(data));
+        },
+        err => this.alertService.error(err)
+      )
     )
 
 
