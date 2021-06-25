@@ -44,11 +44,7 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
   loading = false;
   selectedItem: any;
   AssetValuationTotal: any;
-
-
   enterValuationWindow = false;
-
-
   valuation_state: State = {
     skip: 0,
     sort: [],
@@ -62,9 +58,6 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
   ValuationGridData: any;
   ValuationgridView: DataResult;
   selectedValuationItem: any;
-
-
-
   DisplayPaymentAssetsWindow = false;
   display_payment_asset_state: State = {
     skip: 0,
@@ -78,8 +71,6 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
 
   DisplayPaymentAssetsData: any;
   DisplayPaymentAssetsView: DataResult;
-
-
 
   public dropdownSettings = {
     singleSelection: false,
@@ -260,23 +251,14 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
     this.subs.add(
       this.worksOrdersService.WorksResetPendingSchedule(params).subscribe(
         data => {
-
-
           if (data.isSuccess) {
-
             let resultData = data.data;
             if (resultData.validYN == 'Y') {
-
               this.alertService.success(resultData.validationMessage);
-
               this.GetWEBWorksOrdersPaymentScheduleForWorksOrder();
-
             } else {
               this.alertService.error(resultData.validationMessage);
-
             }
-
-
           } else {
             this.alertService.error(data.message);
             this.loading = false
@@ -818,21 +800,19 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
 
 
   GetWEBWorksOrdersPaymentScheduleForWorksOrder() {
+    // const params = {
+    //   "wprsequence": this.worksOrderData.wprsequence,
+    //   "wosequence": this.worksOrderData.wosequence
+    // };
 
-
-    const params = {
-      "wprsequence": this.worksOrderData.wprsequence,
-      "wosequence": this.worksOrderData.wosequence
-    };
-
-    const qs = Object.keys(params).map(key => `${key}=${params[key]}`).join('&');
-
-
+    // const qs = Object.keys(params).map(key => `${key}=${params[key]}`).join('&');
+  
+    const {wprsequence, wosequence} = this.worksOrderData;
+    
 
     this.subs.add(
-      this.worksOrdersService.GetWEBWorksOrdersPaymentScheduleForWorksOrder(qs).subscribe(
+      this.worksOrdersService.GetWEBWorksOrdersPaymentScheduleForWorksOrder(wprsequence, wosequence).subscribe(
         data => {
-
 
           //      console.log('GetWEBWorksOrdersPaymentScheduleForWorksOrder api response ' + JSON.stringify(data));
 

@@ -845,12 +845,12 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
 
   openWOPMPaymentSchedule(item) {
     this.selectedWorksOrder = item;
-    $('.wopmpaymentoverlay').addClass('ovrlay');
+    $('.worksOrderOverlay').addClass('ovrlay');
     this.openWOPaymentScheduleWindow = true;
   }
 
   closePaymentScheduleWindow($event) {
-    $('.wopmpaymentoverlay').removeClass('ovrlay');
+    $('.worksOrderOverlay').removeClass('ovrlay');
     this.openWOPaymentScheduleWindow = $event;
   }
 

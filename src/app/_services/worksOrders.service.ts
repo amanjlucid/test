@@ -250,9 +250,9 @@ export class WorksOrdersService {
         return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/UpdateMilestoneItem`, params, this.httpOptions);
     }
 
-    // GetWEBWorksOrdersPaymentScheduleForWorksOrder(wprsequence, wosequence){
-    //     return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWEBWorksOrdersPaymentScheduleForWorksOrder?wprsequence=${wprsequence}&wosequence=${wosequence}`, this.httpOptions);
-    // }
+    GetWEBWorksOrdersPaymentScheduleForWorksOrder(wprsequence, wosequence){
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWEBWorksOrdersPaymentScheduleForWorksOrder?wprsequence=${wprsequence}&wosequence=${wosequence}`, this.httpOptions);
+    }
     
     bulkUpdateWorksOrderPaymentSchedule(params){
         return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/BulkUpdateWorksOrderPaymentSchedule`, params, this.httpOptions);
@@ -303,9 +303,9 @@ export class WorksOrdersService {
 
 
 
-    GetWEBWorksOrdersPaymentScheduleForWorksOrder(qs) {
-        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWEBWorksOrdersPaymentScheduleForWorksOrder?${qs}`, this.httpOptions);
-    }
+    // GetWEBWorksOrdersPaymentScheduleForWorksOrder(qs) {
+    //     return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWEBWorksOrdersPaymentScheduleForWorksOrder?${qs}`, this.httpOptions);
+    // }
 
     WorksRefreshPaymentSchedule(qs) {
         return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/WorksRefreshPaymentSchedule?${qs}`, this.httpOptions);
