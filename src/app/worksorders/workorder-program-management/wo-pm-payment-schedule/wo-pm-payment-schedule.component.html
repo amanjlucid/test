@@ -1,18 +1,16 @@
 <kendo-window title="{{title}}" *ngIf="openWOPaymentScheduleWindow" (close)="closePaymentScheduleWin()" [top]="10"
   [minWidth]="700" [width]="1050" [height]="auto" [minHeight]="300">
 
-  <div class="row headerArea">
-    <div class="col-md-12 headerRow12">
+  <div class="row">
+    <div class="col-md-12">
       <div class="row align-items-center">
         <div class="col-md-auto">
-          <label for="" class="lbl">Works Order: </label>
+          <label class="col-form-label">Works Order: </label>
         </div>
         <div class="col-md">
-          <input [readonly]="true" type="text" class="form-control" placeholder=""
-            value="{{ worksOrderData.woname }} (Works Order No : {{ worksOrderData.wosequence}})">
+          <input [readonly]="true" type="text" class="form-control"
+            value="{{ worksOrderData?.woname }} (Works Order No : {{ worksOrderData?.wosequence}})">
         </div>
-
-
       </div>
     </div>
 
@@ -21,39 +19,55 @@
 
   <div class="row mt-2">
     <div class="col-md-12">
-      <kendo-grid #grid="kendoGrid" [data]="gridView" [selectable]="{
+      <!-- <kendo-grid #grid="kendoGrid" [data]="gridView" [selectable]="{
         mode: 'multiple'
       }" [kendoGridSelectBy]="mySelectionKey" [selectedKeys]="mySelection" [groupable]="false" [sortable]="{
               allowUnsort: allowUnsort,
               mode: multiple ? 'multiple' : 'single'
-              }" [sort]="state.sort" [skip]="state.skip" [loading]="loading" [height]="400">
+              }" [sort]="state.sort" [skip]="state.skip" [loading]="loading" [height]="400"> -->
 
+      <kendo-grid #grid [data]="gridView" [height]="600" [selectable]="selectableSettings" filterable="menu"
+        [resizable]="true" [sortable]="{
+                allowUnsort: true,
+                mode: 'multiple'
+                }" [skip]="state.skip" [loading]="gridLoading" [pageSize]="pageSize" [rowHeight]="36"
+        (pageChange)="pageChange($event)" scrollable="virtual" [sort]="state.sort" [filter]="state.filter"
+        (sortChange)="sortChange($event)" (filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)"
+        [navigable]="false">
 
         <kendo-grid-column title=" " width="37" [filterable]="false" [sortable]="false">
           <ng-template kendoGridCellTemplate let-dataItem>
             <li class="nav-item dropdown list-unstyled" style="margin-top: -7px;">
               <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
               <div class="dropdown-menu">
-                <a (click)="WorksRefreshPaymentSchedule(dataItem)" class="dropdown-item"
-                  href="javascript:void(0)">Refresh Schedule</a>
+                <!-- <a (click)="WorksRefreshPaymentSchedule(dataItem)" class="dropdown-item"
+                  href="javascript:void(0)">Refresh Schedule</a> -->
                 <a (click)="WorksOrdersValidateInsertPayment(dataItem)" class="dropdown-item"
                   href="javascript:void(0)">Request Payment</a>
                 <a (click)="enterValuation(dataItem)" class="dropdown-item" href="javascript:void(0)">Enter
                   Valuation</a>
                 <a (click)="WorksResetPendingScheduleCall(dataItem)" class="dropdown-item"
-                  href="javascript:void(0)">Reset Pending Schedule</a>
-                <a class="dropdown-item" href="javascript:void(0)"
-                  (click)="WOCreateXportOutputReport(525, 'Valuation Report')">Valuation Report</a>
-                <a class="dropdown-item" href="javascript:void(0)"
-                  (click)="WOCreateXportOutputReport(522, 'Schedule Report(Order)')">Schedule Report(Order)</a>
+                  href="javascript:void(0)">Reset Pending</a>
 
-                <a class="dropdown-item" href="javascript:void(0)"
-                  (click)="WOCreateXportOutputReport(523, 'Schedule Report(Order)')">Schedule Report(Programme)</a>
-                <a (click)="GetWebWorksOrderPaymentScheduleDetailsClick(dataItem)" class="dropdown-item"
-                  href="javascript:void(0)">Display Payment Schedule Assets</a>
-                <a class="dropdown-item" href="javascript:void(0)"
-                  (click)="PaymentReconcillationClick(dataItem, 529, 'Payment Reconcillation')">Payment
-                  Reconcillation</a>
+                <div class="dropdown-toggle">
+                  <div class="dropdown-item">Reports</div>
+                  <div class="dropdown-menu contractorReportMenu">
+                    <a class="dropdown-item" href="javascript:void(0)"
+                      (click)="WOCreateXportOutputReport(525, 'Valuation Report')">Valuation Report</a>
+                    <a class="dropdown-item" href="javascript:void(0)"
+                      (click)="WOCreateXportOutputReport(581, 'Contractor Work Report')">Work Report</a>
+                    <a class="dropdown-item" href="javascript:void(0)"
+                      (click)="WOCreateXportOutputReport(522, 'Schedule Report(Order)')">Schedule Report(Order)</a>
+
+                    <a class="dropdown-item" href="javascript:void(0)"
+                      (click)="WOCreateXportOutputReport(523, 'Schedule Report(Order)')">Schedule Report(Programme)</a>
+                    <a (click)="GetWebWorksOrderPaymentScheduleDetailsClick(dataItem)" class="dropdown-item"
+                      href="javascript:void(0)">Display Payment Schedule Assets</a>
+                    <a class="dropdown-item" href="javascript:void(0)"
+                      (click)="PaymentReconcillationClick(dataItem, 529, 'Payment Reconcillation')">Payment
+                      Reconcillation</a>
+                  </div>
+                </div>
 
 
               </div>
@@ -217,9 +231,9 @@
 
 
       </kendo-grid>
-
-
     </div>
+
+
 
     <div class="col-md-12 border-bottom mt-2">
       <ul class="list-inline">
@@ -265,7 +279,7 @@
   <div class="wopmpaymentoverlay"></div>
 
 
-  <kendo-window title="Enter Valuation" *ngIf="enterValuationWindow" (close)="closeEnterValuationWindowWindow()"
+  <!-- <kendo-window title="Enter Valuation" *ngIf="enterValuationWindow" (close)="closeEnterValuationWindowWindow()"
     [top]="35" [minWidth]="400" [height]="auto" [minHeight]="200">
 
     <div class="row headerArea">
@@ -653,14 +667,14 @@
     </div>
 
 
-  </kendo-window>
+  </kendo-window> -->
 
 </kendo-window>
 
 
 <div class="wopmpaymentoverlay"></div>
 
-<app-wo-program-management-edit-payment-schedule *ngIf="openWOEditPaymentScheduleWindow"
+<!-- <app-wo-program-management-edit-payment-schedule *ngIf="openWOEditPaymentScheduleWindow"
   [worksOrderData]="worksOrderData" [openWOEditPaymentScheduleWindow]="openWOEditPaymentScheduleWindow"
   (closeEditPaymentScheduleWindowEvent)="closeEditPaymentScheduleWindow($event)">
 </app-wo-program-management-edit-payment-schedule>
@@ -673,4 +687,4 @@
 <app-wo-program-management-create-payment-schedule *ngIf="openWOCreatePaymentScheduleWindow"
   [worksOrderData]="worksOrderData" [openWOCreatePaymentScheduleWindow]="openWOCreatePaymentScheduleWindow"
   (closeCreatePaymentScheduleWindowEvent)="closeCreatePaymentScheduleWindow($event)">
-</app-wo-program-management-create-payment-schedule>
+</app-wo-program-management-create-payment-schedule> -->

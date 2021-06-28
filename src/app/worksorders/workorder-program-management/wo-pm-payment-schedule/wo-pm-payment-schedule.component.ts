@@ -1,9 +1,9 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef, ViewEncapsulation } from '@angular/core';
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
-import { AlertService, ReportingGroupService, HelperService, WorksorderReportService, LoaderService, ConfirmationDialogService, WorksOrdersService, PropertySecurityGroupService, SharedService } from 'src/app/_services';
+import { AlertService, HelperService, WorksorderReportService, ConfirmationDialogService, WorksOrdersService, SharedService } from 'src/app/_services';
 import { combineLatest } from 'rxjs';
-import { GridComponent, RowArgs } from '@progress/kendo-angular-grid';
+import { PageChangeEvent, SelectableSettings } from '@progress/kendo-angular-grid';
 import { DateFormatPipe } from 'src/app/_pipes/date-format.pipe';
 
 
@@ -11,34 +11,42 @@ import { DateFormatPipe } from 'src/app/_pipes/date-format.pipe';
   selector: 'app-wo-program-management-payment-schedule',
   templateUrl: './wo-pm-payment-schedule.component.html',
   styleUrls: ['./wo-pm-payment-schedule.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  encapsulation: ViewEncapsulation.None
 })
 
 export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
-  @Input() openWOPaymentScheduleWindow: boolean = false;
   @Output() closePaymentScheduleWindowEvent = new EventEmitter<boolean>();
+  @Input() openWOPaymentScheduleWindow: boolean = false;
   @Input() worksOrderData: any;
-
   subs = new SubSink();
-
+  title = 'Payment Schedule';
   state: State = {
     skip: 0,
-    sort: [{ field: 'woname', dir: 'asc' }],
+    sort: [],
+    take: 25,
     group: [],
     filter: {
       logic: "or",
       filters: []
     }
   }
+  selectableSettings: SelectableSettings;
+  gridLoading = true;
+  mySelection: any[] = [];
+  gridData:any;
+  pageSize = 25;
+
+
+
   public allowUnsort = true;
   public multiple = false;
-  public mySelection: any[] = [];
 
   disabled = false;
   ShowFilter = false;
   gridView: DataResult;
-  gridLoading = true
-  title = 'Payment Schedule';
+  // gridLoading = true
+
   GridData: any;
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
   loading = false;
@@ -95,9 +103,18 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
     private confirmationDialogService: ConfirmationDialogService,
     private helperService: HelperService,
     private worksOrderReportService: WorksorderReportService,
-  ) { }
+  ) {
+    this.setSelectableSettings();
+  }
+
+  ngOnDestroy() {
+    this.subs.unsubscribe();
+  }
+
 
   ngOnInit(): void {
+    console.log({ wo: this.worksOrderData });
+    this.GetWEBWorksOrdersPaymentScheduleForWorksOrder();
 
     this.AssetValuationTotal = {
       "wosequence": '',
@@ -114,27 +131,70 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
       "totaloutstandingpaymentvalue": 0
     };
 
-    //  console.log('worksOrderData ' + JSON.stringify(this.worksOrderData) );
 
-    this.GetWEBWorksOrdersPaymentScheduleForWorksOrder();
+    
+  }
+
+  setSelectableSettings(): void {
+    this.selectableSettings = {
+      checkboxOnly: false,
+      mode: 'single'
+    };
   }
 
 
   todayDate() {
-
     var today = new Date();
     var dd = String(today.getDate()).padStart(2, '0');
     var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
     var yyyy = today.getFullYear();
-
     let today2 = mm + '/' + dd + '/' + yyyy;
-
     return today2;
+  }
+
+
+
+  GetWEBWorksOrdersPaymentScheduleForWorksOrder() {
+    const { wprsequence, wosequence } = this.worksOrderData;
+    this.subs.add(
+      this.worksOrdersService.getWEBWorksOrdersPaymentScheduleForWorksOrder(wprsequence, wosequence).subscribe(
+        data => {
+          if (data.isSuccess) {
+            this.gridData = data.data;
+            this.gridView = process(this.gridData, this.state);
+          } else this.alertService.error(data.message);
+
+          this.gridLoading = false;
+          this.chRef.detectChanges();
+
+        }, err => this.alertService.error(err)
+      )
+    )
 
   }
-  ngOnDestroy() {
-    this.subs.unsubscribe();
+
+  sortChange(sort: SortDescriptor[]): void {
+    this.state.sort = sort;
+    this.gridView = process(this.gridData, this.state);
   }
+
+  filterChange(filter: any): void {
+    this.state.filter = filter;
+    this.gridView = process(this.gridData, this.state);
+  }
+
+  pageChange(event: PageChangeEvent): void {
+    this.state.skip = event.skip;
+    this.gridView = {
+      data: this.gridData.slice(this.state.skip, this.state.skip + this.pageSize),
+      total: this.gridData.length
+    };
+  }
+
+  cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
+    // this.selectedSingleDefect = dataItem;
+  }
+
 
   display_payment_asset__sortChange(sort: SortDescriptor[]): void {
     this.display_payment_asset_state.sort = sort;
@@ -432,15 +492,11 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
         err => this.alertService.error(err)
       )
     )
-
-
-
-
-
   }
+
+
+
   GetWebWorksOrdersAssetValuationTotal() {
-
-
     var date = new Date(this.selectedItem.wpspaymentdate);
     let startdate = (((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + date.getFullYear());
 
@@ -799,67 +855,6 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
   }
 
 
-  GetWEBWorksOrdersPaymentScheduleForWorksOrder() {
-    // const params = {
-    //   "wprsequence": this.worksOrderData.wprsequence,
-    //   "wosequence": this.worksOrderData.wosequence
-    // };
-
-    // const qs = Object.keys(params).map(key => `${key}=${params[key]}`).join('&');
-  
-    const {wprsequence, wosequence} = this.worksOrderData;
-    
-
-    this.subs.add(
-      this.worksOrdersService.GetWEBWorksOrdersPaymentScheduleForWorksOrder(wprsequence, wosequence).subscribe(
-        data => {
-
-          //      console.log('GetWEBWorksOrdersPaymentScheduleForWorksOrder api response ' + JSON.stringify(data));
-
-          if (data.isSuccess) {
-
-            this.gridView = data.data;
-
-
-          } else {
-            this.alertService.error(data.message);
-            this.loading = false
-          }
-
-          this.chRef.detectChanges();
-
-          // console.log('WorkOrderRefusalCodes api reponse' + JSON.stringify(data));
-        },
-        err => this.alertService.error(err)
-      )
-    )
-
-
-    /*
-    if (this.dataList.isSuccess) {
-      let paymentData = this.dataList.data;
-      this.gridView = process(paymentData, this.state);
-      //this.loading = false;
-    }
-    */
-
-    // this.subs.add(
-    //   this.worksOrdersService.GetWEBWorksOrdersPaymentScheduleForWorksOrder(wprsequence, wosequence).subscribe(
-    //     data => {
-    //       if (data.isSuccess) {
-    //         this.paymentScheduleData = data.data;
-    //         this.gridView = process(this.paymentScheduleData, this.state);
-    //         this.loading = false;
-    //       } else {
-    //         this.alertService.error(data.message);
-    //         this.loading = false
-    //       }
-    //       this.chRef.detectChanges();
-    //     },
-    //     err => this.alertService.error(err)
-    //   )
-    // )
-  }
 
 
   closePaymentScheduleWin() {

@@ -68,7 +68,7 @@ export class WoProgramManagmentEditPaymentScheduleComponent implements OnInit {
     const wosequence = this.worksOrderData.wosequence;
 
     this.subs.add(
-      this.worksOrdersService.GetWEBWorksOrdersPaymentScheduleForWorksOrder(wprsequence, wosequence).subscribe(
+      this.worksOrdersService.getWEBWorksOrdersPaymentScheduleForWorksOrder(wprsequence, wosequence).subscribe(
         data => {
           if (data.isSuccess) {
             this.editPaymentScheduleData = data.data;
@@ -122,9 +122,6 @@ export class WoProgramManagmentEditPaymentScheduleComponent implements OnInit {
   
 
   submitPaymentData(gridData: any): void {
-
-    console.log(gridData);
-
     const dataList = gridData.data.data;
     if(dataList.length > 0){
       this.loading = true;
