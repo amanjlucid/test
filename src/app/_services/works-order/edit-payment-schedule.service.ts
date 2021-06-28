@@ -1,22 +1,18 @@
-import { ChangeDetectorRef, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { BehaviorSubject, Observable, zip } from 'rxjs';
+import { BehaviorSubject, zip } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { appConfig } from '../../app.config';
 
-const CREATE_ACTION = 'create';
-const UPDATE_ACTION = 'update';
-const REMOVE_ACTION = 'destroy';
+// const CREATE_ACTION = 'create';
+// const UPDATE_ACTION = 'update';
+// const REMOVE_ACTION = 'destroy';
 
 const itemIndex = (item: any, data: any[]): number => {
     for (let idx = 0; idx < data.length; idx++) {
         if (JSON.stringify(data[idx]) === JSON.stringify(item)) {
             return idx;
         }
-
-        // if (data[idx].wosequence === item.wosequence) {
-        //     return idx;
-        // }
     }
 
     return -1;
@@ -37,7 +33,7 @@ export class EditPaymentScheduleService extends BehaviorSubject<any[]> {
         }),
     };
 
-    constructor(private http: HttpClient, private chRef: ChangeDetectorRef,) {
+    constructor(private http: HttpClient) {
         super([]);
     }
 
@@ -53,12 +49,11 @@ export class EditPaymentScheduleService extends BehaviorSubject<any[]> {
                     this.data = data.data;
                     this.originalData = cloneData(this.data);
                     super.next(this.data);
-                    this.chRef.detectChanges();
                 } else {
                     this.data = [];
                     this.originalData = [];
                     super.next([]);
-                    this.chRef.detectChanges();
+
                 }
 
             });
@@ -159,6 +154,12 @@ export class EditPaymentScheduleService extends BehaviorSubject<any[]> {
         const { wprsequence, wosequence } = wo;
         return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWEBWorksOrdersPaymentScheduleForWorksOrder?wprsequence=${wprsequence}&wosequence=${wosequence}`, this.httpOptions)
             .pipe(map(res => <any[]>res));
+        // .pipe(
+        //     map(response => (<any>{
+        //         data: (response.data != null) ? response.data : [],
+        //         total: (response.data != null) ? response.data.length : 0
+        //     }))
+        // )
     }
 
     private serializeModels(data?: any): string {

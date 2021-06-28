@@ -19,37 +19,13 @@
 
   <div class="row mt-2">
     <div class="col-md-12">
-      <!-- <kendo-grid  [kendoGridInCellEditing]="createFormGroup" [editService]="editService" [data]="gridView" [height]="600" [selectable]="selectableSettings" filterable="menu"
-        [resizable]="true" [sortable]="{
-                allowUnsort: true,
-                mode: 'multiple'
-                }" [skip]="state.skip" [loading]="gridLoading" [pageSize]="pageSize" [rowHeight]="36"
-        (pageChange)="pageChange($event)" scrollable="virtual" [sort]="state.sort" [filter]="state.filter"
-        (sortChange)="sortChange($event)" (filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)"
-        [navigable]="false"> -->
-
-      <!-- <kendo-grid #grid
-        [kendoGridInCellEditing]="createFormGroup"
-        [editService]="editService"
-        [height]="600"
-        [data]="view | async"
-        [loading]="gridLoading"
-        [rowHeight]="36"
-        (pageChange)="pageChange($event)" scrollable="virtual"
-        [pageSize]="gridState.take" [skip]="gridState.skip" [sort]="gridState.sort"
-        [pageable]="false" [sortable]="true"
-        (dataStateChange)="onStateChange($event)"
-        (cellClick)="cellClickHandler($event)"
-        [navigable]="false"
-      > -->
-
-
-      <kendo-grid #grid [data]="view | async" [height]="533" [pageSize]="gridState.take" [skip]="gridState.skip"
-        [sort]="gridState.sort" [pageable]="true" [sortable]="true" (dataStateChange)="onStateChange($event)"
+      <kendo-grid #grid [data]="view | async" [height]="600" [pageSize]="gridState.take" [skip]="gridState.skip"
+        [sort]="gridState.sort" [pageable]="false" [sortable]="true" (dataStateChange)="onStateChange($event)"
         (cellClick)="cellClickHandler($event)" (cellClose)="cellCloseHandler($event)" (cancel)="cancelHandler($event)"
-        (save)="saveHandler($event)" (remove)="removeHandler($event)" (add)="addHandler($event)" [navigable]="true">
+        (save)="saveHandler($event)" (remove)="removeHandler($event)" (add)="addHandler($event)" [navigable]="false"
+        [rowHeight]="36" scrollable="virtual">
 
-        <kendo-grid-column field="wpsstartdate" title="Period Start Date" [editable]="false" [width]="140"
+        <kendo-grid-column field="wpsstartdate" title="Period Start Date" [width]="140"
           [filterable]="false" [sortable]="true">
           <ng-template kendoGridCellTemplate let-dataItem>
             <span>
@@ -57,7 +33,7 @@
             </span>
           </ng-template>
         </kendo-grid-column>
-        <kendo-grid-column field="wpsenddate" title="Period End Date" [editable]="false" [width]="140"
+        <kendo-grid-column field="wpsenddate" title="Period End Date" [width]="150"
           [filterable]="false" [sortable]="true">
           <ng-template kendoGridCellTemplate let-dataItem>
             <span>
@@ -65,7 +41,7 @@
             </span>
           </ng-template>
         </kendo-grid-column>
-        <kendo-grid-column field="wpspaymentdate" title="Payment Date" [editable]="false" [width]="110"
+        <kendo-grid-column field="wpspaymentdate" title="Payment Date" [width]="130"
           [filterable]="false" [sortable]="true">
           <ng-template kendoGridCellTemplate let-dataItem>
             <span>
@@ -73,7 +49,7 @@
             </span>
           </ng-template>
         </kendo-grid-column>
-        <kendo-grid-column field="wpspaymentstatus" title="Payment Status" [editable]="false" [width]="130"
+        <kendo-grid-column field="wpspaymentstatus" title="Payment Status" [width]="130"
           [filterable]="false" [sortable]="true" [style]="{'background-color':'rgba(0, 0, 0, 0.06)'}">
           <ng-template kendoGridCellTemplate let-dataItem>
             <span>
@@ -81,25 +57,19 @@
             </span>
           </ng-template>
         </kendo-grid-column>
-        <kendo-grid-column field="wpsfixedpaymentvalue" title="Stage Payment" [editable]="false" [width]="120"
+        <kendo-grid-column field="wpsfixedpaymentvalue" title="Stage Payment" [width]="120"
           [filterable]="false" [sortable]="true">
         </kendo-grid-column>
 
-
-        <!-- <kendo-grid-column field="wpsretentionpct" title="Retention %" editor="text" [width]="110" [filterable]="false"
-          [sortable]="false">
-        </kendo-grid-column> -->
-        <!-- <kendo-grid-column field="wpsretentionvalue" title="Fixed Retention Value" editor="text" [width]="120"
-          [filterable]="false" [sortable]="false">
-        </kendo-grid-column> -->
         <kendo-grid-column field="wpsretentionpct" editor="numeric" title="Retention %"></kendo-grid-column>
         <kendo-grid-column field="wpsretentionvalue" editor="numeric" title="Fixed Retention Value"></kendo-grid-column>
 
       </kendo-grid>
+
     </div>
 
 
-    <div class="col-md-12 text-right">
+    <div class="col-md-12 text-right mt-2">
       <button type="button" class="btn btn-sm themeButton mr-1" [disabled]="!editService.hasChanges()"
         (click)="saveChanges(grid)">Apply</button>
       <button type="button" class="btn btn-sm themeButton" (click)="closeEditPaymentScheduleWin()">Close</button>
@@ -108,4 +78,3 @@
 
 </kendo-window>
 
-<div class="wopmeditpaymentoverlay"></div>

@@ -135,10 +135,9 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
       "totaloutstandingpaymentvalue": 0
     };
 
-
-
   }
 
+  
   setSelectableSettings(): void {
     this.selectableSettings = {
       checkboxOnly: false,

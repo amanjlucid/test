@@ -23,49 +23,7 @@ export class WoProgramManagmentEditPaymentScheduleComponent implements OnInit {
   @Input() worksOrderData: any;
   subs = new SubSink();
   title = 'Edit Payment Schedule';
-
-
-
-
-  state: State = {
-    skip: 0,
-    sort: [],
-    take: 25,
-    group: [],
-    filter: {
-      logic: "or",
-      filters: []
-    }
-  }
-  pageSize = 25;
-  gridData: any;
-  gridView: DataResult;
-  gridLoading = true;
-  mySelection: any[] = [];
-  selectableSettings: SelectableSettings;
-
-  // editPaymentForm: FormGroup;
-
-  // public editPaymentScheduleData;
-  // public multiple = false;
-
-
-
-
-
-  GridData: any;
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
-  loading = true;
-
-
-
-
-
-
-
-
-
-
   view: Observable<GridDataResult>;
   gridState: State = {
     sort: [],
@@ -74,22 +32,16 @@ export class WoProgramManagmentEditPaymentScheduleComponent implements OnInit {
   };
   changes: any = {};
   formGroup: FormGroup;
+  gridLoading = true;
 
   constructor(
     private formBuilder: FormBuilder,
     public editService: EditPaymentScheduleService,
-    private worksOrdersService: WorksOrdersService,
-    private alertService: AlertService,
-    private chRef: ChangeDetectorRef,
-    private fb: FormBuilder,
-
   ) {
     this.createFormGroup = this.createFormGroup.bind(this);
-    // this.setSelectableSettings();
   }
 
   ngOnInit(): void {
-    // this.GetWEBWorksOrdersPaymentScheduleForWorksOrder();
     this.view = this.editService.pipe(map(data => process(data, this.gridState)));
     this.editService.read(this.worksOrderData);
     this.gridLoading = false;
@@ -103,6 +55,7 @@ export class WoProgramManagmentEditPaymentScheduleComponent implements OnInit {
     this.gridState = state;
     this.editService.read(this.worksOrderData);
   }
+
 
   createFormGroup(dataItem: any): FormGroup {
     return this.formBuilder.group({
@@ -161,12 +114,11 @@ export class WoProgramManagmentEditPaymentScheduleComponent implements OnInit {
   addHandler({ sender }) {
     sender.addRow(this.createFormGroup(new WorkOrdersPaymentScheduleModel()));
   }
-  
+
 
   cancelHandler({ sender, rowIndex }) {
     sender.closeRow(rowIndex);
   }
-
 
   saveHandler({ sender, formGroup, rowIndex }) {
     if (formGroup.valid) {
@@ -191,7 +143,6 @@ export class WoProgramManagmentEditPaymentScheduleComponent implements OnInit {
     this.editService.cancelChanges();
   }
 
-
   private isReadOnly(field: string): boolean {
     const readOnlyColumns = ['wpsstartdate', 'wpsenddate', 'wpspaymentdate', 'wpspaymentstatus', 'wpsfixedpaymentvalue'];
     return readOnlyColumns.indexOf(field) > -1;
@@ -202,157 +153,6 @@ export class WoProgramManagmentEditPaymentScheduleComponent implements OnInit {
     this.openWOEditPaymentScheduleWindow = false;
     this.closeEditPaymentScheduleWindowEvent.emit(false);
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  // setSelectableSettings(): void {
-  //   this.selectableSettings = {
-  //     checkboxOnly: false,
-  //     mode: 'single'
-  //   };
-  // }
-
-
-  // GetWEBWorksOrdersPaymentScheduleForWorksOrder() {
-  //   const { wprsequence, wosequence } = this.worksOrderData
-  //   this.subs.add(
-  //     this.worksOrdersService.getWEBWorksOrdersPaymentScheduleForWorksOrder(wprsequence, wosequence).subscribe(
-  //       data => {
-  //         if (data.isSuccess) {
-  //           this.gridData = data.data;
-  //           this.gridView = process(this.gridData, this.state);
-  //         } else this.alertService.error(data.message);
-
-  //         this.gridLoading = false;
-  //         this.chRef.detectChanges();
-  //       },
-  //       err => this.alertService.error(err)
-  //     )
-  //   )
-  // }
-
-
-  // sortChange(sort: SortDescriptor[]): void {
-  //   this.state.sort = sort;
-  //   this.gridView = process(this.gridData, this.state);
-  // }
-
-  // filterChange(filter: any): void {
-  //   this.state.filter = filter;
-  //   this.gridView = process(this.gridData, this.state);
-  // }
-
-  // pageChange(event: PageChangeEvent): void {
-  //   this.state.skip = event.skip;
-  //   this.gridView = {
-  //     data: this.gridData.slice(this.state.skip, this.state.skip + this.pageSize),
-  //     total: this.gridData.length
-  //   };
-  // }
-
-  // cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
-  //   // this.selectedSingleDefect = dataItem;
-  // }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  // public createFormGroup(dataItem: any): FormGroup {
-  //   return this.fb.group({
-  //     wpsretentionpct: [dataItem.wpsretentionpct, [Validators.required, Validators.pattern("^[0-9.]*$"), Validators.maxLength(5)]],
-  //     wpsretentionvalue: [dataItem.wpsretentionvalue, [Validators.required, Validators.pattern("^[0-9.]*$"), Validators.maxLength(15)]],
-  //   });
-  // }
-
-  // public cellClickHandler({
-  //   sender,
-  //   column,
-  //   rowIndex,
-  //   columnIndex,
-  //   dataItem,
-  //   isEdited,
-  // }) {
-  //   let rowStatus = dataItem.wpspaymentstatus.toLowerCase();
-  //   if (!isEdited && rowStatus !== "pending") {
-  //     sender.editCell(rowIndex, columnIndex, this.createFormGroup(dataItem));
-  //   }
-  // }
-
-  // public cellCloseHandler(args: any) {
-  //   const { formGroup, dataItem } = args;
-  //   if (!formGroup.valid) {
-  //     // prevent closing the edited cell if there are invalid values.
-  //     args.preventDefault();
-  //   } else if (formGroup.dirty) {
-  //     this.assignValues(dataItem, formGroup.value);
-  //   }
-  // }
-
-  // public assignValues(target: any, source: any): void {
-  //   Object.assign(target, source);
-  // }
-
-
-  // submitPaymentData(gridData: any): void {
-  //   const dataList = gridData.data.data;
-  //   if (dataList.length > 0) {
-  //     this.loading = true;
-  //     let dataListArray = dataList.map(x => ({ wprsequence: x.wprsequence, wosequence: x.wosequence, wpspaymentdate: x.wpspaymentdate, wpsretentionpct: parseInt(x.wpsretentionpct), wpsretentionvalue: parseInt(x.wpsretentionvalue), wpsfixedpaymentvalue: x.wpsfixedpaymentvalue }));
-  //     this.subs.add(
-  //       this.worksOrdersService.bulkUpdateWorksOrderPaymentSchedule(dataListArray).subscribe(
-  //         data => {
-  //           if (data.isSuccess) {
-  //             this.loading = true;
-  //             this.closeEditPaymentScheduleWin();
-  //             this.alertService.success("Payment Schedule Successfully Updated.");
-  //           } else {
-  //             this.loading = true;
-  //             this.alertService.error(data.message);
-  //           }
-  //           this.chRef.detectChanges();
-  //         },
-  //         err => this.alertService.error(err)
-  //       )
-  //     )
-  //   }
-  // }
-
-
-
 
 
 }
