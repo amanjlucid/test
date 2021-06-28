@@ -271,7 +271,7 @@ export class WorksordersManagementComponent implements OnInit {
       'name': 'Name',
       'wprstatus': 'Status',
       'budget': 'Budget',
-      'forecast': 'Forcast',
+      'forecast': 'Forecast',
       'committed': 'Commited',
       'issued': 'Issued',
       'wpracceptedvalue': 'Accepted',
