@@ -96,7 +96,7 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
       this.hideMenu();
     }
 
-    event.preventDefault();
+    // event.preventDefault();
   }
 
   constructor(

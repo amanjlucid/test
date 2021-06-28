@@ -15,7 +15,7 @@
                     <a *ngIf="woMenuAccess('Create Blank Variation')" class="dropdown-item" href="javascript:void(0)"
                         (click)="newBlankVariation()">
                         Variation</a>
-                   
+
                     <a [ngClass]="{'disabled' : disableBulkVaritionBtn() || !selectedSingleInstructionVariation }"
                         *ngIf="woMenuAccess('Edit Bulk Variation')" class="dropdown-item" href="javascript:void(0)"
                         (click)="editbulkVariation()">
@@ -88,6 +88,11 @@
 
                                     </div>
                                 </div>
+
+                                <a [ngClass]="{'disabled' : dataItem.woiissuestatus == 'New'}" *ngIf="woMenuAccess('View Variation Report')"
+                                    (click)="openViewInstructionReport(dataItem)" class="dropdown-item"
+                                    href="javascript:void(0)">Report
+                                </a>
 
                                 <a *ngIf="woMenuAccess('Issue Variation')"
                                     [ngClass]="{'disabled' : disableVariationBtns('Issue', dataItem)}"
