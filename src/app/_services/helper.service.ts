@@ -197,6 +197,8 @@ export class HelperService {
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
 
+
+
     dateFormat(val) {
         if (val != "" && val != undefined) {
             let newdate = this.replaceAll(val, '/', '-').split('-');
@@ -233,6 +235,31 @@ export class HelperService {
                 return null;
             }
             return formatedDate + " " + strTime;
+
+        } else {
+            return null;
+        }
+        //return date.getMonth() + 1 + "/" + date.getDate() + "/" + date.getFullYear() + " " + strTime;
+    }
+
+    formatDateTimeSpace(d) {
+        if (d != "" && d != undefined) {
+            const date = new Date(d);
+
+            let hours = date.getHours();
+            let minutes: any = date.getMinutes();
+
+            let ampm = hours >= 12 ? 'pm' : 'am';
+            hours = hours % 12;
+            hours = hours ? hours : 12; // the hour '0' should be '12'
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+            var strTime = hours + ':' + minutes + ' ' + ampm;
+            const formatedDate = "" + this.zeorBeforeSingleDigit(date.getDate()) + " " + this.month_names[date.getMonth()] + " " + date.getFullYear();
+            if (formatedDate == '01-Jan-1753') {
+                return null;
+            }
+            return formatedDate;
+          //  return formatedDate + " " + strTime;
 
         } else {
             return null;
@@ -423,6 +450,15 @@ export class HelperService {
         } else {
             return [this.zeorBeforeSingleDigit(d.getDate()), this.zeorBeforeSingleDigit(d.getMonth() + 1), d.getFullYear()].join('/')
         }
+
+    }
+
+    ddmmyyFormatWithSpace(inputFormat) { //31 Jan 2021 DD MM YYYY
+        let d = new Date(inputFormat)
+
+
+            return [this.zeorBeforeSingleDigit(d.getDate()), this.zeorBeforeSingleDigit(d.getMonth() + 1), d.getFullYear()].join(' ')
+
 
     }
 

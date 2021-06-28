@@ -84,6 +84,7 @@ export class WorkorderListComponent implements OnInit {
   openManageMilestone: boolean;
   disabledMilestone: boolean = true;
   openWOPaymentScheduleWindow : boolean;
+  WOPaymentsWindow = false;
 
   constructor(
     private worksOrderService: WorksOrdersService,
@@ -841,5 +842,18 @@ export class WorkorderListComponent implements OnInit {
     $('.wopmpaymentoverlay').removeClass('ovrlay');
     this.openWOPaymentScheduleWindow = $event;
   }
+
+  openWOPMPayments(item){
+
+      this.selectedWorksOrder = item;
+    $('.wopmpaymentoverlay').addClass('ovrlay');
+    this.WOPaymentsWindow = true;
+  }
+
+  closeWOPMPaymentsWindow($event){
+    $('.wopmpaymentoverlay').removeClass('ovrlay');
+    this.WOPaymentsWindow = $event;
+  }
+
 
 }

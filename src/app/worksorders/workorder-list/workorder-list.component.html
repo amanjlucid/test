@@ -155,6 +155,8 @@
                 <a class="dropdown-item" href="javascript:void(0)"
                   (click)="openWOPMPaymentSchedule(dataItem)">Payment Schedule</a>
 
+                  <a class="dropdown-item" href="javascript:void(0)"
+                    (click)="openWOPMPayments(dataItem)">Payment</a>
 
 
 
@@ -429,3 +431,7 @@
 <app-wo-program-management-payment-schedule *ngIf="openWOPaymentScheduleWindow" [worksOrderData]="selectedWorksOrder"
   [openWOPaymentScheduleWindow]="openWOPaymentScheduleWindow" (closePaymentScheduleWindowEvent)="closePaymentScheduleWindow($event)">
 </app-wo-program-management-payment-schedule>
+
+<app-wo-pm-payments *ngIf="WOPaymentsWindow" [worksOrderData]="selectedWorksOrder"
+  [WOPaymentsWindow]="WOPaymentsWindow" (woPmPaymentsEvent)="closeWOPMPaymentsWindow($event)">
+</app-wo-pm-payments>

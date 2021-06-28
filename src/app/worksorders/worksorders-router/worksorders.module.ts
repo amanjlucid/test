@@ -82,6 +82,7 @@ import { ProgramTransactionsComponent } from '../programme-log/programme-transac
 import { WoAssociationsManageComponent } from '../wo-association/wo-association-manage/wo-association-manage.component';
 import { WoDocumentListComponent } from '../wo-document-list/wo-document-list.component';
 import { WoProgramManagmentPaymentScheduleComponent } from '../workorder-program-management/wo-pm-payment-schedule/wo-pm-payment-schedule.component';
+import { WoPmPaymentsComponent } from '../workorder-program-management/wo-pm-payments/wo-pm-payments.component';
 
 @NgModule({
   declarations: [
@@ -154,7 +155,8 @@ import { WoProgramManagmentPaymentScheduleComponent } from '../workorder-program
     WoAssociationsManageComponent,
     ManageMilestonesComponent,
     ManageMilestonesEditComponent,
-    WoProgramManagmentPaymentScheduleComponent
+    WoProgramManagmentPaymentScheduleComponent,
+    WoPmPaymentsComponent
   ],
 
 
