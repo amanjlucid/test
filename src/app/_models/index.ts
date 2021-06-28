@@ -44,3 +44,4 @@ export * from './wopm-userrole.model';
 export * from './wopm-contractcost.model';
 export * from './asset-resident-info.model';
 export * from './asset-risk.model';
+export * from './workorders/workorders-payment-schedule.model'

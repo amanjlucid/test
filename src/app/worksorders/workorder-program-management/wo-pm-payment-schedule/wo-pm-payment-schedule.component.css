@@ -7,3 +7,13 @@
     line-height: 20px;
     padding: 8px 12px;
 }
+
+.headerActionDiv{
+    text-align: right;
+    display: inline;
+}
+
+.headerActionDiv .reportBtnArea, .headerActionDiv .themeButton{
+    display: inline-block;
+    margin-right: 2px;
+}

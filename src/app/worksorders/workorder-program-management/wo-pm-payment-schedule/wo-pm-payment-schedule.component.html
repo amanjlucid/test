@@ -14,17 +14,38 @@
       </div>
     </div>
 
+    <div class="col-md-12 headerActionDiv mt-2">
+      <div class="dropdown ml-1 reportBtnArea" id="nesting-dropdown-demo">
+        <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Schedule
+          Report</button>
+        <div class="dropdown-menu" x-placement="bottom-start"
+          style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
+          <a class="dropdown-item" href="javascript:void(0)"
+            (click)="WOCreateXportOutputReport(581, 'Contractor Work Report')">Work Report</a>
+          <a class="dropdown-item" href="javascript:void(0)"
+            (click)="WOCreateXportOutputReport(522, 'Schedule Report(Order)')">Schedule Report(Order)</a>
+
+          <a class="dropdown-item" href="javascript:void(0)"
+            (click)="WOCreateXportOutputReport(523, 'Schedule Report(Order)')">Schedule Report(Programme)</a>
+        </div>
+      </div>
+
+
+      <button type="button" class="btn btn-sm themeButton" (click)="closePaymentScheduleWin()">Payments</button>
+      <button type="button" class="btn btn-sm themeButton" (click)="openWOEditPaymentSchedule()">Edit</button>
+      <button type="button" class="btn btn-sm themeButton"
+        (click)="WorksRefreshPaymentSchedule(dataItem)">Refresh</button>
+      <button type="button" class="btn btn-sm themeButton" (click)="openWOAddPaymentSchedule()">Add</button>
+      <button type="button" class="btn btn-sm themeButton" (click)="openWOCreatePaymentSchedule()">Create</button>
+
+
+    </div>
+
   </div>
 
 
   <div class="row mt-2">
     <div class="col-md-12">
-      <!-- <kendo-grid #grid="kendoGrid" [data]="gridView" [selectable]="{
-        mode: 'multiple'
-      }" [kendoGridSelectBy]="mySelectionKey" [selectedKeys]="mySelection" [groupable]="false" [sortable]="{
-              allowUnsort: allowUnsort,
-              mode: multiple ? 'multiple' : 'single'
-              }" [sort]="state.sort" [skip]="state.skip" [loading]="loading" [height]="400"> -->
 
       <kendo-grid #grid [data]="gridView" [height]="600" [selectable]="selectableSettings" filterable="menu"
         [resizable]="true" [sortable]="{
@@ -42,8 +63,8 @@
               <div class="dropdown-menu">
                 <!-- <a (click)="WorksRefreshPaymentSchedule(dataItem)" class="dropdown-item"
                   href="javascript:void(0)">Refresh Schedule</a> -->
-                <a (click)="WorksOrdersValidateInsertPayment(dataItem)" class="dropdown-item"
-                  href="javascript:void(0)">Request Payment</a>
+
+                <a (click)="rquestPayment(dataItem)" class="dropdown-item" href="javascript:void(0)">Request Payment</a>
                 <a (click)="enterValuation(dataItem)" class="dropdown-item" href="javascript:void(0)">Enter
                   Valuation</a>
                 <a (click)="WorksResetPendingScheduleCall(dataItem)" class="dropdown-item"
@@ -54,13 +75,6 @@
                   <div class="dropdown-menu contractorReportMenu">
                     <a class="dropdown-item" href="javascript:void(0)"
                       (click)="WOCreateXportOutputReport(525, 'Valuation Report')">Valuation Report</a>
-                    <a class="dropdown-item" href="javascript:void(0)"
-                      (click)="WOCreateXportOutputReport(581, 'Contractor Work Report')">Work Report</a>
-                    <a class="dropdown-item" href="javascript:void(0)"
-                      (click)="WOCreateXportOutputReport(522, 'Schedule Report(Order)')">Schedule Report(Order)</a>
-
-                    <a class="dropdown-item" href="javascript:void(0)"
-                      (click)="WOCreateXportOutputReport(523, 'Schedule Report(Order)')">Schedule Report(Programme)</a>
                     <a (click)="GetWebWorksOrderPaymentScheduleDetailsClick(dataItem)" class="dropdown-item"
                       href="javascript:void(0)">Display Payment Schedule Assets</a>
                     <a class="dropdown-item" href="javascript:void(0)"
@@ -78,7 +92,7 @@
 
 
 
-        <kendo-grid-column field="woname" title="Work Order" [width]="80" [filterable]="false" [sortable]="false">
+        <kendo-grid-column field="woname" title="Work Order" [width]="130" [filterable]="false" [sortable]="false">
           <ng-template kendoGridCellTemplate let-dataItem>
             <span>
               {{ dataItem.woname }}
@@ -235,7 +249,7 @@
 
 
 
-    <div class="col-md-12 border-bottom mt-2">
+    <!-- <div class="col-md-12 border-bottom mt-2">
       <ul class="list-inline">
         <li class="list-inline-item mb-2"><button type="button" class="btn btn-sm themeButton"
             (click)="openWOCreatePaymentSchedule()">Create Schedule</button></li>
@@ -249,7 +263,8 @@
         </li>
         <li class="list-inline-item mb-2"><button type="button" class="btn btn-sm themeButton"
             (click)="openWOEditPaymentSchedule()">Edit Schedule</button></li>
-        <li class="list-inline-item mb-2"><button type="button" class="btn btn-sm themeButton">Refresh Schedule</button>
+        
+            <li class="list-inline-item mb-2"><button type="button" class="btn btn-sm themeButton">Refresh Schedule</button>
         </li>
         <li class="list-inline-item mb-2"><button type="button" class="btn btn-sm themeButton">Request Schedule</button>
         </li>
@@ -268,7 +283,7 @@
         <li class="list-inline-item mb-2"><button type="button" class="btn btn-sm themeButton">Payment
             Reconciliation</button></li>
       </ul>
-    </div>
+    </div> -->
 
     <div class="col-md-12 text-right mt-2">
       <button type="button" class="btn btn-sm themeButton" (click)="closePaymentScheduleWin()">Close</button>
@@ -395,16 +410,6 @@
             <input [readonly]="true" type="text" class="form-control" placeholder=""
               value="{{ AssetValuationTotal.totaloutstandingpaymentvalue }}">
           </div>
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -672,12 +677,15 @@
 </kendo-window>
 
 
-<div class="wopmpaymentoverlay"></div>
+<!-- <div class="wopmpaymentoverlay"></div> -->
 
-<!-- <app-wo-program-management-edit-payment-schedule *ngIf="openWOEditPaymentScheduleWindow"
+<app-wo-program-management-edit-payment-schedule *ngIf="openWOEditPaymentScheduleWindow"
   [worksOrderData]="worksOrderData" [openWOEditPaymentScheduleWindow]="openWOEditPaymentScheduleWindow"
   (closeEditPaymentScheduleWindowEvent)="closeEditPaymentScheduleWindow($event)">
 </app-wo-program-management-edit-payment-schedule>
+
+
+
 
 <app-wo-program-management-add-payment-schedule *ngIf="openWOAddPaymentScheduleWindow" [worksOrderData]="worksOrderData"
   [openWOAddPaymentScheduleWindow]="openWOAddPaymentScheduleWindow"
@@ -687,4 +695,4 @@
 <app-wo-program-management-create-payment-schedule *ngIf="openWOCreatePaymentScheduleWindow"
   [worksOrderData]="worksOrderData" [openWOCreatePaymentScheduleWindow]="openWOCreatePaymentScheduleWindow"
   (closeCreatePaymentScheduleWindowEvent)="closeCreatePaymentScheduleWindow($event)">
-</app-wo-program-management-create-payment-schedule> -->
+</app-wo-program-management-create-payment-schedule>

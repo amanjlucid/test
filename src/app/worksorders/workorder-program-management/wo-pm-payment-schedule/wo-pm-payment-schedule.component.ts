@@ -34,8 +34,12 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
   selectableSettings: SelectableSettings;
   gridLoading = true;
   mySelection: any[] = [];
-  gridData:any;
+  gridData: any;
   pageSize = 25;
+  openWOEditPaymentScheduleWindow = false;
+
+
+
 
 
 
@@ -91,7 +95,7 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
   };
 
   public paymentScheduleData;
-  openWOEditPaymentScheduleWindow: boolean;
+  
   openWOAddPaymentScheduleWindow: boolean;
   openWOCreatePaymentScheduleWindow: boolean;
 
@@ -132,7 +136,7 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
     };
 
 
-    
+
   }
 
   setSelectableSettings(): void {
@@ -194,6 +198,28 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
   cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
     // this.selectedSingleDefect = dataItem;
   }
+
+
+
+
+
+  openWOEditPaymentSchedule(){
+    $(".wopmpaymentoverlay").addClass("ovrlay");
+    this.openWOEditPaymentScheduleWindow = true;
+  }
+
+  closeEditPaymentScheduleWindow(event){
+    this.openWOEditPaymentScheduleWindow = event;
+    $(".wopmpaymentoverlay").removeClass("ovrlay");
+  }
+
+
+
+
+
+
+
+
 
 
   display_payment_asset__sortChange(sort: SortDescriptor[]): void {
@@ -676,23 +702,15 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
 
 
   WorksRefreshPaymentSchedule(item) {
-
     this.selectedItem = item;
-
     const params = {
       "wosequence": item.wosequence,
       "wprsequence": item.wprsequence,
     };
-
     const qs = Object.keys(params).map(key => `${key}=${params[key]}`).join('&');
-
-
-
     this.subs.add(
       this.worksOrdersService.WorksRefreshPaymentSchedule(qs).subscribe(
         data => {
-
-
           //console.log('WorksRefreshPaymentSchedule api response ' + JSON.stringify(data));
 
           if (data.isSuccess) {
@@ -729,8 +747,6 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
 
 
   WebWorksOrdersInsertPayment() {
-
-
     let paymentDate = this.todayDate();
 
     const params = {
@@ -796,57 +812,33 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
       .catch(() => console.log('Attribute dismissed the dialog.'));
   }
 
-  WorksOrdersValidateInsertPayment(item) {
-
-    this.selectedItem = item;
-
+  rquestPayment(item) {
+    // this.selectedItem = item;
     let paymentDate = this.todayDate();
-
     const params = {
-      "wosequence": this.selectedItem.wosequence,
-      "wprsequence": this.selectedItem.wprsequence,
+      "wosequence": item.wosequence,
+      "wprsequence": item.wprsequence,
       "wpspaymentdate": paymentDate,
       "strUser": this.currentUser.userId
     };
 
-
-
     this.subs.add(
       this.worksOrdersService.WorksOrdersValidateInsertPayment(params).subscribe(
         data => {
-
-
-          //    console.log('WorksOrdersValidateInsertPayment api response ' + JSON.stringify(data));
-
           if (data.isSuccess) {
-
             let resultData = data.data;
-
-            //  alert(resultData.validYN);
-
             if (resultData.validYN == 'Y') {
-
-
               this.openConfirmationDialog(resultData);
-
-            } else {
-              //   this.alertService.error(resultData.validationMessage);
-
             }
 
             this.openConfirmationDialog(resultData);
 
 
-          } else {
-            this.alertService.error(data.message);
-            this.loading = false
-          }
+          } else this.alertService.error(data.message);
 
           this.chRef.detectChanges();
 
-          // console.log('WorkOrderRefusalCodes api reponse' + JSON.stringify(data));
-        },
-        err => this.alertService.error(err)
+        }, err => this.alertService.error(err)
       )
     )
 
