@@ -1,0 +1,17 @@
+.headerRow12 {
+      margin-bottom: 10px;
+}
+
+.k-window {
+      position: fixed !important;
+}
+
+.k-grid tbody td {
+      white-space: nowrap;
+      line-height: 20px;
+      padding: 8px 12px;
+}
+
+.lbl{
+      margin-top: 12px;
+  }

@@ -444,3 +444,7 @@
   [openWOPaymentScheduleWindow]="openWOPaymentScheduleWindow"
   (closePaymentScheduleWindowEvent)="closePaymentScheduleWindow($event)">
 </app-wo-program-management-payment-schedule>
+
+<app-wo-pm-payments *ngIf="WOPaymentsWindow" [worksOrderData]="selectedWorksOrder"
+  [WOPaymentsWindow]="WOPaymentsWindow" (woPmPaymentsEvent)="closeWOPMPaymentsWindow($event)">
+</app-wo-pm-payments>

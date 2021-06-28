@@ -339,4 +339,14 @@ export class WorksOrdersService {
     GetWebWorksOrderPaymentScheduleDetails(qs) {
         return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWebWorksOrderPaymentScheduleDetails?${qs}`, this.httpOptions);
     }
+
+    GetWebWorksOrdersPaymentsForWorksOrder(qs) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWebWorksOrdersPaymentsForWorksOrder?${qs}`, this.httpOptions);
+    }
+    GetWorksOrderReportingPayment(qs) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWorksOrderReportingPayment?${qs}`, this.httpOptions);
+    }
+
+
+
 }
