@@ -11,7 +11,8 @@
           <label class="lbl" for="">Works Order: </label>
         </div>
         <div class="col-md-10">
-          <input [readonly]="true" type="text" class="form-control" placeholder="" value="{{ worksOrderData.woname }} - {{ worksOrderData.wosequence }}">
+          <input [readonly]="true" type="text" class="form-control" placeholder=""
+            value="{{ worksOrderData.woname }} - {{ worksOrderData.wosequence }}">
         </div>
       </div>
 
@@ -43,8 +44,8 @@
             <li class="nav-item dropdown list-unstyled" style="margin-top: -7px;">
               <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
               <div class="dropdown-menu">
-                <a (click)="openDisplayPaymentSummary(dataItem)"
-                  class="dropdown-item" href="javascript:void(0)">Display Payment Summary</a>
+                <a (click)="openDisplayPaymentSummary(dataItem)" class="dropdown-item" href="javascript:void(0)">Display
+                  Payment Summary</a>
 
 
               </div>
@@ -83,12 +84,12 @@
         </kendo-grid-column>
 
 
-            <kendo-grid-column field="requestusername" title="Request User" width="100">
-            </kendo-grid-column>
+        <kendo-grid-column field="requestusername" title="Request User" width="100">
+        </kendo-grid-column>
 
 
-        <kendo-grid-column field="wpypaymentvalue" title="Payment Value" [width]="120" [filterable]="false" [sortable]="false"
-          [style]="{'text-align': 'right'}">
+        <kendo-grid-column field="wpypaymentvalue" title="Payment Value" [width]="120" [filterable]="false"
+          [sortable]="false" [style]="{'text-align': 'right'}">
           <ng-template kendoGridCellTemplate let-dataItem>
             <span>
               {{ dataItem.wpypaymentvalue | currency:'GBP':'symbol' }}
@@ -96,34 +97,34 @@
           </ng-template>
         </kendo-grid-column>
 
-        <kendo-grid-column field="wpyvatrate" title="Payment Vat Rate" [width]="120" [filterable]="false" [sortable]="false"
-          [style]="{'text-align': 'right'}">
+        <kendo-grid-column field="wpyvatrate" title="Payment Vat Rate" [width]="120" [filterable]="false"
+          [sortable]="false" [style]="{'text-align': 'right'}">
           <ng-template kendoGridCellTemplate let-dataItem>
             <span>
-            {{  dataItem.wpyvatrate*100 }} %
+              {{ dataItem.wpyvatrate*100 }} %
 
             </span>
           </ng-template>
         </kendo-grid-column>
 
 
-          <kendo-grid-column field="wpypaymentvaluevat" title="Payment Vat Value" width="100">
-          </kendo-grid-column>
+        <kendo-grid-column field="wpypaymentvaluevat" title="Payment Vat Value" width="100">
+        </kendo-grid-column>
 
-          <kendo-grid-column field="wpypaymentstatus" title="Payment Status" width="100">
-          </kendo-grid-column>
+        <kendo-grid-column field="wpypaymentstatus" title="Payment Status" width="100">
+        </kendo-grid-column>
 
-          <kendo-grid-column field="approvalusername" title="Approval User" width="100">
-          </kendo-grid-column>
+        <kendo-grid-column field="approvalusername" title="Approval User" width="100">
+        </kendo-grid-column>
 
-          <kendo-grid-column field="wpyapprovaldate" title="Approval Date" [width]="140" [filterable]="false"
-            [sortable]="false">
-            <ng-template kendoGridCellTemplate let-dataItem>
-              <span>
-                {{ dataItem.wpyapprovaldate | dateFormat : 'DD-MMM-YYYY' }}
-              </span>
-            </ng-template>
-          </kendo-grid-column>
+        <kendo-grid-column field="wpyapprovaldate" title="Approval Date" [width]="140" [filterable]="false"
+          [sortable]="false">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span>
+              {{ dataItem.wpyapprovaldate | dateFormat : 'DD-MMM-YYYY' }}
+            </span>
+          </ng-template>
+        </kendo-grid-column>
 
 
       </kendo-grid>
@@ -138,34 +139,34 @@
   <div class="woassetdetailoverlay"></div>
 
 
-  <kendo-window title="Display Payment Summary" *ngIf="DisplayPaymentSummaryWindow" (close)="closeDisplayPaymentSummary()"
-      [width]="auto" [height]="auto">
+  <kendo-window title="Display Payment Summary" *ngIf="DisplayPaymentSummaryWindow"
+    (close)="closeDisplayPaymentSummary()" [width]="auto" [height]="auto">
 
 
-      <div class="row headerArea">
+    <div class="row headerArea">
 
 
 
-        <div class="col-md-12 headerRow12">
+      <div class="col-md-12 headerRow12">
 
-          <div class="row">
-            <div class="col-md-2">
-              <label for="">Work Order: </label>
-            </div>
-            <div class="col-md-6">
-              <input [readonly]="true" type="text" class="form-control" placeholder=""
-                value="{{ worksOrderData.woname }}(Work Order No: {{ worksOrderData.wosequence }}) ">
-            </div>
-            <div class="col-md-2">
-              <label for="">Order Status: </label>
-            </div>
-            <div class="col-md-2">
-              <input [readonly]="true" type="text" class="form-control" placeholder=""
-                value="{{ worksOrderData.wostatus }}">
-            </div>
-
-
+        <div class="row">
+          <div class="col-md-2">
+            <label for="">Work Order: </label>
           </div>
+          <div class="col-md-6">
+            <input [readonly]="true" type="text" class="form-control" placeholder=""
+              value="{{ worksOrderData.woname }}(Work Order No: {{ worksOrderData.wosequence }}) ">
+          </div>
+          <div class="col-md-2">
+            <label for="">Order Status: </label>
+          </div>
+          <div class="col-md-2">
+            <input [readonly]="true" type="text" class="form-control" placeholder=""
+              value="{{ worksOrderData.wostatus }}">
+          </div>
+
+
+        </div>
       </div>
 
 
@@ -196,26 +197,26 @@
               value="{{ worksOrderData.contractorName }}">
           </div>
         </div>
+      </div>
+
+
+      <div class="col-md-12 headerRow12">
+
+        <div class="row">
+          <div class="col-md-2">
+            <label for="">Contract Payment Type: </label>
+          </div>
+          <div class="col-md-4">
+            <input [readonly]="true" type="text" class="form-control" placeholder=""
+              value="{{ worksOrderData.wocontracttype }} ">
+          </div>
+
+        </div>
+      </div>
+
+
+
     </div>
-
-
-    <div class="col-md-12 headerRow12">
-
-      <div class="row">
-        <div class="col-md-2">
-          <label for="">Contract Payment Type: </label>
-        </div>
-        <div class="col-md-4">
-          <input [readonly]="true" type="text" class="form-control" placeholder=""
-            value="{{ worksOrderData.wocontracttype }} ">
-        </div>
-
-      </div>
-  </div>
-
-
-
-      </div>
 
   </kendo-window>
   <app-wo-pm-instruction-assets-detail *ngIf="instructionAssetsDetailWindow"

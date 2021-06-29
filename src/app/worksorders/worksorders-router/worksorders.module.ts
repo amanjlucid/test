@@ -40,7 +40,6 @@ import { WopmRagStatusComponent } from '../Config/wopm-rag-status/wopm-rag-statu
 import { WopmEditRefusalCodesComponent } from '../Config/wopm-refusal-codes/wopm-edit-refusal-codes/wopm-edit-refusal-codes.component';
 import { WopmRefusalCodesComponent } from '../Config/wopm-refusal-codes/wopm-refusal-codes.component';
 import { WopmSecJobrolesComponent } from '../Config/wopm-jobroles/wopm-sec-jobroles/wopm-sec-jobroles.component';
-
 import { WopmConfigComponent } from '../Config/wopm-config/wopm-config.component';
 import { WopmMasterstagesComponent } from '../Config/wopm-masterstages/wopm-masterstages.component';
 import { WopmEditTemplateComponent } from '../Config/wopm-templates/wopm-edit-template/wopm-edit-template.component';
@@ -85,7 +84,6 @@ import { WoProgramManagmentPaymentScheduleComponent } from '../workorder-program
 import { WoProgramManagmentEditPaymentScheduleComponent } from '../workorder-program-management/wo-pm-edit-payment-schedule/wo-pm-edit-payment-schedule.component';
 import { WoProgramManagmentAddPaymentScheduleComponent } from '../workorder-program-management/wo-pm-add-payment-schedule/wo-pm-add-payment-schedule.component';
 import { WoProgramManagmentCreatePaymentScheduleComponent } from '../workorder-program-management/wo-pm-create-payment-schedule/wo-pm-create-payment-schedule.component';
-
 import { ManagementRolesComponent } from '../management-roles/management-roles.component';
 import { ManagementSorComponent } from '../management-sor/management-sor.component';
 import { ManagementCostsComponent } from '../management-costs/management-costs.component';
@@ -93,8 +91,8 @@ import { ManagementEditRolesComponent } from '../management-roles/management-edi
 import { ManagementEditCostsComponent } from '../management-costs/management-edit-costs/management-edit-costs.component';
 import { MilestonesNotesComponent } from '../milestones-notes/milestones-notes.component';
 import { MilestonesDocumentListComponent } from '../milestones-document-list/milestones-document-list.component';
-
 import { WoPmPaymentsComponent } from '../workorder-program-management/wo-pm-payments/wo-pm-payments.component';
+import { ValuationsComponent } from '../valuations/valuations.component';
 
 @NgModule({
   declarations: [
@@ -178,7 +176,8 @@ import { WoPmPaymentsComponent } from '../workorder-program-management/wo-pm-pay
     WoProgramManagmentEditPaymentScheduleComponent,
     WoProgramManagmentAddPaymentScheduleComponent,
     WoProgramManagmentCreatePaymentScheduleComponent,
-    WoPmPaymentsComponent
+    WoPmPaymentsComponent,
+    ValuationsComponent
   ],
 
 

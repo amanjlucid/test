@@ -2,7 +2,6 @@ import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { AlertService, HelperService, WorksorderReportService, ConfirmationDialogService, WorksOrdersService, SharedService } from 'src/app/_services';
-import { combineLatest } from 'rxjs';
 import { PageChangeEvent, SelectableSettings } from '@progress/kendo-angular-grid';
 import { DateFormatPipe } from 'src/app/_pipes/date-format.pipe';
 
@@ -95,9 +94,13 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
   };
 
   public paymentScheduleData;
-  
+
   openWOAddPaymentScheduleWindow: boolean;
   openWOCreatePaymentScheduleWindow: boolean;
+
+  //valuation
+  openValuationWindow = false;
+  valuationBtnAccess: boolean = false;
 
   constructor(
     private worksOrdersService: WorksOrdersService,
@@ -137,7 +140,7 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
 
   }
 
-  
+
   setSelectableSettings(): void {
     this.selectableSettings = {
       checkboxOnly: false,
@@ -194,20 +197,19 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
     };
   }
 
-  cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
+  cellClickHandler({ dataItem }) {
+    console.log(dataItem);
+    this.setSelectedRow(dataItem);
     // this.selectedSingleDefect = dataItem;
   }
 
 
-
-
-
-  openWOEditPaymentSchedule(){
+  openWOEditPaymentSchedule() {
     $(".wopmpaymentoverlay").addClass("ovrlay");
     this.openWOEditPaymentScheduleWindow = true;
   }
 
-  closeEditPaymentScheduleWindow(event){
+  closeEditPaymentScheduleWindow(event) {
     this.openWOEditPaymentScheduleWindow = event;
     $(".wopmpaymentoverlay").removeClass("ovrlay");
   }
@@ -613,82 +615,9 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
   }
 
 
-  enterValuation(item) {
-
-    this.selectedItem = item;
-    this.enterValuationWindow = true;
 
 
 
-
-    //let startdate =  this.helperService.ddmmyyywithslash(this.selectedItem.wpspaymentdate , true);
-
-    // alert(this.selectedItem.wpspaymentdate);
-    //this.helperService.getFormattedDate(this.selectedItem.wpspaymentdate);
-
-    var date = new Date(this.selectedItem.wpspaymentdate);
-    let startdate = (((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + date.getFullYear());
-
-
-    //alert(startdate);
-
-
-
-    const params = {
-      "WOSEQUENCE": this.selectedItem.wosequence,
-      "WPSPAYMENTDATE": startdate,
-      "strUser": this.currentUser.userId
-    };
-
-
-
-    this.subs.add(
-      this.worksOrdersService.WorksOrderRefreshAssetValuation(params).subscribe(
-        data => {
-
-
-          // console.log('WorksOrderRefreshAssetValuation api response ' + JSON.stringify(data));
-
-          if (data.isSuccess) {
-
-            let resultData = data.data;
-
-            // alert(resultData.validYN);
-
-            if (resultData.validYN == 'Y') {
-
-
-              this.alertService.warning(resultData.validationMessage);
-              // this.alertService.success('Payment Requested');
-
-              this.GetWebWorksOrdersAssetValuationTotal();
-              this.GetWebWorksOrdersAssetValuation();
-
-            } else {
-              this.alertService.error(resultData.validationMessage);
-
-            }
-
-
-          } else {
-            this.alertService.error(data.message);
-            this.loading = false
-          }
-
-          this.chRef.detectChanges();
-
-          // console.log('WorkOrderRefusalCodes api reponse' + JSON.stringify(data));
-        },
-        err => this.alertService.error(err)
-      )
-    )
-
-
-    //   console.log('selectedItem  ' + JSON.stringify(this.selectedItem));
-
-
-
-  }
   closeEnterValuationWindowWindow() {
 
     this.enterValuationWindow = false;
@@ -852,5 +781,142 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
     this.openWOPaymentScheduleWindow = false;
     this.closePaymentScheduleWindowEvent.emit(false);
   }
+
+  async openValuationWindowMehhod(item, checkProcess = "C") {
+    if (item.wpspaymentstatus == "Unpaid" && checkProcess == "C") {
+      const refresh = await this.checkBeforeValuation(item);
+      if (!refresh.isSuccess) this.alertService.error(refresh.message);
+      if (refresh.data.validYN == "N") this.alertService.error(refresh.data.validationMessage);
+      if (refresh.data.validYN == "Y") this.valuationConfirmation(refresh.data, item);
+      return;
+    }
+
+    this.selectedItem = item;
+    $(".wopmpaymentoverlay").addClass("ovrlay");
+    this.openValuationWindow = true;
+    this.chRef.detectChanges();
+  }
+
+
+  closeValuationWindow(event) {
+    this.openValuationWindow = event;
+    $(".wopmpaymentoverlay").removeClass("ovrlay");
+  }
+
+
+  async checkBeforeValuation(item) {
+    const { wpspaymentdate, wosequence } = item;
+    const startDate = this.helperService.getMDY(wpspaymentdate);
+    const params = {
+      "WOSEQUENCE": wosequence,
+      "WPSPAYMENTDATE": startDate,
+      "strUser": this.currentUser.userId
+    };
+
+    return await this.worksOrdersService.WorksOrderRefreshAssetValuation(params).toPromise();
+
+  }
+
+
+  valuationConfirmation(resp, item) {
+    $('.k-window').css({ 'z-index': 1000 });
+    this.confirmationDialogService.confirm('', `${resp.validationMessage}`, false)
+      .then((confirmed) => this.openValuationWindowMehhod(item, "P"))
+      .catch(() => console.log('Attribute dismissed the dialog.'));
+  }
+
+
+  disableEnterValuationBtn(item) {
+    if (this.worksOrderData.wocontracttype != 'VALUATION') return true
+    if (this.valuationBtnAccess) return false;
+    return true;
+  }
+
+
+  async setSelectedRow(item) {
+    const { wosequence, wpspaymentdate, wpspaymentstatus, miN_PAYMENTDATE } = item;
+    const paydate = this.helperService.getMDY(wpspaymentdate);
+    const minPayDate = this.helperService.getMDY(miN_PAYMENTDATE);
+    const checkValuarionVisibility = await this.worksOrdersService.checkEnterValuationButtonVisibility(wosequence, paydate, wpspaymentstatus, minPayDate).toPromise();
+    this.valuationBtnAccess = checkValuarionVisibility.data;
+    this.chRef.detectChanges();
+  }
+
+
+
+
+
+
+
+
+
+
+
+  enterValuation(item) {
+
+    this.selectedItem = item;
+    this.enterValuationWindow = true;
+
+
+    var date = new Date(this.selectedItem.wpspaymentdate);
+    let startdate = (((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + date.getFullYear());
+
+
+    //alert(startdate);
+
+
+
+    const params = {
+      "WOSEQUENCE": this.selectedItem.wosequence,
+      "WPSPAYMENTDATE": startdate,
+      "strUser": this.currentUser.userId
+    };
+
+
+
+    this.subs.add(
+      this.worksOrdersService.WorksOrderRefreshAssetValuation(params).subscribe(
+        data => {
+
+
+          // console.log('WorksOrderRefreshAssetValuation api response ' + JSON.stringify(data));
+
+          if (data.isSuccess) {
+
+            let resultData = data.data;
+
+            // alert(resultData.validYN);
+
+            if (resultData.validYN == 'Y') {
+
+
+              this.alertService.warning(resultData.validationMessage);
+              // this.alertService.success('Payment Requested');
+
+              this.GetWebWorksOrdersAssetValuationTotal();
+              this.GetWebWorksOrdersAssetValuation();
+
+            } else {
+              this.alertService.error(resultData.validationMessage);
+
+            }
+
+
+          } else {
+            this.alertService.error(data.message);
+            this.loading = false
+          }
+
+          this.chRef.detectChanges();
+
+          // console.log('WorkOrderRefusalCodes api reponse' + JSON.stringify(data));
+        },
+        err => this.alertService.error(err)
+      )
+    )
+
+
+  }
+
 
 }

@@ -259,7 +259,7 @@ export class HelperService {
                 return null;
             }
             return formatedDate;
-          //  return formatedDate + " " + strTime;
+            //  return formatedDate + " " + strTime;
 
         } else {
             return null;
@@ -457,7 +457,7 @@ export class HelperService {
         let d = new Date(inputFormat)
 
 
-            return [this.zeorBeforeSingleDigit(d.getDate()), this.zeorBeforeSingleDigit(d.getMonth() + 1), d.getFullYear()].join(' ')
+        return [this.zeorBeforeSingleDigit(d.getDate()), this.zeorBeforeSingleDigit(d.getMonth() + 1), d.getFullYear()].join(' ')
 
 
     }
@@ -831,9 +831,10 @@ export class HelperService {
     }
 
 
-  getFormattedDate(date) {
-   let rDate =  ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + date.getFullYear()
+    getMDY(givenDate) {
+        let date = new Date(givenDate);
+        return `${this.zeorBeforeSingleDigit(date.getMonth() + 1)}/${this.zeorBeforeSingleDigit(date.getDate())}/${this.zeorBeforeSingleDigit(date.getFullYear())}`;
+    }
 
-return rDate;
-   }
+
 }

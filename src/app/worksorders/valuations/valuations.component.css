@@ -1,0 +1,30 @@
+.k-window {
+    position: fixed!important;
+}
+
+.k-grid tbody td {
+    white-space: nowrap;
+    line-height: 20px;
+    padding: 8px 12px;
+}
+
+.valuationHead {
+    display: block;
+}
+
+.valuationHead .valuationDetailBox {
+    display: inline-block;
+    width: 16%;
+    margin-right: 5px;
+    min-height: 81px;
+    height: 81px;
+    max-height: 81px;
+}
+
+.valuationHead label {
+    font-size: 12px !important;
+}
+
+.valuationHead .valuationDetailBox .innerBox {
+    margin-top: 4px;
+}

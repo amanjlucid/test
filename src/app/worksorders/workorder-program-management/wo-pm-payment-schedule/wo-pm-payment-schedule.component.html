@@ -32,7 +32,7 @@
 
 
       <button type="button" class="btn btn-sm themeButton" (click)="closePaymentScheduleWin()">Payments</button>
-      <button type="button" class="btn btn-sm themeButton" (click)="openWOEditPaymentSchedule()">Edit</button>
+      <button type="button" class="btn btn-sm themeButton" (click)="openWOEditPaymentSchedule()">Edit Schedule</button>
       <button type="button" class="btn btn-sm themeButton"
         (click)="WorksRefreshPaymentSchedule(dataItem)">Refresh</button>
       <button type="button" class="btn btn-sm themeButton" (click)="openWOAddPaymentSchedule()">Add</button>
@@ -58,15 +58,21 @@
 
         <kendo-grid-column title=" " width="37" [filterable]="false" [sortable]="false">
           <ng-template kendoGridCellTemplate let-dataItem>
-            <li class="nav-item dropdown list-unstyled" style="margin-top: -7px;">
-              <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
+            <li class="nav-item dropdown list-unstyled" style="margin-top: -7px;" (click)="setSelectedRow(dataItem)">
+              <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"
+                (click)="setSelectedRow(dataItem)"></i>
               <div class="dropdown-menu">
                 <!-- <a (click)="WorksRefreshPaymentSchedule(dataItem)" class="dropdown-item"
                   href="javascript:void(0)">Refresh Schedule</a> -->
 
                 <a (click)="rquestPayment(dataItem)" class="dropdown-item" href="javascript:void(0)">Request Payment</a>
-                <a (click)="enterValuation(dataItem)" class="dropdown-item" href="javascript:void(0)">Enter
+
+                <a [ngClass]="{'disabled' : disableEnterValuationBtn(dataItem) }"
+                  (click)="openValuationWindowMehhod(dataItem)" class="dropdown-item" href="javascript:void(0)">Enter
                   Valuation</a>
+
+                <!-- <a [ngClass]="{'disabled' : worksOrderData.wocontracttype != 'VALUATION'}" (click)="enterValuation(dataItem)" class="dropdown-item" href="javascript:void(0)">Enter
+                  Valuation</a> -->
                 <a (click)="WorksResetPendingScheduleCall(dataItem)" class="dropdown-item"
                   href="javascript:void(0)">Reset Pending</a>
 
@@ -247,51 +253,13 @@
       </kendo-grid>
     </div>
 
-
-
-    <!-- <div class="col-md-12 border-bottom mt-2">
-      <ul class="list-inline">
-        <li class="list-inline-item mb-2"><button type="button" class="btn btn-sm themeButton"
-            (click)="openWOCreatePaymentSchedule()">Create Schedule</button></li>
-        <li class="list-inline-item mb-2"><button type="button" class="btn btn-sm themeButton"
-            (click)="openWOAddPaymentSchedule()">Add New Schedule To:</button></li>
-        <li class="list-inline-item mb-2">
-          <select class="btn btn-sm themeButton">
-            <option>Select</option>
-            <option>Test One X</option>
-          </select>
-        </li>
-        <li class="list-inline-item mb-2"><button type="button" class="btn btn-sm themeButton"
-            (click)="openWOEditPaymentSchedule()">Edit Schedule</button></li>
-        
-            <li class="list-inline-item mb-2"><button type="button" class="btn btn-sm themeButton">Refresh Schedule</button>
-        </li>
-        <li class="list-inline-item mb-2"><button type="button" class="btn btn-sm themeButton">Request Schedule</button>
-        </li>
-        <li class="list-inline-item mb-2"><button type="button" class="btn btn-sm themeButton">Enter Valuations</button>
-        </li>
-        <li class="list-inline-item mb-2"><button type="button" class="btn btn-sm themeButton">Reset Pending
-            Schedule</button></li>
-        <li class="list-inline-item mb-2"><button type="button" class="btn btn-sm themeButton">Valution Report </button>
-        </li>
-        <li class="list-inline-item mb-2"><button type="button" class="btn btn-sm themeButton">Schedule Report
-            (Order)</button></li>
-        <li class="list-inline-item mb-2"><button type="button" class="btn btn-sm themeButton">Schedule Report
-            (Programme)</button></li>
-        <li class="list-inline-item mb-2"><button type="button" class="btn btn-sm themeButton">Display Payment Schedule
-            Assets</button></li>
-        <li class="list-inline-item mb-2"><button type="button" class="btn btn-sm themeButton">Payment
-            Reconciliation</button></li>
-      </ul>
-    </div> -->
-
     <div class="col-md-12 text-right mt-2">
       <button type="button" class="btn btn-sm themeButton" (click)="closePaymentScheduleWin()">Close</button>
     </div>
   </div>
 
 
-  <div class="wopmpaymentoverlay"></div>
+
 
 
   <!-- <kendo-window title="Enter Valuation" *ngIf="enterValuationWindow" (close)="closeEnterValuationWindowWindow()"
@@ -507,20 +475,15 @@
     </div>
 
 
-  </kendo-window>
+  </kendo-window> -->
 
 
 
   <kendo-window title="Display Payment Schedule Assets" *ngIf="DisplayPaymentAssetsWindow"
     (close)="closGetWebWorksOrderPaymentScheduleDetailsWindow()" [minWidth]="auto" [height]="auto" [minHeight]="auto">
 
-
     <div class="row headerArea">
-
-
-
       <div class="col-md-12 headerRow12">
-
         <div class="row">
           <div class="col-md-2">
             <label for="">Work Order: </label>
@@ -672,27 +635,28 @@
     </div>
 
 
-  </kendo-window> -->
+  </kendo-window>
+  <div class="wopmpaymentoverlay"></div>
+
+
+  <app-wo-program-management-edit-payment-schedule *ngIf="openWOEditPaymentScheduleWindow"
+    [worksOrderData]="worksOrderData" [openWOEditPaymentScheduleWindow]="openWOEditPaymentScheduleWindow"
+    (closeEditPaymentScheduleWindowEvent)="closeEditPaymentScheduleWindow($event)">
+  </app-wo-program-management-edit-payment-schedule>
+
+
+  <app-valuations *ngIf="openValuationWindow" [openValuationWindow]="openValuationWindow"
+    [worksOrderData]="worksOrderData" [paymentScheduleInp]="selectedItem"
+    (closeValuationWindow)="closeValuationWindow($event)"></app-valuations>
+
+  <app-wo-program-management-add-payment-schedule *ngIf="openWOAddPaymentScheduleWindow"
+    [worksOrderData]="worksOrderData" [openWOAddPaymentScheduleWindow]="openWOAddPaymentScheduleWindow"
+    (closeAddPaymentScheduleWindowEvent)="closeAddPaymentScheduleWindow($event)">
+  </app-wo-program-management-add-payment-schedule>
+
+  <app-wo-program-management-create-payment-schedule *ngIf="openWOCreatePaymentScheduleWindow"
+    [worksOrderData]="worksOrderData" [openWOCreatePaymentScheduleWindow]="openWOCreatePaymentScheduleWindow"
+    (closeCreatePaymentScheduleWindowEvent)="closeCreatePaymentScheduleWindow($event)">
+  </app-wo-program-management-create-payment-schedule>
 
 </kendo-window>
-
-
-<!-- <div class="wopmpaymentoverlay"></div> -->
-
-<app-wo-program-management-edit-payment-schedule *ngIf="openWOEditPaymentScheduleWindow"
-  [worksOrderData]="worksOrderData" [openWOEditPaymentScheduleWindow]="openWOEditPaymentScheduleWindow"
-  (closeEditPaymentScheduleWindowEvent)="closeEditPaymentScheduleWindow($event)">
-</app-wo-program-management-edit-payment-schedule>
-
-
-
-
-<app-wo-program-management-add-payment-schedule *ngIf="openWOAddPaymentScheduleWindow" [worksOrderData]="worksOrderData"
-  [openWOAddPaymentScheduleWindow]="openWOAddPaymentScheduleWindow"
-  (closeAddPaymentScheduleWindowEvent)="closeAddPaymentScheduleWindow($event)">
-</app-wo-program-management-add-payment-schedule>
-
-<app-wo-program-management-create-payment-schedule *ngIf="openWOCreatePaymentScheduleWindow"
-  [worksOrderData]="worksOrderData" [openWOCreatePaymentScheduleWindow]="openWOCreatePaymentScheduleWindow"
-  (closeCreatePaymentScheduleWindowEvent)="closeCreatePaymentScheduleWindow($event)">
-</app-wo-program-management-create-payment-schedule>

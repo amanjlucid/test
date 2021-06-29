@@ -250,19 +250,19 @@ export class WorksOrdersService {
         return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/UpdateMilestoneItem`, params, this.httpOptions);
     }
 
-    getWEBWorksOrdersPaymentScheduleForWorksOrder(wprsequence, wosequence){
+    getWEBWorksOrdersPaymentScheduleForWorksOrder(wprsequence, wosequence) {
         return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWEBWorksOrdersPaymentScheduleForWorksOrder?wprsequence=${wprsequence}&wosequence=${wosequence}`, this.httpOptions);
     }
-    
-    bulkUpdateWorksOrderPaymentSchedule(params){
+
+    bulkUpdateWorksOrderPaymentSchedule(params) {
         return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/BulkUpdateWorksOrderPaymentSchedule`, params, this.httpOptions);
     }
 
-    insertWebWorksOrdersPaymentSchedule(params){
+    insertWebWorksOrdersPaymentSchedule(params) {
         return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/InsertWebWorksOrdersPaymentSchedule`, params, this.httpOptions);
     }
 
-    createWebWorksOrdersPaymentSchedule(params){
+    createWebWorksOrdersPaymentSchedule(params) {
         return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WORKSCreatePaymentSchedule`, params, this.httpOptions);
     }
 
@@ -349,6 +349,10 @@ export class WorksOrdersService {
     }
     GetWorksOrderReportingPayment(qs) {
         return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWorksOrderReportingPayment?${qs}`, this.httpOptions);
+    }
+
+    checkEnterValuationButtonVisibility(WOSequence, PayDate, PayStatus, MinPayDate) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/CheckEnterValuationButtonVisibility?WOSequence=${WOSequence}&PayDate=${PayDate}&PayStatus=${PayStatus}&MinPayDate=${MinPayDate}`, this.httpOptions);
     }
 
 

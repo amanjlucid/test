@@ -431,84 +431,6 @@ app-dropdown+.k-action-buttons .k-button.k-primary {
     background-color: #b2adad !important;
 }
 
-/* .kendoTreeM .fa-folder-plus{
-    font-size: 20px !important;
-} */
-
-/* .countDiv{height: 88% !important;}
-.lmGoldenLayout{height: 100% !important; width: 100% !important;}
-.goldenLayoutW_H100{width: 100% !important; height: 44% !important;} */
-
-/* .lm_item{
-    height: 330px !important;
-} */
-
-/* .crtAttFrm .k-content{
-    overflow: visible !important;
-} */
-
-/* css for treeview on h&s portal*/
-
-/* k-treeview .k-icon.k-i-collapse {
-    color: red;
-}
-
-.k-treeview .k-icon.k-i-expand {
-    color: blue;
-}
-
-.k-treeview .k-i-collapse:before {
-    content: "\2212";
-}
-
-.k-treeview .k-i-expand:before {
-    content: "\002B";
-}
-
-.k-treeview .k-top, .k-treeview .k-mid, .k-treeview .k-bot {
-    background-image: url('http://aspnet-skins.telerikstatic.com/mvc/2012.2.607/Default/treeview-nodes.png');
-    background-repeat: no-repeat;
-    margin-left: -16px;
-    padding-left: 16px;
-}
-
-.k-treeview .k-item {
-    background-image: url('http://aspnet-skins.telerikstatic.com/mvc/2012.2.607/Default/treeview-line.png');
-}
-
-.k-treeview .k-last {
-    background-image: none;
-}
-
-.k-treeview .k-top {
-    background-position: -91px 0;
-}
-
-.k-treeview .k-bot {
-    background-position: -69px -22px;
-}
-
-.k-treeview .k-mid {
-    background-position: -47px -37px;
-}
-
-.k-treeview .k-last .k-top {
-    background-position: -25px -66px;
-}
-
-.k-treeview .k-group .k-last .k-bot {
-    background-position: -69px -22px;
-}
-
-.k-treeview .k-item {
-    background-repeat: no-repeat;
-}
-
-.k-treeview .k-first {
-    background-repeat: no-repeat;
-    background-position: 0 16px;
-} */
-
 .red {
     color: red !important;
 }
@@ -543,6 +465,12 @@ app-add-event .k-window-content {
     white-space: nowrap !important;
     line-height: 20px nowrap !important;
     padding: 8px 12px nowrap !important;
+}
+
+.disabled {
+    color: #d1d2d3;
+    background-color: transparent;
+    pointer-events: none !important;
 }
 
 @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {

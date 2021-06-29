@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { BehaviorSubject, zip } from 'rxjs';
+import { BehaviorSubject, Observable, zip } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { appConfig } from '../../app.config';
+import { HelperService } from '../helper.service'
 
 // const CREATE_ACTION = 'create';
 // const UPDATE_ACTION = 'update';
@@ -22,6 +23,7 @@ const cloneData = (data: any[]) => data.map(item => Object.assign({}, item));
 
 @Injectable()
 export class EditPaymentScheduleService extends BehaviorSubject<any[]> {
+    private serviceFor: 'paymentschedule' | 'valuation' = 'paymentschedule';
     private data: any[] = [];
     private originalData: any[] = [];
     private createdItems: any[] = [];
@@ -33,30 +35,38 @@ export class EditPaymentScheduleService extends BehaviorSubject<any[]> {
         }),
     };
 
-    constructor(private http: HttpClient) {
-        super([]);
+    constructor(
+        private http: HttpClient,
+        private helperService: HelperService
+    ) { super([]); }
+
+    public setServiceFor(string: 'paymentschedule' | 'valuation') {
+        this.serviceFor = string;
     }
 
-    public read(wo) {
-        if (this.data.length) {
-            return super.next(this.data);
-        }
+    public read(params) {
+        if (this.data.length > 0) return super.next(this.data);
 
-        this.getWOScheduleData(wo)
-            .subscribe((data: any) => {
-                console.log(data)
-                if (data.isSuccess) {
-                    this.data = data.data;
-                    this.originalData = cloneData(this.data);
-                    super.next(this.data);
-                } else {
-                    this.data = [];
-                    this.originalData = [];
-                    super.next([]);
-                }
+        let apiCall: Observable<any>;
+        if (this.serviceFor == "paymentschedule") apiCall = this.getWOScheduleData(params);
+        if (this.serviceFor == "valuation") apiCall = this.getValuation(params);
+       
+        apiCall.subscribe((data: any) => {
+            console.log(data)
+            if (data.isSuccess) {
+                this.data = data.data;
+                this.originalData = cloneData(this.data);
+                super.next(this.data);
+            } else {
+                this.data = [];
+                this.originalData = [];
+                super.next([]);
+            }
 
-            });
+        });
     }
+
+
 
     public create(item: any): void {
         this.createdItems.push(item);
@@ -148,25 +158,34 @@ export class EditPaymentScheduleService extends BehaviorSubject<any[]> {
         this.createdItems = [];
     }
 
-
-    private getWOScheduleData(wo) {
-        const { wprsequence, wosequence } = wo;
-        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWEBWorksOrdersPaymentScheduleForWorksOrder?wprsequence=${wprsequence}&wosequence=${wosequence}`, this.httpOptions)
-            .pipe(map(res => <any[]>res));
-        // .pipe(
-        //     map(response => (<any>{
-        //         data: (response.data != null) ? response.data : [],
-        //         total: (response.data != null) ? response.data.length : 0
-        //     }))
-        // )
-    }
-
     private serializeModels(data?: any): string {
         return data ? `&models=${JSON.stringify(data)}` : '';
     }
 
+    //edit payment schedule api
+    private getWOScheduleData({ wprsequence, wosequence }) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWEBWorksOrdersPaymentScheduleForWorksOrder?wprsequence=${wprsequence}&wosequence=${wosequence}`, this.httpOptions)
+            .pipe(map(res => <any[]>res));
+
+    }
 
     private bulkUpdatePaymentSchedule(params) {
         return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/BulkUpdateWorksOrderPaymentSchedule`, params, this.httpOptions);
     }
+
+
+    //valuation api
+    private getValuation({ wosequence, wpspaymentdate }) {
+        const paymentdate = this.helperService.getMDY(wpspaymentdate);
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWebWorksOrdersAssetValuation?wosequence=${wosequence}&paymentdate=${paymentdate}`, this.httpOptions)
+            .pipe(map(res => <any[]>res));
+    }
+
+    public getAssetValuationTotal({ wosequence, wpspaymentdate }) {
+        const paymentdate = this.helperService.getMDY(wpspaymentdate);
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWebWorksOrdersAssetValuationTotal?wosequence=${wosequence}&paymentdate=${paymentdate}`, this.httpOptions)
+            .pipe(map(res => <any[]>res));
+    }
+
+
 }

@@ -71,10 +71,7 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
 
   mousePositioin: any = 0;
   openVariationListAll: boolean;
-
-  // tabWindow = false;
   completionList = false;
-
   workOrderId: number;
 
   woProgramManagmentInstructionsWindow = false;
@@ -91,12 +88,10 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
     if (element.className.indexOf('fas fa-bars') == -1) {
       this.hideMenu();
     }
-    // event.preventDefault();
   }
-  // disabledMilestone: boolean = true;
   openWOPaymentScheduleWindow: boolean;
   WOPaymentsWindow = false;
-  
+
   constructor(
     private worksOrderService: WorksOrdersService,
     private worksOrderReportService: WorksorderReportService,
@@ -107,7 +102,6 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
     private router: Router,
     private helper: HelperService,
     private chRef: ChangeDetectorRef,
-    private currencyPipe: CurrencyPipe,
     private reportingGrpService: ReportingGroupService,
   ) {
     this.setSelectableSettings();
@@ -240,7 +234,7 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
   }
 
 
-  cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
+  cellClickHandler({ columnIndex, dataItem }) {
     //get work order user access when row is changed
     if (this.selectedWorksOrder?.wosequence != dataItem.wosequence) {
       this.helperService.getWorkOrderSecurity(dataItem.wosequence);
@@ -863,14 +857,14 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
     this.openWOPaymentScheduleWindow = $event;
   }
 
-  openWOPMPayments(item){
+  openWOPMPayments(item) {
 
-      this.selectedWorksOrder = item;
+    this.selectedWorksOrder = item;
     $('.wopmpaymentoverlay').addClass('ovrlay');
     this.WOPaymentsWindow = true;
   }
 
-  closeWOPMPaymentsWindow($event){
+  closeWOPMPaymentsWindow($event) {
     $('.wopmpaymentoverlay').removeClass('ovrlay');
     this.WOPaymentsWindow = $event;
   }

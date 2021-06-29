@@ -15,11 +15,20 @@ export class LoaderInterceptorService implements HttpInterceptor {
       if (req.url.indexOf("GetListOfScheduledParameters") !== -1 && req.url.indexOf("runInBackground") !== -1) {
         return next.handle(req);
       }
-      
-      if (req.url.indexOf("RunEventManagerProcessAsync") !== -1 || req.url.indexOf("GetEventTypeParameterAndNotify") !== -1 || req.url.indexOf("CreateXportWebReport") !== -1 || req.url.indexOf("EmailReport") !== -1 || req.url.indexOf("WorkOrderUserSecurity") !== -1 || req.url.indexOf("GetUserDetail") !== -1 || req.url.indexOf("VariationWorkListButtonsAccess") !== -1) {
+
+      if (
+        req.url.indexOf("RunEventManagerProcessAsync") !== -1 ||
+        req.url.indexOf("GetEventTypeParameterAndNotify") !== -1 ||
+        req.url.indexOf("CreateXportWebReport") !== -1 ||
+        req.url.indexOf("EmailReport") !== -1 ||
+        req.url.indexOf("WorkOrderUserSecurity") !== -1 ||
+        req.url.indexOf("GetUserDetail") !== -1 ||
+        req.url.indexOf("VariationWorkListButtonsAccess") !== -1 ||
+        req.url.indexOf("CheckEnterValuationButtonVisibility") !== -1
+      ) {
         return next.handle(req)
       }
-      
+
     }
 
     this.showLoader();

@@ -1,9 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { SubSink } from 'subsink';
-import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
-import { AlertService, WorksOrdersService, EditPaymentScheduleService } from 'src/app/_services';
-import { PageChangeEvent, SelectableSettings } from '@progress/kendo-angular-grid';
-
+import { process, State } from '@progress/kendo-data-query';
+import { EditPaymentScheduleService } from 'src/app/_services';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { GridDataResult } from '@progress/kendo-angular-grid';
@@ -14,7 +12,7 @@ import { WorkOrdersPaymentScheduleModel } from '../../../_models'
   selector: 'app-wo-program-management-edit-payment-schedule',
   templateUrl: './wo-pm-edit-payment-schedule.component.html',
   styleUrls: ['./wo-pm-edit-payment-schedule.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 
 export class WoProgramManagmentEditPaymentScheduleComponent implements OnInit {
@@ -37,14 +35,21 @@ export class WoProgramManagmentEditPaymentScheduleComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     public editService: EditPaymentScheduleService,
+    private chRef: ChangeDetectorRef,
   ) {
+    this.editService.setServiceFor('paymentschedule');
     this.createFormGroup = this.createFormGroup.bind(this);
   }
 
   ngOnInit(): void {
+    console.log('in')
     this.view = this.editService.pipe(map(data => process(data, this.gridState)));
     this.editService.read(this.worksOrderData);
     this.gridLoading = false;
+  }
+
+  ngAfterContentChecked() {
+    this.chRef.detectChanges();
   }
 
   ngOnDestroy() {

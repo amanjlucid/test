@@ -1,0 +1,180 @@
+<kendo-window title="{{title}}" *ngIf="openValuationWindow" (close)="closeValuation()" [top]="10" [minWidth]="700"
+    [width]="1150" [height]="auto" [minHeight]="300">
+
+
+    <div class="row">
+        <div class="col-md-12 valuationHead">
+            <div class="valuationDetailBox">
+                <div class="innerBox">
+                    <label>Work Order: </label>
+                    <input [readonly]="true" type="text" class="form-control form-control-sm"
+                        value="{{ worksOrderData?.wosequence }}  - {{ worksOrderData?.woname }} ">
+                </div>
+
+
+                <div class="innerBox">
+                    <label for="">Payment Schedule: </label>
+                    <input [readonly]="true" type="text" class="form-control form-control-sm"
+                        value="{{ paymentScheduleInp?.wpsenddate | dateFormat : 'DD-MMM-YYYY' }} ">
+                </div>
+
+            </div>
+
+            <div class="valuationDetailBox">
+                <div class="innerBox">
+                    <label for="">Committed: </label>
+                    <input [readonly]="true" type="text" class="form-control form-control-sm"
+                        value="{{ AssetValuationTotal?.totalcommittedvalue | currency:'GBP':'symbol' }}">
+                </div>
+
+                <div class="innerBox">
+                    <label for="">Pending: </label>
+                    <input [readonly]="true" type="text" class="form-control form-control-sm"
+                        value="{{ AssetValuationTotal?.totalpendingvalue | currency:'GBP':'symbol' }}">
+                </div>
+
+            </div>
+
+            <div class="valuationDetailBox">
+                <div class="innerBox">
+                    <label for="">Payment to Date: </label>
+                    <input [readonly]="true" type="text" class="form-control form-control-sm"
+                        value="{{ AssetValuationTotal?.totalpaymenttodate | currency:'GBP':'symbol' }}">
+                </div>
+
+                <div class="innerBox">
+                    <label for="">Payment to Date %: </label>
+                    <input [readonly]="true" type="text" class="form-control form-control-sm"
+                        value="{{ AssetValuationTotal?.totalpaymentpcttodate }}">
+                </div>
+
+
+            </div>
+
+            <div class="valuationDetailBox">
+                <div class="innerBox">
+                    <label for="">Contractor Valuation: </label>
+                    <input [readonly]="true" type="text" class="form-control form-control-sm"
+                        value="{{ AssetValuationTotal?.totalcontractorvaluation | currency:'GBP':'symbol' }}">
+                </div>
+
+                <div class="innerBox">
+                    <label for="">Contractor Valuation %: </label>
+                    <input [readonly]="true" type="text" class="form-control form-control-sm"
+                        value="{{ AssetValuationTotal?.totalcontractorvaluationpct }}">
+                </div>
+
+            </div>
+
+            <div class="valuationDetailBox">
+
+                <div class="innerBox">
+                    <label for="">Agreed Valuation: </label>
+                    <input [readonly]="true" type="text" class="form-control form-control-sm"
+                        value="{{ AssetValuationTotal?.totalagreedvaluation | currency:'GBP':'symbol' }}">
+                </div>
+
+                <div class="innerBox">
+                    <label for="">Agreed Valuation %: </label>
+                    <input [readonly]="true" type="text" class="form-control form-control-sm"
+                        value="{{ AssetValuationTotal?.totalagreedvaluationpct }}">
+                </div>
+
+            </div>
+
+            <div class="valuationDetailBox">
+                <div class="innerBox">
+                    <label for="">Calculated Amount Due : </label>
+                    <input [readonly]="true" type="text" class="form-control form-control-sm"
+                        value="{{ AssetValuationTotal?.totalcalcpaymentvalue | currency:'GBP':'symbol' }}">
+                </div>
+
+                <div class="innerBox">
+                    <label for="">Calculated O/S Payment Value: </label>
+                    <input [readonly]="true" type="text" class="form-control form-control-sm"
+                        value="{{ AssetValuationTotal?.totaloutstandingpaymentvalue | currency:'GBP':'symbol' }}">
+                </div>
+
+
+            </div>
+
+        </div>
+    </div>
+
+
+
+    <div class="row mt-3">
+        <div class="col-md-12">
+            <kendo-grid #grid [data]="view | async" [height]="600" [pageSize]="gridState.take" [skip]="gridState.skip"
+                [sort]="gridState.sort" [pageable]="false" [sortable]="true" (dataStateChange)="onStateChange($event)"
+                (cellClick)="cellClickHandler($event)" (cellClose)="cellCloseHandler($event)"
+                (cancel)="cancelHandler($event)" (save)="saveHandler($event)" (remove)="removeHandler($event)"
+                (add)="addHandler($event)" [navigable]="false" [rowHeight]="36" scrollable="virtual">
+
+                <!-- <kendo-grid-column title=" " width="37" [filterable]="false" [sortable]="false">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <li class="nav-item dropdown list-unstyled" style="margin-top: -7px;">
+                            <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
+                            <div class="dropdown-menu">
+                                <a (click)="SetValuationToZeroPaymentClick(dataItem)" class="dropdown-item"
+                                    href="javascript:void(0)">Set to 0 Payment</a>
+                                <a class="dropdown-item" href="javascript:void(0)"
+                                    (click)="WOCreateXportOutputReport(525, 'Valuation Report')">Valuation Report</a>
+
+                            </div>
+                        </li>
+
+                    </ng-template>
+                </kendo-grid-column> -->
+
+                <kendo-grid-column field="wopname" title="Phase" width="80">
+                </kendo-grid-column>
+                <kendo-grid-column field="assid" title="Asset ID" width="100">
+                </kendo-grid-column>
+                <kendo-grid-column field="astconcataddress" title="Address" width="150">
+                </kendo-grid-column>
+                <kendo-grid-column field="woassstatus" title="Asset Status" width="120">
+                </kendo-grid-column>
+                <kendo-grid-column field="woavcommittedvalue" title="Committed" width="100">
+                </kendo-grid-column>
+                <kendo-grid-column field="woavpendingvalue" title="Pending" width="100">
+                </kendo-grid-column>
+                <kendo-grid-column field="woavpaymenttodate" title="Payment to Date" width="140">
+                </kendo-grid-column>
+                <kendo-grid-column field="woavretentionvaluetodate" title="Retention Value to Date" width="160">
+                </kendo-grid-column>
+                <kendo-grid-column field="woavpaymentpcttodate" title="Payment % to Date" width="150">
+                </kendo-grid-column>
+                <kendo-grid-column field="woavvaluationstatus" title="Valuation Status" width="150">
+                </kendo-grid-column>
+                <kendo-grid-column field="woavcontractorvaluation" editor="numeric" title="Contractor Valuation"
+                    width="150">
+                </kendo-grid-column>
+                <kendo-grid-column field="woavcontractorvaluationpct" editor="numeric" title="Contractor Valuation %"
+                    width="150">
+                </kendo-grid-column>
+                <kendo-grid-column field="woavagreedvaluation" editor="numeric" title="Agered Valuation" width="150">
+                </kendo-grid-column>
+                <kendo-grid-column field="woavagreedvaluationpct" editor="numeric" title="Agered Valuation %"
+                    width="150">
+                </kendo-grid-column>
+                <kendo-grid-column field="woavcalcpaymentvalue" title="Calculated Amount Due" width="150">
+                </kendo-grid-column>
+                <kendo-grid-column field="outstandingpaymentvalue" title="Calc O/S Payment Value" width="150">
+                </kendo-grid-column>
+                <kendo-grid-column field="woavnotes" title="Notes" width="100">
+                </kendo-grid-column>
+
+            </kendo-grid>
+
+        </div>
+
+
+        <div class="col-md-12 text-right mt-2">
+            <button type="button" class="btn btn-sm themeButton mr-1" [disabled]="!editService.hasChanges()"
+                (click)="saveChanges(grid)">Apply</button>
+            <button type="button" class="btn btn-sm themeButton" (click)="closeValuation()">Close</button>
+        </div>
+    </div>
+
+</kendo-window>
