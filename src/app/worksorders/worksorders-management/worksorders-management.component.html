@@ -64,7 +64,8 @@
 
     <div class="row mt-2">
 
-        <div class="col-md-12">
+        <div class="col-md-12" kendoTooltip position="right" showOn="none" [tooltipTemplate]="template"
+            filter=".k-grid td" tooltipClass="tooltip-class">
             <kendo-treelist [kendoTreeListFlatBinding]="gridData" idField="id" parentIdField="parentId"
                 scrollable="virtual" [rowHeight]="36" kendoTreeListExpandable [sortable]="true" [sort]="sort"
                 filterable="menu" [filter]="filter" (filterChange)="onFilterChange($event)" [pageSize]="gridPageSize"
@@ -72,9 +73,14 @@
                 [height]="720" [virtualColumns]="true" [loading]="loading" [resizable]="true"
                 (cellClick)="cellClickHandler($event)" [rowClass]="rowCallback">
 
-                <kendo-treelist-column field="wosequence" title="" [width]="33" [sortable]="false" [resizable]="false"
+                <kendo-treelist-column field="wosequence" title="" [width]="37" [sortable]="false" [resizable]="false"
                     [filterable]="false" [locked]="columnLocked">
                     <ng-template kendoTreeListCellTemplate let-dataItem>
+                        <i aria-expanded="false" *ngIf="dataItem.treelevel == 1 || dataItem.treelevel == 2"
+                            class="fas fa-bars" (click)="openMenu($event, dataItem)"></i>
+                    </ng-template>
+
+                    <!-- <ng-template kendoTreeListCellTemplate let-dataItem>
 
                         <li *ngIf="dataItem.treelevel == 1" class="nav-item dropdown list-unstyled"
                             style="margin-top: -7px;" (click)="setSeletedRow(dataItem)">
@@ -144,7 +150,7 @@
 
                         </li>
 
-                    </ng-template>
+                    </ng-template> -->
                 </kendo-treelist-column>
 
                 <kendo-treelist-column [expandable]="true" [minResizableWidth]="200" field="name" title="Name"
@@ -154,7 +160,7 @@
                             {{ dataItem.name }} ({{dataItem.wosequence}})
                         </span>
                         <span *ngIf="dataItem.treelevel != 2">
-                            {{ dataItem.name }} 
+                            {{ dataItem.name }}
                         </span>
                     </ng-template>
                 </kendo-treelist-column>
@@ -168,7 +174,8 @@
                         </span>
                     </ng-template>
                 </kendo-treelist-column>
-                <kendo-treelist-column field="forecast" title="Forecast" [width]="150" [style]="{'text-align': 'right'}">
+                <kendo-treelist-column field="forecast" title="Forecast" [width]="150"
+                    [style]="{'text-align': 'right'}">
                     <ng-template kendoTreeListCellTemplate let-dataItem>
                         <span>
                             {{ dataItem.forecast | currency:"GBP":"symbol" }}
@@ -346,6 +353,64 @@
         </div>
     </div>
 
+    <ng-template #template let-anchor>
+        <div class="list-unstyled menuDiv" *ngIf="menuData">
+            <div *ngIf="menuData.treelevel == 1" #elm class="dropdown-menu" style="display: block; margin-left: -1px;"
+                [ngStyle]="{'margin-top':getTopMargin()}">
+
+                <a *ngIf="programmeMenuAccess('Edit Programme')" class="dropdown-item"
+                    (click)="openNewManagementWindow('edit')" href="javascript:void(0)">Edit</a>
+                <a *ngIf="programmeMenuAccess('Delete Programme')" class="dropdown-item"
+                    (click)="openConfirmationDialog(menuData)" href="javascript:void(0)">Delete</a>
+                <a *ngIf="woMenuAccess('New Works Order') && menuData.wpractinact != 'I'" class="dropdown-item"
+                    href="javascript:void(0)" (click)="openWorksOrderForm('new', menuData)">New Works Order</a>
+                <a class="dropdown-item" href="javascript:void(0)" (click)="openProgrammeLog('programme',menuData)">View
+                    Programme Log</a>
+
+                <a class="dropdown-item" href="javascript:void(0)" (click)="programmeReport(1, menuData)">Selected
+                    Programme Report</a>
+
+            </div>
+
+            <div *ngIf="menuData.treelevel == 2" #elms class="dropdown-menu" style="display: block; margin-left: -1px;"
+                [ngStyle]="{'margin-top':getTopMargin()}">
+                <a class="dropdown-item" *ngIf="woMenuAccess('Edit Works Order')" href="javascript:void(0)"
+                    (click)="openWorksOrderForm('edit', menuData)">Edit</a>
+                <a class="dropdown-item" *ngIf="woMenuAccess('Delete Works Order')" href="javascript:void(0)"
+                    (click)="deleteWorksOrder(menuData)">Delete</a>
+                <a class="dropdown-item" href="javascript:void(0)" (click)="redirectToWorksOrder(menuData)"
+                    *ngIf="woMenuAccess('Works Order Detail')">Works Order Detail</a>
+                <a class="dropdown-item" href="javascript:void(0)" (click)="openPackageMappingWindow(menuData)"
+                    *ngIf="woMenuAccess('Package Mapping')">Package Mapping</a>
+                <a (click)="redirectToWoProgramManagmentInstructions(menuData)" class="dropdown-item"
+                    href="javascript:void(0)">
+                    Instructions</a>
+                <a class="dropdown-item" (click)="openCompletionList(menuData)"
+                    href="javascript:void(0)">Completions</a>
+                <a class="dropdown-item" href="javascript:void(0)" (click)="openProgrammeLog('workorder',menuData)">View
+                    Programme Log</a>
+                <a class="dropdown-item" href="javascript:void(0)"
+                    (click)="openWoAssociationsManage(menuData)">Associations</a>
+                <a class="dropdown-item" href="javascript:void(0)" (click)="openRolesTab(menuData)"
+                    *ngIf="woMenuAccess('Roles Tab')">Roles</a>
+                <a class="dropdown-item" href="javascript:void(0)" (click)="openSORTab(menuData )"
+                    *ngIf="woMenuAccess('SOR Tab')">SOR</a>
+                <a class="dropdown-item" href="javascript:void(0)" (click)="openCostsTab(menuData)"
+                    *ngIf="woMenuAccess('Contract Costs Tab')">Contract Costs</a>
+
+                <div class="dropdown-toggle">
+                    <div class="dropdown-item">Milestones</div>
+                    <div class="dropdown-menu milestoneMenu">
+                        <a *ngIf="woMenuAccess('Milestones')" class="dropdown-item" href="javascript:void(0)"
+                            (click)="openManageMilestonePopup(menuData, 'checklist')">Milestones</a>
+                        <a *ngIf="woMenuAccess('Manage Milestones')" class="dropdown-item" href="javascript:void(0)"
+                            (click)="openManageMilestonePopup(menuData, 'manage')">Manage Milestones</a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </ng-template>
 
 </div>
 

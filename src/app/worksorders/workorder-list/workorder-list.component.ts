@@ -840,5 +840,13 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
   }
 
 
+  disableMilestoneBtn(menuData) {
+    if (menuData.wottemplatetype == "Works Order Milestone" || menuData.wottemplatetype == "Phase Milestone") {
+      return false
+    }
+
+    return true;
+  }
+
 
 }

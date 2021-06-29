@@ -97,7 +97,7 @@
           <ng-template kendoGridCellTemplate let-dataItem>
             <i aria-expanded="false" class="fas fa-bars" (click)="openMenu($event, dataItem)"></i>
           </ng-template>
-          
+
         </kendo-grid-column>
 
         <!-- <kendo-grid-column field="worksOrderAssetChecklistFileCount" title="" width="40" [filterable]="false"
@@ -283,7 +283,8 @@
 
   <ng-template #template let-anchor>
     <div class="list-unstyled menuDiv" *ngIf="menuData">
-      <div #elm class="dropdown-menu" style="display: block; margin-left: -1px;" [ngStyle]="{'margin-top':getTopMargin()}">
+      <div #elm class="dropdown-menu" style="display: block; margin-left: -1px;"
+        [ngStyle]="{'margin-top':getTopMargin()}">
         <a *ngIf="woMenuAccess('Edit Works Order')" class="dropdown-item" href="javascript:void(0)"
           (click)="redirectToWorksOrderEdit(menuData)">Edit</a>
         <a *ngIf="woMenuAccess('Delete Works Order')" class="dropdown-item" href="javascript:void(0)"
@@ -342,10 +343,11 @@
 
 
         <div class="dropdown-toggle">
-          <div [ngClass]="{'disabled' : menuData.wottemplatetype != 'Works Order Milestone'}" class="dropdown-item">
+          <div [ngClass]="{'disabled' : disableMilestoneBtn(menuData) }" class="dropdown-item">
             Milestones</div>
           <div class="dropdown-menu milestoneMenu">
-            <a *ngIf="woMenuAccess('Milestones')" class="dropdown-item" href="javascript:void(0)"
+            <a [ngClass]="{'disabled' : menuData.wottemplatetype != 'Works Order Milestone'}"
+              *ngIf="woMenuAccess('Milestones')" class="dropdown-item" href="javascript:void(0)"
               (click)="openManageMilestonePopup(menuData, 'checklist')">Milestones</a>
             <a *ngIf="woMenuAccess('Manage Milestones')" class="dropdown-item" href="javascript:void(0)"
               (click)="openManageMilestonePopup(menuData, 'manage')">Manage Milestones</a>

@@ -282,6 +282,10 @@ export class WorksOrdersService {
         return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/WEBWorksOrdersWorksProgrammeLogProgram?WPRSEQUENCE=${WPRSEQUENCE}&WPLSEQUENCE=${WPLSEQUENCE}`, this.httpOptions);
     }
 
+    WEBWorksOrdersMilestoneProgrammeLog(wosequence, wopsequence) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/WEBWorksOrdersMilestoneProgrammeLog?wosequence=${wosequence}&wopsequence=${wopsequence}`, this.httpOptions);
+    }
+
     WOReportingProgSummaryTree(wprsequence, wosequence, reporttype) {
         return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/WOReportingProgSummaryTree?wprsequence=${wprsequence}&wosequence=${wosequence}&reporttype=${reporttype}`, this.httpOptions);
     }

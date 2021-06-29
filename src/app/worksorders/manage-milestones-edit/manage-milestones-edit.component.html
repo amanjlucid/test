@@ -54,7 +54,7 @@
                 </div>
 
 
-                <div class="row mt-1" *ngIf="openMilestoneFor == 'checklist'">
+                <div class="row mt-1" *ngIf="openMilestoneFor == 'checklist' || openMilestoneFor == 'phase'">
                     <div class="col-md-3"><label class="col-form-label">Status: </label></div>
                     <div class="col-md-4">
                         <select class="form-control " formControlName="status"
@@ -83,7 +83,7 @@
                     </div>
                 </div>
 
-                <div class="row mt-1" *ngIf="openMilestoneFor == 'checklist'">
+                <div class="row mt-1" *ngIf="openMilestoneFor == 'checklist' || openMilestoneFor == 'phase'">
                     <div class="col-md-3"><label class="col-form-label">Start Date: </label></div>
                     <div class="col-md-4">
                         <input formControlName="startDate"
@@ -97,7 +97,7 @@
                 </div>
 
 
-                <div class="row mt-1" *ngIf="openMilestoneFor == 'checklist'">
+                <div class="row mt-1" *ngIf="openMilestoneFor == 'checklist' || openMilestoneFor == 'phase'">
                     <div class="col-md-3"><label class="col-form-label">Target Date: </label></div>
                     <div class="col-md-4">
                         <input formControlName="targetDate"
@@ -111,7 +111,7 @@
                 </div>
 
 
-                <div class="row mt-1" *ngIf="openMilestoneFor == 'checklist'">
+                <div class="row mt-1" *ngIf="openMilestoneFor == 'checklist' || openMilestoneFor == 'phase'">
                     <div class="col-md-3"><label class="col-form-label">Completion Date: </label></div>
                     <div class="col-md-4">
                         <input formControlName="completionDate"
@@ -125,7 +125,7 @@
                 </div>
 
 
-                <div class="row mt-1" *ngIf="openMilestoneFor == 'checklist'">
+                <div class="row mt-1" *ngIf="openMilestoneFor == 'checklist' || openMilestoneFor == 'phase'">
                     <div class="col-md-3"><label class="col-form-label">Plan Start Date: </label></div>
                     <div class="col-md-4">
                         <input formControlName="planStartDate"
@@ -139,7 +139,7 @@
                 </div>
 
 
-                <div class="row mt-1" *ngIf="openMilestoneFor == 'checklist'">
+                <div class="row mt-1" *ngIf="openMilestoneFor == 'checklist' || openMilestoneFor == 'phase'">
                     <div class="col-md-3"><label class="col-form-label">Plan End Date: </label></div>
                     <div class="col-md-4">
                         <input formControlName="planEndDate"
@@ -152,7 +152,7 @@
                     </div>
                 </div>
 
-                <div class="row mt-1" *ngIf="openMilestoneFor == 'checklist'">
+                <div class="row mt-1" *ngIf="openMilestoneFor == 'checklist' || openMilestoneFor == 'phase'">
                     <div class="col-md-3"><label class="col-form-label">Comment(s): </label></div>
                     <div class="col-md-9">
                         <textarea class="form-control" formControlName="comments"

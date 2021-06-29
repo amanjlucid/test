@@ -95,9 +95,11 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
     if (element.className.indexOf('fas fa-bars') == -1) {
       this.hideMenu();
     }
-
     // event.preventDefault();
   }
+  openMilestoneFor = "phase";
+  openManageMilestone = false;
+
 
   constructor(
     private sharedService: SharedService,
@@ -324,7 +326,7 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
     this.filter = filter;
   }
 
-  cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
+  cellClickHandler({ columnIndex, dataItem }) {
     if (columnIndex > 0) {
       if (this.touchtime == 0) {
         this.touchtime = new Date().getTime();
@@ -1391,6 +1393,20 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
   closeProgrammeLogWindow(eve) {
     this.ProgrammeLogWindow = eve;
     $('.worksOrderDetailOvrlay').removeClass('ovrlay');
+  }
+
+
+  openManageMilestonePopup(item, openFor) {
+    this.openMilestoneFor = openFor;
+    this.selectedParentRow = item;
+    this.openManageMilestone = true;
+    $('.worksOrderDetailOvrlay').addClass('ovrlay');
+
+  }
+
+  closeManageMilestone($event) {
+    $('.worksOrderDetailOvrlay').removeClass('ovrlay');
+    this.openManageMilestone = $event;
   }
 
 }
