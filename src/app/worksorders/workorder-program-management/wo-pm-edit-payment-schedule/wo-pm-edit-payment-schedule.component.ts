@@ -152,6 +152,7 @@ export class WoProgramManagmentEditPaymentScheduleComponent implements OnInit {
   closeEditPaymentScheduleWin() {
     this.openWOEditPaymentScheduleWindow = false;
     this.closeEditPaymentScheduleWindowEvent.emit(false);
+    this.editService.reset();
   }
 
 

@@ -53,7 +53,6 @@ export class EditPaymentScheduleService extends BehaviorSubject<any[]> {
                     this.data = [];
                     this.originalData = [];
                     super.next([]);
-
                 }
 
             });
@@ -142,7 +141,7 @@ export class EditPaymentScheduleService extends BehaviorSubject<any[]> {
         Object.assign(target, source);
     }
 
-    private reset() {
+    public reset() {
         this.data = [];
         this.deletedItems = [];
         this.updatedItems = [];
