@@ -20,3 +20,12 @@
 .blue {
     color: blue;
 }
+
+.actionDiv {
+    display: inline;
+}
+
+.actionDiv .themeButton, .actionDiv .reportBtnArea{
+    display: inline-block;
+    margin-left: 2px;
+}

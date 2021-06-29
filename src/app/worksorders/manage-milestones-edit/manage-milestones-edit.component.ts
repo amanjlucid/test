@@ -14,7 +14,7 @@ import { firstDateIsLower, MustbeTodayOrLower, ShouldGreaterThanYesterday, Simpl
 export class ManageMilestonesEditComponent implements OnInit {
   @Input() openMilestoneEdit: boolean = false;
   @Input() singleMilestone: any;
-  @Input() openMilestoneFor;
+  @Input() openMilestoneFor; // checklist, manage, phase
   @Output() closeMilestoneEditEvent = new EventEmitter<boolean>();
 
   subs = new SubSink(); // to unsubscribe services
@@ -77,7 +77,7 @@ export class ManageMilestonesEditComponent implements OnInit {
   ngOnInit(): void {
     this.getWorkOrderClientUserList();
 
-    if (this.openMilestoneFor == "checklist") {
+    if (this.openMilestoneFor == "checklist" || this.openMilestoneFor == "phase") {
       this.milestoneForm = this.fb.group({
         resUserVal: [''],
         attReqVal: [''],
@@ -110,8 +110,8 @@ export class ManageMilestonesEditComponent implements OnInit {
 
   populateAndDisableField() {
     const { wocheckspeciaL2, woresponsibleuser, womilestonecomment, womilestonestatus, womilestonestartdate, womilestoneplanstartdate, womilestoneplanenddate, womilestonetargetdate, womilestonecompletiondate } = this.singleMilestone;
-    
-    if (this.openMilestoneFor == "checklist") {
+
+    if (this.openMilestoneFor == "checklist" || this.openMilestoneFor == "phase") {
       this.milestoneForm.patchValue({
         attReqVal: wocheckspeciaL2.trim(),
         resUserVal: woresponsibleuser,
@@ -207,8 +207,7 @@ export class ManageMilestonesEditComponent implements OnInit {
     this.submitted = true;
     this.formErrorObject(); // empty form error 
     this.logValidationErrors(this.milestoneForm);
-
-
+    
     if (this.milestoneForm.invalid) {
       return;
     }
@@ -245,8 +244,8 @@ export class ManageMilestonesEditComponent implements OnInit {
       const formValue = this.milestoneForm.getRawValue();
       const { wocheckspeciaL1 } = this.singleMilestone;
       const { status, startDate, completionDate } = formValue;
-     
-      if (status == "New" && (startDate != "" || completionDate != "")) {
+
+      if (status == "New" && (startDate || completionDate)) {
         this.alertService.error("Start and Completion date must be blank when status is 'New'.");
         return;
       }

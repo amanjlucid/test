@@ -505,6 +505,12 @@
           </div>
         </div>
 
+        <a *ngIf="worksOrderSingleData.wottemplatetype == 'Phase Milestone' || worksOrderSingleData.wottemplatetype == 'Works Order Milestone'"
+          class="dropdown-item" href="javascript:void(0)"
+          (click)="openManageMilestonePopup(menuData, 'phase')">{{worksOrderSingleData.wottemplatetype == "Phase
+          Milestone" ?
+          'Phase Milestones' : 'Milestones'}}</a>
+
       </div>
 
       <div *ngIf="menuData.treelevel == 3" #elms class="dropdown-menu" style="display: block; margin-left: -1px;"
@@ -736,3 +742,9 @@
     [singleWorkOrderInp]="worksOrderSingleData" [selectedProgrammeInp]="programmeData" [openedFrom]="programmeLogFor"
     (ProgrammeLogWindowEvent)="closeProgrammeLogWindow($event)">
   </app-programme-log>
+
+
+  <app-manage-milestones *ngIf="openManageMilestone" [worksOrderData]="worksOrderSingleData"
+    [openManageMilestone]="openManageMilestone" [openMilestoneFor]="openMilestoneFor" [selectedPhaseInp]="selectedParentRow"
+    (closeManageMilestoneEvent)="closeManageMilestone($event)">
+  </app-manage-milestones>

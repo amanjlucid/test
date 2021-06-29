@@ -55,7 +55,7 @@ export class ProgramTransactionsComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        if (this.openedFrom == 'workorder') {
+        if (this.openedFrom == 'workorder' || this.openedFrom == 'milestone') {
             const { wprname, wprprogrammetype } = this.programmeData;
             const { woname } = this.singleWorkOrderInp;
             const { wopname, wpltransactiontype, wpldatetime, m_USERNAME, wplsummarymessage } = this.programLogInp;

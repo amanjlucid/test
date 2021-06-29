@@ -110,10 +110,10 @@
         (sortChange)="sortChange($event)" (filterChange)="filterChange($event)" [navigable]="false">
 
 
-        <kendo-grid-column field="assid" title="Asset Id" width="90">
+        <kendo-grid-column field="assid" title="Asset Id" width="90" *ngIf="openedFrom != 'milestone'">
         </kendo-grid-column>
 
-        <kendo-grid-column field="astconcataddress" title="Address" width="100">
+        <kendo-grid-column field="astconcataddress" title="Address" width="100" *ngIf="openedFrom != 'milestone'">
         </kendo-grid-column>
 
         <kendo-grid-column field="wpldstatus" title="Status" width="80">

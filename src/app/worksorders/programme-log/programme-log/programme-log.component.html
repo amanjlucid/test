@@ -2,7 +2,7 @@
   (close)="closeProgrammeLogWindow()" *ngIf="ProgrammeLogWindow">
 
   <div class="row headerArea">
-    <div class="col-md-12">
+    <div class="col-md-12" *ngIf="openedFrom != 'milestone'">
 
       <div class="row">
         <div class="col-md-2">
@@ -33,6 +33,25 @@
         </div>
 
 
+      </div>
+    </div>
+
+    <div class="col-md-12 mt-1" *ngIf="openedFrom == 'milestone'">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="row">
+            <div class="col-md-2">
+              <label class="col-form-label">Works Order: </label>
+            </div>
+            <div class="col-md-8">
+              <input [readonly]="true" type="text" class="form-control" value="{{ workOrderName() }}">
+            </div>
+            <div class="col-md-2">
+              <button *ngIf="woMenuAccess('Milestone Programme Log')" class="btn btn-sm themeButton mt-1"
+                (click)="mileStoneReport(546, 'Programme Log')">Export</button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -150,7 +169,8 @@
               <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
               <div class="dropdown-menu">
                 <a (click)="openProgramLogTransactionsWindow(dataItem)" class="dropdown-item"
-                  href="javascript:void(0)">View Programme Transaction</a>
+                  href="javascript:void(0)">{{openedFrom == 'milestone' ? 'View Milestone Log Detail' : 'View Programme
+                  Transaction'}}</a>
               </div>
             </li>
           </ng-template>
@@ -165,7 +185,7 @@
         </kendo-grid-column>
 
         <kendo-grid-column field="wpldatetime" title="Date" [width]="140" [filterable]="false" [sortable]="false"
-          *ngIf="openedFrom == 'workorder' || openedFrom == 'programme'">
+          *ngIf="openedFrom == 'workorder' || openedFrom == 'programme' || openedFrom == 'milestone'">
           <ng-template kendoGridCellTemplate let-dataItem>
             <span>
               {{ dataItem.wpldatetime | dateFormat : 'DD-MMM-YYYY' }}
@@ -175,13 +195,13 @@
 
 
         <kendo-grid-column field="m_USERNAME" title="User" width="100"
-          *ngIf="openedFrom == 'workorder' || openedFrom == 'programme'">
+          *ngIf="openedFrom == 'workorder' || openedFrom == 'programme' || openedFrom == 'milestone'">
         </kendo-grid-column>
         <kendo-grid-column field="wpltransactiontype" title="Transaction Type" width="140"
-          *ngIf="openedFrom == 'workorder' || openedFrom == 'programme'">
+          *ngIf="openedFrom == 'workorder' || openedFrom == 'programme' || openedFrom == 'milestone'">
         </kendo-grid-column>
         <kendo-grid-column field="wplerrorstatus" title="Status" width="100"
-          *ngIf="openedFrom == 'workorder' || openedFrom == 'programme'">
+          *ngIf="openedFrom == 'workorder' || openedFrom == 'programme' || openedFrom == 'milestone'">
           <!-- <ng-template kendoGridCellTemplate let-dataItem>
             <span>
               {{ dataItem.wplerrorstatus == 'S' ? 'Success' : dataItem.wplerrorstatus }}
@@ -189,7 +209,7 @@
           </ng-template> -->
         </kendo-grid-column>
         <kendo-grid-column field="wplsummarymessage" title="Summary" width="200"
-          *ngIf="openedFrom == 'workorder' || openedFrom == 'programme'">
+          *ngIf="openedFrom == 'workorder' || openedFrom == 'programme' || openedFrom == 'milestone'">
         </kendo-grid-column>
         <!-- Programme log fields for Work order end -->
 

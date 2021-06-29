@@ -16,10 +16,11 @@ import { combineLatest } from 'rxjs';
 export class ManageMilestonesComponent implements OnInit {
   @Input() openManageMilestone: boolean = false;
   @Input() worksOrderData: any;
-  @Input() openMilestoneFor = 'checklist';
+  @Input() openMilestoneFor = 'checklist';//checklist, workordeer, phase
   @Output() closeManageMilestoneEvent = new EventEmitter<boolean>();
   @Input() predecessors = false;
   @Input() selectedMilestoneInp: any;
+  @Input() selectedPhaseInp: any;
   openPredecessors = false;
   openMilestoneEdit: boolean;
   title = 'Work Order Milestones';
@@ -52,13 +53,13 @@ export class ManageMilestonesComponent implements OnInit {
   openMilestoneNotes = false;
   documentWindow = false;
   woName = '';
+  ProgrammeLogWindow = false;
 
   constructor(
     private chRef: ChangeDetectorRef,
     private worksOrdersService: WorksOrdersService,
     private alertService: AlertService,
     private sharedService: SharedService,
-    // private worksOrderReportService: WorksorderReportService,
     private reportingGrpService: ReportingGroupService,
     private helperService: HelperService
 
@@ -67,6 +68,8 @@ export class ManageMilestonesComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    console.log(this.selectedPhaseInp);
+
     this.subs.add(
       combineLatest([
         this.sharedService.worksOrdersAccess,
@@ -87,6 +90,9 @@ export class ManageMilestonesComponent implements OnInit {
       this.title = 'Manage Milestones';
       this.getManageMilestonesList();
     } else {
+      if (this.openMilestoneFor == 'phase') {
+        this.title = 'Phase Milestones';
+      }
       this.getMilestoneChecklist();
     }
 
@@ -192,7 +198,7 @@ export class ManageMilestonesComponent implements OnInit {
     this.openMilestoneEdit = $event;
     $('.milestoneOverlay').removeClass('ovrlay');
 
-    if (this.openMilestoneFor == "checklist") this.getMilestoneChecklist();
+    if (this.openMilestoneFor == "checklist" || this.openMilestoneFor == "phase") this.getMilestoneChecklist();
     else this.getManageMilestonesList();
 
   }
@@ -277,7 +283,24 @@ export class ManageMilestonesComponent implements OnInit {
       )
     )
 
-    
+
+  }
+
+
+  openProgrammeLog(item) {
+    // this.selectedWorksOrder = item;
+    this.ProgrammeLogWindow = true;
+    $('.milestonePredecessorsOverlay').addClass('ovrlay');
+  }
+
+  closeProgrammeLogWindow(eve) {
+    this.ProgrammeLogWindow = eve;
+    $('.milestonePredecessorsOverlay').removeClass('ovrlay');
+  }
+
+
+  milestoneProgrammeLog() {
+
   }
 
 

@@ -43,3 +43,8 @@
 /* .k-grid .k-grid-content-locked .k-state-selected td:hover {
     
 } */
+
+.tooltip-class .k-callout {
+    background-color: transparent !important;
+    color: white !important;
+}

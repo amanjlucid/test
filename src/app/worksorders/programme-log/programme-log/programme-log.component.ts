@@ -1,8 +1,8 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef, ViewEncapsulation } from '@angular/core';
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
-import { AlertService, HelperService, WorksorderManagementService, WorksOrdersService } from 'src/app/_services';
-import { forkJoin, Observable } from 'rxjs';
+import { AlertService, HelperService, ReportingGroupService, SharedService, WorksorderManagementService, WorksOrdersService } from 'src/app/_services';
+import { combineLatest, forkJoin, Observable } from 'rxjs';
 import { SelectableSettings, PageChangeEvent } from '@progress/kendo-angular-grid';
 
 @Component({
@@ -43,7 +43,9 @@ export class ProgramLogComponent implements OnInit {
     ProgrammeTransactionWindow = false;
     selectedItem: any;
     phaseData: any;
-
+    worksOrderAccess = [];
+    worksOrderUsrAccess: any = [];
+    userType: any = [];
 
     constructor(
         private worksOrdersService: WorksOrdersService,
@@ -51,6 +53,8 @@ export class ProgramLogComponent implements OnInit {
         private alertService: AlertService,
         private chRef: ChangeDetectorRef,
         private helper: HelperService,
+        private reportingGrpService: ReportingGroupService,
+        private sharedService: SharedService,
     ) {
         this.setSelectableSettings();
     }
@@ -62,6 +66,20 @@ export class ProgramLogComponent implements OnInit {
     ngOnInit(): void {
         // console.log({ openedFrom: this.openedFrom, workorder: this.singleWorkOrderInp, asset: this.singleWorkOrderAssetInp, programme: this.selectedProgrammeInp })
 
+        this.subs.add(
+            combineLatest([
+              this.sharedService.worksOrdersAccess,
+              this.sharedService.woUserSecObs,
+              this.sharedService.userTypeObs
+            ]).subscribe(
+              data => {
+                this.worksOrderAccess = data[0];
+                this.worksOrderUsrAccess = data[1];
+                this.userType = data[2][0];
+              }
+            )
+          )
+          
         if (this.openedFrom == "assetchecklist" && this.singleWorkOrderAssetInp != undefined) {
             this.title = "View Programme Log for Asset";
             const { wprsequence, wosequence, wopsequence } = this.singleWorkOrderAssetInp;
@@ -90,6 +108,16 @@ export class ProgramLogComponent implements OnInit {
             ];
             this.requiredPageData(pageService);
             this.getProgrammeLog();
+        }
+
+
+        if (this.openedFrom == "milestone" && this.singleWorkOrderInp != undefined) {
+            const { wprsequence } = this.singleWorkOrderInp;
+            const pageService = [
+                this.worksorderManagementService.getWorkProgrammesByWprsequence(wprsequence),
+            ];
+            this.requiredPageData(pageService);
+            this.getMilestoneProgrammeLog();
         }
 
     }
@@ -129,18 +157,7 @@ export class ProgramLogComponent implements OnInit {
         this.subs.add(
             this.worksOrdersService.WEBWorksOrdersWorksProgrammeLogProgram(wprsequence, 0).subscribe(
                 data => {
-                    if (data.isSuccess) {
-                        this.gridData = data.data.map(x => {
-                            if (x.wplerrorstatus == "S") x.wplerrorstatus = "Success";
-                            if (x.wplerrorstatus == "W") x.wplerrorstatus = "Warning";
-                            if (x.wplerrorstatus == "E") x.wplerrorstatus = "Error";
-                            return x;
-                        });
-                        this.gridView = process(this.gridData, this.state);
-                    } else this.alertService.error(data.message);
-
-                    this.gridLoading = false
-                    this.chRef.detectChanges();
+                    this.renderGrid(data);
                 }, err => this.alertService.error(err)
             )
         )
@@ -151,19 +168,7 @@ export class ProgramLogComponent implements OnInit {
         this.subs.add(
             this.worksOrdersService.WEBWorksOrdersWorksProgrammeLog(wosequence, wprsequence, 0).subscribe(
                 data => {
-                    if (data.isSuccess) {
-                        this.gridData = data.data.map(x => {
-                            if (x.wplerrorstatus == "S") x.wplerrorstatus = "Success";
-                            if (x.wplerrorstatus == "W") x.wplerrorstatus = "Warning";
-                            if (x.wplerrorstatus == "E") x.wplerrorstatus = "Error";
-                            return x;
-                        });
-                        this.gridData = data.data;
-                        this.gridView = process(this.gridData, this.state);
-                    } else this.alertService.error(data.message);
-
-                    this.gridLoading = false
-                    this.chRef.detectChanges();
+                    this.renderGrid(data);
                 }, err => this.alertService.error(err)
             )
         )
@@ -175,22 +180,38 @@ export class ProgramLogComponent implements OnInit {
         this.subs.add(
             this.worksOrdersService.WEBWorksOrdersWorksProgrammeLogForAsset(wprsequence, wosequence, wopsequence, assid).subscribe(
                 data => {
-                    if (data.isSuccess) {
-                        this.gridData = data.data.map(x => {
-                            if (x.wpldstatus == "S") x.wpldstatus = "Success";
-                            if (x.wpldstatus == "W") x.wpldstatus = "Warning";
-                            if (x.wpldstatus == "E") x.wpldstatus = "Error";
-                            return x;
-                        });
-                        this.gridData = data.data;
-                        this.gridView = process(this.gridData, this.state);
-                    } else this.alertService.error(data.message);
-
-                    this.gridLoading = false
-                    this.chRef.detectChanges();
+                    this.renderGrid(data);
                 }, err => this.alertService.error(err)
             )
         )
+    }
+
+
+    getMilestoneProgrammeLog() {
+        const { wosequence, wopsequence = 0 } = this.singleWorkOrderInp;
+        this.subs.add(
+            this.worksOrdersService.WEBWorksOrdersMilestoneProgrammeLog(wosequence, wopsequence).subscribe(
+                data => {
+                    this.renderGrid(data);
+                }, err => this.alertService.error(err)
+            )
+        )
+    }
+
+
+    renderGrid(data) {
+        if (data.isSuccess) {
+            this.gridData = data.data.map(x => {
+                if (x.wplerrorstatus == "S") x.wplerrorstatus = "Success";
+                if (x.wplerrorstatus == "W") x.wplerrorstatus = "Warning";
+                if (x.wplerrorstatus == "E") x.wplerrorstatus = "Error";
+                return x;
+            });
+            this.gridView = process(this.gridData, this.state);
+        } else this.alertService.error(data.message);
+
+        this.gridLoading = false
+        this.chRef.detectChanges();
     }
 
     sortChange(sort: SortDescriptor[]): void {
@@ -368,6 +389,46 @@ export class ProgramLogComponent implements OnInit {
 
     }
 
+
+    mileStoneReport(xPortId, reportName) {
+        const { wosequence, wprsequence } = this.singleWorkOrderInp;
+        let params;
+
+        if (reportName == "Programme Log") {
+            params = {
+                "intXportId": xPortId,//546
+                "lstParamNameValue": ["Works Order No", wosequence, "Work Programme", wprsequence],
+            };
+        }
+
+        if (reportName == "Milestone Report" || reportName == "Note Report") {
+            params = {
+                "intXportId": xPortId,//milestonre report 544, note report 545
+                "lstParamNameValue": ["Works Order No", wosequence, "Phase No", 0],
+            };
+        }
+
+        this.subs.add(
+            this.reportingGrpService.runReport(xPortId, params.lstParamNameValue, this.currentUser.userId, "EXCEL", false).subscribe(
+                data => {
+                    const linkSource = 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' + data;
+                    const downloadLink = document.createElement("a");
+                    const fileName = `${reportName}_${xPortId}.xlsx`;
+                    downloadLink.href = linkSource;
+                    downloadLink.download = fileName;
+                    downloadLink.click();
+                }
+            )
+        )
+
+
+    }
+
+
+    woMenuAccess(menuName: string) {
+        return this.helper.checkWorkOrderAreaAccess(this.userType, this.worksOrderAccess, this.worksOrderUsrAccess, menuName)
+
+    }
 
 
 

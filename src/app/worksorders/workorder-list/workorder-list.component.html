@@ -343,10 +343,11 @@
 
 
         <div class="dropdown-toggle">
-          <div [ngClass]="{'disabled' : menuData.wottemplatetype != 'Works Order Milestone'}" class="dropdown-item">
+          <div [ngClass]="{'disabled' : disableMilestoneBtn(menuData) }" class="dropdown-item">
             Milestones</div>
           <div class="dropdown-menu milestoneMenu">
-            <a *ngIf="woMenuAccess('Milestones')" class="dropdown-item" href="javascript:void(0)"
+            <a [ngClass]="{'disabled' : menuData.wottemplatetype != 'Works Order Milestone'}"
+              *ngIf="woMenuAccess('Milestones')" class="dropdown-item" href="javascript:void(0)"
               (click)="openManageMilestonePopup(menuData, 'checklist')">Milestones</a>
             <a *ngIf="woMenuAccess('Manage Milestones')" class="dropdown-item" href="javascript:void(0)"
               (click)="openManageMilestonePopup(menuData, 'manage')">Manage Milestones</a>

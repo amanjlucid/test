@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, ViewChild, ChangeDetectorRef, HostListener } from '@angular/core';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { FilterService, SelectableSettings, TreeListComponent, ExpandEvent, RowClassArgs } from '@progress/kendo-angular-treelist';
 import { AlertService, HelperService, WorksorderManagementService, ConfirmationDialogService, SharedService, WorksOrdersService } from '../../_services'
@@ -6,6 +6,7 @@ import { SubSink } from 'subsink';
 import { Router } from '@angular/router';
 import { SortDescriptor } from '@progress/kendo-data-query';
 import { combineLatest } from 'rxjs';
+import { TooltipDirective } from '@progress/kendo-angular-tooltip';
 
 @Component({
   selector: 'app-worksorders-management',
@@ -74,6 +75,17 @@ export class WorksordersManagementComponent implements OnInit {
   openMilestoneFor = "checklist";
   programmeLogFor = "workorder"
 
+  @ViewChild(TooltipDirective) public tooltipDir: TooltipDirective;
+  @HostListener('click', ['$event']) onClick(event) {
+    const element = event.target as HTMLElement;
+    if (element.className.indexOf('fas fa-bars') == -1) {
+      this.hideMenu();
+    }
+    // event.preventDefault();
+  }
+  menuData: any;
+  mousePositioin: any = 0;
+
   constructor(
     private worksorderManagementService: WorksorderManagementService,
     private helperService: HelperService,
@@ -120,6 +132,16 @@ export class WorksordersManagementComponent implements OnInit {
 
   ngOnDestroy() {
     this.subs.unsubscribe();
+    const elements = document.querySelectorAll('.menuDiv .dropdown-item');
+    elements.forEach(element => {
+      element.removeEventListener("click", (e) => { this.hideMenu() });
+    });
+  }
+
+  ngAfterViewInit() {
+    document.querySelector('.k-grid .k-grid-content').addEventListener('scroll', (e) => {
+      this.tooltipDir.hide();
+    });
   }
 
   rowCallback(context: RowClassArgs) {
@@ -338,8 +360,56 @@ export class WorksordersManagementComponent implements OnInit {
       )
     }
 
+  }
+
+
+  getTopMargin() {
+    if (this.mousePositioin == undefined) return;
+    const { y } = this.mousePositioin;
+    if (y > 680 && this.menuData.treelevel == 2) return "-170px";
+    return "-100px";
 
   }
+
+  openMenu(e, dataItem) {
+    if (dataItem != undefined) {
+      if (dataItem.treelevel == 1) {
+        if (this.selectedProgramme?.wprsequence != dataItem.wprsequence) {
+          this.helperService.getWorkOrderSecurity(dataItem.wosequence);
+          this.helperService.getUserTypeWithWOAndWp(dataItem.wosequence, dataItem.wprsequence);
+        }
+        this.selectedProgramme = dataItem
+      }
+
+      if (dataItem.treelevel == 2) {
+        if (this.selctedWorksOrder?.wosequence != dataItem.wosequence) {
+          this.helperService.getWorkOrderSecurity(dataItem.wosequence)
+          this.helperService.getUserTypeWithWOAndWp(dataItem.wosequence, dataItem.wprsequence);
+        }
+
+        this.selctedWorksOrder = dataItem;
+      }
+
+      this.mousePositioin = { x: e.pageX, y: e.pageY };
+      const element = e.target as HTMLElement;
+      this.menuData = dataItem;
+      this.tooltipDir.toggle(element);
+
+      const elements = document.querySelectorAll('.menuDiv .dropdown-item');
+      elements.forEach(element => {
+        element.addEventListener("click", (e) => { this.hideMenu() });
+      });
+    }
+
+  }
+
+
+  hideMenu() {
+    this.tooltipDir.hide();
+    this.menuData = undefined;
+  }
+
+
 
   setSeletedRow(dataItem) {
     // console.log(this.selectedProgramme);
