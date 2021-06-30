@@ -287,6 +287,10 @@ export class WorksOrdersService {
         return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWorksOrderReportingPayment?${qs}`, this.httpOptions);
     }
 
+    ValidateAuthorisePayment(params) {
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/ValidateAuthorisePayment`, params, this.httpOptions);
+    }
+
 
 
 }
