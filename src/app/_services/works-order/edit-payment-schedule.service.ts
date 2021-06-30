@@ -60,6 +60,7 @@ export class EditPaymentScheduleService extends BehaviorSubject<any[]> {
         if (this.serviceFor == "valuation") apiCall = this.getValuation(params);
 
         apiCall.subscribe((data: any) => {
+            // console.log(data);
             if (data.isSuccess) {
                 this.data = data.data;
                 this.originalData = cloneData(this.data);
@@ -72,8 +73,6 @@ export class EditPaymentScheduleService extends BehaviorSubject<any[]> {
 
         });
     }
-
-
 
     public create(item: any): void {
         this.createdItems.push(item);
@@ -172,7 +171,6 @@ export class EditPaymentScheduleService extends BehaviorSubject<any[]> {
 
         if (completed.length == 0) return;
 
-
         zip(...completed).subscribe((data) => {
             if (data[0] != undefined) {
                 const resp: any = data[0];
@@ -204,6 +202,7 @@ export class EditPaymentScheduleService extends BehaviorSubject<any[]> {
         this.deletedItems = [];
         this.updatedItems = [];
         this.createdItems = [];
+        super.next([]);
     }
 
     private serializeModels(data?: any): string {

@@ -313,8 +313,8 @@ export class WorksOrdersService {
     //     return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWEBWorksOrdersPaymentScheduleForWorksOrder?${qs}`, this.httpOptions);
     // }
 
-    WorksRefreshPaymentSchedule(qs) {
-        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/WorksRefreshPaymentSchedule?${qs}`, this.httpOptions);
+    WorksRefreshPaymentSchedule(wosequence, wprsequence) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/WorksRefreshPaymentSchedule?wosequence=${wosequence}&wprsequence=${wprsequence}`, this.httpOptions);
     }
 
 
@@ -355,6 +355,9 @@ export class WorksOrdersService {
         return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/CheckEnterValuationButtonVisibility?WOSequence=${WOSequence}&PayDate=${PayDate}&PayStatus=${PayStatus}&MinPayDate=${MinPayDate}`, this.httpOptions);
     }
 
+    ValidateAuthorisePayment(params) {
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/ValidateAuthorisePayment`, params, this.httpOptions);
+    }
 
 
 }

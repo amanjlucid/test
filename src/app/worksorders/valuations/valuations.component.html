@@ -110,17 +110,17 @@
                 (cellClick)="cellClickHandler($event)" (cellClose)="cellCloseHandler($event)"
                 (cancel)="cancelHandler($event)" (save)="saveHandler($event)" (remove)="removeHandler($event)"
                 (add)="addHandler($event)" [navigable]="false" [rowHeight]="36" scrollable="virtual" [resizable]="true"
-                [rowClass]="rowCallback">
+                [rowClass]="rowCallback" [selectable]="selectableSettings">
 
-                <kendo-grid-column title=" " width="37" [filterable]="false" [sortable]="false">
+                <!-- <kendo-grid-column title=" " width="37" [filterable]="false" [sortable]="false">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <li class="nav-item dropdown list-unstyled" style="margin-top: -7px;">
                             <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
                             <div class="dropdown-menu">
-                                <!-- <a (click)="SetValuationToZeroPaymentClick(dataItem)" class="dropdown-item"
+                                <a (click)="SetValuationToZeroPaymentClick(dataItem)" class="dropdown-item"
                                     href="javascript:void(0)">Set to 0 Payment</a>
                                 <a class="dropdown-item" href="javascript:void(0)"
-                                    (click)="WOCreateXportOutputReport(525, 'Valuation Report')">Valuation Report</a> -->
+                                    (click)="WOCreateXportOutputReport(525, 'Valuation Report')">Valuation Report</a>
 
                                 <a [ngClass]="{'disabled' : paymentScheduleInp.wpspaymentstatus != 'Unpaid'}"
                                     (click)="openGloabalValuation(dataItem)" class="dropdown-item"
@@ -130,7 +130,7 @@
                         </li>
 
                     </ng-template>
-                </kendo-grid-column>
+                </kendo-grid-column> -->
 
                 <kendo-grid-column field="wopname" title="Phase" width="80">
                 </kendo-grid-column>
@@ -227,7 +227,9 @@
         </div>
 
         <div class="col-md-8 text-left mt-2">
-            <!-- <button type="button" class="btn btn-sm themeButton">Valuation Report</button> -->
+            <button (click)="openGloabalValuation()" type="button" class="btn btn-sm themeButton mr-1"
+                [disabled]="paymentScheduleInp.wpspaymentstatus != 'Unpaid' || !selectedValuation || selectedValuation.woavvaluationstatus == 'Completion'">Global
+                Valuation Updates</button>
 
             <button [disabled]="!selectedValuation || 
                 paymentScheduleInp.wpspaymentstatus != 'Unpaid' || 

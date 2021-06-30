@@ -30,6 +30,7 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
       filters: []
     }
   }
+  gridView: DataResult;
   selectableSettings: SelectableSettings;
   gridLoading = true;
   mySelection: any[] = [];
@@ -37,8 +38,13 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
   pageSize = 25;
   openWOEditPaymentScheduleWindow = false;
   WOPaymentsWindow = false;
+  currentUser = JSON.parse(localStorage.getItem('currentUser'));
+  openWOAddPaymentScheduleWindow: boolean;
+  openWOCreatePaymentScheduleWindow: boolean;
 
-
+  //valuation
+  openValuationWindow = false;
+  valuationBtnAccess: boolean = false;
 
 
 
@@ -47,11 +53,8 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
 
   disabled = false;
   ShowFilter = false;
-  gridView: DataResult;
-  // gridLoading = true
-
   GridData: any;
-  currentUser = JSON.parse(localStorage.getItem('currentUser'));
+
   loading = false;
   selectedItem: any;
   AssetValuationTotal: any;
@@ -95,12 +98,7 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
 
   public paymentScheduleData;
 
-  openWOAddPaymentScheduleWindow: boolean;
-  openWOCreatePaymentScheduleWindow: boolean;
 
-  //valuation
-  openValuationWindow = false;
-  valuationBtnAccess: boolean = false;
 
   constructor(
     private worksOrdersService: WorksOrdersService,
@@ -120,24 +118,7 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
 
 
   ngOnInit(): void {
-    console.log({ wo: this.worksOrderData });
     this.GetWEBWorksOrdersPaymentScheduleForWorksOrder();
-
-    this.AssetValuationTotal = {
-      "wosequence": '',
-      "wpspaymentdate": '',
-      "totalcommittedvalue": '',
-      "totalpendingvalue": 0,
-      "totalpaymenttodate": 0,
-      "totalpaymentpcttodate": 0,
-      "totalcontractorvaluation": 0,
-      "totalcontractorvaluationpct": 0,
-      "totalagreedvaluation": 0,
-      "totalagreedvaluationpct": 0,
-      "totalcalcpaymentvalue": 0,
-      "totaloutstandingpaymentvalue": 0
-    };
-
   }
 
 
@@ -198,7 +179,6 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
   }
 
   cellClickHandler({ dataItem }) {
-    console.log(dataItem);
     this.setSelectedRow(dataItem);
     // this.selectedSingleDefect = dataItem;
   }
@@ -291,9 +271,6 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
       this.worksOrdersService.GetWebWorksOrderPaymentScheduleDetails(qs).subscribe(
         data => {
 
-
-          ///  console.log('GetWebWorksOrdersAssetValuationTotal api response ' + JSON.stringify(data));
-
           if (data.isSuccess) {
 
             let resultData = data.data;
@@ -309,7 +286,6 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
 
           this.chRef.detectChanges();
 
-          // console.log('WorkOrderRefusalCodes api reponse' + JSON.stringify(data));
         },
         err => this.alertService.error(err)
       )
@@ -617,60 +593,19 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
 
 
 
-
-  closeEnterValuationWindowWindow() {
-
-    this.enterValuationWindow = false;
-
-
-
-
-  }
-
-
-
-  WorksRefreshPaymentSchedule(item) {
-    this.selectedItem = item;
-    const params = {
-      "wosequence": item.wosequence,
-      "wprsequence": item.wprsequence,
-    };
-    const qs = Object.keys(params).map(key => `${key}=${params[key]}`).join('&');
+  WorksRefreshPaymentSchedule() {
+    const { wosequence, wprsequence } = this.worksOrderData
     this.subs.add(
-      this.worksOrdersService.WorksRefreshPaymentSchedule(qs).subscribe(
+      this.worksOrdersService.WorksRefreshPaymentSchedule(wosequence, wprsequence).subscribe(
         data => {
-          //console.log('WorksRefreshPaymentSchedule api response ' + JSON.stringify(data));
-
           if (data.isSuccess) {
-
             let resultData = data.data;
-
-            //alert(resultData.validYN);
-
-            if (resultData.validYN == 'Y') {
-
-
-              this.GetWEBWorksOrdersPaymentScheduleForWorksOrder();
-
-            }
-
-
-
-          } else {
-            this.alertService.error(data.message);
-            this.loading = false
-          }
-
+            if (resultData.validYN == 'Y') this.GetWEBWorksOrdersPaymentScheduleForWorksOrder();
+          } else this.alertService.error(data.message);
           this.chRef.detectChanges();
-
-          // console.log('WorkOrderRefusalCodes api reponse' + JSON.stringify(data));
-        },
-        err => this.alertService.error(err)
+        }, err => this.alertService.error(err)
       )
     )
-
-
-
   }
 
 
@@ -854,6 +789,26 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
   }
 
 
+  openWOAddPaymentSchedule() {
+    $('.wopmpaymentoverlay').addClass('ovrlay');
+    this.openWOAddPaymentScheduleWindow = true;
+  }
+
+  closeAddPaymentScheduleWindow(eve) {
+    $('.wopmpaymentoverlay').removeClass('ovrlay');
+    this.openWOAddPaymentScheduleWindow = eve;
+  }
+
+
+  openWOCreatePaymentSchedule() {
+    $('.wopmpaymentoverlay').addClass('ovrlay');
+    this.openWOCreatePaymentScheduleWindow = true;
+  }
+
+  closeCreatePaymentScheduleWindow(eve) {
+    $('.wopmpaymentoverlay').removeClass('ovrlay');
+    this.openWOCreatePaymentScheduleWindow = eve;
+  }
 
 
 
@@ -862,7 +817,6 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
 
 
 
-  
 
   enterValuation(item) {
 
