@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
-import { AlertService, HelperService, LoaderService, WorksorderManagementService, ConfirmationDialogService, WorksOrdersService, PropertySecurityGroupService, SharedService } from 'src/app/_services';
+import { AlertService, HelperService,WorksorderReportService, LoaderService, WorksorderManagementService, ConfirmationDialogService, WorksOrdersService, PropertySecurityGroupService, SharedService } from 'src/app/_services';
 import { combineLatest } from 'rxjs';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { SelectableSettings, PageChangeEvent, RowArgs, GridComponent } from '@progress/kendo-angular-grid';
@@ -55,6 +55,8 @@ export class WoPmPaymentsComponent implements OnInit {
         private sharedService: SharedService,
         private confirmationDialogService: ConfirmationDialogService,
           private helperService: HelperService,
+          private worksOrderReportService: WorksorderReportService,
+
     ) { }
 
     ngOnInit(): void {
@@ -154,9 +156,109 @@ export class WoPmPaymentsComponent implements OnInit {
     }
 
 
+      WOCreateXportOutputReport(xPortId, reportName, item) {
+
+
+
+        let params = {
+          "intXportId": xPortId,
+          "lstParamNameValue": ["Works Order Number", this.worksOrderData.wosequence],
+          "lngMaxRows": 40000
+        };
+
+        if (xPortId == 526) {
+          params.lstParamNameValue = ["Work Order Number",this.worksOrderData.wosequence,"Work Order Payment Number",item.wpysequence];
+        }
+
+
+        this.worksOrderReportService.WOCreateXportOutput(params).subscribe(
+          (data) => {
+
+            const { columns, rows } = data[0];
+            const tempCol = columns.map(x => x.columnName);
+            const tempRow = rows.map(x => x.values);
+            let result: any;
+            let label: any;
+
+            if (tempRow.length > 0) {
+              result = tempRow.map(x => x.reduce(function (result, field, index) {
+                var fieldKey = tempCol[index].replace(new RegExp(" ", 'g'), "");
+                result[fieldKey] = field;
+                return result;
+              }, {}));
+
+              label = tempCol.reduce(function (result, field) {
+                var fieldKey = field.replace(new RegExp(" ", 'g'), "");
+                result[fieldKey] = field;
+                return result;
+              }, {});
+
+              let fileName = reportName + " " + this.worksOrderData.wosequence;
+              this.helperService.exportAsExcelFile(result, fileName, label);
+            } else {
+              this.alertService.error("No Record Found.");
+            }
+            this.chRef.detectChanges();
+          },
+          error => {
+            this.alertService.error(error);
+
+          }
+        )
+      }
+
+
+AuthorisePaymentFinalCall(){
+
+
+ let wpspaymentdate =   this.helperService.formatDateWithoutTime(this.selectedItem.wpspaymentdate);
+
+  const params = {
+  "WPRSEQUENCE":this.selectedItem.wprsequence,
+  	"WOSEQUENCE":this.selectedItem.wosequence,
+  	"WPSPAYMENTDATE":"4/30/2021",
+  	"strUser":this.currentUser.userId,
+  	"strRequestUser":this.selectedItem.requestusername,
+  	"WONAME":this.selectedItem.woname,
+  	"WPYSEQUENCE":this.selectedItem.wpysequence
+  };
+
+
+  this.subs.add(
+      this.worksOrdersService.AuthorisePayment(params).subscribe(
+          data => {
+
+
+              console.log('AuthorisePayment api response '+ JSON.stringify(data));
+
+              if (data.isSuccess) {
+
+                                     let resultData = data.data;
+                                     if(resultData.validYN == 'Y'){
+                                           this.alertService.error('Authorised');
+                                     }else{
+                                        this.alertService.error(resultData.validationMessage);
+                                     }
+              } else {
+                  this.alertService.error(data.message);
+                  this.loading = false
+              }
+
+              this.chRef.detectChanges();
+
+              // console.log('WorkOrderRefusalCodes api reponse' + JSON.stringify(data));
+          },
+          err => this.alertService.error(err)
+      )
+  )
+
+
+
+}
 autthorisePaymentClick(item){
 
 
+  this.selectedItem = item;
 
   const params = {
 
@@ -178,7 +280,7 @@ autthorisePaymentClick(item){
 
                                     let resultData = data.data;
                                      if(resultData.validYN == 'Y'){
-                                         this.alertService.success(resultData.validationMessage);
+                                         this.AuthorisePaymentFinalCall();
                                      }else{
                                         this.alertService.error(resultData.validationMessage);
                                      }
