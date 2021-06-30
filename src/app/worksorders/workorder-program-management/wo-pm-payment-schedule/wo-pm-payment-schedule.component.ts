@@ -36,7 +36,7 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
   gridData: any;
   pageSize = 25;
   openWOEditPaymentScheduleWindow = false;
-
+  WOPaymentsWindow = false;
 
 
 
@@ -843,6 +843,15 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
   }
 
 
+  openWOPMPayments() {
+    $('.wopmpaymentoverlay').addClass('ovrlay');
+    this.WOPaymentsWindow = true;
+  }
+
+  closeWOPMPaymentsWindow($event) {
+    $('.wopmpaymentoverlay').removeClass('ovrlay');
+    this.WOPaymentsWindow = $event;
+  }
 
 
 
@@ -851,6 +860,9 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
 
 
 
+
+
+  
 
   enterValuation(item) {
 

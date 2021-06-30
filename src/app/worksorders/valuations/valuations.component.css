@@ -28,3 +28,15 @@
 .valuationHead .valuationDetailBox .innerBox {
     margin-top: 4px;
 }
+
+.globalvaluationForm {
+    width: 100% !important;
+}
+
+.notEditableRow .editableCol{
+    background-color: #c5c0c0 !important;
+}
+
+.editableRow .editableCol{
+    background-color: #affaaf !important;
+}

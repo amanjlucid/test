@@ -90,7 +90,7 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
     }
   }
   openWOPaymentScheduleWindow: boolean;
-  WOPaymentsWindow = false;
+
 
   constructor(
     private worksOrderService: WorksOrdersService,
@@ -857,17 +857,7 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
     this.openWOPaymentScheduleWindow = $event;
   }
 
-  openWOPMPayments(item) {
-
-    this.selectedWorksOrder = item;
-    $('.wopmpaymentoverlay').addClass('ovrlay');
-    this.WOPaymentsWindow = true;
-  }
-
-  closeWOPMPaymentsWindow($event) {
-    $('.wopmpaymentoverlay').removeClass('ovrlay');
-    this.WOPaymentsWindow = $event;
-  }
+  
 
 
 }

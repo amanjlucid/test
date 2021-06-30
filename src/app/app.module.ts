@@ -280,7 +280,7 @@ import { AssetResidentContainerComponent } from './asset-resident-container/asse
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptorService, multi: true },
     { provide: NgbDateParserFormatter, useClass: NgbDateCustomParserFormatter },
-
+    
   ],
   // exports: [
   //   DialogModule

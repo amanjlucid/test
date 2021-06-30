@@ -1,10 +1,10 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, ViewEncapsulation } from '@angular/core';
 import { SubSink } from 'subsink';
 import { process, State } from '@progress/kendo-data-query';
 import { AlertService, EditPaymentScheduleService } from 'src/app/_services';
-import { Validators, FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { GridDataResult } from '@progress/kendo-angular-grid';
+import { GridComponent, GridDataResult, RowClassArgs } from '@progress/kendo-angular-grid';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { WorkOrdersValuationModel } from '../../_models'
 
@@ -12,7 +12,8 @@ import { WorkOrdersValuationModel } from '../../_models'
   selector: 'app-valuations',
   templateUrl: './valuations.component.html',
   styleUrls: ['./valuations.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  encapsulation: ViewEncapsulation.None
 })
 
 export class ValuationsComponent implements OnInit {
@@ -33,7 +34,17 @@ export class ValuationsComponent implements OnInit {
   formGroup: FormGroup;
   gridLoading = true;
   AssetValuationTotal: any;
+  selectedValuation: any;
+  @ViewChild('grid') grid: GridComponent;
+  gridFormStatus = false;
 
+  //global valuation form
+  openGlobalValuation = false;
+  globalvaluationForm: FormGroup;
+  submitted = false;
+  formErrors: any;
+  validationMessage = {};
+  setToZero = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -51,13 +62,26 @@ export class ValuationsComponent implements OnInit {
     this.view = this.editService.pipe(map(data => process(data, this.gridState)));
     this.editService.read(this.paymentScheduleInp);
     this.gridLoading = false;
-    
+
+    // setTimeout(() => {
+    //   console.log(this.grid);
+    // }, 5000);
   }
 
   ngOnDestroy() {
     this.subs.unsubscribe();
   }
 
+
+  rowCallback(context: RowClassArgs) {
+    const { woavvaluationstatus } = context.dataItem;
+    if (woavvaluationstatus.toLowerCase() == "completion") {
+      return { notEditableRow: true }
+    } else {
+      return { editableRow: true }
+    }
+
+  }
 
   onStateChange(state: State) {
     this.gridState = state;
@@ -74,12 +98,12 @@ export class ValuationsComponent implements OnInit {
       woassstatus: dataItem.woassstatus,
       woavagreedupdatedate: dataItem.woavagreedupdatedate,
       woavagreedupdateuser: dataItem.woavagreedupdateuser,
-      woavagreedvaluation: dataItem.woavagreedvaluation,
-      woavagreedvaluationpct: dataItem.woavagreedvaluationpct,
+      woavagreedvaluation: [dataItem.woavagreedvaluation, [Validators.required, Validators.pattern("^[0-9.]*$"), Validators.maxLength(5)]],
+      woavagreedvaluationpct: [dataItem.woavagreedvaluationpct, [Validators.required, Validators.min(0), Validators.max(100), Validators.pattern("^[0-9.]*$"), Validators.maxLength(3)]],
       woavcalcpaymentvalue: dataItem.woavcalcpaymentvalue,
       woavcommittedvalue: dataItem.woavcommittedvalue,
-      woavcontractorvaluation: dataItem.woavcontractorvaluation,
-      woavcontractorvaluationpct: dataItem.woavcontractorvaluationpct,
+      woavcontractorvaluation: [dataItem.woavcontractorvaluation, [Validators.required, Validators.pattern("^[0-9.]*$"), Validators.maxLength(5)]],
+      woavcontractorvaluationpct: [dataItem.woavcontractorvaluationpct, [Validators.required, Validators.min(0), Validators.max(100), Validators.pattern("^[0-9.]*$"), Validators.maxLength(3)]],
       woavcontractupdatedate: dataItem.woavcontractupdatedate,
       woavcontractupdateuser: dataItem.woavcontractupdateuser,
       woavcreatedate: dataItem.woavcreatedate,
@@ -101,32 +125,102 @@ export class ValuationsComponent implements OnInit {
 
 
   cellClickHandler({ sender, rowIndex, column, columnIndex, dataItem, isEdited }) {
-    if (!isEdited && !this.isReadOnly(column.field)) {
-      let scheduleForm: FormGroup = this.createFormGroup(dataItem)
-      sender.editCell(rowIndex, columnIndex, scheduleForm);
+    this.selectedValuation = dataItem;
 
-      //set  0 if retention or retention value changes
-      // const retentionCtr = scheduleForm.get('wpsretentionpct');
-      // const retentionValueCtr = scheduleForm.get('wpsretentionvalue');
-      // this.subs.add(
-      //   retentionCtr.valueChanges.pipe(distinctUntilChanged()).subscribe(val => {
-      //     if (val == null) return;
-      //     dataItem.wpsretentionvalue = 0;
-      //     scheduleForm.patchValue({ wpsretentionvalue: 0 }, { emitEvent: false });
-      //     retentionCtr.updateValueAndValidity({ emitEvent: false });
-      //   }),
+    if (!isEdited && !this.isReadOnly(column.field) && dataItem.woavvaluationstatus.toLowerCase() != "completion") {
+      this.setToZero = false;
+      this.selectedValuation.woavvaluationstatus = 'Valuation Agreed';
+      let valuationForm: FormGroup = this.createFormGroup(dataItem)
+      sender.editCell(rowIndex, columnIndex, valuationForm);
 
-      //   retentionValueCtr.valueChanges.pipe(distinctUntilChanged()).subscribe(val => {
-      //     if (val == null) return;
-      //     dataItem.wpsretentionpct = 0
-      //     scheduleForm.patchValue({ wpsretentionpct: 0 }, { emitEvent: false });
-      //     retentionValueCtr.updateValueAndValidity({ emitEvent: false });
-      //   }),
-      // )
+      if (valuationForm.status == 'INVALID') this.gridFormStatus = false;
+      if (valuationForm.status == 'VALID') this.gridFormStatus = true;
+
+      const conValCtr = valuationForm.get('woavcontractorvaluation');
+      const conValPctCtr = valuationForm.get('woavcontractorvaluationpct');
+      const agValCtr = valuationForm.get('woavagreedvaluation');
+      const agValPctCtr = valuationForm.get('woavagreedvaluationpct');
+
+      const { woavcommittedvalue } = dataItem;
+      this.subs.add(
+        conValCtr.valueChanges.pipe(distinctUntilChanged()).subscribe(
+          val => {
+            if (val > 0 && woavcommittedvalue > 0) {
+              const perc = this.toFix((val / woavcommittedvalue) * 100, 2);
+              const conPct = this.applyHundredPercentVlaue(val, woavcommittedvalue, perc);
+              if (this.toFix(conValPctCtr.value, 2) != conPct) {
+                valuationForm.patchValue({ woavcontractorvaluationpct: parseFloat(conPct) }, { emitEvent: false });
+              }
+            } else if (val == 0) {
+              valuationForm.patchValue({ woavcontractorvaluationpct: 0 }, { emitEvent: false });
+            }
+            conValCtr.updateValueAndValidity({ emitEvent: false });
+          }
+        )
+      )
+
+
+      this.subs.add(
+        conValPctCtr.valueChanges.pipe(distinctUntilChanged()).subscribe(
+          val => {
+            const conVal = this.toFix((woavcommittedvalue * val) / 100, 2);
+            if (this.toFix(conValCtr.value, 2) != conVal) {
+              valuationForm.patchValue({ woavcontractorvaluation: parseFloat(conVal) }, { emitEvent: false });
+            }
+            conValPctCtr.updateValueAndValidity({ emitEvent: false });
+          }
+        )
+      )
+
+      //agreed
+      this.subs.add(
+        agValCtr.valueChanges.pipe(distinctUntilChanged()).subscribe(
+          val => {
+            if (val > 0 && woavcommittedvalue > 0) {
+              const perc = this.toFix((val / woavcommittedvalue) * 100, 2);
+              const agPct = this.applyHundredPercentVlaue(val, woavcommittedvalue, perc);
+              if (this.toFix(agValPctCtr.value, 2) != agPct) {
+                valuationForm.patchValue({ woavagreedvaluationpct: parseFloat(agPct) }, { emitEvent: false });
+              }
+            } else if (val == 0) {
+              valuationForm.patchValue({ woavagreedvaluationpct: 0 }, { emitEvent: false });
+            }
+            agValCtr.updateValueAndValidity({ emitEvent: false });
+          }
+        )
+      )
+
+      this.subs.add(
+        agValPctCtr.valueChanges.pipe(distinctUntilChanged()).subscribe(
+          val => {
+            const agVal = this.toFix((woavcommittedvalue * val) / 100, 2);
+            if (this.toFix(agValCtr.value, 2) != agVal) {
+              valuationForm.patchValue({ woavagreedvaluation: parseFloat(agVal) }, { emitEvent: false });
+            }
+            agValPctCtr.updateValueAndValidity({ emitEvent: false });
+          }
+        )
+      )
+
+
+      this.chRef.detectChanges();
     }
 
   }
 
+  toFix(val, place) {
+    return parseFloat(val).toFixed(place)
+  }
+
+  applyHundredPercentVlaue(val, val2, perc) {
+    if (perc == 100) {
+      if (val == val2) {
+        return perc;
+      } else {
+        return 99.99;
+      }
+    } else return perc;
+  }
 
   cellCloseHandler(args: any) {
     const { formGroup, dataItem } = args;
@@ -163,9 +257,14 @@ export class ValuationsComponent implements OnInit {
   }
 
   saveChanges(grid: any): void {
+    if (!this.gridFormStatus) {
+      this.alertService.error("There are some invalid fields");
+      return;
+    }
     grid.closeCell();
     grid.cancelCell();
-    this.editService.saveChanges();
+    const { userId } = this.currentUser
+    this.editService.updateChanges(this.setToZero, { userId, ps: this.paymentScheduleInp });
   }
 
   cancelChanges(grid: any): void {
@@ -208,6 +307,169 @@ export class ValuationsComponent implements OnInit {
         }, err => this.alertService.error(err)
       )
     )
+  }
+
+
+  openGloabalValuation(item) {
+    this.selectedValuation = item;
+    this.initializeGlobalValuationForm();
+    $(".valuationOverlay").addClass("ovrlay");
+    this.openGlobalValuation = true;
+    this.chRef.detectChanges();
+  }
+
+  closeGlobalValuation() {
+    this.openGlobalValuation = false;
+    $(".valuationOverlay").removeClass("ovrlay");
+  }
+
+  initializeGlobalValuationForm() {
+    this.globalvaluationForm = this.formBuilder.group({
+      cvt: ['N'],
+      cvv: [''],
+      cvp: [''],
+      avt: ['N'],
+      avv: [''],
+      avp: [''],
+      addNotes: ['N'],
+      notes: [''],
+    });
+
+    const disableFields = ['cvv', 'cvp', 'avv', 'avp', 'notes'];
+    for (const disableField of disableFields) {
+      this.globalvaluationForm.get(disableField).disable();
+    }
+
+    const cvtCtr = this.globalvaluationForm.get('cvt');
+    const avtCtr = this.globalvaluationForm.get('avt');
+    const addNotesCtr = this.globalvaluationForm.get('addNotes');
+
+    this.subs.add(
+      cvtCtr.valueChanges.pipe(distinctUntilChanged()).subscribe(
+        val => {
+          console.log(val);
+          if (val == "P") {
+            this.globalvaluationForm.get('cvp').enable();
+            this.globalvaluationForm.get('cvv').disable();
+          }
+
+          if (val == "V") {
+            this.globalvaluationForm.get('cvv').enable();
+            this.globalvaluationForm.get('cvp').disable();
+          }
+
+          if (val == "N") {
+            this.globalvaluationForm.get('cvp').disable();
+            this.globalvaluationForm.get('cvv').disable();
+          }
+
+        }
+      ),
+
+
+      avtCtr.valueChanges.pipe(distinctUntilChanged()).subscribe(
+        val => {
+          if (val == "P") {
+            this.globalvaluationForm.get('avp').enable();
+            this.globalvaluationForm.get('avv').disable();
+          }
+
+          if (val == "V") {
+            this.globalvaluationForm.get('avv').enable();
+            this.globalvaluationForm.get('avp').disable();
+          }
+
+          if (val == "N") {
+            this.globalvaluationForm.get('avp').disable();
+            this.globalvaluationForm.get('avv').disable();
+          }
+
+        }
+      ),
+
+
+      addNotesCtr.valueChanges.pipe(distinctUntilChanged()).subscribe(
+        val => {
+          if (val == "A") {
+            this.globalvaluationForm.get('notes').enable();
+          }
+
+          if (val == "N") {
+            this.globalvaluationForm.get('notes').disable();
+          }
+        }
+      )
+
+    )
+
+  }
+
+  formErrorObject() {
+    this.formErrors = {
+      cvt: '',
+      cvv: '',
+      cvp: '',
+      avt: '',
+      avv: '',
+      avp: '',
+      addNotes: '',
+      notes: '',
+    }
+  }
+
+  logValidationErrors(group: FormGroup): void {
+    Object.keys(group.controls).forEach((key: string) => {
+      const abstractControl = group.get(key);
+      if (abstractControl instanceof FormGroup) {
+        this.logValidationErrors(abstractControl);
+      } else {
+        if (abstractControl && !abstractControl.valid && abstractControl.errors != null) {
+          const messages = this.validationMessage[key];
+          for (const errorKey in abstractControl.errors) {
+            if (errorKey) {
+              this.formErrors[key] += messages[errorKey] + ' ';
+            }
+          }
+        }
+      }
+    })
+  }
+
+
+  onSubmit() {
+    this.submitted = true;
+    this.formErrorObject(); // empty form error or reinistialize 
+    // this.logValidationErrors(this.globalvaluationForm);
+    console.log(this.globalvaluationForm);
+    let rowData: any = [[...this.selectedValuation]];
+    let formRawVal = this.globalvaluationForm.getRawValue();
+    const { cvv, cvp, avv, avp, notes } = formRawVal;
+    // debugger;
+    if (rowData.length > 0) {
+      for (let row of rowData) {
+        // console.log('in')
+        if (cvv) row.woavcontractorvaluation = parseFloat(cvv);
+        if (cvp) row.woavcontractorvaluationpct = parseFloat(cvp);
+        if (avv) row.woavagreedvaluation = parseFloat(avv);
+        if (avp) row.woavagreedvaluationpct = parseFloat(avp);
+        if (notes) row.woavnotes = parseFloat(notes);
+        // debugger;
+      }
+
+      this.closeGlobalValuation()
+    }
+
+  }
+
+
+
+  setValutionToZero() {
+    if (this.selectedValuation) {
+      this.selectedValuation.woavagreedvaluation = 0;
+      this.selectedValuation.woavagreedvaluationpct = 0;
+      this.selectedValuation.woavvaluationstatus = 'Set to Zero';
+      this.setToZero = true;
+    }
   }
 
 }

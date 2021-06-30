@@ -4,6 +4,7 @@ import { BehaviorSubject, Observable, zip } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { appConfig } from '../../app.config';
 import { HelperService } from '../helper.service'
+import { AlertService } from '../alert.service';
 
 // const CREATE_ACTION = 'create';
 // const UPDATE_ACTION = 'update';
@@ -37,11 +38,18 @@ export class EditPaymentScheduleService extends BehaviorSubject<any[]> {
 
     constructor(
         private http: HttpClient,
-        private helperService: HelperService
+        private helperService: HelperService,
+        private alertService: AlertService
     ) { super([]); }
+
+
 
     public setServiceFor(string: 'paymentschedule' | 'valuation') {
         this.serviceFor = string;
+    }
+
+    public getOriginalData() {
+        return cloneData(this.originalData);
     }
 
     public read(params) {
@@ -50,9 +58,8 @@ export class EditPaymentScheduleService extends BehaviorSubject<any[]> {
         let apiCall: Observable<any>;
         if (this.serviceFor == "paymentschedule") apiCall = this.getWOScheduleData(params);
         if (this.serviceFor == "valuation") apiCall = this.getValuation(params);
-       
+
         apiCall.subscribe((data: any) => {
-            console.log(data)
             if (data.isSuccess) {
                 this.data = data.data;
                 this.originalData = cloneData(this.data);
@@ -114,6 +121,7 @@ export class EditPaymentScheduleService extends BehaviorSubject<any[]> {
     public hasChanges(): boolean {
         return Boolean(this.deletedItems.length || this.updatedItems.length || this.createdItems.length);
     }
+    
 
     public saveChanges(): void {
         if (!this.hasChanges()) {
@@ -138,6 +146,46 @@ export class EditPaymentScheduleService extends BehaviorSubject<any[]> {
 
         this.reset();
         zip(...completed).subscribe(() => this.read(woScheduleListParam));
+    }
+
+
+    public updateChanges(changesFor, reqParams): void {
+        if (!this.hasChanges()) {
+            return;
+        }
+
+        const completed = [];
+        let gridParam: any;
+
+        if (typeof changesFor == "boolean") {
+            if (this.serviceFor == "valuation") {
+                const { userId, ps } = reqParams;
+                gridParam = ps;
+                const params = { struserid: userId, model: this.updatedItems }
+                if (changesFor) {
+                    completed.push(this.setValuationToZeroPayment(params));
+                } else {
+                    completed.push(this.updateWorksOrderAssetValuation(params));
+                }
+            }
+        }
+
+        if (completed.length == 0) return;
+
+
+        zip(...completed).subscribe((data) => {
+            if (data[0] != undefined) {
+                const resp: any = data[0];
+                if (resp.isSuccess) {
+                    if (resp.data.validYN == "Y") {
+                        this.alertService.success(resp.data.validationMessage);
+                        this.reset();
+                        this.read(gridParam)
+                    } else this.alertService.error(resp.data.validationMessage);
+                } else this.alertService.error(resp.message)
+            }
+
+        });
     }
 
     public cancelChanges(): void {
@@ -186,6 +234,15 @@ export class EditPaymentScheduleService extends BehaviorSubject<any[]> {
         return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWebWorksOrdersAssetValuationTotal?wosequence=${wosequence}&paymentdate=${paymentdate}`, this.httpOptions)
             .pipe(map(res => <any[]>res));
     }
+
+    private setValuationToZeroPayment(params) {
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/SetValuationToZeroPayment`, params, this.httpOptions);
+    }
+
+    private updateWorksOrderAssetValuation(params) {
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/UpdateWorksOrderAssetValuation`, params, this.httpOptions);
+    }
+
 
 
 }

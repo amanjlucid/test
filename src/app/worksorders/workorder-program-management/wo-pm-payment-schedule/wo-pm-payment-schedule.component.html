@@ -31,7 +31,7 @@
       </div>
 
 
-      <button type="button" class="btn btn-sm themeButton" (click)="closePaymentScheduleWin()">Payments</button>
+      <button type="button" class="btn btn-sm themeButton" (click)="openWOPMPayments()">Payments</button>
       <button type="button" class="btn btn-sm themeButton" (click)="openWOEditPaymentSchedule()">Edit Schedule</button>
       <button type="button" class="btn btn-sm themeButton"
         (click)="WorksRefreshPaymentSchedule(dataItem)">Refresh</button>
@@ -481,7 +481,6 @@
 
   <kendo-window title="Display Payment Schedule Assets" *ngIf="DisplayPaymentAssetsWindow"
     (close)="closGetWebWorksOrderPaymentScheduleDetailsWindow()" [minWidth]="auto" [height]="auto" [minHeight]="auto">
-
     <div class="row headerArea">
       <div class="col-md-12 headerRow12">
         <div class="row">
@@ -493,19 +492,8 @@
               value="{{ worksOrderData.woname }}(Work Order No: {{ worksOrderData.wosequence }}) ">
           </div>
 
-
-
         </div>
       </div>
-
-
-
-
-
-
-
-
-
 
     </div>
 
@@ -658,5 +646,9 @@
     [worksOrderData]="worksOrderData" [openWOCreatePaymentScheduleWindow]="openWOCreatePaymentScheduleWindow"
     (closeCreatePaymentScheduleWindowEvent)="closeCreatePaymentScheduleWindow($event)">
   </app-wo-program-management-create-payment-schedule>
+
+  <app-wo-pm-payments *ngIf="WOPaymentsWindow" [worksOrderData]="worksOrderData" [WOPaymentsWindow]="WOPaymentsWindow"
+    (woPmPaymentsEvent)="closeWOPMPaymentsWindow($event)">
+  </app-wo-pm-payments>
 
 </kendo-window>

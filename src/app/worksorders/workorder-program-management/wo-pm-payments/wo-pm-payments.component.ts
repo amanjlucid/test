@@ -49,7 +49,6 @@ export class WoPmPaymentsComponent implements OnInit {
     constructor(
         private worksOrdersService: WorksOrdersService,
         private worksorderManagementService: WorksorderManagementService,
-
         private alertService: AlertService,
         private chRef: ChangeDetectorRef,
         private sharedService: SharedService,

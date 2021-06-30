@@ -109,23 +109,28 @@
                 [sort]="gridState.sort" [pageable]="false" [sortable]="true" (dataStateChange)="onStateChange($event)"
                 (cellClick)="cellClickHandler($event)" (cellClose)="cellCloseHandler($event)"
                 (cancel)="cancelHandler($event)" (save)="saveHandler($event)" (remove)="removeHandler($event)"
-                (add)="addHandler($event)" [navigable]="false" [rowHeight]="36" scrollable="virtual">
+                (add)="addHandler($event)" [navigable]="false" [rowHeight]="36" scrollable="virtual" [resizable]="true"
+                [rowClass]="rowCallback">
 
-                <!-- <kendo-grid-column title=" " width="37" [filterable]="false" [sortable]="false">
+                <kendo-grid-column title=" " width="37" [filterable]="false" [sortable]="false">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <li class="nav-item dropdown list-unstyled" style="margin-top: -7px;">
                             <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
                             <div class="dropdown-menu">
-                                <a (click)="SetValuationToZeroPaymentClick(dataItem)" class="dropdown-item"
+                                <!-- <a (click)="SetValuationToZeroPaymentClick(dataItem)" class="dropdown-item"
                                     href="javascript:void(0)">Set to 0 Payment</a>
                                 <a class="dropdown-item" href="javascript:void(0)"
-                                    (click)="WOCreateXportOutputReport(525, 'Valuation Report')">Valuation Report</a>
+                                    (click)="WOCreateXportOutputReport(525, 'Valuation Report')">Valuation Report</a> -->
 
+                                <a [ngClass]="{'disabled' : paymentScheduleInp.wpspaymentstatus != 'Unpaid'}"
+                                    (click)="openGloabalValuation(dataItem)" class="dropdown-item"
+                                    href="javascript:void(0)">Global
+                                    Valuation Updates</a>
                             </div>
                         </li>
 
                     </ng-template>
-                </kendo-grid-column> -->
+                </kendo-grid-column>
 
                 <kendo-grid-column field="wopname" title="Phase" width="80">
                 </kendo-grid-column>
@@ -135,32 +140,84 @@
                 </kendo-grid-column>
                 <kendo-grid-column field="woassstatus" title="Asset Status" width="120">
                 </kendo-grid-column>
-                <kendo-grid-column field="woavcommittedvalue" title="Committed" width="100">
+                <kendo-grid-column field="woavcommittedvalue" title="Committed" width="100"
+                    [style]="{'text-align': 'right'}">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.woavcommittedvalue | currency:'GBP':'symbol' }}
+                        </span>
+                    </ng-template>
                 </kendo-grid-column>
-                <kendo-grid-column field="woavpendingvalue" title="Pending" width="100">
+                <kendo-grid-column field="woavpendingvalue" title="Pending" width="100"
+                    [style]="{'text-align': 'right'}">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.woavcommittedvalue | currency:'GBP':'symbol' }}
+                        </span>
+                    </ng-template>
                 </kendo-grid-column>
-                <kendo-grid-column field="woavpaymenttodate" title="Payment to Date" width="140">
+                <kendo-grid-column field="woavpaymenttodate" title="Payment to Date" width="140"
+                    [style]="{'text-align': 'right'}">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.woavcommittedvalue | currency:'GBP':'symbol' }}
+                        </span>
+                    </ng-template>
                 </kendo-grid-column>
-                <kendo-grid-column field="woavretentionvaluetodate" title="Retention Value to Date" width="160">
+                <kendo-grid-column field="woavretentionvaluetodate" title="Retention Value to Date" width="160"
+                    [style]="{'text-align': 'right'}">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.woavcommittedvalue | currency:'GBP':'symbol' }}
+                        </span>
+                    </ng-template>
                 </kendo-grid-column>
                 <kendo-grid-column field="woavpaymentpcttodate" title="Payment % to Date" width="150">
                 </kendo-grid-column>
                 <kendo-grid-column field="woavvaluationstatus" title="Valuation Status" width="150">
                 </kendo-grid-column>
-                <kendo-grid-column field="woavcontractorvaluation" editor="numeric" title="Contractor Valuation"
-                    width="150">
+                <kendo-grid-column field="woavcontractorvaluation" editor="numeric" format="{0:n2}"
+                    title="Contractor Valuation" width="170" [style]="{'text-align': 'right'}"
+                    [class]="{'editableCol': true}">
+                    <!-- <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.woavcommittedvalue | currency:'GBP':'symbol' }}
+                        </span>
+                    </ng-template> -->
+                    <!-- <ng-template kendoGridEditTemplate let-dataItem="dataItem"> woavcontractorvaluationpct  
+                        <input [value]="dataItem.woavcommittedvalue" kendoGridFocusable />
+                    </ng-template> -->
+
                 </kendo-grid-column>
                 <kendo-grid-column field="woavcontractorvaluationpct" editor="numeric" title="Contractor Valuation %"
-                    width="150">
+                    width="170" [class]="{'editableCol': true}">
                 </kendo-grid-column>
-                <kendo-grid-column field="woavagreedvaluation" editor="numeric" title="Agered Valuation" width="150">
+                <kendo-grid-column field="woavagreedvaluation" editor="numeric" format="{0:n2}" title="Agered Valuation"
+                    width="170" [style]="{'text-align': 'right'}" [class]="{'editableCol': true}">
+                    <!-- <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.woavcommittedvalue | currency:'GBP':'symbol' }}
+                        </span>
+                    </ng-template> -->
                 </kendo-grid-column>
                 <kendo-grid-column field="woavagreedvaluationpct" editor="numeric" title="Agered Valuation %"
-                    width="150">
+                    width="170" [class]="{'editableCol': true}">
                 </kendo-grid-column>
-                <kendo-grid-column field="woavcalcpaymentvalue" title="Calculated Amount Due" width="150">
+                <kendo-grid-column field="woavcalcpaymentvalue" title="Calculated Amount Due" width="150"
+                    [style]="{'text-align': 'right'}">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.woavcommittedvalue | currency:'GBP':'symbol' }}
+                        </span>
+                    </ng-template>
                 </kendo-grid-column>
-                <kendo-grid-column field="outstandingpaymentvalue" title="Calc O/S Payment Value" width="150">
+                <kendo-grid-column field="outstandingpaymentvalue" title="Calc O/S Payment Value" width="150"
+                    [style]="{'text-align': 'right'}">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.woavcommittedvalue | currency:'GBP':'symbol' }}
+                        </span>
+                    </ng-template>
                 </kendo-grid-column>
                 <kendo-grid-column field="woavnotes" title="Notes" width="100">
                 </kendo-grid-column>
@@ -169,12 +226,155 @@
 
         </div>
 
+        <div class="col-md-8 text-left mt-2">
+            <!-- <button type="button" class="btn btn-sm themeButton">Valuation Report</button> -->
 
-        <div class="col-md-12 text-right mt-2">
-            <button type="button" class="btn btn-sm themeButton mr-1" [disabled]="!editService.hasChanges()"
-                (click)="saveChanges(grid)">Apply</button>
+            <button [disabled]="!selectedValuation || 
+                paymentScheduleInp.wpspaymentstatus != 'Unpaid' || 
+                selectedValuation.woavvaluationstatus == 'Completion'" type="button" (click)="setValutionToZero()"
+                class="btn btn-sm themeButton">Set
+                £0 Payment</button>
+        </div>
+        <div class="col-md-4 text-right mt-2">
+            <button type="button" class="btn btn-sm themeButton mr-1"
+                [disabled]="!editService.hasChanges() || !gridFormStatus" (click)="saveChanges(grid)">Apply</button>
             <button type="button" class="btn btn-sm themeButton" (click)="closeValuation()">Close</button>
         </div>
     </div>
+
+
+    <div class="valuationOverlay"></div>
+
+    <kendo-window title="Global Valuation Updates" *ngIf="openGlobalValuation" (close)="closeGlobalValuation()"
+        [minWidth]="500" [height]="auto" [top]="30" [width]="800">
+        <div class="row">
+            <form [formGroup]="globalvaluationForm" (ngSubmit)="onSubmit()" autocomplete="off"
+                class="globalvaluationForm">
+                <div class="col-md-12">
+                    <div class="row mt-2">
+                        <div class="col-md-3">
+                            <label>Contractor Valuation Type:</label>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="radioDiv">
+                                <label class="radio-inline">
+                                    <input type="radio" value="P" formControlName="cvt">Percentage
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" value="V" formControlName="cvt">Value
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" value="N" formControlName="cvt">Not Applicable
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-2">
+                        <div class="col-md-3">
+                            <label class="col-form-label">Contractor Valuation Value:</label>
+                        </div>
+                        <div class="col-md-9">
+                            <input appCurrencyMask maxDigits="9" type="text" formControlName="cvv"
+                                [ngClass]="{ 'is-invalid': submitted && formErrors.cvv }" autocomplete="off"
+                                class="form-control" placeholder="£0.00">
+                        </div>
+                    </div>
+
+                    <div class="row mt-2">
+                        <div class="col-md-3">
+                            <label class="col-form-label">Contractor Valuation %:</label>
+                        </div>
+                        <div class="col-md-9">
+                            <input type="text" formControlName="cvp"
+                                [ngClass]="{ 'is-invalid': submitted && formErrors.cvp }" autocomplete="off"
+                                class="form-control" placeholder="0.00%">
+                        </div>
+                    </div>
+
+
+                    <div class="row mt-2">
+                        <div class="col-md-3">
+                            <label class="col-form-label">Agreed Valuation Type:</label>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="radioDiv">
+                                <label class="radio-inline">
+                                    <input type="radio" value="P" formControlName="avt">Percentage
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" value="V" formControlName="avt">Value
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" value="N" formControlName="avt">Not Applicable
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="row mt-2">
+                        <div class="col-md-3">
+                            <label class="col-form-label">Agreed Valuation Value:</label>
+                        </div>
+                        <div class="col-md-9">
+                            <input appCurrencyMask maxDigits="9" type="text" formControlName="avv"
+                                [ngClass]="{ 'is-invalid': submitted && formErrors.avv }" autocomplete="off"
+                                class="form-control" placeholder="£0.00">
+                        </div>
+                    </div>
+
+                    <div class="row mt-2">
+                        <div class="col-md-3">
+                            <label class="col-form-label">Agreed Valuation %:</label>
+                        </div>
+                        <div class="col-md-9">
+                            <input type="text" formControlName="avp"
+                                [ngClass]="{ 'is-invalid': submitted && formErrors.avp }" autocomplete="off"
+                                class="form-control" placeholder="0.00%">
+                        </div>
+                    </div>
+
+
+
+                    <div class="row mt-2">
+                        <div class="col-md-3">
+                            <label>Add Notes:</label>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="radioDiv">
+                                <label class="radio-inline">
+                                    <input type="radio" value="A" formControlName="addNotes">Add Note
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" value="N" formControlName="addNotes">Not Applicable
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="row mt-2">
+                        <div class="col-md-3">
+                            <label class="col-form-label">Notes:</label>
+                        </div>
+                        <div class="col-md-9">
+                            <input type="text" formControlName="notes"
+                                [ngClass]="{ 'is-invalid': submitted && formErrors.notes }" autocomplete="off"
+                                class="form-control" placeholder="">
+                        </div>
+                    </div>
+
+
+                </div>
+
+                <div class="col-md-12 text-right mt-3">
+                    <button type="submit" class="btn btn-sm themeButton mr-1">Apply</button>
+                    <button type="button" class="btn btn-sm themeButton" (click)="closeValuation()">Cancel</button>
+                </div>
+            </form>
+        </div>
+
+    </kendo-window>
 
 </kendo-window>
