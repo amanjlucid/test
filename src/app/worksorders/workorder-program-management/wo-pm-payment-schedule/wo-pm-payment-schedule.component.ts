@@ -170,7 +170,6 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
 
   cellClickHandler({ dataItem }) {
     this.setSelectedRow(dataItem);
-    // this.selectedSingleDefect = dataItem;
   }
 
 
