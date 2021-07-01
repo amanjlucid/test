@@ -192,7 +192,6 @@ export class WorkOrderFormComponent implements OnInit {
             day: current.getDate()
         };
 
-        // console.log(this.minDate);
     }
 
 
@@ -201,8 +200,6 @@ export class WorkOrderFormComponent implements OnInit {
     }
 
     ngOnInit() {
-        // console.log(this.woFormType)
-        // console.log(this.selectedWorkOrderAddEdit)
         this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
         if (this.woFormType == "new") {
             this.initializeForm(1)
@@ -219,7 +216,6 @@ export class WorkOrderFormComponent implements OnInit {
                 this.worksOrdersService.WorkOrderContractList(true)
             ]).subscribe(
                 data => {
-                    // console.log(data);
                     this.GetPhaseTemplateListData = data[0].data;
                     this.getWorkOrderTypeData = data[1].data;
                     this.workOrderProgrammeListData = data[2].data;
@@ -230,7 +226,6 @@ export class WorkOrderFormComponent implements OnInit {
                     if (this.woFormType == "edit") {
                         this.worksOrdersService.GetWorksOrderByWOsequence(this.selectedWorkOrderAddEdit.wosequence).subscribe(
                             wod => {
-                                // console.log(wod)
                                 if (wod.isSuccess) {
                                     this.worksOrderData = wod.data;
                                     this.populateStage2Form(this.worksOrderData)
@@ -276,10 +271,7 @@ export class WorkOrderFormComponent implements OnInit {
 
 
         } else if (stage == 2) {
-            // this.panelHeight = 800;
-            // this.left = 300;
             this.windowWidth = 1200;
-
             if (this.woFormType == "edit") {
                 this.windowTitle = "Edit Works Order";
             }
@@ -330,7 +322,6 @@ export class WorkOrderFormComponent implements OnInit {
         this.subs.add(
             this.worksOrdersService.GetNewSourceCodeForWorksOrder().subscribe(
                 data => {
-                    // console.log(data);
                     this.workOrderNo = data.data;
                     this.initializeForm(2);
                     this.populateStage2Form(undefined);
@@ -342,8 +333,6 @@ export class WorkOrderFormComponent implements OnInit {
     }
 
     populateStage2Form(wod) {
-        // console.log(wotname);
-        // console.log(contractor);
         let wotname: any = "";
         let wocodE6 = wod?.wocodE6 ?? '';
         let compDate: any = '';
@@ -372,8 +361,7 @@ export class WorkOrderFormComponent implements OnInit {
             wodefectliabperiodflag = wod.wodefectliabperiodflag == "N" ? false : true;
             wodefectliabperioddays = wod.wodefectliabperioddays;
             wocodE2 = wod.wocodE2 == "N" ? false : true;
-
-            // console.log(wod)
+           
         }
 
         //this variable is used while saving and updating record
@@ -440,7 +428,6 @@ export class WorkOrderFormComponent implements OnInit {
         this.subs.add(
             this.woForm2.get('contract_payment_type').valueChanges.subscribe(
                 val => {
-                    // console.log(val)
                     if (val == "VALUATION") {
                         this.woForm2.get('valuationCheck').enable();
                     } else {
@@ -516,7 +503,6 @@ export class WorkOrderFormComponent implements OnInit {
                     paramsForValidWO.WorksOrderTypes
                 ).subscribe(
                     data => {
-                        // console.log(data)
                         if (data.isSuccess) {
                             if (data.data.validYN == 'Y') {
                                 this.prepareStage2Form();
@@ -544,18 +530,9 @@ export class WorkOrderFormComponent implements OnInit {
         this.logValidationErrors(this.woForm2);
         this.chRef.detectChanges();
 
-        // console.log(this.woForm2)
         if (this.woForm2.invalid) {
             return;
         }
-
-        // this.subs.add(
-        //     this.worksorderManagementService.getWorkProgrammesByWprsequence(this.programSelcted.wprsequence).subscribe(
-        //         data => {
-        //             console.log(data)
-        //         }
-        //     )
-        // )
 
         let formRawVal = this.woForm2.getRawValue();
 
@@ -627,27 +604,29 @@ export class WorkOrderFormComponent implements OnInit {
             WOCODE1: formRawVal.plan_year,
             CTTSURCDE: this.contractSelcted.cttsurcde,
             WOTSEQUENCE: this.assetTmpSelcted.wotsequence,
-            WPRSEQUENCE: this.programSelcted.wprsequence,
-            WOFINALACCOUNT: 0,
-            WOBUDGETASSET: 0,
-            WOFORECAST: 0,
-            WOCOMMITTED: 0,
-            WOAPPROVED: 0,
-            WOPENDING: 0,
-            WOACTUAL: 0,
-            WOFORECASTFEE: 0,
-            WOCOMMITTEDFEE: 0,
-            WOAPPROVEDFEE: 0,
-            WOPENDINGFEE: 0,
-            WOACTUALFEE: 0,
-            WOFORECASTCONFEE: 0,
-            WOCOMMITTEDCONFEE: 0,
-            WOAPPROVEDCONFEE: 0,
-            WOPENDINGCONFEE: 0,
-            WOACTUALCONFEE: 0,
-            WOINITIALCONTRACTSUM: 0,
-            WOCURRENTCONTRACTSUM: 0,
-            WOACCEPTEDVALUE: 0,
+            WPRSEQUENCE: this.woFormType == "new" ? this.programSelcted.wprsequence : wodData?.wprsequence,
+
+            WOFINALACCOUNT: wodData?.wofinalaccount ?? 0,
+            WOBUDGETASSET: wodData?.wobudgetasset ?? 0,
+            WOFORECAST: wodData?.woforecast ?? 0,
+            WOCOMMITTED: wodData?.wocommitted ?? 0,
+            WOAPPROVED: wodData?.woapproved ?? 0,
+            WOPENDING: wodData?.wopending ?? 0,
+            WOACTUAL: wodData?.woactual ?? 0,
+            WOFORECASTFEE: wodData?.woforecastfee ?? 0,
+            WOCOMMITTEDFEE: wodData?.wocommittedfee ?? 0,
+            WOAPPROVEDFEE: wodData?.woapprovedfee ?? 0,
+            WOPENDINGFEE: wodData?.wopendingfee ?? 0,
+            WOACTUALFEE: wodData?.woactualfee ?? 0,
+            WOFORECASTCONFEE: wodData?.woforecastconfee ?? 0,
+            WOCOMMITTEDCONFEE: wodData?.wocommittedconfee ?? 0,
+            WOAPPROVEDCONFEE: wodData?.woapprovedconfee ?? 0,
+            WOPENDINGCONFEE: wodData?.wopendingconfee ?? 0,
+            WOACTUALCONFEE: wodData?.woactualconfee ?? 0,
+            WOINITIALCONTRACTSUM: wodData?.woinitialcontractsum ?? 0,
+            WOCURRENTCONTRACTSUM: wodData?.wocurrentcontractsum ?? 0,
+            WOACCEPTEDVALUE: wodData?.woacceptedvalue ?? 0,
+
             WOCONTRACTORISSUEDATE: this.dateFormate(undefined),
             WOTARGETCOMPLETIONDATE: this.dateFormate(formRawVal.wotargetcompletiondate),
             WOCONTRACTORACCEPTANCEDATE: this.dateFormate(undefined),
@@ -658,7 +637,7 @@ export class WorkOrderFormComponent implements OnInit {
             WOCALCOVERPREMTYPE: 'N',
             WODEFECTLIABPERIODFLAG: formRawVal.defectLibPeriodCheck ? "Y" : "N",
             WODEFECTLIABPERIODDAYS: formRawVal.defectLibPeriodVal,
-            WOPAYMENT: 0,
+            WOPAYMENT: wodData?.wopayment ?? 0,
             WOCODE2: formRawVal.valuationCheck ? "Y" : "N",
             WOCODE3: formRawVal.purchase_order_no,
             WOCODE4: formRawVal.wobudgetcode,
@@ -679,10 +658,6 @@ export class WorkOrderFormComponent implements OnInit {
 
             filed: false
         }
-
-
-        // console.log(JSON.stringify(params));
-        // console.log(params)
 
         let apiCall: any;
         if (this.woFormType == "new") {
@@ -737,7 +712,6 @@ export class WorkOrderFormComponent implements OnInit {
         this.subs.add(
             apiCall.subscribe(
                 data => {
-                    //  console.log(data);
                     if (data.isSuccess) {
                         this.alertService.success(msg);
                         this.closewoFormWindow();

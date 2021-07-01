@@ -234,7 +234,6 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
 
 
   closGetWebWorksOrderPaymentScheduleDetailsWindow() {
-
     this.DisplayPaymentAssetsWindow = false;
   }
 
@@ -707,6 +706,9 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
     this.closePaymentScheduleWindowEvent.emit(false);
   }
 
+
+
+  //aman
   async openValuationWindowMehhod(item, checkProcess = "C") {
     if (item.wpspaymentstatus == "Unpaid" && checkProcess == "C") {
       const refresh = await this.checkBeforeValuation(item);
@@ -800,7 +802,7 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
     this.openWOCreatePaymentScheduleWindow = eve;
   }
 
-
+//aman 
 
 
 

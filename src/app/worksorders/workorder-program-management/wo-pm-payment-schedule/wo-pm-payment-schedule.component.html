@@ -61,11 +61,8 @@
               <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"
                 (click)="setSelectedRow(dataItem)"></i>
               <div class="dropdown-menu">
-                <!-- <a (click)="WorksRefreshPaymentSchedule(dataItem)" class="dropdown-item"
-                  href="javascript:void(0)">Refresh Schedule</a> -->
-
+               
                 <a (click)="rquestPayment(dataItem)" class="dropdown-item" href="javascript:void(0)">Request Payment</a>
-
                 <a [ngClass]="{'disabled' : disableEnterValuationBtn(dataItem) }"
                   (click)="openValuationWindowMehhod(dataItem)" class="dropdown-item" href="javascript:void(0)">Enter
                   Valuation</a>
@@ -256,6 +253,13 @@
   </div>
 
 
+
+
+
+
+
+
+
   <kendo-window title="Display Payment Schedule Assets" *ngIf="DisplayPaymentAssetsWindow"
     (close)="closGetWebWorksOrderPaymentScheduleDetailsWindow()" [minWidth]="auto" [height]="auto" [minHeight]="auto">
     <div class="row headerArea">
@@ -396,8 +400,9 @@
 
 
   </kendo-window>
-  <div class="wopmpaymentoverlay"></div>
 
+
+  <div class="wopmpaymentoverlay"></div>
 
   <app-wo-program-management-edit-payment-schedule *ngIf="openWOEditPaymentScheduleWindow"
     [worksOrderData]="worksOrderData" [openWOEditPaymentScheduleWindow]="openWOEditPaymentScheduleWindow"

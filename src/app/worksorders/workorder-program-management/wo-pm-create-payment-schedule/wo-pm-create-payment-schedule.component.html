@@ -1,5 +1,5 @@
 <kendo-window title="{{title}}" *ngIf="openWOCreatePaymentScheduleWindow"
-  (close)="closeCreatePaymentScheduleWin()" [top]="10" [minWidth]="500" [width]="700" [height]="auto"
+  (close)="closeCreatePaymentScheduleWin()" [top]="10" [minWidth]="500" [width]="800" [height]="auto"
   [minHeight]="400">
 
   <form [formGroup]="createScheduleForm" id="addScheduleForm" (ngSubmit)="onSubmit()" autocomplete="off">
@@ -8,7 +8,7 @@
           <label class="py-2">Works Order:</label>
       </div>
       <div class="col-md-9">
-          <input type="text" value="" class="form-control" formControlName="worksOrder" [readonly]="true">
+          <input type="text" class="form-control" formControlName="worksOrder">
       </div>
     </div>
     <div class="row mt-2">
