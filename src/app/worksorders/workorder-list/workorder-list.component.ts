@@ -91,6 +91,8 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
   }
   openWOPaymentScheduleWindow: boolean;
 
+  disabledMilestone: boolean = true;
+  showChecklist = false;
 
   constructor(
     private worksOrderService: WorksOrdersService,
@@ -860,4 +862,16 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
   
 
 
+  
+  
+  openChecklist(dataItem) {
+    this.selectedWorksOrder = dataItem;
+    $('.bgblur').addClass('ovrlay');
+    this.showChecklist = true;
+
+  }
+  closeChecklistWindow($event) {
+    this.showChecklist = $event;
+    $('.bgblur').removeClass('ovrlay');
+}
 }

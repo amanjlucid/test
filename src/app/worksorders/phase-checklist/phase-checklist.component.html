@@ -173,6 +173,20 @@
                         </div>
                     </div>
 
+                    <a  class="dropdown-item" 
+                    [ngClass]="{'disabled' : disableMenuMultiple('LETTER')}"
+                    *ngIf="woGlobalSecurityAccess('Report Checklist')"
+                    (click)="mergeMailMultiple()" href="javascript:void(0)">Letter</a>
+                    
+
+                    <div [ngClass]="{'disabled' : disableMenuMultiple('comments')}" class="dropdown-toggle"
+                    *ngIf="woMenuBtnSecurityAccess('Comments')">
+                        <div class="dropdown-item">Comments</div>
+                        <div class="dropdown-menu handoverDrp">
+                            <a (click)="setComment('replace')" class="dropdown-item" href="javascript:void(0)">Replace selected</a>
+                            <a (click)="setComment('add')" class="dropdown-item" href="javascript:void(0)">Add to selected</a>
+                        </div>
+                    </div>
 
                 </div>
             </div>
@@ -431,6 +445,18 @@
                                     </div>
                                 </div>
 
+                                <a  class="dropdown-item" 
+                                *ngIf="woGlobalSecurityAccess('Report Checklist') && dataItem.wocheckspeciaL1 == 'LETTER'"
+                                (click)="mergeMailSingle(dataItem)" href="javascript:void(0)">Letter</a>
+                                
+
+                                <div class="dropdown-toggle"*ngIf="woMenuBtnSecurityAccess('Comments')">
+                                    <div class="dropdown-item">Comments</div>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item" (click)="setSingleComment('replace',dataItem)" href="javascript:void(0)">Replace selected</a>
+                                        <a class="dropdown-item" (click)="setSingleComment('add',dataItem)"  href="javascript:void(0)">Add to selected</a>
+                                    </div>
+                                </div>
 
                             </div>
                         </li>
@@ -683,6 +709,8 @@
         (closePredecessorsEvent)="closePredecessors($event)">
     </app-worksorders-asset-checklist-predecessors>
 
-
-
+    
+    <app-wo-editcomment *ngIf="showEditCommentWindow" [showEditCommentWindow]="showEditCommentWindow" [mode]="commentMode"
+    (closeEditCommentWindow)="closeCommentPanel($event)" type="AssetChecklist" [checklistParms]="commentParms"> </app-wo-editcomment>
+    
 </kendo-window>

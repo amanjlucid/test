@@ -83,6 +83,10 @@ export class PhaseChecklistComponent implements OnInit {
   selectedCheckList = [];
   @ViewChild('stagesMultiSelect') stagesMultiSelect;
   predecessors: boolean = false;
+  showEditCommentWindow: boolean = false;
+  commentMode: string;
+  commentParms;
+  commentChecklist;
 
 
   constructor(
@@ -436,7 +440,7 @@ export class PhaseChecklistComponent implements OnInit {
   }
 
   mySelectionKey(context: RowArgs): string {
-    return encodeURIComponent(`${context.dataItem.assid}_${context.dataItem.wostagesurcde}_${context.dataItem.wochecksurcde}`);
+    return `${context.dataItem.assid}_${context.dataItem.wostagesurcde}_${context.dataItem.wochecksurcde}_${context.dataItem.wocheckspeciaL1}`;
   }
 
   keyChange(eve) {
@@ -446,7 +450,7 @@ export class PhaseChecklistComponent implements OnInit {
   cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited, originalEvent }) {
     if (originalEvent.ctrlKey == false) {
       if (this.mySelection.length > 0) {
-        this.mySelection = [`${dataItem.assid}_${dataItem.wostagesurcde}_${dataItem.wochecksurcde}`];
+        this.mySelection = [`${dataItem.assid}_${dataItem.wostagesurcde}_${dataItem.wochecksurcde}_${dataItem.wocheckspeciaL1}`];
         this.chRef.detectChanges();
       }
     }
@@ -945,8 +949,209 @@ export class PhaseChecklistComponent implements OnInit {
   }
 
 
+  woGlobalSecurityAccess(menuName) {
+    return this.worksOrderAccess.indexOf(menuName) != -1 
+
+}
+
+
+  mergeMailMultiple() {
+    var keyArray : any[] = [];
+    for (const checklist of this.mySelection) {
+      const splitSelection = checklist.split('_');
+      const keys = {
+        assid : splitSelection[0],
+        wostagesurcde : splitSelection[1],
+        wochecksurcde : splitSelection[2],
+      }
+      keyArray.push(keys);
+    }
+
+    let wostagesurcde;
+    let wochecksurcde;
+    for (const key of keyArray) {
+      wostagesurcde = key.wostagesurcde;
+      wochecksurcde = key.wochecksurcde;
+      break;
+    }
+    let differentChecklistType = false;
+    for (const key of keyArray) {
+      if (wostagesurcde != key.wostagesurcde ||  wochecksurcde != key.wochecksurcde) {
+        differentChecklistType = true;
+        break;
+      }
+    }
+    if (differentChecklistType) {
+      this.alertService.error("You cannot perform a mail merge on different checklist type items!  Please select items of the same checklist type first.");
+      return;
+    }
+
+
+    const mailParms = {
+      wosequence : this.selectedPhase.wosequence, 
+      wopsequence : this.selectedPhase.wopsequence,
+      mergelist : keyArray,
+      user : this.currentUser.userId,
+    }
+
+    this.processMailMerge(mailParms);
+  }
+
+  mergeMailSingle(dataItem : any) {
+    var keyArray : any[] = [];
+
+
+      const keys = {
+        assid : dataItem.assid,
+        wostagesurcde : dataItem.wostagesurcde,
+        wochecksurcde : dataItem.wochecksurcde,
+      }
+      keyArray.push(keys);
+
+
+    const mailParms = {
+      wosequence : this.selectedPhase.wosequence, 
+      wopsequence : this.selectedPhase.wopsequence,
+      mergelist : keyArray,
+      user : this.currentUser.userId,
+    }
+
+    this.processMailMerge(mailParms);
+  }
+
+  processMailMerge(mailParms) {
+    this.worksorderManagementService.getMergeMailLetter(mailParms).subscribe(
+      data => {
+        if (data && data.isSuccess) {
+          var byteCharacters = atob(data.data);
+          var byteNumbers = new Array(byteCharacters.length);
+          for (var i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+          }
+          var byteArray = new Uint8Array(byteNumbers);
+          var file = new Blob([byteArray], { type: 'application/pdf;base64' });
+          var fileURL = URL.createObjectURL(file);
+          let newPdfWindow =window.open(fileURL);
 
 
 
+
+          this.alertService.success("Mail-merge document created successfully.");
+          this.searchGrid();
+
+        } else {
+          this.alertService.error(data.message);
+        }
+      },
+      error => {
+        this.alertService.error(error);
+      }
+    )
+  }
+
+  disableMenuMultiple(type) {
+    if (type == "LETTER") {
+
+      if (this.mySelection.length > 0) {
+        let letterRecs = 0;
+        let nonletterRecs = 0;
+        for (const checklist of this.mySelection) {
+          if (checklist) {
+          const splitSelection = checklist.split('_');
+          let specialchar = splitSelection[3];
+          if (specialchar == "LETTER") {
+            letterRecs += 1;
+          } else {
+            nonletterRecs += 1;
+          }
+        }
+        }
+        if (letterRecs > 0 && nonletterRecs == 0){
+          return false;
+        } else {
+          return true;      
+        }
+
+      } else {
+        return true; 
+      }
+    }
+
+    if (type == "comments") {
+      return (this.mySelection.length == 0 )
+    }
+
+    return false; 
+  }
+
+
+  setComment(type: string) {
+    this.commentMode = type;
+    var keyArray : any[] = [];
+    for (const checklist of this.mySelection) {
+      const splitSelection = checklist.split('_');
+      const keys = {
+        assid : splitSelection[0],
+        wostagesurcde : splitSelection[1],
+        wochecksurcde : splitSelection[2],
+      }
+      keyArray.push(keys);
+    }
+
+    if (keyArray.length == 0) {
+      return
+    }
+
+    let ASSID_STAGESURCDE_CHECKSURCDE = [];
+    for (const checklist of keyArray) {
+      ASSID_STAGESURCDE_CHECKSURCDE.push(checklist.assid)
+      ASSID_STAGESURCDE_CHECKSURCDE.push(checklist.wostagesurcde)
+      ASSID_STAGESURCDE_CHECKSURCDE.push(checklist.wochecksurcde)
+    }
+    
+    let csvKeys : string = ASSID_STAGESURCDE_CHECKSURCDE.join(",");
+    this.commentParms = {
+      wosequence : this.selectedPhase.wosequence, 
+      wopsequence : this.selectedPhase.wopsequence,
+      csvKeys : csvKeys,
+      subtitle : this.selectedPhase.woname, 
+      phase: true,
+      }
+
+      this.showEditCommentWindow = true;
+  }
+
+  setSingleComment(type: string, dataItem : any) {
+    this.commentMode = type;
+    let ASSID_STAGESURCDE_CHECKSURCDE = [];
+    ASSID_STAGESURCDE_CHECKSURCDE.push(dataItem.assid)
+    ASSID_STAGESURCDE_CHECKSURCDE.push(dataItem.wostagesurcde)
+    ASSID_STAGESURCDE_CHECKSURCDE.push(dataItem.wochecksurcde)
+
+    
+    let csvKeys : string = ASSID_STAGESURCDE_CHECKSURCDE.join(",");
+    this.commentParms = {
+      wosequence : this.selectedPhase.wosequence, 
+      wopsequence : this.selectedPhase.wopsequence,
+      csvKeys : csvKeys,
+      subtitle : dataItem.assid + " - " + dataItem.astconcataddress, 
+      }
+
+    this.showEditCommentWindow = true;
+
+    $('.phaseChecklistovrlay').addClass('ovrlay');
+
+  }
+
+
+  closeCommentPanel(eve) {
+    this.showEditCommentWindow = false;
+    if (eve != null) {
+      this.searchGrid();  
+    }
+    $('.phaseChecklistovrlay').removeClass('ovrlay');
+
+
+  }
 
 }

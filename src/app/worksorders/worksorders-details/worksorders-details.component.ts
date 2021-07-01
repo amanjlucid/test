@@ -5,7 +5,8 @@ import { FilterService, SelectableSettings, TreeListComponent, RowClassArgs } fr
 import { AlertService, LoaderService, ConfirmationDialogService, WorksOrdersService, HelperService, WorksorderManagementService, SharedService, PropertySecurityGroupService, AuthenticationService, WorksorderReportService } from '../../_services'
 import { combineLatest, forkJoin } from 'rxjs';
 import { WorkordersDetailModel } from 'src/app/_models';
-import { Router } from '@angular/router';
+import { WopmRepCharConfig }  from '../../_models';
+import { Router, ActivatedRoute, RouterEvent } from '@angular/router';
 import { appConfig } from '../../app.config';
 import { CurrencyPipe } from '@angular/common';
 import { TooltipDirective } from '@progress/kendo-angular-tooltip';
@@ -99,6 +100,18 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
   openMilestoneFor = "phase";
   openManageMilestone = false;
 
+
+  reportingCharsConfig: WopmRepCharConfig;
+  displayAssetChar1 = false;
+  displayAssetChar2 = false;
+  displayAssetChar3 = false;
+  AssetChar1 = '';
+  AssetChar2 = '';
+  AssetChar3 = '';
+  showChecklist = false;
+  showEditCommentWindow = false;
+  displayResidentDetails = false;
+  assetID: string;
 
   constructor(
     private sharedService: SharedService,
@@ -198,12 +211,26 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
         this.worksorderManagementService.worksOrderGetUnallocPhaseBudget(intWOSEQUENCE),
         this.worksorderManagementService.getWorksOrderRepairingCharConfigExt(intWOSEQUENCE),
         this.worksorderManagementService.getListOfWorksOrderChecklistForWORK(intWOSEQUENCE),
+        this.worksorderManagementService.getReportingCharConfigData1(intWOSEQUENCE),
+
       ]).subscribe(
         data => {
           const programmeData = data[0];
           const userSecurityByWO = data[1];
           const worksOrderData = data[2];
           this.phaseBudgetAvailable = data[3].data;
+          this.reportingCharsConfig = data[6].data.reportingCharConfig;
+
+          if(this.reportingCharsConfig.wosequence > 0)
+          {
+            this.displayAssetChar1 = (this.reportingCharsConfig.status1 == 'A');
+            this.displayAssetChar2 = (this.reportingCharsConfig.status2 == 'A');
+            this.displayAssetChar3 = (this.reportingCharsConfig.status3 == 'A');
+            this.AssetChar1 = this.reportingCharsConfig.alias1;
+            this.AssetChar2 = this.reportingCharsConfig.alias2;
+            this.AssetChar3 = this.reportingCharsConfig.alias3;
+
+          }
 
           // const repairingChar = data[3];
           // const checkListForWO = data[4];
@@ -240,7 +267,7 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
           if (data.isSuccess) {
             let gridData = [];
             let tempData = [...data.data];
-
+            const v = data.data;
             //Find parent and Set parent id in each row wopsequence
             tempData.forEach((value, index) => {
               if (value.treelevel == 2) {
@@ -672,6 +699,7 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
 
   }
 
+
   closeAssetDetailWindow(eve) {
     this.assetDetailWindow = eve;
     $('.worksOrderDetailOvrlay').removeClass('ovrlay');
@@ -788,6 +816,37 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
       params.UserName = this.currentUser.userName;
       params.dtDate = this.helperService.dateObjToString(this.selectedDate.selectedDate);
       callApi = this.worksorderManagementService.worksOrderAssetSignOff(params);
+    }
+
+    else if (type == 'SE') {
+      params.dtDate = this.helperService.dateObjToString(this.selectedDate.start);
+      params.dtEndDate = this.helperService.dateObjToString(this.selectedDate.end);
+      callApi = this.worksorderManagementService.SetWorksOrderAssetPlannedDate(params);
+    }
+
+    else if (type == 'TCY') {
+      params.dtDate = this.helperService.getDateString('Yesterday');
+      callApi = this.worksorderManagementService.SetWorksOrderAssetTargetDate(params);
+    }
+
+    else if (type == 'TCTOD') {
+      params.dtDate = this.helperService.getDateString('Today');
+      callApi = this.worksorderManagementService.SetWorksOrderAssetTargetDate(params);
+    }
+
+    else if (type == 'TCTOM') {
+      params.dtDate = this.helperService.getDateString('Tomorrow');
+      callApi = this.worksorderManagementService.SetWorksOrderAssetTargetDate(params);
+    }
+
+    else if (type == 'TC7') {
+      params.dtDate = this.helperService.getDateString('Next 7');
+      callApi = this.worksorderManagementService.SetWorksOrderAssetTargetDate(params);
+    }
+
+    else if (type == 'TCPICK') {
+      params.dtDate = this.helperService.dateObjToString(this.selectedDate.selectedDate);
+      callApi = this.worksorderManagementService.SetWorksOrderAssetTargetDate(params);
     }
 
     else if (type == "REMOVE") {
@@ -1178,6 +1237,10 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
 
   }
 
+  isServicingWorksOrder(){
+    return (this.worksOrderData.wocodE6 =='SERVICING')
+  }
+
   viewWOReportingAsset(reportName, reportLevel, dataItem: any = null) {
 
     const wprsequence = (dataItem != null) ? dataItem.wprsequence : this.worksOrderSingleData.wprsequence;
@@ -1367,6 +1430,48 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
   }
 
 
+
+
+  openChecklist() {
+    $('.bgblur').addClass('ovrlay');
+    this.showChecklist = true;
+
+  }
+  closeChecklistWindow($event) {
+    this.showChecklist = $event;
+    $('.bgblur').removeClass('ovrlay');
+  }
+
+
+  openCommentPanel(item = null) {
+    this.showEditCommentWindow = true;
+    this.actualSelectedRow = item;
+    $('.worksOrderDetailOvrlay').addClass('ovrlay');
+  }
+
+  closeCommentPanel(eve) {
+    this.showEditCommentWindow = false;
+    if (eve != null) {
+      this.actualSelectedRow.comment = eve;      
+    }
+
+    $('.worksOrderDetailOvrlay').removeClass('ovrlay');
+  }
+
+
+  // openResidentDetails(item) {
+
+  //         this.assetID = item.assid;
+  //         this.displayResidentDetails = true;
+  //         $('.worksOrderDetailOvrlay').addClass('ovrlay');
+
+  //   //$('.worksOrderDetailOvrlay').addClass('ovrlay');
+  // }
+
+  closeResidentInfoDetailsWindow(eve) {
+    this.displayResidentDetails = false;
+    $('.worksOrderDetailOvrlay').removeClass('ovrlay');
+  }
   /********** WOD Reports Function End *********/
 
 

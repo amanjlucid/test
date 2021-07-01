@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef, HostListener } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AlertService, WorksOrdersService, HelperService, LoaderService, WorksorderManagementService } from '../../../_services';
+import { AlertService, WorksOrdersService, HelperService, ConfirmationDialogService, LoaderService, WorksorderManagementService, WopmConfigurationService } from '../../../_services';
+import { WopmRepCharConfig }  from '../../../_models';
 import { SubSink } from 'subsink';
 import { forkJoin } from 'rxjs';
 import { firstDateIsLower, IsGreaterDateValidator, isNumberCheck, ShouldGreaterThanYesterday, shouldNotZero, SimpleDateValidator, yearFormatValidator } from 'src/app/_helpers';
@@ -20,6 +21,7 @@ export class WorkOrderFormComponent implements OnInit {
     @Input() selectedWorkOrderAddEdit: any;
     @Input() woFormType: any = 'new';
     @Input() selectedProgramme: any = null;
+    @Input() worksOrderAccess: any = [];
     @Output() closeWoFormWin = new EventEmitter<boolean>();
     panelHeight: any = "auto";
     windowWidth: any = 600;
@@ -27,8 +29,11 @@ export class WorkOrderFormComponent implements OnInit {
     windowTitle: string;
     readonly = true;
     worksOrderData: any;
+    reportingCharsConfig: WopmRepCharConfig;
+    origReportingCharsConfig: WopmRepCharConfig;
     submitted = false;
     submitted1 = false;
+    repCharWindow = false;
     assetTemplateListData: any;
     getWorkOrderTypeData: any;
     workOrderProgrammeListData: any;
@@ -52,7 +57,7 @@ export class WorkOrderFormComponent implements OnInit {
         wodesc: ['', Validators.required],
         wostatus: ['', Validators.required],
         woactinact: ['', Validators.required],
-        wotargetcompletiondate: [''],
+        wotargetcompletiondate: ['', [Validators.required]],
         wobudget: ['', [Validators.required, shouldNotZero()]],
         purchase_order_no: [''],
         wobudgetcode: [''],
@@ -179,6 +184,8 @@ export class WorkOrderFormComponent implements OnInit {
     constructor(
         private fb: FormBuilder,
         private worksOrdersService: WorksOrdersService,
+        private wopmConfigurationService: WopmConfigurationService,
+        private confirmationDialogService: ConfirmationDialogService,
         private alertService: AlertService,
         private chRef: ChangeDetectorRef,
         private helperService: HelperService,
@@ -276,6 +283,7 @@ export class WorkOrderFormComponent implements OnInit {
                 this.windowTitle = "Edit Works Order";
             }
 
+            // this.woForm2 = this.fb.group(this.stage2FormSetting);
 
             this.woForm2 = this.fb.group(this.stage2FormSetting,
                 {
@@ -587,6 +595,11 @@ export class WorkOrderFormComponent implements OnInit {
             // WOCODE5 = (wodData.wocodE5 == "" || wodData.wocodE5 == null) ? null : this.GetPhaseTemplateListData.find(x.wottemplatetype == wodData.wocodE5)?.
         }
 
+        if(this.reportingCharsConfig == undefined){
+          this.reportingCharsConfig = new WopmRepCharConfig();
+          this.reportingCharsConfig.wosequence = 0;
+        }
+
         let params = {
             WOSEQUENCE: formRawVal.won,
             WOEXTREF: formRawVal.extRef,
@@ -655,7 +668,7 @@ export class WorkOrderFormComponent implements OnInit {
             MPgrA: userAndDate.MPgrA, // updated user
             MPgsA: userAndDate.MPgsA, // created date
             MPgtA: userAndDate.MPgtA, // updated date
-
+            repCharConfig: this.reportingCharsConfig,
             filed: false
         }
 
@@ -714,7 +727,7 @@ export class WorkOrderFormComponent implements OnInit {
                 data => {
                     if (data.isSuccess) {
                         this.alertService.success(msg);
-                        this.closewoFormWindow();
+                        this.closewoFormWindow(true);
                     } else {
                         this.alertService.error(data.message);
                         this.chRef.detectChanges();
@@ -798,6 +811,50 @@ export class WorkOrderFormComponent implements OnInit {
         }
     }
 
+    editRepChars(){
+      if(this.reportingCharsConfig == undefined){
+        this.subs.add(
+          this.worksorderManagementService.getReportingCharConfigData1(this.selectedWorkOrderAddEdit.wosequence).subscribe(
+            data => {
+              if (data.isSuccess) {
+                  this.reportingCharsConfig = data.data.reportingCharConfig;
+                  this.origReportingCharsConfig = data.data.reportingCharConfig;
+                  $('.worksOrderOverlay').addClass('ovrlay');
+                  this.repCharWindow = true;
+                  this.chRef.detectChanges();
+              }
+              else
+              {
+                this.alertService.error(data.message)
+                this.chRef.detectChanges();
+              }
+            }
+          )
+        )
+      }
+      else
+      {
+        $('.worksOrderOverlay').addClass('ovrlay');
+        this.repCharWindow = true;
+      }
+    }
+
+    closeRepCharWindow(eve) {
+      $('.worksOrderOverlay').removeClass('ovrlay');
+      this.repCharWindow = false;
+      this.reportingCharsConfig = eve;
+    }
+
+    woMenuAccess(menuName) {
+        if (this.worksOrderAccess.indexOf(menuName) != -1) {
+          return true
+        }else
+        {
+          return false
+        }
+
+    }
+
 
     openCalendar(obj) {
         obj.toggle()
@@ -811,9 +868,37 @@ export class WorkOrderFormComponent implements OnInit {
         return new Date(dateStr).toJSON()
     }
 
-    closewoFormWindow() {
+    closewoFormWindow(submitted) {
+      if (this.reportingCharsConfig != undefined && !submitted && this.compareRepConfigs())
+      {
+        this.openConfirmationDialog('You have made changes to the Reporting Characteristics that will be lost if you cancel.')
+      }
+      else{
         this.woFormWindow = false;
         this.closeWoFormWin.emit(this.woFormWindow)
+      }
+    }
+
+    compareRepConfigs(){
+      if(this.reportingCharsConfig.alias1 != this.origReportingCharsConfig.alias1 || this.reportingCharsConfig.alias2 != this.origReportingCharsConfig.alias2 || this.reportingCharsConfig.alias3 != this.origReportingCharsConfig.alias3
+        || this.reportingCharsConfig.status1 != this.origReportingCharsConfig.status1 || this.reportingCharsConfig.status2 != this.origReportingCharsConfig.status2 || this.reportingCharsConfig.status3 != this.origReportingCharsConfig.status3
+        || this.reportingCharsConfig.chacode1 != this.origReportingCharsConfig.chacode1 || this.reportingCharsConfig.chacode2 != this.origReportingCharsConfig.chacode2 || this.reportingCharsConfig.chacode3 != this.origReportingCharsConfig.chacode3)
+      {
+        return true
+      }
+      return false
+    }
+
+    public openConfirmationDialog(message) {
+      this.confirmationDialogService.confirm('Please confirm..', message)
+        .then((confirmed) => (confirmed) ? this.completeUpdate() : console.log(confirmed))
+        .catch(() => console.log('User dismissed the dialog.'));
+      $('.k-window').css({ 'z-index': 1000 });
+    }
+
+    completeUpdate() {
+      this.woFormWindow = false;
+      this.closeWoFormWin.emit(this.woFormWindow)
     }
 
 

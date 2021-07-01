@@ -1,0 +1,30 @@
+<!-- <p><span class="questionNumber">{{answerRecord.wocstquestionsequence}}.</span>{{answerRecord.wocstquestiontext}}</p> -->
+
+<div class="row">
+    <div class="column left">
+      <p class="questionNumber">{{answerRecord.wocstquestionsequence}}.</p>
+    </div>
+    <div class="column right">
+      <p>{{answerRecord.wocstquestiontext}}</p>
+    </div>
+  </div>
+
+<div *ngIf="answerRecord.wocstquestiontype =='MULTI'" class="multiChoice" align="left">
+    <button type="button" (click)="setAnswer(1)" class="btn btn-sm" [ngClass]="{'themeButton': answerRecord.woacsrnumericanswer === 1}" >{{answerRecord.wocstquestionmultichoicE1TEXT}}</button>
+    <button type="button" (click)="setAnswer(2)" class="btn btn-sm" [ngClass]="{'themeButton': answerRecord.woacsrnumericanswer === 2}" >{{answerRecord.wocstquestionmultichoicE2TEXT}}</button>
+    <button type="button" (click)="setAnswer(3)" class="btn btn-sm" [ngClass]="{'themeButton': answerRecord.woacsrnumericanswer === 3}" >{{answerRecord.wocstquestionmultichoicE3TEXT}}</button>
+    <button type="button" (click)="setAnswer(4)" class="btn btn-sm" [ngClass]="{'themeButton': answerRecord.woacsrnumericanswer === 4}" >{{answerRecord.wocstquestionmultichoicE4TEXT}}</button>
+    <button type="button" (click)="setAnswer(5)" class="btn btn-sm" [ngClass]="{'themeButton': answerRecord.woacsrnumericanswer === 5}" >{{answerRecord.wocstquestionmultichoicE5TEXT}}</button>
+</div>
+
+<div *ngIf="answerRecord.wocstquestiontype =='YESNO'" class="multiChoice" align="left">
+    <button type="button" (click)="setAnswer(1)" class="btn btn-sm" [ngClass]="{'themeButton': answerRecord.woacsrnumericanswer === 1}" >{{answerRecord.wocstquestionmultichoicE1TEXT}}</button>
+    <button type="button" (click)="setAnswer(2)" class="btn btn-sm" [ngClass]="{'themeButton': answerRecord.woacsrnumericanswer === 2}" >{{answerRecord.wocstquestionmultichoicE2TEXT}}</button>
+</div>
+
+<div *ngIf="answerRecord.wocstquestiontype =='TEXTUAL'"  align="center">
+    <!-- <input class="textAnswer" type="text" [(ngModel)]="answerRecord.woacsrtextualanswer" > -->
+
+    <textarea class="textAnswer" rows="6" cols="35" [(ngModel)]="answerRecord.woacsrtextualanswer">
+    </textarea>
+</div>

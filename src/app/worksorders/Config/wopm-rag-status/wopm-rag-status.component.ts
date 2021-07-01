@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component,ViewEncapsulation, OnInit } from '@angular/core';
 import { SubSink } from 'subsink';
 import { GroupDescriptor, DataResult, process, State, SortDescriptor, distinct } from '@progress/kendo-data-query';
-import { PageChangeEvent, SelectableSettings } from '@progress/kendo-angular-grid';
+import { PageChangeEvent, SelectableSettings, RowClassArgs } from '@progress/kendo-angular-grid';
 import { AlertService, EventManagerService, HelperService, ConfirmationDialogService, SharedService, WopmConfigurationService } from '../../../_services'
 import { forkJoin } from 'rxjs';
 import { Router } from '@angular/router';
@@ -10,7 +10,8 @@ import { WopmRagstatusModel, SurveyPortalXports } from '../../../_models'
 @Component({
   selector: 'app-wopm-rag-status',
   templateUrl: './wopm-rag-status.component.html',
-  styleUrls: ['./wopm-rag-status.component.css']
+  styleUrls: ['./wopm-rag-status.component.css'] ,
+  encapsulation: ViewEncapsulation.None
 })
 export class WopmRagStatusComponent implements OnInit {
     subs = new SubSink();
@@ -23,7 +24,8 @@ export class WopmRagStatusComponent implements OnInit {
         filters: []
       }
     }
-
+    public selectableSettings: SelectableSettings;
+    public checkboxOnly = false;
     allowUnsort = true;
     multiple = false;
     public gridView: DataResult;
@@ -54,6 +56,7 @@ export class WopmRagStatusComponent implements OnInit {
 
     ngOnInit(): void {
       this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+      this.setSelectableSettings();
       this.getGridDataDetails();
       //update notification on top
       this.helper.updateNotificationOnTop();
@@ -61,6 +64,13 @@ export class WopmRagStatusComponent implements OnInit {
 
     ngOnDestroy() {
       this.subs.unsubscribe();
+    }
+
+    public setSelectableSettings(): void {
+      this.selectableSettings = {
+        checkboxOnly: this.checkboxOnly,
+        mode: this.mode
+      };
     }
 
     ngAfterViewInit() {
@@ -76,6 +86,15 @@ export class WopmRagStatusComponent implements OnInit {
           }
         )
       )
+    }
+
+    rowCallback(context: RowClassArgs) {
+      if (context.dataItem.rAGStatus == 'Active') {
+        return { notNew: true, gridRow: true }
+      } else {
+        return { notNew: false, gridRow: true }
+      }
+
     }
 
     checkWorksOrdersAccess(val: string): Boolean {

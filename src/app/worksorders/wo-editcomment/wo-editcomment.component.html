@@ -1,0 +1,27 @@
+
+<kendo-dialog  title="{{title}}" *ngIf="showEditCommentWindow"   [minHeight]="250"  (close)="closeWindow()"
+[minWidth]="250" [width]="650"  >
+
+    <div class="col-md-12 mt-3" >
+        <textarea class="textComment" [(ngModel)]="comment" rows="10" maxlength=1024 >
+        </textarea>
+    </div>
+
+    <div class="buttonDiv pull-right mt-1">
+      <button type="button" (click)="saveComment()"
+        class="btn btn-sm themeButton mr-1">Apply</button>
+      <button type="button" (click)="closeWindow()"
+        class="btn btn-sm themeButton mr-1">Cancel</button>
+    </div>
+
+    <div style="background-color: #cecece;position: absolute; top: 0px; left:0px; width: 100%;" class=" m-0  p-0">
+        <div style="background-color: #cecece;" class="form-row m-0 p-0">
+          <p style="background-color: #cecece; margin: -1px; font-weight: 600;  text-overflow: ellipsis;white-space: nowrap;overflow: hidden;" class="col-md-12 m-0 px-3 pt-1 pb-1">
+            {{Header}}:
+            <span style="font-weight: 400;margin-left:10px">{{subtitle}}</span>
+           </div>
+      </div>
+
+
+  </kendo-dialog>
+

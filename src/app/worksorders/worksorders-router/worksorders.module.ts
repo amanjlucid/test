@@ -84,6 +84,7 @@ import { WoProgramManagmentPaymentScheduleComponent } from '../workorder-program
 import { WoProgramManagmentEditPaymentScheduleComponent } from '../workorder-program-management/wo-pm-edit-payment-schedule/wo-pm-edit-payment-schedule.component';
 import { WoProgramManagmentAddPaymentScheduleComponent } from '../workorder-program-management/wo-pm-add-payment-schedule/wo-pm-add-payment-schedule.component';
 import { WoProgramManagmentCreatePaymentScheduleComponent } from '../workorder-program-management/wo-pm-create-payment-schedule/wo-pm-create-payment-schedule.component';
+import { ReportingCharComponent} from '../workorder-list/workorder-form/reporting-char/reporting-char.component';
 import { ManagementRolesComponent } from '../management-roles/management-roles.component';
 import { ManagementSorComponent } from '../management-sor/management-sor.component';
 import { ManagementCostsComponent } from '../management-costs/management-costs.component';
@@ -93,6 +94,12 @@ import { MilestonesNotesComponent } from '../milestones-notes/milestones-notes.c
 import { MilestonesDocumentListComponent } from '../milestones-document-list/milestones-document-list.component';
 import { WoPmPaymentsComponent } from '../workorder-program-management/wo-pm-payments/wo-pm-payments.component';
 import { ValuationsComponent } from '../valuations/valuations.component';
+import { WorksordersChecklistComponent } from '../worksorders-checklist/worksorders-checklist.component';
+import { WorksordersEditchecklistComponent } from '../worksorders-checklist/worksorders-editchecklist/worksorders-editchecklist.component';
+import { CustomerSurveyComponent } from '../customer-survey/customer-survey.component';
+import { CustomersurveyanswerComponent } from '../customer-survey/customersurveyanswer/customersurveyanswer.component';
+import { WoEditcommentComponent } from '../wo-editcomment/wo-editcomment.component';
+
 
 @NgModule({
   declarations: [
@@ -177,7 +184,13 @@ import { ValuationsComponent } from '../valuations/valuations.component';
     WoProgramManagmentAddPaymentScheduleComponent,
     WoProgramManagmentCreatePaymentScheduleComponent,
     WoPmPaymentsComponent,
-    ValuationsComponent
+    ValuationsComponent,
+    ReportingCharComponent,
+    WorksordersChecklistComponent,
+    WorksordersEditchecklistComponent,
+    CustomerSurveyComponent,
+    CustomersurveyanswerComponent,
+    WoEditcommentComponent
   ],
 
 
@@ -198,7 +211,9 @@ import { ValuationsComponent } from '../valuations/valuations.component';
     NgMultiSelectDropDownModule.forRoot(),
     MultiSelectModule,
 
-  ]
+  ],
+  exports: [
+  ],
 
 })
 

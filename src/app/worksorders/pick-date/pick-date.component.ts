@@ -65,14 +65,22 @@ export class PickDateComponent implements OnInit {
         month: current.getMonth() + 1,
         day: current.getDate()
       };
-    } else if (this.chooseDateType == "SE") {
+    } else if (this.chooseDateType == "SE" ) {
       this.width = 520;
       // this.height = 430;
       this.range = true;
       // this.fromDate = this.calendar.getToday();
       // this.toDate = this.calendar.getNext(this.calendar.getToday(), 'd', 10);
 
-    } else {
+    } else if (this.chooseDateType == "TCPICK" ) {
+      //this.width = 520;
+      this.range = false;
+      // this.height = 430;
+      // this.fromDate = this.calendar.getToday();
+      // this.toDate = this.calendar.getNext(this.calendar.getToday(), 'd', 10);
+
+    }
+     else {
       this.maxDate = {
         year: current.getFullYear(),
         month: current.getMonth() + 1,

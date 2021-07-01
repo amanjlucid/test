@@ -1,5 +1,5 @@
 <kendo-window title="{{windowTitle}}" [top]="20" [height]="panelHeight" [left]="left" [(width)]="windowWidth"
-  [minWidth]="120" *ngIf="woFormWindow" (close)="closewoFormWindow()">
+  [minWidth]="120" *ngIf="woFormWindow" (close)="closewoFormWindow(false)">
 
   <div class="row">
     <div class="col-md-12">
@@ -92,7 +92,7 @@
         <div class="row">
           <div class="col-md-12 text-right">
             <button type="submit" class="btn btn-sm themeButton mr-1">Apply</button>
-            <button type="button" (click)="closewoFormWindow()" class="btn btn-sm themeButton">Cancel</button>
+            <button type="button" (click)="closewoFormWindow(false)" class="btn btn-sm themeButton">Cancel</button>
           </div>
         </div>
       </form>
@@ -474,13 +474,13 @@
 
 
 
-
-
-
         <div class="row mt-3">
-          <div class="col-md-12 text-right">
+          <div class="col-md-2">
+            <button type="button" *ngIf="woMenuAccess('Edit Reporting Characteristics')" (click)="editRepChars()" class="btn btn-sm themeButton">Edit Reporting Characteristics</button>
+          </div>
+          <div class="col-md-10 text-right">
             <button type="submit" class="btn btn-sm themeButton mr-1">Apply</button>
-            <button type="button" (click)="closewoFormWindow()" class="btn btn-sm themeButton">Cancel</button>
+            <button type="button" (click)="closewoFormWindow(false)" class="btn btn-sm themeButton">Cancel</button>
           </div>
         </div>
       </form>
@@ -490,10 +490,10 @@
 
   </div>
 
-
-
-
-
-
+  <div class="worksOrderOverlay"></div>
 
 </kendo-window>
+
+<app-reporting-char *ngIf="repCharWindow" [repCharWindow]="repCharWindow" [woSequence]="selectedWorkOrderAddEdit.wosequence" [repCharModel]="reportingCharsConfig"
+[woName]="selectedWorkOrderAddEdit.woname" (closeRepCharWindow)="closeRepCharWindow($event)"></app-reporting-char>
+

@@ -1,0 +1,12 @@
+.invalid-feedback{
+  display: block;
+}
+
+.imgCl{
+  height: 70px;
+  border-radius: 5px;
+}
+
+.uploadBtn{
+  display: block;
+}

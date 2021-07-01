@@ -123,7 +123,7 @@
                         <li class="sidenav-item" [routerLinkActive]="['active']"
                             *ngIf="tasksPortalPermissions.indexOf('Manage User Events') != -1">
                             <a [routerLink]="['/tasks/tasks']" class="sidenav-link">
-                                <div>Tasks</div>
+                                <div>Worktray</div>
                             </a>
                         </li>
 
@@ -246,7 +246,7 @@
                                 <div>Works Orders</div>
                             </a>
                         </li>
-                                          
+
                         <li style="display: none;" class="sidenav-item" [routerLinkActive]="['active']">
                             <a [routerLink]="['/worksorders/details']" class="sidenav-link">
                                 <div>Works Order Detail</div>
@@ -544,6 +544,13 @@
                                 <div>Reporting</div>
                             </a>
                         </li>
+
+                        <li class="sidenav-item" [routerLinkActive]="['active']"
+                        *ngIf="checkAngularGrpPermission('Works Orders', 'Works Order Portal Access',1)">
+                        <a [routerLink]="['/works-order-settings']" class="sidenav-link">
+                            <div>Works Orders</div>
+                        </a>
+                    </li>
 
                     </ul>
                 </li>

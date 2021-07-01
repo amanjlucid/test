@@ -69,7 +69,7 @@ export class SettingsService {
     }
 
 
-    
+
     getEPCSettings() {
         let httpOptions = {
             headers: new HttpHeaders({
@@ -90,7 +90,7 @@ export class SettingsService {
     }
 
 
-    // Business area api 
+    // Business area api
 
     getBusinessAreaList() {
         let httpOptions = {
@@ -276,4 +276,23 @@ export class SettingsService {
         let body = JSON.stringify(params);
         return this.http.post<any>(`${appConfig.apiUrl}/api/WebReportSearch/UpdateWebReporterSystemDefaultConfigurationValues`, body, httpOptions);
     }
+
+    getWorksOrdersSettings() {
+      let httpOptions = {
+          headers: new HttpHeaders({
+              'Content-Type': 'application/json'
+          }),
+      };
+      return this.http.get<any>(`${appConfig.apiUrl}/api/WOPMManagement/GetWorksOrdersSettings`, httpOptions);
+    }
+
+    updateWorksOrderSettings(params) {
+      let body = JSON.stringify(params);
+      return this.http.post<any>(`${appConfig.apiUrl}/api/WOPMManagement/UpdateWorksOrdersSettings`, params);
+    }
+
+
+
+
+
 }
