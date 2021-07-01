@@ -37,12 +37,12 @@
     color: black !important;
 }
 
-.filterArea {
+.workorderListFilter .filterArea {
     width: 100%;
     display: block;
 }
 
-.filterArea input[type=text] {
+.workorderListFilter .filterArea input[type=text] {
     font-size: .894rem;
     line-height: 1.54;
     color: #4E5155;
@@ -52,47 +52,47 @@
     border-radius: .25rem;
 }
 
-.filterArea .filterdiv, .radioDiv, .actionDiv, .actionDiv #nesting-dropdown-demo {
+.workorderListFilter .filterArea .filterdiv, .radioDiv, .actionDiv, .actionDiv #nesting-dropdown-demo {
     display: inline-block;
 }
 
-.filterArea .filterdiv1 .filterLbl {
+.workorderListFilter .filterArea .filterdiv1 .filterLbl {
     width: 34%;
     margin-right: 10px;
 }
 
-.filterArea .filterdiv1 input[type=text] {
+.workorderListFilter .filterArea .filterdiv1 input[type=text] {
     width: 52%;
 }
 
-.filterArea .filterdiv2 .filterLbl {
+.workorderListFilter .filterArea .filterdiv2 .filterLbl {
     width: 19%;
     margin-right: 12px;
 }
 
-.filterArea .filterdiv2 input[type=text] {
+.workorderListFilter .filterArea .filterdiv2 input[type=text] {
     width: 65%;
 }
 
-.filterArea .filterdiv3 .filterLbl {
+.workorderListFilter .filterArea .filterdiv3 .filterLbl {
     width: 36%;
     margin-right: 10px;
 }
 
-.filterArea .filterdiv3 input[type=text] {
+.workorderListFilter .filterArea .filterdiv3 input[type=text] {
     width: 50%;
 }
 
-.filterArea .filterdiv4 .filterLbl {
+.workorderListFilter .filterArea .filterdiv4 .filterLbl {
     width: 24%;
     margin-right: 10px;
 }
 
-.filterArea .filterdiv4 input[type=text] {
+.workorderListFilter .filterArea .filterdiv4 input[type=text] {
     width: 68%;
 }
 
-.filterArea .filterdiv:not(:first-child) {
+.workorderListFilter .filterArea .filterdiv:not(:first-child) {
     margin-left: 6px;
 }
 
@@ -116,7 +116,7 @@
     width: 11%;
 }
 
-.filterArea .radioDiv {
+.workorderListFilter .filterArea .radioDiv {
     margin-left: 21px;
 }
 
@@ -177,26 +177,26 @@
 /** media query **/
 
 @media only screen and (min-device-width: 768px) and (max-device-width: 1366px) {
-    .filterArea .filterdiv {
+    .workorderListFilter .filterArea .filterdiv {
         width: 40%;
     }
-    .filterArea .filterdiv {
+    .workorderListFilter .filterArea .filterdiv {
         margin-left: 0px;
     }
 }
 
 @media only screen and (min-device-width: 280px) and (max-device-width: 540px) {
-    .filterArea .filterdiv {
+    .workorderListFilter .filterArea .filterdiv {
         width: 100%;
     }
-    .filterArea .filterdiv .filterLbl {
+    .workorderListFilter .filterArea .filterdiv .filterLbl {
         width: 25%;
         text-align: left;
     }
-    .filterArea .filterdiv input[type=text] {
+    .workorderListFilter .filterArea .filterdiv input[type=text] {
         width: 70%;
     }
-    .filterArea .filterdiv {
+    .workorderListFilter .filterArea .filterdiv {
         margin-left: 0px !important;
     }
 }

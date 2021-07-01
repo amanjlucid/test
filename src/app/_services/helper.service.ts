@@ -589,7 +589,6 @@ export class HelperService {
 
 
     checkValidRange(rangeArr, lowerInp, higherInp, range) {
-        //console.log({ rangeArr, lowerInp, higherInp, range })
         let highest = range.max;
         let lowest = range.min;
         let isTrue: boolean = true;
@@ -711,7 +710,6 @@ export class HelperService {
         this.subs.add(
             this.worksorderManagementService.workOrderUserSecurity(currentUser.userId, wo).subscribe(
                 wosecurtiy => {
-                    // console.log(wosecurtiy)
                     this.sharedService.changeWoSecurity(wosecurtiy.data)
                 }
             )
@@ -724,7 +722,6 @@ export class HelperService {
         this.subs.add(
             this.worksorderManagementService.getUserTypeDetails(wo, wp, currentUser.userId).subscribe(
                 userType => {
-                    // console.log(wosecurtiy)
                     this.sharedService.changeUserType(userType.data)
                 }
             )

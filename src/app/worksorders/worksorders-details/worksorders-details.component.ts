@@ -95,7 +95,6 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
     if (element.className.indexOf('fas fa-bars') == -1) {
       this.hideMenu();
     }
-    // event.preventDefault();
   }
   openMilestoneFor = "phase";
   openManageMilestone = false;
@@ -583,8 +582,7 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
       this.worksorderManagementService.phaseUpDown(item.wosequence, item.wopsequence, move).subscribe(
         data => {
           if (data.isSuccess) this.refreshGrid(true);
-        },
-        err => this.alertService.error(err)
+        }, err => this.alertService.error(err)
       )
     )
   }
@@ -625,7 +623,6 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
     this.selectedRow = item;
     this.selectedParentRow = item;
     this.treelevel = 2;
-
     $('.worksOrderDetailOvrlay').addClass('ovrlay');
   }
 
@@ -635,10 +632,7 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
     this.selectedChildRow = item;
     this.selectedRow = item;
     this.treelevel = 3;
-
-
     this.selectedParentRow = JSON.parse(item.parentData);
-
     $('.worksOrderDetailOvrlay').addClass('ovrlay');
   }
 
@@ -662,7 +656,6 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
   }
 
   openResidentDetails(item) {
-
     this.autService.validateAssetIDDeepLinkParameters(this.currentUser.userId, item.assid).subscribe(
       data => {
         if (data.validated) {
@@ -864,12 +857,6 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
 
   woMenuBtnSecurityAccess(menuName) {
     return this.helperService.checkWorkOrderAreaAccess(this.userType, this.worksOrderAccess, this.worksOrderUsrAccess, menuName)
-    // if (this.userType?.wourroletype == "Dual Role") {
-    //   return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
-    // } else {
-    //   return this.worksOrderUsrAccess.indexOf(menuName) != -1
-    // }
-
   }
 
   lockUnlockColumn() {
@@ -884,6 +871,18 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
 
   getTopMargin() {
     if (this.mousePositioin == undefined) return;
+
+    const { y } = this.mousePositioin;
+    if (this.menuData.treelevel == 2) {
+      if (y > 780 && y < 824) return "-190px";
+      if (y > 824) return "-210px";
+    }
+
+    if (this.menuData.treelevel == 3) {
+      if (y > 780 && y < 824) return "-170px";
+      if (y > 824) return "-190px";
+    }
+
     return "-100px"
   }
 

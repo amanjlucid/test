@@ -5,7 +5,6 @@ import { AlertService, HelperService, WorksorderReportService, ConfirmationDialo
 import { PageChangeEvent, SelectableSettings } from '@progress/kendo-angular-grid';
 import { DateFormatPipe } from 'src/app/_pipes/date-format.pipe';
 
-
 @Component({
   selector: 'app-wo-program-management-payment-schedule',
   templateUrl: './wo-pm-payment-schedule.component.html',
@@ -48,6 +47,8 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
 
 
 
+
+
   public allowUnsort = true;
   public multiple = false;
 
@@ -86,17 +87,6 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
   DisplayPaymentAssetsData: any;
   DisplayPaymentAssetsView: DataResult;
 
-  public dropdownSettings = {
-    singleSelection: false,
-    idField: 'item_id',
-    textField: 'item_text',
-    selectAllText: 'Select All',
-    unSelectAllText: 'UnSelect All',
-    itemsShowLimit: 3,
-    allowSearchFilter: true
-  };
-
-  public paymentScheduleData;
 
 
 
