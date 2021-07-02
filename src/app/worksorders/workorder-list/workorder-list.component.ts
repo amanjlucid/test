@@ -122,7 +122,7 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
         this.sharedService.userTypeObs
       ]).subscribe(
         data => {
-          console.log(data);
+          // console.log(data);
           this.worksOrderAccess = data[0];
           this.worksOrderUsrAccess = data[1];
           this.userType = data[2][0];
@@ -235,7 +235,6 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
 
 
   cellClickHandler({ columnIndex, dataItem }) {
-    console.log(dataItem)
     //get work order user access when row is changed
     if (this.selectedWorksOrder?.wosequence != dataItem.wosequence) {
       this.helperService.getWorkOrderSecurity(dataItem.wosequence);

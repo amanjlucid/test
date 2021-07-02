@@ -240,6 +240,7 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
   closeAddPaymentScheduleWindow(eve) {
     $('.wopmpaymentoverlay').removeClass('ovrlay');
     this.openWOAddPaymentScheduleWindow = eve;
+    this.GetWEBWorksOrdersPaymentScheduleForWorksOrder();
   }
 
   openWOCreatePaymentSchedule() {
@@ -254,6 +255,7 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
   closeCreatePaymentScheduleWindow(eve) {
     $('.wopmpaymentoverlay').removeClass('ovrlay');
     this.openWOCreatePaymentScheduleWindow = eve;
+    this.GetWEBWorksOrdersPaymentScheduleForWorksOrder();
   }
 
 

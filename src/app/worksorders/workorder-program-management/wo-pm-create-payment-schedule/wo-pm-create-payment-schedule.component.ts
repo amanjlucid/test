@@ -25,7 +25,7 @@ export class WoProgramManagmentCreatePaymentScheduleComponent implements OnInit 
   submitted: boolean = false;
   minDate: any;
   formErrors: any;
-  
+
   validationMessage = {
     'pStartDate': {
       'required': 'Period Start Date is required.',
@@ -214,33 +214,34 @@ export class WoProgramManagmentCreatePaymentScheduleComponent implements OnInit 
     const { wosequence, wprsequence } = this.worksOrderData;
     const { pStartDate, pEndDate, pFrequency, pType, specificDays = 0, stagePayment = 0, retentionPct = 0, retentionValue = 0 } = formRawVal;
 
-    // const params = {
-    //   "WOSEQUENCE": wosequence,
-    //   "WPRSEQUENCE": wprsequence,
-    //   "dtStartDate": this.helperService.dateObjToString(pStartDate),
-    //   "dtEndDate": this.helperService.dateObjToString(pEndDate),
-    //   "strPaymentFrequency": pFrequency,
-    //   "strPaymentType": pType,
-    //   "intPaymentDays": parseInt(specificDays),
-    //   "WPSRETENTIONPCT": parseInt(retentionPct),
-    //   "WPSRETENTIONVALUE": parseInt(this.helperService.convertMoneyToFlatFormat(retentionValue)),
-    //   "strUser": this.currentUser.userId,
-    //   "WPSFIXEDPAYMENTVALUE": stagePayment
-    // }
-
     const params = {
-      "WOSEQUENCE": this.worksOrderData.wosequence,
-      "WPRSEQUENCE": this.worksOrderData.wprsequence,
-      "dtStartDate": this.dateFormate(this.createScheduleForm.get('pStartDate').value),
-      "dtEndDate": this.dateFormate(this.createScheduleForm.get('pEndDate').value),
-      "strPaymentFrequency": this.createScheduleForm.get('pFrequency').value,
-      "strPaymentType": this.createScheduleForm.get('pType').value,
-      "intPaymentDays": parseInt(this.createScheduleForm.get('specificDays').value),
+      "WOSEQUENCE": wosequence,
+      "WPRSEQUENCE": wprsequence,
+      "dtStartDate": this.helperService.dateObjToString(pStartDate),
+      "dtEndDate": this.helperService.dateObjToString(pEndDate),
+      "strPaymentFrequency": pFrequency,
+      "strPaymentType": pType,
+      "intPaymentDays": parseInt(specificDays),
+      "WPSRETENTIONPCT": parseInt(retentionPct),
+      //"WPSRETENTIONVALUE": parseInt(this.helperService.convertMoneyToFlatFormat(retentionValue)),
+      "WPSRETENTIONVALUE": parseInt(isNaN(parseInt(retentionValue)) ? retentionValue.replace("£", "").replace(",", "").replace(",", "") : retentionValue),
       "strUser": this.currentUser.userId,
-      "WPSRETENTIONPCT": parseInt(this.createScheduleForm.get('retentionPct').value),
-      "WPSRETENTIONVALUE": parseInt(isNaN(parseInt(this.createScheduleForm.get('retentionValue').value)) ? this.createScheduleForm.get('retentionValue').value.replace("£", "").replace(",", "").replace(",", "") : this.createScheduleForm.get('retentionValue').value),
       "WPSFIXEDPAYMENTVALUE": stagePayment
-    };
+    }
+
+    // const params = {
+    //   "WOSEQUENCE": this.worksOrderData.wosequence,
+    //   "WPRSEQUENCE": this.worksOrderData.wprsequence,
+    //   "dtStartDate": this.dateFormate(this.createScheduleForm.get('pStartDate').value),
+    //   "dtEndDate": this.dateFormate(this.createScheduleForm.get('pEndDate').value),
+    //   "strPaymentFrequency": this.createScheduleForm.get('pFrequency').value,
+    //   "strPaymentType": this.createScheduleForm.get('pType').value,
+    //   "intPaymentDays": parseInt(this.createScheduleForm.get('specificDays').value),
+    //   "strUser": this.currentUser.userId,
+    //   "WPSRETENTIONPCT": parseInt(this.createScheduleForm.get('retentionPct').value),
+    //   "WPSRETENTIONVALUE": parseInt(isNaN(parseInt(this.createScheduleForm.get('retentionValue').value)) ? this.createScheduleForm.get('retentionValue').value.replace("£", "").replace(",", "").replace(",", "") : this.createScheduleForm.get('retentionValue').value),
+    //   "WPSFIXEDPAYMENTVALUE": stagePayment
+    // };
 
     this.subs.add(
       this.worksOrdersService.createWebWorksOrdersPaymentSchedule(params).subscribe(
