@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { SelectableSettings, PageChangeEvent } from '@progress/kendo-angular-grid';
-import { AlertService, ConfirmationDialogService, HelperService, SharedService, WorksorderManagementService, WorksOrdersService } from 'src/app/_services';
+import { AlertService, ConfirmationDialogService, HelperService, SharedService, WorksorderManagementService} from 'src/app/_services';
 import { combineLatest, forkJoin, Observable } from 'rxjs';
 
 @Component({
@@ -20,7 +20,6 @@ export class AssetDefectsListComponent implements OnInit {
   @Input() singleWorkOrderAssetInp: any = [];
   @Input() singleWorkOrderInp: any = [];
   @Output() closeDefectsListEvent = new EventEmitter<boolean>();
-
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
   title = 'Show Defects for Asset';
   subs = new SubSink();
@@ -34,7 +33,6 @@ export class AssetDefectsListComponent implements OnInit {
       filters: []
     }
   }
-
   filterToggle = false;
   programmeData: any;
   worksOrderData: any;
@@ -47,7 +45,6 @@ export class AssetDefectsListComponent implements OnInit {
   pageSize = 25;
   gridData: any;
   mySelection: any[] = [];
-
   worksOrderAccess = [];
   worksOrderUsrAccess: any = [];
   userType: any = [];
@@ -55,7 +52,7 @@ export class AssetDefectsListComponent implements OnInit {
   openDefectform = false;
   selectedSingleDefect: any;
 
-  //asset Defet
+  //asset Defect
   openAssetDefect = false;
 
   constructor(
@@ -64,7 +61,7 @@ export class AssetDefectsListComponent implements OnInit {
     private alertService: AlertService,
     private confirmationDialogService: ConfirmationDialogService,
     private sharedService: SharedService,
-    private helperService : HelperService
+    private helperService: HelperService
   ) {
     this.setSelectableSettings();
   }
@@ -74,8 +71,6 @@ export class AssetDefectsListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // console.log({ openedFrom: this.openedFrom, singleWorkOrderInp: this.singleWorkOrderInp, singleWorkOrderAssetInp: this.singleWorkOrderAssetInp, })
-
     if (this.openedFrom == "workdetail" || this.openedFrom == "workorder") {
       this.title = 'Defects';
     }
@@ -213,19 +208,9 @@ export class AssetDefectsListComponent implements OnInit {
     };
   }
 
-  cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
+  cellClickHandler({ dataItem }) {
     this.selectedSingleDefect = dataItem;
   }
-
-  woMenuAccess(menuName: string) {
-    return this.helperService.checkWorkOrderAreaAccess(this.userType, this.worksOrderAccess, this.worksOrderUsrAccess, menuName)
-    // if (this.userType == undefined) return true;
-    // if (this.userType?.wourroletype == "Dual Role") {
-    //   return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
-    // }
-    // return this.worksOrderUsrAccess.indexOf(menuName) != -1
-  }
-
 
   openDefectForm(mode: string, item = null) {
     this.selectedSingleDefect = item;
@@ -319,11 +304,6 @@ export class AssetDefectsListComponent implements OnInit {
 
   woMenuBtnSecurityAccess(menuName) {
     return this.helperService.checkWorkOrderAreaAccess(this.userType, this.worksOrderAccess, this.worksOrderUsrAccess, menuName)
-    // if (this.userType?.wourroletype == "Dual Role") {
-    //   return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
-    // }
-
-    // return this.worksOrderUsrAccess.indexOf(menuName) != -1
   }
 
 

@@ -64,22 +64,21 @@ export class ProgramLogComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        // console.log({ openedFrom: this.openedFrom, workorder: this.singleWorkOrderInp, asset: this.singleWorkOrderAssetInp, programme: this.selectedProgrammeInp })
 
         this.subs.add(
             combineLatest([
-              this.sharedService.worksOrdersAccess,
-              this.sharedService.woUserSecObs,
-              this.sharedService.userTypeObs
+                this.sharedService.worksOrdersAccess,
+                this.sharedService.woUserSecObs,
+                this.sharedService.userTypeObs
             ]).subscribe(
-              data => {
-                this.worksOrderAccess = data[0];
-                this.worksOrderUsrAccess = data[1];
-                this.userType = data[2][0];
-              }
+                data => {
+                    this.worksOrderAccess = data[0];
+                    this.worksOrderUsrAccess = data[1];
+                    this.userType = data[2][0];
+                }
             )
-          )
-          
+        )
+
         if (this.openedFrom == "assetchecklist" && this.singleWorkOrderAssetInp != undefined) {
             this.title = "View Programme Log for Asset";
             const { wprsequence, wosequence, wopsequence } = this.singleWorkOrderAssetInp;
@@ -234,6 +233,16 @@ export class ProgramLogComponent implements OnInit {
 
     cellClickHandler({ columnIndex, dataItem }) {
         this.selectedItem = dataItem;
+        //if no access for view milestone log detail then return empty
+        if (this.openedFrom == 'milestone' && !this.woMenuAccess('View Milestone Log Detail')) {
+            return
+        }
+
+        //if no access for programme taransaction then return empty
+        if (this.openedFrom != 'milestone' && !this.woMenuAccess('View Programme Transaction')) {
+            return
+        }
+
         if (columnIndex > 0) {
             if (this.touchtime == 0) {
                 this.touchtime = new Date().getTime();
@@ -427,7 +436,6 @@ export class ProgramLogComponent implements OnInit {
 
     woMenuAccess(menuName: string) {
         return this.helper.checkWorkOrderAreaAccess(this.userType, this.worksOrderAccess, this.worksOrderUsrAccess, menuName)
-
     }
 
 

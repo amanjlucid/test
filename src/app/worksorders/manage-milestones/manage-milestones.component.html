@@ -16,13 +16,16 @@
             <label for="" class="col-form-label">Phase: </label>
         </div>
         <div *ngIf="openMilestoneFor == 'phase'" class="col-md-3">
-            <input [readonly]="true" type="text" class="form-control" placeholder="" value="{{ selectedPhaseInp?.woname}}">
+            <input [readonly]="true" type="text" class="form-control" placeholder=""
+                value="{{ selectedPhaseInp?.woname}}">
         </div>
         <!-- for phase end  -->
 
         <div class="text-right col-md-3 actionDiv"
             *ngIf="(openMilestoneFor == 'checklist' || openMilestoneFor == 'phase') && !predecessors">
-            <button (click)="openProgrammeLog()" class="btn btn-sm themeButton ml-1">Programme Log</button>
+
+            <button *ngIf="woMenuAccess('Milestone Programme Log')" (click)="openProgrammeLog()"
+                class="btn btn-sm themeButton ml-1">Programme Log</button>
 
             <div class="dropdown mr-1 reportBtnArea mt-2" id="nesting-dropdown-demo">
                 <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown"

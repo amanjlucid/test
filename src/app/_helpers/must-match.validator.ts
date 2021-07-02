@@ -456,4 +456,46 @@ export function MustbeTodayOrLower(format = "DD/MM/YYYY"): any {
 
 
 
+export function checkDateisBelowOrAboveFromGivenDate(controlName1: any, givenDate, check) {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+
+        if (control.errors && !control.errors.isLower) {
+            return;
+        }
+
+        if (controlName1.value == null) {
+            return;
+        }
+
+
+        const date1 = `${controlName1.value.year}/${controlName1.value.month}/${controlName1.value.day}`
+       
+        let dateOne = new Date(date1);
+        let dateTwo = new Date(givenDate);
+
+        if(check == "below"){
+            if (dateOne < dateTwo) {
+                return { isBelow: true }
+            }
+        }
+        
+        if(check == "above"){
+            if (dateOne > dateTwo) {
+                return { isAbove: true }
+            }
+        }
+       
+
+        return null;
+      
+
+    };
+
+
+}
+
+
+
+
+
 

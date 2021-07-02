@@ -122,7 +122,7 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
         this.sharedService.userTypeObs
       ]).subscribe(
         data => {
-          // console.log(data);
+          console.log(data);
           this.worksOrderAccess = data[0];
           this.worksOrderUsrAccess = data[1];
           this.userType = data[2][0];
@@ -143,9 +143,8 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
     // Filter grid from header filter area
     this.subs.add(
       this.searchInGrid$
-        .pipe(
-          debounceTime(100),
-        ).subscribe(obj => this.getUserWorksOrdersList(obj))
+        .pipe(debounceTime(100))
+        .subscribe(obj => this.getUserWorksOrdersList(obj))
     )
 
 
@@ -187,7 +186,6 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
   }
 
   getUserWorksOrdersList(filter, menuOpen = null) {
-
     this.subs.add(
       this.worksOrderService.getListOfUserWorksOrderByUserId(filter).subscribe(
         data => {
@@ -237,6 +235,7 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
 
 
   cellClickHandler({ columnIndex, dataItem }) {
+    console.log(dataItem)
     //get work order user access when row is changed
     if (this.selectedWorksOrder?.wosequence != dataItem.wosequence) {
       this.helperService.getWorkOrderSecurity(dataItem.wosequence);
@@ -275,19 +274,20 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
   }
 
 
-
   getMouseroverEve(eve) {
     // this.mousePositioin = { x: eve.pageX, y: eve.pageY };
   }
 
   getTopMargin() {
     if (this.mousePositioin == undefined) return;
+    
     const { y } = this.mousePositioin;
-    if (y <= 563) return "-133px";
-    if (y > 563 && y < 640) return "-203px";
-    if (y > 640 && y < 745) return "-318px";
-    if (y > 745 && y < 797) return "-364px";
-    if (y > 797 && y < 900) return "-441px";
+    if (y <= 454) return "-133px"
+    if (y > 455 && y <= 563) return "-163px";
+    if (y > 563 && y < 640) return "-223px";
+    if (y > 640 && y < 745) return "-358px";
+    if (y > 745 && y < 797) return "-414px";
+    if (y > 797 && y < 900) return "-491px";
   }
 
   openMenu(e, dataItem) {
@@ -859,11 +859,11 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
     this.openWOPaymentScheduleWindow = $event;
   }
 
-  
 
 
-  
-  
+
+
+
   openChecklist(dataItem) {
     this.selectedWorksOrder = dataItem;
     $('.bgblur').addClass('ovrlay');
@@ -873,5 +873,5 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
   closeChecklistWindow($event) {
     this.showChecklist = $event;
     $('.bgblur').removeClass('ovrlay');
-}
+  }
 }

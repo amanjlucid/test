@@ -2,10 +2,8 @@ import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { PageChangeEvent, RowArgs } from '@progress/kendo-angular-grid';
-import { AlertService, ConfirmationDialogService, HelperService, SharedService, WorksorderManagementService, WorksorderReportService, AuthenticationService } from '../../_services'
-import { CurrencyPipe } from '@angular/common';
+import { AlertService, ConfirmationDialogService, HelperService, SharedService, WorksorderManagementService, WorksorderReportService } from '../../_services'
 import { combineLatest, forkJoin } from 'rxjs';
-import { Router, ActivatedRoute, RouterEvent } from '@angular/router';
 
 
 @Component({
@@ -91,9 +89,6 @@ export class WorksordersAssetChecklistComponent implements OnInit {
     private helperService: HelperService,
     private sharedService: SharedService,
     private worksOrderReportService: WorksorderReportService,
-    private currencyPipe: CurrencyPipe,
-    private autService: AuthenticationService,
-    private router: Router,
   ) { }
 
   ngOnInit(): void {
@@ -1261,20 +1256,19 @@ export class WorksordersAssetChecklistComponent implements OnInit {
 
       return true;
     }
-    
-      if (type == "LETTER") {
-      if (this.assetCheckListData){
+
+    if (type == "LETTER") {
+      if (this.assetCheckListData) {
         let filterChecklist = this.assetCheckListData.filter(x => this.mySelection.includes(x.wochecksurcde));
         return this.mySelection.length == 0 || filterChecklist.some(x => x.wocheckspeciaL1 != "LETTER");
-      } else
-      {
-          return true;
+      } else {
+        return true;
       }
 
     }
 
     if (type == "comments") {
-      return (this.mySelection.length == 0 )
+      return (this.mySelection.length == 0)
     }
 
   }
@@ -1283,16 +1277,11 @@ export class WorksordersAssetChecklistComponent implements OnInit {
 
   woMenuBtnSecurityAccess(menuName) {
     return this.helperService.checkWorkOrderAreaAccess(this.userType, this.worksOrderAccess, this.worksOrderUsrAccess, menuName)
-    // if (this.userType?.wourroletype == "Dual Role") {
-    //   return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
-    // } else {
-    //   return this.worksOrderUsrAccess.indexOf(menuName) != -1
-    // }
   }
 
 
   woGlobalSecurityAccess(menuName) {
-      return this.worksOrderAccess.indexOf(menuName) != -1 
+    return this.worksOrderAccess.indexOf(menuName) != -1
 
   }
 
@@ -1452,7 +1441,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
   closeProgrammeLogWindow(eve) {
     this.ProgrammeLogWindow = eve;
   }
-  
+
   openCustomerSurvey() {
     this.showCustomerSurveyWindow = true;
     $('.checklistOverlay').addClass('ovrlay');
@@ -1467,10 +1456,10 @@ export class WorksordersAssetChecklistComponent implements OnInit {
   mergeMailMultiple() {
     let filterChecklist = this.assetCheckListData.filter(x => this.mySelection.includes(x.wochecksurcde));
     const mailParms = {
-      wosequence : this.selectedChildRow.wosequence, 
-      wopsequence : this.selectedChildRow.wopsequence,
-      mergelist : filterChecklist,
-      user : this.currentUser.userId,
+      wosequence: this.selectedChildRow.wosequence,
+      wopsequence: this.selectedChildRow.wopsequence,
+      mergelist: filterChecklist,
+      user: this.currentUser.userId,
     }
 
 
@@ -1483,7 +1472,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
     }
     let differentChecklistType = false;
     for (const key of filterChecklist) {
-      if (wostagesurcde != key.wostagesurcde ||  wochecksurcde != key.wochecksurcde) {
+      if (wostagesurcde != key.wostagesurcde || wochecksurcde != key.wochecksurcde) {
         differentChecklistType = true;
         break;
       }
@@ -1496,13 +1485,13 @@ export class WorksordersAssetChecklistComponent implements OnInit {
     this.processMailMerge(mailParms);
   }
 
-  mergeMailSingle(dataItem : any) {
-    let filterChecklist = this.assetCheckListData.filter(x => x.wochecksurcde ==dataItem.wochecksurcde );
+  mergeMailSingle(dataItem: any) {
+    let filterChecklist = this.assetCheckListData.filter(x => x.wochecksurcde == dataItem.wochecksurcde);
     const mailParms = {
-      wosequence : this.selectedChildRow.wosequence, 
-      wopsequence : this.selectedChildRow.wopsequence,
-      mergelist : filterChecklist,
-      user : this.currentUser.userId,
+      wosequence: this.selectedChildRow.wosequence,
+      wopsequence: this.selectedChildRow.wopsequence,
+      mergelist: filterChecklist,
+      user: this.currentUser.userId,
     }
 
     this.processMailMerge(mailParms);
@@ -1520,7 +1509,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
           var byteArray = new Uint8Array(byteNumbers);
           var file = new Blob([byteArray], { type: 'application/pdf;base64' });
           var fileURL = URL.createObjectURL(file);
-          let newPdfWindow =window.open(fileURL);
+          let newPdfWindow = window.open(fileURL);
 
           this.alertService.success("Mail-merge document created successfully.");
           this.worksOrderDetailPageData();
@@ -1548,22 +1537,22 @@ export class WorksordersAssetChecklistComponent implements OnInit {
       ASSID_STAGESURCDE_CHECKSURCDE.push(checklist.wostagesurcde)
       ASSID_STAGESURCDE_CHECKSURCDE.push(checklist.wochecksurcde)
     }
-    
-    let csvKeys : string = ASSID_STAGESURCDE_CHECKSURCDE.join(",");
-    this.commentParms = {
-      wosequence : this.selectedChildRow.wosequence, 
-      wopsequence : this.selectedChildRow.wopsequence,
-      csvKeys : csvKeys,
-      subtitle : this.selectedChildRow.woname, 
-      }
 
-      this.showEditCommentWindow = true;
-      $('.checklistOverlay').addClass('ovrlay');
+    let csvKeys: string = ASSID_STAGESURCDE_CHECKSURCDE.join(",");
+    this.commentParms = {
+      wosequence: this.selectedChildRow.wosequence,
+      wopsequence: this.selectedChildRow.wopsequence,
+      csvKeys: csvKeys,
+      subtitle: this.selectedChildRow.woname,
+    }
+
+    this.showEditCommentWindow = true;
+    $('.checklistOverlay').addClass('ovrlay');
   }
 
-  setSingleComment(type: string, dataItem : any) {
+  setSingleComment(type: string, dataItem: any) {
     this.commentMode = type;
-    this.commentChecklist = this.assetCheckListData.filter(x => x.wochecksurcde ==dataItem.wochecksurcde );
+    this.commentChecklist = this.assetCheckListData.filter(x => x.wochecksurcde == dataItem.wochecksurcde);
 
     if (this.commentChecklist.length == 0) {
       return
@@ -1575,14 +1564,14 @@ export class WorksordersAssetChecklistComponent implements OnInit {
       ASSID_STAGESURCDE_CHECKSURCDE.push(checklist.wostagesurcde)
       ASSID_STAGESURCDE_CHECKSURCDE.push(checklist.wochecksurcde)
     }
-    
-    let csvKeys : string = ASSID_STAGESURCDE_CHECKSURCDE.join(",");
+
+    let csvKeys: string = ASSID_STAGESURCDE_CHECKSURCDE.join(",");
     this.commentParms = {
-      wosequence : this.selectedChildRow.wosequence, 
-      wopsequence : this.selectedChildRow.wopsequence,
-      csvKeys : csvKeys,
-      subtitle : this.selectedChildRow.woname, 
-      }
+      wosequence: this.selectedChildRow.wosequence,
+      wopsequence: this.selectedChildRow.wopsequence,
+      csvKeys: csvKeys,
+      subtitle: this.selectedChildRow.woname,
+    }
 
     this.showEditCommentWindow = true;
     $('.checklistOverlay').addClass('ovrlay');
@@ -1602,7 +1591,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
         for (const checklist of this.commentChecklist) {
           checklist.woasscheckcomment += " " + eve;
         }
-      }   
+      }
     }
     $('.checklistOverlay').removeClass('ovrlay');
 
@@ -1612,9 +1601,9 @@ export class WorksordersAssetChecklistComponent implements OnInit {
 
 
   openResidentDetails() {
-          this.assetID = this.selectedChildRow.assid;
-          this.displayResidentDetails = true;
-          $('.checklistOverlay').addClass('ovrlay');
+    this.assetID = this.selectedChildRow.assid;
+    this.displayResidentDetails = true;
+    $('.checklistOverlay').addClass('ovrlay');
   }
 
   closeResidentInfoDetailsWindow(eve) {

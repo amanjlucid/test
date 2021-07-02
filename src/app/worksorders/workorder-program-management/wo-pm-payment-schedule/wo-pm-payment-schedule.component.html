@@ -67,7 +67,7 @@
                   (click)="openValuationWindowMehhod(dataItem)" class="dropdown-item" href="javascript:void(0)">Enter
                   Valuation</a>
 
-                <a (click)="WorksResetPendingScheduleCall(dataItem)" class="dropdown-item"
+                <a [ngClass]="{'disabled' : dataItem.wpspaymentstatus == 'Paid' || dataItem.wpspaymentstatus == 'Unpaid'}" (click)="WorksResetPendingScheduleCall(dataItem)" class="dropdown-item"
                   href="javascript:void(0)">Reset Pending</a>
 
                 <div class="dropdown-toggle">
@@ -415,12 +415,12 @@
     (closeValuationWindow)="closeValuationWindow($event)"></app-valuations>
 
   <app-wo-program-management-add-payment-schedule *ngIf="openWOAddPaymentScheduleWindow"
-    [worksOrderData]="worksOrderData" [openWOAddPaymentScheduleWindow]="openWOAddPaymentScheduleWindow"
+    [worksOrderData]="worksOrderData" [paymentScheduleExist]="paymentScheduleExist" [openWOAddPaymentScheduleWindow]="openWOAddPaymentScheduleWindow"
     (closeAddPaymentScheduleWindowEvent)="closeAddPaymentScheduleWindow($event)">
   </app-wo-program-management-add-payment-schedule>
 
   <app-wo-program-management-create-payment-schedule *ngIf="openWOCreatePaymentScheduleWindow"
-    [worksOrderData]="worksOrderData" [openWOCreatePaymentScheduleWindow]="openWOCreatePaymentScheduleWindow"
+    [worksOrderData]="worksOrderData"  [openWOCreatePaymentScheduleWindow]="openWOCreatePaymentScheduleWindow"
     (closeCreatePaymentScheduleWindowEvent)="closeCreatePaymentScheduleWindow($event)">
   </app-wo-program-management-create-payment-schedule>
 

@@ -1,7 +1,7 @@
-.k-window{
+.k-window {
     position: fixed!important;
-    z-index: 10010!important;
 }
-.wopmcreatepaymentoverlay.ovrlay {
-    z-index: 10007;
+
+app-wo-program-management-create-payment-schedule .k-window-content {
+    overflow: inherit !important;
 }

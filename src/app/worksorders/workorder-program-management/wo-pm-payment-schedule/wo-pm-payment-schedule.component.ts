@@ -33,18 +33,17 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
   selectableSettings: SelectableSettings;
   gridLoading = true;
   mySelection: any[] = [];
-  gridData: any;
+  gridData: any = [];
   pageSize = 25;
   openWOEditPaymentScheduleWindow = false;
   WOPaymentsWindow = false;
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
   openWOAddPaymentScheduleWindow: boolean;
   openWOCreatePaymentScheduleWindow: boolean;
-
   //valuation
   openValuationWindow = false;
   valuationBtnAccess: boolean = false;
-
+  paymentScheduleExist = false;
 
 
 
@@ -88,8 +87,6 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
   DisplayPaymentAssetsView: DataResult;
 
 
-
-
   constructor(
     private worksOrdersService: WorksOrdersService,
     private alertService: AlertService,
@@ -111,25 +108,13 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
     this.GetWEBWorksOrdersPaymentScheduleForWorksOrder();
   }
 
-
+  //aman
   setSelectableSettings(): void {
     this.selectableSettings = {
       checkboxOnly: false,
       mode: 'single'
     };
   }
-
-
-  todayDate() {
-    var today = new Date();
-    var dd = String(today.getDate()).padStart(2, '0');
-    var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-    var yyyy = today.getFullYear();
-    let today2 = mm + '/' + dd + '/' + yyyy;
-    return today2;
-  }
-
-
 
   GetWEBWorksOrdersPaymentScheduleForWorksOrder() {
     const { wprsequence, wosequence } = this.worksOrderData;
@@ -138,6 +123,8 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
         data => {
           if (data.isSuccess) {
             this.gridData = data.data;
+            if (this.gridData.length > 0) this.paymentScheduleExist = true;
+            else this.paymentScheduleExist = false;
             this.gridView = process(this.gridData, this.state);
           } else this.alertService.error(data.message);
 
@@ -169,9 +156,171 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
   }
 
   cellClickHandler({ dataItem }) {
+    //check valuation btn visibility
     this.setSelectedRow(dataItem);
-    // this.selectedSingleDefect = dataItem;
   }
+
+  async openValuationWindowMehhod(item, checkProcess = "C") {
+    if (item.wpspaymentstatus == "Unpaid" && checkProcess == "C") {
+      const refresh = await this.checkBeforeValuation(item);
+      if (!refresh.isSuccess) this.alertService.error(refresh.message);
+      if (refresh.data.validYN == "N") this.alertService.error(refresh.data.validationMessage);
+      if (refresh.data.validYN == "Y") this.valuationConfirmation(refresh.data, item);
+      return;
+    }
+
+    this.selectedItem = item;
+    $(".wopmpaymentoverlay").addClass("ovrlay");
+    this.openValuationWindow = true;
+    this.chRef.detectChanges();
+  }
+
+
+  closeValuationWindow(event) {
+    this.openValuationWindow = event;
+    $(".wopmpaymentoverlay").removeClass("ovrlay");
+  }
+
+
+  async checkBeforeValuation(item) {
+    const { wpspaymentdate, wosequence } = item;
+    const startDate = this.helperService.getMDY(wpspaymentdate);
+    const params = {
+      "WOSEQUENCE": wosequence,
+      "WPSPAYMENTDATE": startDate,
+      "strUser": this.currentUser.userId
+    };
+
+    return await this.worksOrdersService.WorksOrderRefreshAssetValuation(params).toPromise();
+
+  }
+
+
+  valuationConfirmation(resp, item) {
+    $('.k-window').css({ 'z-index': 1000 });
+    this.confirmationDialogService.confirm('', `${resp.validationMessage}`, false)
+      .then((confirmed) => this.openValuationWindowMehhod(item, "P"))
+      .catch(() => console.log('Attribute dismissed the dialog.'));
+  }
+
+
+  disableEnterValuationBtn(item) {
+    if (this.worksOrderData.wocontracttype != 'VALUATION') return true
+    if (this.valuationBtnAccess) return false;
+    return true;
+  }
+
+
+  async setSelectedRow(item) {
+    const { wosequence, wpspaymentdate, wpspaymentstatus, miN_PAYMENTDATE } = item;
+    const paydate = this.helperService.getMDY(wpspaymentdate);
+    const minPayDate = this.helperService.getMDY(miN_PAYMENTDATE);
+    const checkValuaionVisibility = await this.worksOrdersService.checkEnterValuationButtonVisibility(wosequence, paydate, wpspaymentstatus, minPayDate).toPromise();
+    this.valuationBtnAccess = checkValuaionVisibility.data;
+    this.chRef.detectChanges();
+  }
+
+
+  openWOPMPayments() {
+    $('.wopmpaymentoverlay').addClass('ovrlay');
+    this.WOPaymentsWindow = true;
+  }
+
+  closeWOPMPaymentsWindow($event) {
+    $('.wopmpaymentoverlay').removeClass('ovrlay');
+    this.WOPaymentsWindow = $event;
+  }
+
+
+  openWOAddPaymentSchedule() {
+    $('.wopmpaymentoverlay').addClass('ovrlay');
+    this.openWOAddPaymentScheduleWindow = true;
+  }
+
+  closeAddPaymentScheduleWindow(eve) {
+    $('.wopmpaymentoverlay').removeClass('ovrlay');
+    this.openWOAddPaymentScheduleWindow = eve;
+  }
+
+  openWOCreatePaymentSchedule() {
+    if(this.paymentScheduleExist){
+      this.alertService.error("Works Order already has a Payment Schedule.")
+      return
+    }
+    $('.wopmpaymentoverlay').addClass('ovrlay');
+    this.openWOCreatePaymentScheduleWindow = true;
+  }
+
+  closeCreatePaymentScheduleWindow(eve) {
+    $('.wopmpaymentoverlay').removeClass('ovrlay');
+    this.openWOCreatePaymentScheduleWindow = eve;
+  }
+
+
+  rquestPayment(item) {
+    const { wosequence, wprsequence, wpspaymentdate } = item;
+    const params = {
+      "wosequence": wosequence,
+      "wprsequence": wprsequence,
+      "wpspaymentdate": this.helperService.getMDY(wpspaymentdate),
+      "strUser": this.currentUser.userId
+    };
+
+    this.subs.add(
+      this.worksOrdersService.WorksOrdersValidateInsertPayment(params).subscribe(
+        data => {
+          if (data.isSuccess) {
+            const resultData = data.data;
+            if (resultData.validYN == 'N') {
+              this.alertService.error(resultData.validationMessage);
+              return;
+            }
+            this.createPaymentScheduleConfirm(resultData, item);
+          } else this.alertService.error(data.message);
+          this.chRef.detectChanges();
+        }, err => this.alertService.error(err)
+      )
+    )
+
+  }
+
+
+  createPaymentScheduleConfirm(resp, item) {
+    $('.k-window').css({ 'z-index': 1000 });
+    this.confirmationDialogService.confirm('Please confirm..', `${resp.validationMessage}`)
+      .then((confirmed) => (confirmed) ? this.WebWorksOrdersInsertPayment(item) : console.log(confirmed))
+      .catch((err) => console.log(err));
+  }
+
+  WebWorksOrdersInsertPayment(item) {
+    const { wosequence, wprsequence, wpspaymentdate } = item;
+    const params = {
+      "wosequence": wosequence,
+      "wprsequence": wprsequence,
+      "wpspaymentdate": this.helperService.getMDY(wpspaymentdate),
+      "strUser": this.currentUser.userId
+    };
+
+
+    this.subs.add(
+      this.worksOrdersService.WebWorksOrdersInsertPayment(params).subscribe(
+        data => {
+          if (data.isSuccess) {
+            let resultData = data.data;
+            if (resultData.validYN == 'Y') {
+              this.alertService.success('Payment Requested');
+              this.GetWEBWorksOrdersPaymentScheduleForWorksOrder();
+            } else this.alertService.error(resultData.validationMessage);
+          } else this.alertService.error(data.message);
+          this.chRef.detectChanges();
+        }, err => this.alertService.error(err)
+      )
+    )
+
+  }
+
+  //aman 
+
 
 
   openWOEditPaymentSchedule() {
@@ -283,7 +432,13 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
 
 
   }
+
+
   WorksResetPendingScheduleCall(item) {
+    const { wpspaymentstatus = '' } = item;
+    if (wpspaymentstatus.toLowerCase() == 'paid' || wpspaymentstatus.toLowerCase() == 'unpaid') {
+      return
+    }
 
     this.selectedItem = item;
 
@@ -598,105 +753,6 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
   }
 
 
-  WebWorksOrdersInsertPayment() {
-    let paymentDate = this.todayDate();
-
-    const params = {
-      "wosequence": this.selectedItem.wosequence,
-      "wprsequence": this.selectedItem.wprsequence,
-      "wpspaymentdate": paymentDate,
-      "strUser": this.currentUser.userId
-    };
-
-
-
-    this.subs.add(
-      this.worksOrdersService.WebWorksOrdersInsertPayment(params).subscribe(
-        data => {
-
-
-          //  console.log('WebWorksOrdersInsertPayment api response ' + JSON.stringify(data));
-
-          if (data.isSuccess) {
-
-            let resultData = data.data;
-
-            //alert(resultData.validYN);
-
-            if (resultData.validYN == 'Y') {
-
-
-              //  this.alertService.success(resultData.validationMessage);
-              this.alertService.success('Payment Requested');
-
-              this.GetWEBWorksOrdersPaymentScheduleForWorksOrder();
-
-            } else {
-              this.alertService.error(resultData.validationMessage);
-
-            }
-
-
-          } else {
-            this.alertService.error(data.message);
-            this.loading = false
-          }
-
-          this.chRef.detectChanges();
-
-          // console.log('WorkOrderRefusalCodes api reponse' + JSON.stringify(data));
-        },
-        err => this.alertService.error(err)
-      )
-    )
-
-
-
-  }
-
-  openConfirmationDialog(resp) {
-
-    $('.k-window').css({
-      'z-index': 1000
-    });
-    this.confirmationDialogService.confirm('Please confirm..', `${resp.validationMessage}`)
-      .then((confirmed) => (confirmed) ? this.WebWorksOrdersInsertPayment() : console.log(confirmed))
-      .catch(() => console.log('Attribute dismissed the dialog.'));
-  }
-
-  rquestPayment(item) {
-    // this.selectedItem = item;
-    let paymentDate = this.todayDate();
-    const params = {
-      "wosequence": item.wosequence,
-      "wprsequence": item.wprsequence,
-      "wpspaymentdate": paymentDate,
-      "strUser": this.currentUser.userId
-    };
-
-    this.subs.add(
-      this.worksOrdersService.WorksOrdersValidateInsertPayment(params).subscribe(
-        data => {
-          if (data.isSuccess) {
-            let resultData = data.data;
-            if (resultData.validYN == 'Y') {
-              this.openConfirmationDialog(resultData);
-            }
-
-            this.openConfirmationDialog(resultData);
-
-
-          } else this.alertService.error(data.message);
-
-          this.chRef.detectChanges();
-
-        }, err => this.alertService.error(err)
-      )
-    )
-
-
-
-  }
 
 
 
@@ -706,103 +762,6 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
     this.closePaymentScheduleWindowEvent.emit(false);
   }
 
-
-
-  //aman
-  async openValuationWindowMehhod(item, checkProcess = "C") {
-    if (item.wpspaymentstatus == "Unpaid" && checkProcess == "C") {
-      const refresh = await this.checkBeforeValuation(item);
-      if (!refresh.isSuccess) this.alertService.error(refresh.message);
-      if (refresh.data.validYN == "N") this.alertService.error(refresh.data.validationMessage);
-      if (refresh.data.validYN == "Y") this.valuationConfirmation(refresh.data, item);
-      return;
-    }
-
-    this.selectedItem = item;
-    $(".wopmpaymentoverlay").addClass("ovrlay");
-    this.openValuationWindow = true;
-    this.chRef.detectChanges();
-  }
-
-
-  closeValuationWindow(event) {
-    this.openValuationWindow = event;
-    $(".wopmpaymentoverlay").removeClass("ovrlay");
-  }
-
-
-  async checkBeforeValuation(item) {
-    const { wpspaymentdate, wosequence } = item;
-    const startDate = this.helperService.getMDY(wpspaymentdate);
-    const params = {
-      "WOSEQUENCE": wosequence,
-      "WPSPAYMENTDATE": startDate,
-      "strUser": this.currentUser.userId
-    };
-
-    return await this.worksOrdersService.WorksOrderRefreshAssetValuation(params).toPromise();
-
-  }
-
-
-  valuationConfirmation(resp, item) {
-    $('.k-window').css({ 'z-index': 1000 });
-    this.confirmationDialogService.confirm('', `${resp.validationMessage}`, false)
-      .then((confirmed) => this.openValuationWindowMehhod(item, "P"))
-      .catch(() => console.log('Attribute dismissed the dialog.'));
-  }
-
-
-  disableEnterValuationBtn(item) {
-    if (this.worksOrderData.wocontracttype != 'VALUATION') return true
-    if (this.valuationBtnAccess) return false;
-    return true;
-  }
-
-
-  async setSelectedRow(item) {
-    const { wosequence, wpspaymentdate, wpspaymentstatus, miN_PAYMENTDATE } = item;
-    const paydate = this.helperService.getMDY(wpspaymentdate);
-    const minPayDate = this.helperService.getMDY(miN_PAYMENTDATE);
-    const checkValuarionVisibility = await this.worksOrdersService.checkEnterValuationButtonVisibility(wosequence, paydate, wpspaymentstatus, minPayDate).toPromise();
-    this.valuationBtnAccess = checkValuarionVisibility.data;
-    this.chRef.detectChanges();
-  }
-
-
-  openWOPMPayments() {
-    $('.wopmpaymentoverlay').addClass('ovrlay');
-    this.WOPaymentsWindow = true;
-  }
-
-  closeWOPMPaymentsWindow($event) {
-    $('.wopmpaymentoverlay').removeClass('ovrlay');
-    this.WOPaymentsWindow = $event;
-  }
-
-
-  openWOAddPaymentSchedule() {
-    $('.wopmpaymentoverlay').addClass('ovrlay');
-    this.openWOAddPaymentScheduleWindow = true;
-  }
-
-  closeAddPaymentScheduleWindow(eve) {
-    $('.wopmpaymentoverlay').removeClass('ovrlay');
-    this.openWOAddPaymentScheduleWindow = eve;
-  }
-
-
-  openWOCreatePaymentSchedule() {
-    $('.wopmpaymentoverlay').addClass('ovrlay');
-    this.openWOCreatePaymentScheduleWindow = true;
-  }
-
-  closeCreatePaymentScheduleWindow(eve) {
-    $('.wopmpaymentoverlay').removeClass('ovrlay');
-    this.openWOCreatePaymentScheduleWindow = eve;
-  }
-
-//aman 
 
 
 

@@ -306,19 +306,21 @@
         <a *ngIf="woMenuAccess('Works Order Detail')" class="dropdown-item" href="javascript:void(0)"
           (click)="redirectToWorksOrder(menuData)"> Works Order Details</a>
 
-        <a *ngIf="woMenuAccess('Variations')" class="dropdown-item" href="javascript:void(0)"
+        <a *ngIf="woMenuAccess('Variations Tab')" class="dropdown-item" href="javascript:void(0)"
           (click)="openVariationList(menuData)">Variations</a>
         <a (click)="redirectToWoProgramManagmentInstructions(menuData)" class="dropdown-item" href="javascript:void(0)">
           Instructions</a>
 
-        <a class="dropdown-item" (click)="openCompletionList(menuData)" href="javascript:void(0)">Completions</a>
+        <a *ngIf="worksOrderAccess.indexOf('Completions Tab') != -1" class="dropdown-item"
+          (click)="openCompletionList(menuData)" href="javascript:void(0)">Completions</a>
 
-        <a class="dropdown-item" href="javascript:void(0)" (click)="openProgrammeLog(menuData)">View Programme
+        <a *ngIf="worksOrderAccess.indexOf('Programmes Log Tab') != -1" class="dropdown-item" href="javascript:void(0)"
+          (click)="openProgrammeLog(menuData)">View Programme
           Log</a>
 
         <a class="dropdown-item" href="javascript:void(0)" (click)="openWoAssociationsManage(menuData)">Associations</a>
 
-        <a *ngIf="woMenuAccess('Defects')" class="dropdown-item" href="javascript:void(0)"
+        <a *ngIf="worksOrderAccess.indexOf('Defects Tabs') != -1" class="dropdown-item" href="javascript:void(0)"
           (click)="openDefectsMethod(menuData)">Defects</a>
 
         <a *ngIf="woMenuAccess('Works Order Documents')" [ngClass]="{'disabled': menuData.worksOrderFileCount == 0}"

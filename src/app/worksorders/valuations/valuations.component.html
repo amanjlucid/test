@@ -152,7 +152,7 @@
                     [style]="{'text-align': 'right'}">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <span>
-                            {{ dataItem.woavcommittedvalue | currency:'GBP':'symbol' }}
+                            {{ dataItem.woavpendingvalue | currency:'GBP':'symbol' }}
                         </span>
                     </ng-template>
                 </kendo-grid-column>
@@ -160,7 +160,7 @@
                     [style]="{'text-align': 'right'}">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <span>
-                            {{ dataItem.woavcommittedvalue | currency:'GBP':'symbol' }}
+                            {{ dataItem.woavpaymenttodate | currency:'GBP':'symbol' }}
                         </span>
                     </ng-template>
                 </kendo-grid-column>
@@ -168,7 +168,7 @@
                     [style]="{'text-align': 'right'}">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <span>
-                            {{ dataItem.woavcommittedvalue | currency:'GBP':'symbol' }}
+                            {{ dataItem.woavretentionvaluetodate | currency:'GBP':'symbol' }}
                         </span>
                     </ng-template>
                 </kendo-grid-column>
@@ -194,11 +194,7 @@
                 </kendo-grid-column>
                 <kendo-grid-column field="woavagreedvaluation" editor="numeric" format="{0:n2}" title="Agered Valuation"
                     width="170" [style]="{'text-align': 'right'}" [class]="{'editableCol': true}">
-                    <!-- <ng-template kendoGridCellTemplate let-dataItem>
-                        <span>
-                            {{ dataItem.woavcommittedvalue | currency:'GBP':'symbol' }}
-                        </span>
-                    </ng-template> -->
+                   
                 </kendo-grid-column>
                 <kendo-grid-column field="woavagreedvaluationpct" editor="numeric" title="Agered Valuation %"
                     width="170" [class]="{'editableCol': true}">
@@ -207,7 +203,7 @@
                     [style]="{'text-align': 'right'}">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <span>
-                            {{ dataItem.woavcommittedvalue | currency:'GBP':'symbol' }}
+                            {{ dataItem.woavcalcpaymentvalue | currency:'GBP':'symbol' }}
                         </span>
                     </ng-template>
                 </kendo-grid-column>

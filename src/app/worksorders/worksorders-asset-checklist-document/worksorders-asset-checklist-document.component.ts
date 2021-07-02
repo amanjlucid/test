@@ -47,13 +47,14 @@ export class WorksordersAssetChecklistDocumentComponent implements OnInit {
 
   worksOrderAccess: any = [];
   userType: any = [];
+  worksOrderUsrAccess: any = [];
   @ViewChild(GridComponent) grid: GridComponent;
 
   constructor(
     private chRef: ChangeDetectorRef,
     private alertService: AlertService,
     private confirmationDialogService: ConfirmationDialogService,
-    private helperServie: HelperService,
+    private helperService: HelperService,
     private sharedService: SharedService,
     private loaderService: LoaderService,
     private worksorderManagementService: WorksorderManagementService,
@@ -90,12 +91,15 @@ export class WorksordersAssetChecklistDocumentComponent implements OnInit {
       ]).subscribe(
         data => {
           // console.log(data);
+          // this.userType = data[2][0];
+          // if (this.userType?.wourroletype == "Dual Role") {
+          //   this.worksOrderAccess = [...data[0], ...data[1]];
+          // } else {
+          //   this.worksOrderAccess = data[0]
+          // }
+          this.worksOrderUsrAccess = data[0];
+          this.worksOrderAccess = data[1];
           this.userType = data[2][0];
-          if (this.userType?.wourroletype == "Dual Role") {
-            this.worksOrderAccess = [...data[0], ...data[1]];
-          } else {
-            this.worksOrderAccess = data[0]
-          }
 
         }
       )
@@ -108,6 +112,10 @@ export class WorksordersAssetChecklistDocumentComponent implements OnInit {
     //     }
     //   )
     // )
+  }
+
+  woMenuBtnSecurityAccess(menuName) {
+    return this.helperService.checkWorkOrderAreaAccess(this.userType, this.worksOrderAccess, this.worksOrderUsrAccess, menuName)
   }
 
   worksOrderDetailPageData() {

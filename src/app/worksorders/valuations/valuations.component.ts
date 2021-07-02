@@ -100,8 +100,7 @@ export class ValuationsComponent implements OnInit {
 
 
   mySelectionKey(context: RowArgs): any {
-    // const { assid, wosequence, astconcataddress, woassstatus, woavnotes, woavvaluationstatus, woavcontractorvaluation, woavcontractorvaluationpct, woavagreedvaluation, woavagreedvaluationpct, woavcalcpaymentvalue } = context.dataItem;
-    // const fullStr = ``
+    // JSON.stringify(context.dataItem);
     return 'dds';
   }
 
@@ -146,9 +145,11 @@ export class ValuationsComponent implements OnInit {
     });
   }
 
+
   toFix(val, place) {
     return parseFloat(val).toFixed(place)
   }
+
 
   applyHundredPercentVlaue(val, val2, perc) {
     if (perc == 100) {
@@ -163,7 +164,7 @@ export class ValuationsComponent implements OnInit {
   cellClickHandler({ sender, rowIndex, column, columnIndex, dataItem, isEdited }) {
     this.selectedValuation = dataItem;
     this.kendoRowDetail = { rowIndex, dataItem }
-    
+
     if (!isEdited && !this.isReadOnly(column.field) && dataItem.woavvaluationstatus.toLowerCase() != "completion") {
       this.setToZero = false;
       this.selectedValuation.woavvaluationstatus = 'Valuation Agreed';
@@ -246,7 +247,7 @@ export class ValuationsComponent implements OnInit {
   cellCloseHandler(args: any) {
     const { formGroup, dataItem } = args;
     this.gridFormStatus = formGroup.valid
-    
+
     if (!formGroup.valid) {
       // prevent closing the edited cell if there are invalid values.
       args.preventDefault();
@@ -475,7 +476,7 @@ export class ValuationsComponent implements OnInit {
   onSubmit() {
     this.submitted = true;
     this.formErrorObject(); // empty form error or reinistialize 
-   
+
     let formRawVal = this.globalvaluationForm.getRawValue();
     const { cvv, cvp, avv, avp, notes } = formRawVal;
     const { rowIndex, dataItem } = this.kendoRowDetail;
@@ -526,7 +527,7 @@ export class ValuationsComponent implements OnInit {
     if (notes) dataItem.woavnotes = notes;
 
     this.closeGlobalValuation()
-    
+
 
   }
 

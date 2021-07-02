@@ -168,9 +168,14 @@
             <li class="nav-item dropdown list-unstyled" style="margin-top: -7px;">
               <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
               <div class="dropdown-menu">
-                <a (click)="openProgramLogTransactionsWindow(dataItem)" class="dropdown-item"
-                  href="javascript:void(0)">{{openedFrom == 'milestone' ? 'View Milestone Log Detail' : 'View Programme
-                  Transaction'}}</a>
+                <a *ngIf="openedFrom == 'milestone' && woMenuAccess('View Milestone Log Detail')"
+                  (click)="openProgramLogTransactionsWindow(dataItem)" class="dropdown-item"
+                  href="javascript:void(0)">View Milestone Log Detail</a>
+
+                <a *ngIf="openedFrom != 'milestone' && woMenuAccess('View Programme Transaction')"
+                  (click)="openProgramLogTransactionsWindow(dataItem)" class="dropdown-item"
+                  href="javascript:void(0)">View Programme
+                  Transaction</a>
               </div>
             </li>
           </ng-template>

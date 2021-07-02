@@ -60,7 +60,7 @@ export class EditPaymentScheduleService extends BehaviorSubject<any[]> {
         if (this.serviceFor == "valuation") apiCall = this.getValuation(params);
 
         apiCall.subscribe((data: any) => {
-            // console.log(data);
+            console.log(data);
             if (data.isSuccess) {
                 this.data = data.data;
                 this.originalData = cloneData(this.data);

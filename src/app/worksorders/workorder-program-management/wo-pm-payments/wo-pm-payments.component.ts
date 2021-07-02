@@ -146,11 +146,7 @@ export class WoPmPaymentsComponent implements OnInit {
 
 
     autthorisePaymentClick(item) {
-
-
-
         const params = {
-
             "WOSEQUENCE": item.wosequence,
             "WPRSEQUENCE": item.wprsequence,
             "WPYSEQUENCE": item.wpysequence,
@@ -161,10 +157,7 @@ export class WoPmPaymentsComponent implements OnInit {
         this.subs.add(
             this.worksOrdersService.ValidateAuthorisePayment(params).subscribe(
                 data => {
-
-
                     console.log('ValidateAuthorisePayment api response ' + JSON.stringify(data));
-
                     if (data.isSuccess) {
 
                         let resultData = data.data;
