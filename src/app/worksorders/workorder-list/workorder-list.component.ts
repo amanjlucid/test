@@ -122,7 +122,7 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
         this.sharedService.userTypeObs
       ]).subscribe(
         data => {
-          // console.log(data);
+          console.log(data);
           this.worksOrderAccess = data[0];
           this.worksOrderUsrAccess = data[1];
           this.userType = data[2][0];
@@ -857,9 +857,6 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
     $('.worksOrderOverlay').removeClass('ovrlay');
     this.openWOPaymentScheduleWindow = $event;
   }
-
-
-
 
 
 

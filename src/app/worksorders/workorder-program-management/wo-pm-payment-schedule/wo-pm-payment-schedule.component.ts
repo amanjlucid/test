@@ -4,6 +4,7 @@ import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data
 import { AlertService, HelperService, WorksorderReportService, ConfirmationDialogService, WorksOrdersService, SharedService } from 'src/app/_services';
 import { PageChangeEvent, SelectableSettings } from '@progress/kendo-angular-grid';
 import { DateFormatPipe } from 'src/app/_pipes/date-format.pipe';
+import { combineLatest } from 'rxjs';
 
 @Component({
   selector: 'app-wo-program-management-payment-schedule',
@@ -86,6 +87,10 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
   DisplayPaymentAssetsData: any;
   DisplayPaymentAssetsView: DataResult;
 
+  worksOrderAccess = [];
+  worksOrderUsrAccess: any = [];
+  userType: any = [];
+
 
   constructor(
     private worksOrdersService: WorksOrdersService,
@@ -105,10 +110,25 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
 
 
   ngOnInit(): void {
+
+    this.subs.add(
+      combineLatest([
+        this.sharedService.worksOrdersAccess,
+        this.sharedService.woUserSecObs,
+        this.sharedService.userTypeObs
+      ]).subscribe(
+        data => {
+          this.worksOrderAccess = data[0];
+          this.worksOrderUsrAccess = data[1];
+          this.userType = data[2][0];
+        }
+      )
+    )
+
     this.GetWEBWorksOrdersPaymentScheduleForWorksOrder();
   }
 
-  //aman
+  //am
   setSelectableSettings(): void {
     this.selectableSettings = {
       checkboxOnly: false,
@@ -179,6 +199,7 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
   closeValuationWindow(event) {
     this.openValuationWindow = event;
     $(".wopmpaymentoverlay").removeClass("ovrlay");
+    this.GetWEBWorksOrdersPaymentScheduleForWorksOrder();
   }
 
 
@@ -321,7 +342,14 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
 
   }
 
-  //aman 
+  
+  woMenuAccess(menuName) {
+    return this.helperService.checkWorkOrderAreaAccess(this.userType, this.worksOrderAccess, this.worksOrderUsrAccess, menuName)
+  }
+
+  //am
+
+
 
 
 

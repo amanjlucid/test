@@ -1,9 +1,9 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, ViewEncapsulation } from '@angular/core';
 import { SubSink } from 'subsink';
 import { process, State } from '@progress/kendo-data-query';
-import { AlertService, EditPaymentScheduleService, HelperService } from 'src/app/_services';
+import { AlertService, ConfirmationDialogService, EditPaymentScheduleService, HelperService, SharedService } from 'src/app/_services';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { combineLatest, Observable } from 'rxjs';
 import { GridComponent, GridDataResult, RowArgs, RowClassArgs, SelectableSettings } from '@progress/kendo-angular-grid';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { WorkOrdersValuationModel } from '../../_models'
@@ -49,13 +49,18 @@ export class ValuationsComponent implements OnInit {
   validationMessage = {};
   setToZero = false;
 
+  worksOrderAccess = [];
+  worksOrderUsrAccess: any = [];
+  userType: any = [];
 
   constructor(
     private formBuilder: FormBuilder,
     public editService: EditPaymentScheduleService,
     private chRef: ChangeDetectorRef,
     private alertService: AlertService,
-    private helperService: HelperService
+    private helperService: HelperService,
+    private confirmationDialogService: ConfirmationDialogService,
+    private sharedService: SharedService,
   ) {
     this.setSelectableSettings();
     this.createFormGroup = this.createFormGroup.bind(this);
@@ -72,10 +77,25 @@ export class ValuationsComponent implements OnInit {
 
 
   ngOnInit(): void {
+    this.subs.add(
+      combineLatest([
+        this.sharedService.worksOrdersAccess,
+        this.sharedService.woUserSecObs,
+        this.sharedService.userTypeObs
+      ]).subscribe(
+        data => {
+          this.worksOrderAccess = data[0];
+          this.worksOrderUsrAccess = data[1];
+          this.userType = data[2][0];
+        }
+      )
+    )
+
     this.getAssetValuationTotal();
     this.view = this.editService.pipe(map(data => process(data, this.gridState)));
     this.editService.read(this.paymentScheduleInp);
     this.gridLoading = false;
+
 
     // setTimeout(() => {
     //   console.log(this.grid);
@@ -286,8 +306,21 @@ export class ValuationsComponent implements OnInit {
       this.alertService.error("There are some invalid fields");
       return;
     }
+
     grid.closeCell();
     grid.cancelCell();
+    this.confirmValuation();
+
+  }
+
+  confirmValuation() {
+    $('.k-window').css({ 'z-index': 1000 });
+    this.confirmationDialogService.confirm('Please confirm..', `Do you really want to apply these changes ?`)
+      .then((confirmed) => (confirmed) ? this.applyValuationChange() : console.log(confirmed))
+      .catch((err) => console.log(err));
+  }
+
+  applyValuationChange() {
     const { userId } = this.currentUser
     this.editService.updateChanges(this.setToZero, { userId, ps: this.paymentScheduleInp });
   }
@@ -310,6 +343,17 @@ export class ValuationsComponent implements OnInit {
         'woavagreedupdatedate', 'woavagreedupdateuser', 'woavcalcpaymentvalue', 'woavcommittedvalue', 'woavcontractupdatedate', 'woavcontractupdateuser', 'woavcreatedate', 'woavcreateuser', 'woavnotes', 'woavpaymentpcttodate', 'woavpaymenttodate', 'woavpendingvalue', 'woavretentionvaluetodate', 'woavupdatedate', 'woavupdateuser', 'woavvaluationstatus', 'wopname', 'wopsequence', 'wosequence', 'wpspaymentdate'
       ];
     }
+
+    if (!this.woMenuAccess('Enter Contractor Valuations')) {
+      readOnlyColumns.push('woavcontractorvaluation');
+      readOnlyColumns.push('woavcontractorvaluationpct')
+    }
+
+    if (!this.woMenuAccess('Enter Agreed Valuations')) {
+      readOnlyColumns.push('woavagreedvaluation');
+      readOnlyColumns.push('woavagreedvaluationpct')
+    }
+
     return readOnlyColumns.indexOf(field) > -1;
   }
 
@@ -526,6 +570,7 @@ export class ValuationsComponent implements OnInit {
 
     if (notes) dataItem.woavnotes = notes;
 
+    this.editService.update(dataItem);
     this.closeGlobalValuation()
 
 
@@ -540,6 +585,11 @@ export class ValuationsComponent implements OnInit {
       this.selectedValuation.woavvaluationstatus = 'Set to Zero';
       this.setToZero = true;
     }
+  }
+
+
+  woMenuAccess(menuName) {
+    return this.helperService.checkWorkOrderAreaAccess(this.userType, this.worksOrderAccess, this.worksOrderUsrAccess, menuName)
   }
 
 }

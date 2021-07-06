@@ -74,6 +74,7 @@ export class WorksordersManagementComponent implements OnInit {
   openManageMilestone = false;
   openMilestoneFor = "checklist";
   programmeLogFor = "workorder"
+  openWOPaymentScheduleWindow = false;
 
   @ViewChild(TooltipDirective) public tooltipDir: TooltipDirective;
   @HostListener('click', ['$event']) onClick(event) {
@@ -81,7 +82,6 @@ export class WorksordersManagementComponent implements OnInit {
     if (element.className.indexOf('fas fa-bars') == -1) {
       this.hideMenu();
     }
-    // event.preventDefault();
   }
   menuData: any;
   mousePositioin: any = 0;
@@ -694,7 +694,16 @@ export class WorksordersManagementComponent implements OnInit {
   }
 
 
+  openWOPMPaymentSchedule(item) {
+    this.selectedWorksOrder = item;
+    $('.newManagementOverlay').addClass('ovrlay');
+    this.openWOPaymentScheduleWindow = true;
+  }
 
+  closePaymentScheduleWindow($event) {
+    $('.newManagementOverlay').removeClass('ovrlay');
+    this.openWOPaymentScheduleWindow = $event;
+  }
 
 
 }

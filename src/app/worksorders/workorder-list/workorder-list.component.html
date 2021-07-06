@@ -370,7 +370,7 @@
           </div>
         </div>
 
-        <a class="dropdown-item" href="javascript:void(0)" (click)="openWOPMPaymentSchedule(menuData)">Payment
+        <a *ngIf="woMenuAccess('Payment Schedule Tab')" class="dropdown-item" href="javascript:void(0)" (click)="openWOPMPaymentSchedule(menuData)">Payment
           Schedule</a>
 
         <a *ngIf="woMenuAccess('Manage Checklist')" class="dropdown-item" href="javascript:void(0)"

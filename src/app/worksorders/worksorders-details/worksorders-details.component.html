@@ -71,6 +71,9 @@
 
             <a *ngIf="woMenuBtnSecurityAccess('Manage Checklist')" class="dropdown-item" href="javascript:void(0)"
               (click)="openChecklist()">Checklist</a>
+
+            <a *ngIf="woMenuBtnSecurityAccess('Payment Schedule Tab')" class="dropdown-item" href="javascript:void(0)" (click)="openWOPMPaymentSchedule(menuData)">Payment
+              Schedule</a>
           </div>
         </div>
       </div>
@@ -490,7 +493,8 @@
         <a class="dropdown-item" *ngIf="woMenuBtnSecurityAccess('Phase Checklist')" href="javascript:void(0)"
           (click)="openPhaseChecklist(menuData)">Phase Checklist</a>
 
-        <a *ngIf="woMenuBtnSecurityAccess('Add Assets for Phase Work Costs')" class="dropdown-item" href="javascript:void(0)" (click)="openAddPhaseCostStructure(menuData)">Asset(s) for
+        <a *ngIf="woMenuBtnSecurityAccess('Add Assets for Phase Work Costs')" class="dropdown-item"
+          href="javascript:void(0)" (click)="openAddPhaseCostStructure(menuData)">Asset(s) for
           Phase Work Cost</a>
 
         <div class="dropdown-toggle">
@@ -619,7 +623,8 @@
         <a *ngIf="woMenuBtnSecurityAccess('Move Assets')" class="dropdown-item" href="javascript:void(0)"
           (click)="moveAssets(menuData)">Move</a>
 
-        <a *ngIf="woMenuBtnSecurityAccess('Add Assets for Phase Work Costs')" class="dropdown-item" href="javascript:void(0)" (click)="openAddPhaseCostStructure(menuData)">Asset(s) for
+        <a *ngIf="woMenuBtnSecurityAccess('Add Assets for Phase Work Costs')" class="dropdown-item"
+          href="javascript:void(0)" (click)="openAddPhaseCostStructure(menuData)">Asset(s) for
           Phase Work Cost</a>
 
         <a class="dropdown-item" [ngClass]="{'disabled' : !menuData.residentriskcode || menuData.residentriskcode == 0}"
@@ -809,3 +814,8 @@
   <app-asset-resident-info [displayResidentDetails]="displayResidentDetails" [assetID]="assetID"
     *ngIf="displayResidentDetails" (closeResidentDetailsWindow)="closeResidentInfoDetailsWindow($event)">
   </app-asset-resident-info>
+
+  <app-wo-program-management-payment-schedule *ngIf="openWOPaymentScheduleWindow"
+    [worksOrderData]="worksOrderSingleData" [openWOPaymentScheduleWindow]="openWOPaymentScheduleWindow"
+    (closePaymentScheduleWindowEvent)="closePaymentScheduleWindow($event)">
+  </app-wo-program-management-payment-schedule>

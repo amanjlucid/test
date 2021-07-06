@@ -337,6 +337,9 @@
                     </div>
                 </div>
 
+                <a *ngIf="woMenuAccess('Payment Schedule Tab')" class="dropdown-item" href="javascript:void(0)" (click)="openWOPMPaymentSchedule(menuData)">Payment
+                    Schedule</a>
+
             </div>
         </div>
     </ng-template>
@@ -414,3 +417,8 @@
     [openManageMilestone]="openManageMilestone" [openMilestoneFor]="openMilestoneFor"
     (closeManageMilestoneEvent)="closeManageMilestone($event)">
 </app-manage-milestones>
+
+<app-wo-program-management-payment-schedule *ngIf="openWOPaymentScheduleWindow" [worksOrderData]="selectedWorksOrder"
+  [openWOPaymentScheduleWindow]="openWOPaymentScheduleWindow"
+  (closePaymentScheduleWindowEvent)="closePaymentScheduleWindow($event)">
+</app-wo-program-management-payment-schedule>

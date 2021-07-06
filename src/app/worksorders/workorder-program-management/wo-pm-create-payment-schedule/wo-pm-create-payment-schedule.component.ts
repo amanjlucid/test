@@ -173,7 +173,7 @@ export class WoProgramManagmentCreatePaymentScheduleComponent implements OnInit 
   changePaymentType(e) {
     let selectedValue = this.createScheduleForm.get('pType').value;
     if (selectedValue == "Days") {
-      this.createScheduleForm.controls['specificDays'].setValidators([Validators.required, shouldNotZero()]);
+      this.createScheduleForm.controls['specificDays'].setValidators([Validators.required]);
     } else {
       this.createScheduleForm.controls["specificDays"].setErrors(null);
       this.createScheduleForm.controls["specificDays"].clearValidators();
@@ -226,23 +226,9 @@ export class WoProgramManagmentCreatePaymentScheduleComponent implements OnInit 
       //"WPSRETENTIONVALUE": parseInt(this.helperService.convertMoneyToFlatFormat(retentionValue)),
       "WPSRETENTIONVALUE": parseInt(isNaN(parseInt(retentionValue)) ? retentionValue.replace("£", "").replace(",", "").replace(",", "") : retentionValue),
       "strUser": this.currentUser.userId,
-      "WPSFIXEDPAYMENTVALUE": stagePayment
+      "WPSFIXEDPAYMENTVALUE": parseFloat(this.helperService.convertMoneyToFlatFormat(stagePayment)) 
     }
-
-    // const params = {
-    //   "WOSEQUENCE": this.worksOrderData.wosequence,
-    //   "WPRSEQUENCE": this.worksOrderData.wprsequence,
-    //   "dtStartDate": this.dateFormate(this.createScheduleForm.get('pStartDate').value),
-    //   "dtEndDate": this.dateFormate(this.createScheduleForm.get('pEndDate').value),
-    //   "strPaymentFrequency": this.createScheduleForm.get('pFrequency').value,
-    //   "strPaymentType": this.createScheduleForm.get('pType').value,
-    //   "intPaymentDays": parseInt(this.createScheduleForm.get('specificDays').value),
-    //   "strUser": this.currentUser.userId,
-    //   "WPSRETENTIONPCT": parseInt(this.createScheduleForm.get('retentionPct').value),
-    //   "WPSRETENTIONVALUE": parseInt(isNaN(parseInt(this.createScheduleForm.get('retentionValue').value)) ? this.createScheduleForm.get('retentionValue').value.replace("£", "").replace(",", "").replace(",", "") : this.createScheduleForm.get('retentionValue').value),
-    //   "WPSFIXEDPAYMENTVALUE": stagePayment
-    // };
-
+    
     this.subs.add(
       this.worksOrdersService.createWebWorksOrdersPaymentSchedule(params).subscribe(
         data => {

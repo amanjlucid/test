@@ -20,23 +20,26 @@
           Report</button>
         <div class="dropdown-menu" x-placement="bottom-start"
           style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
-          <a class="dropdown-item" href="javascript:void(0)"
-            (click)="WOCreateXportOutputReport(581, 'Contractor Work Report')">Work Report</a>
+
           <a class="dropdown-item" href="javascript:void(0)"
             (click)="WOCreateXportOutputReport(522, 'Schedule Report(Order)')">Schedule Report(Order)</a>
 
-          <a class="dropdown-item" href="javascript:void(0)"
-            (click)="WOCreateXportOutputReport(523, 'Schedule Report(Order)')">Schedule Report(Programme)</a>
+          <!-- <a class="dropdown-item" href="javascript:void(0)"
+            (click)="WOCreateXportOutputReport(523, 'Schedule Report(Order)')">Schedule Report(Programme)</a> -->
         </div>
       </div>
 
 
-      <button type="button" class="btn btn-sm themeButton" (click)="openWOPMPayments()">Payments</button>
-      <button type="button" class="btn btn-sm themeButton" (click)="openWOEditPaymentSchedule()">Edit Schedule</button>
-      <button type="button" class="btn btn-sm themeButton"
+      <button *ngIf="woMenuAccess('Payment Tab')" type="button" class="btn btn-sm themeButton"
+        (click)="openWOPMPayments()">Payments</button>
+      <button *ngIf="woMenuAccess('Edit Schedule')" type="button" class="btn btn-sm themeButton"
+        (click)="openWOEditPaymentSchedule()">Edit Schedule</button>
+      <button *ngIf="woMenuAccess('Refresh Schedule')" type="button" class="btn btn-sm themeButton"
         (click)="WorksRefreshPaymentSchedule()">Refresh</button>
-      <button type="button" class="btn btn-sm themeButton" (click)="openWOAddPaymentSchedule()">Add</button>
-      <button type="button" class="btn btn-sm themeButton" (click)="openWOCreatePaymentSchedule()">Create</button>
+      <button *ngIf="woMenuAccess('Add New Schedule To')" type="button" class="btn btn-sm themeButton"
+        (click)="openWOAddPaymentSchedule()">Add</button>
+      <button *ngIf="woMenuAccess('Create Schedule')" type="button" class="btn btn-sm themeButton"
+        (click)="openWOCreatePaymentSchedule()">Create</button>
 
 
     </div>
@@ -61,23 +64,29 @@
               <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"
                 (click)="setSelectedRow(dataItem)"></i>
               <div class="dropdown-menu">
-               
-                <a (click)="rquestPayment(dataItem)" class="dropdown-item" href="javascript:void(0)">Request Payment</a>
-                <a [ngClass]="{'disabled' : disableEnterValuationBtn(dataItem) }"
+
+                <a *ngIf="woMenuAccess('Request Payment')" (click)="rquestPayment(dataItem)" class="dropdown-item"
+                  href="javascript:void(0)">Request Payment</a>
+                <a *ngIf="woMenuAccess('Enter Valuations')"
+                  [ngClass]="{'disabled' : disableEnterValuationBtn(dataItem) }"
                   (click)="openValuationWindowMehhod(dataItem)" class="dropdown-item" href="javascript:void(0)">Enter
                   Valuation</a>
 
-                <a [ngClass]="{'disabled' : dataItem.wpspaymentstatus == 'Paid' || dataItem.wpspaymentstatus == 'Unpaid'}" (click)="WorksResetPendingScheduleCall(dataItem)" class="dropdown-item"
+                <a *ngIf="woMenuAccess('Reset Pending Schedule')"
+                  [ngClass]="{'disabled' : dataItem.wpspaymentstatus == 'Paid' || dataItem.wpspaymentstatus == 'Unpaid'}"
+                  (click)="WorksResetPendingScheduleCall(dataItem)" class="dropdown-item"
                   href="javascript:void(0)">Reset Pending</a>
 
                 <div class="dropdown-toggle">
                   <div class="dropdown-item">Reports</div>
                   <div class="dropdown-menu contractorReportMenu">
-                    <a class="dropdown-item" href="javascript:void(0)"
+                    <a *ngIf="woMenuAccess('Valuation Report')" class="dropdown-item" href="javascript:void(0)"
                       (click)="WOCreateXportOutputReport(525, 'Valuation Report')">Valuation Report</a>
-                    <a (click)="GetWebWorksOrderPaymentScheduleDetailsClick(dataItem)" class="dropdown-item"
-                      href="javascript:void(0)">Display Payment Schedule Assets</a>
-                    <a class="dropdown-item" href="javascript:void(0)"
+                    <a *ngIf="woMenuAccess('Display Payment Schedule Assets')"
+                      (click)="GetWebWorksOrderPaymentScheduleDetailsClick(dataItem)" class="dropdown-item"
+                      href="javascript:void(0)">Payment Schedule Assets</a>
+                    <a *ngIf="woMenuAccess('Payment Reconciliation Report')" class="dropdown-item"
+                      href="javascript:void(0)"
                       (click)="PaymentReconcillationClick(dataItem, 529, 'Payment Reconcillation')">Payment
                       Reconcillation</a>
                   </div>
@@ -257,10 +266,7 @@
 
 
 
-
-
-
-  <kendo-window title="Display Payment Schedule Assets" *ngIf="DisplayPaymentAssetsWindow"
+  <kendo-window title="Payment Schedule Assets" *ngIf="DisplayPaymentAssetsWindow"
     (close)="closGetWebWorksOrderPaymentScheduleDetailsWindow()" [minWidth]="auto" [height]="auto" [minHeight]="auto">
     <div class="row headerArea">
       <div class="col-md-12 headerRow12">
@@ -415,12 +421,13 @@
     (closeValuationWindow)="closeValuationWindow($event)"></app-valuations>
 
   <app-wo-program-management-add-payment-schedule *ngIf="openWOAddPaymentScheduleWindow"
-    [worksOrderData]="worksOrderData" [paymentScheduleExist]="paymentScheduleExist" [openWOAddPaymentScheduleWindow]="openWOAddPaymentScheduleWindow"
+    [worksOrderData]="worksOrderData" [paymentScheduleExist]="paymentScheduleExist"
+    [openWOAddPaymentScheduleWindow]="openWOAddPaymentScheduleWindow"
     (closeAddPaymentScheduleWindowEvent)="closeAddPaymentScheduleWindow($event)">
   </app-wo-program-management-add-payment-schedule>
 
   <app-wo-program-management-create-payment-schedule *ngIf="openWOCreatePaymentScheduleWindow"
-    [worksOrderData]="worksOrderData"  [openWOCreatePaymentScheduleWindow]="openWOCreatePaymentScheduleWindow"
+    [worksOrderData]="worksOrderData" [openWOCreatePaymentScheduleWindow]="openWOCreatePaymentScheduleWindow"
     (closeCreatePaymentScheduleWindowEvent)="closeCreatePaymentScheduleWindow($event)">
   </app-wo-program-management-create-payment-schedule>
 

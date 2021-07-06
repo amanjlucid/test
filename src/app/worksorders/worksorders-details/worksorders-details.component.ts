@@ -89,6 +89,7 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
   documentWindow = false;
   ProgrammeLogWindow = false;
   programmeLogFor = "workorder"
+  openWOPaymentScheduleWindow = false;
   menuData: any;
   @ViewChild(TooltipDirective) public tooltipDir: TooltipDirective;
   @HostListener('click', ['$event']) onClick(event) {
@@ -1511,6 +1512,18 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
   closeManageMilestone($event) {
     $('.worksOrderDetailOvrlay').removeClass('ovrlay');
     this.openManageMilestone = $event;
+  }
+
+
+  openWOPMPaymentSchedule() {
+    // this.selectedWorksOrder = item;
+    $('.worksOrderDetailOvrlay').addClass('ovrlay');
+    this.openWOPaymentScheduleWindow = true;
+  }
+
+  closePaymentScheduleWindow($event) {
+    $('.worksOrderDetailOvrlay').removeClass('ovrlay');
+    this.openWOPaymentScheduleWindow = $event;
   }
 
 }

@@ -176,7 +176,7 @@ export class EditPaymentScheduleService extends BehaviorSubject<any[]> {
                 const resp: any = data[0];
                 if (resp.isSuccess) {
                     if (resp.data.validYN == "Y") {
-                        this.alertService.success(resp.data.validationMessage);
+                        this.alertService.success("Valuation updated successfully.");
                         this.reset();
                         this.read(gridParam)
                     } else this.alertService.error(resp.data.validationMessage);

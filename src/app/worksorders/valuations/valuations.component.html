@@ -192,11 +192,11 @@
                 <kendo-grid-column field="woavcontractorvaluationpct" editor="numeric" title="Contractor Valuation %"
                     width="170" [class]="{'editableCol': true}">
                 </kendo-grid-column>
-                <kendo-grid-column field="woavagreedvaluation" editor="numeric" format="{0:n2}" title="Agered Valuation"
+                <kendo-grid-column field="woavagreedvaluation" editor="numeric" format="{0:n2}" title="Agreed Valuation"
                     width="170" [style]="{'text-align': 'right'}" [class]="{'editableCol': true}">
                    
                 </kendo-grid-column>
-                <kendo-grid-column field="woavagreedvaluationpct" editor="numeric" title="Agered Valuation %"
+                <kendo-grid-column field="woavagreedvaluationpct" editor="numeric" title="Agreed Valuation %"
                     width="170" [class]="{'editableCol': true}">
                 </kendo-grid-column>
                 <kendo-grid-column field="woavcalcpaymentvalue" title="Calculated Amount Due" width="150"
@@ -211,7 +211,7 @@
                     [style]="{'text-align': 'right'}">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <span>
-                            {{ dataItem.woavcommittedvalue | currency:'GBP':'symbol' }}
+                            {{ dataItem.outstandingpaymentvalue | currency:'GBP':'symbol' }}
                         </span>
                     </ng-template>
                 </kendo-grid-column>
@@ -223,11 +223,11 @@
         </div>
 
         <div class="col-md-8 text-left mt-2">
-            <button (click)="openGloabalValuation()" type="button" class="btn btn-sm themeButton mr-1"
+            <button *ngIf="woMenuAccess('Enter Global Valuations')" (click)="openGloabalValuation()" type="button" class="btn btn-sm themeButton mr-1"
                 [disabled]="paymentScheduleInp.wpspaymentstatus != 'Unpaid' || !selectedValuation || selectedValuation.woavvaluationstatus == 'Completion'">Global
                 Valuation Updates</button>
 
-            <button [disabled]="!selectedValuation || 
+            <button *ngIf="woMenuAccess('Set to £0 Payment')" [disabled]="!selectedValuation || 
                 paymentScheduleInp.wpspaymentstatus != 'Unpaid' || 
                 selectedValuation.woavvaluationstatus == 'Completion'" type="button" (click)="setValutionToZero()"
                 class="btn btn-sm themeButton">Set
