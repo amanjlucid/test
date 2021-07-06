@@ -12,6 +12,27 @@
       padding: 8px 12px;
 }
 
-.paymentTab .lbl{
+.paymentTab .lbl {
       margin-top: 12px;
-  }
+}
+
+.paymentSummaryRow .detailRow {
+      margin: 3px 0px;
+      border: 1px solid #d9d0d0;
+      border-radius: 5px;
+      padding-bottom: 3px;
+}
+
+.paymentSummaryRow .detailRow .row {
+      margin-top: 4px;
+}
+
+.paymentSummaryRow .detailRow .subTotal {
+      border-top: 1px solid;
+      padding-top: 4px;
+}
+
+.paymentSummaryRow .detailRow .vatVlaue {
+      border-bottom: 1px solid;
+      padding-bottom: 4px;
+}

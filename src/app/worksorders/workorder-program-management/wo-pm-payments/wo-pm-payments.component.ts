@@ -255,6 +255,7 @@ export class WoPmPaymentsComponent implements OnInit {
         this.subs.add(
             this.worksOrdersService.GetWorksOrderReportingPayment(qs).subscribe(
                 data => {
+                    // console.log(data)
                     if (data.isSuccess) {
                         this.DisplayPaymentSummaryData = data.data[0];
                         this.DisplayPaymentSummaryWindow = true;
