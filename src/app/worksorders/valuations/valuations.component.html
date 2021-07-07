@@ -104,7 +104,7 @@
 
 
     <div class="row mt-3">
-        <div class="col-md-12 valuationGrid">
+        <div class="col-md-12">
             <kendo-grid #grid [data]="view | async" [height]="600" [pageSize]="gridState.take" [skip]="gridState.skip"
                 [sort]="gridState.sort" [pageable]="false" [sortable]="true" (dataStateChange)="onStateChange($event)"
                 (cellClick)="cellClickHandler($event)" (cellClose)="cellCloseHandler($event)"
@@ -112,26 +112,7 @@
                 (add)="addHandler($event)" [navigable]="false" [rowHeight]="36" scrollable="virtual" [resizable]="true"
                 [rowClass]="rowCallback" [selectable]="selectableSettings">
 
-                <!-- <kendo-grid-column title=" " width="37" [filterable]="false" [sortable]="false">
-                    <ng-template kendoGridCellTemplate let-dataItem>
-                        <li class="nav-item dropdown list-unstyled" style="margin-top: -7px;">
-                            <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
-                            <div class="dropdown-menu">
-                                <a (click)="SetValuationToZeroPaymentClick(dataItem)" class="dropdown-item"
-                                    href="javascript:void(0)">Set to 0 Payment</a>
-                                <a class="dropdown-item" href="javascript:void(0)"
-                                    (click)="WOCreateXportOutputReport(525, 'Valuation Report')">Valuation Report</a>
-
-                                <a [ngClass]="{'disabled' : paymentScheduleInp.wpspaymentstatus != 'Unpaid'}"
-                                    (click)="openGloabalValuation(dataItem)" class="dropdown-item"
-                                    href="javascript:void(0)">Global
-                                    Valuation Updates</a>
-                            </div>
-                        </li>
-
-                    </ng-template>
-                </kendo-grid-column> -->
-
+              
                 <kendo-grid-column field="wopname" title="Phase" width="80">
                 </kendo-grid-column>
                 <kendo-grid-column field="assid" title="Asset ID" width="100">
@@ -176,26 +157,25 @@
                 </kendo-grid-column>
                 <kendo-grid-column field="woavvaluationstatus" title="Valuation Status" width="150">
                 </kendo-grid-column>
-                <!-- <kendo-grid-column field="woavcontractorvaluation" editor="numeric" format="{0:n2}"
-                    title="Contractor Valuation" width="170" [style]="{'text-align': 'right'}" class="no-padding">
-                    <ng-template kendoGridCellTemplate let-dataItem>
-                        <span class="whole-cell" [ngClass]="{'readOnly' : worksOrderNew?.wocodE2 == 'N', 'editableCol' : worksOrderNew?.wocodE2 != 'N'}">
-                            {{ dataItem.woavcontractorvaluation }}
-                        </span>
-                    </ng-template>
-
-                </kendo-grid-column> -->
                 <kendo-grid-column field="woavcontractorvaluation" editor="numeric" format="{0:n2}"
                     title="Contractor Valuation" width="170" [style]="{'text-align': 'right'}"
-                    [class]="{'editableCol': true}">
-                </kendo-grid-column>
+                    [class]="{'editableCol': worksOrderNew?.wocodE2 != 'N'}">
+                    <!-- <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.woavcommittedvalue | currency:'GBP':'symbol' }}
+                        </span>
+                    </ng-template> -->
+                    <!-- <ng-template kendoGridEditTemplate let-dataItem="dataItem"> woavcontractorvaluationpct  
+                        <input [value]="dataItem.woavcommittedvalue" kendoGridFocusable />
+                    </ng-template> -->
 
+                </kendo-grid-column>
                 <kendo-grid-column field="woavcontractorvaluationpct" editor="numeric" title="Contractor Valuation %"
-                    width="170" [class]="{'editableCol': true}">
+                    width="170" [class]="{'editableCol': worksOrderNew?.wocodE2 != 'N'}">
                 </kendo-grid-column>
                 <kendo-grid-column field="woavagreedvaluation" editor="numeric" format="{0:n2}" title="Agreed Valuation"
                     width="170" [style]="{'text-align': 'right'}" [class]="{'editableCol': true}">
-
+                   
                 </kendo-grid-column>
                 <kendo-grid-column field="woavagreedvaluationpct" editor="numeric" title="Agreed Valuation %"
                     width="170" [class]="{'editableCol': true}">
@@ -224,8 +204,7 @@
         </div>
 
         <div class="col-md-8 text-left mt-2">
-            <button *ngIf="woMenuAccess('Enter Global Valuations')" (click)="openGloabalValuation()" type="button"
-                class="btn btn-sm themeButton mr-1"
+            <button *ngIf="woMenuAccess('Enter Global Valuations')" (click)="openGloabalValuation()" type="button" class="btn btn-sm themeButton mr-1"
                 [disabled]="paymentScheduleInp.wpspaymentstatus != 'Unpaid' || !selectedValuation || selectedValuation.woavvaluationstatus == 'Completion'">Global
                 Valuation Updates</button>
 

@@ -375,7 +375,6 @@ export class ValuationsComponent implements OnInit {
         this.workOrderProgrammeService.getWorksOrderByWOsequence(wosequence),
       ]).subscribe(
         data => {
-          console.log(data);
           const assetValuationTotal: any = data[0];
           this.AssetValuationTotal = assetValuationTotal.data[0] ?? [];
           const worksOrderNew = data[1];

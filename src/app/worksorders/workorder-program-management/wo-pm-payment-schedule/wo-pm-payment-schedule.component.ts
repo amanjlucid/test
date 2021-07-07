@@ -104,7 +104,7 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
     if(this.worksOrderData['woname'] == undefined){
       this.worksOrderData['woname'] = this.worksOrderData.name; 
     }
-    console.log(this.worksOrderData)
+    
     this.subs.add(
       combineLatest([
         this.sharedService.worksOrdersAccess,
