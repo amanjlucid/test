@@ -61,14 +61,14 @@
       <div class="col-6">
         <div class="row">
           <div class="col-md-6">
-            <label class="py-2">Payment Type:</label>
+            <label class="py-2">Payment Date:</label>
           </div>
           <div class="col-md-6">
             <select class="form-control" formControlName="pType" (change)="changePaymentType($event)"
               [ngClass]="{ 'is-invalid': submitted && formErrors.pType }">
               <option value="End Date">End Date</option>
               <option value="Next Month">Next Month</option>
-              <option value="Days">Specific Number of Days...</option>
+              <option value="Days">Days After Payment Period</option>
             </select>
             <div *ngIf="submitted && formErrors.pType" class="invalid-feedback">
               <div *ngIf="formErrors.pType">{{ formErrors.pType }}</div>
@@ -79,7 +79,7 @@
       <div class="col-6">
         <div class="row">
           <div class="col-md-6">
-            <label class="py-2">Specific Days:</label>
+            <label class="py-2">Number Of Days:</label>
           </div>
           <div class="col-md-6">
             <input type="text" class="form-control" formControlName="specificDays"
@@ -138,7 +138,7 @@
             <label class="py-2">Retention %:</label>
           </div>
           <div class="col-md-6">
-            <input type="text" class="form-control" autocomplete="off" formControlName="retentionPct"
+            <input numberDecimal maxDigits="3" type="text" class="form-control" autocomplete="off" formControlName="retentionPct"
               [readonly]="readonlyRetentionPct" [ngClass]="{'is-invalid':submitted && formErrors.retentionPct}">
             <div *ngIf="submitted && formErrors.retentionPct" class="invalid-feedback">
               <div *ngIf="formErrors.retentionPct">{{ formErrors.retentionPct }}</div>

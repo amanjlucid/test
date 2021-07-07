@@ -18,3 +18,16 @@
     margin-right: 2px;
 }
 
+
+.paymentScheduleGrid .paid{
+    background-color: rgba(230, 0, 126, 0.2) !important;
+
+}
+
+.paymentScheduleGrid .unpaid{
+    background-color: rgba(230, 0, 126, 0.1) !important;
+}
+
+.paymentScheduleGrid .other {
+    background-color: white !important;
+}

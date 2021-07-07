@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy
 import { SubSink } from 'subsink';
 import { AlertService, HelperService, WorksOrdersService } from 'src/app/_services';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { shouldNotZero, SimpleDateValidator, firstDateIsLower } from 'src/app/_helpers';
+import { shouldNotZero, SimpleDateValidator, firstDateIsLower, isNumberCheck } from 'src/app/_helpers';
 
 @Component({
   selector: 'app-wo-program-management-create-payment-schedule',
@@ -46,7 +46,9 @@ export class WoProgramManagmentCreatePaymentScheduleComponent implements OnInit 
     },
     'specificDays': {
       'required': 'Payment Days is required.',
-      'shouldNotZero': 'Payment Days cannot be 0 and blank'
+      'shouldNotZero': 'Payment Days cannot be 0 and blank',
+      'isNotNumber': 'Payment Days should be an integer value.',
+      'maxlength': 'Payment Days must be maximum 4 digit.',
     },
     'retentionPct': {
       'required': 'Retention % is required.',
@@ -73,14 +75,14 @@ export class WoProgramManagmentCreatePaymentScheduleComponent implements OnInit 
   ) { }
 
   ngOnInit(): void {
-    console.log(this.worksOrderData);
+    // console.log(this.worksOrderData);
     if (this.worksOrderData.wocontracttype == "STAGE") {
       this.createScheduleForm = this.fb.group({
         pStartDate: ['', [SimpleDateValidator()]],
         pEndDate: ['', [SimpleDateValidator()]],
         pFrequency: ['', [Validators.required]],
         pType: ['', [Validators.required]],
-        specificDays: [0],
+        specificDays: [0, [Validators.maxLength(4), isNumberCheck()]],
         stagePayment: ['', Validators.required]
       },
         {
@@ -88,6 +90,8 @@ export class WoProgramManagmentCreatePaymentScheduleComponent implements OnInit 
             firstDateIsLower('pEndDate', 'pStartDate')
           ],
         });
+
+      this.createScheduleForm.get('specificDays').disable();
     } else {
       this.createScheduleForm = this.fb.group({
         worksOrder: [''],
@@ -95,16 +99,18 @@ export class WoProgramManagmentCreatePaymentScheduleComponent implements OnInit 
         pEndDate: ['', [SimpleDateValidator()]],
         pFrequency: ['', [Validators.required]],
         pType: ['', [Validators.required]],
-        specificDays: [0],
+        specificDays: [0, [Validators.maxLength(4), isNumberCheck()]],
         retentionType: [''],
-        retentionPct: ['', [Validators.required, Validators.maxLength(3), shouldNotZero()]],
-        retentionValue: ['']
+        retentionPct: [0, [Validators.required]],
+        retentionValue: [0]
       },
         {
           validator: [
             firstDateIsLower('pEndDate', 'pStartDate')
           ],
         });
+
+      this.createScheduleForm.get('specificDays').disable();
     }
 
     this.patchFormValue();
@@ -118,8 +124,9 @@ export class WoProgramManagmentCreatePaymentScheduleComponent implements OnInit 
 
   patchFormValue() {
     const { mPgsA, wotargetcompletiondate } = this.worksOrderData;
+    const today = this.helperService.getDateString();
     this.createScheduleForm.patchValue({
-      pStartDate: this.helperService.ngbDatepickerFormat(mPgsA),
+      pStartDate: this.helperService.ngbDatepickerFormat(today),
       pEndDate: this.helperService.ngbDatepickerFormat(wotargetcompletiondate)
     });
 
@@ -173,8 +180,12 @@ export class WoProgramManagmentCreatePaymentScheduleComponent implements OnInit 
   changePaymentType(e) {
     let selectedValue = this.createScheduleForm.get('pType').value;
     if (selectedValue == "Days") {
-      this.createScheduleForm.controls['specificDays'].setValidators([Validators.required]);
+      this.createScheduleForm.get('specificDays').enable();
+      this.createScheduleForm.controls['specificDays'].setValidators([Validators.required, shouldNotZero(), Validators.maxLength(4), isNumberCheck()]);
     } else {
+      this.createScheduleForm.patchValue({ specificDays: 0 });
+      this.formErrors.specificDays = '';
+      this.createScheduleForm.get('specificDays').disable();
       this.createScheduleForm.controls["specificDays"].setErrors(null);
       this.createScheduleForm.controls["specificDays"].clearValidators();
     }
@@ -193,7 +204,7 @@ export class WoProgramManagmentCreatePaymentScheduleComponent implements OnInit 
     } else {
       this.readonlyRetentionPct = false;
       this.readonlyRetentionValue = true;
-      this.createScheduleForm.controls['retentionPct'].setValidators([Validators.required, Validators.maxLength(3), shouldNotZero()]);
+      this.createScheduleForm.controls['retentionPct'].setValidators([Validators.required]);
       this.createScheduleForm.controls["retentionValue"].setErrors(null);
       this.createScheduleForm.controls["retentionValue"].clearValidators();
     }
@@ -206,6 +217,7 @@ export class WoProgramManagmentCreatePaymentScheduleComponent implements OnInit 
     this.formErrorObject(); // empty form error
     this.logValidationErrors(this.createScheduleForm);
 
+    // console.log(this.createScheduleForm);
     if (this.createScheduleForm.invalid) {
       return;
     }
@@ -226,9 +238,9 @@ export class WoProgramManagmentCreatePaymentScheduleComponent implements OnInit 
       //"WPSRETENTIONVALUE": parseInt(this.helperService.convertMoneyToFlatFormat(retentionValue)),
       "WPSRETENTIONVALUE": parseInt(isNaN(parseInt(retentionValue)) ? retentionValue.replace("£", "").replace(",", "").replace(",", "") : retentionValue),
       "strUser": this.currentUser.userId,
-      "WPSFIXEDPAYMENTVALUE": parseFloat(this.helperService.convertMoneyToFlatFormat(stagePayment)) 
+      "WPSFIXEDPAYMENTVALUE": parseFloat(this.helperService.convertMoneyToFlatFormat(stagePayment))
     }
-    
+
     this.subs.add(
       this.worksOrdersService.createWebWorksOrdersPaymentSchedule(params).subscribe(
         data => {

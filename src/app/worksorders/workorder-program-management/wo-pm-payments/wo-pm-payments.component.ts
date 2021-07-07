@@ -123,9 +123,6 @@ export class WoPmPaymentsComponent implements OnInit {
         }
 
 
-
-
-        //  console.log('worksOrderData 1 ' + JSON.stringify(this.worksOrderData));
     }
 
 
@@ -171,14 +168,10 @@ export class WoPmPaymentsComponent implements OnInit {
         this.subs.add(
             this.worksOrdersService.ValidateAuthorisePayment(params).subscribe(
                 data => {
-                    console.log(data)
                     if (data.isSuccess) {
                         let resultData = data.data;
                         if (resultData.validYN == 'Y' && checkProcess == "C") {
                             this.authorisedConfirmation(resultData, item)
-                        } else if (resultData.validYN == 'Y' && checkProcess == "P") {
-                            this.alertService.success(resultData.validationMessage);
-                            this.GetWebWorksOrdersPaymentsForWorksOrderCall();
                         } else {
                             this.alertService.error(resultData.validationMessage);
                         }
@@ -199,8 +192,42 @@ export class WoPmPaymentsComponent implements OnInit {
     authorisedConfirmation(resultData, item) {
         $('.k-window').css({ 'z-index': 1000 });
         this.confirmationDialogService.confirm('Please confirm..', `${resultData.validationMessage}`)
-            .then((confirmed) => this.autthorisePaymentClick(item, "P"))
+            .then((confirmed) => this.authorisePayment(item))
             .catch(() => console.log('Attribute dismissed the dialog.'));
+    }
+
+
+    authorisePayment(item) {
+        const params = {
+            "WOSEQUENCE": item.wosequence,
+            "WPRSEQUENCE": item.wprsequence,
+            "WPYSEQUENCE": item.wpysequence,
+            "strUser": this.currentUser.userId,
+            "WONAME": item.woname,
+            "WPSPAYMENTDATE": this.helperService.getMDY(item.wpspaymentdate),
+            "strRequestUser": item.wpyrequestuser,
+        };
+
+        this.subs.add(
+            this.worksOrdersService.AuthorisePayment(params).subscribe(
+                data => {
+                    if (data.isSuccess) {
+                        let resultData = data.data;
+                        if (resultData.validYN == 'Y') {
+                            this.alertService.success("Authorised successfully");
+                            this.GetWebWorksOrdersPaymentsForWorksOrderCall();
+                        } else {
+                            this.alertService.error(resultData.validationMessage);
+                        }
+                    } else {
+                        this.alertService.error(data.message);
+                    }
+
+                    this.chRef.detectChanges();
+                }
+            )
+        )
+        
     }
 
 
@@ -255,7 +282,6 @@ export class WoPmPaymentsComponent implements OnInit {
         this.subs.add(
             this.worksOrdersService.GetWorksOrderReportingPayment(qs).subscribe(
                 data => {
-                    // console.log(data)
                     if (data.isSuccess) {
                         this.DisplayPaymentSummaryData = data.data[0];
                         this.DisplayPaymentSummaryWindow = true;
@@ -272,7 +298,7 @@ export class WoPmPaymentsComponent implements OnInit {
         )
 
 
-        
+
     }
 
 

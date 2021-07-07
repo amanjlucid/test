@@ -281,12 +281,13 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
     if (this.mousePositioin == undefined) return;
     
     const { y } = this.mousePositioin;
+    // console.log(y)
     if (y <= 454) return "-133px"
     if (y > 455 && y <= 563) return "-163px";
-    if (y > 563 && y < 640) return "-223px";
-    if (y > 640 && y < 745) return "-358px";
-    if (y > 745 && y < 797) return "-414px";
-    if (y > 797 && y < 900) return "-491px";
+    if (y > 563 && y <= 640) return "-243px";
+    if (y > 640 && y <= 745) return "-358px";
+    if (y > 745 && y <= 797) return "-414px";
+    if (y > 797 && y <= 900) return "-491px";
   }
 
   openMenu(e, dataItem) {

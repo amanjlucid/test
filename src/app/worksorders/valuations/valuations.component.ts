@@ -1,9 +1,9 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, ViewEncapsulation } from '@angular/core';
 import { SubSink } from 'subsink';
 import { process, State } from '@progress/kendo-data-query';
-import { AlertService, ConfirmationDialogService, EditPaymentScheduleService, HelperService, SharedService } from 'src/app/_services';
+import { AlertService, ConfirmationDialogService, EditPaymentScheduleService, HelperService, SharedService, WorksorderManagementService } from 'src/app/_services';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { combineLatest, Observable } from 'rxjs';
+import { combineLatest, forkJoin, Observable } from 'rxjs';
 import { GridComponent, GridDataResult, RowArgs, RowClassArgs, SelectableSettings } from '@progress/kendo-angular-grid';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { WorkOrdersValuationModel } from '../../_models'
@@ -21,6 +21,7 @@ export class ValuationsComponent implements OnInit {
   @Input() openValuationWindow = false;
   @Input() worksOrderData: any;
   @Input() paymentScheduleInp: any;
+  worksOrderNew:any;
   subs = new SubSink();
   title = 'Enter Valuations';
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
@@ -61,6 +62,7 @@ export class ValuationsComponent implements OnInit {
     private helperService: HelperService,
     private confirmationDialogService: ConfirmationDialogService,
     private sharedService: SharedService,
+    private workOrderProgrammeService: WorksorderManagementService,
   ) {
     this.setSelectableSettings();
     this.createFormGroup = this.createFormGroup.bind(this);
@@ -91,7 +93,7 @@ export class ValuationsComponent implements OnInit {
       )
     )
 
-    this.getAssetValuationTotal();
+    this.requiredPageData();
     this.view = this.editService.pipe(map(data => process(data, this.gridState)));
     this.editService.read(this.paymentScheduleInp);
     this.gridLoading = false;
@@ -344,7 +346,7 @@ export class ValuationsComponent implements OnInit {
       ];
     }
 
-    if (!this.woMenuAccess('Enter Contractor Valuations')) {
+    if (!this.woMenuAccess('Enter Contractor Valuations') || this.worksOrderNew?.wocodE2 == "N") {
       readOnlyColumns.push('woavcontractorvaluation');
       readOnlyColumns.push('woavcontractorvaluationpct')
     }
@@ -364,18 +366,38 @@ export class ValuationsComponent implements OnInit {
     this.editService.reset();
   }
 
-  getAssetValuationTotal() {
+
+  requiredPageData() {
+    const { wosequence } = this.worksOrderData;
     this.subs.add(
-      this.editService.getAssetValuationTotal(this.paymentScheduleInp).subscribe(
-        (data: any) => {
-          if (data.isSuccess) {
-            this.AssetValuationTotal = data.data[0] ?? [];
-            this.chRef.detectChanges();
-          } else this.alertService.error(data.message);
-        }, err => this.alertService.error(err)
+      forkJoin([
+        this.editService.getAssetValuationTotal(this.paymentScheduleInp),
+        this.workOrderProgrammeService.getWorksOrderByWOsequence(wosequence),
+      ]).subscribe(
+        data => {
+          console.log(data);
+          const assetValuationTotal: any = data[0];
+          this.AssetValuationTotal = assetValuationTotal.data[0] ?? [];
+          const worksOrderNew = data[1];
+          if (worksOrderNew.isSuccess) this.worksOrderNew = worksOrderNew.data;
+          this.chRef.detectChanges();
+        }
       )
     )
   }
+
+  // getAssetValuationTotal() {
+  //   this.subs.add(
+  //     this.editService.getAssetValuationTotal(this.paymentScheduleInp).subscribe(
+  //       (data: any) => {
+  //         if (data.isSuccess) {
+  //           this.AssetValuationTotal = data.data[0] ?? [];
+  //           this.chRef.detectChanges();
+  //         } else this.alertService.error(data.message);
+  //       }, err => this.alertService.error(err)
+  //     )
+  //   )
+  // }
 
 
   openGloabalValuation() {

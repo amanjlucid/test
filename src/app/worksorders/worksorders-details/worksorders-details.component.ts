@@ -5,7 +5,7 @@ import { FilterService, SelectableSettings, TreeListComponent, RowClassArgs } fr
 import { AlertService, LoaderService, ConfirmationDialogService, WorksOrdersService, HelperService, WorksorderManagementService, SharedService, PropertySecurityGroupService, AuthenticationService, WorksorderReportService } from '../../_services'
 import { combineLatest, forkJoin } from 'rxjs';
 import { WorkordersDetailModel } from 'src/app/_models';
-import { WopmRepCharConfig }  from '../../_models';
+import { WopmRepCharConfig } from '../../_models';
 import { Router, ActivatedRoute, RouterEvent } from '@angular/router';
 import { appConfig } from '../../app.config';
 import { CurrencyPipe } from '@angular/common';
@@ -222,8 +222,7 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
           this.phaseBudgetAvailable = data[3].data;
           this.reportingCharsConfig = data[6].data.reportingCharConfig;
 
-          if(this.reportingCharsConfig.wosequence > 0)
-          {
+          if (this.reportingCharsConfig.wosequence > 0) {
             this.displayAssetChar1 = (this.reportingCharsConfig.status1 == 'A');
             this.displayAssetChar2 = (this.reportingCharsConfig.status2 == 'A');
             this.displayAssetChar3 = (this.reportingCharsConfig.status3 == 'A');
@@ -935,12 +934,12 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
     const { y } = this.mousePositioin;
     if (this.menuData.treelevel == 2) {
       if (y > 780 && y < 824) return "-190px";
-      if (y > 824) return "-210px";
+      if (y >= 824) return "-210px";
     }
 
     if (this.menuData.treelevel == 3) {
       if (y > 780 && y < 824) return "-170px";
-      if (y > 824) return "-190px";
+      if (y >= 824) return "-190px";
     }
 
     return "-100px"
@@ -1238,8 +1237,8 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
 
   }
 
-  isServicingWorksOrder(){
-    return (this.worksOrderData.wocodE6 =='SERVICING')
+  isServicingWorksOrder() {
+    return (this.worksOrderData.wocodE6 == 'SERVICING')
   }
 
   viewWOReportingAsset(reportName, reportLevel, dataItem: any = null) {
@@ -1453,7 +1452,7 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
   closeCommentPanel(eve) {
     this.showEditCommentWindow = false;
     if (eve != null) {
-      this.actualSelectedRow.comment = eve;      
+      this.actualSelectedRow.comment = eve;
     }
 
     $('.worksOrderDetailOvrlay').removeClass('ovrlay');

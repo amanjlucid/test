@@ -359,5 +359,9 @@ export class WorksOrdersService {
         return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/ValidateAuthorisePayment`, params, this.httpOptions);
     }
 
+    AuthorisePayment(params) {
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/AuthorisePayment`, params, this.httpOptions);
+    }
+
 
 }

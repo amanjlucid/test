@@ -8,6 +8,16 @@
     padding: 8px 12px;
 }
 
+.valuationGrid .k-grid .no-padding, .valuationGrid .k-grid .k-grid-edit-row td:not(.k-hierarchy-cell), .valuationGrid .k-grid .k-command-cell, .valuationGrid .k-grid .k-edit-cell {
+    padding: 0 !important;
+}
+
+.valuationGrid .whole-cell {
+    display: block;
+    padding: 8px 12px;
+    /* depends on theme */
+}
+
 .valuationHead {
     display: block;
 }
@@ -33,10 +43,10 @@
     width: 100% !important;
 }
 
-.notEditableRow .editableCol{
+.notEditableRow .editableCol {
     background-color: #c5c0c0 !important;
 }
 
-.editableRow .editableCol{
+.editableRow .editableCol {
     background-color: #d2e5d2 !important;
 }
