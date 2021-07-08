@@ -1,4 +1,4 @@
-.k-window{
+.k-window {
     position: fixed!important;
 }
 
@@ -8,33 +8,36 @@
     padding: 8px 12px;
 }
 
-.headerActionDiv{
+.headerActionDiv {
     text-align: right;
     display: inline;
 }
 
-.headerActionDiv .reportBtnArea, .headerActionDiv .themeButton{
+.headerActionDiv .reportBtnArea, .headerActionDiv .themeButton {
     display: inline-block;
     margin-right: 2px;
 }
 
-
-.paymentScheduleGrid .paid{
+.paymentScheduleGrid .paid {
     background-color: rgba(230, 0, 126, 0.2) !important;
-
 }
 
-.paymentScheduleGrid .unpaid{
+.paymentScheduleGrid .unpaid {
     background-color: white !important;
-   
 }
 
 .paymentScheduleGrid .other {
     background-color: rgba(230, 0, 126, 0.1) !important;
 }
 
-/* #paymentScheduleGrid{
-    padding-top: 80px;
-    border-width: 1;
+app-wo-program-management-payment-schedule .paymentScheduleGridRow {
+    height: calc(100% - 85px);
+}
+
+app-wo-program-management-payment-schedule .paymentScheduleGridRow .paymentScheduleGrid {
+    height: calc(100% - 25px);
+}
+
+app-wo-program-management-payment-schedule .paymentScheduleGridRow .paymentScheduleGrid #paymentScheduleGrid {
     height: 100%;
-} */
+}

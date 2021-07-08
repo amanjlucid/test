@@ -24,7 +24,7 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
   state: State = {
     skip: 0,
     sort: [],
-    take: 25,
+    take: 35,
     group: [],
     filter: {
       logic: "or",
@@ -529,11 +529,7 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
     this.closePaymentScheduleWindowEvent.emit(false);
   }
 
-  resizeWindow(event) {
-    console.log(event)
-    // console.log(this.kendoWin)
-    // console.log(this.kendoWin.height)
-  }
+ 
 
 
 
