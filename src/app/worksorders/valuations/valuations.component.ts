@@ -28,8 +28,8 @@ export class ValuationsComponent implements OnInit {
   view: Observable<GridDataResult>;
   gridState: State = {
     sort: [],
-    skip: 0,
-    take: 20
+    // skip: 0,
+    // take: 20
   };
   changes: any = {};
   formGroup: FormGroup;
@@ -73,7 +73,7 @@ export class ValuationsComponent implements OnInit {
   setSelectableSettings(): void {
     this.selectableSettings = {
       checkboxOnly: false,
-      mode: 'single'
+      mode: 'multiple'
     };
   }
 
@@ -98,10 +98,6 @@ export class ValuationsComponent implements OnInit {
     this.editService.read(this.paymentScheduleInp);
     this.gridLoading = false;
 
-
-    // setTimeout(() => {
-    //   console.log(this.grid);
-    // }, 5000);
   }
 
 
@@ -122,8 +118,7 @@ export class ValuationsComponent implements OnInit {
 
 
   mySelectionKey(context: RowArgs): any {
-    // JSON.stringify(context.dataItem);
-    return 'dds';
+    return context.index; // JSON.stringify(context.dataItem);
   }
 
 
@@ -259,8 +254,8 @@ export class ValuationsComponent implements OnInit {
         )
       )
 
-
       this.chRef.detectChanges();
+
     }
 
   }
@@ -268,8 +263,8 @@ export class ValuationsComponent implements OnInit {
 
   cellCloseHandler(args: any) {
     const { formGroup, dataItem } = args;
-    this.gridFormStatus = formGroup.valid
-
+    this.gridFormStatus = formGroup.valid;
+  
     if (!formGroup.valid) {
       // prevent closing the edited cell if there are invalid values.
       args.preventDefault();
@@ -360,9 +355,20 @@ export class ValuationsComponent implements OnInit {
     return readOnlyColumns.indexOf(field) > -1;
   }
 
+  confirmCloseVariation() {
+    if (!this.editService.hasChanges()) {
+      this.closeValuation();
+      return
+    }
+
+    $('.k-window').css({ 'z-index': 1000 });
+    this.confirmationDialogService.confirm('Please confirm..', `You have made changes that have not yet been applied. Are you sure you want to exit and lose these changes?`)
+      .then((confirmed) => (confirmed) ? this.closeValuation() : console.log(confirmed))
+      .catch((err) => console.log(err));
+  }
 
   closeValuation() {
-    this.openValuationWindow = false;
+    this.openValuationWindow = false; 
     this.closeValuationWindow.emit(false);
     this.editService.reset();
   }
@@ -385,20 +391,6 @@ export class ValuationsComponent implements OnInit {
       )
     )
   }
-
-  // getAssetValuationTotal() {
-  //   this.subs.add(
-  //     this.editService.getAssetValuationTotal(this.paymentScheduleInp).subscribe(
-  //       (data: any) => {
-  //         if (data.isSuccess) {
-  //           this.AssetValuationTotal = data.data[0] ?? [];
-  //           this.chRef.detectChanges();
-  //         } else this.alertService.error(data.message);
-  //       }, err => this.alertService.error(err)
-  //     )
-  //   )
-  // }
-
 
   openGloabalValuation() {
     this.initializeGlobalValuationForm();
@@ -428,7 +420,7 @@ export class ValuationsComponent implements OnInit {
     if (this.worksOrderNew?.wocodE2 == "N") {
       disableFields.push('cvt', 'cvv', 'cvp');
     }
-
+   
     for (const disableField of disableFields) {
       this.globalvaluationForm.get(disableField).disable();
     }
@@ -548,11 +540,27 @@ export class ValuationsComponent implements OnInit {
     this.formErrorObject(); // empty form error or reinistialize 
 
     let formRawVal = this.globalvaluationForm.getRawValue();
-    const { cvv, cvp, avv, avp, notes } = formRawVal;
-    const { rowIndex, dataItem } = this.kendoRowDetail;
-    const { woavcommittedvalue, woavcontractorvaluation, woavcontractorvaluationpct, woavagreedvaluation, woavagreedvaluationpct } = dataItem;
+    let gridData: any = this.grid.data;//copy data with reference
 
-    //check if contractor not allowed to enter contractor valuation
+    if (this.mySelection.length) {
+      for (let len of this.mySelection) {
+        gridData.data[len] = this.setGridColumnValues(gridData.data[len], formRawVal);
+      }
+
+      this.gridFormStatus = true;
+      this.closeGlobalValuation();
+
+    }
+
+  }
+
+
+
+  setGridColumnValues(dataItem, formRawVal) {
+    const { woavcommittedvalue, woavcontractorvaluation, woavcontractorvaluationpct, woavagreedvaluation, woavagreedvaluationpct } = dataItem;
+    const { cvv, cvp, avv, avp, notes } = formRawVal;
+
+    // check if contractor not allowed to enter contractor valuation
     if (this.worksOrderNew?.wocodE2 != "N") {
       if (cvv) {
         const val = dataItem.woavcontractorvaluation = parseFloat(this.helperService.convertMoneyToFlatFormat(cvv))
@@ -574,7 +582,7 @@ export class ValuationsComponent implements OnInit {
           dataItem.woavcontractorvaluation = parseFloat(conVal);
         }
       }
-      
+
     }
 
 
@@ -601,10 +609,9 @@ export class ValuationsComponent implements OnInit {
 
     if (notes) dataItem.woavnotes = notes;
 
-    this.editService.update(dataItem);
-    this.closeGlobalValuation()
+    this.editService.update(dataItem);//push data to update
 
-
+    return dataItem;
   }
 
 

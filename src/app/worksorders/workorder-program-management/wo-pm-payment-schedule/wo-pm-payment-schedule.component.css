@@ -32,3 +32,9 @@
 .paymentScheduleGrid .other {
     background-color: rgba(230, 0, 126, 0.1) !important;
 }
+
+/* #paymentScheduleGrid{
+    padding-top: 80px;
+    border-width: 1;
+    height: 100%;
+} */

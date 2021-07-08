@@ -1,10 +1,11 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef, ViewEncapsulation, ViewChild } from '@angular/core';
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { AlertService, HelperService, WorksorderReportService, ConfirmationDialogService, WorksOrdersService, SharedService } from 'src/app/_services';
 import { PageChangeEvent, RowClassArgs, SelectableSettings } from '@progress/kendo-angular-grid';
 import { DateFormatPipe } from 'src/app/_pipes/date-format.pipe';
 import { combineLatest } from 'rxjs';
+import { WindowComponent } from '@progress/kendo-angular-dialog';
 
 @Component({
   selector: 'app-wo-program-management-payment-schedule',
@@ -49,39 +50,13 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
   worksOrderUsrAccess: any = [];
   userType: any = [];
 
-  //valuation
   openValuationWindow = false;
   valuationBtnAccess: boolean = false;
   paymentScheduleExist = false;
-
-  // public allowUnsort = true;
-  // public multiple = false;
-
-  // disabled = false;
-  // ShowFilter = false;
-  // GridData: any;
-
-  // loading = false;
   selectedItem: any;
-  // AssetValuationTotal: any;
-
-
-  // ValuationGridData: any;
-  // ValuationgridView: DataResult;
-  // selectedValuationItem: any;
   DisplayPaymentAssetsWindow = false;
-  // display_payment_asset_state: State = {
-  //   skip: 0,
-  //   sort: [],
-  //   group: [],
-  //   filter: {
-  //     logic: "or",
-  //     filters: []
-  //   }
-  // }
 
-
-
+  @ViewChild('kendoWin') kendoWin: WindowComponent;
 
   constructor(
     private worksOrdersService: WorksOrdersService,
@@ -101,7 +76,6 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
 
 
   ngOnInit(): void {
-    console.log(this.worksOrderData)
     if (this.worksOrderData['woname'] == undefined) {
       this.worksOrderData['woname'] = this.worksOrderData.name;
     }
@@ -555,7 +529,11 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
     this.closePaymentScheduleWindowEvent.emit(false);
   }
 
-
+  resizeWindow(event) {
+    console.log(event)
+    // console.log(this.kendoWin)
+    // console.log(this.kendoWin.height)
+  }
 
 
 

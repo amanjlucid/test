@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
-import { AlertService, HelperService, ConfirmationDialogService, WorksOrdersService, SharedService } from 'src/app/_services';
+import { AlertService, HelperService, ConfirmationDialogService, WorksOrdersService, SharedService, WorksorderReportService, ReportingGroupService } from 'src/app/_services';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { PageChangeEvent } from '@progress/kendo-angular-grid';
 import { combineLatest } from 'rxjs';
@@ -55,6 +55,8 @@ export class WoPmPaymentsComponent implements OnInit {
         private sharedService: SharedService,
         private confirmationDialogService: ConfirmationDialogService,
         private helperService: HelperService,
+        private worksOrderReportService: WorksorderReportService,
+        private reportingGrpService: ReportingGroupService,
     ) { }
 
     ngOnInit(): void {
@@ -227,7 +229,7 @@ export class WoPmPaymentsComponent implements OnInit {
                 }
             )
         )
-        
+
     }
 
 
@@ -309,6 +311,31 @@ export class WoPmPaymentsComponent implements OnInit {
 
     woMenuAccess(menuName) {
         return this.helperService.checkWorkOrderAreaAccess(this.userType, this.worksOrderAccess, this.worksOrderUsrAccess, menuName)
+    }
+
+    WOCreateXportOutputReport(item) {
+        console.log(item)
+        const { wosequence } = this.worksOrderData;
+        const { wpysequence } = item;
+        let xPortId = 526;
+        let params = {
+            "lstParamNameValue": ["Works Order Number", wosequence, "Works Order Payment Number", wpysequence],
+        };
+
+
+        this.subs.add(
+            this.reportingGrpService.runReport(xPortId, params.lstParamNameValue, this.currentUser.userId, "EXCEL", false).subscribe(
+                data => {
+                    const linkSource = 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' + data;
+                    const downloadLink = document.createElement("a");
+                    const fileName = `Payment_Asset_Report_${xPortId}.xlsx`;
+                    downloadLink.href = linkSource;
+                    downloadLink.download = fileName;
+                    downloadLink.click();
+                }, err => this.alertService.error(err)
+            )
+        )
+
     }
 
 }

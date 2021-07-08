@@ -1,5 +1,5 @@
-<kendo-window title="{{title}}" *ngIf="openWOPaymentScheduleWindow" (close)="closePaymentScheduleWin()" [top]="10"
-  [minWidth]="700" [width]="1050" [height]="auto" [minHeight]="300">
+<kendo-window #kendoWin title="{{title}}" *ngIf="openWOPaymentScheduleWindow" (close)="closePaymentScheduleWin()"
+  [top]="10" [minWidth]="700" [width]="1050" [height]="auto" [minHeight]="300" (resizeEnd)="resizeWindow(e)" (resizeStart)="resizeWindow(kendoWin)">
 
   <div class="row">
     <div class="col-md-12">
@@ -50,8 +50,8 @@
 
   <div class="row mt-2">
     <div class="col-md-12 paymentScheduleGrid">
-      <kendo-grid #grid [data]="gridView" [height]="600" [selectable]="selectableSettings" filterable="menu"
-        [resizable]="true" [sortable]="{
+      <kendo-grid id="paymentScheduleGrid" #grid [data]="gridView" [height]="600" [selectable]="selectableSettings"
+        filterable="menu" [resizable]="true" [sortable]="{
                 allowUnsort: true,
                 mode: 'multiple'
                 }" [skip]="state.skip" [loading]="gridLoading" [pageSize]="pageSize" [rowHeight]="36"

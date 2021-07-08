@@ -105,14 +105,19 @@
 
     <div class="row mt-3">
         <div class="col-md-12">
-            <kendo-grid #grid [data]="view | async" [height]="600" [pageSize]="gridState.take" [skip]="gridState.skip"
+            <!-- <kendo-grid #grid [data]="view | async" [height]="600" [pageSize]="gridState.take" [skip]="gridState.skip"
                 [sort]="gridState.sort" [pageable]="false" [sortable]="true" (dataStateChange)="onStateChange($event)"
                 (cellClick)="cellClickHandler($event)" (cellClose)="cellCloseHandler($event)"
                 (cancel)="cancelHandler($event)" (save)="saveHandler($event)" (remove)="removeHandler($event)"
                 (add)="addHandler($event)" [navigable]="false" [rowHeight]="36" scrollable="virtual" [resizable]="true"
-                [rowClass]="rowCallback" [selectable]="selectableSettings">
+                [rowClass]="rowCallback" [selectable]="selectableSettings"> -->
+            <kendo-grid #grid [data]="view | async" [height]="600" [sort]="gridState.sort" [pageable]="false"
+                [sortable]="true" (dataStateChange)="onStateChange($event)" (cellClick)="cellClickHandler($event)"
+                (cellClose)="cellCloseHandler($event)" (cancel)="cancelHandler($event)" (save)="saveHandler($event)"
+                (remove)="removeHandler($event)" (add)="addHandler($event)" [navigable]="false" [resizable]="true"
+                [rowClass]="rowCallback" [selectable]="selectableSettings" [selectedKeys]="mySelection"
+                [kendoGridSelectBy]="mySelectionKey">
 
-              
                 <kendo-grid-column field="wopname" title="Phase" width="80">
                 </kendo-grid-column>
                 <kendo-grid-column field="assid" title="Asset ID" width="100">
@@ -175,7 +180,7 @@
                 </kendo-grid-column>
                 <kendo-grid-column field="woavagreedvaluation" editor="numeric" format="{0:n2}" title="Agreed Valuation"
                     width="170" [style]="{'text-align': 'right'}" [class]="{'editableCol': true}">
-                   
+
                 </kendo-grid-column>
                 <kendo-grid-column field="woavagreedvaluationpct" editor="numeric" title="Agreed Valuation %"
                     width="170" [class]="{'editableCol': true}">
@@ -204,7 +209,8 @@
         </div>
 
         <div class="col-md-8 text-left mt-2">
-            <button *ngIf="woMenuAccess('Enter Global Valuations')" (click)="openGloabalValuation()" type="button" class="btn btn-sm themeButton mr-1"
+            <button *ngIf="woMenuAccess('Enter Global Valuations')" (click)="openGloabalValuation()" type="button"
+                class="btn btn-sm themeButton mr-1"
                 [disabled]="paymentScheduleInp.wpspaymentstatus != 'Unpaid' || !selectedValuation || selectedValuation.woavvaluationstatus == 'Completion'">Global
                 Valuation Updates</button>
 
@@ -217,7 +223,7 @@
         <div class="col-md-4 text-right mt-2">
             <button type="button" class="btn btn-sm themeButton mr-1"
                 [disabled]="!editService.hasChanges() || !gridFormStatus" (click)="saveChanges(grid)">Apply</button>
-            <button type="button" class="btn btn-sm themeButton" (click)="closeValuation()">Close</button>
+            <button type="button" class="btn btn-sm themeButton" (click)="confirmCloseVariation()">Close</button>
         </div>
     </div>
 
@@ -349,7 +355,8 @@
 
                 <div class="col-md-12 text-right mt-3">
                     <button type="submit" class="btn btn-sm themeButton mr-1">Apply</button>
-                    <button type="button" class="btn btn-sm themeButton" (click)="closeValuation()">Cancel</button>
+                    <button type="button" class="btn btn-sm themeButton"
+                        (click)="closeGlobalValuation()">Cancel</button>
                 </div>
             </form>
         </div>

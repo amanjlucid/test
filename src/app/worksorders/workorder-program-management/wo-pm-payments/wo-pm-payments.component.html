@@ -36,6 +36,8 @@
                 <a *ngIf="woMenuAccess('Authorise Payment')" (click)="autthorisePaymentClick(dataItem)"
                   class="dropdown-item" href="javascript:void(0)">Authorise
                   Payment</a>
+                <!-- <a *ngIf="woMenuAccess('Payment Asset Report')" (click)="WOCreateXportOutputReport(dataItem)"
+                  class="dropdown-item" href="javascript:void(0)">Payment Asset Report</a> -->
               </div>
             </li>
 
@@ -112,6 +114,11 @@
 
       </kendo-grid>
 
+    </div>
+
+
+    <div class="col-md-12 text-right mt-2">
+      <button type="button" class="btn btn-sm themeButton" (click)="closePaymentsWindowList()">Close</button>
     </div>
   </div>
 
@@ -397,7 +404,8 @@
                 <label class="col-form-label">Sub Total: </label>
               </div>
               <div class="col-md-3 subTotal">
-                <input [readonly]="true" type="text" class="form-control" value="{{ DisplayPaymentSummaryData?.payment_Value }}">
+                <input [readonly]="true" type="text" class="form-control"
+                  value="{{ DisplayPaymentSummaryData?.payment_Value }}">
               </div>
             </div>
 
@@ -425,7 +433,8 @@
                 <label class="col-form-label" style="font-weight: 600;">Total: </label>
               </div>
               <div class="col-md-3">
-                <input style="font-weight: 600;" [readonly]="true" type="text" class="form-control" value="{{DisplayPaymentSummaryData?.total_Payment_Value}}">
+                <input style="font-weight: 600;" [readonly]="true" type="text" class="form-control"
+                  value="{{DisplayPaymentSummaryData?.total_Payment_Value}}">
               </div>
             </div>
 
