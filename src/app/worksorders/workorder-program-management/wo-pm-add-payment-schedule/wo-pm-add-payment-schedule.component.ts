@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy
 import { SubSink } from 'subsink';
 import { AlertService, HelperService, WorksOrdersService, WorksorderManagementService } from 'src/app/_services';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { shouldNotZero, SimpleDateValidator } from 'src/app/_helpers';
+import { firstDateIsLower, shouldNotZero, SimpleDateValidator } from 'src/app/_helpers';
 import { forkJoin } from 'rxjs';
 
 @Component({
@@ -36,6 +36,7 @@ export class WoProgramManagmentAddPaymentScheduleComponent implements OnInit {
     'pEndDate': {
       'required': 'Period End Date is required.',
       'invalidDate': 'Period End Date in dd/mm/yyyy format.',
+      'isLower': 'Period End Date must be on or after the Period Start Date.',
     },
     'paymentDate': {
       'required': 'Payment Date is required.',
@@ -48,6 +49,9 @@ export class WoProgramManagmentAddPaymentScheduleComponent implements OnInit {
     'retentionValue': {
       'required': 'Retention Value is required.',
       'shouldNotZero': 'Retention Value cannot be 0 and blank'
+    },
+    'stagePayment': {
+      'required': 'Stage Payment is required.',
     }
 
   };
@@ -68,47 +72,58 @@ export class WoProgramManagmentAddPaymentScheduleComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // console.log(this.worksOrderData);
-    // console.log(this.paymentScheduleExist);
+    if (this.worksOrderData.wocontracttype == "STAGE") {
+      this.addScheduleForm = this.fb.group({
+        pStartDate: ['', [Validators.required, SimpleDateValidator()]],
+        pEndDate: ['', [Validators.required, SimpleDateValidator()]],
+        paymentDate: ['', [Validators.required, SimpleDateValidator()]],
+        stagePayment: ['', Validators.required]
+      });
 
-    this.addScheduleForm = this.fb.group({
-      pStartDate: ['', [Validators.required, SimpleDateValidator()]],
-      pEndDate: ['', [Validators.required, SimpleDateValidator()]],
-      paymentDate: ['', [Validators.required, SimpleDateValidator()]],
-      retentionType: [''],
-      retentionPct: ['', [Validators.required, Validators.maxLength(3), shouldNotZero()]],
-      retentionValue: ['']
-    });
+    } else {
 
-    const retentionValueCtr = this.addScheduleForm.get('retentionValue');
-    const retentionPctCtr = this.addScheduleForm.get('retentionPct');
-    const retentionTypeCtr = this.addScheduleForm.get('retentionType');
+      this.addScheduleForm = this.fb.group({
+        pStartDate: ['', [Validators.required, SimpleDateValidator()]],
+        pEndDate: ['', [Validators.required, SimpleDateValidator()]],
+        paymentDate: ['', [Validators.required, SimpleDateValidator()]],
+        retentionType: [''],
+        retentionPct: ['', [Validators.required]],
+        retentionValue: ['']
+      });
 
-    this.subs.add(
-      retentionTypeCtr.valueChanges.subscribe(
-        val => {
-          retentionValueCtr.setErrors(null);
-          retentionPctCtr.setErrors(null);
-          retentionValueCtr.clearValidators();
-          retentionPctCtr.clearValidators();
+      const retentionValueCtr = this.addScheduleForm.get('retentionValue');
+      const retentionPctCtr = this.addScheduleForm.get('retentionPct');
+      const retentionTypeCtr = this.addScheduleForm.get('retentionType');
 
-          if (val == "P") {
-            this.addScheduleForm.patchValue({ retentionValue: '' });
-            retentionPctCtr.enable();
-            retentionValueCtr.disable();
-            retentionPctCtr.setValidators([Validators.required, shouldNotZero()]);
-          } else if (val == "V") {
-            this.addScheduleForm.patchValue({ retentionPct: '' });
-            retentionPctCtr.disable();
-            retentionValueCtr.enable();
-            retentionValueCtr.setValidators([Validators.required, Validators.maxLength(3), shouldNotZero()]);
+      this.subs.add(
+        retentionTypeCtr.valueChanges.subscribe(
+          val => {
+            retentionValueCtr.setErrors(null);
+            retentionPctCtr.setErrors(null);
+            retentionValueCtr.clearValidators();
+            retentionPctCtr.clearValidators();
+
+            if (val == "P") {
+              this.addScheduleForm.patchValue({ retentionValue: '' });
+              retentionPctCtr.enable();
+              retentionValueCtr.disable();
+              retentionPctCtr.setValidators([Validators.required]);
+            } else if (val == "V") {
+              this.addScheduleForm.patchValue({ retentionPct: '' });
+              retentionPctCtr.disable();
+              retentionValueCtr.enable();
+              retentionValueCtr.setValidators([Validators.required, Validators.maxLength(3), shouldNotZero()]);
+            }
+
+            retentionValueCtr.updateValueAndValidity();
+            retentionPctCtr.updateValueAndValidity();
           }
-
-          retentionValueCtr.updateValueAndValidity();
-          retentionPctCtr.updateValueAndValidity();
-        }
+        )
       )
-    )
+
+
+    }
+
 
     this.requiredPageData();
 
@@ -177,13 +192,15 @@ export class WoProgramManagmentAddPaymentScheduleComponent implements OnInit {
     })
   }
 
+
   formErrorObject() {
     this.formErrors = {
       'pStartDate': '',
       'pEndDate': '',
       'paymentDate': '',
       'retentionPct': '',
-      'retentionValue': ''
+      'retentionValue': '',
+      'stagePayment': ''
     }
   }
 
@@ -197,41 +214,33 @@ export class WoProgramManagmentAddPaymentScheduleComponent implements OnInit {
       return;
     }
 
-
     let formRawVal = this.addScheduleForm.getRawValue();
     const { wosequence, wprsequence } = this.worksOrderData;
-    const { paymentDate, pStartDate, pEndDate, retentionPct, retentionValue } = formRawVal;
+    const { paymentDate, pStartDate, pEndDate, retentionPct = 0, retentionValue = 0, stagePayment = 0 } = formRawVal;
 
     if (new Date(this.helperService.dateObjToString(pEndDate)) < new Date(this.helperService.dateObjToString(pStartDate))) {
       this.alertService.error('Payment End date cannot be lower then the Payment start date.')
       return
     }
-  
-    // const params = {
-    //   "WOSEQUENCE": wosequence,
-    //   "WPRSEQUENCE": wprsequence,
-    //   "WPSPAYMENTDATE": this.helperService.dateObjToString(paymentDate),
-    //   "WPSSTARTDATE": this.helperService.dateObjToString(pStartDate),
-    //   "WPSENDDATE": pEndDate,
-    //   "WPSRETENTIONPCT": parseInt(retentionPct),
-    //   "WPSRETENTIONVALUE": parseInt(this.helperService.convertMoneyToFlatFormat(retentionValue)),
-    //   'WPSFIXEDPAYMENTVALUE': 0,
-    //   "strUser": this.currentUser.userId,
 
-    // }
+    if (new Date(this.helperService.dateObjToString(paymentDate)) < new Date(this.helperService.dateObjToString(pEndDate))) {
+      this.alertService.error('Payment date cannot be lower then the Payment end date.')
+      return
+    }
 
     const params = {
-      "WPRSEQUENCE": this.worksOrderData.wprsequence,
-      "WOSEQUENCE": this.worksOrderData.wosequence,
-      "WPSPAYMENTDATE": this.dateFormate(this.addScheduleForm.get('paymentDate').value),
-      "WPSSTARTDATE": this.dateFormate(this.addScheduleForm.get('pStartDate').value),
-      "WPSENDDATE": this.dateFormate(this.addScheduleForm.get('pEndDate').value),
+      "WOSEQUENCE": wosequence,
+      "WPRSEQUENCE": wprsequence,
+      "WPSPAYMENTDATE": this.helperService.dateObjToString(paymentDate),
+      "WPSSTARTDATE": this.helperService.dateObjToString(pStartDate),
+      "WPSENDDATE": this.helperService.dateObjToString(pEndDate),
+      "WPSRETENTIONPCT": parseInt(retentionPct),
+      // "WPSRETENTIONVALUE": parseInt(this.helperService.convertMoneyToFlatFormat(retentionValue)),
+      "WPSRETENTIONVALUE": parseInt(isNaN(parseInt(retentionValue)) ? retentionValue.replace("£", "").replace(",", "").replace(",", "") : retentionValue),
+      'WPSFIXEDPAYMENTVALUE': parseFloat(this.helperService.convertMoneyToFlatFormat(stagePayment)),
       "strUser": this.currentUser.userId,
-      "WPSRETENTIONPCT": parseInt(this.addScheduleForm.get('retentionPct').value),
-      "WPSRETENTIONVALUE": parseInt(isNaN(parseInt(this.addScheduleForm.get('retentionValue').value)) ? this.addScheduleForm.get('retentionValue').value.replace("£", "").replace(",", "").replace(",", "") : this.addScheduleForm.get('retentionValue').value),
-      // "WPSRETENTIONVALUE":this.addScheduleForm.get('retentionValue').value,
-      "WPSFIXEDPAYMENTVALUE": 0
-    };
+
+    }
 
     this.subs.add(
       this.worksOrdersService.insertWebWorksOrdersPaymentSchedule(params).subscribe(
@@ -244,19 +253,12 @@ export class WoProgramManagmentAddPaymentScheduleComponent implements OnInit {
         }, err => this.alertService.error(err)
       )
     )
+
   }
 
 
   openCalendar(obj) {
     obj.toggle()
-  }
-
-  dateFormate(value) {
-    if (value == undefined || typeof value == 'undefined' || typeof value == 'string') {
-      return new Date('1753-01-01').toJSON()
-    }
-    const dateStr = `${value.year}-${this.helperService.zeorBeforeSingleDigit(value.month)}-${this.helperService.zeorBeforeSingleDigit(value.day)}`;
-    return new Date(dateStr).toJSON()
   }
 
 

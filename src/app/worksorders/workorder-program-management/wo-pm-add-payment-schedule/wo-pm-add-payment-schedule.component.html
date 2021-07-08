@@ -1,5 +1,5 @@
 <kendo-window title="{{title}}" *ngIf="openWOAddPaymentScheduleWindow" (close)="closeAddPaymentScheduleWin()" [top]="10"
-  [minWidth]="500" [width]="700" [height]="auto" [minHeight]="450">
+  [minWidth]="500" [width]="700" [height]="auto" [minHeight]="400">
 
   <form [formGroup]="addScheduleForm" id="addScheduleForm" (ngSubmit)="onSubmit()" autocomplete="off">
     <div class="row mt-2">
@@ -57,7 +57,25 @@
         </div>
       </div>
     </div>
-    <div class="row mt-2">
+
+    <div class="row mt-2" *ngIf="worksOrderData.wocontracttype == 'STAGE'">
+      <div class="col-6">
+        <div class="row">
+          <div class="col-md-6">
+            <label class="py-2">Stage Payment:</label>
+          </div>
+          <div class="col-md-6">
+            <input appCurrencyMask maxDigits="9" type="text" class="form-control" formControlName="stagePayment"
+              [ngClass]="{ 'is-invalid': submitted && formErrors.stagePayment }">
+            <div *ngIf="submitted && formErrors.stagePayment" class="invalid-feedback">
+              <div *ngIf="formErrors.stagePayment">{{ formErrors.stagePayment }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-2" *ngIf="worksOrderData.wocontracttype != 'STAGE'">
       <div class="col-6">
         <div class="row">
           <div class="col-md-6">
@@ -83,7 +101,7 @@
             <label>Retention %:</label>
           </div>
           <div class="col-md-6">
-            <input type="text" class="form-control" autocomplete="off" formControlName="retentionPct"
+            <input numberDecimal maxDigits="3" type="text" class="form-control" autocomplete="off" formControlName="retentionPct"
               [ngClass]="{'is-invalid':submitted && formErrors.retentionPct}" placeholder="0.00%">
             <div *ngIf="submitted && formErrors.retentionPct" class="invalid-feedback">
               <div *ngIf="formErrors.retentionPct">{{ formErrors.retentionPct }}</div>

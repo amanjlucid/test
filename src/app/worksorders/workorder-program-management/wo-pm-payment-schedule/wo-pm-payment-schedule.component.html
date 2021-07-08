@@ -30,7 +30,7 @@
       </div> -->
 
       <button *ngIf="woMenuAccess('Schedule Report Order')" type="button" class="btn btn-sm themeButton"
-      (click)="WOCreateXportOutputReport(522, 'Schedule Report(Order)')">Schedule Report</button>
+        (click)="WOCreateXportOutputReport(522, 'Schedule Report(Order)')">Schedule Report</button>
       <button *ngIf="woMenuAccess('Payment Tab')" type="button" class="btn btn-sm themeButton"
         (click)="openWOPMPayments()">Payments</button>
       <button *ngIf="woMenuAccess('Edit Schedule')" type="button" class="btn btn-sm themeButton"
@@ -80,7 +80,9 @@
                 <div class="dropdown-toggle">
                   <div class="dropdown-item">Reports</div>
                   <div class="dropdown-menu contractorReportMenu">
-                    <a *ngIf="woMenuAccess('Valuation Report')" class="dropdown-item" href="javascript:void(0)"
+                    <a *ngIf="woMenuAccess('Valuation Report')"
+                      [ngClass]="{'disabled' : worksOrderData.wocontracttype == 'STAGE' || worksOrderData.wocontracttype == 'COMPLETION'}"
+                      class="dropdown-item" href="javascript:void(0)"
                       (click)="WOCreateXportOutputReport(525, 'Valuation Report')">Valuation Report</a>
                     <a *ngIf="woMenuAccess('Display Payment Schedule Assets')"
                       (click)="GetWebWorksOrderPaymentScheduleDetailsClick(dataItem)" class="dropdown-item"
@@ -339,9 +341,21 @@
               </span>
             </ng-template>
           </kendo-grid-column>
-          <kendo-grid-column field="asset_Committed_Value" title="Actual Committed Value" width="100">
+          <kendo-grid-column field="asset_Committed_Value" title="Asset Committed Value" width="100"
+            [style]="{'text-align': 'right'}">
+            <ng-template kendoGridCellTemplate let-dataItem>
+              <span>
+                {{ dataItem.asset_Committed_Value | currency:'GBP':'symbol' }}
+              </span>
+            </ng-template>
           </kendo-grid-column>
-          <kendo-grid-column field="asset_Committed_Fee" title="Asset Committed Fee" width="100">
+          <kendo-grid-column field="asset_Committed_Fee" title="Asset Committed Fee" width="100"
+            [style]="{'text-align': 'right'}">
+            <ng-template kendoGridCellTemplate let-dataItem>
+              <span>
+                {{ dataItem.asset_Committed_Fee | currency:'GBP':'symbol' }}
+              </span>
+            </ng-template>
           </kendo-grid-column>
           <kendo-grid-column field="asset_Target_Completion_Date" title="Asset target Completion Date" [width]="140"
             [filterable]="false" [sortable]="false">
@@ -377,7 +391,13 @@
             </ng-template>
           </kendo-grid-column>
 
-          <kendo-grid-column field="woavvaluationstatus" title="Asset Payment Value" width="100">
+          <kendo-grid-column field="asset_Payment_Value" title="Asset Payment Value" width="100"
+            [style]="{'text-align': 'right'}">
+            <ng-template kendoGridCellTemplate let-dataItem>
+              <span>
+                {{ dataItem.asset_Payment_Value | currency:'GBP':'symbol' }}
+              </span>
+            </ng-template>
           </kendo-grid-column>
 
         </kendo-grid>

@@ -25,9 +25,10 @@
 }
 
 .paymentScheduleGrid .unpaid{
-    background-color: rgba(230, 0, 126, 0.1) !important;
+    background-color: white !important;
+   
 }
 
 .paymentScheduleGrid .other {
-    background-color: white !important;
+    background-color: rgba(230, 0, 126, 0.1) !important;
 }

@@ -41,39 +41,6 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
   openWOAddPaymentScheduleWindow: boolean;
   openWOCreatePaymentScheduleWindow: boolean;
-  //valuation
-  openValuationWindow = false;
-  valuationBtnAccess: boolean = false;
-  paymentScheduleExist = false;
-
-
-
-
-  public allowUnsort = true;
-  public multiple = false;
-
-  disabled = false;
-  ShowFilter = false;
-  GridData: any;
-
-  loading = false;
-  selectedItem: any;
-  AssetValuationTotal: any;
-
-
-  ValuationGridData: any;
-  ValuationgridView: DataResult;
-  selectedValuationItem: any;
-  DisplayPaymentAssetsWindow = false;
-  display_payment_asset_state: State = {
-    skip: 0,
-    sort: [],
-    group: [],
-    filter: {
-      logic: "or",
-      filters: []
-    }
-  }
 
   DisplayPaymentAssetsData: any;
   DisplayPaymentAssetsView: DataResult;
@@ -81,6 +48,39 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
   worksOrderAccess = [];
   worksOrderUsrAccess: any = [];
   userType: any = [];
+
+  //valuation
+  openValuationWindow = false;
+  valuationBtnAccess: boolean = false;
+  paymentScheduleExist = false;
+
+  // public allowUnsort = true;
+  // public multiple = false;
+
+  // disabled = false;
+  // ShowFilter = false;
+  // GridData: any;
+
+  // loading = false;
+  selectedItem: any;
+  // AssetValuationTotal: any;
+
+
+  // ValuationGridData: any;
+  // ValuationgridView: DataResult;
+  // selectedValuationItem: any;
+  DisplayPaymentAssetsWindow = false;
+  // display_payment_asset_state: State = {
+  //   skip: 0,
+  //   sort: [],
+  //   group: [],
+  //   filter: {
+  //     logic: "or",
+  //     filters: []
+  //   }
+  // }
+
+
 
 
   constructor(
@@ -101,10 +101,11 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
 
 
   ngOnInit(): void {
-    if(this.worksOrderData['woname'] == undefined){
-      this.worksOrderData['woname'] = this.worksOrderData.name; 
+    console.log(this.worksOrderData)
+    if (this.worksOrderData['woname'] == undefined) {
+      this.worksOrderData['woname'] = this.worksOrderData.name;
     }
-    
+
     this.subs.add(
       combineLatest([
         this.sharedService.worksOrdersAccess,
@@ -363,7 +364,7 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
     if (context.dataItem.wpspaymentstatus.toLowerCase() != 'paid' && context.dataItem.wpspaymentstatus.toLowerCase() != 'unpaid') {
       return { other: true, }
     }
-    
+
   }
   //am
 
@@ -470,6 +471,14 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
 
 
   WOCreateXportOutputReport(xPortId, reportName) {
+    if (reportName == 'Valuation Report') {
+      const { wocontracttype } = this.worksOrderData;
+      if (wocontracttype == 'STAGE' || wocontracttype == 'COMPLETION') {
+        this.alertService.error("Work order payment type must not be stage and completion.");
+        return;
+      }
+    }
+
     let params = {
       "intXportId": xPortId,
       "lstParamNameValue": ["Works Order Number", this.worksOrderData.wosequence],
@@ -549,7 +558,7 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
 
 
 
-  
+
 
 
 

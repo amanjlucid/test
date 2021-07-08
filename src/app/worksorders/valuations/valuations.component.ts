@@ -21,7 +21,7 @@ export class ValuationsComponent implements OnInit {
   @Input() openValuationWindow = false;
   @Input() worksOrderData: any;
   @Input() paymentScheduleInp: any;
-  worksOrderNew:any;
+  worksOrderNew: any;
   subs = new SubSink();
   title = 'Enter Valuations';
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
@@ -325,6 +325,7 @@ export class ValuationsComponent implements OnInit {
   applyValuationChange() {
     const { userId } = this.currentUser
     this.editService.updateChanges(this.setToZero, { userId, ps: this.paymentScheduleInp });
+    this.gridFormStatus = false;
   }
 
   cancelChanges(grid: any): void {
@@ -424,6 +425,10 @@ export class ValuationsComponent implements OnInit {
     });
 
     const disableFields = ['cvv', 'cvp', 'avv', 'avp', 'notes'];
+    if (this.worksOrderNew?.wocodE2 == "N") {
+      disableFields.push('cvt', 'cvv', 'cvp');
+    }
+
     for (const disableField of disableFields) {
       this.globalvaluationForm.get(disableField).disable();
     }
@@ -547,26 +552,31 @@ export class ValuationsComponent implements OnInit {
     const { rowIndex, dataItem } = this.kendoRowDetail;
     const { woavcommittedvalue, woavcontractorvaluation, woavcontractorvaluationpct, woavagreedvaluation, woavagreedvaluationpct } = dataItem;
 
-    if (cvv) {
-      const val = dataItem.woavcontractorvaluation = parseFloat(this.helperService.convertMoneyToFlatFormat(cvv))
-      if (val > 0 && woavcommittedvalue > 0) {
-        const perc = this.toFix((val / woavcommittedvalue) * 100, 2);
-        const conPct = this.applyHundredPercentVlaue(val, woavcommittedvalue, perc);
-        if (this.toFix(woavcontractorvaluationpct, 2) != conPct) {
-          dataItem.woavcontractorvaluationpct = parseFloat(conPct);
+    //check if contractor not allowed to enter contractor valuation
+    if (this.worksOrderNew?.wocodE2 != "N") {
+      if (cvv) {
+        const val = dataItem.woavcontractorvaluation = parseFloat(this.helperService.convertMoneyToFlatFormat(cvv))
+        if (val > 0 && woavcommittedvalue > 0) {
+          const perc = this.toFix((val / woavcommittedvalue) * 100, 2);
+          const conPct = this.applyHundredPercentVlaue(val, woavcommittedvalue, perc);
+          if (this.toFix(woavcontractorvaluationpct, 2) != conPct) {
+            dataItem.woavcontractorvaluationpct = parseFloat(conPct);
+          }
+        } else if (val == 0) {
+          dataItem.woavcontractorvaluationpct = 0;
         }
-      } else if (val == 0) {
-        dataItem.woavcontractorvaluationpct = 0;
-      }
-    };
+      };
 
-    if (cvp) {
-      const val = dataItem.woavcontractorvaluationpct = parseFloat(cvp);
-      const conVal = this.toFix((woavcommittedvalue * val) / 100, 2);
-      if (this.toFix(woavcontractorvaluation.value, 2) != conVal) {
-        dataItem.woavcontractorvaluation = parseFloat(conVal);
+      if (cvp) {
+        const val = dataItem.woavcontractorvaluationpct = parseFloat(cvp);
+        const conVal = this.toFix((woavcommittedvalue * val) / 100, 2);
+        if (this.toFix(woavcontractorvaluation.value, 2) != conVal) {
+          dataItem.woavcontractorvaluation = parseFloat(conVal);
+        }
       }
+      
     }
+
 
     if (avv) {
       const val = dataItem.woavagreedvaluation = parseFloat(this.helperService.convertMoneyToFlatFormat(avv));
@@ -605,6 +615,8 @@ export class ValuationsComponent implements OnInit {
       this.selectedValuation.woavagreedvaluationpct = 0;
       this.selectedValuation.woavvaluationstatus = 'Set to Zero';
       this.setToZero = true;
+      this.editService.update(this.selectedValuation);
+      this.gridFormStatus = true;
     }
   }
 

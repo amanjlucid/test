@@ -100,7 +100,7 @@
           </div>
           <div class="col-md-6">
             <input appCurrencyMask maxDigits="9" type="text" class="form-control" formControlName="stagePayment"
-              [ngClass]="{ 'is-invalid': submitted && formErrors.specificDays }">
+              [ngClass]="{ 'is-invalid': submitted && formErrors.stagePayment }">
             <div *ngIf="submitted && formErrors.stagePayment" class="invalid-feedback">
               <div *ngIf="formErrors.stagePayment">{{ formErrors.stagePayment }}</div>
             </div>

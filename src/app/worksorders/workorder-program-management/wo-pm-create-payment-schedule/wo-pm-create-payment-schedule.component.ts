@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef, ViewEncapsulation } from '@angular/core';
 import { SubSink } from 'subsink';
 import { AlertService, HelperService, WorksOrdersService } from 'src/app/_services';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -8,7 +8,8 @@ import { shouldNotZero, SimpleDateValidator, firstDateIsLower, isNumberCheck } f
   selector: 'app-wo-program-management-create-payment-schedule',
   templateUrl: './wo-pm-create-payment-schedule.component.html',
   styleUrls: ['./wo-pm-create-payment-schedule.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  encapsulation: ViewEncapsulation.None
 })
 
 export class WoProgramManagmentCreatePaymentScheduleComponent implements OnInit {
