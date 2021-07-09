@@ -316,10 +316,11 @@
 
         <a *ngIf="worksOrderAccess.indexOf('View Programme Log') != -1" class="dropdown-item" href="javascript:void(0)"
           (click)="openProgrammeLog(menuData)">View Programme Log</a>
-         
-        <a *ngIf="woMenuAccess('Manage Associations')" class="dropdown-item" href="javascript:void(0)" (click)="openWoAssociationsManage(menuData)">Associations</a>
 
-        <a *ngIf="worksOrderAccess.indexOf('Defects Tabs') != -1" class="dropdown-item" href="javascript:void(0)"
+        <a *ngIf="woMenuAccess('Manage Associations')" class="dropdown-item" href="javascript:void(0)"
+          (click)="openWoAssociationsManage(menuData)">Associations</a>
+
+        <a *ngIf="woMenuAccess('Defects Tab')" class="dropdown-item" href="javascript:void(0)"
           (click)="openDefectsMethod(menuData)">Defects</a>
 
         <a *ngIf="woMenuAccess('Works Order Documents')" [ngClass]="{'disabled': menuData.worksOrderFileCount == 0}"
