@@ -596,11 +596,7 @@
 
         <a *ngIf="woMenuBtnSecurityAccess('Move Assets')" class="dropdown-item" href="javascript:void(0)"
           (click)="moveAssets(menuData)">Move</a>
-
-        <a *ngIf="woMenuBtnSecurityAccess('Add Assets for Phase Work Costs')" class="dropdown-item"
-          href="javascript:void(0)" (click)="openAddPhaseCostStructure(menuData)">Asset(s) for
-          Phase Work Cost</a>
-
+        
         <a class="dropdown-item" [ngClass]="{'disabled' : !menuData.residentriskcode || menuData.residentriskcode == 0}"
           *ngIf="woMenuBtnSecurityAccess('View Resident Info')" href="javascript:void(0)"
           (click)="openResidentDetails(menuData)">Resident Details</a>
