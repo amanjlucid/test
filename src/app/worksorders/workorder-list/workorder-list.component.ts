@@ -278,7 +278,7 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
 
   getTopMargin() {
     if (this.mousePositioin == undefined) return;
-    
+
     const { y } = this.mousePositioin;
     if (y <= 454) return "-133px"
     if (y > 455 && y <= 563) return "-163px";
@@ -427,14 +427,12 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
 
 
   finalDeleteSubmit(reason) {
-
     this.errorDeleteMsg = '';
     this.successDeleteMsg = '';
 
     if (reason == '' || reason == null) {
       this.errorDeleteMsg = 'You must enter a reason for deleting a Works Order';
-    }
-    else {
+    } else {
       let userId = this.currentUser.userId;
       let checkOrProcess = 'P';
       this.worksOrderService.DeleteWebWorkOrder(this.wosequenceForDelete, reason, userId, checkOrProcess).subscribe(
