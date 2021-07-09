@@ -66,7 +66,8 @@ export class WorksordersAssetDetailComponent implements OnInit {
         private alertService: AlertService,
         private chRef: ChangeDetectorRef,
         private sharedService: SharedService,
-        private confirmationDialogService: ConfirmationDialogService
+        private confirmationDialogService: ConfirmationDialogService,
+        private helperService: HelperService,
     ) { }
 
     ngOnInit(): void {
@@ -79,12 +80,9 @@ export class WorksordersAssetDetailComponent implements OnInit {
                 this.sharedService.userTypeObs
             ]).subscribe(
                 data => {
+                    this.worksOrderUsrAccess = data[0];
+                    this.worksOrderAccess = data[1];
                     this.userType = data[2][0];
-                    if (this.userType?.wourroletype == "Dual Role") {
-                        this.worksOrderAccess = [...data[0], ...data[1]];
-                    } else {
-                        this.worksOrderAccess = data[0]
-                    }
                 }
             )
         )
@@ -227,8 +225,6 @@ export class WorksordersAssetDetailComponent implements OnInit {
             RemoveWorkList: action,
         };
 
-        //console.log('finalremoveAssetFromPhase to dlete ' +  JSON.stringify(params));
-
         this.worksOrdersService.WorksOrderRemoveWork(params).subscribe(
             (data) => {
                 if (data.isSuccess) {
@@ -246,8 +242,7 @@ export class WorksordersAssetDetailComponent implements OnInit {
                     } else {
                         this.alertService.error(apiData.pRETURNMESSAGE);
                     }
-
-                    // console.log('finalremoveAssetFromPhase api data '+ JSON.stringify(apiData));
+                    
                 }
 
             },
@@ -298,8 +293,6 @@ export class WorksordersAssetDetailComponent implements OnInit {
             RemoveWorkList: action,
         };
 
-        //  console.log('Parms to dlete ' +  JSON.stringify(params));
-
         this.worksOrdersService.WorksOrderRemoveWork(params).subscribe(
             (data) => {
                 if (data.isSuccess) {
@@ -314,7 +307,7 @@ export class WorksordersAssetDetailComponent implements OnInit {
 
                     }
 
-                    //   console.log('Delete Data Return '+ JSON.stringify(apiData));
+                   
 
                 }
 
@@ -358,7 +351,6 @@ export class WorksordersAssetDetailComponent implements OnInit {
                 }
 
 
-                //(confirmed) ? this.finalremoveAssetFromPhase(item) : console.log(confirmed)
             )
             .catch(() => console.log('Attribute dismissed the dialog.'));
 
@@ -373,53 +365,6 @@ export class WorksordersAssetDetailComponent implements OnInit {
 
         $('.woassetdetailoverlay').addClass('ovrlay');
         this.SwapPackageWindow = true;
-        // this.selectedItem = item;
-        // this.SwapPackageWindow = true;
-        // this.itemData.assid = item.assid;
-        // this.itemData.wocheckname = item.wocheckname;
-        // this.itemData.woname = this.selectedRow.woname;
-
-
-        // //console.log('selectedItem'+ JSON.stringify(this.selectedItem));
-        // //console.log('worksOrderData'+ JSON.stringify(this.worksOrderData));
-
-
-        // let paramsTosend = {
-        //     'ASSID': this.selectedItem.assid,
-        //     'CTTSURCDE': this.worksOrderData.cttsurcde,
-        //     'PLANYEAR': this.selectedItem.wlplanyear,
-        //     'WOSEQUENCE': this.selectedItem.wosequence,
-        //     'WOCHECKSURCDE': this.selectedItem.wochecksurcde,
-        //     'ATAID': this.selectedItem.wlataid,
-
-        // };
-
-
-
-        // this.worksOrdersService.GetWorksPackagesForAssets(paramsTosend).subscribe(
-        //     (data) => {
-
-        //         //  console.log('openSwapPackage item  api reponse'+ JSON.stringify(data));
-
-        //         if (data.isSuccess) {
-        //             this.SwapPackagesForAssetsDataGrid = data.data
-
-        //         } else {
-
-        //             this.alertService.error(data.message);
-
-        //         }
-
-        //         this.chRef.detectChanges();
-
-        //     },
-        //     error => {
-        //         this.alertService.error(error);
-        //         this.chRef.detectChanges();
-
-        //     }
-        // )
-
 
     }
 
@@ -436,7 +381,6 @@ export class WorksordersAssetDetailComponent implements OnInit {
             return
         }
 
-        //  console.log('item  api reponse'+ JSON.stringify(item));
         this.selectedItem = item;
         this.SetToRefusalWindow = true;
 
@@ -463,7 +407,6 @@ export class WorksordersAssetDetailComponent implements OnInit {
 
                     this.chRef.detectChanges();
 
-                    // console.log('WorkOrderRefusalCodes api reponse' + JSON.stringify(data));
                 },
                 err => this.alertService.error(err)
             )
@@ -474,9 +417,6 @@ export class WorksordersAssetDetailComponent implements OnInit {
     }
 
     SetToRefusalSave(clear = false) {
-
-        // console.log('SetToRefusalSave itemDat' + JSON.stringify(this.itemData));
-
 
         const params = {
             "WOSEQUENCE": this.selectedItem.wosequence,
@@ -514,7 +454,6 @@ export class WorksordersAssetDetailComponent implements OnInit {
 
                     this.chRef.detectChanges();
 
-                    // console.log('WorkOrderUpdateCommentForAttribute api reponse'+ JSON.stringify(data));
                 },
                 err => this.alertService.error(err)
             )
@@ -529,7 +468,7 @@ export class WorksordersAssetDetailComponent implements OnInit {
     closeSetToRefusalWindow() {
         this.SetToRefusalWindow = false;
     }
-    
+
     openEditCommentForWoAssetWindow(item) {
         this.selectedItem = item;
         this.EditCommentForWoAssetWindow = true;
@@ -578,12 +517,11 @@ export class WorksordersAssetDetailComponent implements OnInit {
 
                     this.chRef.detectChanges();
 
-                    // console.log('WorkOrderUpdateCommentForAttribute api reponse'+ JSON.stringify(data));
                 },
                 err => this.alertService.error(err)
             )
         )
-        //console.log(input);
+     
 
     }
 
@@ -599,9 +537,9 @@ export class WorksordersAssetDetailComponent implements OnInit {
             this.worksOrdersService.GetDefaultCostForAssetWork(params).subscribe(
                 (data) => {
                     let costData = data.data[0];
-                    //console.log('costData'+ JSON.stringify(costData));
+                  
                     this.itemData.wo_forcast = costData.soR_RATE;
-                    //this.itemData.work_cost =  costData.cost;
+                   
                     this.itemData.work_cost = this.itemData.asaquantity * this.itemData.wo_forcast;
                     this.itemData.cost_override = costData.overridE_COST;
                     this.chRef.detectChanges();
@@ -627,40 +565,12 @@ export class WorksordersAssetDetailComponent implements OnInit {
         this.selectedItem = item;
         this.EditWorkPackageQtyCostWindow = true;
 
-        // this.itemData.wlcomppackage = item.wlcomppackage;
-        // this.itemData.wphname = item.wphname;
-        // this.itemData.atadescription = item.atadescription;
-        // this.itemData.asaquantity = item.asaquantity;
-        // this.itemData.asauom = item.asauom;
-        // this.itemData.woadforecast = item.woadforecast;
-        // this.itemData.woadcomment = item.woadcomment;
-
-        // let params = {
-        //     "WLCode": this.selectedItem.wlcode,
-        //     "WLATAId": this.selectedItem.wlataid,
-        //     "WLAssid": this.selectedItem.assid,
-        //     "WLPlanYear": this.selectedItem.wlplanyear,
-        //     "WOSequence": this.selectedItem.wosequence
-        // };
-
-        // await this.GetDefaultCostForAssetWork(params);
-
-
-
-        /*** */
-        // console.log('costData'+ JSON.stringify(this.itemData));
-        // this.itemData.work_cost = (  this.itemData.wo_forcast * item.asaquantity) ;
-        // this.itemData.cost_override = (  this.itemData.wo_forcast * item.asaquantity) ;
-
 
     }
 
     editWorkPackageQtyCostSave() {
-
         this.loading = true;
-        // console.log('this.itemData values ' + JSON.stringify(this.itemData));
-
-
+       
         let params = {
             "PWOSEQUENCE": this.selectedItem.wosequence,
             "PWOPSEQUENCE": this.selectedItem.wopsequence,
@@ -677,15 +587,9 @@ export class WorksordersAssetDetailComponent implements OnInit {
         };
 
 
-
-
-        //console.log('Parms to WOEditWorkPackageTablet ' +  JSON.stringify(params));
-
         this.worksOrdersService.WOEditWorkPackageTablet(params).subscribe(
             (data) => {
 
-
-                /// console.log('WOEditWorkPackageTablet Api Response '+ JSON.stringify(data));
 
                 if (data.isSuccess) {
                     let success_msg = "Work Updated Successfully";
@@ -736,9 +640,7 @@ export class WorksordersAssetDetailComponent implements OnInit {
         this.selectedItem = item;
 
         this.loading = true;
-        //  console.log('this.itemData values '+ JSON.stringify(this.itemData));
-
-
+       
         let params = {
             "WOSEQUENCE": this.selectedItem.wosequence,
             "WOPSEQUENCE": this.selectedItem.wopsequence,
@@ -750,14 +652,8 @@ export class WorksordersAssetDetailComponent implements OnInit {
             "PlanYear": this.selectedItem.wlplanyear,
         };
 
-
-        //console.log('Parms to WOEditWorkPackageTablet ' +  JSON.stringify(params));
-
         this.worksOrdersService.RechargeToggle(params).subscribe(
             (data) => {
-
-
-                /// console.log('WOEditWorkPackageTablet Api Response '+ JSON.stringify(data));
 
                 if (data.isSuccess) {
                     let success_msg = "Recharge Successfully Set";
@@ -785,16 +681,13 @@ export class WorksordersAssetDetailComponent implements OnInit {
             }
         )
 
-
-
-
     }
 
 
 
     setSeletedRow(dataItem) {
         this.selectedItem = dataItem;
-        // this.selectedEvent.push(dataItem)
+       
     }
 
 
@@ -815,8 +708,9 @@ export class WorksordersAssetDetailComponent implements OnInit {
         this.closeAssetDetailEvent.emit(this.assetDetailWindow);
     }
 
-    // woMenuBtnSecurityAccess(menuName) {
-    //     return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
-    // }
+
+    woMenuBtnSecurityAccess(menuName) {
+        return this.helperService.checkWorkOrderAreaAccess(this.userType, this.worksOrderAccess, this.worksOrderUsrAccess, menuName)
+    }
 
 }

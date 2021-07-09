@@ -4,6 +4,7 @@ import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data
 import { AlertService, ConfirmationDialogService, WorksOrdersService, SharedService, WorksorderReportService, HelperService } from 'src/app/_services';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { SelectableSettings, PageChangeEvent } from '@progress/kendo-angular-grid';
+import { combineLatest } from 'rxjs';
 
 @Component({
   selector: 'app-wo-association-manage',
@@ -48,6 +49,9 @@ export class WoAssociationsManageComponent implements OnInit {
   UpdateAssociationWindow = false;
   selectableSettings: SelectableSettings;
   selectedAssociationSingle: any;
+  worksOrderAccess = [];
+  worksOrderUsrAccess: any = [];
+  userType: any = [];
 
   constructor(
     private worksOrdersService: WorksOrdersService,
@@ -56,6 +60,7 @@ export class WoAssociationsManageComponent implements OnInit {
     private helperService: HelperService,
     private worksOrderReportService: WorksorderReportService,
     private confirmationDialogService: ConfirmationDialogService,
+    private sharedService: SharedService,
   ) {
     this.setSelectableSettings();
   }
@@ -68,10 +73,23 @@ export class WoAssociationsManageComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.subs.add(
+      combineLatest([
+        this.sharedService.worksOrdersAccess,
+        this.sharedService.woUserSecObs,
+        this.sharedService.userTypeObs
+      ]).subscribe(
+        data => {
+          this.worksOrderAccess = data[0];
+          this.worksOrderUsrAccess = data[1];
+          this.userType = data[2][0];
+        }
+      )
+    )
+
     if (this.worksOrderData.hasOwnProperty('name')) {
       this.worksOrderData.woname = this.worksOrderData.name;
     }
-
 
     this.GetWEBWorksOrdersAssociations();
   }
@@ -79,11 +97,6 @@ export class WoAssociationsManageComponent implements OnInit {
   ngOnDestroy() {
     this.subs.unsubscribe();
   }
-
-  // keyChange(e) {
-  //   this.mySelection = e;
-  //   console.log(this.mySelection);
-  // }
 
   sortChange(sort: SortDescriptor[]): void {
     this.state.sort = sort;
@@ -344,6 +357,11 @@ export class WoAssociationsManageComponent implements OnInit {
       error => this.alertService.error(error)
     )
     
+  }
+
+
+  woMenuAccess(menuName) {
+    return this.helperService.checkWorkOrderAreaAccess(this.userType, this.worksOrderAccess, this.worksOrderUsrAccess, menuName)
   }
 
 

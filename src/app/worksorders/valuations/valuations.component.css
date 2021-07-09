@@ -40,3 +40,15 @@
 .editableRow .editableCol{
     background-color: #d2e5d2 !important;
 }
+
+app-valuations .valuationGridRow {
+    height: calc(100% - 128px);
+}
+
+app-valuations .valuationGridRow .valuationGridCol {
+    height: calc(100% - 25px);
+}
+
+app-valuations .valuationGridRow .valuationGridCol #valuationGrid {
+    height: 100%;
+}

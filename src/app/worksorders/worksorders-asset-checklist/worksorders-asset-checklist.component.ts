@@ -879,10 +879,10 @@ export class WorksordersAssetChecklistComponent implements OnInit {
     this.wodDetailType = detailType;
 
     if (detailType == "single") {
+      this.selectedChecklistsingleItem = item;
       if (!this.selectedChecklistsingleItem || this.selectedChecklistsingleItem.detailCount == 0) {
         return;
       }
-      this.selectedChecklistsingleItem = item;
     }
 
     $('.checklistOverlay').addClass('ovrlay');

@@ -122,7 +122,6 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
         this.sharedService.userTypeObs
       ]).subscribe(
         data => {
-          // console.log(data);
           this.worksOrderAccess = data[0];
           this.worksOrderUsrAccess = data[1];
           this.userType = data[2][0];
@@ -281,7 +280,6 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
     if (this.mousePositioin == undefined) return;
     
     const { y } = this.mousePositioin;
-    // console.log(y)
     if (y <= 454) return "-133px"
     if (y > 455 && y <= 563) return "-163px";
     if (y > 563 && y <= 640) return "-243px";

@@ -314,11 +314,10 @@
         <a *ngIf="worksOrderAccess.indexOf('Completions Tab') != -1" class="dropdown-item"
           (click)="openCompletionList(menuData)" href="javascript:void(0)">Completions</a>
 
-        <a *ngIf="worksOrderAccess.indexOf('Programmes Log Tab') != -1" class="dropdown-item" href="javascript:void(0)"
-          (click)="openProgrammeLog(menuData)">View Programme
-          Log</a>
-
-        <a class="dropdown-item" href="javascript:void(0)" (click)="openWoAssociationsManage(menuData)">Associations</a>
+        <a *ngIf="worksOrderAccess.indexOf('View Programme Log') != -1" class="dropdown-item" href="javascript:void(0)"
+          (click)="openProgrammeLog(menuData)">View Programme Log</a>
+         
+        <a *ngIf="woMenuAccess('Manage Associations')" class="dropdown-item" href="javascript:void(0)" (click)="openWoAssociationsManage(menuData)">Associations</a>
 
         <a *ngIf="worksOrderAccess.indexOf('Defects Tabs') != -1" class="dropdown-item" href="javascript:void(0)"
           (click)="openDefectsMethod(menuData)">Defects</a>
@@ -326,12 +325,12 @@
         <a *ngIf="woMenuAccess('Works Order Documents')" [ngClass]="{'disabled': menuData.worksOrderFileCount == 0}"
           class="dropdown-item" (click)="openDocumentMethod(menuData)" href="javascript:void(0)">Documents</a>
 
-        <div class="dropdown-toggle">
+        <div class="dropdown-toggle" *ngIf="woMenuAccess('Contractor Reports')">
           <div class="dropdown-item">Contractor Reports</div>
           <div class="dropdown-menu contractorReportMenu">
-            <a class="dropdown-item" href="javascript:void(0)"
+            <a *ngIf="woMenuAccess('Asset Report (contractor)')" class="dropdown-item" href="javascript:void(0)"
               (click)="WOCreateXportOutputReport(580, 'Contractor Asset Report')">Asset Report</a>
-            <a class="dropdown-item" href="javascript:void(0)"
+            <a *ngIf="woMenuAccess('Work Report (contractor)')" class="dropdown-item" href="javascript:void(0)"
               (click)="WOCreateXportOutputReport(581, 'Contractor Work Report')">Work Report</a>
           </div>
         </div>
@@ -346,10 +345,10 @@
             <a class="dropdown-item" href="javascript:void(0)"
               (click)="viewWOReportingAsset(2, selectedWorksOrder)">Selected Order (including Assets)</a>
 
-            <a class="dropdown-item" href="javascript:void(0)"
+            <a *ngIf="woMenuAccess('Asset Report (customer)')" class="dropdown-item" href="javascript:void(0)"
               (click)="WOCreateXportOutputReport(505, 'WO Selected Asset Report')">Asset Report (Selected
               Order)</a>
-            <a class="dropdown-item" href="javascript:void(0)"
+            <a *ngIf="woMenuAccess('Work Report (customer)')" class="dropdown-item" href="javascript:void(0)"
               (click)="WOCreateXportOutputReport(506, 'WO Selected Work Report')">Work Report (Selected
               Order)</a>
 
@@ -370,10 +369,11 @@
           </div>
         </div>
 
-        <a *ngIf="woMenuAccess('Payment Schedule Tab')" class="dropdown-item" href="javascript:void(0)" (click)="openWOPMPaymentSchedule(menuData)">Payment
+        <a *ngIf="woMenuAccess('Payment Schedule Tab')" class="dropdown-item" href="javascript:void(0)"
+          (click)="openWOPMPaymentSchedule(menuData)">Payment
           Schedule</a>
 
-        <a *ngIf="woMenuAccess('Manage Checklist')" class="dropdown-item" href="javascript:void(0)"
+        <a *ngIf="woMenuAccess('Manage WO Checklist')" class="dropdown-item" href="javascript:void(0)"
           (click)="openChecklist(menuData)">Checklist</a>
 
       </div>

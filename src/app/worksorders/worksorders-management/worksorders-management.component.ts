@@ -114,7 +114,7 @@ export class WorksordersManagementComponent implements OnInit {
           this.userType = data[2][0];
 
           if (this.worksOrderAccess.length > 0) {
-            if (!this.worksOrderAccess.includes("Management Menu")) {
+            if (!this.worksOrderAccess.includes("Programmes Menu")) {
               this.router.navigate(['login']);
             }
           }
@@ -357,7 +357,9 @@ export class WorksordersManagementComponent implements OnInit {
   getTopMargin() {
     if (this.mousePositioin == undefined) return;
     const { y } = this.mousePositioin;
-    if (y > 680 && this.menuData.treelevel == 2) return "-170px";
+    if ((y > 550 && y <= 700) && this.menuData.treelevel == 2) return "-230px";
+    if ((y > 700 && y <= 800) && this.menuData.treelevel == 2) return "-350px";
+    if ((y > 800) && this.menuData.treelevel == 2) return "-390px";
     return "-100px";
 
   }

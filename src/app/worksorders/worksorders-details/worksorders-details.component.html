@@ -127,7 +127,7 @@
         </div>
       </div>
 
-      <button *ngIf="woMenuBtnSecurityAccess('Add Phase')" (click)="openNewphase('new')"
+      <button *ngIf="woMenuBtnSecurityAccess('Add')" (click)="openNewphase('new')"
         class="btn btn-sm themeButton">New Phase</button>
 
       <!-- <button *ngIf="woMenuBtnSecurityAccess('Defects')" (click)="openDefectsMethod()"
@@ -546,32 +546,6 @@
 
         <a class="dropdown-item" *ngIf="woMenuBtnSecurityAccess('Asset Details')" href="javascript:void(0)"
           (click)="openActualAssetDetails(menuData)">Asset Details</a>
-
-        <!-- <div class="dropdown-toggle datesToggle">
-            <div class="dropdown-item">Dates</div>
-            <div class="dropdown-menu datesMenu">
-
-              <a class="dropdown-item" *ngIf="woMenuBtnSecurityAccess('Set Asset Planned Dates')" href="javascript:void(0)"
-              (click)="openChooseDate('multiple','SE')">Set Asset Planned Dates</a>
-
-              <div class="dropdown-toggle" *ngIf="woMenuBtnSecurityAccess('Set Asset Target Date')">
-                <div  [ngClass]="{'disabled' : isServicingWorksOrder() }" class="dropdown-item">Set Asset Target Date</div>
-                <div class="dropdown-menu">
-                  <a class="dropdown-item" (click)="assetAction(null, 'TCY', 'multiple')"
-                  href="javascript:void(0)">Yesterday</a>
-                  <a class="dropdown-item" (click)="assetAction(null,'TCTOD', 'multiple')"
-                      href="javascript:void(0)">Today</a>
-                  <a class="dropdown-item" (click)="assetAction(null,'TCTOM', 'multiple')"
-                      href="javascript:void(0)">Tomorrow</a>
-                  <a class="dropdown-item" (click)="assetAction(null,'TC7', 'multiple')" href="javascript:void(0)">7
-                      Days</a>
-                  <a class="dropdown-item" (click)="openChooseDate('multiple','TCPICK')"
-                      href="javascript:void(0)">Choose Date</a>
-                </div>
-              </div>
-
-            </div>
-          </div> -->
 
         <div class="dropdown-toggle actionToggle">
           <div class="dropdown-item">Actions</div>

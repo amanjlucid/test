@@ -103,15 +103,10 @@
 
 
 
-    <div class="row mt-3">
-        <div class="col-md-12">
-            <!-- <kendo-grid #grid [data]="view | async" [height]="600" [pageSize]="gridState.take" [skip]="gridState.skip"
-                [sort]="gridState.sort" [pageable]="false" [sortable]="true" (dataStateChange)="onStateChange($event)"
-                (cellClick)="cellClickHandler($event)" (cellClose)="cellCloseHandler($event)"
-                (cancel)="cancelHandler($event)" (save)="saveHandler($event)" (remove)="removeHandler($event)"
-                (add)="addHandler($event)" [navigable]="false" [rowHeight]="36" scrollable="virtual" [resizable]="true"
-                [rowClass]="rowCallback" [selectable]="selectableSettings"> -->
-            <kendo-grid #grid [data]="view | async" [height]="600" [sort]="gridState.sort" [pageable]="false"
+    <div class="row mt-3 valuationGridRow">
+        <div class="col-md-12 valuationGridCol">
+        
+            <kendo-grid id="valuationGrid" #grid [data]="view | async" [sort]="gridState.sort" [pageable]="false"
                 [sortable]="true" (dataStateChange)="onStateChange($event)" (cellClick)="cellClickHandler($event)"
                 (cellClose)="cellCloseHandler($event)" (cancel)="cancelHandler($event)" (save)="saveHandler($event)"
                 (remove)="removeHandler($event)" (add)="addHandler($event)" [navigable]="false" [resizable]="true"

@@ -20,9 +20,9 @@
             <div class="dropdown-menu" x-placement="bottom-start"
               style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
 
-              <a class="dropdown-item" href="javascript:void(0)"
+              <a *ngIf="woMenuAccess('Associations WO Level')" class="dropdown-item" href="javascript:void(0)"
                 (click)="WOCreateXportOutputReport(587, 'Associations Works Order Level')">Works Order Level</a>
-              <a class="dropdown-item" href="javascript:void(0)"
+              <a *ngIf="woMenuAccess('Associations Asset Level')" class="dropdown-item" href="javascript:void(0)"
                 (click)="WOCreateXportOutputReport(588, 'Associations Asset Level')">Asset Level</a>
 
             </div>

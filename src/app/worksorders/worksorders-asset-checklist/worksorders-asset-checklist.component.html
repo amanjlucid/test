@@ -15,8 +15,8 @@
                     aria-expanded="false">Administration</button>
                 <div class="dropdown-menu" x-placement="bottom-start"
                     style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
-                    <a class="dropdown-item" href="javascript:void(0)" (click)="openProgrammeLog('assetchecklist')">View
-                        Programme Log</a>
+                    <a *ngIf="woMenuBtnSecurityAccess('Programme Log For Asset')" class="dropdown-item" href="javascript:void(0)"
+                        (click)="openProgrammeLog('assetchecklist')">View Programme Log</a>
                 </div>
             </div>
 
@@ -63,8 +63,8 @@
                     aria-expanded="false">Report</button>
                 <div class="dropdown-menu" x-placement="bottom-start"
                     style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
-                    <a class="dropdown-item" href="javascript:void(0)"
-                        (click)="viewCheckListOrderReport(4)">Checklist Report</a>
+                    <a class="dropdown-item" href="javascript:void(0)" (click)="viewCheckListOrderReport(4)">Checklist
+                        Report</a>
 
                 </div>
             </div>
@@ -228,17 +228,18 @@
                         </div>
                     </div>
 
-                    <a  class="dropdown-item" 
-                    [ngClass]="{'disabled' : disableMainActions('LETTER')}"
-                    *ngIf="woGlobalSecurityAccess('Report Checklist')"
-                    (click)="mergeMailMultiple()" href="javascript:void(0)">Letter</a>
+                    <a class="dropdown-item" [ngClass]="{'disabled' : disableMainActions('LETTER')}"
+                        *ngIf="woGlobalSecurityAccess('Report Checklist')" (click)="mergeMailMultiple()"
+                        href="javascript:void(0)">Letter</a>
 
                     <div [ngClass]="{'disabled' : disableMainActions('comments')}" class="dropdown-toggle"
                         *ngIf="woMenuBtnSecurityAccess('Comments')">
                         <div class="dropdown-item">Comments</div>
                         <div class="dropdown-menu handoverDrp">
-                            <a (click)="setComment('replace')" class="dropdown-item" href="javascript:void(0)">Replace selected</a>
-                            <a (click)="setComment('add')" class="dropdown-item" href="javascript:void(0)">Add to selected</a>
+                            <a (click)="setComment('replace')" class="dropdown-item" href="javascript:void(0)">Replace
+                                selected</a>
+                            <a (click)="setComment('add')" class="dropdown-item" href="javascript:void(0)">Add to
+                                selected</a>
                         </div>
                     </div>
 
@@ -558,24 +559,26 @@
                                     class="dropdown-item" href="javascript:void(0)"
                                     (click)="openNoAccessWindow(dataItem)">No
                                     Access</a>
-                                   
-                                    <a  class="dropdown-item" 
+
+                                <a class="dropdown-item"
                                     *ngIf="woMenuBtnSecurityAccess('Customer Survey') && dataItem.wocheckspeciaL1 == 'CUSTFORM'"
                                     [ngClass]="{'disabled' :disableBtnsIndividualMenu('customerSurvey', dataItem)}"
                                     (click)="openCustomerSurvey()" href="javascript:void(0)">Customer Survey</a>
 
-                                                                        
-                                    <a  class="dropdown-item" 
+
+                                <a class="dropdown-item"
                                     *ngIf="woGlobalSecurityAccess('Report Checklist') && dataItem.wocheckspeciaL1 == 'LETTER'"
                                     (click)="mergeMailSingle(dataItem)" href="javascript:void(0)">Letter</a>
 
-                                    <div class="dropdown-toggle"*ngIf="woMenuBtnSecurityAccess('Comments')">
-                                        <div class="dropdown-item">Comments</div>
-                                        <div class="dropdown-menu">
-                                            <a class="dropdown-item" (click)="setSingleComment('replace',dataItem)" href="javascript:void(0)">Replace selected</a>
-                                            <a class="dropdown-item" (click)="setSingleComment('add',dataItem)"  href="javascript:void(0)">Add to selected</a>
-                                        </div>
+                                <div class="dropdown-toggle" *ngIf="woMenuBtnSecurityAccess('Comments')">
+                                    <div class="dropdown-item">Comments</div>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item" (click)="setSingleComment('replace',dataItem)"
+                                            href="javascript:void(0)">Replace selected</a>
+                                        <a class="dropdown-item" (click)="setSingleComment('add',dataItem)"
+                                            href="javascript:void(0)">Add to selected</a>
                                     </div>
+                                </div>
 
 
                             </div>
@@ -781,17 +784,18 @@
         [singleWorkOrderAssetInp]="selectedChildRow" [openedFrom]="'assetchecklist'"
         (closeDefectsListEvent)="closeDefectList($event)">
     </app-asset-defects-list>
-    
-    <app-customer-survey *ngIf="showCustomerSurveyWindow"   [showCustomerSurveyWindow]="showCustomerSurveyWindow"
-    [selectedWorksOrderAsset]="selectedChildRow" (closeCustomerSurveyWindow) ="closeCustomerSurveyWindow($event)" >
+
+    <app-customer-survey *ngIf="showCustomerSurveyWindow" [showCustomerSurveyWindow]="showCustomerSurveyWindow"
+        [selectedWorksOrderAsset]="selectedChildRow" (closeCustomerSurveyWindow)="closeCustomerSurveyWindow($event)">
     </app-customer-survey>
 
-    <app-wo-editcomment *ngIf="showEditCommentWindow" [showEditCommentWindow]="showEditCommentWindow" [mode]="commentMode"
-    (closeEditCommentWindow)="closeCommentPanel($event)" type="AssetChecklist" [checklistParms]="commentParms"> </app-wo-editcomment>
+    <app-wo-editcomment *ngIf="showEditCommentWindow" [showEditCommentWindow]="showEditCommentWindow"
+        [mode]="commentMode" (closeEditCommentWindow)="closeCommentPanel($event)" type="AssetChecklist"
+        [checklistParms]="commentParms"> </app-wo-editcomment>
 
-    
-    <app-asset-resident-info [displayResidentDetails]="displayResidentDetails" [assetID]="assetID" 
-    *ngIf="displayResidentDetails" (closeResidentDetailsWindow)="closeResidentInfoDetailsWindow($event)">
+
+    <app-asset-resident-info [displayResidentDetails]="displayResidentDetails" [assetID]="assetID"
+        *ngIf="displayResidentDetails" (closeResidentDetailsWindow)="closeResidentInfoDetailsWindow($event)">
     </app-asset-resident-info>
 
 
