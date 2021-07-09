@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ViewEncapsulation, OnInit } from '@angular/core';
 import { SubSink } from 'subsink';
 import { GroupDescriptor, DataResult, process, State, SortDescriptor, distinct } from '@progress/kendo-data-query';
 import { PageChangeEvent, SelectableSettings, RowClassArgs } from '@progress/kendo-angular-grid';
@@ -10,7 +10,8 @@ import { WopmJobroleModel, SurveyPortalXports } from '../../../_models'
 @Component({
   selector: 'app-wopm-jobroles',
   templateUrl: './wopm-jobroles.component.html',
-  styleUrls: ['./wopm-jobroles.component.css']
+  styleUrls: ['./wopm-jobroles.component.css'],
+  encapsulation: ViewEncapsulation.None
 })
 export class WopmJobrolesComponent implements OnInit {
     subs = new SubSink();
@@ -23,7 +24,7 @@ export class WopmJobrolesComponent implements OnInit {
         filters: []
       }
     }
-
+    public selectableSettings: SelectableSettings;
     allowUnsort = true;
     multiple = false;
     public gridView: DataResult;
@@ -47,6 +48,7 @@ export class WopmJobrolesComponent implements OnInit {
     public securityFunctionWindow: boolean = false;
     public RoleType: string;
     public JobRole: string;
+    public checkboxOnly = false;
 
     constructor(
       private wopmConfigurationService: WopmConfigurationService,
@@ -59,6 +61,7 @@ export class WopmJobrolesComponent implements OnInit {
 
     ngOnInit(): void {
       this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+      this.setSelectableSettings();
       this.getGridDataDetails();
       //update notification on top
       this.helper.updateNotificationOnTop();
@@ -66,6 +69,13 @@ export class WopmJobrolesComponent implements OnInit {
 
     ngOnDestroy() {
       this.subs.unsubscribe();
+    }
+
+    public setSelectableSettings(): void {
+      this.selectableSettings = {
+        checkboxOnly: this.checkboxOnly,
+        mode: this.mode
+      };
     }
 
     ngAfterViewInit() {

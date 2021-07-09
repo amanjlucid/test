@@ -1,0 +1,337 @@
+<div class="layout-content">
+
+  <!-- Content -->
+  <div class="container-fluid flex-grow-1 container-p-y">
+
+    <h4 class="font-weight-bold py-3 mb-4">
+      <span class="text-muted font-weight-light">Works Orders Settings</span>
+    </h4>
+
+    <div class="card mb-4">
+      <!-- <h6 class="card-header">
+        Change Password
+      </h6> -->
+      <div class="card-body">
+        <form [formGroup]="settingsForm" (ngSubmit)="onSubmit()" autocomplete="off">
+
+          <div class="row  mt-2">
+
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="switcher switcher-secondary">
+                  <input type="checkbox" class="switcher-input" formControlName="bypasswork">
+                  <span class="switcher-indicator">
+                    <span class="switcher-yes">
+                      <span class="ion ion-md-checkmark"></span>
+                    </span>
+                    <span class="switcher-no">
+                      <span class="ion ion-md-close"></span>
+                    </span>
+                  </span>
+                  <span class="switcher-label">Allow Completion of Work from New (no need for In Progress)</span>
+                </label>
+                <div *ngIf="submitted && formErrors.bypasswork" class="invalid-feedback">
+                  <div *ngIf="formErrors.bypasswork">{{ formErrors.bypasswork }}</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="switcher switcher-secondary">
+                  <input type="checkbox" class="switcher-input" formControlName="docsupload">
+                  <span class="switcher-indicator">
+                    <span class="switcher-yes">
+                      <span class="ion ion-md-checkmark"></span>
+                    </span>
+                    <span class="switcher-no">
+                      <span class="ion ion-md-close"></span>
+                    </span>
+                  </span>
+                  <span class="switcher-label">Allow document upload</span>
+                </label>
+                <div *ngIf="submitted && formErrors.docsupload" class="invalid-feedback">
+                  <div *ngIf="formErrors.docsupload">{{ formErrors.docsupload }}</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="row  mt-2">
+
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="switcher switcher-secondary">
+                  <input type="checkbox" class="switcher-input" formControlName="issuevarfromnew">
+                  <span class="switcher-indicator">
+                    <span class="switcher-yes">
+                      <span class="ion ion-md-checkmark"></span>
+                    </span>
+                    <span class="switcher-no">
+                      <span class="ion ion-md-close"></span>
+                    </span>
+                  </span>
+                  <span class="switcher-label">Issue Variation without having to send to Client / Contractor first</span>
+                </label>
+                <div *ngIf="submitted && formErrors.issuevarfromnew" class="invalid-feedback">
+                  <div *ngIf="formErrors.issuevarfromnew">{{ formErrors.issuevarfromnew }}</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="switcher switcher-secondary">
+                  <input type="checkbox" class="switcher-input" formControlName="milestones">
+                  <span class="switcher-indicator">
+                    <span class="switcher-yes">
+                      <span class="ion ion-md-checkmark"></span>
+                    </span>
+                    <span class="switcher-no">
+                      <span class="ion ion-md-close"></span>
+                    </span>
+                  </span>
+                  <span class="switcher-label">Allow use of Milestones</span>
+                </label>
+                <div *ngIf="submitted && formErrors.milestones" class="invalid-feedback">
+                  <div *ngIf="formErrors.milestones">{{ formErrors.milestones }}</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="row  mt-2">
+
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="switcher switcher-secondary">
+                  <input type="checkbox" class="switcher-input" formControlName="multicomplete">
+                  <span class="switcher-indicator">
+                    <span class="switcher-yes">
+                      <span class="ion ion-md-checkmark"></span>
+                    </span>
+                    <span class="switcher-no">
+                      <span class="ion ion-md-close"></span>
+                    </span>
+                  </span>
+                  <span class="switcher-label">Complete multiple Assets in one action</span>
+                </label>
+                <div *ngIf="submitted && formErrors.multicomplete" class="invalid-feedback">
+                  <div *ngIf="formErrors.multicomplete">{{ formErrors.multicomplete }}</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="switcher switcher-secondary">
+                  <input type="checkbox" class="switcher-input" formControlName="multiissue">
+                  <span class="switcher-indicator">
+                    <span class="switcher-yes">
+                      <span class="ion ion-md-checkmark"></span>
+                    </span>
+                    <span class="switcher-no">
+                      <span class="ion ion-md-close"></span>
+                    </span>
+                  </span>
+                  <span class="switcher-label">Issue multiple Assets in one action</span>
+                </label>
+                <div *ngIf="submitted && formErrors.multiissue" class="invalid-feedback">
+                  <div *ngIf="formErrors.multiissue">{{ formErrors.multiissue }}</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="row  mt-2">
+
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="switcher switcher-secondary">
+                  <input type="checkbox" class="switcher-input" formControlName="multivariation">
+                  <span class="switcher-indicator">
+                    <span class="switcher-yes">
+                      <span class="ion ion-md-checkmark"></span>
+                    </span>
+                    <span class="switcher-no">
+                      <span class="ion ion-md-close"></span>
+                    </span>
+                  </span>
+                  <span class="switcher-label">Issue multiple Variations in one action</span>
+                </label>
+                <div *ngIf="submitted && formErrors.multivariation" class="invalid-feedback">
+                  <div *ngIf="formErrors.multivariation">{{ formErrors.multivariation }}</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="switcher switcher-secondary">
+                  <input type="checkbox" class="switcher-input" formControlName="useworkcompdate">
+                  <span class="switcher-indicator">
+                    <span class="switcher-yes">
+                      <span class="ion ion-md-checkmark"></span>
+                    </span>
+                    <span class="switcher-no">
+                      <span class="ion ion-md-close"></span>
+                    </span>
+                  </span>
+                  <span class="switcher-label">Use Work Completion Date instead of Sign Off Date</span>
+                </label>
+                <div *ngIf="submitted && formErrors.useworkcompdate" class="invalid-feedback">
+                  <div *ngIf="formErrors.useworkcompdate">{{ formErrors.useworkcompdate }}</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="row  mt-2">
+
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="switcher switcher-secondary">
+                  <input type="checkbox" class="switcher-input" formControlName="womissuecontractor">
+                  <span class="switcher-indicator">
+                    <span class="switcher-yes">
+                      <span class="ion ion-md-checkmark"></span>
+                    </span>
+                    <span class="switcher-no">
+                      <span class="ion ion-md-close"></span>
+                    </span>
+                  </span>
+                  <span class="switcher-label">Allow Work to be Issued from Works Order Mobile</span>
+                </label>
+                <div *ngIf="submitted && formErrors.womissuecontractor" class="invalid-feedback">
+                  <div *ngIf="formErrors.womissuecontractor">{{ formErrors.womissuecontractor }}</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="switcher switcher-secondary">
+                  <input type="checkbox" class="switcher-input" formControlName="workcextr">
+                  <span class="switcher-indicator">
+                    <span class="switcher-yes">
+                      <span class="ion ion-md-checkmark"></span>
+                    </span>
+                    <span class="switcher-no">
+                      <span class="ion ion-md-close"></span>
+                    </span>
+                  </span>
+                  <span class="switcher-label">Allow Completions to write to Survey Extract</span>
+                </label>
+                <div *ngIf="submitted && formErrors.workcextr" class="invalid-feedback">
+                  <div *ngIf="formErrors.workcextr">{{ formErrors.workcextr }}</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="row  mt-2">
+            <div class="col-md-12">
+              <div class="form-group">
+                <label class="form-label">Folder Location for Mail Merge letters</label>
+                <input type="text" class="form-control" formControlName="mailmergefolder"
+
+                  [ngClass]="{ 'is-invalid': submitted && formErrors.mailmergefolder }" autocomplete="off">
+                <div *ngIf="submitted && formErrors.mailmergefolder" class="invalid-feedback">
+                  <div *ngIf="formErrors.mailmergefolder">{{ formErrors.mailmergefolder }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row  mt-2">
+            <div class="col-md-12">
+              <div class="form-group">
+                <label class="form-label">Mail Merge Letter Template Location</label>
+                <input type="text" class="form-control" formControlName="mailmergetemplate"
+
+                  [ngClass]="{ 'is-invalid': submitted && formErrors.mailmergetemplate }" autocomplete="off">
+                <div *ngIf="submitted && formErrors.mailmergetemplate" class="invalid-feedback">
+                  <div *ngIf="formErrors.mailmergetemplate">{{ formErrors.mailmergetemplate }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row  mt-2">
+            <div class="col-md-12">
+              <div class="form-group">
+                <label class="form-label">Works Orders Documents Location</label>
+                <input type="text" class="form-control" formControlName="wodocslocn"
+
+                  [ngClass]="{ 'is-invalid': submitted && formErrors.wodocslocn }" autocomplete="off">
+                <div *ngIf="submitted && formErrors.wodocslocn" class="invalid-feedback">
+                  <div *ngIf="formErrors.wodocslocn">{{ formErrors.wodocslocn }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row  mt-2">
+
+            <div class="col-md-3">
+              <div class="form-group">
+                <label class="form-label">Minimum Defect Score</label>
+                <input type="number" class="form-control" formControlName="defectmin" min="0" max="99999"
+                  [ngClass]="{ 'is-invalid': submitted && formErrors.defectmin }" autocomplete="off">
+                <div *ngIf="submitted && formErrors.defectmin" class="invalid-feedback">
+                  <div *ngIf="formErrors.defectmin">{{ formErrors.defectmin }}</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-3">
+              <div class="form-group">
+                <label class="form-label">Maximum Defect Score</label>
+                <input type="number" class="form-control" formControlName="defectmax" min="1" max="99999"
+                  [ngClass]="{ 'is-invalid': submitted && formErrors.defectmax }" autocomplete="off">
+                <div *ngIf="submitted && formErrors.defectmax" class="invalid-feedback">
+                  <div *ngIf="formErrors.defectmax">{{ formErrors.defectmax }}</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="row  mt-2">
+
+
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-label">Issue from Works Order / Works Order Mobile / Both</label>
+                <select class="custom-select" formControlName="issuefrom"
+                [ngClass]="{ 'is-invalid': submitted && formErrors.issuefrom }">
+                <option value=""></option>
+                <option value="WOPM">Works Order</option>
+                <option value="WOM">Works Order Mobile</option>
+                <option value="BOTH">Both</option>
+              </select>
+                <div *ngIf="submitted && formErrors.issuefrom" class="invalid-feedback">
+                  <div *ngIf="formErrors.issuefrom">{{ formErrors.issuefrom }}</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <button class="btn btn-default themeButton">Submit</button>
+        </form>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<!--<div class="SettingOverlay"></div>
+<app-hns-report-images *ngIf="showReportImages" [showReportImages]="showReportImages" [uploadFooterImageLocation]="uploadFooterImageLocation" (uploadedSuccessfull)="uploadedSuccessfull($event)"
+  (closeReportImages)="closeReportImages($event)"></app-hns-report-images>-->

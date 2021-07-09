@@ -96,6 +96,7 @@
         <kendo-grid-column title=" " width="37" [filterable]="false" [locked]="columnLocked">
           <ng-template kendoGridCellTemplate let-dataItem>
             <i aria-expanded="false" class="fas fa-bars" (click)="openMenu($event, dataItem)"></i>
+
           </ng-template>
 
         </kendo-grid-column>
@@ -115,7 +116,20 @@
 
         <kendo-grid-column field="wosequence" title="Work Order" width="130" [locked]="columnLocked">
         </kendo-grid-column>
-        <kendo-grid-column field="woname" title="Name" width="250" [minResizableWidth]="150" [locked]="columnLocked">
+        <kendo-grid-column field="woname" title="Name" width="300" [minResizableWidth]="200" [locked]="columnLocked">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span>
+              {{ dataItem.woname }}
+            </span>
+            <div style="margin-left:2px;" class="iconDiv">
+              <img style="margin-top: -1px;" title="Red" *ngIf="dataItem.ragStatus == 'R'" class="table-icon-wr"
+                src="assets/img/icons/RedDot.png" />
+              <img style="margin-top: -1px;" title="Amber" *ngIf="dataItem.ragStatus == 'A'" class="table-icon-wr"
+                src="assets/img/icons/AmberDot.png" />
+              <img style="margin-top: -1px;" title="Green" *ngIf="dataItem.ragStatus == 'G'" class="table-icon-wr"
+                src="assets/img/icons/GreenDot.png" />
+            </div>
+          </ng-template>
         </kendo-grid-column>
         <kendo-grid-column field="wostatus" title="Status" width="160">
         </kendo-grid-column>
@@ -292,30 +306,31 @@
         <a *ngIf="woMenuAccess('Works Order Detail')" class="dropdown-item" href="javascript:void(0)"
           (click)="redirectToWorksOrder(menuData)"> Works Order Details</a>
 
-        <a *ngIf="woMenuAccess('Variations')" class="dropdown-item" href="javascript:void(0)"
+        <a *ngIf="woMenuAccess('Variations Tab')" class="dropdown-item" href="javascript:void(0)"
           (click)="openVariationList(menuData)">Variations</a>
         <a (click)="redirectToWoProgramManagmentInstructions(menuData)" class="dropdown-item" href="javascript:void(0)">
           Instructions</a>
 
-        <a class="dropdown-item" (click)="openCompletionList(menuData)" href="javascript:void(0)">Completions</a>
+        <a *ngIf="worksOrderAccess.indexOf('Completions Tab') != -1" class="dropdown-item"
+          (click)="openCompletionList(menuData)" href="javascript:void(0)">Completions</a>
 
-        <a class="dropdown-item" href="javascript:void(0)" (click)="openProgrammeLog(menuData)">View Programme
-          Log</a>
+        <a *ngIf="worksOrderAccess.indexOf('View Programme Log') != -1" class="dropdown-item" href="javascript:void(0)"
+          (click)="openProgrammeLog(menuData)">View Programme Log</a>
+         
+        <a *ngIf="woMenuAccess('Manage Associations')" class="dropdown-item" href="javascript:void(0)" (click)="openWoAssociationsManage(menuData)">Associations</a>
 
-        <a class="dropdown-item" href="javascript:void(0)" (click)="openWoAssociationsManage(menuData)">Associations</a>
-
-        <a *ngIf="woMenuAccess('Defects')" class="dropdown-item" href="javascript:void(0)"
+        <a *ngIf="worksOrderAccess.indexOf('Defects Tabs') != -1" class="dropdown-item" href="javascript:void(0)"
           (click)="openDefectsMethod(menuData)">Defects</a>
 
         <a *ngIf="woMenuAccess('Works Order Documents')" [ngClass]="{'disabled': menuData.worksOrderFileCount == 0}"
           class="dropdown-item" (click)="openDocumentMethod(menuData)" href="javascript:void(0)">Documents</a>
 
-        <div class="dropdown-toggle">
+        <div class="dropdown-toggle" *ngIf="woMenuAccess('Contractor Reports')">
           <div class="dropdown-item">Contractor Reports</div>
           <div class="dropdown-menu contractorReportMenu">
-            <a class="dropdown-item" href="javascript:void(0)"
+            <a *ngIf="woMenuAccess('Asset Report (contractor)')" class="dropdown-item" href="javascript:void(0)"
               (click)="WOCreateXportOutputReport(580, 'Contractor Asset Report')">Asset Report</a>
-            <a class="dropdown-item" href="javascript:void(0)"
+            <a *ngIf="woMenuAccess('Work Report (contractor)')" class="dropdown-item" href="javascript:void(0)"
               (click)="WOCreateXportOutputReport(581, 'Contractor Work Report')">Work Report</a>
           </div>
         </div>
@@ -330,10 +345,10 @@
             <a class="dropdown-item" href="javascript:void(0)"
               (click)="viewWOReportingAsset(2, selectedWorksOrder)">Selected Order (including Assets)</a>
 
-            <a class="dropdown-item" href="javascript:void(0)"
+            <a *ngIf="woMenuAccess('Asset Report (customer)')" class="dropdown-item" href="javascript:void(0)"
               (click)="WOCreateXportOutputReport(505, 'WO Selected Asset Report')">Asset Report (Selected
               Order)</a>
-            <a class="dropdown-item" href="javascript:void(0)"
+            <a *ngIf="woMenuAccess('Work Report (customer)')" class="dropdown-item" href="javascript:void(0)"
               (click)="WOCreateXportOutputReport(506, 'WO Selected Work Report')">Work Report (Selected
               Order)</a>
 
@@ -354,9 +369,12 @@
           </div>
         </div>
 
-        <a class="dropdown-item" href="javascript:void(0)" (click)="openWOPMPaymentSchedule(menuData)">Payment
+        <a *ngIf="woMenuAccess('Payment Schedule Tab')" class="dropdown-item" href="javascript:void(0)"
+          (click)="openWOPMPaymentSchedule(menuData)">Payment
           Schedule</a>
 
+        <a *ngIf="woMenuAccess('Manage WO Checklist')" class="dropdown-item" href="javascript:void(0)"
+          (click)="openChecklist(menuData)">Checklist</a>
 
       </div>
 
@@ -402,7 +420,7 @@
 
 <div class="worksOrderOverlay"></div>
 
-<app-workorder-form [woFormType]="woFormType" [woFormWindow]="woFormWindow"
+<app-workorder-form [woFormType]="woFormType" [woFormWindow]="woFormWindow" [worksOrderAccess]="worksOrderAccess"
   [selectedWorkOrderAddEdit]="selectedWorkOrderAddEdit" *ngIf="woFormWindow" (closeWoFormWin)="closeWoFormWin($event)">
 </app-workorder-form>
 
@@ -447,3 +465,6 @@
 </app-wo-program-management-payment-schedule>
 
 
+<app-worksorders-checklist *ngIf="showChecklist" [selectedWorksOrder]="selectedWorksOrder"
+  [showChecklistWindow]="showChecklist" (closeChecklistWindow)="closeChecklistWindow($event)">
+</app-worksorders-checklist>

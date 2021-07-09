@@ -317,4 +317,5 @@ export class WopmConfigurationService {
     return this.http.get<any>(`${appConfig.apiUrl}/api/WOPMManagement/GetResidentRisk?assetid=${assetID}`, this.httpOptions);
   }
 
+
 }

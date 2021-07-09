@@ -201,6 +201,17 @@
     }
 }
 
+
+.iconDiv {
+  display: inline-block !important;
+  margin: 0px;
+}
+
+.iconDiv i {
+  display: inline-block !important;
+  margin: 0px 0px;
+}
+
 @media (max-width: 1224px) {
     .filterdiv {
         width: 40% !important;
@@ -212,4 +223,7 @@
     .filterdiv input[type=text] {
         width: 58% !important;
     }
+
+
+
 }

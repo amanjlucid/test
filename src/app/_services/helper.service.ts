@@ -3,10 +3,9 @@ import * as FileSaver from 'file-saver';
 import * as XLSX from 'xlsx';
 const EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
 const EXCEL_EXTENSION = '.xlsx';
-import { Observable, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { SharedService } from '../_services/shared.service';
 import * as moment from "moment";
-import { anyChanged } from '@progress/kendo-angular-grid/dist/es2015/utils';
 import { SubSink } from 'subsink';
 import { EventService } from './event.service';
 import { WorksorderManagementService } from './works-order/worksorder-management.service';
@@ -820,7 +819,7 @@ export class HelperService {
 
     checkWorkOrderAreaAccess(userType, worksOrderAccess, worksOrderUsrAccess, menuName) {
         // workorder list page has own security check method
-        if (userType == undefined) return worksOrderUsrAccess.indexOf(menuName) != -1;
+        if (userType == undefined) return worksOrderAccess.indexOf(menuName) != -1;
         if (userType?.wourroletype == "Dual Role") {
             return worksOrderAccess.indexOf(menuName) != -1 || worksOrderUsrAccess.indexOf(menuName) != -1
         }

@@ -123,7 +123,7 @@
                         <li class="sidenav-item" [routerLinkActive]="['active']"
                             *ngIf="tasksPortalPermissions.indexOf('Manage User Events') != -1">
                             <a [routerLink]="['/tasks/tasks']" class="sidenav-link">
-                                <div>Tasks</div>
+                                <div>Worktray</div>
                             </a>
                         </li>
 
@@ -229,13 +229,13 @@
                     </a>
                     <ul class="sidenav-menu">
                         <li class="sidenav-item" [routerLinkActive]="['active']"
-                            *ngIf="checkWorksOrdersAccess('Dashboard')">
+                            *ngIf="checkWorksOrdersAccess('Management Dashboard')">
                             <a [routerLink]="['/worksorders/dashboard']" class="sidenav-link">
                                 <div>Dashboard</div>
                             </a>
                         </li>
                         <li class="sidenav-item" [routerLinkActive]="['active']"
-                            *ngIf="checkWorksOrdersAccess('Management Menu')">
+                            *ngIf="checkWorksOrdersAccess('Programmes Menu')">
                             <a [routerLink]="['/worksorders/management']" class="sidenav-link">
                                 <div>Management</div>
                             </a>
@@ -246,7 +246,7 @@
                                 <div>Works Orders</div>
                             </a>
                         </li>
-                                          
+
                         <li style="display: none;" class="sidenav-item" [routerLinkActive]="['active']">
                             <a [routerLink]="['/worksorders/details']" class="sidenav-link">
                                 <div>Works Order Detail</div>
@@ -254,7 +254,7 @@
                         </li>
 
                         <li class="sidenav-item" [routerLinkActive]="['active']"
-                        *ngIf="checkWorksOrdersAccess('Work List Menu')">
+                            *ngIf="checkWorksOrdersAccess('Work List Menu')">
                             <a [routerLink]="['/worksorders/worklist']" class="sidenav-link">
                                 <div>Work List</div>
                             </a>
@@ -280,28 +280,31 @@
                                     </a>
                                 </li>
                                 <li class="sidenav-item" [routerLinkActive]="['active']"
-                                *ngIf="checkWorksOrdersAccess('Config Job Roles Tab')">
-                                <a [routerLink]="['/worksorders/config/jobroles']" class="sidenav-link">
-                                    <div>Job Roles</div>
-                                </a>
+                                    *ngIf="checkWorksOrdersAccess('Config Job Roles Tab')">
+                                    <a [routerLink]="['/worksorders/config/jobroles']" class="sidenav-link">
+                                        <div>Job Roles</div>
+                                    </a>
                                 </li>
                                 <li class="sidenav-item" [routerLinkActive]="['active']"
-                                *ngIf="checkWorksOrdersAccess('Config Refusal Codes Tab')">
-                                <a [routerLink]="['/worksorders/config/refusalcodes']" class="sidenav-link">
-                                    <div>Refusal Codes</div>
-                                </a></li>
+                                    *ngIf="checkWorksOrdersAccess('Config Refusal Codes Tab')">
+                                    <a [routerLink]="['/worksorders/config/refusalcodes']" class="sidenav-link">
+                                        <div>Refusal Codes</div>
+                                    </a>
+                                </li>
 
                                 <li class="sidenav-item" [routerLinkActive]="['active']"
-                                *ngIf="checkWorksOrdersAccess('Config Contract Terms Tab')">
-                                <a [routerLink]="['/worksorders/config/contractterms']" class="sidenav-link">
-                                    <div>Contract Terms</div>
-                                </a></li>
+                                    *ngIf="checkWorksOrdersAccess('Config Contract Terms Tab')">
+                                    <a [routerLink]="['/worksorders/config/contractterms']" class="sidenav-link">
+                                        <div>Contract Terms</div>
+                                    </a>
+                                </li>
 
                                 <li class="sidenav-item" [routerLinkActive]="['active']"
-                                *ngIf="checkWorksOrdersAccess('Config RAG Status Tab')">
-                                <a [routerLink]="['/worksorders/config/ragstatus']" class="sidenav-link">
-                                    <div>RAG Status Setup</div>
-                                </a></li>
+                                    *ngIf="checkWorksOrdersAccess('Config RAG Status Tab')">
+                                    <a [routerLink]="['/worksorders/config/ragstatus']" class="sidenav-link">
+                                        <div>RAG Status Setup</div>
+                                    </a>
+                                </li>
                             </ul>
 
                         </li>
@@ -542,6 +545,13 @@
                             *ngIf="checkAngularGrpPermission('Reporter', 'Web Reporter Portal Access',1)">
                             <a [routerLink]="['/web-reporter-settings']" class="sidenav-link">
                                 <div>Reporting</div>
+                            </a>
+                        </li>
+
+                        <li class="sidenav-item" [routerLinkActive]="['active']"
+                            *ngIf="checkAngularGrpPermission('Works Orders', 'Works Order Portal Access',1)">
+                            <a [routerLink]="['/works-order-settings']" class="sidenav-link">
+                                <div>Works Orders</div>
                             </a>
                         </li>
 
@@ -919,7 +929,7 @@
                             ©
                         </div>
                         <div class="pt-3 mr-0">
-                          <span class="footer-text">Version 17.1.0</span>
+                            <span class="footer-text">Version 17.1.0</span>
                         </div>
                     </div>
                 </nav>

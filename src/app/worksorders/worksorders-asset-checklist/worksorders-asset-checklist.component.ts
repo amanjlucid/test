@@ -2,10 +2,8 @@ import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { PageChangeEvent, RowArgs } from '@progress/kendo-angular-grid';
-import { AlertService, ConfirmationDialogService, HelperService, SharedService, WorksorderManagementService, WorksorderReportService, AuthenticationService } from '../../_services'
-import { CurrencyPipe } from '@angular/common';
+import { AlertService, ConfirmationDialogService, HelperService, SharedService, WorksorderManagementService, WorksorderReportService } from '../../_services'
 import { combineLatest, forkJoin } from 'rxjs';
-import { Router, ActivatedRoute, RouterEvent } from '@angular/router';
 
 
 @Component({
@@ -75,6 +73,13 @@ export class WorksordersAssetChecklistComponent implements OnInit {
   ProgrammeLogWindow = false;
   programmeLogFor = 'assetchecklist';
 
+  showCustomerSurveyWindow: boolean = false;
+  showEditCommentWindow: boolean = false;
+  commentMode: string;
+  commentParms;
+  commentChecklist;
+  assetID: string;
+  displayResidentDetails: boolean = false;
 
   constructor(
     private chRef: ChangeDetectorRef,
@@ -84,9 +89,6 @@ export class WorksordersAssetChecklistComponent implements OnInit {
     private helperService: HelperService,
     private sharedService: SharedService,
     private worksOrderReportService: WorksorderReportService,
-    private currencyPipe: CurrencyPipe,
-    private autService: AuthenticationService,
-    private router: Router,
   ) { }
 
   ngOnInit(): void {
@@ -877,10 +879,10 @@ export class WorksordersAssetChecklistComponent implements OnInit {
     this.wodDetailType = detailType;
 
     if (detailType == "single") {
+      this.selectedChecklistsingleItem = item;
       if (!this.selectedChecklistsingleItem || this.selectedChecklistsingleItem.detailCount == 0) {
         return;
       }
-      this.selectedChecklistsingleItem = item;
     }
 
     $('.checklistOverlay').addClass('ovrlay');
@@ -1183,6 +1185,13 @@ export class WorksordersAssetChecklistComponent implements OnInit {
       return item?.detailCount == 0
     }
 
+    if (name == "customerSurvey") {
+      if (this.workorderAsset?.woassstatus == "Handover" || this.workorderAsset?.woassstatus == "Practical Completion" || this.workorderAsset?.woassstatus == "Final Completion") {
+        return false;
+      } else {
+        return true;
+      }
+    }
 
     return false
   }
@@ -1248,36 +1257,34 @@ export class WorksordersAssetChecklistComponent implements OnInit {
       return true;
     }
 
+    if (type == "LETTER") {
+      if (this.assetCheckListData) {
+        let filterChecklist = this.assetCheckListData.filter(x => this.mySelection.includes(x.wochecksurcde));
+        return this.mySelection.length == 0 || filterChecklist.some(x => x.wocheckspeciaL1 != "LETTER");
+      } else {
+        return true;
+      }
+
+    }
+
+    if (type == "comments") {
+      return (this.mySelection.length == 0)
+    }
+
   }
 
 
 
   woMenuBtnSecurityAccess(menuName) {
     return this.helperService.checkWorkOrderAreaAccess(this.userType, this.worksOrderAccess, this.worksOrderUsrAccess, menuName)
-    // if (this.userType?.wourroletype == "Dual Role") {
-    //   return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
-    // } else {
-    //   return this.worksOrderUsrAccess.indexOf(menuName) != -1
-    // }
   }
 
 
-  openResidentDetails() {
-    let item = this.selectedChildRow
-    this.autService.validateAssetIDDeepLinkParameters(this.currentUser.userId, item.assid).subscribe(
-      data => {
-        if (data.validated) {
-          let ResidentInfo = { assid: item.assid, calledFrom: 'worksOrderAssetChecklist' };
-          sessionStorage.setItem('ResidentInfo', JSON.stringify(ResidentInfo));
-          this.router.navigate(['/resident-info']);
-          $('.worksOrderDetailOvrlay').addClass('ovrlay');
-        } else {
-          const errMsg = `${data.errorCode} : ${data.errorMessage}`
-          this.alertService.error(errMsg);
-        }
-      }
-    )
+  woGlobalSecurityAccess(menuName) {
+    return this.worksOrderAccess.indexOf(menuName) != -1
+
   }
+
 
   openNoAccessWindow(item) {
     this.selectedChecklistsingleItem = item
@@ -1433,8 +1440,174 @@ export class WorksordersAssetChecklistComponent implements OnInit {
 
   closeProgrammeLogWindow(eve) {
     this.ProgrammeLogWindow = eve;
+  }
+
+  openCustomerSurvey() {
+    this.showCustomerSurveyWindow = true;
+    $('.checklistOverlay').addClass('ovrlay');
+  }
+
+  closeCustomerSurveyWindow(eve) {
+    this.showCustomerSurveyWindow = eve;
     $('.checklistOverlay').removeClass('ovrlay');
   }
 
 
+  mergeMailMultiple() {
+    let filterChecklist = this.assetCheckListData.filter(x => this.mySelection.includes(x.wochecksurcde));
+    const mailParms = {
+      wosequence: this.selectedChildRow.wosequence,
+      wopsequence: this.selectedChildRow.wopsequence,
+      mergelist: filterChecklist,
+      user: this.currentUser.userId,
+    }
+
+
+    let wostagesurcde;
+    let wochecksurcde;
+    for (const key of filterChecklist) {
+      wostagesurcde = key.wostagesurcde;
+      wochecksurcde = key.wochecksurcde;
+      break;
+    }
+    let differentChecklistType = false;
+    for (const key of filterChecklist) {
+      if (wostagesurcde != key.wostagesurcde || wochecksurcde != key.wochecksurcde) {
+        differentChecklistType = true;
+        break;
+      }
+    }
+    if (differentChecklistType) {
+      this.alertService.error("You cannot perform a mail merge on different checklist type items!  Please select items of the same checklist type first.");
+      return;
+    }
+
+    this.processMailMerge(mailParms);
+  }
+
+  mergeMailSingle(dataItem: any) {
+    let filterChecklist = this.assetCheckListData.filter(x => x.wochecksurcde == dataItem.wochecksurcde);
+    const mailParms = {
+      wosequence: this.selectedChildRow.wosequence,
+      wopsequence: this.selectedChildRow.wopsequence,
+      mergelist: filterChecklist,
+      user: this.currentUser.userId,
+    }
+
+    this.processMailMerge(mailParms);
+  }
+
+  processMailMerge(mailParms) {
+    this.worksorderManagementService.getMergeMailLetter(mailParms).subscribe(
+      data => {
+        if (data && data.isSuccess) {
+          var byteCharacters = atob(data.data);
+          var byteNumbers = new Array(byteCharacters.length);
+          for (var i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+          }
+          var byteArray = new Uint8Array(byteNumbers);
+          var file = new Blob([byteArray], { type: 'application/pdf;base64' });
+          var fileURL = URL.createObjectURL(file);
+          let newPdfWindow = window.open(fileURL);
+
+          this.alertService.success("Mail-merge document created successfully.");
+          this.worksOrderDetailPageData();
+        } else {
+          this.alertService.error(data.message);
+        }
+      },
+      error => {
+        this.alertService.error(error);
+      }
+    )
+  }
+
+  setComment(type: string) {
+    this.commentMode = type;
+    this.commentChecklist = this.assetCheckListData.filter(x => this.mySelection.includes(x.wochecksurcde));
+
+    if (this.commentChecklist.length == 0) {
+      return
+    }
+
+    let ASSID_STAGESURCDE_CHECKSURCDE = [];
+    for (const checklist of this.commentChecklist) {
+      ASSID_STAGESURCDE_CHECKSURCDE.push(checklist.assid)
+      ASSID_STAGESURCDE_CHECKSURCDE.push(checklist.wostagesurcde)
+      ASSID_STAGESURCDE_CHECKSURCDE.push(checklist.wochecksurcde)
+    }
+
+    let csvKeys: string = ASSID_STAGESURCDE_CHECKSURCDE.join(",");
+    this.commentParms = {
+      wosequence: this.selectedChildRow.wosequence,
+      wopsequence: this.selectedChildRow.wopsequence,
+      csvKeys: csvKeys,
+      subtitle: this.selectedChildRow.woname,
+    }
+
+    this.showEditCommentWindow = true;
+    $('.checklistOverlay').addClass('ovrlay');
+  }
+
+  setSingleComment(type: string, dataItem: any) {
+    this.commentMode = type;
+    this.commentChecklist = this.assetCheckListData.filter(x => x.wochecksurcde == dataItem.wochecksurcde);
+
+    if (this.commentChecklist.length == 0) {
+      return
+    }
+
+    let ASSID_STAGESURCDE_CHECKSURCDE = [];
+    for (const checklist of this.commentChecklist) {
+      ASSID_STAGESURCDE_CHECKSURCDE.push(checklist.assid)
+      ASSID_STAGESURCDE_CHECKSURCDE.push(checklist.wostagesurcde)
+      ASSID_STAGESURCDE_CHECKSURCDE.push(checklist.wochecksurcde)
+    }
+
+    let csvKeys: string = ASSID_STAGESURCDE_CHECKSURCDE.join(",");
+    this.commentParms = {
+      wosequence: this.selectedChildRow.wosequence,
+      wopsequence: this.selectedChildRow.wopsequence,
+      csvKeys: csvKeys,
+      subtitle: this.selectedChildRow.woname,
+    }
+
+    this.showEditCommentWindow = true;
+    $('.checklistOverlay').addClass('ovrlay');
+
+  }
+
+
+  closeCommentPanel(eve) {
+    this.showEditCommentWindow = false;
+    if (eve != null) {
+      if (this.commentMode == "replace") {
+        for (const checklist of this.commentChecklist) {
+          checklist.woasscheckcomment = eve;
+        }
+      }
+      if (this.commentMode == "add") {
+        for (const checklist of this.commentChecklist) {
+          checklist.woasscheckcomment += " " + eve;
+        }
+      }
+    }
+    $('.checklistOverlay').removeClass('ovrlay');
+
+
+  }
+
+
+
+  openResidentDetails() {
+    this.assetID = this.selectedChildRow.assid;
+    this.displayResidentDetails = true;
+    $('.checklistOverlay').addClass('ovrlay');
+  }
+
+  closeResidentInfoDetailsWindow(eve) {
+    this.displayResidentDetails = false;
+    $('.checklistOverlay').removeClass('ovrlay');
+  }
 }

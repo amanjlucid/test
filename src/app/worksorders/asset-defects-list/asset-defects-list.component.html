@@ -95,7 +95,7 @@
                                     href="javascript:void(0)" (click)="openAssetDefectsMethod(dataItem)">Show Defects
                                     for Asset</a>
 
-                                <a [ngClass]="{'disabled': dataItem.wodstatus != 'Resolved'}" class="dropdown-item"
+                                <a *ngIf="woMenuBtnSecurityAccess('Signoff')" [ngClass]="{'disabled': dataItem.wodstatus != 'Resolved'}" class="dropdown-item"
                                     href="javascript:void(0)" (click)="confirm(dataItem, 'signOff')">Signoff</a>
 
                             </div>

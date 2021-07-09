@@ -1,5 +1,6 @@
 .k-window{
     position: fixed !important;
+    z-index: 1000 !important;
     /* padding: 0 !important; */
 
 }

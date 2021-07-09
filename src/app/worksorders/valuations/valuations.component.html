@@ -103,34 +103,15 @@
 
 
 
-    <div class="row mt-3">
-        <div class="col-md-12">
-            <kendo-grid #grid [data]="view | async" [height]="600" [pageSize]="gridState.take" [skip]="gridState.skip"
-                [sort]="gridState.sort" [pageable]="false" [sortable]="true" (dataStateChange)="onStateChange($event)"
-                (cellClick)="cellClickHandler($event)" (cellClose)="cellCloseHandler($event)"
-                (cancel)="cancelHandler($event)" (save)="saveHandler($event)" (remove)="removeHandler($event)"
-                (add)="addHandler($event)" [navigable]="false" [rowHeight]="36" scrollable="virtual" [resizable]="true"
-                [rowClass]="rowCallback" [selectable]="selectableSettings">
-
-                <!-- <kendo-grid-column title=" " width="37" [filterable]="false" [sortable]="false">
-                    <ng-template kendoGridCellTemplate let-dataItem>
-                        <li class="nav-item dropdown list-unstyled" style="margin-top: -7px;">
-                            <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
-                            <div class="dropdown-menu">
-                                <a (click)="SetValuationToZeroPaymentClick(dataItem)" class="dropdown-item"
-                                    href="javascript:void(0)">Set to 0 Payment</a>
-                                <a class="dropdown-item" href="javascript:void(0)"
-                                    (click)="WOCreateXportOutputReport(525, 'Valuation Report')">Valuation Report</a>
-
-                                <a [ngClass]="{'disabled' : paymentScheduleInp.wpspaymentstatus != 'Unpaid'}"
-                                    (click)="openGloabalValuation(dataItem)" class="dropdown-item"
-                                    href="javascript:void(0)">Global
-                                    Valuation Updates</a>
-                            </div>
-                        </li>
-
-                    </ng-template>
-                </kendo-grid-column> -->
+    <div class="row mt-3 valuationGridRow">
+        <div class="col-md-12 valuationGridCol">
+        
+            <kendo-grid id="valuationGrid" #grid [data]="view | async" [sort]="gridState.sort" [pageable]="false"
+                [sortable]="true" (dataStateChange)="onStateChange($event)" (cellClick)="cellClickHandler($event)"
+                (cellClose)="cellCloseHandler($event)" (cancel)="cancelHandler($event)" (save)="saveHandler($event)"
+                (remove)="removeHandler($event)" (add)="addHandler($event)" [navigable]="false" [resizable]="true"
+                [rowClass]="rowCallback" [selectable]="selectableSettings" [selectedKeys]="mySelection"
+                [kendoGridSelectBy]="mySelectionKey">
 
                 <kendo-grid-column field="wopname" title="Phase" width="80">
                 </kendo-grid-column>
@@ -152,7 +133,7 @@
                     [style]="{'text-align': 'right'}">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <span>
-                            {{ dataItem.woavcommittedvalue | currency:'GBP':'symbol' }}
+                            {{ dataItem.woavpendingvalue | currency:'GBP':'symbol' }}
                         </span>
                     </ng-template>
                 </kendo-grid-column>
@@ -160,7 +141,7 @@
                     [style]="{'text-align': 'right'}">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <span>
-                            {{ dataItem.woavcommittedvalue | currency:'GBP':'symbol' }}
+                            {{ dataItem.woavpaymenttodate | currency:'GBP':'symbol' }}
                         </span>
                     </ng-template>
                 </kendo-grid-column>
@@ -168,7 +149,7 @@
                     [style]="{'text-align': 'right'}">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <span>
-                            {{ dataItem.woavcommittedvalue | currency:'GBP':'symbol' }}
+                            {{ dataItem.woavretentionvaluetodate | currency:'GBP':'symbol' }}
                         </span>
                     </ng-template>
                 </kendo-grid-column>
@@ -178,7 +159,7 @@
                 </kendo-grid-column>
                 <kendo-grid-column field="woavcontractorvaluation" editor="numeric" format="{0:n2}"
                     title="Contractor Valuation" width="170" [style]="{'text-align': 'right'}"
-                    [class]="{'editableCol': true}">
+                    [class]="{'editableCol': worksOrderNew?.wocodE2 != 'N'}">
                     <!-- <ng-template kendoGridCellTemplate let-dataItem>
                         <span>
                             {{ dataItem.woavcommittedvalue | currency:'GBP':'symbol' }}
@@ -190,24 +171,20 @@
 
                 </kendo-grid-column>
                 <kendo-grid-column field="woavcontractorvaluationpct" editor="numeric" title="Contractor Valuation %"
-                    width="170" [class]="{'editableCol': true}">
+                    width="170" [class]="{'editableCol': worksOrderNew?.wocodE2 != 'N'}">
                 </kendo-grid-column>
-                <kendo-grid-column field="woavagreedvaluation" editor="numeric" format="{0:n2}" title="Agered Valuation"
+                <kendo-grid-column field="woavagreedvaluation" editor="numeric" format="{0:n2}" title="Agreed Valuation"
                     width="170" [style]="{'text-align': 'right'}" [class]="{'editableCol': true}">
-                    <!-- <ng-template kendoGridCellTemplate let-dataItem>
-                        <span>
-                            {{ dataItem.woavcommittedvalue | currency:'GBP':'symbol' }}
-                        </span>
-                    </ng-template> -->
+
                 </kendo-grid-column>
-                <kendo-grid-column field="woavagreedvaluationpct" editor="numeric" title="Agered Valuation %"
+                <kendo-grid-column field="woavagreedvaluationpct" editor="numeric" title="Agreed Valuation %"
                     width="170" [class]="{'editableCol': true}">
                 </kendo-grid-column>
                 <kendo-grid-column field="woavcalcpaymentvalue" title="Calculated Amount Due" width="150"
                     [style]="{'text-align': 'right'}">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <span>
-                            {{ dataItem.woavcommittedvalue | currency:'GBP':'symbol' }}
+                            {{ dataItem.woavcalcpaymentvalue | currency:'GBP':'symbol' }}
                         </span>
                     </ng-template>
                 </kendo-grid-column>
@@ -215,7 +192,7 @@
                     [style]="{'text-align': 'right'}">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <span>
-                            {{ dataItem.woavcommittedvalue | currency:'GBP':'symbol' }}
+                            {{ dataItem.outstandingpaymentvalue | currency:'GBP':'symbol' }}
                         </span>
                     </ng-template>
                 </kendo-grid-column>
@@ -227,11 +204,12 @@
         </div>
 
         <div class="col-md-8 text-left mt-2">
-            <button (click)="openGloabalValuation()" type="button" class="btn btn-sm themeButton mr-1"
+            <button *ngIf="woMenuAccess('Enter Global Valuations')" (click)="openGloabalValuation()" type="button"
+                class="btn btn-sm themeButton mr-1"
                 [disabled]="paymentScheduleInp.wpspaymentstatus != 'Unpaid' || !selectedValuation || selectedValuation.woavvaluationstatus == 'Completion'">Global
                 Valuation Updates</button>
 
-            <button [disabled]="!selectedValuation || 
+            <button *ngIf="woMenuAccess('Set to £0 Payment')" [disabled]="!selectedValuation || 
                 paymentScheduleInp.wpspaymentstatus != 'Unpaid' || 
                 selectedValuation.woavvaluationstatus == 'Completion'" type="button" (click)="setValutionToZero()"
                 class="btn btn-sm themeButton">Set
@@ -240,7 +218,7 @@
         <div class="col-md-4 text-right mt-2">
             <button type="button" class="btn btn-sm themeButton mr-1"
                 [disabled]="!editService.hasChanges() || !gridFormStatus" (click)="saveChanges(grid)">Apply</button>
-            <button type="button" class="btn btn-sm themeButton" (click)="closeValuation()">Close</button>
+            <button type="button" class="btn btn-sm themeButton" (click)="confirmCloseVariation()">Close</button>
         </div>
     </div>
 
@@ -372,7 +350,8 @@
 
                 <div class="col-md-12 text-right mt-3">
                     <button type="submit" class="btn btn-sm themeButton mr-1">Apply</button>
-                    <button type="button" class="btn btn-sm themeButton" (click)="closeValuation()">Cancel</button>
+                    <button type="button" class="btn btn-sm themeButton"
+                        (click)="closeGlobalValuation()">Cancel</button>
                 </div>
             </form>
         </div>

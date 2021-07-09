@@ -1,0 +1,49 @@
+.multiChoice .btn {
+
+    min-width:100px;
+    min-height: 20px;
+    margin-left:20px;
+    margin-top:5px;
+    margin-bottom:5px;   
+}
+
+.multiChoice {
+    margin-left:50px;
+}
+
+.questionText {
+    font-weight:600;
+    margin-left:10px
+}
+
+.questionNumber {
+    margin-left:5px;
+}
+
+
+
+
+.column {
+    float: left;
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+  
+  .left {
+    width: 1%;
+  }
+  
+  .right {
+    width: 90%;
+  }
+  
+  /* Clear floats after the columns */
+  .row:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+
+  .textAnswer {
+      width:98%;
+  }

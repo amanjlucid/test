@@ -1,9 +1,10 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
-import { AlertService, HelperService, WorksorderManagementService, ConfirmationDialogService, WorksOrdersService, SharedService } from 'src/app/_services';
+import { AlertService, HelperService, ConfirmationDialogService, WorksOrdersService, SharedService, WorksorderReportService, ReportingGroupService } from 'src/app/_services';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { PageChangeEvent } from '@progress/kendo-angular-grid';
+import { combineLatest } from 'rxjs';
 
 @Component({
     selector: 'app-wo-pm-payments',
@@ -40,25 +41,40 @@ export class WoPmPaymentsComponent implements OnInit {
     instructionAssetsDetailWindow = false;
     selectedInstructionAssetRow: any;
 
-    userType: any = [];
     DisplayPaymentSummaryWindow = false;
     DisplayPaymentSummaryData: any;
 
+    worksOrderAccess = [];
+    worksOrderUsrAccess: any = [];
+    userType: any = [];
+
     constructor(
         private worksOrdersService: WorksOrdersService,
-        private worksorderManagementService: WorksorderManagementService,
-
         private alertService: AlertService,
         private chRef: ChangeDetectorRef,
         private sharedService: SharedService,
         private confirmationDialogService: ConfirmationDialogService,
         private helperService: HelperService,
+        private worksOrderReportService: WorksorderReportService,
+        private reportingGrpService: ReportingGroupService,
     ) { }
 
     ngOnInit(): void {
+        this.subs.add(
+            combineLatest([
+                this.sharedService.worksOrdersAccess,
+                this.sharedService.woUserSecObs,
+                this.sharedService.userTypeObs
+            ]).subscribe(
+                data => {
+                    this.worksOrderAccess = data[0];
+                    this.worksOrderUsrAccess = data[1];
+                    this.userType = data[2][0];
+                }
+            )
+        )
 
         this.GetWebWorksOrdersPaymentsForWorksOrderCall();
-
 
         this.DisplayPaymentSummaryData = {
             "programme": "",
@@ -109,9 +125,6 @@ export class WoPmPaymentsComponent implements OnInit {
         }
 
 
-
-
-        //  console.log('worksOrderData 1 ' + JSON.stringify(this.worksOrderData));
     }
 
 
@@ -145,12 +158,8 @@ export class WoPmPaymentsComponent implements OnInit {
     }
 
 
-    autthorisePaymentClick(item) {
-
-
-
+    autthorisePaymentClick(item, checkProcess = "C") {
         const params = {
-
             "WOSEQUENCE": item.wosequence,
             "WPRSEQUENCE": item.wprsequence,
             "WPYSEQUENCE": item.wpysequence,
@@ -161,28 +170,20 @@ export class WoPmPaymentsComponent implements OnInit {
         this.subs.add(
             this.worksOrdersService.ValidateAuthorisePayment(params).subscribe(
                 data => {
-
-
-                    console.log('ValidateAuthorisePayment api response ' + JSON.stringify(data));
-
                     if (data.isSuccess) {
-
                         let resultData = data.data;
-                        if (resultData.validYN == 'Y') {
-                            this.alertService.success(resultData.validationMessage);
+                        if (resultData.validYN == 'Y' && checkProcess == "C") {
+                            this.authorisedConfirmation(resultData, item)
                         } else {
                             this.alertService.error(resultData.validationMessage);
                         }
                     } else {
                         this.alertService.error(data.message);
-                        this.loading = false
                     }
 
                     this.chRef.detectChanges();
 
-                    // console.log('WorkOrderRefusalCodes api reponse' + JSON.stringify(data));
-                },
-                err => this.alertService.error(err)
+                }, err => this.alertService.error(err)
             )
         )
 
@@ -190,10 +191,50 @@ export class WoPmPaymentsComponent implements OnInit {
 
     }
 
+    authorisedConfirmation(resultData, item) {
+        $('.k-window').css({ 'z-index': 1000 });
+        this.confirmationDialogService.confirm('Please confirm..', `${resultData.validationMessage}`)
+            .then((confirmed) => this.authorisePayment(item))
+            .catch(() => console.log('Attribute dismissed the dialog.'));
+    }
+
+
+    authorisePayment(item) {
+        const params = {
+            "WOSEQUENCE": item.wosequence,
+            "WPRSEQUENCE": item.wprsequence,
+            "WPYSEQUENCE": item.wpysequence,
+            "strUser": this.currentUser.userId,
+            "WONAME": item.woname,
+            "WPSPAYMENTDATE": this.helperService.getMDY(item.wpspaymentdate),
+            "strRequestUser": item.wpyrequestuser,
+        };
+
+        this.subs.add(
+            this.worksOrdersService.AuthorisePayment(params).subscribe(
+                data => {
+                    if (data.isSuccess) {
+                        let resultData = data.data;
+                        if (resultData.validYN == 'Y') {
+                            this.alertService.success("Authorised successfully");
+                            this.GetWebWorksOrdersPaymentsForWorksOrderCall();
+                        } else {
+                            this.alertService.error(resultData.validationMessage);
+                        }
+                    } else {
+                        this.alertService.error(data.message);
+                    }
+
+                    this.chRef.detectChanges();
+                }
+            )
+        )
+
+    }
+
 
 
     GetWebWorksOrdersPaymentsForWorksOrderCall() {
-
         const params = {
             "wosequence": this.worksOrderData.wosequence,
             "wprsequence": this.worksOrderData.wprsequence,
@@ -204,15 +245,8 @@ export class WoPmPaymentsComponent implements OnInit {
         this.subs.add(
             this.worksOrdersService.GetWebWorksOrdersPaymentsForWorksOrder(qs).subscribe(
                 data => {
-
-
-                    console.log('GetWebWorksOrdersPaymentsForWorksOrderCall api data ' + JSON.stringify(data));
-
                     if (data.isSuccess) {
-
                         this.gridData = data.data;
-
-
                     } else {
                         this.alertService.error(data.message);
                         this.loading = false
@@ -220,9 +254,7 @@ export class WoPmPaymentsComponent implements OnInit {
 
                     this.chRef.detectChanges();
 
-                    // console.log('WorkOrderRefusalCodes api reponse' + JSON.stringify(data));
-                },
-                err => this.alertService.error(err)
+                }, err => this.alertService.error(err)
             )
         )
 
@@ -238,17 +270,8 @@ export class WoPmPaymentsComponent implements OnInit {
     }
 
     openDisplayPaymentSummary(item) {
-        this.selectedItem = item;
-
-        //paymentdate=31 Jan 2021
-
-
-
+        $('.woassetdetailoverlay').addClass('ovrlay');
         let startdate = this.helperService.formatDateTimeSpace(item.wpspaymentdate);
-
-
-        console.log('startdate ' + startdate);
-        item.wpspaymentdate
         const params = {
             "wosequence": this.worksOrderData.wosequence,
             "wprsequence": this.worksOrderData.wprsequence,
@@ -261,38 +284,58 @@ export class WoPmPaymentsComponent implements OnInit {
         this.subs.add(
             this.worksOrdersService.GetWorksOrderReportingPayment(qs).subscribe(
                 data => {
-
-
-                    console.log('GetWorksOrderReportingPayment api data ' + JSON.stringify(data));
-
                     if (data.isSuccess) {
-
                         this.DisplayPaymentSummaryData = data.data[0];
-
-
+                        this.DisplayPaymentSummaryWindow = true;
                     } else {
                         this.alertService.error(data.message);
-                        this.loading = false
+                        $('.woassetdetailoverlay').removeClass('ovrlay');
                     }
-
                     this.chRef.detectChanges();
-
-                    // console.log('WorkOrderRefusalCodes api reponse' + JSON.stringify(data));
-                },
-                err => this.alertService.error(err)
+                }, err => {
+                    this.alertService.error(err);
+                    $('.woassetdetailoverlay').removeClass('ovrlay');
+                }
             )
         )
 
 
-        this.DisplayPaymentSummaryWindow = true;
+
     }
 
 
     closeDisplayPaymentSummary() {
+        $('.woassetdetailoverlay').removeClass('ovrlay');
         this.DisplayPaymentSummaryWindow = false;
-
     }
 
+    woMenuAccess(menuName) {
+        return this.helperService.checkWorkOrderAreaAccess(this.userType, this.worksOrderAccess, this.worksOrderUsrAccess, menuName)
+    }
 
+    WOCreateXportOutputReport(item) {
+        console.log(item)
+        const { wosequence } = this.worksOrderData;
+        const { wpysequence } = item;
+        let xPortId = 526;
+        let params = {
+            "lstParamNameValue": ["Works Order Number", wosequence, "Works Order Payment Number", wpysequence],
+        };
+
+
+        this.subs.add(
+            this.reportingGrpService.runReport(xPortId, params.lstParamNameValue, this.currentUser.userId, "EXCEL", false).subscribe(
+                data => {
+                    const linkSource = 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' + data;
+                    const downloadLink = document.createElement("a");
+                    const fileName = `Payment_Asset_Report_${xPortId}.xlsx`;
+                    downloadLink.href = linkSource;
+                    downloadLink.download = fileName;
+                    downloadLink.click();
+                }, err => this.alertService.error(err)
+            )
+        )
+
+    }
 
 }

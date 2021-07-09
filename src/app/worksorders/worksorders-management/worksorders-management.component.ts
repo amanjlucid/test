@@ -74,6 +74,7 @@ export class WorksordersManagementComponent implements OnInit {
   openManageMilestone = false;
   openMilestoneFor = "checklist";
   programmeLogFor = "workorder"
+  openWOPaymentScheduleWindow = false;
 
   @ViewChild(TooltipDirective) public tooltipDir: TooltipDirective;
   @HostListener('click', ['$event']) onClick(event) {
@@ -81,7 +82,6 @@ export class WorksordersManagementComponent implements OnInit {
     if (element.className.indexOf('fas fa-bars') == -1) {
       this.hideMenu();
     }
-    // event.preventDefault();
   }
   menuData: any;
   mousePositioin: any = 0;
@@ -102,7 +102,6 @@ export class WorksordersManagementComponent implements OnInit {
     //update notification on top
     this.helperService.updateNotificationOnTop();
 
-    // console.log(this.currentUser)
     this.subs.add(
       combineLatest([
         this.sharedService.worksOrdersAccess,
@@ -110,14 +109,12 @@ export class WorksordersManagementComponent implements OnInit {
         this.sharedService.userTypeObs
       ]).subscribe(
         data => {
-          // console.log(data);
           this.worksOrderAccess = data[0];
           this.worksOrderUsrAccess = data[1];
           this.userType = data[2][0];
 
           if (this.worksOrderAccess.length > 0) {
-            if (!this.worksOrderAccess.includes("Management Menu")) {
-              // this.alertService.error("No access")
+            if (!this.worksOrderAccess.includes("Programmes Menu")) {
               this.router.navigate(['login']);
             }
           }
@@ -160,7 +157,6 @@ export class WorksordersManagementComponent implements OnInit {
     this.subs.add(
       this.worksorderManagementService.getVW_PROGRAMMES_WORKS_ORDERs(status, this.currentUser.userId).subscribe(
         data => {
-          // console.log(data);
           if (data.isSuccess) {
             let gridData = [];
             this.apiData = [...data.data];
@@ -172,7 +168,6 @@ export class WorksordersManagementComponent implements OnInit {
 
             this.groupedData = [...groupBywprsequence];
 
-            // console.log(this.groupedData)
             //Find parent and Set parent id in each row
             tempData.forEach((value, index) => {
               if (value.treelevel == 1) {
@@ -203,7 +198,6 @@ export class WorksordersManagementComponent implements OnInit {
             })
 
             setTimeout(() => {
-              // console.log(gridData);
               this.gridData = [...gridData];
               this.loading = false
             }, 100);
@@ -231,8 +225,6 @@ export class WorksordersManagementComponent implements OnInit {
     if ($event.dataItem.treelevel == 2) {
       this.setSeletedWORow($event.dataItem);
     }
-    // console.log($event)
-    // console.log(this.selected)
   }
 
   public clearSelection(): void {
@@ -288,7 +280,6 @@ export class WorksordersManagementComponent implements OnInit {
 
   gridStateExport(gridState) {
     let dataToExport = gridState.map(x => { return x.data });
-    // console.log(dataToExport);
     let label = {
       'name': 'Name',
       'wprstatus': 'Status',
@@ -366,7 +357,9 @@ export class WorksordersManagementComponent implements OnInit {
   getTopMargin() {
     if (this.mousePositioin == undefined) return;
     const { y } = this.mousePositioin;
-    if (y > 680 && this.menuData.treelevel == 2) return "-170px";
+    if ((y > 550 && y <= 700) && this.menuData.treelevel == 2) return "-230px";
+    if ((y > 700 && y <= 800) && this.menuData.treelevel == 2) return "-350px";
+    if ((y > 800) && this.menuData.treelevel == 2) return "-390px";
     return "-100px";
 
   }
@@ -412,7 +405,6 @@ export class WorksordersManagementComponent implements OnInit {
 
 
   setSeletedRow(dataItem) {
-    // console.log(this.selectedProgramme);
     if (this.selectedProgramme?.wprsequence != dataItem.wprsequence) {
       this.helperService.getWorkOrderSecurity(dataItem.wosequence);
       this.helperService.getUserTypeWithWOAndWp(dataItem.wosequence, dataItem.wprsequence);
@@ -449,7 +441,6 @@ export class WorksordersManagementComponent implements OnInit {
     this.subs.add(
       this.worksOrderService.DeleteWebWorkOrder(worksOrderItem.wosequence, reason, this.currentUser.userId, checkOrProcess).subscribe(
         data => {
-          // console.log(data);
           if (data.isSuccess && data.data.pRETURNSTATUS == "S") {
             this.deleteWorksOrderReasonWindow = true;
           } else if (data.data.pRETURNSTATUS == "E") {
@@ -471,7 +462,6 @@ export class WorksordersManagementComponent implements OnInit {
     this.subs.add(
       this.worksOrderService.DeleteWebWorkOrder(this.selctedWorksOrder.wosequence, this.reasonToDeleteWO, this.currentUser.userId, "P").subscribe(
         data => {
-          // console.log(data);
           if (data.data.pRETURNSTATUS == "E") {
             this.alertService.error(data.data.pRETURNMESSAGE)
           } else {
@@ -706,7 +696,16 @@ export class WorksordersManagementComponent implements OnInit {
   }
 
 
+  openWOPMPaymentSchedule(item) {
+    this.selectedWorksOrder = item;
+    $('.newManagementOverlay').addClass('ovrlay');
+    this.openWOPaymentScheduleWindow = true;
+  }
 
+  closePaymentScheduleWindow($event) {
+    $('.newManagementOverlay').removeClass('ovrlay');
+    this.openWOPaymentScheduleWindow = $event;
+  }
 
 
 }

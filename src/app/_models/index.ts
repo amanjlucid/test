@@ -32,6 +32,7 @@ export * from './workorders/workorders-add-assetworklist.model';
 export * from './wopm-template.model';
 export * from './wopm-masterstage.model';
 export * from './wopm-checklistmaster.model';
+export * from './wopm-checklist.model';
 export * from './wopm-checklist-dependency.model';
 export * from './workorders/workorders-phasechecklist-asset.model';
 export * from './wopm-jobrole.model';
@@ -46,3 +47,5 @@ export * from './asset-resident-info.model';
 export * from './asset-risk.model';
 export * from './workorders/workorders-payment-schedule.model';
 export * from './workorders/workorders-valuation.model';
+export * from './works-order-settings.model';
+export * from './wopm-rep-char-config.model'

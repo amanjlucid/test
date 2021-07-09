@@ -30,7 +30,7 @@ import { SurveyDashboardComponent } from './survey-portal/survey-dashboard/surve
 import { SurveyCbcreportComponent } from './survey-portal/survey-cbcreport/survey-cbcreport.component';
 import { CustomPreloadingStrategy } from './_helpers/custom-preloading-strategy';
 import { AssetResidentContainerComponent } from './asset-resident-container/asset-resident-container.component';
-
+import { WorksOrderSettingsComponent } from './works-order-settings/works-order-settings.component';
 
 
 const appRoutes: Routes = [
@@ -96,6 +96,7 @@ const appRoutes: Routes = [
             { path: 'notification', loadChildren: () => import('./setting/notification/notification.module').then(m => m.NotificationModule) },
             { path: 'tasks-settings', loadChildren: () => import('./setting/event-manager-setting/event-manager-setting.module').then(m => m.EventManagerSettingModule) },
             { path: 'web-reporter-settings', component: WebReporterSettingComponent, canActivate: [AuthGuard] },
+            { path: 'works-order-settings', component: WorksOrderSettingsComponent, canActivate: [AuthGuard] },
             {
                 path: 'surveying',
                 component: ServicePortalComponent,

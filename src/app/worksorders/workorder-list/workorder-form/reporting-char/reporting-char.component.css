@@ -1,0 +1,204 @@
+.buttonDiv button {
+  margin-left: 8px;
+}
+
+.newBtn {
+  background-color: #e4287e;
+  border-color: #e4287e;
+  color: #fff;
+}
+
+.userFrm {
+  width: 805px;
+}
+
+.k-window {
+  position: fixed !important;
+}
+
+.workOrderDateFilter {
+  height: 10px;
+  font-size: 14px;
+  line-height: 1.54;
+  color: #4E5155;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid rgba(24, 28, 33, 0.1);
+  border-radius: .25rem;
+  padding-left: 6px;
+}
+
+.invalid-feedback {
+  display: block !important;
+}
+
+.firstdiv, .secondDiv, .thirdDiv, .thirdDivchk {
+  width: 32%;
+  display: inline-flex;
+  margin: 5px;
+}
+
+.firstdiv label, .secondDiv label, .thirdDiv label {
+  /* width: 150px; */
+  width: 38%;
+  display: inline-block;
+  margin-right: 5px !important;
+  font-size: 15px !important;
+  margin-top: 12px;
+
+}
+
+/* .firstdiv .form-control, .secondDiv .form-control, .thirdDiv .form-control {
+
+  width: 55%;
+  display: inline-block;
+} */
+
+.firstdiv .form-group, .secondDiv .form-group, .thirdDiv .form-group {
+  /* width: 215px; */
+  width: 55%;
+  display: inline-block;
+}
+
+.firstTwo {
+  width: 63%;
+  display: inline-flex;
+  margin: 5px;
+}
+
+.secondOne {
+  width: 33%;
+  display: inline-flex;
+  margin: 5px;
+}
+
+.firstTwo label {
+  width: 19%;
+  display: inline-block;
+  margin-right: 5px !important;
+  font-size: 15px !important;
+  margin-top: 12px;
+}
+
+.firstTwo .form-group {
+  width: 80%;
+  display: inline-block;
+}
+
+.secondOne label {
+  width: 38%;
+  display: inline-block;
+  margin-right: 5px !important;
+  font-size: 15px !important;
+  margin-top: 12px;
+  margin-left: 20px;
+}
+
+.secondOne .form-group {
+  width: 58%;
+  display: inline-block;
+}
+
+.secondOne .form-group .form-control{
+  width: 95%;
+}
+
+.instructionDiv {
+  width: 100%;
+  display: inline-flex;
+}
+
+.instructionDiv label {
+  width: 12%;
+  display: inline-block;
+  margin-right: 9px !important;
+  font-size: 15px !important;
+  margin-left: 5px;
+  margin-top: 12px;
+}
+
+.instructionDiv .form-group {
+  width: 83%;
+  display: inline-block;
+}
+
+.state2Form .form-group {
+  padding: 0;
+  margin: 0;
+}
+
+.half,.half2 {
+  width: 48%;
+  display: inline-flex;
+}
+
+.half label {
+  width: 74%;
+  display: inline-block;
+  margin-right: 9px !important;
+  font-size: 15px !important;
+  margin-left: 5px;
+  margin-top: 12px;
+}
+
+.half input[type="text"] {
+  width: 100%;
+  margin-left: 12px;
+}
+
+.half .checkBox, .half2 .checkBox{
+  margin-top: 13px;
+}
+
+.half2 label{
+  display: inline-block;
+  margin-right: 9px !important;
+  font-size: 15px !important;
+  margin-left: 45px;
+  margin-top: 12px;
+}
+
+.thirdDivchk label{
+  display: inline-block;
+  margin-right: 9px !important;
+  font-size: 15px !important;
+  margin-top: 12px;
+}
+
+.thirdDivchk .checkBox {
+  margin-top: 14px;
+}
+
+.full{
+  width: 64%;
+  display: inline-flex;
+}
+
+.full label{
+  display: inline-block;
+  margin-right: 9px !important;
+  font-size: 15px !important;
+  margin-left: 5px;
+  margin-top: 12px;
+  width: 30%;
+}
+
+.full .checkBox{
+  margin-top: 13px;
+}
+
+.full .form-group {
+  width: 61%;
+  margin-left: 34px;
+}
+
+/* .stage2Form{
+  max-height: 680px;
+    overflow: auto;
+} */
+
+@media screen and (max-width: 769px) {
+  .userFrm {
+    width: 100%;
+  }
+}

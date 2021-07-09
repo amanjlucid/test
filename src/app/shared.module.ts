@@ -23,11 +23,13 @@ import { ReportingComponent } from './security-portal/groups/reporting/reporting
 import { MultiSelectModule } from '@progress/kendo-angular-dropdowns';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { CurrencyInputDirective, CurrencyMaskDirective, NumberDecimalMaskDirective } from './_directives';
+import { AssetRiskComponent } from './asset-resident-info/asset-risk/asset-risk.component';
+import { AssetResidentInfoComponent } from './asset-resident-info/asset-resident-info.component';
 
 @NgModule({
   imports: [FormsModule, ReactiveFormsModule, GridModule, InputsModule, DialogsModule, DatePickerModule, CommonModule, TreeListModule, MultiSelectModule, NgMultiSelectDropDownModule.forRoot()],
-  declarations: [DateFormatPipe, CurrencyFormatPipe, RoundOffPipe, SimpleTextFilterComponent, DateRangeFilterComponent, MultiCheckFilterComponent, RetrievedEpcGridComponent, DateRangeTreeListFilterComponent, ReportingComponent, CurrencyInputDirective, CurrencyMaskDirective, NumberDecimalMaskDirective],
-  exports: [DateFormatPipe, CurrencyFormatPipe, RoundOffPipe, SimpleTextFilterComponent, DateRangeFilterComponent, MultiCheckFilterComponent, RetrievedEpcGridComponent, DateRangeTreeListFilterComponent, ReportingComponent, CurrencyInputDirective, CurrencyMaskDirective, NumberDecimalMaskDirective]
+  declarations: [DateFormatPipe, CurrencyFormatPipe, RoundOffPipe, SimpleTextFilterComponent, DateRangeFilterComponent, MultiCheckFilterComponent, RetrievedEpcGridComponent, DateRangeTreeListFilterComponent, ReportingComponent, CurrencyInputDirective, CurrencyMaskDirective, NumberDecimalMaskDirective, AssetResidentInfoComponent,     AssetRiskComponent,],
+  exports: [DateFormatPipe, CurrencyFormatPipe, RoundOffPipe, SimpleTextFilterComponent, DateRangeFilterComponent, MultiCheckFilterComponent, RetrievedEpcGridComponent, DateRangeTreeListFilterComponent, ReportingComponent, CurrencyInputDirective, CurrencyMaskDirective, NumberDecimalMaskDirective, AssetResidentInfoComponent]
 })
 
 export class SharedModule { }

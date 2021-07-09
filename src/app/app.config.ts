@@ -2,7 +2,6 @@ let host = window.location.hostname;
 let apiFolder = "RowanwoodWebAPI";
 
 if (host == "localhost") {
-    // host = "localhost:50912";
     host = "104.40.138.8";
 }
 
@@ -13,12 +12,3 @@ export const appConfig = {
     appUrl: `http://${host}/rowanwood`,
     silverLightUrl: `http://${host}/Rowanwood`
 };
-
-
-// export const appConfig = {
-//     apiUrl: `http://localhost:50912`,
-//     appUrl: `http://localhost:4200`,
-//     silverLightUrl: `http://localhost:4200/Rowanwood`
-// };
-
-

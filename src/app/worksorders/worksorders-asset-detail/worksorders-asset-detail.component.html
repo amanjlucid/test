@@ -68,36 +68,36 @@
             <li class="nav-item dropdown list-unstyled" style="margin-top: -7px;">
               <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars" (click)="setSeletedRow(dataItem)"></i>
               <div class="dropdown-menu">
-                <a class="dropdown-item" href="javascript:void(0)" *ngIf="worksOrderAccess.indexOf('Delete Work') != -1"
+                <a class="dropdown-item" href="javascript:void(0)" *ngIf="woMenuBtnSecurityAccess('Delete Work')"
                   (click)="removeAssetFromPhase(dataItem, true)"
                   [ngClass]="{'disabled' :dataItem.woadstatus != 'New'}">Delete</a>
-                <a class="dropdown-item" href="javascript:void(0)" *ngIf="worksOrderAccess.indexOf('Remove Work') != -1"
+                <a class="dropdown-item" href="javascript:void(0)" *ngIf="woMenuBtnSecurityAccess('Remove Work')"
                   (click)="removeAssetFromPhase(dataItem, false)"
                   [ngClass]="{'disabled' :dataItem.woadstatus != 'New'}">Remove</a>
 
-                <a *ngIf="treelevel == 3 && worksOrderAccess.indexOf('Edit Comment') != -1" class="dropdown-item"
+                <a *ngIf="treelevel == 3 && woMenuBtnSecurityAccess('Edit Comment')" class="dropdown-item"
                   href="javascript:void(0)" (click)="openEditCommentForWoAssetWindow(dataItem)">Edit Comment</a>
 
                 <a [ngClass]="{'disabled' :dataItem.woadstatus != 'New'}"
-                  *ngIf="treelevel == 3 && worksOrderAccess.indexOf('Edit Work') != -1" class="dropdown-item"
+                  *ngIf="treelevel == 3 && woMenuBtnSecurityAccess('Edit Work')" class="dropdown-item"
                   href="javascript:void(0)" (click)="openEditWorkPackageQtyCostWindow(dataItem)">Edit Work</a>
                 <a [ngClass]="{'disabled' :dataItem.woadstatus != 'New'}"
-                  *ngIf="treelevel == 3 && dataItem.woadrechargeyn == 'N' && worksOrderAccess.indexOf('Recharge') != -1"
+                  *ngIf="treelevel == 3 && dataItem.woadrechargeyn == 'N' && woMenuBtnSecurityAccess('Recharge')"
                   class="dropdown-item" href="javascript:void(0)" (click)="rechargeToggle(dataItem, true)">Recharge</a>
                 <a [ngClass]="{'disabled' :dataItem.woadstatus != 'New'}"
-                  *ngIf="treelevel == 3 && dataItem.woadrechargeyn == 'Y' && worksOrderAccess.indexOf('Recharge') != -1"
+                  *ngIf="treelevel == 3 && dataItem.woadrechargeyn == 'Y' && woMenuBtnSecurityAccess('Recharge')"
                   class="dropdown-item" href="javascript:void(0)" (click)="rechargeToggle(dataItem, false)">Clear
                   Recharge</a>
                 <a [ngClass]="{'disabled' :dataItem.woadstatus != 'New'}"
-                  *ngIf="treelevel == 3 && dataItem.woadrefusaL_YN == 'N' && worksOrderAccess.indexOf('Refusal') != -1"
+                  *ngIf="treelevel == 3 && dataItem.woadrefusaL_YN == 'N' && woMenuBtnSecurityAccess('Refusal')"
                   class="dropdown-item" href="javascript:void(0)" (click)="openSetToRefusalWindow(dataItem)">Set to
                   Refusal</a>
                 <a [ngClass]="{'disabled' :dataItem.woadstatus != 'New'}"
-                  *ngIf="treelevel == 3 && dataItem.woadrefusaL_YN == 'Y' && worksOrderAccess.indexOf('Refusal') != -1"
+                  *ngIf="treelevel == 3 && dataItem.woadrefusaL_YN == 'Y' && woMenuBtnSecurityAccess('Refusal')"
                   class="dropdown-item" href="javascript:void(0)" (click)="clearRefusalConfirm(dataItem)">Clear
                   Refusal</a>
                 <a [ngClass]="{'disabled' :dataItem.woadstatus != 'New'}"
-                  *ngIf="treelevel == 3 && worksOrderAccess.indexOf('Swap Package') != -1" class="dropdown-item"
+                  *ngIf="treelevel == 3 && woMenuBtnSecurityAccess('Swap Package')" class="dropdown-item"
                   href="javascript:void(0)" (click)="openSwapPackage(dataItem)">Swap Package</a>
 
 
@@ -249,11 +249,6 @@
 
       </kendo-grid>
 
-
-
-
-
-
     </div>
 
 
@@ -274,89 +269,6 @@
       <button (click)="closeAssetDetailWindow()" class="btn btn-sm themeButton">Close</button>
     </div>
   </div>
-
-
-
-
-  <!-- <kendo-window title="Add Package to Work List" *ngIf="SwapPackageWindow" (close)="closeSwapPackageWindow()"
-    [minWidth]="650" [width]="1200">
-
-    <div class="row headerRow12">
-      <div class="col-md-2">
-        <label for="">Assset:</label>
-      </div>
-      <div class="col-md-4">
-        <input [(ngModel)]="itemData.assid" [readonly]="true" type="text" class="form-control" placeholder="">
-      </div>
-
-
-      <div class="col-md-6">
-        <input [(ngModel)]="itemData.woname" [readonly]="true" type="text" class="form-control" placeholder="">
-      </div>
-
-
-    </div>
-
-    <div class="row headerRow12">
-      <div class="col-md-2">
-        <label for="">Checklist:</label>
-      </div>
-      <div class="col-md-4">
-        <input [(ngModel)]="itemData.wocheckname" [readonly]="true" type="text" class="form-control" placeholder=""
-          value="">
-      </div>
-
-    </div>
-
-
-    <div class="row">
-
-      <div class="col-md-12">
-        <kendo-grid [kendoGridGroupBinding]="SwapPackagesForAssetsDataGrid" [data]="gridView" [height]="570"
-          [selectable]="{
-        mode: 'multiple'
-      }" filterable="menu" [resizable]="true" [sortable]="{
-        allowUnsort: true,
-        mode: 'multiple'
-        }" [skip]="state.skip" [sort]="state.sort" [filter]="state.filter" (sortChange)="sortChange($event)"
-          (filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)" [navigable]="false">
-
-          <kendo-grid-column field="wphcode" title="Package Code" width="150">
-          </kendo-grid-column>
-          <kendo-grid-column field="wphname" title="Package Name" width="160">
-          </kendo-grid-column>
-          <kendo-grid-column field="wlcomppackagedesc" title="Work Package Description" width="180">
-          </kendo-grid-column>
-          <kendo-grid-column field="atadescription" title="Attribute Description" width="180">
-          </kendo-grid-column>
-          <kendo-grid-column field="asaquantity" title="Quantity" width="100">
-          </kendo-grid-column>
-          <kendo-grid-column field="uom" title="UOM" width="100">
-          </kendo-grid-column>
-          <kendo-grid-column field="contractrate" title="SOR Rate" width="100">
-          </kendo-grid-column>
-          <kendo-grid-column field="contractrate" title="Contract Rate" width="100">
-          </kendo-grid-column>
-          <kendo-grid-column field="cost" title="Work Cost" width="100">
-          </kendo-grid-column>
-          <kendo-grid-column field="attributeexists" title="Attribute Status" width="100">
-          </kendo-grid-column>
-          <kendo-grid-column field="exclusionreason" title="Exclusion Reason" width="150">
-          </kendo-grid-column>
-
-        </kendo-grid>
-      </div>
-
-    </div>
-
-    <div class="row">
-      <div class="col-md-12 text-right mb-4 mt-2">
-        <button type="button" (click)="closeSwapPackageWindow()" class="btn btn-sm themeButton mr-1">Cancel</button>
-
-      </div>
-    </div>
-
-  </kendo-window> -->
 
 
 

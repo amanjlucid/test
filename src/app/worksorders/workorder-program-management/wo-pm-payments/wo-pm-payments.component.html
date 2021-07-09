@@ -1,6 +1,6 @@
 <kendo-window title="{{title}}" [top]="10" [minWidth]="700" [width]="1050" [minHeight]="350"
   (close)="closePaymentsWindowList()">
-  <div class="row headerArea">
+  <div class="row paymentTab">
     <div class="col-md-12 headerRow12">
       <div class="row mt-1">
         <div class="col-md-2">
@@ -30,10 +30,14 @@
             <li class="nav-item dropdown list-unstyled" style="margin-top: -7px;">
               <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
               <div class="dropdown-menu">
-                <a (click)="openDisplayPaymentSummary(dataItem)" class="dropdown-item" href="javascript:void(0)">Display
+                <a *ngIf="woMenuAccess('Display Payment Summary')" (click)="openDisplayPaymentSummary(dataItem)"
+                  class="dropdown-item" href="javascript:void(0)">
                   Payment Summary</a>
-                <a (click)="autthorisePaymentClick(dataItem)" class="dropdown-item" href="javascript:void(0)">Authorise
+                <a *ngIf="woMenuAccess('Authorise Payment')" (click)="autthorisePaymentClick(dataItem)"
+                  class="dropdown-item" href="javascript:void(0)">Authorise
                   Payment</a>
+                <a *ngIf="woMenuAccess('Payment Asset Report')" (click)="WOCreateXportOutputReport(dataItem)"
+                  class="dropdown-item" href="javascript:void(0)">Payment Asset Report</a>
               </div>
             </li>
 
@@ -111,493 +115,336 @@
       </kendo-grid>
 
     </div>
+
+
+    <div class="col-md-12 text-right mt-2">
+      <button type="button" class="btn btn-sm themeButton" (click)="closePaymentsWindowList()">Close</button>
+    </div>
   </div>
 
 
   <div class="woassetdetailoverlay"></div>
 
-  <kendo-window title="Display Payment Summary" *ngIf="DisplayPaymentSummaryWindow"
-    (close)="closeDisplayPaymentSummary()" [width]="auto" [height]="800" [minHeight]="700">
-    <div class="row headerArea">
-      <div class="col-md-12 headerRow12">
-        <div class="row border py-2 mb-2">
+  <kendo-window title="Payment Summary" [top]="10" *ngIf="DisplayPaymentSummaryWindow"
+    (close)="closeDisplayPaymentSummary()" [width]="1450" [height]="880" [minHeight]="700">
+    <div class="row paymentSummaryRow">
+      <div class="col-md-12 detailRow">
+        <div class="row">
           <div class="col-md-2">
-            <label for="">Work Order: </label>
+            <label class="col-form-label">Work Order: </label>
           </div>
+
           <div class="col-md-6">
-            <input [readonly]="true" type="text" class="form-control" placeholder=""
-              value="{{ worksOrderData.woname }}(Work Order No: {{ worksOrderData.wosequence }}) ">
+            <input [readonly]="true" type="text" class="form-control"
+              value="{{ worksOrderData?.woname }}(Work Order No: {{ worksOrderData?.wosequence }}) ">
           </div>
           <div class="col-md-2">
-            <label for="">Order Status: </label>
+            <label class="col-form-label">Order Status: </label>
+          </div>
+          <div class="col-md-2">
+            <input [readonly]="true" type="text" class="form-control" value="{{ worksOrderData?.wostatus }}">
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-12 detailRow">
+        <div class="row">
+          <div class="col-md-2">
+            <label class="col-form-label">Programme: </label>
+          </div>
+          <div class="col-md-2">
+            <input [readonly]="true" type="text" class="form-control"
+              value="{{ DisplayPaymentSummaryData?.programme }} ">
+          </div>
+          <div class="col-md-2">
+            <label class="col-form-label">Contractor Code: </label>
           </div>
           <div class="col-md-2">
             <input [readonly]="true" type="text" class="form-control" placeholder=""
-              value="{{ worksOrderData.wostatus }}">
+              value="{{ DisplayPaymentSummaryData?.contract_Code }}">
           </div>
-        </div>
-      </div>
-
-      <div class="border py-2 mb-2">
-        <div class="row ">
-          <div class="col-md-12 headerRow12">
-            <div class="row">
-              <div class="col-md-2">
-                <label for="">Programme: </label>
-              </div>
-              <div class="col-md-4">
-                <input [readonly]="true" type="text" class="form-control" placeholder=""
-                  value="{{ DisplayPaymentSummaryData.programme }} ">
-              </div>
-              <div class="col-md-1">
-                <label for="">Contractor Code: </label>
-              </div>
-              <div class="col-md-1">
-                <input [readonly]="true" type="text" class="form-control" placeholder=""
-                  value="{{ DisplayPaymentSummaryData.contract_Code }}">
-              </div>
-
-              <div class="col-md-2">
-                <label for="">Contractor: </label>
-              </div>
-              <div class="col-md-2">
-                <input [readonly]="true" type="text" class="form-control" placeholder=""
-                  value="{{ DisplayPaymentSummaryData.contractor }}">
-              </div>
-            </div>
+          <div class="col-md-2">
+            <label class="col-form-label">Contractor: </label>
           </div>
-
-
-          <div class="col-md-12 headerRow12">
-            <div class="row">
-              <div class="col-md-2">
-                <label for="">Contract Payment Type: </label>
-              </div>
-              <div class="col-md-4">
-                <input [readonly]="true" type="text" class="form-control" placeholder=""
-                  value="{{ DisplayPaymentSummaryData.contract_Payment_Type }} ">
-              </div>
-            </div>
+          <div class="col-md-2">
+            <input [readonly]="true" type="text" class="form-control" placeholder=""
+              value="{{ DisplayPaymentSummaryData?.contractor }}">
           </div>
-          <div class="col-md-12 headerRow12">
-            <div class="row">
-              <div class="col-md-2">
-                <label for="">DLP: </label>
-              </div>
-              <div class="col-md-4">
-                <input [readonly]="true" type="text" class="form-control" placeholder=""
-                  value="{{ DisplayPaymentSummaryData.contract_DLP }} ">
-              </div>
-              <div class="col-md-2">
-                <label for="">DLP Days: </label>
-              </div>
-              <div class="col-md-4">
-                <input [readonly]="true" type="text" class="form-control" placeholder=""
-                  value="{{ DisplayPaymentSummaryData.contract_DLP_Days }} ">
-              </div>
-
-            </div>
-          </div>
-
-
-
-          <div class="col-md-12 headerRow12">
-
-            <div class="row">
-              <div class="col-md-2">
-                <label for="">Work Retention: </label>
-              </div>
-              <div class="col-md-4">
-                <input [readonly]="true" type="text" class="form-control" placeholder=""
-                  value="{{ DisplayPaymentSummaryData.work_Retention___in_Period }} ">
-              </div>
-              <div class="col-md-2">
-                <label for="">Fixed Retention: </label>
-              </div>
-              <div class="col-md-4">
-                <input [readonly]="true" type="text" class="form-control" placeholder=""
-                  value="{{ DisplayPaymentSummaryData.fixed_Retention_Value_in_Period }} ">
-              </div>
-
-            </div>
-          </div>
-
-
 
         </div>
-      </div>
+
+        <div class="row">
+          <div class="col-md-2">
+            <label class="col-form-label">Contract Payment Type: </label>
+          </div>
+          <div class="col-md-2">
+            <input [readonly]="true" type="text" class="form-control" placeholder=""
+              value="{{ DisplayPaymentSummaryData?.contract_Payment_Type }} ">
+          </div>
+
+          <div class="col-md-2">
+            <label class="col-form-label">DLP: </label>
+          </div>
+          <div class="col-md-2">
+            <input [readonly]="true" type="text" class="form-control" placeholder=""
+              value="{{ DisplayPaymentSummaryData?.contract_DLP }} ">
+          </div>
+          <div class="col-md-2">
+            <label class="col-form-label">DLP Days: </label>
+          </div>
+          <div class="col-md-2">
+            <input [readonly]="true" type="text" class="form-control" placeholder=""
+              value="{{ DisplayPaymentSummaryData?.contract_DLP_Days }} ">
+          </div>
+
+        </div>
 
 
-      <div class="row border py-2 mb-2">
-
-        <div class="row col-md-12 headerRow12">
-
-          <div class="row">
-            <div class="col-md-1">
-              <label for="">Shedule Start Date: </label>
-            </div>
-            <div class="col-md-2">
-              <input [readonly]="true" type="text" class="form-control" placeholder=""
-                value="{{ DisplayPaymentSummaryData.payment_Period_Start_Date }} ">
-            </div>
-            <div class="col-md-1">
-              <label for="">Shedule End Date: </label>
-            </div>
-            <div class="col-md-2">
-              <input [readonly]="true" type="text" class="form-control" placeholder=""
-                value="{{ DisplayPaymentSummaryData.payment_Period_End_Date }} ">
-            </div>
-
-            <div class="col-md-1">
-              <label for="">Shedule Updated By: </label>
-            </div>
-            <div class="col-md-2">
-              <input [readonly]="true" type="text" class="form-control" placeholder=""
-                value="{{ DisplayPaymentSummaryData.payment_Schedule_Updated_by }} ">
-            </div>
-
-            <div class="col-md-1">
-              <label for="">Shedule Updated On: </label>
-            </div>
-            <div class="col-md-2">
-              <input [readonly]="true" type="text" class="form-control" placeholder=""
-                value="{{ DisplayPaymentSummaryData.payment_Schedule_updated_on }} ">
-            </div>
-
+        <div class="row">
+          <div class="col-md-2">
+            <label class="col-form-label">Work Retention: </label>
+          </div>
+          <div class="col-md-2">
+            <input [readonly]="true" type="text" class="form-control" placeholder=""
+              value="{{ DisplayPaymentSummaryData?.work_Retention___in_Period }} ">
+          </div>
+          <div class="col-md-2">
+            <label class="col-form-label">Fixed Retention: </label>
+          </div>
+          <div class="col-md-2">
+            <input [readonly]="true" type="text" class="form-control" placeholder=""
+              value="{{ DisplayPaymentSummaryData?.fixed_Retention_Value_in_Period }} ">
           </div>
         </div>
 
       </div>
 
 
+      <div class="col-md-12 detailRow">
+        <div class="row">
+          <div class="col-md-2">
+            <label class="col-form-label">Shedule Start Date: </label>
+          </div>
+          <div class="col-md-2">
+            <input [readonly]="true" type="text" class="form-control" placeholder=""
+              value="{{ DisplayPaymentSummaryData?.payment_Period_Start_Date }} ">
+          </div>
+          <div class="col-md-2">
+            <label class="col-form-label">Shedule End Date: </label>
+          </div>
+          <div class="col-md-2">
+            <input [readonly]="true" type="text" class="form-control" placeholder=""
+              value="{{ DisplayPaymentSummaryData?.payment_Period_End_Date }} ">
+          </div>
 
-
-      <div class="row border py-2 mb-2">
-
-
-        <div class="col-md-12 headerRow12">
-
-          <div class="row">
-            <div class="col-md-2">
-              <label for="">Payment Date: </label>
-            </div>
-            <div class="col-md-2">
-              <input [readonly]="true" type="text" class="form-control" placeholder=""
-                value="{{ DisplayPaymentSummaryData.payment_Date }} ">
-            </div>
-            <div class="col-md-2">
-              <label for="">Payment Shedule Status: </label>
-            </div>
-            <div class="col-md-2">
-              <input [readonly]="true" type="text" class="form-control" placeholder=""
-                value="{{ DisplayPaymentSummaryData.payment_Schedule_Status }} ">
-            </div>
-
-            <div class="col-md-2">
-              <label for="">Payment Status: </label>
-            </div>
-            <div class="col-md-2">
-              <input [readonly]="true" type="text" class="form-control" placeholder=""
-                value="{{ DisplayPaymentSummaryData.payment_Status }} ">
-            </div>
-
-
-
+          <div class="col-md-2">
+            <label class="col-form-label">Shedule Updated By: </label>
+          </div>
+          <div class="col-md-2">
+            <input [readonly]="true" type="text" class="form-control" placeholder=""
+              value="{{ DisplayPaymentSummaryData?.payment_Schedule_Updated_by }} ">
           </div>
         </div>
 
-
-
-
-
-
-        <div class="col-md-12 headerRow12">
-
-          <div class="row">
-            <div class="col-md-2">
-              <label for=""> </label>
-            </div>
-            <div class="col-md-2">
-
-            </div>
-            <div class="col-md-2">
-              <label for="">Requested By: </label>
-            </div>
-            <div class="col-md-2">
-              <input [readonly]="true" type="text" class="form-control" placeholder=""
-                value="{{ DisplayPaymentSummaryData.request_User }} ">
-            </div>
-
-            <div class="col-md-2">
-              <label for="">Requested Status: </label>
-            </div>
-            <div class="col-md-2">
-              <input [readonly]="true" type="text" class="form-control" placeholder=""
-                value="{{ DisplayPaymentSummaryData.payment_Request_Date }} ">
-            </div>
-
-
-
+        <div class="row">
+          <div class="col-md-2">
+            <label class="col-form-label">Shedule Updated On: </label>
+          </div>
+          <div class="col-md-2">
+            <input [readonly]="true" type="text" class="form-control" placeholder=""
+              value="{{ DisplayPaymentSummaryData?.payment_Schedule_updated_on }} ">
           </div>
         </div>
-
-
-        <div class="col-md-12 headerRow12">
-
-          <div class="row">
-            <div class="col-md-2">
-              <label for=""> </label>
-            </div>
-            <div class="col-md-2">
-
-            </div>
-            <div class="col-md-2">
-              <label for="">Payment Approved By: </label>
-            </div>
-            <div class="col-md-2">
-              <input [readonly]="true" type="text" class="form-control" placeholder=""
-                value="{{ DisplayPaymentSummaryData.payment_Approval_User }} ">
-            </div>
-
-            <div class="col-md-2">
-              <label for="">Payment Approved: </label>
-            </div>
-            <div class="col-md-2">
-              <input [readonly]="true" type="text" class="form-control" placeholder=""
-                value="{{ DisplayPaymentSummaryData.payment_Approval_Date }} ">
-            </div>
-
-
-
-          </div>
-        </div>
-
       </div>
 
+      <div class="col-md-12 detailRow">
+        <div class="row">
+          <div class="col-md-2">
+            <label class="col-form-label">Payment Date: </label>
+          </div>
+          <div class="col-md-2">
+            <input [readonly]="true" type="text" class="form-control" placeholder=""
+              value="{{ DisplayPaymentSummaryData?.payment_Date }} ">
+          </div>
+          <div class="col-md-2">
+            <label class="col-form-label">Payment Shedule Status: </label>
+          </div>
+          <div class="col-md-2">
+            <input [readonly]="true" type="text" class="form-control" placeholder=""
+              value="{{ DisplayPaymentSummaryData?.payment_Schedule_Status }} ">
+          </div>
 
+          <div class="col-md-2">
+            <label class="col-form-label">Payment Status: </label>
+          </div>
+          <div class="col-md-2">
+            <input [readonly]="true" type="text" class="form-control" placeholder=""
+              value="{{ DisplayPaymentSummaryData?.payment_Status }} ">
+          </div>
 
-
-
-      <div class="row col-md-12 border py-2 mb-2">
-
-
-        <div class="col-md-6">
         </div>
 
-        <div class="col-md-6">
-          <div class="col-md-12 headerRow12">
-
-            <div class="row">
-              <div class="col-md-3">
-                <label for="">Assets Count</label>
-              </div>
-              <div class="col-md-3">
-                <input [readonly]="true" type="text" class="form-control" placeholder=""
-                  value="{{ DisplayPaymentSummaryData.target_Assets_in_Period }} ">
-
-
-              </div>
-              <div class="col-md-3">
-                <label for="">Actual Work/Fee Costs: </label>
-              </div>
-              <div class="col-md-3">
-                <input [readonly]="true" type="text" class="form-control" placeholder=""
-                  value="{{ DisplayPaymentSummaryData.actual_Work_Costs_in_Period }} ">
-              </div>
-
-
-
-
-
-            </div>
-
-
+        <div class="row">
+          <div class="col-md-4"> </div>
+          <div class="col-md-2">
+            <label class="col-form-label">Requested By: </label>
+          </div>
+          <div class="col-md-2">
+            <input [readonly]="true" type="text" class="form-control" placeholder=""
+              value="{{ DisplayPaymentSummaryData?.request_User }} ">
           </div>
 
-          <div class="col-md-12 headerRow12">
+          <div class="col-md-2">
+            <label class="col-form-label">Requested Status: </label>
+          </div>
+          <div class="col-md-2">
+            <input [readonly]="true" type="text" class="form-control" placeholder=""
+              value="{{ DisplayPaymentSummaryData?.payment_Request_Date }} ">
+          </div>
+        </div>
 
-            <div class="row">
-              <div class="col-md-3">
-                <label for=""></label>
-              </div>
-              <div class="col-md-3">
-
-              </div>
-              <div class="col-md-3">
-                <label for="">Est/Act Retention: </label>
-              </div>
-              <div class="col-md-3">
-                <input [readonly]="true" type="text" class="form-control" placeholder=""
-                  value="{{ DisplayPaymentSummaryData.est___Act_Retention_Value_in_Period }} ">
-              </div>
-
-
-
-
-
-            </div>
-
-
+        <div class="row">
+          <div class="col-md-4"> </div>
+          <div class="col-md-2">
+            <label class="col-form-label">Payment Approved By: </label>
+          </div>
+          <div class="col-md-2">
+            <input [readonly]="true" type="text" class="form-control" placeholder=""
+              value="{{ DisplayPaymentSummaryData?.payment_Approval_User }} ">
           </div>
 
-          <div class="col-md-12 headerRow12">
+          <div class="col-md-2">
+            <label class="col-form-label">Payment Approved: </label>
+          </div>
+          <div class="col-md-2">
+            <input [readonly]="true" type="text" class="form-control" placeholder=""
+              value="{{ DisplayPaymentSummaryData?.payment_Approval_Date }} ">
+          </div>
+        </div>
+      </div>
 
+      <div class="col-md-12 detailRow">
+        <div class="row">
+          <div class="col-md-6"></div>
+          <div class="col-md-6 detailRow">
             <div class="row">
               <div class="col-md-3">
-                <label for=""></label>
-              </div>
-              <div class="col-md-3">
-
-              </div>
-              <div class="col-md-3">
-                <label for="">Est/Act Release Retention: </label>
+                <label class="col-form-label">Assets Count</label>
               </div>
               <div class="col-md-3">
                 <input [readonly]="true" type="text" class="form-control" placeholder=""
-                  value="{{ DisplayPaymentSummaryData.est___Act_Released_Retention_in_Period }} ">
+                  value="{{ DisplayPaymentSummaryData?.target_Assets_in_Period }} ">
               </div>
-
-
-
-
-
+              <div class="col-md-3">
+                <label class="col-form-label">Actual Work/Fee Costs: </label>
+              </div>
+              <div class="col-md-3">
+                <input [readonly]="true" type="text" class="form-control" placeholder=""
+                  value="{{ DisplayPaymentSummaryData?.actual_Work_Costs_in_Period }} ">
+              </div>
             </div>
-
-
-          </div>
-
-
-          <div class="col-md-12 headerRow12">
-
             <div class="row">
+              <div class="col-md-6">
+              </div>
               <div class="col-md-3">
-                <label for="">Contract Fee Count</label>
+                <label class="col-form-label">Est/Act Retention: </label>
               </div>
               <div class="col-md-3">
                 <input [readonly]="true" type="text" class="form-control" placeholder=""
-                  value="{{ DisplayPaymentSummaryData.contract_Fees_Count }} ">
-
-
+                  value="{{ DisplayPaymentSummaryData?.est___Act_Retention_Value_in_Period }} ">
               </div>
-              <div class="col-md-3">
-                <label for="">Contract Fee: </label>
-              </div>
-              <div class="col-md-3">
-                <input [readonly]="true" type="text" class="form-control" placeholder=""
-                  value="{{ DisplayPaymentSummaryData.contract_Fees_in_Period }} ">
-              </div>
-
-
-
-
-
             </div>
-
-
-          </div>
-
-          <div class="col-md-12 headerRow12">
-
-            <div class="row">
-              <div class="col-md-3">
-                <label for=""></label>
-              </div>
-              <div class="col-md-3">
-
-              </div>
-              <div class="col-md-3">
-                <label for="">Fixed Costs: </label>
-              </div>
-              <div class="col-md-3">
-                <input [readonly]="true" type="text" class="form-control" placeholder=""
-                  value="{{ DisplayPaymentSummaryData.fixed_Work_Costs_in_Period }} ">
-              </div>
-
-
-
-
-
-            </div>
-
-
-          </div>
-
-
-
-          <div class="col-md-12 headerRow12">
 
             <div class="row">
               <div class="col-md-6">
-                <label for=""></label>
-              </div>
-              <div class="col-md-6">
-
-              </div>
-            </div>
-          </div>
-
-          <div class="col-md-12 headerRow12">
-
-            <div class="row">
-              <div class="col-md-3">
-                <label for=""></label>
               </div>
               <div class="col-md-3">
-
-              </div>
-              <div class="col-md-3">
-                <label for="">Sub Total: </label>
-              </div>
-              <div class="col-md-3">
-                <input [readonly]="true" type="text" class="form-control" placeholder="" value="">
-              </div>
-
-
-
-
-
-            </div>
-
-
-          </div>
-
-          <div class="col-md-12 headerRow12">
-
-            <div class="row">
-              <div class="col-md-3">
-                <label for="">Vat Rate %</label>
+                <label class="col-form-label">Est/Act Release Retention: </label>
               </div>
               <div class="col-md-3">
                 <input [readonly]="true" type="text" class="form-control" placeholder=""
-                  value="{{ DisplayPaymentSummaryData.payment_VAT_Rate }} ">
-
-
+                  value="{{ DisplayPaymentSummaryData?.est___Act_Released_Retention_in_Period }} ">
               </div>
+
+            </div>
+
+            <div class="row">
               <div class="col-md-3">
-                <label for="">Vat value: </label>
+                <label class="col-form-label">Contract Fee Count</label>
               </div>
               <div class="col-md-3">
                 <input [readonly]="true" type="text" class="form-control" placeholder=""
-                  value="{{ DisplayPaymentSummaryData.payment_Value_VAT }} ">
+                  value="{{ DisplayPaymentSummaryData?.contract_Fees_Count }} ">
               </div>
+              <div class="col-md-3">
+                <label class="col-form-label">Contract Fee: </label>
+              </div>
+              <div class="col-md-3">
+                <input [readonly]="true" type="text" class="form-control" placeholder=""
+                  value="{{ DisplayPaymentSummaryData?.contract_Fees_in_Period }} ">
+              </div>
+            </div>
 
-
-
-
+            <div class="row">
+              <div class="col-md-6"> </div>
+              <div class="col-md-3">
+                <label class="col-form-label">Fixed Costs: </label>
+              </div>
+              <div class="col-md-3">
+                <input [readonly]="true" type="text" class="form-control" placeholder=""
+                  value="{{ DisplayPaymentSummaryData?.fixed_Work_Costs_in_Period }} ">
+              </div>
 
             </div>
 
 
+            <div class="row">
+              <div class="col-md-6"> </div>
+              <div class="col-md-3">
+                <label class="col-form-label">Sub Total: </label>
+              </div>
+              <div class="col-md-3 subTotal">
+                <input [readonly]="true" type="text" class="form-control"
+                  value="{{ DisplayPaymentSummaryData?.payment_Value }}">
+              </div>
+            </div>
+
+
+            <div class="row">
+              <div class="col-md-3">
+                <label class="col-form-label">Vat Rate %</label>
+              </div>
+              <div class="col-md-3">
+                <input [readonly]="true" type="text" class="form-control"
+                  value="{{ DisplayPaymentSummaryData?.payment_VAT_Rate }}">
+              </div>
+              <div class="col-md-3">
+                <label class="col-form-label">Vat value: </label>
+              </div>
+              <div class="col-md-3 vatVlaue">
+                <input [readonly]="true" type="text" class="form-control"
+                  value="{{ DisplayPaymentSummaryData?.payment_Value_VAT }}">
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6"> </div>
+              <div class="col-md-3">
+                <label class="col-form-label" style="font-weight: 600;">Total: </label>
+              </div>
+              <div class="col-md-3">
+                <input style="font-weight: 600;" [readonly]="true" type="text" class="form-control"
+                  value="{{DisplayPaymentSummaryData?.total_Payment_Value}}">
+              </div>
+            </div>
+
+
           </div>
-
-
-
-
         </div>
       </div>
-
 
     </div>
+
 
   </kendo-window>
 

@@ -1,294 +1,180 @@
-
-  .selected {
-    background-color: #cacaca;
-  }
-
-  #myUL {
-    border: 1px solid #e2e2eb;
-    background-color: #fff;
-    list-style: none;
-    font-size: 12px;
-    min-height: 27px;
-    max-height: 58px;
-    overflow-y: scroll;
-    border-radius: 5px;
-    padding: 2px 0px;
-  }
-
-  #myUL li {
-    list-style: none;
-    font-size: 12px;
-  }
-
-  #myUL, #myUL ul {
-    padding-left: 20px !important;
-  }
-
-  .addr_search {
-    text-align: center;
-    margin-top: 3px;
-  }
-
-  .assetInpBox {
-    height: 27px;
-    font-size: .894rem;
-    line-height: 1.54;
-    color: #4E5155;
-    background-color: #fff;
-    background-clip: padding-box;
-    border: 1px solid rgba(24, 28, 33, 0.1);
-    border-radius: .25rem;
-  }
-
-  .assetSelect {
-    /* padding: .188rem 2.5rem .188rem .625rem; */
-    height: calc(1.5rem + 2px);
-    background-position: right .625rem center;
-    font-size: .75rem;
-    line-height: 1.5;
-    background-clip: padding-box;
-    border: 1px solid rgba(24, 28, 33, 0.1);
-  }
-
-  .k-window {
-    position: fixed !important;
-}
-
 .k-grid tbody td {
-    white-space: nowrap;
-    line-height: 20px;
-    padding: 8px 12px;
+  white-space: nowrap;
+  line-height: 20px;
+  padding: 8px 12px;
 }
 
-  .btnGrp button {
-    margin-left:3px;
-  }
+.worksorderGrid .k-grid tr {
+  background-color: white
+}
 
-  /** scroll till window start  **/
-  .projectsGrid {
-    display: block;
-    max-width: 100%;
-  }
+.k-grid tr.notNew {
+  background-color: rgba(230, 0, 126, 0.1) !important
+}
 
-  table {
-    border-collapse: collapse;
-    /* width: 340%; */
-    overflow-x: scroll;
-    display: block;
-  }
+.worksorderGrid .gridRow:hover:not(.notNew), .worksorderGrid .gridRow:hover td {
+  background-color: transparent !important;
+  ;
+}
 
-  thead, tbody {
-    display: block;
-  }
+.worksorderGrid .k-state-selected.gridRow:hover {
+  background-color: #d4cdcd!important;
+}
 
-  .fixTbody {
-    overflow-y: scroll;
-    overflow-x: hidden;
-    height: 580px;
-  }
+.dropdown.list-unstyled {
+  position: absolute !important;
+}
 
-  .smallCol{
-    min-width: 38px;
-    max-width: 38px;
-    width: 38px;
-  }
+/* .k-grid-content tr td {
+  overflow: visible !important;
+} */
 
-  .midCol {
-    min-width: 120px;
-    max-width: 120px;
-  }
+/* .drpMenu{
+  top: -122px !important;
+} */
 
-  .bigCol{
-    min-width: 164px;
-    max-width: 164px;
-  }
+.worksOrderFilter .text-dark:hover {
+  color: black !important;
+}
 
-  .midBigCol{
-    min-width: 189px;
-    max-width: 189px;
-  }
+.filterArea {
+  width: 100%;
+  display: block;
+}
 
-  .addressCol {
-    min-width: 800px;
-    max-width: 800px;
-  }
+.filterArea input[type=text] {
+  font-size: .894rem;
+  line-height: 1.54;
+  color: #4E5155;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid rgba(24, 28, 33, 0.1);
+  border-radius: .25rem;
+}
 
-  .midAddressCol{
-    min-width: 564px;
-    max-width: 564px;
-  }
+.filterArea .filterdiv, .radioDiv, .actionDiv, .actionDiv #nesting-dropdown-demo {
+  display: inline-block;
+}
 
-  td, th {
-    /* min-width: 100px; */
-    /* height: 25px; */
-    /* overflow: hidden; */
-    text-overflow: ellipsis;
-    /* max-width: 100px; */
-  }
+.filterArea .filterdiv1 .filterLbl {
+  width: 34%;
+}
 
-   .search-container {
-    position: fixed;
-    top: 0;
-    right: 0;
-    width: 255px;
-    display: none;
-    height: 100%;
-    overflow: hidden;
-    background: #070627;
-    z-index: 999;
-    /* transform: translateX(100%); */
-    -webkit-transform: translateX(100%);
-  }
+.filterArea .filterdiv1 input[type=text] {
+  width: 52%;
+}
 
-  .selectedcs {
-    animation: slide-in 0.5s forwards;
-    -webkit-animation: slide-in 0.5s forwards;
-  }
+.filterArea .filterdiv2 .filterLbl {
+  width: 19%;
+  margin-right: 12px;
+}
 
-  .dismiss {
-    animation: slide-out 0.5s forwards;
-    -webkit-animation: slide-out 0.5s forwards;
-  }
+.filterArea .filterdiv2 input[type=text] {
+  width: 65%;
+}
 
-  .searchDiv {
-    padding: 7px;
-    color: white;
-    overflow-y: scroll;
-    height: 829px;
-  }
+.filterArea .filterdiv3 .filterLbl {
+  width: 36%;
+}
 
-  .searchDiv::-webkit-scrollbar {
-    width: .5em;
-  }
+.filterArea .filterdiv3 input[type=text] {
+  width: 50%;
+}
 
-  .searchDiv::-webkit-scrollbar-track {
-    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-    border-radius: 10px;
-  }
+.filterArea .filterdiv4 .filterLbl {
+  width: 24%;
+}
 
-  .searchDiv::-webkit-scrollbar-thumb {
-    background-color: darkgrey;
-    outline: 1px solid slategrey;
-    border-radius: 10px;
-  }
+.filterArea .filterdiv4 input[type=text] {
+  width: 68%;
+}
 
-  .assetCount {
-    padding: 5px 5px 5px 0px;
-    color: #a3a4a6;
-    float: left;
-  }
+.filterArea .filterdiv:not(:first-child) {
+  margin-left: 6px;
+}
 
-  .exportDiv {
-    text-align: right;
-  }
+.filterdiv2, .filterdiv4 {
+  width: 19%;
+}
 
-  .iconDiv {
-    display: inline-block !important;
-  }
+.filterdiv5 {
+  width: 21%;
+}
 
-  .iconDiv i {
-    display: inline-block !important;
-    margin: 0px 5px;
-  }
+.filterdiv1 {
+  width: 15%;
+}
 
-  .osFilterSwitch, .asbestosColumnSwitch, .colSwitch {
-    border: 1px solid #847d7d;
-  }
+.filterdiv3 {
+  width: 11%;
+}
 
-  .osFilterLabel, .filterLabel {
-    display: block;
-  }
+.filterdiv6 {
+  width: 8%;
+}
 
-  .filtersection {
-    padding: 10px 0px;
-    border-top: 1px solid gray;
-  }
+.filterArea .radioDiv {
+  margin-left: 21px;
+}
 
-  .filterHead {
-    color: #b0acac;
-    font-size: 18px;
-  }
+.radioDiv .radio-inline input[type=radio], .radioDiv .radio-inline {
+  margin-right: 11px;
+}
 
-  .assetTbl td{
-    word-break: break-all;
-  }
+.deleteError {
+  margin: 30px;
+  text-align: center;
+  color: red;
+  font-size: 17px;
+}
 
-  .readonlyCl{
-    background: #eee2e2;
-  }
+.successDeleteMsg {
+  margin: 30px;
+  text-align: center;
+  color: green;
+  font-size: 17px;
+}
 
-  @keyframes slide-in {
-    0% {
-      -webkit-transform: translateX(100%);
-    }
-    100% {
-      -webkit-transform: translateX(0%);
-    }
-  }
+.dropdown-menu.show{
+  margin-bottom: 10px;
+}
 
-  @-webkit-keyframes slide-in {
-    0% {
-      transform: translateX(100%);
-    }
-    100% {
-      transform: translateX(0%);
-    }
-  }
+/** media query **/
 
-  @keyframes slide-out {
-    0% {
-      transform: translateX(0%);
-    }
-    100% {
-      transform: translateX(100%);
-    }
+@media only screen and (min-device-width: 768px) and (max-device-width: 1366px) {
+  .filterArea .filterdiv {
+      width: 40%;
   }
-
-  @-webkit-keyframes slide-out {
-    0% {
-      -webkit-transform: translateX(0%);
-    }
-    100% {
-      -webkit-transform: translateX(100%);
-    }
+  .filterArea .filterdiv {
+      margin-left: 0px;
   }
+}
 
-  @media only screen and (max-width: 768px) {
-    .hiearchyDiv label {
-      text-align: left !important;
-    }
-    .hiearchyBtn {
-      margin-bottom: 8px;
-      min-width: 16% !important;
-      max-width: 16% !important;
-    }
-    .typeDiv {
-      padding: 0px;
-      margin-bottom: 8px;
-    }
-    .typeDiv .assetSelect {
+@media only screen and (min-device-width: 280px) and (max-device-width: 540px) {
+  .filterArea .filterdiv {
       width: 100%;
-    }
-    .addr_search {
-      text-align: left;
-    }
-    .goBtnDiv {
-      padding: 2px;
-      margin-top: 7px;
-    }
-    .exportDiv {
-      text-align: left;
-      margin-bottom: 3px;
-    }
-
   }
-
-
-  .dropdown.list-unstyled {
-    position: absolute !important;
+  .filterArea .filterdiv .filterLbl {
+      width: 25%;
+      text-align: left;
+  }
+  .filterArea .filterdiv input[type=text] {
+      width: 70%;
+  }
+  .filterArea .filterdiv {
+      margin-left: 0px !important;
+  }
 }
 
-.disabled {
-    pointer-events: none;
+@media (max-width: 1224px) {
+  .filterdiv {
+      width: 40% !important;
+      margin-left: 0px !important;
+  }
+  .filterdiv .filterLbl {
+      width: 38% !important;
+  }
+  .filterdiv input[type=text] {
+      width: 58% !important;
+  }
 }
-

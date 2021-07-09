@@ -110,11 +110,8 @@ import { SurveyCbcreportSelectImageComponent } from './survey-portal/survey-cbcr
 import { SurveyCbcreportSignatureImageComponent } from './survey-portal/survey-cbcreport-signature-image/survey-cbcreport-signature-image.component';
 import { TreeListModule } from '@progress/kendo-angular-treelist';
 import { CurrencyPipe } from '@angular/common';
-import { AssetResidentInfoComponent } from './asset-resident-info/asset-resident-info.component';
-import { AssetRiskComponent } from './asset-resident-info/asset-risk/asset-risk.component';
 import { AssetResidentContainerComponent } from './asset-resident-container/asset-resident-container.component';
-
-
+import { WorksOrderSettingsComponent } from './works-order-settings/works-order-settings.component';
 
 
 @NgModule({
@@ -209,10 +206,10 @@ import { AssetResidentContainerComponent } from './asset-resident-container/asse
     SurveyCbcreportSelectImageComponent,
     SurveyCbcreportSelectPDFComponent,
     SurveyCbcreportSignatureImageComponent,
-    AssetResidentInfoComponent,
-    AssetRiskComponent,
     AssetResidentContainerComponent,
-   
+    WorksOrderSettingsComponent,
+
+
   ],
 
   imports: [
@@ -280,11 +277,11 @@ import { AssetResidentContainerComponent } from './asset-resident-container/asse
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptorService, multi: true },
     { provide: NgbDateParserFormatter, useClass: NgbDateCustomParserFormatter },
-    
+
   ],
-  // exports: [
-  //   DialogModule
-  // ],
+  exports: [
+
+  ],
   bootstrap: [AppComponent],
   entryComponents: [ConfirmationDialogComponent],
 

@@ -31,7 +31,7 @@
         </div>
 
         <div class="col-md-6 mt-4 text-left">
-            <button type="button" (click)="delete()" [disabled]="!selectedSingleNoAccessData" class="btn btn-sm themeButton mr-1">
+            <button *ngIf="woMenuBtnSecurityAccess('Delete No Access')" type="button" (click)="delete()" [disabled]="!selectedSingleNoAccessData" class="btn btn-sm themeButton mr-1">
                 Delete
             </button>
         </div>

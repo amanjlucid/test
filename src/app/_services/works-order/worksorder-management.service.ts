@@ -266,7 +266,7 @@ export class WorksorderManagementService {
         return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetAssetAddressForSpecificAsset?WOSEQUENCE=${WOSEQUENCE}&WOPSEQUENCE=${WOPSEQUENCE}&assid=${assid}&WOCHECKSURCDE=${WOCHECKSURCDE}`, this.httpOptions);
     }
 
-    //asset address 
+    //asset address
     getAssetAddressByAsset(assid) {
         return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetAssetAddress?assid=${assid}`, this.httpOptions);
     }
@@ -573,8 +573,89 @@ export class WorksorderManagementService {
         let body = JSON.stringify(params);
         return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/WORemoveInstructionAssetDetailForMultiple`, body, this.httpOptions);
     }
+    getReportingCharConfigData1(wosequence: number) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/WOPMManagement/GetReportingCharConfigData1?wosequence=${wosequence}`, this.httpOptions);
+    }
+
+    getReportingCharConfigData2(searchchar: string) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/WOPMManagement/GetReportingCharConfigData2?searchchar=${searchchar}`, this.httpOptions);
+    }
+
+    getWorksOrderChecklist(WOSEQUENCE) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWorksOrderChecklist?WOSEQUENCE=${WOSEQUENCE}`, this.httpOptions);
+    }
+
+    updateChecklist(updateChecklistParms) {
+        var httpOptions = {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json'
+            }),
+        };
+        let body = JSON.stringify(updateChecklistParms);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/UpdateChecklist`, body, httpOptions);
+    }
+
+
+    getCustomerSurveyAnswers(WOSEQUENCE, WOPSEQUENCE, ASSID) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetCustomerSurveyAnswers?WOSEQUENCE=${WOSEQUENCE}&WOPSEQUENCE=${WOPSEQUENCE}&ASSID=${ASSID}`, this.httpOptions);
+    }
+
+
+    updateCustomerSurvey(updateCustomerSurveyParms) {
+        var httpOptions = {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json'
+            }),
+        };
+        let body = JSON.stringify(updateCustomerSurveyParms);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/UpdateCustomerSurvey`, body, httpOptions);
+    }
 
 
 
+    getMergeMailLetter(getMergeMailLetterParms) {
+        var httpOptions = {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json'
+            }),
+        };
+        let body = JSON.stringify(getMergeMailLetterParms);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/GetMergeMailLetter`, body, httpOptions);
+    }
+
+    SetWorksOrderAssetTargetDate(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/SetWorksOrderAssetTargetDate`, body, this.httpOptions);
+    }
+
+    SetWorksOrderAssetPlannedDate(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/SetWorksOrderAssetPlannedDates`, body, this.httpOptions);
+    }
+
+    updateWOAssetComment(updateWOAssetCommentParms) {
+        var httpOptions = {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json'
+            }),
+        };
+        let body = JSON.stringify(updateWOAssetCommentParms);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/UpdateWOAssetComment`, body, httpOptions);
+    }
+
+
+    updateWOAssetChecklistComment(updateWOAssetChecklistCommentParms) {
+        var httpOptions = {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json'
+            }),
+        };
+        let body = JSON.stringify(updateWOAssetChecklistCommentParms);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/UpdateWOAssetChecklistComment`, body, httpOptions);
+    }
+
+    GetPaymentScheduleDate(WOSEQUENCE, WPRSEQUENCE) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetPaymentScheduleDate?WOSEQUENCE=${WOSEQUENCE}&WPRSEQUENCE=${WPRSEQUENCE}`, this.httpOptions);
+    }
 
 }

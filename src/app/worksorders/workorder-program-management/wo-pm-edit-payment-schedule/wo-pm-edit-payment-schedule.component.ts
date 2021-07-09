@@ -42,7 +42,6 @@ export class WoProgramManagmentEditPaymentScheduleComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log('in')
     this.view = this.editService.pipe(map(data => process(data, this.gridState)));
     this.editService.read(this.worksOrderData);
     this.gridLoading = false;

@@ -68,8 +68,6 @@ export class ManageMilestonesComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log(this.selectedPhaseInp);
-
     this.subs.add(
       combineLatest([
         this.sharedService.worksOrdersAccess,

@@ -120,7 +120,7 @@ export class EditPaymentScheduleService extends BehaviorSubject<any[]> {
     public hasChanges(): boolean {
         return Boolean(this.deletedItems.length || this.updatedItems.length || this.createdItems.length);
     }
-    
+
 
     public saveChanges(): void {
         if (!this.hasChanges()) {
@@ -161,6 +161,7 @@ export class EditPaymentScheduleService extends BehaviorSubject<any[]> {
                 const { userId, ps } = reqParams;
                 gridParam = ps;
                 const params = { struserid: userId, model: this.updatedItems }
+                console.log(params);
                 if (changesFor) {
                     completed.push(this.setValuationToZeroPayment(params));
                 } else {
@@ -171,12 +172,13 @@ export class EditPaymentScheduleService extends BehaviorSubject<any[]> {
 
         if (completed.length == 0) return;
 
+
         zip(...completed).subscribe((data) => {
             if (data[0] != undefined) {
                 const resp: any = data[0];
                 if (resp.isSuccess) {
                     if (resp.data.validYN == "Y") {
-                        this.alertService.success(resp.data.validationMessage);
+                        this.alertService.success("Valuation updated successfully.");
                         this.reset();
                         this.read(gridParam)
                     } else this.alertService.error(resp.data.validationMessage);

@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { AlertService, ConfirmationDialogService, HelperService, SharedService, WorksorderManagementService } from '../../_services'
+import { combineLatest } from 'rxjs';
 
 
 @Component({
@@ -31,6 +32,9 @@ export class NoAccessHistoryComponent implements OnInit {
   gridLoading = true
   selectedSingleNoAccessData: any;
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
+  worksOrderAccess = [];
+  worksOrderUsrAccess: any = [];
+  userType: any = [];
 
   constructor(
     private chRef: ChangeDetectorRef,
@@ -38,9 +42,24 @@ export class NoAccessHistoryComponent implements OnInit {
     private alertService: AlertService,
     private confirmationDialogService: ConfirmationDialogService,
     private helperService: HelperService,
+    private sharedService: SharedService,
   ) { }
 
   ngOnInit(): void {
+    this.subs.add(
+      combineLatest([
+        this.sharedService.worksOrdersAccess,
+        this.sharedService.woUserSecObs,
+        this.sharedService.userTypeObs
+      ]).subscribe(
+        data => {
+          this.worksOrderAccess = data[0];
+          this.worksOrderUsrAccess = data[1];
+          this.userType = data[2][0];
+        }
+      )
+    )
+
     this.getNoAccessData();
   }
 
@@ -81,7 +100,7 @@ export class NoAccessHistoryComponent implements OnInit {
 
   delete(checkOrProcess = "C") {
     const { wosequence, wopsequence, assid, wochecksurcde, wostagesurcde, woacnasequence } = this.selectedSingleNoAccessData;
-    
+
     let params = {
       WOSEQUENCE: wosequence,
       WOPSEQUENCE: wopsequence,
@@ -125,7 +144,6 @@ export class NoAccessHistoryComponent implements OnInit {
 
 
   openConfirmationDialog(res) {
-
     let checkstatus = "C";
 
     if (res.pRETURNSTATUS == 'S') {
@@ -145,6 +163,9 @@ export class NoAccessHistoryComponent implements OnInit {
   }
 
 
+  woMenuBtnSecurityAccess(menuName) {
+    return this.helperService.checkWorkOrderAreaAccess(this.userType, this.worksOrderAccess, this.worksOrderUsrAccess, menuName)
+  }
 
 
 }

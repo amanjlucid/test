@@ -1,0 +1,41 @@
+<!-- <div class="modalBGround" style="z-index: 10003"></div> -->
+
+
+
+
+<kendo-window  title="Customer Survey" [top]="10" [minWidth]="550" [height]="550"
+[width]="1150" (close)="closeWindow()" style="padding: 0;" >
+
+<div class=" col-md-12 container py-0 pl-2 pr-0">
+  <div class="col-md-12 header">
+  </div>
+  <div class="main-content p-1">
+            <div *ngFor="let item of questions let i = index; trackBy:trackByFunction">
+              <app-customersurveyanswer class="answerComponent" [answerRecord]="item"></app-customersurveyanswer>
+            </div>
+  </div>
+  <div class="footer buttonDiv" align="right">
+              <button type="button" class="btn btn-sm themeButton mr-1" (click)="applySurvey()">Apply</button>
+              <button type="button" class="btn btn-sm themeButton mr-1" (click)="closeWindow()">Cancel</button>
+  </div>
+</div>
+
+
+
+<div style="background-color: #cecece;position: absolute; top: 0px; left:0px; width: 100%;" class=" m-0  p-0">
+  <div style="background-color: #cecece;" class="form-row m-0 p-0">
+    <p style="background-color: #cecece; margin: -1px; font-weight: 600;  text-overflow: ellipsis;white-space: nowrap;overflow: hidden;" class="col-md-12 m-0 px-3 pt-1 pb-1">
+      Asset:
+      <span style="font-weight: 400;margin-left:10px">{{selectedWorksOrderAsset.woname}}</span>
+     </div>
+</div>
+
+
+</kendo-window>
+
+
+
+
+
+
+
