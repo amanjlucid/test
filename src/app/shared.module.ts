@@ -1,16 +1,15 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
+import { GridModule, ExcelModule } from '@progress/kendo-angular-grid';
+import { InputsModule } from '@progress/kendo-angular-inputs';
+import { DialogsModule } from '@progress/kendo-angular-dialog';
 import { SimpleTextFilterComponent } from './kendo-component/simple-text-filter.component';
+import { TextFilterComponent } from './kendo-component/text-filter.component';
 import { DateFormatPipe } from './_pipes/date-format.pipe'
 import { CurrencyFormatPipe } from './_pipes/currency-format.pipe'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DateRangeFilterComponent } from './kendo-component/date-range-filter.component';
-
-import { GridModule } from '@progress/kendo-angular-grid';
-import { InputsModule } from '@progress/kendo-angular-inputs';
-import { DialogsModule } from '@progress/kendo-angular-dialog';
-
+import { RangeFilterComponent } from './kendo-component/range-filter.component';
 import { DatePickerModule } from '@progress/kendo-angular-dateinputs';
 import { MultiCheckFilterComponent } from './kendo-component/multicheck-filter.component';
 import { RoundOffPipe } from './_pipes/round-off.pipe';
@@ -27,9 +26,9 @@ import { AssetRiskComponent } from './asset-resident-info/asset-risk/asset-risk.
 import { AssetResidentInfoComponent } from './asset-resident-info/asset-resident-info.component';
 
 @NgModule({
-  imports: [FormsModule, ReactiveFormsModule, GridModule, InputsModule, DialogsModule, DatePickerModule, CommonModule, TreeListModule, MultiSelectModule, NgMultiSelectDropDownModule.forRoot()],
-  declarations: [DateFormatPipe, CurrencyFormatPipe, RoundOffPipe, SimpleTextFilterComponent, DateRangeFilterComponent, MultiCheckFilterComponent, RetrievedEpcGridComponent, DateRangeTreeListFilterComponent, ReportingComponent, CurrencyInputDirective, CurrencyMaskDirective, NumberDecimalMaskDirective, AssetResidentInfoComponent,     AssetRiskComponent,],
-  exports: [DateFormatPipe, CurrencyFormatPipe, RoundOffPipe, SimpleTextFilterComponent, DateRangeFilterComponent, MultiCheckFilterComponent, RetrievedEpcGridComponent, DateRangeTreeListFilterComponent, ReportingComponent, CurrencyInputDirective, CurrencyMaskDirective, NumberDecimalMaskDirective, AssetResidentInfoComponent]
+  imports: [ FormsModule, ReactiveFormsModule, GridModule, DatePickerModule, CommonModule, ExcelModule, InputsModule, DialogsModule, TreeListModule, MultiSelectModule,  NgMultiSelectDropDownModule],
+  declarations: [DateFormatPipe, CurrencyFormatPipe, RoundOffPipe, SimpleTextFilterComponent, DateRangeFilterComponent, MultiCheckFilterComponent, RangeFilterComponent,TextFilterComponent, AssetResidentInfoComponent, AssetRiskComponent,DateRangeTreeListFilterComponent,CurrencyMaskDirective, NumberDecimalMaskDirective,CurrencyInputDirective,RetrievedEpcGridComponent,ReportingComponent],
+  exports: [DateFormatPipe, CurrencyFormatPipe, RoundOffPipe, SimpleTextFilterComponent, DateRangeFilterComponent, MultiCheckFilterComponent, RangeFilterComponent,TextFilterComponent, AssetResidentInfoComponent,DateRangeTreeListFilterComponent,CurrencyMaskDirective, NumberDecimalMaskDirective,CurrencyInputDirective,RetrievedEpcGridComponent,ReportingComponent]
 })
 
 export class SharedModule { }

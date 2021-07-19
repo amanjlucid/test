@@ -11,13 +11,10 @@
 
     <div class="table-responsive" *ngIf="reports?.rows?.length > 0">
       <table class="table table-striped table-bordered reportingTable">
-        <thead>
-          <tr>
-            <th *ngFor="let report of reports.columns">{{report.columnName}}</th>
-          </tr>
-        </thead>
         <tbody>
-
+          <tr>
+            <td *ngFor="let report of reports.columns">{{report.columnName}}</td>
+          </tr>
           <tr *ngFor="let row of reports.rows" (click)="toggleGroupClass($event, row)">
             <td *ngFor="let value of row.values">{{ value }}</td>
           </tr>
@@ -30,7 +27,7 @@
       <div class="cui-example-paragraph-spacing reportingPrevBtnDiv">
 
         <span class="reportingPrevBtn">
-          <div class="btn-group" *ngIf="reporterPortalPermission.indexOf('Preview User Report') != -1">
+          <div class="btn-group" *ngIf="reporterPortalPermission.indexOf('Preview Rows') != -1">
             <button [disabled]="reports?.rows?.length == 0" type="button"
               class="btn btn-sm btn-outline-secondary dropdown-toggle" data-toggle="dropdown" data-trigger="hover"
               aria-expanded="false">Preview</button>
@@ -45,25 +42,18 @@
           </div>
 
 
-          <div class="btn-group ml-2" *ngIf="reporterPortalPermission.indexOf('Save Preview As') != -1">
-            <button [disabled]="reports?.rows?.length == 0" type="button"
-              class="btn btn-sm btn-outline-secondary dropdown-toggle" data-toggle="dropdown" data-trigger="hover"
-              aria-expanded="false">Preview As</button>
-            <div class="dropdown-menu" x-placement="top-start"
-              style="position: absolute; will-change: top, left; top: -175px; left: 0px; font-size: 13px;">
-              <a class="dropdown-item" (click)="saveReport('CSV')" href="javascript:void(0)">Csv</a>
-              <a class="dropdown-item" (click)="saveReport('EXCEL')" href="javascript:void(0)">Excel</a>
 
-            </div>
-          </div>
+            <button *ngIf="reporterPortalPermission.indexOf('Save Preview') != -1" [disabled]="reports?.rows?.length == 0" type="button"
+            class="btn btn-sm btn-outline-secondary" (click)="savePreview()">Save Preview</button>
 
-          <div class="btn-group ml-2" *ngIf="reporterPortalPermission.indexOf('Email Preview') != -1">
+          <div class="btn-group" *ngIf="reporterPortalPermission.indexOf('Email Preview') != -1">
             <button [disabled]="reports?.rows?.length == 0" type="button"
               class="btn btn-sm btn-outline-secondary dropdown-toggle" data-toggle="dropdown" data-trigger="hover"
               aria-expanded="false">Email Preview</button>
             <div class="dropdown-menu" x-placement="top-start"
               style="position: absolute; will-change: top, left; top: -175px; left: 0px; font-size: 13px;">
               <a class="dropdown-item" (click)="openEmailWindow()" href="javascript:void(0)">Selected Rows</a>
+              <a class="dropdown-item" (click)="opneEmailAllRecords()" href="javascript:void(0)">Grid</a>
             </div>
           </div>
 
@@ -85,7 +75,7 @@
               <span class="custom-control-label">Excel</span>
             </label>
             <label class="custom-control custom-control-inline custom-checkbox">
-              <input checked [disabled]="reports?.rows?.length == 0 || reportDataType" type="checkbox"
+              <input #dataCheckBox checked [disabled]="reports?.rows?.length == 0 || reportDataType" type="checkbox"
                 class="custom-control-input" name="dataReport">
               <span class="custom-control-label">Data</span>
             </label>
@@ -102,8 +92,7 @@
   </div>
   <div class="reportBgblur"></div>
 
-  <!-- <kendo-dialog title="sds" *ngIf="emailWithReportWindow || emailWindow">
-  </kendo-dialog> -->
+
 
   <kendo-window [(width)]="emailWindowWidth" [(top)]="emailPreviewWindowTop" [minWidth]="250" [minHeight]="350"
     title="Send Email including data" [height]="auto" *ngIf="emailWindow" (close)="closeEmailWindow()">
@@ -146,23 +135,25 @@
             <div class="col-sm-10 htmlData">
               <div class="dataDiv">
                 <p>From: {{currentUser?.userName }}</p>
-                <p>Report: {{ this.exportId }} - {{ reportingType }}</p>
-                <p>Parameters:
-                  {{ reportingAction == "selectedGrpDetail" ? "Security Group="+ this.selectedGroup?.groupId : "None"}}
-                </p>
+                <p>Report: {{ reportingType }}</p>
+                <p>Parameters: {{ formattedParameters}}</p>
                 <p>Rows: {{emailReportsLists.rows?.length}}</p>
               </div>
               <div class="table-responsive emailPreviewTable">
                 <table class="">
-                  <thead style="display: block;">
+<!--                   <thead style="display: block;">
                     <tr>
                       <th
                         style="text-align: left; min-width: 138px!important; width: 138px!important;  border: 1px solid #ddd; padding: 8px;"
                         *ngFor="let emailReportsList of emailReportsLists.columns">
                         {{emailReportsList.columnName}}</th>
                     </tr>
-                  </thead>
+                  </thead> -->
                   <tbody style="display: block; overflow-y: auto; overflow-x: hidden; max-height: 114px;">
+                    <tr >
+                      <td style="min-width: 138px!important; border: 1px solid #ddd; padding: 8px;"
+                      *ngFor="let emailReportsList of emailReportsLists.columns">{{emailReportsList.columnName}}</td>
+                    </tr>
                     <tr *ngFor="let row of emailReportsLists.rows">
                       <td style="min-width: 138px!important; border: 1px solid #ddd; padding: 8px;"
                         *ngFor="let value of row.values">{{ value }}</td>

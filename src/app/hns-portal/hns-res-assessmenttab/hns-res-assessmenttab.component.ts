@@ -81,12 +81,12 @@ export class HnsResAssessmenttabComponent implements OnInit {
     this.headerFilters.Textstring = '';
     this.displayCustomerColOnAssessment()
 
-    if (sessionStorage.getItem('AssetHSView'))
+    if (localStorage.getItem('AssetHSView'))
         {
-          this.AssetHSView = JSON.parse(sessionStorage.getItem('AssetHSView'));
+          this.AssetHSView = JSON.parse(localStorage.getItem('AssetHSView'));
           this.fromAssetView = true;
-
-
+          localStorage.removeItem('AssetHSView')
+		  this.gridStat = "N";
         }
 
     this.query = this.stateChange.pipe(
@@ -103,6 +103,7 @@ export class HnsResAssessmenttabComponent implements OnInit {
         if (this.fromAssetView)
         {
             this.Assessments = res.data;
+            this.gridStat = "N";
             this.displayAssessmentFromAssetWindow()
         }
       })

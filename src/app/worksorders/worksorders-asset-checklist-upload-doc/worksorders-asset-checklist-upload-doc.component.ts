@@ -153,7 +153,14 @@ export class WorksordersAssetChecklistUploadDocComponent implements OnInit {
           formData.append('WOP_SEQNO', '0');
           formData.append('ASSID', '');
           formData.append('CHECKSURCDE', '0');
-        } else {
+        } else if (this.uploadDocFor == "Asset") {
+          formData.append('WO_LEVEL', '1');
+          formData.append('WO_SEQNO', this.selectedChecklist.wosequence);
+          formData.append('WOP_SEQNO', this.selectedChecklist.wopsequence);
+          formData.append('ASSID', this.selectedChecklist.assid);
+          formData.append('CHECKSURCDE', '0');
+        }
+        else {
           formData.append('WO_LEVEL', '2');
           formData.append('WO_SEQNO', this.selectedChecklist.wosequence);
           formData.append('WOP_SEQNO', this.selectedChecklist.wopsequence);

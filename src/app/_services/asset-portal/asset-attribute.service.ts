@@ -26,7 +26,6 @@ export class AssetAttributeService {
         return this.http.get<any>(`${appConfig.apiUrl}/api/Asset/AssetTypes`, httpOptions);
     }
 
-
     getAllAssets(assetList: AssetListModel) {
         var httpOptions = {
             headers: new HttpHeaders({

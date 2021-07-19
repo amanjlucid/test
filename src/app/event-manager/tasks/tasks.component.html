@@ -13,7 +13,7 @@
                     Completed</button>
                 <button type="button" class="btn btn-sm themeButton mr-1" (click)="assignToMe()">Assign
                     to Me</button>
-                <button type="button" class="btn btn-sm themeButton mr-1" (click)="assignToOther()">Assign
+                <button *ngIf="taskSecurityList.indexOf('Assign To Other User') != -1" type="button" class="btn btn-sm themeButton mr-1" (click)="assignToOther(null)">Assign
                     to Other user</button>
                 <button type="button" class="btn btn-sm themeButton mr-1" (click)="setPlanned()">Set
                     Planned To</button>
@@ -34,7 +34,7 @@
 
         <div class="col-md-12" kendoTooltip position="right" showOn="none" [tooltipTemplate]="template"
             filter=".k-grid td" (mouseover)="showTooltip($event)" tooltipClass="tooltip-class">
-            <kendo-grid (groupChange)="groupChange($event)" [group]="state.group" [groupable]="true" [kendoGridGroupBinding]="userEventList" [pageSize]="80"  scrollable="virtual" [rowHeight]="36"
+            <kendo-grid (groupChange)="groupChange($event)" [group]="state.group" [groupable]="true" [kendoGridGroupBinding]="userEventList" [pageSize]="500"  scrollable="virtual" [rowHeight]="36"
                 [height]="720" [loading]="loading" filterable="menu" [resizable]="true" [sortable]="{
     allowUnsort: allowUnsort,
     mode: multiple ? 'multiple' : 'single'
@@ -43,7 +43,7 @@
                 (sortChange)="sortChange($event)" (filterChange)="filterChange($event)"
                 (cellClick)="cellClickHandler($event)" [navigable]="false" [rowClass]="rowCallback">
 
-                <kendo-grid-column title=" " width="37" [filterable]="false" [sortable]="false">
+                <kendo-grid-column title=" " width="37" [filterable]="false">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <li [ngClass]="{'disabled' : selectedEvent.length > 1}" class="nav-item dropdown list-unstyled"
                             style="margin-top: -7px;">
@@ -63,7 +63,7 @@
                                         <a class="dropdown-item" (click)="assignToMe(dataItem,'single')"
                                             href="javascript:void(0)">Assign
                                             to Me</a>
-                                        <a class="dropdown-item" (click)="assignToOther(dataItem,'single')"
+                                        <a *ngIf="taskSecurityList.indexOf('Assign To Other User') != -1" class="dropdown-item" (click)="assignToOther(dataItem)"
                                             href="javascript:void(0)">Assign
                                             to Other user</a>
 
@@ -99,7 +99,7 @@
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <span>
                             <i [attr.seq]="dataItem.eventSequence" class="fa fa-circle" aria-hidden="true" [ngClass]="{'highColor': dataItem.eventSevType == 'H',
-                            'mediumColor':  dataItem.eventSevType == 'M', 
+                            'mediumColor':  dataItem.eventSevType == 'M',
                             'lowColor': dataItem.eventSevType == 'L'}"></i>
                         </span>
                     </ng-template>
@@ -122,6 +122,10 @@
                 </kendo-grid-column> -->
 
                 <kendo-grid-column field="eventSequence" title="Seq" width="100">
+                  <ng-template kendoGridFilterMenuTemplate let-filter let-column="column" let-filterService="filterService">
+                    <range-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
+                    </range-filter>
+                  </ng-template>
                 </kendo-grid-column>
                 <kendo-grid-column field="busareaName" title="Business Area" width="160">
                 </kendo-grid-column>
@@ -130,13 +134,17 @@
                 <kendo-grid-column field="eventName" title="Task" width="410">
                 </kendo-grid-column>
                 <kendo-grid-column field="eventRowCount" title="Record(s)" width="120">
+                  <ng-template kendoGridFilterMenuTemplate let-filter let-column="column" let-filterService="filterService">
+                    <range-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
+                    </range-filter>
+                  </ng-template>
                 </kendo-grid-column>
-                <kendo-grid-column field="processedPercentage" title="Processed" width="120">
+                <kendo-grid-column field="processedPercentage" title="Processed" width="120"  filter="numeric" >
+                    <ng-template kendoGridFilterMenuTemplate let-filter let-column="column" let-filterService="filterService">
+                      <range-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
+                      </range-filter>
+                    </ng-template>
                     <ng-template kendoGridCellTemplate let-dataItem>
-                        <!-- <span class="processedRecord">
-                            {{ ((dataItem.eventProcessedCount/dataItem.eventRowCount) * 100) | roundOff }}%
-                        </span> -->
-
                         <div id="progress">
                             <span id="percent">
                                 {{ dataItem.processedPercentage }}%</span>
@@ -161,6 +169,13 @@
                     </ng-template>
                 </kendo-grid-column>
                 <kendo-grid-column field="eventStatusName" title="Status" width="120">
+                  <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
+                        let-filterService="filterService">
+                        <multicheck-filter [isPrimitive]="false" [field]="column.field" [currentFilter]="filter"
+                            [filterService]="filterService" textField="text" valueField="val"
+                            [data]="distinctPrimitive(column.field)">
+                        </multicheck-filter>
+                    </ng-template>
                 </kendo-grid-column>
                 <kendo-grid-column field="eventAssignUserName" title="Assigned To" width="210">
                 </kendo-grid-column>
@@ -352,7 +367,7 @@
 
     <div class="row">
         <div class="col-md-12 text-center">
-            <ngb-datepicker #dp [(ngModel)]="plannedDateModel" [minDate]="{year: 1800, month: 1, day: 1}"
+            <ngb-datepicker #dp [(ngModel)]="plannedDateModel" [minDate]="minPickerDate"
                 (navigate)="date = $event.next"></ngb-datepicker>
         </div>
 

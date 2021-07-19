@@ -1,5 +1,8 @@
 .reportingTable{
     font-size: 12px;
+    display: block;
+    height: 550px;
+    overflow-y: scroll;
 }
 
 .k-window {

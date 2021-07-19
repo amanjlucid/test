@@ -90,8 +90,22 @@ export class EventManagerService {
         return this.http.get<any>(`${appConfig.apiUrl}/api/EventType/CopyEventType?eventTypeSequence=${eventTypeSequence}&userId=${userId}`, this.httpOptions);
     }
 
+    
+    copyEvents(EventTypeSequences, userId) {
+        let body = JSON.stringify({
+            eventTypeSequences: EventTypeSequences,
+            userID: userId,
+        });
+        return this.http.post<any>(`${appConfig.apiUrl}/api/EventType/CopyEventTypes`, body, this.httpOptions);
+    }
+
     runEvent(eventTypeSequence, userId) {
         return this.http.get<any>(`${appConfig.apiUrl}/api/EventType/RunEventManagerProcessAsync?eventTypeSequence=${eventTypeSequence}&userId=${userId}`, this.httpOptions);
+    }
+
+    ValidateRunEvent(params) {
+      let body = JSON.stringify(params);
+      return this.http.post<any>(`${appConfig.apiUrl}/api/EventType/ValidateRunEventManagerProcess`, body, this.httpOptions);
     }
 
     deleteEvent(eventTypeSequence, userId) {

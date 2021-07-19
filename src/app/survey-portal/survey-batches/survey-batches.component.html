@@ -1,15 +1,27 @@
 <div class="layout-content">
 <div class="container-fluid flex-grow-1 container-p-y">
   <div class="row">
-    <div class="col-md-2 col-sm-3">
+    <div class="col-md-2">
       <h4 class="font-weight-bold py-3 mb-1">
         <!-- <span class="text-muted font-weight-light">Assets/</span> Assets -->
-        Batches
+        {{title}}
       </h4>
     </div>
 
-    <div class="col-md-9 col-sm-9">
+    <div class="col-md-5"></div>
+
+    <div class="col-md-2 mt-3 pull-right mr-2">
+      <label>
+        {{filtersApplied}}
+      </label>
+    </div>
+
+    <div class="col-md-2">
       <div class="row mt-3 pull-right btnGrp">
+        <div  *ngIf="this.filterApplied">
+          <button type="button" class="btn btn-sm themeButton" (click)="clearTable()"
+            aria-expanded="false">Clear</button>
+        </div>
         <div  *ngIf="checkGroupPermission('Batches Xport Grid')">
           <button type="button" class="btn btn-sm themeButton" (click)="exportToExcel()"
             aria-expanded="false">Export</button>
@@ -20,7 +32,7 @@
       </div>
     </div>
 
-    <div class="col-md-1 col-sm-12"></div>
+    <div class="col-md-1"></div>
 
   </div>
 
@@ -43,7 +55,7 @@
             <!--Hamburger Item-->
             <th class="smallCol"></th>
             <!--Survey Batches-->
-            <th class="midBigCol" style="cursor: pointer;" (click)="orderBy('SurveyBatch')">Survey Batch
+            <th class="expandableCol" style="cursor: pointer;" (click)="orderBy('SurveyBatch')">Survey Batch
               <i class="lnr lnr-arrow-up sortIcon" aria-hidden="true"
                 *ngIf="batchesListItem.OrderBy === 'SurveyBatch' && batchesListItem.OrderType === 'Asc'"></i>
               <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
@@ -55,7 +67,7 @@
               <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
                 *ngIf="batchesListItem.OrderBy === 'SurveyorID' && batchesListItem.OrderType === 'Desc'"></i>
             </th>
-            <th class="bigCol" style="cursor: pointer;" (click)="orderBy('SurveyorName')">Surveyor Name
+            <th class="midBigCol" style="cursor: pointer;" (click)="orderBy('SurveyorName')">Surveyor Name
               <i class="lnr lnr-arrow-up sortIcon" aria-hidden="true"
                 *ngIf="batchesListItem.OrderBy === 'SurveyorName' && batchesListItem.OrderType === 'Asc'"></i>
               <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
@@ -109,6 +121,7 @@
               <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
                 *ngIf="batchesListItem.OrderBy === 'Active' && batchesListItem.OrderType === 'Desc'"></i>
             </th>
+            <th width="10px"></th>
           </tr>
         </thead>
         <tbody class="fixTbody" (scroll)="onScroll($event)"
@@ -118,11 +131,11 @@
             (click)="toggleClass($event, batchList)" (dblclick)="doubleclick(batchList)" >
             <td class="smallCol" (mousedown)="toggleClass($event, batchList)">
               <!--<i style="color: #dfdbdb;" class="fas fa-bars"></i>-->
-              <li class="nav-item dropdown list-unstyled" >
+              <li class="nav-item surveying dropdown list-unstyled" >
                 <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
                 <div class="dropdown-menu">
                   <a class="dropdown-item" *ngIf="checkGroupPermission('Survey Batch Asset')"
-                    (click)="openTabWindow('BatchSurveys', batchList)" href="javascript:void(0)">Surveys</a>
+                    (click)="openTabWindow('BatchSurveys', batchList)" href="javascript:void(0)">Batch  Surveys</a>
                     <div class="dropdown-toggle" *ngIf="checkGroupPermission('Batch Reports') ">
                     <div class="dropdown-item">Reports...</div>
                     <div class="dropdown-menu">
@@ -146,9 +159,9 @@
                 </div>
               </li>
             </td>
-            <td class="midBigCol">{{batchList.surveyBatch}}</td>
+            <td class="expandableCol">{{batchList.surveyBatch}}</td>
             <td class="midCol">{{batchList.surveyorID}}</td>
-            <td class="bigCol">{{batchList.surveyorName}}</td>
+            <td class="midBigCol">{{batchList.surveyorName}}</td>
             <td class="midBigCol">{{batchList.surveyDownloadDateTime}}</td>
             <td class="midBigCol">{{batchList.surveyUploadDateTime}}</td>
             <td class="midCol">{{batchList.batchStatus}}</td>
@@ -169,9 +182,9 @@
           <thead class="fixedHeader">
             <tr>
               <th class="smallCol"></th>
-              <th class="midBigCol">Survey Batch</th>
+              <th class="expandableCol">Survey Batch</th>
               <th class="midCol">Surveyor ID</th>
-              <th class="bigCol">Surveyor Name</th>
+              <th class="midBigCol">Surveyor Name</th>
               <th class="midBigCol">Download Date</th>
               <th class="midBigCol">Upload Date</th>
               <th class="midCol">Status</th>
@@ -231,15 +244,15 @@
 
         <div class="form-group mt-3">
           <label class="form-label form-label-sm">Survey Batch</label>
-          <input (keyup)="filterTable($event.target.value, 'SurveyBatch')" name="surveybatch" data-col="0" type="text"
-            class="form-control form-control-sm" placeholder="Search By Survey Batch">
+          <input (keyup)="triggerBatchSearch($event.target.value)" name="surveybatch" data-col="0" type="text"
+            class="form-control form-control-sm" placeholder="Search By Survey Batch" [(value)]="batchesListItem.BatchNameFilter" >
         </div>
 
 
         <div class="form-group mt-3">
-          <label class="form-label form-label-sm">Surveyor Name</label>
-          <input (keyup)="filterTable($event.target.value, 'SurveyorName')"  type="text"
-            class="form-control form-control-sm" placeholder="Search By Survey Name">
+          <label class="form-label form-label-sm">Surveyor Name or ID</label>
+          <input (keyup)="triggerSurveyorSearch($event.target.value)"  type="text"
+            class="form-control form-control-sm" placeholder="Search By Surveyor Name or ID" [(value)]="batchesListItem.SurveyorNameFilter" >
         </div>
 
       </div>

@@ -46,10 +46,10 @@ import { HnsResActionComponent } from './hns-res-action/hns-res-action.component
 import { HnsResHeaderComponent } from './hns-res-header/hns-res-header.component';
 import { HnsResAssessmentComponent } from './hns-res-assessment/hns-res-assessment.component';
 import { HnsResEditAnswerComponent } from './hns-res-edit-answer/hns-res-edit-answer.component';
-import { TextFilterComponent } from '../kendo-component/text-filter.component'
+//import { TextFilterComponent } from '../kendo-component/text-filter.component'
 import { AssessmentHeaderPipe } from '../_pipes/hns-res-assessment-header.pipe';
-import { MultiCheckFilterComponent } from '../kendo-component/multicheck-filter.component';
-import { RangeFilterComponent } from '../kendo-component/range-filter.component';
+//import { MultiCheckFilterComponent } from '../kendo-component/multicheck-filter.component';
+//import { RangeFilterComponent } from '../kendo-component/range-filter.component';
 import { NgbDate, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { HnsResAddEditIssueComponent } from './hns-res-add-edit-issue/hns-res-add-edit-issue.component';
 import { HnsResAnsImageComponent } from './hns-res-ans-image/hns-res-ans-image.component';
@@ -130,10 +130,10 @@ import { RiskScorePipe } from '../_pipes/risk-score.pipe';
     HnsResHeaderComponent,
     HnsResAssessmentComponent,
     HnsResEditAnswerComponent,
-    TextFilterComponent,
+    //TextFilterComponent,
     AssessmentHeaderPipe,
     //MultiCheckFilterComponent,
-    RangeFilterComponent,
+    //RangeFilterComponent,
     HnsResAddEditIssueComponent,
     HnsResAnsImageComponent,
     HnsResUploadAnsImageComponent,

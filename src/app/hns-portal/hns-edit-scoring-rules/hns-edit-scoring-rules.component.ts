@@ -45,7 +45,7 @@ export class HnsEditScoringRulesComponent implements OnInit {
         this.questionScoring = results[0].data[0];
         this.percentageQuesScoring = results[1].data;
         this.instanceCountQuesScoring = results[2].data;
-       
+
         if (results[0].data.length > 0) {
           this.showDeleteBtn = true
         } else {
@@ -162,9 +162,12 @@ export class HnsEditScoringRulesComponent implements OnInit {
     formObj.modifiedby = this.currentUser.userId;
 
     let scorService: any;
+    let updateMessage = ''
     if (this.showDeleteBtn) {
+      updateMessage = 'updated'
       scorService = this.hnsService.updateScoringRules(formObj);
     } else {
+      updateMessage = 'added'
       scorService = this.hnsService.insertScoringRules(formObj);
     }
 
@@ -172,6 +175,7 @@ export class HnsEditScoringRulesComponent implements OnInit {
       scorService.subscribe(
         data => {
           if (data.isSuccess) {
+            this.alertService.success("Scoring Rule successfully " + updateMessage)
             this.closeScoringRulesMethod();
           } else {
             this.alertService.error(data.message);
@@ -196,6 +200,7 @@ export class HnsEditScoringRulesComponent implements OnInit {
       this.hnsService.deleteScoringRules(this.selectedNode).subscribe(
         data => {
           if (data.isSuccess) {
+            this.alertService.success("Scoring Rule successfully deleted")
             this.closeScoringRulesMethod();
           } else {
             this.alertService.error(data.message);

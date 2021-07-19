@@ -65,7 +65,7 @@ export class HnsResInfoEditAnsComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-   
+
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.getFloor();
     this.editAnsForm = this.fb.group({
@@ -110,14 +110,14 @@ export class HnsResInfoEditAnsComponent implements OnInit {
         isLatest = false//this.selectedAction.hasalatestassesment
       }
     }
-  
+
 
     if (!isLatest) {
       let historicParam:any = { Hasarid: action.hasarid, Hasarsequence: action.hasarsequence };
       HnSAnsParam = { ...HnSAnsParam, ...historicParam }
     }
 
-    
+
     forkJoin([this.hnsResultService.isQuestionCodeOnActiveSurvey(action.hasquestioncode, action.assid), this.hnsResultService.getSpecificAns(HnSAnsParam, isLatest), this.hnsResultService.getCharacteristicData(action.hascode, action.hasversion, action.hasgroupid, action.hasheadingid, action.hasquestionid)]).subscribe(
       data => {
         const quesCodeData = data[0]
@@ -457,7 +457,7 @@ export class HnsResInfoEditAnsComponent implements OnInit {
 
 
   dateFormate(value) {
-    return `${value.day}-${value.month}-${value.year}`
+    return `${value.year}-${value.month}-${value.day}`
   }
 
   openCalendar(obj, field) {

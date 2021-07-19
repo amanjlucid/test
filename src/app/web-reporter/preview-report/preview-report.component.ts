@@ -48,6 +48,7 @@ export class PreviewReportComponent implements OnInit {
   selectedUsersToMail: any = [];
   exportId: any;
   @ViewChild('pivotCheckBox') pivotCheckBox: ElementRef;
+  @ViewChild('dataCheckBox') dataCheckBox: ElementRef;
   @ViewChild('emailPreview') emailPreview: any;
   tableSetting = {
     scrollY: '73vh',
@@ -88,6 +89,7 @@ export class PreviewReportComponent implements OnInit {
   parameterForPreviewReport: any = { intXportId: '', lstParamNameValue: [''], lngMaxRows: 1000 };
   reporterPortalPermission = [];
   reportName = '';
+  public formattedParameters : string = "None";
 
   constructor(
     private fb: FormBuilder,
@@ -125,10 +127,18 @@ export class PreviewReportComponent implements OnInit {
                 if (checkValueSet == '' && element.paramvalue == "") {
                   checkValueSet = element.extfield;
                 }
+
+                if (this.formattedParameters == "None") {
+                  this.formattedParameters = "";
+                } else {
+                  this.formattedParameters += ", "
+                }
+                this.formattedParameters += element.extfield + "=" + element.paramvalue;
+
                 paramArr.push(element.extfield)
                 paramArr.push(element.paramvalue)
               });
-              this.parameterForPreviewReport.lstParamNameValue = [paramArr.toString()];
+              this.parameterForPreviewReport.lstParamNameValue = paramArr;
 
               if (checkValueSet != '') {
                 this.alertService.error(`Missing Parameters: ${checkValueSet}`)
@@ -203,36 +213,48 @@ export class PreviewReportComponent implements OnInit {
     this.getReport(this.parameterForPreviewReport);
   }
 
-  exportToPdf(saveAs, exportId, lstParamNameValue, userId, pivotCheckBox) {
-    this.subs.add(
-      this.reportingGrpService.runReport(exportId, lstParamNameValue, userId, "PDF", pivotCheckBox).subscribe(
-        data => {
-          const linkSource = 'data:application/pdf;base64,' + data;
-          const downloadLink = document.createElement("a");
-          const fileName = `Xport_${exportId}.pdf`;
-          downloadLink.href = linkSource;
-          downloadLink.download = fileName;
-          downloadLink.click();
-        },
-        err => this.alertService.error(err)
-      )
-    )
-  }
 
-  exportToExcel(saveAs, exportId, lstParamNameValue, userId, pivotCheckBox) {
+  exportToExcel(saveAs, exportId, lstParamNameValue, userId, pivotCheckBox, dataCheckBox) {
     this.subs.add(
-      this.reportingGrpService.runReport(exportId, lstParamNameValue, userId, "EXCEL", pivotCheckBox).subscribe(
+      this.reportingGrpService.runReport(exportId, lstParamNameValue, userId, "EXCEL", pivotCheckBox, dataCheckBox).subscribe(
         data => {
-          const linkSource = 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' + data;
-          if (saveAs) {
-            //save document
-
-          } else {
+          if (data.isSuccess) {
+            const linkSource = 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' + data.data;
             const downloadLink = document.createElement("a");
             const fileName = `Xport_${exportId}.xlsx`;
             downloadLink.href = linkSource;
             downloadLink.download = fileName;
             downloadLink.click();
+          }else {
+            if (data.message.toLowerCase().includes("parameter")) {
+              this.alertService.error(data.message.replace("substitute","set"));
+            } else {
+                this.alertService.error(data.message);
+            }
+          }
+        },
+        err => this.alertService.error(err)
+      )
+    )
+  }
+ 
+  exportDataToExcel(saveAs, exportId, lstParamNameValue, userId) {
+    this.subs.add(
+      this.reportingGrpService.previewReport(exportId, lstParamNameValue, userId, "EXCEL", this.parameterForPreviewReport.lngMaxRows).subscribe(
+        data => {
+          if (data.isSuccess) {
+            const linkSource = 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' + data.data;
+            const downloadLink = document.createElement("a");
+            const fileName = `XportPreview_${exportId}.xlsx`;
+            downloadLink.href = linkSource;
+            downloadLink.download = fileName;
+            downloadLink.click();
+          }else {
+            if (data.message.toLowerCase().includes("parameter")) {
+              this.alertService.error(data.message.replace("substitute","set"));
+            } else {
+                this.alertService.error(data.message);
+            }
           }
         },
         err => this.alertService.error(err)
@@ -242,14 +264,46 @@ export class PreviewReportComponent implements OnInit {
 
   exportToCsv(saveAs, exportId, lstParamNameValue, userId, pivotCheckBox) {
     this.subs.add(
-      this.reportingGrpService.runReport(exportId, lstParamNameValue, userId, "CSV", pivotCheckBox).subscribe(
+      this.reportingGrpService.runReport(exportId, lstParamNameValue, userId, "CSV", false, true).subscribe(
         data => {
-          const linkSource = 'data:attachment/csv;base64,' + data;
+          if (data.isSuccess) {
+            const linkSource = 'data:attachment/csv;base64,' + data.data;
           const downloadLink = document.createElement("a");
           const fileName = `Xport_${exportId}.csv`;
           downloadLink.href = linkSource;
           downloadLink.download = fileName;
           downloadLink.click();
+          }else {
+            if (data.message.toLowerCase().includes("parameter")) {
+              this.alertService.error(data.message.replace("substitute","set"));
+            } else {
+                this.alertService.error(data.message);
+            }
+          }
+        },
+        err => this.alertService.error(err)
+      )
+    )
+  }
+
+  exportDataToCsv(saveAs, exportId, lstParamNameValue, userId) {
+    this.subs.add(
+      this.reportingGrpService.previewReport(exportId, lstParamNameValue, userId, "CSV", this.parameterForPreviewReport.lngMaxRows).subscribe(
+        data => {
+          if (data.isSuccess) {
+            const linkSource = 'data:attachment/csv;base64,' + data.data;
+            const downloadLink = document.createElement("a");
+            const fileName = `XportPreview_${exportId}.csv`;
+            downloadLink.href = linkSource;
+            downloadLink.download = fileName;
+            downloadLink.click();
+          }else {
+            if (data.message.toLowerCase().includes("parameter")) {
+              this.alertService.error(data.message.replace("substitute","set"));
+            } else {
+                this.alertService.error(data.message);
+            }
+          }
         },
         err => this.alertService.error(err)
       )
@@ -259,14 +313,22 @@ export class PreviewReportComponent implements OnInit {
   runReport(saveAs = false) {
     this.alertService.success(`Report ${this.exportId} - ${this.reportName} has started.`);
     let pivotCheckBox = this.pivotCheckBox.nativeElement.checked;
+    let dataCheckBox = this.dataCheckBox.nativeElement.checked;
     let lstParamNameValue: string[] = this.parameterForPreviewReport.lstParamNameValue;
-    if (this.reportFormat == "PDF") {
-      this.exportToPdf(saveAs, this.exportId, lstParamNameValue, this.currentUser.userId, pivotCheckBox);
-    } else if (this.reportFormat == "EXCEL") {
-      this.exportToExcel(saveAs, this.exportId, lstParamNameValue, this.currentUser.userId, pivotCheckBox);
+    if (this.reportFormat == "EXCEL") {
+      this.exportToExcel(saveAs, this.exportId, lstParamNameValue, this.currentUser.userId, pivotCheckBox, dataCheckBox);
     } else if (this.reportFormat == "CSV") {
       pivotCheckBox = false;
       this.exportToCsv(saveAs, this.exportId, lstParamNameValue, this.currentUser.userId, pivotCheckBox);
+    }
+  }
+
+  savePreview() {
+    let lstParamNameValue: string[] = this.parameterForPreviewReport.lstParamNameValue;
+    if (this.reportFormat == "EXCEL") {
+      this.exportDataToExcel(saveAs, this.exportId, lstParamNameValue, this.currentUser.userId);
+    } else if (this.reportFormat == "CSV") {
+      this.exportDataToCsv(saveAs, this.exportId, lstParamNameValue, this.currentUser.userId);
     }
   }
 
@@ -308,17 +370,13 @@ export class PreviewReportComponent implements OnInit {
     if (this.reportsLists.length > 0 && this.reportsLists != undefined) {
       this.userListToEmail(true, false);
     } else {
-      //alert('Please select atleast one record');
-      this.alertService.error('Please select atleast one record');
+      this.alertService.error('Please select at least one record');
     }
   }
 
   public userListToEmail(emailPreview, all = null) {
     $('.reportBgblur').addClass('ovrlay');
 
-    // setTimeout(function () {
-    //   $('.k-dialog').hide();
-    // }, 2000);
     this.subs.add(
       this.reportingGrpService.userListToMail().subscribe(
         data => {
@@ -351,7 +409,7 @@ export class PreviewReportComponent implements OnInit {
             //console.log(data);
             if (data.isSuccess) {
               this.closeEmailWindow();
-              this.alertService.success('Mail sent successfully');
+              this.alertService.success('Email sent successfully');
             } else {
               this.alertService.error(data.message);
             }
@@ -359,9 +417,8 @@ export class PreviewReportComponent implements OnInit {
           err => this.alertService.error(err)
         )
       )
-    } else {
-      //alert("Please select atleast one user to send mail");
-      this.alertService.error('Please select atleast one user to send mail');
+
+      this.alertService.error('Please select at least one user to send email');
     }
   }
 
@@ -376,8 +433,7 @@ export class PreviewReportComponent implements OnInit {
     }
 
     if (this.selectedUsersToMail.length == 0) {
-      //alert("Please select atleast one user");
-      this.alertService.error('Please select atleast one user to send mail');
+      this.alertService.error('Please select at least one user to send email');
       return
     }
 
@@ -387,7 +443,7 @@ export class PreviewReportComponent implements OnInit {
       if (data.isSuccess) {
         //console.log(data);
         this.closeEmailWithReportWindow();
-        this.alertService.success('Mail sent successfully');
+        this.alertService.success('Email sent successfully');
       } else {
         this.alertService.error(data.message);
       }
@@ -462,5 +518,8 @@ export class PreviewReportComponent implements OnInit {
   }
 
   get emailReportCon() { return this.emailReportForm.controls; }
+
+
+
 
 }

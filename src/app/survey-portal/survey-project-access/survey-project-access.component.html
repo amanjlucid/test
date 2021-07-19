@@ -1,14 +1,22 @@
 <div class="layout-content">
 <div class="container-fluid flex-grow-1 container-p-y">
   <div class="row">
-    <div class="col-md-2 col-sm-3">
+    <div class="col-md-2">
       <h4 class="font-weight-bold py-3 mb-1">
         <!-- <span class="text-muted font-weight-light">Assets/</span> Assets -->
         Contractor Access
       </h4>
     </div>
 
-    <div class="col-md-9 col-sm-9">
+    <div class="col-md-5"></div>
+
+    <div class="col-md-2 mt-3 pull-right mr-2">
+      <label>
+        {{filtersApplied}}
+      </label>
+    </div>
+
+    <div class="col-md-2">
       <div class="row mt-3 pull-right btnGrp">
         <button id="showFilePanel" (click)="openSearchBar()" class="btn btn-sm themeButton"><i class="fa fa-search"></i>
         </button>
@@ -20,7 +28,7 @@
       </div>
     </div>
 
-    <div class="col-md-1 col-sm-12"></div>
+    <div class="col-md-1"></div>
 
   </div>
 
@@ -53,7 +61,7 @@
               <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
                 *ngIf="surveyProjectAccessItem.OrderBy === 'UserID' && surveyProjectAccessItem.OrderType === 'Desc'"></i>
             </th>
-            <th class="bigCol" style="cursor: pointer;" (click)="orderBy('UserName')">User Name
+            <th class="expandableCol" style="cursor: pointer;" (click)="orderBy('UserName')">User Name
               <i class="lnr lnr-arrow-up sortIcon" aria-hidden="true"
                 *ngIf="surveyProjectAccessItem.OrderBy === 'UserName' && surveyProjectAccessItem.OrderType === 'Asc'"></i>
               <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
@@ -65,7 +73,7 @@
               <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
                 *ngIf="surveyProjectAccessItem.OrderBy === 'UserEmail' && surveyProjectAccessItem.OrderType === 'Desc'"></i>
             </th>
-            <th class="bigCol" style="cursor: pointer;" (click)="orderBy('ConName')">Contractor Name
+            <th class="expandableCol" style="cursor: pointer;" (click)="orderBy('ConName')">Contractor Name
               <i class="lnr lnr-arrow-up sortIcon" aria-hidden="true"
                 *ngIf="surveyProjectAccessItem.OrderBy === 'ConName' && surveyProjectAccessItem.OrderType === 'Asc'"></i>
               <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
@@ -83,7 +91,7 @@
               <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
                 *ngIf="surveyProjectAccessItem.OrderBy === 'LoginAllowed' && surveyProjectAccessItem.OrderType === 'Desc'"></i>
             </th>
-
+            <th width="10px"></th>
           </tr>
         </thead>
         <tbody class="fixTbody" (scroll)="onScroll($event)"
@@ -95,9 +103,9 @@
               <input class="text-center" (change)="grantUserAccess($event, projectAccess)" [attr.checked]="projectAccess.hasAccess == 'Y' ? 'checked' : null" type="checkbox">
             </td>
             <td class="midCol">{{projectAccess.userID}}</td>
-            <td class="bigCol">{{projectAccess.userName}}</td>
+            <td class="expandableCol">{{projectAccess.userName}}</td>
             <td class="smallAddressCol">{{projectAccess.userEmail}}</td>
-            <td class="bigCol">{{projectAccess.conName}}</td>
+            <td class="expandableCol">{{projectAccess.conName}}</td>
             <td class="midCol">{{projectAccess.userStatus}}</td>
             <td class="midCol">{{projectAccess.loginAllowed}}</td>
           </tr>
@@ -112,9 +120,9 @@
             <tr>
               <th class="midCol">Has Access</th>
               <th class="midCol">User</th>
-              <th class="bigCol">User Name</th>
+              <th class="expandableCol">User Name</th>
               <th class="smallAddressCol">Email</th>
-              <th class="bigCol">Contractor name</th>
+              <th class="expandableCol">Contractor name</th>
               <th class="midCol">Status</th>
               <th class="midCol">Login Allowed</th>
             </tr>
@@ -168,26 +176,21 @@
         </div>
 
         <div class="form-group mt-3">
-          <label class="form-label form-label-sm">User</label>
-          <input (keyup)="filterTable($event.target.value, 'UserID')" type="text"
-            class="form-control form-control-sm" placeholder="Search By Useer Name">
-        </div>
-
-        <div class="form-group mt-3">
-          <label class="form-label form-label-sm">User Name</label>
-          <input (keyup)="filterTable($event.target.value, 'UserName')" type="text"
+          <label class="form-label form-label-sm">User ID or Name</label>
+          <input (keyup)="triggerUserNameSearch($event.target.value)" type="text"
             class="form-control form-control-sm" >
         </div>
 
+
         <div class="form-group mt-3">
           <label class="form-label form-label-sm">Email</label>
-          <input (keyup)="filterTable($event.target.value, 'UserEmail')" type="text"
+          <input (keyup)="triggerEmailSearch($event.target.value)" type="text"
             class="form-control form-control-sm" >
         </div>
 
         <div class="form-group mt-3">
           <label class="form-label form-label-sm">Contractor Name</label>
-          <input (keyup)="filterTable($event.target.value, 'ConName')" type="text"
+          <input (keyup)="triggerConNameSearch($event.target.value)" type="text"
             class="form-control form-control-sm" >
         </div>
 

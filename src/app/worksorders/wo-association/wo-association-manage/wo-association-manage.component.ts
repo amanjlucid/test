@@ -128,7 +128,7 @@ export class WoAssociationsManageComponent implements OnInit {
     originalEvent
   }) {
 
-    if (originalEvent.ctrlKey == false) {
+    if (originalEvent.ctrlKey == false && originalEvent.shiftKey == false) {
       if (this.mySelection.length > 0) {
         this.mySelection = [dataItem.wosequence];
         this.chRef.detectChanges();

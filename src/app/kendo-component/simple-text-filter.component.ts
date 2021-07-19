@@ -8,8 +8,8 @@ import { SubSink } from 'subsink';
 @Component({
   selector: 'simple-text-filter',
   template: `
-  <div class="k-form">
-    <label class="k-form-field">
+  <div class="k-form col-md-12 m-0 p-0">
+    <label class="k-form-field pull-left">
         <input kendoTextBox [(ngModel)]="text" (ngModelChange)="onInput($event)" />
     </label>
 
@@ -45,6 +45,7 @@ export class SimpleTextFilterComponent extends BaseFilterCellComponent {
   @Input() public filter: CompositeFilterDescriptor;
   @Input() public filterService: FilterService;
   @Input() public field: string;
+  @Input() public contains: boolean;
   @Output() filterGrid = new EventEmitter<any>();
   subs = new SubSink();
   searchTerm$ = new Subject<string>();
@@ -56,7 +57,12 @@ export class SimpleTextFilterComponent extends BaseFilterCellComponent {
 
 
   ngOnInit() {
+    if (this.contains) {
+      this.text = this.findValue('contains');
+    } else {
     this.text = this.findValue('eq');
+    }
+
    
     this.subs.add(
       this.searchTerm$
@@ -67,11 +73,21 @@ export class SimpleTextFilterComponent extends BaseFilterCellComponent {
           // console.log(this.text)
           const filters = [];
 
+          if (this.contains) {
+              filters.push({
+              field: this.field,
+              operator: "contains",
+              value: searchTerm
+            });
+  
+          } else {
           filters.push({
             field: this.field,
             operator: "eq",
             value: searchTerm
           });
+
+          }
 
           this.text = searchTerm;
 

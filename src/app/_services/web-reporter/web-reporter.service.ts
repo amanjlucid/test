@@ -50,9 +50,9 @@ export class WebReporterService {
         return this.http.get<any>(`${appConfig.apiUrl}/api/WebReportSearch/SetXportAsFavourite?xportId=${xportId}&userName=${userName}&favourite=${favourite}`, this.httpOptions);
     }
 
-    getUserCategoryReport(xportCategory, value = 0) {
-        return this.http.get<any>(`${appConfig.apiUrl}/api/WebReportSearch/GetUserCategoryDataList?xportCategory=${xportCategory}&value=${value}`, this.httpOptions);
-    }
+    // getUserCategoryReport(xportCategory, value = 0) {
+    //     return this.http.get<any>(`${appConfig.apiUrl}/api/WebReportSearch/GetUserCategoryDataList?xportCategory=${xportCategory}&value=${value}`, this.httpOptions);
+    // }
 
     deleteReportFromCategory(params) {
         let body = JSON.stringify(params);
@@ -112,7 +112,8 @@ export class WebReporterService {
         return this.http.post<any>(`${appConfig.apiUrl}/api/WebReportSearch/GetXportParameterSelectionColumns`, body, this.httpOptions).pipe(
             map(response => (<any>{
                 data: (response.data != null) ? response.data.dataTable : [],
-                total: (response.data != null) ? response.data.totalCount : 0
+                total: (response.data != null) ? response.data.totalCount : 0,
+                columns: (response.data != null) ? response.data.columns : []
             }))
         );;
     }
@@ -170,4 +171,7 @@ export class WebReporterService {
     }
 
 
+    checkParameters(intXportID: number) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/WebReportSearch/CheckParameters?intXportID=${intXportID}`, this.httpOptions);
+    }
 }

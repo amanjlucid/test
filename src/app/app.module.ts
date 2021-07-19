@@ -28,7 +28,9 @@ import { ElementsGroupComponent } from './security-portal/groups/elements-group/
 import { AttributeGroupComponent } from './security-portal/groups/attribute-group/attribute-group.component';
 import { PortalTabsComponent } from './security-portal/groups/portal-tabs/portal-tabs.component';
 import { PropertySecurityComponent } from './security-portal/groups/property-security/property-security.component';
+//import { ReportingComponent } from './security-portal/groups/reporting/reporting.component';
 import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
+import { DateFormatPipe } from './_pipes/date-format.pipe';
 import { AsbestosRefDetailPipe } from './_pipes/asbestos-ref-detail.pipe'
 import { NumberFormatPipe } from './_pipes/number-format.pipe';
 import { RoundOffPipe } from './_pipes/round-off.pipe';
@@ -91,19 +93,22 @@ import { AssetEpcDataComponent } from './assets-portal/asset-epc-data/asset-epc-
 import { AssetEpcRetrieveComponent } from './assets-portal/asset-epc-retrieve/asset-epc-retrieve.component';
 import { EpcSettingsComponent } from './setting/epc-settings/epc-settings.component';
 import { MatCheckboxModule, } from '@angular/material/checkbox';
-import { MatSelectModule } from '@angular/material/select';
+import {MatSelectModule} from '@angular/material/select';
 import { TooltipModule } from '@progress/kendo-angular-tooltip';
 import { WebReporterSettingComponent } from './setting/web-reporter-setting/web-reporter-setting.component';
-import { MatExpansionModule } from '@angular/material/expansion';
+import {MatExpansionModule} from '@angular/material/expansion';
 import { AssetEpcDashboardComponent } from './assets-portal/asset-energy/asset-epc-dashboard/asset-epc-dashboard.component';
 import { AssetEpcRouterComponent } from './assets-portal/asset-energy/asset-epc-router/asset-epc-router.component';
+//import { RetrievedEpcGridComponent } from './assets-portal/asset-energy/retrieved-epc-grid/retrieved-epc-grid.component';
+//import { WorksordersDashboardComponent } from './worksorders/worksorders-dashboard/worksorders-dashboard.component';
+//import { WorksordersRouterComponent } from './worksorders/worksorders-router/worksorders-router.component';
 import { SurveyProjectsComponent } from './survey-portal/survey-projects/survey-projects.component';
 import { SurveyProjectSurveysComponent } from './survey-portal/survey-project-surveys/survey-project-surveys.component';
 import { SurveyBatchesComponent } from './survey-portal/survey-batches/survey-batches.component';
 import { SurveyBatchSurveysComponent } from './survey-portal/survey-batch-surveys/survey-batch-surveys.component';
 import { SurveyProjectAccessComponent } from './survey-portal/survey-project-access/survey-project-access.component';
 import { SurveyProjectSettingsComponent } from './survey-portal/survey-project-settings/survey-project-settings.component';
-import { SurveyDashboardComponent } from './survey-portal/survey-dashboard/survey-dashboard.component';
+import { SurveyDashboardComponent} from './survey-portal/survey-dashboard/survey-dashboard.component';
 import { SurveyCbcreportComponent } from './survey-portal/survey-cbcreport/survey-cbcreport.component';
 import { SurveyCbcreportSelectPDFComponent } from './survey-portal/survey-cbcreport-select-pdf/survey-cbcreport-select-pdf.component';
 import { SurveyCbcreportSelectImageComponent } from './survey-portal/survey-cbcreport-select-image/survey-cbcreport-select-image.component';
@@ -131,7 +136,9 @@ import { WorksOrderSettingsComponent } from './works-order-settings/works-order-
     AttributeGroupComponent,
     PortalTabsComponent,
     PropertySecurityComponent,
+    //ReportingComponent,
     ConfirmationDialogComponent,
+    // DateFormatPipe,
     AsbestosRefDetailPipe,
     NumberFormatPipe,
     UserFormComponent,
@@ -195,6 +202,9 @@ import { WorksOrderSettingsComponent } from './works-order-settings/works-order-
     WebReporterSettingComponent,
     AssetEpcDashboardComponent,
     AssetEpcRouterComponent,
+  //  RetrievedEpcGridComponent,
+    //WorksordersDashboardComponent,
+    //WorksordersRouterComponent,
     SurveyProjectsComponent,
     SurveyProjectSurveysComponent,
     SurveyBatchesComponent,

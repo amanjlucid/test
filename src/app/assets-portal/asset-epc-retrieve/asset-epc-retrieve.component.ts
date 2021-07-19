@@ -40,9 +40,9 @@ export class AssetEpcRetrieveComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    setTimeout(() => {
+/*     setTimeout(() => {
       this.rrnTextbox.focus();
-    }, 0);
+    }, 0); */
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     if (this.epcStatus == null || this.epcStatus == "")
     {
@@ -68,8 +68,7 @@ export class AssetEpcRetrieveComponent implements OnInit, OnDestroy {
 
   onChange(value: any): void {
     var enteredRRN = value.replaceAll(/ /g, "");
-    enteredRRN = enteredRRN.replaceAll("-", "");
-    if (enteredRRN.trim().length == 20) {
+    if (enteredRRN.trim().length == 24) {
       this.submitDisabled = false;
     }
     else {

@@ -187,7 +187,7 @@ export class ReportParameterComponent implements OnInit {
         paramArr.push(element.extfield)
         paramArr.push(element.paramvalue)
       });
-      lstParamNameValue = [paramArr.toString()];
+      lstParamNameValue = paramArr;
       if (checkValueSet != '') {
         this.alertService.error(`Missing Parameters: ${checkValueSet}`);
         return;
@@ -196,16 +196,26 @@ export class ReportParameterComponent implements OnInit {
       // run report 
       this.alertService.success(`Report ${this.selectedReport.reportId} - ${this.selectedReport.reportName} has started.`);
       const exportId = this.selectedReport.reportId
-      this.reportingGrpService.runReport(exportId, lstParamNameValue, this.currentUser.userId, "EXCEL", this.pivot).subscribe(
+      this.reportingGrpService.runReport(exportId, lstParamNameValue, this.currentUser.userId, "EXCEL", this.pivot, true).subscribe(
         data => {
-          const linkSource = 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' + data;
+          if (data.isSuccess) {
+            const linkSource = 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' + data.data;
           const downloadLink = document.createElement("a");
           const fileName = `Xport_${exportId}.xlsx`;
           downloadLink.href = linkSource;
           downloadLink.download = fileName;
           downloadLink.click();
+          } else {
+            if (data.message.toLowerCase().includes("parameter")) {
+              this.alertService.error(data.message.replace("substitute","set"));
+            } else {
+                this.alertService.error(data.message);
+            }
+          }
         },
-        err => this.alertService.error(err)
+        err => {
+          this.alertService.error(err);
+        }
       )
     }
 

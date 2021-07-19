@@ -24,7 +24,7 @@ export class ReportsComponent implements OnInit {
     sort: [],
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -68,6 +68,13 @@ export class ReportsComponent implements OnInit {
     showSelectedItemsAtTop: false,
     defaultOpen: false
   }
+  categoryPopupSettings = {
+    animate: true,
+    width: 'auto',
+  }
+
+
+
   selectedCategories: any = [];
   selectedCategory: any = [];
   outputColumns: any;
@@ -95,7 +102,7 @@ export class ReportsComponent implements OnInit {
   reportQueryModel = {
     userId: '',
     value: 0,
-    Categories: '',
+    Categories: [],
     IsShceduled: false,
     FavouritesOnly: false,
     XportCategory: ''
@@ -166,7 +173,9 @@ export class ReportsComponent implements OnInit {
 
           //set default model value to get report data
           this.reportQueryModel.userId = this.currentUser.userId;
-          this.reportQueryModel.Categories = this.selectedCategories.map(x => x.item_id).toString();
+          // this.reportQueryModel.Categories = this.selectedCategories.map(x => x.item_id).toString();
+          this.reportQueryModel.Categories = this.selectedCategories.map(x => x.item_id);
+
           this.getReportList(this.reportQueryModel);
           this.getRportCount(this.reportQueryModel);
 
@@ -178,20 +187,28 @@ export class ReportsComponent implements OnInit {
     this.subs.add(
       this.textSearch$
         .pipe(
-          tap(x => this.loading = true),
           debounceTime(1000),
-          distinctUntilChanged()
+          distinctUntilChanged(),
         ).subscribe((val) => {
           this.filterGrid();
         })
     );
 
     // subscribe for grid filter with api
-    this.subs.add(
+/*     this.subs.add(
       this.waitForApiSearch$.pipe(
-        tap(x => this.loading = true),
         debounceTime(1000),
         distinctUntilChanged()
+      ).subscribe(val => {
+        this.loading = true
+        this.getReportList(this.reportQueryModel)
+      })
+    ); */
+
+    this.subs.add(
+      this.waitForApiSearch$.pipe(
+        debounceTime(1000),
+        distinctUntilChanged(),
       ).subscribe(val => {
         this.getReportList(this.reportQueryModel)
       })
@@ -244,6 +261,7 @@ export class ReportsComponent implements OnInit {
   }
 
   getReportList(params): any {
+    this.loading = true;
     this.subs.add(
       this.reportService.getReportList(params).subscribe(
         data => {
@@ -261,8 +279,10 @@ export class ReportsComponent implements OnInit {
     )
   }
 
+
+  public selectedCallback = (args) => args.dataItem;
+
   showColFn() {
-    this.showColumns = !this.showColumns;
     this.rowheight = this.showColumns ? 56 : 36; // change virtual row height according to show columns
   }
 
@@ -281,25 +301,21 @@ export class ReportsComponent implements OnInit {
     this.state.group = groups;
   }
 
-  cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited, originalEvent }) {
-    if (originalEvent.ctrlKey == false) {
-      if (this.mySelection.length > 0) {
-        this.mySelection = [dataItem.reportId];
-        // this.chRef.detectChanges();
-      }
-    }
+  cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
     this.selectedReport = dataItem;
-    // console.log(this.mySelection);
   }
 
   onCategoriesSingleSelectionChange(item: any) {
-    this.reportQueryModel.Categories = this.selectedCategories.map(x => x.item_id).toString();
+    // this.reportQueryModel.Categories = this.selectedCategories.map(x => x.item_id).toString();
+    this.reportQueryModel.Categories = this.selectedCategories.map(x => x.item_id);
+
     this.waitForApiSearch$.next(this.reportQueryModel.Categories)
   }
 
   onCategoriesSelectionAllChange(items: any) {
     this.selectedCategories = items;
-    this.reportQueryModel.Categories = this.selectedCategories.map(x => x.item_id).toString();
+    // this.reportQueryModel.Categories = this.selectedCategories.map(x => x.item_id).toString();
+    this.reportQueryModel.Categories = this.selectedCategories.map(x => x.item_id);
     this.waitForApiSearch$.next(this.reportQueryModel.Categories)
   }
 
@@ -346,10 +362,11 @@ export class ReportsComponent implements OnInit {
   }
 
   filterGrid() {
-
+    this.loading = true;
+    this.mySelection = [];
     if ((this.reportListFilters.frontFilter == false) || (this.reportListFilters.number == "" && this.reportListFilters.name == "" && this.reportListFilters.selectedOutputColumns.length == 0)) {
       this.reportList = this.actualReportList;
-      setTimeout(() => { this.loading = false }, 400);
+      setTimeout(() => { this.loading = false }, 100);
       return
     }
 
@@ -381,21 +398,84 @@ export class ReportsComponent implements OnInit {
 
         //filter report column
         if (this.reportListFilters.selectedOutputColumns.length > 0) {
+          var searchColumns = this.reportListFilters.selectedOutputColumns.map((a) => { return a.toLowerCase() })
+          reportColFilter = false;
+          const splitColumns = element.xport_Col.trim() != "" ? element.xport_Col.split(',') : [];
+          var xportColumns = splitColumns.map((a) => { return a.toLowerCase() })
+          if (xportColumns.length > 0) {
+            if (this.reportListFilters.columnMatchAll) {
+                for (var searchIndex in searchColumns) {
+                  reportColFilter = false;
+                  for (var col in xportColumns) {
           if (this.reportListFilters.columnExactMatch) {
-            if (element.xport_Col.trim() != "")
+                        if (xportColumns[col] == searchColumns[searchIndex]){
+                          reportColFilter = true;
+                          break;
+                        }
+                      } else {
+                        if (xportColumns[col].includes(searchColumns[searchIndex])){
+                          reportColFilter = true;
+                          break;
+                        }
+                      }
+                    }
+                    if (!reportColFilter) {
+                      break;
+                    }                      
+                  }
+            } else {
+              if (this.reportListFilters.columnExactMatch) {
+                reportColFilter = searchColumns.every(x => xportColumns.includes(x));
+              } else {
+                for (var searchIndex in searchColumns) {
+                  for (var col in xportColumns) {
+                      if (xportColumns[col].includes(searchColumns[searchIndex])){
+                        reportColFilter = true;
+                        break;
+                      }
+                    }
+                    if (reportColFilter) {
+                      break;
+                    }                      
+                  }
+              }
+            }
+          } else {
+            reportColFilter = false;
+          }
+
+
+
+
+
+
+
+/*           if (this.reportListFilters.columnExactMatch) {
+            if (element.xport_Col.trim() != "") {
               reportColFilter = element.xport_Col.trim() == this.reportListFilters.selectedOutputColumns.toString();
+            } else {
+              reportColFilter = false;
+            }
           } else {
             const splitColumns = element.xport_Col.trim() != "" ? element.xport_Col.split(',') : [];
             if (this.reportListFilters.columnMatchAll) {
               if (splitColumns.length > 0) {
                 reportColFilter = this.reportListFilters.selectedOutputColumns.every(x => splitColumns.includes(x))
+              } else {
+                reportColFilter = false;
               }
             } else {
               if (splitColumns.length > 0) {
                 reportColFilter = splitColumns.some(x => this.reportListFilters.selectedOutputColumns.some(y => x.toLowerCase().indexOf(y.toLocaleLowerCase()) !== -1))
               }
+              else{
+                reportColFilter = false;
             }
           }
+          } */
+
+
+
 
         }
 
@@ -406,11 +486,12 @@ export class ReportsComponent implements OnInit {
     }
 
     this.reportList = gridData;
-    setTimeout(() => { this.loading = false }, 400);
+    setTimeout(() => { this.loading = false }, 100);
 
   }
 
   reqGridSearch2(event, month) {
+    this.mySelection = [];
     this.reportQueryModel.value = month;
     if (month == 0) {
       if (this.reportListFilters.all == false) {
@@ -510,8 +591,37 @@ export class ReportsComponent implements OnInit {
 
   //####################### Preview Report functions start ##########################
   previewReport() {
+    let lstParamNameValue: string[] = [''];
+    const exportId = this.selectedReport.reportId;
+    this.subs.add(
+      this.reportService.checkParameters(exportId).subscribe(
+        data => {
+          if (data.isSuccess) {
+
+
     this.openPreviewReport = true;
     $('.reportParamOverlay').addClass('ovrlay');
+
+
+          } else{
+            
+            if (data.message.toLowerCase().includes('parameter')){
+              this.alertService.error(data.message.replace("substitute","set"));
+              this.openParameterWindow(this.selectedReport);
+                  return;
+            } else {
+              this.alertService.error(data.message);
+            }
+          }
+        }
+      )
+    )
+
+
+
+
+
+
   }
 
   closePreviewReport(eve) {
@@ -530,7 +640,6 @@ export class ReportsComponent implements OnInit {
           data => {
             if (data.isSuccess) {
               const parameters = data.data;
-              // console.log(parameters);
               if (parameters.length > 0) {
                 let paramArr: string[] = [];
                 let checkValueSet = '';
@@ -541,7 +650,7 @@ export class ReportsComponent implements OnInit {
                   paramArr.push(element.extfield)
                   paramArr.push(element.paramvalue)
                 });
-                lstParamNameValue = [paramArr.toString()];
+                lstParamNameValue = paramArr;
 
                 if (checkValueSet != '') {
                   this.alertService.error(`Missing Parameters: ${checkValueSet}`);
@@ -552,18 +661,28 @@ export class ReportsComponent implements OnInit {
 
               // run report 
               this.alertService.success(`Report ${exportId} - ${this.selectedReport.reportName} has started.`);
-              this.reportingGrpService.runReport(exportId, lstParamNameValue, this.currentUser.userId, "EXCEL", this.pivot).subscribe(
+              this.reportingGrpService.runReport(exportId, lstParamNameValue, this.currentUser.userId, "EXCEL", this.pivot, true).subscribe(
                 data => {
-                  const linkSource = 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' + data;
+                  if (data.isSuccess) {
+                    const linkSource = 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' + data.data;
                   const downloadLink = document.createElement("a");
                   const fileName = `Xport_${exportId}.xlsx`;
                   downloadLink.href = linkSource;
                   downloadLink.download = fileName;
                   downloadLink.click();
+                  } else {
+                    if (data.message.toLowerCase().includes("parameter")) {
+                      this.alertService.error(data.message.replace("substitute","set"));
+                      this.openParameterWindow(this.selectedReport);
+                    } else {
+                        this.alertService.error(data.message);
+                    }
+                  }
                 },
                 err => {
-                  this.alertService.error(`Parameters are not set`);
-                  this.openParameterWindow(this.selectedReport);
+                  
+                  this.alertService.error(err);
+
                 }
               )
             } else this.alertService.error(data.message);
@@ -578,7 +697,7 @@ export class ReportsComponent implements OnInit {
   }
 
   async runMultipleReport() {
-    this.alertService.success(`Multiple report has started.`);
+    this.alertService.success(`Multiple reports have started.`);
     for (let exportId of this.mySelection) {
       let lstParamNameValue: string[] = [''];
       const data = await this.reportService.getListOfScheduledParameters(exportId, true).toPromise();
@@ -593,7 +712,7 @@ export class ReportsComponent implements OnInit {
           paramArr.push(element.extfield)
           paramArr.push(element.paramvalue)
         });
-        lstParamNameValue = [paramArr.toString()];
+        lstParamNameValue = paramArr;
 
         if (checkValueSet != '') {
           this.alertService.error(`${exportId} Report missing Parameters: ${checkValueSet}`);
@@ -601,13 +720,28 @@ export class ReportsComponent implements OnInit {
         }
       }
 
-      let reportData = await this.reportingGrpService.runReport(exportId, lstParamNameValue, this.currentUser.userId, "EXCEL", this.pivot).toPromise();
-      const linkSource = 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' + reportData;
+      let reportData = await this.reportingGrpService.runReport(exportId, lstParamNameValue, this.currentUser.userId, "EXCEL", this.pivot, true ).toPromise();
+      if (reportData.isSuccess) {
+        const linkSource = 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' + reportData.data;
       const downloadLink = document.createElement("a");
       const fileName = `Xport_${exportId}.xlsx`;
       downloadLink.href = linkSource;
       downloadLink.download = fileName;
       downloadLink.click();
+      } else {
+        if (reportData.message.toLowerCase().includes("parameter")) {
+          this.alertService.error(reportData.message.replace("substitute","set"));
+          this.openParameterWindow(this.selectedReport);
+        } else {
+            this.alertService.error(reportData.message);
+        }
+      }
+
+
+
+
+
+
       // console.log(exportId);
     }
 
@@ -650,6 +784,17 @@ export class ReportsComponent implements OnInit {
   }
 
   clearFilter() {
+
+
+    var isChange : boolean = true;
+    if (this.reportListFilters.number == '' && this.reportListFilters.name == '' && !this.reportListFilters.nameMatchAll && this.reportListFilters.nameMatchAny && 
+    this.reportListFilters.selectedOutputColumns.length == 0 && !this.reportListFilters.columnMatchAll && this.reportListFilters.columnMatchAny && 
+    !this.reportListFilters.columnExactMatch && this.reportListFilters.all && !this.reportListFilters.lastMonth && !this.reportListFilters.last3Month && 
+    !this.reportListFilters.last12Month && !this.reportListFilters.frontFilter && !this.showColumns && !this.reportQueryModel.FavouritesOnly &&
+    !this.reportQueryModel.IsShceduled) {
+      isChange = false;
+    }
+
     this.reportListFilters = {
       number: '',
       name: '',
@@ -666,9 +811,19 @@ export class ReportsComponent implements OnInit {
       frontFilter: false
     }
 
+
     this.showColumns = false;
-    const objectStr = JSON.stringify(this.reportListFilters);//pass object string just to check object has changed
-    this.textSearch$.next(objectStr);
+    this.reportQueryModel.FavouritesOnly = false;
+    this.reportQueryModel.IsShceduled = false;
+    this.reportQueryModel.value = 0;
+
+/*     const objectStr = JSON.stringify(this.reportListFilters);//pass object string just to check object has changed
+    this.textSearch$.next(objectStr); */
+
+    if (isChange) {
+          this.getReportList(this.reportQueryModel);
+    }
+
   }
 
   // ####################### Right sidebar functions end ##########################

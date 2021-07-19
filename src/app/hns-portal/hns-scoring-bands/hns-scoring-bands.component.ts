@@ -38,6 +38,7 @@ export class HnsScoringBandsComponent implements OnInit {
   currentUser: any;
   hnsPermission: any = [];
   ScoringBandRules: boolean = false;
+  itemsDeleted: boolean = false;
 
   constructor(
     private hnsService: HnsPortalService,
@@ -59,7 +60,7 @@ export class HnsScoringBandsComponent implements OnInit {
       )
     )
     this.getScoringbands({ hasCode: this.selectedDefinition.hascode, hasVersion: this.selectedDefinition.hasversion });
-  
+
     this.subs.add(
       this.sharedService.hnsPortalSecurityList.subscribe(
         data => {
@@ -148,6 +149,7 @@ export class HnsScoringBandsComponent implements OnInit {
   }
 
   delete() {
+    this.itemsDeleted = true;
     this.listData = this.listData.filter(x => x != this.selectedData).map(x => {
       x.modifiedby = this.currentUser.userId;
       // x.hasscoringbandname = x.hasscorebandname;
@@ -212,8 +214,10 @@ export class HnsScoringBandsComponent implements OnInit {
       }
     }
 
+    let AllItemsDeleted = false;
     // check if table is empty then set hascode and hasversion to delete records
     if (this.listData.length == 0) {
+      AllItemsDeleted = true
       this.listData.push(
         {
           hascode: this.selectedDefinition.hascode,
@@ -224,14 +228,47 @@ export class HnsScoringBandsComponent implements OnInit {
         }
       )
     }
-    //console.log(this.listData);
-    
+    else
+    {
+      let missingNums: any[] = [];
+      let numFound = false;
+      for (let iNum = 0; iNum < 101; iNum++)
+      {
+        numFound = false
+        for(let obj of this.listData)
+        {
+          if(iNum <= obj.hasscorebandhigh && iNum >= obj.hasscorebandlow)
+          {
+            numFound = true
+          }
+        }
+        if(!numFound){
+          missingNums.push(iNum)
+        }
+      }
+      if(missingNums.length > 0)
+      {
+        this.alertService.error("The scoring bands do not cover the complete range.");
+        return
+      }
+    }
+
+    let ResMessage = 'Scoring band updated successfully'
+    if(AllItemsDeleted){
+      ResMessage = 'Scoring bands deleted successfully'
+    }else if(this.itemsDeleted){
+      ResMessage = 'Scoring bands updated/deleted successfully'
+    }
+    else{
+      ResMessage = 'Scoring band updated successfully'
+    }
+
     this.subs.add(
       this.hnsService.addScoringBand(this.listData).subscribe(
         data => {
           if (data.isSuccess) {
             this.getScoringbands({ hasCode: this.selectedDefinition.hascode, hasVersion: this.selectedDefinition.hasversion });
-            this.alertService.success("Scoring band saved successfully")
+            this.alertService.success(ResMessage)
           } else {
             this.alertService.error(data.message)
           }

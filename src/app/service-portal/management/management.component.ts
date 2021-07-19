@@ -560,7 +560,7 @@ export class ManagementComponent implements OnInit, OnDestroy {
     }
 
     localStorage.setItem('assetFilterObj', JSON.stringify(assetFilterObj));
-    window.open("https://apexdevweb.rowanwood.ltd/dev/rowanwood/asset-list?servicing=true", "_blank");
+    window.open(`${appConfig.appUrl}/asset-list?servicing=true`, "_blank");
   }
 
 

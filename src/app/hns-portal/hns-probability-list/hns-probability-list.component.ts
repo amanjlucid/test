@@ -35,7 +35,7 @@ export class HnsProbabilityListComponent implements OnInit {
   formMode: string = 'add';
   selectedRowIndex = 0;
   hnsPermission: any = [];
-  
+
   constructor(
     private hnsService: HnsPortalService,
     private chRef: ChangeDetectorRef,
@@ -113,6 +113,7 @@ export class HnsProbabilityListComponent implements OnInit {
       this.hnsService.deleteProbability(this.selectedData).subscribe(
         data => {
           if (data.isSuccess) {
+            this.alertService.success("Probability record successfully deleted");
             this.getProbability({ hasCode: this.selectedDefinition.hascode, hasVersion: this.selectedDefinition.hasversion });
           } else {
             this.alertService.error(data.message);

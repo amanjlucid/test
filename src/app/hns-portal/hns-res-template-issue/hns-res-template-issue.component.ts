@@ -161,7 +161,7 @@ export class HnsResTemplateIssueComponent implements OnInit {
       this.hnsService.deleteTemplateIssue(this.selectedTemplateIssue).subscribe(
         data => {
           if (data.isSuccess) {
-            this.alertService.success("Question issue deleted successfully.")
+            this.alertService.success("Template issue successfully deleted")
             this.getTemplateIssues(this.templateIssueModel);
           } else {
             this.alertService.success(data.message);

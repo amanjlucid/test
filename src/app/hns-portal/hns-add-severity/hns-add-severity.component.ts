@@ -39,7 +39,7 @@ export class HnsAddSeverityComponent implements OnInit {
     }
   };
   hnsPermission: any = [];
-  
+
   constructor(
     private fb: FormBuilder,
     private chRef: ChangeDetectorRef,
@@ -142,7 +142,7 @@ export class HnsAddSeverityComponent implements OnInit {
   onSubmit(createAnother = null) {
     if (this.formMode == "edit" || this.formMode == "add") {
       this.submitted = true;
-      this.formErrorObject(); // empty form error 
+      this.formErrorObject(); // empty form error
       this.logValidationErrors(this.formGrp);
 
       if (this.formGrp.invalid) {
@@ -158,18 +158,21 @@ export class HnsAddSeverityComponent implements OnInit {
       formObj.hasseveritydesc = formRawVal.hasseveritydesc;
       formObj.hasseverityscore = formRawVal.hasseverityscore;
       formObj.modifiedby = this.currentUser.userId;
-
+      let updateMessage = ''
       let queryAddEdit: any;
       if (this.formMode == "add") {
         formObj.createdby = this.currentUser.userId;
+        updateMessage = 'added'
         queryAddEdit = this.hnsService.addSeverity(formObj);
       } else if (this.formMode == "edit") {
+        updateMessage = 'updated'
         queryAddEdit = this.hnsService.updateSeverity(formObj);
       }
 
       queryAddEdit.subscribe(
         data => {
           if (data.isSuccess) {
+            this.alertService.success('Severity record successfully ' + updateMessage);
             if (createAnother == null) {
               this.closeSeverityMethod()
             } else {

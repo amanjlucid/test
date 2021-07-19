@@ -269,7 +269,7 @@ export class ManageMilestonesComponent implements OnInit {
     }
 
     this.subs.add(
-      this.reportingGrpService.runReport(xPortId, params.lstParamNameValue, this.currentUser.userId, "EXCEL", false).subscribe(
+      this.reportingGrpService.runReport(xPortId, params.lstParamNameValue, this.currentUser.userId, "EXCEL", false, true).subscribe(
         data => {
           const linkSource = 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' + data;
           const downloadLink = document.createElement("a");

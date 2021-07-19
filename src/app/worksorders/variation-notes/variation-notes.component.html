@@ -1,0 +1,65 @@
+<kendo-window [title]="windowTitle"  *ngIf="displayNotesWindow" (close)="closeNotesWindow()" [top]="20" [minWidth]="700" [width]="980"
+  [resizable]="false" >
+
+<div class="row mt-2">
+  <div class="col-md-12">
+
+      <kendo-grid [groupable]="false" [data]="gridView"  [height]="500" filterable="menu" [loading]="loading" [resizable]="true"
+      [sortable]="{allowUnsort: allowUnsort, mode: multiple ? 'multiple' : 'single' }"
+      [skip]="state.skip" [sort]="state.sort"  [filter]="state.filter" (sortChange)="sortChange($event)" (filterChange)="filterChange($event)"
+           [navigable]="true" (cellClick)="cellClickHandler($event)">
+
+          <kendo-grid-column field="note" title="Note" width="300">
+            <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
+            let-filterService="filterService" >
+            <multicheck-filter  [isPrimitive]="false" [field]="column.field" [currentFilter]="filter"
+                [filterService]="filterService" textField="text" valueField="val"
+                [data]="distinctPrimitive(column.field)">
+            </multicheck-filter>
+          </ng-template>
+          </kendo-grid-column>
+          <kendo-grid-column field="userName" title="User" width="170">
+            <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
+            let-filterService="filterService">
+            <multicheck-filter [isPrimitive]="false" [field]="column.field" [currentFilter]="filter"
+                [filterService]="filterService" textField="text" valueField="val"
+                [data]="distinctPrimitive(column.field)">
+            </multicheck-filter>
+          </ng-template>
+          </kendo-grid-column>
+          <kendo-grid-column field="dateAdded" title="Date/Time" width="170">
+            <ng-template kendoGridCellTemplate let-dataItem>
+              {{ dataItem.dateAdded | dateFormat : 'DD-MMM-YYYY HH:mm:ss' }}
+            </ng-template>
+            <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
+            let-filterService="filterService">
+            <multicheck-filter [isPrimitive]="false" [field]="column.field" [currentFilter]="filter"
+                [filterService]="filterService" textField="text" valueField="val"
+                [data]="distinctPrimitive(column.field)">
+            </multicheck-filter>
+          </ng-template>
+          </kendo-grid-column>
+
+      </kendo-grid>
+
+  </div>
+</div>
+
+  <form class="scoringRulesForm mt-2"  [formGroup]="notesForm" (ngSubmit)="onSubmit()"  autocomplete="off">
+    <div class="form-row">
+      <div class="form-group col-md-12">
+        <label class="form-label">New Note</label>
+        <input type="text" class="form-control"   formControlName="newNote" maxlength="1024"
+          [ngClass]="{ 'is-invalid': submitted && noteError != ''}">
+        <div *ngIf="submitted && noteError != ''" class="invalid-feedback">
+          <div>{{ this.noteError }}</div>
+        </div>
+      </div>
+    </div>
+
+     <div class="buttonDiv pull-right mt-2">
+      <button *ngIf="checkWorksOrdersAccess('Add Note')" [disabled]="disabledAddNote" type="submit" class="btn btn-sm themeButton m-1" >Add</button>
+      <button type="button" (click)="closeNotesWindow()" class="btn btn-sm themeButton m-1">Close</button>
+    </div>
+  </form>
+</kendo-window>

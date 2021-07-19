@@ -142,7 +142,7 @@ export class HnsAddProbabilityComponent implements OnInit {
   onSubmit(createAnother = null) {
     if (this.formMode == "edit" || this.formMode == "add") {
       this.submitted = true;
-      this.formErrorObject(); // empty form error 
+      this.formErrorObject(); // empty form error
       this.logValidationErrors(this.formGrp);
 
       if (this.formGrp.invalid) {
@@ -158,18 +158,21 @@ export class HnsAddProbabilityComponent implements OnInit {
       formObj.hasprobabilitydesc = formRawVal.hasprobabilitydesc;
       formObj.hasprobabilityscore = formRawVal.hasprobabilityscore;
       formObj.modifiedby = this.currentUser.userId;
-
+      let updateMessage = ''
       let queryAddEdit: any;
       if (this.formMode == "add") {
         formObj.createdby = this.currentUser.userId;
+        updateMessage = 'added'
         queryAddEdit = this.hnsService.addProbability(formObj);
       } else if (this.formMode == "edit") {
+        updateMessage = 'updated'
         queryAddEdit = this.hnsService.updateProbability(formObj);
       }
 
       queryAddEdit.subscribe(
         data => {
           if (data.isSuccess) {
+            this.alertService.success('Probability record successfully ' + updateMessage);
             if (createAnother == null) {
               this.closeProbability()
             } else {

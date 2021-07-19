@@ -77,7 +77,7 @@ export class HnsDefinitionDetailComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    
+
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
 
     if (this.selectedDefinition.hasinuse == "Y") {
@@ -136,7 +136,7 @@ export class HnsDefinitionDetailComponent implements OnInit, OnDestroy {
     this.subs.add(
       this.hnsPortalService.HASDefinitionValidationResult(this.selectedDefinition.hascode, this.selectedDefinition.hasversion).subscribe(
         data => {
-          // emit false to close the definition panel 
+          // emit false to close the definition panel
           this.definitionDetailIsTrue = false;
           this.closeDefinitionDetailEven.emit(this.definitionDetailIsTrue);
         },
@@ -627,12 +627,17 @@ export class HnsDefinitionDetailComponent implements OnInit, OnDestroy {
   }
 
   delete(defObj: any, deleteType: string) {
+
+    let updateMessage = ''
     let deleteQuery: any;
     if (deleteType == "group") {
+      updateMessage = 'Group'
       deleteQuery = this.hnsPortalService.deleteDefinitionGrp(defObj);
     } else if (deleteType == "heading") {
+      updateMessage = 'Heading'
       deleteQuery = this.hnsPortalService.deleteDefinitionHeading(defObj);
     } else if (deleteType == "ques") {
+      updateMessage = 'Question'
       deleteQuery = this.hnsPortalService.deleteQuestion(defObj);
     }
 
@@ -640,6 +645,7 @@ export class HnsDefinitionDetailComponent implements OnInit, OnDestroy {
       deleteQuery.subscribe(
         data => {
           if (data.isSuccess) {
+            this.alertService.success('Definition ' + updateMessage + ' successfully deleted');
             this.getDefinitionDetail(this.selectedDefinition);
           } else {
             this.alertService.error(data.message);

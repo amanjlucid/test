@@ -118,7 +118,7 @@ export class VariationNewComponent implements OnInit {
 
   onSubmit() {
     this.submitted = true;
-    this.formErrorObject(); // empty form error 
+    this.formErrorObject(); // empty form error
     this.logValidationErrors(this.variationForm);
 
     this.chRef.detectChanges();
@@ -181,6 +181,7 @@ export class VariationNewComponent implements OnInit {
           if (data.isSuccess) {
             this.alertService.success(data.message);
             this.closeNewVariation();
+            this.outputVariation.emit(formRawVal.reason);
 
           } else this.alertService.error(data.message)
         }, err => this.alertService.error(err)

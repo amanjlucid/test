@@ -121,15 +121,13 @@
             <svg [@bounce]="bounceState" class="indicator" style="position: relative; bottom: 20px; right:-310px" width="62" height="36">
               <rect width="44" height="36" [style.fill]="getSAPColor(SAPRating)" x="17"></rect>
               <polygon points="0,18 18,36 18,0 0,18" [style.fill]="getSAPColor(SAPRating)"></polygon>
-              <text x="12" y="25" class="current-potential-number">{{SAPRating}} |</text>
-              <text x="46" y="25" class="small-letter">{{SAPBand}}</text>
+                <text x="10" y="25" textLength="48" class="current-potential-number">{{SAPRating}} | <tspan class="small-letter">{{SAPBand}}</tspan></text>
             </svg>
           
             <svg [@bounce]="bounceState2" style="position: relative; bottom: 20px; right:-326px" width="62" height="36">
               <rect width="44" height="36" [style.fill]="getSAPColor(SAPPotentialRating)" x="17" ></rect>
               <polygon points="0,18 18,36 18,0 0,18" [style.fill]="getSAPColor(SAPPotentialRating)"></polygon>
-              <text x="12" y="25" class="current-potential-number">{{SAPPotentialRating}} |</text>
-              <text x="46" y="25" class="small-letter">{{SAPPotentialBand}}</text>
+              <text x="10" y="25" textLength="48" class="current-potential-number">{{SAPPotentialRating}} | <tspan class="small-letter">{{SAPPotentialBand}}</tspan></text>
             </svg>
 
            
@@ -235,15 +233,13 @@
             <svg   [@bounce]="bounceState3" style="position: relative; bottom: 20px; right:-310px" width="62" height="36">
               <rect width="44" height="36" [style.fill]="getEIColor(EIRating)" x="17"></rect>
               <polygon points="0,18 18,36 18,0 0,18" [style.fill]="getEIColor(EIRating)"></polygon>
-              <text x="12" y="25" class="current-potential-number">{{EIRating}} |</text>
-              <text x="46" y="25" class="small-letter">{{EIBand}}</text>
+              <text x="10" y="25" textLength="48" class="current-potential-number">{{EIRating}} | <tspan class="small-letter">{{EIBand}}</tspan></text>
             </svg>
           
             <svg  [@bounce]="bounceState4" style="position: relative; bottom: 20px; right:-326px" width="62" height="36">
               <rect width="44" height="36" [style.fill]="getEIColor(EIPotentialRating)" x="17"></rect>
               <polygon points="0,18 18,36 18,0 0,18" [style.fill]="getEIColor(EIPotentialRating)"></polygon>
-              <text x="12" y="25" class="current-potential-number">{{EIPotentialRating}} |</text>
-              <text x="46" y="25" class="small-letter">{{EIPotentialBand}}</text>
+              <text x="10" y="25" textLength="48" class="current-potential-number">{{EIPotentialRating}} | <tspan class="small-letter">{{EIPotentialBand}}</tspan></text>
             </svg>
 
     </div>
@@ -264,7 +260,7 @@
             <a class="dropdown-item" *ngIf="checkEnergyPortalAccess('View EPC Data')" (click)="openEPCData(dataItem)" href="javascript:void(0)">EPC Data</a>
             <a class="dropdown-item" *ngIf="checkEnergyPortalAccess('View History')" (click)="openEPCHistory(dataItem)" href="javascript:void(0)">History</a>
             <a class="dropdown-item" *ngIf="checkEnergyPortalAccess('View EPC Recommendations')" (click)="openEPCRecommendations(dataItem)" href="javascript:void(0)">Recommendations</a>
-            <a class="dropdown-item" *ngIf="checkEnergyPortalAccess('View Addenda/Disclosure')" (click)="openEPCAddenda(dataItem)" href="javascript:void(0)">Addenda /Disclosure</a>
+            <a class="dropdown-item" *ngIf="checkEnergyPortalAccess('View Addenda/Disclosure')" (click)="openEPCAddenda(dataItem)" href="javascript:void(0)">Addenda/Disclosure</a>
             <a class="dropdown-item" *ngIf="checkEnergyPortalAccess('View Certificate')" (click)="getEPCCertificate(dataItem)" href="javascript:void(0)">Certificate</a>
           </div>
         </li>

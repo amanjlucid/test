@@ -39,6 +39,15 @@
 
   </div>
 
+  <div class="row">
+    <div class="col-md-12">
+    </div>
+
+    <div class="col-md-12 actionBtnDiv text-right">
+      <button *ngIf="woMenuAccess('Accept Instruction')" (click)="openAcceptInstruction()" 
+      [disabled]="CheckMultiAcceptDisabled()" class="btn btn-sm themeButton mr-1">Accept</button>
+    </div>
+  </div>
 
 
 
@@ -46,13 +55,14 @@
     <div class="col-md-12">
 
       <kendo-grid [kendoGridGroupBinding]="gridData" [data]="gridView" [height]="570" [selectable]="{
-                    mode: 'single'
+                    mode: 'multiple'
                   }" filterable="menu" [resizable]="true" [sortable]="{
                     allowUnsort: true,
                     mode: 'multiple'
                     }" [skip]="state.skip" [sort]="state.sort" [filter]="state.filter"
         (sortChange)="sortChange($event)" (filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)"
-        [navigable]="false">
+        [navigable]="false" [kendoGridSelectBy]="mySelectionKey"
+        [selectedKeys]="mySelection">
 
         <kendo-grid-column title=" " width="37" [filterable]="false" [sortable]="false">
           <ng-template kendoGridCellTemplate let-dataItem>
@@ -62,6 +72,9 @@
                 <a *ngIf="woMenuAccess('Show Instruction Detail')" (click)="openShowInstAssetsDetail(dataItem)"
                   class="dropdown-item" href="javascript:void(0)">Show Details</a>
 
+                  <a *ngIf="woMenuAccess('Accept Instruction')" (click)="openAcceptInstruction()" 
+                   [ngClass]="{'disabled' : dataItem.woiaissuestatus != 'Issued'}"
+                  class="dropdown-item" href="javascript:void(0)" >Accept Instruction</a>
 
               </div>
             </li>

@@ -19,11 +19,10 @@ export class RetrievedEpcGridComponent implements OnInit {
   @Input() retrievedEPCs: boolean = false;
   @Input() showPanel: boolean = false;
   @Input() selectedBarChartXasis: any;
-  usereventData: any;
-  // userEventTempData: any;
+  chartData: any;
   selectedEvent: any;
-  @Output() closeretrievedEPCs = new EventEmitter<boolean>();
-  title: any = 'EPC Data';
+  @Output() closeEPCChartDataWindow = new EventEmitter<boolean>();
+  title: any = 'Energy';
   state: State = {
     skip: 0,
     sort: [],
@@ -36,6 +35,8 @@ export class RetrievedEpcGridComponent implements OnInit {
   mySelection: number[] = [];
   gridView: DataResult;
   columnName = [];
+  showAssetLink: boolean = false;
+  AssetIDColumn:string = "";
 
   constructor(
     private chRef: ChangeDetectorRef,
@@ -47,12 +48,12 @@ export class RetrievedEpcGridComponent implements OnInit {
 
   ngOnInit() {
     if (this.retrievedEPCs) {
-this.title= 'Retrieved EPCs during ' + this.selectedBarChartXasis.xAxisValue;
+      this.title= 'Retrieved EPCs during ' + this.selectedBarChartXasis.xAxisValue;
     } else {
-      this.title= 'EPC Data - ' + this.selectedBarChartXasis.xAxisValue;
+      this.title= 'Energy Data for ' + this.selectedBarChartXasis.chartName + ' - ' + this.selectedBarChartXasis.xAxisValue;
     }
 
-    this.getEventData(this.selectedBarChartXasis);
+    this.getData(this.selectedBarChartXasis);
   }
 
   
@@ -61,12 +62,12 @@ this.title= 'Retrieved EPCs during ' + this.selectedBarChartXasis.xAxisValue;
   }
 
 
-  getEventData(params) {
+  getData(params) {
     this.subs.add(
       this.dashboardService.getListOfUserEventByCriteria(params).subscribe(
         data => {
           if (data.isSuccess) {
-            let userEventTempData = Object.assign([], data.data);
+            let chartTempData = Object.assign([], data.data);
             let col = data.data[0];
 
             for (let cl in col) {
@@ -74,15 +75,20 @@ this.title= 'Retrieved EPCs during ' + this.selectedBarChartXasis.xAxisValue;
                 this.columnName.push({ 'key': `col${cl}`, 'val': col[cl] })
             }
 
-            userEventTempData.shift();
-            for (let tmpData of userEventTempData) {
+            var seqCol = this.columnName.find(x => x.val == "Asset ID")
+            if (seqCol) {
+              this.showAssetLink = true;
+            }
+
+            chartTempData.shift();
+            for (let tmpData of chartTempData) {
               for (let tindex in tmpData) {
                 tmpData[`col${tindex}`] = tmpData[tindex]
                 delete tmpData[tindex];
               }
             }
 
-            this.usereventData = Object.assign([], userEventTempData);
+            this.chartData = Object.assign([], chartTempData);
             this.renderGrid();
 
           }
@@ -90,36 +96,7 @@ this.title= 'Retrieved EPCs during ' + this.selectedBarChartXasis.xAxisValue;
       )
     )
   }
-/* 
-  getEventData(params) {
-    this.subs.add(
-      this.assetAttributeService.getRetrievedEPCs(params.xAxisValue).subscribe(
-        data => {
-          if (data.isSuccess) {
-            let userEventTempData = Object.assign([], data.data);
-            let col = data.data[0];
 
-            for (let cl in col) {
-              if (col[cl] != '')
-                this.columnName.push({ 'key': `col${cl}`, 'val': col[cl] })
-            }
-
-            userEventTempData.shift();
-            for (let tmpData of userEventTempData) {
-              for (let tindex in tmpData) {
-                tmpData[`col${tindex}`] = tmpData[tindex]
-                delete tmpData[tindex];
-              }
-            }
-
-            this.usereventData = Object.assign([], userEventTempData);
-            this.renderGrid();
-
-          }
-        }
-      )
-    )
-  } */
 
 
   groupChange(groups: GroupDescriptor[]): void {
@@ -145,53 +122,14 @@ this.title= 'Retrieved EPCs during ' + this.selectedBarChartXasis.xAxisValue;
   }
 
   renderGrid() {
-    this.gridView = process(this.usereventData, this.state);
+    this.gridView = process(this.chartData, this.state);
     this.chRef.detectChanges();
   }
 
   closeGrid() {
     this.showPanel = false;
-    this.closeretrievedEPCs.emit(this.showPanel)
+    this.closeEPCChartDataWindow.emit(this.showPanel)
   }
-
-
-  redirectToUserEevnt(val) {
-    const host = window.location.hostname;
-    let siteUrl = `"https://apexdevweb.rowanwood.ltd/dev/rowanwood`;
-
-
-    const seqCol = this.columnName.find(x => x.val == "Task No.")
-    if (seqCol) {
-      let seqArr = [];
-      if (val == "all") {
-        if (this.usereventData.length > 0) {
-          seqArr = this.usereventData.map(x => x[seqCol.key])
-        } else {
-          this.alertService.error("No record selected.")
-          return
-        }
-      } else {
-        if (this.mySelection.length > 0) {
-          for (let rowSelected of this.mySelection) {
-            seqArr.push(this.usereventData[rowSelected][seqCol.key]);
-          }
-        } else {
-          this.alertService.error("No record selected.")
-          return
-        }
-      }
-
-      siteUrl = `${siteUrl}/tasks/tasks?seq=true`
-      localStorage.setItem('taskslist', btoa(seqArr.toString()));
-      window.open(siteUrl, "_blank");
-
-    } else {
-      this.alertService.error('Seq column not found.')
-      return
-    }
-
-  }
-
 
   export() {
     let label = {};
@@ -199,13 +137,74 @@ this.title= 'Retrieved EPCs during ' + this.selectedBarChartXasis.xAxisValue;
       label[col.key] = col.val
     }
 
-    if (this.usereventData) {
-      this.helperService.exportAsExcelFile(this.usereventData, 'Retrieved EPCs', label)
+    if (this.chartData) {
+      this.helperService.exportAsExcelFile(this.chartData, this.selectedBarChartXasis.xAxisValue, label)
     } else {
       this.alertService.error("There is no record to export.")
     }
 
   }
+
+  AssetLink(val) {
+    const seqCol = this.columnName.find(x => x.val == "Asset ID")
+    if (seqCol) {
+      let assetIds = [];
+      if (val == "all") {
+        if (this.chartData.length > 0) {
+          assetIds = this.chartData.map(x => x[seqCol.key])
+        } else {
+          this.alertService.error("No record selected.")
+          return
+        }
+      } else {
+        if (this.mySelection.length > 0) {
+          for (let rowSelected of this.mySelection) {
+            assetIds.push(this.chartData[rowSelected][seqCol.key]);
+          }
+        } else {
+          this.alertService.error("No record selected.")
+          return
+        }
+      }
+
+     localStorage.setItem('assetList', btoa(assetIds.toString()));
+     let siteUrl = `${appConfig.appUrl}/asset-list?energyData=true`
+     window.open(siteUrl, "_blank");
+
+    } else {
+      this.alertService.error('Asset ID column not found.')
+      return
+    }
+
+
+
+
+
+
+  //   if (this.ChartsWithLinks.includes(this.selectedBarChartXasis.chartName)) {
+
+  //     let url = `${appConfig.appUrl}/asset-list`; // for local
+  //     if (this.selectedBarChartXasis.chartName == "EPC SAP Band & Cloned" || this.selectedBarChartXasis.chartName == "EPC SAP Bands") {
+  //       url += `?sapBand=${encodeURIComponent(this.selectedBarChartXasis.xAxisValue)}`;
+  //     }
+  //     if (this.selectedBarChartXasis.chartName == "EPC Status") {
+  //       url += `?epcStatus=${encodeURIComponent(this.selectedBarChartXasis.xAxisValue)}`;
+  //     }
+  //     window.open(url, "_blank");
+
+  // } else {
+  //   let assetIds = this.chartData.map(x => x[`col${this.AssetIdColumnIndex}`])
+  //   localStorage.setItem('assetList', btoa(assetIds.toString()));
+  //   let siteUrl = `${appConfig.appUrl}/asset-list?energyData=true`
+  //   window.open(siteUrl, "_blank");
+
+
+  // }
+
+}
+
+
+
 
 
 

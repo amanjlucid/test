@@ -34,7 +34,6 @@ export class TabWindowComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-   
     this.getMenus();
     this.dataShareService.sharedAsset.subscribe();
     this.dataShareService.modulePermission.subscribe(data => {this.moduleAccess = data});

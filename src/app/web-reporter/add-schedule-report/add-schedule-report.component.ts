@@ -4,7 +4,7 @@ import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data
 import { SelectableSettings } from '@progress/kendo-angular-grid';
 import { AlertService, ConfirmationDialogService, HelperService, SettingsService, SharedService, WebReporterService } from '../../_services'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MustbeTodayOrGreater } from 'src/app/_helpers';
+import { MustbeTodayOrGreater, SimpleDateValidator, DateMustbeTodayOrGreater, DateMustbeInFuture, ChangedDateMustbeInFuture } from 'src/app/_helpers';
 import { forkJoin, from } from 'rxjs';
 import { filter, map, toArray } from 'rxjs/operators';
 
@@ -23,6 +23,7 @@ export class AddScheduleReportComponent implements OnInit {
   @Input() openAddScheduleReport = false
   @Output() closeAddScheduleReport = new EventEmitter<boolean>();
   @Output() reloadScheduleGrid = new EventEmitter<boolean>();
+  originalRunDate;
   title = 'Schedule';
   editEvform: FormGroup;
   formErrors: any;
@@ -32,9 +33,11 @@ export class AddScheduleReportComponent implements OnInit {
     },
     'periodInterval': {
       'required': 'Period interval is required.',
+      'min': 'Period interval must be greater than zero.',
     },
     'nextRunDate': {
       'required': 'Next run date is required.',
+      'invalidDate': 'The next run date must be a valid date.',
       'pastdate': 'The next run date must be in the future.'
     },
 
@@ -73,6 +76,7 @@ export class AddScheduleReportComponent implements OnInit {
   reporterPortalPermission = [];
   notificationLoading = true;
   mySelection: number[] = [];
+  templateHeading = '';
 
   constructor(
     private fb: FormBuilder,
@@ -87,11 +91,15 @@ export class AddScheduleReportComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    if (this.selectedScheduleReport &&  this.selectedScheduleReport.xport_next_run_date) {
+      this.originalRunDate = this.helperService.ngbDatepickerFormatFromDate(this.selectedScheduleReport.xport_next_run_date);      
+    }
+    this.templateHeading = this.selectedReport.reportId + " " + this.selectedReport.reportName;
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.editEvform = this.fb.group({
       periodType: ['', [Validators.required]],
-      periodInterval: ['', [Validators.required]],
-      nextRunDate: ['', [Validators.required, MustbeTodayOrGreater()]],
+      periodInterval: ['', [Validators.required, Validators.min(1)]],
+      nextRunDate: ['', [Validators.required, SimpleDateValidator(), ChangedDateMustbeInFuture(this.originalRunDate), ]],
       pivot: ['']
     });
 
@@ -121,9 +129,10 @@ export class AddScheduleReportComponent implements OnInit {
             this.editEvform.patchValue({
               periodType: JSON.stringify(this.selectedScheduleReport.xport_period_type),
               periodInterval: this.selectedScheduleReport.xport_period,
-              nextRunDate: this.helperService.ngbDatepickerFormat(this.selectedScheduleReport.xport_next_run_date),
+              nextRunDate: this.helperService.ngbDatepickerFormatFromDate(this.selectedScheduleReport.xport_next_run_date),
               pivot: this.selectedScheduleReport.xport_pivot,
             });
+
           }
 
           // set parameter grid
@@ -232,7 +241,7 @@ export class AddScheduleReportComponent implements OnInit {
         if (abstractControl && !abstractControl.valid) {
           const messages = this.validationMessage[key];
           for (const errorKey in abstractControl.errors) {
-            if (errorKey) {
+            if (errorKey && errorKey != "ngbDate") {
               this.formErrors[key] += messages[errorKey] + ' ';
             }
           }

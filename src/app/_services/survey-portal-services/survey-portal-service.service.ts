@@ -23,8 +23,9 @@ export class SurveyPortalService {
         let statusFilter  = projectFilterList.StatusFilter;
         let supCodeNameFilter  = projectFilterList.SupCodeNameFilter;
         let settingsFilter = projectFilterList.SettingsFilter;
+        let supCodeOnlyFilter = projectFilterList.SupCodeOnlyFilter;
         let pageNo = projectFilterList.PageNo;
-        return this.http.get<any>(`${appConfig.apiUrl}/api/Survey/GetSurveyProjectsList?userId=${userID}&orderBy=${orderBy}&orderType=${orderType}&statusFilter=${statusFilter}&supCodeNameFilter=${supCodeNameFilter}&settingsFilter=${settingsFilter}&PageNo=${pageNo}`,  this.httpOptions);
+        return this.http.get<any>(`${appConfig.apiUrl}/api/Survey/GetSurveyProjectsList?userId=${userID}&orderBy=${orderBy}&orderType=${orderType}&supCodeOnlyFilter=${supCodeOnlyFilter}&statusFilter=${statusFilter}&supCodeNameFilter=${supCodeNameFilter}&settingsFilter=${settingsFilter}&PageNo=${pageNo}`,  this.httpOptions);
 
     }
 
@@ -37,7 +38,8 @@ export class SurveyPortalService {
       let batchNameFilter  = batchesFilterList.BatchNameFilter;
       let surveyorNameFilter = batchesFilterList.SurveyorNameFilter;
       let pageNo = batchesFilterList.PageNo;
-      return this.http.get<any>(`${appConfig.apiUrl}/api/Survey/GetSurveyBatchesList?supCode=${supCode}&orderBy=${orderBy}&orderType=${orderType}&statusFilter=${statusFilter}&batchNameFilter=${batchNameFilter}&surveyorNameFilter=${surveyorNameFilter}&PageNo=${pageNo}`,  this.httpOptions);
+      let batchOnlyFilter  = batchesFilterList.BatchOnlyFilter;
+      return this.http.get<any>(`${appConfig.apiUrl}/api/Survey/GetSurveyBatchesList?supCode=${supCode}&orderBy=${orderBy}&orderType=${orderType}&batchOnlyFilter=${batchOnlyFilter}&statusFilter=${statusFilter}&batchNameFilter=${batchNameFilter}&surveyorNameFilter=${surveyorNameFilter}&PageNo=${pageNo}`,  this.httpOptions);
 
   }
 
@@ -159,4 +161,9 @@ export class SurveyPortalService {
     return this.http.get<any>(`${appConfig.apiUrl}/api/Survey/PreviewCBCReport?reportid=${reportid}`,  this.httpOptions);
 
     }
+
+    GetEncryptedDeepLink(portal: string,  userid: string, assetid: string) {
+      return this.  http.get<any>(`${appConfig.apiUrl}/api/Survey/GetEncryptedDeepLink?portal=${portal}&userid=${userid}&assetid=${assetid}`,  this.httpOptions);
+    }
+
 }

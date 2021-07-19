@@ -56,11 +56,11 @@ export class AddEventComponent implements OnInit {
 
     })
 
-    if (this.selectedEvent.length == 1) {
+    if (this.selectedEvent.length > 0) {
       this.editEvform.patchValue({
         periodType: JSON.stringify(this.selectedEvent[0].eventPeriodType),
         periodInterval: this.selectedEvent[0].eventPeriod,
-        nextRunDate: this.helperService.ngbDatepickerFormat(this.selectedEvent[0].eventNextRunDate),
+        nextRunDate: this.selectedEvent[0].eventNextRunDate
       })
     }
 
@@ -126,7 +126,33 @@ export class AddEventComponent implements OnInit {
       this.subs.add(
         forkJoin(req).subscribe(
           data => {
-            console.log(data);
+            if (data.length > 0) {
+              let parms: any = data;
+
+              let successStr = [];
+              let failStr = [];
+              for (let parm in parms) {
+                if (parms[parm].isSuccess) {
+                  successStr.push(`success`);
+                } else {
+                  failStr.push(`Fail`);
+                }
+
+              }
+              let sMessageSuccess = '';
+              let sMessageFailures = '';
+              if(successStr.length > 0)
+              {
+                sMessageSuccess = JSON.stringify(successStr.length)  + ' Task(s) scheduled successfully'
+                this.alert.success(sMessageSuccess, false, 2000)
+              }
+              if(failStr.length > 0)
+              {
+                sMessageFailures = JSON.stringify(failStr.length)  + ' Task(s) not scheduled'
+                this.alert.error(sMessageFailures, false, 2000)
+              }
+
+            }
             this.closeAddEventMethod();
           }
         )
@@ -187,8 +213,11 @@ export class AddEventComponent implements OnInit {
       this.eventmanagerService.deleteSchedule(req.join(), this.currentUser.userId).subscribe(
         data => {
           if (data.isSuccess) {
-            // this.modifiedSelectedEvent.emit(modifiedEvent);
+            this.alert.success('Scheduled Task(s) successfully deleted');
             this.closeAddEventMethod();
+          }
+          else{
+            this.alert.error('Scheduled Task(s) not deleted');
           }
         }
       )

@@ -284,7 +284,7 @@ export class ProgramLogComponent implements OnInit {
     }
 
     setParamsForAssetReport(reportType) {
-        //Summary by Date = 1, Summary by Order/Phase and Date = 2, Detail by Date = 3, Detail by Order/Phase and Date = 4, 
+        //Summary by Date = 1, Summary by Order/Phase and Date = 2, Detail by Date = 3, Detail by Order/Phase and Date = 4,
         const { wprsequence, wosequence, wopsequence, } = this.singleWorkOrderAssetInp;
         let params: any = {};
 
@@ -330,7 +330,7 @@ export class ProgramLogComponent implements OnInit {
     }
 
     setParamsForWOReport(reportType) {
-        //Summary by Date = 1, Summary by Order/Phase and Date = 2, Detail by Date = 3, Detail by Order/Phase and Date = 4, 
+        //Summary by Date = 1, Summary by Order/Phase and Date = 2, Detail by Date = 3, Detail by Order/Phase and Date = 4,
         const { wprsequence } = (this.openedFrom == 'workorder') ? this.singleWorkOrderInp : this.selectedProgrammeInp;
 
         let params = {
@@ -418,7 +418,7 @@ export class ProgramLogComponent implements OnInit {
         }
 
         this.subs.add(
-            this.reportingGrpService.runReport(xPortId, params.lstParamNameValue, this.currentUser.userId, "EXCEL", false).subscribe(
+            this.reportingGrpService.runReport(xPortId, params.lstParamNameValue, this.currentUser.userId, "EXCEL", false, true).subscribe(
                 data => {
                     const linkSource = 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' + data;
                     const downloadLink = document.createElement("a");

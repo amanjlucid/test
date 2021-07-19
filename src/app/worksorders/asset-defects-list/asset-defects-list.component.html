@@ -87,9 +87,8 @@
                                     href="javascript:void(0)" (click)="openDefectForm('edit',dataItem)">Edit
                                     Defect</a>
 
-                                <!-- <a [ngClass]="{'disabled': dataItem.wodstatus != 'New'}"
-                                    *ngIf="woMenuBtnSecurityAccess('Remove Defect')" class="dropdown-item"
-                                    href="javascript:void(0)" (click)="confirm(dataItem, 'delete')">Delete Defect</a> -->
+                                <a [ngClass]="{'disabled': dataItem.wodstatus != 'New'}" *ngIf="woMenuBtnSecurityAccess('Delete Defect')" class="dropdown-item"
+                                    href="javascript:void(0)" (click)="confirm(dataItem, 'delete')">Delete Defect</a>
 
                                 <a *ngIf="openedFrom == 'workdetail' || openedFrom == 'workorder'" class="dropdown-item"
                                     href="javascript:void(0)" (click)="openAssetDefectsMethod(dataItem)">Show Defects

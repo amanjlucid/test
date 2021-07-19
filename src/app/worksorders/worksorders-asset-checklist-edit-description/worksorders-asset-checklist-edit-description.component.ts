@@ -50,7 +50,23 @@ export class WorksordersAssetChecklistEditDescriptionComponent implements OnInit
       const { wosequence } = this.worksOrder;
       const { ntpsequence } = this.selectedDoc;
       apiCall = this.worksorderManagementService.updateWorksOrderDocument(wosequence, ntpsequence, this.description, this.currentUser.userId)
-    } else {
+    } else if (this.editDesFor == "Asset") {
+      //update doc description for asset checklist
+      const assetdata = this.selectedChecklist;
+      let params = {
+        WOSEQUENCE: assetdata.wosequence,
+        ASSID: assetdata.assid,
+        WOPSEQUENCE: assetdata.wopsequence,
+        CHECKSURCDE: '0',
+        NTPSEQUENCE: this.selectedDoc.ntpsequence,
+        NEWDESCRIPTION: this.description,
+        UserId: this.currentUser.userId
+      }
+
+      apiCall = this.worksorderManagementService.updateWorksOrderAssetDocument(params);
+
+    }
+    else {
       //update doc description for asset checklist
       const checklistdata = this.selectedChecklist;
       let params = {

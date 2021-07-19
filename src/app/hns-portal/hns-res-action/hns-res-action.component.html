@@ -47,7 +47,7 @@
     <div class="col-md-12 actionGrid">
       <kendo-grid [data]="query | async" [loading]="loading" [skip]="headerFilters.CurrentPage"
         [pageSize]="headerFilters.PageSize" [selectable]="{
-        mode: 'single'
+        mode: 'multiple'
       }" filterable="menu" [resizable]="true" [sortable]="{
         allowUnsort: allowUnsort,
         mode: multiple ? 'multiple' : 'single'

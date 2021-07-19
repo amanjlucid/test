@@ -40,7 +40,8 @@ export class VariationAdditionalWorkItemComponent implements OnInit {
   mySelection: any[] = [];
   packageQuantityWindow = false;
   worksOrderData: any;
-  selectedPackagesArr: any = [];;
+  selectedPackagesArr: any = [];
+  currentUser = JSON.parse(localStorage.getItem('currentUser'));
 
   worksOrderAccess = [];
   worksOrderUsrAccess: any = [];
@@ -129,6 +130,34 @@ export class VariationAdditionalWorkItemComponent implements OnInit {
     )
   }
 
+  validateForProcess(process){
+
+    let dataItem = this.selectedSingleVariationAssetInp;
+    const params = {
+      WOSEQUENCE: dataItem.wosequence,
+      WOISEQUENCE: dataItem.woisequence,
+      Process: process,
+      UserID: this.currentUser.userId,
+    }
+
+    this.subs.add(
+      this.workOrderProgrammeService.worksOrdersCheckVariationValidForProcess(params).subscribe(
+        data => {
+          if (data.isSuccess) {
+            if(process == 'AddTicked'){
+              this.addTickedToVariation()
+            } else if (process == ''){
+              this.alertService.error('Process Not Validated')
+            }
+          } else {
+            this.alertService.error(data.message)
+          }
+        }, err => this.alertService.error(err)
+      )
+    )
+
+
+  }
 
   getWorkPacakgeData(params) {
     this.subs.add(

@@ -16,10 +16,11 @@
                 (click)="addEvent()">Schedule</button>
             <button *ngIf="taskSecurityList.indexOf('Notify') != -1" type="button" class="btn btn-sm themeButton mr-1"
                 (click)="opneNotifyWindow()">Notify</button>
-            <button type="button" class="btn btn-sm themeButton mr-1" (click)="runEvent()">Run</button>
-            <button type="button" class="btn btn-sm themeButton mr-1" (click)="copyEvent()">Copy</button>
-            <button type="button" *ngIf="checkUserEvents" class="btn btn-sm themeButton"
-                (click)="openConfirmationDialog()">Delete</button>
+            <button *ngIf="taskSecurityList.indexOf('Run')  != -1" type="button" class="btn btn-sm themeButton mr-1"
+              (click)="runEvent()">Run</button>
+            <button *ngIf="taskSecurityList.indexOf('Copy')  != -1" type="button" class="btn btn-sm themeButton mr-1"
+              (click)="copyEvent()">Copy</button>
+
         </div>
 
     </div>
@@ -56,11 +57,12 @@
                                     [ngClass]="{'disabled' : (dataItem.eventParamCount <= 0 &&  dataItem.eventParamEmptyCount != 0) || (dataItem.eventParamCount <= 0 &&  dataItem.eventParamEmptyCount <= 0) }"
                                     class="dropdown-item" href="javascript:void(0)"
                                     (click)="openParamsWindow()">Parameter(s)</a>
-
-                                <a class="dropdown-item" href="javascript:void(0)" (click)="runEvent()">Run</a>
-                                <a [ngClass]="{'disabled' : dataItem.eventTypeStatus == 'S' && validRundate(dataItem.eventNextRunDate)  }"
+                                <a *ngIf="taskSecurityList.indexOf('Run')  != -1" class="dropdown-item" href="javascript:void(0)"
+                                    [ngClass]="{'disabled' : dataItem.eventTypeStatusName == 'In-Active'  }"
+                                    (click)="runEvent()">Run</a>
+                                <a *ngIf="taskSecurityList.indexOf('Copy') != -1" [ngClass]="{'disabled' : dataItem.eventTypeStatus == 'S' && validRundate(dataItem.eventNextRunDate)  }"
                                     class="dropdown-item" href="javascript:void(0)" (click)="copyEvent()">Copy</a>
-                                <a [ngClass]="{'disabled' : dataItem.eventTypeUpdatedBy != currentUser.userId && dataItem.busAreaCode != 'USER EVENT'}"
+                                <a *ngIf="taskSecurityList.indexOf('Delete') != -1" [ngClass]="{'disabled' : dataItem.busAreaCode != 'USER EVENT'}"
                                     class="dropdown-item" href="javascript:void(0)"
                                     (click)="openConfirmationDialog()">Delete</a>
 
@@ -73,8 +75,10 @@
 
 
 
-                <kendo-grid-column field="eventParamEmptyCount" title="Parameters" width="50" [filterable]="false"
-                    [groupable]="true">
+                <kendo-grid-column field="eventParamEmptyCount" title="?" width="50" [filterable]="false" [groupable]="true">
+                    <ng-template kendoGridHeaderTemplate>
+                      <i title="Parameters?" class="fa fa-question" aria-hidden="true" ></i>
+                    </ng-template>
 
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <span>
@@ -89,8 +93,10 @@
                     </ng-template>
                 </kendo-grid-column>
 
-                <kendo-grid-column field="eventTypeNotifyCount" title="Notification" width="50" [filterable]="false"
-                    [groupable]="true">
+                <kendo-grid-column field="eventTypeNotifyCount" title="?" width="50" [filterable]="false"  [groupable]="true">
+                    <ng-template kendoGridHeaderTemplate>
+                      <i title="Notification?" class="fa fa-question" aria-hidden="true" ></i>
+                    </ng-template>
 
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <span>
@@ -104,6 +110,16 @@
                 </kendo-grid-column>
 
 
+                <kendo-grid-column field="eventPeriodType" width="50" [filterable]="false"
+                    [sortable]="false" [style]="{'padding': '0','text-align': 'center'}">
+                    <ng-template kendoGridHeaderTemplate>
+                        <i title="Schedule" class="fa fa-clock" aria-hidden="true" ></i>
+                      </ng-template>
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <i *ngIf="dataItem.eventPeriodType > -1" class="fas fa-clock"
+                            style="color: #e4287e; font-size: 14px;"></i>
+                    </ng-template>
+                </kendo-grid-column>
 
                 <kendo-grid-column field="eventTypeCode" title="Code" width="120">
                 </kendo-grid-column>
@@ -151,38 +167,55 @@
                     </ng-template>
 
                 </kendo-grid-column>
-                <kendo-grid-column field="eventTypeDueDays" title="Complete Within (days)" width="120" filter="numeric"
-                    format="{0:b}">
+                <kendo-grid-column field="eventTypeDueDays" title="Complete Within (days)" width="120" >
+                  <ng-template kendoGridFilterMenuTemplate let-filter let-column="column" let-filterService="filterService">
+                    <range-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
+                    </range-filter>
+                  </ng-template>
                 </kendo-grid-column>
-                <kendo-grid-column field="eventESCToDays1" title="Esc Days 1" width="120" filter="numeric"
-                    format="{0:b}">
+                <kendo-grid-column field="eventESCToDays1" title="Esc Days 1" width="120"  >
+                    <ng-template kendoGridFilterMenuTemplate let-filter let-column="column" let-filterService="filterService">
+                      <range-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
+                      </range-filter>
+                    </ng-template>
                 </kendo-grid-column>
 
                 <kendo-grid-column field="eventESCUser1Name" title="Esc User 1" width="150">
                 </kendo-grid-column>
 
-                <kendo-grid-column field="eventESCToDays2" title="Esc Days 2" width="120" filter="numeric"
-                    format="{0:b}">
+                <kendo-grid-column field="eventESCToDays2" title="Esc Days 2" width="120" >
+                  <ng-template kendoGridFilterMenuTemplate let-filter let-column="column" let-filterService="filterService">
+                    <range-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
+                    </range-filter>
+                  </ng-template>
                 </kendo-grid-column>
                 <kendo-grid-column field="eventESCUser2Name" title="Esc User 2" width="150">
                 </kendo-grid-column>
 
-                <kendo-grid-column field="eventESCToDays3" title="Esc Days 3" width="130" filter="numeric"
-                    format="{0:b}">
+                <kendo-grid-column field="eventESCToDays3" title="Esc Days 3" width="130"  >
+                    <ng-template kendoGridFilterMenuTemplate let-filter let-column="column" let-filterService="filterService">
+                      <range-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
+                      </range-filter>
+                    </ng-template>
                 </kendo-grid-column>
                 <kendo-grid-column field="eventESCUser3Name" title="Esc User 3" width="150">
                 </kendo-grid-column>
 
-                <kendo-grid-column field="eventPeriodType" title="Schedule Type" width="140" filter="numeric"
-                    format="{0:b}">
-                    <ng-template kendoGridCellTemplate let-dataItem>
-                        <span *ngIf="dataItem.eventPeriod != 0">
-                            {{ eventPeriod[dataItem.eventPeriodType] }}
-                        </span>
+                <kendo-grid-column field="eventPeriodTypeDisplayText" title="Schedule Type" width="140">
+                <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
+                        let-filterService="filterService">
+                        <multicheck-filter [isPrimitive]="false" [field]="column.field" [currentFilter]="filter"
+                            [filterService]="filterService" textField="text" valueField="val"
+                            [data]="distinctPrimitive(column.field)">
+                        </multicheck-filter>
                     </ng-template>
                 </kendo-grid-column>
-                <kendo-grid-column field="eventPeriod" title="Schedule Frequency" width="160" filter="numeric"
-                    format="{0:b}">
+
+                <kendo-grid-column field="eventPeriod" title="Schedule Frequency" width="160" >
+                    <ng-template kendoGridFilterMenuTemplate let-filter let-column="column" let-filterService="filterService">
+                      <range-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
+                      </range-filter>
+                    </ng-template>
                 </kendo-grid-column>
 
                 <kendo-grid-column field="eventLastRunDate" title="Last Run Date" width="120" filter="date"

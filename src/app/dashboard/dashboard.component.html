@@ -22,7 +22,7 @@
       <div class="card eventDiv">
         <div class="card-body">
           <div class="col-md-4 eventChartDiv">
-            <p style="font-size:18px; color:#333333;">Events assigned to you </p>
+            <p style="font-size:18px; color:#333333;">Tasks assigned to you </p>
             <div id="calendar"></div>
           </div>
 
@@ -61,7 +61,7 @@
 </div>
 
 <div class="example-wrapper">
-  <kendo-dialog title="Event(s)" *ngIf="notificationDialogOpened" (close)="closeNotificationDialog()" [minWidth]="250"
+  <kendo-dialog title="Task(s)" *ngIf="notificationDialogOpened" (close)="closeNotificationDialog()" [minWidth]="250"
     [width]="450">
     <ul *ngIf="selectedCalendarEvents">
       <li *ngFor="let selectedCalendarEvent of selectedCalendarEvents" style="margin-bottom:10px;">

@@ -57,7 +57,7 @@ export class ReportingGroupService {
         return this.http.post<any>(`${appConfig.apiUrl}/api/Report/CreateXportOutput`, body, httpOptions);
     }
 
-    runReport(exportId, lstParamNameValue, userId, format, pivotCheckBox) {
+    runReport(exportId, lstParamNameValue, userId, format, pivotCheckBox, dataCheckBox) {
         var httpOptions = {
             headers: new HttpHeaders({
                 'Content-Type': 'application/json',
@@ -71,12 +71,34 @@ export class ReportingGroupService {
             strUserId: userId,
             reportFormat: format,
             bPivot: pivotCheckBox,
-            bExcel: true,
+            bExcel: dataCheckBox,
             bChart: false
         };
         let body = JSON.stringify(postData);
 
         return this.http.post<any>(`${appConfig.apiUrl}/api/Report/CreateXportWebReport`, body, httpOptions);
+    }
+
+
+    previewReport(exportId, lstParamNameValue, userId, format, maxRows) {
+        var httpOptions = {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json',
+                'responseType': 'arraybuffer' as 'json'
+            }),
+
+        };
+        var postData = {
+            intXportId: exportId,
+            lstParamNameValue: lstParamNameValue,
+            strUserId: userId,
+            reportFormat: format,
+            bExcel: true,
+            lngMaxRows: maxRows
+        };
+        let body = JSON.stringify(postData);
+
+        return this.http.post<any>(`${appConfig.apiUrl}/api/Report/GetXportPreview`, body, httpOptions);
     }
 
 

@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, ChangeDetectionStrategy, ViewChild, ElementRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SubSink } from 'subsink';
-import { HnsPortalService, HelperService, SharedService } from 'src/app/_services';
+import { HnsPortalService, AlertService, HelperService, SharedService } from 'src/app/_services';
 
 @Component({
   selector: 'app-hns-definition-heading',
@@ -41,6 +41,7 @@ export class HnsDefinitionHeadingComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private hnsService: HnsPortalService,
     private helper: HelperService,
+    private alertService: AlertService,
     private sharedService: SharedService
   ) { }
 
@@ -128,8 +129,13 @@ export class HnsDefinitionHeadingComponent implements OnInit, OnDestroy {
   onSubmit(createAnother = null) {
     if (this.defGrpFormMode == "change" || this.defGrpFormMode == "new") {
       this.submitted = true;
-      this.formErrorObject(); // empty form error 
+      this.formErrorObject(); // empty form error
       this.logValidationErrors(this.defintionHeadingForm);
+
+      let updateMessage = 'updated'
+      if (this.defGrpFormMode == "new"){
+         updateMessage = 'added'
+      }
 
       if (this.defintionHeadingForm.invalid) {
         return;
@@ -158,6 +164,7 @@ export class HnsDefinitionHeadingComponent implements OnInit, OnDestroy {
       this.hnsService.saveHnsHeading(formObj, this.defGrpFormMode).subscribe(
         data => {
           if (data.isSuccess) {
+            this.alertService.success('Definition Heading successfully ' +  updateMessage);
             if (createAnother != null) {
               this.defintionHeadingForm.reset();
               this.defintionHeadingForm.patchValue({ status: "A" })

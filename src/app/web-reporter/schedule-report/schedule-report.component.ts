@@ -39,6 +39,7 @@ export class ScheduleReportComponent implements OnInit {
   openAddScheduleReport: boolean = false;
   mode = 'new';
   selectedScheduleReport: any;
+  templateHeading = '';
 
   constructor(
     private alertService: AlertService,
@@ -51,6 +52,7 @@ export class ScheduleReportComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.templateHeading = this.selectedReport.reportId + " " + this.selectedReport.reportName;
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.getScheduleReport(this.selectedReport.reportId);
   }
@@ -87,8 +89,8 @@ export class ScheduleReportComponent implements OnInit {
 
                   return {
                     xport_identifier: scheduleObj.reportId,
-                    xport_last_run_date: scheduleObj.lastRunDate,
-                    xport_next_run_date: scheduleObj.nextRunDate,
+                    xport_last_run_date: new Date(scheduleObj.lastRunDate),
+                    xport_next_run_date: new Date(scheduleObj.nextRunDate),
                     xport_period: scheduleObj.period,
                     xport_period_type: scheduleObj.periodType,
                     xport_pivot: scheduleObj.pivot,
@@ -139,8 +141,9 @@ export class ScheduleReportComponent implements OnInit {
     this.closeScheduleReportWindow.emit(this.openScheduleReport);
   }
 
-  openAddSchedule(mode) {
+  openAddSchedule(mode, dataItem) {
     this.mode = mode;
+    this.selectedScheduleReport = dataItem;
     if (this.mode == 'edit') {
       if (!this.selectedScheduleReport) return;
     }
@@ -165,7 +168,8 @@ export class ScheduleReportComponent implements OnInit {
     // console.log(this.mySelection)
   }
 
-  openConfirmationDialog() {
+  openConfirmationDialog(dataItem) {
+    this.selectedScheduleReport = dataItem;
     if (this.selectedScheduleReport == undefined) {
       this.alertService.error('Please select one attachment');
       return;

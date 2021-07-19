@@ -270,6 +270,8 @@
             </th>
             <th class="midCol" style="cursor: pointer;" *ngIf="epcView">Expiry Date
             </th>
+            <th class="midCol" style="cursor: pointer;" *ngIf="epcView">Cloned
+            </th>
             <th class="midCol" style="cursor: pointer;" *ngIf="epcView">Scheduled Date
             </th>
             <th class="midCol" style="cursor: pointer;" *ngIf="epcView">Survey Status
@@ -314,9 +316,9 @@
                     <div class="dropdown-menu">
                       <a class="dropdown-item" *ngIf="checkTabPermission('Energy') && checkModuleEnabled('Energy')"
                         (click)="openTabWindow('energy',attributeList)" href="javascript:void(0)">Rating</a>
-                          <a class="dropdown-item" *ngIf="checkTabPermission('EPC') && checkModuleEnabled('EPC Module') && checkEnergyPortalAccess('Energy Portal Access')  && checkMenuAccess('EPCs', 1)"
+                          <a class="dropdown-item" *ngIf="checkTabPermission('EPC') && checkModuleEnabled('EPC Module') && checkEnergyPortalAccess('Energy Portal Access')  && checkMenuAccess('Energy', 1)"
                         (click)="openTabWindow('epc',attributeList)" href="javascript:void(0)">EPC</a>
-                          <a class="dropdown-item" *ngIf="checkTabPermission('EPC') && checkModuleEnabled('EPC Module') && checkEnergyPortalAccess('Energy Portal Access') && checkEnergyPortalAccess('Retrieve EPC') && checkMenuAccess('EPCs', 1)"
+                          <a class="dropdown-item" *ngIf="checkTabPermission('EPC') && checkModuleEnabled('EPC Module') && checkEnergyPortalAccess('Energy Portal Access') && checkEnergyPortalAccess('Retrieve EPC') && checkMenuAccess('Energy', 1)"
                         (click)="openRetrieveEPCWindow(attributeList)" href="javascript:void(0)">Retrieve EPC</a>
                     </div>
                   </div>
@@ -453,6 +455,15 @@
             <td class="midCol" *ngIf="epcView">{{attributeList?.eiBand }}</td>
             <td class="midCol" *ngIf="epcView">{{attributeList?.lodgeDate }}</td>
             <td class="midCol" *ngIf="epcView">{{attributeList?.expiryDate }}</td>
+
+
+            <td class="midCol"  *ngIf="epcView">
+              <div class="iconDiv">
+                </div>
+                <img title="SettingsExist" style="height: 14px;" *ngIf="attributeList?.cloned == 'Y'"
+                  class="table-icon-wr" src="assets/img/icons/tick.png" />
+            </td>
+
             <td class="midCol" *ngIf="epcView">{{attributeList?.scheduledDate }}</td>
             <td class="midCol" *ngIf="epcView">{{attributeList?.surveyStatus }}</td>
             <td class="midCol" *ngIf="epcView">{{attributeList?.surveyDate }}</td>
@@ -677,6 +688,14 @@
 
   <div class="searchDiv">
     <form #assetSearch id="assetSearch">
+      <div *ngIf="energyDashboardFilter" class="row col-md-12 mt-0 pt-0 pb-2">
+        <label class="col-md-12" style="color:white;font-style: italic; text-align: center;" >Active Energy filter</label>
+      </div>
+      <div *ngIf="TaskFilter" class="row col-md-12 mt-0 pt-0 pb-2">
+        <label class="col-md-12" style="color:white;font-style: italic; text-align: center;" >Active Task filter</label>
+      </div>
+
+
       <mat-accordion>
 
         <div class="filtersection ml-0">
@@ -788,8 +807,8 @@
         </div>
 
 
-      <div class="filtersection ml-0" *ngIf="checkTabPermission('EPC') && checkEnergyPortalAccess('Energy Portal Access') && checkModuleEnabled('EPC Module') && checkMenuAccess('EPCs', 1)">
-        <mat-expansion-panel *ngIf="checkTabPermission('EPC') && checkEnergyPortalAccess('Energy Portal Access') && checkModuleEnabled('EPC Module') && checkMenuAccess('EPCs', 1)"
+      <div class="filtersection ml-0" *ngIf="checkTabPermission('EPC') && checkEnergyPortalAccess('Energy Portal Access') && checkModuleEnabled('EPC Module') && checkMenuAccess('Energy', 1)">
+        <mat-expansion-panel *ngIf="checkTabPermission('EPC') && checkEnergyPortalAccess('Energy Portal Access') && checkModuleEnabled('EPC Module') && checkMenuAccess('Energy', 1)"
             style="background-color: transparent; font-family: 'MuseoSansRounded-300', sans-serif;padding:1px; margin: 0px;">
             <mat-expansion-panel-header style="margin: 0px;padding: 0px;">
               <mat-panel-title>
@@ -972,13 +991,13 @@
       </mat-accordion>
 
       <div class="filtersection">
-        <div class="row p-2 mt-3">
-          <div class="col">
-
-          </div>
+        <div class="row p-0 mt-3">
           <div class="col">
             <button id="" (click)="clearAssetTable()" class="btn btn-sm themeButton">Clear
             </button>
+          </div>
+          <div class="col">
+
           </div>
           <div class="col">
 

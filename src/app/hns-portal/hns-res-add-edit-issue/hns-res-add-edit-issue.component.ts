@@ -3,6 +3,7 @@ import { SubSink } from 'subsink';
 import { HnsResultsService, HelperService, HnsPortalService, AlertService, SharedService, LoaderService } from '../../_services';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { trim } from 'jquery';
+import * as moment from 'moment';
 import { forkJoin } from 'rxjs';
 
 
@@ -30,6 +31,7 @@ export class HnsResAddEditIssueComponent implements OnInit {
   floorDrp: any;
   maxTodayDate = undefined;
   priority: any;
+  selectedPriority;
   budget: any;
   readonly: boolean = true;
   ifNotResolved: boolean = true;
@@ -81,6 +83,7 @@ export class HnsResAddEditIssueComponent implements OnInit {
   headingValues: any = {};
   pageLoaded = false
   QCodeOnACtiveSurvey: boolean = false;
+  AddIssuePictureCount = 0;
 
   constructor(
     private fb: FormBuilder,
@@ -490,12 +493,12 @@ export class HnsResAddEditIssueComponent implements OnInit {
 
       formObj.Hasiissue = formRawVal.issue;
       formObj.Hasiproposedaction = formRawVal.proposedAction;
-
-      formObj.Hasitargetdate = this.dateFormate(formRawVal.targetDate);
-      formObj.Hasiassessmentdate = this.dateFormate(formRawVal.date);
+      let sDate = formRawVal.date;
+      formObj.Hasitargetdate = this.dateFormate2(formRawVal.targetDate);
+      formObj.Hasiassessmentdate = this.dateFormate2(formRawVal.date);
       formObj.Hasiassessor = formRawVal.assessor;
       formObj.Hasiresolution = formRawVal.resolution;
-      formObj.Hasiresolutiondate = this.dateFormate(this.editIssueForm.controls.resDate.value);
+      formObj.Hasiresolutiondate = this.dateFormate2(this.editIssueForm.controls.resDate.value);
       formObj.Hasiactionstatus = (formRawVal.status == "" || formRawVal.status == null) ? "O" : formRawVal.status;
       formObj.Hasibudgetcode = formRawVal.budget;
       formObj.Hasiremedialcost = formRawVal.remedialCost;
@@ -505,12 +508,12 @@ export class HnsResAddEditIssueComponent implements OnInit {
       }
       formObj.Modifiedby = this.currentUser.userId;//formRawVal.comments;
       formObj.Hasiworkstatus = formRawVal.workStatus;
-      formObj.Hasiworkauthoriseddate = this.dateFormate(formRawVal.workAuthDate);
+      formObj.Hasiworkauthoriseddate = this.dateFormate2(formRawVal.workAuthDate);
       formObj.Hasiworkauthoriseduser = formRawVal.workAuthUser;
       formObj.Hasiworkreference = formRawVal.workRef;
-      formObj.Hasiworkscheduledate = this.dateFormate(formRawVal.workSchedDate);
+      formObj.Hasiworkscheduledate = this.dateFormate2(formRawVal.workSchedDate);
       formObj.Hasiworknotes = formRawVal.workNotes;
-      formObj.Hasiworkcompletiondate = this.dateFormate(formRawVal.workCompDate);
+      formObj.Hasiworkcompletiondate = this.dateFormate2(formRawVal.workCompDate);
       formObj.HasILocation = formRawVal.location;
       formObj.HasIFloor = formRawVal.floor;
       formObj.Hasquestioncode = this.selectedAction.hasquestioncode;
@@ -840,7 +843,13 @@ export class HnsResAddEditIssueComponent implements OnInit {
   closerImage(event) {
 
     if(event != undefined)
-    {this.selectedIssue.pictureCount = event;
+    {
+      if (this.selectedIssue != undefined){
+        this.selectedIssue.pictureCount = event;
+    }
+      else{
+        this.AddIssuePictureCount = event;
+      }
     }
     this.showImage = false;
     $('.editIssOvrlay').removeClass('ovrlay');
@@ -858,7 +867,14 @@ export class HnsResAddEditIssueComponent implements OnInit {
     } else {
       obj.toggle();
     }
+  }
 
+  dateChange()
+  {
+    let assessDate = this.dateFormate2(this.editIssueForm.controls.date.value);
+    if (assessDate != 'undefined-undefined-undefined'){
+      this.changeTargetDate()
+    }
   }
 
   openTemplateIssue() {
@@ -928,6 +944,11 @@ export class HnsResAddEditIssueComponent implements OnInit {
 
 
       this.tempIssueObj.hasicomments = formRawVal.comments;
+      if(this.selectedIssue != undefined){
+        this.tempIssueObj.pictureCount = this.selectedIssue.pictureCount;
+      }else{
+        this.tempIssueObj.pictureCount = this.AddIssuePictureCount;
+      }
       if (this.issueFormMode == "add"){
         this.tempIssueObj.createdby = this.currentUser.userId;
       }else{
@@ -936,7 +957,7 @@ export class HnsResAddEditIssueComponent implements OnInit {
       this.tempIssueObj.createdby = this.currentUser.userId;
       this.tempIssueObj.hasimodifiedby = this.currentUser.userId;
       this.tempIssueObj.hasiworkstatus = formRawVal.workStatus;
-
+      this.tempIssueObj.hasiremedialcost = formRawVal.remedialCost;
       this.tempIssueObj.hasiworkauthoriseddate = this.dateFormate2(formRawVal.workAuthDate);
       this.tempIssueObj.hasiworkauthoriseduser = formRawVal.workAuthUser;
       this.tempIssueObj.hasiworkreference = formRawVal.workRef;
@@ -946,7 +967,7 @@ export class HnsResAddEditIssueComponent implements OnInit {
       this.tempIssueObj.hasIFloor = formRawVal.floor;
       this.tempIssueObj.hasquestioncode = this.selectedAction.hasquestioncode;
       this.tempIssueObj.hasiseverity = formRawVal.severity;
-      this.tempIssueObj.pictureCount = this.selectedIssue.pictureCount;
+
       this.tempIssueObj.hasiprobability = formRawVal.probability//this.selectedAction.hasiseverity;
       this.tempIssueObj.hasiriskscore = this.selectedAction.hasiriskscore;
       this.tempIssueObj.hascode = this.selectedAction.hascode;
@@ -1163,45 +1184,52 @@ export class HnsResAddEditIssueComponent implements OnInit {
 
   setTargetDate(event, key = null) {
     const targetVal = event.target.value;
-    this.changeTargetDate(targetVal);
+    this.selectedPriority = targetVal;
+    this.changeTargetDate();
+
   }
 
-  changeTargetDate(targetVal, key = null) {
-    const selectedPriority = (key == null) ? this.priority.find(x => x.haspriority == targetVal) : this.priority.find(x => x.hasprioritydescription == targetVal);
-    if (this.issueFormMode == "edit") {
-      if (selectedPriority && (this.editIssueData.hasiassessmentdate != "" || this.editIssueData.hasiassessmentdate != null)) {
-        let assessDate = new Date(this.editIssueData.hasiassessmentdate);
-        if (assessDate.getFullYear() == 1753) {
-          assessDate = new Date();
-        }
-        assessDate.setDate(assessDate.getDate() + selectedPriority.hasdaystoresolve);
-        this.editIssueForm.patchValue({
-          targetDate: this.helperService.setNgbDate2(assessDate),
-        })
-        this.chRef.detectChanges();
 
-      }
-    } else {
-      if (selectedPriority) {
-        let assessDate: any;
-        if (this.selectedAction.hasiassessmentdate == "" || this.selectedAction.hasiassessmentdate == null) {
-          assessDate = new Date();
-        } else {
-          assessDate = new Date(this.selectedAction.hasiassessmentdate);
-          if (assessDate.getFullYear() == 1753) {
-            assessDate = new Date();
-          }
-        }
+  changeTargetDate() {
 
-        assessDate.setDate(assessDate.getDate() + selectedPriority.hasdaystoresolve);
-        this.editIssueForm.patchValue({
-          targetDate: this.helperService.setNgbDate2(assessDate),
-        })
-        this.chRef.detectChanges();
-
+    if(this.selectedPriority == undefined)
+    {
+      //this.alertService.error("No priority set");
+      if (this.editIssueForm.controls.priority.value != "" && this.editIssueForm.controls.priority.value != null)
+      {
+        this.selectedPriority = this.editIssueForm.controls.priority.value;
       }
     }
 
+    const Priority =  this.priority.find(x => x.haspriority == this.selectedPriority);
+    if (Priority == "" || Priority == null)
+    {
+      return;
+    }
+
+    if (Priority && (this.editIssueForm.controls.date.value != "" || this.editIssueForm.controls.date.value != null)) {
+      let checkDate = this.dateFormate2(this.editIssueForm.controls.date.value);
+      if (checkDate == 'undefined-undefined-undefined'){
+        this.alertService.error("Unable to recalculate the Target Date - invalid Assessment Date!")
+      }
+      else{
+        let tempDate = this.formatAssessmentDateFromControlValue(this.editIssueForm.controls.date.value)
+        let assessDate = new Date(tempDate);
+        if (assessDate.getFullYear() == 1753) {
+          assessDate = new Date();
+        }
+        assessDate.setDate(assessDate.getDate() + Priority.hasdaystoresolve);
+        this.editIssueForm.patchValue({
+            targetDate: this.helperService.setNgbDate2(assessDate),
+          })
+        this.chRef.detectChanges();
+      }
+    }
+  }
+
+  formatAssessmentDateFromControlValue(value) {
+    //return `${this.helperService.zeorBeforeSingleDigit(value.day)}/${this.helperService.zeorBeforeSingleDigit(value.month)}/${value.year}`
+    return `${value.year}-${this.helperService.zeorBeforeSingleDigit(value.month)}-${this.helperService.zeorBeforeSingleDigit(value.day)}T00:00:00`
   }
 
   changeSeverity(event) {
@@ -1214,12 +1242,12 @@ export class HnsResAddEditIssueComponent implements OnInit {
         return x;
       }
     });
-
+    this.selectedPriority = prior.haspriority;
     this.editIssueForm.patchValue({
       priority: prior.hasprioritydescription
     });
     setTimeout(() => {
-      this.changeTargetDate(prior.hasprioritydescription, "val");
+      this.changeTargetDate();
     }, 10);
 
   }
@@ -1234,11 +1262,12 @@ export class HnsResAddEditIssueComponent implements OnInit {
         return x;
       }
     });
+    this.selectedPriority = prior.haspriority;
     this.editIssueForm.patchValue({
       priority: prior.hasprioritydescription
     })
     setTimeout(() => {
-      this.changeTargetDate(prior.hasprioritydescription, "val");
+      this.changeTargetDate();
     }, 10);
 
   }
@@ -1259,12 +1288,13 @@ export class HnsResAddEditIssueComponent implements OnInit {
           return x;
         }
       });
+      this.selectedPriority = prior.haspriority;
       this.editIssueForm.patchValue({
         priority: prior.hasprioritydescription
       })
       setTimeout(() => {
         if (setTarget) {
-          this.changeTargetDate(prior.hasprioritydescription, "val");
+          this.changeTargetDate();
         }
 
       }, 10);

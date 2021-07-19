@@ -1,14 +1,9 @@
-let host = window.location.hostname;
+let host = '104.40.138.8';
 let apiFolder = "RowanwoodWebAPI";
 
-if (host == "localhost") {
-    host = "104.40.138.8";
-}
-
 export const appConfig = {
-    //apiUrl: 'http://192.168.1.10'
-    // apiUrl: `http://${host}`,
-    apiUrl: `http://${host}/${apiFolder}`,//'http://104.40.138.8/RowanwoodWebAPI',
+    apiUrl: `http://${host}/${apiFolder}`,
     appUrl: `http://${host}/rowanwood`,
     silverLightUrl: `http://${host}/Rowanwood`
 };
+

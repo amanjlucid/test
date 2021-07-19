@@ -99,6 +99,12 @@ import { WorksordersEditchecklistComponent } from '../worksorders-checklist/work
 import { CustomerSurveyComponent } from '../customer-survey/customer-survey.component';
 import { CustomersurveyanswerComponent } from '../customer-survey/customersurveyanswer/customersurveyanswer.component';
 import { WoEditcommentComponent } from '../wo-editcomment/wo-editcomment.component';
+import { WorksordersAssetDocumentComponent } from '../worksorders-asset-document/worksorders-asset-document.component';
+import { WoChecklistFeeComponent } from '../wo-checklist-fee/wo-checklist-fee.component';
+import { RenamePhaseAssetComponent } from '../rename-phase-asset/rename-phase-asset.component';
+import { VariationNotesComponent } from '../variation-notes/variation-notes.component';
+
+
 
 
 @NgModule({
@@ -190,7 +196,12 @@ import { WoEditcommentComponent } from '../wo-editcomment/wo-editcomment.compone
     WorksordersEditchecklistComponent,
     CustomerSurveyComponent,
     CustomersurveyanswerComponent,
-    WoEditcommentComponent
+    WoEditcommentComponent,
+    WorksordersAssetDocumentComponent,
+    WoChecklistFeeComponent,
+    RenamePhaseAssetComponent,
+    VariationNotesComponent,
+
   ],
 
 

@@ -1321,39 +1321,53 @@ export class SurveyDashboardComponent implements OnInit {
   }
 
 
+
+
   openDrillDownchart(chartEvent, parentChartObj) {
     if (parentChartObj != null && parentChartObj.ddChartID != undefined) {
-      if (parentChartObj.ddChartID != 0) {
-        const params = {
-          "chartName": `${parentChartObj.chartName} (${chartEvent.options.name})`,
-          "chartType": 4,
-          "chartParameterValue": "string",
-          "ddChartId": parentChartObj.ddChartID,
-          "parantChartId": parentChartObj.chartID,
+        if (parentChartObj.ddChartID != 0) {
+          const params = {
+            "chartName": `${parentChartObj.chartName} (${chartEvent.options.name})`,
+            "chartType": 4,
+            "chartParameterValue": "string",
+            "ddChartId": parentChartObj.ddChartID,
+            "parantChartId": parentChartObj.chartID,
+            "xAxisValue": chartEvent.options.name,
+            "seriesId": chartEvent.options.seriesId,
+            "color": chartEvent.color
+          }
+          this.renderDrillDownChart(chartEvent, params)
+        } else {
+          if (parentChartObj.dataSP != "") {
+              this.openGridOnClickOfBarChart(chartEvent, parentChartObj, true);
+          }
+        }
+    }
+  }
+
+
+  openGridOnClickOfBarChart(chartEvent, parentChartObj, fromPieChart:boolean = false) {
+    if (parentChartObj.dataSP != "") {
+      if (fromPieChart) {
+        this.selectedBarChartXasis = {
+          "ddChartId": parentChartObj.ddChartId != undefined ? parentChartObj.ddChartId : parentChartObj.ddChartID,
+          "parantChartId": parentChartObj.parantChartId != undefined ? parentChartObj.parantChartId : parentChartObj.chartID,
           "xAxisValue": chartEvent.options.name,
           "seriesId": chartEvent.options.seriesId,
-          "color" : chartEvent.color
+          "chartName": parentChartObj.chartName
         }
-
-        this.renderDrillDownChart(chartEvent, params)
-
+      } else {
+          this.selectedBarChartXasis = {
+          "ddChartId": parentChartObj.ddChartId != undefined ? parentChartObj.ddChartId : parentChartObj.ddChartID,
+          "parantChartId": parentChartObj.parantChartId != undefined ? parentChartObj.parantChartId : parentChartObj.chartID,
+          "xAxisValue": chartEvent.category,
+          "seriesId": parentChartObj.seriesId,
+          "chartName": parentChartObj.chartName
+        }
       }
-
+        this.openGrid();
     }
   }
-
-
-  openGridOnClickOfBarChart(chartEvent, parentChartObj) {
-    this.selectedBarChartXasis = {
-      "ddChartId": parentChartObj.ddChartId,
-      "parantChartId": parentChartObj.parantChartId != undefined ? parentChartObj.parantChartId : parentChartObj.chartID,
-      "xAxisValue": chartEvent.category,
-      "seriesId": parentChartObj.seriesId
-    }
-
-    this.openGrid();
-  }
-
 
 
   renderDrillDownChart($event: any, chartData: any) {

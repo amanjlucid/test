@@ -72,8 +72,13 @@
                     </ng-template>
                 </kendo-grid-column>
 
-                <kendo-grid-column *ngFor="let col of columns" field="{{col.key}}" title="{{col.val}}"
+                <kendo-grid-column *ngFor="let col of columns" field="{{col.key}}" title="{{col.val}}" [filterable]="canFilter(col.val)"
                     width="{{col.width}}">
+                    <ng-template kendoGridFilterMenuTemplate let-filter="filter" let-column="column"
+                    let-filterService="filterService">
+                     <simple-text-filter [field]="col.key" [filter]="filter" [filterService]="filterService">
+                    </simple-text-filter>
+                  </ng-template>
 
                 </kendo-grid-column>
 

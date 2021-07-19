@@ -57,6 +57,7 @@ export class HnsResEditAnswerComponent implements OnInit {
   headingValues: any = {};
   budget: any;
   actualAnsIssueList: any;
+  formDateError = '';
 
 
   constructor(
@@ -436,6 +437,9 @@ export class HnsResEditAnswerComponent implements OnInit {
     //   return;
     // }
 
+    this.submitted = true;
+    this.formDateError = '';
+
     let formRawVal = this.editAnsForm.getRawValue();
     let formObj: any = {};
     formObj.Hasactionyesnona = formRawVal.answer;
@@ -443,6 +447,12 @@ export class HnsResEditAnswerComponent implements OnInit {
     formObj.Hasaansweritem = this.healthAndSafetyAns.hasaansweritem
     formObj.HasALocation = formRawVal.location;
     formObj.HasAFloor = formRawVal.floor;
+    let v = formRawVal.date
+    if (v== undefined || v == "")
+    {
+      this.formDateError = 'Invalid Assessment Date';
+      return
+    }
     formObj.Hasaassessmentdate = this.dateFormate(formRawVal.date);
     formObj.Hasaassessor = formRawVal.assessor;
     formObj.Hasalatestassesment = this.healthAndSafetyAns.hasalatestassessment;
@@ -612,7 +622,7 @@ export class HnsResEditAnswerComponent implements OnInit {
               if (res.issueToAdd.length > 0) {
                 //await this.updateIssueArchive()
               }
-              
+
               this.loaderService.pageHide()
             }
           })

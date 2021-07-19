@@ -502,6 +502,50 @@ export class VariationWorkListComponent implements OnInit {
 
   }
 
+  validateForProcess(dataItem, process){
+
+    let res = true
+    const params = {
+      WOSEQUENCE: dataItem.wosequence,
+      WOISEQUENCE: dataItem.woisequence,
+      Process: process,
+      UserID: this.currentUser.userId,
+    }
+
+    this.subs.add(
+      this.workOrderProgrammeService.worksOrdersCheckVariationValidForProcess(params).subscribe(
+        data => {
+          if (data.isSuccess) {
+            if(process == 'RemoveVariation'){
+              this.removeItemVariationConfirm(dataItem)
+            } else if (process == 'ChangeCostQty'){
+              this.openEditWorkPackageQtyCostWindow(dataItem)
+            } else if (process == 'RemoveWork'){
+              this.deleteWorkConfirm(dataItem)
+            } else if (process == 'Recharge'){
+              this.rechargeToggle(dataItem, true)
+            } else if (process == 'ClearRecharge'){
+              this.rechargeToggle(dataItem, false)
+            } else if (process == 'Refusal'){
+              this.openRefusalReason(dataItem)
+            } else if (process == 'ClearRefusal'){
+              this.clearRefusal(dataItem)
+            } else if (process == 'ReplacePackage'){
+              this.openServicePkzMethod(dataItem)
+            } else if (process == ''){
+              this.alertService.error('Process Not Validated')
+            }
+
+          } else {
+            this.alertService.error(data.message)
+          }
+        }, err => this.alertService.error(err)
+      )
+    )
+
+
+  }
+
 
   replaceService() {
     if (this.selectedSingleServicePkz == undefined) {

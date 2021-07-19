@@ -448,7 +448,7 @@ export class PhaseChecklistComponent implements OnInit {
   }
 
   cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited, originalEvent }) {
-    if (originalEvent.ctrlKey == false) {
+    if (originalEvent.ctrlKey == false && originalEvent.shiftKey == false) {
       if (this.mySelection.length > 0) {
         this.mySelection = [`${dataItem.assid}_${dataItem.wostagesurcde}_${dataItem.wochecksurcde}_${dataItem.wocheckspeciaL1}`];
         this.chRef.detectChanges();

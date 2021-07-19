@@ -1,7 +1,7 @@
 import { FormGroup, AbstractControl, ValidatorFn } from '@angular/forms';
 import * as moment from "moment";
 import { FormControl } from "@angular/forms";
-
+import { retry } from 'rxjs/operators';
 // custom validator to check that two fields match
 export function MustMatch(controlName: string, matchingControlName: string) {
     return (formGroup: FormGroup) => {
@@ -160,8 +160,6 @@ export function OrderDateValidator(controlName: any, matchingControlName1: any) 
         if (matchingControl1.value == null || control.value == null) {
             return;
         }
-
-
         const date1 = `${control.value.year}/${control.value.month}/${control.value.day}`
         const date2 = `${matchingControl1.value.year}/${matchingControl1.value.month}/${matchingControl1.value.day}`
         let dateOne = new Date(date1);
@@ -279,6 +277,118 @@ export function MustbeTodayOrGreater(format = "DD/MM/YYYY"): any {
 
     };
 }
+
+export function DateMustbeTodayOrGreater(format = "DD/MM/YYYY"): any {
+    return (control: FormControl): { [key: string]: any } => {
+        if (control.value != null && control.value != "") {
+            let date;
+            if (control.value.day == undefined) {
+                date = control.value;
+                const dateObj = moment(date, format, true);
+                if (isNaN(dateObj.year()) || isNaN(dateObj.month()) || isNaN(dateObj.date())) {
+                    return { pastdate: false };
+                }
+                if (dateObj.isValid()) {
+                    const dd = { day: dateObj.date(), month: dateObj.month() + 1, year: dateObj.year() }
+                    control.setValue(dd);
+                }
+            } else {
+                date = `${control.value.day}/${control.value.month}/${control.value.year}`;
+            }
+            const val = moment(date, format, false);
+            if (!val.isValid()) {
+                return { pastdate: false };
+            }
+            let today = moment().format("YYYY/MM/DD")
+            let givenDate = val.format("YYYY/MM/DD");
+            if (new Date(givenDate) < new Date(today)) {
+                return { pastdate: true }
+            }
+        }
+        return null;
+
+    };
+}
+
+export function DateMustbeInFuture(format = "DD/MM/YYYY"): any {
+    return (control: FormControl): { [key: string]: any } => {
+        if (control.value != null && control.value != "") {
+            let date;
+            if (control.value.day == undefined) {
+                date = control.value;
+                const dateObj = moment(date, format, true);
+                if (isNaN(dateObj.year()) || isNaN(dateObj.month()) || isNaN(dateObj.date())) {
+                    return { pastdate: false };
+                }
+                if (dateObj.isValid()) {
+                    const dd = { day: dateObj.date(), month: dateObj.month() + 1, year: dateObj.year() }
+                    control.setValue(dd);
+                }
+            } else {
+                date = `${control.value.day}/${control.value.month}/${control.value.year}`;
+            }
+            const val = moment(date, format, false);
+            if (!val.isValid()) {
+                return { pastdate: false };
+            }
+            let today = moment().format("YYYY/MM/DD")
+            let givenDate = val.format("YYYY/MM/DD");
+            if (new Date(givenDate) <= new Date(today)) {
+                return { pastdate: true }
+            }
+        }
+        return null;
+
+    };
+}
+
+
+export function ChangedDateMustbeInFuture(originalDate): any {
+    return (control: FormControl): { [key: string]: any } => {
+        var format = "DD/MM/YYYY";
+        if (control.value != null && control.value != "") {
+            let date;
+            if (control.value.day == undefined) {
+                date = control.value;
+                const dateObj = moment(date, format, true);
+                if (isNaN(dateObj.year()) || isNaN(dateObj.month()) || isNaN(dateObj.date())) {
+                    return { pastdate: false };
+                }
+                if (dateObj.isValid()) {
+                    const dd = { day: dateObj.date(), month: dateObj.month() + 1, year: dateObj.year() }
+                    control.setValue(dd);
+                }
+            } else {
+                date = `${control.value.day}/${control.value.month}/${control.value.year}`;
+            }
+            const val = moment(date, format, false);
+            if (!val.isValid()) {
+                return { pastdate: false };
+            }
+            let today = moment().format("YYYY/MM/DD")
+            let givenDate = val.format("YYYY/MM/DD");
+            if (originalDate) {
+                if (originalDate.day == control.value.day && originalDate.month == control.value.month && originalDate.year == control.value.year) {
+                    if (new Date(givenDate) < new Date(today)) {
+                        return { pastdate: true }
+                    }
+                } else {
+                    if (new Date(givenDate) <= new Date(today)) {
+                        return { pastdate: true }
+                    }                
+                }                
+            } else {
+                if (new Date(givenDate) <= new Date(today)) {
+                    return { pastdate: true }
+                }   
+            }
+
+        }
+        return null;
+
+    };
+}
+
 
 export function isNumberCheck(): ValidatorFn {
     return (control: FormControl): { [key: string]: boolean } | null => {
@@ -493,8 +603,6 @@ export function checkDateisBelowOrAboveFromGivenDate(controlName1: any, givenDat
 
 
 }
-
-
 
 
 

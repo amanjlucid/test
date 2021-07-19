@@ -54,6 +54,8 @@ export class AsbestosAuthComponent implements OnInit {
   selectedAttachment: any;
   editAttachmentDetails: boolean = false;
   wariningPopup: boolean = false;
+  viewAttachment: boolean = false;
+  touchtime = 0;
 
   constructor(
     private dataShareService: SharedService,
@@ -107,6 +109,26 @@ export class AsbestosAuthComponent implements OnInit {
 
   cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
     this.selectedAttachment = dataItem;
+    this.handleDoubleClick(dataItem)
+  }
+
+  handleDoubleClick(dataItem) {
+    if (this.touchtime == 0) {
+      // set first click
+      this.touchtime = new Date().getTime();
+    } else {
+      // compare first click to this click and see if they occurred within double click threshold
+      if (((new Date().getTime()) - this.touchtime) < 400) {
+        // double click occurred
+        this.selectedAttachment = dataItem;
+        this.openViewAttachment()
+        this.touchtime = 0;
+      } else {
+        // not a double click so set as a new first click
+        this.touchtime = new Date().getTime();
+      }
+    }
+
   }
 
   closeAsbestosAuthWin() {
@@ -155,7 +177,7 @@ export class AsbestosAuthComponent implements OnInit {
 
   onSubmit() {
     this.submitted = true;
-    this.formErrorObject(); // empty form error 
+    this.formErrorObject(); // empty form error
     this.logValidationErrors(this.asbestosAuthForm);
     if (this.asbestosAuthForm.invalid) {
       return;
@@ -245,6 +267,26 @@ export class AsbestosAuthComponent implements OnInit {
     return `${value.day}-${value.month}-${value.year}`
   }
 
+openViewAttachment() {
+
+    if(this.selectedAsbestos != undefined)
+    {
+      if(this.selectedAttachment != undefined){
+        $('.asbestosReq').addClass('ovrlay')
+        this.viewAttachment = true;
+      }else {
+      this.alertService.error('Please select one attachment');
+      }
+    }
+
+
+  }
+
+  closeViewAttachment($event) {
+    $('.asbestosReq').removeClass('ovrlay')
+    this.viewAttachment = $event;
+  }
+
   openAttachment() {
     $('.asbestosReq').addClass('ovrlay')
     this.attachment = true;
@@ -257,7 +299,7 @@ export class AsbestosAuthComponent implements OnInit {
 
   authoriseRequest(reqAccept) {
     let successMsg = 'Request successfully authorised.';
-    
+
     if (this.selectedAsbestos.sampleList.length > 0) {
       if (this.selectedAsbestos.sampleList[0].analysisStatusText == 'Pending') {
         this.wariningPopup = true;
@@ -280,28 +322,39 @@ export class AsbestosAuthComponent implements OnInit {
     this.subs.add(
       this.asbestosService.validateAuthorise(asbestosDetails).subscribe(
         data => {
-           console.log(data)
-          if (data.isSuccess && data.data == "OK") {
-            this.asbestosService.submitAuthoriseWithAttachments(asbestosDetails).subscribe(
-              data => {
-                console.log(data);
-                if (data.isSuccess) {
-                  this.alertService.success(successMsg);
-                  this.assetAttributeService.getAssetAsbestosList(this.selectedAsbestos.assid).subscribe(
-                    data => {
-                      if (data && data.isSuccess) {
-                        this.dataShareService.changeAsbestos(data.data);
+          if (data.isSuccess) {
+            if (data.data == "OK") {
+                this.asbestosService.submitAuthoriseWithAttachments(asbestosDetails).subscribe(
+                data => {
+                    if (data.isSuccess) {
+                    this.alertService.success(successMsg);
+                    this.assetAttributeService.getAssetAsbestosList(this.selectedAsbestos.assid).subscribe(
+                      data => {
+                        if (data && data.isSuccess) {
+                          this.dataShareService.changeAsbestos(data.data);
+                        }
                       }
-                    }
-                  )
-                  this.closeAsbestosAuthWin();
-                } else {
-                  this.alertService.error(data.message)
+                    )
+                    this.closeAsbestosAuthWin();
+                  } else {
+                    this.alertService.error(data.message)
+                  }
                 }
-              }
-            )
+              )
+            } else {
+              this.alertService.error(data.data)
+            }
+          } else {
+            this.alertService.error(data.message)
+
           }
+
+
+
         }
+
+
+
       )
     )
   }

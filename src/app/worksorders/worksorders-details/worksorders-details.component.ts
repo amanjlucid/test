@@ -100,7 +100,8 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
   }
   openMilestoneFor = "phase";
   openManageMilestone = false;
-
+  renameAssetWindow = false;
+  renameItem: any;
 
   reportingCharsConfig: WopmRepCharConfig;
   displayAssetChar1 = false;
@@ -113,6 +114,7 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
   showEditCommentWindow = false;
   displayResidentDetails = false;
   assetID: string;
+  assetDocWindow: boolean = false;
 
   constructor(
     private sharedService: SharedService,
@@ -681,19 +683,57 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
 
   }
 
-  openResidentDetails(item) {
-    this.autService.validateAssetIDDeepLinkParameters(this.currentUser.userId, item.assid).subscribe(
-      data => {
-        if (data.validated) {
-          let ResidentInfo = { assid: item.assid, calledFrom: 'worksOrderDetail' };
-          sessionStorage.setItem('ResidentInfo', JSON.stringify(ResidentInfo));
-          this.router.navigate(['/resident-info']);
-          $('.worksOrderDetailOvrlay').addClass('ovrlay');
-        } else {
-          const errMsg = `${data.errorCode} : ${data.errorMessage}`
-          this.alertService.error(errMsg);
+  renamePhaseAsset(item) {
+    this.actualSelectedRow = item;
+    let params: any = {};
+    params.WOSEQUENCE = item.wosequence;
+    params.WOPSEQUENCE = item.wopsequence;
+    params.ASSID = item.assid;
+    params.strUserId = this.currentUser.userId;
+    params.strCheckOrProcess = 'C';
+    let newName = item.woname.replace(item.assid + ' - ' , '');
+    params.NewPhaseAssetName = newName;
+    this.renameItem = params;
+    $('.worksOrderDetailOvrlay').addClass('ovrlay');
+    this.renameAssetWindow = true;
+  }
+
+  closeRenameAssetWindow(eve) {
+    $('.worksOrderDetailOvrlay').removeClass('ovrlay');
+    this.renameAssetWindow = false;
+  }
+
+  renameItemComplete(params){
+    this.renameAssetWindow = false;
+    $('.worksOrderDetailOvrlay').removeClass('ovrlay');
+
+    this.subs.add(
+      this.worksorderManagementService.renamePhaseAsset(params).subscribe(
+        data => {
+          if (!data.isSuccess) {
+            this.alertService.error(data.message);
+            return
+          }
+
+          let resp: any;
+          if (data.data[0] == undefined) {
+            resp = data.data;
+          } else {
+            resp = data.data[0];
+          }
+          if (params.strCheckOrProcess == "C" && (resp.pRETURNSTATUS == "E" || resp.pRETURNSTATUS == "S")) {
+            this.openConfirmationDialogRename( resp, params)
+          } else {
+            if(resp.pRETURNSTATUS == "E" ){
+              this.alertService.error(resp.pRETURNMESSAGE)
+            }else{
+              this.alertService.success(resp.pRETURNMESSAGE)
+              this.worksOrderDetailPageData();
+            }
+          }
+
         }
-      }
+      )
     )
 
   }
@@ -733,14 +773,22 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
         return
       }
 
+      params.WOSEQUENCE = item.wosequence;
+      params.WOPSEQUENCE = item.wopsequence;
       if (item.treelevel == 2) {
+        if (type == 'ISSUE' || type == 'RELEASE')
+        {
+          params.strASSID = '';
+        }
+        else
+        {
         this.alertService.error("You must select some Assets.")
         return
       }
-
-      params.WOSEQUENCE = item.wosequence;
-      params.WOPSEQUENCE = item.wopsequence;
+      }
+      else {
       params.strASSID = [item.assid];
+      }
 
       if (type != "REMOVE") {
         params.concateAddress = item.woname;
@@ -778,6 +826,9 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
     } else if (type == "ISSUE") {
       params.UserName = this.currentUser.userName;
       callApi = this.worksorderManagementService.worksOrderIssueAsset(params);
+    }else if (type == "Reset") {
+      params.UserName = this.currentUser.userName;
+      callApi = this.worksorderManagementService.worksOrderResetAsset(params);
     }
 
 
@@ -878,8 +929,12 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
           if (checkOrProcess == "C" && (resp.pRETURNSTATUS == "E" || resp.pRETURNSTATUS == "S")) {
             this.openConfirmationDialogAction({ item, type, selection }, resp)
           } else {
+            if(resp.pRETURNSTATUS == "E" ){
+              this.alertService.error(resp.pRETURNMESSAGE)
+            }else{
             this.alertService.success(resp.pRETURNMESSAGE)
             this.worksOrderDetailPageData();
+          }
           }
 
         }
@@ -889,6 +944,21 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
 
   }
 
+  openConfirmationDialogRename(res, params) {
+
+    $('.k-window').css({ 'z-index': 1000 });
+    this.confirmationDialogService.confirm('Please confirm..', `${res.pRETURNMESSAGE}`)
+      .then((confirmed) => {
+        if (confirmed) {
+          if (res.pRETURNSTATUS == 'E') {
+            return
+          }
+          params.strCheckOrProcess = 'P'
+          this.renameItemComplete(params);
+        }
+
+      }).catch(() => console.log('Attribute dismissed the dialog.'));
+  }
 
   openConfirmationDialogAction(obj, res) {
 
@@ -1458,14 +1528,21 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
   }
 
 
-  // openResidentDetails(item) {
+  openResidentDetails(item) {
 
-  //         this.assetID = item.assid;
-  //         this.displayResidentDetails = true;
-  //         $('.worksOrderDetailOvrlay').addClass('ovrlay');
-
-  //   //$('.worksOrderDetailOvrlay').addClass('ovrlay');
-  // }
+    this.autService.validateAssetIDDeepLinkParameters(this.currentUser.userId, item.assid).subscribe(
+      data => {
+        if (data.validated) {
+          this.assetID = item.assid;
+          this.displayResidentDetails = true;
+          $('.worksOrderDetailOvrlay').addClass('ovrlay');
+        } else {
+          const errMsg = `${data.errorCode} : ${data.errorMessage}`
+          this.alertService.error(errMsg);
+        }
+      }
+    )
+  }
 
   closeResidentInfoDetailsWindow(eve) {
     this.displayResidentDetails = false;
@@ -1474,6 +1551,17 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
   /********** WOD Reports Function End *********/
 
 
+  openAssetDocument(item) {
+          this.actualSelectedRow = item;
+          this.assetDocWindow = true;
+          $('.worksOrderDetailOvrlay').addClass('ovrlay');
+
+  }
+
+  closeAssetDocument(eve) {
+    this.assetDocWindow = false;
+    $('.worksOrderDetailOvrlay').removeClass('ovrlay');
+  }
 
   openDocumentMethod() {
     if (this.worksOrderSingleData.worksOrderFileCount == 0) return;

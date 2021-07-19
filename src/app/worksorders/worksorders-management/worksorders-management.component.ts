@@ -114,7 +114,7 @@ export class WorksordersManagementComponent implements OnInit {
           this.userType = data[2][0];
 
           if (this.worksOrderAccess.length > 0) {
-            if (!this.worksOrderAccess.includes("Programmes Menu")) {
+            if (!this.worksOrderAccess.includes("Management Menu")) {
               this.router.navigate(['login']);
             }
           }

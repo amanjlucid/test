@@ -60,7 +60,7 @@ export class HnsAddTemplateActionComponent implements OnInit {
 
   onSubmit() {
     this.submitted = true;
-    this.formErrorObject(); // empty form error 
+    this.formErrorObject(); // empty form error
     this.logValidationErrors(this.templateActionForm);
 
     if (this.templateActionForm.invalid) {
@@ -89,9 +89,15 @@ export class HnsAddTemplateActionComponent implements OnInit {
       actionQuery = this.hnsService.updateTemplateAction(formObj);
     }
 
+    let updateMessage = 'updated'
+    if (this.actionMode == "new"){
+       updateMessage = 'added'
+    }
+
     actionQuery.subscribe(
       data => {
         if (data.isSuccess) {
+          this.alertService.success('Template Action successfully ' +  updateMessage);
           this.closePopupMethod();
           this.isSuccessFullSubmit.emit(true);
         } else {

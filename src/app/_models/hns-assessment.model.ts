@@ -12,7 +12,7 @@ export class HnsAssessment {
     AddressSearch: string = '';
     UserId: string = '';
     ActiveInactive: string = 'A';
-    PageSize: any = 100;
+    PageSize: any = 400;
     CurrentPage: any = 0;
     OrderBy: string = 'ASSID';
     OrderType: string = 'Ascending';

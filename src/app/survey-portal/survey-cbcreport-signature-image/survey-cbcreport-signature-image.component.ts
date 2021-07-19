@@ -10,7 +10,7 @@ import { SurveyPortalService, LoaderService, AlertService } from '../../_service
 })
 export class SurveyCbcreportSignatureImageComponent implements OnInit {
   @Input() openSignatureImage: boolean = false;
-  @Output() closeReportImages = new EventEmitter<string>();
+  @Output() closeReportImages = new EventEmitter<any>();
   //@Input() uploadFooterImageLocation: any
   title = "Upload Image";
   subs = new SubSink();
@@ -24,7 +24,8 @@ export class SurveyCbcreportSignatureImageComponent implements OnInit {
   maxFiles: number = 1;
   maxSize: number = 5; // 5MB
   uploadStatus = false;
-  uploadedImageFileName: string = "";
+  uploadedImageByteArray: any;
+  fileName: string = "";
   @Output() uploadedSuccessfull = new EventEmitter<boolean>();
 
 
@@ -111,25 +112,26 @@ export class SurveyCbcreportSignatureImageComponent implements OnInit {
 
         let httpres = this.surveyService.UploadSignatureImage(formData).subscribe(
           data => {
+            if(data.isSuccess){
+              uploadedFile++;
+              checkUploadPercent += averageUploadedPercent;
+              if (checkUploadPercent > 95)
+                checkUploadPercent = 100;
+              this.uploadResponse.message = checkUploadPercent
 
-
-
-            uploadedFile++;
-            checkUploadPercent += averageUploadedPercent;
-            if (checkUploadPercent > 95)
-              checkUploadPercent = 100;
-            this.uploadResponse.message = checkUploadPercent
-
-            if (uploadedFile == files.length) {
-              this.uploadObj.message = `${uploadMsg} uploaded.`;
-              this.uploadedSuccessfull.emit(true);
-              this.uploadedImageFileName = data.data;
-              setTimeout(() => {
-                this.closeUploadAttachmentWin()
-              }, 100);
+              if (uploadedFile == files.length) {
+                this.uploadObj.message = `${uploadMsg} uploaded.`;
+                this.uploadedSuccessfull.emit(true);
+                this.fileName = file.name;
+                this.uploadedImageByteArray = data.data;
+                setTimeout(() => {
+                  this.closeUploadAttachmentWin()
+                }, 100);
+              }
             }
-            //console.log(uploadedFile, files.length);
-
+            else{
+              this.alertService.error(data.message)
+            }
           }, error => {
             this.uploadObj.image = [];
             this.uploadObj.message = '';
@@ -149,7 +151,11 @@ export class SurveyCbcreportSignatureImageComponent implements OnInit {
 
   closeUploadAttachmentWin() {
     this.openSignatureImage = false;
-    this.closeReportImages.emit(this.uploadedImageFileName);
+    const uploadedResult = {
+      fileName: this.fileName,
+      byteArray: this.uploadedImageByteArray 
+    }
+    this.closeReportImages.emit(uploadedResult);
   }
 
   private isValidFiles(files) {

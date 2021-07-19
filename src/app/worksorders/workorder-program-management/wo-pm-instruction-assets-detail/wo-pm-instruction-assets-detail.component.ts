@@ -266,9 +266,7 @@ export class WoPmInstructionAssetsDetailComponent implements OnInit {
 
 
     woMenuAccess(menuName) {
-        if (this.userType == undefined) return true;
-
-        if (this.userType?.wourroletype == "Dual Role") {
+       if(this.userType == undefined || this.userType?.wourroletype == "Dual Role") {
             return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
         }
 

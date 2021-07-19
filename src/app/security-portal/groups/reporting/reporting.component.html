@@ -11,13 +11,10 @@
 
     <div class="table-responsive" *ngIf="reports?.rows?.length > 0">
       <table class="table table-striped table-bordered reportingTable">
-        <thead>
-          <tr>
-            <th *ngFor="let report of reports.columns">{{report.columnName}}</th>
-          </tr>
-        </thead>
         <tbody>
-
+         <tr>
+            <td *ngFor="let report of reports.columns">{{report.columnName}}</td>
+          </tr>
           <tr *ngFor="let row of reports.rows" (click)="toggleGroupClass($event, row)">
             <td *ngFor="let value of row.values">{{ value }}</td>
           </tr>
@@ -31,7 +28,7 @@
 
         <span class="reportingPrevBtn">
 
-          <div class="btn-group">
+          <div class="btn-group" *ngIf="reporterPortalPermission.indexOf('Preview Rows') != -1">
             <button [disabled]="reports?.rows?.length == 0" type="button"
               class="btn btn-sm btn-outline-secondary dropdown-toggle" data-toggle="dropdown" data-trigger="hover"
               aria-expanded="false">Preview</button>
@@ -47,39 +44,28 @@
             </div>
           </div>
 
-          <!-- <button [disabled]="reports?.rows?.length == 0" type="button" class="btn btn-sm btn-outline-secondary">Save
-              Preview As</button> -->
-          <div class="btn-group ml-2">
+
+
+            <button *ngIf="reporterPortalPermission.indexOf('Save Preview') != -1" [disabled]="reports?.rows?.length == 0" type="button"
+            class="btn btn-sm btn-outline-secondary" (click)="savePreview()">Save Preview</button>
+
+          <div class="btn-group" *ngIf="reporterPortalPermission.indexOf('Email Preview') != -1">
             <button [disabled]="reports?.rows?.length == 0" type="button"
               class="btn btn-sm btn-outline-secondary dropdown-toggle" data-toggle="dropdown" data-trigger="hover"
-              aria-expanded="false">Preview As</button>
-            <div class="dropdown-menu" x-placement="top-start"
-              style="position: absolute; will-change: top, left; top: -175px; left: 0px; font-size: 13px;">
-              <a class="dropdown-item" (click)="saveReport('CSV')" href="javascript:void(0)">Csv</a>
-              <a class="dropdown-item" (click)="saveReport('EXCEL')" href="javascript:void(0)">Excel</a>
-
-            </div>
-          </div>
-
-          <div class="btn-group ml-2">
-            <button [disabled]="reports?.rows?.length == 0" type="button"
-              class="btn btn-sm btn-outline-secondary dropdown-toggle" data-toggle="dropdown" data-trigger="hover"
-              aria-expanded="false">Email
-              Preview</button>
+              aria-expanded="false">Email Preview</button>
             <div class="dropdown-menu" x-placement="top-start"
               style="position: absolute; will-change: top, left; top: -175px; left: 0px; font-size: 13px;">
               <a class="dropdown-item" (click)="openEmailWindow()" href="javascript:void(0)">Selected Rows</a>
-              <!-- <a class="dropdown-item" (click)="opneEmailAllRecords()" href="javascript:void(0)">All Rows</a> -->
+              <a class="dropdown-item" (click)="opneEmailAllRecords()" href="javascript:void(0)">Grid</a>
 
             </div>
           </div>
 
 
 
-          <button [disabled]="reports?.rows?.length == 0" type="button" class="btn btn-sm btn-outline-secondary"
-            (click)="runReport()">Run
-            Report</button>
-          <button [disabled]="reports?.rows?.length == 0" type="button" (click)="openEmailWithReportWindow()"
+          <button *ngIf="reporterPortalPermission.indexOf('Run Report') != -1" [disabled]="reports?.rows?.length == 0" type="button" class="btn btn-sm btn-outline-secondary"
+            (click)="runReport()">Run Report</button>
+          <button *ngIf="reporterPortalPermission.indexOf('Email Report') != -1" [disabled]="reports?.rows?.length == 0" type="button" (click)="openEmailWithReportWindow()"
             class="btn btn-sm btn-outline-secondary">Email Report</button>
           <span class="" style="margin-left:10px;">
             <label class="custom-control custom-control-inline custom-radio">
@@ -93,7 +79,7 @@
               <span class="custom-control-label">Excel</span>
             </label>
             <label class="custom-control custom-control-inline custom-checkbox">
-              <input checked [disabled]="reports?.rows?.length == 0 || reportDataType" type="checkbox"
+              <input #dataCheckBox checked [disabled]="reports?.rows?.length == 0 || reportDataType" type="checkbox"
                 class="custom-control-input" name="dataReport">
               <span class="custom-control-label">Data</span>
             </label>
@@ -110,27 +96,21 @@
   </div>
   <div class="reportBgblur"></div>
 
-  <kendo-dialog title="sds" *ngIf="emailWithReportWindow || emailWindow">
-  </kendo-dialog>
-</kendo-window>
-
 
 
 <kendo-window [(width)]="emailWindowWidth" [(top)]="emailPreviewWindowTop" [minWidth]="250" [minHeight]="350"
-  title="Send Email including data" *ngIf="emailWindow" (close)="closeEmailWindow()">
-
- 
+    title="Send Email including data" [height]="auto" *ngIf="emailWindow" (close)="closeEmailWindow()">
   <div class="row sendEmailDiv">
-   
     <div class="container pl-0">
       <form (ngSubmit)="emailPreview.form.valid &&  onSubmit()" #emailPreview="ngForm">
         <div class="form-group row">
           <label class="col-form-label col-sm-2 text-sm-right">To</label>
           <div class="col-sm-10">
 
-            <ng-multiselect-dropdown [placeholder]="'Select Users'" [data]="userListToMail" [(ngModel)]="selectedItems"
-              [settings]="dropdownSettings" (onSelect)="onItemSelect($event)" (onDeSelect)="onItemDeSelect($event)"
-              name="users" (onSelectAll)="onSelectAll($event)" (onDeSelectAll)="onItemDeSelectAll($event)">
+              <ng-multiselect-dropdown [placeholder]="'Select Users'" [data]="userListToMail"
+                [(ngModel)]="selectedItems" [settings]="dropdownSettings" (onSelect)="onItemSelect($event)"
+                (onDeSelect)="onItemDeSelect($event)" name="users" (onSelectAll)="onSelectAll($event)"
+                (onDeSelectAll)="onItemDeSelectAll($event)">
             </ng-multiselect-dropdown>
           </div>
         </div>
@@ -138,7 +118,8 @@
           <label class="col-form-label col-sm-2 text-sm-right">Subject</label>
           <div class="col-sm-10">
             <input name="subject" [(ngModel)]="emailPreviewForm.subject" #subject="ngModel" type="text"
-              class="form-control" placeholder="Subject" required [ngClass]="{ 'is-invalid': subject.invalid && emailPreview.submitted }">
+                class="form-control" placeholder="Subject" required
+                [ngClass]="{ 'is-invalid': subject.invalid && emailPreview.submitted }">
               <div *ngIf="subject.invalid && emailPreview.submitted"  class="invalid-f">
                 An Email Subject is required.
               </div>
@@ -158,25 +139,31 @@
           <div class="col-sm-10 htmlData">
             <div class="dataDiv">
               <p>From: {{currentUser?.userName  }}</p>
-              <p>Report: {{ this.exportId }} - {{ reportingType }}</p>
-              <p>Parameters:
-                {{ reportingAction == "selectedGrpDetail" ? "Security Group="+ this.selectedGroup?.groupId : "None"}}
-              </p>
+                <p>Report: {{ reportingType }}</p>
+                <p>Parameters: {{ formattedParameters}}</p>
               <p>Rows: {{emailReportsLists.rows?.length}}</p>
             </div>
             <div class="table-responsive emailPreviewTable">
               <table class="">
-                <thead style="display: block;">
+<!--                 <thead style="display: block;">
                   <tr>
                     <th
-                      style="text-align: left; min-width: 138px!important; width: 138px!important;  border: 1px solid #ddd; padding: 8px;"
+                      style="text-align: left; min-width: 150px!important; width: 150px!important;  border: 1px solid #ddd; padding: 4px;"
                       *ngFor="let emailReportsList of emailReportsLists.columns">
                       {{emailReportsList.columnName}}</th>
                   </tr>
-                </thead>
+                </thead> -->
                 <tbody style="display: block; overflow-y: auto; overflow-x: hidden; max-height: 114px;">
+                  <tr>
+                    <td
+                      style="text-align: left; min-width: 150px!important; width: 150px!important;  border: 1px solid #ddd; padding: 4px;"
+                      *ngFor="let emailReportsList of emailReportsLists.columns">
+                      {{emailReportsList.columnName}}</td>
+                  </tr>
+
+
                   <tr *ngFor="let row of emailReportsLists.rows">
-                    <td style="min-width: 138px!important; border: 1px solid #ddd; padding: 8px;"
+                    <td style="min-width: 150px!important; width: 150px!important; border: 1px solid #ddd; padding: 4px;"
                       *ngFor="let value of row.values">{{ value }}</td>
                   </tr>
                 </tbody>
@@ -198,10 +185,7 @@
           <div class="col-sm-10 ml-sm-auto reportingPrevBtn text-right">
 
             <button type="submit" (click)="closeEmailWindow()" class="btn btn-sm">Cancel</button>
-            <button type="submit"
-              class="btn btn-sm btn-default themeButton">Ok</button>
-              <!-- <button type="submit" [disabled]="!emailPreview.form.valid"
-              class="btn btn-sm btn-default themeButton">Ok</button> -->
+              <button type="submit" class="btn btn-sm btn-default themeButton">Ok</button>
           </div>
         </div>
       </form>
@@ -212,7 +196,7 @@
 
 
 <kendo-window [(width)]="emailWindowWidth" [(top)]="emailReportWindowTop" [minWidth]="250" [minHeight]="410"
-  title="Send Email with report" *ngIf="emailWithReportWindow" (close)="closeEmailWithReportWindow()">
+    title="Send Email with report" [height]="auto" *ngIf="emailWithReportWindow" (close)="closeEmailWithReportWindow()">
   <div class="row sendEmailWithReportDiv">
 
     <div class="container pl-0">
@@ -220,11 +204,10 @@
         <div class="form-group row">
           <label class="col-form-label col-sm-2 text-sm-right">To</label>
           <div class="col-sm-10 emailReport">
-
-            <ng-multiselect-dropdown [placeholder]="'Select Users'" [data]="userListToMail" [(ngModel)]="selectedItems"
-              formControlName="userlist" [settings]="dropdownSettings" (onSelect)="onItemSelect($event)"
-              (onDeSelect)="onItemDeSelect($event)" name="users" (onSelectAll)="onSelectAll($event)"
-              (onDeSelectAll)="onItemDeSelectAll($event)">
+              <ng-multiselect-dropdown [placeholder]="'Select Users'" [data]="userListToMail"
+                [(ngModel)]="selectedItems" formControlName="userlist" [settings]="dropdownSettings"
+                (onSelect)="onItemSelect($event)" (onDeSelect)="onItemDeSelect($event)" name="users"
+                (onSelectAll)="onSelectAll($event)" (onDeSelectAll)="onItemDeSelectAll($event)">
             </ng-multiselect-dropdown>
           </div>
         </div>
@@ -260,5 +243,8 @@
       </form>
     </div>
   </div>
+
+  </kendo-window>
+
 
 </kendo-window>

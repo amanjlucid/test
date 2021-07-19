@@ -108,18 +108,23 @@
           </div>
 
           <div class="col-md-12 accessorDiv mt-2">
-            <label class="col-form-label">Assessor</label>
-            <input type="text" [readonly]="readonly" formControlName="assessor" class="form-control input-sm">
 
-            <label class="col-form-label">Date</label>
-            <!-- <input type="text" class="form-control input-sm" [value]="healthAndSafetyAns?.hasaassessmentdate | dateFormat : 'DD-MMM-YYYY'"> -->
-            <input type="text" class="form-control" formControlName="date" [(ngModel)]="assessorDate" [readonly]="viewOnly"
-              (click)="openCalendar(s)" [minDate]="{year: 1800, month: 1, day: 1}" ngbDatepicker #s="ngbDatepicker"
-              autocomplete="off">
-
-            <label class="col-form-label">Ref</label>
-            <input type="text" [readonly]="readonly" class="form-control input-sm"
-              [value]="healthAndSafetyAns?.hasaassessmentref">
+              <label class="col-form-label">Assessor</label>
+              <input type="text" [readonly]="readonly" formControlName="assessor" class="form-control input-sm">
+              <label class="col-form-label">Date</label>
+              <!-- <input type="text" class="form-control input-sm" [value]="healthAndSafetyAns?.hasaassessmentdate | dateFormat : 'DD-MMM-YYYY'"> -->
+              <div>
+                <input style="width: 120px;" type="text" class="form-control" formControlName="date" [(ngModel)]="assessorDate" [readonly]="viewOnly"
+                [ngClass]="{ 'is-invalid': submitted && formDateError != '' }"
+                (click)="openCalendar(s)" [minDate]="{year: 1800, month: 1, day: 1}" ngbDatepicker #s="ngbDatepicker"
+                autocomplete="off">
+                <div *ngIf="submitted && formDateError != ''" class="invalid-feedback">
+                  <div *ngIf="formDateError != ''">{{ formDateError }}</div>
+                </div>
+              </div>
+              <label class="col-form-label">Ref</label>
+              <input type="text" [readonly]="readonly" class="form-control input-sm"
+                [value]="healthAndSafetyAns?.hasaassessmentref">
           </div>
 
           <div class="col-md-12 modifiedDetail mt-2">
@@ -185,12 +190,15 @@
           </kendo-grid-column>
 
 
-          <kendo-grid-column field="hasiactionstatus" title="Status" width="100">
+  <!--        <kendo-grid-column field="hasiactionstatus" title="Status" width="100">
             <ng-template kendoGridCellTemplate let-dataItem>
               <span>
                 {{ dataItem.hasiactionstatus == "O" || dataItem.hasiactionstatus == "Y" ? "Outstanding" : dataItem.hasiactionstatus == "R" ? "Resolved" : "" }}
               </span>
             </ng-template>
+          </kendo-grid-column>-->
+          <kendo-grid-column field="actionStatusText" title="Status" width="100">
+
           </kendo-grid-column>
           <kendo-grid-column field="hasiissue" title="Issue" width="120">
           </kendo-grid-column>

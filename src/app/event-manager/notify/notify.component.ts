@@ -346,6 +346,7 @@ export class NotifyComponent implements OnInit {
         data => {
           // console.log(data);
           if (data.isSuccess) {
+            this.alert.success("Notification Users updated successfully");
             this.userToRemove = [];
             this.userToAppend = [];
             // this.getGridData();

@@ -39,6 +39,7 @@ export class HnsPriorityListComponent implements OnInit {
   range: any = { min: 1, max: 1 };
   updatedRange: any = { min: 0, max: 0 };
   hnsPermission: any = [];
+  currentUser: any;
 
   constructor(
     private hnsService: HnsPortalService,
@@ -50,7 +51,7 @@ export class HnsPriorityListComponent implements OnInit {
 
   //A1ATEST
   ngOnInit() {
-    //console.log(this.selectedDefinition);
+    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     if (this.selectedDefinition.hasinuse == "Y") {
       this.title = "View Priority List - (In Use - Read Only)";
       this.disableBtn = true;
@@ -152,6 +153,8 @@ export class HnsPriorityListComponent implements OnInit {
   }
 
   delete() {
+
+    this.selectedData.modifiedby = this.currentUser.userId
     this.subs.add(
       this.hnsService.deletePriority(this.selectedData).subscribe(
         data => {
@@ -206,7 +209,8 @@ export class HnsPriorityListComponent implements OnInit {
       hasversion: this.selectedDefinition.hasversion,
       haspriority: this.selectedData.haspriority,
       destiniationprioritysequence: this.listData[destinationIndex].haspriorityorder,
-      movedirection: direction
+      movedirection: direction,
+      modifiedby: this.currentUser.userId
     }
 
     this.hnsService.movePrioritySeq(params).subscribe(

@@ -5,6 +5,7 @@ import { PageChangeEvent, SelectableSettings } from '@progress/kendo-angular-gri
 import { AlertService, EventManagerService, HelperService, ConfirmationDialogService, SharedService, EventService } from '../../_services'
 import { forkJoin } from 'rxjs';
 import { Router } from '@angular/router';
+import { DateFormatPipe } from '../../_pipes/date-format.pipe';
 
 @Component({
   selector: 'app-task-details',
@@ -18,7 +19,7 @@ export class TaskDetailsComponent implements OnInit {
     sort: [],
     group: [{ field: 'busAreaDesc' }],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -27,7 +28,7 @@ export class TaskDetailsComponent implements OnInit {
     sort: [],
     group: [{ field: 'busAreaDesc' }],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -110,7 +111,16 @@ export class TaskDetailsComponent implements OnInit {
       this.eventManagerService.getEventTypeList().subscribe(
         data => {
           if (data.isSuccess) {
-            this.taskDetails = data.data;
+
+            let tempData = data.data;
+            tempData.map(s => {
+              s.eventLastRunDate = new Date(s.eventLastRunDate);
+              s.eventNextRunDate = new Date(s.eventNextRunDate);
+              s.eventTypeCreatedDate = new Date(s.eventTypeCreatedDate);
+              s.eventTypeUpdatedDate = new Date(s.eventTypeUpdatedDate);
+             });
+
+            this.taskDetails = tempData;
             this.taskDetailsTemp = Object.assign([], data.data);
 
             // this.taskDetailsTemp = data.data.slice(this.state.skip, 30) // remove it
@@ -150,7 +160,7 @@ export class TaskDetailsComponent implements OnInit {
     if (this.mySelection.length > 0) {
       this.selectedEvent = this.taskDetails.filter(x => this.mySelection.indexOf(x.eventTypeCode) !== -1);
       for (let selectedEve of this.selectedEvent) {
-        if (selectedEve.eventTypeUpdatedBy == this.currentUser.userId || selectedEve.busAreaCode == "USER EVENT") {
+        if (selectedEve.busAreaCode == "USER EVENT" && this.mySelection.length == 1) {
           this.checkUserEvents = true;
         } else {
           this.checkUserEvents = false;
@@ -165,11 +175,17 @@ export class TaskDetailsComponent implements OnInit {
           // compare first click to this click and see if they occurred within double click threshold
           if (((new Date().getTime()) - this.touchtime) < 400) {
             if (columnIndex == 1) {
+              if(this.taskSecurityList.indexOf('Parameters') != -1){
               this.openParamsWindow();
+              }
             } else if (columnIndex == 2) {
+              if(this.taskSecurityList.indexOf('Notify') != -1){
               this.opneNotifyWindow();
+              }
             } else {
+              if(this.taskSecurityList.indexOf('Edit') != -1){
               this.editEventMethod();
+            }
             }
 
             this.touchtime = 0;
@@ -237,18 +253,35 @@ export class TaskDetailsComponent implements OnInit {
     const len = this.mySelection.length;
   }
 
-
   runEvent() {
+
+    if (this.taskSecurityList.indexOf('Run') == -1) {
+      return
+    }
+
     if (this.selectedEvent.length > 0) {
       let req = [];
+      let eventTypeSequences: Int32Array[] = [];
       let checkManual = false;
+      let InactiveSelected = false;
       for (let eve of this.selectedEvent) {
         if (eve.eventTypeStatus == "S") {
           checkManual = true
         } else {
+          if (eve.eventTypeStatus != "I"){
           req.push(this.eventManagerService.runEvent(eve.eventTypeSequence, this.currentUser.userId));
+            eventTypeSequences.push(eve.eventTypeSequence);
+          }
+          else
+          {
+            InactiveSelected = true
+          }
         }
+      }
 
+      if (InactiveSelected) {
+        this.alertService.error("In-Active events cannot be run.")
+        return
       }
 
       if (checkManual) {
@@ -256,11 +289,18 @@ export class TaskDetailsComponent implements OnInit {
         return
       }
 
+      let params = {
+        EventTypeSequences: eventTypeSequences
+      }
 
+      this.eventManagerService.ValidateRunEvent(params).subscribe(
+        data => {
+          if (data.isSuccess) {
       this.alertService.success(`${this.selectedEvent.length} task(s) running in background.`);
 
       forkJoin(req).subscribe(
         data => {
+          this.helper.updateNotificationOnTop();
           this.alertService.destroyAlert();
           if (data.length > 0) {
             let runevents: any = data;
@@ -296,33 +336,42 @@ export class TaskDetailsComponent implements OnInit {
         }
       )
     }
+          else
+          {
+            this.alertService.error(data.message)
+          }
+        }
+      )
+    }
   }
 
   copyEvent() {
     if (this.selectedEvent.length > 0) {
-      let req: any = [];
+      let eventTypeSequences: any = [];
       for (let selectedEve of this.selectedEvent) {
         if ((selectedEve.eventTypeStatus != "S") || (selectedEve.eventTypeStatus == "S" && !this.validRundate(selectedEve.eventNextRunDate))) {
-          req.push(this.eventManagerService.copyEvent(selectedEve.eventTypeSequence, this.currentUser.userId));
+          eventTypeSequences.push(selectedEve.eventTypeSequence);
         }
-
       }
 
-      forkJoin(req).subscribe(
-        res => {
-          this.getEventData();
-          this.alertService.success("Task Copied Successfully.")
-        },
-        err => {
-          this.alertService.error(err);
-        }
-      )
-
-    }
-  }
+      this.eventManagerService.copyEvents(eventTypeSequences, this.currentUser.userId).subscribe(
+                  copyResult => {
+                    if (copyResult.isSuccess) {
+                      this.getEventData();
+                      this.alertService.success("Task Copied Successfully.")
+                    } else {
+                      this.alertService.error(copyResult.message)
+                    }
+                  },
+                  err => {
+                    this.alertService.error(err);
+                  }
+            )
+                }
+      }
 
   public openConfirmationDialog() {
-    if (this.selectedEvent.length > 0) {
+    if (this.selectedEvent.length == 1) {
       $('.k-window').css({ 'z-index': 1000 });
       this.confirmationDialogService.confirm('Please confirm..', 'Are you sure you want to delete the event ?')
         .then((confirmed) => (confirmed) ? this.deleteEvent() : console.log(confirmed))
@@ -335,25 +384,21 @@ export class TaskDetailsComponent implements OnInit {
 
 
   deleteEvent() {
-    if (this.selectedEvent.length > 0) {
-      let req: any = [];
-      // let checkCurrentUser = false;
+    if (this.selectedEvent.length == 1) {
       for (let selectedEve of this.selectedEvent) {
-        if (selectedEve.eventTypeUpdatedBy == this.currentUser.userId) {
-          req.push(this.eventManagerService.deleteEvent(selectedEve.eventTypeSequence, this.currentUser.userId));
-        }
-      }
-
-      if (!this.checkUserEvents) {
-        this.alertService.error("Please select your task to delete.")
-        return
-      }
-
       this.subs.add(
-        forkJoin(req).subscribe(
-          res => {
+              this.eventManagerService.deleteEvent(selectedEve.eventTypeSequence, this.currentUser.userId).subscribe(
+              data => {
+                if(data.isSuccess)
+                {
             this.getEventData();
             this.alertService.success("Task Deleted Successfully.")
+                }
+                else
+                {
+                  //this.getEventData();
+                  this.alertService.error("Task Not Deleted")
+                }
           },
           err => {
             this.alertService.error(err);
@@ -361,7 +406,7 @@ export class TaskDetailsComponent implements OnInit {
         )
       )
     }
-
+    }
   }
 
   editEventMethod(editType = 'edit') {
@@ -415,5 +460,12 @@ export class TaskDetailsComponent implements OnInit {
     this.getEventData();
   }
 
+  dateFormatDDMMYYYY(value) {
+    if (value) {
+      return `${value.day}-${value.month}-${value.year}`
+    } else {
+      return '01-01-1753';
+    }
+  }
 
 }

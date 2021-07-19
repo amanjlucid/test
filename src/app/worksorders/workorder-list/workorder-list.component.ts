@@ -9,6 +9,7 @@ import { WorkordersListFilterModel } from '../../_models';
 import { debounceTime } from 'rxjs/operators';
 import { CurrencyPipe } from '@angular/common';
 import { TooltipDirective } from '@progress/kendo-angular-tooltip';
+import { appConfig } from '../../app.config';
 
 @Component({
   selector: 'app-workorder-list',
@@ -821,7 +822,7 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
     }
 
     this.subs.add(
-      this.reportingGrpService.runReport(xPortId, params.lstParamNameValue, this.currentUser.userId, "EXCEL", false).subscribe(
+      this.reportingGrpService.runReport(xPortId, params.lstParamNameValue, this.currentUser.userId, "EXCEL", false, true).subscribe(
         data => {
           const linkSource = 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' + data;
           const downloadLink = document.createElement("a");
@@ -866,5 +867,42 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
   closeChecklistWindow($event) {
     this.showChecklist = $event;
     $('.bgblur').removeClass('ovrlay');
+}
+
+  ShowWorkList(type:string, dataItem) {
+    let querystring : string = "";
+    switch (type) {
+      case "Contractor":
+        querystring = `?Contractor=true`;
+        const worklistcontractor = {
+          concode : dataItem.concode,
+          contractorName : dataItem.contractorName
+        };
+        localStorage.setItem('worklistcontractor', JSON.stringify(worklistcontractor));
+        break;
+
+      case "Contract":
+        querystring = `?Contract=true`;
+        const worklistcontract = {
+          concode : dataItem.concode,
+          contractorName : dataItem.contractorName,
+          cttsurcde : dataItem.cttsurcde,
+          contractName : dataItem.contractName
+        };
+        localStorage.setItem('worklistcontract', JSON.stringify(worklistcontract));
+        break;
+
+      case "WorksOrder":
+        querystring = `?WorksOrder=true`;
+        localStorage.setItem('worklistwosequence', JSON.stringify(dataItem.wosequence));
+        break;
+
+      default:
+        break;
+    }
+
+    let siteUrl = `${appConfig.appUrl}/worksorders/worklist${querystring}`
+    window.open(siteUrl, "_blank");
+
   }
 }
