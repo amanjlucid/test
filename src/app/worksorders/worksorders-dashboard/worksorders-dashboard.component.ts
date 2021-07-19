@@ -71,6 +71,9 @@ export class WorksordersDashboardComponent implements OnInit {
   selectedBarChartXasis: any;
   worksOrdersAccess: any = [];
 
+  // new
+  portalNameForChart = 'WorksOrder'
+
   constructor(
     private hnsPortalService: HnsPortalService,
     private alertService: AlertService,
@@ -111,98 +114,98 @@ export class WorksordersDashboardComponent implements OnInit {
 
   ngOnInit() {
     //this.getChart()
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    // this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
 
-    //update notification on top
-    this.helper.updateNotificationOnTop();
+    // //update notification on top
+    // this.helper.updateNotificationOnTop();
 
-    setTimeout(() => {
-      this.subs.add(
-        // get chart data and render in template
-        this.hnsPortalService.getUserChartData(this.currentUser.userId, this.portalName).subscribe(
-          data => {
-            if (data.data.chartData != null) {
-              this.dashboardName = data.data.dashboard;
-              this.savedState = data.data.chartData.chartData
-              this.myLayout = new GoldenLayout(JSON.parse(this.savedState), $('#layoutContainer'));
-            } else {
-              this.savedState = null
-              this.myLayout = new GoldenLayout(this.config, $('#layoutContainer')); // actual object
-            }
+    // setTimeout(() => {
+    //   this.subs.add(
+    //     // get chart data and render in template
+    //     this.hnsPortalService.getUserChartData(this.currentUser.userId, this.portalName).subscribe(
+    //       data => {
+    //         if (data.data.chartData != null) {
+    //           this.dashboardName = data.data.dashboard;
+    //           this.savedState = data.data.chartData.chartData
+    //           this.myLayout = new GoldenLayout(JSON.parse(this.savedState), $('#layoutContainer'));
+    //         } else {
+    //           this.savedState = null
+    //           this.myLayout = new GoldenLayout(this.config, $('#layoutContainer')); // actual object
+    //         }
 
-            this.subs.add(
-              this.assetAttributeService.getChartsList("WorksOrder").subscribe(
-                data => {
-                  if (data.isSuccess) {
-                    // console.log(data);
-                    this.chartNames = data.data;
-                    const comp = this;
-                    let createDefaultCharts = function (container: any, state: any) {
-                      if (comp.drawChartObj == null && comp.savedState == null) {
-                        if (state.text == "Component1") {
-                          container.setTitle(comp.chartNames[0].chartName)
-                          let cl = "pi111"; // default chart class start string
-                          comp.renderChartTypes(comp.chartNames[0], comp, container, state, cl);
-                        } else if (state.text == "Component2") {
-                          let cl = "pi22"; // default chart class start string
-                          if (comp.chartNames[1] == undefined) {
-                            container.setTitle(comp.chartNames[0].chartName)
-                            comp.renderChartTypes(comp.chartNames[0], comp, container, state, cl);
-                          } else {
-                            container.setTitle(comp.chartNames[1].chartName)
-                            comp.renderChartTypes(comp.chartNames[1], comp, container, state, cl);
-                          }
+    //         this.subs.add(
+    //           this.assetAttributeService.getChartsList("WorksOrder").subscribe(
+    //             data => {
+    //               if (data.isSuccess) {
+    //                 // console.log(data);
+    //                 this.chartNames = data.data;
+    //                 const comp = this;
+    //                 let createDefaultCharts = function (container: any, state: any) {
+    //                   if (comp.drawChartObj == null && comp.savedState == null) {
+    //                     if (state.text == "Component1") {
+    //                       container.setTitle(comp.chartNames[0].chartName)
+    //                       let cl = "pi111"; // default chart class start string
+    //                       comp.renderChartTypes(comp.chartNames[0], comp, container, state, cl);
+    //                     } else if (state.text == "Component2") {
+    //                       let cl = "pi22"; // default chart class start string
+    //                       if (comp.chartNames[1] == undefined) {
+    //                         container.setTitle(comp.chartNames[0].chartName)
+    //                         comp.renderChartTypes(comp.chartNames[0], comp, container, state, cl);
+    //                       } else {
+    //                         container.setTitle(comp.chartNames[1].chartName)
+    //                         comp.renderChartTypes(comp.chartNames[1], comp, container, state, cl);
+    //                       }
 
-                        } else if (state.text == "Component3") {
-                          if (comp.chartNames[2] == undefined) {
-                            container.setTitle(comp.chartNames[0].chartName)
-                            comp.renderChartTypes(comp.chartNames[0], comp, container, state);
-                          } else {
-                            container.setTitle(comp.chartNames[2].chartName)
-                            comp.renderChartTypes(comp.chartNames[2], comp, container, state);
-                          }
+    //                     } else if (state.text == "Component3") {
+    //                       if (comp.chartNames[2] == undefined) {
+    //                         container.setTitle(comp.chartNames[0].chartName)
+    //                         comp.renderChartTypes(comp.chartNames[0], comp, container, state);
+    //                       } else {
+    //                         container.setTitle(comp.chartNames[2].chartName)
+    //                         comp.renderChartTypes(comp.chartNames[2], comp, container, state);
+    //                       }
 
-                        } else if (state.text == "Component4") {
-                          if (comp.chartNames[3] != undefined) {
-                            container.setTitle(comp.chartNames[3].chartName)
-                            comp.renderChartTypes(comp.chartNames[3], comp, container, state);
-                          }
-                        }
-                      } else if (comp.drawChartObj == null && comp.savedState != null) {
-                        comp.renderChartIfStateSaved(container, state, comp);
-                      } else if (comp.drawChartObj != null) {
-                        comp.renderChartTypes(comp.drawChartObj, comp, container, state);
-                      }
-                    }
+    //                     } else if (state.text == "Component4") {
+    //                       if (comp.chartNames[3] != undefined) {
+    //                         container.setTitle(comp.chartNames[3].chartName)
+    //                         comp.renderChartTypes(comp.chartNames[3], comp, container, state);
+    //                       }
+    //                     }
+    //                   } else if (comp.drawChartObj == null && comp.savedState != null) {
+    //                     comp.renderChartIfStateSaved(container, state, comp);
+    //                   } else if (comp.drawChartObj != null) {
+    //                     comp.renderChartTypes(comp.drawChartObj, comp, container, state);
+    //                   }
+    //                 }
 
-                    if (this.pageload) {
-                      this.myLayout.registerComponent('testComponent', createDefaultCharts);
-                      this.myLayout.init();
-                    }
+    //                 if (this.pageload) {
+    //                   this.myLayout.registerComponent('testComponent', createDefaultCharts);
+    //                   this.myLayout.init();
+    //                 }
 
-                    this.pageload = false;
+    //                 this.pageload = false;
 
-                  } else {
-                    this.alertService.error(data.message);
-                  }
-                }
-              )
-            )
+    //               } else {
+    //                 this.alertService.error(data.message);
+    //               }
+    //             }
+    //           )
+    //         )
 
-          }
-        )
-      )
-    }, 500);
+    //       }
+    //     )
+    //   )
+    // }, 500);
 
-    // resize chart when click on sidebar hide btn
-    const comp = this;
-    $(".ion-md-menu").click(function () {
-      $(".lm_goldenlayout").css("width", "100%");
-      $('.lm_goldenlayout > .lm_column').css("width", "100%");
-      setTimeout(() => {
-        comp.myLayout.updateSize();
-      }, 200);
-    })
+    // // resize chart when click on sidebar hide btn
+    // const comp = this;
+    // $(".ion-md-menu").click(function () {
+    //   $(".lm_goldenlayout").css("width", "100%");
+    //   $('.lm_goldenlayout > .lm_column').css("width", "100%");
+    //   setTimeout(() => {
+    //     comp.myLayout.updateSize();
+    //   }, 200);
+    // })
 
   }
 

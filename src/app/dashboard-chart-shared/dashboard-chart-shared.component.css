@@ -1,9 +1,7 @@
-/* #wrapper {
+#wrapper {
     height: 100%;
- 
     width: 100%;
     overflow: hidden;
-   
 }
 
 .fullscreen {
@@ -20,9 +18,7 @@
     height: 710px;
     position: relative;
     width: 100%;
-   
     margin-bottom: 5px;
-   
 }
 
 #layoutContainer {
@@ -32,9 +28,7 @@
     top: 0;
     left: 8px;
     border: 1px solid #e6e1e1;
-   
 }
-
 
 .spBtnGrp {
     display: block;
@@ -63,7 +57,6 @@
     overflow: hidden;
     background: #070627;
     z-index: 999;
-   
     -webkit-transform: translateX(100%);
 }
 
@@ -116,4 +109,4 @@
     100% {
         -webkit-transform: translateX(100%);
     }
-} */
+}

@@ -48,4 +48,5 @@ export * from './asset-risk.model';
 export * from './workorders/workorders-payment-schedule.model';
 export * from './workorders/workorders-valuation.model';
 export * from './works-order-settings.model';
-export * from './wopm-rep-char-config.model'
+export * from './wopm-rep-char-config.model';
+export * from './chart-component.model';

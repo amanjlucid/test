@@ -10,7 +10,7 @@ import { LoginComponent } from './login';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { AuthGuard } from './_guards';
 import { JwtInterceptor, ErrorInterceptor, LoaderInterceptorService, NgbDateCustomParserFormatter, CustomPreloadingStrategy } from './_helpers';
-import { AlertService, AuthenticationService, UserService, LoaderService, GroupService, CharacteristicGroupService, ElementGroupService, AttributeGroupService, PortalGroupService, FunctionSecurityService, PropertySecurityGroupService, ReportingGroupService, ConfirmationDialogService, EventService, AssetAttributeService, SharedService, ServicePortalService, SettingsService, HnsPortalService, HnsResultsService, EventManagerDashboardService, EventManagerService, WebReporterService, SurveyPortalService, WorksorderManagementService, WorksorderReportService, WorksOrdersService, WopmConfigurationService, EditPaymentScheduleService } from './_services';
+import { AlertService, AuthenticationService, UserService, LoaderService, GroupService, CharacteristicGroupService, ElementGroupService, AttributeGroupService, PortalGroupService, FunctionSecurityService, PropertySecurityGroupService, ReportingGroupService, ConfirmationDialogService, EventService, AssetAttributeService, SharedService, ServicePortalService, SettingsService, HnsPortalService, HnsResultsService, EventManagerDashboardService, EventManagerService, WebReporterService, SurveyPortalService, WorksorderManagementService, WorksorderReportService, WorksOrdersService, WopmConfigurationService, EditPaymentScheduleService, ChartService } from './_services';
 import { AlertComponent, LoaderComponent, KendoGridColor, KendoZindex, MyDatePicker, DecimalValidation } from './_directives';
 import { GridModule, ExcelModule } from '@progress/kendo-angular-grid';
 import { InputsModule } from '@progress/kendo-angular-inputs';
@@ -28,7 +28,6 @@ import { ElementsGroupComponent } from './security-portal/groups/elements-group/
 import { AttributeGroupComponent } from './security-portal/groups/attribute-group/attribute-group.component';
 import { PortalTabsComponent } from './security-portal/groups/portal-tabs/portal-tabs.component';
 import { PropertySecurityComponent } from './security-portal/groups/property-security/property-security.component';
-//import { ReportingComponent } from './security-portal/groups/reporting/reporting.component';
 import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
 import { DateFormatPipe } from './_pipes/date-format.pipe';
 import { AsbestosRefDetailPipe } from './_pipes/asbestos-ref-detail.pipe'
@@ -99,9 +98,6 @@ import { WebReporterSettingComponent } from './setting/web-reporter-setting/web-
 import {MatExpansionModule} from '@angular/material/expansion';
 import { AssetEpcDashboardComponent } from './assets-portal/asset-energy/asset-epc-dashboard/asset-epc-dashboard.component';
 import { AssetEpcRouterComponent } from './assets-portal/asset-energy/asset-epc-router/asset-epc-router.component';
-//import { RetrievedEpcGridComponent } from './assets-portal/asset-energy/retrieved-epc-grid/retrieved-epc-grid.component';
-//import { WorksordersDashboardComponent } from './worksorders/worksorders-dashboard/worksorders-dashboard.component';
-//import { WorksordersRouterComponent } from './worksorders/worksorders-router/worksorders-router.component';
 import { SurveyProjectsComponent } from './survey-portal/survey-projects/survey-projects.component';
 import { SurveyProjectSurveysComponent } from './survey-portal/survey-project-surveys/survey-project-surveys.component';
 import { SurveyBatchesComponent } from './survey-portal/survey-batches/survey-batches.component';
@@ -282,6 +278,7 @@ import { WorksOrderSettingsComponent } from './works-order-settings/works-order-
     WopmConfigurationService,
     CustomPreloadingStrategy,
     EditPaymentScheduleService,
+    ChartService,
     CurrencyPipe,
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },

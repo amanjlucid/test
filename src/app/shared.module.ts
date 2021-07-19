@@ -24,11 +24,14 @@ import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { CurrencyInputDirective, CurrencyMaskDirective, NumberDecimalMaskDirective } from './_directives';
 import { AssetRiskComponent } from './asset-resident-info/asset-risk/asset-risk.component';
 import { AssetResidentInfoComponent } from './asset-resident-info/asset-resident-info.component';
+import { DashboardChartSharedComponent } from './dashboard-chart-shared/dashboard-chart-shared.component';
 
 @NgModule({
-  imports: [ FormsModule, ReactiveFormsModule, GridModule, DatePickerModule, CommonModule, ExcelModule, InputsModule, DialogsModule, TreeListModule, MultiSelectModule,  NgMultiSelectDropDownModule],
-  declarations: [DateFormatPipe, CurrencyFormatPipe, RoundOffPipe, SimpleTextFilterComponent, DateRangeFilterComponent, MultiCheckFilterComponent, RangeFilterComponent,TextFilterComponent, AssetResidentInfoComponent, AssetRiskComponent,DateRangeTreeListFilterComponent,CurrencyMaskDirective, NumberDecimalMaskDirective,CurrencyInputDirective,RetrievedEpcGridComponent,ReportingComponent],
-  exports: [DateFormatPipe, CurrencyFormatPipe, RoundOffPipe, SimpleTextFilterComponent, DateRangeFilterComponent, MultiCheckFilterComponent, RangeFilterComponent,TextFilterComponent, AssetResidentInfoComponent,DateRangeTreeListFilterComponent,CurrencyMaskDirective, NumberDecimalMaskDirective,CurrencyInputDirective,RetrievedEpcGridComponent,ReportingComponent]
+  imports: [FormsModule, ReactiveFormsModule, GridModule, DatePickerModule, CommonModule, ExcelModule, InputsModule, DialogsModule, TreeListModule, MultiSelectModule, NgMultiSelectDropDownModule],
+  
+  declarations: [DateFormatPipe, CurrencyFormatPipe, RoundOffPipe, SimpleTextFilterComponent, DateRangeFilterComponent, MultiCheckFilterComponent, RangeFilterComponent, TextFilterComponent, AssetResidentInfoComponent, AssetRiskComponent, DateRangeTreeListFilterComponent, CurrencyMaskDirective, NumberDecimalMaskDirective, CurrencyInputDirective, RetrievedEpcGridComponent, ReportingComponent, DashboardChartSharedComponent],
+
+  exports: [DateFormatPipe, CurrencyFormatPipe, RoundOffPipe, SimpleTextFilterComponent, DateRangeFilterComponent, MultiCheckFilterComponent, RangeFilterComponent, TextFilterComponent, AssetResidentInfoComponent, DateRangeTreeListFilterComponent, CurrencyMaskDirective, NumberDecimalMaskDirective, CurrencyInputDirective, RetrievedEpcGridComponent, ReportingComponent, DashboardChartSharedComponent]
 })
 
 export class SharedModule { }
