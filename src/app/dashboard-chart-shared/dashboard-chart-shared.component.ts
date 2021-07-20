@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewEncapsulation, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, ViewEncapsulation, Output, EventEmitter, HostListener } from '@angular/core';
 import { SubSink } from 'subsink';
 import { ChartComponentModel } from '../_models';
 import { AlertService, HelperService, ChartService } from '../_services';
@@ -36,6 +36,11 @@ export class DashboardChartSharedComponent implements OnInit {
   pageload: boolean = true;
   dashboardName: string;
   defaultFilterVal: string = "0_OPTIVO:CONTRACT1:OPTGAS2";
+  goldenLayoutHeight = "710px";
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    this.updateChartLayoutSize();
+  }
 
   constructor(
     private alertService: AlertService,
@@ -64,7 +69,6 @@ export class DashboardChartSharedComponent implements OnInit {
         .pipe(delay(500))//DELAY 500 MILISECOND 
         .subscribe(
           async data => {
-            console.log(data);
             const { chartData = null, dashboard } = data.data;
             if (chartData != null) {
               this.dashboardName = dashboard;
@@ -128,6 +132,7 @@ export class DashboardChartSharedComponent implements OnInit {
             if (this.pageload) {
               this.myLayout.registerComponent('testComponent', createDefaultCharts);
               this.myLayout.init();
+              this.updateChartLayoutSize();//UPDATE LAYOUT HEIGHT AND WIDTH
             }
 
             this.pageload = false;
@@ -140,18 +145,19 @@ export class DashboardChartSharedComponent implements OnInit {
     //RESIZE CHART ON COLLAPSE OF SIDEBAR
     const sideMenu = document.querySelector('.ion-md-menu');
     this.subs.add(
-      fromEvent(sideMenu, 'click').subscribe(
-        (value) => {
-          $(".lm_goldenlayout").css("width", "100%");
-          $('.lm_goldenlayout > .lm_column').css("width", "100%");
-          setTimeout(() => { this.myLayout.updateSize() }, 200);
-        }
-      )
+      fromEvent(sideMenu, 'click').subscribe(value => this.updateChartLayoutSize())
     )
 
 
   }
 
+  updateChartLayoutSize() {
+    const innerHeight = window.innerHeight - 200;
+    this.goldenLayoutHeight = `${innerHeight}px`;
+    $(".lm_goldenlayout").css("width", "100%");
+    $('.lm_goldenlayout > .lm_column').css("width", "100%");
+    setTimeout(() => { this.myLayout.updateSize() }, 200);
+  }
 
 
   renderChartIfStateSaved(container: any, state: any) {

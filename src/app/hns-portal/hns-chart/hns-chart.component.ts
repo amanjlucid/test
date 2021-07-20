@@ -32,7 +32,7 @@ export class HnsChartComponent implements OnInit {
         data => {
           this.servicePortalAccess = data;
           if (this.servicePortalAccess.length > 0) {
-            console.log(this.servicePortalAccess);
+            // console.log(this.servicePortalAccess);
             // this.alertService.error("You have no access to configuration")
             // this.router.navigate(['/dashboard']);
           }
