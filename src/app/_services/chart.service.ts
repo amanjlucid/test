@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { BehaviorSubject } from 'rxjs';
 import { appConfig } from '../app.config';
 declare var Highcharts: any;
 
@@ -16,9 +17,9 @@ export class ChartService {
 
     constructor(private http: HttpClient) { }
 
-    getChartType() {
-        return this.http.get<any>(`${appConfig.apiUrl}/api/HealthSafetyChart/GetHealtSafetyChartList`, this.httpOptions);
-    }
+    // getChartType() {
+    //     return this.http.get<any>(`${appConfig.apiUrl}/api/HealthSafetyChart/GetHealtSafetyChartList`, this.httpOptions);
+    // }
 
     getChartData(chartDetail) {
         let body = JSON.stringify(chartDetail);
@@ -72,7 +73,7 @@ export class ChartService {
     }
 
     pieChartConfiguration(selector: any, data: any, chartObj = null, titleText: any, seriesName: string, allowPointSelect: boolean = true) {
-        let comp = this
+        let service = this
         let format = (chartObj && chartObj.valueFormat) ? chartObj.valueFormat : '';
         let prefix = (chartObj && chartObj.valuePrefix) ? chartObj.valuePrefix : '';
         let suffix = (chartObj && chartObj.valueSuffix) ? chartObj.valueSuffix : '';
@@ -98,13 +99,13 @@ export class ChartService {
                 name: seriesName,
                 colorByPoint: true,
                 data: data,
-                // point: {
-                //     events: {
-                //         click: function (event) {
-                //             // comp.openDrillDownchart(this, chartObj)
-                //         }
-                //     }
-                // }
+                point: {
+                    events: {
+                        click: function (event) {
+                            service.changeChartInfo({ chartRef: this, chartObject: chartObj, chartType: 'pie' })
+                        }
+                    }
+                }
             }],
             chart: {
                 plotShadow: false,
@@ -201,6 +202,9 @@ export class ChartService {
 
 
     barChartConfiguration(selector: any, data: any, barChartParams: any = null, titleText: any, seriesName: string, allowPointSelect: boolean = true) {
+        const service = this
+        const { categories, stackedBarChartViewModelList } = data;
+        const scroll = categories.length < 10 ? false : true;
         let color = barChartParams != null ? barChartParams.color : '';
         if (barChartParams.ddChartID != undefined) {
             barChartParams.seriesId = data.stackedBarChartViewModelList[0].seriesId
@@ -215,7 +219,7 @@ export class ChartService {
                 text: titleText
             },
             xAxis: {
-                categories: data.categories,
+                categories: categories,
                 min: 0,
                 // max: data.categories.length - 1,
                 max: 10,
@@ -223,7 +227,7 @@ export class ChartService {
                     rotation: 90,
                 },
                 scrollbar: {
-                    enabled: true,
+                    enabled: scroll,
                 },
             },
             yAxis: {
@@ -249,6 +253,7 @@ export class ChartService {
                     point: {
                         events: {
                             click: function (event) {
+                                service.changeChartInfo({ chartRef: this, chartObject: barChartParams, chartType: 'bar' })
                                 // comp.openGridOnClickOfBarChart(this, barChartParams)
                             }
                         }
@@ -256,7 +261,7 @@ export class ChartService {
 
                 }
             },
-            series: data.stackedBarChartViewModelList,
+            series: stackedBarChartViewModelList,
         }
 
     }
@@ -282,6 +287,9 @@ export class ChartService {
 
 
     groupBarChartConfiguration(selector: any, data: any, titleText: any, seriesName: string, allowPointSelect: boolean = true) {
+        console.log({ 'gbar': data });
+        const { categories, stackedBarChartViewModelList } = data;
+        const scroll = categories.length < 13 ? false : true;
         return {
             chart: {
                 type: 'column',
@@ -291,7 +299,7 @@ export class ChartService {
                 text: titleText
             },
             xAxis: {
-                categories: data.categories,
+                categories: categories,
                 crosshair: true,
                 min: 0,
                 // max: data.categories.length - 1,
@@ -300,7 +308,7 @@ export class ChartService {
                     rotation: 90,
                 },
                 scrollbar: {
-                    enabled: true,
+                    enabled: scroll,
                 },
             },
             yAxis: {
@@ -323,11 +331,10 @@ export class ChartService {
                     borderWidth: 0
                 }
             },
-            series: data.stackedBarChartViewModelList
+            series: stackedBarChartViewModelList
         }
 
     }
-
 
 
     diff(from, to) {
@@ -344,4 +351,15 @@ export class ChartService {
 
         return arr;
     }
+
+
+    private chartClickSource = new BehaviorSubject<any>([]);
+    chartInfo = this.chartClickSource.asObservable();
+
+
+    changeChartInfo(data) {
+        this.chartClickSource.next(data)
+    }
+
+
 }

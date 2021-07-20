@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, Input, ViewEncapsulation, Output, EventEmitter } from '@angular/core';
 import { SubSink } from 'subsink';
 import { ChartComponentModel } from '../_models';
 import { AlertService, HelperService, ChartService } from '../_services';
@@ -7,7 +7,13 @@ import { fromEvent } from 'rxjs';
 
 declare var $: any;
 declare var GoldenLayout: any;
-declare var Highcharts: any;
+// declare var Highcharts: any;
+type gridDataEventType = {
+  chartRef: any
+  chartObject: any
+  chartType: string
+};
+
 
 @Component({
   selector: 'app-dashboard-chart-shared',
@@ -18,6 +24,7 @@ declare var Highcharts: any;
 export class DashboardChartSharedComponent implements OnInit {
   @Input() portalName: string;
   @Input() portalNameForChart: string;
+  @Output() gridDataEvent = new EventEmitter<gridDataEventType>();
   subs = new SubSink();
   monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
   chartNames: any = [];
@@ -28,9 +35,9 @@ export class DashboardChartSharedComponent implements OnInit {
   currentUser: any = JSON.parse(localStorage.getItem('currentUser'));
   pageload: boolean = true;
   dashboardName: string;
-  defaultFilterVal: string = "";
-  retrievedEPCs = false
-  showDataPanel = false;
+  defaultFilterVal: string = "0_OPTIVO:CONTRACT1:OPTGAS2";
+
+
   selectedBarChartXasis: any;
 
 
@@ -45,15 +52,24 @@ export class DashboardChartSharedComponent implements OnInit {
 
   ngOnDestroy() {
     this.subs.unsubscribe();
+
+    //EMPTY CHART CLICK SUBSCRIPTION ON COMPONENT LEAVE
+    this.chartService.changeChartInfo([]);
   }
 
   ngOnInit(): void {
+    //SUBSCRIBE CHART CLICK
+    this.subs.add(
+      this.chartService.chartInfo.subscribe(data => this.handleChartClick(data))
+    )
+
+    //GET CHART DATA
     this.subs.add(
       this.chartService.getUserChartData(this.currentUser.userId, this.portalName)
         .pipe(delay(500))//DELAY 500 MILISECOND 
         .subscribe(
           async data => {
-            console.log(data)
+            // console.log(data)
             const { chartData = null, dashboard } = data.data;
             if (chartData != null) {
               this.dashboardName = dashboard;
@@ -71,9 +87,9 @@ export class DashboardChartSharedComponent implements OnInit {
               this.alertService.error(chartList.message);
               return;
             }
-           
+
             this.chartNames = chartList.data;
-            
+
             const createDefaultCharts = (container: any, state: any) => {
               if (this.drawChartObj == null && this.savedState == null) {
                 const { text } = state;
@@ -291,6 +307,7 @@ export class DashboardChartSharedComponent implements OnInit {
 
 
   pieChart(container: any, state: any, chartObj: any = null, cl = null) {
+    console.log(chartObj);
     const className = this.getUniqueClassName(cl, 'pie');
     let filterDivCl = "filterpi" + className;
     console.log('pie')
@@ -342,13 +359,15 @@ export class DashboardChartSharedComponent implements OnInit {
     const className = this.getUniqueClassName(cl, 'pie');
     const filterDivCl = "filterpi" + className;
 
+    console.log(state)
+
     const { selectedFilter, containerChartObj: chartObj } = state;  //Object destructuring 
     chartObj.ChartParameterValue = (selectedFilter != null && selectedFilter != "") ? selectedFilter : this.defaultFilterVal;
 
     this.subs.add(
       this.chartService.getChartData(chartObj).subscribe(
         data => {
-          console.log(data);
+          // console.log(data);
           if (data.isSuccess) {
             const { pieChartModel, chartFilterModel: pieChartFilterData } = data.data;
             const pieChartData = pieChartModel.filter(x => x.y != 0 && x.y != "" && x.y != null);
@@ -525,6 +544,7 @@ export class DashboardChartSharedComponent implements OnInit {
 
 
   barChart(container: any, state: any, chartObj: any = null, cl = null) {
+    console.log({ container, state, chartObj })
     const className = this.getUniqueClassName(cl, 'bar');
     let filterDivCl = "filterbar" + className;
 
@@ -786,6 +806,88 @@ export class DashboardChartSharedComponent implements OnInit {
       )
     )
   }
+
+
+  handleChartClick(data: gridDataEventType) {
+    if (typeof data == 'object' && data.chartType != undefined) {
+      this.openChartOrGrid(data);
+    }
+  }
+
+
+  openChartOrGrid(data: gridDataEventType) {
+    console.log(data)
+    const { chartRef: chartEvent, chartObject: parentChartObj } = data;
+    if (parentChartObj && parentChartObj.ddChartID) {
+      const params = {
+        "chartName": `${parentChartObj.chartName} (${chartEvent.options.name})`,
+        "chartType": 4,
+        "chartParameterValue": "string",
+        "ddChartId": parentChartObj.ddChartID,
+        "parantChartId": parentChartObj.chartID,
+        "xAxisValue": chartEvent.options.name,
+        "seriesId": chartEvent.options.seriesId,
+        "color": chartEvent.color
+      }
+      this.renderDrillDownChart(chartEvent, params)
+    } else {
+      if (parentChartObj.dataSP) {
+        this.outputDataForGrid(data);
+      }
+    }
+  }
+
+
+  renderDrillDownChart($event: any, chartData: any) {
+    this.drawChartObj = chartData;
+    let cl = Math.random();
+    let compNo = `line${new Date().getMilliseconds()}${Math.random()}${cl}`;
+    let thisContainer = $($event.series.chart.container);
+
+    let newItemConfig = {
+      title: chartData.chartName,
+      type: 'component',
+      componentName: 'testComponent',
+      componentState: { text: 'Component' + compNo }
+    };
+
+    thisContainer.closest(".lm_stack").find('.lm_selectable').click();
+    if (this.myLayout.selectedItem != undefined) {
+      this.myLayout.selectedItem.addChild(newItemConfig);
+    }
+  };
+
+  outputDataForGrid(data: gridDataEventType) {
+    this.gridDataEvent.emit(data);
+  }
+
+  // openGridOnClickOfBarChart(chartEvent, parentChartObj, fromPieChart: boolean = false) {
+  //   if (parentChartObj.dataSP != "") {
+  //     if (fromPieChart) {
+  //       this.selectedBarChartXasis = {
+  //         "ddChartId": parentChartObj.ddChartId != undefined ? parentChartObj.ddChartId : parentChartObj.ddChartID,
+  //         "parantChartId": parentChartObj.parantChartId != undefined ? parentChartObj.parantChartId : parentChartObj.chartID,
+  //         "xAxisValue": chartEvent.options.name,
+  //         "seriesId": chartEvent.options.seriesId,
+  //         "chartName": parentChartObj.chartName
+  //       }
+  //     } else {
+  //       this.selectedBarChartXasis = {
+  //         "ddChartId": parentChartObj.ddChartId != undefined ? parentChartObj.ddChartId : parentChartObj.ddChartID,
+  //         "parantChartId": parentChartObj.parantChartId != undefined ? parentChartObj.parantChartId : parentChartObj.chartID,
+  //         "xAxisValue": chartEvent.category,
+  //         "seriesId": parentChartObj.seriesId,
+  //         "chartName": parentChartObj.chartName
+  //       }
+  //     }
+
+  //     // this.openGrid(parentChartObj.chartName);
+  //   }
+  // }
+
+
+
+
 
   openChartList() {
     const scrollTop = $('.layout-container').height();
