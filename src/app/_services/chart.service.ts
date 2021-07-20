@@ -12,7 +12,7 @@ export class ChartService {
             'Content-Type': 'application/json'
         }),
     };
-    
+
 
     constructor(private http: HttpClient) { }
 
@@ -116,7 +116,7 @@ export class ChartService {
     }
 
 
-    lineChartInit(className: any, chartData: any, xaxis: any, titleText: any, yAxisTitle: any) {
+    lineChartInit(className: any, chartData: any, xaxis: any, titleText: any = null, yAxisTitle: any = null) {
         Highcharts.chart(
             this.lineChartConfigration(
                 className,
@@ -130,10 +130,9 @@ export class ChartService {
 
     lineChartConfigration(selector: any, data: any, xaxis: any, titleText: any, yAxisTitle: any) {
         let category = this.diff(xaxis.start, xaxis.end);
-        console.log(category)
         let maxCol = category?.length < 10 ? category.length : 10;
         let scroll = maxCol < 10 ? false : true;
-        console.log(scroll)
+
         return {
             title: {
                 text: titleText
@@ -181,6 +180,156 @@ export class ChartService {
     }
 
 
+    barChartInit(selector: any, data: any, barChartParams: any = null, titleText: any = null, yAxisTitle: string = null, allowPointSelect: boolean = true) {
+        if (data.categories != null) {
+            Highcharts.chart(
+                this.barChartConfiguration(
+                    selector,
+                    data,
+                    barChartParams,
+                    titleText,
+                    yAxisTitle,
+                    allowPointSelect,
+
+                )
+            );
+        } else {
+            $("#" + selector).css("background-color", "white").html('<div style="text-align: center;margin-top: 16%;font-size: 20px;font-weight: 600;">No Record.</div>');
+        }
+
+    }
+
+
+    barChartConfiguration(selector: any, data: any, barChartParams: any = null, titleText: any, seriesName: string, allowPointSelect: boolean = true) {
+        let color = barChartParams != null ? barChartParams.color : '';
+        if (barChartParams.ddChartID != undefined) {
+            barChartParams.seriesId = data.stackedBarChartViewModelList[0].seriesId
+        }
+
+        return {
+            chart: {
+                type: 'column',
+                renderTo: selector,
+            },
+            title: {
+                text: titleText
+            },
+            xAxis: {
+                categories: data.categories,
+                min: 0,
+                // max: data.categories.length - 1,
+                max: 10,
+                labels: {
+                    rotation: 90,
+                },
+                scrollbar: {
+                    enabled: true,
+                },
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: ''
+                }
+            },
+            tooltip: {
+                pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y:.2f}</b><br/>',
+                shared: true
+            },
+            legend: { enabled: false },
+            plotOptions: {
+                column: {
+                    stacking: 'normal',
+                    'zones': [{
+                        color: color,
+                    }]
+                },
+                series: {
+                    cursor: 'pointer',
+                    point: {
+                        events: {
+                            click: function (event) {
+                                // comp.openGridOnClickOfBarChart(this, barChartParams)
+                            }
+                        }
+                    },
+
+                }
+            },
+            series: data.stackedBarChartViewModelList,
+        }
+
+    }
+
+
+
+    groupBarChartInit(selector: any, data: any, titleText: any = null, yAxisTitle: string = null, allowPointSelect: boolean = true) {
+        if (data.categories != null) {
+            Highcharts.chart(
+                this.groupBarChartConfiguration(
+                    selector,
+                    data,
+                    titleText,
+                    yAxisTitle,
+                    allowPointSelect,
+                )
+            );
+        } else {
+            $("#" + selector).css("background-color", "white").html('<div style="text-align: center;margin-top: 16%;font-size: 20px;font-weight: 600;">No Record.</div>');
+        }
+
+    }
+
+
+    groupBarChartConfiguration(selector: any, data: any, titleText: any, seriesName: string, allowPointSelect: boolean = true) {
+        return {
+            chart: {
+                type: 'column',
+                renderTo: selector,
+            },
+            title: {
+                text: titleText
+            },
+            xAxis: {
+                categories: data.categories,
+                crosshair: true,
+                min: 0,
+                // max: data.categories.length - 1,
+                max: 10,
+                labels: {
+                    rotation: 90,
+                },
+                scrollbar: {
+                    enabled: true,
+                },
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: ''
+                }
+            },
+            tooltip: {
+                headerFormat: '<span style="font-size:12px">{point.key}</span><table>',
+                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                    '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
+                footerFormat: '</table>',
+                shared: true,
+                useHTML: true
+            },
+            plotOptions: {
+                column: {
+                    pointPadding: 0.3,
+                    borderWidth: 0
+                }
+            },
+            series: data.stackedBarChartViewModelList
+        }
+
+    }
+
+
+
     diff(from, to) {
         let arr = [];
         let datFrom = new Date('1 ' + from);
@@ -188,11 +337,11 @@ export class ChartService {
         let fromYear = datFrom.getFullYear();
         let toYear = datTo.getFullYear();
         let diffYear = (12 * (toYear - fromYear)) + datTo.getMonth();
-    
+
         for (let i = datFrom.getMonth(); i <= diffYear; i++) {
-          arr.push(this.monthNames[i % 12] + " " + Math.floor(fromYear + (i / 12)));
+            arr.push(this.monthNames[i % 12] + " " + Math.floor(fromYear + (i / 12)));
         }
-    
+
         return arr;
-      }
+    }
 }
