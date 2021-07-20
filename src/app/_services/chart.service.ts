@@ -204,7 +204,12 @@ export class ChartService {
     barChartConfiguration(selector: any, data: any, barChartParams: any = null, titleText: any, seriesName: string, allowPointSelect: boolean = true) {
         const service = this
         const { categories, stackedBarChartViewModelList } = data;
-        const scroll = categories.length < 10 ? false : true;
+        let max = 10;
+        let scroll = true;
+        if (categories.length < 10) {
+            scroll = false;
+            max = categories.length - 1;
+        }
         let color = barChartParams != null ? barChartParams.color : '';
         if (barChartParams.ddChartID != undefined) {
             barChartParams.seriesId = data.stackedBarChartViewModelList[0].seriesId
@@ -221,8 +226,7 @@ export class ChartService {
             xAxis: {
                 categories: categories,
                 min: 0,
-                // max: data.categories.length - 1,
-                max: 10,
+                max: max,
                 labels: {
                     rotation: 90,
                 },
@@ -254,7 +258,6 @@ export class ChartService {
                         events: {
                             click: function (event) {
                                 service.changeChartInfo({ chartRef: this, chartObject: barChartParams, chartType: 'bar' })
-                                // comp.openGridOnClickOfBarChart(this, barChartParams)
                             }
                         }
                     },
@@ -287,7 +290,6 @@ export class ChartService {
 
 
     groupBarChartConfiguration(selector: any, data: any, titleText: any, seriesName: string, allowPointSelect: boolean = true) {
-        console.log({ 'gbar': data });
         const { categories, stackedBarChartViewModelList } = data;
         const scroll = categories.length < 13 ? false : true;
         return {

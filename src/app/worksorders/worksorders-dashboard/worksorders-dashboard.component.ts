@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AlertService, SharedService, AssetAttributeService } from '../../_services'
+import { AlertService, SharedService } from '../../_services'
 import { SubSink } from 'subsink';
 import { Router } from "@angular/router"
 
@@ -24,6 +24,8 @@ export class WorksordersDashboardComponent implements OnInit {
     private sharedServie: SharedService,
     private router: Router,
   ) { }
+
+  ngOnInit() { }
 
   ngOnDestroy() {
     this.subs.unsubscribe();
@@ -51,15 +53,37 @@ export class WorksordersDashboardComponent implements OnInit {
     )
   }
 
-  ngOnInit() {
-
-  }
+ 
 
   gridDataEvent(event) {
-    console.log(event);
+    if (event && typeof event == 'object') {
+      const { chartType, chartRef: chartEvent, chartObject: parentChartObj } = event;
+      if (chartType == 'pie') {
+        this.selectedBarChartXasis = {
+          "ddChartId": parentChartObj.ddChartId != undefined ? parentChartObj.ddChartId : parentChartObj.ddChartID,
+          "parantChartId": parentChartObj.parantChartId != undefined ? parentChartObj.parantChartId : parentChartObj.chartID,
+          "xAxisValue": chartEvent.options.name,
+          "seriesId": chartEvent.options.seriesId,
+          "chartName": parentChartObj.chartName
+        }
+      }
+
+      if (chartType == 'bar') {
+        this.selectedBarChartXasis = {
+          "ddChartId": parentChartObj.ddChartId != undefined ? parentChartObj.ddChartId : parentChartObj.ddChartID,
+          "parantChartId": parentChartObj.parantChartId != undefined ? parentChartObj.parantChartId : parentChartObj.chartID,
+          "xAxisValue": chartEvent.category,
+          "seriesId": parentChartObj.seriesId,
+          "chartName": parentChartObj.chartName
+        }
+      }
+
+      this.openGrid();
+     
+    }
   }
 
-  openGrid(chartName: string) {
+  openGrid() {
     // this.retrievedEPCs = false;
     this.showDataPanel = true;
     $('.eventdashboardovrlay').addClass('ovrlay');
@@ -69,76 +93,6 @@ export class WorksordersDashboardComponent implements OnInit {
     this.showDataPanel = $event
     $('.eventdashboardovrlay').removeClass('ovrlay');
   }
-
-
-  // openDrillDownchart(chartEvent, parentChartObj) {
-  //   if (parentChartObj != null && parentChartObj.ddChartID != undefined) {
-  //     if (parentChartObj.ddChartID != 0) {
-  //       const params = {
-  //         "chartName": `${parentChartObj.chartName} (${chartEvent.options.name})`,
-  //         "chartType": 4,
-  //         "chartParameterValue": "string",
-  //         "ddChartId": parentChartObj.ddChartID,
-  //         "parantChartId": parentChartObj.chartID,
-  //         "xAxisValue": chartEvent.options.name,
-  //         "seriesId": chartEvent.options.seriesId,
-  //         "color": chartEvent.color
-  //       }
-  //       this.renderDrillDownChart(chartEvent, params)
-  //     } else {
-  //       if (parentChartObj.dataSP != "") {
-  //         this.openGridOnClickOfBarChart(chartEvent, parentChartObj, true);
-  //       }
-  //     }
-  //   }
-  // }
-
-
-  // openGridOnClickOfBarChart(chartEvent, parentChartObj, fromPieChart: boolean = false) {
-  //   if (parentChartObj.dataSP != "") {
-  //     if (fromPieChart) {
-  //       this.selectedBarChartXasis = {
-  //         "ddChartId": parentChartObj.ddChartId != undefined ? parentChartObj.ddChartId : parentChartObj.ddChartID,
-  //         "parantChartId": parentChartObj.parantChartId != undefined ? parentChartObj.parantChartId : parentChartObj.chartID,
-  //         "xAxisValue": chartEvent.options.name,
-  //         "seriesId": chartEvent.options.seriesId,
-  //         "chartName": parentChartObj.chartName
-  //       }
-  //     } else {
-  //       this.selectedBarChartXasis = {
-  //         "ddChartId": parentChartObj.ddChartId != undefined ? parentChartObj.ddChartId : parentChartObj.ddChartID,
-  //         "parantChartId": parentChartObj.parantChartId != undefined ? parentChartObj.parantChartId : parentChartObj.chartID,
-  //         "xAxisValue": chartEvent.category,
-  //         "seriesId": parentChartObj.seriesId,
-  //         "chartName": parentChartObj.chartName
-  //       }
-  //     }
-  //     this.openGrid(parentChartObj.chartName);
-  //   }
-  // }
-
-
-
-  // renderDrillDownChart($event: any, chartData: any) {
-  //   this.drawChartObj = chartData;
-  //   let cl = Math.random();
-  //   let compNo = `line${new Date().getMilliseconds()}${Math.random()}${cl}`;
-  //   let thisContainer = $($event.series.chart.container);
-
-  //   let newItemConfig = {
-  //     title: chartData.chartName,
-  //     type: 'component',
-  //     componentName: 'testComponent',
-  //     componentState: { text: 'Component' + compNo }
-  //   };
-
-  //   thisContainer.closest(".lm_stack").find('.lm_selectable').click();
-  //   this.myLayout.selectedItem.addChild(newItemConfig);
-
-  // };
-
-
-
 
 }
 

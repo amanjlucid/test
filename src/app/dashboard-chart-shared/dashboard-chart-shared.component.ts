@@ -7,13 +7,12 @@ import { fromEvent } from 'rxjs';
 
 declare var $: any;
 declare var GoldenLayout: any;
-// declare var Highcharts: any;
+
 type gridDataEventType = {
   chartRef: any
   chartObject: any
   chartType: string
 };
-
 
 @Component({
   selector: 'app-dashboard-chart-shared',
@@ -21,6 +20,7 @@ type gridDataEventType = {
   styleUrls: ['./dashboard-chart-shared.component.css'],
   encapsulation: ViewEncapsulation.None
 })
+
 export class DashboardChartSharedComponent implements OnInit {
   @Input() portalName: string;
   @Input() portalNameForChart: string;
@@ -37,10 +37,6 @@ export class DashboardChartSharedComponent implements OnInit {
   dashboardName: string;
   defaultFilterVal: string = "0_OPTIVO:CONTRACT1:OPTGAS2";
 
-
-  selectedBarChartXasis: any;
-
-
   constructor(
     private alertService: AlertService,
     private helper: HelperService,
@@ -51,10 +47,9 @@ export class DashboardChartSharedComponent implements OnInit {
   }
 
   ngOnDestroy() {
-    this.subs.unsubscribe();
-
     //EMPTY CHART CLICK SUBSCRIPTION ON COMPONENT LEAVE
     this.chartService.changeChartInfo([]);
+    this.subs.unsubscribe();
   }
 
   ngOnInit(): void {
@@ -63,13 +58,13 @@ export class DashboardChartSharedComponent implements OnInit {
       this.chartService.chartInfo.subscribe(data => this.handleChartClick(data))
     )
 
-    //GET CHART DATA
+    //GET CHART AND ITS DATA
     this.subs.add(
       this.chartService.getUserChartData(this.currentUser.userId, this.portalName)
         .pipe(delay(500))//DELAY 500 MILISECOND 
         .subscribe(
           async data => {
-            // console.log(data)
+            console.log(data);
             const { chartData = null, dashboard } = data.data;
             if (chartData != null) {
               this.dashboardName = dashboard;
@@ -82,7 +77,6 @@ export class DashboardChartSharedComponent implements OnInit {
 
             //GET CHART LIST BY PORTAL NAME
             const chartList = await this.chartService.getChartsList(this.portalNameForChart).toPromise();
-            console.log(chartList)
             if (!chartList.isSuccess) {
               this.alertService.error(chartList.message);
               return;
@@ -307,10 +301,9 @@ export class DashboardChartSharedComponent implements OnInit {
 
 
   pieChart(container: any, state: any, chartObj: any = null, cl = null) {
-    console.log(chartObj);
     const className = this.getUniqueClassName(cl, 'pie');
     let filterDivCl = "filterpi" + className;
-    console.log('pie')
+
     this.subs.add(
       this.chartService.getChartData(chartObj).subscribe(
         data => {
@@ -349,7 +342,6 @@ export class DashboardChartSharedComponent implements OnInit {
       )
     )
 
-
     this.resizeContainer(container);
 
   }
@@ -359,15 +351,12 @@ export class DashboardChartSharedComponent implements OnInit {
     const className = this.getUniqueClassName(cl, 'pie');
     const filterDivCl = "filterpi" + className;
 
-    console.log(state)
-
     const { selectedFilter, containerChartObj: chartObj } = state;  //Object destructuring 
     chartObj.ChartParameterValue = (selectedFilter != null && selectedFilter != "") ? selectedFilter : this.defaultFilterVal;
 
     this.subs.add(
       this.chartService.getChartData(chartObj).subscribe(
         data => {
-          // console.log(data);
           if (data.isSuccess) {
             const { pieChartModel, chartFilterModel: pieChartFilterData } = data.data;
             const pieChartData = pieChartModel.filter(x => x.y != 0 && x.y != "" && x.y != null);
@@ -484,7 +473,6 @@ export class DashboardChartSharedComponent implements OnInit {
       this.chartService.getChartData(chartObj).subscribe(
         data => {
           if (data.isSuccess) {
-            console.log(data);
             const { lineChartModel: lineChartData, chartFilterModel: lineChartFilterData, startDate, endtDate } = data.data;
             const xaxis = { 'start': startDate, 'end': endtDate };
 
@@ -544,7 +532,6 @@ export class DashboardChartSharedComponent implements OnInit {
 
 
   barChart(container: any, state: any, chartObj: any = null, cl = null) {
-    console.log({ container, state, chartObj })
     const className = this.getUniqueClassName(cl, 'bar');
     let filterDivCl = "filterbar" + className;
 
@@ -816,7 +803,6 @@ export class DashboardChartSharedComponent implements OnInit {
 
 
   openChartOrGrid(data: gridDataEventType) {
-    console.log(data)
     const { chartRef: chartEvent, chartObject: parentChartObj } = data;
     if (parentChartObj && parentChartObj.ddChartID) {
       const params = {
@@ -837,6 +823,9 @@ export class DashboardChartSharedComponent implements OnInit {
     }
   }
 
+  outputDataForGrid(data: gridDataEventType) {
+    this.gridDataEvent.emit(data);
+  }
 
   renderDrillDownChart($event: any, chartData: any) {
     this.drawChartObj = chartData;
@@ -856,37 +845,6 @@ export class DashboardChartSharedComponent implements OnInit {
       this.myLayout.selectedItem.addChild(newItemConfig);
     }
   };
-
-  outputDataForGrid(data: gridDataEventType) {
-    this.gridDataEvent.emit(data);
-  }
-
-  // openGridOnClickOfBarChart(chartEvent, parentChartObj, fromPieChart: boolean = false) {
-  //   if (parentChartObj.dataSP != "") {
-  //     if (fromPieChart) {
-  //       this.selectedBarChartXasis = {
-  //         "ddChartId": parentChartObj.ddChartId != undefined ? parentChartObj.ddChartId : parentChartObj.ddChartID,
-  //         "parantChartId": parentChartObj.parantChartId != undefined ? parentChartObj.parantChartId : parentChartObj.chartID,
-  //         "xAxisValue": chartEvent.options.name,
-  //         "seriesId": chartEvent.options.seriesId,
-  //         "chartName": parentChartObj.chartName
-  //       }
-  //     } else {
-  //       this.selectedBarChartXasis = {
-  //         "ddChartId": parentChartObj.ddChartId != undefined ? parentChartObj.ddChartId : parentChartObj.ddChartID,
-  //         "parantChartId": parentChartObj.parantChartId != undefined ? parentChartObj.parantChartId : parentChartObj.chartID,
-  //         "xAxisValue": chartEvent.category,
-  //         "seriesId": parentChartObj.seriesId,
-  //         "chartName": parentChartObj.chartName
-  //       }
-  //     }
-
-  //     // this.openGrid(parentChartObj.chartName);
-  //   }
-  // }
-
-
-
 
 
   openChartList() {
