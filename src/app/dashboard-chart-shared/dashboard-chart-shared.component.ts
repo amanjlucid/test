@@ -93,16 +93,16 @@ export class DashboardChartSharedComponent implements OnInit {
                 const { text } = state;
                 if (text == "Component1") {
                   container.setTitle(this.chartNames[0].chartName)
-                  let cl = "pi111"; // DEFAULT CHART CLASS START STRING
-                  this.renderChartTypes(this.chartNames[0], container, state, cl);
+                  // let cl = "pi111"; // DEFAULT CHART CLASS START STRING
+                  this.renderChartTypes(this.chartNames[0], container, state);
                 } else if (text == "Component2") {
-                  let cl = "pi22"; // DEFAULT CHART CLASS START STRING
+                  // let cl = "pi22"; // DEFAULT CHART CLASS START STRING
                   if (this.chartNames[1] == undefined) {
                     container.setTitle(this.chartNames[0].chartName)
-                    this.renderChartTypes(this.chartNames[0], container, state, cl);
+                    this.renderChartTypes(this.chartNames[0], container, state);
                   } else {
                     container.setTitle(this.chartNames[1].chartName)
-                    this.renderChartTypes(this.chartNames[1], container, state, cl);
+                    this.renderChartTypes(this.chartNames[1], container, state);
                   }
 
                 } else if (text == "Component3") {
@@ -132,7 +132,7 @@ export class DashboardChartSharedComponent implements OnInit {
             if (this.pageload) {
               this.myLayout.registerComponent('testComponent', createDefaultCharts);
               this.myLayout.init();
-              this.updateChartLayoutSize();//UPDATE LAYOUT HEIGHT AND WIDTH
+              setTimeout(() => this.updateChartLayoutSize(), 500);//UPDATE LAYOUT HEIGHT AND WIDTH
             }
 
             this.pageload = false;
@@ -161,6 +161,7 @@ export class DashboardChartSharedComponent implements OnInit {
 
 
   renderChartIfStateSaved(container: any, state: any) {
+    console.log({ container, state })
     let currentStateChart = state.containerChartObj;
     const { chartType, chartName } = currentStateChart;
     if (chartType == 3) {
@@ -177,18 +178,37 @@ export class DashboardChartSharedComponent implements OnInit {
 
 
   // RENDER CHART TYPE ON CLICK
-  renderChartTypes(chartObj: any, container: any, state: any, cl = null) {
+  renderChartTypes(chartObj: any, container: any, state: any) {
+    console.log({ chartObj, container, state })
+
     chartObj.ChartParameterValue = chartObj.chartParameters == 1 ? this.defaultFilterVal : "";
-    if (chartObj.chartType == 3) {
-      this.pieChart(container, state, chartObj, chartObj.chartName + cl);
+    const tempState = {
+      containerChartObj: chartObj,
+      selectedFilter: chartObj.ChartParameterValue,
+      mode: 'new'
+    }
+
+    //MERGE STATE
+    state = { ...state, ...tempState }
+    const { chartName, chartType } = chartObj;
+
+    if (chartType == 3) {
+      let cl = "";
+      if (state.text == "Component1") cl = "pi111"; // DEFAULT CHART CLASS START STRING
+      if (state.text == "Component2") cl = "pi22"; // DEFAULT CHART CLASS START STRING
+      // this.pieChart(container, state, chartObj, chartObj.chartName + cl);
+      this.renderPieChartIfStatesaved(container, state, chartName + cl)
     } else if (chartObj.chartType == 1) {
-      this.lineChart(container, state, chartObj, chartObj.chartName);
-    } else if (chartObj.chartType == 4) {
-      chartObj.ChartParameterValue = this.defaultFilterVal;
-      this.barChart(container, state, chartObj, chartObj.chartName);
-    } else if (chartObj.chartType == 5) {
-      chartObj.ChartParameterValue = this.defaultFilterVal;
-      this.groupBarChart(container, state, chartObj, chartObj.chartName);
+      this.renderLineChartIfStatesaved(container, state, chartName);
+      // this.lineChart(container, state, chartObj, chartObj.chartName);
+    } else if (chartType == 4) {
+      // chartObj.ChartParameterValue = this.defaultFilterVal;
+      // this.barChart(container, state, chartObj, chartName);
+      this.renderBarChartIfStatesaved(container, state, chartName);
+    } else if (chartType == 5) {
+      // chartObj.ChartParameterValue = this.defaultFilterVal;
+      // this.groupBarChart(container, state, chartObj, chartName);
+      this.renderGroupBarChartIfStatesaved(container, state, chartName);
     }
   }
 
@@ -253,11 +273,11 @@ export class DashboardChartSharedComponent implements OnInit {
         if (state.text == "Component1") {
           container.setTitle(this.chartNames[0].chartName)
           let cl = "pi111"; // default chart class start string
-          this.renderChartTypes(this.chartNames[0], container, state, cl);
+          this.renderChartTypes(this.chartNames[0], container, state);
         } else if (state.text == "Component2") {
           let cl = "pi22"; // default chart class start string
           container.setTitle(this.chartNames[1].chartName)
-          this.renderChartTypes(this.chartNames[1], container, state, cl);
+          this.renderChartTypes(this.chartNames[1], container, state);
         } else if (state.text == "Component3") {
           container.setTitle(this.chartNames[2].chartName)
           this.renderChartTypes(this.chartNames[2], container, state);
@@ -471,7 +491,7 @@ export class DashboardChartSharedComponent implements OnInit {
   renderLineChartIfStatesaved(container: any, state: any, cl: any = null) {
     const className = this.getUniqueClassName(cl, 'line');
     const filterDivCl = "filterli" + className;
-
+    console.log({ container, state })
     const { selectedFilter, containerChartObj: chartObj } = state;
     chartObj.ChartParameterValue = (selectedFilter != null && selectedFilter != "") ? selectedFilter : this.defaultFilterVal;
 
@@ -499,6 +519,12 @@ export class DashboardChartSharedComponent implements OnInit {
               xaxis: xaxis,
               selectedFilter: chartObj.ChartParameterValue
             });
+
+            //trigger change event on new chart
+            if (lineChartFilterData != null && lineChartData.length == 0 && state.mode) {
+              const event = new Event('change');
+              chartarea[0].querySelector(`.${className}`).dispatchEvent(event);
+            }
 
           } else {
             this.alertService.error(data.message);
