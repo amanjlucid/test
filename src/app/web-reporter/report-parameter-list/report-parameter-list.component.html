@@ -1,35 +1,31 @@
 <kendo-window title="{{title}}" *ngIf="openReportParamlist" (close)="closeReportParamList()" [top]="20" [minWidth]="700"
     [width]="840" [height]="auto" [minHeight]="350">
 
-    <div class="row">
-        <div class="col-md-12">
-            <div class="paramsHeading"> <span>{{ reportParamListHeading }}</span> </div>
+    
+<div class="windowHeading m-0  p-0">
+    <div class="form-row m-1 p-0">
+      <p class="col-md-12 m-0 px-3 py-2 headingText">
+        {{ reportParamListHeading }}</p>
         </div>
     </div>
 
-    <div class="row mt-1">
+    <div class="row gridDiv">
         <div class="col-md-12 paramListGrid">
 
-            <kendo-grid [data]="query | async" [loading]="loading" [skip]="headerFilters.CurrentPage"
-                [pageSize]="headerFilters.PageSize" filterable="menu" [resizable]="true" [sortable]="{
+            <kendo-grid [data]="query" [loading]="loading" filterable="menu" [resizable]="true" [sortable]="{
         allowUnsort: allowUnsort,
         mode: multiple ? 'multiple' : 'single'
         }" [sort]="state.sort" (sortChange)="sortChange($event)" (filterChange)="filterChange($event)"
-                (cellClick)="cellClickHandler($event)" [filter]="state.filter" scrollable="virtual" [rowHeight]="36"
-                [height]="600" (pageChange)="pageChange($event)" [navigable]="true" [selectable]="selectableSettings"
+            (cellClick)="cellClickHandler($event)" [filter]="state.filter"  
+            [height]="600"  [navigable]="true" [selectable]="selectableSettings"
                 [groupable]="false">
 
-                <!-- <kendo-grid-checkbox-column width="50">
-                    <ng-template kendoGridHeaderTemplate *ngIf="selectableSettings.mode == 'multiple'">
-                        <input class="k-checkbox" id="selectAllCheckboxId" kendoGridSelectAllCheckbox
-                            [state]="selectAllState" (selectAllChange)="onSelectAllChange($event)">
-                        <label class="k-checkbox-label" for="selectAllCheckboxId"></label>
-                    </ng-template>
-                </kendo-grid-checkbox-column> -->
 
-                <kendo-grid-column *ngFor="let col of columnName" field="{{col.col}}" title="{{col.col}}"
-                    width="{{col.width}}">
-                    <ng-template kendoGridFilterMenuTemplate let-filter let-column="column"
+
+                <kendo-grid-column     *ngFor="let column of columnNames"
+                field="{{column.name}}"
+                title="{{column.name}}" >
+                    <ng-template kendoGridFilterMenuTemplate  let-filter="filter" let-column="column"
                         let-filterService="filterService">
                         <simple-text-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
                         </simple-text-filter>

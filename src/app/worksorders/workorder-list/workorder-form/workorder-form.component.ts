@@ -4,6 +4,7 @@ import { AlertService, WorksOrdersService, HelperService, ConfirmationDialogServ
 import { WopmRepCharConfig }  from '../../../_models';
 import { SubSink } from 'subsink';
 import { forkJoin } from 'rxjs';
+import * as moment from "moment";
 import { firstDateIsLower, IsGreaterDateValidator, isNumberCheck, ShouldGreaterThanYesterday, shouldNotZero, SimpleDateValidator, yearFormatValidator } from 'src/app/_helpers';
 
 @Component({
@@ -569,18 +570,7 @@ export class WorkOrderFormComponent implements OnInit {
             userAndDate.MPgpA = wodData.mPgpA;
             userAndDate.MPgqA = wodData.mPgqA;
             userAndDate.MPgrA = this.currentUser.userId;
-
-            const today = new Date()
-            const yesterday = new Date(today)
-            yesterday.setDate(yesterday.getDate() - 1)
-
-            let yesterdayObj = {
-                year: yesterday.getFullYear(),
-                month: yesterday.getMonth() + 1,
-                day: yesterday.getDate()
-            }
-
-            userAndDate.MPgsA = this.dateFormate(yesterdayObj);
+            userAndDate.MPgsA = this.dateFormate(this.minDate);
             userAndDate.MPgtA = this.dateFormate(this.minDate);
 
 
@@ -869,7 +859,7 @@ export class WorkOrderFormComponent implements OnInit {
     }
 
     closewoFormWindow(submitted) {
-      if (this.reportingCharsConfig != undefined && !submitted && this.compareRepConfigs())
+      if (this.reportingCharsConfig != undefined && this.origReportingCharsConfig != undefined && !submitted && this.compareRepConfigs())
       {
         this.openConfirmationDialog('You have made changes to the Reporting Characteristics that will be lost if you cancel.')
       }

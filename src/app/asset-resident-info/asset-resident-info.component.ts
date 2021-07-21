@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AlertService, WopmConfigurationService, ConfirmationDialogService, HelperService } from '../_services';
 import { AssetResidentInfo } from '../_models'
@@ -36,6 +36,7 @@ export class AssetResidentInfoComponent implements OnInit {
     private confirmationDialogService: ConfirmationDialogService,
     private helperService: HelperService,
     private router: Router,
+    private chRef: ChangeDetectorRef,
     private alertService: AlertService
   ) { }
 
@@ -74,6 +75,7 @@ export class AssetResidentInfoComponent implements OnInit {
         if (data.isSuccess) {
           this.assetResidentInfoModel = data.data
           this.populateTemplate(this.assetResidentInfoModel);
+          this.chRef.detectChanges();
           this.loading = false;
           this.displayResidentDetails = true;
         } else {

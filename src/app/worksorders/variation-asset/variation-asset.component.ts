@@ -243,7 +243,13 @@ export class VariationAssetComponent implements OnInit {
   disableVariationBtns(btnType, item) {
 
     if (btnType == 'Edit') {
-      if (this.selectedVariationInp.responsibility == "ALL" && this.selectedVariationInp.woiissuestatus != "Accepted" && this.selectedVariationInp.woiissuestatus != "Issued") {
+      if (this.selectedVariationInp.responsibility == "ALL" && (this.selectedVariationInp.woiissuestatus == "Contractor Review" || this.selectedVariationInp.woiissuestatus == "Customer Review" || this.selectedVariationInp.woiissuestatus == "New")) {
+        return false
+      }
+      if (this.selectedVariationInp.responsibility == "CONTRACTOR" && this.selectedVariationInp.woiissuestatus == "Contractor Review") {
+        return false
+      }
+      if (this.selectedVariationInp.responsibility == "CLIENT" && (this.selectedVariationInp.woiissuestatus == "Customer Review" || this.selectedVariationInp.woiissuestatus == "New")) {
         return false
       }
 
@@ -273,7 +279,7 @@ export class VariationAssetComponent implements OnInit {
   }
 
   openVariationDetailMethod() {
-    // this.selectedSingleInstructionVariation = this.selectedVariationInp;
+    this.openedFor = 'details';
     $('.variationAssetListOverlay').addClass('ovrlay');
     this.openVariationDetail = true;
   }

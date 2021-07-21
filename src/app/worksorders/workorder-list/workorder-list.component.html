@@ -376,6 +376,18 @@
 
         <a *ngIf="woMenuAccess('Manage WO Checklist')" class="dropdown-item" href="javascript:void(0)"
           (click)="openChecklist(menuData)">Checklist</a>
+          
+        <div class="dropdown-toggle" *ngIf="woMenuAccess('Work List Menu')">
+          <div class="dropdown-item">View Work List</div>
+          <div class="dropdown-menu addAssetMenu">
+            <a class="dropdown-item" href="javascript:void(0)"
+              (click)="ShowWorkList('Contractor',menuData)">for Contractor</a>
+            <a class="dropdown-item" href="javascript:void(0)"
+              (click)="ShowWorkList('Contract',menuData)">for Contract</a>
+              <a class="dropdown-item" href="javascript:void(0)"
+              (click)="ShowWorkList('WorksOrder',menuData)">for Works Order</a>
+          </div>
+        </div>
 
       </div>
 

@@ -2,9 +2,27 @@
   [height]="auto" [minHeight]="700">
 
   <div class="row">
-    <div class="col-md-12 text-right">
-      <button id="exportEvents" [disabled]="!usereventData" (click)="export()" class="btn btn-sm themeButton">Export
-      </button>
+    <div class="col-md-12 text-right" >
+      <!-- <button  *ngIf="showAssetLink" [disabled]="!chartData" (click)="AssetLink()" class="btn btn-sm themeButton mr-2">Show Assets
+      </button> -->
+
+
+<button type="button" class="btn btn-sm dropdown-toggle themeButton" data-toggle="dropdown" aria-expanded="false"  [disabled]="!chartData">View
+          Assets</button>
+        <div class="dropdown-menu" x-placement="bottom-start"
+          style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
+          <a class="dropdown-item" (click)="AssetLink('all')" href="javascript:void(0)">All</a>
+          <a class="dropdown-item" (click)="AssetLink('selected')" href="javascript:void(0)">Selected</a>
+
+        </div> 
+
+
+
+
+      <button id="exportEvents" [disabled]="!chartData" (click)="export()" class="ml-2 btn btn-sm themeButton">Export
+      </button>        
+
+
     </div>
 
   </div>

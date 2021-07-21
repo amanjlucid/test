@@ -1,0 +1,20 @@
+<kendo-window [title]="windowTitle"  *ngIf="renameAssetWindow" (close)="closeEditFormWindow()" [top]="20"
+[width]="650"  [resizable]="false" >
+
+  <form class="scoringRulesForm mt-3"  [formGroup]="renameForm" (ngSubmit)="onSubmit()"  autocomplete="off">
+    <div class="form-row">
+      <div class="form-group col-md-12">
+        <label class="form-label">New Name</label>
+        <input type="text" class="form-control" placeholder="New Name" formControlName="newName" maxlength="35"
+          [ngClass]="{ 'is-invalid': submitted && descriptionError != ''}">
+        <div *ngIf="submitted && descriptionError != ''" class="invalid-feedback">
+          <div>{{ this.descriptionError }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="buttonDiv pull-right mt-2">
+      <button type="button" (click)="closeEditFormWindow()" class="btn btn-sm themeButton m-1">Cancel</button>
+      <button type="submit" class="btn btn-sm themeButton m-1" >Ok</button>
+    </div>
+  </form>
+</kendo-window>

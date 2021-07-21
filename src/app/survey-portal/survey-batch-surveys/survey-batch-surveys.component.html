@@ -1,14 +1,22 @@
 <div class="layout-content">
 <div class="container-fluid flex-grow-1 container-p-y">
   <div class="row">
-    <div class="col-md-2 col-sm-3">
+    <div class="col-md-2 ">
       <h4 class="font-weight-bold py-3 mb-1">
         <!-- <span class="text-muted font-weight-light">Assets/</span> Assets -->
-        Batch Surveys
+        {{title}}
       </h4>
     </div>
 
-    <div class="col-md-9 col-sm-9">
+    <div class="col-md-5"></div>
+
+    <div class="col-md-2 mt-3 pull-right mr-2">
+      <label>
+        {{filtersApplied}}
+      </label>
+    </div>
+
+    <div class="col-md-2">
       <div class="row mt-3 pull-right btnGrp">
         <div  *ngIf="checkGroupPermission('Assets Xport Grid')">
           <button type="button" class="btn btn-sm themeButton" (click)="exportToExcel()"
@@ -20,7 +28,7 @@
       </div>
     </div>
 
-    <div class="col-md-1 col-sm-12"></div>
+    <div class="col-md-1 "></div>
 
   </div>
 
@@ -52,7 +60,7 @@
               <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
                 *ngIf="batchSurveysListItem.OrderBy === 'SurveyCode' && batchSurveysListItem.OrderType === 'Desc'"></i>
             </th>
-            <th class="bigCol" style="cursor: pointer;" (click)="orderBy('SurveyName')">Survey Name
+            <th class="expandableCol" style="cursor: pointer;" (click)="orderBy('SurveyName')">Survey Name
               <i class="lnr lnr-arrow-up sortIcon" aria-hidden="true"
                 *ngIf="batchSurveysListItem.OrderBy === 'SurveyName' && batchSurveysListItem.OrderType === 'Asc'"></i>
               <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
@@ -70,7 +78,7 @@
               <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
                 *ngIf="batchSurveysListItem.OrderBy === 'Asset' && batchSurveysListItem.OrderType === 'Desc'"></i>
             </th>
-            <th class="smallAddressCol" style="cursor: pointer;" (click)="orderBy('Address')">Address
+            <th class="midAddressCol" style="cursor: pointer;" (click)="orderBy('Address')">Address
               <i class="lnr lnr-arrow-up sortIcon" aria-hidden="true"
                 *ngIf="batchSurveysListItem.OrderBy === 'Address' && batchSurveysListItem.OrderType === 'Asc'"></i>
               <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
@@ -94,6 +102,7 @@
               <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
                 *ngIf="batchSurveysListItem.OrderBy === 'PictureCount' && batchSurveysListItem.OrderType === 'Desc'"></i>
             </th>
+            <th width="10px"></th>
           </tr>
         </thead>
         <tbody class="fixTbody" (scroll)="onScroll($event)"
@@ -103,7 +112,7 @@
             (click)="toggleClass($event, batchSurvey)">
             <td class="smallCol" (mousedown)="toggleClass($event, batchSurvey)">
               <!--<i style="color: #dfdbdb;" class="fas fa-bars"></i>-->
-              <li class="nav-item dropdown list-unstyled" >
+              <li class="nav-item surveying dropdown list-unstyled" >
                 <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
                 <div class="dropdown-menu">
                     <div class="dropdown-toggle" *ngIf="checkGroupPermission('Batch Survey Reports') ">
@@ -125,10 +134,10 @@
                           </div>
                           <div *ngIf="checkGroupPermission('Batch Survey Reports CBC Asbestos')">
                             <div *ngIf="canRunCBCReport; else disabled_CBC">
-                              <a class="dropdown-item" (click)="openCBCReport()" href="javascript:void(0)">CBC Asbestos Report...</a>
+                              <a class="dropdown-item" (click)="openCBCReport()" href="javascript:void(0)">Asbestos Report...</a>
                             </div>
                             <ng-template #disabled_CBC>
-                              <a class="dropdown-item isDisabled" href="javascript:void(0)">CBC Asbestos Report...</a>
+                              <a class="dropdown-item isDisabled" href="javascript:void(0)">Asbestos Report...</a>
                             </ng-template>
                           </div>
                         </div>
@@ -137,10 +146,10 @@
               </li>
             </td>
             <td class="midCol">{{batchSurvey.surveyCode}}</td>
-            <td class="bigCol">{{batchSurvey.surveyName}}</td>
+            <td class="expandableCol">{{batchSurvey.surveyName}}</td>
             <td class="midSmallCol">{{batchSurvey.version}}</td>
             <td class="midCol">{{batchSurvey.asset}}</td>
-            <td class="smallAddressCol">{{batchSurvey.address}}</td>
+            <td class="midAddressCol">{{batchSurvey.address}}</td>
             <td class="midCol">{{batchSurvey.surveyDate}}</td>
             <td class="midCol">{{batchSurvey.status}}</td>
             <td class="midCol">{{batchSurvey.pictureCount}}</td>
@@ -156,10 +165,10 @@
             <tr>
               <th class="smallCol"></th>
               <th class="midCol">Survey Code</th>
-              <th class="bigCol">Survey Name</th>
+              <th class="expandableCol">Survey Name</th>
               <th class="midSmallCol">Version</th>
               <th class="midCol">Asset</th>
-              <th class="smallAddressCol">Address</th>
+              <th class="midAddressCol">Address</th>
               <th class="midCol">Survey Date</th>
               <th class="midCol">Status</th>
               <th class="midCol">Picture Count</th>

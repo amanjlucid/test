@@ -2,7 +2,6 @@ import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy
 import { SubSink } from 'subsink';
 import { GroupDescriptor, DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { AlertService, EventManagerDashboardService, HelperService } from '../../_services'
-import { encode } from 'punycode';
 import { appConfig } from '../../app.config';
 
 @Component({
@@ -31,6 +30,7 @@ export class UserEventsGridComponent implements OnInit {
       filters: []
     }
   }
+  SiteURL: string = appConfig.appUrl;
   mySelection: number[] = [];
   gridView: DataResult;
   columnName = [];
@@ -141,9 +141,8 @@ export class UserEventsGridComponent implements OnInit {
         }
       }
 
-      let siteUrl = `https://apexdevweb.rowanwood.ltd/dev/rowanwood/tasks/tasks?seq=true`
-      localStorage.setItem('taskslist', btoa(seqArr.toString()));
-      window.open(siteUrl, "_blank");
+     localStorage.setItem('taskslist', btoa(seqArr.toString()));
+     window.open(this.SiteURL + "/tasks/tasks?seq=true", "_blank");
 
     } else {
       this.alertService.error('Seq column not found.')

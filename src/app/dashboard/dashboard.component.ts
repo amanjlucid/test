@@ -72,9 +72,8 @@ export class DashboardComponent implements OnInit {
     if (urlParams["loaded"]) {
       setTimeout(() => {
         this.checkLoaded = true
-        // console.log(this.dashboardPermission); debugger;
-        if (this.dashboardPermission.indexOf('Dashboard') === -1) {
-          if (this.modulePermission.indexOf('Asset Portal Access') != -1) {
+        if (!this.dashboardPermission.includes('Dashboard')) {
+          if (this.modulePermission.includes('Asset Portal Access')) {
             this.router.navigate(['asset-list']);
           } else {
             this.router.navigate(['my-profile']);
@@ -98,7 +97,7 @@ export class DashboardComponent implements OnInit {
 
           component.selectedCalendarEvents = component.caledarEventsByDate[dd + "-" + mm + "-" + yy];
         });
-      }, 1500);
+      }, 1000);
 
     } else {
       let win = (window as any);
@@ -132,7 +131,7 @@ export class DashboardComponent implements OnInit {
       data => {
         if (data.isSuccess) {
           let eventByStatus = data.data
-          this.barChart('eventByStatus', 'Event By Status', eventByStatus);
+          this.barChart('eventByStatus', 'Task By Status', eventByStatus);
         } else {
           this.loaderService.hide();
           this.alertService.error(data.message);
@@ -148,7 +147,7 @@ export class DashboardComponent implements OnInit {
       data => {
         if (data.isSuccess) {
           let businessAreaEvent = data.data
-          this.pieChart('businessAreaEvent', 'Event By Business Area', businessAreaEvent);
+          this.pieChart('businessAreaEvent', 'Task By Business Area', businessAreaEvent);
         } else {
           this.loaderService.hide();
           this.alertService.error(data.message);
@@ -163,7 +162,7 @@ export class DashboardComponent implements OnInit {
       data => {
         if (data.isSuccess) {
           let eventAssignedUser = data.data
-          this.pieChart('eventAssignedUser', 'Event Assigned User', eventAssignedUser);
+          this.pieChart('eventAssignedUser', 'Task Assigned User', eventAssignedUser);
         } else {
           this.loaderService.hide();
           this.alertService.error(data.message);
@@ -178,7 +177,7 @@ export class DashboardComponent implements OnInit {
       data => {
         if (data.isSuccess) {
           let eventBySeverity = data.data
-          this.pieChart('eventBySeverity', 'Event By Severity', eventBySeverity);
+          this.pieChart('eventBySeverity', 'Task By Severity', eventBySeverity);
         } else {
           this.loaderService.hide();
           this.alertService.error(data.message);

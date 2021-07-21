@@ -1378,28 +1378,42 @@ export class EventManagerChartComponent implements OnInit {
           "seriesId": chartEvent.options.seriesId,
           "color": chartEvent.color
         }
-
         this.renderDrillDownChart(chartEvent, params)
-
+      } else {
+        if (parentChartObj.dataSP != "") {
+            this.openGridOnClickOfBarChart(chartEvent, parentChartObj, true);
+        }
       }
+    }
+  }
 
+  openGridOnClickOfBarChart(chartEvent, parentChartObj, fromPieChart:boolean = false) {
+    if (parentChartObj.dataSP != "") {
+      if (fromPieChart) {
+        this.selectedBarChartXasis = {
+          "ddChartId": parentChartObj.ddChartId != undefined ? parentChartObj.ddChartId : parentChartObj.ddChartID,
+          "parantChartId": parentChartObj.parantChartId != undefined ? parentChartObj.parantChartId : parentChartObj.chartID,
+          "xAxisValue": chartEvent.options.name,
+          "seriesId": chartEvent.options.seriesId,
+          "chartName": parentChartObj.chartName
+        }
+      } else {
+          this.selectedBarChartXasis = {
+          "ddChartId": parentChartObj.ddChartId != undefined ? parentChartObj.ddChartId : parentChartObj.ddChartID,
+          "parantChartId": parentChartObj.parantChartId != undefined ? parentChartObj.parantChartId : parentChartObj.chartID,
+          "xAxisValue": chartEvent.category,
+          "seriesId": parentChartObj.seriesId,
+          "chartName": parentChartObj.chartName
+        }
+      }
+        this.openGrid();
     }
   }
 
 
-  openGridOnClickOfBarChart(chartEvent, parentChartObj) {
-    // console.log(chartEvent)
 
-    this.selectedBarChartXasis = {
-      "ddChartId": parentChartObj.ddChartId != undefined ? parentChartObj.ddChartId : parentChartObj.ddChartID,
-      "parantChartId": parentChartObj.parantChartId != undefined ? parentChartObj.parantChartId : parentChartObj.chartID,
-      "xAxisValue": chartEvent.category,
-      "seriesId": parentChartObj.seriesId,
-      "chartName": parentChartObj.chartName
-    }
 
-    this.openGrid();
-  }
+
 
 
 

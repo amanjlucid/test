@@ -113,6 +113,21 @@
   </div>
 
 
+ 
+  <div class="filterArea mb-2" *ngIf="contractor">
+    <div class="row">
+      <label class="col-sm-12 col-md-1">Contractor:</label>
+      <input  class="assetInpBox col-sm-12 col-md-3" type="text" [(ngModel)]="contractorName" readonly>
+    </div>
+  </div> 
+
+  <div class="filterArea mb-2" *ngIf="contract">
+    <div class="row">
+
+      <label class="col-sm-12 col-md-1">Contract:</label>
+      <input class="assetInpBox col-sm-12 col-md-3" type="text" [(ngModel)]="contractName" readonly>
+    </div>
+  </div> 
 
 
 

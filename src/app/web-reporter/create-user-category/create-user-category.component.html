@@ -6,7 +6,7 @@
             <form (ngSubmit)="onSubmit()" #userCategoryForm="ngForm">
                 <div class="form-group">
                     <label for="name">Name:</label>
-                    <input type="text" class="form-control" id="name" required [(ngModel)]="categoryName" name="name"
+                    <input type="text" class="form-control" id="name" required [(ngModel)]="categoryName" name="name" maxlength="30"
                     #name="ngModel" [ngClass]="{ 'is-invalid': !name.valid && submitted }">
                     <div *ngIf="!name.valid && submitted" class="invalid-feedback">
                         Name is required

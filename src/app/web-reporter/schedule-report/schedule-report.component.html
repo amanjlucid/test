@@ -1,15 +1,29 @@
-<kendo-window title="{{title}}" *ngIf="openScheduleReport" (close)="closeScheduleReport()" [top]="20" [minWidth]="500"
-    [width]="900" [height]="auto" [minHeight]="350">
-    <div class="row">
+<kendo-window title="{{title}}" *ngIf="openScheduleReport" (close)="closeScheduleReport()" [top]="20" [minWidth]="900"
+    [width]="1100" [height]="auto" [minHeight]="350">
+<!--     <div class="row" >
+        <div class="col-md-12">
+            <div class="windowHeading"> <span>{{ templateHeading }}</span> </div>
+        </div>
+    </div> -->
+
+
+    <div class="windowHeading m-0  p-0">
+        <div class="form-row m-1 p-0">
+          <p class="col-md-12 m-0 px-3 py-2 headingText">
+            {{ templateHeading }}</p>
+        </div>
+      </div>
+
+    <div class="row gridDiv">
         <div class="col-md-12 text-right">
-            <button type="button" class="btn btn-sm themeButton mr-2" [disabled]="!selectedScheduleReport"
+<!--             <button type="button" class="btn btn-sm themeButton mr-2" [disabled]="!selectedScheduleReport"
                 (click)="openConfirmationDialog()">Delete</button>
             <button type="button" class="btn btn-sm themeButton mr-2" (click)="openAddSchedule('edit')"
-                [disabled]="!selectedScheduleReport">Edit</button>
+                [disabled]="!selectedScheduleReport">Edit</button> -->
             <button type="button" class="btn btn-sm themeButton" (click)="openAddSchedule('new')">New</button>
         </div>
 
-        <div class="col-md-12 mt-3">
+        <div class="col-md-12 mt-2">
             <kendo-grid [data]="gridView" [loading]="loading" [height]="600" filterable="menu" [resizable]="true"
                 [sortable]="{
             allowUnsort: allowUnsort,
@@ -19,6 +33,21 @@
                 (selectedKeysChange)="onSelectedKeysChange($event)" [filter]="state.filter"
                 (sortChange)="sortChange($event)" (filterChange)="filterChange($event)"
                 (cellClick)="cellClickHandler($event)" [navigable]="true">
+
+
+                <kendo-grid-column title=" " width="25" [filterable]="false">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <li class="nav-item reportmenu dropdown list-unstyled" style="margin-top: -7px;">
+                            <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"
+                                (click)="setSeletedRow(dataItem)"></i>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="javascript:void(0)" (click)="openAddSchedule('edit',dataItem)">Edit</a>
+                                <a class="dropdown-item" href="javascript:void(0)" (click)="openConfirmationDialog(dataItem)">Delete</a>
+                            </div>
+                        </li>
+
+                    </ng-template>
+                </kendo-grid-column>
 
                 <kendo-grid-column field="xport_schedule_id" title="Sequence" width="90">
                 </kendo-grid-column>

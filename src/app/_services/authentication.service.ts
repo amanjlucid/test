@@ -48,6 +48,8 @@ export class AuthenticationService {
         //localStorage.removeItem('savedState');
         sessionStorage.removeItem('SurvProj');
         sessionStorage.removeItem('SurvBatch');
+        sessionStorage.removeItem('SurveyAccess');
+        sessionStorage.removeItem('SurvBatchFilters');
         //localStorage.removeItem('layoutCollapsed');
         if (localStorage.getItem('currentUser') != null) {
             var httpOptions = {
@@ -60,7 +62,7 @@ export class AuthenticationService {
         } else {
             localStorage.removeItem('currentUser');
         }
-        
+
     }
 
     changePassword(username: string, currentPassword: string, newPassword: string) {
@@ -104,7 +106,7 @@ export class AuthenticationService {
         this._userActionOccured.next();
     }
 
-    
+
     formAuthentication(userId){
         var httpOptions = {
             headers: new HttpHeaders({

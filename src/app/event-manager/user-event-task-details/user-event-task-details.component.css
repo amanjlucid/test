@@ -46,13 +46,13 @@
 }
 
 .mediumColor {
-    color: #e6e617 !important;
+  color: #ff9900 !important;
 }
 
 .highColor {
-    color: red !important;
+  color: #ed1313 !important;
 }
 
 .lowColor {
-    color: green !important;
+  color: #4ba818 !important;
 }

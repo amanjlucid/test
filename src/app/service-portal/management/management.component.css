@@ -2,6 +2,10 @@
   background-color: #fdfdfd !important;
 }
 
+.management.dropdown.list-unstyled{
+  position: relative !important;
+}
+
 #mgmtTable tr {
   height: 36px !important;
   min-height: 36px !important;
@@ -168,7 +172,7 @@ li.nav-item.dropdown.list-unstyled {
   opacity: 1 !important;
 } */
 
-/* 
+/*
 .fixedHeader {
   min-width: calc(100% - 23px) !important;
 } */
@@ -202,7 +206,7 @@ width: 155px;
 
 /* .list-unstyled{z-index: -1;} */
 
-/* 
+/*
 .mgmtTable tbody tr, thead {
 display: table;
 width: 100%;

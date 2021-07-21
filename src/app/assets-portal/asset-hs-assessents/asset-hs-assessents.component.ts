@@ -175,9 +175,9 @@ export class AssetHSAssessentsComponent implements OnInit, OnDestroy {
     sessionStorage.removeItem('AssetHSView');
 
     let AssetHSView = {assid: this.assetId, hascode: this.resultData.hascode, hasversion: this.resultData.hasversion, hasref: this.resultData.hasassessmentref};
-    sessionStorage.setItem('AssetHSView', JSON.stringify(AssetHSView));
+    localStorage.setItem('AssetHSView', JSON.stringify(AssetHSView));
    // this.router.navigate(['/health&safety/results/assessment']);
-    let url = `https://apexdevweb.rowanwood.ltd/dev/rowanwood/health&safety/results/assessment`;
+    let url = `<<PortalURL>><<TestText>>/rowanwood/health&safety/results/assessment`;
     window.open(url, "_blank");
 
   }

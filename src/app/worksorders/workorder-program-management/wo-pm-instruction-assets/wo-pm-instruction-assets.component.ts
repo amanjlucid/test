@@ -48,6 +48,11 @@ export class WoPmInstructionAssetsComponent implements OnInit {
     worksOrderAccess = [];
     worksOrderUsrAccess: any = [];
     userType: any = [];
+    mySelection: any = [];
+    mySelectionKey(context: RowArgs): string {
+      return context.dataItem.assid + '_||_' + context.dataItem.woiaissuestatus;
+    };
+    acceptedAnything: boolean = false;
 
 
     constructor(
@@ -197,7 +202,7 @@ export class WoPmInstructionAssetsComponent implements OnInit {
     closeInstructionAssetsWindow() {
         this.woPmInstructionAssetsWindow = false;
         $('.woassetdetailoverlay').removeClass('ovrlay');
-        this.woPmInstructionAssetsEvent.emit(this.woPmInstructionAssetsWindow);
+        this.woPmInstructionAssetsEvent.emit(this.acceptedAnything);
     }
 
     openShowInstAssetsDetail(item) {
@@ -224,5 +229,135 @@ export class WoPmInstructionAssetsComponent implements OnInit {
         // return this.worksOrderUsrAccess.indexOf(menuName) != -1
 
     }
+    
+        openAcceptInstruction() {
+
+   
+        let strCheckOrProcess = 'C';
+
+        if (this.mySelection.length == 0) {
+            return
+        }
+        let strASSID = [];        
+        for (const asset of this.mySelection) {
+            const splitSelection = asset.split('_||_');
+            strASSID.push(splitSelection[0]);
+            }
+        let params = {
+            strCheckOrProcess: strCheckOrProcess,
+            WOSEQUENCE: this.selectedInstructionRow.wosequence,
+            WOPSEQUENCE: this.selectedInstructionRow.wopsequence,
+            strASSID: strASSID,
+            strUserId: this.currentUser.userId
+        }
+
+        this.worksOrdersService.WorksOrderAcceptAsset(params).subscribe(
+            (data) => {
+
+                //  console.log("WorksOrderAcceptAsset response " + JSON.stringify(data))
+
+                if (!data.isSuccess) {
+                    this.alertService.error(data.message)
+                    return
+                }
+                if (strCheckOrProcess == "C" && data.data[0].pRETURNSTATUS == "S") {
+                    this.openConfirmationDialog(data.data)
+                } else if (strCheckOrProcess == "P" && data.data[0].pRETURNSTATUS == "S") {
+                    this.alertService.success(data.data[0].pRETURNMESSAGE);
+                    //   this.refreshWorkOrderDetails.emit(true);
+                    //   this.searchGrid();
+                } else if (data.data[0].pRETURNSTATUS != "S") {
+                    this.alertService.error(data.data[0].pRETURNMESSAGE)
+                }
+
+
+            },
+            error => {
+                this.alertService.error(error);
+
+            }
+        )
+
+    }
+
+
+    openConfirmationDialog(resp) {
+        let strCheckOrProcess = "N";
+        let res = resp[0]
+        if (res.pRETURNSTATUS == "S" && res.pWPLSEQUENCE == 0 && res.pWPRSEQUENCE == 0) {
+            strCheckOrProcess = "P"
+        }
+        $('.k-window').css({
+            'z-index': 1000
+        });
+        this.confirmationDialogService.confirm('Please confirm..', `${res.pRETURNMESSAGE}`)
+            .then((confirmed) => (confirmed) ? this.AcceptInstructionFinal(strCheckOrProcess) : console.log(confirmed))
+            .catch(() => console.log('Attribute dismissed the dialog.'));
+    }
+
+
+    AcceptInstructionFinal(strCheckOrProcess = "C") {
+
+        //  console.log("this.selectedItem in PRocess " + JSON.stringify(this.selectedItem))
+
+        if (strCheckOrProcess != "C" && strCheckOrProcess != "P") {
+            return
+        }
+
+        if (this.mySelection.length == 0) {
+            return
+        }
+        let strASSID = [];        
+        for (const asset of this.mySelection) {
+            const splitSelection = asset.split('_||_');
+            strASSID.push(splitSelection[0]);
+            }
+
+        let params = {
+            strCheckOrProcess: strCheckOrProcess,
+            WOSEQUENCE: this.selectedInstructionRow.wosequence,
+            WOPSEQUENCE: this.selectedInstructionRow.wopsequence,
+            strASSID: strASSID,
+            strUserId: this.currentUser.userId
+        }
+
+        this.subs.add(
+            this.worksOrdersService.WorksOrderAcceptAsset(params).subscribe(
+                data => {
+                    if (!data.isSuccess) {
+                        this.alertService.error(data.message)
+                        return
+                    }
+                    if (strCheckOrProcess == "C" && data.data[0].pRETURNSTATUS == "S") {
+                        this.openConfirmationDialog(data.data)
+                    } else if (strCheckOrProcess == "P" && data.data[0].pRETURNSTATUS == "S") {
+                        this.acceptedAnything = true;
+                        this.alertService.success(data.data[0].pRETURNMESSAGE);
+                        //  this.refreshWorkOrderDetails.emit(true);
+                        this.GetWOInstructionAssets();
+                    } else if (data.data[0].pRETURNSTATUS != "S") {
+                        this.alertService.error(data.data[0].pRETURNMESSAGE)
+                    }
+                },
+                err => this.alertService.error(err)
+            )
+        )
+
+
+    }
+
+    CheckMultiAcceptDisabled() : boolean {
+
+        if (this.mySelection.length > 0) {
+            for (const asset of this.mySelection) {
+                const splitSelection = asset.split('_||_');
+                if (splitSelection[1] != "Issued")
+                    return true;
+              }
+              return false;
+        }
+        return true;
+    }
+
 
 }

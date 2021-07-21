@@ -72,7 +72,7 @@
           allowUnsort: allowUnsort,
           mode: multiple ? 'multiple' : 'single'
           }" (sortChange)="sortChange($event)" [selectable]="{mode: 'single'}" (cellClick)="cellClickHandler($event)"
-          [height]="260">
+          [height]="260"   >
           <!-- <kendo-grid-checkbox-column></kendo-grid-checkbox-column> -->
           <kendo-grid-column field="aauaattachmentname" title="Attachment Name" width="140"></kendo-grid-column>
           <kendo-grid-column field="aauatype" title="Attachment Type" width="130"></kendo-grid-column>
@@ -89,13 +89,14 @@
 
     </div>
     <div class="row mt-2">
-      <div class="col-md-6 attachmentActionArea">
+      <div class="col-md-7 attachmentActionArea">
         <button type="button" class="btn btn-sm themeButton" (click)="openAttachment()">Add Attachment</button>
+        <button type="button" class="btn btn-sm themeButton" (click)="openViewAttachment()">View Attachment</button>
         <button type="button" class="btn btn-sm themeButton" (click)="openConfirmationDialog()">Remove
           Attachment</button>
         <button type="button" class="btn btn-sm themeButton" (click)="editAttachmentDetailsFunction()">Edit</button>
       </div>
-      <div class="col-md-6 requestActionArea text-right">
+      <div class="col-md-5 requestActionArea text-right">
         <button type="button" class="btn btn-sm themeButton" (click)="closeAsbestosAuthWin()">Cancel</button>
         <button type="button" class="btn btn-sm themeButton" [disabled]="!disableActionBtn"
           (click)="authoriseRequest(true)">Accept</button>
@@ -118,6 +119,9 @@
   <app-asbestos-attachment [selectedAsbestos]="selectedAsbestos" [attachment]="attachment"
     (closeAttachment)="closeAttachment($event)" *ngIf="attachment">
   </app-asbestos-attachment>
+
+  <app-asbestos-view-attachment [viewAttachment]="viewAttachment" [selectedAsbestos]="selectedAsbestos" [selectedAttachment]="selectedAttachment"
+   (closeViewAttachment)="closeViewAttachment($event)" *ngIf="viewAttachment"></app-asbestos-view-attachment>
 
   <kendo-dialog title="Asbestos" *ngIf="wariningPopup" (close)="closerWarningPopup('close')"
     [minWidth]="250" [width]="450">

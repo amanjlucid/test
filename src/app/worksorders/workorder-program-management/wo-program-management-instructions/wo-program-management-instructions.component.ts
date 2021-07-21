@@ -194,7 +194,10 @@ export class WoProgramManagmentInstructionComponent implements OnInit {
     $('.wopminstructionoverlay').addClass('ovrlay');
   }
 
-  closeWoPmInstructionAssetsWindow() {
+  closeWoPmInstructionAssetsWindow(event) {
+    if (event == true) {
+      this.GetWEBWorksOrdersInstructionsForUser();
+    }
     this.woPmInstructionAssetsWindow = false;
     $('.wopminstructionoverlay').addClass('ovrlay');
   }

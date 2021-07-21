@@ -119,7 +119,7 @@ export class HnsAddBudgetComponent implements OnInit {
   onSubmit(createAnother = null) {
     if (this.formMode == "edit" || this.formMode == "add") {
       this.submitted = true;
-      this.formErrorObject(); // empty form error 
+      this.formErrorObject(); // empty form error
       this.logValidationErrors(this.formGrp);
 
       if (this.formGrp.invalid) {
@@ -132,15 +132,16 @@ export class HnsAddBudgetComponent implements OnInit {
       formObj.hascode = this.selectedDefinition.hascode;
       formObj.hasversion = this.selectedDefinition.hasversion;
       formObj.hasbudgetdescription = formRawVal.description;
-
+      let updateMessage = ''
       let queryAddEdit;
       if (this.formMode == "add") {
         formObj.hasbudgetcode = formRawVal.budget.toUpperCase();
-        formObj.createdby = this.currentUser.userId;
+        formObj.modifiedby = this.currentUser.userId;
         queryAddEdit = this.hnsService.addBudget(formObj);
         queryAddEdit.subscribe(
           data => {
             if (data.isSuccess) {
+              this.alertService.success('Budget code successfully added');
               if (createAnother == null) {
                 this.closeBudgetMethod()
               } else {
@@ -157,6 +158,7 @@ export class HnsAddBudgetComponent implements OnInit {
         )
       } else if (this.formMode == "edit") {
         formObj.hasbudgetcode = this.selectedBudget.hasbudgetcode;
+        formObj.modifiedby = this.currentUser.userId;
         queryAddEdit = this.hnsService.updateBudget(formObj);
         this.hnsService.validateBudget(this.selectedBudget.hascode, this.selectedBudget.hasversion, this.selectedBudget.hasbudgetcode).subscribe(
           res => {
@@ -167,6 +169,7 @@ export class HnsAddBudgetComponent implements OnInit {
                 queryAddEdit.subscribe(
                   data => {
                     if (data.isSuccess) {
+                      this.alertService.success('Budget code successfully updated');
                       if (createAnother == null) {
                         this.closeBudgetMethod()
                       } else {

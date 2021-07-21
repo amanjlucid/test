@@ -111,11 +111,13 @@ export class SurveyCbcreportComponent implements OnInit {
 
   closeSignatureImage($event) {
     this.openSignatureImage = false;
-    if ($event != undefined && $event != '')
+    if ($event != undefined)
     {
-      this.cbcReportForm.controls.signatureText.setValue($event);
-      this.getSignatureImage($event);
-      this.SignatureSelected = true;
+      var uploadResult = $event;
+      if (uploadResult.fileName && uploadResult.fileName != "") {
+        this.cbcReportForm.controls.signatureText.setValue(uploadResult.fileName);
+        this.getSignatureImage(uploadResult.byteArray);
+      }
     }
     $('.portalwBlur').removeClass('ovrlay');
   }
@@ -128,17 +130,20 @@ export class SurveyCbcreportComponent implements OnInit {
 
   getSignatureImage(val)
   {
-    this.subs.add(
-      this.surveyService.GetSignatureImage(val).subscribe(
-        data => {
-          if (data.isSuccess)
-          {
-            this.signatureImage = data.data;
+            this.signatureImage = val;
             this.SignatureSelected = true;
-          }
-        }
-      )
-    )
+
+    // this.subs.add(
+    //   this.surveyService.GetSignatureImage(val).subscribe(
+    //     data => {
+    //       if (data.isSuccess)
+    //       {
+    //         this.signatureImage = data.data;
+    //         this.SignatureSelected = true;
+    //       }
+    //     }
+    //   )
+    // )
   }
 
 

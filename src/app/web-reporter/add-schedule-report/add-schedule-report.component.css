@@ -7,3 +7,26 @@
     border-radius: 5px;
     padding-top: 3px;
 }
+
+
+.windowHeading{
+    background-color:white;
+    position: absolute; 
+    top: 0px; 
+    left:0px; 
+    width: 100%;
+}
+
+.windowHeading div{
+    background-color: #cecece;
+}
+
+
+.headingText{
+    background-color: #cecece; 
+    font-weight: 600;  
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+

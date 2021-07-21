@@ -40,47 +40,45 @@
                                 <a [ngClass]="{'disabled' : disableGridRowMenu('Change Cost/Qty',dataItem) }"
                                     *ngIf="woMenuAccess('Change Cost/Qty')" class="dropdown-item"
                                     href="javascript:void(0)"
-                                    (click)="openEditWorkPackageQtyCostWindow(dataItem)">Change Cost/Qty</a>
+                                    (click)="validateForProcess(dataItem, 'ChangeCostQty')">Change Cost/Qty</a>
 
                                 <a *ngIf="woMenuAccess('Remove Work (Var)')"
                                     [ngClass]="{'disabled' : disableGridRowMenu('Remove Work',dataItem)}"
                                     class="dropdown-item" href="javascript:void(0)"
-                                    (click)="deleteWorkConfirm(dataItem)">Remove Work</a>
-
+                                    (click)="validateForProcess(dataItem, 'RemoveWork')">Remove Work</a>
 
                                 <a *ngIf="woMenuAccess('Remove Item Variation')"
                                     [ngClass]="{'disabled' : disableGridRowMenu('Remove Item Variation',dataItem)}"
                                     class="dropdown-item" href="javascript:void(0)"
-                                    (click)="removeItemVariationConfirm(dataItem)">Remove Item Variation</a>
+                                    (click)="validateForProcess(dataItem, 'RemoveVariation')">Remove Item Variation</a>
 
-                                <a *ngIf="woMenuAccess('Recharge (Var)') && (dataItem.woadrechargeyn == 'N' || dataItem.variationAction == 'Remove Work Item')"
+                                <a *ngIf="woMenuAccess('Recharge (Var)') && dataItem.woadrechargeyn == 'N' || dataItem.variationAction == 'Remove Work Item'"
                                     [ngClass]="{'disabled' : disableGridRowMenu('Recharge',dataItem) }"
                                     class="dropdown-item" href="javascript:void(0)"
-                                    (click)="rechargeToggle(dataItem, true)">Recharge</a>
+                                    (click)="validateForProcess(dataItem, 'Recharge')">Recharge</a>
 
-                                <a *ngIf="woMenuAccess('Recharge (Var)') && (dataItem.woadrechargeyn == 'Y' &&  dataItem.variationAction != 'Remove Work Item')"
+                                <a *ngIf="woMenuAccess('Recharge (Var)') && dataItem.woadrechargeyn == 'Y' &&  dataItem.variationAction != 'Remove Work Item'"
                                     [ngClass]="{'disabled' : disableGridRowMenu('Recharge',dataItem) }"
                                     class="dropdown-item" href="javascript:void(0)"
-                                    (click)="rechargeToggle(dataItem, false)">Clear
+                                    (click)="validateForProcess(dataItem, 'ClearRecharge')">Clear
                                     Recharge</a>
-
 
                                 <a *ngIf="woMenuAccess('Refusal (Var)') && dataItem.woadrefusaL_YN == 'N'"
                                     [ngClass]="{'disabled' : disableGridRowMenu('Refusal',dataItem)}"
                                     class="dropdown-item" href="javascript:void(0)"
-                                    (click)="openRefusalReason(dataItem)">Set To
+                                    (click)="validateForProcess(dataItem, 'Refusal')">Set To
                                     Refusal</a>
 
                                 <a *ngIf="woMenuAccess('Refusal (Var)') && dataItem.woadrefusaL_YN == 'Y' && dataItem.variationAction != 'Remove Work Item'"
                                     [ngClass]="{'disabled' : disableGridRowMenu('Refusal',dataItem)}"
                                     class="dropdown-item" href="javascript:void(0)"
-                                    (click)="clearRefusal(dataItem, 'clear')">Clear
+                                    (click)="validateForProcess(dataItem, 'ClearRefusal')">Clear
                                     Refusal</a>
 
                                 <a *ngIf="woMenuAccess('Replace Service Package')"
                                     [ngClass]="{'disabled' : disableGridRowMenu('Replace Service Package',dataItem)}"
                                     class="dropdown-item" href="javascript:void(0)"
-                                    (click)="openServicePkzMethod(dataItem)">Replace Service
+                                    (click)="validateForProcess(dataItem, 'ReplacePackage')">Replace Service
                                     Package</a>
                             </div>
                         </li>

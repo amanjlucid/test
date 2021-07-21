@@ -35,6 +35,7 @@ export class HnsBudgetListComponent implements OnInit {
   openAddBudget: boolean = false;
   formMode: string = 'add';
   hnsPermission: any = [];
+  currentUser: any;
 
   constructor(
     private hnsService: HnsPortalService,
@@ -45,7 +46,7 @@ export class HnsBudgetListComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    //console.log(this.selectedDefinition);
+    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     if (this.selectedDefinition.hasinuse == "Y") {
       this.title = "Edit Budget List - (In Use - Read Only)";
       this.disableBtn = true;
@@ -137,6 +138,7 @@ export class HnsBudgetListComponent implements OnInit {
           if (res.data == 0) {
             this.alertService.error("This budget code is already in use.")
           } else if (res.data == 1) {
+            this.selectedData.modifiedby = this.currentUser.userId;
             this.subs.add(
               this.hnsService.deleteBudget(this.selectedData).subscribe(
                 data => {

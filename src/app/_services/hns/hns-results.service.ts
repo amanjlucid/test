@@ -92,10 +92,10 @@ export class HnsResultsService {
         return this.http.post<any>(`${appConfig.apiUrl}/api/HealthSafetyResult/AddAssetHealtSafetyIssueForSingleRecord`, body, this.httpOptions)
     }
 
-    addAssetHealtSafetyIssue(params) {
-        let body = JSON.stringify(params);
-        return this.http.post<any>(`${appConfig.apiUrl}/api/HealthSafetyResult/AddAssetHealtSafetyIssue`, body, this.httpOptions)
-    }
+    //addAssetHealtSafetyIssue(params) {
+    //    let body = JSON.stringify(params);
+    //    return this.http.post<any>(`${appConfig.apiUrl}/api/HealthSafetyResult/AddAssetHealtSafetyIssue`, body, this.httpOptions)
+    //}
 
     updateAssetHealtSafetyIssue(params) {
         let body = JSON.stringify(params);

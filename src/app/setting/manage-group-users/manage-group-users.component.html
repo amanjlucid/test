@@ -31,9 +31,20 @@
                     </kendo-grid-column>
                     <kendo-grid-column field="email" title="Email" width="120">
                     </kendo-grid-column>
-                    <kendo-grid-column field="nonSec" title="Apex User" width="70">
-                        <ng-template kendoGridCellTemplate let-dataItem>
-                            {{(dataItem.nonSec) ? 'No' : 'Yes'}}
+                    <kendo-grid-column field="isActiveDisplay" title="Status" width="70">
+                      <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter" let-filterService="filterService">
+                          <multicheck-filter [isPrimitive]="false" [field]="column.field" [currentFilter]="filter"
+                              [filterService]="filterService" textField="text" valueField="val"
+                              [data]="distinctPrimitiveAvailable(column.field)">
+                          </multicheck-filter>
+                      </ng-template>
+                    </kendo-grid-column>
+                    <kendo-grid-column field="nonSecDisplay" title="Apex User" width="70">
+                      <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter" let-filterService="filterService">
+                          <multicheck-filter [isPrimitive]="false" [field]="column.field" [currentFilter]="filter"
+                              [filterService]="filterService" textField="text" valueField="val"
+                              [data]="distinctPrimitiveAvailable(column.field)">
+                          </multicheck-filter>
                         </ng-template>
                     </kendo-grid-column>
 
@@ -71,9 +82,20 @@
                     </kendo-grid-column>
                     <kendo-grid-column field="email" title="Email" width="120">
                     </kendo-grid-column>
-                    <kendo-grid-column field="nonSec" title="Apex User" width="70">
-                        <ng-template kendoGridCellTemplate let-dataItem>
-                            {{(dataItem.nonSec) ? 'No' : 'Yes'}}
+                    <kendo-grid-column field="isActiveDisplay" title="Status" width="70">
+                      <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter" let-filterService="filterService">
+                          <multicheck-filter [isPrimitive]="false" [field]="column.field" [currentFilter]="filter"
+                              [filterService]="filterService" textField="text" valueField="val"
+                              [data]="distinctPrimitive(column.field)">
+                          </multicheck-filter>
+                      </ng-template>
+                    </kendo-grid-column>
+                    <kendo-grid-column field="nonSecDisplay" title="Apex User" width="70">
+                      <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter" let-filterService="filterService">
+                          <multicheck-filter [isPrimitive]="false" [field]="column.field" [currentFilter]="filter"
+                              [filterService]="filterService" textField="text" valueField="val"
+                              [data]="distinctPrimitive(column.field)">
+                          </multicheck-filter>
                         </ng-template>
                     </kendo-grid-column>
 

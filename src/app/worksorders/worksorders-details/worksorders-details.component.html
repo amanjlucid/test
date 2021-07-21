@@ -88,6 +88,9 @@
             <a *ngIf="woMenuBtnSecurityAccess('Release Asset')" (click)="assetAction(null, 'RELEASE', 'multiple')"
               class="dropdown-item" href="javascript:void(0)">Release
             </a>
+            <a *ngIf="woMenuBtnSecurityAccess('Reset Asset')" (click)="assetAction(null, 'Reset', 'multiple')"
+            class="dropdown-item" href="javascript:void(0)">Reset
+          </a>
             <a *ngIf="woMenuBtnSecurityAccess('Issue Asset')" (click)="assetAction(null, 'ISSUE', 'multiple')"
               class="dropdown-item" href="javascript:void(0)">Issue</a>
             <a *ngIf="woMenuBtnSecurityAccess('Accept Asset')" (click)="assetAction(null, 'ACCEPT', 'multiple')"
@@ -455,6 +458,7 @@
     </div>
   </div>
 
+
   <ng-template #template let-anchor>
     <div class="list-unstyled menuDiv" *ngIf="menuData">
       <div *ngIf="menuData.treelevel == 2" #elm class="dropdown-menu" style="display: block; margin-left: -1px;"
@@ -487,6 +491,17 @@
               From Work
               List</a>
 
+          </div>
+        </div>
+
+        <div class="dropdown-toggle" *ngIf="woMenuBtnSecurityAccess('Issue Work For Phase') || woMenuBtnSecurityAccess('Release Phase')">
+          <div class="dropdown-item">Actions</div>
+          <div class="dropdown-menu addAssetMenu">
+            <a *ngIf="woMenuBtnSecurityAccess('Release Phase')" class="dropdown-item"
+            (click)="assetAction(menuData, 'RELEASE', 'single')" href="javascript:void(0)">Release Assets For Phase</a>
+            <a *ngIf="woMenuBtnSecurityAccess('Issue Work For Phase')" class="dropdown-item"
+              (click)="assetAction(menuData, 'ISSUE', 'single')" href="javascript:void(0)">
+              Issue Work For Phase</a>
           </div>
         </div>
 
@@ -555,7 +570,9 @@
               (click)="assetAction(menuData, 'RELEASE', 'single')" href="javascript:void(0)">Release</a>
             <a *ngIf="woMenuBtnSecurityAccess('Issue Asset')" class="dropdown-item"
               (click)="assetAction(menuData, 'ISSUE', 'single')" href="javascript:void(0)">Issue</a>
-            <a *ngIf="woMenuBtnSecurityAccess('Accept Asset')" class="dropdown-item"
+                    <a *ngIf="woMenuBtnSecurityAccess('Reset Asset')" class="dropdown-item"
+                      (click)="assetAction(menuData, 'Reset', 'single')" href="javascript:void(0)">Reset</a>
+        <a *ngIf="woMenuBtnSecurityAccess('Accept Asset')" class="dropdown-item"
               (click)="assetAction(menuData, 'ACCEPT', 'single')" href="javascript:void(0)">Accept</a>
 
             <div class="dropdown-toggle" *ngIf="woMenuBtnSecurityAccess('Handover Asset')">
@@ -596,7 +613,7 @@
 
         <a *ngIf="woMenuBtnSecurityAccess('Move Assets')" class="dropdown-item" href="javascript:void(0)"
           (click)="moveAssets(menuData)">Move</a>
-        
+
         <a class="dropdown-item" [ngClass]="{'disabled' : !menuData.residentriskcode || menuData.residentriskcode == 0}"
           *ngIf="woMenuBtnSecurityAccess('View Resident Info')" href="javascript:void(0)"
           (click)="openResidentDetails(menuData)">Resident Details</a>
@@ -604,10 +621,18 @@
         <a class="dropdown-item" *ngIf="woMenuBtnSecurityAccess('Edit WO Comment')" href="javascript:void(0)"
           (click)="openCommentPanel(menuData)">Edit Comment</a>
 
+        <a *ngIf="woMenuBtnSecurityAccess('Asset Documents')" class="dropdown-item" href="javascript:void(0)"
+          (click)="openAssetDocument(menuData)">Documents</a>
+
+                <a class="dropdown-item" *ngIf="woMenuBtnSecurityAccess('Rename Phase Work')" href="javascript:void(0)"
+                  (click)="renamePhaseAsset(menuData)">Rename Phase Asset</a>
+
 
       </div>
     </div>
   </ng-template>
+
+
 
   <div class="worksOrderDetailOvrlay"></div>
 
@@ -789,3 +814,12 @@
     [worksOrderData]="worksOrderSingleData" [openWOPaymentScheduleWindow]="openWOPaymentScheduleWindow"
     (closePaymentScheduleWindowEvent)="closePaymentScheduleWindow($event)">
   </app-wo-program-management-payment-schedule>
+
+<app-rename-phase-asset *ngIf="renameAssetWindow" [renameAssetWindow]="renameAssetWindow" [rename]="renameItem"
+(closeRenameAssetWindow)="closeRenameAssetWindow($event)" (renameItem)="renameItemComplete($event)"  >
+</app-rename-phase-asset>
+
+
+<app-worksorders-asset-document *ngIf="assetDocWindow" [assetDocWindow]="assetDocWindow"
+(closeAssetDocEvent)="closeAssetDocument($event)" [selectedChildRow]="selectedChildRow"
+[selectedAsset]="actualSelectedRow"></app-worksorders-asset-document>

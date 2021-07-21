@@ -1,13 +1,20 @@
 <kendo-window title="{{title}}" *ngIf="openReportParameter" (close)="closeReportParameter()" [top]="20" [minWidth]="700"
     [width]="840" [height]="auto" [minHeight]="350">
 
-    <div class="row">
+<!--     <div class="row">
         <div class="col-md-12">
-            <div class="reportParamsHeading"> <span>{{ reportParamHeading }}</span> </div>
+            <div class="windowHeading"> <span>{{ reportParamHeading }}</span> </div>
+        </div>
+    </div> -->
+
+    <div class="windowHeading m-0  p-0">
+        <div class="form-row m-1 p-0">
+          <p class="col-md-12 m-0 px-3 py-2 headingText">
+            {{ reportParamHeading }}</p>
         </div>
     </div>
 
-    <div class="row mt-1">
+    <div class="row gridDiv">
         <div class="col-md-12">
 
             <kendo-grid [data]="gridView" [height]="400" filterable="menu" [resizable]="true" [sortable]="{

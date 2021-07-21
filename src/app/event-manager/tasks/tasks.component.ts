@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { SubSink } from 'subsink';
-import { GroupDescriptor, DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
+import { GroupDescriptor, DataResult, process, State, SortDescriptor, distinct } from '@progress/kendo-data-query';
 import { SelectableSettings, RowClassArgs } from '@progress/kendo-angular-grid';
 import { AlertService, EventManagerService, HelperService, SharedService } from '../../_services'
 import { BehaviorSubject, forkJoin } from 'rxjs';
@@ -27,7 +27,7 @@ export class TasksComponent implements OnInit {
     sort: [],
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -50,6 +50,11 @@ export class TasksComponent implements OnInit {
   loading = true
   assignedToOther = false;
   plannedDatewindow = false;
+  minPickerDate = {
+    year: new Date().getFullYear(),
+    month: new Date().getMonth() + 1,
+    day: new Date().getDate()
+  };
   taskSecurityList: any = [];
   toolTipData = { data: [], hoverSeq: '', dataLoaded: false };
   seqChange = new BehaviorSubject<any>(this.toolTipData);
@@ -204,13 +209,7 @@ export class TasksComponent implements OnInit {
     // this.gridView = process(this.userEventList, this.state);
   }
 
-  cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited, originalEvent }) {
-    if (originalEvent.ctrlKey == false) {
-      if (this.mySelection.length > 0) {
-        this.mySelection = [dataItem.eventSequence];
-      }
-    }
-
+  cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
     if (this.mySelection.length > 0) {
       this.selectedEvent = this.userEventList.filter(x => this.mySelection.indexOf(x.eventSequence) !== -1);
 
@@ -244,13 +243,21 @@ export class TasksComponent implements OnInit {
       this.eveneManagerService.getListOfUserEventByUserId(userId, hideComplete).subscribe(
         data => {
           if (data.isSuccess) {
-            // console.log(data)
-            this.userEventList = data.data;
+
+            let tempData = data.data;
+            tempData.map(s => {
+              s.eventPlannedDate = new Date(s.eventPlannedDate);
+              s.eventCreatedDate = new Date(s.eventCreatedDate);
+              s.eventUpdateDate = new Date(s.eventUpdateDate);
+             });
+
+            this.userEventList = tempData;
             if (this.seqIds != "") {
               let seqArr = this.seqIds.split(",");
               if (seqArr.length > 0) {
                 this.userEventList = this.userEventList.filter(x => seqArr.indexOf(x.eventSequence.toString()) !== -1)
               }
+              //this.seqIds = ''
             }
 
             //retain assign to me filter
@@ -261,18 +268,6 @@ export class TasksComponent implements OnInit {
                 }
               })
             }
-
-            // if (this.currentUser.admin == "Y") {
-            //   let unique = [];
-            //   let distinct = [];
-            //   for (let i = 0; i < this.userEventList.length; i++) {
-            //     if (!unique[this.userEventList[i].eventSequence]) {
-            //       distinct.push(this.userEventList[i]);
-            //       unique[this.userEventList[i].eventSequence] = 1;
-            //     }
-            //   }
-            //   this.userEventList = distinct;
-            // }
 
             // this.gridView = process(this.userEventList, this.state);
             this.loading = false;
@@ -404,7 +399,8 @@ export class TasksComponent implements OnInit {
         }
       }
 
-      if (successData.length > 0) {
+      if (successData.length > 0 && failsData.length == 0)
+      {
         this.subs.add(
           forkJoin(req).subscribe(
             data => {
@@ -465,10 +461,25 @@ export class TasksComponent implements OnInit {
       let failsData = [];
       let successData = [];
       let req = [];
+
       for (let userEvent of this.selectedEvent) {
+        if (userEvent.eventStatus == 'C') {
+          this.alertService.error(`You cannot assign completed events`)
+          this.selectedEvent = []
+          return
+        }
+      }
+
+      for (let userEvent of this.selectedEvent) {
+
         if (this.currentUser.admin == 'Y') {
+          if (userEvent.eventAssignUser != "" && userEvent.eventAssignUser == this.currentUser.userId) {
+            failsData.push(`Event number: ${userEvent.eventSequence} is already assigned to me \n`)
+          }
+          else{
           successData.push(userEvent.eventSequence);
           req.push(this.eveneManagerService.transferTo(userEvent.eventSequence, this.currentUser.userId, this.currentUser.userId))
+          }
         } else {
           if (userEvent.eventAssignUser == "") {
             successData.push(userEvent.eventSequence);
@@ -484,7 +495,8 @@ export class TasksComponent implements OnInit {
 
       }
 
-      if (successData.length > 0) {
+      if (successData.length > 0 && failsData.length == 0)
+      {
         this.subs.add(
           forkJoin(req).subscribe(
             data => {
@@ -503,15 +515,30 @@ export class TasksComponent implements OnInit {
   }
 
 
-  assignToOther(item = null, single = null) {
-    if (single = "single") {
+  assignToOther(item) {
+    if (item != null) {
       this.selectedEvent = [];
       this.selectedEvent.push(item);
     }
 
+    let failItems  = [];
     if (this.selectedEvent.length > 0) {
-      this.assignedToOther = true;
-      $('.taskOvrlay').addClass('ovrlay');
+      for(let obj of this.selectedEvent)
+      {
+        if(obj.eventStatus == "C")
+        {
+          failItems.push(obj);
+        }
+      }
+      if (failItems.length == 0)
+      {
+        this.assignedToOther = true;
+        $('.taskOvrlay').addClass('ovrlay');
+      }
+      else
+      {
+        this.alertService.error("You cannot assign completed events to other users.")
+      }
     } else {
       this.alertService.error("Please select atleast one row first.")
     }
@@ -588,13 +615,13 @@ export class TasksComponent implements OnInit {
 
 
   rowCallback(context: RowClassArgs) {
-    let currentuser = JSON.parse(localStorage.getItem('currentUser'));
+    //let currentuser = JSON.parse(localStorage.getItem('currentUser'));
     //console.log(cuser)
-    if (currentuser.admin == 'Y') {
-      return {
-        taskUnreadRow: false,
-      }
-    }
+    //if (currentuser.admin == 'Y') {
+    //  return {
+    //    taskUnreadRow: false,
+     // }
+    //}
 
     if (context.dataItem.eventNotifyStatus == "N") {
       return {
@@ -605,6 +632,12 @@ export class TasksComponent implements OnInit {
         taskUnreadRow: false,
       }
     }
+  }
+
+  distinctPrimitive(fieldName: string): any {
+    return distinct(this.userEventList, fieldName).map(item => {
+      return { val: item[fieldName], text: item[fieldName] }
+    });
   }
 
 

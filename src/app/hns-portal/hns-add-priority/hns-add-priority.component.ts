@@ -47,7 +47,7 @@ export class HnsAddPriorityComponent implements OnInit {
     }
   };
   hnsPermission: any = [];
-  
+
   constructor(
     private fb: FormBuilder,
     private chRef: ChangeDetectorRef,
@@ -158,7 +158,7 @@ export class HnsAddPriorityComponent implements OnInit {
   onSubmit(createAnother = null) {
     if (this.formMode == "edit" || this.formMode == "add") {
       this.submitted = true;
-      this.formErrorObject(); // empty form error 
+      this.formErrorObject(); // empty form error
       this.logValidationErrors(this.formGrp);
 
       if (this.formGrp.invalid) {
@@ -167,7 +167,7 @@ export class HnsAddPriorityComponent implements OnInit {
 
       let formRawVal = this.formGrp.getRawValue();
       let formObj: any = {};
-
+      let updateMessage = ''
       if (this.selectedDefinition.hasscoring == 2) {
 
         let message = this.validateScoreData(formRawVal);
@@ -180,8 +180,10 @@ export class HnsAddPriorityComponent implements OnInit {
         let priorityData
         if (this.formMode == "add") {
           priorityData = this.priorityData;
+
         } else if (this.formMode == "edit") {
           priorityData = this.priorityData.filter(x => x != this.selectedPriority)
+
         }
 
       }
@@ -198,16 +200,19 @@ export class HnsAddPriorityComponent implements OnInit {
       let queryAddEdit;
       if (this.formMode == "add") {
         formObj.createdby = this.currentUser.userId;
+        updateMessage = 'added'
         formObj.haspriorityorder = 0;
         queryAddEdit = this.hnsService.addPriority(formObj);
       } else if (this.formMode == "edit") {
         formObj.haspriorityorder = this.selectedPriority.haspriorityorder;
+        updateMessage = 'updated'
         queryAddEdit = this.hnsService.updatePriority(formObj);
       }
 
       queryAddEdit.subscribe(
         data => {
           if (data.isSuccess) {
+            this.alertService.success('Priority record successfully ' + updateMessage);
             if (createAnother == null) {
               this.closePriorityMethod()
             } else {

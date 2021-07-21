@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ViewChild, ElementRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SubSink } from 'subsink';
-import { HnsPortalService, HelperService, SharedService } from 'src/app/_services';
+import { HnsPortalService,  AlertService, HelperService, SharedService } from 'src/app/_services';
 
 @Component({
   selector: 'app-hns-definition-group',
@@ -26,6 +26,7 @@ export class HnsDefinitionGroupComponent implements OnInit {
   definitionGrpForm: FormGroup;
   submitted: boolean = false;
   formErrors: any;
+
   validationMessage = {
     'group': {
       'required': 'Group is required.',
@@ -36,11 +37,12 @@ export class HnsDefinitionGroupComponent implements OnInit {
     }
   };
   hnsPermission: any = [];
-  
+
   constructor(
     private fb: FormBuilder,
     private hnsService: HnsPortalService,
     private helper: HelperService,
+    private alertService: AlertService,
     private sharedService: SharedService
 
   ) { }
@@ -93,7 +95,7 @@ export class HnsDefinitionGroupComponent implements OnInit {
       setTimeout(() => {
         this.firstInpElm.nativeElement.focus();
       }, 200);
-    } 
+    }
 
     this.subs.add(
       this.sharedService.hnsPortalSecurityList.subscribe(
@@ -136,8 +138,14 @@ export class HnsDefinitionGroupComponent implements OnInit {
 
   onSubmit(createAnother = null) {
     if (this.defGrpFormMode == "change" || this.defGrpFormMode == "new") {
+
+      let updateMessage = 'updated'
+      if (this.defGrpFormMode == "new"){
+         updateMessage = 'added'
+      }
+
       this.submitted = true;
-      this.formErrorObject(); // empty form error 
+      this.formErrorObject(); // empty form error
       this.logValidationErrors(this.definitionGrpForm);
 
       if (this.definitionGrpForm.invalid) {
@@ -167,6 +175,7 @@ export class HnsDefinitionGroupComponent implements OnInit {
       this.hnsService.saveHnsGrp(formObj, this.defGrpFormMode).subscribe(
         data => {
           if (data.isSuccess) {
+            this.alertService.success('Definition Group successfully ' +  updateMessage);
             if (createAnother != null) {
               this.definitionGrpForm.reset();
               this.definitionGrpForm.patchValue({ status: "A" })

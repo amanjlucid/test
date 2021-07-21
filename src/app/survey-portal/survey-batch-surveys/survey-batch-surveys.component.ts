@@ -5,7 +5,8 @@ import { SubSink } from 'subsink';
 import { BatchSurveysListModel, SurveyPortalXports } from '../../_models';
 import { DateFormatPipe } from '../../_pipes/date-format.pipe';
 import {formatDate} from '@angular/common';
-import { toUnicode } from 'punycode';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, map, tap } from 'rxjs/operators';
 declare var $: any;
 
 @Component({
@@ -20,7 +21,7 @@ export class SurveyBatchSurveysComponent implements OnInit {
   //tabName: string = "attributes";
   selectedBatch;
   selectedBatchSurvey;
-  selectedSurveyDate: Date = new Date("1900-01-01");
+  selectedSurveyDate = formatDate(new Date(), '1900-01-01', 'en');
   todaysDate =  formatDate(new Date(), 'yyyy-MM-dd', 'en');
   batchSurveysLists: any = [];
   scrollLoad = true;
@@ -42,6 +43,9 @@ export class SurveyBatchSurveysComponent implements OnInit {
     'PageNo': 0,
 
    }
+    title = 'Batch Surveys';
+    filtersApplied = '';
+    filterApplied = false;
     selectedBatchSurveysExport: any[] = [];
     subs = new SubSink(); // to unsubscribe services
     surveyProjectLabel: string;
@@ -83,7 +87,7 @@ export class SurveyBatchSurveysComponent implements OnInit {
     this.batchSurveysListItem.SurveyBatchName = this.selectedBatch.BatchName;
     this.getBatchSurveys(this.batchSurveysListItem);
     this.surveyProjectLabel = this.batchSurveysListItem.SupCode + ' - ' + this.batchSurveysListItem.SupName;
-    this.surveyBatchLabel = this.batchSurveysListItem.SubID + ' - ' + this.batchSurveysListItem.SurveyBatchName
+    this.surveyBatchLabel = this.batchSurveysListItem.SurveyBatchName
   }
 
   onScroll(event)
@@ -198,12 +202,20 @@ export class SurveyBatchSurveysComponent implements OnInit {
                 s.surveyDate = (s.surveyDate != "") ? (s.surveyDate != "1753-01-01T00:00:00") ? DateFormatPipe.prototype.transform(s.surveyDate, 'DD-MMM-YYYY'): '' : s.surveyDate;
                 });
               this.batchSurveysLists = tempData;
+              this.filtersApplied = this.batchSurveysLists[0].filtersApplied;
               this.checkRendertable();
+            }
+            else{
+              if(this.filterApplied)
+              {
+                this.filtersApplied = "No records for this filter";
+              };
             }
             this.loaderService.pageHide();
         }
         else
         {
+
         this.alertService.error(data.message);
         this.loaderService.pageHide();
         }
@@ -219,6 +231,7 @@ export class SurveyBatchSurveysComponent implements OnInit {
      this.batchSurveysListItem.PageNo = 0;
     if (column == 'Status') {
       this.batchSurveysListItem.StatusFilter = value;
+      this.filterApplied = true;
       this.getBatchSurveys(this.batchSurveysListItem);
     }
     if (column == 'StartDate') {
@@ -226,7 +239,7 @@ export class SurveyBatchSurveysComponent implements OnInit {
       {
         if(value > "1900-01-01")
         {
-          this.selectedSurveyDate = value;
+          this.selectedSurveyDate = formatDate(new Date(), value, 'en');
           this.batchSurveysListItem.SurveyStartDateFilter = value;
         }
       }
@@ -243,13 +256,13 @@ export class SurveyBatchSurveysComponent implements OnInit {
       //validate the start and end dates here
 
       if(this.batchSurveysListItem.SurveyEndDateFilter >= this.batchSurveysListItem.SurveyStartDateFilter){
+        this.filterApplied = true;
         this.getBatchSurveys(this.batchSurveysListItem);
       }
       else{
-        this.alertService.error('The survey end date cannot be earlier that the start date')
+        this.alertService.error('The survey end date must be later than the start date')
       }
     }
-
 
   }
 
@@ -280,8 +293,9 @@ export class SurveyBatchSurveysComponent implements OnInit {
     this.batchSurveysListItem.OrderBy = 'SurveyName';
     this.batchSurveysListItem.OrderType = 'Asc';
     this.batchSurveysListItem.PageNo = 0;
-    this.selectedSurveyDate = new Date('1900-01-01');
-
+    this.selectedSurveyDate = '1900-01-01';
+    this.filterApplied = false;
+    this.filtersApplied = '';
   }
 
   openTabWindow(tabname, batchsurvey) {
@@ -438,7 +452,7 @@ export class SurveyBatchSurveysComponent implements OnInit {
       }
 
       this.selectedXport = {'XportID' : XportID,
-      'ReportTitle':ReportTitle + ': ' + this.selectedBatchSurvey.supName,
+      'ReportTitle':ReportTitle + ': ' + this.selectedBatchSurvey.surveyName,
       'Params': this.params,
       }
       this.reportingAction = 'runSurveyPortalXports';

@@ -32,6 +32,7 @@ export class SurveyProjectSettingsComponent implements OnInit {
   ngOnInit() {
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.selectedProject = JSON.parse(sessionStorage.getItem('SurvProj'));
+    sessionStorage.setItem('SurveyAccess', 'SurveyAccess');
     this.surveyProjectLabel = this.selectedProject.SupCode + ' - ' + this.selectedProject.SupName;
     this.settingsForm = this.fb.group({
       batchRecycling: [false],

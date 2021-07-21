@@ -1,0 +1,115 @@
+<kendo-window title="{{title}}" *ngIf="assetDocWindow" (close)="closeChecklistDoc()" [top]="10" [minWidth]="700"
+    [width]="870" [height]="auto" [minHeight]="300">
+    <div class="row headingDetail">
+        <div class="col-md-12 mt-2">
+            <div class="row">
+                <div class="col-md-3">
+                    <label class="lbl" for="">Programme: </label>
+                </div>
+                <div class="col-md-9">
+                    <input type="text" class="form-control form-control-sm" [readonly]="readonly"
+                        value="{{programmeData?.wprname}}">
+                </div>
+            </div>
+
+            <div class="row mt-2">
+                <div class="col-md-3">
+                    <label class="lbl" for="">Work Order: </label>
+                </div>
+                <div class="col-md-9">
+                    <input type="text" class="form-control form-control-sm" [readonly]="readonly"
+                        value="{{worksOrderData?.wosequence}} - {{worksOrderData?.woname}}">
+                </div>
+            </div>
+
+            <div class="row mt-2">
+                <div class="col-md-3">
+                    <label class="lbl" for="">Asset:</label>
+                </div>
+                <div class="col-md-9">
+                    <input type="text" class="form-control form-control-sm" [readonly]="readonly"
+                        value="{{selectedAsset?.woname}}">
+                </div>
+            </div>
+
+
+        </div>
+
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <kendo-grid #grid [data]="gridView" [height]="410" [selectable]="{
+        mode: 'single'
+      }" filterable="menu" [resizable]="true" [sortable]="{
+        allowUnsort: allowUnsort,
+        mode: multiple ? 'multiple' : 'single'
+        }" [sort]="state.sort" (sortChange)="sortChange($event)" (filterChange)="filterChange($event)"
+                (cellClick)="cellClickHandler($event)" [filter]="state.filter">
+
+
+                <kendo-grid-column field="description" title="" width="25" [filterable]="false">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <img data-toggle="dropdown" aria-expanded="true"
+                            style="height:14px; width:16px; margin-top: 0px;" class="attachmentIcon"
+                            src="assets/img/icons/attach.png" />
+                    </ng-template>
+                </kendo-grid-column>
+                <kendo-grid-column field="description" title="Description" width="120">
+                </kendo-grid-column>
+                <kendo-grid-column field="filename" title="Filename" width="220">
+                </kendo-grid-column>
+                <kendo-grid-column field="ntpmodifiedtime" title="Modified" width="100">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.ntpmodifiedtime | dateFormat : 'DD-MMM-YYYY HH:mm:ss' }}
+                        </span>
+                    </ng-template>
+                </kendo-grid-column>
+
+
+            </kendo-grid>
+        </div>
+
+
+    </div>
+
+    <div class="row mt-2">
+        <div class="col-md-9 text-left leftSideBtn">
+            <input (change)="onFileChange($event)" type="file" #addDoc id="addDoc" style="display: none;">
+            <button *ngIf="worksOrderAccess.indexOf('View Checklist Document') != -1" class="btn btn-sm themeButton"
+                (click)="viewDocument()" [disabled]="!selectedDoc">View
+                Document</button>
+            <button *ngIf="worksOrderAccess.indexOf('Edit Checklist Document Description') != -1"
+                class="btn btn-sm themeButton" (click)="openEditDoc()" [disabled]="!selectedDoc">Edit
+                Description</button>
+            <button *ngIf="worksOrderAccess.indexOf('Add Checklist Document') != -1" class="btn btn-sm themeButton"
+                (click)="addDocument()">Add Document</button>
+
+            <button *ngIf="worksOrderAccess.indexOf('Upload Checklist Document') != -1"
+                class="btn btn-sm themeButton uploadDocBtn" (click)="uploadImage()">Upload Document</button>
+            <button *ngIf="worksOrderAccess.indexOf('Remove Checklist Document') != -1" class="btn btn-sm themeButton"
+                (click)="openConfirmationDialog()" [disabled]="!selectedDoc">Remove
+                Document</button>
+        </div>
+
+        <div class="col-md-3 text-right rightSideBtn">
+            <button class="btn btn-sm themeButton" (click)="closeChecklistDoc()"> Close </button>
+        </div>
+
+    </div>
+
+
+    <div class="docOvrlay"></div>
+
+    <app-worksorders-asset-checklist-edit-description *ngIf="showEditDoc" [showEditDoc]="showEditDoc" editDesFor="Asset"
+        [selectedChecklist]="selectedAsset" [selectedDoc]="selectedDoc" (closeEditDoc)="closeEditDoc($event)">
+    </app-worksorders-asset-checklist-edit-description>
+
+    <app-worksorders-asset-checklist-upload-doc *ngIf="uploadAttachment" [uploadAttachment]="uploadAttachment" uploadDocFor="Asset"
+        [selectedChecklist]="selectedAsset" (closeAttachment)="closeAttachment($event)"
+        (complete)="complete($event)">
+    </app-worksorders-asset-checklist-upload-doc>
+
+
+</kendo-window>

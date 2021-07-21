@@ -3,7 +3,25 @@
 }
 
 .windowHeading{
-    background: #dbdbdb;
-    padding: 4px;
+    background-color:white;
+    position: absolute; 
+    top: 0px; 
+    left:0px; 
+    width: 100%;
+}
+
+.windowHeading div{
+    background-color: #cecece;
+}
+
+.gridDiv{
+    margin-top: 28px;
+}
+
+.headingText{
+    background-color: #cecece; 
     font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 }

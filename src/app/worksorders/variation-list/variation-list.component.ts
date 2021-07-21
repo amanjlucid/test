@@ -57,6 +57,13 @@ export class VariationListComponent implements OnInit {
   userType: any = [];
   variationIssuedAndAccepted: boolean = true;
   outstandingVariation: boolean = true;
+  SendEmailInsReportWindow = false;
+  disabledAddNote: boolean = false;
+  displayNotesWindow: boolean = false;
+  wosequence: number = 0;
+  woisequence: number = 0;
+  openVariationDetail = false;
+
 
   constructor(
     private chRef: ChangeDetectorRef,
@@ -106,6 +113,36 @@ export class VariationListComponent implements OnInit {
   closeVariationList() {
     this.openVariationList = false;
     this.closeVariationListEvent.emit(false);
+  }
+
+  disableAddNote(dataItem){
+    if (dataItem.woiissuestatus == 'New' || dataItem.woiissuestatus == 'Accepted' || dataItem.woiissuestatus == 'Issued'){
+      return true;
+    }
+    if (dataItem.woiissuestatus == 'Contractor Review'){
+       if (this.userType != undefined && this.userType?.wourroletype == 'Customer'){
+        return true;
+       }
+    }
+    if (dataItem.woiissuestatus == 'Customer Review'){
+      if (this.userType != undefined && this.userType?.wourroletype == 'Contractor'){
+        return true;
+       }
+    }
+    return false;
+  }
+
+  openVariationNotes(dataItem){
+    this.disabledAddNote = this.disableAddNote(dataItem);
+    this.wosequence = dataItem.wosequence;
+    this.woisequence = dataItem.woisequence;
+    this.displayNotesWindow = true
+    $('.variationListOverlay').addClass('ovrlay');
+  }
+
+  closeVariationNotes(eve){
+    this.displayNotesWindow = false
+    $('.variationListOverlay').removeClass('ovrlay');
   }
 
   slideToggle() {
@@ -463,6 +500,35 @@ export class VariationListComponent implements OnInit {
     this.selectedSingleVariation.assid = this.selectedAsset.assid;
     this.openVariationDetails(undefined)
 
+  }
+
+
+  openVariationDetailMethod(dataItem) {
+    this.openedFor = 'details';
+    this.selectedSingleVariation = dataItem;
+    this.selectedSingleVariation.assid = this.selectedAsset.assid;
+    $('.variationListOverlay').addClass('ovrlay');
+    this.openVariationDetail = true;
+  }
+
+  closeVarDetails(eve) {
+    this.openVariationDetail = eve;
+    $('.variationListOverlay').removeClass('ovrlay');
+   }
+
+
+  openEmailInstructionReport(item) {
+    this.SendEmailInsReportWindow = true;
+    this.selectedSingleVariation = item;
+    $('.variationListOverlay').addClass('ovrlay');
+  }
+
+
+  closeEmailWithReportWindow(eve) {
+    this.SendEmailInsReportWindow = false;
+   
+    $('.variationListOverlay').removeClass('ovrlay');
+    // $('.reportingDiv').removeClass('pointerEvent');
   }
 
 }

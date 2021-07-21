@@ -7,15 +7,19 @@
         </div>
 
         <div class="col-md-10 col-sm-9 text-right">
-           
-            <!-- <button *ngIf="reporterPortalPermission.indexOf('User Categories') != -1" type="button"
+
+
+            <span class="mr-5">Reports: Filtered {{reportList ? reportList.length : 0}}/{{reportCount ? reportCount : 0}}</span>
+            <span class="mx-5"></span>
+
+            <!-- <button *ngIf="reporterPortalPermission.indexOf('Custom Categories') != -1" type="button"
                 class="btn btn-sm themeButton mr-1" (click)="openSetUserCategoryWindow(null, false)">User
                 Categories</button> -->
             <button *ngIf="reporterPortalPermission.indexOf('Preview') != -1" type="button"
                 class="btn btn-sm themeButton mr-1" (click)="previewReport()"
-                [disabled]="!selectedReport">Preview</button>
+                [disabled]="mySelection.length == 0 || mySelection.length > 1">Preview</button>
             <button *ngIf="reporterPortalPermission.indexOf('Run Report') != -1" type="button"
-                class="btn btn-sm themeButton mr-1" (click)="runReport()" [disabled]="!selectedReport">Run</button>
+                class="btn btn-sm themeButton mr-1" (click)="runReport()" [disabled]="mySelection.length == 0">Run</button>
 
             <label class="switcher switcher-secondary">
                 <input [checked]="pivot"
@@ -39,10 +43,10 @@
 
 
     <div class="row">
-        <div class="col-md-10">
+        <div class="col-md-12">
             <div class="form-inline">
                 <label>Categories</label>
-                <ng-multiselect-dropdown [placeholder]="'Select Categories'" [data]="categories"
+                <ng-multiselect-dropdown [placeholder]="'Select Categories'" [data]="categories" id="SelectCategories"
                     [settings]="mulitSelectDropdownSettings" [disabled]="false"
                     (onSelect)="onCategoriesSingleSelectionChange($event)"
                     (onDeSelect)="onCategoriesSingleSelectionChange($event)"
@@ -51,22 +55,22 @@
                     #categoriesMultiSelect>
                 </ng-multiselect-dropdown>
 
-                <label class="categoryLbl">Category</label>
+                <label class="categoryLbl">Custom Categories</label>
 
-                <ng-multiselect-dropdown [placeholder]="'Select Category'" [data]="userCategory"
+                <ng-multiselect-dropdown [placeholder]="'Select Custom Categories'" [data]="userCategory" id="SelectUserCategories"
                     [settings]="categoryDropdownSettings" [disabled]="false"
                     (onSelect)="onCategorySingleSelectionChange($event)"
                     (onDeSelect)="onCategorySingleSelectionChange($event)"
                     (onSelectAll)="onCategorySelectionAllChange($event)"
                     (onDeSelectAll)="onCategorySelectionAllChange($event)" [(ngModel)]="selectedCategory">
                 </ng-multiselect-dropdown>
+
+
+
             </div>
 
         </div>
 
-        <div class="col-md-2">
-            <span>Reports: Filtered {{reportList ? reportList.length : 0}}/{{reportCount ? reportCount : 0}}</span>
-        </div>
     </div>
 
 
@@ -78,7 +82,7 @@
                 [sortable]="{
     allowUnsort: allowUnsort,
     mode: multiple ? 'multiple' : 'single'
-    }" [skip]="state.skip" [pageSize]="70" scrollable="virtual" [rowHeight]="rowheight" [sort]="state.sort"
+    }" [skip]="state.skip" [pageSize]="2000" scrollable="virtual" [rowHeight]="rowheight" [sort]="state.sort"
                 [selectable]="selectableSettings"  kendoGridSelectBy="reportId" [selectedKeys]="mySelection" [filter]="state.filter" (cellClick)="cellClickHandler($event)"
                 [navigable]="false">
 
@@ -91,30 +95,11 @@
 
                 </kendo-grid-column>
 
-                <kendo-grid-column field="parameterCheck" title="Paramters" width="20" [filterable]="false"
-                    [groupable]="true">
-                    <ng-template kendoGridCellTemplate let-dataItem>
-                        <span>
-                            <img *ngIf="dataItem.parameterCheck == 1" style="height: 14px;"
-                                src="assets/img/icons/tick.png" />
-                            <img style="height: 14px;" *ngIf="dataItem.parameterCheck == 2"
-                                src="assets/img/icons/cross.png" />
 
-                        </span>
-                    </ng-template>
-                </kendo-grid-column>
-
-                <kendo-grid-column field="isShceduled" title="Schedule" width="20" [filterable]="false"
-                    [sortable]="false" [style]="{'padding': '0','text-align': 'center'}">
-                    <ng-template kendoGridCellTemplate let-dataItem>
-                        <i *ngIf="dataItem.isShceduled" class="fas fa-clock"
-                            style="color: #e4287e; font-size: 14px;"></i>
-                    </ng-template>
-                </kendo-grid-column>
 
                 <kendo-grid-column title=" " width="20" [filterable]="false">
                     <ng-template kendoGridCellTemplate let-dataItem>
-                        <li class="nav-item dropdown list-unstyled" style="margin-top: -7px;">
+                        <li class="nav-item reportmenu dropdown list-unstyled" style="margin-top: -7px;">
                             <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"
                                 (click)="setSeletedRow(dataItem)"></i>
                             <div class="dropdown-menu">
@@ -124,10 +109,10 @@
                                 <a *ngIf="reporterPortalPermission.indexOf('Parameters') != -1"
                                     [ngClass]="{'disabled' : dataItem.parameterExists == false}" class="dropdown-item"
                                     href="javascript:void(0)" (click)="openParameterWindow(dataItem)">Parameters</a>
-                                <a *ngIf="reporterPortalPermission.indexOf('User Categories') != -1"
+                                <a *ngIf="reporterPortalPermission.indexOf('Custom Categories') != -1"
                                     class="dropdown-item" href="javascript:void(0)"
                                     (click)="openSetUserCategoryWindow(dataItem, true)">
-                                    User Categories</a>
+                                    Custom Categories</a>
                                 <a *ngIf="reporterPortalPermission.indexOf('Preview') != -1" class="dropdown-item"
                                     href="javascript:void(0)" (click)="previewReport()">Preview</a>
                                 <a *ngIf="reporterPortalPermission.indexOf('Run Report') != -1" class="dropdown-item"
@@ -138,11 +123,56 @@
                     </ng-template>
                 </kendo-grid-column>
 
-                <kendo-grid-column field="category" title="Category" width="80">
+
+                <kendo-grid-column field="parameterCheck"  width="20" [filterable]="false"
+                [groupable]="true">
+                <ng-template kendoGridHeaderTemplate>
+                    <i title="Parameters?" class="fa fa-question" aria-hidden="true" ></i>
+                  </ng-template>
+                <ng-template kendoGridCellTemplate let-dataItem>
+                    <span>
+                        <img *ngIf="dataItem.parameterCheck == 1" style="height: 14px;"
+                            src="assets/img/icons/tick.png" (click)="openParameterWindow(dataItem)" />
+                        <img style="height: 14px;" *ngIf="dataItem.parameterCheck == 2"
+                            src="assets/img/icons/cross.png" />
+
+                    </span>
+                </ng-template>
+            </kendo-grid-column>
+
+            <kendo-grid-column field="isShceduled" width="20" [filterable]="false"
+                [sortable]="false" [style]="{'padding': '0','text-align': 'center'}">
+                <ng-template kendoGridHeaderTemplate>
+                    <i title="Schedule" class="fa fa-clock" aria-hidden="true" ></i>
+                  </ng-template>
+                <ng-template kendoGridCellTemplate let-dataItem>
+                    <i *ngIf="dataItem.isShceduled" class="fas fa-clock" (click)="scheduleReport(dataItem)"
+                        style="color: #e4287e; font-size: 14px;"></i>
+                </ng-template>
+            </kendo-grid-column>
+
+                <kendo-grid-column field="category" title="Categories" width="80">
+                    <ng-template kendoGridFilterMenuTemplate  let-filter="filter" let-column="column"
+                    let-filterService="filterService">
+                    <simple-text-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
+                    </simple-text-filter>
+                      </ng-template>
+
+
+
+
                 </kendo-grid-column>
                 <kendo-grid-column field="reportId" title="Report ID" width="60">
+                    <ng-template kendoGridFilterMenuTemplate  let-filter="filter" let-column="column" let-filterService="filterService">
+                        <simple-text-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
+                        </simple-text-filter>
+                    </ng-template>
                 </kendo-grid-column>
                 <kendo-grid-column field="reportName" title="Report Name" width="265" [class]="{'reportNameCol': true}">
+                    <ng-template kendoGridFilterMenuTemplate  let-filter="filter" let-column="column" let-filterService="filterService">
+                        <simple-text-filter [field]="column.field" [filter]="filter" [filterService]="filterService" [contains]="true">
+                        </simple-text-filter>
+                    </ng-template>
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <span class="reportNameSpan" title="{{dataItem.reportName}}">{{dataItem.reportName}}</span>
                         <span *ngIf="showColumns" class="showCol">{{dataItem.xport_Col}}</span>
@@ -151,9 +181,17 @@
 
 
                 <kendo-grid-column field="reportDescription" title="Report Description" width="210">
+                    <ng-template kendoGridFilterMenuTemplate  let-filter="filter" let-column="column" let-filterService="filterService">
+                        <simple-text-filter [field]="column.field" [filter]="filter" [filterService]="filterService" [contains]="true">
+                        </simple-text-filter>
+                    </ng-template>
                 </kendo-grid-column>
 
                 <kendo-grid-column field="monthYear" title="Run History" width="90">
+                    <ng-template kendoGridFilterMenuTemplate  let-filter="filter" let-column="column" let-filterService="filterService">
+                        <simple-text-filter [field]="column.field" [filter]="filter" [filterService]="filterService" [contains]="true">
+                        </simple-text-filter>
+                    </ng-template>
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <span *ngIf="dataItem.monthYear != ''">{{dataItem.monthYear}} ({{dataItem.count}})</span>
                     </ng-template>
@@ -328,7 +366,7 @@
 
                 <div class="col-md-6">
                     <label class="switcher switcher-secondary">
-                        <input (change)="showColFn()" type="checkbox" value="{{showColumns}}" class="switcher-input">
+                        <input (change)="showColFn()" type="checkbox" [(ngModel)]="showColumns" class="switcher-input">
                         <span class="switcher-indicator colSwitch">
                             <span class="switcher-yes">
                                 <span class="ion ion-md-checkmark"></span>

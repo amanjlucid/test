@@ -49,7 +49,7 @@
     <div class="row mt-2">
         <div class="col-md-12">
             <kendo-grid #grid [data]="gridView" [height]="660" [selectable]="{
-                        mode: 'single'
+                        mode: 'multiple'
                       }" filterable="menu" [resizable]="true" [sortable]="{
                         allowUnsort: allowUnsort,
                         mode: multiple ? 'multiple' : 'single'
@@ -149,7 +149,6 @@
                     </multicheck-filter>
                 </ng-template>
                 </kendo-grid-column>
-                
                 <kendo-grid-column field="hasversion" title="Version" width="100" filter="numeric">
                 </kendo-grid-column>
                 <kendo-grid-column field="hasname" title="Name" width="220">

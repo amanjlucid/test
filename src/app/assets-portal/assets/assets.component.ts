@@ -110,6 +110,7 @@ export class AssetsComponent implements OnInit, OnDestroy, AfterViewInit {
   AsbestosFilter: boolean = false;
   ServicingFilter: boolean = false;
   TaskFilter: boolean = false;
+  energyDashboardFilter:boolean = false;
 
 
   menuList: any = [];
@@ -233,6 +234,7 @@ export class AssetsComponent implements OnInit, OnDestroy, AfterViewInit {
         const assetid = params['assetid'];
         const servicePortal = params['servicing'];
         const taskData = params['taskData'];
+        const energyData = params['energyData'];
         const sapBand = params['sapBand'];
         const epcStatus = params['epcStatus'];
         const openTab = params['openTab'];
@@ -247,7 +249,7 @@ export class AssetsComponent implements OnInit, OnDestroy, AfterViewInit {
                   if (openTab != undefined) {
                     this.openTabFromUrl(data, openTab);
                   } else {
-                    this.openLinkTabs(data);
+                this.openLinkTabs(data);
                   }
                 }
 
@@ -259,6 +261,16 @@ export class AssetsComponent implements OnInit, OnDestroy, AfterViewInit {
             }
           )
         } else if (taskData != undefined && taskData == "true") {
+          this.TaskFilter = true;
+          let encodedTasksAssets = localStorage.getItem("assetList");
+          if (encodedTasksAssets != null) {
+            let assetIdstring = atob(encodedTasksAssets);//Decode tasks assets
+            this.assetList.TaskAsset = true;
+            this.assetList.TaskAssets = assetIdstring.split(',');
+          }
+          this.getAllAssets(this.assetList);
+        } else if (energyData != undefined && energyData == "true") {
+          this.energyDashboardFilter= true;
           let encodedTasksAssets = localStorage.getItem("assetList");
           if (encodedTasksAssets != null) {
             let assetIdstring = atob(encodedTasksAssets);//Decode tasks assets
@@ -415,7 +427,6 @@ export class AssetsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.attributeLists = [];
     this.assetAttributeService.getAllAssets(this.assetList).subscribe(
       data => {
-        // console.log(data);
         if (data && data.isSuccess) {
           this.attributeLists = data.data;
           if (this.attributeLists != undefined && this.attributeLists.length == 1) {
@@ -696,10 +707,6 @@ export class AssetsComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     else { this.EPCFilter = true; }
 
-    if (!this.assetList.TaskAsset && (this.assetList.TaskAssets == undefined || this.assetList.TaskAssets.length == 0)) {
-      this.TaskFilter = false;
-    }
-    else { this.TaskFilter = true; }
 
     this.attributeLists = [];
     this.assetAttributeService.getAssetCount(assetList).subscribe(
@@ -871,6 +878,7 @@ export class AssetsComponent implements OnInit, OnDestroy, AfterViewInit {
       this.sapMultiSelect.reset();
     }
 
+    this.energyDashboardFilter = false;
     this.getAllAssets(this.assetList);
   }
 

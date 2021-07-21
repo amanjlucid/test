@@ -4,6 +4,7 @@ import { SubSink } from 'subsink';
 import { Router } from "@angular/router"
 import { appConfig } from '../../../app.config';
 
+
 declare var $: any;
 declare var GoldenLayout: any;
 declare var Highcharts: any;
@@ -62,7 +63,7 @@ export class AssetEpcDashboardComponent implements OnInit {
   pageload: boolean = true;
   //allChartDropdownVlaues: any;
   dashboardName: string;
-  portalName: string = "EPC";
+  portalName: string = "Energy";
   defaultFilterVal: string = "";
   retrievedEPCs = false
   showDataPanel = false;
@@ -77,7 +78,7 @@ export class AssetEpcDashboardComponent implements OnInit {
     private router: Router,
     private eventMangerDashboardService: EventManagerDashboardService,
     private assetAttributeService: AssetAttributeService,
-    
+
   ) { }
 
   ngOnDestroy() {
@@ -108,12 +109,14 @@ export class AssetEpcDashboardComponent implements OnInit {
   }
 
   ngOnInit() {
+
+
     //this.getChart()
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
 
     //update notification on top
     this.helper.updateNotificationOnTop();
-   
+
     setTimeout(() => {
       this.subs.add(
         // get chart data and render in template
@@ -449,7 +452,7 @@ export class AssetEpcDashboardComponent implements OnInit {
               comp.getLineChartData(dataForChart, className, container, state, chartObj);
             });
 
-            
+
             //trigger change event
             if (lineChartFilterData != null && lineChartData.length == 0) {
               $('.' + className).trigger('change');
@@ -1002,7 +1005,7 @@ export class AssetEpcDashboardComponent implements OnInit {
 
   barChartConfiguration(titleText: any, seriesName: string, allowPointSelect: boolean = true, selector: any, data: any, barChartParams: any = null) {
     let color = barChartParams != null ? barChartParams.color : '';
-    //let chartParams =  Object.assign([], barChartParams); 
+    //let chartParams =  Object.assign([], barChartParams);
     if (barChartParams.ddChartID != undefined) {
       barChartParams.seriesId = data.stackedBarChartViewModelList[0].seriesId
     }
@@ -1011,6 +1014,7 @@ export class AssetEpcDashboardComponent implements OnInit {
 
     let comp = this;
     return {
+      useHTML: true,
       chart: {
         type: 'column',
         renderTo: selector,
@@ -1024,18 +1028,40 @@ export class AssetEpcDashboardComponent implements OnInit {
         max: data.categories.length - 1,
         labels: {
           rotation: 90,
-        }
+        },
       },
       yAxis: {
+        useHTML:true,
         min: 0,
         title: {
           text: ''
-        }
+        },
       },
       tooltip: {
         pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b><br/>',
         shared: true
       },
+      //Test code to refer to later
+      // tooltip: {
+      //   // useHTML: true,
+      //   style: {
+      //     padding: 0,``
+      //     pointerEvents: 'auto'
+      //   },
+//         footerFormat:"hello",
+//         formatter: function (tooltip) {
+// var s = '<button onclick="';
+// s+ = 'localStorage.setItem(\u0027ChartParameters\u0027, \u0027' + this.x + '\u0027);'
+          // var s = '<b>' + this.x + this.name + titleText.options.footerFormat + b +'</b><button onclick="localStorage.setItem(\u0027ChartParameters\u0027, \u0027' + this.x + '\u0027);">submit </button>';
+          // $.each(this.points, function (i, point) {
+              // s += '<a href="javascript:AssetEpcRetrieveComponent.prototype.onChange">Visit W3Schools.com!</a><br/><span style="color:' + point.series.color + '">\u25CF</span>\n\ <span (click)="testclick();">Click Me</span> ' + point.series.name + ': ' + point.y;
+              // s += '<br/><span style="color:' + point.series.color + '">\u25CF</span>\n\ ' + point.series.name + ': ' + point.y;
+      //       });
+      //     return s;
+      // },
+        // pointFormat: '<a href="https://www.w3schools.com">Visit W3Schools.com!</a><button onclick="testclick()" >click</button><span (click)="comp.testclick()" style="color:{series.color}">helloe{series.name}</span>: <b>{point.y}</b><br/>',
+        // shared: true,
+      // },
       legend: { enabled: false },
       plotOptions: {
         column: {
@@ -1060,8 +1086,14 @@ export class AssetEpcDashboardComponent implements OnInit {
 
     }
 
+
   }
 
+//Test code
+  // onClickSubmit(toolTipValue) {
+  //   var ss = localStorage.getItem("ChartParameters")
+
+  // }
 
   // group chart
 
@@ -1380,19 +1412,6 @@ export class AssetEpcDashboardComponent implements OnInit {
 
   openDrillDownchart(chartEvent, parentChartObj) {
     if (parentChartObj != null && parentChartObj.ddChartID != undefined) {
-      if (parentChartObj.chartName == "EPC SAP Bands") {
-        this.selectedBarChartXasis = {
-          "ddChartId": parentChartObj.ddChartId != undefined ? parentChartObj.ddChartId : parentChartObj.ddChartID,
-          "parantChartId": parentChartObj.parantChartId != undefined ? parentChartObj.parantChartId : parentChartObj.chartID,
-          "xAxisValue": chartEvent.options.name,
-          "seriesId": chartEvent.options.seriesId,
-          "chartName": parentChartObj.chartName
-        }
-
-        this.gotoAsset(this.selectedBarChartXasis);
-      }
-      else
-      {
         if (parentChartObj.ddChartID != 0) {
           const params = {
             "chartName": `${parentChartObj.chartName} (${chartEvent.options.name})`,
@@ -1404,36 +1423,43 @@ export class AssetEpcDashboardComponent implements OnInit {
             "seriesId": chartEvent.options.seriesId,
             "color": chartEvent.color
           }
-
           this.renderDrillDownChart(chartEvent, params)
-
+        } else {
+          if (parentChartObj.dataSP != "") {
+              this.openGridOnClickOfBarChart(chartEvent, parentChartObj, true);
+          }
         }
-      }
     }
   }
 
 
-  openGridOnClickOfBarChart(chartEvent, parentChartObj) {
-    this.selectedBarChartXasis = {
-      "ddChartId": parentChartObj.ddChartId != undefined ? parentChartObj.ddChartId : parentChartObj.ddChartID,
-      "parantChartId": parentChartObj.parantChartId != undefined ? parentChartObj.parantChartId : parentChartObj.chartID,
-      "xAxisValue": chartEvent.category,
-      "seriesId": parentChartObj.seriesId,
-      "chartName": parentChartObj.chartName
+  openGridOnClickOfBarChart(chartEvent, parentChartObj, fromPieChart:boolean = false) {
+    if (parentChartObj.dataSP != "") {
+      if (fromPieChart) {
+        this.selectedBarChartXasis = {
+          "ddChartId": parentChartObj.ddChartId != undefined ? parentChartObj.ddChartId : parentChartObj.ddChartID,
+          "parantChartId": parentChartObj.parantChartId != undefined ? parentChartObj.parantChartId : parentChartObj.chartID,
+          "xAxisValue": chartEvent.options.name,
+          "seriesId": chartEvent.options.seriesId,
+          "chartName": parentChartObj.chartName
+        }
+      } else {
+          this.selectedBarChartXasis = {
+          "ddChartId": parentChartObj.ddChartId != undefined ? parentChartObj.ddChartId : parentChartObj.ddChartID,
+          "parantChartId": parentChartObj.parantChartId != undefined ? parentChartObj.parantChartId : parentChartObj.chartID,
+          "xAxisValue": chartEvent.category,
+          "seriesId": parentChartObj.seriesId,
+          "chartName": parentChartObj.chartName
+        }
+      }
+        this.openGrid(parentChartObj.chartName);
     }
-
-    if (parentChartObj.chartName == "EPC Status" || parentChartObj.chartName == "EPC SAP Band & Cloned" || parentChartObj.chartName == "EPC SAP Bands") {
-      this.gotoAsset(this.selectedBarChartXasis);
-    } else {
-      this.openGrid(parentChartObj.chartName);
-    }
-    
   }
 
 
   gotoAsset(item: any) {
 
-    let url = `https://apexdevweb.rowanwood.ltd/dev/rowanwood/asset-list`; // for local
+    let url = `<<PortalURL>><<TestText>>/rowanwood/asset-list`; // for local
     if (item.chartName == "EPC SAP Band & Cloned" || item.chartName == "EPC SAP Bands") {
       url += `?sapBand=${encodeURIComponent(item.xAxisValue)}`;
     }

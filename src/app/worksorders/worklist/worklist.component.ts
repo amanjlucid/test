@@ -20,7 +20,7 @@ export class WorklistComponent implements OnInit {
   subs = new SubSink();
   state: State = {
     skip: 0,
-    take: 50,
+    take: 100,
     sort: [],
     group: [],
     filter: {
@@ -76,6 +76,13 @@ export class WorklistComponent implements OnInit {
   public reportingAction = "";
   public selectedXport: SurveyPortalXports;
 
+  contractor : boolean;
+  contract : boolean;
+  concode : string = "";
+  contractorName : string = "";
+  cttsurcde : number = 0;
+  contractName : string = ""
+
 
   constructor(
     private worksOrdersService: WorksOrdersService,
@@ -117,6 +124,37 @@ export class WorklistComponent implements OnInit {
   ngOnInit(): void {
     //update notification on top
     this.helper.updateNotificationOnTop();
+
+    this.activeRoute.queryParams.subscribe(params => {
+      this.contractor = params['Contractor'];
+      this.contract = params['Contract'];
+      const worksorder = params['WorksOrder'];
+      this.chRef.detectChanges();
+      if (this.contractor || this.contract || worksorder) {
+        if (this.contractor) {
+          let worklistcontractor = JSON.parse(localStorage.getItem("worklistcontractor"));
+          this.concode = worklistcontractor.concode;
+          this.contractorName = worklistcontractor.contractorName;
+          this.headerFilters.concode = this.concode;
+        }
+        if (this.contract) {
+          let worklistcontract = JSON.parse(localStorage.getItem("worklistcontract"));
+          this.concode = worklistcontract.concode;
+          this.contractorName = worklistcontract.contractorName;
+          this.cttsurcde = worklistcontract.cttsurcde,
+          this.contractName = worklistcontract.contractName
+          this.headerFilters.concode = this.concode;
+          this.headerFilters.cttsurcde = this.cttsurcde;
+        }
+        if (worksorder) {
+          let wosequence : number = +localStorage.getItem("worklistwosequence");
+          this.headerFilters.wosequence = wosequence;
+        }
+        this.searchGrid()
+      }
+    })
+
+
 
     this.subs.add(
       this.sharedService.worksOrdersAccess.subscribe(
@@ -209,7 +247,7 @@ export class WorklistComponent implements OnInit {
   }
 
   cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited, originalEvent }) {
-    if (originalEvent.ctrlKey == false) {
+    if (originalEvent.ctrlKey == false && originalEvent.shiftKey == false) {
       if (this.mySelection.length > 0) {
         this.mySelection = [this.rowKey(dataItem)];
         this.chRef.detectChanges();
@@ -1027,10 +1065,6 @@ export class WorklistComponent implements OnInit {
       return this.asbestosPortalAccess.includes(val);
     }
     return false;
-  }
-
-  setSeletedRow(item){
-
   }
 
 }

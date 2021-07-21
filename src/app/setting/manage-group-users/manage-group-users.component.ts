@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { SubSink } from 'subsink';
-import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
-import { AlertService, EventManagerService, SettingsService } from '../../_services'
+import { DataResult, process, State, SortDescriptor, distinct } from '@progress/kendo-data-query';
+import { AlertService, EventManagerService, SettingsService, SharedService } from '../../_services'
 import { DataStateChangeEvent, SelectableSettings, PageChangeEvent } from '@progress/kendo-angular-grid';
 import { trim } from 'jquery';
 
@@ -28,7 +28,7 @@ export class ManageGroupUsersComponent implements OnInit {
     take: 25,
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -42,7 +42,7 @@ export class ManageGroupUsersComponent implements OnInit {
     take: 25,
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -72,6 +72,7 @@ export class ManageGroupUsersComponent implements OnInit {
     private chRef: ChangeDetectorRef,
     private eventmanagerService: EventManagerService,
     private settingService: SettingsService,
+    private sharedService: SharedService,
     private alert: AlertService
   ) { }
 
@@ -161,7 +162,6 @@ export class ManageGroupUsersComponent implements OnInit {
   }
 
   cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
-    // console.log(this.mySelection)
     this.selectedAvailableUser = [];
     this.pushClickedData.push({ row: rowIndex, data: dataItem });
     for (let ind of this.mySelection) {
@@ -332,7 +332,17 @@ export class ManageGroupUsersComponent implements OnInit {
     this.closeEditWindow();
   }
 
+  distinctPrimitiveAvailable(fieldName: string): any {
+    return distinct(this.availableUser, fieldName).map(item => {
+      return { val: item[fieldName], text: item[fieldName] }
+    });
+  }
 
+  distinctPrimitive(fieldName: string): any {
+    return distinct(this.includedUser, fieldName).map(item => {
+      return { val: item[fieldName], text: item[fieldName] }
+    });
+  }
 
 
 }

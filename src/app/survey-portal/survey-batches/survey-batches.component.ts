@@ -4,6 +4,8 @@ import { AlertService, LoaderService,  HelperService, SharedService, SurveyPorta
 import { SubSink } from 'subsink';
 import { BatchesListModel, SurveyPortalXports } from '../../_models';
 import { DateFormatPipe } from '../../_pipes/date-format.pipe';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, map, tap } from 'rxjs/operators';
 declare var $: any;
 
 @Component({
@@ -31,6 +33,7 @@ export class SurveyBatchesComponent implements OnInit, OnDestroy {
     'SurveyorNameFilter': '',
     'StatusFilter': '',
     'PageNo': 0,
+    'BatchOnlyFilter': '',
 
    }
     selectedBatchesExport: any[] = [];
@@ -38,12 +41,17 @@ export class SurveyBatchesComponent implements OnInit, OnDestroy {
     supCode: string;
     surveyBatch: string;
     tabWindow = false;
+    title = 'Batches';
+    filtersApplied = '';
     tabName: string = "batches";
     SettingsApplied: boolean = false;
     public openReports = false;
     public reportingAction = "";
     public selectedXport: SurveyPortalXports;
     surveyProjectLabel: string;
+    filterApplied = false;
+    batchSearch$ = new Subject<any>();
+    surveyorSearch$ = new Subject<any>();
 
   constructor(
     private loaderService: LoaderService,
@@ -68,15 +76,52 @@ export class SurveyBatchesComponent implements OnInit, OnDestroy {
     if (sessionStorage.getItem('SurvBatchFilters'))
     {
       this.batchesListItem = JSON.parse(sessionStorage.getItem('SurvBatchFilters'));
+      this.batchesListItem.BatchOnlyFilter = "";
+      this.filterApplied = true;
     }
     else
     {
-      this.batchesListItem.UserId = this.currentUser.userId;
-      this.batchesListItem.SupCode = this.selectedProject.SupCode;
-      this.batchesListItem.SupName = this.selectedProject.SupName;
+      if (sessionStorage.getItem('SurvBatch'))
+      {
+        let SurvBatch = JSON.parse(sessionStorage.getItem('SurvBatch'));
+        this.batchesListItem.BatchOnlyFilter = SurvBatch.BatchName;
+        this.filterApplied = true;
+      }
     }
+    this.batchesListItem.UserId = this.currentUser.userId;
+    this.batchesListItem.SupCode = this.selectedProject.SupCode;
+    this.batchesListItem.SupName = this.selectedProject.SupName;
     this.getSurveyBatches(this.batchesListItem);
     this.surveyProjectLabel = this.batchesListItem.SupCode + ' - ' + this.batchesListItem.SupName;
+
+    this.subs.add(
+      this.batchSearch$
+        .pipe(
+          debounceTime(1000),
+          distinctUntilChanged()
+        ).subscribe((val) => {
+          this.filterTable(val, 'SurveyBatch');
+        })
+    );
+
+    this.subs.add(
+      this.surveyorSearch$
+        .pipe(
+          debounceTime(1000),
+          distinctUntilChanged()
+        ).subscribe((val) => {
+          this.filterTable(val, 'SurveyorName');
+        })
+    );
+
+  }
+
+  triggerBatchSearch(value) {
+    this.batchSearch$.next(value);
+  }
+
+  triggerSurveyorSearch(value) {
+    this.surveyorSearch$.next(value);
   }
 
   onScroll(event)
@@ -108,6 +153,10 @@ export class SurveyBatchesComponent implements OnInit, OnDestroy {
               this.batchesLists = this.batchesLists.concat(tempData);
               this.batchesLists.map(item => item.viewKey)
               .filter((value, index, self) => self.indexOf(value.viewKey) === index);
+            }
+            else
+            {
+              this.loaderService.hide();
             }
         },
         error => {
@@ -169,7 +218,7 @@ doubleclick(rowItem)
 
     sessionStorage.removeItem('SurvBatch');
 
-    let SurvBatch = {SupCode: batch.supCode, SupName: batch.supName, BatchName: batch.surveyBatch, SubID: batch.subID, SubArcID: batch.subArcID};
+    let SurvBatch = {SupCode: this.batchesListItem.SupCode, SupName: this.batchesListItem.SupName, BatchName: batch.surveyBatch, SubID: batch.subID, SubArcID: batch.subArcID};
     sessionStorage.setItem('SurvBatch', JSON.stringify(SurvBatch));
 
   }
@@ -190,8 +239,15 @@ doubleclick(rowItem)
                   s.surveyUploadDateTime = (s.surveyUploadDateTime != "") ? (s.surveyUploadDateTime != "1753-01-01T00:00:00") ? DateFormatPipe.prototype.transform(s.surveyUploadDateTime, 'DD-MMM-YYYY HH:mm:SS'): '' : s.surveyUploadDateTime;
                 });
                 this.batchesLists = tempData;
+                this.filtersApplied = this.batchesLists[0].filtersApplied;
                 this.checkRendertable();
             	}
+              else{
+                if(this.filterApplied)
+                {
+                  this.filtersApplied = "No records for this filter";
+                };
+              }
             	this.loaderService.pageHide();
 	      }
         else
@@ -209,6 +265,10 @@ doubleclick(rowItem)
   }
 
   filterTable(value, column) {
+    this.batchesListItem.BatchOnlyFilter = "";
+    this.filterApplied = true;
+    sessionStorage.removeItem('SurvBatch');
+    sessionStorage.removeItem('SurvBatchFilters')
      this.batchesListItem.PageNo = 0;
     if (column == 'Status') {
       this.batchesListItem.StatusFilter = value;
@@ -250,6 +310,9 @@ doubleclick(rowItem)
     this.batchesListItem.OrderBy = 'SurveyBatch';
     this.batchesListItem.OrderType = 'Asc';
     this.batchesListItem.PageNo = 0;
+    this.batchesListItem.BatchOnlyFilter = "";
+    this.filterApplied = false;
+    this.filtersApplied = '';
 
   }
 
@@ -378,7 +441,7 @@ doubleclick(rowItem)
     {
       let params: string[] = ['Project', this.selectedBatch.supCode, 'Batch', this.selectedBatch.subID];
       this.selectedXport = {'XportID' : XportID,
-      'ReportTitle':ReportTitle + ': ' + this.selectedBatch.supName,
+      'ReportTitle':ReportTitle + ': ' + this.selectedBatch.surveyBatch,
       'Params': params,
       }
       this.reportingAction = 'runSurveyPortalXports';

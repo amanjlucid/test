@@ -26,7 +26,7 @@ export class SetUserCategoryComponent implements OnInit {
       filters: []
     }
   }
-  title = 'User Categories';
+  title = 'Custom Categories';
   gridView: DataResult;
   allowUnsort = true;
   multiple = false;

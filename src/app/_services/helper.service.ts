@@ -3,9 +3,10 @@ import * as FileSaver from 'file-saver';
 import * as XLSX from 'xlsx';
 const EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
 const EXCEL_EXTENSION = '.xlsx';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { SharedService } from '../_services/shared.service';
 import * as moment from "moment";
+import { anyChanged } from '@progress/kendo-angular-grid/dist/es2015/utils';
 import { SubSink } from 'subsink';
 import { EventService } from './event.service';
 import { WorksorderManagementService } from './works-order/worksorder-management.service';
@@ -26,8 +27,8 @@ export class HelperService {
 
     constructor(
         private sharedService: SharedService,
-        private notificationService: EventService,
         private worksorderManagementService: WorksorderManagementService,
+        private notificationService: EventService
     ) { }
 
     public exportAsExcelFile(json: any[], excelFileName: string, labels): void {
@@ -195,8 +196,6 @@ export class HelperService {
     numberWithCommas(x) {
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
-
-
 
     dateFormat(val) {
         if (val != "" && val != undefined) {
@@ -505,6 +504,17 @@ export class HelperService {
             }
         }
         return "";
+    }
+
+    ngbDatepickerFormatFromDate(val) {
+        if (val.getFullYear() <= 1753) {
+            return "";
+        }
+        return {
+            "day": val.getDate(),
+            "year": val.getFullYear(),
+            "month": val.getMonth() + 1
+        }
     }
 
     getFileSizeUnit(size) {

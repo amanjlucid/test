@@ -28,7 +28,7 @@ export class UserTaskDataComponent implements OnInit {
     sort: [],
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -42,6 +42,7 @@ export class UserTaskDataComponent implements OnInit {
   mySelection: number[] = [];
   currentUser: any;
   loadedData: any = [];
+  SiteURL: string = appConfig.appUrl;
   public selectableSettings: SelectableSettings;
 
   constructor(
@@ -138,15 +139,15 @@ export class UserTaskDataComponent implements OnInit {
   filterChange(filter: any): void {
     this.state.filter = filter;
 
-    // this.filters = [];
+    this.filters = [];
 
     if (this.state.filter) {
       this.headerFilters.IsFilter = true;
       if (this.state.filter.filters.length > 0) {
+        this.resetGridFilter()
         let distincFitler = this.changeFilterState(this.state.filter.filters);
         distincFitler.then(filter => {
           if (filter.length > 0) {
-            this.resetGridFilter()
             for (let ob of filter) {
               this.setGridFilter(ob);
             }
@@ -181,6 +182,14 @@ export class UserTaskDataComponent implements OnInit {
       }
       return this.filters
     })
+  }
+
+
+  searchGrid() {
+    this.headerFilters.CurrentPage = 0;
+    this.state.skip = 0;
+    this.stateChange.next(this.headerFilters);
+
   }
 
   containsFilterObject(obj, list) {
@@ -319,12 +328,16 @@ export class UserTaskDataComponent implements OnInit {
 
   }
 
-
-  searchGrid() {
-    this.headerFilters.CurrentPage = 0;
-    this.state.skip = 0;
-    this.stateChange.next(this.headerFilters);
+  canFilter(col)
+  {
+    if (col == "Sequence") {
+      return false;
+    } else {
+      return true;
+    }
   }
+
+
 
   onChange(eve) {
     if (eve == "A") {
@@ -571,6 +584,7 @@ export class UserTaskDataComponent implements OnInit {
 
   showAssets() {
     let findAssetKey = this.columns.find(x => x.val.toLowerCase() == "asset");
+
     if (findAssetKey) {
       const host = window.location.hostname;
 
@@ -586,53 +600,16 @@ export class UserTaskDataComponent implements OnInit {
               if (selectedData.length > 0) {
                 let assetIds = selectedData.map(x => x[findAssetKey.key])
                 localStorage.setItem('assetList', btoa(assetIds.toString()));
-                let siteUrl = `https://apexdevweb.rowanwood.ltd/dev/rowanwood/asset-list?taskData=true`
-                window.open(siteUrl, "_blank");
+                window.open(this.SiteURL + "/asset-list?taskData=true", "_blank");
               }
             }
           }
         )
-        // this.eveneManagerService.getListOfEventDataByEventDataSequence(params).subscribe(
-        //   selectData => {
-        //     if (selectData.isSuccess) {
-        //       let selectedData = selectData.data;
-        //       if (selectedData.length > 0) {
-        //         let assetIds = selectedData.map(x => x[findAssetKey.key])
-        //         localStorage.setItem('assetList', btoa(assetIds.toString()));
-        //         siteUrl = `${siteUrl}/asset-list?taskData=true`
-        //         // window.open(siteUrl, "_blank");
-        //         console.log(assetIds);
-        //       }
-        //     }
-        //   }
-        // )
+
       )
 
     }
 
-    // this.mySelection = this.mySelection.filter((val, ind, self) => self.indexOf(val) == ind)//get unique value
-    // const params = {
-    //   EventSequence: this.selectedEvent.eventSequence,
-    //   EventDataSequence: this.mySelection
-    // }
-
-
-
-
-
-
-    // siteUrl = "http://104.40.138.8/rowanwood"
-    // if (this.mySelection.length == 1) {
-    //   let findRow = this.loadedData.find(x => x.eventsequence == this.selectedEvent.eventSequence && this.mySelection.indexOf(x.eventdatasequence) !== -1)
-    //   let findAssetKey = this.columns.find(x => x.val == "Asset");
-    //   if (findRow) {
-    //     siteUrl = `${siteUrl}/asset-list?assetid=${findRow[findAssetKey.key]}`
-    //   }
-    // } else {
-    //   return
-    // }
-
-    // window.open(siteUrl, "_blank");
 
   }
 

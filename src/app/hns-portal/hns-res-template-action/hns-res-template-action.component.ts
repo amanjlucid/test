@@ -164,7 +164,7 @@ export class HnsResTemplateActionComponent implements OnInit {
       this.hnsService.deleteTemplateAction(this.selectedTemplateAction).subscribe(
         data => {
           if (data.isSuccess) {
-            this.alertService.success("Question action deleted successfully.")
+            this.alertService.success("Template action successfully deleted")
             this.getTemplateAction(this.templateActionModel);
           } else {
             this.alertService.success(data.message);

@@ -12,6 +12,7 @@ import { NotificationRoutingModule } from './notification-routnig.module';
 import { AddNotificationComponent } from '../add-notification/add-notification.component';
 import { ManageEmailsComponent } from '../manage-emails/manage-emails.component';
 import { ManageGroupUsersComponent } from '../manage-group-users/manage-group-users.component';
+import { SharedModule } from '../../shared.module';
 
 @NgModule({
   imports: [
@@ -24,7 +25,8 @@ import { ManageGroupUsersComponent } from '../manage-group-users/manage-group-us
     InputsModule,
     DialogsModule,
     DropDownListModule,
-    PopupModule
+    PopupModule,
+    SharedModule 
   ],
   declarations: [NotificationComponent, AddNotificationComponent, ManageEmailsComponent, ManageGroupUsersComponent]
 })

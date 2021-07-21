@@ -197,7 +197,7 @@
             </div>
           </div>
 
-          
+
           <div class="col-md-10 offset-md-2" *ngIf="formErrors.priority || formErrors.targetDate">
             <div class="row">
               <div class="col-md-6">
@@ -282,7 +282,7 @@
               <div class="col-md-1"></div>
               <div class="col-md-6  displayInherit">
                 <label for="" class="col-form-label foorLbl fixLbl">Remedial Cost</label>
-                <input type="text" class="form-control locationInp" (keypress)="ValidateNumberOnly($event)"
+                <input type="number" class="form-control locationInp" (keypress)="ValidateNumberOnly($event)"
                   formControlName="remedialCost">
                 <i title="Cost of resolving issue." class="fas fa-info-circle d-block inputI"></i>
               </div>
@@ -320,7 +320,7 @@
               <div class="col-md-1"></div>
               <div class="col-md-6 displayInherit">
                 <label for="" class="col-form-label foorLbl fixLbl">Date</label>
-                <input [ngClass]="{ 'is-invalid': formErrors.date }" type="text" class="form-control locationInp" formControlName="date" placeholder="Enter Date"
+                <input [ngClass]="{ 'is-invalid': formErrors.date }" type="text" (dateSelect)="dateChange()" (keyup)="dateChange()" class="form-control locationInp" formControlName="date" placeholder="Enter Date"
                   (click)="openCalendar(d)" [minDate]="{year: 1800, month: 1, day: 1}" ngbDatepicker #d="ngbDatepicker"
                   autocomplete="off">
                 <i title="Cost of resolving issue." class="fas fa-info-circle d-block inputI"></i>

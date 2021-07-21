@@ -80,6 +80,11 @@
                         [ngClass]="{'disabled' : disableMainActions('release')}">
                         Release</a>
 
+                    <a *ngIf="woMenuBtnSecurityAccess('Reset Asset')" class="dropdown-item"
+                        (click)="setAsset('Reset')" href="javascript:void(0)"
+                        [ngClass]="{'disabled' : disableMainActions('reset')}">
+                        Reset</a>
+
                     <a *ngIf="woMenuBtnSecurityAccess('Issue Asset')" class="dropdown-item" (click)="setAsset('ISSUE')"
                         href="javascript:void(0)" [ngClass]="{'disabled' : disableMainActions('issue')}">
                         Issue</a>
@@ -231,6 +236,11 @@
                     <a class="dropdown-item" [ngClass]="{'disabled' : disableMainActions('LETTER')}"
                         *ngIf="woGlobalSecurityAccess('Report Checklist')" (click)="mergeMailMultiple()"
                         href="javascript:void(0)">Letter</a>
+ 
+                   <a  class="dropdown-item"
+                    [ngClass]="{'disabled' : disableMainActions('FEE')}"
+                    *ngIf="woMenuBtnSecurityAccess('Edit Checklist Fee')"
+                    (click)="updateCheckListFee('multiple')" href="javascript:void(0)">Edit Checklist Fee</a>
 
                     <div [ngClass]="{'disabled' : disableMainActions('comments')}" class="dropdown-toggle"
                         *ngIf="woMenuBtnSecurityAccess('Comments')">
@@ -565,6 +575,10 @@
                                     [ngClass]="{'disabled' :disableBtnsIndividualMenu('customerSurvey', dataItem)}"
                                     (click)="openCustomerSurvey()" href="javascript:void(0)">Customer Survey</a>
 
+                           <a  class="dropdown-item"
+                                    [ngClass]="{'disabled' : disableMainActions('FEE')}"
+                                    *ngIf="woMenuBtnSecurityAccess('Edit Checklist Fee')"
+                                    (click)="updateCheckListFee('single', dataItem)" href="javascript:void(0)">Edit Checklist Fee</a>
 
                                 <a class="dropdown-item"
                                     *ngIf="woGlobalSecurityAccess('Report Checklist') && dataItem.wocheckspeciaL1 == 'LETTER'"
@@ -803,5 +817,9 @@
         [singleWorkOrderInp]="worksOrderData" [singleWorkOrderAssetInp]="selectedChildRow"
         [openedFrom]="programmeLogFor" (ProgrammeLogWindowEvent)="closeProgrammeLogWindow($event)">
     </app-programme-log>
+
+    <app-wo-checklist-fee *ngIf="ShowEditCheckListFeeWindow"  [ShowEditCheckListFeeWindow]="ShowEditCheckListFeeWindow"
+    [EditCheckListFeeItem]="EditCheckListFeeItem" (closeEditFeeWindowEvent) ="closeEditFeeWindow($event)"  (EditCheckListFeeItemOut) ="editCheckListFeeItemOut($event)" >
+    </app-wo-checklist-fee>
 
 </kendo-window>

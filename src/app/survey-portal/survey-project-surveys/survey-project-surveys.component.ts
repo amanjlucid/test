@@ -4,6 +4,8 @@ import { AlertService, LoaderService,  HelperService, SharedService, SurveyPorta
 import { SubSink } from 'subsink';
 import { ProjectSurveysListModel, SurveyPortalXports } from '../../_models';
 import { DateFormatPipe } from '../../_pipes/date-format.pipe';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, map, tap } from 'rxjs/operators';
 declare var $: any;
 
 @Component({
@@ -26,8 +28,8 @@ export class SurveyProjectSurveysComponent implements OnInit {
     'OrderBy': 'Asset',
     'OrderType': 'Asc',
     'UserId': '',
-    'SupCode': 'AAAAAWEB',
-    'SupName': 'Webinar Survey Project',
+    'SupCode': '',
+    'SupName': '',
     'StatusFilter': '',
     'AssetTypeFilter': '',
     'AssetFilter': '',
@@ -48,6 +50,12 @@ export class SurveyProjectSurveysComponent implements OnInit {
     public selectedXport: SurveyPortalXports;
     params: string[];
     assetTypes: any;
+    title = 'Project Surveys';
+    filtersApplied = '';
+    filterApplied = false;
+    assetSearch$ = new Subject<any>();
+    addressSearch$ = new Subject<any>();
+    srvCodeSearch$ = new Subject<any>();
 
   constructor(
     private loaderService: LoaderService,
@@ -69,8 +77,8 @@ export class SurveyProjectSurveysComponent implements OnInit {
     this.loaderService.pageShow();
     this.subs.add(this.sharedService.surveyPortalSecurityList.subscribe(data => { this.securityFunctionAccess = data }));
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    this.projectSurveysListItem.UserId = this.currentUser.userId;
     this.selectedProject = JSON.parse(sessionStorage.getItem('SurvProj'));
+    this.projectSurveysListItem.UserId = this.currentUser.userId;
     this.projectSurveysListItem.SupCode = this.selectedProject.SupCode;
     this.projectSurveysListItem.SupName = this.selectedProject.SupName;
     this.projectSurveysListItem.OrderBy = "Asset";
@@ -78,6 +86,49 @@ export class SurveyProjectSurveysComponent implements OnInit {
     this.getProjectSurveys(this.projectSurveysListItem);
     this.surveyProjectLabel = this.projectSurveysListItem.SupCode + ' - ' + this.projectSurveysListItem.SupName;
     this.getAssetTypes();
+
+    this.subs.add(
+      this.assetSearch$
+        .pipe(
+          debounceTime(1000),
+          distinctUntilChanged()
+        ).subscribe((val) => {
+          this.filterTable(val, 'Asset');
+        })
+    );
+
+    this.subs.add(
+      this.addressSearch$
+        .pipe(
+          debounceTime(1000),
+          distinctUntilChanged()
+        ).subscribe((val) => {
+          this.filterTable(val, 'Address');
+        })
+    );
+
+    this.subs.add(
+      this.srvCodeSearch$
+        .pipe(
+          debounceTime(1000),
+          distinctUntilChanged()
+        ).subscribe((val) => {
+          this.filterTable(val, 'SrvCode');
+        })
+    );
+
+  }
+
+  triggerAssetSearch(value) {
+    this.assetSearch$.next(value);
+  }
+
+  triggerAddressSearch(value) {
+    this.addressSearch$.next(value);
+  }
+
+  triggerSrvCodeSearch(value) {
+    this.srvCodeSearch$.next(value);
   }
 
   onScroll(event)
@@ -98,13 +149,17 @@ export class SurveyProjectSurveysComponent implements OnInit {
       this.projectSurveysListItem.PageNo = this.projectSurveysListItem.PageNo + 1;
       this.surveyPortalService.GetSurveyProjectsAssetsList(this.projectSurveysListItem).subscribe(
         data => {
-            if (data.data.data.length != undefined && data.length > 0)
+          if (data.data.length != undefined && data.data.length > 0)
             {
               this.scrollLoad = true;
               let tempData = data.data;
               this.projectSurveysLists = this.projectSurveysLists.concat(tempData);
               this.projectSurveysLists.map(item => item.viewKey)
-                .filter((value, index, self) => self.indexOf(value.viewKey) === index);
+              .filter((value, index, self) => self.indexOf(value.viewKey) === index);
+            }
+            else
+            {
+              this.loaderService.hide();
             }
         },
         error => {
@@ -169,7 +224,14 @@ export class SurveyProjectSurveysComponent implements OnInit {
           {
             this.scrollLoad = true;
             this.projectSurveysLists = data.data;
+            this.filtersApplied = this.projectSurveysLists[0].filtersApplied;
             this.checkRendertable();
+          }
+          else{
+            if(this.filterApplied)
+            {
+              this.filtersApplied = "No records for this filter";
+            };
           }
           this.loaderService.pageHide();
         }
@@ -230,8 +292,7 @@ export class SurveyProjectSurveysComponent implements OnInit {
     if (column == 'InSurvey') {
       this.projectSurveysListItem.InSurveysFilter = (this.projectSurveysListItem.InSurveysFilter == 'N') ? '' : 'N';
     }
-
-
+    this.filterApplied = true;
     this.getProjectSurveys(this.projectSurveysListItem);
 
   }
@@ -267,6 +328,8 @@ export class SurveyProjectSurveysComponent implements OnInit {
     this.projectSurveysListItem.OrderBy = 'Asset';
     this.projectSurveysListItem.OrderType = 'Asc';
     this.projectSurveysListItem.PageNo = 0;
+    this.filterApplied = false;
+    this.filtersApplied = '';
 
   }
 

@@ -6,8 +6,10 @@
 
     <div class=" row col-md-12 p-0 mx-0 my-4">
         <div class="col-md-2"></div>
-        <kendo-maskedtextbox class="col-md-10 text-right p-0 m-0"  #rRN mask="0000-0000-0000-0000-0000" 
-            [(ngModel)]="rRNText" (valueChange)="onChange($event)" prompt="#" [includeLiterals]=true > </kendo-maskedtextbox>
+        <kendo-textbox class="col-md-10 text-right p-0 m-0" #rRN maxlength="24" placeholder="####-####-####-####-####"
+            [(ngModel)]="rRNText" (valueChange)="onChange($event)"> </kendo-textbox>
+
+                  <!--mask="0000-0000-0000-0000-0000" prompt="#"   -->  
     </div>
 
 

@@ -88,6 +88,37 @@ export class VariationFeesComponent implements OnInit {
     this.subs.unsubscribe();
   }
 
+  validateForProcess(dataItem, process){
+
+    let res = true
+    const params = {
+      WOSEQUENCE: dataItem.wosequence,
+      WOISEQUENCE: dataItem.woisequence,
+      Process: process,
+      UserID: this.currentUser.userId,
+    }
+
+    this.subs.add(
+      this.workOrderProgrammeService.worksOrdersCheckVariationValidForProcess(params).subscribe(
+        data => {
+          if (data.isSuccess) {
+            if(process == 'ChangeFee'){
+              this.openChangeFeeMethod(dataItem)
+            } else if (process == 'RemoveFee'){
+              this.removeFeeVariation(dataItem)
+            } else if (process == ''){
+              this.alertService.error('Process Not Validated')
+            }
+          } else {
+            this.alertService.error(data.message)
+          }
+        }, err => this.alertService.error(err)
+      )
+    )
+
+
+  }
+
 
   rowCallback(context: RowClassArgs) {
     const { woacpendingfee, woiadcomment } = context.dataItem;
@@ -156,6 +187,7 @@ export class VariationFeesComponent implements OnInit {
     this.selectedSingleFees = item;
     $('.variationFeeOvrlay').addClass('ovrlay');
     this.openChangeFee = true;
+    this.chRef.detectChanges();
   }
 
   closeVariationFeeMethod(eve) {

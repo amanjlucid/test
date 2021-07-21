@@ -2,8 +2,10 @@ import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { PageChangeEvent, RowArgs } from '@progress/kendo-angular-grid';
-import { AlertService, ConfirmationDialogService, HelperService, SharedService, WorksorderManagementService, WorksorderReportService } from '../../_services'
+import { AlertService, ConfirmationDialogService, HelperService, SharedService, WorksorderManagementService, WorksorderReportService, AuthenticationService } from '../../_services'
+import { CurrencyPipe } from '@angular/common';
 import { combineLatest, forkJoin } from 'rxjs';
+import { Router, ActivatedRoute, RouterEvent } from '@angular/router';
 
 
 @Component({
@@ -80,6 +82,11 @@ export class WorksordersAssetChecklistComponent implements OnInit {
   commentChecklist;
   assetID: string;
   displayResidentDetails: boolean = false;
+  residentInfoOK: boolean = false;
+  residentInfoMessage: string = 'Resident Information unavailable';
+  EditCheckListFeeItem: any;
+  ShowEditCheckListFeeWindow: boolean = false;
+  EditCheckListFeeWindowSubmitted: boolean = false;
 
   constructor(
     private chRef: ChangeDetectorRef,
@@ -89,9 +96,24 @@ export class WorksordersAssetChecklistComponent implements OnInit {
     private helperService: HelperService,
     private sharedService: SharedService,
     private worksOrderReportService: WorksorderReportService,
+    private currencyPipe: CurrencyPipe,
+    private autService: AuthenticationService,
+    private router: Router,
   ) { }
 
   ngOnInit(): void {
+
+    this.autService.validateAssetIDDeepLinkParameters(this.currentUser.userId, this.selectedChildRow.assid).subscribe(
+      data => {
+        if (data.validated) {
+          this.residentInfoOK = true;
+        } else {
+          this.residentInfoOK = false;
+          this.residentInfoMessage = `${data.errorCode} : ${data.errorMessage}`;
+        }
+      }
+    )
+    // console.log(this.selectedChildRow);
     //subscribe for work order security access
     this.subs.add(
       combineLatest([
@@ -199,7 +221,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
 
   cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited, originalEvent }) {
     this.selectedChecklistsingleItem = dataItem;
-    if (originalEvent.ctrlKey == false) {
+    if (originalEvent.ctrlKey == false && originalEvent.shiftKey == false) {
       if (this.mySelection.length > 0) {
         this.mySelection = [dataItem.wochecksurcde];
       }
@@ -772,6 +794,9 @@ export class WorksordersAssetChecklistComponent implements OnInit {
     } else if (type == "ISSUE") {
       params.UserName = this.currentUser.userName;
       callApi = this.worksorderManagementService.worksOrderIssueAsset(params);
+    } else if (type == "Reset") {
+      params.UserName = this.currentUser.userName;
+      callApi = this.worksorderManagementService.worksOrderResetAsset(params);
     }
 
     //#################
@@ -1011,7 +1036,21 @@ export class WorksordersAssetChecklistComponent implements OnInit {
       }).catch(() => console.log('Attribute dismissed the dialog.'));
   }
 
+	confirmationForEditChecklistFee(res) {
 
+    $('.k-window').css({ 'z-index': 1000 });
+    this.confirmationDialogService.confirm('Please confirm..', `${res.pRETURNMESSAGE}`)
+      .then((confirmed) => {
+        if (confirmed) {
+          if (res.pRETURNSTATUS == 'E') {
+            return
+          }
+          this.completeUpdateChecklistFee('P');
+        }
+
+      })
+      .catch(() => console.log('Attribute dismissed the dialog.'));
+  }
 
   setStatusMul(type, checkOrProcess = 'C') {
     this.actionType = 'multiple';
@@ -1218,11 +1257,16 @@ export class WorksordersAssetChecklistComponent implements OnInit {
       return this.workorderAsset?.woassstatus != 'New'
     }
 
+
+    if (type == "FEE") {
+      return this.workorderAsset?.woassstatus != 'New'
+    }
+
     if (type == "release") {
       return this.workorderAsset?.woassstatus != 'New'
     }
 
-    if (type == "issue") {
+	if (type == "issue" || type == "reset") {
       return this.workorderAsset?.woassstatus != 'Pending'
     }
 
@@ -1442,6 +1486,99 @@ export class WorksordersAssetChecklistComponent implements OnInit {
     this.ProgrammeLogWindow = eve;
   }
 
+  openEditFeeWindow() {
+    this.ShowEditCheckListFeeWindow = true;
+    $('.checklistOverlay').addClass('ovrlay');
+  }
+
+  closeEditFeeWindow(eve) {
+    this.EditCheckListFeeWindowSubmitted = eve;
+    this.ShowEditCheckListFeeWindow = false;
+    $('.checklistOverlay').removeClass('ovrlay');
+  }
+
+  editCheckListFeeItemOut(eve) {
+    this.EditCheckListFeeItem = eve;
+    if (this.EditCheckListFeeWindowSubmitted){
+      this.completeUpdateChecklistFee('C')
+    }
+  }
+
+  updateCheckListFee(type, item) {
+
+    let params: any = {}
+    let ASSID_STAGESURCDE_CHECKSURCDE = [];
+
+    if(type == 'single'){
+      ASSID_STAGESURCDE_CHECKSURCDE.push(item.assid)
+      ASSID_STAGESURCDE_CHECKSURCDE.push(item.wostagesurcde)
+      ASSID_STAGESURCDE_CHECKSURCDE.push(item.wochecksurcde)
+      params.FeeValue = item.woacforecastfee;
+      params.Title = item.wocheckname;
+    }
+    else{
+
+      if (this.mySelection.length == 0) {
+        this.alertService.error("Please select some checklist items")
+      }
+      let filterChecklist = this.assetCheckListData.filter(x => this.mySelection.includes(x.wochecksurcde));
+
+      if (filterChecklist.length == 0) {
+        this.alertService.error("Please select some valid checklist items")
+      }
+
+      for (const checklist of filterChecklist) {
+        ASSID_STAGESURCDE_CHECKSURCDE.push(checklist.assid)
+        ASSID_STAGESURCDE_CHECKSURCDE.push(checklist.wostagesurcde)
+        ASSID_STAGESURCDE_CHECKSURCDE.push(checklist.wochecksurcde)
+      }
+      if (filterChecklist.length == 1) {
+        params.FeeValue = filterChecklist[0].woacforecastfee;
+        params.Title = filterChecklist[0].wocheckname;
+      }else{
+        params.FeeValue = 0;
+        params.Title = 'multiple items';
+      }
+    }
+    params.WOSEQUENCE = this.selectedChecklistsingleItem.wosequence;
+    params.WOPSEQUENCE = this.selectedChecklistsingleItem.wopsequence;
+    params.ASSID_STAGESURCDE_CHECKSURCDE = ASSID_STAGESURCDE_CHECKSURCDE;
+    params.strUserId = this.currentUser.userId;
+    params.strCheckOrProcess = 'C';
+    params.strReason = '';
+    params.Submitted = false;
+    this.EditCheckListFeeItem = params;
+    this.openEditFeeWindow()
+
+  }
+
+  completeUpdateChecklistFee(checkOrProcess)
+  {
+    let params = this.EditCheckListFeeItem;
+    params.strCheckOrProcess = checkOrProcess;
+    this.subs.add(
+      this.worksorderManagementService.worksOrderUpdateCheckListFee(params).subscribe(
+        data => {
+          let resp: any;
+          if (data.data[0] == undefined) {
+            resp = data.data;
+          } else {
+            resp = data.data[0];
+          }
+          if (checkOrProcess == "C" && (resp.pRETURNSTATUS == "E" || resp.pRETURNSTATUS == "S")) {
+            this.confirmationForEditChecklistFee(resp)
+          } else {
+            this.alertService.success(resp.pRETURNMESSAGE)
+            this.worksOrderDetailPageData();
+            this.selectedChecklistsingleItem = undefined
+            this.chRef.detectChanges();
+          }
+        }
+      )
+    )
+
+  }
+
   openCustomerSurvey() {
     this.showCustomerSurveyWindow = true;
     $('.checklistOverlay').addClass('ovrlay');
@@ -1601,9 +1738,14 @@ export class WorksordersAssetChecklistComponent implements OnInit {
 
 
   openResidentDetails() {
-    this.assetID = this.selectedChildRow.assid;
-    this.displayResidentDetails = true;
-    $('.checklistOverlay').addClass('ovrlay');
+    if (this.residentInfoOK) {
+          this.assetID = this.selectedChildRow.assid;
+        this.displayResidentDetails = true;
+        $('.checklistOverlay').addClass('ovrlay');
+    } else {
+      this.alertService.error(this.residentInfoMessage);
+    }
+
   }
 
   closeResidentInfoDetailsWindow(eve) {

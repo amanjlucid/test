@@ -32,6 +32,7 @@ export class UserEventTaskDetailsComponent implements OnInit {
 
     this.selectedEventList = Object.assign([], this.selectedEvent);
     this.selectedEvent = this.selectedEvent[0]
+    this.selectedEvent.eventViewDate = '1753-01-01T00:00:00';
     this.comments = this.selectedEvent.eventComments;
 
     this.markViewd(this.selectedEvent.eventSequence, this.currentUser.userId);
@@ -62,7 +63,14 @@ export class UserEventTaskDetailsComponent implements OnInit {
     this.subs.add(
       this.eventManagerService.getListOfUserEventBySequence(seq, userId).subscribe(
         data => {
-          // console.log(data);
+          if (data.isSuccess && data.data) {
+            let tempData = data.data;
+            if(tempData.length > 0)
+            { tempData.map(s => {
+                this.selectedEvent.eventViewDate = s.eventViewDate;
+              });
+            }
+          }
         }
       )
     )
@@ -72,7 +80,7 @@ export class UserEventTaskDetailsComponent implements OnInit {
   processedEvent(obj) {
     const a = (obj.eventProcessedCount / obj.eventRowCount) * 100;
     return Math.round(a);
-    //((dataItem.eventProcessedCount/dataItem.eventRowCount) * 100) | roundOff 
+    //((dataItem.eventProcessedCount/dataItem.eventRowCount) * 100) | roundOff
   }
 
   saveComment() {

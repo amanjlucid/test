@@ -131,7 +131,7 @@ export class HnsDefinitionQuestionComponent implements OnInit {
         this.quesType = "3";
       }
 
-      
+
       this.definitionQuesForm.patchValue({
         question: this.selectedNode.hasquestiontext,
         questionCode: this.selectedNode.hasquestioncode,
@@ -351,8 +351,13 @@ export class HnsDefinitionQuestionComponent implements OnInit {
   onSubmit(createAnother = null) {
     if (this.defGrpFormMode == "change" || this.defGrpFormMode == "new") {
       this.submitted = true;
-      this.formErrorObject(); // empty form error 
+      this.formErrorObject(); // empty form error
       this.logValidationErrors(this.definitionQuesForm);
+
+      let updateMessage = 'updated'
+      if (this.defGrpFormMode == "new"){
+        updateMessage = 'added'
+      }
 
       if (this.definitionQuesForm.invalid) {
         return;
@@ -429,6 +434,7 @@ export class HnsDefinitionQuestionComponent implements OnInit {
               data => {
 
                 if (data.isSuccess) {
+                  this.alertService.success('Definition Question successfully ' +  updateMessage);
                   if (createAnother != null) {
                     this.definitionQuesForm.reset();
                     this.datatype = "C";

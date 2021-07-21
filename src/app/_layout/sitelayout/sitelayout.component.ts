@@ -3,7 +3,7 @@ import { Subject, timer, Subscription } from 'rxjs';
 import { takeUntil, take } from 'rxjs/operators';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { SubSink } from 'subsink';
-import { AuthenticationService, EventService, AssetAttributeService, SharedService, FunctionSecurityService, SettingsService } from '../../_services';
+import { AlertService, AuthenticationService, EventService, AssetAttributeService, SharedService, FunctionSecurityService, SettingsService, HelperService } from '../../_services';
 import { appConfig } from '../../app.config';
 declare var $: any;
 
@@ -37,12 +37,12 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
   tasksPortalPermissions: any = [];
   reporterPortalPermissions: any = [];
   apexDashboardPermission: any = [];
-  SurveyPortalPermissions: any = [];
+  SurveyPortalPermissions:any = [];
   BatchesLink: string = '';
   BatchSurveysLink: string = '';
   BatchesLinkColor: string = 'Yellow';
   ProjectSurveysLink: string = '';
-  // underDevelopment: boolean = true;
+  SiteURL: string = appConfig.appUrl;
   silverLightMenus: any = [
     {
       menuName: "Health & Safety",
@@ -61,7 +61,7 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
     },
     {
       menuName: "Works Orders",
-      silverLightLink: `${appConfig.silverLightUrl}/WorksOrdersPortal`,
+      silverLightLink: `${appConfig.silverLightUrl}/WorksOrders`,
       grpPermissionName: "Works Order Portal Access",
     }
   ];
@@ -76,7 +76,9 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
     private assetService: AssetAttributeService,
     private sharedServie: SharedService,
     private functionSecurity: FunctionSecurityService,
-    private settingService: SettingsService
+    private alertService: AlertService,
+    private settingService: SettingsService,
+    private helperService: HelperService
   ) {
     this.router.events.subscribe((ev) => {
       if (ev instanceof NavigationEnd) {
@@ -127,7 +129,6 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
     this.reporterPortalAccess();
     this.getWorksOrdersAccess();
     this.SurveyPortalAccess();
-
     this.subs.add(
       this.sharedServie.servicePortalObs.subscribe(data => { this.servicePortalAccess = data; })
     )
@@ -137,17 +138,33 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
     )
 
   }
+  ClearProjSurv()
+  {
+    if (sessionStorage.getItem('SurveyAccess'))
+    {
 
-  checkLinkEnabled(divValue: string, linkValue: string): Boolean {
+    }
+    else
+    {
+      sessionStorage.removeItem('SurvProj');
+      sessionStorage.removeItem('SurvBatch');
+      sessionStorage.removeItem('SurvBatchFilters');
+    }
+  }
+
+  checkLinkEnabled(divValue: string, linkValue: string): Boolean
+  {
     let linkExists = false;
-    if (sessionStorage.getItem(linkValue)) {
-      linkExists = true;
-    }
+    if (sessionStorage.getItem(linkValue))
+      {
+        linkExists = true;
+      }
 
-    if (divValue == 'firstLink') {
-      return linkExists;
+    if(divValue =='firstLink')
+    {
+        return linkExists;
     }
-    else {
+    else{
       return !linkExists;
     }
   }
@@ -333,7 +350,6 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
     this.subs.add(
       this.assetService.apexGetAssetManagementSecurity(this.currentUser.userId, 'Programme Management').subscribe(
         data => {
-          // console.log(data);
           if (data && data.isSuccess) {
             this.WorksOrdersPermissions = data.data;
             this.sharedServie.changeWorksOrdersAccess(data.data);
@@ -500,21 +516,37 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
     )
   }
 
+  updateNotifications()
+  {
+    this.helperService.updateNotificationOnTop();
+    //this.alertService.success("Hey There")
+  }
 
   redirectToUserEevnt(val) {
-    const host = window.location.hostname;
 
-    let siteUrl = `https://apexdevweb.rowanwood.ltd/dev/rowanwood/tasks/tasks?seq=${val.eventId}`
+    if(val.eventId > 0)
+    {
+      const host = window.location.hostname;
+      let siteUrl = this.SiteURL + `/tasks/tasks?seq=${val.eventId}`
+      let win: any = window;
+      win.location = siteUrl;
+    }
+    else if(val == '0')
+    {
+      const host = window.location.hostname;
+      let siteUrl = this.SiteURL + `/tasks/tasks`
+      let win: any = window;
+      win.location = siteUrl;
+    }
+    else{
+      return false;
+    }
 
-    let win: any = window;
-    win.location = siteUrl;
-    //    window.open(siteUrl);
   }
 
 
 
-  isActive(base: string): boolean {
-    return this.router.url.includes(`/${base}`);
-  }
+
+
 
 }

@@ -35,7 +35,7 @@ export class HnsSeverityListComponent implements OnInit {
   formMode: string = 'add';
   selectedRowIndex = 0;
   hnsPermission: any = [];
-  
+
   constructor(
     private hnsService: HnsPortalService,
     private chRef: ChangeDetectorRef,
@@ -115,6 +115,7 @@ export class HnsSeverityListComponent implements OnInit {
       this.hnsService.deleteSeverity(this.selectedData).subscribe(
         data => {
           if (data.isSuccess) {
+            this.alertService.success('Severity record successfully deleted');
             this.getSeverity({ hasCode: this.selectedDefinition.hascode, hasVersion: this.selectedDefinition.hasversion });
           } else {
             this.alertService.error(data.message);

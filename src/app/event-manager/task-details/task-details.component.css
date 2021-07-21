@@ -5,3 +5,11 @@
 .disabled {
     pointer-events: none;
 }
+
+.k-filter-menu .k-actions, .k-filter-menu .k-action-buttons, .k-filter-menu .k-columnmenu-actions {
+  margin-left:0;
+  margin-bottom:0;
+  padding:2px;
+}
+
+

@@ -3,16 +3,20 @@
 }
 
 .k-grid tbody td {
-    white-space: nowrap;
-    line-height: 20px;
-    padding: 8px 12px;
+  white-space: nowrap !important;
+  line-height: 20px !important;
+  padding: 8px 12px !important;
 }
 
-.goBtnDiv {
-  padding: 2px;
-  margin-top: 7px;
+ /* .progress {
+    height: 1rem !important;
+    background-color: gainsboro !important;
+    font-size: 11px !important;
 }
 
+.progress-bar {
+    padding-left: 3px !important;
+} */
 
 #progress {
     border-radius: 5px;
@@ -44,15 +48,15 @@
 }
 
 .mediumColor {
-    color: #F39C12 !important;
+    color: #ff9900 !important;
 }
 
 .highColor {
-    color: #C0392B !important;
+    color: #ed1313 !important;
 }
 
 .lowColor {
-    color: #27AE60 !important;
+    color: #4ba818 !important;
 }
 
 .processedRecord {
@@ -158,3 +162,11 @@
     background-color: transparent !important;
     color: white !important;
 }
+
+.k-filter-menu .k-actions, .k-filter-menu .k-action-buttons, .k-filter-menu .k-columnmenu-actions {
+  margin-left:0;
+  margin-bottom:0;
+  padding:2px;
+}
+
+

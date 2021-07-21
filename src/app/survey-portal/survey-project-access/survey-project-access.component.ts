@@ -2,6 +2,8 @@ import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AlertService, LoaderService,  HelperService, SharedService, SurveyPortalService} from '../../_services';
 import { SubSink } from 'subsink';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, map, tap } from 'rxjs/operators';
 import { SurveyProjectAccessModel } from '../../_models';
 
 declare var $: any;
@@ -19,6 +21,8 @@ export class SurveyProjectAccessComponent implements OnInit, OnDestroy {
   selectedProjectName: string;
   selectedProjectAccess;
   projectAccessItemLists: any = [];
+  filtersApplied = '';
+  filterApplied = false;
   HasAccess: boolean = false;
   scrollLoad = true;
   securityFunctionAccess: any;
@@ -39,6 +43,9 @@ export class SurveyProjectAccessComponent implements OnInit, OnDestroy {
    }
     selectedAccessItem: any[] = [];
     subs = new SubSink(); // to unsubscribe services
+    userNameSearch$ = new Subject<any>();
+    emailSearch$ = new Subject<any>();
+    conNameSearch$ = new Subject<any>();
 
 
   constructor(
@@ -69,6 +76,48 @@ export class SurveyProjectAccessComponent implements OnInit, OnDestroy {
     this.surveyProjectAccessItem.OrderType = "Asc";
     this.getProjectAccessList(this.surveyProjectAccessItem);
     this.surveyProjectLabel = this.selectedProject.SupCode + ' - ' + this.selectedProject.SupName;
+    sessionStorage.setItem('SurveyAccess', 'SurveyAccess');
+    this.subs.add(
+      this.userNameSearch$
+        .pipe(
+          debounceTime(1000),
+          distinctUntilChanged()
+        ).subscribe((val) => {
+          this.filterTable(val, 'UserID');
+        })
+    );
+
+    this.subs.add(
+      this.emailSearch$
+        .pipe(
+          debounceTime(1000),
+          distinctUntilChanged()
+        ).subscribe((val) => {
+          this.filterTable(val, 'UserEmail');
+        })
+    );
+
+    this.subs.add(
+      this.conNameSearch$
+        .pipe(
+          debounceTime(1000),
+          distinctUntilChanged()
+        ).subscribe((val) => {
+          this.filterTable(val, 'ConName');
+        })
+    );
+  }
+
+  triggerUserNameSearch(value) {
+    this.userNameSearch$.next(value);
+  }
+
+  triggerEmailSearch(value) {
+    this.emailSearch$.next(value);
+  }
+
+  triggerConNameSearch(value) {
+    this.conNameSearch$.next(value);
   }
 
   onScroll(event)
@@ -160,7 +209,14 @@ export class SurveyProjectAccessComponent implements OnInit, OnDestroy {
             {
               this.scrollLoad = true;
               this.projectAccessItemLists = data.data;
+              this.filtersApplied = this.projectAccessItemLists[0].filtersApplied;
               this.checkRendertable();
+            }
+            else{
+              if(this.filterApplied)
+              {
+                this.filtersApplied = "No records for this filter";
+              };
             }
             this.loaderService.pageHide();
         }
@@ -186,9 +242,6 @@ export class SurveyProjectAccessComponent implements OnInit, OnDestroy {
     if (column == 'UserID') {
       this.surveyProjectAccessItem.UserID = value;
     }
-    if (column == 'UserName') {
-      this.surveyProjectAccessItem.UserName = value;
-    }
     if (column == 'UserEmail') {
       this.surveyProjectAccessItem.UserEmail = value;
     }
@@ -200,6 +253,7 @@ export class SurveyProjectAccessComponent implements OnInit, OnDestroy {
     }
 
     this.surveyProjectAccessItem.PageNo = 0;
+    this.filterApplied = true;
     this.getProjectAccessList(this.surveyProjectAccessItem);
 
   }
@@ -234,7 +288,8 @@ export class SurveyProjectAccessComponent implements OnInit, OnDestroy {
     this.surveyProjectAccessItem.OrderBy = 'UserID';
     this.surveyProjectAccessItem.OrderType = 'Asc';
     this.surveyProjectAccessItem.PageNo = 0;
-
+    this.filterApplied = false;
+    this.filtersApplied = '';
   }
 
 

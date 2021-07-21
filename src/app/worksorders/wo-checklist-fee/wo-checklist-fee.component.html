@@ -1,0 +1,37 @@
+<kendo-window [title]="windowTitle"  *ngIf="ShowEditCheckListFeeWindow" (close)="closeEditFeeWindow()" [top]="20"
+[width]="650"  [resizable]="false" >
+
+  <form class="scoringRulesForm mt-3"  [formGroup]="checklistFeeForm" (ngSubmit)="onSubmit()"  autocomplete="off">
+    <div class="form-row ">
+      <div class="form-group col-md-4">
+        <label class="form-label  mr-4">Fee Value</label>
+        <input type="text"  appCurrencyMask maxDigits="9" class="form-control"  formControlName="feeValue"
+          [ngClass]="{ 'is-invalid': submitted && feeError != ''}">
+        <div *ngIf="submitted && feeError != ''" class="invalid-feedback">
+          <div>{{ this.feeError }}</div>
+        </div>
+      </div>
+      <div>
+        <span class="col-md-8"></span>
+      </div>
+    </div>
+
+    <div class="form-row mt-2">
+      <div class="form-group col-md-12">
+        <label class="form-label">Reason</label>
+
+        <textarea class="form-control" placeholder="Reason" formControlName="reason" maxlength="900"
+        [ngClass]="{ 'is-invalid': submitted && reasonError != ''}" cols="30" rows="3"></textarea>
+        <div *ngIf="submitted && reasonError != ''" class="invalid-feedback">
+          <div>{{ this.reasonError }}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="buttonDiv pull-right mt-2">
+      <button type="button" (click)="closeEditFeeWindow()" class="btn btn-sm themeButton m-1">Cancel</button>
+      <button type="submit" class="btn btn-sm themeButton m-1" >Ok</button>
+    </div>
+  </form>
+</kendo-window>
+

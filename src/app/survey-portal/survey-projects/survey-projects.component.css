@@ -1,3 +1,8 @@
+.surveying.dropdown.list-unstyled{
+  position: relative !important;
+}
+
+
 .hiearchyBtn {
   max-width: 10.60%;
 }
@@ -28,10 +33,6 @@
 .assetLabel {
   max-width: 11%;
 }
-
-/* .dropdown.list-unstyled {
-  position: relative !important;
-} */
 
 /*------------------   Heiarchy css             ------------------------- */
 
@@ -248,7 +249,7 @@ label.tree_label:after {
 /** scroll till window start  **/
 .projectsGrid {
   display: block;
-  max-width: 100%;
+  width: 100%;
 }
 
 table {
@@ -272,32 +273,57 @@ thead, tbody {
   min-width: 38px;
   max-width: 38px;
   width: 38px;
+  word-wrap: break-word;
+}
+
+.expandableCol {
+  min-width: 160px;
+  width: 50%;
+  word-wrap: break-word;
 }
 
 .midCol {
-  min-width: 120px;
-  max-width: 120px;
+  min-width: 90px;
+  max-width: 90px;
+  word-wrap: break-word;
 }
 
 .bigCol{
   min-width: 164px;
   max-width: 164px;
+  word-wrap: break-word;
 }
 
 .midBigCol{
   min-width: 189px;
   max-width: 189px;
+  word-wrap: break-word;
 }
+
 
 .addressCol {
   min-width: 800px;
   max-width: 800px;
+  word-wrap: break-word;
 }
 
 .midAddressCol{
   min-width: 564px;
   max-width: 564px;
+  word-wrap: break-word;
 }
+
+.smallAddressCol{
+  min-width: 350px;
+  max-width: 350px;
+  word-wrap: break-word;
+}
+
+.smallMidCol {
+  min-width: 90px;
+  max-width: 90px;
+}
+
 
 td, th {
   /* min-width: 100px; */

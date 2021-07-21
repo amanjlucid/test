@@ -1,14 +1,22 @@
 <div class="layout-content">
 <div class="container-fluid flex-grow-1 container-p-y">
   <div class="row">
-    <div class="col-md-2 col-sm-3">
+    <div class="col-md-2">
       <h4 class="font-weight-bold py-3 mb-1">
         <!-- <span class="text-muted font-weight-light">Assets/</span> Assets -->
         Project Surveys
       </h4>
     </div>
 
-    <div class="col-md-9 col-sm-9">
+    <div class="col-md-5"></div>
+
+    <div class="col-md-2 mt-3 pull-right mr-2">
+      <label>
+        {{filtersApplied}}
+      </label>
+    </div>
+
+    <div class="col-md-2">
       <div class="row mt-3 pull-right btnGrp">
         <div  *ngIf="checkGroupPermission('Project Surveys Xport Grid')">
           <button type="button" class="btn btn-sm themeButton" (click)="exportToExcel()"
@@ -20,7 +28,7 @@
       </div>
     </div>
 
-    <div class="col-md-1 col-sm-12"></div>
+    <div class="col-md-1 "></div>
 
   </div>
 
@@ -85,7 +93,7 @@
               <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
                 *ngIf="projectSurveysListItem.OrderBy === 'SrvVersion' && projectSurveysListItem.OrderType === 'Desc'"></i>
             </th>
-            <th class="bigCol" style="cursor: pointer;" (click)="orderBy('BatchName')">Batch
+            <th class="expandableCol" style="cursor: pointer;" (click)="orderBy('BatchName')">Batch
               <i class="lnr lnr-arrow-up sortIcon" aria-hidden="true"
                 *ngIf="projectSurveysListItem.OrderBy === 'BatchName' && projectSurveysListItem.OrderType === 'Asc'"></i>
               <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
@@ -97,6 +105,7 @@
               <i class="lnr lnr-arrow-down sortIcon" aria-hidden="true"
                 *ngIf="projectSurveysListItem.OrderBy === 'SurveyorID' && projectSurveysListItem.OrderType === 'Desc'"></i>
             </th>
+            <th width="10px"></th>
           </tr>
         </thead>
         <tbody class="fixTbody" (scroll)="onScroll($event)"
@@ -104,30 +113,6 @@
 
           <tr class="odd gradeX" *ngFor="let projectSurvey of projectSurveysLists let i = index; trackBy:trackByFunction"
             (click)="toggleClass($event, projectSurvey)">
-           <!-- <td class="smallCol">
-                <li class="nav-item dropdown list-unstyled" >
-                <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
-                <div class="dropdown-menu">
-                    <div class="dropdown-toggle" *ngIf="checkGroupPermission('Asset Reports') ">
-                    <div class="dropdown-item">Reports...</div>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item"
-                          *ngIf="checkGroupPermission('Asset Reports Details')"
-                          (click)="openReport(0, 'Survey Batch Assets')" href="javascript:void(0)">Survey Details...</a>
-                        <a class="dropdown-item"
-                          *ngIf="checkGroupPermission('Asset Reports Notes')"
-                          (click)="openReport(564, 'Survey Batch Assets for Survey Notes')" href="javascript:void(0)">Survey Notes...</a>
-                        <a class="dropdown-item"
-                          *ngIf="checkGroupPermission('Asset Reports Photos')"
-                          (click)="openPhotosReport()" href="javascript:void(0)">Photos...</a>
-                        <a class="dropdown-item"
-                          *ngIf="checkGroupPermission('Asset Reports CBC Asbestos')"
-                          (click)="openCBCReport()" href="javascript:void(0)">CBC Asbestos Report...</a>
-                        </div>
-                    </div>
-                </div>
-              </li>
-            </td>-->
             <td class="midCol">
               <div class="iconDiv">
                 </div>
@@ -140,7 +125,7 @@
             <td class="midCol">{{projectSurvey.status}}</td>
             <td class="midCol">{{projectSurvey.srvCode}}</td>
             <td class="midCol">{{projectSurvey.srvVersion}}</td>
-            <td class="bigCol">{{projectSurvey.batchName}}</td>
+            <td class="expandableCol">{{projectSurvey.batchName}}</td>
             <td class="midCol">{{projectSurvey.surveyorID}}</td>
           </tr>
         </tbody>
@@ -159,7 +144,7 @@
               <th class="midCol">Status</th>
               <th class="midCol">Survey Code</th>
               <th class="midCol">Version</th>
-              <th class="bigCol">Batch Name</th>
+              <th class="expandableCol">Batch Name</th>
               <th class="midCol">Surveyor ID</th>
             </tr>
           </thead>
@@ -197,13 +182,13 @@
 
         <div class="form-group mt-3">
           <label class="form-label form-label-sm">Asset</label>
-          <input (keyup)="filterTable($event.target.value, 'Asset')" name="srvCode" data-col="0" type="text"
+          <input (keyup)="triggerAssetSearch($event.target.value)" name="srvCode" data-col="0" type="text"
             class="form-control form-control-sm" placeholder="Search By Asset">
         </div>
 
         <div class="form-group mt-3">
           <label class="form-label form-label-sm">Address</label>
-          <input (keyup)="filterTable($event.target.value, 'Address')" name="srvCode" data-col="0" type="text"
+          <input (keyup)="triggerAddressSearch($event.target.value)" name="srvCode" data-col="0" type="text"
             class="form-control form-control-sm" placeholder="Search By Address">
         </div>
 
@@ -234,31 +219,16 @@
 
         <div class="form-group mt-3">
           <label class="form-label form-label-sm">Survey Code</label>
-          <input (keyup)="filterTable($event.target.value, 'SrvCode')" name="srvCode" data-col="0" type="text"
+          <input (keyup)="triggerSrvCodeSearch($event.target.value)" name="srvCode" data-col="0" type="text"
             class="form-control form-control-sm" placeholder="Search By Survey Code">
         </div>
 
         <div class="form-group mt-3">
           <label class="form-label form-label-sm">Version</label>
           <input  (change)="filterTable($event.target.value, 'SrvVersion')" name="srvVersion" data-col="0" type="number"
-          min="1" max="9999" class="form-control form-control-sm midSmallCol" placeholder="Search By Version">
+          min="1" max="9999" class="form-control form-control-sm midSmallCol" placeholder="">
         </div>
 
-        <div class="form-group">
-          <label class="form-label form-label-sm">Not In Survey</label>
-          <label class="switcher switcher-secondary osFilterLabel">
-            <input type="checkbox" value="{{InSurvey}}" (change)="filterTable('Change', 'InSurvey')"
-              class="switcher-input">
-            <span class="switcher-indicator osFilterSwitch">
-              <span class="switcher-yes">
-                <span class="ion ion-md-checkmark"></span>
-              </span>
-              <span class="switcher-no">
-                <span class="ion ion-md-close"></span>
-              </span>
-            </span>
-          </label>
-        </div>
       </div>
 
 

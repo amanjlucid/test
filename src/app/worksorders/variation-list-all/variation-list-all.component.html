@@ -70,9 +70,10 @@
                                     class="dropdown-item" href="javascript:void(0)"
                                     (click)="openVariationlist(dataItem)">Assets</a>
 
-                                <!-- <a [ngClass]="{'disabled' : disableVariationBtns('Details', dataItem)}"
+                                <a [ngClass]="{'disabled' : disableVariationBtns('Edit', dataItem)}"
                                     class="dropdown-item" href="javascript:void(0)"
-                                    (click)="openVariationDetailMethod(dataItem)">Details</a> -->
+                                    (click)="editVariation(dataItem)">Edit</a>
+
 
                                 <div class="dropdown-toggle">
                                     <div class="dropdown-item">Send</div>
@@ -85,6 +86,9 @@
                                             *ngIf="woMenuAccess('Send Variation To Contractor')" class="dropdown-item"
                                             href="javascript:void(0)"
                                             (click)="sendVariation('Contractor', dataItem)">Contractor</a>
+
+                                            <a *ngIf="woMenuAccess('Email Variation Report')" (click)="openEmailInstructionReport(dataItem)"
+                                            class="dropdown-item" href="javascript:void(0)">Select Users</a>
 
                                     </div>
                                 </div>
@@ -102,6 +106,9 @@
                                 <a [ngClass]="{'disabled' : disableVariationBtns('Delete', dataItem)}"
                                     *ngIf="woMenuAccess('Delete Variation')" class="dropdown-item"
                                     href="javascript:void(0)" (click)="deleteVariationConfirm(dataItem)">Delete</a>
+                                <a [ngClass]="{'disabled' : disableVariationBtns('Notes', dataItem)}"
+                                *ngIf="woMenuAccess('Variation Notes')" class="dropdown-item" href="javascript:void(0)"
+                                    (click)="openVariationNotes(dataItem)">Variation Notes</a>
 
                             </div>
                         </li>
@@ -188,6 +195,12 @@
     <div class="variationListAllOverlay"></div>
 
 
+    <app-variation-new *ngIf="openNewVariation" [openNewVariation]="openNewVariation"
+    [singleVariation]="selectedSingleInstructionVariation" [openedFrom]="openedFrom" [formMode]="formMode"
+    [selectedAsset]="selectedAsset" (closeNewVariationEvent)="closeNewVariation($event)"
+    (outputVariation)="getVariationReason($event)">
+    </app-variation-new>
+
     <app-variation-detail *ngIf="openVariationDetail" [openVariationDetail]="openVariationDetail"
         [openedFrom]="openedFrom" [openedFor]="openedFor" [singleVariation]="selectedSingleInstructionVariation"
         (closeVariationDetailEvent)="closeEditBulkVariation($event)">
@@ -202,5 +215,15 @@
     <app-blank-variation *ngIf="opneBlankVariation" [opneBlankVariation]="opneBlankVariation" [openedFrom]="openedFrom"
         [singleWorksOrder]="singleWorksOrder" [selectedSingleVariationInp]="selectedSingleInstructionVariation"
         (closeBlankVariation)="closeBlankVariation($event)"></app-blank-variation>
+
+        <app-send-email *ngIf="SendEmailInsReportWindow" [SendEmailInsReportWindow]="SendEmailInsReportWindow" 
+        (closeEmailReportEvent)="closeEmailWithReportWindow($event)" [selectedObj]="selectedSingleInstructionVariation" 
+        [opendFrom]="'variation'"></app-send-email>
+
+        <app-variation-notes *ngIf="displayNotesWindow" [displayNotesWindow]="displayNotesWindow"
+        [wosequence]="wosequence" [woisequence]="woisequence" [disabledAddNote]="disabledAddNote"
+        (closeVariationNotes)="closeVariationNotes($event)" >
+        </app-variation-notes>
+
 
 </kendo-window>

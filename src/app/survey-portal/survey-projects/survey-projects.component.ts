@@ -2,6 +2,8 @@ import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AlertService, LoaderService,  HelperService, SharedService, SurveyPortalService } from '../../_services';
 import { SubSink } from 'subsink';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, map, tap } from 'rxjs/operators';
 import { ProjectsListModel, SurveyPortalXports } from '../../_models';
 
 declare var $: any;
@@ -19,31 +21,36 @@ export class SurveyProjectsComponent implements OnInit, OnDestroy {
   selectedProject;
   projectsLists: any = [];
   scrollLoad = true;
+  SettingsApplied = false;
+  StatusAll = false;
+  StatusActive  = false;
+  StatusInactive  = false;
   securityFunctionAccess: any;
   projectsListItem: ProjectsListModel = {
     'UserId': '',
     'OrderBy': 'SupCode',
     'OrderType': 'Asc',
-    'SupCode': '',
-    'SupName': '',
-    'StatusFilter': 'Active',
+    'StatusFilter': '',
     'SupCodeNameFilter': '',
     'SettingsFilter': '',
     'PageNo': 0,
-
+    'SupCode': '',
+    'SupCodeOnlyFilter': '',
    }
+    title = 'Projects';
+    filtersApplied = '';
+    filterApplied = true;
     selectedProjectsExport: any[] = [];
-    previousFilters;
     subs = new SubSink(); // to unsubscribe services
     supCode: string;
     tabWindow = false;
     tabName: string = "projects";
-    SettingsApplied: boolean = false;
     public openReports = false;
     public SurveyBatchMenuIsActive = false;
     public SurveyAssetMenuIsActive = false;
     public reportingAction = "";
     public selectedXport: SurveyPortalXports;
+    supCodeSearch$ = new Subject<any>();
 
   constructor(
     private loaderService: LoaderService,
@@ -64,17 +71,42 @@ export class SurveyProjectsComponent implements OnInit, OnDestroy {
     this.loaderService.pageShow();
     this.subs.add(this.sharedService.surveyPortalSecurityList.subscribe(data => { this.securityFunctionAccess = data }));
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    if (sessionStorage.getItem('SurvProjFilters'))
+    this.projectsListItem.SupCodeOnlyFilter = "";
+    this.projectsListItem.StatusFilter = "Active";
+    this.projectsListItem.UserId = this.currentUser.userId;
+    sessionStorage.removeItem('SurveyAccess');
+    if (sessionStorage.getItem('SurvProj'))
     {
-      this.projectsListItem = JSON.parse(sessionStorage.getItem('SurvProjFilters'));
+      let SurvProj = JSON.parse(sessionStorage.getItem('SurvProj'));
+      this.projectsListItem.SupCodeOnlyFilter = SurvProj.SupCodeOnly;
+      this.projectsListItem.StatusFilter = SurvProj.Status;
+      this.projectsListItem.SettingsFilter = SurvProj.Settings;
+      this.projectsListItem.SupCodeNameFilter = SurvProj.SupNameFilter;
+      this.SettingsApplied = (this.projectsListItem.SettingsFilter == 'Y');
+      this.filterApplied = true;
+      this.projectsListItem.OrderBy = SurvProj.OrderBy;
+      this.projectsListItem.OrderType = SurvProj.OrderType;
     }
-    else
-    {
-      this.projectsListItem.UserId = this.currentUser.userId;
-      this.projectsListItem.StatusFilter = "Active";
-    }
+    this.StatusAll = (this.projectsListItem.StatusFilter == 'All');
+    this.StatusActive = (this.projectsListItem.StatusFilter == 'Active');
+    this.StatusInactive = (this.projectsListItem.StatusFilter == 'InActive');
+
     this.getSurveyProjects(this.projectsListItem);
 
+    this.subs.add(
+      this.supCodeSearch$
+        .pipe(
+          debounceTime(1000),
+          distinctUntilChanged()
+        ).subscribe((val) => {
+          this.filterTable(val, 'SupCodeName');
+        })
+    );
+
+  }
+
+  triggerSupCodeSearch(value) {
+    this.supCodeSearch$.next(value);
   }
 
   onScroll(event)
@@ -95,20 +127,18 @@ export class SurveyProjectsComponent implements OnInit, OnDestroy {
       this.projectsListItem.PageNo = this.projectsListItem.PageNo + 1;
       this.surveyPortalService.GetSurveyProjectsList(this.projectsListItem).subscribe(
         data => {
-          if (data.data.isSuccess) {
             if (data.data.length != undefined && data.data.length > 0)
             {
               this.scrollLoad = true;
               let tempData = data.data;
               this.projectsLists = this.projectsLists.concat(tempData);
               this.projectsLists.map(item => item.SupCode)
-                .filter((value, index, self) => self.indexOf(value.SupCode) === index);
+              .filter((value, index, self) => self.indexOf(value.SupCode) === index);
             }
-          }
-          else
-          {
-            this.loaderService.hide();
-          }
+            else
+            {
+              this.loaderService.hide();
+            }
         },
         error => {
           this.loaderService.hide();
@@ -148,8 +178,6 @@ export class SurveyProjectsComponent implements OnInit, OnDestroy {
 
   }
 
-
-
   toggleClass(event: any, project) {
     //this.sharedService.changeSelectedproject(project);
 
@@ -174,8 +202,13 @@ export class SurveyProjectsComponent implements OnInit, OnDestroy {
     sessionStorage.removeItem('SurvProj');
     sessionStorage.removeItem('SurvBatch');
     sessionStorage.removeItem('SurvBatchFilters');
-    sessionStorage.removeItem('SurvProjFilters');
-    let SupProj = {SupCode: project.supCode, SupName: project.supName};
+
+    if (this.projectsListItem.SettingsFilter == '' && this.projectsListItem.SupCodeNameFilter == '')
+    {
+      this.projectsListItem.SupCodeOnlyFilter = project.supCode;
+    }
+
+    let SupProj = {SupCode: project.supCode, SupName: project.supName, Status: this.projectsListItem.StatusFilter, Settings: this.projectsListItem.SettingsFilter, SupNameFilter: this.projectsListItem.SupCodeNameFilter, SupCodeOnly: this.projectsListItem.SupCodeOnlyFilter, OrderBy: this.projectsListItem.OrderBy, OrderType: this.projectsListItem.OrderType};
     sessionStorage.setItem('SurvProj', JSON.stringify(SupProj));
     this.SurveyBatchMenuIsActive = true;
     this.SurveyAssetMenuIsActive = false;
@@ -193,7 +226,14 @@ export class SurveyProjectsComponent implements OnInit, OnDestroy {
             this.scrollLoad = true;
             let tempData = data.data;
             this.projectsLists = tempData;
+            this.filtersApplied = this.projectsLists[0].filtersApplied;
             this.checkRendertable();
+          }
+          else{
+            if(this.filterApplied)
+            {
+              this.filtersApplied = "No records for this filter";
+            };
           }
           this.loaderService.pageHide();
         }
@@ -212,26 +252,38 @@ export class SurveyProjectsComponent implements OnInit, OnDestroy {
   }
 
   filterTable(value, column) {
+
+    this.filterApplied = true;
+    sessionStorage.removeItem('SurvProj');
+    sessionStorage.removeItem('SurvBatch');
+    sessionStorage.removeItem('SurvBatchFilters')
      this.projectsListItem.PageNo = 0;
     if (column == 'Status') {
       this.projectsListItem.StatusFilter = value;
     }
-    if (column == 'SupCode') {
+    if (column == 'SupCodeName') {
       this.projectsListItem.SupCodeNameFilter = value;
+      this.projectsListItem.SupCodeOnlyFilter = "";
+      //sessionStorage.setItem('SurvProjFilters', JSON.stringify(this.projectsListItem));
     }
     if (column == 'Settings') {
       this.projectsListItem.SettingsFilter = (this.projectsListItem.SettingsFilter == 'Y') ? '' : 'Y';
+      this.projectsListItem.SupCodeOnlyFilter = "";
+     // sessionStorage.setItem('SurvProjFilters', JSON.stringify(this.projectsListItem));
     }
-    sessionStorage.setItem('SurvProjFilters', JSON.stringify(this.projectsListItem));
     this.getSurveyProjects(this.projectsListItem);
+
   }
 
   clearFilterTable() {
      $("#filterSearch").trigger("reset");
       this.scrollLoad = true;
       this.resetFilterList();
-      sessionStorage.removeItem('SurvProjFilters');
-    this.getSurveyProjects(this.projectsListItem);
+      sessionStorage.removeItem('SurvProj');
+      sessionStorage.removeItem('SurvBatch');
+      sessionStorage.removeItem('SurvBatchFilters')
+      this.getSurveyProjects(this.projectsListItem);
+
   }
 
   orderBy(orderBy) {
@@ -247,16 +299,20 @@ export class SurveyProjectsComponent implements OnInit, OnDestroy {
 
   resetFilterList() {
     this.selectedProject = [];
-    this.projectsListItem.StatusFilter = 'Active';
+    this.projectsListItem.StatusFilter = 'All';
     this.projectsListItem.SupCodeNameFilter = '';
     this.projectsListItem.SettingsFilter = ''
     this.projectsListItem.OrderBy = 'SupCode';
     this.projectsListItem.OrderType = 'Asc';
     this.projectsListItem.PageNo = 0;
+    this.projectsListItem.SupCodeOnlyFilter = '';
+    this.filterApplied = false;
+    this.filtersApplied = '';
 
   }
 
   openTabWindow(tabname, project) {
+
     switch(tabname)
     {
       case 'Batches':
@@ -307,7 +363,7 @@ export class SurveyProjectsComponent implements OnInit, OnDestroy {
       'supName': 'Name',
       'supStatus': 'Status',
       'newSurveys': 'New Surveys',
-      'activeSurveys': 'Ative Surveys',
+      'activeSurveys': 'Active Surveys',
       'assignedSurveys': 'Assigned Surveys',
       'completedSurveys': 'Completed Surveys',
       'downloadedSurveys': 'Downloaded Surveys',
@@ -406,6 +462,23 @@ export class SurveyProjectsComponent implements OnInit, OnDestroy {
   public closeReportingWin() {
     $('.bgblur').removeClass('ovrlay');
     this.openReports = false;
+  }
+
+  getDeepLink(){
+    let portal = 'Asset Portal'
+    let userid = 'chris'
+    let assetid = 'D109595'
+
+    this.surveyPortalService.GetEncryptedDeepLink(portal,  userid, assetid).subscribe(
+      data => {
+        if (data.isSuccess)
+        {
+            let v = data.data;
+        }
+
+
+      })
+
   }
 
 }

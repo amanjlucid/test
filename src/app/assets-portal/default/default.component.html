@@ -28,16 +28,13 @@
 
                 <li class="sidenav-item" [routerLinkActive]="['active']">
                     <a [routerLink]="['/dashboard']" class="sidenav-link">
-                        <!-- <i class="sidenav-icon ion ion-md-quote"></i> -->
                         <img class="sidenav-icon ion" src="assets/img/icons/dashboard.svg">
                         <div class="active">Dashboard</div>
                     </a>
                 </li>
 
                 <li *ngIf="checkGroupPermission('Asset Portal Access')" class="sidenav-item" [routerLinkActive]="['active']">
-                    <!-- <a [routerLink]="['/AssetPortal']" class="sidenav-link" target="_blank"> -->
                     <a [routerLink]="['/assets-portal/assets']" class="sidenav-link">
-                        <!-- <i class="sidenav-icon ion ion-md-speedometer"></i> -->
                         <img class="sidenav-icon ion" src="assets/img/icons/assets.svg">
                         <div>Assets</div>
                     </a>
@@ -45,115 +42,50 @@
                 </li>
 
 
-                <!-- <li *ngIf="checkGroupPermission('Asset Portal Access')" class="sidenav-item">
-                   
-                    <a href="https://apexdevweb.rowanwood.ltd/dev/Rowanwood/AssetPortal" class="sidenav-link" target="_blank">
-                       
-                        <img class="sidenav-icon ion" src="assets/img/icons/assets.svg">
-                        <div>Assets</div>
-                    </a>
-
-                </li> -->
-
                 <li *ngIf="checkGroupPermission('Asbestos Portal Access')" class="sidenav-item">
-                    <a href="https://apexdevweb.rowanwood.ltd/dev/Rowanwood/AsbestosPortal" class="sidenav-link" target="_blank">
-                        <!-- <i class="sidenav-icon ion ion-md-speedometer"></i> -->
+                    <a href="<<PortalURL>><<TestText>>/rowanwood/AsbestosPortal" class="sidenav-link" target="_blank">
                         <img class="sidenav-icon ion" src="assets/img/icons/asbestos.svg">
                         <div>Asbestos</div>
                     </a>
 
-                    <!-- <ul class="sidenav-menu">
-                        <li class="sidenav-item">
-                            <a href="index.html" class="sidenav-link">
-                                <div>Dashboard 1</div>
-                            </a>
-                        </li>
-
-                    </ul> -->
                 </li>
 
-                <!-- <li *ngIf="checkGroupPermission('Asbestos Lite Access')" class="sidenav-item">
-                        <a href="https://apexdevweb.rowanwood.ltd/dev/Rowanwood/AsbestosLite" class="sidenav-link" target="_blank">
-                           
-                            <img class="sidenav-icon ion" src="assets/img/icons/asbestos.svg">
-                            <div>Asbestos Lite</div>
-                        </a>
-    
-                        
-                    </li> -->
 
                 <li *ngIf="checkGroupPermission('Energy Portal Access')" class="sidenav-item">
-                    <a href="https://apexdevweb.rowanwood.ltd/dev/Rowanwood/EnergyPortal" class="sidenav-link" target="_blank">
-                        <!-- <i class="sidenav-icon ion ion-md-speedometer"></i> -->
+                    <a href="<<PortalURL>><<TestText>>/rowanwood/EnergyPortal" class="sidenav-link" target="_blank">
                         <img class="sidenav-icon ion" src="assets/img/icons/energy.svg">
                         <div>Energy</div>
                     </a>
 
-                    <!-- <ul class="sidenav-menu">
-                        <li class="sidenav-item">
-                            <a href="index.html" class="sidenav-link">
-                                <div>Dashboard 1</div>
-                            </a>
-                        </li>
-
-                    </ul> -->
                 </li>
 
                 <li *ngIf="checkGroupPermission('BA_EventManager')" class="sidenav-item">
-                    <a href="https://apexdevweb.rowanwood.ltd/dev/Rowanwood/EventManager" class="sidenav-link" target="_blank">
-                        <!-- <i class="sidenav-icon ion ion-md-speedometer"></i> -->
+                    <a href="<<PortalURL>><<TestText>>/rowanwood/EventManager" class="sidenav-link" target="_blank">
                         <img class="sidenav-icon ion" src="assets/img/icons/event-manager.svg">
                         <div>Event Manager</div>
                     </a>
 
-                    <!-- <ul class="sidenav-menu">
-                        <li class="sidenav-item">
-                            <a href="index.html" class="sidenav-link">
-                                <div>Dashboard 1</div>
-                            </a>
-                        </li>
-
-                    </ul> -->
                 </li>
 
 
                 <li *ngIf="checkGroupPermission('Health And Safety Portal Access')" class="sidenav-item">
-                    <a href="https://apexdevweb.rowanwood.ltd/dev/Rowanwood/HealthAndSafety" class="sidenav-link" target="_blank">
-                        <!-- <i class="sidenav-icon ion ion-md-speedometer"></i> -->
+                    <a href="<<PortalURL>><<TestText>>/rowanwood/HealthAndSafety" class="sidenav-link" target="_blank">
                         <img class="sidenav-icon ion" src="assets/img/icons/healthnsafety.svg">
                         <div>Health & Safety</div>
                     </a>
 
-                    <!-- <ul class="sidenav-menu">
-                        <li class="sidenav-item">
-                            <a href="index.html" class="sidenav-link">
-                                <div>Dashboard 1</div>
-                            </a>
-                        </li>
-
-                    </ul> -->
                 </li>
 
                 <li *ngIf="checkGroupPermission('Works Order Portal Access')" class="sidenav-item">
-                    <a href="https://apexdevweb.rowanwood.ltd/dev/Rowanwood/WorksOrdersPortal" class="sidenav-link" target="_blank">
-                        <!-- <i class="sidenav-icon ion ion-md-speedometer"></i> -->
+                    <a href="<<PortalURL>><<TestText>>/rowanwood/WorksOrdersPortal" class="sidenav-link" target="_blank">
                         <img class="sidenav-icon ion" src="assets/img/icons/workorders.svg">
                         <div>Work Orders</div>
                     </a>
 
-                    <!-- <ul class="sidenav-menu">
-                        <li class="sidenav-item">
-                            <a href="index.html" class="sidenav-link">
-                                <div>Dashboard 1</div>
-                            </a>
-                        </li>
-
-                    </ul> -->
                 </li>
 
                 <li class="sidenav-item" [routerLinkActive]="['open']" *ngIf="this.currentUser?.admin == 'Y'">
                     <a href="javascript:void(0)" class="sidenav-link sidenav-toggle">
-                        <!-- <i class="sidenav-icon ion ion-md-speedometer"></i> -->
                         <img class="sidenav-icon ion" src="assets/img/icons/security.svg">
                         <div>Security</div>
                     </a>
@@ -175,54 +107,26 @@
                 </li>
 
                 <li *ngIf="checkGroupPermission('Servicing Portal Access')" class="sidenav-item">
-                    <a href="https://apexdevweb.rowanwood.ltd/dev/Rowanwood/SIM_Portal" class="sidenav-link" target="_blank">
-                        <!-- <i class="sidenav-icon ion ion-md-speedometer"></i> -->
+                    <a href="<<PortalURL>><<TestText>>/rowanwood/SIM_Portal" class="sidenav-link" target="_blank">
                         <img class="sidenav-icon ion" src="assets/img/icons/servicing.svg">
                         <div>Servicing</div>
                     </a>
-
-                    <!-- <ul class="sidenav-menu">
-                        <li class="sidenav-item">
-                            <a [routerLink]="['/dashboard']" class="sidenav-link">
-                                <div>Dashboard 1</div>
-                            </a>
-                        </li>
-
-                    </ul> -->
                 </li>
 
                 <li *ngIf="checkGroupPermission('Survey Portal Access')" class="sidenav-item">
-                    <a href="https://apexdevweb.rowanwood.ltd/dev/Rowanwood/SurveyPortal" class="sidenav-link" target="_blank">
+                    <a href="<<PortalURL>><<TestText>>/rowanwood/SurveyPortal" class="sidenav-link" target="_blank">
                         <!-- <i class="sidenav-icon ion ion-md-speedometer"></i> -->
                         <img class="sidenav-icon ion" src="assets/img/icons/Surveying.svg">
                         <div>Surveying</div>
                     </a>
 
-                    <!-- <ul class="sidenav-menu">
-                        <li class="sidenav-item">
-                            <a href="index.html" class="sidenav-link">
-                                <div>Dashboard 1</div>
-                            </a>
-                        </li>
-
-                    </ul> -->
                 </li>
 
                 <li *ngIf="checkGroupPermission('Web Reporter Portal Access')" class="sidenav-item">
-                    <a href="https://apexdevweb.rowanwood.ltd/dev/Rowanwood/WebReporter" class="sidenav-link" target="_blank">
-                        <!-- <i class="sidenav-icon ion ion-md-speedometer"></i> -->
+                    <a href="<<PortalURL>><<TestText>>/rowanwood/WebReporter" class="sidenav-link" target="_blank">
                         <img class="sidenav-icon ion" src="assets/img/icons/reports.svg">
                         <div>Reporter</div>
                     </a>
-
-                    <!-- <ul class="sidenav-menu">
-                        <li class="sidenav-item">
-                            <a href="index.html" class="sidenav-link">
-                                <div>Dashboard 1</div>
-                            </a>
-                        </li>
-
-                    </ul> -->
                 </li>
 
 
@@ -324,7 +228,7 @@
                                     <div class="bg-primary text-center text-white font-weight-bold p-3">
                                         0 New Notifications
                                     </div>
-                                    
+
 
                                 </div>
                             </ng-template>
@@ -345,14 +249,14 @@
                                 <div class="list-group list-group-flush">
                                     <!-- <ng-container *ngFor="let eventList of eventLists; let i = index;">
                                         <a ng-if="i < 5" href="javascript:void(0)" class="list-group-item list-group-item-action media d-flex align-items-center" >
-                                               
+
                                                 <div class="media-body ml-3">
                                                     <div class="text-dark line-height-condenced">{{eventList?.title}}</div>
-                                                   
-                                                </div>
-                                            </a> 
 
-                                            
+                                                </div>
+                                            </a>
+
+
                                             </ng-container> -->
                                     <a class="list-group-item list-group-item-action media d-flex align-items-center"
                                         href="{{unreadMsgPage}}" target="_blank">
@@ -362,17 +266,17 @@
 
                                         </div>
                                     </a>
-                                    
+
                                 </div>
 
-                               
+
                             </div>
                             <ng-template #eventDiv>
                                     <div class="dropdown-menu dropdown-menu-right">
                                         <div class="bg-primary text-center text-white font-weight-bold p-3">
                                                 0 Unread Message
                                         </div>
-    
+
                                     </div>
                                 </ng-template>
                         </div>
@@ -457,7 +361,7 @@
           <form class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title">
-              
+
                 <span class="font-weight-light">{{validationObj?.errorCode}}</span>
                 <!-- <br>
                 <small class="text-muted">We need payment information to process your order.</small> -->
@@ -470,11 +374,11 @@
                   {{validationObj?.errorMessage}}
                 </div>
               </div>
-              
+
             </div>
             <div class="modal-footer">
               <button type="button" (click)="closeTabds()" class="btn btn-default" data-dismiss="modal">Close</button>
-            
+
             </div>
           </form>
         </div>

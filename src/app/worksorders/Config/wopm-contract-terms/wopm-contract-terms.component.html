@@ -31,9 +31,11 @@
               </kendo-grid-column>
               <kendo-grid-column field="contractTermText" title="Contract Term Wording" minwidth="450">
                 <ng-template kendoGridEditTemplate let-dataItem="dataItem">
-                    <input [(ngModel)]="dataItem.contractTermText" kendoGridFocusable name="contractTermText"
+                    <input *ngIf="checkWorksOrdersAccess('Config Contract Terms Apply')" [(ngModel)]="dataItem.contractTermText" kendoGridFocusable name="contractTermText"
                         class="k-textbox" (keyup)="keyupevent(dataItem)" (keydown.enter)="changedRowData(dataItem)"
                         (focusout)="changedRowData(dataItem)" maxlength="2048"  />
+                    <input *ngIf="!checkWorksOrdersAccess('Config Contract Terms Apply')" readonly [(ngModel)]="dataItem.contractTermText" kendoGridFocusable name="contractTermText"
+                        class="k-textbox" />
                 </ng-template>
               </kendo-grid-column>
           </kendo-grid>

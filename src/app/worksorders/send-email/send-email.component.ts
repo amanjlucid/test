@@ -14,7 +14,7 @@ import { AlertService, ReportingGroupService, SharedService, WorksorderManagemen
 export class SendEmailComponent implements OnInit {
   @Input() SendEmailInsReportWindow = false;
   @Input() selectedObj: any;
-  @Input() opendFrom: 'completion' | 'instruction';
+  @Input() opendFrom: 'completion' | 'instruction' | 'variation';
   @Output() closeEmailReportEvent = new EventEmitter<boolean>();
   subs = new SubSink();
   emailReportForm: FormGroup;
@@ -177,6 +177,19 @@ export class SendEmailComponent implements OnInit {
     }
 
     else if (this.opendFrom == "instruction") {
+      params = {
+        "USERID": this.currentUser.userId,
+        "WOSEQUENCE": this.selectedObj.wosequence,
+        "WOISEQUENCE": this.selectedObj.woisequence,
+        "Body": this.emailReportCon.emailText.value,
+        "Subject": this.emailReportCon.subject.value,
+        "UserName": this.userNameCommaSeprted
+      }
+
+      apiCall = this.worksOrdersService.EmailContractInstructionReport(params)
+    }
+
+    else if (this.opendFrom == "variation") {
       params = {
         "USERID": this.currentUser.userId,
         "WOSEQUENCE": this.selectedObj.wosequence,

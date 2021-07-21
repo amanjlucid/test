@@ -177,6 +177,33 @@ export class EventParametersComponent implements OnInit {
       this.subs.add(
         forkJoin(req).subscribe(
           data => {
+            if (data.length > 0) {
+              let parms: any = data;
+              // console.log(runevents);
+              let successStr = [];
+              let failStr = [];
+              for (let parm in parms) {
+                if (parms[parm].isSuccess) {
+                  successStr.push(` Parameter updated successfully.`);
+                } else {
+                  failStr.push(` Parameter not updated.`);
+                }
+
+              }
+              let sMessageSuccess = '';
+              let sMessageFailures = '';
+              if(successStr.length > 0)
+              {
+                sMessageSuccess = JSON.stringify(successStr.length)  + ' parameter(s) updated successfully'
+                this.alert.error(sMessageSuccess, false, 2000)
+              }
+              if(failStr.length > 0)
+              {
+                sMessageFailures = JSON.stringify(failStr.length)  + ' parameter(s) not updated'
+                this.alert.error(sMessageFailures, false, 2000)
+              }
+
+            }
             this.closeEventParamWin();
           }
         )

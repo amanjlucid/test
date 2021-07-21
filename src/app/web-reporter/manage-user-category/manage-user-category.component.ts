@@ -27,7 +27,7 @@ export class ManageUserCategoryComponent implements OnInit {
       filters: []
     }
   }
-  title = 'Manage User Categories';
+  title = 'Manage Custom Categories';
   selectableSettings: SelectableSettings;
   mySelection: number[] = [];
   allowUnsort = true;
@@ -70,16 +70,16 @@ export class ManageUserCategoryComponent implements OnInit {
 
   getUserCategoryReport() {
     this.subs.add(
-      this.reportService.getUserCategoryReport(this.selectedUserCategory.name).subscribe(
-        data => {
-          if (data.isSuccess) {
-            this.mySelection = data.data.map(x => x.reportId);
-            this.actualSelectedReport = [...this.mySelection];
-            this.getReportList(this.reportQueryModel);
-          } else this.alertService.error(data.message);
-        },
-        err => this.alertService.error(err)
-      )
+      // this.reportService.getUserCategoryReport(this.selectedUserCategory.name).subscribe(
+      //   data => {
+      //     if (data.isSuccess) {
+      //       this.mySelection = data.data.map(x => x.reportId);
+      //       this.actualSelectedReport = [...this.mySelection];
+      //       this.getReportList(this.reportQueryModel);
+      //     } else this.alertService.error(data.message);
+      //   },
+      //   err => this.alertService.error(err)
+      // )
     )
   }
 
@@ -133,14 +133,7 @@ export class ManageUserCategoryComponent implements OnInit {
     // console.log(this.mySelection)
   }
 
-  cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited, originalEvent }) {
-    if (originalEvent.ctrlKey == false) {
-      if (this.mySelection.length > 0) {
-        this.mySelection = [dataItem.reportId];
-        this.chRef.detectChanges();
-      }
-    }
-
+  cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
     if (this.mySelection.length > 0) {
       setTimeout(() => {
         this.selectedReportList = this.reportList.filter(x => this.mySelection.indexOf(x.reportId) !== -1);

@@ -8,4 +8,5 @@ export class BatchesListModel {
   BatchNameFilter: string = '';
   SurveyorNameFilter: string = '';
   PageNo: number = 0;
+  BatchOnlyFilter: string = '';
 }

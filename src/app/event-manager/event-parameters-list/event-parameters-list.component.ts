@@ -403,10 +403,11 @@ export class EventParametersListComponent implements OnInit {
                   data => {
                     if (data.isSuccess) {
                       this.selectedParam.eventTypeParamSqlValue = pstring;
+                      this.alertService.success("Parameter(s) successfully updated", false, 2500)
                       this.changeParams()
                       this.closeParameterWindow()
                     } else {
-                      this.alertService.error(data.message)
+                      this.alertService.error("Parameter(s) not updated: " + data.message)
                     }
                   },
                   err => {

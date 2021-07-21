@@ -9,7 +9,7 @@
     <kendo-grid-column field="filter" title="&nbsp;" [width]="50" [filterable]="false" [sortable]="false">
       <ng-template kendoGridGroupHeaderTemplate let-group let-field="field" let-value="value">
         <!-- <i class="fas fa-home d-block"></i>&nbsp;  -->
-        {{(value == 'ASSETATTR') ? 'Attributes' : value == 'ASSETCHAR' ? 'Characteristics' : value == 'SERVICEJOB' ? 'Servicing' : value == 'ASBESTOS' ? 'Asbestos' : value == 'ASSET' ? 'Asset' : value }}
+        {{(value == 'ASSETATTR') ? 'Attributes' : value == 'ASSETCHAR' ? 'Characteristics' : value == 'SERVICEJOB' ? 'Servicing' : value == 'ASBESTOS' ? 'Asbestos' : value == 'ASSET' ? 'Asset' : value == 'HSIMAGE' ? 'Health and Safety'  : value }}
       </ng-template>
       <ng-template kendoGridCellTemplate let-dataItem>
         <!-- <i style="text-align: center;" class="fas fa-pencil-alt d-block" *ngIf="dataItem.type == 'Notepad'"></i>

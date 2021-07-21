@@ -1,8 +1,9 @@
+
 <div class="container-fluid flex-grow-1">
     <div class="row">
       <div class="col-md-2 col-sm-4 p-2">
         <h4 class="font-weight-bold">
-         EPC
+         Energy
         </h4>
       </div>
   
@@ -25,7 +26,10 @@
   
   <div class="cont">
     <div id="wrapper">
+      <!-- <form #userlogin = "ngForm" (ngSubmit) = "onClickSubmit(userlogin.value)" > -->
       <div id="layoutContainer"></div>
+    <!-- </form> -->
+
     </div>
   
   </div>
@@ -56,4 +60,4 @@
   <div class="eventdashboardovrlay"></div>
 
 <app-retrieved-epc-grid *ngIf="showDataPanel" [retrievedEPCs]="retrievedEPCs" [selectedBarChartXasis]="selectedBarChartXasis" [showPanel]="showDataPanel"
-    (closeretrievedEPCs)="closeDataPanel($event)"></app-retrieved-epc-grid>
+    (closeEPCChartDataWindow)="closeDataPanel($event)"></app-retrieved-epc-grid>

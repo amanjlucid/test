@@ -1,7 +1,12 @@
 <kendo-window title="{{title}}" *ngIf="openAddScheduleReport" (close)="close()" [top]="15" [minWidth]="500"
     [width]="840" [height]="auto" [minHeight]="500">
-
-    <form [formGroup]="editEvform" id="editEvform" (ngSubmit)="onSubmit()" autocomplete="off">
+    <div class="windowHeading m-0  p-0">
+        <div class="form-row m-1 p-0">
+          <p class="col-md-12 m-0 px-3 py-2 headingText">
+            {{ templateHeading }}</p>
+        </div>
+      </div>
+    <form [formGroup]="editEvform" id="editEvform" (ngSubmit)="onSubmit()" autocomplete="off" class="mt-4 pt-1">
         <div class="row">
             <div class="col-md-3">
                 <label>Period Type</label>
@@ -38,7 +43,7 @@
             </div>
 
             <div class="col-md-9">
-                <input type="number" min="0" class="form-control" formControlName="periodInterval"
+                <input type="number" min="1" class="form-control" formControlName="periodInterval"
                     [ngClass]="{ 'is-invalid': submitted && formErrors.periodInterval }">
                 <div *ngIf="submitted && formErrors.periodInterval" class="invalid-feedback">
                     <div *ngIf="formErrors.periodInterval">{{ formErrors.periodInterval }}</div>
