@@ -72,7 +72,8 @@
             <a *ngIf="woMenuBtnSecurityAccess('Manage Checklist')" class="dropdown-item" href="javascript:void(0)"
               (click)="openChecklist()">Checklist</a>
 
-            <a *ngIf="woMenuBtnSecurityAccess('Payment Schedule Tab')" class="dropdown-item" href="javascript:void(0)" (click)="openWOPMPaymentSchedule(menuData)">Payment
+            <a *ngIf="woMenuBtnSecurityAccess('Payment Schedule Tab')" class="dropdown-item" href="javascript:void(0)"
+              (click)="openWOPMPaymentSchedule(menuData)">Payment
               Schedule</a>
           </div>
         </div>
@@ -89,8 +90,8 @@
               class="dropdown-item" href="javascript:void(0)">Release
             </a>
             <a *ngIf="woMenuBtnSecurityAccess('Reset Asset')" (click)="assetAction(null, 'Reset', 'multiple')"
-            class="dropdown-item" href="javascript:void(0)">Reset
-          </a>
+              class="dropdown-item" href="javascript:void(0)">Reset
+            </a>
             <a *ngIf="woMenuBtnSecurityAccess('Issue Asset')" (click)="assetAction(null, 'ISSUE', 'multiple')"
               class="dropdown-item" href="javascript:void(0)">Issue</a>
             <a *ngIf="woMenuBtnSecurityAccess('Accept Asset')" (click)="assetAction(null, 'ACCEPT', 'multiple')"
@@ -130,8 +131,8 @@
         </div>
       </div>
 
-      <button *ngIf="woMenuBtnSecurityAccess('Add')" (click)="openNewphase('new')"
-        class="btn btn-sm themeButton">New Phase</button>
+      <button *ngIf="woMenuBtnSecurityAccess('Add')" (click)="openNewphase('new')" class="btn btn-sm themeButton">New
+        Phase</button>
 
       <!-- <button *ngIf="woMenuBtnSecurityAccess('Defects')" (click)="openDefectsMethod()"
         class="btn btn-sm themeButton ml-1">Defects</button> -->
@@ -183,7 +184,7 @@
             <div class="col-md-2">
               <label>Unallocated Budget:</label>
               <input type="text" class="form-control form-control-sm" [readonly]="readonly"
-                value="{{worksOrderData?.wobudget-worksOrderData?.woacceptedvalue | currency:'GBP':'symbol'}}">
+                value="{{worksOrderData?.wobudget-worksOrderData?.wocommitted-worksOrderData?.wocommittedfee | currency:'GBP':'symbol'}}">
             </div>
 
             <div class="col-md-3">
@@ -207,37 +208,37 @@
             <div class="col-md-1">
               <label>Forecast:</label>
               <input type="text" class="form-control form-control-sm" readonly="true"
-                value="{{worksOrderData?.woforecast | currency:'GBP':'symbol'}}">
+                value="{{worksOrderData?.woforecast + worksOrderData?.woforecastfee + worksOrderData?.woforecastconfee | currency:'GBP':'symbol'}}">
             </div>
 
             <div class="col-md-1">
               <label>Commited:</label>
               <input type="text" class="form-control form-control-sm" readonly="true"
-                value="{{worksOrderData?.wocommitted | currency:'GBP':'symbol'}}">
+                value="{{worksOrderData?.wocommitted + worksOrderData?.wocommittedfee + worksOrderData?.wocommittedconfee  | currency:'GBP':'symbol'}}">
             </div>
 
             <div class="col-md-1">
               <label>Approved:</label>
               <input type="text" class="form-control form-control-sm" readonly="true"
-                value="{{worksOrderData?.woapproved | currency:'GBP':'symbol'}}">
+                value="{{worksOrderData?.woapproved + worksOrderData?.woapprovedfee + worksOrderData?.woapprovedconfee | currency:'GBP':'symbol'}}">
             </div>
 
             <div class="col-md-1">
               <label>Pending:</label>
               <input type="text" class="form-control form-control-sm" readonly="true"
-                value="{{worksOrderData?.wopending | currency:'GBP':'symbol'}}">
+                value="{{worksOrderData?.wopending + worksOrderData?.wopendingfee+ worksOrderData?.wopendingconfee | currency:'GBP':'symbol'}}">
             </div>
 
             <div class="col-md-1">
               <label>Actual:</label>
               <input type="text" class="form-control form-control-sm" readonly="true"
-                value="{{worksOrderData?.woactual | currency:'GBP':'symbol'}}">
+                value="{{worksOrderData?.woactual + worksOrderData?.woactualfee+ worksOrderData?.woactualconfee | currency:'GBP':'symbol'}}">
             </div>
 
             <div class="col-md-1">
               <label>Issued:</label>
               <input type="text" class="form-control form-control-sm" readonly="true"
-                value="{{worksOrderData?.woactualfee | currency:'GBP':'symbol'}}">
+                value="{{worksOrderData?.wocurrentcontractsum | currency:'GBP':'symbol'}}">
             </div>
 
             <div class="col-md-1">
@@ -395,10 +396,10 @@
             </span>
           </ng-template>
         </kendo-treelist-column>
-        <kendo-treelist-column field="woacceptedvalue" title="Issued" [width]="130" [style]="{'text-align': 'right'}">
+        <kendo-treelist-column field="wocurrentcontractsum" title="Issued" [width]="130" [style]="{'text-align': 'right'}">
           <ng-template kendoTreeListCellTemplate let-dataItem>
             <span>
-              {{ dataItem.woacceptedvalue | currency:"GBP":"symbol" }}
+              {{ dataItem.wocurrentcontractsum | currency:"GBP":"symbol" }}
             </span>
           </ng-template>
         </kendo-treelist-column>
@@ -494,11 +495,13 @@
           </div>
         </div>
 
-        <div class="dropdown-toggle" *ngIf="woMenuBtnSecurityAccess('Issue Work For Phase') || woMenuBtnSecurityAccess('Release Phase')">
+        <div class="dropdown-toggle"
+          *ngIf="woMenuBtnSecurityAccess('Issue Work For Phase') || woMenuBtnSecurityAccess('Release Phase')">
           <div class="dropdown-item">Actions</div>
           <div class="dropdown-menu addAssetMenu">
             <a *ngIf="woMenuBtnSecurityAccess('Release Phase')" class="dropdown-item"
-            (click)="assetAction(menuData, 'RELEASE', 'single')" href="javascript:void(0)">Release Assets For Phase</a>
+              (click)="assetAction(menuData, 'RELEASE', 'single')" href="javascript:void(0)">Release Assets For
+              Phase</a>
             <a *ngIf="woMenuBtnSecurityAccess('Issue Work For Phase')" class="dropdown-item"
               (click)="assetAction(menuData, 'ISSUE', 'single')" href="javascript:void(0)">
               Issue Work For Phase</a>
@@ -570,9 +573,9 @@
               (click)="assetAction(menuData, 'RELEASE', 'single')" href="javascript:void(0)">Release</a>
             <a *ngIf="woMenuBtnSecurityAccess('Issue Asset')" class="dropdown-item"
               (click)="assetAction(menuData, 'ISSUE', 'single')" href="javascript:void(0)">Issue</a>
-                    <a *ngIf="woMenuBtnSecurityAccess('Reset Asset')" class="dropdown-item"
-                      (click)="assetAction(menuData, 'Reset', 'single')" href="javascript:void(0)">Reset</a>
-        <a *ngIf="woMenuBtnSecurityAccess('Accept Asset')" class="dropdown-item"
+            <a *ngIf="woMenuBtnSecurityAccess('Reset Asset')" class="dropdown-item"
+              (click)="assetAction(menuData, 'Reset', 'single')" href="javascript:void(0)">Reset</a>
+            <a *ngIf="woMenuBtnSecurityAccess('Accept Asset')" class="dropdown-item"
               (click)="assetAction(menuData, 'ACCEPT', 'single')" href="javascript:void(0)">Accept</a>
 
             <div class="dropdown-toggle" *ngIf="woMenuBtnSecurityAccess('Handover Asset')">
@@ -624,8 +627,8 @@
         <a *ngIf="woMenuBtnSecurityAccess('Asset Documents')" class="dropdown-item" href="javascript:void(0)"
           (click)="openAssetDocument(menuData)">Documents</a>
 
-                <a class="dropdown-item" *ngIf="woMenuBtnSecurityAccess('Rename Phase Work')" href="javascript:void(0)"
-                  (click)="renamePhaseAsset(menuData)">Rename Phase Asset</a>
+        <a class="dropdown-item" *ngIf="woMenuBtnSecurityAccess('Rename Phase Work')" href="javascript:void(0)"
+          (click)="renamePhaseAsset(menuData)">Rename Phase Asset</a>
 
 
       </div>
@@ -815,11 +818,11 @@
     (closePaymentScheduleWindowEvent)="closePaymentScheduleWindow($event)">
   </app-wo-program-management-payment-schedule>
 
-<app-rename-phase-asset *ngIf="renameAssetWindow" [renameAssetWindow]="renameAssetWindow" [rename]="renameItem"
-(closeRenameAssetWindow)="closeRenameAssetWindow($event)" (renameItem)="renameItemComplete($event)"  >
-</app-rename-phase-asset>
+  <app-rename-phase-asset *ngIf="renameAssetWindow" [renameAssetWindow]="renameAssetWindow" [rename]="renameItem"
+    (closeRenameAssetWindow)="closeRenameAssetWindow($event)" (renameItem)="renameItemComplete($event)">
+  </app-rename-phase-asset>
 
 
-<app-worksorders-asset-document *ngIf="assetDocWindow" [assetDocWindow]="assetDocWindow"
-(closeAssetDocEvent)="closeAssetDocument($event)" [selectedChildRow]="selectedChildRow"
-[selectedAsset]="actualSelectedRow"></app-worksorders-asset-document>
+  <app-worksorders-asset-document *ngIf="assetDocWindow" [assetDocWindow]="assetDocWindow"
+    (closeAssetDocEvent)="closeAssetDocument($event)" [selectedChildRow]="selectedChildRow"
+    [selectedAsset]="actualSelectedRow"></app-worksorders-asset-document>

@@ -220,6 +220,7 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
           const programmeData = data[0];
           const userSecurityByWO = data[1];
           const worksOrderData = data[2];
+          
           this.phaseBudgetAvailable = data[3].data;
           this.reportingCharsConfig = data[6].data.reportingCharConfig;
 
@@ -691,7 +692,7 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
     params.ASSID = item.assid;
     params.strUserId = this.currentUser.userId;
     params.strCheckOrProcess = 'C';
-    let newName = item.woname.replace(item.assid + ' - ' , '');
+    let newName = item.woname.replace(item.assid + ' - ', '');
     params.NewPhaseAssetName = newName;
     this.renameItem = params;
     $('.worksOrderDetailOvrlay').addClass('ovrlay');
@@ -703,7 +704,7 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
     this.renameAssetWindow = false;
   }
 
-  renameItemComplete(params){
+  renameItemComplete(params) {
     this.renameAssetWindow = false;
     $('.worksOrderDetailOvrlay').removeClass('ovrlay');
 
@@ -722,11 +723,11 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
             resp = data.data[0];
           }
           if (params.strCheckOrProcess == "C" && (resp.pRETURNSTATUS == "E" || resp.pRETURNSTATUS == "S")) {
-            this.openConfirmationDialogRename( resp, params)
+            this.openConfirmationDialogRename(resp, params)
           } else {
-            if(resp.pRETURNSTATUS == "E" ){
+            if (resp.pRETURNSTATUS == "E") {
               this.alertService.error(resp.pRETURNMESSAGE)
-            }else{
+            } else {
               this.alertService.success(resp.pRETURNMESSAGE)
               this.worksOrderDetailPageData();
             }
@@ -776,18 +777,16 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
       params.WOSEQUENCE = item.wosequence;
       params.WOPSEQUENCE = item.wopsequence;
       if (item.treelevel == 2) {
-        if (type == 'ISSUE' || type == 'RELEASE')
-        {
+        if (type == 'ISSUE' || type == 'RELEASE') {
           params.strASSID = '';
         }
-        else
-        {
-        this.alertService.error("You must select some Assets.")
-        return
-      }
+        else {
+          this.alertService.error("You must select some Assets.")
+          return
+        }
       }
       else {
-      params.strASSID = [item.assid];
+        params.strASSID = [item.assid];
       }
 
       if (type != "REMOVE") {
@@ -826,7 +825,7 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
     } else if (type == "ISSUE") {
       params.UserName = this.currentUser.userName;
       callApi = this.worksorderManagementService.worksOrderIssueAsset(params);
-    }else if (type == "Reset") {
+    } else if (type == "Reset") {
       params.UserName = this.currentUser.userName;
       callApi = this.worksorderManagementService.worksOrderResetAsset(params);
     }
@@ -929,12 +928,12 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
           if (checkOrProcess == "C" && (resp.pRETURNSTATUS == "E" || resp.pRETURNSTATUS == "S")) {
             this.openConfirmationDialogAction({ item, type, selection }, resp)
           } else {
-            if(resp.pRETURNSTATUS == "E" ){
+            if (resp.pRETURNSTATUS == "E") {
               this.alertService.error(resp.pRETURNMESSAGE)
-            }else{
-            this.alertService.success(resp.pRETURNMESSAGE)
-            this.worksOrderDetailPageData();
-          }
+            } else {
+              this.alertService.success(resp.pRETURNMESSAGE)
+              this.worksOrderDetailPageData();
+            }
           }
 
         }
@@ -1552,9 +1551,9 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
 
 
   openAssetDocument(item) {
-          this.actualSelectedRow = item;
-          this.assetDocWindow = true;
-          $('.worksOrderDetailOvrlay').addClass('ovrlay');
+    this.actualSelectedRow = item;
+    this.assetDocWindow = true;
+    $('.worksOrderDetailOvrlay').addClass('ovrlay');
 
   }
 

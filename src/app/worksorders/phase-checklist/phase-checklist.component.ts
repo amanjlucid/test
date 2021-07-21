@@ -111,7 +111,7 @@ export class PhaseChecklistComponent implements OnInit {
   ngOnInit(): void {
     // console.log(this.selectedPhase)
     this.phaseFromApi = this.selectedPhase;
-
+    
     const { wopsequence, wosequence } = this.phaseFromApi;
     this.headerFilters.WOPSEQUENCE = wopsequence;
     this.headerFilters.WOSEQUENCE = wosequence;
@@ -128,7 +128,6 @@ export class PhaseChecklistComponent implements OnInit {
         this.sharedService.userTypeObs
       ]).subscribe(
         data => {
-          // console.log(data);
           this.worksOrderUsrAccess = data[0];
           this.worksOrderAccess = data[1];
           this.userType = data[2][0];
@@ -144,7 +143,6 @@ export class PhaseChecklistComponent implements OnInit {
       }),
       switchMap(state => this.worksorderManagementService.workOrderPhaseCheckList(state)),
       tap((res) => {
-        // console.log(res);
         this.totalCount = (res.total != undefined) ? res.total : 0;
         this.loading = false;
         setTimeout(() => {
