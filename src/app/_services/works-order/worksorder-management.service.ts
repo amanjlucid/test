@@ -692,5 +692,9 @@ export class WorksorderManagementService {
     return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/AddGetVariationNote`, body, this.httpOptions);
   }
 
+  workOrderContract_cost(wprsequence, wosequence) {
+    return this.http.get<any>(`${appConfig.apiUrl}/api/WorkOrderDetails/WorkOrderContract_cost?wprsequence=${wprsequence}&wosequence=${wosequence}`, this.httpOptions);
+}
+
 
 }

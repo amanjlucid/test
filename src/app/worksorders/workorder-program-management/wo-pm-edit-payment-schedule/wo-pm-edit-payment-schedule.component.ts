@@ -75,7 +75,8 @@ export class WoProgramManagmentEditPaymentScheduleComponent implements OnInit {
 
 
   cellClickHandler({ sender, rowIndex, column, columnIndex, dataItem, isEdited }) {
-    if (!isEdited && !this.isReadOnly(column.field)) {
+    const { wpspaymentstatus } = dataItem;
+    if (!isEdited && !this.isReadOnly(column.field) && (wpspaymentstatus != "Pending" && wpspaymentstatus != "Paid")) {
       let scheduleForm: FormGroup = this.createFormGroup(dataItem)
       sender.editCell(rowIndex, columnIndex, scheduleForm);
 

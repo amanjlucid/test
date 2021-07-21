@@ -157,7 +157,7 @@
             </div>
             <div class="col-md-2">Unauthorised Contract Costs: </div>
             <div class="col-md-1 text-right"><input type="text" class="form-control form-control-sm"
-                [readonly]="readonly" value="{{programmeData?.wpractualconfee | currency:'GBP':'symbol'}}"></div>
+                [readonly]="readonly" value="{{contractorCost?.unAuthorisedContractCost | currency:'GBP':'symbol'}}"></div>
           </div>
 
           <div class="form-group form-row">
@@ -166,7 +166,7 @@
                 value="{{worksOrderData?.woname}} (Works Order No: {{worksOrderData?.wosequence}})"></div>
             <div class="col-md-2">Authorised Contract Costs: </div>
             <div class="col-md-1 text-right"><input type="text" class="form-control form-control-sm"
-                [readonly]="readonly" value="{{programmeData?.wprapprovedconfee | currency:'GBP':'symbol'}}"></div>
+                [readonly]="readonly" value="{{contractorCost?.authorisedContractCost | currency:'GBP':'symbol'}}"></div>
           </div>
 
           <div class="form-group form-row">

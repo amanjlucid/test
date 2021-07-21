@@ -49,6 +49,7 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
   public gridData: any = [];
   @ViewChild(TreeListComponent) public grid: TreeListComponent;
   gridHeight = 750;
+  contractorCost:any;
   worksOrderData: any;
   assetchecklistWindow = false;
   selectedChildRow: any;
@@ -214,6 +215,7 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
         this.worksorderManagementService.getWorksOrderRepairingCharConfigExt(intWOSEQUENCE),
         this.worksorderManagementService.getListOfWorksOrderChecklistForWORK(intWOSEQUENCE),
         this.worksorderManagementService.getReportingCharConfigData1(intWOSEQUENCE),
+        this.worksorderManagementService.workOrderContract_cost(wprsequence, intWOSEQUENCE)
 
       ]).subscribe(
         data => {
@@ -223,7 +225,8 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
           
           this.phaseBudgetAvailable = data[3].data;
           this.reportingCharsConfig = data[6].data.reportingCharConfig;
-
+          this.contractorCost = (data[7].data[0]) ? data[7].data[0] : []; 
+          
           if (this.reportingCharsConfig.wosequence > 0) {
             this.displayAssetChar1 = (this.reportingCharsConfig.status1 == 'A');
             this.displayAssetChar2 = (this.reportingCharsConfig.status2 == 'A');
@@ -231,7 +234,6 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
             this.AssetChar1 = this.reportingCharsConfig.alias1;
             this.AssetChar2 = this.reportingCharsConfig.alias2;
             this.AssetChar3 = this.reportingCharsConfig.alias3;
-
           }
 
           // const repairingChar = data[3];
