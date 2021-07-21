@@ -242,6 +242,7 @@ export class VariationAdditionalWorkItemComponent implements OnInit {
   addTickedToVariation() {
     this.packageQuantityWindow = true;
     $('.worklistPackageOvrlay').addClass('ovrlay');
+    this.chRef.detectChanges();
   }
 
   closePackageQuantiyEvent(eve) {
