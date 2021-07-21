@@ -197,9 +197,19 @@ export class ChartService {
                     yAxisTitle,
                     allowPointSelect,
 
-                )
+                ), function (chart) { // on complete
+                    chart.renderer.text('No Data Available', 140, 120)
+                        .css({
+                            color: '#4572A7',
+                            fontSize: '16px'
+                        })
+                        .add();
+
+                }
             );
-        } else {
+        }
+
+        else {
             $("#" + selector).css("background-color", "white").html('<div style="text-align: center;margin-top: 16%;font-size: 20px;font-weight: 600;">No Record.</div>');
         }
 
@@ -209,9 +219,24 @@ export class ChartService {
     barChartConfiguration(selector: any, data: any, barChartParams: any = null, titleText: any, seriesName: string, allowPointSelect: boolean = true) {
         const service = this
         const { categories, stackedBarChartViewModelList } = data;
+        //IF CATEGORY 
+        if (!categories) {
+            return {
+                chart: {
+                    type: 'column',
+                    renderTo: selector,
+                },
+                xAxis: {
+                    categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+                },
+
+                series: []
+            }
+        }
+
         let max = 10;
         let scroll = true;
-        if (categories.length < 10) {
+        if (categories && categories.length < 10) {
             scroll = false;
             max = categories.length - 1;
         }

@@ -58,6 +58,9 @@ export class DashboardChartSharedComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    //UPDATE LAYOUT HEIGHT ON LOAD
+    this.updateChartLayoutSize(true);
+
     //SUBSCRIBE CHART CLICK
     this.subs.add(
       this.chartService.chartInfo.subscribe(data => this.handleChartClick(data))
@@ -93,10 +96,8 @@ export class DashboardChartSharedComponent implements OnInit {
                 const { text } = state;
                 if (text == "Component1") {
                   container.setTitle(this.chartNames[0].chartName)
-                  // let cl = "pi111"; // DEFAULT CHART CLASS START STRING
                   this.renderChartTypes(this.chartNames[0], container, state);
                 } else if (text == "Component2") {
-                  // let cl = "pi22"; // DEFAULT CHART CLASS START STRING
                   if (this.chartNames[1] == undefined) {
                     container.setTitle(this.chartNames[0].chartName)
                     this.renderChartTypes(this.chartNames[0], container, state);
@@ -104,7 +105,6 @@ export class DashboardChartSharedComponent implements OnInit {
                     container.setTitle(this.chartNames[1].chartName)
                     this.renderChartTypes(this.chartNames[1], container, state);
                   }
-
                 } else if (text == "Component3") {
                   if (this.chartNames[2] == undefined) {
                     container.setTitle(this.chartNames[0].chartName)
@@ -113,14 +113,12 @@ export class DashboardChartSharedComponent implements OnInit {
                     container.setTitle(this.chartNames[2].chartName)
                     this.renderChartTypes(this.chartNames[2], container, state);
                   }
-
                 } else if (text == "Component4") {
                   if (this.chartNames[3] != undefined) {
                     container.setTitle(this.chartNames[3].chartName)
                     this.renderChartTypes(this.chartNames[3], container, state);
                   }
                 }
-
               } else if (this.drawChartObj == null && this.savedState != null) {
                 this.renderChartIfStateSaved(container, state);
               } else if (this.drawChartObj != null) {
@@ -128,11 +126,9 @@ export class DashboardChartSharedComponent implements OnInit {
               }
             }
 
-
             if (this.pageload) {
               this.myLayout.registerComponent('testComponent', createDefaultCharts);
               this.myLayout.init();
-              setTimeout(() => this.updateChartLayoutSize(), 500);//UPDATE LAYOUT HEIGHT AND WIDTH
             }
 
             this.pageload = false;
@@ -151,17 +147,20 @@ export class DashboardChartSharedComponent implements OnInit {
 
   }
 
-  updateChartLayoutSize() {
+  updateChartLayoutSize(onlyLayoutHeight = false) {
     const innerHeight = window.innerHeight - 200;
     this.goldenLayoutHeight = `${innerHeight}px`;
-    $(".lm_goldenlayout").css("width", "100%");
-    $('.lm_goldenlayout > .lm_column').css("width", "100%");
-    setTimeout(() => { this.myLayout.updateSize() }, 200);
+
+    if (!onlyLayoutHeight) {
+      $(".lm_goldenlayout").css("width", "100%");
+      $('.lm_goldenlayout > .lm_column').css("width", "100%");
+      setTimeout(() => { this.myLayout.updateSize() }, 300);
+    }
+
   }
 
 
   renderChartIfStateSaved(container: any, state: any) {
-    console.log({ container, state })
     let currentStateChart = state.containerChartObj;
     const { chartType, chartName } = currentStateChart;
     if (chartType == 3) {
@@ -179,37 +178,28 @@ export class DashboardChartSharedComponent implements OnInit {
 
   // RENDER CHART TYPE ON CLICK
   renderChartTypes(chartObj: any, container: any, state: any) {
-    console.log({ chartObj, container, state })
-
     chartObj.ChartParameterValue = chartObj.chartParameters == 1 ? this.defaultFilterVal : "";
+    const { chartName, chartType, ChartParameterValue } = chartObj;
     const tempState = {
       containerChartObj: chartObj,
-      selectedFilter: chartObj.ChartParameterValue,
+      selectedFilter: ChartParameterValue,
       mode: 'new'
     }
 
     //MERGE STATE
     state = { ...state, ...tempState }
-    const { chartName, chartType } = chartObj;
 
     if (chartType == 3) {
       let cl = "";
       if (state.text == "Component1") cl = "pi111"; // DEFAULT CHART CLASS START STRING
       if (state.text == "Component2") cl = "pi22"; // DEFAULT CHART CLASS START STRING
-      // this.pieChart(container, state, chartObj, chartObj.chartName + cl);
       this.renderPieChartIfStatesaved(container, state, chartName + cl)
-    } else if (chartObj.chartType == 1) {
-      this.renderLineChartIfStatesaved(container, state, chartName);
-      // this.lineChart(container, state, chartObj, chartObj.chartName);
-    } else if (chartType == 4) {
-      // chartObj.ChartParameterValue = this.defaultFilterVal;
-      // this.barChart(container, state, chartObj, chartName);
-      this.renderBarChartIfStatesaved(container, state, chartName);
-    } else if (chartType == 5) {
-      // chartObj.ChartParameterValue = this.defaultFilterVal;
-      // this.groupBarChart(container, state, chartObj, chartName);
-      this.renderGroupBarChartIfStatesaved(container, state, chartName);
     }
+
+    if (chartType == 1) this.renderLineChartIfStatesaved(container, state, chartName);
+    if (chartType == 4) this.renderBarChartIfStatesaved(container, state, chartName);
+    if (chartType == 5) this.renderGroupBarChartIfStatesaved(container, state, chartName);
+
   }
 
 
@@ -326,53 +316,6 @@ export class DashboardChartSharedComponent implements OnInit {
   }
 
 
-  pieChart(container: any, state: any, chartObj: any = null, cl = null) {
-    const className = this.getUniqueClassName(cl, 'pie');
-    let filterDivCl = "filterpi" + className;
-
-    this.subs.add(
-      this.chartService.getChartData(chartObj).subscribe(
-        data => {
-          if (data.isSuccess) {
-            const { pieChartModel, chartFilterModel: pieChartFilterData } = data.data;
-            const pieChartData = pieChartModel.filter(x => x.y != 0 && x.y != "" && x.y != null);
-
-            const chartarea = container.getElement().html(`<div class="row" style="width:100%; height:100%;"><input type="hidden" value="${chartObj.chartName}" class="line${className}"><div class="col-md-12"><div class="${filterDivCl}"></div><div id="${className}" style="width:100%; height: 100%; position:absolute;  margin-top:0px;"></div> </div></div>`);
-
-
-            if (pieChartFilterData != null) {
-              this.createFilterDropdown(pieChartFilterData[0]['filterString'], { className, filterDivCl });
-              chartarea[0].querySelector(`.${className}`).addEventListener("change", (event) => this.renderFilteredChart(className, container, state, 'pie'));
-              chartarea[0].querySelector('.row').style.height = "94%";
-              chartarea[0].querySelector(`#${className}`).style.marginTop = "2px";
-            }
-
-            this.chartService.pieChartInit(className, pieChartData, chartObj);
-
-            container.setState({
-              text: state.text,
-              containerChartObj: chartObj,
-              selectedFilter: ""
-            });
-
-
-            //trigger change event
-            if (pieChartFilterData != null && pieChartData.length == 0) {
-              $(`.${className}`).trigger('change');
-            }
-
-          } else {
-            this.alertService.error(data.message);
-          }
-        }
-      )
-    )
-
-    this.resizeContainer(container);
-
-  }
-
-
   renderPieChartIfStatesaved(container: any, state: any, cl: any = null) {
     const className = this.getUniqueClassName(cl, 'pie');
     const filterDivCl = "filterpi" + className;
@@ -403,6 +346,12 @@ export class DashboardChartSharedComponent implements OnInit {
               containerChartObj: chartObj,
               selectedFilter: chartObj.ChartParameterValue
             });
+
+            //trigger change event on new chart
+            if (pieChartFilterData != null && pieChartFilterData.length && state.mode) {
+              const event = new Event('change');
+              chartarea[0].querySelector(`.${className}`).dispatchEvent(event);
+            }
 
           } else {
             this.alertService.error(data.message);
@@ -440,58 +389,9 @@ export class DashboardChartSharedComponent implements OnInit {
   }
 
 
-  lineChart(container: any, state: any, chartObj: any = null, cl = null) {
-    const className = this.getUniqueClassName(cl, 'line');
-    const filterDivCl = "filterli" + className;
-    this.subs.add(
-      this.chartService.getChartData(chartObj).subscribe(
-        data => {
-          if (data.isSuccess) {
-            const { lineChartModel: lineChartData, chartFilterModel: lineChartFilterData, startDate, endtDate } = data.data;
-            const xaxis = { 'start': startDate, 'end': endtDate };
-
-            const chartarea = container.getElement().html(`<div class="row" style="width:100%; height:100%;"><input type="hidden" value="${chartObj.chartName}" class="line${className}"><div class="col-md-12"><div class="${filterDivCl}"></div> <div id="${className}" style="position:absolute; width:100%; height:100%;"></div> </div></div>`);
-
-            if (lineChartFilterData != null) {
-              this.createFilterDropdown(lineChartFilterData[0]['filterString'], { className, filterDivCl });
-              chartarea[0].querySelector(`.${className}`).addEventListener("change", (event) => this.renderFilteredChart(className, container, state, 'line'));
-              chartarea[0].querySelector('.row').style.height = "94%";
-              chartarea[0].querySelector(`#${className}`).style.marginTop = "2px";
-            }
-
-            this.chartService.lineChartInit(className, lineChartData, xaxis, null, null);
-
-            container.setState({
-              text: state.text,
-              containerChartObj: chartObj,
-              xaxis: xaxis,
-              selectedFilter: ""
-            });
-
-
-            //trigger change event
-            if (lineChartFilterData != null && lineChartData.length == 0) {
-              $(`.${className}`).trigger('change');
-            }
-
-          } else {
-            this.alertService.error(data.message);
-          }
-        }
-      )
-    )
-
-
-    this.resizeContainer(container);
-
-
-  }
-
-
   renderLineChartIfStatesaved(container: any, state: any, cl: any = null) {
     const className = this.getUniqueClassName(cl, 'line');
     const filterDivCl = "filterli" + className;
-    console.log({ container, state })
     const { selectedFilter, containerChartObj: chartObj } = state;
     chartObj.ChartParameterValue = (selectedFilter != null && selectedFilter != "") ? selectedFilter : this.defaultFilterVal;
 
@@ -521,7 +421,7 @@ export class DashboardChartSharedComponent implements OnInit {
             });
 
             //trigger change event on new chart
-            if (lineChartFilterData != null && lineChartData.length == 0 && state.mode) {
+            if (lineChartFilterData != null && lineChartData.length && state.mode) {
               const event = new Event('change');
               chartarea[0].querySelector(`.${className}`).dispatchEvent(event);
             }
@@ -563,56 +463,6 @@ export class DashboardChartSharedComponent implements OnInit {
   }
 
 
-  barChart(container: any, state: any, chartObj: any = null, cl = null) {
-    const className = this.getUniqueClassName(cl, 'bar');
-    let filterDivCl = "filterbar" + className;
-
-    let getChartData;
-    if (chartObj.ddChartId != undefined) {
-      getChartData = this.chartService.drillDownStackedBarChartData(chartObj)
-    } else {
-      getChartData = this.chartService.getChartData(chartObj);
-    }
-
-    this.subs.add(
-      getChartData.subscribe(
-        data => {
-          if (data.isSuccess) {
-            const { data: barChartData, chartFilterModel: barChartFilterData } = data;
-
-            const chartarea = container.getElement().html(`<div class="row" style="width:100%; height:100%;"><input type="hidden" value="${chartObj.chartName}" class="line${className}"><div class="col-md-12"><div class="${filterDivCl}"></div> <div id="${className}" style="position:absolute; width:100%; height:100%;"></div> </div></div>`);
-
-            if (barChartFilterData != null) {
-              this.createFilterDropdown(barChartFilterData[0]['filterString'], { className, filterDivCl });
-              chartarea[0].querySelector(`.${className}`).addEventListener("change", (event) => this.renderFilteredChart(className, container, state, 'bar'));
-              chartarea[0].querySelector('.row').style.height = "94%";
-              chartarea[0].querySelector(`#${className}`).style.marginTop = "2px";
-            }
-
-            this.chartService.barChartInit(className, barChartData, chartObj);
-
-            container.setState({
-              text: state.text,
-              containerChartObj: chartObj,
-              selectedFilter: ""
-            });
-
-            //trigger change event
-            if (barChartFilterData != null && barChartData.stackedBarChartViewModelList.length == 0) {
-              $(`.${className}`).trigger('change');
-            }
-
-          } else {
-            this.alertService.error(data.message);
-          }
-        }
-      )
-    )
-
-    this.resizeContainer(container);
-
-  }
-
   renderBarChartIfStatesaved(container: any, state: any, cl: any = null) {
     const className = this.getUniqueClassName(cl, 'bar');
     const filterDivCl = "filterbar" + className;
@@ -631,9 +481,9 @@ export class DashboardChartSharedComponent implements OnInit {
       getChartData.subscribe(
         data => {
           if (data.isSuccess) {
-            const { data: barChartData, chartFilterModel: barChartFilterData } = data;
-
+            const { data: barChartData, data: { chartFilterModel: barChartFilterData } } = data;
             const chartarea = container.getElement().html(`<div class="row" style="width:100%; height:100%;"><input type="hidden" value="${chartObj.chartName}" class="line${className}"><div class="col-md-12"><div class="${filterDivCl}"></div> <div id="${className}" style="position:absolute; width:100%; height:100%;"></div> </div></div>`);
+            console.log(barChartFilterData)
 
             if (barChartFilterData != null) {
               this.createFilterDropdown(barChartFilterData[0]['filterString'], { className, filterDivCl, selectedFilter });
@@ -649,6 +499,12 @@ export class DashboardChartSharedComponent implements OnInit {
               containerChartObj: chartObj,
               selectedFilter: chartObj.ChartParameterValue
             });
+
+            //trigger change event on new chart
+            if (barChartFilterData != null && barChartFilterData.length && state.mode) {
+              const event = new Event('change');
+              chartarea[0].querySelector(`.${className}`).dispatchEvent(event);
+            }
 
           } else {
             this.alertService.error(data.message);
@@ -686,50 +542,7 @@ export class DashboardChartSharedComponent implements OnInit {
     )
   }
 
-  groupBarChart(container: any, state: any, chartObj: any = null, cl = null) {
-    let className = this.getUniqueClassName(cl, 'groupbar');
-    className = this.helper.replaceAll(className, "/", "");
-    const filterDivCl = "filtergrpbar" + className;
 
-    this.subs.add(
-      this.chartService.getChartData(chartObj).subscribe(
-        data => {
-          if (data.isSuccess) {
-            const { data: chartData, chartFilterModel: chartFilterData } = data;
-
-            const chartarea = container.getElement().html(`<div class="row" style="width:100%; height:100%;"><input type="hidden" value="${chartObj.chartName}" class="line${className}"><div class="col-md-12"><div class="${filterDivCl}"></div> <div id="${className}" style="position:absolute; width:100%; height:100%;"></div> </div></div>`);
-
-
-            if (chartFilterData != null) {
-              this.createFilterDropdown(chartFilterData[0]['filterString'], { className, filterDivCl });
-              chartarea[0].querySelector(`.${className}`).addEventListener("change", (event) => this.renderFilteredChart(className, container, state, 'groupbar'));
-              chartarea[0].querySelector('.row').style.height = "94%";
-              chartarea[0].querySelector(`#${className}`).style.marginTop = "2px";
-            }
-
-            this.chartService.groupBarChartInit(className, chartData);
-
-            container.setState({
-              text: state.text,
-              containerChartObj: chartObj,
-              selectedFilter: ""
-            });
-
-            //trigger change event
-            if (chartFilterData != null && chartData.length == 0) {
-              $(`.${className}`).trigger('change');
-            }
-
-          } else {
-            this.alertService.error(data.message);
-          }
-        }
-      )
-    )
-
-    this.resizeContainer(container);
-
-  }
 
   renderGroupBarChartIfStatesaved(container: any, state: any, cl: any = null) {
     let className = this.getUniqueClassName(cl, 'groupbar');
@@ -743,8 +556,7 @@ export class DashboardChartSharedComponent implements OnInit {
       this.chartService.getChartData(chartObj).subscribe(
         data => {
           if (data.isSuccess) {
-            const { data: chartData, chartFilterModel: chartFilterData } = data;
-
+            const { data: chartData, data: { chartFilterModel: chartFilterData } } = data;
             const chartarea = container.getElement().html(`<div class="row" style="width:100%; height:100%;"><input type="hidden" value="${chartObj.chartName}" class="line${className}"><div class="col-md-12"><div class="${filterDivCl}"></div> <div id="${className}" style="position:absolute; width:100%; height:100%;"></div> </div></div>`);
 
             if (chartFilterData != null) {
@@ -761,6 +573,12 @@ export class DashboardChartSharedComponent implements OnInit {
               containerChartObj: chartObj,
               selectedFilter: chartObj.ChartParameterValue
             });
+
+            //trigger change event on new chart
+            if (chartFilterData != null && chartFilterData.length && state.mode) {
+              const event = new Event('change');
+              chartarea[0].querySelector(`.${className}`).dispatchEvent(event);
+            }
 
           } else {
             this.alertService.error(data.message);
@@ -795,7 +613,6 @@ export class DashboardChartSharedComponent implements OnInit {
       )
     )
   }
-
 
 
   resizeContainer(container) {

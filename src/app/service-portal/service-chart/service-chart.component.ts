@@ -9,6 +9,7 @@ import { Router } from "@angular/router"
   templateUrl: './service-chart.component.html',
   styleUrls: ['./service-chart.component.css']
 })
+
 export class ServiceChartComponent implements OnInit {
   portalNameForChart = 'Servicing';
   portalName: string = "Servicing";
