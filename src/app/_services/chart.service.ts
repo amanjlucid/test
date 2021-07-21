@@ -197,15 +197,7 @@ export class ChartService {
                     yAxisTitle,
                     allowPointSelect,
 
-                ), function (chart) { // on complete
-                    chart.renderer.text('No Data Available', 140, 120)
-                        .css({
-                            color: '#4572A7',
-                            fontSize: '16px'
-                        })
-                        .add();
-
-                }
+                )
             );
         }
 
@@ -219,21 +211,6 @@ export class ChartService {
     barChartConfiguration(selector: any, data: any, barChartParams: any = null, titleText: any, seriesName: string, allowPointSelect: boolean = true) {
         const service = this
         const { categories, stackedBarChartViewModelList } = data;
-        //IF CATEGORY 
-        if (!categories) {
-            return {
-                chart: {
-                    type: 'column',
-                    renderTo: selector,
-                },
-                xAxis: {
-                    categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-                },
-
-                series: []
-            }
-        }
-
         let max = 10;
         let scroll = true;
         if (categories && categories.length < 10) {
@@ -259,8 +236,9 @@ export class ChartService {
                             if (ticks[i]) {
                                 const label = ticks[i].label.element
                                 label.onclick = function () {
+                                    console.log(point);
                                     service.changeChartInfo({ chartRef: point, chartObject: barChartParams, chartType: 'bar' })
-                                    // console.log(point);
+
                                     // tooltip.getPosition(null, null, point) 
                                     // tooltip.refresh(point)
                                 }

@@ -8,12 +8,12 @@ import { Router } from "@angular/router"
   templateUrl: './survey-dashboard.component.html',
   styleUrls: ['./survey-dashboard.component.css']
 })
+
 export class SurveyDashboardComponent implements OnInit {
   portalNameForChart = 'Surveying';
   portalName: string = "Surveying";
   servicePortalAccess: any = [];
   subs = new SubSink();
-
 
   constructor(
     private sharedServie: SharedService,

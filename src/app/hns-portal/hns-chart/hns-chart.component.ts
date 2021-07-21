@@ -3,7 +3,6 @@ import { AlertService, SharedService } from '../../_services'
 import { SubSink } from 'subsink';
 import { Router } from "@angular/router"
 
-
 @Component({
   selector: 'app-hns-chart',
   templateUrl: './hns-chart.component.html',
@@ -22,6 +21,8 @@ export class HnsChartComponent implements OnInit {
     private router: Router
   ) { }
 
+  ngOnInit() { }
+  
   ngOnDestroy() {
     this.subs.unsubscribe();
   }
@@ -40,8 +41,6 @@ export class HnsChartComponent implements OnInit {
       )
     )
   }
-
-  ngOnInit() { }
 
   gridDataEvent(event) {
     console.log(event);

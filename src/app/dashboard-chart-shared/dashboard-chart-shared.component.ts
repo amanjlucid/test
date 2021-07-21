@@ -483,8 +483,7 @@ export class DashboardChartSharedComponent implements OnInit {
           if (data.isSuccess) {
             const { data: barChartData, data: { chartFilterModel: barChartFilterData } } = data;
             const chartarea = container.getElement().html(`<div class="row" style="width:100%; height:100%;"><input type="hidden" value="${chartObj.chartName}" class="line${className}"><div class="col-md-12"><div class="${filterDivCl}"></div> <div id="${className}" style="position:absolute; width:100%; height:100%;"></div> </div></div>`);
-            console.log(barChartFilterData)
-
+            
             if (barChartFilterData != null) {
               this.createFilterDropdown(barChartFilterData[0]['filterString'], { className, filterDivCl, selectedFilter });
               chartarea[0].querySelector(`.${className}`).addEventListener("change", (event) => this.renderFilteredChart(className, container, state, 'bar'));

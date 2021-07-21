@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { AlertService, SharedService } from '../../_services'
+import { AlertService, SharedService } from '../../_services';
 import { SubSink } from 'subsink';
-import { Router } from "@angular/router"
+import { Router } from "@angular/router";
 
 @Component({
   selector: 'app-worksorders-dashboard',
@@ -93,6 +93,7 @@ export class WorksordersDashboardComponent implements OnInit {
     this.showDataPanel = $event
     $('.eventdashboardovrlay').removeClass('ovrlay');
   }
+  
 
 }
 
