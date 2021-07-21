@@ -118,15 +118,20 @@ export class ChartService {
 
 
     lineChartInit(className: any, chartData: any, xaxis: any, titleText: any = null, yAxisTitle: any = null) {
-        Highcharts.chart(
-            this.lineChartConfigration(
-                className,
-                chartData,
-                xaxis,
-                titleText,
-                yAxisTitle,
-            )
-        );
+        if (chartData.length) {
+            Highcharts.chart(
+                this.lineChartConfigration(
+                    className,
+                    chartData,
+                    xaxis,
+                    titleText,
+                    yAxisTitle,
+                )
+            );
+        } else {
+            $("#" + className).css("background-color", "white").html('<div style="text-align: center;margin-top: 10%;font-size: 20px;font-weight: 600;">No Record.</div>');
+        }
+
     }
 
     lineChartConfigration(selector: any, data: any, xaxis: any, titleText: any, yAxisTitle: any) {
@@ -219,6 +224,26 @@ export class ChartService {
             chart: {
                 type: 'column',
                 renderTo: selector,
+                events: {
+                    load: function () {
+                        const axis = this.xAxis[0]
+                        const ticks = axis.ticks
+                        const points = this.series[0].points
+                        //const tooltip = this.tooltip
+                        points.forEach(function (point, i) {
+                            if (ticks[i]) {
+                                const label = ticks[i].label.element
+                                label.onclick = function () {
+                                    service.changeChartInfo({ chartRef: point, chartObject: barChartParams, chartType: 'bar' })
+                                    // console.log(point);
+                                    // tooltip.getPosition(null, null, point) 
+                                    // tooltip.refresh(point)
+                                }
+                            }
+
+                        })
+                    }
+                }
             },
             title: {
                 text: titleText
@@ -228,6 +253,9 @@ export class ChartService {
                 min: 0,
                 max: max,
                 labels: {
+                    style: {
+                        cursor: 'pointer'
+                    },
                     rotation: 90,
                 },
                 scrollbar: {
