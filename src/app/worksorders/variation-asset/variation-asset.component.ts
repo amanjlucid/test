@@ -193,7 +193,7 @@ export class VariationAssetComponent implements OnInit {
             } else {
               this.alertService.success(resp.pRETURNMESSAGE)
               this.getVariationPageDataWithVariationAssetFromWO();
-              this.refreshParentComponent.emit(true)
+              // this.refreshParentComponent.emit(true)
             }
 
 

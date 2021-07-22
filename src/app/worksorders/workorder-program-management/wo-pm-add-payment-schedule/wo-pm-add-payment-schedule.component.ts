@@ -243,8 +243,10 @@ export class WoProgramManagmentAddPaymentScheduleComponent implements OnInit {
     }
 
     const validateForm = await this.worksOrdersService.addScheduleValidation(params).toPromise();
-    console.log(validateForm);
-    return;
+    if (!validateForm.isSuccess) {
+      this.alertService.error(validateForm.message);
+      return;
+    }
 
     this.subs.add(
       this.worksOrdersService.insertWebWorksOrdersPaymentSchedule(params).subscribe(
