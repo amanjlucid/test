@@ -205,7 +205,7 @@ export class WoProgramManagmentAddPaymentScheduleComponent implements OnInit {
   }
 
 
-  onSubmit(): void {
+  async onSubmit() {
     this.submitted = true;
     this.formErrorObject(); // empty form error 
     this.logValidationErrors(this.addScheduleForm);
@@ -241,6 +241,10 @@ export class WoProgramManagmentAddPaymentScheduleComponent implements OnInit {
       "strUser": this.currentUser.userId,
 
     }
+
+    const validateForm = await this.worksOrdersService.addScheduleValidation(params).toPromise();
+    console.log(validateForm);
+    return;
 
     this.subs.add(
       this.worksOrdersService.insertWebWorksOrdersPaymentSchedule(params).subscribe(

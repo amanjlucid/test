@@ -363,5 +363,9 @@ export class WorksOrdersService {
         return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/AuthorisePayment`, params, this.httpOptions);
     }
 
+    addScheduleValidation(params) {
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/AddScheduleValidation`, params, this.httpOptions);
+    }
+
 
 }
