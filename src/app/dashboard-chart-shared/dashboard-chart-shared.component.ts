@@ -651,6 +651,7 @@ export class DashboardChartSharedComponent implements OnInit {
 
 
   openChartOrGrid(data: gridDataEventType) {
+    console.log(data)
     const { chartRef: chartEvent, chartObject: parentChartObj } = data;
     if (parentChartObj && parentChartObj.ddChartID) {
       const params = {

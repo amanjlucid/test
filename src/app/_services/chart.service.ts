@@ -228,6 +228,7 @@ export class ChartService {
                 renderTo: selector,
                 events: {
                     load: function () {
+                        console.log(this)
                         const axis = this.xAxis[0]
                         const ticks = axis.ticks
                         const points = this.series[0].points
@@ -264,6 +265,7 @@ export class ChartService {
                 scrollbar: {
                     enabled: scroll,
                 },
+
             },
             yAxis: {
                 min: 0,
