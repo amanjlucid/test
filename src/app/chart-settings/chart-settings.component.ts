@@ -8,8 +8,8 @@ import { Component, OnInit } from '@angular/core';
 
 export class ChartSettingsComponent implements OnInit {
   chartPortals = [];
-  emptyObject:any = { portalName: '', numberofchart: 0 }
-
+  emptyObject: any = { portalName: '', numberofchart: 0 }
+  submitted = false
 
   constructor() { }
 
@@ -36,6 +36,12 @@ export class ChartSettingsComponent implements OnInit {
     return item.portalName
   }
 
-  saveChartForm() { console.log(this.chartPortals) }
+  saveChartForm() {
+    if (!this.submitted) {
+      this.submitted = true;
+      console.log(this.chartPortals)
+    }
+  }
+
 
 }
