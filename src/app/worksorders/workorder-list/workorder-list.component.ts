@@ -526,6 +526,12 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
 
   woMenuAccess(menuName) {
 
+    if (menuName == 'Payment Schedule Tab'){
+      let v =  this.worksOrderUsrAccess.indexOf(menuName) != -1
+      let v2 = this.worksOrderAccess.indexOf(menuName) != -1
+      let v3 = 3
+    }
+
     if (this.userType == undefined) return true;
 
     if (this.userType?.wourroletype == "Dual Role") {

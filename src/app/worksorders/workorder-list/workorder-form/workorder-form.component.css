@@ -14,6 +14,7 @@
 
 .k-window {
   position: fixed !important;
+  z-index: 500 important;
 }
 
 .workOrderDateFilter {
@@ -45,11 +46,11 @@
   margin-right: 5px !important;
   font-size: 15px !important;
   margin-top: 12px;
- 
+
 }
 
 /* .firstdiv .form-control, .secondDiv .form-control, .thirdDiv .form-control {
-  
+
   width: 55%;
   display: inline-block;
 } */

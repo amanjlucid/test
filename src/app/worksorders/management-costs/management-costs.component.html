@@ -62,7 +62,7 @@
               </kendo-grid-column>
               <kendo-grid-column field="requestDate" title="Request Date" [width]="180">
              </kendo-grid-column>
-              <kendo-grid-column field="contractCost" title="Contract Cost" width="180" [filterable]="true">
+              <kendo-grid-column field="contractCost" title="Contract Cost" width="180" [filterable]="true"  [style]="{'text-align': 'right'}">
                 <ng-template kendoGridCellTemplate let-dataItem>
                   <div class="exportDiv">
                     {{ dataItem.contractCost | currency:"GBP":"symbol" }}

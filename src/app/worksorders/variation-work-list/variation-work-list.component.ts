@@ -448,7 +448,7 @@ export class VariationWorkListComponent implements OnInit {
     this.selectedSingleVarWorkList = item;
     $('.variationWorkListOverlay').addClass('ovrlay')
     this.EditWorkPackageQtyCostWindow = true;
-    this.chRef.detectChanges();
+
   }
 
   closeEditWorkPackageQtyCostWindow(eve) {

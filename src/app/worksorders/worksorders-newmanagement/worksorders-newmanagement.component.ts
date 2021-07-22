@@ -95,6 +95,7 @@ export class WorksordersNewmanagementComponent implements OnInit {
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
   readonly = true;
   mData: any;
+  currentStatus: string;
 
 
   constructor(
@@ -112,7 +113,7 @@ export class WorksordersNewmanagementComponent implements OnInit {
       day: current.getDate()
     };
 
-    
+
   }
 
   ngAfterViewInit() {
@@ -207,6 +208,7 @@ export class WorksordersNewmanagementComponent implements OnInit {
 
   populateForm() {
     if (this.formMode == 'new') {
+      this.currentStatus = 'New';
       this.workManagementForm.patchValue({ WPRSTATUS: 'New', WPRACTINACT: 'A' });
       this.workManagementForm.get('WPRSTATUS').disable();
       this.workManagementForm.get('WPRACTINACT').disable();
@@ -223,6 +225,7 @@ export class WorksordersNewmanagementComponent implements OnInit {
           // console.log(data);
           if (data.isSuccess) {
             const mData = this.mData = data.data[0];
+            this.currentStatus = mData.wprstatus;
             this.workManagementForm.patchValue({
               WPRNAME: mData.wprname,
               WPREXTREF: mData.wprextref,
@@ -332,7 +335,7 @@ export class WorksordersNewmanagementComponent implements OnInit {
 
   onSubmit() {
     this.submitted = true;
-    this.formErrorObject(); // empty form error 
+    this.formErrorObject(); // empty form error
     this.logValidationErrors(this.workManagementForm);
 
     this.chRef.detectChanges();
@@ -380,17 +383,17 @@ export class WorksordersNewmanagementComponent implements OnInit {
       managementModel.MPgrA = this.currentUser.userId
       managementModel.WPRSEQUENCE = this.mData.wprsequence;
 
-      if (this.mData.wprstatus == "New" && managementModel.WPRSTATUS == "In Progress") {
+      if (this.currentStatus == "New" && managementModel.WPRSTATUS == "In Progress") {
         this.alertService.error("The Work Programme Status cannot be changed from 'New' to 'In Progress'");
         return
       }
 
-      if (this.mData.wprstatus == "Closed" && managementModel.WPRSTATUS == "New") {
+      if (this.currentStatus == "Closed" && managementModel.WPRSTATUS == "New") {
         this.alertService.error("The Work Programme Status cannot be changed from 'Closed' to 'New'");
         return
       }
 
-      if (this.mData.wprstatus == "In Progress" && managementModel.WPRSTATUS == "New") {
+      if (this.currentStatus == "In Progress" && managementModel.WPRSTATUS == "New") {
         this.alertService.error("The Work Programme Status cannot be changed from 'In Progress' to 'New'");
         return
       }

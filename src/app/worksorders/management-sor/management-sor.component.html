@@ -82,7 +82,7 @@
                 </multicheck-filter>
               </ng-template>
               </kendo-grid-column>
-              <kendo-grid-column field="defaultCost" title="Default Cost" width="160" >
+              <kendo-grid-column field="defaultCost" title="Default Cost" width="160" [style]="{'text-align': 'right'}"  >
                 <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
                 let-filterService="filterService">
                 <multicheck-filter [isPrimitive]="false" [field]="column.field" [currentFilter]="filter"
@@ -96,7 +96,7 @@
                 </div>
             </ng-template>
               </kendo-grid-column>
-              <kendo-grid-column field="cost" title="Cost" width="180" >
+              <kendo-grid-column field="cost" title="Cost" width="180" [style]="{'text-align': 'right'}" >
                 <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
                 let-filterService="filterService">
                 <multicheck-filter [isPrimitive]="false" [field]="column.field" [currentFilter]="filter"

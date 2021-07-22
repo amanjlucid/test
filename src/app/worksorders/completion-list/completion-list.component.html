@@ -54,14 +54,14 @@
         </kendo-grid-column>
         <kendo-grid-column field="assetCount" title="Asset Count" width="110" filter="numeric">
         </kendo-grid-column>
-        <kendo-grid-column field="feecostsum" title="Fee Cost" width="140" filter="numeric">
+        <kendo-grid-column field="feecostsum" title="Fee Cost" width="140" filter="numeric"  [style]="{'text-align': 'right'}">
           <ng-template kendoGridCellTemplate let-gridView>
             <span>
               {{ gridView.feecostsum | currency:"GBP":"symbol" }}
             </span>
           </ng-template>
         </kendo-grid-column>
-        <kendo-grid-column field="workcostsum" title="Work Cost" width="120" filter="numeric">
+        <kendo-grid-column field="workcostsum" title="Work Cost" width="120" filter="numeric"  [style]="{'text-align': 'right'}">
           <ng-template kendoGridCellTemplate let-gridView>
             <span>
               {{ gridView.workcostsum | currency:"GBP":"symbol" }}
@@ -87,7 +87,7 @@
   <div class="completionListOverlay"></div>
 
  <app-send-email *ngIf="SendEmailInsReportWindow" [SendEmailInsReportWindow]="SendEmailInsReportWindow" (closeEmailReportEvent)="closeEmailWithReportWindow($event)" [selectedObj]="selectedCompletionsList" [opendFrom]="'completion'"></app-send-email>
-<!-- 
+<!--
     <kendo-window title="Send Report" [top]="25" *ngIf="SendEmailInsReportWindow" (close)="closeEmailWithReportWindow()"
       [minWidth]="800" [height]="auto" [minHeight]="300" [width]="650">
 

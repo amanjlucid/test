@@ -103,9 +103,37 @@ export class VariationChangefeeComponent implements OnInit {
     }
   }
 
+
+  validateForProcess(){
+
+    const { wosequence, wopsequence, assid, wostagesurcde, wochecksurcde } = this.selectedSingleFees;
+    const { woisequence } = this.selectedSingleVariationAssetInp;
+
+    const params = {
+      WOSEQUENCE:  wosequence,
+      WOISEQUENCE:  woisequence,
+      Process: 'ChangeFee',
+      UserID: this.currentUser.userId,
+    }
+
+    this.subs.add(
+      this.workOrderProgrammeService.worksOrdersCheckVariationValidForProcess(params).subscribe(
+        data => {
+          if (data.isSuccess) {
+              this.completeSubmit()
+          } else {
+            this.alertService.error(data.message)
+          }
+        }, err => this.alertService.error(err)
+      )
+    )
+
+
+  }
+
   onSubmit() {
     this.submitted = true;
-    this.formErrorObject(); // empty form error 
+    this.formErrorObject(); // empty form error
     this.logValidationErrors(this.variationFeeForm);
 
     this.chRef.detectChanges();
@@ -114,6 +142,11 @@ export class VariationChangefeeComponent implements OnInit {
       return;
     }
 
+    this.validateForProcess();
+
+  }
+
+  completeSubmit() {
 
     let formRawVal = this.variationFeeForm.getRawValue();
     const { wosequence, wopsequence, assid, wostagesurcde, wochecksurcde } = this.selectedSingleFees;

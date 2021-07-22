@@ -471,7 +471,7 @@ export class WorksordersAddPackageEnterQuantityComponent implements OnInit {
 
       //console.log(req)
       this.subs.add(
-        forkJoin(req).subscribe(
+          forkJoin(req).subscribe(
           data => {
             this.closePackageQuantityWindow();
           }
@@ -512,28 +512,28 @@ export class WorksordersAddPackageEnterQuantityComponent implements OnInit {
           WOPSEQUENCE: this.selectedWorkOrder.wopsequence
         }
 
-        
+
         if (this.applyCount > 0) {
 
           this.subs.add(
             this.worksorderManagementService.SwapPackage(params).subscribe(
               data => {
-             
+
 
                 if (data.data != undefined) {
                   const res = data.data[0];
-                
+
                   if (res.pRETURNSTATUS == "E") {
                     this.alertService.error(res.pRETURNMESSAGE);
                     return;
-                  
+
                   } else {
                     this.alertService.success(res.pRETURNMESSAGE);
                     this.closePackageQuantityWindow();
                   }
                 } else {
                   this.alertService.success("Something went wrong.");
-                  
+
                 }
 
 

@@ -168,6 +168,7 @@ export class WopmEditRagStatusComponent implements OnInit {
   changeType(value) {
 
     this.formErrorObject()
+    this.DisplaySurveyQuestion = false;
     this.TypeSelected = true;
     this.DisplayCompareTo = false;
     this.DisplaySliders = false;
@@ -222,7 +223,7 @@ export class WopmEditRagStatusComponent implements OnInit {
       this.DisplaySurveyQuestion = this.EditMode;
       this.DisplaySliders  = true//!this.EditMode;
       this.updateSurveyQuestionText(this.ragStatusForm.controls.compareField.value);
-      this.infoLabel = `Use sliders below to select a percentage value between 0 and 5.  For a 'Survey' RAG Status the Green value should be higher than the Amber value:`;
+      this.infoLabel = `Use sliders below to select a value between 0 and 5.  For a 'Survey' RAG Status the Green value should be higher than the Amber value:`;
 
 
     }

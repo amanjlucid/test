@@ -1,6 +1,6 @@
 <kendo-window  [title]="windowTitle"  [width]="750"  (close)="closeChecklistFormWindow()" style="z-index: 12003">
     <div class="flex-grow-1 userFrm">
-  
+
       <form [formGroup]="checklistForm"  autocomplete="off">
 
           <div class="col-md-12 m-1">
@@ -18,7 +18,7 @@
                   <div *ngIf="submitted && formErrors.stage" class="invalid-feedback">
                     <div *ngIf="formErrors.stage">{{ formErrors.stage }}</div>
                   </div>
-                </div> 
+                </div>
 
               </div>
           </div>
@@ -34,7 +34,7 @@
                 <div *ngIf="submitted && formErrors.name" class="invalid-feedback">
                   <div *ngIf="formErrors.name">{{ formErrors.name }}</div>
                 </div>
-              </div>                
+              </div>
             </div>
           </div>
 
@@ -49,7 +49,7 @@
                     <div *ngIf="submitted && formErrors.description" class="invalid-feedback">
                       <div *ngIf="formErrors.description">{{ formErrors.description }}</div>
                     </div>
-                  </div>              
+                  </div>
                 </div>
           </div>
 
@@ -132,7 +132,7 @@
                 </div>
 
                 <div class="col-md-9">
-                  <kendo-numerictextbox [format]="'##,#.00'" [min]="0"  class="form-control" placeholder="Cost" formControlName="cost"
+                  <kendo-numerictextbox [format]="'£##,#.00'" [min]="0"  class="form-control" placeholder="Cost" formControlName="cost"
                   [ngClass]="{ 'is-invalid': submitted && formErrors.cost }" ></kendo-numerictextbox>
                   <div *ngIf="submitted && formErrors.cost" class="invalid-feedback">
                     <div *ngIf="formErrors.cost">{{ formErrors.cost }}</div>
@@ -146,7 +146,7 @@
                 <div class="col-md-3 text-right">
                   <label class="col-form-label">User Ref 2</label>
                 </div>
-  
+
                 <div class="col-md-9">
                   <input type="text" class="form-control" placeholder="User Ref 2" formControlName="useref2"  maxlength="20"  disabled
                     [ngClass]="{ 'is-invalid': submitted && formErrors.useref2 }">
@@ -154,7 +154,7 @@
                     <div *ngIf="formErrors.useref2">{{ formErrors.useref2 }}</div>
                   </div>
                 </div>
-  
+
               </div>
             </div>
             <div class="col-md-12 m-1"  *ngIf="templateType == 'Asset Template'">
@@ -258,7 +258,7 @@
                     <button type="button" class="btn btn-sm themeButton col smallButton" (click)="file.click()"
                     [disabled]="checklistForm.controls['checklisttype'].value != 'LETTER'">...
                       <!-- <input type="file" [(ngModel)]="fileValue" accept=".csv" style="display:none" (change)="handleFile($event)"> -->
-                      <input type="file" #file [(ngModel)]="fileValue" [ngModelOptions]="{standalone: true}" [multiple]="false" (change)="onFileChange($event)" 
+                      <input type="file" #file [(ngModel)]="fileValue" [ngModelOptions]="{standalone: true}" [multiple]="false" (change)="onFileChange($event)"
                       style="display:none"  accept=".docx,.dotx,.doc,.dot"/>
                     </button>
                   <div *ngIf="submitted && formErrors.mailmergedoc" class="invalid-feedback">
@@ -292,7 +292,7 @@
           </div>
 
       </form>
-  
-  
+
+
     </div>
   </kendo-window>

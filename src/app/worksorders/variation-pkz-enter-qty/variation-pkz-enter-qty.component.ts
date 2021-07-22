@@ -63,12 +63,11 @@ export class VariationPkzEnterQtyComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log('in')
     // console.log({ mode: this.mode, parnetcomp: this.parentComp, openedFrom: this.openedFrom, variation: this.singleVariationInp, assetDetail: this.assetDetailInp, asset: this.selectedSingleVariationAssetInp })
     // console.log({ selection: this.selectedPkzs })
 
     if (this.parentComp == 'worklist') {
-      this.title = 'Variation Cost/Qantity';
+      this.title = 'Variation Cost/Quantity';
     } else if (this.parentComp == 'additional') {
       this.title = 'Add Package Enter Quantity';
     }

@@ -169,7 +169,7 @@ export class UserFormComponent implements OnInit {
             passwordControl.clearValidators();
             passwordDurationControl.clearValidators();
             maxLoginAttemptControl.clearValidators();
-            
+
             let pwd = '';
             let pwdExpiry: any = ''
             let maxAttemp: any = ''
@@ -301,7 +301,7 @@ export class UserFormComponent implements OnInit {
 
   onSubmit() {
     this.submitted = true;
-    this.formErrorObject(); // empty form error 
+    this.formErrorObject(); // empty form error
     this.logValidationErrors(this.userForm);
 
     if (this.userForm.invalid) {
@@ -328,6 +328,11 @@ export class UserFormComponent implements OnInit {
       LoggedInUserId: this.currentUser.userId,
       CONCODE: this.f.contractor.value,
       IsEdit: this.userFormType == "new" ? false : true
+    }
+
+    if(user.UserType == 'I')
+    {
+      user.CONCODE = '';
     }
 
     //console.log(user);

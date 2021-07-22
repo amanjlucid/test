@@ -6,7 +6,7 @@
           Work List
         </h4>
       </div>
-  
+
       <div class="col-md-9 text-right">
         <button type="button" [disabled]="mySelection.length == 0" class="btn btn-sm themeButton mr-1"
         *ngIf="checkWorksOrdersAccess('Set Tag')" (click)="MultipleSetTag()">Set Tag</button>
@@ -19,7 +19,7 @@
 
         <button type="button" [disabled]="mySelection.length == 0" class="btn btn-sm themeButton mr-1"
         *ngIf="checkWorksOrdersAccess('Cancel Work List')" (click)="MultipleCancelWorkItem()">Cancel Work List</button>
-  
+
         <button type="button" class="btn btn-sm themeButton mr-1 dropdown-toggle" data-toggle="dropdown"
         *ngIf="checkWorksOrdersAccess('Work List') || checkWorksOrdersAccess('Work List Tag') || checkWorksOrdersAccess('Work List (Interface Format)')"
           aria-expanded="false">Reports...</button>
@@ -32,12 +32,12 @@
             <a class="dropdown-item" *ngIf="checkWorksOrdersAccess('Work List (Interface Format)')"
             (click)="openReport(535, 'Work List Interface Format Report')" href="javascript:void(0)">Work List (Interface Format))</a>
         </div>
-  
+
 
       </div>
-  
+
     </div>
-  
+
   <div class="row">
       <div class="sameline">
       <label for="woStatus" class="padding-12">Work List Status:</label>
@@ -95,7 +95,7 @@
         <div class="sameline">
           <label class="form-label form-label-sm mr-1">Cancelled</label>
           <label class="switcher switcher-secondary osFilterLabel">
-          <input type="checkbox"  class="switcher-input" [(ngModel)]="headerFilters.workStatusCancelled"  (change)="searchGrid()"> 
+          <input type="checkbox"  class="switcher-input" [(ngModel)]="headerFilters.workStatusCancelled"  (change)="searchGrid()">
             <span class="switcher-indicator osFilterSwitch">
               <span class="switcher-yes">
                 <span class="ion ion-md-checkmark"></span>
@@ -113,13 +113,13 @@
   </div>
 
 
- 
+
   <div class="filterArea mb-2" *ngIf="contractor">
     <div class="row">
       <label class="col-sm-12 col-md-1">Contractor:</label>
       <input  class="assetInpBox col-sm-12 col-md-3" type="text" [(ngModel)]="contractorName" readonly>
     </div>
-  </div> 
+  </div>
 
   <div class="filterArea mb-2" *ngIf="contract">
     <div class="row">
@@ -127,7 +127,7 @@
       <label class="col-sm-12 col-md-1">Contract:</label>
       <input class="assetInpBox col-sm-12 col-md-3" type="text" [(ngModel)]="contractName" readonly>
     </div>
-  </div> 
+  </div>
 
 
 
@@ -181,13 +181,13 @@
   <div class="filterArea mt-1">
     <div class="row">
       <label class="col-sm-12 col-md-1">WL Tag:</label>
-      <input  class="assetInpBox col-sm-12 col-md-2" type="text" [(ngModel)]="headerFilters.wlttagcode" (keydown)="keyDownFunction($event)"> 
-  
+      <input  class="assetInpBox col-sm-12 col-md-2" type="text" [(ngModel)]="headerFilters.wlttagcode" (keydown)="keyDownFunction($event)">
+
       <label class="ml-1 col-sm-12 col-md-1 addr_search">Works Order No:</label>
       <input type="number" min="0" [(ngModel)]="headerFilters.wosequence" class="assetInpBox col-sm-12 col-md-2" (keydown)="keyDownFunction($event)">
 
       <div class="col-md-1"></div>
-      
+
       <div class="col-md-1">
         <label for="">Phase:</label>
     </div>
@@ -207,7 +207,7 @@
 
 
     <div class="row mt-2">
-  
+
       <div class="col-md-12">
 
           <kendo-grid
@@ -223,9 +223,9 @@
             allowUnsort: true, mode: 'single'}"
             [sort]="state.sort"
             (cellClick)="cellClickHandler($event)"
-            [navigable]="false" 
+            [navigable]="false"
             [virtualColumns]="true"
-            [selectedKeys]="mySelection" 
+            [selectedKeys]="mySelection"
             [selectable]="selectableSettings"
             [kendoGridSelectBy]="mySelectionKey"
             [rowClass]="rowCallback"
@@ -246,7 +246,7 @@
         </kendo-grid-column>
 
 
-            <!-- [filter]="state.filter"  -->            
+            <!-- [filter]="state.filter"  -->
             <!-- (filterChange)="filterChange($event)"  -->
             <kendo-grid-column field="asbestosRisk" title="" width="40" [filterable]="false" [sortable]="false">
               <ng-template kendoGridHeaderTemplate>
@@ -264,7 +264,7 @@
 
 
                     <li class="nav-item dropdown list-unstyled" style="margin-top: -7px;">
-                      
+
                       <!-- <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars barClas"></i> -->
 
                       <span data-toggle="dropdown" aria-expanded="false">
@@ -278,7 +278,7 @@
                       <!-- <div class="dropdown-menu" *ngIf="(worksOrderAccess.indexOf('Asset Details') != -1) && checkAsbestosTabAccess()"> -->
                         <div class="dropdown-menu" *ngIf="checkAsbestosTabAccess()">
                         <a class="dropdown-item" href="javascript:void(0)" (click)="openAsbestosDetail(dataItem)">View Asbestos Detail</a>
-            
+
                       </div>
                     </li>
               </ng-template>
@@ -360,7 +360,7 @@
             </simple-text-filter>
         </ng-template> -->
           </kendo-grid-column>
-  
+
           <kendo-grid-column field="wlttagcode" title="WL Tag" [width]="200">
             <!-- <ng-template kendoGridFilterMenuTemplate let-filter="filter" let-column="column"
             let-filterService="filterService">
@@ -368,7 +368,7 @@
             </simple-text-filter>
         </ng-template> -->
           </kendo-grid-column>
-          <kendo-grid-column field="wlcontcost" title="Contract Cost" [width]="150">
+          <kendo-grid-column field="wlcontcost" title="Contract Cost" [width]="150"  [style]="{'text-align': 'right'}">
             <ng-template kendoGridCellTemplate let-dataItem>
               <span>
                 {{ dataItem.wlcontcost | currency:"GBP":"symbol" }}
@@ -440,23 +440,23 @@
         </ng-template> -->
           </kendo-grid-column>
 
-  
+
         </kendo-grid>
 
-  
+
       </div>
     </div>
-  
-  
+
+
   </div>
-  
- 
-  
-  
-  
+
+
+
+
+
   <div class="workListOverlay"></div>
 
-  
+
     <!-- window for add new hiearchy starts -->
     <kendo-window [height]="640" [top]="15" [width]="700" title="Select Hierarchy..." *ngIf="hiearchyWindow"
         (close)="closeHiearchyWindow()">
@@ -523,41 +523,41 @@
 
     <kendo-dialog  title="Work List Tag" *ngIf="dialogSetTag"   [height]="220" autoFocusedElement="#workTag" (close)="closeSetTagWin()"
     [width]="400" style="padding: 0;" >
-    
+
         <legend>Please enter the Tag value</legend>
-    
+
         <div class=" row col-md-12 p-0 mx-0 my-4">
             <div class="col-md-2"></div>
             <input #workTag class="col-md-10 text-left p-0 m-0" maxlength="50" [(ngModel)]="tagText">
         </div>
-        
+
         <!-- </fieldset> -->
         <div class="text-right mt-3">
             <button class="btn btn-sm themeButton" Width="100" (click)="closeSetTagWin()">Cancel</button>
             <button [disabled]="!tagText || tagText.length == 0"  Width="100"  class="btn btn-sm themeButton ml-1" (click)="setTag()">OK</button>
-        </div> 
-    
+        </div>
+
     </kendo-dialog>
 
     <kendo-dialog  title="Cancellation Reason" *ngIf="dialogCancellationReason"   [height]="220" autoFocusedElement="#workTag" (close)="closeCancellationWin()"
     [width]="600" style="padding: 0;" >
-    
+
         <legend>Please enter the cancellation reason</legend>
-    
+
         <div class=" row col-md-12 p-0 mx-0 my-4">
             <div class="col-md-2"></div>
             <input #workTag class="col-md-10 text-left p-1 m-0" [(ngModel)]="cancellationText">
         </div>
-        
+
         <!-- </fieldset> -->
         <div class="text-right mt-3">
             <button class="btn btn-sm themeButton" Width="100" (click)="closeCancellationWin()">Cancel</button>
             <button [disabled]="!cancellationText || cancellationText.length == 0"  Width="100"  class="btn btn-sm themeButton ml-1" (click)="confirmCancelItems()">OK</button>
-        </div> 
-    
+        </div>
+
     </kendo-dialog>
 
-    
+
   <!-- Reporting Section -->
   <app-reporting [reportingAction]="reportingAction" [surveyPortalXport]="selectedXport" [openReports]="openReports"
   *ngIf="openReports" (closeReportingWin)="closeReportingWin($event)"></app-reporting>

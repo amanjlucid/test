@@ -1,10 +1,9 @@
 import { Component, OnInit, ViewEncapsulation, ViewChild, ChangeDetectorRef, HostListener } from '@angular/core';
-import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
-import { FilterService, SelectableSettings, TreeListComponent, ExpandEvent, RowClassArgs } from '@progress/kendo-angular-treelist';
+import { SortDescriptor, State, CompositeFilterDescriptor } from '@progress/kendo-data-query';
+import { FilterService, SelectableSettings, TreeListComponent, ExpandEvent, RowClassArgs} from '@progress/kendo-angular-treelist';
 import { AlertService, HelperService, WorksorderManagementService, ConfirmationDialogService, SharedService, WorksOrdersService } from '../../_services'
 import { SubSink } from 'subsink';
 import { Router } from '@angular/router';
-import { SortDescriptor } from '@progress/kendo-data-query';
 import { combineLatest } from 'rxjs';
 import { TooltipDirective } from '@progress/kendo-angular-tooltip';
 
@@ -46,7 +45,7 @@ export class WorksordersManagementComponent implements OnInit {
   selectedProgramme: any;
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
   worksOrderAccess = [];
-
+  touchtime = 0;
   packageMappingWindow = false
   worksOrderSingleData: any;
   deleteWorksOrderReasonWindow = false;
@@ -55,7 +54,7 @@ export class WorksordersManagementComponent implements OnInit {
   managementRolesTab = false
   managementSORTab = false
   managementCostsTab = false
-
+  selectedStatus: string = "A";
   woFormType = 'new';
   woFormWindow: boolean = false;
 
@@ -213,9 +212,12 @@ export class WorksordersManagementComponent implements OnInit {
     )
   }
 
+
+
   public onFilterChange(filter: any): void {
     this.filter = filter;
   }
+
 
   cellClickHandler($event) {
     if ($event.dataItem.treelevel == 1) {
@@ -224,7 +226,27 @@ export class WorksordersManagementComponent implements OnInit {
 
     if ($event.dataItem.treelevel == 2) {
       this.setSeletedWORow($event.dataItem);
+      let dataItem = $event.dataItem
+      if (this.selctedWorksOrder.wosequence)
+        if (this.touchtime == 0) {
+          this.touchtime = new Date().getTime();
+        } else {
+          if (((new Date().getTime()) - this.touchtime) < 400) {
+            //open work order detail window
+            setTimeout(() => { this.redirectToWorksOrder(dataItem) }, 200);
+            this.touchtime = 0;
+          } else {
+            // not a double click so set as a new first click
+            this.touchtime = new Date().getTime();
+          }
+
+        }
+
     }
+
+
+
+
   }
 
   public clearSelection(): void {
@@ -233,9 +255,10 @@ export class WorksordersManagementComponent implements OnInit {
 
 
   checkActiveInactive($event) {
+    this.selectedStatus = $event.target.value;
     this.loading = true;
     this.gridData = [];
-    this.getManagement($event.target.value)
+    this.getManagement( this.selectedStatus)
   }
 
 
@@ -312,7 +335,7 @@ export class WorksordersManagementComponent implements OnInit {
 
   refreshManagementGrid(event) {
     if (event) {
-      this.getManagement();
+      this.getManagement(this.selectedStatus);
       this.selectedProgramme = undefined;
     }
   }
@@ -427,9 +450,11 @@ export class WorksordersManagementComponent implements OnInit {
   }
 
   redirectToWorksOrder(item) {
-    this.sharedService.changeWorksOrderSingleData(item);
-    localStorage.setItem('worksOrderSingleData', JSON.stringify(item)); // remove code on logout service
-    this.router.navigate(['worksorders/details']);
+    if (this.woMenuAccess('Works Order Detail')){
+      this.sharedService.changeWorksOrderSingleData(item);
+      localStorage.setItem('worksOrderSingleData', JSON.stringify(item)); // remove code on logout service
+      this.router.navigate(['worksorders/details']);
+    }
   }
 
   lockUnlockColumn() {

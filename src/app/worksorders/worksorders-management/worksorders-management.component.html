@@ -23,7 +23,25 @@
             </div>
 
 
+
             <div class="actionDiv">
+
+
+              <div class="dropdown mr-1" id="nesting-dropdown-demo"
+              *ngIf="worksOrderAccess.indexOf('New Programme') != -1 || worksOrderAccess.indexOf('New Works Order') != -1">
+                  <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown"
+                      aria-expanded="false">New</button>
+                  <div class="dropdown-menu" x-placement="bottom-start"
+                      style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
+                      <a *ngIf="worksOrderAccess.indexOf('New Programme') != -1" class="dropdown-item"
+                          (click)="openNewManagementWindow()" href="javascript:void(0)">New
+                          Programme</a>
+                      <a class="dropdown-item" *ngIf="worksOrderAccess.indexOf('New Works Order') != -1"
+                          href="javascript:void(0)" (click)="openWorksOrderForm('new')">New Works Order</a>
+
+                  </div>
+              </div>
+
                 <button type="button" class="btn btn-sm themeButton mr-1" (click)="export()">Export</button>
 
                 <div class="dropdown mr-1 reportBtnArea mt-2" id="nesting-dropdown-demo">
@@ -38,20 +56,7 @@
                 </div>
 
 
-                <div class="dropdown mr-1" id="nesting-dropdown-demo"
-                    *ngIf="worksOrderAccess.indexOf('New Programme') != -1 || worksOrderAccess.indexOf('New Works Order') != -1">
-                    <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown"
-                        aria-expanded="false">New</button>
-                    <div class="dropdown-menu" x-placement="bottom-start"
-                        style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
-                        <a *ngIf="worksOrderAccess.indexOf('New Programme') != -1" class="dropdown-item"
-                            (click)="openNewManagementWindow()" href="javascript:void(0)">New
-                            Programme</a>
-                        <a class="dropdown-item" *ngIf="worksOrderAccess.indexOf('New Works Order') != -1"
-                            href="javascript:void(0)" (click)="openWorksOrderForm('new')">New Works Order</a>
 
-                    </div>
-                </div>
                 <button id="showFilePanel" (click)="lockUnlockColumn()" class="btn btn-sm themeButton">
                     <i *ngIf="!columnLocked" class="fa fa-lock" aria-hidden="true"></i>
                     <i *ngIf="columnLocked" class="fa fa-unlock" aria-hidden="true"></i>
@@ -79,7 +84,7 @@
                         <i aria-expanded="false" *ngIf="dataItem.treelevel == 1 || dataItem.treelevel == 2"
                             class="fas fa-bars" (click)="openMenu($event, dataItem)"></i>
                     </ng-template>
-                 
+
                 </kendo-treelist-column>
 
                 <kendo-treelist-column [expandable]="true" [minResizableWidth]="200" field="name" title="Name"
@@ -96,14 +101,14 @@
 
                 <kendo-treelist-column field="wprstatus" title="Status" [width]="110">
                 </kendo-treelist-column>
-                <kendo-treelist-column field="budget" title="Budget" [width]="150" [style]="{'text-align': 'right'}">
+                <kendo-treelist-column field="budget" title="Budget" [width]="150" [style]="{'text-align': 'right'}" [filterable]=false>
                     <ng-template kendoTreeListCellTemplate let-dataItem>
                         <span>
                             {{ dataItem.budget | currency:"GBP":"symbol" }}
                         </span>
                     </ng-template>
                 </kendo-treelist-column>
-                <kendo-treelist-column field="forecast" title="Forecast" [width]="150"
+                <kendo-treelist-column field="forecast" title="Forecast" [width]="150" [filterable]=false
                     [style]="{'text-align': 'right'}">
                     <ng-template kendoTreeListCellTemplate let-dataItem>
                         <span>
@@ -111,7 +116,7 @@
                         </span>
                     </ng-template>
                 </kendo-treelist-column>
-                <kendo-treelist-column field="committed" title="Commited" [width]="150"
+                <kendo-treelist-column field="committed" title="Commited" [width]="150" [filterable]=false
                     [style]="{'text-align': 'right'}">
                     <ng-template kendoTreeListCellTemplate let-dataItem>
                         <span>
@@ -119,7 +124,7 @@
                         </span>
                     </ng-template>
                 </kendo-treelist-column>
-                <kendo-treelist-column field="wprcurrentcontractsum" title="Issued" [width]="150"
+                <kendo-treelist-column field="wprcurrentcontractsum" title="Issued" [width]="150" [filterable]=false
                     [style]="{'text-align': 'right'}">
                     <ng-template kendoTreeListCellTemplate let-dataItem>
                         <span>
@@ -127,7 +132,7 @@
                         </span>
                     </ng-template>
                 </kendo-treelist-column>
-                <kendo-treelist-column field="wpracceptedvalue" title="Accepted" [width]="150"
+                <kendo-treelist-column field="wpracceptedvalue" title="Accepted" [width]="150" [filterable]=false
                     [style]="{'text-align': 'right'}">
                     <ng-template kendoTreeListCellTemplate let-dataItem>
                         <span>
@@ -135,14 +140,14 @@
                         </span>
                     </ng-template>
                 </kendo-treelist-column>
-                <kendo-treelist-column field="actual" title="Actual" [width]="150" [style]="{'text-align': 'right'}">
+                <kendo-treelist-column field="actual" title="Actual" [width]="150" [style]="{'text-align': 'right'}" [filterable]=false >
                     <ng-template kendoTreeListCellTemplate let-dataItem>
                         <span>
                             {{ dataItem.actual | currency:"GBP":"symbol" }}
                         </span>
                     </ng-template>
                 </kendo-treelist-column>
-                <kendo-treelist-column field="approved" title="Approved" [width]="150"
+                <kendo-treelist-column field="approved" title="Approved" [width]="150" [filterable]=false
                     [style]="{'text-align': 'right'}">
                     <ng-template kendoTreeListCellTemplate let-dataItem>
                         <span>
@@ -150,14 +155,14 @@
                         </span>
                     </ng-template>
                 </kendo-treelist-column>
-                <kendo-treelist-column field="pending" title="Pending" [width]="150" [style]="{'text-align': 'right'}">
+                <kendo-treelist-column field="pending" title="Pending" [width]="150" [style]="{'text-align': 'right'}" [filterable]=false >
                     <ng-template kendoTreeListCellTemplate let-dataItem>
                         <span>
                             {{ dataItem.pending | currency:"GBP":"symbol" }}
                         </span>
                     </ng-template>
                 </kendo-treelist-column>
-                <kendo-treelist-column field="payments" title="Payments" [width]="150"
+                <kendo-treelist-column field="payments" title="Payments" [width]="150" [filterable]=false
                     [style]="{'text-align': 'right'}">
                     <ng-template kendoTreeListCellTemplate let-dataItem>
                         <span>
@@ -270,13 +275,13 @@
                 </kendo-treelist-column>
                 <kendo-treelist-column field="fc" title="FC" [width]="80">
                 </kendo-treelist-column>
-                <kendo-treelist-column field="fc" title="Comment" [width]="150">
+  <!--            <kendo-treelist-column field="fc" title="Comment" [width]="150">
                     <ng-template kendoTreeListCellTemplate let-dataItem>
                         <span>
 
                         </span>
                     </ng-template>
-                </kendo-treelist-column>
+                </kendo-treelist-column>-->
 
             </kendo-treelist>
         </div>
@@ -337,7 +342,7 @@
                     </div>
                 </div>
 
-                <a *ngIf="woMenuAccess('Payment Schedule Tab')" class="dropdown-item" href="javascript:void(0)" (click)="openWOPMPaymentSchedule(menuData)">Payment
+                <a *ngIf="programmeMenuAccess('Payment Schedule Tab')" class="dropdown-item" href="javascript:void(0)" (click)="openWOPMPaymentSchedule(menuData)">Payment
                     Schedule</a>
 
             </div>

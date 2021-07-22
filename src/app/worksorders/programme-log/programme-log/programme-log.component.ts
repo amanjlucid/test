@@ -29,7 +29,7 @@ export class ProgramLogComponent implements OnInit {
         take: 20,
         group: [],
         filter: {
-            logic: "or",
+            logic: "and",
             filters: []
         }
     }

@@ -160,6 +160,7 @@ export class WorksordersAddPackageToWorklistComponent implements OnInit {
   }
 
   addTickedToWorklist() {
+    let v = this.mySelection.length
     this.packageQuantityWindow = true;
     $('.worklistPackageOvrlay').addClass('ovrlay');
   }

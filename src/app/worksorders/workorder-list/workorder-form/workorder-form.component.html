@@ -492,8 +492,10 @@
 
   <div class="worksOrderOverlay"></div>
 
+  <app-reporting-char *ngIf="repCharWindow" [repCharWindow]="repCharWindow" [woSequence]="selectedWorkOrderAddEdit.wosequence" [repCharModel]="reportingCharsConfig"
+  [woName]="selectedWorkOrderAddEdit.woname" (closeRepCharWindow)="closeRepCharWindow($event)"></app-reporting-char>
+
 </kendo-window>
 
-<app-reporting-char *ngIf="repCharWindow" [repCharWindow]="repCharWindow" [woSequence]="selectedWorkOrderAddEdit.wosequence" [repCharModel]="reportingCharsConfig"
-[woName]="selectedWorkOrderAddEdit.woname" (closeRepCharWindow)="closeRepCharWindow($event)"></app-reporting-char>
+
 

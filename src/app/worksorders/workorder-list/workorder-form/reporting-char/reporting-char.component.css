@@ -14,7 +14,10 @@
 
 .k-window {
   position: fixed !important;
+  z-index: 1000 important;
 }
+
+
 
 .workOrderDateFilter {
   height: 10px;
