@@ -248,6 +248,7 @@ export class VariationWorkListComponent implements OnInit {
   openFeesMethod() {
     $('.variationWorkListOverlay').addClass('ovrlay')
     this.openFees = true;
+    this.chRef.detectChanges();
   }
 
   closeOpenFees(eve) {
@@ -259,6 +260,7 @@ export class VariationWorkListComponent implements OnInit {
   openAdditionalWorkItem() {
     $('.variationWorkListOverlay').addClass('ovrlay')
     this.openadditionalWork = true
+    this.chRef.detectChanges();
   }
 
   closeAdditionalWorkItem(eve) {
@@ -448,7 +450,7 @@ export class VariationWorkListComponent implements OnInit {
     this.selectedSingleVarWorkList = item;
     $('.variationWorkListOverlay').addClass('ovrlay')
     this.EditWorkPackageQtyCostWindow = true;
-
+    this.chRef.detectChanges();
   }
 
   closeEditWorkPackageQtyCostWindow(eve) {

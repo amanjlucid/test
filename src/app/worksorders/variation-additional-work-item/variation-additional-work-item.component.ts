@@ -58,6 +58,7 @@ export class VariationAdditionalWorkItemComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    console.log('in')
     this.subs.add(
       combineLatest([
         this.sharedService.worksOrdersAccess,
@@ -242,6 +243,7 @@ export class VariationAdditionalWorkItemComponent implements OnInit {
   addTickedToVariation() {
     this.packageQuantityWindow = true;
     $('.worklistPackageOvrlay').addClass('ovrlay');
+    this.chRef.detectChanges();
   }
 
   closePackageQuantiyEvent(eve) {
