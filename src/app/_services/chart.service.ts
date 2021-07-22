@@ -45,7 +45,16 @@ export class ChartService {
         return this.http.get<any>(`${appConfig.apiUrl}/api/Asset/GetChartsList?chartArea=${encodeURIComponent(chartArea)}`, this.httpOptions);
     }
 
+    getListOfUserEventByCriteria(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/Manager/DrillDownChartGridData`, body, this.httpOptions);
+    }
 
+    
+    checkDrillDownChartGridDataIsNull(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/Manager/CheckDrillDownChartGridDataIsNull`, body, this.httpOptions);
+    }
 
     //########## CHART CONFIGURATION ##################//
 
@@ -234,29 +243,27 @@ export class ChartService {
             chart: {
                 type: 'column',
                 renderTo: selector,
-                // events: {
-                //     load: function () {
-                //         console.log(this)
-                //         const axis = this.xAxis[0]
-                //         const ticks = axis.ticks
-                //         const points = this.series[0].points
-                //         //const tooltip = this.tooltip
-                //         points.forEach(function (point, i) {
-                //             if (ticks[i]) {
-                //                 const label = ticks[i].label.element
-                //                 console.log(label)
-                //                 label.onclick = function () {
-                //                     console.log(point);
-                //                     service.changeChartInfo({ chartRef: point, chartObject: barChartParams, chartType: 'bar' })
+                events: {
+                    load: function () {
+                        console.log(this)
+                        const axis = this.xAxis[0]
+                        const ticks = axis.ticks
+                        const points = this.series[0].points
+                        //const tooltip = this.tooltip
+                        points.forEach(function (point, i) {
+                            if (ticks[i]) {
+                                const label = ticks[i].label.element
+                                label.onclick = function () {
+                                    service.changeChartInfo({ chartRef: point, chartObject: barChartParams, chartType: 'bar' })
 
-                //                     // tooltip.getPosition(null, null, point) 
-                //                     // tooltip.refresh(point)
-                //                 }
-                //             }
+                                    // tooltip.getPosition(null, null, point) 
+                                    // tooltip.refresh(point)
+                                }
+                            }
 
-                //         })
-                //     }
-                // }
+                        })
+                    }
+                }
             },
             title: {
                 text: titleText

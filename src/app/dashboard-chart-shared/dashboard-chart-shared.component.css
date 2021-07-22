@@ -1,13 +1,20 @@
 #wrapper {
     height: 100%;
     width: 100%;
-    overflow: hidden;
+    overflow-y: hidden;
 }
 
 .cont {
     position: relative;
     width: 100%;
     margin-bottom: 5px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    /* overflow-y: auto; */
+}
+
+.cont .lm_item.lm_stack {
+    min-height: 160px !important;
 }
 
 #layoutContainer {
@@ -17,6 +24,7 @@
     top: 0;
     left: 8px;
     border: 1px solid #e6e1e1;
+    
 }
 
 .fullscreen {
@@ -28,8 +36,6 @@
     left: 0;
     background-color: white;
 }
-
-
 
 .spBtnGrp {
     display: block;

@@ -36,7 +36,10 @@ export class DashboardChartSharedComponent implements OnInit {
   pageload: boolean = true;
   dashboardName: string;
   defaultFilterVal: string = "0_OPTIVO:CONTRACT1:OPTGAS2";
-  goldenLayoutHeight = "710px";
+  goldenLayoutStyle = {
+    height: "742px",
+    minHeight: "742px",
+  }
   @HostListener('window:resize', ['$event'])
   onResize(event) {
     this.updateChartLayoutSize();
@@ -149,7 +152,8 @@ export class DashboardChartSharedComponent implements OnInit {
 
   updateChartLayoutSize(onlyLayoutHeight = false) {
     const innerHeight = window.innerHeight - 200;
-    this.goldenLayoutHeight = `${innerHeight}px`;
+    this.goldenLayoutStyle.height = `${innerHeight}px`;
+    setTimeout(() => this.goldenLayoutStyle.minHeight = `${innerHeight + 2}px`, 3500);
 
     if (!onlyLayoutHeight) {
       $(".lm_goldenlayout").css("width", "100%");
@@ -204,9 +208,11 @@ export class DashboardChartSharedComponent implements OnInit {
 
 
   renderChart($event: any, side: string, chartData: any) {
+
     if ($('.lm_vertical').length == 0 && $('.lm_horizontal').length == 0 && $('.lm_selectable').length == 0) {
       this.createNewChart($event, side, chartData);
     } else {
+      console.log(this.myLayout);
       this.drawChartObj = chartData;
       let cl = Math.random();
       let compNo = `line${new Date().getMilliseconds()}${Math.random()}${cl}`;
@@ -483,7 +489,7 @@ export class DashboardChartSharedComponent implements OnInit {
           if (data.isSuccess) {
             const { data: barChartData, data: { chartFilterModel: barChartFilterData } } = data;
             const chartarea = container.getElement().html(`<div class="row" style="width:100%; height:100%;"><input type="hidden" value="${chartObj.chartName}" class="line${className}"><div class="col-md-12"><div class="${filterDivCl}"></div> <div id="${className}" style="position:absolute; width:100%; height:100%;"></div> </div></div>`);
-            
+
             if (barChartFilterData != null) {
               this.createFilterDropdown(barChartFilterData[0]['filterString'], { className, filterDivCl, selectedFilter });
               chartarea[0].querySelector(`.${className}`).addEventListener("change", (event) => this.renderFilteredChart(className, container, state, 'bar'));
@@ -673,7 +679,41 @@ export class DashboardChartSharedComponent implements OnInit {
   }
 
   outputDataForGrid(data: gridDataEventType) {
-    this.gridDataEvent.emit(data);
+    if (data && typeof data == 'object') {
+      const { chartType, chartRef: chartEvent, chartObject: parentChartObj } = data;
+      let selectedBarChartXasis: any;
+      if (chartType == 'pie') {
+        selectedBarChartXasis = {
+          "ddChartId": parentChartObj.ddChartId != undefined ? parentChartObj.ddChartId : parentChartObj.ddChartID,
+          "parantChartId": parentChartObj.parantChartId != undefined ? parentChartObj.parantChartId : parentChartObj.chartID,
+          "xAxisValue": chartEvent.options.name,
+          "seriesId": chartEvent.options.seriesId,
+          "chartName": parentChartObj.chartName
+        }
+      }
+
+      if (chartType == 'bar') {
+        selectedBarChartXasis = {
+          "ddChartId": parentChartObj.ddChartId != undefined ? parentChartObj.ddChartId : parentChartObj.ddChartID,
+          "parantChartId": parentChartObj.parantChartId != undefined ? parentChartObj.parantChartId : parentChartObj.chartID,
+          "xAxisValue": chartEvent.category,
+          "seriesId": parentChartObj.seriesId,
+          "chartName": parentChartObj.chartName
+        }
+      }
+
+      this.chartService.checkDrillDownChartGridDataIsNull(selectedBarChartXasis).subscribe(
+        data => {
+          console.log(data);
+          if (data.isSuccess) {
+            this.gridDataEvent.emit(selectedBarChartXasis);
+          } else this.alertService.error('No data found.')
+
+        }
+      );
+
+
+    }
   }
 
   renderDrillDownChart($event: any, chartData: any) {
