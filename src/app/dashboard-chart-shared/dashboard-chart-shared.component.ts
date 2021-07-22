@@ -44,6 +44,7 @@ export class DashboardChartSharedComponent implements OnInit {
   onResize(event) {
     this.updateChartLayoutSize();
   }
+  numberOfChartCanBeAdded = 10;
 
   constructor(
     private alertService: AlertService,
@@ -75,10 +76,11 @@ export class DashboardChartSharedComponent implements OnInit {
         .pipe(delay(500))//DELAY 500 MILISECOND 
         .subscribe(
           async data => {
-            const { chartData = null, dashboard } = data.data;
+            const { chartData = null, dashboard, numberOfChart = 10 } = data.data;
             if (chartData != null) {
               this.dashboardName = dashboard;
               this.savedState = chartData.chartData;
+              this.numberOfChartCanBeAdded = numberOfChart
               this.myLayout = new GoldenLayout(JSON.parse(this.savedState), $('#layoutContainer'));
             } else {
               this.savedState = null
@@ -153,7 +155,7 @@ export class DashboardChartSharedComponent implements OnInit {
   updateChartLayoutSize(onlyLayoutHeight = false) {
     const innerHeight = window.innerHeight - 200;
     this.goldenLayoutStyle.height = `${innerHeight}px`;
-    setTimeout(() => this.goldenLayoutStyle.minHeight = `${innerHeight + 2}px`, 3500);
+    setTimeout(() => this.goldenLayoutStyle.minHeight = `${innerHeight + 2}px`, 4500);
 
     if (!onlyLayoutHeight) {
       $(".lm_goldenlayout").css("width", "100%");
@@ -212,7 +214,13 @@ export class DashboardChartSharedComponent implements OnInit {
     if ($('.lm_vertical').length == 0 && $('.lm_horizontal').length == 0 && $('.lm_selectable').length == 0) {
       this.createNewChart($event, side, chartData);
     } else {
-      console.log(this.myLayout);
+      const numberOfCharts = document.querySelectorAll('.lm_item_container').length;
+      if (numberOfCharts >= this.numberOfChartCanBeAdded) {
+        this.alertService.error(`Maximum ${this.numberOfChartCanBeAdded} chart can be added.`)
+        return
+      }
+
+      // console.log(this.myLayout.config);
       this.drawChartObj = chartData;
       let cl = Math.random();
       let compNo = `line${new Date().getMilliseconds()}${Math.random()}${cl}`;
@@ -657,7 +665,6 @@ export class DashboardChartSharedComponent implements OnInit {
 
 
   openChartOrGrid(data: gridDataEventType) {
-    console.log(data)
     const { chartRef: chartEvent, chartObject: parentChartObj } = data;
     if (parentChartObj && parentChartObj.ddChartID) {
       const params = {
@@ -704,7 +711,6 @@ export class DashboardChartSharedComponent implements OnInit {
 
       this.chartService.checkDrillDownChartGridDataIsNull(selectedBarChartXasis).subscribe(
         data => {
-          console.log(data);
           if (data.isSuccess) {
             this.gridDataEvent.emit(selectedBarChartXasis);
           } else this.alertService.error('No data found.')

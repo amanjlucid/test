@@ -55,30 +55,9 @@ export class EventManagerChartComponent implements OnInit {
 
 
   gridDataEvent(event) {
-    if (event && typeof event == 'object') {
-      const { chartType, chartRef: chartEvent, chartObject: parentChartObj } = event;
-      if (chartType == 'pie') {
-        this.selectedBarChartXasis = {
-          "ddChartId": parentChartObj.ddChartId != undefined ? parentChartObj.ddChartId : parentChartObj.ddChartID,
-          "parantChartId": parentChartObj.parantChartId != undefined ? parentChartObj.parantChartId : parentChartObj.chartID,
-          "xAxisValue": chartEvent.options.name,
-          "seriesId": chartEvent.options.seriesId,
-          "chartName": parentChartObj.chartName
-        }
-      }
-
-      if (chartType == 'bar') {
-        this.selectedBarChartXasis = {
-          "ddChartId": parentChartObj.ddChartId != undefined ? parentChartObj.ddChartId : parentChartObj.ddChartID,
-          "parantChartId": parentChartObj.parantChartId != undefined ? parentChartObj.parantChartId : parentChartObj.chartID,
-          "xAxisValue": chartEvent.category,
-          "seriesId": parentChartObj.seriesId,
-          "chartName": parentChartObj.chartName
-        }
-      }
-
+   if (event && typeof event == 'object') {
+      this.selectedBarChartXasis = event
       this.openGrid();
-     
     }
 
   }
