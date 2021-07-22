@@ -33,6 +33,7 @@ import { SurveyCbcreportComponent } from './survey-portal/survey-cbcreport/surve
 import { CustomPreloadingStrategy } from './_helpers/custom-preloading-strategy';
 import { AssetResidentContainerComponent } from './asset-resident-container/asset-resident-container.component';
 import { WorksOrderSettingsComponent } from './works-order-settings/works-order-settings.component';
+import { ChartSettingsComponent } from './chart-settings/chart-settings.component';
 
 
 const appRoutes: Routes = [
@@ -118,6 +119,7 @@ const appRoutes: Routes = [
               		]
           	},
             { path: 'resident-info', component: AssetResidentContainerComponent, canActivate: [AuthGuard] },
+            { path: 'chart-settings', component: ChartSettingsComponent, canActivate: [AuthGuard] },
 
         ]
     },

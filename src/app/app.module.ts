@@ -113,6 +113,7 @@ import { TreeListModule } from '@progress/kendo-angular-treelist';
 import { CurrencyPipe } from '@angular/common';
 import { AssetResidentContainerComponent } from './asset-resident-container/asset-resident-container.component';
 import { WorksOrderSettingsComponent } from './works-order-settings/works-order-settings.component';
+import { ChartSettingsComponent } from './chart-settings/chart-settings.component';
 
 
 @NgModule({
@@ -198,9 +199,6 @@ import { WorksOrderSettingsComponent } from './works-order-settings/works-order-
     WebReporterSettingComponent,
     AssetEpcDashboardComponent,
     AssetEpcRouterComponent,
-  //  RetrievedEpcGridComponent,
-    //WorksordersDashboardComponent,
-    //WorksordersRouterComponent,
     SurveyProjectsComponent,
     SurveyProjectSurveysComponent,
     SurveyBatchesComponent,
@@ -214,7 +212,7 @@ import { WorksOrderSettingsComponent } from './works-order-settings/works-order-
     SurveyCbcreportSignatureImageComponent,
     AssetResidentContainerComponent,
     WorksOrderSettingsComponent,
-
+    ChartSettingsComponent
 
   ],
 
