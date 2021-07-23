@@ -81,3 +81,7 @@
 .childGrpDiv input[type=text], .budgetDiv input[type=text]{
     text-align: right;
 }
+
+app-worksorders-newmanagement .k-window-content{
+    overflow: inherit !important;
+}
