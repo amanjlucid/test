@@ -1,6 +1,19 @@
 <kendo-window title="{{title}}" *ngIf="packageMappingWindow" (close)="closePackageMappingWindow()" [top]="20"
     [minWidth]="700" [width]="1050" [height]="auto" [minHeight]="350">
-
+    <div class="row">
+        <div class="col-md-12">
+            <div class="row align-items-center">
+                <div class="col-md-auto">
+                    <label class="col-form-label">Works Order: </label>
+                </div>
+                <div class="col-md">
+                    <input [readonly]="true" type="text" class="form-control"
+                        value="{{ worksOrderData?.woname }} (Works Order No : {{ worksOrderData?.wosequence}})">
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <div class="row">
         <div class="col-md-12 mt-2">
             <kendo-grid [data]="gridView" [loading]="gridLoading" [height]="600" [selectable]="{
@@ -14,12 +27,36 @@
                 [selectedKeys]="mySelection">
 
                 <kendo-grid-column field="wphcode" title="Code" width="130">
+                    <ng-template kendoGridFilterMenuTemplate let-filter="filter" let-column="column"
+                        let-filterService="filterService">
+                        <simple-text-filter [contains]="true" [field]="column.field" [filter]="filter"
+                            [filterService]="filterService">
+                        </simple-text-filter>
+                    </ng-template>
                 </kendo-grid-column>
                 <kendo-grid-column field="wphname" title="Name" width="250">
+                    <ng-template kendoGridFilterMenuTemplate let-filter="filter" let-column="column"
+                        let-filterService="filterService">
+                        <simple-text-filter [contains]="true" [field]="column.field" [filter]="filter"
+                            [filterService]="filterService">
+                        </simple-text-filter>
+                    </ng-template>
                 </kendo-grid-column>
                 <kendo-grid-column field="atadescription" title="Description" width="280">
+                    <ng-template kendoGridFilterMenuTemplate let-filter="filter" let-column="column"
+                        let-filterService="filterService">
+                        <simple-text-filter [contains]="true" [field]="column.field" [filter]="filter"
+                            [filterService]="filterService">
+                        </simple-text-filter>
+                    </ng-template>
                 </kendo-grid-column>
                 <kendo-grid-column field="stageCheckDesc" title="Stage Checklist" width="320">
+                    <ng-template kendoGridFilterMenuTemplate let-filter="filter" let-column="column"
+                        let-filterService="filterService">
+                        <simple-text-filter [contains]="true" [field]="column.field" [filter]="filter"
+                            [filterService]="filterService">
+                        </simple-text-filter>
+                    </ng-template>
                 </kendo-grid-column>
 
 

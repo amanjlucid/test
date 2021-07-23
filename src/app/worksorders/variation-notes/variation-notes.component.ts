@@ -1,14 +1,17 @@
-import { Component, OnInit, OnDestroy, Input, Output,ChangeDetectorRef, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output,ChangeDetectorRef, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AlertService, EventManagerService, HelperService, ConfirmationDialogService, SharedService, WorksorderManagementService} from '../../_services'
-import { GroupDescriptor, DataResult, process, State, SortDescriptor, distinct } from '@progress/kendo-data-query';
+import { AlertService, HelperService, ConfirmationDialogService, SharedService, WorksorderManagementService} from '../../_services'
+import { DataResult, process, State, distinct } from '@progress/kendo-data-query';
 import { combineLatest } from 'rxjs';
 import { SubSink } from 'subsink';
+
 @Component({
   selector: 'app-variation-notes',
   templateUrl: './variation-notes.component.html',
-  styleUrls: ['./variation-notes.component.css']
+  styleUrls: ['./variation-notes.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
+
 export class VariationNotesComponent implements OnInit {
   @Input() displayNotesWindow: boolean = false;
   @Input() wosequence: number = 0;

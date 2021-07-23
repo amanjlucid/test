@@ -80,9 +80,7 @@ export class CompletionListComponent implements OnInit, OnDestroy {
       )
     )
 
-
     this.getWorkOrderGetWorksOrderCompletionsList();
-
 
   }
 
@@ -110,6 +108,9 @@ export class CompletionListComponent implements OnInit, OnDestroy {
           data => {
             if (data && data.isSuccess) {
               let tempData = data.data;
+              tempData.map(s => {
+                s.wocodate = new Date(s.wocodate);
+               });
               this.workOrderProgrammeData = tempData;
               this.gridView = process(this.workOrderProgrammeData, this.state);
               this.chRef.detectChanges();

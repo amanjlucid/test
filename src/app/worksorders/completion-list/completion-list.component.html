@@ -1,23 +1,25 @@
 <kendo-window title="{{title}}" [(state)]="windowState" [(top)]="windowTop" *ngIf="completionWin" [minWidth]="500"
-  [width]="980" (close)="closeCompletionWindow()">
+  [width]="980" [height]="auto" (close)="closeCompletionWindow()">
   <div class="row mt-2">
-
-
     <div class="col-md-12">
       <span *ngIf="workOrderProgrammeData?.length > 0"
         class="heading headingDiv p-2 d-block">{{workOrderProgrammeData[0].woname}} (Works Order No:
         {{workOrderProgrammeData[0].wosequence}})</span>
     </div>
+  </div>
 
-    <div class="col-md-12 mt-3">
-      <kendo-grid #grid="kendoGrid" (cellClick)="getSelectedCell($event)" [data]="gridView" [selectable]="{
+
+  <div class="row completionGridRow">
+    <div class="col-md-12 mt-3 completioGridCol">
+      <kendo-grid id="completioGrid" #grid="kendoGrid" (cellClick)="getSelectedCell($event)" [data]="gridView"
+        [selectable]="{
           mode: 'single'
         }" [groupable]="false" (groupChange)="groupChange($event)" [group]="state.group"
         [kendoGridSelectBy]="mySelectionKey" [selectedKeys]="mySelection" [resizable]="true" [skip]="state.skip"
         [sort]="state.sort" [filter]="state.filter" filterable="menu" [sortable]="{
               allowUnsort: allowUnsort,
               mode: multiple ? 'multiple' : 'single'
-              }" (sortChange)="sortChange($event)" (filterChange)="filterChange($event)" [height]="400">
+              }" (sortChange)="sortChange($event)" (filterChange)="filterChange($event)">
 
         <kendo-grid-column title=" " width="37" [filterable]="false" [sortable]="false">
           <ng-template kendoGridCellTemplate let-dataItem>
@@ -43,7 +45,12 @@
         </kendo-grid-column>
         <kendo-grid-column field="wocosequence" title="Completion ID" width="130" filter="numeric">
         </kendo-grid-column>
-        <kendo-grid-column field="wocodate" title="Completion Date" width="160">
+        <kendo-grid-column field="wocodate" title="Completion Date" width="160" filter="date" format="{0:dd-MM-yyyy}">
+          <ng-template kendoGridFilterMenuTemplate let-filter let-column="column" let-filterService="filterService">
+            <date-range-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
+            </date-range-filter>
+          </ng-template>
+
           <ng-template kendoGridCellTemplate let-gridView>
             <span>
               {{ gridView.wocodate | dateFormat : 'DD-MMM-YYYY' }}
@@ -54,14 +61,28 @@
         </kendo-grid-column>
         <kendo-grid-column field="assetCount" title="Asset Count" width="110" filter="numeric">
         </kendo-grid-column>
-        <kendo-grid-column field="feecostsum" title="Fee Cost" width="140" filter="numeric"  [style]="{'text-align': 'right'}">
+        <kendo-grid-column field="feecostsum" title="Fee Cost" width="140" filter="numeric"
+          [style]="{'text-align': 'right'}">
+          <ng-template kendoGridFilterMenuTemplate let-filter="filter" let-column="column"
+            let-filterService="filterService">
+            <simple-text-filter [contains]="true" [field]="column.field" [filter]="filter"
+              [filterService]="filterService">
+            </simple-text-filter>
+          </ng-template>
           <ng-template kendoGridCellTemplate let-gridView>
             <span>
               {{ gridView.feecostsum | currency:"GBP":"symbol" }}
             </span>
           </ng-template>
         </kendo-grid-column>
-        <kendo-grid-column field="workcostsum" title="Work Cost" width="120" filter="numeric"  [style]="{'text-align': 'right'}">
+        <kendo-grid-column field="workcostsum" title="Work Cost" width="120" filter="numeric"
+          [style]="{'text-align': 'right'}">
+          <ng-template kendoGridFilterMenuTemplate let-filter="filter" let-column="column"
+            let-filterService="filterService">
+            <simple-text-filter [contains]="true" [field]="column.field" [filter]="filter"
+              [filterService]="filterService">
+            </simple-text-filter>
+          </ng-template>
           <ng-template kendoGridCellTemplate let-gridView>
             <span>
               {{ gridView.workcostsum | currency:"GBP":"symbol" }}
@@ -77,7 +98,7 @@
 
     </div>
 
-    <div style="height:5%; min-height:10" class="col-md-12 text-right actionArea pt-3">
+    <div class="col-md-12 text-right mt-3">
       <button type="button" class="btn btn-sm themeButton" (click)="closeCompletionWindow()">Close</button>
     </div>
 
@@ -86,64 +107,8 @@
 
   <div class="completionListOverlay"></div>
 
- <app-send-email *ngIf="SendEmailInsReportWindow" [SendEmailInsReportWindow]="SendEmailInsReportWindow" (closeEmailReportEvent)="closeEmailWithReportWindow($event)" [selectedObj]="selectedCompletionsList" [opendFrom]="'completion'"></app-send-email>
-<!--
-    <kendo-window title="Send Report" [top]="25" *ngIf="SendEmailInsReportWindow" (close)="closeEmailWithReportWindow()"
-      [minWidth]="800" [height]="auto" [minHeight]="300" [width]="650">
-
-      <div class="row sendEmailWithReportDiv">
-        <div class="container pl-0">
-          <form [formGroup]="emailReportForm" (ngSubmit)="onEmailReportSubmit()">
-            <div class="form-group row">
-              <label class="col-form-label col-sm-2 text-sm-right">To</label>
-              <div class="col-sm-10 emailReport">
-
-                <ng-multiselect-dropdown [placeholder]="'Select Users'" [data]="userListToMail"
-                  [(ngModel)]="selectedItems" formControlName="userlist" [settings]="dropdownSettings"
-                  (onSelect)="onItemSelect($event)" (onDeSelect)="onItemDeSelect($event)" name="users"
-                  (onSelectAll)="onSelectAll($event)" (onDeSelectAll)="onItemDeSelectAll($event)">
-                </ng-multiselect-dropdown>
-              </div>
-            </div>
-            <div class="form-group row">
-              <label class="col-form-label col-sm-2 text-sm-right">Subject</label>
-              <div class="col-sm-10">
-                <input type="text" class="form-control" placeholder="Subject" formControlName="subject"
-                  [ngClass]="{ 'is-invalid': submitted && formErrors.subject }">
-
-                <div *ngIf="submitted && formErrors.subject" class="invalid-feedback">
-                  <div *ngIf="formErrors.subject">{{ formErrors.subject }}</div>
-                </div>
-              </div>
-            </div>
-            <div class="form-group row">
-              <label class="col-form-label col-sm-2 text-sm-right">Email Text</label>
-              <div class="col-sm-10">
-                <textarea class="form-control" placeholder="Email Text" formControlName="emailText"
-                  [ngClass]="{ 'is-invalid': submitted && formErrors.emailText }"></textarea>
-                <div *ngIf="submitted && formErrors.emailText" class="invalid-feedback">
-                  <div *ngIf="formErrors.emailText">{{ formErrors.emailText }}</div>
-                </div>
-              </div>
-            </div>
-
-            <div class="form-group row">
-              <div class="col-sm-10 ml-sm-auto reportingPrevBtn text-right">
-                <button type="button" (click)="closeEmailWithReportWindow()"
-                  class="btn btn-sm themeButton">Cancel</button>
-                <button type="submit" class="btn btn-sm btn-default themeButton ml-1">Ok</button>
-
-              </div>
-            </div>
-          </form>
-
-
-        </div>
-      </div>
-
-    </kendo-window> -->
-
-
-
+  <app-send-email *ngIf="SendEmailInsReportWindow" [SendEmailInsReportWindow]="SendEmailInsReportWindow"
+    (closeEmailReportEvent)="closeEmailWithReportWindow($event)" [selectedObj]="selectedCompletionsList"
+    [opendFrom]="'completion'"></app-send-email>
 
 </kendo-window>
