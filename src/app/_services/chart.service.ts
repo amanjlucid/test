@@ -208,14 +208,6 @@ export class ChartService {
 
                 )
             );
-
-            // chart.xAxis[0].labelGroup.element.childNodes.forEach(function (label) {
-            //     // label.style.cursor = "pointer";
-            //     label.onclick = function () {
-            //         console.log(this);
-            //         // alert('You clicked on ' + this.textContent);
-            //     }
-            // });
         }
 
         else {
@@ -243,25 +235,6 @@ export class ChartService {
             chart: {
                 type: 'column',
                 renderTo: selector,
-                // events: {
-                //     load: function () {
-                //         console.log(this)
-                //         const axis = this.xAxis[0]
-                //         const ticks = axis.ticks
-                //         const points = this.series[0].points
-                //         points.forEach(function (point, i) {
-                //             if (ticks[i]) {
-                //                 const label = ticks[i].label.element
-                //                 label.onclick = function () {
-                //                     service.changeChartInfo({ chartRef: point, chartObject: barChartParams, chartType: 'bar' })
-                //                     // tooltip.getPosition(null, null, point) 
-                //                     // tooltip.refresh(point)
-                //                 }
-                //             }
-
-                //         })
-                //     }
-                // }
             },
             title: {
                 text: titleText
@@ -287,8 +260,7 @@ export class ChartService {
                             }
                         }
 
-                        return '<a href="javascript:void(0);">' +
-                            this.value + '</a>';
+                        return `<a href="javascript:void(0);">${this.value}</a>`;
 
                     }
                 },
@@ -324,15 +296,6 @@ export class ChartService {
                             }
                         }
                     },
-                    labels: {
-                        events: {
-                            click: function (event) {
-                                console.log('fds');
-                                // service.changeChartInfo({ chartRef: this, chartObject: barChartParams, chartType: 'bar' })
-                            }
-                        }
-                    }
-
                 }
             },
             series: stackedBarChartViewModelList,
