@@ -249,13 +249,11 @@ export class ChartService {
                         const axis = this.xAxis[0]
                         const ticks = axis.ticks
                         const points = this.series[0].points
-                        //const tooltip = this.tooltip
                         points.forEach(function (point, i) {
                             if (ticks[i]) {
                                 const label = ticks[i].label.element
                                 label.onclick = function () {
                                     service.changeChartInfo({ chartRef: point, chartObject: barChartParams, chartType: 'bar' })
-
                                     // tooltip.getPosition(null, null, point) 
                                     // tooltip.refresh(point)
                                 }
