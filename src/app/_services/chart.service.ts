@@ -50,7 +50,7 @@ export class ChartService {
         return this.http.post<any>(`${appConfig.apiUrl}/api/Manager/DrillDownChartGridData`, body, this.httpOptions);
     }
 
-    
+
     checkDrillDownChartGridDataIsNull(params) {
         let body = JSON.stringify(params);
         return this.http.post<any>(`${appConfig.apiUrl}/api/Manager/CheckDrillDownChartGridDataIsNull`, body, this.httpOptions);
@@ -243,25 +243,25 @@ export class ChartService {
             chart: {
                 type: 'column',
                 renderTo: selector,
-                events: {
-                    load: function () {
-                        console.log(this)
-                        const axis = this.xAxis[0]
-                        const ticks = axis.ticks
-                        const points = this.series[0].points
-                        points.forEach(function (point, i) {
-                            if (ticks[i]) {
-                                const label = ticks[i].label.element
-                                label.onclick = function () {
-                                    service.changeChartInfo({ chartRef: point, chartObject: barChartParams, chartType: 'bar' })
-                                    // tooltip.getPosition(null, null, point) 
-                                    // tooltip.refresh(point)
-                                }
-                            }
+                // events: {
+                //     load: function () {
+                //         console.log(this)
+                //         const axis = this.xAxis[0]
+                //         const ticks = axis.ticks
+                //         const points = this.series[0].points
+                //         points.forEach(function (point, i) {
+                //             if (ticks[i]) {
+                //                 const label = ticks[i].label.element
+                //                 label.onclick = function () {
+                //                     service.changeChartInfo({ chartRef: point, chartObject: barChartParams, chartType: 'bar' })
+                //                     // tooltip.getPosition(null, null, point) 
+                //                     // tooltip.refresh(point)
+                //                 }
+                //             }
 
-                        })
-                    }
-                }
+                //         })
+                //     }
+                // }
             },
             title: {
                 text: titleText
@@ -275,6 +275,22 @@ export class ChartService {
                         cursor: 'pointer'
                     },
                     rotation: 90,
+                    formatter: function () {
+                        if (this.tick.label) {
+                            const label = this.tick.label.element;
+                            label.onclick = () => {
+                                service.changeChartInfo({ chartRef: { category: this.value }, chartObject: barChartParams, chartType: 'bar' })
+                                // const points = this.axis.series[0].points;
+                                // const point = points.find((val, ind) => ind == this.pos)
+                                // console.log(point)
+                                // console.log(this)
+                            }
+                        }
+
+                        return '<a href="javascript:void(0);">' +
+                            this.value + '</a>';
+
+                    }
                 },
                 scrollbar: {
                     enabled: scroll,
