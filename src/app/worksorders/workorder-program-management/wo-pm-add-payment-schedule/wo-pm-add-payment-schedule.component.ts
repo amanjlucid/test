@@ -24,6 +24,7 @@ export class WoProgramManagmentAddPaymentScheduleComponent implements OnInit {
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
   loading = true;
   workProgrammesData: any;
+  woActual: any;
   nextScheduleDate;
   submitted: boolean = false;
   minDate: any;
@@ -72,6 +73,7 @@ export class WoProgramManagmentAddPaymentScheduleComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // console.log(this.worksOrderData);
     if (this.worksOrderData.wocontracttype == "STAGE") {
       this.addScheduleForm = this.fb.group({
         pStartDate: ['', [Validators.required, SimpleDateValidator()]],
@@ -136,10 +138,12 @@ export class WoProgramManagmentAddPaymentScheduleComponent implements OnInit {
       forkJoin([
         this.workOrderProgrammeService.getWorkProgrammesByWprsequence(wprsequence),
         this.workOrderProgrammeService.GetPaymentScheduleDate(wosequence, wprsequence),
+        this.worksOrdersService.GetWorksOrderByWOsequence(wosequence)
       ]).subscribe(
         data => {
           const programmeData: any = data[0];
-          const nextScheduleDate = data[1]
+          const nextScheduleDate = data[1];
+          this.woActual = data[2].data;
           if (programmeData.isSuccess) this.workProgrammesData = programmeData.data[0];
           if (nextScheduleDate.isSuccess && this.paymentScheduleExist) {
             this.nextScheduleDate = nextScheduleDate.data;

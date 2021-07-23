@@ -166,7 +166,7 @@ export class SendEmailComponent implements OnInit {
       params = {
         // "USERID": this.currentUser.userId,
         "WOSEQUENCE": this.selectedObj.wosequence,
-        "WOCOSEQUENCE ": this.selectedObj.wocosequence,
+        "WOCOSEQUENCE": this.selectedObj.wocosequence,
         "Body": this.emailReportCon.emailText.value,
         "Subject": this.emailReportCon.subject.value,
         "USERID": this.userNameCommaSeprted,

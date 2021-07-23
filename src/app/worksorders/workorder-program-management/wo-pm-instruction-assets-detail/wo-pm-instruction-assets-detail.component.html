@@ -1,5 +1,5 @@
-<kendo-window title="{{title}}" [top]="10" [minWidth]="700"
-  [width]="1050" [minHeight]="350" (close)="closeInstructionAssetsDetailWindow()" >
+<kendo-window title="{{title}}" [top]="10" [minWidth]="700" [width]="1050" [minHeight]="350" [height]="700"
+  (close)="closeInstructionAssetsDetailWindow()">
 
   <div class="row headerArea">
     <div class="col-md-12 headerRow12">
@@ -21,7 +21,7 @@
         </div>
         <div class="col-md-10">
           <input [readonly]="true" type="text" class="form-control form-control-sm" placeholder=""
-              value="{{ worksOrderData.woname }}">
+            value="{{ worksOrderData.woname }}">
         </div>
       </div>
 
@@ -31,7 +31,7 @@
         </div>
         <div class="col-md-6">
           <input [readonly]="true" type="text" class="form-control form-control-sm" placeholder=""
-              value="{{ selectedInstructionRow.wopname }}">
+            value="{{ selectedInstructionRow.wopname }}">
         </div>
 
         <div class="col-md-2">
@@ -39,7 +39,7 @@
         </div>
         <div class="col-md-2">
           <input [readonly]="true" type="text" class="form-control form-control-sm" placeholder=""
-              value="{{ selectedInstructionAssetRow.woisequence }}">
+            value="{{ selectedInstructionAssetRow.woisequence }}">
         </div>
 
       </div>
@@ -52,12 +52,12 @@
         </div>
         <div class="col-md-4">
           <input [readonly]="true" type="text" class="form-control form-control-sm" placeholder=""
-              value="{{ selectedInstructionAssetRow.assid }}">
+            value="{{ selectedInstructionAssetRow.assid }}">
         </div>
 
         <div class="col-md-6">
           <input [readonly]="true" type="text" class="form-control form-control-sm" placeholder=""
-              value="{{ selectedInstructionAssetRow.address }}">
+            value="{{ selectedInstructionAssetRow.address }}">
         </div>
 
       </div>
@@ -73,11 +73,9 @@
 
 
 
-  <div class="row mt-2">
-    <div class="col-md-12">
-
-
-      <kendo-grid [kendoGridGroupBinding]="gridData" [data]="gridView" [height]="570" [selectable]="{
+  <div class="row mt-2 gridRow">
+    <div class="col-md-12 gridCol">
+      <kendo-grid id="instAsset" [data]="gridView" [selectable]="{
                     mode: 'single'
                   }" filterable="menu" [resizable]="true" [sortable]="{
                     allowUnsort: true,
@@ -85,19 +83,6 @@
                     }" [skip]="state.skip" [sort]="state.sort" [filter]="state.filter"
         (sortChange)="sortChange($event)" (filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)"
         [navigable]="false">
-
-        <kendo-grid-column title=" " width="37" [filterable]="false" [sortable]="false">
-          <ng-template kendoGridCellTemplate let-dataItem>
-            <li class="nav-item dropdown list-unstyled" style="margin-top: -7px;">
-              <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars" ></i>
-              <div class="dropdown-menu">
-                <a *ngIf="woMenuAccess('Accept Instruction')" (click)="openAcceptInstruction(dataItem)" class="dropdown-item" href="javascript:void(0)" >Accept Instruction</a>
-
-              </div>
-            </li>
-
-          </ng-template>
-        </kendo-grid-column>
 
 
         <kendo-grid-column field="woiadrequesttype" title="Requested Type" width="150">
@@ -118,7 +103,7 @@
 
         <kendo-grid-column field="fee" title="Fee" width="100" [style]="{'text-align': 'right'}">
           <ng-template kendoGridCellTemplate let-dataItem>
-            <span  >
+            <span>
               {{ dataItem.fee | currency:'GBP':'symbol' }}
             </span>
           </ng-template>
@@ -126,7 +111,7 @@
 
         <kendo-grid-column field="cost" title="Work" width="100" [style]="{'text-align': 'right'}">
           <ng-template kendoGridCellTemplate let-dataItem>
-            <span  >
+            <span>
               {{ dataItem.cost | currency:'GBP':'symbol' }}
             </span>
           </ng-template>
@@ -136,14 +121,17 @@
         <kendo-grid-column field="woiadissueuser" title="Requested By" width="140">
         </kendo-grid-column>
 
-
-
-        <kendo-grid-column field="woiaissuedate" title="Requested On" [width]="140" [filterable]="false" [sortable]="false">
-            <ng-template kendoGridCellTemplate let-dataItem>
-                <span  >
-                    {{ dataItem.woiadissuedate | dateFormat : 'DD-MMM-YYYY' }}
-                </span>
-              </ng-template>
+        <kendo-grid-column field="woiadissuedate" title="Requested On" [width]="140" 
+          [sortable]="false">
+          <ng-template kendoGridFilterMenuTemplate let-filter let-column="column" let-filterService="filterService">
+            <date-range-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
+            </date-range-filter>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span>
+              {{ dataItem.woiadissuedate | dateFormat : 'DD-MMM-YYYY' }}
+            </span>
+          </ng-template>
         </kendo-grid-column>
 
         <kendo-grid-column field="woiadissuereason" title="Issue Reason" width="140">

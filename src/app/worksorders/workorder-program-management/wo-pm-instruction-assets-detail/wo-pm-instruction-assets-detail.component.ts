@@ -1,22 +1,22 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef, ViewEncapsulation } from '@angular/core';
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
-import { AlertService, HelperService, LoaderService, ConfirmationDialogService, WorksOrdersService, PropertySecurityGroupService, SharedService } from 'src/app/_services';
+import { AlertService, ConfirmationDialogService, WorksOrdersService, SharedService } from 'src/app/_services';
 import { combineLatest } from 'rxjs';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
-import { SelectableSettings, PageChangeEvent, RowArgs, GridComponent } from '@progress/kendo-angular-grid';
+import { PageChangeEvent } from '@progress/kendo-angular-grid';
 
 @Component({
     selector: 'app-wo-pm-instruction-assets-detail',
     templateUrl: './wo-pm-instruction-assets-detail.component.html',
     styleUrls: ['./wo-pm-instruction-assets-detail.component.css'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    encapsulation: ViewEncapsulation.None
 })
 
 export class WoPmInstructionAssetsDetailComponent implements OnInit {
     @Input() instructionAssetsDetailWindow: boolean = false;
     @Output() instructionAssetsDetailEvent = new EventEmitter<boolean>();
-
 
     @Input() selectedInstructionAssetRow: any;
     @Input() selectedInstructionRow: any;
@@ -101,19 +101,12 @@ export class WoPmInstructionAssetsDetailComponent implements OnInit {
     }
 
     cellClickHandler({
-        sender,
-        column,
-        rowIndex,
-        columnIndex,
         dataItem,
-        isEditedselectedInstructionRow
     }) {
         this.selectedItem = dataItem;
     }
 
     GetWOInstructionAssetsDetails() {
-
-
         const params = {
             "WOSEQUENCE": this.selectedInstructionAssetRow.wosequence,
             "WOISEQUENCE": this.selectedInstructionAssetRow.woisequence,
@@ -121,30 +114,24 @@ export class WoPmInstructionAssetsDetailComponent implements OnInit {
 
         const qs = Object.keys(params).map(key => `${key}=${params[key]}`).join('&');
 
-
-
         this.subs.add(
             this.worksOrdersService.GetWOInstructionAssetsDetails(qs).subscribe(
                 data => {
-
-
-                    //  console.log('GetWOInstructionAssets api data ' + JSON.stringify(data));
-
                     if (data.isSuccess) {
+                        let tempData = data.data;
+                        tempData.map(s => {
+                            s.woiadissuedate = new Date(s.woiadissuedate);
+                        });
 
                         this.gridData = data.data;
-
-
+                        this.gridView = process(this.gridData, this.state);
                     } else {
                         this.alertService.error(data.message);
                         this.loading = false
                     }
 
                     this.chRef.detectChanges();
-
-                    // console.log('WorkOrderRefusalCodes api reponse' + JSON.stringify(data));
-                },
-                err => this.alertService.error(err)
+                }, err => this.alertService.error(err)
             )
         )
 
@@ -266,7 +253,7 @@ export class WoPmInstructionAssetsDetailComponent implements OnInit {
 
 
     woMenuAccess(menuName) {
-       if(this.userType == undefined || this.userType?.wourroletype == "Dual Role") {
+        if (this.userType == undefined || this.userType?.wourroletype == "Dual Role") {
             return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
         }
 

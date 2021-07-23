@@ -1,18 +1,19 @@
 .headerRow12 {
-      margin-bottom: 10px;
+    margin-bottom: 10px;
 }
 
 .k-window {
-      position: fixed !important;
+    position: fixed !important;
 }
 
 .k-grid tbody td {
-      white-space: nowrap;
-      line-height: 20px;
-      padding: 8px 12px;
+    white-space: nowrap;
+    line-height: 20px;
+    padding: 8px 12px;
 }
 
-.reportingTable{
+
+.reportingTable {
     font-size: 12px;
 }
 
@@ -20,18 +21,19 @@
     position: fixed !important;
 }
 
-.reportingPrevBtn button{
+.reportingPrevBtn button {
     margin-right: 4px;
 }
 
-.reportingDiv{
+.reportingDiv {
     position: relative;
     padding: 0px 5px !important;
 }
 
-.repotingHeading span{
+.repotingHeading span {
     font-weight: bold;
 }
+
 /* .reportingDiv .rowCount{ 7rem
     margin-bottom: -11px;
     padding-top: 12px;
@@ -45,19 +47,19 @@
     color: #d9534f;
 }
 
-.reportingDiv th, .reportingDiv td{
-    min-width:  84px !important;
+.reportingDiv th, .reportingDiv td {
+    min-width: 84px !important;
 }
 
-.dataDiv{
-    border: 1px solid rgba(24,28,33,0.1);
+.dataDiv {
+    border: 1px solid rgba(24, 28, 33, 0.1);
     position: relative;
     padding-top: 10px;
     padding-left: 5px;
     margin-bottom: 12px;
 }
 
-.dataDiv p{
+.dataDiv p {
     line-height: 5px;
 }
 
@@ -65,7 +67,7 @@
     font-weight: bold;
 }
 
-.overlay{
+.overlay {
     background: none repeat scroll 0 0 black;
     position: fixed;
     display: block;
@@ -77,10 +79,22 @@
     width: 100%;
 }
 
-.pointerEvent{
+.pointerEvent {
     pointer-events: none;
 }
 
-.lbl{
+.lbl {
     margin-top: 12px;
+}
+
+app-wo-program-management-instructions .griddRow {
+    height: calc(100% - 68px);
+}
+
+app-wo-program-management-instructions .griddRow .gridCol {
+    height: calc(100% - 25px);
+}
+
+app-wo-program-management-instructions .griddRow .gridCol #instGrid {
+    height: 100%;
 }

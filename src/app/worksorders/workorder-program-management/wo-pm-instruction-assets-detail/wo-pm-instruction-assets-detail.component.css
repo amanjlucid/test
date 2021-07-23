@@ -11,3 +11,15 @@
 .lbl{
     margin-top: 8px;
 }
+
+app-wo-program-management-instructions .gridRow {
+    height: calc(100% - 180px);
+}
+
+app-wo-program-management-instructions .gridRow .gridCol {
+    height: calc(100% - 25px);
+}
+
+app-wo-program-management-instructions .gridRow .gridCol #instGrid {
+    height: 100%;
+}

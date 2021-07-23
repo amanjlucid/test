@@ -1,16 +1,17 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef, ViewEncapsulation } from '@angular/core';
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
-import { AlertService, HelperService, LoaderService, WorksorderManagementService, ConfirmationDialogService, WorksOrdersService, PropertySecurityGroupService, SharedService } from 'src/app/_services';
+import { AlertService, HelperService, WorksorderManagementService, ConfirmationDialogService, WorksOrdersService, SharedService } from 'src/app/_services';
 import { combineLatest } from 'rxjs';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
-import { SelectableSettings, PageChangeEvent, RowArgs, GridComponent } from '@progress/kendo-angular-grid';
+import { PageChangeEvent, RowArgs } from '@progress/kendo-angular-grid';
 
 @Component({
     selector: 'app-wo-pm-instruction-assets',
     templateUrl: './wo-pm-instruction-assets.component.html',
     styleUrls: ['./wo-pm-instruction-assets.component.css'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    encapsulation: ViewEncapsulation.None
 })
 
 export class WoPmInstructionAssetsComponent implements OnInit {
@@ -32,7 +33,7 @@ export class WoPmInstructionAssetsComponent implements OnInit {
     }
 
     public filter: CompositeFilterDescriptor;
-    pageSize = 25;
+    pageSize = 30;
     title = 'Work Order Instruction Assets';
 
     currentUser = JSON.parse(localStorage.getItem('currentUser'));
@@ -50,7 +51,7 @@ export class WoPmInstructionAssetsComponent implements OnInit {
     userType: any = [];
     mySelection: any = [];
     mySelectionKey(context: RowArgs): string {
-      return context.dataItem.assid + '_||_' + context.dataItem.woiaissuestatus;
+        return context.dataItem.assid + '_||_' + context.dataItem.woiaissuestatus;
     };
     acceptedAnything: boolean = false;
 
@@ -58,7 +59,6 @@ export class WoPmInstructionAssetsComponent implements OnInit {
     constructor(
         private worksOrdersService: WorksOrdersService,
         private worksorderManagementService: WorksorderManagementService,
-
         private alertService: AlertService,
         private chRef: ChangeDetectorRef,
         private sharedService: SharedService,
@@ -88,8 +88,7 @@ export class WoPmInstructionAssetsComponent implements OnInit {
         };
         this.GetWOProgramme();
         this.GetWOInstructionAssets();
-        //console.log('worksOrderData 1 ' + JSON.stringify(this.worksOrderData));
-        //   console.log('selectedInstructionRow ' + JSON.stringify(this.selectedInstructionRow));
+        
     }
 
 
@@ -119,36 +118,25 @@ export class WoPmInstructionAssetsComponent implements OnInit {
     }
 
     cellClickHandler({
-        sender,
-        column,
-        rowIndex,
-        columnIndex,
         dataItem,
-        isEditedselectedInstructionRow
+       
     }) {
         this.selectedItem = dataItem;
     }
 
     GetWOProgramme() {
-
         let wprsequence = this.worksOrderData.wprsequence;
         this.subs.add(
             this.worksorderManagementService.getWorkProgrammesByWprsequence(wprsequence).subscribe(
                 data => {
-                    //console.log('programmeData api data '+ JSON.stringify(data));
                     if (data.isSuccess) {
-
                         this.programmeData = data.data[0];
-
-
                     } else {
                         this.alertService.error(data.message);
                         this.loading = false
                     }
-
                     this.chRef.detectChanges();
 
-                    // console.log('WorkOrderRefusalCodes api reponse' + JSON.stringify(data));
                 },
                 err => this.alertService.error(err)
             )
@@ -161,7 +149,6 @@ export class WoPmInstructionAssetsComponent implements OnInit {
 
 
     GetWOInstructionAssets() {
-
         const params = {
             "WOSEQUENCE": this.selectedInstructionRow.wosequence,
             "WOISEQUENCE": this.selectedInstructionRow.woisequence,
@@ -172,23 +159,20 @@ export class WoPmInstructionAssetsComponent implements OnInit {
         this.subs.add(
             this.worksOrdersService.GetWOInstructionAssets(qs).subscribe(
                 data => {
-
-
-                    //console.log('GetWOInstructionAssets api data '+ JSON.stringify(data));
-
                     if (data.isSuccess) {
-
+                        let tempData = data.data;
+                        tempData.map(s => {
+                            s.woiaissuedate = new Date(s.woiaissuedate);
+                            s.woiaacceptdate = new Date(s.woiaacceptdate);
+                        });
                         this.gridData = data.data;
-
-
+                        this.gridView = process(this.gridData, this.state);
                     } else {
                         this.alertService.error(data.message);
                         this.loading = false
                     }
 
                     this.chRef.detectChanges();
-
-                    // console.log('WorkOrderRefusalCodes api reponse' + JSON.stringify(data));
                 },
                 err => this.alertService.error(err)
             )
@@ -229,20 +213,20 @@ export class WoPmInstructionAssetsComponent implements OnInit {
         // return this.worksOrderUsrAccess.indexOf(menuName) != -1
 
     }
-    
-        openAcceptInstruction() {
 
-   
+    openAcceptInstruction() {
+
+
         let strCheckOrProcess = 'C';
 
         if (this.mySelection.length == 0) {
             return
         }
-        let strASSID = [];        
+        let strASSID = [];
         for (const asset of this.mySelection) {
             const splitSelection = asset.split('_||_');
             strASSID.push(splitSelection[0]);
-            }
+        }
         let params = {
             strCheckOrProcess: strCheckOrProcess,
             WOSEQUENCE: this.selectedInstructionRow.wosequence,
@@ -307,11 +291,11 @@ export class WoPmInstructionAssetsComponent implements OnInit {
         if (this.mySelection.length == 0) {
             return
         }
-        let strASSID = [];        
+        let strASSID = [];
         for (const asset of this.mySelection) {
             const splitSelection = asset.split('_||_');
             strASSID.push(splitSelection[0]);
-            }
+        }
 
         let params = {
             strCheckOrProcess: strCheckOrProcess,
@@ -346,15 +330,15 @@ export class WoPmInstructionAssetsComponent implements OnInit {
 
     }
 
-    CheckMultiAcceptDisabled() : boolean {
+    CheckMultiAcceptDisabled(): boolean {
 
         if (this.mySelection.length > 0) {
             for (const asset of this.mySelection) {
                 const splitSelection = asset.split('_||_');
                 if (splitSelection[1] != "Issued")
                     return true;
-              }
-              return false;
+            }
+            return false;
         }
         return true;
     }

@@ -76,6 +76,7 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
 
 
   ngOnInit(): void {
+    
     if (this.worksOrderData['woname'] == undefined) {
       this.worksOrderData['woname'] = this.worksOrderData.name;
     }

@@ -1,5 +1,5 @@
 <kendo-window title="{{title}}" *ngIf="woProgramManagmentInstructionsWindow"
-  (close)="closeWoProgramManagmentInstructionsWin()" [top]="10" [minWidth]="700" [width]="1050" [height]="auto"
+  (close)="closeWoProgramManagmentInstructionsWin()" [top]="10" [minWidth]="700" [width]="1050" [height]="700"
   [minHeight]="350">
 
   <div class="row headerArea">
@@ -22,14 +22,15 @@
 
 
 
-  <div class="row mt-2">
-    <div class="col-md-12">
-      <kendo-grid #grid="kendoGrid" [data]="gridView" [selectable]="{
+  <div class="row mt-2 griddRow">
+    <div class="col-md-12 gridCol">
+      <kendo-grid id="instGrid" #grid="kendoGrid" [data]="gridView" [selectable]="{
         mode: 'multiple'
       }" [kendoGridSelectBy]="mySelectionKey" [selectedKeys]="mySelection" [groupable]="false" [sortable]="{
               allowUnsort: allowUnsort,
               mode: multiple ? 'multiple' : 'single'
-              }" [sort]="state.sort" [skip]="state.skip" [loading]="loading" [height]="520">
+              }" [sort]="state.sort" [skip]="state.skip" [loading]="loading" (pageChange)="pageChange($event)"
+        scrollable="virtual" [pageSize]="pageSize" [rowHeight]="36" [filter]="state.filter" filterable="menu">
 
         <kendo-grid-column title=" " width="37" [filterable]="false" [sortable]="false">
           <ng-template kendoGridCellTemplate let-dataItem>
@@ -53,7 +54,7 @@
 
 
 
-        <kendo-grid-column field="woisequence" title="No" [width]="80" [filterable]="false" [sortable]="false">
+        <kendo-grid-column field="woisequence" title="No" [width]="80">
           <ng-template kendoGridCellTemplate let-dataItem>
             <span>
               {{ dataItem.woisequence }}
@@ -61,39 +62,37 @@
           </ng-template>
         </kendo-grid-column>
 
-        <kendo-grid-column field="woirequesttype" title="Request Type" [width]="140" [filterable]="false"
-          [sortable]="false">
+        <kendo-grid-column field="woirequesttype" title="Request Type" [width]="140">
           <ng-template kendoGridCellTemplate let-dataItem>
             <span>
               {{ dataItem.woirequesttype }}
             </span>
           </ng-template>
         </kendo-grid-column>
-        <kendo-grid-column field="woiissuestatus" title="Status" [width]="140" [filterable]="false" [sortable]="false">
+        <kendo-grid-column field="woiissuestatus" title="Status" [width]="140">
           <ng-template kendoGridCellTemplate let-dataItem>
             <span>
               {{ dataItem.woiissuestatus }}
             </span>
           </ng-template>
         </kendo-grid-column>
-        <kendo-grid-column field="woirequestuser" title="Requested By" [width]="140" [filterable]="false"
-          [sortable]="false">
+        <kendo-grid-column field="woirequestuser" title="Requested By" [width]="140">
           <ng-template kendoGridCellTemplate let-dataItem>
             <span>
               {{ dataItem.woirequestuser }}
             </span>
           </ng-template>
         </kendo-grid-column>
-        <kendo-grid-column field="woirequestdate" title="Requested On" [width]="140" [filterable]="false"
-          [sortable]="false">
+        <kendo-grid-column field="woirequestdate" title="Requested On" [width]="140">
+    
+
           <ng-template kendoGridCellTemplate let-dataItem>
             <span>
               {{ dataItem.woirequestdate | dateFormat : 'DD-MMM-YYYY' }}
             </span>
           </ng-template>
         </kendo-grid-column>
-        <kendo-grid-column field="woiissuereason" title="Issue Reason" [width]="140" [filterable]="false"
-          [sortable]="false">
+        <kendo-grid-column field="woiissuereason" title="Issue Reason" [width]="140">
           <ng-template kendoGridCellTemplate let-dataItem>
             <span>
               {{ dataItem.woiissuereason }}
@@ -101,16 +100,14 @@
           </ng-template>
         </kendo-grid-column>
 
-        <kendo-grid-column field="woifeecost" title="Fee" [width]="140" [filterable]="false" [sortable]="false"
-          [style]="{'text-align': 'right'}">
+        <kendo-grid-column field="woifeecost" title="Fee" [width]="140" [style]="{'text-align': 'right'}">
           <ng-template kendoGridCellTemplate let-dataItem>
             <span>
               {{ dataItem.woifeecost | currency:'GBP':'symbol' }}
             </span>
           </ng-template>
         </kendo-grid-column>
-        <kendo-grid-column field="woiworkcost" title="Work" [width]="140" [filterable]="false" [sortable]="false"
-          [style]="{'text-align': 'right'}">
+        <kendo-grid-column field="woiworkcost" title="Work" [width]="140" [style]="{'text-align': 'right'}">
           <ng-template kendoGridCellTemplate let-dataItem>
             <span>
               {{ dataItem.woiworkcost | currency:'GBP':'symbol' }}
@@ -118,16 +115,15 @@
           </ng-template>
         </kendo-grid-column>
 
-        <kendo-grid-column field="woiacceptuser" title="Accepted By" [width]="140" [filterable]="false"
-          [sortable]="false">
+        <kendo-grid-column field="woiacceptuser" title="Accepted By" [width]="140">
           <ng-template kendoGridCellTemplate let-dataItem>
             <span>
               {{ dataItem.woiacceptuser }}
             </span>
           </ng-template>
         </kendo-grid-column>
-        <kendo-grid-column field="woiacceptdate" title="Accepted On" [width]="140" [filterable]="false"
-          [sortable]="false">
+        <kendo-grid-column field="woiacceptdate" title="Accepted On" [width]="140">
+        
           <ng-template kendoGridCellTemplate let-dataItem>
             <span>
               {{ dataItem.woiacceptdate | dateFormat : 'DD-MMM-YYYY' }}
@@ -136,85 +132,23 @@
         </kendo-grid-column>
 
 
-
-
-
-
-
-
       </kendo-grid>
 
 
     </div>
 
     <div class="col-md-12 text-right mt-2">
-      <button type="button" class="btn btn-sm themeButton" (click)="closeWoProgramManagmentInstructionsWin()">Close</button>
+      <button type="button" class="btn btn-sm themeButton"
+        (click)="closeWoProgramManagmentInstructionsWin()">Close</button>
     </div>
   </div>
 
 
   <div class="reportBgblur"></div>
 
-  <app-send-email *ngIf="SendEmailInsReportWindow" [SendEmailInsReportWindow]="SendEmailInsReportWindow" (closeEmailReportEvent)="closeEmailWithReportWindow($event)" [selectedObj]="selectedInstructionRow" [opendFrom]="'instruction'"></app-send-email>
-
-  <!-- <kendo-window title="Send Report" [top]="25" *ngIf="SendEmailInsReportWindow" (close)="closeEmailWithReportWindow()"
-    [minWidth]="800" [height]="auto" [minHeight]="300" [width]="650">
-
-
-    <div class="row sendEmailWithReportDiv">
-
-      <div class="container pl-0">
-        <form [formGroup]="emailReportForm" (ngSubmit)="onEmailReportSubmit()">
-          <div class="form-group row">
-            <label class="col-form-label col-sm-2 text-sm-right">To</label>
-            <div class="col-sm-10 emailReport">
-
-              <ng-multiselect-dropdown [placeholder]="'Select Users'" [data]="userListToMail"
-                [(ngModel)]="selectedItems" formControlName="userlist" [settings]="dropdownSettings"
-                (onSelect)="onItemSelect($event)" (onDeSelect)="onItemDeSelect($event)" name="users"
-                (onSelectAll)="onSelectAll($event)" (onDeSelectAll)="onItemDeSelectAll($event)">
-              </ng-multiselect-dropdown>
-            </div>
-          </div>
-          <div class="form-group row">
-            <label class="col-form-label col-sm-2 text-sm-right">Subject</label>
-            <div class="col-sm-10">
-              <input type="text" class="form-control" placeholder="Subject" formControlName="subject"
-                [ngClass]="{ 'is-invalid': submitted && formErrors.subject }">
-
-              <div *ngIf="submitted && formErrors.subject" class="invalid-feedback">
-                <div *ngIf="formErrors.subject">{{ formErrors.subject }}</div>
-              </div>
-            </div>
-          </div>
-          <div class="form-group row">
-            <label class="col-form-label col-sm-2 text-sm-right">Email Text</label>
-            <div class="col-sm-10">
-              <textarea class="form-control" placeholder="Email Text" formControlName="emailText"
-                [ngClass]="{ 'is-invalid': submitted && formErrors.emailText }"></textarea>
-              <div *ngIf="submitted && formErrors.emailText" class="invalid-feedback">
-                <div *ngIf="formErrors.emailText">{{ formErrors.emailText }}</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="form-group row">
-            <div class="col-sm-10 ml-sm-auto reportingPrevBtn text-right">
-              <button type="button" (click)="closeEmailWithReportWindow()"
-                class="btn btn-sm themeButton">Cancel</button>
-              <button type="submit" class="btn btn-sm btn-default themeButton ml-1">Ok</button>
-
-            </div>
-          </div>
-        </form>
-
-
-      </div>
-    </div>
-
-
-  </kendo-window> -->
-
+  <app-send-email *ngIf="SendEmailInsReportWindow" [SendEmailInsReportWindow]="SendEmailInsReportWindow"
+    (closeEmailReportEvent)="closeEmailWithReportWindow($event)" [selectedObj]="selectedInstructionRow"
+    [opendFrom]="'instruction'"></app-send-email>
 
 </kendo-window>
 
