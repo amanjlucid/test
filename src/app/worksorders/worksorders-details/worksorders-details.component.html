@@ -3,7 +3,7 @@
 
     <div class="col-md-4 col-sm-4">
       <h4 class="font-weight-bold">
-        Works Orders Detail
+        Works Order Detail
       </h4>
     </div>
 
@@ -325,6 +325,11 @@
             </span>
 
             <div style="margin-left:2px;" class="iconDiv">
+              <img style="margin-top: -4px;" title="Notepad" *ngIf="dataItem.attachment == 'Y'"
+                class="table-icon-wr" src="assets/img/icons/attach.png" />
+            </div>
+
+            <div style="margin-left:2px;" class="iconDiv">
               <img style="margin-top: -4px;" title="Resident Info" *ngIf="dataItem.residentriskcode == 1"
                 class="table-icon-wr" src="assets/img/icons/GreenResident.png" />
               <img style="margin-top: -4px;" title="Resident Info with Risk" *ngIf="dataItem.residentriskcode == 2"
@@ -337,6 +342,13 @@
         </kendo-treelist-column>
 
         <kendo-treelist-column field="wostatus" title="Status" [width]="120" [locked]="columnLocked">
+          <ng-template  kendoTreeListFilterMenuTemplate  let-column="column" let-filter="filter"
+          let-filterService="filterService">
+            <multicheck-treelist-filter [isPrimitive]="false" [field]="column.field" [currentFilter]="filter"
+            [filterService]="filterService" textField="text" valueField="val"
+            [data]="statusFilterDropDown">
+            </multicheck-treelist-filter>
+          </ng-template>
         </kendo-treelist-column>
 
         <kendo-treelist-column *ngIf="displayAssetChar1" field="assetChar1" [title]="AssetChar1" [width]="180">
@@ -629,7 +641,9 @@
           (click)="openAssetDocument(menuData)">Documents</a>
 
         <a class="dropdown-item" *ngIf="woMenuBtnSecurityAccess('Rename Phase Work')" href="javascript:void(0)"
-          (click)="renamePhaseAsset(menuData)">Rename Phase Asset</a>
+        [ngClass]="{'disabled' : menuData.astcode != 'PHASEWORK'}"
+          (click)="renamePhaseAsset(menuData)"
+          >Rename Phase Asset</a>
 
 
       </div>

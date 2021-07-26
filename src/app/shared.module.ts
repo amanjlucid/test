@@ -16,6 +16,7 @@ import { RoundOffPipe } from './_pipes/round-off.pipe';
 import { TreeListModule } from '@progress/kendo-angular-treelist';
 import { RetrievedEpcGridComponent } from './assets-portal/asset-energy/retrieved-epc-grid/retrieved-epc-grid.component';
 
+import { MultiCheckTreeListFilterComponent } from './kendo-component/multicheck-treelist-filter.component';
 import { DateRangeTreeListFilterComponent } from './kendo-component/date-range-treelist-filter.component';
 
 import { ReportingComponent } from './security-portal/groups/reporting/reporting.component';
@@ -27,8 +28,8 @@ import { AssetResidentInfoComponent } from './asset-resident-info/asset-resident
 
 @NgModule({
   imports: [ FormsModule, ReactiveFormsModule, GridModule, DatePickerModule, CommonModule, ExcelModule, InputsModule, DialogsModule, TreeListModule, MultiSelectModule,  NgMultiSelectDropDownModule],
-  declarations: [DateFormatPipe, CurrencyFormatPipe, RoundOffPipe, SimpleTextFilterComponent, DateRangeFilterComponent, MultiCheckFilterComponent, RangeFilterComponent,TextFilterComponent, AssetResidentInfoComponent, AssetRiskComponent,DateRangeTreeListFilterComponent,CurrencyMaskDirective, NumberDecimalMaskDirective,CurrencyInputDirective,RetrievedEpcGridComponent,ReportingComponent],
-  exports: [DateFormatPipe, CurrencyFormatPipe, RoundOffPipe, SimpleTextFilterComponent, DateRangeFilterComponent, MultiCheckFilterComponent, RangeFilterComponent,TextFilterComponent, AssetResidentInfoComponent,DateRangeTreeListFilterComponent,CurrencyMaskDirective, NumberDecimalMaskDirective,CurrencyInputDirective,RetrievedEpcGridComponent,ReportingComponent]
+  declarations: [DateFormatPipe, CurrencyFormatPipe, RoundOffPipe, SimpleTextFilterComponent, DateRangeFilterComponent, MultiCheckTreeListFilterComponent, MultiCheckFilterComponent, RangeFilterComponent,TextFilterComponent, AssetResidentInfoComponent, AssetRiskComponent,DateRangeTreeListFilterComponent,CurrencyMaskDirective, NumberDecimalMaskDirective,CurrencyInputDirective,RetrievedEpcGridComponent,ReportingComponent],
+  exports: [DateFormatPipe, CurrencyFormatPipe, RoundOffPipe, SimpleTextFilterComponent, DateRangeFilterComponent, MultiCheckTreeListFilterComponent, MultiCheckFilterComponent, RangeFilterComponent,TextFilterComponent, AssetResidentInfoComponent,DateRangeTreeListFilterComponent,CurrencyMaskDirective, NumberDecimalMaskDirective,CurrencyInputDirective,RetrievedEpcGridComponent,ReportingComponent]
 })
 
 export class SharedModule { }

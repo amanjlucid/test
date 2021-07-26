@@ -6,6 +6,9 @@ import { InputsModule } from '@progress/kendo-angular-inputs';
 import { DialogsModule } from '@progress/kendo-angular-dialog';
 import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
 import { SharedModule } from '../../shared.module';
+import { DropdownComponent } from '../../kendo-component/dropdown/dropdown.component'
+import { DropDownListModule } from '@progress/kendo-angular-dropdowns';
+import { PopupModule } from '@progress/kendo-angular-popup';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { NgbDate, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { TooltipModule } from '@progress/kendo-angular-tooltip';
@@ -103,7 +106,7 @@ import { WorksordersAssetDocumentComponent } from '../worksorders-asset-document
 import { WoChecklistFeeComponent } from '../wo-checklist-fee/wo-checklist-fee.component';
 import { RenamePhaseAssetComponent } from '../rename-phase-asset/rename-phase-asset.component';
 import { VariationNotesComponent } from '../variation-notes/variation-notes.component';
-
+import { CurrencyMaskModule } from "ng2-currency-mask";
 
 
 
@@ -221,7 +224,8 @@ import { VariationNotesComponent } from '../variation-notes/variation-notes.comp
     TreeListModule,
     NgMultiSelectDropDownModule.forRoot(),
     MultiSelectModule,
-
+    CurrencyMaskModule,
+    DropDownListModule,
   ],
   exports: [
   ],

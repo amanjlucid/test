@@ -44,7 +44,6 @@ export class WorksordersManagementComponent implements OnInit {
   @ViewChild(TreeListComponent) public grid: TreeListComponent;
   selectedProgramme: any;
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
-  worksOrderAccess = [];
   touchtime = 0;
   packageMappingWindow = false
   worksOrderSingleData: any;
@@ -107,22 +106,18 @@ export class WorksordersManagementComponent implements OnInit {
         this.sharedService.userTypeObs
       ]).subscribe(
         data => {
-          this.worksOrderAccess = data[0];
           this.worksOrderUsrAccess = data[0];
           this.userType = data[1][0];
-
-          if (this.worksOrderAccess.length > 0) {
-            if (!this.worksOrderAccess.includes("Management Menu")) {
-              this.router.navigate(['login']);
-            }
-          }
-
         }
       )
     )
 
 
     this.getManagement();
+  }
+
+  woMenuBtnSecurityAccess(menuName) {
+    return this.worksOrderUsrAccess.indexOf(menuName) != -1
   }
 
   ngOnDestroy() {

@@ -214,9 +214,9 @@ export class WorksordersAddPackageEnterQuantityComponent implements OnInit {
     this.subs.unsubscribe();
   }
 
-  closePackageQuantityWindow() {
+  closePackageQuantityWindow(res) {
     this.packageQuantityWindow = false;
-    this.closePackageQuantiyEvent.emit(this.packageQuantityWindow);
+    this.closePackageQuantiyEvent.emit(res);
     this.refreshPackageList.emit(true);
   }
 
@@ -406,7 +406,7 @@ export class WorksordersAddPackageEnterQuantityComponent implements OnInit {
                 this.populateForm(this.displayHighestPkz)
                 this.chRef.detectChanges();
                 if (this.applyCount == 0) {
-                  this.closePackageQuantityWindow();
+                  this.closePackageQuantityWindow(true);
                   return
                 }
 
@@ -436,7 +436,7 @@ export class WorksordersAddPackageEnterQuantityComponent implements OnInit {
             if (data.isSuccess) {
               let success_msg = "Work Updated Successfully";
               this.alertService.success(success_msg);
-              this.closePackageQuantityWindow();
+              this.closePackageQuantityWindow(true);
 
             } else {
               this.alertService.error(data.message);
@@ -473,7 +473,7 @@ export class WorksordersAddPackageEnterQuantityComponent implements OnInit {
       this.subs.add(
           forkJoin(req).subscribe(
           data => {
-            this.closePackageQuantityWindow();
+            this.closePackageQuantityWindow(true);
           }
         )
       )
@@ -529,7 +529,7 @@ export class WorksordersAddPackageEnterQuantityComponent implements OnInit {
 
                   } else {
                     this.alertService.success(res.pRETURNMESSAGE);
-                    this.closePackageQuantityWindow();
+                    this.closePackageQuantityWindow(true);
                   }
                 } else {
                   this.alertService.success("Something went wrong.");

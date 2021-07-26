@@ -59,6 +59,7 @@
     "ng-animate": "^0.3.4",
     "ng-circle-progress": "^1.6.0",
     "ng-multiselect-dropdown": "^0.2.3",
+    "ng2-currency-mask": "^11.0.0",
     "ngx-spellchecker": "^1.0.5",
     "pdfmake": "^0.1.56",
     "rxjs": "~6.6.0",

@@ -58,7 +58,6 @@ export class VariationAdditionalWorkItemComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log('in')
     this.subs.add(
       combineLatest([
         this.sharedService.worksOrdersAccess,

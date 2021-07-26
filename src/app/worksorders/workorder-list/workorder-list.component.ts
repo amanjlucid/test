@@ -193,6 +193,7 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
           this.resetGrid();
           if (data.isSuccess) {
             this.worksorderTempData = [...data.data]
+            let v = this.worksorderTempData;
             this.worksOrderData = [...data.data];
             this.gridView = process(this.worksOrderData, this.state);
             this.chRef.detectChanges();
@@ -347,7 +348,7 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
       if (this.worksOrderUsrAccess.indexOf('Works Order Detail') == -1) {
         return
       }
- 
+
 
     this.selectedWorksOrder = item;
     this.sharedService.changeWorksOrderSingleData(item);

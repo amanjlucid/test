@@ -28,15 +28,15 @@
 
 
               <div class="dropdown mr-1" id="nesting-dropdown-demo"
-              *ngIf="worksOrderAccess.indexOf('New Programme') != -1 || worksOrderAccess.indexOf('New Works Order') != -1">
+              *ngIf="woMenuBtnSecurityAccess('New Programme') || woMenuBtnSecurityAccess('New Works Order')">
                   <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown"
                       aria-expanded="false">New</button>
                   <div class="dropdown-menu" x-placement="bottom-start"
                       style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
-                      <a *ngIf="worksOrderAccess.indexOf('New Programme') != -1" class="dropdown-item"
+                      <a *ngIf="woMenuBtnSecurityAccess('New Programme')" class="dropdown-item"
                           (click)="openNewManagementWindow()" href="javascript:void(0)">New
                           Programme</a>
-                      <a class="dropdown-item" *ngIf="worksOrderAccess.indexOf('New Works Order') != -1"
+                      <a class="dropdown-item" *ngIf="woMenuBtnSecurityAccess('New Works Order')"
                           href="javascript:void(0)" (click)="openWorksOrderForm('new')">New Works Order</a>
 
                   </div>
@@ -360,7 +360,7 @@
     (closePackageMappingEvent)="cloasePackageMappingWindow($event)" [worksOrderSingleData]="worksOrderSingleData">
 </app-worksorders-package-mapping>
 
-<app-workorder-form [woFormType]="woFormType" [woFormWindow]="woFormWindow" [worksOrderAccess]="worksOrderAccess"
+<app-workorder-form [woFormType]="woFormType" [woFormWindow]="woFormWindow" [worksOrderAccess]="worksOrderUsrAccess"
     [selectedWorkOrderAddEdit]="selctedWorksOrder" [selectedProgramme]="selectedProgramme" *ngIf="woFormWindow"
     (closeWoFormWin)="closeWoFormWin($event)">
 </app-workorder-form>

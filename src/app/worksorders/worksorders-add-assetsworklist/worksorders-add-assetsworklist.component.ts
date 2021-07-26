@@ -6,6 +6,7 @@ import { AlertService, AssetAttributeService, ConfirmationDialogService, HelperS
 import { WorkordersAddAssetworklistModel } from '../../_models'
 import { tap, switchMap } from 'rxjs/operators';
 import { BehaviorSubject, combineLatest, forkJoin } from 'rxjs';
+import { SelectionEvent } from '@progress/kendo-angular-dropdowns/dist/es2015/common/selection/selection.service';
 
 @Component({
   selector: 'app-worksorders-add-assetsworklist',
@@ -68,6 +69,8 @@ export class WorksordersAddAssetsworklistComponent implements OnInit {
   worksOrderAccess: any = [];
   userType: any = [];
   @ViewChild(GridComponent) grid: GridComponent;
+  ChecklistCost;
+  RequiredBudget = 0;
 
 
   constructor(
@@ -118,7 +121,9 @@ export class WorksordersAddAssetsworklistComponent implements OnInit {
         this.assetAttributeService.getAssetTypes(),
         this.worksorderManagementService.getPhase(this.actualSelectedRow.wosequence, this.actualSelectedRow.wopsequence),
         this.worksorderManagementService.getWorksOrderByWOsequence(this.actualSelectedRow.wosequence),
-        this.worksorderManagementService.getPlanYear(this.actualSelectedRow.wosequence)
+        this.worksorderManagementService.getPlanYear(this.actualSelectedRow.wosequence),
+        this.worksorderManagementService.getChecklistCost(this.actualSelectedRow.wosequence)
+
       ]).subscribe(
         resp => {
           // console.log(resp);
@@ -126,6 +131,7 @@ export class WorksordersAddAssetsworklistComponent implements OnInit {
           const phase = resp[1];
           const worksOrder = resp[2];
           this.planYear = resp[3].data;
+          this.ChecklistCost = resp[4].data;
 
           if (assetType.isSuccess) this.assetTypes = assetType.data;
           if (phase.isSuccess) this.phaseData = phase.data;
@@ -176,9 +182,9 @@ export class WorksordersAddAssetsworklistComponent implements OnInit {
 
   setSelectableSettings(): void {
     this.selectableSettings = {
-      checkboxOnly: true,
-      mode: 'multiple'
-    };
+      checkboxOnly: false,
+      mode: 'multiple',
+     };
   }
 
   cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
@@ -310,6 +316,9 @@ export class WorksordersAddAssetsworklistComponent implements OnInit {
     this.headerFilters.CurrentPage = 0;
     this.state.skip = 0;
     this.stateChange.next(this.headerFilters);
+    this.RequiredBudget = 0;
+    this.mySelection = [];
+    this.selectedRow = [];
   }
 
   mySelectionKey(context: RowArgs): string {
@@ -387,6 +396,7 @@ export class WorksordersAddAssetsworklistComponent implements OnInit {
             this.refreshWorkOrderDetails.emit(true);
             this.searchGrid();
             this.mySelection = [];
+            this.selectedRow = [];
           } else if (data.data[0].pRETURNSTATUS != "S") {
             this.alertService.error(data.data['validYN'])
           }
@@ -539,6 +549,54 @@ export class WorksordersAddAssetsworklistComponent implements OnInit {
   }
 
   //##################### hierarchy function end ######################################//
+
+  public isDisabled(args) {
+    return {
+      'DisableRowSelection': !(args.dataItem.alreadyInWorksOrderAssetDetail == 'N' && args.dataItem.woChecklistMatchCount  == 1)
+     }; 
+    }
+
+    public selectedRowChange(selectionEvent) {
+      if (!(selectionEvent.ctrlKey || selectionEvent.shiftKey)){
+        this.mySelection = [];
+      }
+      if (selectionEvent.deselectedRows.length > 0) {
+        for (let row of selectionEvent.deselectedRows) {
+          this.mySelection = this.mySelection.filter(x => x != `${row.dataItem.wlassid}_${row.dataItem.wlataid}_${row.dataItem.wlcode}_${row.dataItem.cttsurcde}_${row.dataItem.matchedCHECKSURCDE}_${row.dataItem.matchedSTAGESURCDE}`);
+          
+          
+          this.selectedRow = this.selectedRow.filter(x => this.mySelection.includes(`${x.wlassid}_${x.wlataid}_${x.wlcode}_${x.cttsurcde}_${x.matchedCHECKSURCDE}_${x.matchedSTAGESURCDE}`));
+        }   
+      }
+      if (selectionEvent.selectedRows.length > 0) {
+        for (let row of selectionEvent.selectedRows) {
+          this.mySelection = this.mySelection.filter(x => x = `${row.dataItem.wlassid}_${row.dataItem.wlataid}_${row.dataItem.wlcode}_${row.dataItem.cttsurcde}_${row.dataItem.matchedCHECKSURCDE}_${row.dataItem.matchedSTAGESURCDE}`
+           );
+          
+
+          if ((row.dataItem.alreadyInWorksOrderAssetDetail == 'N' && row.dataItem.woChecklistMatchCount  == 1)) {
+                      this.mySelection.push(`${row.dataItem.wlassid}_${row.dataItem.wlataid}_${row.dataItem.wlcode}_${row.dataItem.cttsurcde}_${row.dataItem.matchedCHECKSURCDE}_${row.dataItem.matchedSTAGESURCDE}`);
+
+          this.selectedRow.push(row.dataItem);
+          }
+           
+
+        }   
+      }
+
+      var workcost = 0;
+      var assetCount = 0;
+      var distinctAssets = [];
+      for (let row of this.selectedRow) {
+        if (!distinctAssets.includes(row.wlassid)) {
+          distinctAssets.push(row.wlassid);
+        }
+        workcost += row.wlcontcost;
+      }
+      this.RequiredBudget = (distinctAssets.length * this.ChecklistCost) + workcost;
+
+
+    }
 
 
 }

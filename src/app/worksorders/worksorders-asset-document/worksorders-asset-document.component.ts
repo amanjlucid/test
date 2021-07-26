@@ -44,8 +44,9 @@ export class WorksordersAssetDocumentComponent implements OnInit {
   fileExt: string = "JPG, GIF, PNG, PDF";
   maxSize: number = 5; // 5MB
   filePath;
-
-  worksOrderAccess: any = [];
+  initialLoadDocsCount = 0;
+  initialLoad = true;
+   worksOrderAccess: any = [];
   userType: any = [];
   @ViewChild(GridComponent) grid: GridComponent;
 
@@ -63,7 +64,7 @@ export class WorksordersAssetDocumentComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    // console.log(this.selectedChecklist); 
+    // console.log(this.selectedChecklist);
     // debugger;
 
     var dd = this.selectedAsset;
@@ -142,6 +143,10 @@ export class WorksordersAssetDocumentComponent implements OnInit {
           // console.log(data);
           if (data.isSuccess) {
             this.gridData = data.data;
+            if(this.initialLoad){
+              this.initialLoadDocsCount = data.data.length;
+              this.initialLoad = false;
+            }
             this.gridView = process(this.gridData, this.state);
 
             setTimeout(() => {
@@ -171,7 +176,8 @@ export class WorksordersAssetDocumentComponent implements OnInit {
 
   closeChecklistDoc() {
     this.assetDocWindow = false;
-    this.closeAssetDocEvent.emit(this.assetDocWindow);
+    let v = this.gridView.data.length
+    this.closeAssetDocEvent.emit(this.gridView.data.length != this.initialLoadDocsCount);
   }
 
 

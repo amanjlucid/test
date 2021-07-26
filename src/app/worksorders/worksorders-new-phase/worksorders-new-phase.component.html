@@ -89,8 +89,8 @@
                                 <label class="col-form-label">Budget</label>
                             </div>
                             <div class="second">
-                                <input appCurrencyMask maxDigits="9" type="text" class="form-control"
-                                    formControlName="WOPBUDGET"
+                                  <input currencyMask [options]="{ prefix: '£', thousands: ',', decimal: '.' }" type="text" class="form-control"
+                                  maxlength="15" formControlName="WOPBUDGET" 
                                     [ngClass]="{ 'is-invalid': submitted && formErrors.WOPBUDGET }" autocomplete="off">
 
                                 <div *ngIf="submitted && formErrors.WOPBUDGET" class="invalid-feedback">
@@ -129,27 +129,27 @@
                                 <label class="col-form-label">Work</label>
                             </div>
                             <div class="childGrpDiv">
-                                <input type="text" class="form-control" formControlName="WOPFORECAST" appCurrencyMask
+                                <input type="text" class="form-control" formControlName="WOPFORECAST" currencyMask [options]="{ prefix: '£', thousands: ',', decimal: '.' }"
                                     [ngClass]="{ 'is-invalid': submitted && formErrors.WOPFORECAST }" autocomplete="off"
                                     [readonly]="readonly">
                             </div>
                             <div class="childGrpDiv">
-                                <input type="text" class="form-control" formControlName="WOPCOMMITTED" appCurrencyMask
+                                <input type="text" class="form-control" formControlName="WOPCOMMITTED" currencyMask [options]="{ prefix: '£', thousands: ',', decimal: '.' }"
                                     [ngClass]="{ 'is-invalid': submitted && formErrors.WOPCOMMITTED }"
                                     autocomplete="off" [readonly]="readonly">
                             </div>
                             <div class="childGrpDiv">
-                                <input type="text" class="form-control" formControlName="WOPAPPROVED" appCurrencyMask
+                                <input type="text" class="form-control" formControlName="WOPAPPROVED" currencyMask [options]="{ prefix: '£', thousands: ',', decimal: '.' }"
                                     [ngClass]="{ 'is-invalid': submitted && formErrors.WOPAPPROVED }" autocomplete="off"
                                     [readonly]="readonly">
                             </div>
                             <div class="childGrpDiv">
-                                <input type="text" class="form-control" formControlName="WOPPENDING" appCurrencyMask
+                                <input type="text" class="form-control" formControlName="WOPPENDING" currencyMask [options]="{ prefix: '£', thousands: ',', decimal: '.' }"
                                     [ngClass]="{ 'is-invalid': submitted && formErrors.WOPPENDING }" autocomplete="off"
                                     [readonly]="readonly">
                             </div>
                             <div class="childGrpDiv">
-                                <input type="text" class="form-control" formControlName="WOPACTUAL" appCurrencyMask
+                                <input type="text" class="form-control" formControlName="WOPACTUAL" currencyMask [options]="{ prefix: '£', thousands: ',', decimal: '.' }"
                                     [ngClass]="{ 'is-invalid': submitted && formErrors.WOPACTUAL }" autocomplete="off"
                                     [readonly]="readonly">
                             </div>
@@ -160,27 +160,27 @@
                                 <label class="col-form-label">Fees</label>
                             </div>
                             <div class="childGrpDiv">
-                                <input type="text" class="form-control" formControlName="WOPFORECASTFEE" appCurrencyMask
+                                <input type="text" class="form-control" formControlName="WOPFORECASTFEE" currencyMask [options]="{ prefix: '£', thousands: ',', decimal: '.' }"
                                     [ngClass]="{ 'is-invalid': submitted && formErrors.WOPFORECASTFEE }"
                                     autocomplete="off" [readonly]="readonly">
                             </div>
                             <div class="childGrpDiv">
-                                <input type="text" class="form-control" formControlName="WOPCOMMITTEDFEE" appCurrencyMask
+                                <input type="text" class="form-control" formControlName="WOPCOMMITTEDFEE" currencyMask [options]="{ prefix: '£', thousands: ',', decimal: '.' }"
                                     [ngClass]="{ 'is-invalid': submitted && formErrors.WOPCOMMITTEDFEE }"
                                     autocomplete="off" [readonly]="readonly">
                             </div>
                             <div class="childGrpDiv">
-                                <input type="text" class="form-control" formControlName="WOPAPPROVEDFEE" appCurrencyMask
+                                <input type="text" class="form-control" formControlName="WOPAPPROVEDFEE" currencyMask [options]="{ prefix: '£', thousands: ',', decimal: '.' }"
                                     [ngClass]="{ 'is-invalid': submitted && formErrors.WOPAPPROVEDFEE }"
                                     autocomplete="off" [readonly]="readonly">
                             </div>
                             <div class="childGrpDiv">
-                                <input type="text" class="form-control" formControlName="WOPPENDINGFEE" appCurrencyMask
+                                <input type="text" class="form-control" formControlName="WOPPENDINGFEE" currencyMask [options]="{ prefix: '£', thousands: ',', decimal: '.' }"
                                     [ngClass]="{ 'is-invalid': submitted && formErrors.WOPPENDINGFEE }"
                                     autocomplete="off" [readonly]="readonly">
                             </div>
                             <div class="childGrpDiv">
-                                <input type="text" class="form-control" formControlName="WOPACTUALFEE" appCurrencyMask
+                                <input type="text" class="form-control" formControlName="WOPACTUALFEE" currencyMask [options]="{ prefix: '£', thousands: ',', decimal: '.' }"
                                     [ngClass]="{ 'is-invalid': submitted && formErrors.WOPACTUALFEE }"
                                     autocomplete="off" [readonly]="readonly">
                             </div>

@@ -4,6 +4,7 @@ import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data
 import { AlertService, HelperService, ReportingGroupService, SharedService, WorksorderManagementService, WorksOrdersService } from 'src/app/_services';
 import { combineLatest, forkJoin, Observable } from 'rxjs';
 import { SelectableSettings, PageChangeEvent } from '@progress/kendo-angular-grid';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
     selector: 'app-programme-log',
@@ -46,6 +47,7 @@ export class ProgramLogComponent implements OnInit {
     worksOrderAccess = [];
     worksOrderUsrAccess: any = [];
     userType: any = [];
+    private stateChange = new BehaviorSubject<any>(this.state);
 
     constructor(
         private worksOrdersService: WorksOrdersService,
@@ -219,6 +221,7 @@ export class ProgramLogComponent implements OnInit {
     }
 
     filterChange(filter: any): void {
+        this.state.skip = 0;
         this.state.filter = filter;
         this.gridView = process(this.gridData, this.state);
     }
@@ -229,6 +232,9 @@ export class ProgramLogComponent implements OnInit {
             data: this.gridData.slice(this.state.skip, this.state.skip + this.pageSize),
             total: this.gridData.length
         };
+        
+        this.stateChange.next(this.state);
+        this.gridView = process(this.gridData, this.state);
     }
 
     cellClickHandler({ columnIndex, dataItem }) {

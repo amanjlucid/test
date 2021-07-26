@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewEncapsulation, ViewChild, ChangeDetectorRef, AfterViewInit, HostListener } from '@angular/core';
 import { SubSink } from 'subsink';
-import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
+import { CompositeFilterDescriptor, FilterDescriptor } from '@progress/kendo-data-query';
 import { FilterService, SelectableSettings, TreeListComponent, RowClassArgs } from '@progress/kendo-angular-treelist';
 import { AlertService, LoaderService, ConfirmationDialogService, WorksOrdersService, HelperService, WorksorderManagementService, SharedService, PropertySecurityGroupService, AuthenticationService, WorksorderReportService } from '../../_services'
 import { combineLatest, forkJoin } from 'rxjs';
@@ -116,6 +116,12 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
   displayResidentDetails = false;
   assetID: string;
   assetDocWindow: boolean = false;
+  statusFilterDropDown = [{ text: "New", val: "New" }, { text: "Pending", val: "Pending" },
+  { text: "Issued", val: "Issued" }, { text: "Accepted", val: "Accepted" },
+  { text: "In Progress", val: "In Progress" }, { text: "Handover", val: "Handover" },
+  { text: "Practical Completion", val: "Practical Completion" }, 
+  { text: "Final Completion", val: "Final Completion" },
+];
 
   constructor(
     private sharedService: SharedService,
@@ -222,11 +228,11 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
           const programmeData = data[0];
           const userSecurityByWO = data[1];
           const worksOrderData = data[2];
-          
+
           this.phaseBudgetAvailable = data[3].data;
           this.reportingCharsConfig = data[6].data.reportingCharConfig;
-          this.contractorCost = (data[7].data[0]) ? data[7].data[0] : []; 
-          
+          this.contractorCost = (data[7].data[0]) ? data[7].data[0] : [];
+
           if (this.reportingCharsConfig.wosequence > 0) {
             this.displayAssetChar1 = (this.reportingCharsConfig.status1 == 'A');
             this.displayAssetChar2 = (this.reportingCharsConfig.status2 == 'A');
@@ -1562,7 +1568,8 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
   closeAssetDocument(eve) {
     this.assetDocWindow = false;
     $('.worksOrderDetailOvrlay').removeClass('ovrlay');
-  }
+    this.refreshGrid(eve);
+    }
 
   openDocumentMethod() {
     if (this.worksOrderSingleData.worksOrderFileCount == 0) return;
@@ -1571,8 +1578,9 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
   }
 
   closeDocumentWindow(eve) {
-    this.documentWindow = eve;
+    this.documentWindow = false;
     $('.worksOrderDetailOvrlay').removeClass('ovrlay');
+
   }
 
 

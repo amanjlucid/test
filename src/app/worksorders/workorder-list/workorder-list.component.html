@@ -127,6 +127,12 @@
               <img style="margin-top: -1px;" title="Green" *ngIf="dataItem.ragStatus == 'G'" class="table-icon-wr"
                 src="assets/img/icons/GreenDot.png" />
             </div>
+
+            <div style="margin-left:2px;" class="iconDiv">
+              <img style="margin-top: -4px;" title="Notepad" *ngIf="dataItem.worksOrderFileCount > 0"
+                class="table-icon-wr" src="assets/img/icons/attach.png" />
+            </div>
+
           </ng-template>
         </kendo-grid-column>
         <kendo-grid-column field="wostatus" title="Status" width="160">

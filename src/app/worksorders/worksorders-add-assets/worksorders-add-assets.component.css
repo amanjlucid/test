@@ -350,3 +350,8 @@ label.radio-inline {
 .moneytext {
   text-align: right;
 }
+
+.k-grid .k-grid-content tr.DisableRowSelection td:not(.k-hierarchy-cell) {
+  opacity: 0.6;
+  pointer-events: none;
+}

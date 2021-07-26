@@ -30,7 +30,7 @@ export class WorksordersAssetDetailComponent implements OnInit {
         sort: [],
         group: [],
         filter: {
-            logic: "or",
+            logic: "and",
             filters: []
         }
     }
@@ -242,7 +242,7 @@ export class WorksordersAssetDetailComponent implements OnInit {
                     } else {
                         this.alertService.error(apiData.pRETURNMESSAGE);
                     }
-                    
+
                 }
 
             },
@@ -307,7 +307,7 @@ export class WorksordersAssetDetailComponent implements OnInit {
 
                     }
 
-                   
+
 
                 }
 
@@ -521,7 +521,7 @@ export class WorksordersAssetDetailComponent implements OnInit {
                 err => this.alertService.error(err)
             )
         )
-     
+
 
     }
 
@@ -537,9 +537,9 @@ export class WorksordersAssetDetailComponent implements OnInit {
             this.worksOrdersService.GetDefaultCostForAssetWork(params).subscribe(
                 (data) => {
                     let costData = data.data[0];
-                  
+
                     this.itemData.wo_forcast = costData.soR_RATE;
-                   
+
                     this.itemData.work_cost = this.itemData.asaquantity * this.itemData.wo_forcast;
                     this.itemData.cost_override = costData.overridE_COST;
                     this.chRef.detectChanges();
@@ -570,7 +570,7 @@ export class WorksordersAssetDetailComponent implements OnInit {
 
     editWorkPackageQtyCostSave() {
         this.loading = true;
-       
+
         let params = {
             "PWOSEQUENCE": this.selectedItem.wosequence,
             "PWOPSEQUENCE": this.selectedItem.wopsequence,
@@ -640,7 +640,7 @@ export class WorksordersAssetDetailComponent implements OnInit {
         this.selectedItem = item;
 
         this.loading = true;
-       
+
         let params = {
             "WOSEQUENCE": this.selectedItem.wosequence,
             "WOPSEQUENCE": this.selectedItem.wopsequence,
@@ -687,7 +687,7 @@ export class WorksordersAssetDetailComponent implements OnInit {
 
     setSeletedRow(dataItem) {
         this.selectedItem = dataItem;
-       
+
     }
 
 

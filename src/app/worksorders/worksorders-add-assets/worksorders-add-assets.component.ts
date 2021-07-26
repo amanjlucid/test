@@ -58,6 +58,8 @@ export class WorksordersAddAssetsComponent implements OnInit {
   worksOrderAccess: any = [];
   userType: any = []
   @ViewChild(GridComponent) grid: GridComponent;
+  ChecklistCost;
+  RequiredBudget = 0;
 
   constructor(
     private propSecGrpService: PropertySecurityGroupService,
@@ -82,11 +84,13 @@ export class WorksordersAddAssetsComponent implements OnInit {
     this.subs.add(
       combineLatest([
         this.sharedService.woUserSecObs,
-        this.sharedService.userTypeObs
+        this.sharedService.userTypeObs,
+        this.worksorderManagementService.getChecklistCost(this.actualSelectedRow.wosequence),
       ]).subscribe(
         data => {
           this.userType = data[1][0];
           this.worksOrderAccess = data[0]
+          this.ChecklistCost = data[2].data;
         }
       )
     )
@@ -137,13 +141,13 @@ export class WorksordersAddAssetsComponent implements OnInit {
 
   setSelectableSettings(): void {
     this.selectableSettings = {
-      checkboxOnly: true,
+      checkboxOnly: false,
       mode: 'multiple'
     };
   }
 
-  cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
-    // console.log(this.mySelection)
+  cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited, originalEvent }) {
+
   }
 
   sortChange(sort: SortDescriptor[]): void {
@@ -168,7 +172,7 @@ export class WorksordersAddAssetsComponent implements OnInit {
   filterChange(filter: any): void {
     this.state.filter = filter;
     this.mySelection = [];
-
+    this.RequiredBudget = 0;
     if (this.state.filter) {
       // this.headerFilters.isFilter = true;
       if (this.state.filter.filters.length > 0) {
@@ -257,12 +261,15 @@ export class WorksordersAddAssetsComponent implements OnInit {
   pageChange(state: PageChangeEvent): void {
     this.headerFilters.CurrentPage = state.skip;
     this.stateChange.next(this.headerFilters);
+
   }
 
   searchGrid() {
     this.headerFilters.CurrentPage = 0;
     this.state.skip = 0;
     this.stateChange.next(this.headerFilters);
+    this.mySelection = [];
+    this.RequiredBudget = 0;
   }
 
   mySelectionKey(context: RowArgs): string {
@@ -295,6 +302,7 @@ export class WorksordersAddAssetsComponent implements OnInit {
             this.alertService.success(data.data[0].pRETURNMESSAGE);
             this.refreshWorkOrderDetails.emit(true);
             this.searchGrid();
+            this.mySelection = [];
           } else if (data.data[0].pRETURNSTATUS != "S") {
             this.alertService.error(data.data[0].pRETURNMESSAGE)
           }
@@ -317,11 +325,13 @@ export class WorksordersAddAssetsComponent implements OnInit {
   }
 
   selectionChange(item) {
-    if (this.mySelection.includes(item.assid)) {
-      this.mySelection = this.mySelection.filter(x => x != item.assid);
-    } else {
-      this.mySelection.push(item.assid);
-    }
+    // if (this.mySelection.includes(item.assid)) {
+    //   this.mySelection = this.mySelection.filter(x => x != item.assid);
+    // } else {
+    //   this.mySelection.push(item.assid);
+    // }
+
+    // this.RequiredBudget = (this.mySelection.length * this.ChecklistCost);
   }
 
 
@@ -423,5 +433,33 @@ export class WorksordersAddAssetsComponent implements OnInit {
 
   //##################### hierarchy function end ######################################//
 
+  public isDisabled(args) {
+    return {
+      'DisableRowSelection': !(args.dataItem.alreadyInWorksOrderPhase == 'N')
+     }; 
+    }
 
+    public selectedRowChange(selectionEvent) {
+      if (!(selectionEvent.ctrlKey || selectionEvent.shiftKey)){
+        this.mySelection = [];
+        this.RequiredBudget = 0;
+      }
+      if (selectionEvent.deselectedRows.length > 0) {
+        for (let row of selectionEvent.deselectedRows) {
+          this.mySelection = this.mySelection.filter(x => x != row.dataItem.assid);
+      }   
+      }
+      if (selectionEvent.selectedRows.length > 0) {
+        for (let row of selectionEvent.selectedRows) {
+          this.mySelection = this.mySelection.filter(x => x = row.dataItem.assid);
+          if (row.dataItem.alreadyInWorksOrderPhase == 'N') {
+              this.mySelection.push(row.dataItem.assid);
+          }
+        }   
+      }
+      this.RequiredBudget = (this.mySelection.length * this.ChecklistCost);
+    }
+
+
+    
 }

@@ -32,6 +32,12 @@
         </div>
 
         <div class="form-row">
+          <div class="form-group col-md-4">
+            <label class="form-label">Filter</label>
+            <input *ngIf="!disableUser"  class="form-control" (keyup)="searchUsers($event)"  type="text"  >
+            <input *ngIf="disableUser"  class="form-control" type="text" readonly>
+          </div>
+
           <div class="form-group col-md-8">
             <label class="form-label">Security User</label>
             <select class="custom-select" formControlName="securityUser" *ngIf="!disableUser"
@@ -44,12 +50,6 @@
             <div *ngIf="submitted && formErrors.securityUser" class="invalid-feedback">
               <div *ngIf="formErrors.securityUser">{{ formErrors.securityUser }}</div>
             </div>
-          </div>
-
-          <div class="form-group col-md-4">
-            <label class="form-label">Search</label>
-            <input *ngIf="!disableUser"  class="form-control" (keyup)="searchUsers($event)"  type="text"  >
-            <input *ngIf="disableUser"  class="form-control" type="text" readonly>
           </div>
 
         </div>

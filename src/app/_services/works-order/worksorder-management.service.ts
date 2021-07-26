@@ -697,4 +697,8 @@ export class WorksorderManagementService {
 }
 
 
+  getChecklistCost(WOSEQUENCE) {
+    return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetChecklistCost?WOSEQUENCE=${WOSEQUENCE}`, this.httpOptions);
+}
+
 }
