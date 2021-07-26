@@ -30,7 +30,8 @@
               allowUnsort: allowUnsort,
               mode: multiple ? 'multiple' : 'single'
               }" [sort]="state.sort" [skip]="state.skip" [loading]="loading" (pageChange)="pageChange($event)"
-        scrollable="virtual" [pageSize]="pageSize" [rowHeight]="36" [filter]="state.filter" filterable="menu">
+        scrollable="virtual" [pageSize]="pageSize" [rowHeight]="36" [filter]="state.filter" filterable="menu"
+        (sortChange)="sortChange($event)" (filterChange)="filterChange($event)">
 
         <kendo-grid-column title=" " width="37" [filterable]="false" [sortable]="false">
           <ng-template kendoGridCellTemplate let-dataItem>
@@ -84,7 +85,7 @@
           </ng-template>
         </kendo-grid-column>
         <kendo-grid-column field="woirequestdate" title="Requested On" [width]="140">
-    
+
 
           <ng-template kendoGridCellTemplate let-dataItem>
             <span>
@@ -123,7 +124,7 @@
           </ng-template>
         </kendo-grid-column>
         <kendo-grid-column field="woiacceptdate" title="Accepted On" [width]="140">
-        
+
           <ng-template kendoGridCellTemplate let-dataItem>
             <span>
               {{ dataItem.woiacceptdate | dateFormat : 'DD-MMM-YYYY' }}

@@ -33,7 +33,7 @@ export class WoProgramManagmentInstructionComponent implements OnInit {
     sort: [{ field: 'woname', dir: 'asc' }],
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }

@@ -287,10 +287,10 @@
 
   </div>
 
-  <div class="row">
+  <div class="row gridRow">
     <div class="col-md-12 mt-2 workorderDetailGrid" (mouseover)="getMouseroverEve($event)" kendoTooltip position="right"
       showOn="none" [tooltipTemplate]="template" filter=".k-grid td" tooltipClass="tooltip-class">
-      <kendo-treelist #grid [kendoTreeListFlatBinding]="gridData" idField="id" parentIdField="parentId"
+      <kendo-treelist id="workorderDetailtable" #grid [kendoTreeListFlatBinding]="gridData" idField="id" parentIdField="parentId"
         scrollable="virtual" [rowHeight]="36" kendoTreeListExpandable [initiallyExpanded]="true" [sortable]="true"
         filterable="menu" [filter]="filter" (filterChange)="onFilterChange($event)" [pageSize]="gridPageSize"
         [navigable]="false" kendoTreeListSelectable [selectable]="settings" [(selectedItems)]="selected" itemKey="id"

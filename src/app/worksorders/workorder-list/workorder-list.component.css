@@ -223,7 +223,8 @@
     .filterdiv input[type=text] {
         width: 58% !important;
     }
+}
 
-
-
+.k-tooltip{
+    background-color: white !important;
 }

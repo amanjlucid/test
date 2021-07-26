@@ -37,7 +37,10 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
   userSecurityByWO: any;
   loading = true;
   public selected: any[] = [];
-  public filter: CompositeFilterDescriptor;
+  public filter: CompositeFilterDescriptor = {
+    logic: "and",
+    filters: []
+  };
   public settings: SelectableSettings = {
     mode: 'row',
     multiple: true,
@@ -49,7 +52,7 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
   public gridData: any = [];
   @ViewChild(TreeListComponent) public grid: TreeListComponent;
   gridHeight = 750;
-  contractorCost:any;
+  contractorCost: any;
   worksOrderData: any;
   assetchecklistWindow = false;
   selectedChildRow: any;
@@ -119,9 +122,13 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
   statusFilterDropDown = [{ text: "New", val: "New" }, { text: "Pending", val: "Pending" },
   { text: "Issued", val: "Issued" }, { text: "Accepted", val: "Accepted" },
   { text: "In Progress", val: "In Progress" }, { text: "Handover", val: "Handover" },
-  { text: "Practical Completion", val: "Practical Completion" }, 
+  { text: "Practical Completion", val: "Practical Completion" },
   { text: "Final Completion", val: "Final Completion" },
-];
+  ];
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    this.updateGridHeight();
+  }
 
   constructor(
     private sharedService: SharedService,
@@ -180,7 +187,9 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
 
         }
       )
-    )
+    );
+
+    this.updateGridHeight()
   }
 
   ngOnDestroy() {
@@ -504,13 +513,9 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
   slideToggle() {
     this.filterToggle = !this.filterToggle;
     $('.worksorder-header').slideToggle();
-    if (this.filterToggle) {
-      this.gridHeight = 430;
-    } else {
-      setTimeout(() => {
-        this.gridHeight = 750;
-      }, 500);
-    }
+    setTimeout(() => {
+      this.updateGridHeight();
+    }, 500);
   }
 
 
@@ -1569,7 +1574,7 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
     this.assetDocWindow = false;
     $('.worksOrderDetailOvrlay').removeClass('ovrlay');
     this.refreshGrid(eve);
-    }
+  }
 
   openDocumentMethod() {
     if (this.worksOrderSingleData.worksOrderFileCount == 0) return;
@@ -1619,6 +1624,22 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
   closePaymentScheduleWindow($event) {
     $('.worksOrderDetailOvrlay').removeClass('ovrlay');
     this.openWOPaymentScheduleWindow = $event;
+  }
+
+  updateGridHeight() {
+    const innerHeight = window.innerHeight - 200;
+    if (this.filterToggle) {
+      this.gridHeight = innerHeight - 330;
+    } else {
+      this.gridHeight = innerHeight;
+    }
+
+    if (this.gridHeight > 900) {
+      this.gridPageSize = 40;
+    } else {
+      this.gridPageSize = 25;
+    }
+
   }
 
 }
