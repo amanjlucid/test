@@ -103,14 +103,13 @@ export class WorksordersManagementComponent implements OnInit {
 
     this.subs.add(
       combineLatest([
-        this.sharedService.worksOrdersAccess,
         this.sharedService.woUserSecObs,
         this.sharedService.userTypeObs
       ]).subscribe(
         data => {
           this.worksOrderAccess = data[0];
-          this.worksOrderUsrAccess = data[1];
-          this.userType = data[2][0];
+          this.worksOrderUsrAccess = data[0];
+          this.userType = data[1][0];
 
           if (this.worksOrderAccess.length > 0) {
             if (!this.worksOrderAccess.includes("Management Menu")) {
@@ -450,7 +449,7 @@ export class WorksordersManagementComponent implements OnInit {
   }
 
   redirectToWorksOrder(item) {
-    if (this.woMenuAccess('Works Order Detail')){
+    if (this.UserMenuAccess('Works Order Detail')){
       this.sharedService.changeWorksOrderSingleData(item);
       localStorage.setItem('worksOrderSingleData', JSON.stringify(item)); // remove code on logout service
       this.router.navigate(['worksorders/details']);
@@ -541,19 +540,9 @@ export class WorksordersManagementComponent implements OnInit {
     this.selctedWorksOrder = dataItem;
   }
 
-  programmeMenuAccess(menuName) {
-    return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
+  UserMenuAccess(menuName) {
+    return this.worksOrderUsrAccess.indexOf(menuName) != -1
   }
-
-  woMenuAccess(menuName) {
-    return this.helperService.checkWorkOrderAreaAccess(this.userType, this.worksOrderAccess, this.worksOrderUsrAccess, menuName)
-    // if (this.userType == undefined) return true;
-    // if (this.userType?.wourroletype == "Dual Role") {
-    //   return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
-    // }
-    // return this.worksOrderUsrAccess.indexOf(menuName) != -1
-  }
-
 
   redirectToWoProgramManagmentInstructions(item) {
     this.selctedWorksOrder = item;

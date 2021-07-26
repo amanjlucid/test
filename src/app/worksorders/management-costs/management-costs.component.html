@@ -124,14 +124,16 @@
       </div>
   </div>
   <div class="ManagementCostsOverlay"></div>
+  <app-management-edit-costs [editFormWindow]="editFormWindow" [selectedContractCost]="wopmContractcost"
+  [editFormType]="editFormType" [selectedWorksOrder]="selectedWorksOrder"
+  *ngIf="editFormWindow" (closeEditFormWindow)="closeEditFormWin($event)">
+  </app-management-edit-costs>
+
  </kendo-window>
 
 
 
-<app-management-edit-costs [editFormWindow]="editFormWindow" [selectedContractCost]="wopmContractcost"
-[editFormType]="editFormType" [selectedWorksOrder]="selectedWorksOrder"
-*ngIf="editFormWindow" (closeEditFormWindow)="closeEditFormWin($event)">
-</app-management-edit-costs>
+
 
 
 

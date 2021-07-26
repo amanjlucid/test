@@ -6,4 +6,3 @@ export const appConfig = {
     appUrl: `http://${host}/rowanwood`,
     silverLightUrl: `http://${host}/Rowanwood`
 };
-

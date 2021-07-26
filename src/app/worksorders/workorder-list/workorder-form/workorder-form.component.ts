@@ -40,6 +40,7 @@ export class WorkOrderFormComponent implements OnInit {
     workOrderProgrammeListData: any;
     WorkOrderContractListData: any;
     GetPhaseTemplateListData: any;
+    WorksOrderName: string = '';
     formErrors: any;
     stage2FormSetting = {
         won: [''],
@@ -835,6 +836,10 @@ export class WorkOrderFormComponent implements OnInit {
     }
 
     editRepChars(){
+
+      let formRawVal = this.woForm2.getRawValue();
+      this.WorksOrderName = formRawVal.woname;
+
       if(this.reportingCharsConfig == undefined){
         this.subs.add(
           this.worksorderManagementService.getReportingCharConfigData1(this.selectedWorkOrderAddEdit.wosequence).subscribe(

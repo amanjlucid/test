@@ -827,12 +827,7 @@ export class HelperService {
     }
 
 
-    checkWorkOrderAreaAccess(userType, worksOrderAccess, worksOrderUsrAccess, menuName) {
-        // workorder list page has own security check method
-        if (userType == undefined) return worksOrderAccess.indexOf(menuName) != -1;
-        if (userType?.wourroletype == "Dual Role") {
-            return worksOrderAccess.indexOf(menuName) != -1 || worksOrderUsrAccess.indexOf(menuName) != -1
-        }
+    checkWorkOrderAreaAccess(worksOrderUsrAccess, menuName) {
         return worksOrderUsrAccess.indexOf(menuName) != -1
     }
 

@@ -416,6 +416,9 @@ label.radio-inline {
   color: white !important;
 }
 
+.moneytext {
+  text-align: right;
+}
 /* .workorderDetailGrid .k-grid-content-locked {
   z-index: 2 !important;
   overflow: initial !important;

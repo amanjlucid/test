@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { SubSink } from 'subsink';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { WorksorderManagementService, AlertService, HelperService, LoaderService } from '../../_services'
@@ -10,8 +10,7 @@ import { WorkordersAddManagementModel } from '../../_models';
   selector: 'app-worksorders-newmanagement',
   templateUrl: './worksorders-newmanagement.component.html',
   styleUrls: ['./worksorders-newmanagement.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  encapsulation: ViewEncapsulation.None
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 export class WorksordersNewmanagementComponent implements OnInit {

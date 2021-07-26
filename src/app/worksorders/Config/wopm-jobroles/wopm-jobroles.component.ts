@@ -11,7 +11,7 @@ import { WopmJobroleModel, SurveyPortalXports } from '../../../_models'
   selector: 'app-wopm-jobroles',
   templateUrl: './wopm-jobroles.component.html',
   styleUrls: ['./wopm-jobroles.component.css'],
-  encapsulation: ViewEncapsulation.None
+
 })
 export class WopmJobrolesComponent implements OnInit {
     subs = new SubSink();

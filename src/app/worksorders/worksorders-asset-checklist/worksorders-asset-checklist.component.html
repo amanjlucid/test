@@ -20,10 +20,6 @@
                 </div>
             </div>
 
-            <button *ngIf="woMenuBtnSecurityAccess('Checklist Documents')" type="button"
-                [disabled]="!selectedChecklistsingleItem || mySelection.length != 1" class="btn btn-sm themeButton mr-1"
-                (click)="openChecklistDoc()">Documents</button>
-
             <div class="dropdown mr-1" id="nesting-dropdown-demo">
                 <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown"
                     aria-expanded="false">Work</button>
@@ -35,11 +31,11 @@
                     <a *ngIf="woMenuBtnSecurityAccess('Remove All Work')" class="dropdown-item"
                         (click)="removeOrDeletework('remove')" href="javascript:void(0)"
                         [ngClass]="{'disabled' : disableMainActions('woremoveAll')}">
-                        Remove All</a>
+                        Remove</a>
                     <a *ngIf="woMenuBtnSecurityAccess('Delete All Work')" class="dropdown-item"
                         (click)="removeOrDeletework('delete')" href="javascript:void(0)"
                         [ngClass]="{'disabled' : disableMainActions('wodeleteAll')}">
-                        Delete All</a>
+                        Delete</a>
                     <a *ngIf="woMenuBtnSecurityAccess('Add Work')" class="dropdown-item"
                         (click)="openAddAssetWorkOrdersList(selectedChildRow, 'all')" href="javascript:void(0)"
                         [ngClass]="{'disabled' : disableMainActions('woAdd')}">
@@ -233,9 +229,9 @@
                         </div>
                     </div>
 
-                    <a class="dropdown-item" [ngClass]="{'disabled' : disableMainActions('LETTER')}"
+                    <!-- <a class="dropdown-item" [ngClass]="{'disabled' : disableMainActions('LETTER')}"
                         *ngIf="woGlobalSecurityAccess('Report Checklist')" (click)="mergeMailMultiple()"
-                        href="javascript:void(0)">Letter</a>
+                        href="javascript:void(0)">Letter</a> -->
  
                    <a  class="dropdown-item"
                     [ngClass]="{'disabled' : disableMainActions('FEE')}"
@@ -554,6 +550,16 @@
                                             (click)="openAssetDetailChild('single', dataItem)" href="javascript:void(0)"
                                             [ngClass]="{'disabled' :disableBtnsIndividualMenu('WODETAIL', dataItem)}">Detail</a>
 
+                                        <a *ngIf="woMenuBtnSecurityAccess('Remove All Work')" class="dropdown-item"
+                                            (click)="removeOrDeletework('remove')" href="javascript:void(0)"
+                                            [ngClass]="{'disabled' : disableMainActions('woremoveAll')}">
+                                            Remove</a>
+
+                                        <a *ngIf="woMenuBtnSecurityAccess('Delete All Work')" class="dropdown-item"
+                                            (click)="removeOrDeletework('delete')" href="javascript:void(0)"
+                                            [ngClass]="{'disabled' : disableMainActions('wodeleteAll')}">
+                                            Delete</a>
+
                                         <a *ngIf="woMenuBtnSecurityAccess('Add Work')" class="dropdown-item"
                                             (click)="openAddAssetWorkOrdersList(dataItem, 'single')"
                                             href="javascript:void(0)"
@@ -594,6 +600,10 @@
                                     </div>
                                 </div>
 
+
+                                <a class="dropdown-item"
+                                    *ngIf="woMenuBtnSecurityAccess('Checklist Documents')" 
+                                    (click)="openChecklistDoc(dataItem)" href="javascript:void(0)">Documents</a>
 
                             </div>
                         </li>
@@ -738,7 +748,12 @@
                         </span>
                     </ng-template>
                 </kendo-grid-column>
-                <kendo-grid-column field="woasscheckcomment" title="Comment(s)" width="400">
+                <kendo-grid-column field="woasscheckcomment" title="Comment(s)" width="1000">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span title="{{ dataItem.woasscheckcomment}}">
+                            {{ dataItem.woasscheckcomment}}
+                        </span>
+                    </ng-template>
                 </kendo-grid-column>
 
             </kendo-grid>

@@ -1,4 +1,4 @@
-<kendo-dialog  [title]="windowTitle"  [width]="650"  *ngIf="templateFormWindow" (close)="closetemplateFormWindow()">
+<kendo-window  [title]="windowTitle"  [width]="650" top="10" *ngIf="templateFormWindow" (close)="closetemplateFormWindow()">
   <div class="flex-grow-1 userFrm">
 
     <form [formGroup]="templateForm" (ngSubmit)="onSubmit()" autocomplete="off">
@@ -70,4 +70,4 @@
 
 
   </div>
-</kendo-dialog>
+</kendo-window>

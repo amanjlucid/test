@@ -64,10 +64,10 @@
       </app-attributes>
       <app-asset-characteristics [selectedAsset]="selectedAsset" [assetId]="assetId"
         *ngIf="tabName == 'characteristics'"></app-asset-characteristics>
-      <app-asset-asbestos [selectedAsset]="selectedAsset" [assetId]="assetId" *ngIf="tabName == 'asbestos'">
+      <app-asset-asbestos [selectedAsset]="selectedAsset" [assetId]="assetId" *ngIf="tabName == 'asbestos' && checkAsbestosPortalAccess() && checkGroupPermission('Asbestos Portal Access')">
       </app-asset-asbestos>
       <app-asset-energy [selectedAsset]="selectedAsset" [assetId]="assetId" *ngIf="tabName == 'energy'"></app-asset-energy>
-      <app-asset-epc [selectedAsset]="selectedAsset" [assetId]="assetId" *ngIf="tabName == 'epc'"></app-asset-epc>
+      <app-asset-epc [selectedAsset]="selectedAsset" [assetId]="assetId" *ngIf="tabName == 'epc' && checkModuleEnabled('EPC Module') && checkEnergyPortalAccess('Energy Portal Access') && checkMenuAccess('Energy', 1)"></app-asset-epc>
       <app-asset-surveys [selectedAsset]="selectedAsset" [assetId]="assetId" *ngIf="tabName == 'surveys'"></app-asset-surveys>
       <app-asset-hs-assessents [selectedAsset]="selectedAsset" [assetId]="assetId" *ngIf="tabName == 'assessments'"></app-asset-hs-assessents>
       <app-asset-servicing [selectedAsset]="selectedAsset" [assetId]="assetId" *ngIf="tabName == 'servicing'"></app-asset-servicing>

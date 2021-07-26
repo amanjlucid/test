@@ -1,9 +1,9 @@
 
-<kendo-dialog  title="{{title}}" *ngIf="showEditCommentWindow"   [minHeight]="250"  (close)="closeWindow()"
-[minWidth]="250" [width]="650"  >
+<kendo-window  title="{{title}}" *ngIf="showEditCommentWindow"   [minHeight]="450"  (close)="closeWindow()"
+[minWidth]="250" [width]="650"  [top]="10" [height]="auto" >
 
     <div class="col-md-12 mt-3" >
-        <textarea class="textComment" [(ngModel)]="comment" rows="10" maxlength=1024 >
+        <textarea class="textComment" [(ngModel)]="comment" rows="18" maxlength=1024 >
         </textarea>
     </div>
 
@@ -23,5 +23,5 @@
       </div>
 
 
-  </kendo-dialog>
+  </kendo-window>
 

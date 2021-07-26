@@ -186,6 +186,7 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
   }
 
   getUserWorksOrdersList(filter, menuOpen = null) {
+
     this.subs.add(
       this.worksOrderService.getListOfUserWorksOrderByUserId(filter).subscribe(
         data => {
@@ -343,15 +344,10 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
   }
 
   redirectToWorksOrder(item) {
-    if (this.userType?.wourroletype == "Dual Role") {
-      if (this.worksOrderAccess.indexOf('Works Order Detail') == -1 && this.worksOrderUsrAccess.indexOf('Works Order Detail') == -1) {
-        return;
-      }
-    } else {
       if (this.worksOrderUsrAccess.indexOf('Works Order Detail') == -1) {
         return
       }
-    }
+ 
 
     this.selectedWorksOrder = item;
     this.sharedService.changeWorksOrderSingleData(item);
@@ -370,15 +366,9 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
 
 
   redirectToWorksOrderEdit(item) {
-    if (this.userType?.wourroletype == "Dual Role") {
-      if (this.worksOrderAccess.indexOf('Edit Works Order') == -1 && this.worksOrderUsrAccess.indexOf('Edit Works Order') == -1) {
-        return;
-      }
-    } else {
       if (this.worksOrderUsrAccess.indexOf('Edit Works Order') == -1) {
         return
       }
-    }
 
     $('.bgblur').addClass('ovrlay');
     this.woFormType = 'edit';
@@ -525,36 +515,22 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
 
 
   woMenuAccess(menuName) {
-
-    if (menuName == 'Payment Schedule Tab'){
-      let v =  this.worksOrderUsrAccess.indexOf(menuName) != -1
-      let v2 = this.worksOrderAccess.indexOf(menuName) != -1
-      let v3 = 3
-    }
-
-    if (this.userType == undefined) return true;
-
-    if (this.userType?.wourroletype == "Dual Role") {
       if (menuName == "Works Orders Menu") {
-        if (this.worksOrderAccess.indexOf('Edit Works Order') != -1 || this.worksOrderUsrAccess.indexOf('Edit Works Order') != -1) {
+        if (this.worksOrderUsrAccess.indexOf('Edit Works Order') != -1) {
           return true
         }
 
-        if (this.worksOrderAccess.indexOf('Delete Works Order') != -1 || this.worksOrderUsrAccess.indexOf('Delete Works Order') != -1) {
+        if (this.worksOrderUsrAccess.indexOf('Delete Works Order') != -1) {
           return true
         }
 
-        if (this.worksOrderAccess.indexOf('Works Order Detail') != -1 || this.worksOrderUsrAccess.indexOf('Works Order Detail') != -1) {
+        if (this.worksOrderUsrAccess.indexOf('Works Order Detail') != -1) {
           return true
         }
 
         return false;
       }
-      return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
-    }
-
     return this.worksOrderUsrAccess.indexOf(menuName) != -1
-
 
   }
 

@@ -89,12 +89,7 @@ export class WoDocumentListComponent implements OnInit {
         data => {
           // console.log(data);
           this.userType = data[2][0];
-          if (this.userType?.wourroletype == "Dual Role") {
-            this.worksOrderAccess = [...data[0], ...data[1]];
-          } else {
-            this.worksOrderAccess = data[0]
-          }
-
+          this.worksOrderAccess = data[0]
         }
       )
     )

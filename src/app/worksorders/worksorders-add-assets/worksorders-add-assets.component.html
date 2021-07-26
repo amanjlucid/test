@@ -14,14 +14,14 @@
                     <label for="">Phase Budget:</label>
                 </div>
                 <div class="col-md-2">
-                    <input type="text" [readonly]="readonly"
+                    <input type="text" [readonly]="readonly" class="moneytext" 
                         value="{{actualSelectedRow?.wobudget | currency:'GBP':'symbol'}}">
                 </div>
                 <div class="col-md-2">
                     <label for="">Phase Available Budget</label>
                 </div>
                 <div class="col-md-2">
-                    <input type="text" [readonly]="readonly"
+                    <input type="text" [readonly]="readonly" class="moneytext" 
                         value="{{actualSelectedRow?.wobudget - actualSelectedRow?.wocommitted | currency:'GBP':'symbol'}}">
                 </div>
             </div>
@@ -39,13 +39,13 @@
                     <label for="">Asset Checklist Cost:</label>
                 </div>
                 <div class="col-md-2">
-                    <input type="text" [readonly]="readonly" value="{{zero| currency:'GBP':'symbol'}}">
+                    <input type="text" [readonly]="readonly" value="{{zero| currency:'GBP':'symbol'}}" class="moneytext" >
                 </div>
                 <div class="col-md-2">
                     <label for="">Required Budget</label>
                 </div>
                 <div class="col-md-2">
-                    <input type="text" [readonly]="readonly" value="{{zero| currency:'GBP':'symbol'}}">
+                    <input type="text" [readonly]="readonly" value="{{zero| currency:'GBP':'symbol'}}" class="moneytext" >
                 </div>
             </div>
         </div>

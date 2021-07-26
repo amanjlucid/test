@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AlertService, WopmConfigurationService, ConfirmationDialogService } from '../../_services';
 import { AssetRisk } from '../../_models'
@@ -14,7 +14,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 })
 export class AssetRiskComponent implements OnInit {
 
-  @Input() displayRiskDetails 
+  @Input() displayRiskDetails
   @Input() assetID: string = ''
   @Input() assetAddress: string = ''
   @Output() closeRiskDetailsWindow = new EventEmitter<boolean>();
@@ -31,6 +31,7 @@ export class AssetRiskComponent implements OnInit {
   constructor(
     private wopmConfigurationService: WopmConfigurationService,
     private confirmationDialogService: ConfirmationDialogService,
+    private chRef: ChangeDetectorRef,
     private alertService: AlertService
   ) { }
 
@@ -50,9 +51,11 @@ export class AssetRiskComponent implements OnInit {
         if (data.isSuccess) {
           this.riskData = data.data
           this.loading = false;
+          this.chRef.detectChanges();
         } else {
           this.loading = false;
           this.alertService.error(data.message);
+          this.chRef.detectChanges();
         }
       },
       error => {

@@ -346,3 +346,7 @@ label.radio-inline {
     max-width: 16% !important;
   }
 }
+
+.moneytext {
+  text-align: right;
+}

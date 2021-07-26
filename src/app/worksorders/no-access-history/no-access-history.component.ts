@@ -164,7 +164,7 @@ export class NoAccessHistoryComponent implements OnInit {
 
 
   woMenuBtnSecurityAccess(menuName) {
-    return this.helperService.checkWorkOrderAreaAccess(this.userType, this.worksOrderAccess, this.worksOrderUsrAccess, menuName)
+    return this.helperService.checkWorkOrderAreaAccess(this.worksOrderUsrAccess, menuName)
   }
 
 

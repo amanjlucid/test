@@ -77,12 +77,7 @@ export class VariationAdditionalWorkItemComponent implements OnInit {
   }
 
   woMenuAccess(menuName) {
-    return this.helperService.checkWorkOrderAreaAccess(this.userType, this.worksOrderAccess, this.worksOrderUsrAccess, menuName)
-    // if (this.userType == undefined) return this.worksOrderUsrAccess.indexOf(menuName) != -1;
-    // if (this.userType?.wourroletype == "Dual Role") {
-    //   return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1;
-    // }
-    // return this.worksOrderUsrAccess.indexOf(menuName) != -1;
+    return this.helperService.checkWorkOrderAreaAccess(this.worksOrderUsrAccess, menuName)
   }
 
   requiredPagedata() {

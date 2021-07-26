@@ -178,18 +178,18 @@
             </div>
             <div class="col-md-2">
               <label>Budget:</label>
-              <input type="text" class="form-control form-control-sm" [readonly]="readonly"
+              <input type="text" class="form-control form-control-sm moneytext" [readonly]="readonly"
                 value="{{worksOrderData?.wobudget | currency:'GBP':'symbol'}}">
             </div>
             <div class="col-md-2">
               <label>Unallocated Budget:</label>
-              <input type="text" class="form-control form-control-sm" [readonly]="readonly"
+              <input type="text" class="form-control form-control-sm moneytext" [readonly]="readonly"
                 value="{{worksOrderData?.wobudget-worksOrderData?.wocommitted-worksOrderData?.wocommittedfee | currency:'GBP':'symbol'}}">
             </div>
 
             <div class="col-md-3">
               <label>Phase Budget Available:</label>
-              <input type="text" class="form-control form-control-sm" [readonly]="readonly"
+              <input type="text" class="form-control form-control-sm moneytext" [readonly]="readonly"
                 value="{{phaseBudgetAvailable | currency:'GBP':'symbol'}}">
             </div>
 
@@ -207,49 +207,49 @@
 
             <div class="col-md-1">
               <label>Forecast:</label>
-              <input type="text" class="form-control form-control-sm" readonly="true"
+              <input type="text" class="form-control form-control-sm moneytext" readonly="true"
                 value="{{worksOrderData?.woforecast + worksOrderData?.woforecastfee + worksOrderData?.woforecastconfee | currency:'GBP':'symbol'}}">
             </div>
 
             <div class="col-md-1">
-              <label>Commited:</label>
-              <input type="text" class="form-control form-control-sm" readonly="true"
+              <label>Committed:</label>
+              <input type="text" class="form-control form-control-sm moneytext" readonly="true"
                 value="{{worksOrderData?.wocommitted + worksOrderData?.wocommittedfee + worksOrderData?.wocommittedconfee  | currency:'GBP':'symbol'}}">
             </div>
 
             <div class="col-md-1">
               <label>Approved:</label>
-              <input type="text" class="form-control form-control-sm" readonly="true"
+              <input type="text" class="form-control form-control-sm moneytext" readonly="true"
                 value="{{worksOrderData?.woapproved + worksOrderData?.woapprovedfee + worksOrderData?.woapprovedconfee | currency:'GBP':'symbol'}}">
             </div>
 
             <div class="col-md-1">
               <label>Pending:</label>
-              <input type="text" class="form-control form-control-sm" readonly="true"
+              <input type="text" class="form-control form-control-sm moneytext" readonly="true"
                 value="{{worksOrderData?.wopending + worksOrderData?.wopendingfee+ worksOrderData?.wopendingconfee | currency:'GBP':'symbol'}}">
             </div>
 
             <div class="col-md-1">
               <label>Actual:</label>
-              <input type="text" class="form-control form-control-sm" readonly="true"
+              <input type="text" class="form-control form-control-sm moneytext" readonly="true"
                 value="{{worksOrderData?.woactual + worksOrderData?.woactualfee+ worksOrderData?.woactualconfee | currency:'GBP':'symbol'}}">
             </div>
 
             <div class="col-md-1">
               <label>Issued:</label>
-              <input type="text" class="form-control form-control-sm" readonly="true"
+              <input type="text" class="form-control form-control-sm moneytext" readonly="true"
                 value="{{worksOrderData?.wocurrentcontractsum | currency:'GBP':'symbol'}}">
             </div>
 
             <div class="col-md-1">
               <label>Accepted:</label>
-              <input type="text" class="form-control form-control-sm" readonly="true"
+              <input type="text" class="form-control form-control-sm moneytext" readonly="true"
                 value="{{worksOrderData?.woacceptedvalue | currency:'GBP':'symbol'}}">
             </div>
 
             <div class="col-md-1">
               <label>Payment:</label>
-              <input type="text" class="form-control form-control-sm" readonly="true"
+              <input type="text" class="form-control form-control-sm moneytext" readonly="true"
                 value="{{worksOrderData?.wopayment | currency:'GBP':'symbol'}}">
             </div>
           </div>
@@ -500,8 +500,7 @@
           <div class="dropdown-item">Actions</div>
           <div class="dropdown-menu addAssetMenu">
             <a *ngIf="woMenuBtnSecurityAccess('Release Phase')" class="dropdown-item"
-              (click)="assetAction(menuData, 'RELEASE', 'single')" href="javascript:void(0)">Release Assets For
-              Phase</a>
+            (click)="assetAction(menuData, 'RELEASE', 'single')" href="javascript:void(0)">Release Assets For Phase</a>
             <a *ngIf="woMenuBtnSecurityAccess('Issue Work For Phase')" class="dropdown-item"
               (click)="assetAction(menuData, 'ISSUE', 'single')" href="javascript:void(0)">
               Issue Work For Phase</a>
@@ -611,11 +610,13 @@
             <a *ngIf="woMenuBtnSecurityAccess('Remove Asset')" class="dropdown-item" href="javascript:void(0)"
               (click)="openRemoveReasonPanel('single', 'REMOVE', menuData)">Remove</a>
 
+              <a *ngIf="woMenuBtnSecurityAccess('Move Assets')" class="dropdown-item" href="javascript:void(0)"
+              (click)="moveAssets(menuData)">Move</a>
+
           </div>
         </div>
 
-        <a *ngIf="woMenuBtnSecurityAccess('Move Assets')" class="dropdown-item" href="javascript:void(0)"
-          (click)="moveAssets(menuData)">Move</a>
+
 
         <a class="dropdown-item" [ngClass]="{'disabled' : !menuData.residentriskcode || menuData.residentriskcode == 0}"
           *ngIf="woMenuBtnSecurityAccess('View Resident Info')" href="javascript:void(0)"

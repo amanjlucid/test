@@ -314,7 +314,7 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
 
 
   woMenuAccess(menuName) {
-    return this.helperService.checkWorkOrderAreaAccess(this.userType, this.worksOrderAccess, this.worksOrderUsrAccess, menuName)
+    return this.helperService.checkWorkOrderAreaAccess( this.worksOrderUsrAccess, menuName)
   }
 
 

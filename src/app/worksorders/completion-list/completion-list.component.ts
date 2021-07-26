@@ -184,15 +184,7 @@ export class CompletionListComponent implements OnInit, OnDestroy {
 
 
   woMenuAccess(menuName) {
-    return this.helperService.checkWorkOrderAreaAccess(this.userType, this.worksOrderAccess, this.worksOrderUsrAccess, menuName)
-    // if (this.userType == undefined) return true;
-
-    // if (this.userType?.wourroletype == "Dual Role") {
-    //   return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
-    // }
-
-    // return this.worksOrderUsrAccess.indexOf(menuName) != -1
-
+    return this.helperService.checkWorkOrderAreaAccess(this.worksOrderUsrAccess, menuName)
   }
 
   openEmailInstructionReport(item) {

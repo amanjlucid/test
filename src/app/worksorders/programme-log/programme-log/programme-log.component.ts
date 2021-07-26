@@ -435,7 +435,7 @@ export class ProgramLogComponent implements OnInit {
 
 
     woMenuAccess(menuName: string) {
-        return this.helper.checkWorkOrderAreaAccess(this.userType, this.worksOrderAccess, this.worksOrderUsrAccess, menuName)
+        return this.helper.checkWorkOrderAreaAccess(this.worksOrderUsrAccess, menuName)
     }
 
 

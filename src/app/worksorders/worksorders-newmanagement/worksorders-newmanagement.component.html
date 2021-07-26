@@ -257,11 +257,11 @@
                     <div class="first">
                         <label class="col-form-label">Target Date</label>
                     </div>
-                    <div class="second">
+                    <div class="second tgdate">
                         <input type="text" class="form-control" formControlName="WPRTARGETCOMPLETIONDATE"
                             [ngClass]="{ 'is-invalid': submitted && formErrors.WPRTARGETCOMPLETIONDATE }"
                             autocomplete="off" (click)="openCalendar(td,'completedDate')" [minDate]="minDate"
-                            ngbDatepicker #td="ngbDatepicker"   >
+                            ngbDatepicker #td="ngbDatepicker" [placement]="'top'">
 
                         <div *ngIf="submitted && formErrors.WPRTARGETCOMPLETIONDATE" class="invalid-feedback">
                             <div *ngIf="formErrors.WPRTARGETCOMPLETIONDATE">{{ formErrors.WPRTARGETCOMPLETIONDATE }}
@@ -280,7 +280,7 @@
                         <input type="text" class="form-control" formControlName="WPRCONTRACTORISSUEDATE"
                             [ngClass]="{ 'is-invalid': submitted && formErrors.WPRCONTRACTORISSUEDATE }"
                             autocomplete="off" (click)="openCalendar(td,'completedDate')" [minDate]="minDate"
-                            ngbDatepicker #td="ngbDatepicker">
+                            ngbDatepicker #td="ngbDatepicker" [placement]="'top'">
 
                         <div *ngIf="submitted && formErrors.WPRCONTRACTORISSUEDATE" class="invalid-feedback">
                             <div *ngIf="formErrors.WPRCONTRACTORISSUEDATE">{{ formErrors.WPRCONTRACTORISSUEDATE }}</div>
@@ -300,7 +300,7 @@
                         <input type="text" class="form-control" formControlName="WPRPLANSTARTDATE"
                             [ngClass]="{ 'is-invalid': submitted && formErrors.WPRPLANSTARTDATE }" autocomplete="off"
                             (click)="openCalendar(psd,'completedDate')" [minDate]="minDate" ngbDatepicker
-                            #psd="ngbDatepicker" >
+                            #psd="ngbDatepicker" [placement]="'top'">
 
                         <div *ngIf="submitted && formErrors.WPRPLANSTARTDATE" class="invalid-feedback">
                             <div *ngIf="formErrors.WPRPLANSTARTDATE">{{ formErrors.WPRPLANSTARTDATE }}</div>
@@ -318,7 +318,7 @@
                         <input type="text" class="form-control" formControlName="WPRPLANENDDATE"
                             [ngClass]="{ 'is-invalid': submitted && formErrors.WPRPLANENDDATE }" autocomplete="off"
                             (click)="openCalendar(ped,'completedDate')" [minDate]="minDate" ngbDatepicker
-                            #ped="ngbDatepicker">
+                            #ped="ngbDatepicker" [placement]="'top'">
 
                         <div *ngIf="submitted && formErrors.WPRPLANENDDATE" class="invalid-feedback">
                             <div *ngIf="formErrors.WPRPLANENDDATE">{{ formErrors.WPRPLANENDDATE }}</div>
@@ -338,7 +338,7 @@
                         <input type="text" class="form-control" formControlName="WPRACTUALSTARTDATE"
                             [ngClass]="{ 'is-invalid': submitted && formErrors.WPRACTUALSTARTDATE }" autocomplete="off"
                             (click)="openCalendar(asd,'completedDate')" [minDate]="minDate" ngbDatepicker
-                            #asd="ngbDatepicker">
+                            #asd="ngbDatepicker" [placement]="'top'">
 
                         <div *ngIf="submitted && formErrors.WPRACTUALSTARTDATE" class="invalid-feedback">
                             <div *ngIf="formErrors.WPRACTUALSTARTDATE">{{ formErrors.WPRACTUALSTARTDATE }}</div>
@@ -354,7 +354,7 @@
                         <input type="text" class="form-control" formControlName="WPRACTUALENDDATE"
                             [ngClass]="{ 'is-invalid': submitted && formErrors.WPRACTUALENDDATE }" autocomplete="off"
                             (click)="openCalendar(aed,'completedDate')" [minDate]="minDate" ngbDatepicker
-                            #aed="ngbDatepicker">
+                            #aed="ngbDatepicker" [placement]="'top'">
 
                         <div *ngIf="submitted && formErrors.WPRACTUALENDDATE" class="invalid-feedback">
                             <div *ngIf="formErrors.WPRACTUALENDDATE">{{ formErrors.WPRACTUALENDDATE }}</div>

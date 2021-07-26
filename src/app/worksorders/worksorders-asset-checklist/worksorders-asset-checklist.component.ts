@@ -274,9 +274,10 @@ export class WorksordersAssetChecklistComponent implements OnInit {
 
   }
 
-  openChecklistDoc() {
-    if (this.mySelection.length != 1) return
+  openChecklistDoc(dataItem) {
+    if (!dataItem) return
     $('.checklistOverlay').addClass('ovrlay');
+    this.selectedChecklistsingleItem = dataItem;
     this.checklistDocWindow = true;
   }
 
@@ -1320,7 +1321,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
 
 
   woMenuBtnSecurityAccess(menuName) {
-    return this.helperService.checkWorkOrderAreaAccess(this.userType, this.worksOrderAccess, this.worksOrderUsrAccess, menuName)
+    return this.helperService.checkWorkOrderAreaAccess(this.worksOrderUsrAccess, menuName)
   }
 
 
@@ -1484,6 +1485,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
 
   closeProgrammeLogWindow(eve) {
     this.ProgrammeLogWindow = eve;
+    $('.checklistOverlay').removeClass('ovrlay');
   }
 
   openEditFeeWindow() {

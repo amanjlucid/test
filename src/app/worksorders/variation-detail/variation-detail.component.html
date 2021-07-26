@@ -156,9 +156,7 @@
                             <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
 
                             <div class="dropdown-menu">
-                                <!-- <a [ngClass]="{'disabled' : disableVariationBtns('Edit', dataItem)}"
-                                *ngIf="woMenuAccess('Edit Variation')" class="dropdown-item"
-                                href="javascript:void(0)" (click)="editVariation(dataItem)">Delete Work</a> -->
+
                                 <a *ngIf="woMenuAccess('Remove Work (Var)')" class="dropdown-item"
                                     href="javascript:void(0)" (click)="openDeleteWorkReasonWindow(dataItem)">Delete
                                     Work</a>

@@ -10,15 +10,6 @@
           [skip]="state.skip" [sort]="state.sort"  [filter]="state.filter" (sortChange)="sortChange($event)" (filterChange)="filterChange($event)"
                [navigable]="true" (cellClick)="cellClickHandler($event)">
 
-              <kendo-grid-column field="worksOrderName" title="Name" width="200">
-                <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
-                let-filterService="filterService" >
-                <multicheck-filter  [isPrimitive]="false" [field]="column.field" [currentFilter]="filter"
-                    [filterService]="filterService" textField="text" valueField="val"
-                    [data]="distinctPrimitive(column.field)">
-                </multicheck-filter>
-              </ng-template>
-              </kendo-grid-column>
               <kendo-grid-column field="contractorName" title="Contractor Name" width="200">
                 <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
                 let-filterService="filterService" >

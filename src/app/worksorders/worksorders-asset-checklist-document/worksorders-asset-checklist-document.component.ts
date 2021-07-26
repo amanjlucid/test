@@ -90,13 +90,6 @@ export class WorksordersAssetChecklistDocumentComponent implements OnInit {
         this.sharedService.userTypeObs
       ]).subscribe(
         data => {
-          // console.log(data);
-          // this.userType = data[2][0];
-          // if (this.userType?.wourroletype == "Dual Role") {
-          //   this.worksOrderAccess = [...data[0], ...data[1]];
-          // } else {
-          //   this.worksOrderAccess = data[0]
-          // }
           this.worksOrderUsrAccess = data[0];
           this.worksOrderAccess = data[1];
           this.userType = data[2][0];
@@ -105,17 +98,10 @@ export class WorksordersAssetChecklistDocumentComponent implements OnInit {
       )
     )
 
-    // this.subs.add(
-    //   this.sharedService.worksOrdersAccess.subscribe(
-    //     data => {
-    //       this.worksOrderAccess = data;
-    //     }
-    //   )
-    // )
   }
 
   woMenuBtnSecurityAccess(menuName) {
-    return this.helperService.checkWorkOrderAreaAccess(this.userType, this.worksOrderAccess, this.worksOrderUsrAccess, menuName)
+    return this.helperService.checkWorkOrderAreaAccess( this.worksOrderUsrAccess, menuName)
   }
 
   worksOrderDetailPageData() {

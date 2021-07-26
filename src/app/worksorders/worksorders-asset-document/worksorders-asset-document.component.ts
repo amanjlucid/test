@@ -87,18 +87,12 @@ export class WorksordersAssetDocumentComponent implements OnInit {
     this.subs.add(
       combineLatest([
         this.sharedService.woUserSecObs,
-        this.sharedService.worksOrdersAccess,
         this.sharedService.userTypeObs
       ]).subscribe(
         data => {
           // console.log(data);
-          this.userType = data[2][0];
-          if (this.userType?.wourroletype == "Dual Role") {
-            this.worksOrderAccess = [...data[0], ...data[1]];
-          } else {
+          this.userType = data[1][0];
             this.worksOrderAccess = data[0]
-          }
-
         }
       )
     )

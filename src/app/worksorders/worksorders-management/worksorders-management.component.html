@@ -263,17 +263,17 @@
                         </span>
                     </ng-template>
                 </kendo-treelist-column>
-                <kendo-treelist-column field="new" title="New" [width]="80">
+                <kendo-treelist-column field="new" title="New" [width]="80" [filterable]=false>
                 </kendo-treelist-column>
-                <kendo-treelist-column field="issued" title="Issued" [width]="100">
+                <kendo-treelist-column field="issued" title="Issued" [width]="100" [filterable]=false>
                 </kendo-treelist-column>
-                <kendo-treelist-column field="wip" title="WIP" [width]="100">
+                <kendo-treelist-column field="wip" title="WIP" [width]="100" [filterable]=false>
                 </kendo-treelist-column>
-                <kendo-treelist-column field="handover" title="Handover" [width]="80">
+                <kendo-treelist-column field="handover" title="Handover" [width]="80" [filterable]=false>
                 </kendo-treelist-column>
-                <kendo-treelist-column field="pc" title="PC" [width]="80">
+                <kendo-treelist-column field="pc" title="PC" [width]="80" [filterable]=false>
                 </kendo-treelist-column>
-                <kendo-treelist-column field="fc" title="FC" [width]="80">
+                <kendo-treelist-column field="fc" title="FC" [width]="80" [filterable]=false>
                 </kendo-treelist-column>
   <!--            <kendo-treelist-column field="fc" title="Comment" [width]="150">
                     <ng-template kendoTreeListCellTemplate let-dataItem>
@@ -292,30 +292,29 @@
             <div *ngIf="menuData.treelevel == 1" #elm class="dropdown-menu" style="display: block; margin-left: -1px;"
                 [ngStyle]="{'margin-top':getTopMargin()}">
 
-                <a *ngIf="programmeMenuAccess('Edit Programme')" class="dropdown-item"
+                <a *ngIf="UserMenuAccess('Edit Programme')" class="dropdown-item"
                     (click)="openNewManagementWindow('edit')" href="javascript:void(0)">Edit</a>
-                <a *ngIf="programmeMenuAccess('Delete Programme')" class="dropdown-item"
+                <a *ngIf="UserMenuAccess('Delete Programme')" class="dropdown-item"
                     (click)="openConfirmationDialog(menuData)" href="javascript:void(0)">Delete</a>
-                <a *ngIf="woMenuAccess('New Works Order') && menuData.wpractinact != 'I'" class="dropdown-item"
+                <a *ngIf="UserMenuAccess('New Works Order') && menuData.wpractinact != 'I'" class="dropdown-item"
                     href="javascript:void(0)" (click)="openWorksOrderForm('new', menuData)">New Works Order</a>
                 <a class="dropdown-item" href="javascript:void(0)" (click)="openProgrammeLog('programme',menuData)">View
                     Programme Log</a>
 
-                <a class="dropdown-item" href="javascript:void(0)" (click)="programmeReport(1, menuData)">Selected
-                    Programme Report</a>
+                <a class="dropdown-item" href="javascript:void(0)" (click)="programmeReport(1, menuData)">Programme Report</a>
 
             </div>
 
             <div *ngIf="menuData.treelevel == 2" #elms class="dropdown-menu" style="display: block; margin-left: -1px;"
                 [ngStyle]="{'margin-top':getTopMargin()}">
-                <a class="dropdown-item" *ngIf="woMenuAccess('Edit Works Order')" href="javascript:void(0)"
+                <a class="dropdown-item" *ngIf="UserMenuAccess('Edit Works Order')" href="javascript:void(0)"
                     (click)="openWorksOrderForm('edit', menuData)">Edit</a>
-                <a class="dropdown-item" *ngIf="woMenuAccess('Delete Works Order')" href="javascript:void(0)"
+                <a class="dropdown-item" *ngIf="UserMenuAccess('Delete Works Order')" href="javascript:void(0)"
                     (click)="deleteWorksOrder(menuData)">Delete</a>
                 <a class="dropdown-item" href="javascript:void(0)" (click)="redirectToWorksOrder(menuData)"
-                    *ngIf="woMenuAccess('Works Order Detail')">Works Order Detail</a>
+                    *ngIf="UserMenuAccess('Works Order Detail')">Works Order Detail</a>
                 <a class="dropdown-item" href="javascript:void(0)" (click)="openPackageMappingWindow(menuData)"
-                    *ngIf="woMenuAccess('Package Mapping')">Package Mapping</a>
+                    *ngIf="UserMenuAccess('Package Mapping')">Package Mapping</a>
                 <a (click)="redirectToWoProgramManagmentInstructions(menuData)" class="dropdown-item"
                     href="javascript:void(0)">
                     Instructions</a>
@@ -326,23 +325,23 @@
                 <a class="dropdown-item" href="javascript:void(0)"
                     (click)="openWoAssociationsManage(menuData)">Associations</a>
                 <a class="dropdown-item" href="javascript:void(0)" (click)="openRolesTab(menuData)"
-                    *ngIf="woMenuAccess('Roles Tab')">Roles</a>
+                    *ngIf="UserMenuAccess('Roles Tab')">Roles</a>
                 <a class="dropdown-item" href="javascript:void(0)" (click)="openSORTab(menuData )"
-                    *ngIf="woMenuAccess('SOR Tab')">SOR</a>
+                    *ngIf="UserMenuAccess('SOR Tab')">SOR</a>
                 <a class="dropdown-item" href="javascript:void(0)" (click)="openCostsTab(menuData)"
-                    *ngIf="woMenuAccess('Contract Costs Tab')">Contract Costs</a>
+                    *ngIf="UserMenuAccess('Contract Costs Tab')">Contract Costs</a>
 
                 <div class="dropdown-toggle">
                     <div class="dropdown-item">Milestones</div>
                     <div class="dropdown-menu milestoneMenu">
-                        <a *ngIf="woMenuAccess('Milestones')" class="dropdown-item" href="javascript:void(0)"
+                        <a *ngIf="UserMenuAccess('Milestones')" class="dropdown-item" href="javascript:void(0)"
                             (click)="openManageMilestonePopup(menuData, 'checklist')">Milestones</a>
-                        <a *ngIf="woMenuAccess('Manage Milestones')" class="dropdown-item" href="javascript:void(0)"
+                        <a *ngIf="UserMenuAccess('Manage Milestones')" class="dropdown-item" href="javascript:void(0)"
                             (click)="openManageMilestonePopup(menuData, 'manage')">Manage Milestones</a>
                     </div>
                 </div>
 
-                <a *ngIf="programmeMenuAccess('Payment Schedule Tab')" class="dropdown-item" href="javascript:void(0)" (click)="openWOPMPaymentSchedule(menuData)">Payment
+                <a *ngIf="UserMenuAccess('Payment Schedule Tab')" class="dropdown-item" href="javascript:void(0)" (click)="openWOPMPaymentSchedule(menuData)">Payment
                     Schedule</a>
 
             </div>
@@ -361,7 +360,7 @@
     (closePackageMappingEvent)="cloasePackageMappingWindow($event)" [worksOrderSingleData]="worksOrderSingleData">
 </app-worksorders-package-mapping>
 
-<app-workorder-form [woFormType]="woFormType" [woFormWindow]="woFormWindow"
+<app-workorder-form [woFormType]="woFormType" [woFormWindow]="woFormWindow" [worksOrderAccess]="worksOrderAccess"
     [selectedWorkOrderAddEdit]="selctedWorksOrder" [selectedProgramme]="selectedProgramme" *ngIf="woFormWindow"
     (closeWoFormWin)="closeWoFormWin($event)">
 </app-workorder-form>

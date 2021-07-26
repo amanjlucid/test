@@ -3,7 +3,7 @@ import { SubSink } from 'subsink';
 import { GroupDescriptor, DataResult, process, State, SortDescriptor, distinct } from '@progress/kendo-data-query';
 import { PageChangeEvent, SelectableSettings } from '@progress/kendo-angular-grid';
 import { AlertService, EventManagerService, HelperService, ConfirmationDialogService, SharedService, WopmConfigurationService } from '../../_services'
-import { forkJoin } from 'rxjs';
+import { combineLatest } from 'rxjs';
 import { Router } from '@angular/router';
 import { WopmContractcost, SurveyPortalXports } from '../../_models'
 import { DateFormatPipe } from '../../_pipes/date-format.pipe';
@@ -39,7 +39,9 @@ export class ManagementCostsComponent implements OnInit {
     public mode: any = 'single';
     currentUser: any;
     loading = true
-    wopmSecurityList: any = [];
+    worksOrderAccess = [];
+    worksOrderUsrAccess: any = [];
+    userType: any = [];
     public editFormWindow: boolean = false;
     public editFormType: any;
     public title: string = '';
@@ -64,6 +66,19 @@ export class ManagementCostsComponent implements OnInit {
       this.helper.updateNotificationOnTop();
       let WOName = this.selectedWorksOrder.name != undefined? this.selectedWorksOrder.name:this.selectedWorksOrder.woname;
       this.title = 'Contract Costs: ' +this.selectedWorksOrder.wosequence + ' - ' +  WOName ;
+      this.subs.add(
+        combineLatest([
+          this.sharedService.worksOrdersAccess,
+          this.sharedService.woUserSecObs,
+          this.sharedService.userTypeObs
+        ]).subscribe(
+          data => {
+            this.worksOrderAccess = data[0];
+            this.worksOrderUsrAccess = data[1];
+            this.userType = data[2][0];
+          }
+        )
+      )
       this.getGridDataDetails();
     }
 
@@ -71,29 +86,10 @@ export class ManagementCostsComponent implements OnInit {
       this.subs.unsubscribe();
     }
 
-    ngAfterViewInit() {
-      this.subs.add(
-        this.sharedService.worksOrdersAccess.subscribe(
-          data => {
-            this.wopmSecurityList = data;
-            if (this.wopmSecurityList.length > 0) {
-              if (!(this.checkWorksOrdersAccess("Contract Costs Tab") && this.checkWorksOrdersAccess("Works Order Portal Access"))) {
-                this.router.navigate(['/dashboard']);
-              }
-            } else {
-              this.router.navigate(['/dashboard']);
-            }
-          }
-        )
-      )
-    }
 
-    checkWorksOrdersAccess(val: string): Boolean {
-      if (this.wopmSecurityList != undefined) {
-      return this.wopmSecurityList.includes(val);
-      } else {
-        return false;
-      }
+
+    checkWorksOrdersAccess(menuName): Boolean {
+      return this.helper.checkWorkOrderAreaAccess(this.worksOrderUsrAccess, menuName)
     }
 
     distinctPrimitive(fieldName: string): any {

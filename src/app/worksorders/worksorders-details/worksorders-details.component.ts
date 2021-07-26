@@ -985,7 +985,7 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
 
 
   woMenuBtnSecurityAccess(menuName) {
-    return this.helperService.checkWorkOrderAreaAccess(this.userType, this.worksOrderAccess, this.worksOrderUsrAccess, menuName)
+    return this.helperService.checkWorkOrderAreaAccess(this.worksOrderUsrAccess, menuName)
   }
 
   lockUnlockColumn() {

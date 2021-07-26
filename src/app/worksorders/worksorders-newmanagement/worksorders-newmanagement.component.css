@@ -82,6 +82,10 @@
     text-align: right;
 }
 
-app-worksorders-newmanagement .k-window-content{
-    overflow: inherit !important;
+.tgdate .dropdown-menu.show {
+  display: block;
+  /* left: 24px; */
+  position: fixed !important;
+  /* top: 46% !important; */
+  left: 22% !important;
 }

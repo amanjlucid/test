@@ -9,9 +9,7 @@
 
     <div class="col-md-10 text-right headerActionBtnArea">
       <button *ngIf="worksOrderAccess.indexOf('New Works Order') != -1" (click)="openUserPopup('new')"
-        class="btn btn-sm themeButton ">
-        New Works Order
-      </button>
+        class="btn btn-sm themeButton ">New</button>
       <button (click)="export()" class="btn btn-sm themeButton ml-1"> Export</button>
       <div class="dropdown ml-1 reportBtnArea" id="nesting-dropdown-demo">
         <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown"
@@ -58,7 +56,7 @@
           <label for="woStatus" class="">Status:</label>
           <div class="radioDiv">
             <label class="radio-inline">
-              <input type="radio" value="S" name="gridStatus" [(ngModel)]="filterObject.ActiveInactive">All
+              <input type="radio" value="" name="gridStatus" [(ngModel)]="filterObject.ActiveInactive">All
             </label>
             <label class="radio-inline">
               <input type="radio" value="A" name="gridStatus" [(ngModel)]="filterObject.ActiveInactive">Active
@@ -337,21 +335,19 @@
         </div>
 
 
-        <div class="dropdown-toggle">
+        <div class="dropdown-toggle" *ngIf="woMenuAccess('Report Programme Summary') || woMenuAccess('Report Asset') " >
           <div class="dropdown-item">Works Order Report</div>
           <div class="dropdown-menu woReport">
             <a class="dropdown-item" href="javascript:void(0)"
-              (click)="viewWOReportingProgSummaryTree(2, selectedWorksOrder)">Selected Order</a>
+              (click)="viewWOReportingProgSummaryTree(2, selectedWorksOrder)">Works Order</a>
 
             <a class="dropdown-item" href="javascript:void(0)"
-              (click)="viewWOReportingAsset(2, selectedWorksOrder)">Selected Order (including Assets)</a>
+              (click)="viewWOReportingAsset(2, selectedWorksOrder)">Works Order inc. Assets</a>
 
             <a *ngIf="woMenuAccess('Asset Report (customer)')" class="dropdown-item" href="javascript:void(0)"
-              (click)="WOCreateXportOutputReport(505, 'WO Selected Asset Report')">Asset Report (Selected
-              Order)</a>
+              (click)="WOCreateXportOutputReport(505, 'WO Selected Asset Report')">Asset Report</a>
             <a *ngIf="woMenuAccess('Work Report (customer)')" class="dropdown-item" href="javascript:void(0)"
-              (click)="WOCreateXportOutputReport(506, 'WO Selected Work Report')">Work Report (Selected
-              Order)</a>
+              (click)="WOCreateXportOutputReport(506, 'WO Selected Work Report')">Work Report</a>
 
 
           </div>
@@ -376,7 +372,7 @@
 
         <a *ngIf="woMenuAccess('Manage WO Checklist')" class="dropdown-item" href="javascript:void(0)"
           (click)="openChecklist(menuData)">Checklist</a>
-          
+
         <div class="dropdown-toggle" *ngIf="woMenuAccess('Work List Menu')">
           <div class="dropdown-item">View Work List</div>
           <div class="dropdown-menu addAssetMenu">

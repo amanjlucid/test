@@ -130,20 +130,27 @@
     </div>
   </div>
 
+
   <div class="disabledBackground"></div>
 
-</kendo-window>
+  <app-wopm-sec-jobroles [securityFunctionWindow]="securityFunctionWindow" [RoleType]="this.RoleType" [JobRole]="this.JobRole"
+  *ngIf="securityFunctionWindow" (closeSecurityFunctionWindow)="closeSecurityFunctionWindow($event)">
+  </app-wopm-sec-jobroles>
+
+   <app-management-edit-roles [editFormWindow]="editFormWindow" [selectedUserRole]="wopmUserRole"
+  [editFormType]="editFormType" [selectedWorksOrder]="selectedWorksOrder"
+  *ngIf="editFormWindow" (closeEditFormWindow)="closeEditFormWin($event)">
+  </app-management-edit-roles>
+
+  </kendo-window>
 
 
 
-<app-management-edit-roles [editFormWindow]="editFormWindow" [selectedUserRole]="wopmUserRole"
-[editFormType]="editFormType" [selectedWorksOrder]="selectedWorksOrder"
-*ngIf="editFormWindow" (closeEditFormWindow)="closeEditFormWin($event)">
-</app-management-edit-roles>
 
-<app-wopm-sec-jobroles [securityFunctionWindow]="securityFunctionWindow" [RoleType]="this.RoleType" [JobRole]="this.JobRole"
-*ngIf="securityFunctionWindow" (closeSecurityFunctionWindow)="closeSecurityFunctionWindow($event)">
-</app-wopm-sec-jobroles>
+
+
+
+
 
 
 
