@@ -279,7 +279,7 @@ export class ChartService {
                 pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y:.2f}</b><br/>',
                 shared: true
             },
-            legend: { enabled: false },
+            legend: { enabled: true },
             plotOptions: {
                 column: {
                     stacking: 'normal',

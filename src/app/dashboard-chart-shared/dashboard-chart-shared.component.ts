@@ -14,6 +14,9 @@ type gridDataEventType = {
   chartType: string
 };
 
+const cloneObject = (data: any) => JSON.parse(JSON.stringify(data));
+const cloneData = (data: any[]) => data.map(item => Object.assign({}, item));
+
 @Component({
   selector: 'app-dashboard-chart-shared',
   templateUrl: './dashboard-chart-shared.component.html',
@@ -37,8 +40,8 @@ export class DashboardChartSharedComponent implements OnInit {
   dashboardName: string;
   defaultFilterVal: string = "0_OPTIVO:CONTRACT1:OPTGAS2";
   goldenLayoutStyle = {
-    height: "742px",
-    minHeight: "742px",
+    height: "500px",
+    minHeight: "500px",
   }
   @HostListener('window:resize', ['$event'])
   onResize(event) {
@@ -184,11 +187,19 @@ export class DashboardChartSharedComponent implements OnInit {
 
   // RENDER CHART TYPE ON CLICK
   renderChartTypes(chartObj: any, container: any, state: any) {
-    chartObj.ChartParameterValue = chartObj.chartParameters == 1 ? this.defaultFilterVal : "";
-    const { chartName, chartType, ChartParameterValue } = chartObj;
+    let selectedFiler = ''
+
+    if (chartObj.chartParameters == 1) {
+      if (chartObj.ChartParameterValue) selectedFiler = chartObj.ChartParameterValue;
+      else selectedFiler = this.defaultFilterVal;
+    } else {
+      selectedFiler = this.defaultFilterVal;
+    }
+
+    const { chartName, chartType } = chartObj;
     const tempState = {
       containerChartObj: chartObj,
-      selectedFilter: ChartParameterValue,
+      selectedFilter: selectedFiler,
       mode: 'new'
     }
 
@@ -210,7 +221,6 @@ export class DashboardChartSharedComponent implements OnInit {
 
 
   renderChart($event: any, side: string, chartData: any) {
-
     if ($('.lm_vertical').length == 0 && $('.lm_horizontal').length == 0 && $('.lm_selectable').length == 0) {
       this.createNewChart($event, side, chartData);
     } else {
@@ -220,7 +230,6 @@ export class DashboardChartSharedComponent implements OnInit {
         return
       }
 
-      // console.log(this.myLayout.config);
       this.drawChartObj = chartData;
       let cl = Math.random();
       let compNo = `line${new Date().getMilliseconds()}${Math.random()}${cl}`;
@@ -319,9 +328,14 @@ export class DashboardChartSharedComponent implements OnInit {
   renderFilteredChart(className, container, state, chartType) {
     const selectedValue = $(`.${className}`).val();
     const chartName = $(`.line${className}`).val();
-    let dataForChart = this.chartNames.find(x => x.chartName == chartName);
+    let chartNames = cloneData(this.chartNames);
+    let dataForChart = chartNames.find(x => x.chartName == chartName);
     dataForChart.ChartParameterValue = selectedValue;
-
+    
+    //reset state object
+    state.containerChartObj = dataForChart;
+    state.selectedFilter = selectedValue;
+  
     if (chartType == 'pie') this.getPieChartData(dataForChart, className, container, state);
     if (chartType == 'line') this.getLineChartData(dataForChart, className, container, state);
     if (chartType == 'bar') this.getBarChartData(dataForChart, className, container, state);
@@ -670,7 +684,7 @@ export class DashboardChartSharedComponent implements OnInit {
       const params = {
         "chartName": `${parentChartObj.chartName} (${chartEvent.options.name})`,
         "chartType": 4,
-        "chartParameterValue": "string",
+        "ChartParameterValue": parentChartObj?.ChartParameterValue,
         "ddChartId": parentChartObj.ddChartID,
         "parantChartId": parentChartObj.chartID,
         "xAxisValue": chartEvent.options.name,
@@ -695,7 +709,8 @@ export class DashboardChartSharedComponent implements OnInit {
           "parantChartId": parentChartObj.parantChartId != undefined ? parentChartObj.parantChartId : parentChartObj.chartID,
           "xAxisValue": chartEvent.options.name,
           "seriesId": chartEvent.options.seriesId,
-          "chartName": parentChartObj.chartName
+          "chartName": parentChartObj.chartName,
+          "ChartParameterValue": parentChartObj?.ChartParameterValue,
         }
       }
 
@@ -705,7 +720,8 @@ export class DashboardChartSharedComponent implements OnInit {
           "parantChartId": parentChartObj.parantChartId != undefined ? parentChartObj.parantChartId : parentChartObj.chartID,
           "xAxisValue": chartEvent.category,
           "seriesId": parentChartObj.seriesId,
-          "chartName": parentChartObj.chartName
+          "chartName": parentChartObj.chartName,
+          "ChartParameterValue": parentChartObj?.ChartParameterValue,
         }
       }
 
@@ -717,9 +733,8 @@ export class DashboardChartSharedComponent implements OnInit {
 
         }
       );
-
-
     }
+
   }
 
   renderDrillDownChart($event: any, chartData: any) {
