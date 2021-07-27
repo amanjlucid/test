@@ -46,6 +46,7 @@ export class WopmMasterstagesComponent implements OnInit {
     public stageFormWindow: boolean = false;
     public stageFormType: any;
     public disableBtn: boolean = false;
+    selectedStage : any;
 
   
     constructor(
@@ -291,6 +292,36 @@ export class WopmMasterstagesComponent implements OnInit {
         }
       }
     }
+  }
+
+
+  deleteStage(dataitem) { 
+    this.selectedStage = dataitem;
+    this.confirmationDialogService.confirm('Please confirm..', 'Do you really want to delete this record ?')
+    .then((confirmed) => (confirmed) ? this.deleteStageConfirmed(confirmed) : console.log(confirmed))
+    .catch(() => console.log('User dismissed the dialog.'));
+  }
+
+  deleteStageConfirmed(deleteConfirmed:boolean) {
+    if (deleteConfirmed) {
+      const parms = {
+        ID : this.selectedStage.wostagesurcde,
+      }
+      this.wopmConfigurationService.deleteMasterStage(parms)
+      .subscribe(
+        data => {
+          if (data.isSuccess) {
+            this.alertService.success("Master Stage deleted successfully.")
+            this.getMasterStages();
+          } else {
+            this.alertService.error(data.message);
+          }
+        },
+        error => {
+          this.alertService.error(error);
+        }
+        );
+      }
   }
 
 }

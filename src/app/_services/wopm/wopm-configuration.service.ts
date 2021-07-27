@@ -67,6 +67,16 @@ export class WopmConfigurationService {
     return this.http.post<any>(`${appConfig.apiUrl}/api/WOPMConfiguration/UpdateMasterStage`, body, httpOptions);
   }
 
+  deleteMasterStage(parms) {
+    var httpOptions = {
+        headers: new HttpHeaders({
+            'Content-Type': 'application/json'
+        }),
+    };
+    let body = JSON.stringify(parms);
+    return this.http.post<any>(`${appConfig.apiUrl}/api/WOPMConfiguration/DeleteMasterStage`, body, httpOptions);
+  }
+
   moveMasterStage(moveMasterStageParms) {
     var httpOptions = {
         headers: new HttpHeaders({

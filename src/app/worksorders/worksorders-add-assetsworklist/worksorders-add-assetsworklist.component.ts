@@ -563,8 +563,6 @@ export class WorksordersAddAssetsworklistComponent implements OnInit {
       if (selectionEvent.deselectedRows.length > 0) {
         for (let row of selectionEvent.deselectedRows) {
           this.mySelection = this.mySelection.filter(x => x != `${row.dataItem.wlassid}_${row.dataItem.wlataid}_${row.dataItem.wlcode}_${row.dataItem.cttsurcde}_${row.dataItem.matchedCHECKSURCDE}_${row.dataItem.matchedSTAGESURCDE}`);
-          
-          
           this.selectedRow = this.selectedRow.filter(x => this.mySelection.includes(`${x.wlassid}_${x.wlataid}_${x.wlcode}_${x.cttsurcde}_${x.matchedCHECKSURCDE}_${x.matchedSTAGESURCDE}`));
         }   
       }
@@ -579,8 +577,6 @@ export class WorksordersAddAssetsworklistComponent implements OnInit {
 
           this.selectedRow.push(row.dataItem);
           }
-           
-
         }   
       }
 
