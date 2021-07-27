@@ -68,8 +68,8 @@
               Log</a>
             <a class="dropdown-item" href="javascript:void(0)" (click)="openProgrammeLog('workorder')">Works Order
               Log</a>
-
-            <a *ngIf="woMenuBtnSecurityAccess('Manage Checklist')" class="dropdown-item" href="javascript:void(0)"
+              
+            <a *ngIf="woMenuBtnSecurityAccess('Manage WO Checklist')" class="dropdown-item" href="javascript:void(0)"
               (click)="openChecklist()">Checklist</a>
 
             <a *ngIf="woMenuBtnSecurityAccess('Payment Schedule Tab')" class="dropdown-item" href="javascript:void(0)"
@@ -157,7 +157,8 @@
             </div>
             <div class="col-md-2">Unauthorised Contract Costs: </div>
             <div class="col-md-1 text-right"><input type="text" class="form-control form-control-sm"
-                [readonly]="readonly" value="{{contractorCost?.unAuthorisedContractCost | currency:'GBP':'symbol'}}"></div>
+                [readonly]="readonly" value="{{contractorCost?.unAuthorisedContractCost | currency:'GBP':'symbol'}}">
+            </div>
           </div>
 
           <div class="form-group form-row">
@@ -166,7 +167,8 @@
                 value="{{worksOrderData?.woname}} (Works Order No: {{worksOrderData?.wosequence}})"></div>
             <div class="col-md-2">Authorised Contract Costs: </div>
             <div class="col-md-1 text-right"><input type="text" class="form-control form-control-sm"
-                [readonly]="readonly" value="{{contractorCost?.authorisedContractCost | currency:'GBP':'symbol'}}"></div>
+                [readonly]="readonly" value="{{contractorCost?.authorisedContractCost | currency:'GBP':'symbol'}}">
+            </div>
           </div>
 
           <div class="form-group form-row">
@@ -290,12 +292,12 @@
   <div class="row gridRow">
     <div class="col-md-12 mt-2 workorderDetailGrid" (mouseover)="getMouseroverEve($event)" kendoTooltip position="right"
       showOn="none" [tooltipTemplate]="template" filter=".k-grid td" tooltipClass="tooltip-class">
-      <kendo-treelist id="workorderDetailtable" #grid [kendoTreeListFlatBinding]="gridData" idField="id" parentIdField="parentId"
-        scrollable="virtual" [rowHeight]="36" kendoTreeListExpandable [initiallyExpanded]="true" [sortable]="true"
-        filterable="menu" [filter]="filter" (filterChange)="onFilterChange($event)" [pageSize]="gridPageSize"
-        [navigable]="false" kendoTreeListSelectable [selectable]="settings" [(selectedItems)]="selected" itemKey="id"
-        [height]="gridHeight" [virtualColumns]="true" [loading]="loading" [resizable]="true"
-        (cellClick)="cellClickHandler($event)" [rowClass]="rowCallback">
+      <kendo-treelist id="workorderDetailtable" #grid [kendoTreeListFlatBinding]="gridData" idField="id"
+        parentIdField="parentId" scrollable="virtual" [rowHeight]="36" kendoTreeListExpandable
+        [initiallyExpanded]="true" [sortable]="true" filterable="menu" [filter]="filter"
+        (filterChange)="onFilterChange($event)" [pageSize]="gridPageSize" [navigable]="false" kendoTreeListSelectable
+        [selectable]="settings" [(selectedItems)]="selected" itemKey="id" [height]="gridHeight" [virtualColumns]="true"
+        [loading]="loading" [resizable]="true" (cellClick)="cellClickHandler($event)" [rowClass]="rowCallback">
 
         <kendo-treelist-column field="wprstatus" title="" [width]="37" [sortable]="false" [filterable]="false"
           [locked]="columnLocked">
@@ -325,8 +327,8 @@
             </span>
 
             <div style="margin-left:2px;" class="iconDiv">
-              <img style="margin-top: -4px;" title="Notepad" *ngIf="dataItem.attachment == 'Y'"
-                class="table-icon-wr" src="assets/img/icons/attach.png" />
+              <img style="margin-top: -4px;" title="Notepad" *ngIf="dataItem.attachment == 'Y'" class="table-icon-wr"
+                src="assets/img/icons/attach.png" />
             </div>
 
             <div style="margin-left:2px;" class="iconDiv">
@@ -342,11 +344,10 @@
         </kendo-treelist-column>
 
         <kendo-treelist-column field="wostatus" title="Status" [width]="120" [locked]="columnLocked">
-          <ng-template  kendoTreeListFilterMenuTemplate  let-column="column" let-filter="filter"
-          let-filterService="filterService">
+          <ng-template kendoTreeListFilterMenuTemplate let-column="column" let-filter="filter"
+            let-filterService="filterService">
             <multicheck-treelist-filter [isPrimitive]="false" [field]="column.field" [currentFilter]="filter"
-            [filterService]="filterService" textField="text" valueField="val"
-            [data]="statusFilterDropDown">
+              [filterService]="filterService" textField="text" valueField="val" [data]="statusFilterDropDown">
             </multicheck-treelist-filter>
           </ng-template>
         </kendo-treelist-column>
@@ -408,7 +409,8 @@
             </span>
           </ng-template>
         </kendo-treelist-column>
-        <kendo-treelist-column field="wocurrentcontractsum" title="Issued" [width]="130" [style]="{'text-align': 'right'}">
+        <kendo-treelist-column field="wocurrentcontractsum" title="Issued" [width]="130"
+          [style]="{'text-align': 'right'}">
           <ng-template kendoTreeListCellTemplate let-dataItem>
             <span>
               {{ dataItem.wocurrentcontractsum | currency:"GBP":"symbol" }}
@@ -493,7 +495,7 @@
         <a *ngIf="woMenuBtnSecurityAccess('Delete Phase')" class="dropdown-item" href="javascript:void(0)"
           (click)="openConfirmationDialog(menuData)">Delete</a>
 
-        <div class="dropdown-toggle" *ngIf="woMenuBtnSecurityAccess('Add Assets')">
+        <div class="dropdown-toggle" *ngIf="woMenuBtnSecurityAccess('Add')">
           <div class="dropdown-item">Add Asset(s)</div>
           <div class="dropdown-menu addAssetMenu">
             <a *ngIf="woMenuBtnSecurityAccess('Add Assets for Phase Work Costs')" class="dropdown-item"
@@ -512,7 +514,8 @@
           <div class="dropdown-item">Actions</div>
           <div class="dropdown-menu addAssetMenu">
             <a *ngIf="woMenuBtnSecurityAccess('Release Phase')" class="dropdown-item"
-            (click)="assetAction(menuData, 'RELEASE', 'single')" href="javascript:void(0)">Release Assets For Phase</a>
+              (click)="assetAction(menuData, 'RELEASE', 'single')" href="javascript:void(0)">Release Assets For
+              Phase</a>
             <a *ngIf="woMenuBtnSecurityAccess('Issue Work For Phase')" class="dropdown-item"
               (click)="assetAction(menuData, 'ISSUE', 'single')" href="javascript:void(0)">
               Issue Work For Phase</a>
@@ -549,7 +552,7 @@
           </div>
         </div>
 
-        <a *ngIf="worksOrderSingleData.wottemplatetype == 'Phase Milestone' || worksOrderSingleData.wottemplatetype == 'Works Order Milestone'"
+        <a *ngIf="(worksOrderSingleData.wottemplatetype == 'Phase Milestone' || worksOrderSingleData.wottemplatetype == 'Works Order Milestone') && woMenuBtnSecurityAccess('Phase Milestones')"
           class="dropdown-item" href="javascript:void(0)"
           (click)="openManageMilestonePopup(menuData, 'phase')">{{worksOrderSingleData.wottemplatetype == "Phase
           Milestone" ?
@@ -622,7 +625,7 @@
             <a *ngIf="woMenuBtnSecurityAccess('Remove Asset')" class="dropdown-item" href="javascript:void(0)"
               (click)="openRemoveReasonPanel('single', 'REMOVE', menuData)">Remove</a>
 
-              <a *ngIf="woMenuBtnSecurityAccess('Move Assets')" class="dropdown-item" href="javascript:void(0)"
+            <a *ngIf="woMenuBtnSecurityAccess('Move Assets')" class="dropdown-item" href="javascript:void(0)"
               (click)="moveAssets(menuData)">Move</a>
 
           </div>
@@ -641,9 +644,8 @@
           (click)="openAssetDocument(menuData)">Documents</a>
 
         <a class="dropdown-item" *ngIf="woMenuBtnSecurityAccess('Rename Phase Work')" href="javascript:void(0)"
-        [ngClass]="{'disabled' : menuData.astcode != 'PHASEWORK'}"
-          (click)="renamePhaseAsset(menuData)"
-          >Rename Phase Asset</a>
+          [ngClass]="{'disabled' : menuData.astcode != 'PHASEWORK'}" (click)="renamePhaseAsset(menuData)">Rename Phase
+          Asset</a>
 
 
       </div>

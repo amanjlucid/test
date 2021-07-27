@@ -46,7 +46,8 @@ export class WorksordersAssetDocumentComponent implements OnInit {
   filePath;
   initialLoadDocsCount = 0;
   initialLoad = true;
-   worksOrderAccess: any = [];
+  worksOrderAccess: any = [];
+  worksOrderUsrAccess:any = [];
   userType: any = [];
   @ViewChild(GridComponent) grid: GridComponent;
 
@@ -85,26 +86,26 @@ export class WorksordersAssetDocumentComponent implements OnInit {
       )
     )
 
+
     this.subs.add(
       combineLatest([
         this.sharedService.woUserSecObs,
+        this.sharedService.worksOrdersAccess,
         this.sharedService.userTypeObs
       ]).subscribe(
         data => {
-          // console.log(data);
-          this.userType = data[1][0];
-            this.worksOrderAccess = data[0]
+          this.worksOrderUsrAccess = data[0];
+          this.worksOrderAccess = data[1];
+          this.userType = data[2][0];
         }
       )
     )
 
-    // this.subs.add(
-    //   this.sharedService.worksOrdersAccess.subscribe(
-    //     data => {
-    //       this.worksOrderAccess = data;
-    //     }
-    //   )
-    // )
+
+  }
+
+  woMenuBtnSecurityAccess(menuName) {
+    return this.helperServie.checkWorkOrderAreaAccess(this.worksOrderUsrAccess, menuName)
   }
 
   worksOrderDetailPageData() {
@@ -143,7 +144,7 @@ export class WorksordersAssetDocumentComponent implements OnInit {
           // console.log(data);
           if (data.isSuccess) {
             this.gridData = data.data;
-            if(this.initialLoad){
+            if (this.initialLoad) {
               this.initialLoadDocsCount = data.data.length;
               this.initialLoad = false;
             }

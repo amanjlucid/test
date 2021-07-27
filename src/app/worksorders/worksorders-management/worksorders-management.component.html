@@ -27,20 +27,20 @@
             <div class="actionDiv">
 
 
-              <div class="dropdown mr-1" id="nesting-dropdown-demo"
-              *ngIf="woMenuBtnSecurityAccess('New Programme') || woMenuBtnSecurityAccess('New Works Order')">
-                  <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown"
-                      aria-expanded="false">New</button>
-                  <div class="dropdown-menu" x-placement="bottom-start"
-                      style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
-                      <a *ngIf="woMenuBtnSecurityAccess('New Programme')" class="dropdown-item"
-                          (click)="openNewManagementWindow()" href="javascript:void(0)">New
-                          Programme</a>
-                      <a class="dropdown-item" *ngIf="woMenuBtnSecurityAccess('New Works Order')"
-                          href="javascript:void(0)" (click)="openWorksOrderForm('new')">New Works Order</a>
+                <div class="dropdown mr-1" id="nesting-dropdown-demo"
+                    *ngIf="woMenuBtnSecurityAccess('New Programme') || woMenuBtnSecurityAccess('New Works Order')">
+                    <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown"
+                        aria-expanded="false">New</button>
+                    <div class="dropdown-menu" x-placement="bottom-start"
+                        style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
+                        <a *ngIf="woMenuBtnSecurityAccess('New Programme')" class="dropdown-item"
+                            (click)="openNewManagementWindow()" href="javascript:void(0)">New
+                            Programme</a>
+                        <a class="dropdown-item" *ngIf="woMenuBtnSecurityAccess('New Works Order')"
+                            href="javascript:void(0)" (click)="openWorksOrderForm('new')">New Works Order</a>
 
-                  </div>
-              </div>
+                    </div>
+                </div>
 
                 <button type="button" class="btn btn-sm themeButton mr-1" (click)="export()">Export</button>
 
@@ -101,7 +101,8 @@
 
                 <kendo-treelist-column field="wprstatus" title="Status" [width]="110">
                 </kendo-treelist-column>
-                <kendo-treelist-column field="budget" title="Budget" [width]="150" [style]="{'text-align': 'right'}" [filterable]=false>
+                <kendo-treelist-column field="budget" title="Budget" [width]="150" [style]="{'text-align': 'right'}"
+                    [filterable]=false>
                     <ng-template kendoTreeListCellTemplate let-dataItem>
                         <span>
                             {{ dataItem.budget | currency:"GBP":"symbol" }}
@@ -140,7 +141,8 @@
                         </span>
                     </ng-template>
                 </kendo-treelist-column>
-                <kendo-treelist-column field="actual" title="Actual" [width]="150" [style]="{'text-align': 'right'}" [filterable]=false >
+                <kendo-treelist-column field="actual" title="Actual" [width]="150" [style]="{'text-align': 'right'}"
+                    [filterable]=false>
                     <ng-template kendoTreeListCellTemplate let-dataItem>
                         <span>
                             {{ dataItem.actual | currency:"GBP":"symbol" }}
@@ -155,7 +157,8 @@
                         </span>
                     </ng-template>
                 </kendo-treelist-column>
-                <kendo-treelist-column field="pending" title="Pending" [width]="150" [style]="{'text-align': 'right'}" [filterable]=false >
+                <kendo-treelist-column field="pending" title="Pending" [width]="150" [style]="{'text-align': 'right'}"
+                    [filterable]=false>
                     <ng-template kendoTreeListCellTemplate let-dataItem>
                         <span>
                             {{ dataItem.pending | currency:"GBP":"symbol" }}
@@ -275,7 +278,7 @@
                 </kendo-treelist-column>
                 <kendo-treelist-column field="fc" title="FC" [width]="80" [filterable]=false>
                 </kendo-treelist-column>
-  <!--            <kendo-treelist-column field="fc" title="Comment" [width]="150">
+                <!--            <kendo-treelist-column field="fc" title="Comment" [width]="150">
                     <ng-template kendoTreeListCellTemplate let-dataItem>
                         <span>
 
@@ -298,10 +301,11 @@
                     (click)="openConfirmationDialog(menuData)" href="javascript:void(0)">Delete</a>
                 <a *ngIf="UserMenuAccess('New Works Order') && menuData.wpractinact != 'I'" class="dropdown-item"
                     href="javascript:void(0)" (click)="openWorksOrderForm('new', menuData)">New Works Order</a>
-                <a class="dropdown-item" href="javascript:void(0)" (click)="openProgrammeLog('programme',menuData)">View
-                    Programme Log</a>
+                <a *ngIf="UserMenuAccess('View Programme Log')" class="dropdown-item" href="javascript:void(0)"
+                    (click)="openProgrammeLog('programme',menuData)">View Programme Log</a>
 
-                <a class="dropdown-item" href="javascript:void(0)" (click)="programmeReport(1, menuData)">Programme Report</a>
+                <a class="dropdown-item" href="javascript:void(0)" (click)="programmeReport(1, menuData)">Programme
+                    Report</a>
 
             </div>
 
@@ -315,14 +319,17 @@
                     *ngIf="UserMenuAccess('Works Order Detail')">Works Order Detail</a>
                 <a class="dropdown-item" href="javascript:void(0)" (click)="openPackageMappingWindow(menuData)"
                     *ngIf="UserMenuAccess('Package Mapping')">Package Mapping</a>
-                <a (click)="redirectToWoProgramManagmentInstructions(menuData)" class="dropdown-item"
+                <a *ngIf="UserMenuAccess('Instructions Tab')"
+                    (click)="redirectToWoProgramManagmentInstructions(menuData)" class="dropdown-item"
                     href="javascript:void(0)">
                     Instructions</a>
-                <a class="dropdown-item" (click)="openCompletionList(menuData)"
-                    href="javascript:void(0)">Completions</a>
+                <a *ngIf="UserMenuAccess('Completions Tab')" class="dropdown-item"
+                    (click)="openCompletionList(menuData)" href="javascript:void(0)">Completions</a>
+                <a *ngIf="UserMenuAccess('Defects Tab')" class="dropdown-item" href="javascript:void(0)"
+                    (click)="openDefectsMethod(menuData)">Defects</a>
                 <a class="dropdown-item" href="javascript:void(0)" (click)="openProgrammeLog('workorder',menuData)">View
                     Programme Log</a>
-                <a class="dropdown-item" href="javascript:void(0)"
+                <a *ngIf="UserMenuAccess('Manage Associations')" class="dropdown-item" href="javascript:void(0)"
                     (click)="openWoAssociationsManage(menuData)">Associations</a>
                 <a class="dropdown-item" href="javascript:void(0)" (click)="openRolesTab(menuData)"
                     *ngIf="UserMenuAccess('Roles Tab')">Roles</a>
@@ -341,7 +348,8 @@
                     </div>
                 </div>
 
-                <a *ngIf="UserMenuAccess('Payment Schedule Tab')" class="dropdown-item" href="javascript:void(0)" (click)="openWOPMPaymentSchedule(menuData)">Payment
+                <a *ngIf="UserMenuAccess('Payment Schedule Tab')" class="dropdown-item" href="javascript:void(0)"
+                    (click)="openWOPMPaymentSchedule(menuData)">Payment
                     Schedule</a>
 
             </div>
@@ -423,6 +431,11 @@
 </app-manage-milestones>
 
 <app-wo-program-management-payment-schedule *ngIf="openWOPaymentScheduleWindow" [worksOrderData]="selectedWorksOrder"
-  [openWOPaymentScheduleWindow]="openWOPaymentScheduleWindow"
-  (closePaymentScheduleWindowEvent)="closePaymentScheduleWindow($event)">
+    [openWOPaymentScheduleWindow]="openWOPaymentScheduleWindow"
+    (closePaymentScheduleWindowEvent)="closePaymentScheduleWindow($event)">
 </app-wo-program-management-payment-schedule>
+
+<app-asset-defects-list *ngIf="openDefectsList" [openDefectsList]="openDefectsList"
+    [singleWorkOrderInp]="selectedWorksOrder" [openedFrom]="'workorder'"
+    (closeDefectsListEvent)="closeDefectList($event)">
+</app-asset-defects-list>

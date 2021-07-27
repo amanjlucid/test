@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewEncapsulation, ViewChild, ChangeDetectorRef, HostListener } from '@angular/core';
 import { SortDescriptor, State, CompositeFilterDescriptor } from '@progress/kendo-data-query';
-import { FilterService, SelectableSettings, TreeListComponent, ExpandEvent, RowClassArgs} from '@progress/kendo-angular-treelist';
+import { FilterService, SelectableSettings, TreeListComponent, ExpandEvent, RowClassArgs } from '@progress/kendo-angular-treelist';
 import { AlertService, HelperService, WorksorderManagementService, ConfirmationDialogService, SharedService, WorksOrdersService } from '../../_services'
 import { SubSink } from 'subsink';
 import { Router } from '@angular/router';
@@ -83,6 +83,7 @@ export class WorksordersManagementComponent implements OnInit {
   }
   menuData: any;
   mousePositioin: any = 0;
+  openDefectsList = false;
 
   constructor(
     private worksorderManagementService: WorksorderManagementService,
@@ -252,7 +253,7 @@ export class WorksordersManagementComponent implements OnInit {
     this.selectedStatus = $event.target.value;
     this.loading = true;
     this.gridData = [];
-    this.getManagement( this.selectedStatus)
+    this.getManagement(this.selectedStatus)
   }
 
 
@@ -444,7 +445,7 @@ export class WorksordersManagementComponent implements OnInit {
   }
 
   redirectToWorksOrder(item) {
-    if (this.UserMenuAccess('Works Order Detail')){
+    if (this.UserMenuAccess('Works Order Detail')) {
       this.sharedService.changeWorksOrderSingleData(item);
       localStorage.setItem('worksOrderSingleData', JSON.stringify(item)); // remove code on logout service
       this.router.navigate(['worksorders/details']);
@@ -716,5 +717,16 @@ export class WorksordersManagementComponent implements OnInit {
     this.openWOPaymentScheduleWindow = $event;
   }
 
+
+  openDefectsMethod(item) {
+    this.selectedWorksOrder = item;
+    $('.newManagementOverlay').addClass('ovrlay');
+    this.openDefectsList = true;
+  }
+
+  closeDefectList(eve) {
+    this.openDefectsList = eve;
+    $('.newManagementOverlay').removeClass('ovrlay');
+  }
 
 }
