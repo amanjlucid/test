@@ -279,7 +279,10 @@
             <input [readonly]="true" type="text" class="form-control" placeholder=""
               value="{{ worksOrderData?.woname }}(Work Order No: {{ worksOrderData?.wosequence }}) ">
           </div>
-
+          <div class="col-md-2">
+            <!-- <button type="button" class="btn btn-sm themeButton"
+          (click)="exportPaymentScheduleAsset()">Export</button> -->
+          </div>
         </div>
       </div>
 
@@ -404,7 +407,7 @@
 
       </div>
 
-      <div class="col-md-12 text-right">
+      <div class="col-md-12 text-right mt-2">
         <button type="button" class="btn btn-sm themeButton"
           (click)="closGetWebWorksOrderPaymentScheduleDetailsWindow()">Close</button>
       </div>

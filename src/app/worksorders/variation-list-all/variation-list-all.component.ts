@@ -144,24 +144,24 @@ export class VariationListAllComponent implements OnInit {
     $('.variationListAllOverlay').addClass('ovrlay');
   }
 
-  disableAddNote(dataItem){
-    if (dataItem.woiissuestatus == 'New' || dataItem.woiissuestatus == 'Accepted' || dataItem.woiissuestatus == 'Issued'){
+  disableAddNote(dataItem) {
+    if (dataItem.woiissuestatus == 'New' || dataItem.woiissuestatus == 'Accepted' || dataItem.woiissuestatus == 'Issued') {
       return true;
     }
-    if (dataItem.woiissuestatus == 'Contractor Review'){
-       if (this.userType != undefined && this.userType?.wourroletype == 'Customer'){
+    if (dataItem.woiissuestatus == 'Contractor Review') {
+      if (this.userType != undefined && this.userType?.wourroletype == 'Customer') {
         return true;
-       }
+      }
     }
-    if (dataItem.woiissuestatus == 'Customer Review'){
-      if (this.userType != undefined && this.userType?.wourroletype == 'Contractor'){
+    if (dataItem.woiissuestatus == 'Customer Review') {
+      if (this.userType != undefined && this.userType?.wourroletype == 'Contractor') {
         return true;
-       }
+      }
     }
     return false;
   }
 
-  openVariationNotes(dataItem){
+  openVariationNotes(dataItem) {
     this.disabledAddNote = this.disableAddNote(dataItem);
     this.wosequence = dataItem.wosequence;
     this.woisequence = dataItem.woisequence;
@@ -169,7 +169,7 @@ export class VariationListAllComponent implements OnInit {
     $('.variationListAllOverlay').addClass('ovrlay');
   }
 
-  closeVariationNotes(eve){
+  closeVariationNotes(eve) {
     this.displayNotesWindow = false
     $('.variationListAllOverlay').removeClass('ovrlay');
   }
@@ -188,7 +188,7 @@ export class VariationListAllComponent implements OnInit {
         // this.workOrderProgrammeService.getWorksOrderByWOsequence(wosequence),
       ]).subscribe(
         data => {
-          console.log(data);
+          // console.log(data);
           // let sec = data[0].data.map(x => `${x.spffunction} - ${x.spjrftype}`)
           // console.log(sec);
         }
@@ -266,13 +266,13 @@ export class VariationListAllComponent implements OnInit {
     }
 
     else if (btnType == 'Customer') {
-      if (item.woiissuestatus == 'Contractor Review' && item.responsibility == "ALL" && item.isEmptyVariation == "N") {
+      if ((item.woiissuestatus == 'Contractor Review' || item.woiissuestatus == 'New') && item.isEmptyVariation == "N") {
         return false;
       }
     }
 
     else if (btnType == 'Contractor') {
-      if (item.woiissuestatus == 'Customer Review' && item.responsibility == "ALL" && item.isEmptyVariation == "N") {
+      if ((item.woiissuestatus == 'Customer Review' || item.woiissuestatus == 'New') && item.isEmptyVariation == "N") {
         return false;
       }
     }
@@ -532,7 +532,7 @@ export class VariationListAllComponent implements OnInit {
 
   }
 
-  
+
   openEmailInstructionReport(item) {
     this.SendEmailInsReportWindow = true;
     this.selectedSingleInstructionVariation = item;
@@ -542,7 +542,7 @@ export class VariationListAllComponent implements OnInit {
 
   closeEmailWithReportWindow(eve) {
     this.SendEmailInsReportWindow = false;
-   
+
     $('.variationListAllOverlay').removeClass('ovrlay');
     // $('.reportingDiv').removeClass('pointerEvent');
   }
