@@ -331,11 +331,11 @@ export class DashboardChartSharedComponent implements OnInit {
     let chartNames = cloneData(this.chartNames);
     let dataForChart = chartNames.find(x => x.chartName == chartName);
     dataForChart.ChartParameterValue = selectedValue;
-    
+
     //reset state object
     state.containerChartObj = dataForChart;
     state.selectedFilter = selectedValue;
-  
+
     if (chartType == 'pie') this.getPieChartData(dataForChart, className, container, state);
     if (chartType == 'line') this.getLineChartData(dataForChart, className, container, state);
     if (chartType == 'bar') this.getBarChartData(dataForChart, className, container, state);
