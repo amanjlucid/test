@@ -76,7 +76,7 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
 
 
   ngOnInit(): void {
-    
+
     if (this.worksOrderData['woname'] == undefined) {
       this.worksOrderData['woname'] = this.worksOrderData.name;
     }
@@ -314,7 +314,7 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
 
 
   woMenuAccess(menuName) {
-    return this.helperService.checkWorkOrderAreaAccess( this.worksOrderUsrAccess, menuName)
+    return this.helperService.checkWorkOrderAreaAccess(this.worksOrderUsrAccess, menuName)
   }
 
 
@@ -352,6 +352,7 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
   GetWebWorksOrderPaymentScheduleDetailsClick(item) {
     $(".wopmpaymentoverlay").addClass("ovrlay");
     const { wpspaymentdate, wosequence } = item;
+    this.selectedItem = item;
     const params = {
       "wosequence": wosequence,
       "paymentdate": this.helperService.getMDY(wpspaymentdate),
@@ -471,6 +472,12 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
       params.lstParamNameValue = ["Payment Rec to YYYYMMDD", this.selectedItem.wpsenddate_YYYYMMDD, "Payment Rec from YYYYMMDD", this.selectedItem.wpsstartdate_YYYYMMDD, "Works Order Number", this.worksOrderData.wosequence];
     }
 
+    if (xPortId == 524) {
+      let end_date = DateFormatPipe.prototype.transform(this.selectedItem.wpsenddate, 'YYYYMMDD');
+      params.lstParamNameValue = ["Works Order Payment Schedule", end_date, "Works Order Number", this.worksOrderData.wosequence];
+    }
+
+
 
     this.worksOrderReportService.WOCreateXportOutput(params).subscribe(
       (data) => {
@@ -530,7 +537,7 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
     this.closePaymentScheduleWindowEvent.emit(false);
   }
 
- 
+
 
 
 

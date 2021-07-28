@@ -20,7 +20,8 @@
             Orders</a>
           <a class="dropdown-item" href="javascript:void(0)" (click)="viewWOReportingProgSummaryTree(4)">All
             Orders (Including Phase)</a>
-          <a class="dropdown-item" href="javascript:void(0)" (click)="viewWOReportingAsset(0)">All Orders (including
+          <a *ngIf="woMenuAccess('Report Asset')" class="dropdown-item" href="javascript:void(0)"
+            (click)="viewWOReportingAsset(0)">All Orders (including
             Assets)</a>
         </div>
       </div>
@@ -347,13 +348,16 @@
             <a class="dropdown-item" href="javascript:void(0)"
               (click)="viewWOReportingProgSummaryTree(2, selectedWorksOrder)">Works Order</a>
 
-            <a class="dropdown-item" href="javascript:void(0)"
+            <a *ngIf="woMenuAccess('Report Asset')" class="dropdown-item" href="javascript:void(0)"
               (click)="viewWOReportingAsset(2, selectedWorksOrder)">Works Order inc. Assets</a>
 
-            <a *ngIf="woMenuAccess('Asset Report (customer)')" class="dropdown-item" href="javascript:void(0)"
-              (click)="WOCreateXportOutputReport(505, 'WO Selected Asset Report')">Asset Report</a>
-            <a *ngIf="woMenuAccess('Work Report (customer)')" class="dropdown-item" href="javascript:void(0)"
-              (click)="WOCreateXportOutputReport(506, 'WO Selected Work Report')">Work Report</a>
+            <a *ngIf="woMenuAccess('Asset Report (customer)') && woMenuAccess('Report Asset')" class="dropdown-item"
+              href="javascript:void(0)" (click)="WOCreateXportOutputReport(505, 'WO Selected Asset Report')">Asset
+              Report</a>
+
+            <a *ngIf="woMenuAccess('Work Report (customer)') && woMenuAccess('Report Asset')" class="dropdown-item"
+              href="javascript:void(0)" (click)="WOCreateXportOutputReport(506, 'WO Selected Work Report')">Work
+              Report</a>
 
 
           </div>

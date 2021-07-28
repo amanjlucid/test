@@ -150,6 +150,10 @@
     top: -45px !important;
 }
 
+.dropdown-menu.addAssetMenu{
+    top: -80px !important;
+}
+
 .disabled .dropdown-item {
     color: #d1d2d3;
     background-color: transparent;
