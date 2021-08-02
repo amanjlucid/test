@@ -26,7 +26,7 @@ export class AssetServicingComponent implements OnInit, OnDestroy {
     sort: [],
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -50,7 +50,7 @@ export class AssetServicingComponent implements OnInit, OnDestroy {
   servicePortalAccess: any = [];
 
   // variable for service portal
-  servicePortalRef = true; // show service portal attribute tabs 
+  servicePortalRef = true; // show service portal attribute tabs
   serviceServicingDetailWindow: boolean = false;
   currentUser;
 
@@ -272,7 +272,7 @@ export class AssetServicingComponent implements OnInit, OnDestroy {
 
   public cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
     this.selectedService = dataItem;
-   
+
   }
 
   openNotesDetails(notesDetails) {
@@ -294,8 +294,8 @@ export class AssetServicingComponent implements OnInit, OnDestroy {
       this.notesDetails = true;
     } else if (this.selectedNotes.linkType == 'L') {
       let lnk = this.selectedNotes.link;
- 
-      
+
+
       let fileExt = lnk.substring(lnk.lastIndexOf(".") + 1).toLowerCase();
       this.assetAttributeService.getMimeType(fileExt).subscribe(
         mimedata => {

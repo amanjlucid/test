@@ -28,7 +28,7 @@ export class VariationDetailComponent implements OnInit {
     take: 25,
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }

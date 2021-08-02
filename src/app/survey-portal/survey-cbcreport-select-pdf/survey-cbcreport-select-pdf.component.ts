@@ -22,7 +22,7 @@ export class SurveyCbcreportSelectPDFComponent implements OnInit {
     take: 100,
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }

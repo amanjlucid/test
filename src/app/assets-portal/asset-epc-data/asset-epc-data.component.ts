@@ -25,7 +25,7 @@ export class AssetEpcDataComponent implements OnInit {
       field: 'edcname',
     }],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -50,7 +50,7 @@ export class AssetEpcDataComponent implements OnInit {
 
   ngOnInit(): void {
     this.getLatestRDSAPAnswers();
-    this.sharedService.energyPortalAccess.subscribe(data => { 
+    this.sharedService.energyPortalAccess.subscribe(data => {
       this.energyPortalAccess = data;
     });
   }
@@ -105,13 +105,13 @@ export class AssetEpcDataComponent implements OnInit {
   }
 
 
-  
+
   getYear(initialDate){
     var properDate = new Date(initialDate);
     var yearValue = properDate.getFullYear();
     return yearValue;
     }
-    
+
 
     exportToExcel(grid: GridComponent, fileExt, rowSelection = null): void {
         //let ignore = ['assid','edeid','answerOnly','asctext','ascvalue','assid','ataid','chacode','eaarepairyear','eaascenarioanswercost','edccode','edcname','edcsequence','edeid','edqdatause','edqsequence','edqtype','enadate','enadescription','enasource','enatime','enauser','enscode','sapcode'];
@@ -131,7 +131,7 @@ export class AssetEpcDataComponent implements OnInit {
           s.enatime = (s.enatime != "") ? ((s.enatime != '00:00:00') ? s.enatime : "")  : "";
         });
 
-  
+
         if (rowSelection != null) {
           if (this.mySelection.length != undefined && this.mySelection.length > 0) {
             let selectedRows = tempData.filter((v, k) => {
@@ -144,13 +144,13 @@ export class AssetEpcDataComponent implements OnInit {
         } else {
           this.selectedRows = tempData;
         }
-  
+
         if (this.selectedRows && this.selectedRows.length > 0) {
           this.helper.exportToexcelWithAssetDetails(this.selectedRows, this.assetId + '_EPC_Data', label)
         } else {
           this.alertService.error("There are no records to export.")
         }
- 
+
     }
 
     checkEnergyPortalAccess(val: string): Boolean {

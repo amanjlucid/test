@@ -25,7 +25,7 @@ export class CompletionListComponent implements OnInit, OnDestroy {
     sort: [],
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   };

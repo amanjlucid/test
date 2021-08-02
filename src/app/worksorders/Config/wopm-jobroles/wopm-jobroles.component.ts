@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation, OnInit } from '@angular/core';
+import { Component, ViewEncapsulation, OnInit, ChangeDetectorRef } from '@angular/core';
 import { SubSink } from 'subsink';
 import { GroupDescriptor, DataResult, process, State, SortDescriptor, distinct } from '@progress/kendo-data-query';
 import { PageChangeEvent, SelectableSettings, RowClassArgs } from '@progress/kendo-angular-grid';
@@ -11,7 +11,7 @@ import { WopmJobroleModel, SurveyPortalXports } from '../../../_models'
   selector: 'app-wopm-jobroles',
   templateUrl: './wopm-jobroles.component.html',
   styleUrls: ['./wopm-jobroles.component.css'],
-
+  encapsulation: ViewEncapsulation.None
 })
 export class WopmJobrolesComponent implements OnInit {
     subs = new SubSink();
@@ -56,6 +56,7 @@ export class WopmJobrolesComponent implements OnInit {
       private confirmationDialogService: ConfirmationDialogService,
       private sharedService: SharedService,
       private router: Router,
+      private chRef: ChangeDetectorRef,
       private helper: HelperService
     ) { }
 
@@ -118,6 +119,7 @@ export class WopmJobrolesComponent implements OnInit {
               this.jobRoleDetailsTemp = Object.assign([], jobRoles);
               this.gridView = process(this.jobRoleDetailsTemp, this.state);
               this.loading = false;
+              this.chRef.detectChanges
             }
           }
         )

@@ -33,6 +33,7 @@ export class ReportingComponent implements OnInit {
   ) { }
 
   @Input() reportingAction = "";
+  @Input() worksOrderReports = false;
   @Input() selectedGroup: Group;
   @Input() openReports: boolean = false;
   @Output() closeReportingWin = new EventEmitter<boolean>();
@@ -135,8 +136,13 @@ export class ReportingComponent implements OnInit {
     }else if (this.reportingAction == "runSurveyPortalXports") {
       //var exportId = 586;
       this.lstParamNameValue = this.reportParams;
+    }else if (this.reportingAction == "runExportTemplate") {
+      this.lstParamNameValue = this.reportParams;
+    }else {
+      this.lstParamNameValue = this.reportParams;
     }
 
+    
     var pair = 1
     if (this.lstParamNameValue.length > 0) {
         let paramArr: string[] = [];
@@ -362,25 +368,8 @@ export class ReportingComponent implements OnInit {
     let dataCheckBox = this.dataCheckBox.nativeElement.checked;
 
 
-    if (this.reportingAction == "allUserNGroup") {
-      //var exportId = 536;
-      var lstParamNameValue: string[] = [''];
-    } else if (this.reportingAction == "selectedGrpDetail") {
-      //var exportId = 585;
-      var lstParamNameValue: string[] = ['Security Group', this.selectedGroup.groupId.toString()];
-    } else if (this.reportingAction == "allGrpDetail") {
-      //var exportId = 586;
-      var lstParamNameValue: string[] = [''];
-    }else if (this.reportingAction == "runSurveyPortalXports") {
-      //var exportId = 586;
-      var lstParamNameValue: string[] = this.reportParams;
-    }else if (this.reportingAction == "runExportTemplate") {
-      var lstParamNameValue: string[] = this.reportParams;
-    }else {
-      var lstParamNameValue: string[] = this.reportParams;
-    }
     if (this.reportFormat == "PDF") {
-      this.exportToPdf(saveAs, this.exportId, lstParamNameValue, this.currentUser.userId, pivotCheckBox);
+      this.exportToPdf(saveAs, this.exportId, this.lstParamNameValue, this.currentUser.userId, pivotCheckBox);
     } else if (this.reportFormat == "EXCEL") {
       this.exportToExcel(saveAs, this.exportId, this.lstParamNameValue, this.currentUser.userId, pivotCheckBox, dataCheckBox);
     } else if (this.reportFormat == "CSV") {

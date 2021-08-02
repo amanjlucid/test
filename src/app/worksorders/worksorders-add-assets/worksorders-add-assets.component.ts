@@ -46,7 +46,7 @@ export class WorksordersAddAssetsComponent implements OnInit {
     sort: [],
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -436,7 +436,7 @@ export class WorksordersAddAssetsComponent implements OnInit {
   public isDisabled(args) {
     return {
       'DisableRowSelection': !(args.dataItem.alreadyInWorksOrderPhase == 'N')
-     }; 
+     };
     }
 
     public selectedRowChange(selectionEvent) {
@@ -447,7 +447,7 @@ export class WorksordersAddAssetsComponent implements OnInit {
       if (selectionEvent.deselectedRows.length > 0) {
         for (let row of selectionEvent.deselectedRows) {
           this.mySelection = this.mySelection.filter(x => x != row.dataItem.assid);
-      }   
+      }
       }
       if (selectionEvent.selectedRows.length > 0) {
         for (let row of selectionEvent.selectedRows) {
@@ -455,11 +455,11 @@ export class WorksordersAddAssetsComponent implements OnInit {
           if (row.dataItem.alreadyInWorksOrderPhase == 'N') {
               this.mySelection.push(row.dataItem.assid);
           }
-        }   
+        }
       }
       this.RequiredBudget = (this.mySelection.length * this.ChecklistCost);
     }
 
 
-    
+
 }

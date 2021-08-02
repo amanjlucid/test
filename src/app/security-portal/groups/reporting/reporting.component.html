@@ -28,7 +28,7 @@
 
         <span class="reportingPrevBtn">
 
-          <div class="btn-group" *ngIf="reporterPortalPermission.indexOf('Preview Rows') != -1">
+          <div class="btn-group" *ngIf="reporterPortalPermission.indexOf('Preview Rows') != -1  || worksOrderReports">
             <button [disabled]="reports?.rows?.length == 0" type="button"
               class="btn btn-sm btn-outline-secondary dropdown-toggle" data-toggle="dropdown" data-trigger="hover"
               aria-expanded="false">Preview</button>
@@ -46,10 +46,10 @@
 
 
 
-            <button *ngIf="reporterPortalPermission.indexOf('Save Preview') != -1" [disabled]="reports?.rows?.length == 0" type="button"
+            <button *ngIf="reporterPortalPermission.indexOf('Save Preview') != -1  || worksOrderReports" [disabled]="reports?.rows?.length == 0" type="button"
             class="btn btn-sm btn-outline-secondary" (click)="savePreview()">Save Preview</button>
 
-          <div class="btn-group" *ngIf="reporterPortalPermission.indexOf('Email Preview') != -1">
+          <div class="btn-group" *ngIf="reporterPortalPermission.indexOf('Email Preview') != -1  || worksOrderReports">
             <button [disabled]="reports?.rows?.length == 0" type="button"
               class="btn btn-sm btn-outline-secondary dropdown-toggle" data-toggle="dropdown" data-trigger="hover"
               aria-expanded="false">Email Preview</button>
@@ -63,9 +63,9 @@
 
 
 
-          <button *ngIf="reporterPortalPermission.indexOf('Run Report') != -1" [disabled]="reports?.rows?.length == 0" type="button" class="btn btn-sm btn-outline-secondary"
+          <button *ngIf="reporterPortalPermission.indexOf('Run Report') != -1  || worksOrderReports" [disabled]="reports?.rows?.length == 0" type="button" class="btn btn-sm btn-outline-secondary"
             (click)="runReport()">Run Report</button>
-          <button *ngIf="reporterPortalPermission.indexOf('Email Report') != -1" [disabled]="reports?.rows?.length == 0" type="button" (click)="openEmailWithReportWindow()"
+          <button *ngIf="reporterPortalPermission.indexOf('Email Report') != -1  || worksOrderReports" [disabled]="reports?.rows?.length == 0" type="button" (click)="openEmailWithReportWindow()"
             class="btn btn-sm btn-outline-secondary">Email Report</button>
           <span class="" style="margin-left:10px;">
             <label class="custom-control custom-control-inline custom-radio">
@@ -124,7 +124,7 @@
                 An Email Subject is required.
               </div>
           </div>
-               
+
         </div>
 
         <div class="form-group row">

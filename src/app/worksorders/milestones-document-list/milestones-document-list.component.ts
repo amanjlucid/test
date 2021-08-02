@@ -23,7 +23,7 @@ export class MilestonesDocumentListComponent implements OnInit {
     sort: [],
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -328,7 +328,7 @@ export class MilestonesDocumentListComponent implements OnInit {
 
 
   updateDescription() {
-    //update doc description 
+    //update doc description
     const { wosequence, wocheckname, wopsequence, wochecksurcde } = this.selectedMilestoneInp;
 
     let params = {

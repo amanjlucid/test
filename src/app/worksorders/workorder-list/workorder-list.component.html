@@ -11,14 +11,14 @@
       <button *ngIf="worksOrderAccess.indexOf('New Works Order') != -1" (click)="openUserPopup('new')"
         class="btn btn-sm themeButton ">New</button>
       <button (click)="export()" class="btn btn-sm themeButton ml-1"> Export</button>
-      <div class="dropdown ml-1 reportBtnArea" id="nesting-dropdown-demo">
+      <div  *ngIf="allowContractorAccessToMenu && (woMenuAccess('Report Programme Summary') || woMenuAccess('Report Phase') || woMenuAccess('Report Asset'))" class="dropdown ml-1 reportBtnArea" id="nesting-dropdown-demo">
         <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown"
           aria-expanded="false">Report</button>
         <div class="dropdown-menu" x-placement="bottom-start"
           style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
-          <a class="dropdown-item" href="javascript:void(0)" (click)="viewWOReportingProgSummaryTree(3)">All
+          <a *ngIf="woMenuAccess('Report Programme Summary')" class="dropdown-item" href="javascript:void(0)" (click)="viewWOReportingProgSummaryTree(3)">All
             Orders</a>
-          <a class="dropdown-item" href="javascript:void(0)" (click)="viewWOReportingProgSummaryTree(4)">All
+          <a *ngIf="woMenuAccess('Report Phase')" class="dropdown-item" href="javascript:void(0)" (click)="viewWOReportingProgSummaryTree(4)">All
             Orders (Including Phase)</a>
           <a *ngIf="woMenuAccess('Report Asset')" class="dropdown-item" href="javascript:void(0)"
             (click)="viewWOReportingAsset(0)">All Orders (including
@@ -319,7 +319,7 @@
         <a *ngIf="woMenuAccess('Completions Tab')" class="dropdown-item" (click)="openCompletionList(menuData)"
           href="javascript:void(0)">Completions</a>
 
-        <a *ngIf="woMenuAccess('View Programme Log')" class="dropdown-item" href="javascript:void(0)"
+        <a *ngIf="allowContractorAccessToMenu && worksOrderAccess.indexOf('View Programme Log') != -1" class="dropdown-item" href="javascript:void(0)"
           (click)="openProgrammeLog(menuData)">View Programme Log</a>
 
         <a *ngIf="woMenuAccess('Manage Associations')" class="dropdown-item" href="javascript:void(0)"
@@ -328,12 +328,12 @@
         <a *ngIf="woMenuAccess('Defects Tab')" class="dropdown-item" href="javascript:void(0)"
           (click)="openDefectsMethod(menuData)">Defects</a>
 
-        <a *ngIf="woMenuAccess('Works Order Documents')" [ngClass]="{'disabled': menuData.worksOrderFileCount == 0}"
+        <a *ngIf="woMenuAccess('Works Order Documents')"
           class="dropdown-item" (click)="openDocumentMethod(menuData)" href="javascript:void(0)">Documents</a>
 
-        <div class="dropdown-toggle" *ngIf="woMenuAccess('Contractor Reports')">
+        <div class="dropdown-toggle" *ngIf="woMenuAccess('Contractor Reports') && (woMenuAccess('Asset Report (contractor)') || woMenuAccess('Work Report (contractor)'))">
           <div class="dropdown-item">Contractor Reports</div>
-          <div class="dropdown-menu contractorReportMenu">
+          <div class="dropdown-menu" [ngStyle]="{'margin-top':getSubMenuTopMargin('Contractor Reports')}">
             <a *ngIf="woMenuAccess('Asset Report (contractor)')" class="dropdown-item" href="javascript:void(0)"
               (click)="WOCreateXportOutputReport(580, 'Contractor Asset Report')">Asset Report</a>
             <a *ngIf="woMenuAccess('Work Report (contractor)')" class="dropdown-item" href="javascript:void(0)"
@@ -342,20 +342,20 @@
         </div>
 
 
-        <div class="dropdown-toggle" *ngIf="woMenuAccess('Report Programme Summary') || woMenuAccess('Report Asset') ">
+        <div class="dropdown-toggle" *ngIf="allowContractorAccessToMenu && (woMenuAccess('Works Order Report (customer)') || woMenuAccess('Works Order Asset Report (customer)') || woMenuAccess('Asset Report (customer)')  || woMenuAccess('Work Report (customer)'))" >
           <div class="dropdown-item">Works Order Report</div>
-          <div class="dropdown-menu woReport">
-            <a class="dropdown-item" href="javascript:void(0)"
+          <div class="dropdown-menu" [ngStyle]="{'margin-top':getSubMenuTopMargin('Works Order Reports')}"  >
+            <a *ngIf="woMenuAccess('Works Order Report (customer)')"  class="dropdown-item" href="javascript:void(0)"
               (click)="viewWOReportingProgSummaryTree(2, selectedWorksOrder)">Works Order</a>
 
-            <a *ngIf="woMenuAccess('Report Asset')" class="dropdown-item" href="javascript:void(0)"
+            <a *ngIf="woMenuAccess('Works Order Asset Report (customer)')" class="dropdown-item" href="javascript:void(0)"
               (click)="viewWOReportingAsset(2, selectedWorksOrder)">Works Order inc. Assets</a>
 
-            <a *ngIf="woMenuAccess('Asset Report (customer)') && woMenuAccess('Report Asset')" class="dropdown-item"
+            <a *ngIf="woMenuAccess('Asset Report (customer)')" class="dropdown-item"
               href="javascript:void(0)" (click)="WOCreateXportOutputReport(505, 'WO Selected Asset Report')">Asset
               Report</a>
 
-            <a *ngIf="woMenuAccess('Work Report (customer)') && woMenuAccess('Report Asset')" class="dropdown-item"
+            <a *ngIf="woMenuAccess('Work Report (customer)')" class="dropdown-item"
               href="javascript:void(0)" (click)="WOCreateXportOutputReport(506, 'WO Selected Work Report')">Work
               Report</a>
 
@@ -364,10 +364,10 @@
         </div>
 
 
-        <div class="dropdown-toggle">
+        <div class="dropdown-toggle"  *ngIf="woMenuAccess('Milestones') || woMenuAccess('Manage Milestones')" >
           <div [ngClass]="{'disabled' : disableMilestoneBtn(menuData) }" class="dropdown-item">
             Milestones</div>
-          <div class="dropdown-menu milestoneMenu">
+          <div class="dropdown-menu" [ngStyle]="{'margin-top':getSubMenuTopMargin('Milestones')}">
             <a [ngClass]="{'disabled' : menuData.wottemplatetype != 'Works Order Milestone'}"
               *ngIf="woMenuAccess('Milestones')" class="dropdown-item" href="javascript:void(0)"
               (click)="openManageMilestonePopup(menuData, 'checklist')">Milestones</a>
@@ -383,16 +383,16 @@
         <a *ngIf="woMenuAccess('Manage WO Checklist')" class="dropdown-item" href="javascript:void(0)"
           (click)="openChecklist(menuData)">Checklist</a>
 
-        <div class="dropdown-toggle" *ngIf="woMenuAccess('Work List Menu')">
+        <div class="dropdown-toggle" *ngIf="woMenuAccess('Work List Menu')  && (woMenuAccess('View Work List for Contractor') || woMenuAccess('View Work List for Contract') || woMenuAccess('View Work List for Works Order')) ">
           <div class="dropdown-item">View Work List</div>
-          <div class="dropdown-menu addAssetMenu">
+          <div class="dropdown-menu" [ngStyle]="{'margin-top':getSubMenuTopMargin('View Work List')}" >
             <a *ngIf="woMenuAccess('View Work List for Contractor')" class="dropdown-item" href="javascript:void(0)"
               (click)="ShowWorkList('Contractor',menuData)">for
               Contractor</a>
             <a *ngIf="woMenuAccess('View Work List for Contract')" class="dropdown-item" href="javascript:void(0)"
               (click)="ShowWorkList('Contract',menuData)">for
               Contract</a>
-            <a class="dropdown-item" href="javascript:void(0)" (click)="ShowWorkList('WorksOrder',menuData)">for Works
+            <a *ngIf="woMenuAccess('View Work List for Works Order')" class="dropdown-item" href="javascript:void(0)" (click)="ShowWorkList('WorksOrder',menuData)">for Works
               Order</a>
           </div>
         </div>

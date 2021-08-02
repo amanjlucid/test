@@ -129,6 +129,7 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
     this.reporterPortalAccess();
     this.getWorksOrdersAccess();
     this.SurveyPortalAccess();
+    this.isUserContractor();
     this.subs.add(
       this.sharedServie.servicePortalObs.subscribe(data => { this.servicePortalAccess = data; })
     )
@@ -357,6 +358,18 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
 
         }
       )
+    )
+  }
+
+  isUserContractor(){
+     this.subs.add(
+        this.assetService.IsUserContractor(this.currentUser.userId).subscribe(
+            data => {
+              if (data && data.isSuccess) {
+                this.sharedServie.changeUserIsContractor(data.data);
+              }
+            }
+        )
     )
   }
 

@@ -23,7 +23,7 @@ export class NoAccessHistoryComponent implements OnInit {
     sort: [],
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }

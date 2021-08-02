@@ -26,7 +26,7 @@ export class AssetWorksManagementComponent implements OnInit, OnDestroy {
     sort: [],
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -103,7 +103,7 @@ export class AssetWorksManagementComponent implements OnInit, OnDestroy {
 
   public cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited }) {
     this.selectedAttribute = dataItem;
-   
+
   }
 
   openWorkDetail($event) {

@@ -27,7 +27,7 @@ export class VariationListAllComponent implements OnInit {
     take: 25,
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }

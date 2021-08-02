@@ -24,7 +24,7 @@ export class AsbestosManageRequestComponent implements OnInit {
     sort: [],
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -93,7 +93,7 @@ export class AsbestosManageRequestComponent implements OnInit {
     } else {
       this.alertService.error('You have no permission.')
     }
-    
+
 
 
     // if (this.selectedAsbestos != undefined) {
@@ -180,7 +180,7 @@ export class AsbestosManageRequestComponent implements OnInit {
                   temObj.push(x);
                 }
               });
-              
+
               if (temObj.length != undefined) {
                 if (temObj.length > 0) {
                   if (temObj[0].requestUserId == this.currentUser.userId) {
@@ -193,7 +193,7 @@ export class AsbestosManageRequestComponent implements OnInit {
                   this.disableActionBtn = false;
 
                 }
-               
+
 
                 this.reqStr = `Requests: ${this.activeRequests.length - temObj.length} Previous Requests, ${temObj.length} Current Request`
               } else {
@@ -237,7 +237,7 @@ export class AsbestosManageRequestComponent implements OnInit {
     //     return false
     //   }
     // }
-    
+
     if (!this.containsAll(['Management Request'], this.asbestosPropertySecurityAccess) && !this.containsAll(['Management Authorise'], this.asbestosPropertySecurityAccess)) {
       return true
     }

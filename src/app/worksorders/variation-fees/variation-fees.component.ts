@@ -29,7 +29,7 @@ export class VariationFeesComponent implements OnInit {
     take: 25,
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -70,7 +70,7 @@ export class VariationFeesComponent implements OnInit {
         }
       )
     )
-    
+
     if (this.openedFor == "details") {
       this.title = `Variation Fees: ${this.selectedSingleVariationAssetInp?.woiissuereason} (${this.selectedSingleVariationAssetInp?.wopsequence})`;
     }

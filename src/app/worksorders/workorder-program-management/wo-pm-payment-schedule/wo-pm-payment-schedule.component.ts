@@ -27,7 +27,7 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
     take: 35,
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }

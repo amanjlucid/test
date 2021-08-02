@@ -282,7 +282,7 @@ export class AssetAttributeService {
         return this.http.get<any>(`${appConfig.apiUrl}/api/Asset/GetAssetNotepadList?assetId=${assetId}&userId=${userId}`, httpOptions);
     }
 
-    
+
 
     getAssetServicingDetail(assetId: string, jobNumber: number) {
         let httpOptions = {
@@ -445,11 +445,11 @@ export class AssetAttributeService {
         };
         let portal
         if(portalName == null){
-            portal = 'Asset Portal' 
+            portal = 'Asset Portal'
         } else {
             portal = portalName;
         }
-        
+
         return this.http.get<any>(`${appConfig.apiUrl}/api/AssetManagement/ApexGetAssetManagementSecurity?UserId=${userId}&Portal=${portal}`, httpOptions);
 
     }
@@ -461,7 +461,7 @@ export class AssetAttributeService {
                 'Content-Type': 'application/json'
             }),
         };
-        
+
         return this.http.get<any>(`${appConfig.apiUrl}/api/Asset/AsbestosByLocationReport?Assid=${encodeURIComponent(assetId)}`, httpOptions);
     }
 
@@ -473,7 +473,7 @@ export class AssetAttributeService {
                 'Content-Type': 'application/json'
             }),
         };
-        
+
         return this.http.get<any>(`${appConfig.apiUrl}/api/Asset/GetMimeType?fileExtension=${encodeURIComponent(fileExtension)}`, httpOptions);
     }
 
@@ -593,7 +593,7 @@ export class AssetAttributeService {
             }),
         };
         return this.http.get<any>(`${appConfig.apiUrl}/api/Asset/GetEPCChartsList`, httpOptions);
-        
+
     }
 
     getEPCComponentsReport(assetId: string, epcSequence) {
@@ -603,7 +603,7 @@ export class AssetAttributeService {
             }),
         };
         return this.http.get<any>(`${appConfig.apiUrl}/api/Asset/GetEPCComponentsReport?assetId=${encodeURIComponent(assetId)}&epcSequence=${encodeURIComponent(epcSequence)}`, httpOptions);
-        
+
     }
 
 
@@ -614,7 +614,7 @@ export class AssetAttributeService {
             }),
         };
         return this.http.get<any>(`${appConfig.apiUrl}/api/Asset/GetRetrievedEPCs?monthText=${encodeURIComponent(monthText)}`, httpOptions);
-        
+
     }
 
 
@@ -625,10 +625,10 @@ export class AssetAttributeService {
             }),
         };
         return this.http.get<any>(`${appConfig.apiUrl}/api/Asset/GetChartsList?chartArea=${encodeURIComponent(chartArea)}`, httpOptions);
-        
+
     }
-  
-  
+
+
     /** remove these */
 
     getAssetCountd(assetList: AssetListModel) {
@@ -655,6 +655,15 @@ export class AssetAttributeService {
         return this.http.post<any>(`${appConfig.apiUrl}/api/Asset/GetAssetListDummy`, body, httpOptions);
     }
 
-   
+    IsUserContractor(userid) {
+      var httpOptions = {
+        headers: new HttpHeaders({
+            'Content-Type': 'application/json'
+        }),
+    };
+      return this.http.get<any>(`${appConfig.apiUrl}/api/WorkordersPortal/IsUserContractor?userid=${userid}`, httpOptions);
+    }
+
+
 
 }

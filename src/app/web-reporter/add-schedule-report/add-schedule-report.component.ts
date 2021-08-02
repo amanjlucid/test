@@ -47,7 +47,7 @@ export class AddScheduleReportComponent implements OnInit {
     sort: [],
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -59,7 +59,7 @@ export class AddScheduleReportComponent implements OnInit {
     sort: [],
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -92,7 +92,7 @@ export class AddScheduleReportComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.selectedScheduleReport &&  this.selectedScheduleReport.xport_next_run_date) {
-      this.originalRunDate = this.helperService.ngbDatepickerFormatFromDate(this.selectedScheduleReport.xport_next_run_date);      
+      this.originalRunDate = this.helperService.ngbDatepickerFormatFromDate(this.selectedScheduleReport.xport_next_run_date);
     }
     this.templateHeading = this.selectedReport.reportId + " " + this.selectedReport.reportName;
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
@@ -261,7 +261,7 @@ export class AddScheduleReportComponent implements OnInit {
 
   onSubmit() {
     this.submitted = true;
-    this.formErrorObject(); // empty form error 
+    this.formErrorObject(); // empty form error
     this.logValidationErrors(this.editEvform);
     if (this.editEvform.invalid) {
       return;

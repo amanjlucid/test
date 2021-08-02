@@ -43,7 +43,7 @@ export class AttributesComponent implements OnInit, OnDestroy {
     sort: [],
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -719,7 +719,7 @@ export class AttributesComponent implements OnInit, OnDestroy {
       sort: [],
       group: [],
       filter: {
-        logic: "or",
+        logic: "and",
         filters: []
       }
     }

@@ -29,7 +29,7 @@ export class AssetDefectsListComponent implements OnInit {
     take: 25,
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -221,7 +221,7 @@ export class AssetDefectsListComponent implements OnInit {
       if (this.workorderAssetFullDetail == undefined) return;
       woassstatus = this.workorderAssetFullDetail.woassstatus;
     } else {
-      //from workorder list 
+      //from workorder list
       woassstatus = item.woassstatus;
     }
 

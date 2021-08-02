@@ -28,7 +28,7 @@ export class RetrievedEpcGridComponent implements OnInit {
     sort: [],
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -56,7 +56,7 @@ export class RetrievedEpcGridComponent implements OnInit {
     this.getData(this.selectedBarChartXasis);
   }
 
-  
+
   ngOnDestroy() {
     this.subs.unsubscribe();
   }

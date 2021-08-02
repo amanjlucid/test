@@ -28,7 +28,7 @@
 
                 <kendo-grid-checkbox-column width="40">
                     <ng-template kendoGridCellTemplate let-dataItem>
-                        <input (click)="selectionChange(dataItem)" class="k-checkbox" type="checkbox"
+                        <input (click)="selectionChange(dataItem)" class="k-checkbox" type="checkbox" [checked]="dataItem.selected"
                             *ngIf="checkPackageExist(dataItem)">
                     </ng-template>
                 </kendo-grid-checkbox-column>
@@ -42,7 +42,7 @@
                 </kendo-grid-column>
                 <kendo-grid-column field="atadescription" title="Attribute Description" width="200">
                 </kendo-grid-column>
-                <kendo-grid-column field="asaquantity" title="Quantiy" width="120">
+                <kendo-grid-column field="asaquantity" title="Quantity" width="120">
                 </kendo-grid-column>
 
                 <kendo-grid-column field="uom" title="UOM" width="120">
@@ -79,7 +79,7 @@
         </div>
 
         <div class="col-md-12 text-right mt-2">
-            <button (click)="addTickedToWorklist()" [disabled]="mySelection.length == 0"
+            <button (click)="addTickedToWorklist()" [disabled]="!IsValidForAddTicked()"
                 class="btn btn-sm themeButton ml-1">Add Ticked To Work List</button>
             <button (click)="closePackageWindow()" class="btn btn-sm themeButton ml-1">Close</button>
         </div>

@@ -24,7 +24,7 @@ export class ServiceServiceHistoryComponent implements OnInit {
     sort: [],
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -40,7 +40,7 @@ export class ServiceServiceHistoryComponent implements OnInit {
   constructor(
     private helper: HelperService,
     private servicePortalService: ServicePortalService,
-    
+
   ) { }
 
   ngOnInit() {

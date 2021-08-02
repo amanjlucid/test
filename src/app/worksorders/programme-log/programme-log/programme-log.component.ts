@@ -94,6 +94,7 @@ export class ProgramLogComponent implements OnInit {
         }
 
         if (this.openedFrom == "workorder" && this.singleWorkOrderInp != undefined) {
+          this.title = "View Programme Log for Works Order";
             const { wprsequence } = this.singleWorkOrderInp;
             const pageService = [
                 this.worksorderManagementService.getWorkProgrammesByWprsequence(wprsequence),
@@ -232,7 +233,7 @@ export class ProgramLogComponent implements OnInit {
             data: this.gridData.slice(this.state.skip, this.state.skip + this.pageSize),
             total: this.gridData.length
         };
-        
+
         this.stateChange.next(this.state);
         this.gridView = process(this.gridData, this.state);
     }
@@ -426,7 +427,7 @@ export class ProgramLogComponent implements OnInit {
         this.subs.add(
             this.reportingGrpService.runReport(xPortId, params.lstParamNameValue, this.currentUser.userId, "EXCEL", false, true).subscribe(
                 data => {
-                    const linkSource = 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' + data;
+                    const linkSource = 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' + data.data;
                     const downloadLink = document.createElement("a");
                     const fileName = `${reportName}_${xPortId}.xlsx`;
                     downloadLink.href = linkSource;

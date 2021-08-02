@@ -52,6 +52,17 @@
 
   </div>
 
+  <div *ngIf="woMenuBtnSecurityAccess('Add Work')" class="row mt-2">
+    <div class="col-md-6">
+    </div>
+    <div class="col-md-6 text-right">
+      <button type="button" (click)="openAddAssetWorkordersListWindow()"
+      [disabled]="disableMainActions('Add Work')"
+        class="btn btn-sm themeButton">Add</button>
+    </div>
+
+  </div>
+
   <div class="row mt-2">
     <div class="col-md-12 mt-2">
       <kendo-grid [kendoGridGroupBinding]="assetDetailsGridData" [data]="gridView" [height]="570" [selectable]="{
@@ -124,7 +135,7 @@
         </kendo-grid-column>
 
 
-        <kendo-grid-column *ngIf="treelevel == 2" field="wlcomppackage" title="Package Name" width="120">
+        <kendo-grid-column *ngIf="treelevel == 2" field="wphname" title="Package Name" width="120">
         </kendo-grid-column>
 
 
@@ -163,7 +174,7 @@
         </kendo-grid-column>
 
 
-        <kendo-grid-column *ngIf="treelevel == 3" field="wlcomppackage" title="Package Name" width="120">
+        <kendo-grid-column *ngIf="treelevel == 3" field="wphname" title="Package Name" width="120">
         </kendo-grid-column>
 
 
@@ -256,13 +267,6 @@
 
   <div class="row mt-4">
     <div class="col-md-6">
-      <!-- <select class="selectTemplate">
-                <option value="w">Test</option>
-                <option value="w">Test</option>
-            </select>
-
-            <button class="btn btn-sm themeButton ml-3">Apply Selected</button>
-            <button class="btn btn-sm themeButton ml-2">Apply All</button> -->
     </div>
 
     <div class="col-md-6 text-right">
@@ -352,4 +356,13 @@
 
 
   <div class="woassetdetailoverlay"></div>
+
+
+  <app-worksorders-add-assetsworklist *ngIf="addAssetWorklistWindow" [addAssetWorklistWindow]="addAssetWorklistWindow"
+  [actualSelectedRow]="itemPassToWorkList" [selectedAssetChecklist]="selectedChecklistsingleItem"
+  [addWorkFrom]="'assetchecklist'" [addWorkorderType]="addWorkorderType"
+  (closeAddAssetWorkListEvent)="closeAddAssetWorkordersListWindow($event)"
+  (refreshWorkOrderDetails)="refreshGrid($event)">
+</app-worksorders-add-assetsworklist>
+
 </kendo-window>

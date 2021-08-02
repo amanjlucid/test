@@ -10,7 +10,7 @@
             <button
                 [disabled]="workorderAssetFullDetail?.woassstatus != 'Handover' && workorderAssetFullDetail?.woassstatus != 'Final Completion'"
                 (click)="openDefectForm('new')" type="button" class="btn btn-sm themeButton"
-                *ngIf="openedFrom == 'assetchecklist' && woMenuBtnSecurityAccess('New Defects')">
+                *ngIf="(openedFrom == 'assetchecklist' || openedFrom == 'workdetail') && woMenuBtnSecurityAccess('New Defects')">
                 New Defect
             </button>
         </div>
@@ -36,7 +36,7 @@
                         </div>
 
 
-                        <div class="row mt-1" *ngIf="openedFrom == 'assetchecklist'">
+                        <div class="row mt-1" *ngIf="(openedFrom == 'assetchecklist' || openedFrom == 'workdetail')">
                             <div class="col-md-2"><label class="lbl">Phase: </label></div>
                             <div class="col-md-10">
                                 <input type="text" value="{{phaseData?.wopname}}" class="form-control form-control-sm"
@@ -44,7 +44,7 @@
                             </div>
                         </div>
 
-                        <div class="row mt-1" *ngIf="openedFrom == 'assetchecklist'">
+                        <div class="row mt-1" *ngIf="(openedFrom == 'assetchecklist' || openedFrom == 'workdetail')">
                             <div class="col-md-2"><label class="lbl">Asset:</label> </div>
                             <div class="col-md-3">
                                 <input type="text" value="{{workorderAsset?.assid}}"
@@ -90,7 +90,7 @@
                                 <a [ngClass]="{'disabled': dataItem.wodstatus != 'New'}" *ngIf="woMenuBtnSecurityAccess('Delete Defect')" class="dropdown-item"
                                     href="javascript:void(0)" (click)="confirm(dataItem, 'delete')">Delete Defect</a>
 
-                                <a *ngIf="openedFrom == 'workdetail' || openedFrom == 'workorder'" class="dropdown-item"
+                                <a *ngIf="woMenuBtnSecurityAccess('Show Defects For Asset') && (openedFrom == 'workdetail' || openedFrom == 'workorder')" class="dropdown-item"
                                     href="javascript:void(0)" (click)="openAssetDefectsMethod(dataItem)">Show Defects
                                     for Asset</a>
 
@@ -104,7 +104,7 @@
                 </kendo-grid-column>
 
 
-                <kendo-grid-column title="No." field="wodsequence" width="60" *ngIf="openedFrom == 'assetchecklist'">
+                <kendo-grid-column title="No." field="wodsequence" width="60" *ngIf="(openedFrom == 'assetchecklist' || openedFrom == 'workdetail')">
                 </kendo-grid-column>
 
                 <kendo-grid-column title="Phase" field="wopname" width="130"

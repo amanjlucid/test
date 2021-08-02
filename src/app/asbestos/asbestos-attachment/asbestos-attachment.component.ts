@@ -25,7 +25,7 @@ export class AsbestosAttachmentComponent implements OnInit {
     sort: [],
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -106,7 +106,7 @@ export class AsbestosAttachmentComponent implements OnInit {
         data => {
           if (data && data.isSuccess) {
             this.getActiveAttachment(this.asbestosAttachmentModel);
-            
+
           }
         }
       )

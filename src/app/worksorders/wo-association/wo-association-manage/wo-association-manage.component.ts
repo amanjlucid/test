@@ -25,7 +25,7 @@ export class WoAssociationsManageComponent implements OnInit {
     sort: [],
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -356,7 +356,7 @@ export class WoAssociationsManageComponent implements OnInit {
       },
       error => this.alertService.error(error)
     )
-    
+
   }
 
 

@@ -16,7 +16,7 @@
           <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown"
             aria-expanded="false">Report</button>
 
-          <div class="dropdown-menu" x-placement="bottom-start"
+          <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-start"
             style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
 
             <div class="dropdown-toggle">
@@ -62,11 +62,11 @@
 
             <a *ngIf="woMenuBtnSecurityAccess('Works Order Documents')"
               [ngClass]="{'disabled': worksOrderSingleData.worksOrderFileCount == 0}" class="dropdown-item"
-              (click)="openDocumentMethod()" href="javascript:void(0)">Documents</a>
+              (click)="openDocumentMethod()" href="javascript:void(0)">Works Order Documents</a>
 
-            <a class="dropdown-item" href="javascript:void(0)" (click)="openProgrammeLog('programme')">Programme
+            <a *ngIf="allowContractorAccessToMenu && woMenuBtnSecurityAccess('View Programme Log')" class="dropdown-item" href="javascript:void(0)" (click)="openProgrammeLog('programme')">Programme
               Log</a>
-            <a class="dropdown-item" href="javascript:void(0)" (click)="openProgrammeLog('workorder')">Works Order
+            <a *ngIf="allowContractorAccessToMenu && woMenuBtnSecurityAccess('View Programme Log')" class="dropdown-item" href="javascript:void(0)" (click)="openProgrammeLog('workorder')">Works Order
               Log</a>
 
             <a *ngIf="woMenuBtnSecurityAccess('Manage WO Checklist')" class="dropdown-item" href="javascript:void(0)"
@@ -84,7 +84,7 @@
         <div class="dropdown" id="nesting-dropdown-demo">
           <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown"
             aria-expanded="false">Actions</button>
-          <div class="dropdown-menu" x-placement="bottom-start"
+          <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-start"
             style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
             <a *ngIf="woMenuBtnSecurityAccess('Release Asset')" (click)="assetAction(null, 'RELEASE', 'multiple')"
               class="dropdown-item" href="javascript:void(0)">Release
@@ -100,7 +100,7 @@
 
             <div class="dropdown-toggle" *ngIf="woMenuBtnSecurityAccess('Handover Asset')">
               <div class="dropdown-item">Handover</div>
-              <div class="dropdown-menu">
+              <div class="dropdown-menu dropdown-menu-right">
                 <a class="dropdown-item" href="javascript:void(0)"
                   (click)="assetAction(null, 'HY', 'multiple')">Yesterday</a>
                 <a class="dropdown-item" href="javascript:void(0)"
@@ -112,7 +112,7 @@
 
             <div class="dropdown-toggle" *ngIf="woMenuBtnSecurityAccess('Signoff Asset')">
               <div class="dropdown-item">Sign Off</div>
-              <div class="dropdown-menu">
+              <div class="dropdown-menu dropdown-menu-right">
                 <a class="dropdown-item" href="javascript:void(0)"
                   (click)="assetAction(null, 'SOY', 'multiple')">Yesterday</a>
                 <a class="dropdown-item" href="javascript:void(0)"
@@ -126,6 +126,34 @@
               class="dropdown-item" href="javascript:void(0)">Cancel</a>
             <a *ngIf="woMenuBtnSecurityAccess('Remove Asset')" class="dropdown-item" href="javascript:void(0)"
               (click)="openRemoveReasonPanel('multiple', 'REMOVE')">Remove</a>
+              <a *ngIf="woMenuBtnSecurityAccess('Move Assets')" class="dropdown-item" href="javascript:void(0)"
+              (click)="moveAssets(menuData)">Move</a>
+
+              <div class="dropdown-toggle datesToggle">
+                <div class="dropdown-item">Dates</div>
+                <div class="dropdown-menu datesMenu">
+
+                  <a class="dropdown-item" *ngIf="woMenuBtnSecurityAccess('Set Asset Planned Dates')" href="javascript:void(0)"
+                  (click)="openChooseDate('multiple','SE')">Set Asset Planned Dates</a>
+
+                  <div class="dropdown-toggle" *ngIf="woMenuBtnSecurityAccess('Set Asset Target Date')">
+                    <div  [ngClass]="{'disabled' : isServicingWorksOrder() }" class="dropdown-item">Set Asset Target Date</div>
+                    <div class="dropdown-menu">
+                      <a class="dropdown-item" (click)="assetAction(null, 'TCY', 'multiple')"
+                      href="javascript:void(0)">Yesterday</a>
+                      <a class="dropdown-item" (click)="assetAction(null,'TCTOD', 'multiple')"
+                          href="javascript:void(0)">Today</a>
+                      <a class="dropdown-item" (click)="assetAction(null,'TCTOM', 'multiple')"
+                          href="javascript:void(0)">Tomorrow</a>
+                      <a class="dropdown-item" (click)="assetAction(null,'TC7', 'multiple')" href="javascript:void(0)">7
+                          Days</a>
+                      <a class="dropdown-item" (click)="openChooseDate('multiple','TCPICK')"
+                          href="javascript:void(0)">Choose Date</a>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
 
           </div>
         </div>
@@ -497,7 +525,7 @@
 
         <div class="dropdown-toggle" *ngIf="woMenuBtnSecurityAccess('Add')">
           <div class="dropdown-item">Add Asset(s)</div>
-          <div class="dropdown-menu addAssetMenu">
+          <div class="dropdown-menu">
             <a *ngIf="woMenuBtnSecurityAccess('Add Assets for Phase Work Costs')" class="dropdown-item"
               (click)="openAddAssetWorkOrders(1, menuData)" href="javascript:void(0)">
               Asset(s)</a>
@@ -512,7 +540,7 @@
         <div class="dropdown-toggle"
           *ngIf="woMenuBtnSecurityAccess('Issue Work For Phase') || woMenuBtnSecurityAccess('Release Phase')">
           <div class="dropdown-item">Actions</div>
-          <div class="dropdown-menu addAssetMenu">
+          <div class="dropdown-menu">
             <a *ngIf="woMenuBtnSecurityAccess('Release Phase')" class="dropdown-item"
               (click)="assetAction(menuData, 'RELEASE', 'single')" href="javascript:void(0)">Release Assets For
               Phase</a>
@@ -565,6 +593,35 @@
           (click)="openAssetChecklist(menuData)">Asset
           Checklist</a>
 
+
+          <div class="dropdown-toggle datesToggle">
+            <div class="dropdown-item">Dates</div>
+            <div class="dropdown-menu datesMenu">
+
+              <a class="dropdown-item" *ngIf="woMenuBtnSecurityAccess('Set Asset Planned Dates')" href="javascript:void(0)"
+              (click)="openChooseDate('multiple','SE')">Set Asset Planned Dates</a>
+
+              <div class="dropdown-toggle" *ngIf="woMenuBtnSecurityAccess('Set Asset Target Date')">
+                <div  [ngClass]="{'disabled' : isServicingWorksOrder() }" class="dropdown-item">Set Asset Target Date</div>
+                <div class="dropdown-menu">
+                  <a class="dropdown-item" (click)="assetAction(menuData, 'TCY', 'single')"
+                  href="javascript:void(0)">Yesterday</a>
+                  <a class="dropdown-item" (click)="assetAction(menuData,'TCTOD', 'single')"
+                      href="javascript:void(0)">Today</a>
+                  <a class="dropdown-item" (click)="assetAction(menuData,'TCTOM', 'single')"
+                      href="javascript:void(0)">Tomorrow</a>
+                  <a class="dropdown-item" (click)="assetAction(menuData,'TC7', 'single')" href="javascript:void(0)">7
+                      Days</a>
+                  <a class="dropdown-item" (click)="openChooseDate('multiple','TCPICK')"
+                      href="javascript:void(0)">Choose Date</a>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+
+
         <div class="dropdown-toggle">
           <div class="dropdown-item">Work</div>
           <div class="dropdown-menu">
@@ -580,7 +637,7 @@
 
         <div class="dropdown-toggle actionToggle">
           <div class="dropdown-item">Actions</div>
-          <div class="dropdown-menu actionMenu">
+          <div class="dropdown-menu " [ngStyle]="{'margin-top':getActionTopMargin()}">
 
             <a *ngIf="woMenuBtnSecurityAccess('Release Asset')" class="dropdown-item"
               (click)="assetAction(menuData, 'RELEASE', 'single')" href="javascript:void(0)">Release</a>
@@ -630,7 +687,8 @@
           </div>
         </div>
 
-
+        <a class="dropdown-item" *ngIf="woMenuBtnSecurityAccess('Defects')" href="javascript:void(0)"
+        (click)="openDefectsMethod(menuData)">Defects</a>
 
         <a class="dropdown-item" [ngClass]="{'disabled' : !menuData.residentriskcode || menuData.residentriskcode == 0}"
           *ngIf="woMenuBtnSecurityAccess('View Resident Info')" href="javascript:void(0)"

@@ -55,10 +55,12 @@ export class WorksordersAssetDetailComponent implements OnInit {
     refusalCodeList: any;
     SwapPackageWindow = false;
     SwapPackagesForAssetsDataGrid: any
-
+    addAssetWorklistWindow = false
+    addWorkorderType = 'all'
     worksOrderAccess: any = []
     worksOrderUsrAccess: any = [];
-
+    selectedChecklistsingleItem: any = [];
+    itemPassToWorkList: any;
     userType: any = []
 
     constructor(
@@ -335,7 +337,7 @@ export class WorksordersAssetDetailComponent implements OnInit {
             'z-index': 1000
         });
 
-        this.confirmationDialogService.confirm('Please confirm..', 'Clear Refusal')
+        this.confirmationDialogService.confirm('Please confirm..', `Clear Refusal ${this.selectedItem.woadrefusal} for ${this.selectedItem.atadescription} work item?`)
             .then(
                 (confirmed) => {
 
@@ -712,5 +714,33 @@ export class WorksordersAssetDetailComponent implements OnInit {
     woMenuBtnSecurityAccess(menuName) {
         return this.helperService.checkWorkOrderAreaAccess(this.worksOrderUsrAccess, menuName)
     }
+
+    openAddAssetWorkordersListWindow(){
+      let item = this.selectedRow
+      this.selectedChecklistsingleItem = item
+      this.itemPassToWorkList = item;
+      this.addAssetWorklistWindow = true;
+       $('.woassetdetailoverlay').addClass('ovrlay');
+    }
+
+    closeAddAssetWorkordersListWindow(eve) {
+      this.addAssetWorklistWindow = false;
+      $('.woassetdetailoverlay').removeClass('ovrlay');
+    }
+
+    disableMainActions(type) {
+
+      if (type == "Add Work") {
+        let item = this.selectedRow
+        if(item.wostatus != 'New'){
+          return true
+        }
+      }
+    }
+
+    refreshGrid(eve) {
+
+    }
+
 
 }

@@ -24,7 +24,7 @@ export class AssetAsbestosComponent implements OnInit, OnDestroy {
     group: [],
     sort: [{ field: 'group', dir: 'asc' }],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -321,7 +321,7 @@ export class AssetAsbestosComponent implements OnInit, OnDestroy {
   }
 
   checkFurtherInfoAccess() {
-    
+
     if (!this.containsAll(['Request Further Information'], this.asbestosPropertySecurityAccess)) {
       return true
     }

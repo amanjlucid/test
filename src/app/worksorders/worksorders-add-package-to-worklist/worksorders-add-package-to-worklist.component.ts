@@ -26,7 +26,7 @@ export class WorksordersAddPackageToWorklistComponent implements OnInit {
     sort: [],
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -38,7 +38,7 @@ export class WorksordersAddPackageToWorklistComponent implements OnInit {
   worksOrder: any;
   planYear: any;
   selectableSettings: SelectableSettings;
-  mySelection: any[] = [];
+  mySelection: any[];
   packageQuantityWindow = false;
 
   @ViewChild(GridComponent) grid: GridComponent;
@@ -138,18 +138,16 @@ export class WorksordersAddPackageToWorklistComponent implements OnInit {
     // }
   }
 
-  // mySelectionKey(context: RowArgs): string {
-  //   return encodeURIComponent(context.dataItem.wphcode);
-  // }
 
   selectionChange(item) {
-    if (this.mySelection.includes(item.wphcode)) {
-      this.mySelection = this.mySelection.filter(x => x != item.wphcode);
-    } else {
-      this.mySelection.push(item.wphcode);
+    if(!item.selected){
+      item.selected = true
+    }else
+    {
+      item.selected = false
     }
-
     this.chRef.detectChanges();
+
   }
 
   setSelectableSettings(): void {
@@ -160,19 +158,24 @@ export class WorksordersAddPackageToWorklistComponent implements OnInit {
   }
 
   addTickedToWorklist() {
-    let v = this.mySelection.length
-    this.packageQuantityWindow = true;
-    $('.worklistPackageOvrlay').addClass('ovrlay');
+
+    if(this.IsValidForAddTicked()){
+      let v = this.mySelection
+      this.packageQuantityWindow = true;
+      $('.worklistPackageOvrlay').addClass('ovrlay');
+    }
+
   }
 
   closePackageQuantiyEvent(eve) {
-    this.packageQuantityWindow = eve;
+     this.packageQuantityWindow = false;
     $('.worklistPackageOvrlay').removeClass('ovrlay');
+    this.refreshPackageList(eve)
   }
 
   refreshPackageList(eve) {
-    // this.mySelection = [];
     this.getPackageList();
+    this.IsValidForAddTicked()
     this.chRef.detectChanges();
   }
 
@@ -180,6 +183,22 @@ export class WorksordersAddPackageToWorklistComponent implements OnInit {
     if (item.attributeexists == 'Work Package Exists') return false;
     if (item.exclusionreason != '') return false;
     return true;
+  }
+
+  IsValidForAddTicked()
+  {
+    this.mySelection  = [];
+    this.packageData.forEach(element => {
+      if(element.selected){
+        this.mySelection.push(element)
+      }
+    });
+
+    if(this.mySelection.length > 0){
+      return true
+    }else{
+      return false
+    }
   }
 
 }

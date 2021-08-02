@@ -29,7 +29,7 @@ export class VariationWorkListComponent implements OnInit {
     take: 25,
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -67,7 +67,7 @@ export class VariationWorkListComponent implements OnInit {
     take: 25,
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }

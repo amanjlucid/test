@@ -488,6 +488,11 @@ export class WorksorderManagementService {
         return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetVariationIndicator?WOSEQUENCE=${WOSEQUENCE}&WOPSEQUENCE=${WOPSEQUENCE}&assId=${assId}`, this.httpOptions);
     }
 
+    
+    getDefectsIndicator(WOSEQUENCE, WOPSEQUENCE, assId) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetDefectsIndicator?WOSEQUENCE=${WOSEQUENCE}&WOPSEQUENCE=${WOPSEQUENCE}&assId=${assId}`, this.httpOptions);
+    }
+
     processCompletionReport(params) {
         let body = JSON.stringify(params);
         return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/ProcessCompletionReport`, body, this.httpOptions);

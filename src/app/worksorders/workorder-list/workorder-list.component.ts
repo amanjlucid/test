@@ -26,7 +26,7 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
     take: 25,
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -62,7 +62,7 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
   deleteReasonMsgInput = false;
   wosequenceForDelete: any;
   worksOrderAccess = [];
-
+  allowContractorAccessToMenu = true;
   touchtime = 0;
   columnLocked: boolean = true;
   @ViewChild(GridComponent) grid: GridComponent;
@@ -74,7 +74,7 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
   openVariationListAll: boolean;
   completionList = false;
   workOrderId: number;
-
+  userIsContractor: any
   woProgramManagmentInstructionsWindow = false;
   documentWindow = false;
   ProgrammeLogWindow = false;
@@ -126,14 +126,27 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
           this.worksOrderAccess = data[0];
           this.worksOrderUsrAccess = data[1];
           this.userType = data[2][0];
-
           if (this.worksOrderAccess.length > 0) {
             if (!this.worksOrderAccess.includes("Works Orders Menu")) {
               this.router.navigate(['login']);
             }
           }
-
         }
+      )
+    )
+
+    this.subs.add(
+        this.sharedService.isUserContractorObs.subscribe(
+        data => {
+            this.userIsContractor = data;
+            if(this.userIsContractor)
+            {
+              this.allowContractorAccessToMenu = false
+            }else
+            {
+              this.allowContractorAccessToMenu = true
+            }
+          }
       )
     )
 
@@ -146,11 +159,7 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
         .pipe(debounceTime(100))
         .subscribe(obj => this.getUserWorksOrdersList(obj))
     )
-
-
   }
-
-
 
   ngOnDestroy() {
     this.subs.unsubscribe();
@@ -165,6 +174,7 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
     document.querySelector('.k-grid .k-grid-content').addEventListener('scroll', (e) => {
       this.tooltipDir.hide();
     });
+
   }
 
 
@@ -261,6 +271,15 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
 
         }
     }
+  }
+
+  test(){
+
+      let v = this.allowContractorAccessToMenu
+      let x = this.worksOrderAccess;
+      let y = this.worksOrderUsrAccess
+      let z = this.userIsContractor
+
   }
 
   setSelectableSettings(): void {
@@ -465,6 +484,10 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
   }
 
   export() {
+
+    let v = this.worksOrderAccess
+    let y = this.worksOrderUsrAccess
+
     if (this.gridView.total > 0 && this.gridView.data) {
       let tempData = Object.assign([], this.worksorderTempData);
       tempData.map((x: any) => {
@@ -573,7 +596,7 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
 
 
   openDocumentMethod(item) {
-    if (item.worksOrderFileCount == 0) return;
+   // if (item.worksOrderFileCount == 0) return;
     this.selectedWorksOrder = item;
     $('.worksOrderOverlay').addClass('ovrlay');
     this.documentWindow = true;
@@ -603,7 +626,11 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
   }
 
   closeDocumentWindow(eve) {
-    this.documentWindow = eve;
+    this.documentWindow = false;
+    if (eve != undefined)
+    {
+      this.selectedWorksOrder.worksOrderFileCount = eve;
+    }
     $('.worksOrderOverlay').removeClass('ovrlay');
   }
 
@@ -807,12 +834,13 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
     this.subs.add(
       this.reportingGrpService.runReport(xPortId, params.lstParamNameValue, this.currentUser.userId, "EXCEL", false, true).subscribe(
         data => {
-          const linkSource = 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' + data;
+          const linkSource = 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' + data.data;
           const downloadLink = document.createElement("a");
           const fileName = `${reportName}_${xPortId}.xlsx`;
           downloadLink.href = linkSource;
           downloadLink.download = fileName;
           downloadLink.click();
+
         }
       )
     )
@@ -888,4 +916,42 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
     window.open(siteUrl, "_blank");
 
   }
+
+
+  getSubMenuTopMargin(subMenu) {
+    let numberMenus = 0;
+    if (subMenu == 'Works Order Reports'){
+      if (this.woMenuAccess('Works Order Report (customer)')) numberMenus += 1;
+      if (this.woMenuAccess('Works Order Asset Report (customer)')) numberMenus += 1;
+      if (this.woMenuAccess('Asset Report (customer)')) numberMenus += 1;
+      if (this.woMenuAccess('Work Report (customer)')) numberMenus += 1;
+      if (numberMenus == 1) return "-5px";
+      if (numberMenus == 2) return "-40px";
+      if (numberMenus == 3) return "-75px";
+      if (numberMenus == 4) return "-110px";
+    }
+    if (subMenu == 'View Work List'){
+      if (this.woMenuAccess('View Work List for Contractor')) numberMenus += 1;
+      if (this.woMenuAccess('View Work List for Contract')) numberMenus += 1;
+      if (this.woMenuAccess('Work List')) numberMenus += 1;
+      if (numberMenus == 1) return "-5px";
+      if (numberMenus == 2) return "-40px";
+      if (numberMenus == 3) return "-75px";
+    }
+    if (subMenu == 'Contractor Reports'){
+      if (this.woMenuAccess('Asset Report (contractor)')) numberMenus += 1;
+      if (this.woMenuAccess('Work Report (contractor)')) numberMenus += 1;
+      if (numberMenus == 1) return "-5px";
+      if (numberMenus == 2) return "-40px";
+    }
+    if (subMenu == 'Milestones'){
+      if (this.woMenuAccess('Milestones')) numberMenus += 1;
+      if (this.woMenuAccess('Manage Milestones')) numberMenus += 1;
+      if (numberMenus == 1) return "-5px";
+      if (numberMenus == 2) return "-40px";
+
+    }
+
+  }
+
 }

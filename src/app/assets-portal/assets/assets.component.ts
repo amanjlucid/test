@@ -29,7 +29,7 @@ export class AssetsComponent implements OnInit, OnDestroy, AfterViewInit {
   selectedhierarchyLevel: any;
   hiearchyWindow = false;
   tabWindow = false;
-  tabName: string = "attributes";
+  tabName: string;
   assetTypes: any;
   attributeLists: any = [];
   scrollLoad = true;
@@ -467,6 +467,56 @@ export class AssetsComponent implements OnInit, OnDestroy, AfterViewInit {
             alert('Please select one record');
           }
           const selectedAttribute = this.attributeLists[0];
+
+          if (!this.tabName) {
+            this.assetAttributeService.getAssetTabsList(this.currentUser.userId).subscribe(
+              tabData => {
+                this.tabsData = tabData;
+
+                let tabs = ['Attributes', 'Characteristics', 'Asbestos', 'Energy', 'EPC', 'Surveys', 'Health and Safety', 'Servicing', 'HHSRS', 'Works Management', 'Quality', 'Notepad'];
+                for (let tab of tabs) {
+                  if (this.tabsData.includes(tab)) {
+                    switch (tab) {
+                      case 'Asbestos':
+                        this.tabName = "asbestos";
+                        break;
+                      case 'Attributes':
+                        this.tabName = "attributes";
+                        break;
+                      case 'Characteristics':
+                        this.tabName = "characteristics";
+                        break;
+                      case 'Energy':
+                        this.tabName = "energy";
+                        break;
+                      case 'EPC':
+                        this.tabName = "epc";
+                        break;
+                      case 'Health and Safety':
+                        this.tabName = "assessments";
+                        break;
+                      case 'HHSRS':
+                        this.tabName = "hhrs";
+                        break;
+                      case 'Notepad':
+                        this.tabName = "notepad";
+                      case 'Quality':
+                        this.tabName = "quality";
+                      case 'Servicing':
+                        this.tabName = "servicing";
+                      case 'Surveys':
+                        this.tabName = "surveys";
+                      case 'Works Management':
+                        this.tabName = "workmanagement";
+                    }
+                  }
+                  if (this.tabName) {
+                    break;
+                  }
+                }
+              });
+          }
+
           this.openTabWindow(this.tabName, selectedAttribute);
         }
       },
@@ -1009,6 +1059,8 @@ export class AssetsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.selectedAsset = asset;
     this.tabName = tabname;
     this.tabWindow = true;
+    this.loaderService.hide();
+    this.loaderService.pageHide();
   }
 
   closeTabWindow($event) {

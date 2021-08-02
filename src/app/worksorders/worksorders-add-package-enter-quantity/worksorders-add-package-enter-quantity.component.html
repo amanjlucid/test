@@ -34,8 +34,6 @@
                         <input type="text" numberDecimal maxDigits="5" formControlName="quantity"
                             [ngClass]="{ 'is-invalid': submitted && formErrors.quantity }" autocomplete="off">
 
-                        <!-- <input type="text" [(ngModel)]="quantity" (keypress)="validate($event)"
-                            (ngModelChange)="setCost($event, 'quantity')"> -->
                         <div class="lblDiv lblDiv2">UOM:</div>
                         <input type="text" formControlName="uom"
                             [ngClass]="{ 'is-invalid': submitted && formErrors.uom }" autocomplete="off">
@@ -89,17 +87,20 @@
 
             </div>
 
+            <div class="col-md-12 text-right mt-2 mr-20">
+              <button type="button" class="btn btn-sm themeButton ml-1" (click)="selectApply(1)">Apply</button>
+              <button type="button" (click)="closePackageQuantityWindow(false)" class="btn btn-sm themeButton ml-1">Cancel</button>
+           </div>
+
+           <!--
             <div class="col-md-4 mt-3 text-left">
-                <button type="button" *ngIf="mode == 'new'" class="btn btn-sm themeButton ml-1" (click)="defaultToOne()">Default to 1</button>
+            <button type="button" *ngIf="mode == 'new'" class="btn btn-sm themeButton ml-1" (click)="defaultToOne()">Default to 1</button>
             </div>
-            <div class="col-md-8 mt-3 text-right">
-                <button type="button" class="btn btn-sm themeButton ml-1" (click)="selectApply(1)">Apply</button>
-                <button type="button" *ngIf="mode == 'new'" [disabled]="checkApplyAllDisable()" class="btn btn-sm themeButton ml-1"
-                    (click)="selectApply(2)">Apply To
-                    All</button>
-                <button type="button" (click)="closePackageQuantityWindow(false)"
-                    class="btn btn-sm themeButton ml-1">Cancel</button>
-            </div>
+
+            <button type="button" *ngIf="mode == 'new'" [disabled]="checkApplyAllDisable()" class="btn btn-sm themeButton ml-1"
+            (click)="selectApply(2)">Apply To
+            All</button>
+             -->
 
         </div>
     </form>

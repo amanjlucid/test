@@ -27,7 +27,7 @@ export class VariationListComponent implements OnInit {
     take: 25,
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -177,7 +177,7 @@ export class VariationListComponent implements OnInit {
               this.variationData = variationData.data;
 
               this.outstandingVariation = data[5].data.result;
-              //check if request type is variation 
+              //check if request type is variation
               this.variationIssuedAndAccepted = variationData.data.some(x => x.woirequesttype == "Variation" && (x.woiissuestatus == "New" || x.woiissuestatus == "Issued" || x.woiissuestatus == "Contractor Review" || x.woiissuestatus == "Customer Review"))
 
               this.gridView = process(this.variationData, this.state);
@@ -486,7 +486,7 @@ export class VariationListComponent implements OnInit {
       this.alertService.error('Variaton not created.');
       return;
     }
-   
+
     this.openedFor = 'edit';
     this.selectedSingleVariation = eve;
     this.selectedSingleVariation.assid = this.selectedAsset.assid;
@@ -518,7 +518,7 @@ export class VariationListComponent implements OnInit {
 
   closeEmailWithReportWindow(eve) {
     this.SendEmailInsReportWindow = false;
-   
+
     $('.variationListOverlay').removeClass('ovrlay');
     // $('.reportingDiv').removeClass('pointerEvent');
   }

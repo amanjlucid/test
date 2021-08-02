@@ -22,7 +22,7 @@ export class MoveAssetComponent implements OnInit {
     sort: [],
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -98,11 +98,16 @@ export class MoveAssetComponent implements OnInit {
 
   apply(checkOrProcess = "C") {
     const { wosequence, wopsequence, assid } = this.selectedAssetList[0];
+    let assetIdArr = [];
+    for (const asset of this.selectedAssetList) {
+      assetIdArr.push(asset.assid)
+    }
+
     const params = {
       WOSEQUENCE: wosequence,
       WOPSEQUENCE: wopsequence,
       WOPSEQUENCE_New: this.selectedPhase.wopsequence,
-      ASSIDLIST: [assid],
+      ASSIDLIST: assetIdArr,
       Reason: this.reason,
       UserId: this.currentUser.userId,
       CheckOrProcess: checkOrProcess

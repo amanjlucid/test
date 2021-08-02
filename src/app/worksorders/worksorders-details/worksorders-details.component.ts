@@ -2,7 +2,7 @@ import { Component, OnInit, ViewEncapsulation, ViewChild, ChangeDetectorRef, Aft
 import { SubSink } from 'subsink';
 import { CompositeFilterDescriptor, FilterDescriptor } from '@progress/kendo-data-query';
 import { FilterService, SelectableSettings, TreeListComponent, RowClassArgs } from '@progress/kendo-angular-treelist';
-import { AlertService, LoaderService, ConfirmationDialogService, WorksOrdersService, HelperService, WorksorderManagementService, SharedService, PropertySecurityGroupService, AuthenticationService, WorksorderReportService } from '../../_services'
+import { AlertService, AssetAttributeService, LoaderService, ConfirmationDialogService, WorksOrdersService, HelperService, WorksorderManagementService, SharedService, PropertySecurityGroupService, AuthenticationService, WorksorderReportService } from '../../_services'
 import { combineLatest, forkJoin } from 'rxjs';
 import { WorkordersDetailModel } from 'src/app/_models';
 import { WopmRepCharConfig } from '../../_models';
@@ -88,6 +88,7 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
   openAssetRemoveReason = false;
   reason = '';
   openDefectsList = false;
+  allowContractorAccessToMenu = true;
   asebestosDoubleClick = 0;
   AddPhaseCostStructureWindow = false;
   documentWindow = false;
@@ -106,7 +107,7 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
   openManageMilestone = false;
   renameAssetWindow = false;
   renameItem: any;
-
+  userIsContractor = false;
   reportingCharsConfig: WopmRepCharConfig;
   displayAssetChar1 = false;
   displayAssetChar2 = false;
@@ -144,6 +145,7 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
     private worksOrderReportService: WorksorderReportService,
     private currencyPipe: CurrencyPipe,
     private router: Router,
+    private assetAttributeService: AssetAttributeService,
   ) { }
 
 
@@ -161,16 +163,31 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
     //subscribe for work order security access
     this.subs.add(
       combineLatest([
-        this.sharedService.woUserSecObs,
         this.sharedService.worksOrdersAccess,
+        this.sharedService.woUserSecObs,
         this.sharedService.userTypeObs
       ]).subscribe(
         data => {
-          // console.log(data);
-          this.worksOrderUsrAccess = data[0];
-          this.worksOrderAccess = data[1];
+          this.worksOrderAccess = data[0];
+          this.worksOrderUsrAccess = data[1];
           this.userType = data[2][0];
+          
         }
+      )
+    )
+
+    this.subs.add(
+        this.sharedService.isUserContractorObs.subscribe(
+        data => {
+            this.userIsContractor = data;
+            if(this.userIsContractor)
+            {
+              this.allowContractorAccessToMenu = false
+            }else
+            {
+              this.allowContractorAccessToMenu = true
+            }
+          }
       )
     )
 
@@ -192,6 +209,7 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
 
     this.updateGridHeight()
   }
+
 
   ngOnDestroy() {
     this.subs.unsubscribe();
@@ -818,8 +836,20 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
       }
 
       let assetIdArr = [];
+      let wopsequence = 0;
+      let differentPhase = false;
       for (const asset of assetData) {
+        if (wopsequence != 0 && asset.wopsequence != wopsequence) {
+          differentPhase = true;
+          break;
+        }
         assetIdArr.push(asset.assid)
+        wopsequence = asset.wopsequence;
+      }
+
+      if (differentPhase) {
+        this.alertService.error("You can only select assets from one phase at a time.")
+        return
       }
 
       params.strASSID = assetIdArr;
@@ -1009,21 +1039,109 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
     // this.mousePositioin = { x: eve.pageX, y: eve.pageY };
   }
 
+  getActionTopMargin() {
+    var numberMenus = 0;
+
+    if (this.woMenuBtnSecurityAccess('Release Asset')) numberMenus += 1;
+    if (this.woMenuBtnSecurityAccess('Issue Asset')) numberMenus += 1;
+    if (this.woMenuBtnSecurityAccess('Reset Asset')) numberMenus += 1;
+    if (this.woMenuBtnSecurityAccess('Accept Asset')) numberMenus += 1;
+    if (this.woMenuBtnSecurityAccess('Handover Asset')) numberMenus += 1;
+    if (this.woMenuBtnSecurityAccess('Signoff Asset')) numberMenus += 1;
+    if (this.woMenuBtnSecurityAccess('Cancel Asset')) numberMenus += 1;
+    if (this.woMenuBtnSecurityAccess('Remove Asset')) numberMenus += 1;
+    if (this.woMenuBtnSecurityAccess('Move Assets')) numberMenus += 1;
+
+    if (numberMenus <= 3) return "0px";
+    if (numberMenus <= 5) return "-90px";
+    return "-152px";
+  }
 
   getTopMargin() {
     if (this.mousePositioin == undefined) return;
 
     const { y } = this.mousePositioin;
     if (this.menuData.treelevel == 2) {
-      if (y > 780 && y < 824) return "-190px";
-      if (y >= 824) return "-210px";
+      var numberMenus = 0;
+
+      if (this.woMenuBtnSecurityAccess('Edit Phase')) numberMenus += 1;
+      if (this.woMenuBtnSecurityAccess('Move Assets')) numberMenus += 1;
+      if (this.woMenuBtnSecurityAccess('Delete Phase')) numberMenus += 1;
+      if (this.woMenuBtnSecurityAccess('Add Assets')) numberMenus += 1;
+      if (this.woMenuBtnSecurityAccess('Issue Work For Phase') || this.woMenuBtnSecurityAccess('Release Phase')) numberMenus += 1;
+      if (this.woMenuBtnSecurityAccess('Phase Checklist')) numberMenus += 1;
+      if (this.woMenuBtnSecurityAccess('Add Assets for Phase Work Costs')) numberMenus += 1;
+
+
+      if (y > 780 && y < 824) {
+
+        if (numberMenus <= 3) {
+          return "0px";
+        }   else {
+                return "-190px";
+        }
+      }
+      if (y >= 824) {
+
+        if (numberMenus <= 3) {
+          return "0px";
+        }   else {
+                return "-210px";
+        }
+
+      }
+
+      if (numberMenus <= 3) {
+        return "-50px";
+      }   else {
+              return "-100px";
+      }
+
+
     }
 
     if (this.menuData.treelevel == 3) {
-      if (y > 780 && y < 824) return "-170px";
-      if (y >= 824) return "-190px";
-    }
+      var numberMenus = 0;
 
+      if (this.woMenuBtnSecurityAccess('Asset Checklist')) numberMenus += 1;
+      numberMenus += 1;
+      numberMenus += 1;
+      if (this.woMenuBtnSecurityAccess('Asset Details')) numberMenus += 1;
+      numberMenus += 1;
+      if (this.woMenuBtnSecurityAccess('Defects')) numberMenus += 1;
+      if (this.woMenuBtnSecurityAccess('View Resident Info')) numberMenus += 1;
+      if (this.woMenuBtnSecurityAccess('Edit WO Comment') || this.woMenuBtnSecurityAccess('Release Phase')) numberMenus += 1;
+      if (this.woMenuBtnSecurityAccess('Asset Documents')) numberMenus += 1;
+      if (this.woMenuBtnSecurityAccess('Rename Phase Work')) numberMenus += 1;
+  
+      if (y >= 800){
+        if (numberMenus <= 3) {
+          return "10px";
+        }   else  if (numberMenus <= 7) {
+          return "-270px";
+        } else{
+          return "-320px";
+        }
+      }
+
+      if (y >= 700){
+        if (numberMenus <= 3) {
+          return "10px";
+        }   else  if (numberMenus <= 7) {
+          return "-240px";
+        } else{
+          return "-280px";
+        }
+      }
+
+        if (numberMenus <= 3) {
+          return "10px";
+        }   else  if (numberMenus <= 7) {
+          return "-90px";
+        } else{
+          return "-110px";
+        }
+    }
     return "-100px"
   }
 
@@ -1205,6 +1323,33 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
 
 
   openRemoveReasonPanel(action = "single", type, item = null) {
+
+    if (action="multiple") {
+      let selectedKeyArr = this.selected.map(x => { return x.itemKey });
+      let assetData = this.gridData.filter(x => selectedKeyArr.includes(x.id) && x.treelevel == 3);
+
+      if (assetData.length == 0) {
+        this.alertService.error("You must select some Assets.")
+        return
+      }
+
+      let wopsequence = 0;
+      let differentPhase = false;
+      for (const asset of assetData) {
+        if (wopsequence != 0 && asset.wopsequence != wopsequence) {
+          differentPhase = true;
+          break;
+        }
+        wopsequence = asset.wopsequence;
+      }
+
+      if (differentPhase) {
+        this.alertService.error("You can only select assets from one phase at a time.")
+        return
+      }
+    }
+
+
     this.actionType = action;
     this.chooseDateType = type;
     this.openAssetRemoveReason = true;
@@ -1234,9 +1379,15 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
         this.autService.validateAssetIDDeepLinkParameters(this.currentUser.userId, item.assid).subscribe(
           data => {
             if (data.validated) {
-              const siteUrl = `${appConfig.appUrl}/asset-list?assetid=${encodeURIComponent(item.assid)}&openTab=Asbestos`; // UAT
-              window.open(siteUrl, "_blank");
-
+              this.assetAttributeService.getAssetTabsList(this.currentUser.userId).subscribe(
+                tabData => {
+                  if (tabData.includes('Asbestos')) {
+                    const siteUrl = `${appConfig.appUrl}/asset-list?assetid=${encodeURIComponent(item.assid)}&openTab=Asbestos`; // UAT
+                    window.open(siteUrl, "_blank");
+                  } else {
+                    this.alertService.error("You do not have security access to the Asbestos Tab.");
+                  }
+                });
             } else {
               const errMsg = `${data.errorCode} : ${data.errorMessage}`
               this.alertService.error(errMsg);
@@ -1642,5 +1793,18 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
     }
 
   }
+
+  openDefectsMethod(item) {
+    this.actualSelectedRow = item;
+    $('.worksOrderDetailOvrlay').addClass('ovrlay');
+    this.openDefectsList = true;
+  }
+
+  closeDefectList(eve) {
+    this.openDefectsList = false;
+    $('.worksOrderDetailOvrlay').removeClass('ovrlay');
+   // this.worksOrderDetailPageData();
+  }
+
 
 }

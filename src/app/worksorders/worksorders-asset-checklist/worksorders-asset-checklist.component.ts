@@ -27,7 +27,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
     take: 25,
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -70,6 +70,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
   reason: string = '';
   openVariationList: boolean = false;
   variationNewOrIssue = false;
+  defectsNewOrResolved = false;
   openDefectsList = false;
   diplayResInfoMenu: boolean = false;
   ProgrammeLogWindow = false;
@@ -160,6 +161,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
 
           this.checkListGridData();
           this.getVariationIndicator();
+          this.getDefectsIndicator();
 
         }
       )
@@ -194,6 +196,19 @@ export class WorksordersAssetChecklistComponent implements OnInit {
       this.worksorderManagementService.getVariationIndicator(wosequence, wopsequence, assid).subscribe(
         data => {
           if (data.isSuccess) this.variationNewOrIssue = data.data;
+          else this.alertService.error(data.message);
+          this.chRef.detectChanges();
+        }
+      )
+    )
+  }
+
+  getDefectsIndicator() {
+    const { wosequence, assid, wopsequence } = this.selectedChildRow;
+    this.subs.add(
+      this.worksorderManagementService.getDefectsIndicator(wosequence, wopsequence, assid).subscribe(
+        data => {
+          if (data.isSuccess) this.defectsNewOrResolved = data.data;
           else this.alertService.error(data.message);
           this.chRef.detectChanges();
         }
@@ -353,9 +368,18 @@ export class WorksordersAssetChecklistComponent implements OnInit {
               resp = data.data[0];
             }
 
-            if (checkOrProcess == "C" && (resp.pRETURNSTATUS == "E" || resp.pRETURNSTATUS == "S")) {
-              this.openConfirmationDialog(type, item, resp)
-            } else {
+
+
+              
+            if (checkOrProcess == "C" ) {
+              if (resp.pRETURNSTATUS == "E") {
+                this.alertService.error(resp.pRETURNMESSAGE)
+              }
+              else if (resp.pRETURNSTATUS == "S") {
+                this.openConfirmationDialog(type, item, resp)
+              }
+            }
+            else {
               this.alertService.success(resp.pRETURNMESSAGE)
               this.worksOrderDetailPageData();
             }
@@ -513,12 +537,21 @@ export class WorksordersAssetChecklistComponent implements OnInit {
               resp = data.data[0];
             }
 
-            if (checkOrProcess == "C" && (resp.pRETURNSTATUS == "E" || resp.pRETURNSTATUS == "S")) {
-              this.confirmationForMultipleDate(type, resp)
-            } else {
+
+            if (checkOrProcess == "C" ) {
+              if (resp.pRETURNSTATUS == "E") {
+                this.alertService.error(resp.pRETURNMESSAGE)
+              }
+              else if (resp.pRETURNSTATUS == "S") {
+                this.confirmationForMultipleDate(type, resp)
+              }
+            }
+            else {
               this.alertService.success(resp.pRETURNMESSAGE)
               this.worksOrderDetailPageData();
             }
+
+            
           } else {
             this.alertService.error(data.message);
           }
@@ -622,9 +655,16 @@ export class WorksordersAssetChecklistComponent implements OnInit {
               resp = data.data[0];
             }
 
-            if (checkOrProcess == "C" && (resp.pRETURNSTATUS == "E" || resp.pRETURNSTATUS == "S")) {
-              this.openConfirmationDialog(type, item, resp, 'dates')
-            } else {
+
+            if (checkOrProcess == "C" ) {
+              if (resp.pRETURNSTATUS == "E") {
+                this.alertService.error(resp.pRETURNMESSAGE)
+              }
+              else if (resp.pRETURNSTATUS == "S") {
+                this.openConfirmationDialog(type, item, resp, 'dates')
+              }
+            }
+            else {
               this.alertService.success(resp.pRETURNMESSAGE)
               this.worksOrderDetailPageData();
             }
@@ -679,9 +719,16 @@ export class WorksordersAssetChecklistComponent implements OnInit {
             resp = data.data[0];
           }
 
-          if (checkOrProcess == "C" && (resp.pRETURNSTATUS == "E" || resp.pRETURNSTATUS == "S")) {
-            this.openConfirmationDialog(type, item, resp, 'complete')
-          } else {
+
+          if (checkOrProcess == "C" ) {
+            if (resp.pRETURNSTATUS == "E") {
+              this.alertService.error(resp.pRETURNMESSAGE)
+            }
+            else if (resp.pRETURNSTATUS == "S") {
+              this.openConfirmationDialog(type, item, resp, 'complete')
+            }
+          }
+          else {
             this.alertService.success(resp.pRETURNMESSAGE)
             this.worksOrderDetailPageData();
             this.selectedChecklistsingleItem = undefined
@@ -857,9 +904,15 @@ export class WorksordersAssetChecklistComponent implements OnInit {
             resp = data.data[0];
           }
 
-          if (checkOrProcess == "C" && (resp.pRETURNSTATUS == "E" || resp.pRETURNSTATUS == "S")) {
-            this.openConfirmationDialogAction(type, resp)
-          } else {
+          if (checkOrProcess == "C" ) {
+            if (resp.pRETURNSTATUS == "E") {
+              this.alertService.error(resp.pRETURNMESSAGE)
+            }
+            else if (resp.pRETURNSTATUS == "S") {
+              this.openConfirmationDialogAction(type, resp)
+             }
+          }
+          else {
             this.alertService.success(resp.pRETURNMESSAGE)
             this.worksOrderDetailPageData();
 
@@ -1004,9 +1057,15 @@ export class WorksordersAssetChecklistComponent implements OnInit {
             resp = data.data[0];
           }
 
-          if (checkOrProcess == "C" && (resp.pRETURNSTATUS == "E" || resp.pRETURNSTATUS == "S")) {
-            this.confirmationForDeleteOrRemoveWork(type, resp)
-          } else {
+          if (checkOrProcess == "C" ) {
+            if (resp.pRETURNSTATUS == "E") {
+              this.alertService.error(resp.pRETURNMESSAGE)
+            }
+            else if (resp.pRETURNSTATUS == "S") {
+              this.confirmationForDeleteOrRemoveWork(type, resp)
+            }
+          }
+          else {
             this.alertService.success(resp.pRETURNMESSAGE)
             this.worksOrderDetailPageData();
             this.selectedChecklistsingleItem = undefined
@@ -1126,9 +1185,16 @@ export class WorksordersAssetChecklistComponent implements OnInit {
               resp = data.data[0];
             }
 
-            if (checkOrProcess == "C" && (resp.pRETURNSTATUS == "E" || resp.pRETURNSTATUS == "S")) {
-              this.confirmationForMultipleStatus(type, resp)
-            } else {
+
+            if (checkOrProcess == "C" ) {
+              if (resp.pRETURNSTATUS == "E") {
+                this.alertService.error(resp.pRETURNMESSAGE)
+              }
+              else if (resp.pRETURNSTATUS == "S") {
+                this.confirmationForMultipleStatus(type, resp)
+              }
+            }
+            else {
               this.alertService.success(resp.pRETURNMESSAGE)
               this.worksOrderDetailPageData();
             }
@@ -1193,7 +1259,50 @@ export class WorksordersAssetChecklistComponent implements OnInit {
 
 
   disableBtnsIndividualMenu(name, item) {
-    if (name == "status") {
+    if (this.userType && this.userType.wourroletype == "Contractor") {
+      if (item?.wocheckresp =='CLIENT') return true;
+    }
+    if (this.userType && this.userType.wourroletype == "Customer") {
+      if (item?.wocheckresp =='CONTRACTOR') return true;
+    }
+
+    if (name == "status" || name == "dates") {
+      if (this.userType && this.userType.wourroletype == "Contractor") {
+        return this.workorderAsset?.woassstatus == 'Pending' || this.workorderAsset?.woassstatus == 'Issued' ||
+        this.workorderAsset?.woassstatus == 'Handover' || 
+        this.workorderAsset?.woassstatus == 'Practical Completion' ||
+        this.workorderAsset?.woassstatus == 'Final Completion';
+      } else {
+        return this.workorderAsset?.woassstatus == 'Pending';
+      }
+    }
+
+    if (name == "complete") {
+      if (this.userType && this.userType.wourroletype == "Contractor") {
+        return this.workorderAsset?.woassstatus == 'Pending' || this.workorderAsset?.woassstatus == 'Issued' ||
+        (this.workorderAsset?.woassstatus == 'Handover' && item.wocheckspeciaL1 != 'CUSTFORM') || 
+        (this.workorderAsset?.woassstatus == 'Practical Completion' && item.wocheckspeciaL1 != 'CUSTFORM') ||
+        (this.workorderAsset?.woassstatus == 'Final Completion'  && item.wocheckspeciaL1 != 'CUSTFORM') ;
+      } else {
+        return this.workorderAsset?.woassstatus == 'Pending' || this.workorderAsset?.woassstatus == 'Issued'
+      }
+    }
+
+    if (name == "comments") {
+      if (this.userType && this.userType.wourroletype == "Contractor") {
+        return this.workorderAsset?.woassstatus == 'Handover' || 
+        this.workorderAsset?.woassstatus == 'Practical Completion' || this.workorderAsset?.woassstatus == 'Final Completion';
+      } else {
+        return false
+      }
+    }
+
+    if (name == "documents") {
+      return  this.workorderAsset?.woassstatus == 'Final Completion'
+    }
+
+
+    if (name == "CMP") {
       return this.workorderAsset?.woassstatus == 'Pending' || this.workorderAsset?.woassstatus == 'Issued'
     }
 
@@ -1213,10 +1322,6 @@ export class WorksordersAssetChecklistComponent implements OnInit {
       return this.workorderAsset?.woassstatus == 'Pending' || this.workorderAsset?.woassstatus == 'Issued'
     }
 
-    if (name == "CMP") {
-      return this.workorderAsset?.woassstatus == 'Pending' || this.workorderAsset?.woassstatus == 'Issued'
-    }
-
     if (name == "WOADD") {
       return this.selectedChildRow.wostatus != 'New' || item.wocheckspeciaL1 != 'WORK'
     }
@@ -1225,19 +1330,80 @@ export class WorksordersAssetChecklistComponent implements OnInit {
       return item?.detailCount == 0
     }
 
+
     if (name == "customerSurvey") {
-      if (this.workorderAsset?.woassstatus == "Handover" || this.workorderAsset?.woassstatus == "Practical Completion" || this.workorderAsset?.woassstatus == "Final Completion") {
-        return false;
+
+        return (!(this.workorderAsset?.woassstatus == 'Handover' || this.workorderAsset?.woassstatus == 'Practical Completion' || 
+        this.workorderAsset?.woassstatus == 'Final Completion'));
+
+    }
+
+    if (name == "letter") {
+      if (this.userType && this.userType.wourroletype == "Contractor") {
+        return this.workorderAsset?.woassstatus == 'Pending' || this.workorderAsset?.woassstatus == 'Issued' ||
+        this.workorderAsset?.woassstatus == 'Handover' || this.workorderAsset?.woassstatus == 'Practical Completion' ||
+        this.workorderAsset?.woassstatus == 'Final Completion';
       } else {
-        return true;
+        return this.workorderAsset?.woassstatus == 'Pending' || this.workorderAsset?.woassstatus == 'Issued'
       }
     }
+
+
 
     return false
   }
 
 
   disableMainActions(type) {
+    let checklists = this.assetCheckListData.filter(x => this.mySelection.includes(x.wochecksurcde));    
+    var responsibilities = [];
+    for (const checklist of checklists) {
+      responsibilities.push(checklist.wocheckresp);
+      }
+
+    if (this.userType && this.userType.wourroletype == "Contractor") {
+      if (responsibilities.includes('CLIENT')) return true;
+    }
+    if (this.userType && this.userType.wourroletype == "Customer") {
+      if (responsibilities.includes('CONTRACTOR')) return true;
+    }
+
+
+    if (type == "status" || type == "dates") {
+      if (this.userType && this.userType.wourroletype == "Contractor") {
+        return this.mySelection.length == 0 || this.workorderAsset?.woassstatus == 'Pending' ||
+        this.workorderAsset?.woassstatus == 'Issued' ||
+        this.workorderAsset?.woassstatus == 'Handover' || this.workorderAsset?.woassstatus == 'Practical Completion' ||
+        this.workorderAsset?.woassstatus == 'Final Completion';
+      } else {
+        return this.mySelection.length == 0 || this.workorderAsset?.woassstatus == 'Pending';
+      }
+    }
+
+    if (type == "COMP") {
+      let filterChecklist = this.assetCheckListData.filter(x => this.mySelection.includes(x.wochecksurcde));
+      if (this.userType && this.userType.wourroletype == "Contractor") {
+        return this.mySelection.length == 0 || this.workorderAsset?.woassstatus == 'Pending' || 
+        this.workorderAsset?.woassstatus == 'Issued' ||
+        (this.workorderAsset?.woassstatus == 'Handover' && filterChecklist.some(x => x.wocheckspeciaL1 != "CUSTFORM") ) || 
+        (this.workorderAsset?.woassstatus == 'Practical Completion' && filterChecklist.some(x => x.wocheckspeciaL1 != "CUSTFORM")) ||
+        (this.workorderAsset?.woassstatus == 'Final Completion' && filterChecklist.some(x => x.wocheckspeciaL1 != "CUSTFORM"));
+      } else {
+        return this.mySelection.length == 0 || this.workorderAsset?.woassstatus == 'Pending' || this.workorderAsset?.woassstatus == 'Issued'
+      }
+    }
+
+    if (type == "comments") {
+      if (this.userType && this.userType.wourroletype == "Contractor") {
+        return this.mySelection.length == 0 || this.workorderAsset?.woassstatus == 'Handover' || 
+        this.workorderAsset?.woassstatus == 'Practical Completion' || this.workorderAsset?.woassstatus == 'Final Completion';
+      } else {
+        return (this.mySelection.length == 0)
+      }
+    }
+
+
+
     if (type == "woremoveAll" || type == "wodeleteAll") {
       if (!this.selectedChecklistsingleItem) {
         return true;
@@ -1279,7 +1445,7 @@ export class WorksordersAssetChecklistComponent implements OnInit {
       return this.workorderAsset?.woassstatus != 'Issued' && this.workorderAsset?.woassstatus != "Accepted"
     }
 
-    if (type == "na" || type == "STIP" || type == "NS" || type == "RCI" || type == "COMP") {
+    if (type == "na" || type == "STIP" || type == "NS" || type == "RCI") {
       return this.mySelection.length == 0 || this.workorderAsset?.woassstatus == 'Pending' || this.workorderAsset?.woassstatus == 'Issued'
     }
 
@@ -1302,20 +1468,26 @@ export class WorksordersAssetChecklistComponent implements OnInit {
       return true;
     }
 
-    if (type == "LETTER") {
+    if (type == "customerSurvey") {
+      return (!(this.workorderAsset?.woassstatus == 'Handover' || this.workorderAsset?.woassstatus == 'Practical Completion' || 
+      this.workorderAsset?.woassstatus == 'Final Completion'));
+  }
+
+    if (type == "letter") {
       if (this.assetCheckListData) {
         let filterChecklist = this.assetCheckListData.filter(x => this.mySelection.includes(x.wochecksurcde));
-        return this.mySelection.length == 0 || filterChecklist.some(x => x.wocheckspeciaL1 != "LETTER");
+        if (this.userType && this.userType.wourroletype == "Contractor") {
+          return this.mySelection.length == 0 || filterChecklist.some(x => x.wocheckspeciaL1 != "LETTER") || 
+          this.workorderAsset?.woassstatus == 'Pending' || this.workorderAsset?.woassstatus == 'Issued' ||
+          this.workorderAsset?.woassstatus == 'Handover' || this.workorderAsset?.woassstatus == 'Practical Completion' ||
+          this.workorderAsset?.woassstatus == 'Final Completion';
+        } else {
+          return this.workorderAsset?.woassstatus == 'Pending' || this.workorderAsset?.woassstatus == 'Issued'
+        }
       } else {
         return true;
       }
-
     }
-
-    if (type == "comments") {
-      return (this.mySelection.length == 0)
-    }
-
   }
 
 
@@ -1567,9 +1739,16 @@ export class WorksordersAssetChecklistComponent implements OnInit {
           } else {
             resp = data.data[0];
           }
-          if (checkOrProcess == "C" && (resp.pRETURNSTATUS == "E" || resp.pRETURNSTATUS == "S")) {
-            this.confirmationForEditChecklistFee(resp)
-          } else {
+
+          if (checkOrProcess == "C" ) {
+            if (resp.pRETURNSTATUS == "E") {
+              this.alertService.error(resp.pRETURNMESSAGE)
+            }
+            else if (resp.pRETURNSTATUS == "S") {
+              this.confirmationForEditChecklistFee(resp)
+            }
+          }
+          else {
             this.alertService.success(resp.pRETURNMESSAGE)
             this.worksOrderDetailPageData();
             this.selectedChecklistsingleItem = undefined

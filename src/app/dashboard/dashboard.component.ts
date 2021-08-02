@@ -212,16 +212,16 @@ export class DashboardComponent implements OnInit {
         pie: {
           size: '70%',
           dataLabels: {
-            enabled: false,
+            enabled: true,
           },
           // colors: [
-          //   '#50B432', 
-          //   '#ED561B', 
-          //   '#DDDF00', 
-          //   '#24CBE5', 
-          //   '#64E572', 
-          //   '#FF9655', 
-          //   '#FFF263', 
+          //   '#50B432',
+          //   '#ED561B',
+          //   '#DDDF00',
+          //   '#24CBE5',
+          //   '#64E572',
+          //   '#FF9655',
+          //   '#FFF263',
           //   '#6AF9C4'
           // ],
         }
@@ -295,7 +295,7 @@ export class DashboardComponent implements OnInit {
       plotOptions: {
         bar: {
           dataLabels: {
-            enabled: false
+            enabled: true
           }
         }
       },

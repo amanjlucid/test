@@ -27,7 +27,7 @@ export class WorksordersAssetChecklistDocumentComponent implements OnInit {
     sort: [],
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -64,7 +64,7 @@ export class WorksordersAssetChecklistDocumentComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    // console.log(this.selectedChecklist); 
+    // console.log(this.selectedChecklist);
     // debugger;
 
     this.worksOrderDetailPageData();
