@@ -17,10 +17,6 @@ export class ChartService {
 
     constructor(private http: HttpClient) { }
 
-    // getChartType() {
-    //     return this.http.get<any>(`${appConfig.apiUrl}/api/HealthSafetyChart/GetHealtSafetyChartList`, this.httpOptions);
-    // }
-
     getChartData(chartDetail) {
         let body = JSON.stringify(chartDetail);
         return this.http.post<any>(`${appConfig.apiUrl}/api/Chart/GetChartData`, body, this.httpOptions);
@@ -54,6 +50,15 @@ export class ChartService {
     checkDrillDownChartGridDataIsNull(params) {
         let body = JSON.stringify(params);
         return this.http.post<any>(`${appConfig.apiUrl}/api/Manager/CheckDrillDownChartGridDataIsNull`, body, this.httpOptions);
+    }
+
+    getUserChartSetting(userId:string){
+        return this.http.get<any>(`${appConfig.apiUrl}/api/Chart/GetUserChartSetting?userId=${userId}`, this.httpOptions);
+    }
+
+    SaveUserChartSettings(params) {
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/Chart/SaveUserChartSettings`, body, this.httpOptions);
     }
 
     //########## CHART CONFIGURATION ##################//
@@ -325,7 +330,12 @@ export class ChartService {
 
     groupBarChartConfiguration(selector: any, data: any, titleText: any, seriesName: string, allowPointSelect: boolean = true) {
         const { categories, stackedBarChartViewModelList } = data;
-        const scroll = categories.length < 13 ? false : true;
+        let max = 10;
+        let scroll = true;
+        if (categories && categories.length < 10) {
+            scroll = false;
+            max = categories.length - 1;
+        }
         return {
             chart: {
                 type: 'column',
@@ -338,8 +348,7 @@ export class ChartService {
                 categories: categories,
                 crosshair: true,
                 min: 0,
-                // max: data.categories.length - 1,
-                max: 10,
+                max: max,
                 labels: {
                     rotation: 90,
                 },

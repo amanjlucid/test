@@ -83,7 +83,7 @@ export class DashboardChartSharedComponent implements OnInit {
             if (chartData != null) {
               this.dashboardName = dashboard;
               this.savedState = chartData.chartData;
-              this.numberOfChartCanBeAdded = numberOfChart
+              this.numberOfChartCanBeAdded = numberOfChart == 0 ? 10 : numberOfChart;
               this.myLayout = new GoldenLayout(JSON.parse(this.savedState), $('#layoutContainer'));
             } else {
               this.savedState = null
@@ -339,7 +339,7 @@ export class DashboardChartSharedComponent implements OnInit {
     if (chartType == 'pie') this.getPieChartData(dataForChart, className, container, state);
     if (chartType == 'line') this.getLineChartData(dataForChart, className, container, state);
     if (chartType == 'bar') this.getBarChartData(dataForChart, className, container, state);
-    if (chartType == 'bar') this.getGroupBarChartData(dataForChart, className, container, state);
+    if (chartType == 'groupbar') this.getGroupBarChartData(dataForChart, className, container, state);
 
   }
 

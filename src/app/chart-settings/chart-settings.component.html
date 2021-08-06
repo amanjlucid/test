@@ -13,8 +13,8 @@
                             <div class="form-group row">
                                 <label class="col-form-label col-sm-3">Portal Name</label>
                                 <div class="col-sm-9">
-                                    <input name="portalName[{{i}}]" type="text" required class="form-control"
-                                        [(ngModel)]="portal.portalName">
+                                    <input readonly="true" name="dashboard[{{i}}]" type="text" required
+                                        class="form-control" [(ngModel)]="portal.dashboard">
                                 </div>
                             </div>
                         </div>
@@ -23,8 +23,8 @@
                             <div class="form-group row">
                                 <label class="col-form-label col-sm-6">Number Of Chart</label>
                                 <div class="col-sm-6">
-                                    <input type="number" name="numberofchart[{{i}}]" required class="form-control"
-                                        [(ngModel)]="portal.numberofchart">
+                                    <input type="number" name="numberOfChart[{{i}}]" required class="form-control"
+                                        [(ngModel)]="portal.numberOfChart">
                                 </div>
                             </div>
                         </div>
@@ -33,39 +33,9 @@
                     </div>
 
 
-                    <!-- <div class="row">
-                        <div class="col-md-5">
-                            <div class="form-group row">
-                                <label class="form-label">Portal Name</label>
-                                <input type="text" class="form-control">
-                                <input type="text" class="form-control" formControlName="hsdoclocn"
-                    placeholder="Assessment Document Upload Location"
-                    [ngClass]="{ 'is-invalid': submitted && formErrors.hsdoclocn }" autocomplete="off">
-                                <div *ngIf="submitted && formErrors.hsdoclocn" class="invalid-feedback">
-                    <div *ngIf="formErrors.hsdoclocn">{{ formErrors.hsdoclocn }}</div>
-                  </div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-5">
-                            <div class="form-group row">
-                                <label class="form-label">Number Of Chart</label>
-                                <input type="number" class="form-control">
-                                <input type="text" class="form-control" formControlName="hsdoclocn"
-                    placeholder="Assessment Document Upload Location"
-                    [ngClass]="{ 'is-invalid': submitted && formErrors.hsdoclocn }" autocomplete="off">
-                                <div *ngIf="submitted && formErrors.hsdoclocn" class="invalid-feedback">
-                    <div *ngIf="formErrors.hsdoclocn">{{ formErrors.hsdoclocn }}</div>
-                  </div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-2"></div> 
-
-                    </div>-->
-                    <button (click)="addMore()" class="btn btn-default themeButton addMore mr-2"><i class="fa fa-plus"
-                            aria-hidden="true"></i> Add</button>
-                    <button type="button" (click)="saveChartForm()" class="btn btn-default themeButton">Submit</button>
+                    <!-- <button (click)="addMore()" class="btn btn-default themeButton addMore mr-2"><i class="fa fa-plus"
+                            aria-hidden="true"></i> Add</button> -->
+                    <button *ngIf="chartPortals.length" type="button" (click)="saveChartForm()" class="btn btn-default themeButton">Submit</button>
                 </form>
             </div>
         </div>
