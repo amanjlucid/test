@@ -36,7 +36,7 @@
                 <a *ngIf="woMenuAccess('Authorise Payment')" (click)="autthorisePaymentClick(dataItem)"
                   class="dropdown-item" href="javascript:void(0)">Authorise
                   Payment</a>
-                <a *ngIf="woMenuAccess('Payment Asset Report')" (click)="WOCreateXportOutputReport(dataItem)"
+                <a *ngIf="woMenuAccess('Payment Asset Report') && dataItem.wpypaymentstatus == 'Authorised'" (click)="WOCreateXportOutputReport(dataItem)"
                   class="dropdown-item" href="javascript:void(0)">Payment Asset Report</a>
               </div>
             </li>
@@ -84,7 +84,7 @@
           </ng-template>
         </kendo-grid-column>
 
-        <kendo-grid-column field="wpyvatrate" title="Payment Vat Rate" [width]="120" [filterable]="false"
+        <kendo-grid-column field="wpyvatrate" title="Payment VAT Rate" [width]="120" [filterable]="false"
           [sortable]="false" [style]="{'text-align': 'right'}">
           <ng-template kendoGridCellTemplate let-dataItem>
             <span>
@@ -94,7 +94,12 @@
           </ng-template>
         </kendo-grid-column>
 
-        <kendo-grid-column field="wpypaymentvaluevat" title="Payment Vat Value" width="100">
+        <kendo-grid-column field="wpypaymentvaluevat" title="Payment VAT Value" width="100" [style]="{'text-align': 'right'}">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span>
+              {{ dataItem.wpypaymentvaluevat | currency:"GBP":"symbol" }}
+            </span>
+          </ng-template>
         </kendo-grid-column>
 
         <kendo-grid-column field="wpypaymentstatus" title="Payment Status" width="100">

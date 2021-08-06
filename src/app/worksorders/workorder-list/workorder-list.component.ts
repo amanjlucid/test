@@ -136,17 +136,15 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
     )
 
     this.subs.add(
-        this.sharedService.isUserContractorObs.subscribe(
+      this.sharedService.isUserContractorObs.subscribe(
         data => {
-            this.userIsContractor = data;
-            if(this.userIsContractor)
-            {
-              this.allowContractorAccessToMenu = false
-            }else
-            {
-              this.allowContractorAccessToMenu = true
-            }
+          this.userIsContractor = data;
+          if (this.userIsContractor) {
+            this.allowContractorAccessToMenu = false
+          } else {
+            this.allowContractorAccessToMenu = true
           }
+        }
       )
     )
 
@@ -183,6 +181,14 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
       this.loading = false
       this.getUserWorksOrdersList(this.filterObject);
     }
+  }
+
+  checkActiveInactive(event) {
+    this.loading = false;
+    setTimeout(() => {
+      this.filterObject.ActiveInactive = event.target.value;
+      this.getUserWorksOrdersList(this.filterObject);
+    }, 20);
   }
 
 
@@ -273,12 +279,12 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
     }
   }
 
-  test(){
+  test() {
 
-      let v = this.allowContractorAccessToMenu
-      let x = this.worksOrderAccess;
-      let y = this.worksOrderUsrAccess
-      let z = this.userIsContractor
+    let v = this.allowContractorAccessToMenu
+    let x = this.worksOrderAccess;
+    let y = this.worksOrderUsrAccess
+    let z = this.userIsContractor
 
   }
 
@@ -364,9 +370,9 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
   }
 
   redirectToWorksOrder(item) {
-      if (this.worksOrderUsrAccess.indexOf('Works Order Detail') == -1) {
-        return
-      }
+    if (this.worksOrderUsrAccess.indexOf('Works Order Detail') == -1) {
+      return
+    }
 
 
     this.selectedWorksOrder = item;
@@ -386,9 +392,9 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
 
 
   redirectToWorksOrderEdit(item) {
-      if (this.worksOrderUsrAccess.indexOf('Edit Works Order') == -1) {
-        return
-      }
+    if (this.worksOrderUsrAccess.indexOf('Edit Works Order') == -1) {
+      return
+    }
 
     $('.bgblur').addClass('ovrlay');
     this.woFormType = 'edit';
@@ -490,17 +496,17 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
 
     if (this.gridView.total > 0 && this.gridView.data) {
       let tempData = Object.assign([], this.worksorderTempData);
-      tempData.map((x: any) => {
-        x.wocontractorissuedate = this.helperService.formatDateWithoutTime(x.wocontractorissuedate)
-        x.wotargetcompletiondate = this.helperService.formatDateWithoutTime(x.wotargetcompletiondate)
-        x.wocontractoracceptancedate = this.helperService.formatDateWithoutTime(x.wocontractoracceptancedate)
-        x.woplanstartdate = this.helperService.formatDateWithoutTime(x.woplanstartdate)
-        x.woplanenddate = this.helperService.formatDateWithoutTime(x.woplanenddate)
-        x.woactualstartdate = this.helperService.formatDateWithoutTime(x.woactualstartdate)
-        x.woactualenddate = this.helperService.formatDateWithoutTime(x.woactualenddate)
-        x.mPgpA = this.helperService.formatDateWithoutTime(x.mPgpA)
-        x.mPgsA = this.helperService.formatDateWithoutTime(x.mPgsA)
-      });
+      // tempData.map((x: any) => {
+      //   x.wocontractorissuedate = this.helperService.formatDateWithoutTime(x.wocontractorissuedate)
+      //   x.wotargetcompletiondate = this.helperService.formatDateWithoutTime(x.wotargetcompletiondate)
+      //   x.wocontractoracceptancedate = this.helperService.formatDateWithoutTime(x.wocontractoracceptancedate)
+      //   x.woplanstartdate = this.helperService.formatDateWithoutTime(x.woplanstartdate)
+      //   x.woplanenddate = this.helperService.formatDateWithoutTime(x.woplanenddate)
+      //   x.woactualstartdate = this.helperService.formatDateWithoutTime(x.woactualstartdate)
+      //   x.woactualenddate = this.helperService.formatDateWithoutTime(x.woactualenddate)
+      //   x.mPgpA = this.helperService.formatDateWithoutTime(x.mPgpA)
+      //   x.mPgsA = this.helperService.formatDateWithoutTime(x.mPgsA)
+      // });
 
       let label = {
         'wosequence': 'Work Order',
@@ -530,7 +536,29 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
         'mPgsA': 'Amended Date',
       }
 
-      this.helperService.exportAsExcelFile(tempData, 'WorksOrders', label)
+      const fieldsToFormat = {
+        'wocontractorissuedate': 'date',
+        'wotargetcompletiondate': 'date',
+        'wocontractoracceptancedate': 'date',
+        'woplanstartdate': 'date',
+        'woplanenddate': 'date',
+        'woactualstartdate': 'date',
+        'woactualenddate': 'date',
+        'mPgpA': 'date',
+        'mPgsA': 'date',
+
+        'wobudget': 'money',
+        'woforecastplusfee': 'money',
+        'wocommittedplusfee': 'money',
+        'wocurrentcontractsum': 'money',
+        'woacceptedvalue': 'money',
+        'woactualplusfee': 'money',
+        'woapprovedplusfee': 'money',
+        'wopendingplusfee': 'money',
+        'wopayment': 'money',
+      }
+
+      this.helperService.exportAsExcelFileWithCustomiseFields(tempData, 'WorksOrders', label, fieldsToFormat)
 
     } else {
       this.alertService.error('There is no record to export');
@@ -539,21 +567,21 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
 
 
   woMenuAccess(menuName) {
-      if (menuName == "Works Orders Menu") {
-        if (this.worksOrderUsrAccess.indexOf('Edit Works Order') != -1) {
-          return true
-        }
-
-        if (this.worksOrderUsrAccess.indexOf('Delete Works Order') != -1) {
-          return true
-        }
-
-        if (this.worksOrderUsrAccess.indexOf('Works Order Detail') != -1) {
-          return true
-        }
-
-        return false;
+    if (menuName == "Works Orders Menu") {
+      if (this.worksOrderUsrAccess.indexOf('Edit Works Order') != -1) {
+        return true
       }
+
+      if (this.worksOrderUsrAccess.indexOf('Delete Works Order') != -1) {
+        return true
+      }
+
+      if (this.worksOrderUsrAccess.indexOf('Works Order Detail') != -1) {
+        return true
+      }
+
+      return false;
+    }
     return this.worksOrderUsrAccess.indexOf(menuName) != -1
 
   }
@@ -596,7 +624,7 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
 
 
   openDocumentMethod(item) {
-   // if (item.worksOrderFileCount == 0) return;
+    // if (item.worksOrderFileCount == 0) return;
     this.selectedWorksOrder = item;
     $('.worksOrderOverlay').addClass('ovrlay');
     this.documentWindow = true;
@@ -627,8 +655,7 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
 
   closeDocumentWindow(eve) {
     this.documentWindow = false;
-    if (eve != undefined)
-    {
+    if (eve != undefined) {
       this.selectedWorksOrder.worksOrderFileCount = eve;
     }
     $('.worksOrderOverlay').removeClass('ovrlay');
@@ -638,6 +665,10 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
 
     const wprsequence = (dataItem != null) ? dataItem.wprsequence : 0;
     const wosequence = (dataItem != null) ? dataItem.wosequence : 0;
+    let status = this.filterObject.ActiveInactive;
+    if (dataItem != null) {
+      status = ''
+    }
     const wopsequence = 0;
     let level = reportLevel;
 
@@ -713,8 +744,9 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
       'paymentdaterep': 'date',
     }
 
-    this.worksOrderReportService.getWOReportingAsset(wprsequence, wosequence, wopsequence, level).subscribe(
+    this.worksOrderReportService.getWOReportingAsset(wprsequence, wosequence, wopsequence, level, status).subscribe(
       (data) => {
+
         if (data.isSuccess == true) {
           if (data.data.length == 0) {
             this.alertService.error("No Record Found.");
@@ -736,6 +768,10 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
   viewWOReportingProgSummaryTree(reportType, dataItem: any = null) {
     const wprsequence = (dataItem != null) ? dataItem.wprsequence : 0;
     const wosequence = (dataItem != null) ? dataItem.wosequence : 0;
+    let status = this.filterObject.ActiveInactive;
+    if (dataItem != null) {
+      status = ''
+    }
     let level = reportType;
 
     const label = {
@@ -766,6 +802,7 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
     const fieldsToFormat = {
       'actual___Planned_Start_Date': 'date',
       'actual___Planned_End_Date': 'date',
+      'target_Date': 'date',
       'budget': 'money',
       'forecast': 'money',
       'committed': 'money',
@@ -776,7 +813,7 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
       'payments': 'money',
     }
 
-    this.worksOrderReportService.getWOReportingProgSummaryTree(wprsequence, wosequence, level).subscribe(
+    this.worksOrderReportService.getWOReportingProgSummaryTree(wprsequence, wosequence, level, status).subscribe(
       (data) => {
         if (data.isSuccess == true) {
           if (data.data.length == 0) {
@@ -878,16 +915,16 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
   closeChecklistWindow($event) {
     this.showChecklist = $event;
     $('.bgblur').removeClass('ovrlay');
-}
+  }
 
-  ShowWorkList(type:string, dataItem) {
-    let querystring : string = "";
+  ShowWorkList(type: string, dataItem) {
+    let querystring: string = "";
     switch (type) {
       case "Contractor":
         querystring = `?Contractor=true`;
         const worklistcontractor = {
-          concode : dataItem.concode,
-          contractorName : dataItem.contractorName
+          concode: dataItem.concode,
+          contractorName: dataItem.contractorName
         };
         localStorage.setItem('worklistcontractor', JSON.stringify(worklistcontractor));
         break;
@@ -895,10 +932,10 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
       case "Contract":
         querystring = `?Contract=true`;
         const worklistcontract = {
-          concode : dataItem.concode,
-          contractorName : dataItem.contractorName,
-          cttsurcde : dataItem.cttsurcde,
-          contractName : dataItem.contractName
+          concode: dataItem.concode,
+          contractorName: dataItem.contractorName,
+          cttsurcde: dataItem.cttsurcde,
+          contractName: dataItem.contractName
         };
         localStorage.setItem('worklistcontract', JSON.stringify(worklistcontract));
         break;
@@ -920,7 +957,7 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
 
   getSubMenuTopMargin(subMenu) {
     let numberMenus = 0;
-    if (subMenu == 'Works Order Reports'){
+    if (subMenu == 'Works Order Reports') {
       if (this.woMenuAccess('Works Order Report (customer)')) numberMenus += 1;
       if (this.woMenuAccess('Works Order Asset Report (customer)')) numberMenus += 1;
       if (this.woMenuAccess('Asset Report (customer)')) numberMenus += 1;
@@ -930,7 +967,7 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
       if (numberMenus == 3) return "-75px";
       if (numberMenus == 4) return "-110px";
     }
-    if (subMenu == 'View Work List'){
+    if (subMenu == 'View Work List') {
       if (this.woMenuAccess('View Work List for Contractor')) numberMenus += 1;
       if (this.woMenuAccess('View Work List for Contract')) numberMenus += 1;
       if (this.woMenuAccess('Work List')) numberMenus += 1;
@@ -938,13 +975,13 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
       if (numberMenus == 2) return "-40px";
       if (numberMenus == 3) return "-75px";
     }
-    if (subMenu == 'Contractor Reports'){
+    if (subMenu == 'Contractor Reports') {
       if (this.woMenuAccess('Asset Report (contractor)')) numberMenus += 1;
       if (this.woMenuAccess('Work Report (contractor)')) numberMenus += 1;
       if (numberMenus == 1) return "-5px";
       if (numberMenus == 2) return "-40px";
     }
-    if (subMenu == 'Milestones'){
+    if (subMenu == 'Milestones') {
       if (this.woMenuAccess('Milestones')) numberMenus += 1;
       if (this.woMenuAccess('Manage Milestones')) numberMenus += 1;
       if (numberMenus == 1) return "-5px";

@@ -6,6 +6,7 @@ import * as moment from 'moment';
 @Pipe({
   name: 'dateFormat'
 })
+
 export class DateFormatPipe extends DatePipe implements PipeTransform {
   transform(value: any, args?: any): any {
   

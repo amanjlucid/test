@@ -323,7 +323,28 @@ export class WorksordersManagementComponent implements OnInit {
       'pc': 'PC',
       'fc': 'FC',
     }
-    this.helperService.exportAsExcelFile(dataToExport, 'Programme', label)
+
+    const fieldsToFormat = {
+      'targetcompletiondate': 'date',
+      'wprcontractorissuedate': 'date',
+      'wprcontractoracceptancedate': 'date',
+      'wprplanstartdate': 'date',
+      'wprplanenddate': 'date',
+      'wpractualstartdate': 'date',
+      'wpractualenddate': 'date',
+
+      'budget': 'money',
+      'forecast': 'money',
+      'committed': 'money',
+      'issued': 'money',
+      'wpracceptedvalue': 'money',
+      'actual': 'money',
+      'approved': 'money',
+      'pending': 'money',
+      'payments': 'money',
+    }
+
+    this.helperService.exportAsExcelFileWithCustomiseFields(dataToExport, 'Programme', label, fieldsToFormat)
     setTimeout(() => $('.newManagementOverlay').removeClass('ovrlay'), 500);
 
   }
@@ -642,15 +663,17 @@ export class WorksordersManagementComponent implements OnInit {
     let wprsequence = 0;
     let wosequence = 0;
     let reporttype = reportType;
+    let status = this.selectedStatus;
 
     if (reporttype == 1) {
+      status = 'S';
       this.selectedProgramme = item;
       wprsequence = this.selectedProgramme.wprsequence;
       wosequence = this.selectedProgramme.wosequence;
     }
 
     this.subs.add(
-      this.worksOrderService.WOReportingProgSummaryTree(wprsequence, wosequence, reporttype).subscribe(
+      this.worksOrderService.WOReportingProgSummaryTree(wprsequence, wosequence, reporttype, status).subscribe(
         data => {
           if (data.isSuccess) {
             this.programmeExport(data.data);
@@ -691,6 +714,7 @@ export class WorksordersManagementComponent implements OnInit {
     const fieldsToFormat = {
       'actual___Planned_Start_Date': 'date',
       'actual___Planned_End_Date': 'date',
+      'target_Date': 'date',
       'budget': 'money',
       'forecast': 'money',
       'committed': 'money',
