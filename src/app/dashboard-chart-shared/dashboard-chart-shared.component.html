@@ -14,6 +14,9 @@
             <button id="chartBtn" (click)="saveChartsState()" class="btn btn-sm themeButton mr-1">Save Chart State
             </button>
 
+            <button id="chartBtn" (click)="deleteChartState()" class="btn btn-sm themeButton mr-1">Delete Chart State
+            </button>
+
             <button id="chartBtn" (click)="openChartList()" class="btn btn-sm themeButton">Charts
             </button>
         </div>
@@ -21,6 +24,7 @@
 </div>
 
 <div class="cont" [ngStyle]="{'height' : goldenLayoutStyle.height, 'min-height' : goldenLayoutStyle.minHeight}">
+<!-- <div class="cont" [ngStyle]="{'height' : goldenLayoutStyle.height}"> -->
     <div id="wrapper">
         <div id="layoutContainer"></div>
     </div>

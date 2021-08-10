@@ -48,6 +48,7 @@ export class DashboardChartSharedComponent implements OnInit {
     this.updateChartLayoutSize();
   }
   numberOfChartCanBeAdded = 10;
+  
 
   constructor(
     private alertService: AlertService,
@@ -137,6 +138,16 @@ export class DashboardChartSharedComponent implements OnInit {
             if (this.pageload) {
               this.myLayout.registerComponent('testComponent', createDefaultCharts);
               this.myLayout.init();
+
+              this.myLayout.on('stackCreated', function () {
+                console.log('sta')
+              })
+
+              // this.myLayout.on('itemDestroyed', function () {
+              //   console.log('row')
+              // })
+
+
             }
 
             this.pageload = false;
@@ -158,7 +169,7 @@ export class DashboardChartSharedComponent implements OnInit {
   updateChartLayoutSize(onlyLayoutHeight = false) {
     const innerHeight = window.innerHeight - 200;
     this.goldenLayoutStyle.height = `${innerHeight}px`;
-    setTimeout(() => this.goldenLayoutStyle.minHeight = `${innerHeight + 2}px`, 4500);
+    setTimeout(() => this.goldenLayoutStyle.minHeight = `${innerHeight + 6}px`, 4500);
 
     if (!onlyLayoutHeight) {
       $(".lm_goldenlayout").css("width", "100%");
@@ -644,7 +655,9 @@ export class DashboardChartSharedComponent implements OnInit {
 
   resizeContainer(container) {
     container.on('resize', () => {
-      setTimeout(() => { window.dispatchEvent(new Event('resize')) }, 400);
+    setTimeout(() => {
+        window.dispatchEvent(new Event('resize'));
+      }, 400);
     })
   }
 
@@ -662,6 +675,20 @@ export class DashboardChartSharedComponent implements OnInit {
           if (data.isSuccess) {
             this.dashboardName = this.portalName;
             this.alertService.success("Chart state saved successfully.")
+          } else {
+            this.alertService.error("Something went wrong.")
+          }
+        }
+      )
+    )
+  }
+
+  deleteChartState() {
+    this.subs.add(
+      this.chartService.DeleteChartState(this.portalName).subscribe(
+        data => {
+          if (data.isSuccess) {
+            this.alertService.success("Chart state deleted successfully.")
           } else {
             this.alertService.error("Something went wrong.")
           }

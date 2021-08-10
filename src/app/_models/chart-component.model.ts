@@ -2,6 +2,15 @@ export class ChartComponentModel {
     settings = {
         selectionEnabled: true
     };
+    labels = {
+        popout:'open in new window',
+        popin:'pop in'
+    };
+    dimensions = {
+        dragProxyWidth: 600,
+        dragProxyHeight: 400,
+        minItemHeight: 100,
+    };
     content = [{
         type: 'column',
         content: [{

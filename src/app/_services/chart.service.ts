@@ -26,11 +26,12 @@ export class ChartService {
         return this.http.get<any>(`${appConfig.apiUrl}/api/Chart/GetUserChartData?userId=${userId}&dashboard=${dashboard}`, this.httpOptions);
     }
 
-    saveUserChartData(params: any) {
+    saveUserChartData(params: any, noOfChart = 10) {
         const { UserId, ChartData, dashboard } = params;
         let body = JSON.stringify({ chartData: ChartData });
-        return this.http.post<any>(`${appConfig.apiUrl}/api/Chart/SaveUserChartData?userId=${UserId}&dashboard=${dashboard}`, body, this.httpOptions);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/Chart/SaveUserChartData?userId=${UserId}&dashboard=${dashboard}&noOfChart=${noOfChart}`, body, this.httpOptions);
     }
+    
 
     drillDownStackedBarChartData(params) {
         let body = JSON.stringify(params);
@@ -59,6 +60,10 @@ export class ChartService {
     SaveUserChartSettings(params) {
         let body = JSON.stringify(params);
         return this.http.post<any>(`${appConfig.apiUrl}/api/Chart/SaveUserChartSettings`, body, this.httpOptions);
+    }
+
+    DeleteChartState(dashBoard){
+        return this.http.get<any>(`${appConfig.apiUrl}/api/Chart/DeleteChartState?dashBoard=${dashBoard}`, this.httpOptions);
     }
 
     //########## CHART CONFIGURATION ##################//

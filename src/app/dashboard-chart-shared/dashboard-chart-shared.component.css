@@ -1,7 +1,7 @@
 #wrapper {
     height: 100%;
     width: 100%;
-    overflow-y: hidden;
+    /* overflow-y: hidden; */
 }
 
 .cont {
@@ -9,12 +9,18 @@
     width: 100%;
     margin-bottom: 5px;
     overflow-y: scroll;
-    overflow-x: hidden;
-    /* overflow-y: auto; */
+    /* overflow-x: hidden;  */
 }
 
+/* #layoutContainer .lm_goldenlayout{
+    overflow-y: scroll !important;
+    overflow-x: hidden !important;
+} */
+
+
+
 .cont .lm_item.lm_stack {
-    min-height: 160px !important;
+    min-height: 180px !important;
 }
 
 #layoutContainer {
