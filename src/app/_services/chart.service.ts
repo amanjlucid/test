@@ -31,7 +31,7 @@ export class ChartService {
         let body = JSON.stringify({ chartData: ChartData });
         return this.http.post<any>(`${appConfig.apiUrl}/api/Chart/SaveUserChartData?userId=${UserId}&dashboard=${dashboard}&noOfChart=${noOfChart}`, body, this.httpOptions);
     }
-    
+
 
     drillDownStackedBarChartData(params) {
         let body = JSON.stringify(params);
@@ -53,7 +53,7 @@ export class ChartService {
         return this.http.post<any>(`${appConfig.apiUrl}/api/Manager/CheckDrillDownChartGridDataIsNull`, body, this.httpOptions);
     }
 
-    getUserChartSetting(userId:string){
+    getUserChartSetting(userId: string) {
         return this.http.get<any>(`${appConfig.apiUrl}/api/Chart/GetUserChartSetting?userId=${userId}`, this.httpOptions);
     }
 
@@ -62,10 +62,13 @@ export class ChartService {
         return this.http.post<any>(`${appConfig.apiUrl}/api/Chart/SaveUserChartSettings`, body, this.httpOptions);
     }
 
-    DeleteChartState(dashBoard){
+    DeleteChartState(dashBoard) {
         return this.http.get<any>(`${appConfig.apiUrl}/api/Chart/DeleteChartState?dashBoard=${dashBoard}`, this.httpOptions);
     }
 
+    getChartById(chartId) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/Chart/GetChartById?chartId=${chartId}`, this.httpOptions);
+    }
     //########## CHART CONFIGURATION ##################//
 
     pieChartInit(selector: any, data: any, chartObj = null, titleText: any = null, yAxisTitle: string = null, allowPointSelect: boolean = true) {
@@ -239,6 +242,12 @@ export class ChartService {
         let color = barChartParams != null ? barChartParams.color : '';
         if (barChartParams.ddChartID != undefined) {
             barChartParams.seriesId = data.stackedBarChartViewModelList[0].seriesId
+        }
+
+        if(color){
+            if(stackedBarChartViewModelList[0].color == null){
+                stackedBarChartViewModelList[0].color = color;
+            }
         }
 
         return {

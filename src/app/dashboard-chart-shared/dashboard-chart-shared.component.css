@@ -8,8 +8,6 @@
     position: relative;
     width: 100%;
     margin-bottom: 5px;
-    overflow-y: scroll;
-    /* overflow-x: hidden;  */
 }
 
 /* #layoutContainer .lm_goldenlayout{
@@ -17,20 +15,28 @@
     overflow-x: hidden !important;
 } */
 
-
-
 .cont .lm_item.lm_stack {
     min-height: 180px !important;
 }
 
+/* .cont .lm_item {
+    min-height: 180px !important;
+} */
+
+#layoutContainer .lm_content {
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
 #layoutContainer {
     width: 99%;
-    height: 100%;
+    /* height: 100%; */
     position: absolute;
     top: 0;
     left: 8px;
     border: 1px solid #e6e1e1;
-    
+    overflow-y: scroll;
+    overflow-x: hidden;
 }
 
 .fullscreen {

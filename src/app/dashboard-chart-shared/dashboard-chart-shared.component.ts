@@ -48,7 +48,7 @@ export class DashboardChartSharedComponent implements OnInit {
     this.updateChartLayoutSize();
   }
   numberOfChartCanBeAdded = 10;
-  
+
 
   constructor(
     private alertService: AlertService,
@@ -655,7 +655,8 @@ export class DashboardChartSharedComponent implements OnInit {
 
   resizeContainer(container) {
     container.on('resize', () => {
-    setTimeout(() => {
+      // console.log(container.height)
+      setTimeout(() => {
         window.dispatchEvent(new Event('resize'));
       }, 400);
     })
@@ -716,12 +717,25 @@ export class DashboardChartSharedComponent implements OnInit {
         "parantChartId": parentChartObj.chartID,
         "xAxisValue": chartEvent.options.name,
         "seriesId": chartEvent.options.seriesId,
-        "color": chartEvent.color
+        "color": chartEvent.color,
+        // "dataSP": parentChartObj.dataSP,
       }
       this.renderDrillDownChart(chartEvent, params)
     } else {
       if (parentChartObj.dataSP) {
         this.outputDataForGrid(data);
+      } else {
+        const { ddChartId } = parentChartObj;
+        this.chartService.getChartById(ddChartId).subscribe(
+          datachart => {
+            if (datachart.isSuccess) {
+              const chartData = datachart.data;
+              if (chartData.dataSP) {
+                this.outputDataForGrid(data);
+              }
+            }
+          }
+        );
       }
     }
   }

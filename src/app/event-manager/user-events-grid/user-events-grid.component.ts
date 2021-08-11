@@ -77,8 +77,9 @@ export class UserEventsGridComponent implements OnInit {
             this.usereventData = Object.assign([], userEventTempData);
             this.renderGrid();
 
-          }
-        }
+          } else this.alertService.error(data.message)
+        }, err => this.alertService.error(err)
+
       )
     )
   }
@@ -141,8 +142,8 @@ export class UserEventsGridComponent implements OnInit {
         }
       }
 
-     localStorage.setItem('taskslist', btoa(seqArr.toString()));
-     window.open(this.SiteURL + "/tasks/tasks?seq=true", "_blank");
+      localStorage.setItem('taskslist', btoa(seqArr.toString()));
+      window.open(this.SiteURL + "/tasks/tasks?seq=true", "_blank");
 
     } else {
       this.alertService.error('Seq column not found.')
