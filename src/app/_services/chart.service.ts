@@ -76,27 +76,36 @@ export class ChartService {
     //########## CHART CONFIGURATION ##################//
 
     pieChartInit(selector: any, data: any, chartObj = null, titleText: any = null, yAxisTitle: string = null, allowPointSelect: boolean = true) {
-        if (data.length > 0) {
-            Highcharts.setOptions({
-                lang: {
-                    thousandsSep: ','
+        // if (data.length > 0) {
+        Highcharts.setOptions({
+            lang: {
+                thousandsSep: ','
+            }
+        });
+        let chart = Highcharts.chart(
+            this.pieChartConfiguration(
+                selector,
+                data,
+                chartObj,
+                titleText,
+                yAxisTitle,
+                allowPointSelect
+            ), function (chart) { // on complete
+                if (data.length == 0) {
+                    chart.renderer.text('No Data Available', 140, 120)
+                        .css({
+                            color: '#4572A7',
+                            fontSize: '20px',
+                            margin: "20px"
+                        }).add();
                 }
-            });
-            let chart = Highcharts.chart(
-                this.pieChartConfiguration(
-                    selector,
-                    data,
-                    chartObj,
-                    titleText,
-                    yAxisTitle,
-                    allowPointSelect
-                )
-            );
+            }
+        );
 
-            return chart
-        } else {
-            $("#" + selector).css("background-color", "white").html('<div style="text-align: center;margin-top: 16%;font-size: 20px;font-weight: 600;">No Record.</div>');
-        }
+        return chart
+        // } else {
+        //     $("#" + selector).css("background-color", "white").html('<div style="text-align: center;margin-top: 16%;font-size: 20px;font-weight: 600;">No Record.</div>');
+        // }
 
     }
 
@@ -160,7 +169,16 @@ export class ChartService {
                 xaxis,
                 titleText,
                 yAxisTitle,
-            )
+            ), function (chart) { // on complete
+                if (chartData.length == 0) {
+                    chart.renderer.text('No Data Available', 140, 120)
+                        .css({
+                            color: '#4572A7',
+                            fontSize: '20px',
+                            margin: "20px"
+                        }).add();
+                }
+            }
         );
 
         return chart
@@ -239,7 +257,16 @@ export class ChartService {
                 yAxisTitle,
                 allowPointSelect,
 
-            )
+            ), function (chart) { // on complete
+                if (data.categories == null) {
+                    chart.renderer.text('No Data Available', 140, 120)
+                        .css({
+                            color: '#4572A7',
+                            fontSize: '20px',
+                            margin: "20px"
+                        }).add();
+                }
+            }
         );
 
         return chart;
@@ -360,7 +387,16 @@ export class ChartService {
                 titleText,
                 yAxisTitle,
                 allowPointSelect,
-            )
+            ), function (chart) { // on complete
+                if (data.categories == null) {
+                    chart.renderer.text('No Data Available', 140, 120)
+                        .css({
+                            color: '#4572A7',
+                            fontSize: '20px',
+                            margin: "20px"
+                        }).add();
+                }
+            }
         );
 
         return chart;

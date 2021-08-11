@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { SubSink } from 'subsink';
 import { GroupDescriptor, DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
-import { AlertService, EventManagerDashboardService, HelperService,AssetAttributeService  } from '../../../_services'
+import { AlertService, EventManagerDashboardService, HelperService, AssetAttributeService } from '../../../_services'
 import { encode } from 'punycode';
 import { appConfig } from '../../../app.config';
 
@@ -36,7 +36,7 @@ export class RetrievedEpcGridComponent implements OnInit {
   gridView: DataResult;
   columnName = [];
   showAssetLink: boolean = false;
-  AssetIDColumn:string = "";
+  AssetIDColumn: string = "";
 
   constructor(
     private chRef: ChangeDetectorRef,
@@ -48,15 +48,15 @@ export class RetrievedEpcGridComponent implements OnInit {
 
   ngOnInit() {
     if (this.retrievedEPCs) {
-      this.title= 'Retrieved EPCs during ' + this.selectedBarChartXasis.xAxisValue;
+      this.title = 'Retrieved EPCs during ' + this.selectedBarChartXasis.xAxisValue;
     } else {
-      this.title= 'Energy Data for ' + this.selectedBarChartXasis.chartName + ' - ' + this.selectedBarChartXasis.xAxisValue;
+      this.title = 'Energy Data for ' + this.selectedBarChartXasis.chartName + ' - ' + this.selectedBarChartXasis.xAxisValue;
     }
 
     this.getData(this.selectedBarChartXasis);
   }
 
-  
+
   ngOnDestroy() {
     this.subs.unsubscribe();
   }
@@ -69,18 +69,19 @@ export class RetrievedEpcGridComponent implements OnInit {
           if (data.isSuccess) {
             let chartTempData = Object.assign([], data.data);
             let col = data.data[0];
-
+            
             for (let cl in col) {
               if (col[cl] != '')
                 this.columnName.push({ 'key': `col${cl}`, 'val': col[cl] })
             }
 
-            var seqCol = this.columnName.find(x => x.val == "Asset ID")
+            
+            let seqCol = this.columnName.find(x => x.val == "Asset ID")
             if (seqCol) {
               this.showAssetLink = true;
             }
-
-            chartTempData.shift();
+            
+            // chartTempData.shift();
             for (let tmpData of chartTempData) {
               for (let tindex in tmpData) {
                 tmpData[`col${tindex}`] = tmpData[tindex]
@@ -167,9 +168,9 @@ export class RetrievedEpcGridComponent implements OnInit {
         }
       }
 
-     localStorage.setItem('assetList', btoa(assetIds.toString()));
-     let siteUrl = `${appConfig.appUrl}/asset-list?energyData=true`
-     window.open(siteUrl, "_blank");
+      localStorage.setItem('assetList', btoa(assetIds.toString()));
+      let siteUrl = `${appConfig.appUrl}/asset-list?energyData=true`
+      window.open(siteUrl, "_blank");
 
     } else {
       this.alertService.error('Asset ID column not found.')
@@ -181,27 +182,27 @@ export class RetrievedEpcGridComponent implements OnInit {
 
 
 
-  //   if (this.ChartsWithLinks.includes(this.selectedBarChartXasis.chartName)) {
+    //   if (this.ChartsWithLinks.includes(this.selectedBarChartXasis.chartName)) {
 
-  //     let url = `${appConfig.appUrl}/asset-list`; // for local
-  //     if (this.selectedBarChartXasis.chartName == "EPC SAP Band & Cloned" || this.selectedBarChartXasis.chartName == "EPC SAP Bands") {
-  //       url += `?sapBand=${encodeURIComponent(this.selectedBarChartXasis.xAxisValue)}`;
-  //     }
-  //     if (this.selectedBarChartXasis.chartName == "EPC Status") {
-  //       url += `?epcStatus=${encodeURIComponent(this.selectedBarChartXasis.xAxisValue)}`;
-  //     }
-  //     window.open(url, "_blank");
+    //     let url = `${appConfig.appUrl}/asset-list`; // for local
+    //     if (this.selectedBarChartXasis.chartName == "EPC SAP Band & Cloned" || this.selectedBarChartXasis.chartName == "EPC SAP Bands") {
+    //       url += `?sapBand=${encodeURIComponent(this.selectedBarChartXasis.xAxisValue)}`;
+    //     }
+    //     if (this.selectedBarChartXasis.chartName == "EPC Status") {
+    //       url += `?epcStatus=${encodeURIComponent(this.selectedBarChartXasis.xAxisValue)}`;
+    //     }
+    //     window.open(url, "_blank");
 
-  // } else {
-  //   let assetIds = this.chartData.map(x => x[`col${this.AssetIdColumnIndex}`])
-  //   localStorage.setItem('assetList', btoa(assetIds.toString()));
-  //   let siteUrl = `${appConfig.appUrl}/asset-list?energyData=true`
-  //   window.open(siteUrl, "_blank");
+    // } else {
+    //   let assetIds = this.chartData.map(x => x[`col${this.AssetIdColumnIndex}`])
+    //   localStorage.setItem('assetList', btoa(assetIds.toString()));
+    //   let siteUrl = `${appConfig.appUrl}/asset-list?energyData=true`
+    //   window.open(siteUrl, "_blank");
 
 
-  // }
+    // }
 
-}
+  }
 
 
 

@@ -112,8 +112,7 @@ export class DashboardChartSharedComponent implements OnInit {
             }
 
             this.chartNames = chartList.data;
-            // console.log(this.chartNames)
-
+            
             const createDefaultCharts = (container: any, state: any) => {
               if (this.drawChartObj == null && this.savedState == null) {
                 const { text } = state;
@@ -147,21 +146,12 @@ export class DashboardChartSharedComponent implements OnInit {
               } else if (this.drawChartObj != null) {
                 this.renderChartTypes(this.drawChartObj, container, state);
               }
+
             }
 
             if (this.pageload) {
               this.myLayout.registerComponent('testComponent', createDefaultCharts);
               this.myLayout.init();
-
-              this.myLayout.on('stackCreated', () => {
-                // this.setHeight();
-              })
-
-              // this.myLayout.on('itemDestroyed', function () {
-              //   console.log('row')
-              // })
-
-
             }
 
             this.pageload = false;
@@ -212,14 +202,21 @@ export class DashboardChartSharedComponent implements OnInit {
 
   // RENDER CHART TYPE ON CLICK
   renderChartTypes(chartObj: any, container: any, state: any) {
-    let selectedFiler = ''
+    let selectedFiler: any = ''
 
     if (chartObj.chartParameters == 1) {
       if (chartObj.ChartParameterValue) selectedFiler = chartObj.ChartParameterValue;
-      else selectedFiler = this.defaultFilterVal;
+      else {
+        selectedFiler = this.defaultFilterVal
+      };
     } else {
       selectedFiler = this.defaultFilterVal;
     }
+
+    if (selectedFiler == this.defaultFilterVal && this.portalName == "Energy") {
+      selectedFiler = 10121212;
+    }
+
 
     const { chartName, chartType } = chartObj;
     const tempState = {
@@ -325,6 +322,7 @@ export class DashboardChartSharedComponent implements OnInit {
       } else if (this.drawChartObj != null) {
         this.renderChartTypes(this.drawChartObj, container, state);
       }
+
     }
 
     this.myLayout.registerComponent('testComponent', createDefaultCharts);
@@ -343,8 +341,8 @@ export class DashboardChartSharedComponent implements OnInit {
     let selectElm = $(`<select style="margin-right: -24px;background-color: #fff;background-clip: padding-box;border: 1px solid #ced4da; margin-top: 3px; margin-left: 2px;" class="${className}">`);
     let optHtml = "";
     for (const filterString of filterStrings) {
-      let selectOpt = (selectedFilter == filterString) ? "selected" : "";
-      optHtml += (`<option ${selectOpt} value="${filterString}">${filterString}</option>`);
+      let selectOpt = (selectedFilter == filterString.value) ? "selected" : "";
+      optHtml += (`<option ${selectOpt} value="${filterString.value}">${filterString.key}</option>`);
     }
     selectElm.html(optHtml);
     $("." + filterDivCl).html(selectElm);
@@ -382,6 +380,7 @@ export class DashboardChartSharedComponent implements OnInit {
     const filterDivCl = "filterpi" + className;
 
     const { selectedFilter, containerChartObj: chartObj } = state;  //Object destructuring 
+
     chartObj.ChartParameterValue = (selectedFilter != null && selectedFilter != "") ? selectedFilter : this.defaultFilterVal;
 
     this.subs.add(
@@ -397,7 +396,7 @@ export class DashboardChartSharedComponent implements OnInit {
             this.chartRenderMap.set(className, chart);
 
             if (pieChartFilterData != null) {
-              this.createFilterDropdown(pieChartFilterData[0]['filterString'], { className, filterDivCl, selectedFilter });
+              this.createFilterDropdown(pieChartFilterData, { className, filterDivCl, selectedFilter });
 
               chartarea[0].querySelector(`.${className}`).addEventListener("change", (event) => {
                 this.renderFilteredChart(className, container, state, 'pie')
@@ -416,9 +415,13 @@ export class DashboardChartSharedComponent implements OnInit {
             });
 
             //trigger change event on new chart
-            if (pieChartFilterData != null && pieChartFilterData.length && state.mode) {
-              const event = new Event('change');
-              chartarea[0].querySelector(`.${className}`).dispatchEvent(event);
+            if (pieChartFilterData != null && state.mode) {
+              const checkSelectedParamExist = pieChartFilterData.find(x => x.value == chartObj.ChartParameterValue);
+              if (!checkSelectedParamExist) {
+                const event = new Event('change');
+                chartarea[0].querySelector(`.${className}`).dispatchEvent(event);
+              }
+
             }
 
             this.resizeChart(container, className);
@@ -481,7 +484,7 @@ export class DashboardChartSharedComponent implements OnInit {
             this.chartRenderMap.set(className, chart);
 
             if (lineChartFilterData != null) {
-              this.createFilterDropdown(lineChartFilterData[0]['filterString'], { className, filterDivCl, selectedFilter });
+              this.createFilterDropdown(lineChartFilterData, { className, filterDivCl, selectedFilter });
 
               chartarea[0].querySelector(`.${className}`).addEventListener("change", (event) => {
                 this.renderFilteredChart(className, container, state, 'line')
@@ -498,10 +501,14 @@ export class DashboardChartSharedComponent implements OnInit {
               selectedFilter: chartObj.ChartParameterValue
             });
 
+
             //trigger change event on new chart
-            if (lineChartFilterData != null && lineChartData.length && state.mode) {
-              const event = new Event('change');
-              chartarea[0].querySelector(`.${className}`).dispatchEvent(event);
+            if (lineChartFilterData != null && state.mode) {
+              const checkSelectedParamExist = lineChartFilterData.find(x => x.value == chartObj.ChartParameterValue);
+              if (!checkSelectedParamExist) {
+                const event = new Event('change');
+                chartarea[0].querySelector(`.${className}`).dispatchEvent(event);
+              }
             }
 
             this.resizeChart(container, className);
@@ -569,7 +576,7 @@ export class DashboardChartSharedComponent implements OnInit {
             this.chartRenderMap.set(className, chart);
 
             if (barChartFilterData != null) {
-              this.createFilterDropdown(barChartFilterData[0]['filterString'], { className, filterDivCl, selectedFilter });
+              this.createFilterDropdown(barChartFilterData, { className, filterDivCl, selectedFilter });
               chartarea[0].querySelector(`.${className}`).addEventListener("change", (event) => this.renderFilteredChart(className, container, state, 'bar'));
               chartarea[0].querySelector('.row').style.height = "94%";
               chartarea[0].querySelector(`#${className}`).style.marginTop = "2px";
@@ -582,9 +589,12 @@ export class DashboardChartSharedComponent implements OnInit {
             });
 
             //trigger change event on new chart
-            if (barChartFilterData != null && barChartFilterData.length && state.mode) {
-              const event = new Event('change');
-              chartarea[0].querySelector(`.${className}`).dispatchEvent(event);
+            if (barChartFilterData != null && state.mode) {
+              const checkSelectedParamExist = barChartFilterData.find(x => x.value == chartObj.ChartParameterValue);
+              if (!checkSelectedParamExist) {
+                const event = new Event('change');
+                chartarea[0].querySelector(`.${className}`).dispatchEvent(event);
+              }
             }
 
             this.resizeChart(container, className);
@@ -646,7 +656,7 @@ export class DashboardChartSharedComponent implements OnInit {
             this.chartRenderMap.set(className, chart);
 
             if (chartFilterData != null) {
-              this.createFilterDropdown(chartFilterData[0]['filterString'], { className, filterDivCl, selectedFilter });
+              this.createFilterDropdown(chartFilterData, { className, filterDivCl, selectedFilter });
               chartarea[0].querySelector(`.${className}`).addEventListener("change", (event) => this.renderFilteredChart(className, container, state, 'groupbar'));
               chartarea[0].querySelector('.row').style.height = "94%";
               chartarea[0].querySelector(`#${className}`).style.marginTop = "2px";
@@ -659,9 +669,12 @@ export class DashboardChartSharedComponent implements OnInit {
             });
 
             //trigger change event on new chart
-            if (chartFilterData != null && chartFilterData.length && state.mode) {
-              const event = new Event('change');
-              chartarea[0].querySelector(`.${className}`).dispatchEvent(event);
+            if (chartFilterData != null && state.mode) {
+              const checkSelectedParamExist = chartFilterData.find(x => x.value == chartObj.ChartParameterValue);
+              if (!checkSelectedParamExist) {
+                const event = new Event('change');
+                chartarea[0].querySelector(`.${className}`).dispatchEvent(event);
+              }
             }
 
             this.resizeChart(container, className);
@@ -718,10 +731,33 @@ export class DashboardChartSharedComponent implements OnInit {
         setTimeout(() => {
           if (this.chartRenderMap.has(className)) {
             const chart = this.chartRenderMap.get(className);
-            chart.setSize(container.width, container.height - 20)
+            const previousElem = $(`.${className}`).prev();
+            let hightReduce = 0;
+            if (previousElem.prevObject.is("select")) hightReduce = 20
+            if (chart) chart.setSize(container.width, container.height - hightReduce)
           }
         }, 100);
       }
+
+      // setTimeout(() => {
+      //   const numberOfCharts: any = document.querySelectorAll('.lm_item_container');
+      //   // console.log(numberOfCharts)
+      //   let totalHeight = 0;
+      //   for (let i = 0; i < numberOfCharts.length; i++) {
+      //     totalHeight += numberOfCharts[i].clientHeight;
+      //   }
+      //   // console.log(totalHeight)
+
+      //   if (this.myLayout) {
+      //     if (totalHeight > 746) {
+      //       // this.myLayout.updateSize(836, (totalHeight + 100))
+      //     }
+      //   }
+
+      // }, 1000);
+
+
+
     })
   }
 
