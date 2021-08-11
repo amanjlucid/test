@@ -47,7 +47,8 @@ export class DashboardChartSharedComponent implements OnInit {
   onResize(event) {
     this.updateChartLayoutSize();
   }
-  numberOfChartCanBeAdded = 10;
+  numberOfChartCanBeAdded = 15;
+  chartRenderMap = new Map();
 
 
   constructor(
@@ -74,17 +75,29 @@ export class DashboardChartSharedComponent implements OnInit {
       this.chartService.chartInfo.subscribe(data => this.handleChartClick(data))
     )
 
+    //GET MAXIMUM NUMBER OF CHART FOR THE DASHBOARD
+    this.subs.add(
+      this.chartService.getUserChartByDashboard(this.portalName).subscribe(
+        data => {
+          if (data.isSuccess) {
+            if (data.data.length) {
+              this.numberOfChartCanBeAdded = data.data[0].numberOfChart;
+            }
+          }
+        }
+      )
+    )
+
     //GET CHART AND ITS DATA
     this.subs.add(
       this.chartService.getUserChartData(this.currentUser.userId, this.portalName)
         .pipe(delay(500))//DELAY 500 MILISECOND 
         .subscribe(
           async data => {
-            const { chartData = null, dashboard, numberOfChart = 10 } = data.data;
+            const { chartData = null, dashboard } = data.data;
             if (chartData != null) {
               this.dashboardName = dashboard;
               this.savedState = chartData.chartData;
-              this.numberOfChartCanBeAdded = numberOfChart == 0 ? 10 : numberOfChart;
               this.myLayout = new GoldenLayout(JSON.parse(this.savedState), $('#layoutContainer'));
             } else {
               this.savedState = null
@@ -99,6 +112,7 @@ export class DashboardChartSharedComponent implements OnInit {
             }
 
             this.chartNames = chartList.data;
+            // console.log(this.chartNames)
 
             const createDefaultCharts = (container: any, state: any) => {
               if (this.drawChartObj == null && this.savedState == null) {
@@ -139,8 +153,8 @@ export class DashboardChartSharedComponent implements OnInit {
               this.myLayout.registerComponent('testComponent', createDefaultCharts);
               this.myLayout.init();
 
-              this.myLayout.on('stackCreated', function () {
-                console.log('sta')
+              this.myLayout.on('stackCreated', () => {
+                // this.setHeight();
               })
 
               // this.myLayout.on('itemDestroyed', function () {
@@ -337,6 +351,14 @@ export class DashboardChartSharedComponent implements OnInit {
   }
 
   renderFilteredChart(className, container, state, chartType) {
+    if (this.chartRenderMap.has(className)) {
+      const chartToDestroy = this.chartRenderMap.get(className);
+      if (chartToDestroy) {
+        chartToDestroy.destroy();
+        this.chartRenderMap.delete(className);
+      }
+    }
+
     const selectedValue = $(`.${className}`).val();
     const chartName = $(`.line${className}`).val();
     let chartNames = cloneData(this.chartNames);
@@ -371,14 +393,21 @@ export class DashboardChartSharedComponent implements OnInit {
 
             const chartarea = container.getElement().html(`<div class="row" style="width:100%; height:100%;"><input type="hidden" value="${chartObj.chartName}" class="line${className}"><div class="col-md-12"><div class="${filterDivCl}"></div><div id="${className}" style="width:100%; height: 100%; position:absolute;  margin-top:0px;"></div> </div></div>`);
 
+            let chart = this.chartService.pieChartInit(className, pieChartData, chartObj);
+            this.chartRenderMap.set(className, chart);
+
             if (pieChartFilterData != null) {
               this.createFilterDropdown(pieChartFilterData[0]['filterString'], { className, filterDivCl, selectedFilter });
-              chartarea[0].querySelector(`.${className}`).addEventListener("change", (event) => this.renderFilteredChart(className, container, state, 'pie'));
+
+              chartarea[0].querySelector(`.${className}`).addEventListener("change", (event) => {
+                this.renderFilteredChart(className, container, state, 'pie')
+              });
+
               chartarea[0].querySelector('.row').style.height = "94%";
               chartarea[0].querySelector(`#${className}`).style.marginTop = "2px";
             }
 
-            this.chartService.pieChartInit(className, pieChartData, chartObj);
+
 
             container.setState({
               text: state.text,
@@ -392,6 +421,8 @@ export class DashboardChartSharedComponent implements OnInit {
               chartarea[0].querySelector(`.${className}`).dispatchEvent(event);
             }
 
+            this.resizeChart(container, className);
+
           } else {
             this.alertService.error(data.message);
           }
@@ -399,7 +430,7 @@ export class DashboardChartSharedComponent implements OnInit {
       )
     )
 
-    this.resizeContainer(container);
+    // this.resizeContainer(container);
 
   }
 
@@ -418,7 +449,10 @@ export class DashboardChartSharedComponent implements OnInit {
               selectedFilter: dataForChart.ChartParameterValue
             });
 
-            this.chartService.pieChartInit(className, pieChartData, chartObj, null, null, true);
+            let chart = this.chartService.pieChartInit(className, pieChartData, chartObj, null, null, true);
+            this.chartRenderMap.set(className, chart);
+            this.resizeChart(container, className);
+
           } else {
             this.alertService.error(data.message);
           }
@@ -443,14 +477,19 @@ export class DashboardChartSharedComponent implements OnInit {
 
             const chartarea = container.getElement().html(`<div class="row" style="width:100%; height:100%;"><input type="hidden" value="${chartObj.chartName}" class="line${className}"><div class="col-md-12"><div class="${filterDivCl}"></div> <div id="${className}" style="position:absolute; width:100%; height:100%;"></div> </div></div>`);
 
+            let chart = this.chartService.lineChartInit(className, lineChartData, xaxis, null, null);
+            this.chartRenderMap.set(className, chart);
+
             if (lineChartFilterData != null) {
               this.createFilterDropdown(lineChartFilterData[0]['filterString'], { className, filterDivCl, selectedFilter });
-              chartarea[0].querySelector(`.${className}`).addEventListener("change", (event) => this.renderFilteredChart(className, container, state, 'line'));
+
+              chartarea[0].querySelector(`.${className}`).addEventListener("change", (event) => {
+                this.renderFilteredChart(className, container, state, 'line')
+              });
+
               chartarea[0].querySelector('.row').style.height = "94%";
               chartarea[0].querySelector(`#${className}`).style.marginTop = "2px";
             }
-
-            this.chartService.lineChartInit(className, lineChartData, xaxis, null, null);
 
             container.setState({
               text: state.text,
@@ -465,14 +504,14 @@ export class DashboardChartSharedComponent implements OnInit {
               chartarea[0].querySelector(`.${className}`).dispatchEvent(event);
             }
 
+            this.resizeChart(container, className);
+
           } else {
             this.alertService.error(data.message);
           }
         }
       )
     )
-
-    this.resizeContainer(container);
 
   }
 
@@ -492,7 +531,10 @@ export class DashboardChartSharedComponent implements OnInit {
               selectedFilter: dataForChart.ChartParameterValue
             });
 
-            this.chartService.lineChartInit(className, lineChartData, xaxis);
+            let chart = this.chartService.lineChartInit(className, lineChartData, xaxis);
+            this.chartRenderMap.set(className, chart);
+            this.resizeChart(container, className);
+
           } else {
             this.alertService.error(data.message);
           }
@@ -523,14 +565,15 @@ export class DashboardChartSharedComponent implements OnInit {
             const { data: barChartData, data: { chartFilterModel: barChartFilterData } } = data;
             const chartarea = container.getElement().html(`<div class="row" style="width:100%; height:100%;"><input type="hidden" value="${chartObj.chartName}" class="line${className}"><div class="col-md-12"><div class="${filterDivCl}"></div> <div id="${className}" style="position:absolute; width:100%; height:100%;"></div> </div></div>`);
 
+            let chart = this.chartService.barChartInit(className, barChartData, chartObj);
+            this.chartRenderMap.set(className, chart);
+
             if (barChartFilterData != null) {
               this.createFilterDropdown(barChartFilterData[0]['filterString'], { className, filterDivCl, selectedFilter });
               chartarea[0].querySelector(`.${className}`).addEventListener("change", (event) => this.renderFilteredChart(className, container, state, 'bar'));
               chartarea[0].querySelector('.row').style.height = "94%";
               chartarea[0].querySelector(`#${className}`).style.marginTop = "2px";
             }
-
-            this.chartService.barChartInit(className, barChartData, chartObj);
 
             container.setState({
               text: state.text,
@@ -544,14 +587,14 @@ export class DashboardChartSharedComponent implements OnInit {
               chartarea[0].querySelector(`.${className}`).dispatchEvent(event);
             }
 
+            this.resizeChart(container, className);
+
           } else {
             this.alertService.error(data.message);
           }
         }
       )
     )
-
-    this.resizeContainer(container);
 
   }
 
@@ -570,7 +613,9 @@ export class DashboardChartSharedComponent implements OnInit {
               selectedFilter: dataForChart.ChartParameterValue
             });
 
-            this.chartService.barChartInit(className, barChartData, dataForChart);
+            let chart = this.chartService.barChartInit(className, barChartData, dataForChart);
+            this.chartRenderMap.set(className, chart);
+            this.resizeChart(container, className);
 
           } else {
             this.alertService.error(data.message);
@@ -597,14 +642,15 @@ export class DashboardChartSharedComponent implements OnInit {
             const { data: chartData, data: { chartFilterModel: chartFilterData } } = data;
             const chartarea = container.getElement().html(`<div class="row" style="width:100%; height:100%;"><input type="hidden" value="${chartObj.chartName}" class="line${className}"><div class="col-md-12"><div class="${filterDivCl}"></div> <div id="${className}" style="position:absolute; width:100%; height:100%;"></div> </div></div>`);
 
+            let chart = this.chartService.groupBarChartInit(className, chartData);
+            this.chartRenderMap.set(className, chart);
+
             if (chartFilterData != null) {
               this.createFilterDropdown(chartFilterData[0]['filterString'], { className, filterDivCl, selectedFilter });
               chartarea[0].querySelector(`.${className}`).addEventListener("change", (event) => this.renderFilteredChart(className, container, state, 'groupbar'));
               chartarea[0].querySelector('.row').style.height = "94%";
               chartarea[0].querySelector(`#${className}`).style.marginTop = "2px";
             }
-
-            this.chartService.groupBarChartInit(className, chartData);
 
             container.setState({
               text: state.text,
@@ -618,6 +664,8 @@ export class DashboardChartSharedComponent implements OnInit {
               chartarea[0].querySelector(`.${className}`).dispatchEvent(event);
             }
 
+            this.resizeChart(container, className);
+
           } else {
             this.alertService.error(data.message);
           }
@@ -625,7 +673,7 @@ export class DashboardChartSharedComponent implements OnInit {
       )
     )
 
-    this.resizeContainer(container);
+    // this.resizeContainer(container);
   }
 
 
@@ -643,7 +691,10 @@ export class DashboardChartSharedComponent implements OnInit {
               selectedFilter: dataForChart.ChartParameterValue
             });
 
-            this.chartService.groupBarChartInit(className, chartData);
+            let chart = this.chartService.groupBarChartInit(className, chartData);
+            this.chartRenderMap.set(className, chart);
+            this.resizeChart(container, className);
+
           } else {
             this.alertService.error(data.message);
           }
@@ -655,10 +706,22 @@ export class DashboardChartSharedComponent implements OnInit {
 
   resizeContainer(container) {
     container.on('resize', () => {
-      // console.log(container.height)
       setTimeout(() => {
         window.dispatchEvent(new Event('resize'));
       }, 400);
+    })
+  }
+
+  resizeChart(container, className) {
+    container.on('resize', () => {
+      if (className != undefined) {
+        setTimeout(() => {
+          if (this.chartRenderMap.has(className)) {
+            const chart = this.chartRenderMap.get(className);
+            chart.setSize(container.width, container.height - 20)
+          }
+        }, 100);
+      }
     })
   }
 
@@ -723,6 +786,10 @@ export class DashboardChartSharedComponent implements OnInit {
       this.renderDrillDownChart(chartEvent, params)
     } else {
       if (parentChartObj.dataSP) {
+        //if dataSP is not blank and ddChartid is 0 then set ddchartid as actual chart id
+        if (parentChartObj.ddChartID == 0) {
+          parentChartObj.ddChartId = parentChartObj.chartID
+        }
         this.outputDataForGrid(data);
       } else {
         const { ddChartId } = parentChartObj;

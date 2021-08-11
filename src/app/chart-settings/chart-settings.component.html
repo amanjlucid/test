@@ -11,31 +11,32 @@
                     <div class="row" *ngFor="let portal of chartPortals;let i = index;">
                         <div class="col-md-6">
                             <div class="form-group row">
-                                <label class="col-form-label col-sm-3">Portal Name</label>
+                                <label class="col-form-label col-sm-3">Dashboard</label>
                                 <div class="col-sm-9">
-                                    <input readonly="true" name="dashboard[{{i}}]" type="text" required
-                                        class="form-control" [(ngModel)]="portal.dashboard">
+                                    <input name="dashboard[{{i}}]" type="text" required class="form-control"
+                                        [(ngModel)]="portal.dashboard">
                                 </div>
                             </div>
                         </div>
 
                         <div class="col-md-4">
                             <div class="form-group row">
-                                <label class="col-form-label col-sm-6">Number Of Chart</label>
+                                <label class="col-form-label col-sm-6">Max Number Of Charts</label>
                                 <div class="col-sm-6">
-                                    <input type="number" name="numberOfChart[{{i}}]" required class="form-control"
+                                    <input type="number" min="0" oninput="this.value = Math.abs(this.value)" name="numberOfChart[{{i}}]" required class="form-control"
                                         [(ngModel)]="portal.numberOfChart">
                                 </div>
                             </div>
                         </div>
 
-                        <div class="col-md-2"><i (click)="remove(i)" class="fas fa-trash"></i></div>
+                        <!-- <div class="col-md-2"><i (click)="remove(i)" class="fas fa-trash"></i></div> -->
                     </div>
 
 
-                    <!-- <button (click)="addMore()" class="btn btn-default themeButton addMore mr-2"><i class="fa fa-plus"
-                            aria-hidden="true"></i> Add</button> -->
-                    <button *ngIf="chartPortals.length" type="button" (click)="saveChartForm()" class="btn btn-default themeButton">Submit</button>
+                    <button (click)="addMore()" class="btn btn-default themeButton addMore mr-2"><i class="fa fa-plus"
+                            aria-hidden="true"></i> Add</button>
+                    <button *ngIf="chartPortals.length" type="button" (click)="saveChartForm()"
+                        class="btn btn-default themeButton">Submit</button>
                 </form>
             </div>
         </div>

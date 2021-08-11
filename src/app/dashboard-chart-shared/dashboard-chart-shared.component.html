@@ -23,11 +23,10 @@
     </div>
 </div>
 
-<div class="cont">
+<div class="cont" [ngStyle]="{'height' : goldenLayoutStyle.height, 'min-height' : goldenLayoutStyle.minHeight}">
     <!-- <div class="cont" [ngStyle]="{'height' : goldenLayoutStyle.height}"> -->
     <div id="wrapper">
-        <div id="layoutContainer"
-            [ngStyle]="{'height' : goldenLayoutStyle.height, 'min-height' : goldenLayoutStyle.minHeight}"></div>
+        <div id="layoutContainer"></div>
     </div>
 </div>
 

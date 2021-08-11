@@ -26,10 +26,10 @@ export class ChartService {
         return this.http.get<any>(`${appConfig.apiUrl}/api/Chart/GetUserChartData?userId=${userId}&dashboard=${dashboard}`, this.httpOptions);
     }
 
-    saveUserChartData(params: any, noOfChart = 10) {
+    saveUserChartData(params: any) {
         const { UserId, ChartData, dashboard } = params;
         let body = JSON.stringify({ chartData: ChartData });
-        return this.http.post<any>(`${appConfig.apiUrl}/api/Chart/SaveUserChartData?userId=${UserId}&dashboard=${dashboard}&noOfChart=${noOfChart}`, body, this.httpOptions);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/Chart/SaveUserChartData?userId=${UserId}&dashboard=${dashboard}`, body, this.httpOptions);
     }
 
 
@@ -53,8 +53,8 @@ export class ChartService {
         return this.http.post<any>(`${appConfig.apiUrl}/api/Manager/CheckDrillDownChartGridDataIsNull`, body, this.httpOptions);
     }
 
-    getUserChartSetting(userId: string) {
-        return this.http.get<any>(`${appConfig.apiUrl}/api/Chart/GetUserChartSetting?userId=${userId}`, this.httpOptions);
+    getUserChartSetting() {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/Chart/GetUserChartSetting`, this.httpOptions);
     }
 
     SaveUserChartSettings(params) {
@@ -69,6 +69,10 @@ export class ChartService {
     getChartById(chartId) {
         return this.http.get<any>(`${appConfig.apiUrl}/api/Chart/GetChartById?chartId=${chartId}`, this.httpOptions);
     }
+
+    getUserChartByDashboard(Dashboard) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/Chart/GetUserChartByDashboard?Dashboard=${Dashboard}`, this.httpOptions);
+    }
     //########## CHART CONFIGURATION ##################//
 
     pieChartInit(selector: any, data: any, chartObj = null, titleText: any = null, yAxisTitle: string = null, allowPointSelect: boolean = true) {
@@ -78,7 +82,7 @@ export class ChartService {
                     thousandsSep: ','
                 }
             });
-            Highcharts.chart(
+            let chart = Highcharts.chart(
                 this.pieChartConfiguration(
                     selector,
                     data,
@@ -88,6 +92,8 @@ export class ChartService {
                     allowPointSelect
                 )
             );
+
+            return chart
         } else {
             $("#" + selector).css("background-color", "white").html('<div style="text-align: center;margin-top: 16%;font-size: 20px;font-weight: 600;">No Record.</div>');
         }
@@ -140,19 +146,27 @@ export class ChartService {
 
 
     lineChartInit(className: any, chartData: any, xaxis: any, titleText: any = null, yAxisTitle: any = null) {
-        if (chartData.length) {
-            Highcharts.chart(
-                this.lineChartConfigration(
-                    className,
-                    chartData,
-                    xaxis,
-                    titleText,
-                    yAxisTitle,
-                )
-            );
-        } else {
-            $("#" + className).css("background-color", "white").html('<div style="text-align: center;margin-top: 10%;font-size: 20px;font-weight: 600;">No Record.</div>');
-        }
+        // if (chartData.length) {
+        Highcharts.setOptions({
+            lang: {
+                thousandsSep: ','
+            }
+        });
+
+        let chart = Highcharts.chart(
+            this.lineChartConfigration(
+                className,
+                chartData,
+                xaxis,
+                titleText,
+                yAxisTitle,
+            )
+        );
+
+        return chart
+        // } else {
+        //     $("#" + className).css("background-color", "white").html('<div style="text-align: center;margin-top: 10%;font-size: 20px;font-weight: 600;">No Record.</div>');
+        // }
 
     }
 
@@ -209,23 +223,31 @@ export class ChartService {
 
 
     barChartInit(selector: any, data: any, barChartParams: any = null, titleText: any = null, yAxisTitle: string = null, allowPointSelect: boolean = true) {
-        if (data.categories != null) {
-            let chart = Highcharts.chart(
-                this.barChartConfiguration(
-                    selector,
-                    data,
-                    barChartParams,
-                    titleText,
-                    yAxisTitle,
-                    allowPointSelect,
+        // if (data.categories != null) {
+        Highcharts.setOptions({
+            lang: {
+                thousandsSep: ','
+            }
+        });
 
-                )
-            );
-        }
+        let chart = Highcharts.chart(
+            this.barChartConfiguration(
+                selector,
+                data,
+                barChartParams,
+                titleText,
+                yAxisTitle,
+                allowPointSelect,
 
-        else {
-            $("#" + selector).css("background-color", "white").html('<div style="text-align: center;margin-top: 16%;font-size: 20px;font-weight: 600;">No Record.</div>');
-        }
+            )
+        );
+
+        return chart;
+        // }
+
+        // else {
+        //     $("#" + selector).css("background-color", "white").html('<div style="text-align: center;margin-top: 16%;font-size: 20px;font-weight: 600;">No Record.</div>');
+        // }
 
     }
 
@@ -235,26 +257,27 @@ export class ChartService {
         const { categories, stackedBarChartViewModelList } = data;
         let max = 10;
         let scroll = true;
-        if (categories && categories.length < 10) {
-            scroll = false;
-            max = categories.length - 1;
-        }
-        let color = barChartParams != null ? barChartParams.color : '';
-        if (barChartParams.ddChartID != undefined) {
-            barChartParams.seriesId = data.stackedBarChartViewModelList[0].seriesId
-        }
+        let color = '';
 
-        if(color){
-            if(stackedBarChartViewModelList[0].color == null){
-                stackedBarChartViewModelList[0].color = color;
+        if (categories != null) {
+            if (categories && categories.length < 10) {
+                scroll = false;
+                max = categories.length - 1;
+            }
+            color = barChartParams != null ? barChartParams.color : '';
+            if (barChartParams.ddChartID != undefined) {
+                barChartParams.seriesId = data.stackedBarChartViewModelList[0].seriesId
+            }
+
+            if (color) {
+                if (stackedBarChartViewModelList[0].color == null) {
+                    stackedBarChartViewModelList[0].color = color;
+                }
             }
         }
 
+
         return {
-            chart: {
-                type: 'column',
-                renderTo: selector,
-            },
             title: {
                 text: titleText
             },
@@ -318,6 +341,10 @@ export class ChartService {
                 }
             },
             series: stackedBarChartViewModelList,
+            chart: {
+                type: 'column',
+                renderTo: selector,
+            },
         }
 
     }
@@ -325,19 +352,21 @@ export class ChartService {
 
 
     groupBarChartInit(selector: any, data: any, titleText: any = null, yAxisTitle: string = null, allowPointSelect: boolean = true) {
-        if (data.categories != null) {
-            Highcharts.chart(
-                this.groupBarChartConfiguration(
-                    selector,
-                    data,
-                    titleText,
-                    yAxisTitle,
-                    allowPointSelect,
-                )
-            );
-        } else {
-            $("#" + selector).css("background-color", "white").html('<div style="text-align: center;margin-top: 16%;font-size: 20px;font-weight: 600;">No Record.</div>');
-        }
+        // if (data.categories != null) {
+        let chart = Highcharts.chart(
+            this.groupBarChartConfiguration(
+                selector,
+                data,
+                titleText,
+                yAxisTitle,
+                allowPointSelect,
+            )
+        );
+
+        return chart;
+        // } else {
+        //     $("#" + selector).css("background-color", "white").html('<div style="text-align: center;margin-top: 16%;font-size: 20px;font-weight: 600;">No Record.</div>');
+        // }
 
     }
 

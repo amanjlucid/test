@@ -546,7 +546,7 @@
                                 <div>Works Orders</div>
                             </a>
                         </li>
-                        <li class="sidenav-item" [routerLinkActive]="['active']">
+                        <li class="sidenav-item" [routerLinkActive]="['active']" *ngIf="currentUser?.admin == 'Y'">
                             <a [routerLink]="['/chart-settings']" class="sidenav-link">
                                 <div>Chart Settings</div>
                             </a>

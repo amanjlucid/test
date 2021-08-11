@@ -13,7 +13,7 @@ export class ChartSettingsComponent implements OnInit {
   emptyObject: any = { dashboard: '', numberOfChart: 0 }
   submitted = false
   currentUser: any = JSON.parse(localStorage.getItem('currentUser'));
-  savedChart = [{ dashboard: 'test', numberOfChart: 1 }, { dashboard: 'test2', numberOfChart: 1 }, { dashboard: 'test3', numberOfChart: 1 }]
+  savedChart = []
   subs = new SubSink();
 
   constructor(
@@ -24,22 +24,22 @@ export class ChartSettingsComponent implements OnInit {
   cloneData = (data: any[]) => Object.assign({}, data);
 
   ngOnInit(): void {
-    if (this.chartPortals.length == 0) {
-      //this.chartPortals.push(this.cloneData(this.emptyObject));
-      this.getChartSettings();
-    }
+    this.getChartSettings();
   }
 
   getChartSettings() {
     this.subs.add(
-      this.chartService.getUserChartSetting(this.currentUser.userId).subscribe(
+      this.chartService.getUserChartSetting().subscribe(
         data => {
           if (data.isSuccess) {
-            this.savedChart = data.data;
-            this.chartPortals = JSON.parse(JSON.stringify(this.savedChart));
+            if (data.data.length) {
+              this.savedChart = data.data;
+              this.chartPortals = JSON.parse(JSON.stringify(this.savedChart));
+            }
 
             if (this.chartPortals.length == 0) {
               this.alertServcie.error("There is no chart data saved");
+              this.chartPortals.push(this.cloneData(this.emptyObject));
             }
 
           }
@@ -71,12 +71,9 @@ export class ChartSettingsComponent implements OnInit {
         return;
       }
 
-      let params: any = {}
-      params.userId = this.currentUser.userId;
-      params.chartSettings = this.chartPortals;
-
+    
       this.subs.add(
-        this.chartService.SaveUserChartSettings(params).subscribe(
+        this.chartService.SaveUserChartSettings(this.chartPortals).subscribe(
           data => {
             this.submitted = false;
             if (data.isSuccess) {
