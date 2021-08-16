@@ -17,6 +17,7 @@ type gridDataEventType = {
 const cloneObject = (data: any) => JSON.parse(JSON.stringify(data));
 const cloneData = (data: any[]) => data.map(item => Object.assign({}, item));
 
+
 @Component({
   selector: 'app-dashboard-chart-shared',
   templateUrl: './dashboard-chart-shared.component.html',
@@ -49,7 +50,8 @@ export class DashboardChartSharedComponent implements OnInit {
   }
   numberOfChartCanBeAdded = 15;
   chartRenderMap = new Map();
-
+  checkLayoutResized = false;
+  chartDivHeight = window.innerHeight - 200;
 
   constructor(
     private alertService: AlertService,
@@ -58,6 +60,16 @@ export class DashboardChartSharedComponent implements OnInit {
   ) {
     //update notification on top
     helper.updateNotificationOnTop();
+  }
+
+  onChange(height) {
+    console.log(height);
+    if (height > (window.innerHeight - 200)) {
+      const contDivWidth = document.querySelector('.cont').clientWidth;
+      this.myLayout.updateSize(contDivWidth - 10, height);
+    }
+
+
   }
 
   ngOnDestroy() {
@@ -112,7 +124,7 @@ export class DashboardChartSharedComponent implements OnInit {
             }
 
             this.chartNames = chartList.data;
-            
+
             const createDefaultCharts = (container: any, state: any) => {
               if (this.drawChartObj == null && this.savedState == null) {
                 const { text } = state;
@@ -140,6 +152,10 @@ export class DashboardChartSharedComponent implements OnInit {
                     container.setTitle(this.chartNames[3].chartName)
                     this.renderChartTypes(this.chartNames[3], container, state);
                   }
+                } else if (text == "Component5") {
+                  if (this.chartNames[3] != undefined) {
+                   
+                  }
                 }
               } else if (this.drawChartObj == null && this.savedState != null) {
                 this.renderChartIfStateSaved(container, state);
@@ -153,6 +169,34 @@ export class DashboardChartSharedComponent implements OnInit {
               this.myLayout.registerComponent('testComponent', createDefaultCharts);
               this.myLayout.init();
             }
+
+
+            // this.myLayout.on("stateChanged", item => {
+            //   if (item.origin.contentItems[0])
+            //     item.origin.contentItems[0].callDownwards('setSize', [], true, true)
+            // });
+
+            // this.myLayout.on("stateChanged", item => {
+            //   console.log(item)
+            // });
+
+            // this.myLayout.on("itemCreated", item => {
+            //   console.log(item)
+            // });
+
+            // this.myLayout.on("tabCreated", item => {
+            //   item._dragListener.on('dragStop', function () {
+            //     // console.log(item)
+            //     // item.contentItem.setSize();
+            //     setTimeout(() => {
+            //       item.contentItem.element.closest('.lm_stack').css({ "height": "400px" })
+            //       // console.log(item.contentItem.element.closest('.lm_stack'))
+            //       //$(item.contentItem.element).css({ "height": "400px" })
+            //       console.log(item.contentItem.element)
+            //     }, 1000);
+            //     //Drag Event
+            //   })
+            // });
 
             this.pageload = false;
 
@@ -717,13 +761,13 @@ export class DashboardChartSharedComponent implements OnInit {
   }
 
 
-  resizeContainer(container) {
-    container.on('resize', () => {
-      setTimeout(() => {
-        window.dispatchEvent(new Event('resize'));
-      }, 400);
-    })
-  }
+  // resizeContainer(container) {
+  //   container.on('resize', () => {
+  //     setTimeout(() => {
+  //       window.dispatchEvent(new Event('resize'));
+  //     }, 400);
+  //   })
+  // }
 
   resizeChart(container, className) {
     container.on('resize', () => {
@@ -739,24 +783,26 @@ export class DashboardChartSharedComponent implements OnInit {
         }, 100);
       }
 
-      // setTimeout(() => {
-      //   const numberOfCharts: any = document.querySelectorAll('.lm_item_container');
-      //   // console.log(numberOfCharts)
-      //   let totalHeight = 0;
-      //   for (let i = 0; i < numberOfCharts.length; i++) {
-      //     totalHeight += numberOfCharts[i].clientHeight;
-      //   }
-      //   // console.log(totalHeight)
 
-      //   if (this.myLayout) {
-      //     if (totalHeight > 746) {
-      //       // this.myLayout.updateSize(836, (totalHeight + 100))
+
+      // let contDivWidth = document.querySelector('.cont').clientWidth;
+      // let contDivHeight = document.querySelector('.cont').clientHeight;
+      // let splitter = document.querySelectorAll('.lm_vertical');
+
+      // let totalHeight = 360 * splitter.length + 1
+
+      // if (!this.checkLayoutResized) {
+      //   this.checkLayoutResized = true;
+      //   setTimeout(() => {
+      //     if (totalHeight > 746 && splitter.length > 2) {
+      //       this.myLayout.updateSize(contDivWidth - 10, (totalHeight + 220));
+      //     } else {
+      //       this.myLayout.updateSize(contDivWidth - 10, contDivHeight);
       //     }
-      //   }
 
-      // }, 1000);
-
-
+      //     setTimeout(() => this.checkLayoutResized = false, 2000);
+      //   }, 1000);
+      // }
 
     })
   }

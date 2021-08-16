@@ -11,6 +11,7 @@
         </div>
 
         <div class="col-md-7 col-sm-4 p-2 text-right">
+            <input type="text" [(ngModel)]="chartDivHeight" (ngModelChange)="onChange($event)">
             <button id="chartBtn" (click)="saveChartsState()" class="btn btn-sm themeButton mr-1">Save Chart State
             </button>
 

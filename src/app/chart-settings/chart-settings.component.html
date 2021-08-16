@@ -23,13 +23,14 @@
                             <div class="form-group row">
                                 <label class="col-form-label col-sm-6">Max Number Of Charts</label>
                                 <div class="col-sm-6">
-                                    <input type="number" min="0" oninput="this.value = Math.abs(this.value)" name="numberOfChart[{{i}}]" required class="form-control"
+                                    <input type="number" min="0" oninput="this.value = Math.abs(this.value)"
+                                        name="numberOfChart[{{i}}]" required class="form-control"
                                         [(ngModel)]="portal.numberOfChart">
                                 </div>
                             </div>
                         </div>
 
-                        <!-- <div class="col-md-2"><i (click)="remove(i)" class="fas fa-trash"></i></div> -->
+                        <div class="col-md-2"><i (click)="remove(i)" class="fas fa-trash"></i></div>
                     </div>
 
 

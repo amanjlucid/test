@@ -1,15 +1,17 @@
 export class ChartComponentModel {
     settings = {
-        selectionEnabled: true
+        selectionEnabled: true,
+        responsiveMode: 'onload',
+        constrainDragToContainer: true,
     };
     labels = {
-        popout:'open in new window',
-        popin:'pop in'
+        popout: 'open in new window',
+        popin: 'pop in'
     };
     // dimensions = {
     //     dragProxyWidth: 600,
-    //     dragProxyHeight: 400,
-    //     minItemHeight: 100,
+    //     dragProxyHeight: 200,
+    //     minItemHeight: 400,
     // };
     content = [{
         type: 'column',
@@ -35,6 +37,19 @@ export class ChartComponentModel {
                 componentState: { text: 'Component3' },
                 title: 'Component 3',
 
+            }
+
+            ]
+        },
+        {
+            type: 'row',
+            content: [{
+                isClosable:false,
+                height: 30,
+                type: 'component',
+                componentName: 'testComponent',
+                componentState: { text: 'Component5' },
+                title: '',
             }
 
             ]
