@@ -64,13 +64,11 @@ export class DashboardChartSharedComponent implements OnInit {
   }
 
   onChange(height) {
-    console.log(height);
+    // console.log(height);
     if (height > (window.innerHeight - 200)) {
       const contDivWidth = document.querySelector('.cont').clientWidth;
       this.myLayout.updateSize(contDivWidth - 10, height);
     }
-
-
   }
 
   ngOnDestroy() {
@@ -170,143 +168,10 @@ export class DashboardChartSharedComponent implements OnInit {
             if (this.pageload) {
               this.myLayout.registerComponent('testComponent', createDefaultCharts);
               this.myLayout.init();
-
+              this.afterMyLayoutInit();
             }
 
-            // console.log(this.myLayout)
-            // this.myLayout.on("stateChanged", item => {
-            //   if (item.origin.contentItems[0])
-            //     item.origin.contentItems[0].callDownwards('setSize', [], true, true)
-            // });
-
-            // let contHeight = document.querySelector('.cont').clientHeight;
-            // $('#countHeight').css({'height' : `${contHeight}px`})
-
-            this.myLayout.on("stateChanged", item => {
-
-              let origin = item.origin;
-              let layoutManager = origin.layoutManager;
-              let layoutWidth = layoutManager.width;
-              let layoutHeight = layoutManager.height;
-              let comp = this;
-              // if (this.previousLayoutHeight == 0) {
-              //   this.previousLayoutHeight = layoutManager.height;
-              // } else {
-              //   layoutManager.height = this.previousLayoutHeight;
-              // }
-
-
-              const emptyContainer = origin.layoutManager.root.getItemsById("hiddenContainer");
-              if (emptyContainer[0].config && emptyContainer[0].config.height != 0) {
-                emptyContainer[0].config.height = 0;
-                emptyContainer[0].element.hide();
-                origin.layoutManager.height = layoutHeight;
-                $('#layoutContainer').css({ 'height': `${layoutHeight}px` })
-                origin.layoutManager.updateSize(layoutWidth, layoutHeight);
-              }
-
-
-              if (origin._dimension && origin._dimension == 'height') {
-                const allRows = layoutManager.root.contentItems[0].contentItems;
-                const splitters = origin._splitter;
-
-                let height;
-                let top;
-                let containerHeight = [];
-
-                for (let i = 0; i < splitters.length; i++) {
-                  splitters[i]._dragListener.on('dragStart', function (item) {
-                    layoutWidth = layoutManager.width;
-                    layoutHeight = layoutManager.height;
-                    containerHeight = layoutManager.root.contentItems[0].contentItems.map(x => { return x.config.height });
-                  })
-
-                  splitters[i]._dragListener.on('drag', function (item) {
-                    top = comp.helper.replaceAll(splitters[i].element.css('top'), "px", "");
-                    if (top) top = parseInt(top)
-                  })
-
-                  splitters[i]._dragListener.on('dragStop', function (item) {
-                    setTimeout(() => {
-                      if (top == 0 && i == (splitters.length - 1)) {
-                        top = 150;
-                        height = layoutHeight + top;
-                      } else {
-                        height = layoutHeight + top;
-                        const layoutContainerHeight = document.querySelector('.cont').clientHeight;
-                        if (height < layoutContainerHeight) height = layoutContainerHeight;
-                        if (height > 2000) height = 2000;
-                      }
-
-                      let containerHeightPer = (top * 100) / height;
-                      containerHeightPer = containerHeightPer / 10;
-                      if (containerHeightPer > 0) {
-                        allRows[i].config.height = containerHeight[i] + containerHeightPer;
-                      }
-
-                      if (allRows[i].config.height < 30) {
-                        allRows[i].config.height = 30
-                      }
-
-                      origin.layoutManager.height = height;
-                      $('#layoutContainer').css({ 'height': `${height + 20}px` })
-                      origin.layoutManager.updateSize(layoutWidth, height);
-                    }, 10);
-
-                  })
-
-                }
-
-              }
-
-
-            });
-
-
-
-
-            // this.myLayout.on("rowCreated", item => {
-            //   console.log(item)
-            // });
-
-            // this.myLayout.on("tabCreated", item => {
-            //   item._dragListener.on('dragStop', function () {
-            //     console.log(item)
-            //     console.log(item._layoutManager)
-
-            //     // let contDivWidth = document.querySelector('.cont').clientWidth;
-            //     // let contDivHeight = document.querySelector('.cont').clientHeight;
-            //     // let splitter = document.querySelectorAll('.lm_vertical');
-
-            //     // let totalHeight = 360 * splitter.length + 1
-
-            //     // if (!this.checkLayoutResized) {
-            //     //   this.checkLayoutResized = true;
-            //     //   setTimeout(() => {
-            //     //     if (totalHeight > 746 && splitter.length > 2) {
-            //     //       this.myLayout.updateSize(contDivWidth - 10, (totalHeight + 220));
-            //     //     } else {
-            //     //       this.myLayout.updateSize(contDivWidth - 10, contDivHeight);
-            //     //     }
-
-            //     //     setTimeout(() => this.checkLayoutResized = false, 2000);
-            //     //   }, 1000);
-            //     // }
-
-
-
-
-            //     // item.contentItem.setSize();
-            //     // setTimeout(() => {
-            //     //   item.contentItem.element.closest('.lm_stack').css({ "height": "400px" })
-            //     //   // console.log(item.contentItem.element.closest('.lm_stack'))
-            //     //   //$(item.contentItem.element).css({ "height": "400px" })
-            //     //   console.log(item.contentItem.element)
-            //     // }, 1000);
-            //     //Drag Event
-            //   })
-            // });
-
+            
             this.pageload = false;
 
           }
@@ -320,7 +185,102 @@ export class DashboardChartSharedComponent implements OnInit {
       fromEvent(sideMenu, 'click').subscribe(value => this.updateChartLayoutSize())
     )
 
+  }
 
+  afterMyLayoutInit() {
+    this.myLayout.on("stackCreated", item => {
+      if (item && item.type == 'stack') {
+        let layoutManager = item.layoutManager;
+        // let layoutWidth = layoutManager.width;
+        let layoutHeight = layoutManager.height + 50;
+        $('#layoutContainer').css({ 'height': `${layoutHeight}px` });
+        layoutManager.height = layoutHeight;
+        const allRows = layoutManager.root.contentItems[0].contentItems;
+        allRows[0].config.height = 40
+        allRows[1].config.height = 60
+        item.callDownwards("setSize", [], true, false);
+        // layoutManager.updateSize(layoutWidth, (layoutHeight));
+        // console.log(item)
+      }
+
+    })
+
+
+    this.myLayout.on("stateChanged", item => {
+      if (item == undefined) return
+      let origin = item.origin;
+      let layoutManager = origin.layoutManager;
+      let layoutWidth = layoutManager.width;
+      let layoutHeight = layoutManager.height;
+      let comp = this;
+
+      const emptyContainer = origin.layoutManager.root.getItemsById("hiddenContainer");
+      if (emptyContainer[0].config && emptyContainer[0].config.height != 0) {
+        emptyContainer[0].config.height = 0;
+        emptyContainer[0].element.hide();
+        origin.layoutManager.height = layoutHeight;
+        $('#layoutContainer').css({ 'height': `${layoutHeight}px` });
+        origin.layoutManager.updateSize(layoutWidth, layoutHeight);
+      }
+
+
+      if (origin._dimension && origin._dimension == 'height') {
+        const allRows = layoutManager.root.contentItems[0].contentItems;
+        const splitters = origin._splitter;
+
+        let height;
+        let top;
+        let containerHeight = [];
+
+        for (let i = 0; i < splitters.length; i++) {
+          if (splitters[i]) {
+            splitters[i]._dragListener.on('dragStart', function (item) {
+              layoutWidth = layoutManager.width;
+              layoutHeight = layoutManager.height;
+              containerHeight = allRows.map(x => { return x.config.height });
+            })
+
+            splitters[i]._dragListener.on('drag', function (item) {
+              top = comp.helper.replaceAll(splitters[i].element.css('top'), "px", "");
+              if (top) top = parseInt(top)
+            })
+
+            splitters[i]._dragListener.on('dragStop', function (item) {
+              setTimeout(() => {
+                if (top == 0 && i == (splitters.length - 1)) {
+                  top = 150;
+                  height = layoutHeight + top;
+                } else {
+                  height = layoutHeight + top;
+                  const layoutContainerHeight = document.querySelector('.cont').clientHeight;
+                  if (height < layoutContainerHeight) height = layoutContainerHeight;
+                  if (height > 2000) height = 2000;
+                }
+
+                let containerHeightPer = (top * 100) / height;
+                containerHeightPer = containerHeightPer / 2;
+                if (containerHeightPer > 0) {
+                  allRows[i].config.height = containerHeight[i] + containerHeightPer;
+                }
+
+                if (allRows[i].config.height < 30) {
+                  allRows[i].config.height = 30
+                }
+
+                allRows[i].callDownwards("setSize", [], true, false)
+                origin.layoutManager.height = height;
+                $('#layoutContainer').css({ 'height': `${height + 20}px` })
+                origin.layoutManager.updateSize(layoutWidth, height);
+              }, 10);
+
+            })
+          }
+
+        }
+
+      }
+
+    });
   }
 
   updateChartLayoutSize(onlyLayoutHeight = false) {
@@ -396,10 +356,10 @@ export class DashboardChartSharedComponent implements OnInit {
 
 
   renderChart($event: any, side: string, chartData: any) {
-    if ($('.lm_vertical').length == 0 && $('.lm_horizontal').length == 0 && $('.lm_selectable').length == 0) {
+    if ($('.lm_vertical').length == 0 && $('.lm_horizontal').length == 0 && $('.lm_item.lm_row').length == 1) {
       this.createNewChart($event, side, chartData);
     } else {
-      const numberOfCharts = document.querySelectorAll('.lm_item_container').length;
+      const numberOfCharts = document.querySelectorAll('.lm_item_container').length-1; //-1 is for hidden chart;
       if (numberOfCharts >= this.numberOfChartCanBeAdded) {
         this.alertService.error(`Maximum ${this.numberOfChartCanBeAdded} chart can be added.`)
         return
@@ -444,16 +404,46 @@ export class DashboardChartSharedComponent implements OnInit {
         selectionEnabled: true
       },
       content: [{
-        type: 'row',
-        isClosable: false,
+        type: 'column',
         content: [{
           height: 30,
-          title: chartData.chartName,
-          type: 'component',
-          componentName: 'testComponent',
-          componentState: { text: 'Component' + compNo }
+          isClosable: true,
+          type: 'row',
+          content: [{
+            height: 30,
+            type: 'component',
+            componentName: 'testComponent',
+            componentState: { text: 'Component' + compNo },
+            title: chartData.chartName,
+          }]
+        },
+        {
+          type: 'row',
+          id: "hiddenContainer",
+          content: [{
+            isClosable: false,
+            height: 0,
+            type: 'component',
+            componentName: 'testComponent',
+            componentState: { text: 'Component5' },
+            title: ' ',
+          }]
         }]
       }]
+
+
+      //   content: [{
+      //     type: 'row',
+      //     isClosable: false,
+      //     content: [{
+      //       height: 30,
+      //       title: chartData.chartName,
+      //       type: 'component',
+      //       componentName: 'testComponent',
+      //       componentState: { text: 'Component' + compNo }
+      //     }]
+      //   },
+      // ]
     };
     this.myLayout = new GoldenLayout(config, $('#layoutContainer')); // actual object
 
@@ -470,6 +460,8 @@ export class DashboardChartSharedComponent implements OnInit {
         } else if (state.text == "Component3") {
           container.setTitle(this.chartNames[2].chartName)
           this.renderChartTypes(this.chartNames[2], container, state);
+        } else if (state.text == "Component5") {
+
         }
       } else if (this.drawChartObj == null && this.savedState != null) {
         this.renderChartIfStateSaved(container, state);
@@ -481,7 +473,7 @@ export class DashboardChartSharedComponent implements OnInit {
 
     this.myLayout.registerComponent('testComponent', createDefaultCharts);
     this.myLayout.init();
-
+    this.afterMyLayoutInit();
   }
 
 

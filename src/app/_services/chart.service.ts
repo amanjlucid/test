@@ -92,19 +92,25 @@ export class ChartService {
                 allowPointSelect
             ), function (chart) { // on complete
                 if (data.length == 0) {
-                    chart.renderer.text('No Data Available', 140, 120)
+                    const text = chart.renderer.text('No Data Available')
                         .css({
                             color: '#4572A7',
                             fontSize: '20px',
-                            margin: "20px"
+                            margin: "40px"
                         }).add();
+                    let textBBox = text.getBBox();
+                    let x = chart.plotLeft + (chart.plotWidth * 0.5) - (textBBox.width * 0.5);
+                    let y = chart.plotTop  + (chart.plotHeight * 0.5) + (textBBox.height * 0.25);
+                    text.attr({ x: x, y: y });
                 }
             }
         );
 
         return chart
-        // } else {
-        //     $("#" + selector).css("background-color", "white").html('<div style="text-align: center;margin-top: 16%;font-size: 20px;font-weight: 600;">No Record.</div>');
+        // }
+
+        // else {
+        //     $("#" + selector).css("background-color", "white").html('<div style="text-align: center;margin-top: 16%;font-size: 20px;font-weight: 600;">No Data Available.</div>');
         // }
 
     }
