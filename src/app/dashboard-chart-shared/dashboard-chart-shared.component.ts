@@ -53,6 +53,7 @@ export class DashboardChartSharedComponent implements OnInit {
   checkLayoutResized = false;
   chartDivHeight = window.innerHeight - 200;
 
+
   constructor(
     private alertService: AlertService,
     private helper: HelperService,
@@ -126,6 +127,7 @@ export class DashboardChartSharedComponent implements OnInit {
             this.chartNames = chartList.data;
 
             const createDefaultCharts = (container: any, state: any) => {
+
               if (this.drawChartObj == null && this.savedState == null) {
                 const { text } = state;
                 if (text == "Component1") {
@@ -154,7 +156,7 @@ export class DashboardChartSharedComponent implements OnInit {
                   }
                 } else if (text == "Component5") {
                   if (this.chartNames[3] != undefined) {
-                   
+                    // console.log(container)
                   }
                 }
               } else if (this.drawChartObj == null && this.savedState != null) {
@@ -168,32 +170,139 @@ export class DashboardChartSharedComponent implements OnInit {
             if (this.pageload) {
               this.myLayout.registerComponent('testComponent', createDefaultCharts);
               this.myLayout.init();
+
             }
 
-
+            // console.log(this.myLayout)
             // this.myLayout.on("stateChanged", item => {
             //   if (item.origin.contentItems[0])
             //     item.origin.contentItems[0].callDownwards('setSize', [], true, true)
             // });
 
-            // this.myLayout.on("stateChanged", item => {
-            //   console.log(item)
-            // });
+            // let contHeight = document.querySelector('.cont').clientHeight;
+            // $('#countHeight').css({'height' : `${contHeight}px`})
 
-            // this.myLayout.on("itemCreated", item => {
+            this.myLayout.on("stateChanged", item => {
+
+              let origin = item.origin;
+              let layoutManager = origin.layoutManager;
+              let layoutWidth = layoutManager.width;
+              let layoutHeight = layoutManager.height;
+              let comp = this;
+              // if (this.previousLayoutHeight == 0) {
+              //   this.previousLayoutHeight = layoutManager.height;
+              // } else {
+              //   layoutManager.height = this.previousLayoutHeight;
+              // }
+
+
+              const emptyContainer = origin.layoutManager.root.getItemsById("hiddenContainer");
+              if (emptyContainer[0].config && emptyContainer[0].config.height != 0) {
+                emptyContainer[0].config.height = 0;
+                emptyContainer[0].element.hide();
+                origin.layoutManager.height = layoutHeight;
+                $('#layoutContainer').css({ 'height': `${layoutHeight}px` })
+                origin.layoutManager.updateSize(layoutWidth, layoutHeight);
+              }
+
+
+              if (origin._dimension && origin._dimension == 'height') {
+                const allRows = layoutManager.root.contentItems[0].contentItems;
+                const splitters = origin._splitter;
+
+                let height;
+                let top;
+                let containerHeight = [];
+
+                for (let i = 0; i < splitters.length; i++) {
+                  splitters[i]._dragListener.on('dragStart', function (item) {
+                    layoutWidth = layoutManager.width;
+                    layoutHeight = layoutManager.height;
+                    containerHeight = layoutManager.root.contentItems[0].contentItems.map(x => { return x.config.height });
+                  })
+
+                  splitters[i]._dragListener.on('drag', function (item) {
+                    top = comp.helper.replaceAll(splitters[i].element.css('top'), "px", "");
+                    if (top) top = parseInt(top)
+                  })
+
+                  splitters[i]._dragListener.on('dragStop', function (item) {
+                    setTimeout(() => {
+                      if (top == 0 && i == (splitters.length - 1)) {
+                        top = 150;
+                        height = layoutHeight + top;
+                      } else {
+                        height = layoutHeight + top;
+                        const layoutContainerHeight = document.querySelector('.cont').clientHeight;
+                        if (height < layoutContainerHeight) height = layoutContainerHeight;
+                        if (height > 2000) height = 2000;
+                      }
+
+                      let containerHeightPer = (top * 100) / height;
+                      containerHeightPer = containerHeightPer / 10;
+                      if (containerHeightPer > 0) {
+                        allRows[i].config.height = containerHeight[i] + containerHeightPer;
+                      }
+
+                      if (allRows[i].config.height < 30) {
+                        allRows[i].config.height = 30
+                      }
+
+                      origin.layoutManager.height = height;
+                      $('#layoutContainer').css({ 'height': `${height + 20}px` })
+                      origin.layoutManager.updateSize(layoutWidth, height);
+                    }, 10);
+
+                  })
+
+                }
+
+              }
+
+
+            });
+
+
+
+
+            // this.myLayout.on("rowCreated", item => {
             //   console.log(item)
             // });
 
             // this.myLayout.on("tabCreated", item => {
             //   item._dragListener.on('dragStop', function () {
-            //     // console.log(item)
+            //     console.log(item)
+            //     console.log(item._layoutManager)
+
+            //     // let contDivWidth = document.querySelector('.cont').clientWidth;
+            //     // let contDivHeight = document.querySelector('.cont').clientHeight;
+            //     // let splitter = document.querySelectorAll('.lm_vertical');
+
+            //     // let totalHeight = 360 * splitter.length + 1
+
+            //     // if (!this.checkLayoutResized) {
+            //     //   this.checkLayoutResized = true;
+            //     //   setTimeout(() => {
+            //     //     if (totalHeight > 746 && splitter.length > 2) {
+            //     //       this.myLayout.updateSize(contDivWidth - 10, (totalHeight + 220));
+            //     //     } else {
+            //     //       this.myLayout.updateSize(contDivWidth - 10, contDivHeight);
+            //     //     }
+
+            //     //     setTimeout(() => this.checkLayoutResized = false, 2000);
+            //     //   }, 1000);
+            //     // }
+
+
+
+
             //     // item.contentItem.setSize();
-            //     setTimeout(() => {
-            //       item.contentItem.element.closest('.lm_stack').css({ "height": "400px" })
-            //       // console.log(item.contentItem.element.closest('.lm_stack'))
-            //       //$(item.contentItem.element).css({ "height": "400px" })
-            //       console.log(item.contentItem.element)
-            //     }, 1000);
+            //     // setTimeout(() => {
+            //     //   item.contentItem.element.closest('.lm_stack').css({ "height": "400px" })
+            //     //   // console.log(item.contentItem.element.closest('.lm_stack'))
+            //     //   //$(item.contentItem.element).css({ "height": "400px" })
+            //     //   console.log(item.contentItem.element)
+            //     // }, 1000);
             //     //Drag Event
             //   })
             // });
@@ -338,6 +447,7 @@ export class DashboardChartSharedComponent implements OnInit {
         type: 'row',
         isClosable: false,
         content: [{
+          height: 30,
           title: chartData.chartName,
           type: 'component',
           componentName: 'testComponent',

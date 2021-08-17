@@ -3,6 +3,7 @@ export class ChartComponentModel {
         selectionEnabled: true,
         responsiveMode: 'onload',
         constrainDragToContainer: true,
+       
     };
     labels = {
         popout: 'open in new window',
@@ -19,6 +20,7 @@ export class ChartComponentModel {
             isClosable: true,
             type: 'row',
             content: [{
+                height: 30,
                 type: 'component',
                 componentName: 'testComponent',
                 componentState: { text: 'Component1' },
@@ -32,6 +34,7 @@ export class ChartComponentModel {
         }, {
             type: 'row',
             content: [{
+                height: 30,
                 type: 'component',
                 componentName: 'testComponent',
                 componentState: { text: 'Component3' },
@@ -43,13 +46,14 @@ export class ChartComponentModel {
         },
         {
             type: 'row',
+            id: "hiddenContainer",
             content: [{
-                isClosable:false,
-                height: 30,
+                isClosable: false,
+                height: 0,
                 type: 'component',
                 componentName: 'testComponent',
                 componentState: { text: 'Component5' },
-                title: '',
+                title: ' ',
             }
 
             ]

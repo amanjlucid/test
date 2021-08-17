@@ -54,6 +54,11 @@
     padding: 10px 6px;
 }
 
+.lm_splitter {
+    opacity: 1 !important;
+    background: #bbbbbb !important;
+}
+
 .spChartBtn {
     font-size: .80rem;
     width: 100%;
