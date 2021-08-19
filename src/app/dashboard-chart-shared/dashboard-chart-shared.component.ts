@@ -190,11 +190,9 @@ export class DashboardChartSharedComponent implements OnInit {
 
   afterMyLayoutInit() {
     this.myLayout.on("stackCreated", item => {
-      console.log(item)
       if (item && item.type == 'stack') {
         setTimeout(() => {
           let layoutManager = item.layoutManager;
-          // let layoutWidth = layoutManager.width;
           item.config.height = 35;
           let layoutHeight = layoutManager.height + 250;
           const containerHeight = layoutHeight + 100
@@ -205,9 +203,6 @@ export class DashboardChartSharedComponent implements OnInit {
           const currerPer = (prevFirstRowPix * 100) / (containerHeight);
           allRows[0].config.height = currerPer;
 
-          // allRows[1].config.height = 60
-          // item.callDownwards("setSize", [], true, true);
-          // layoutManager.updateSize(layoutWidth, (layoutHeight));
           layoutManager.updateSize();
 
         }, 200);
@@ -216,9 +211,6 @@ export class DashboardChartSharedComponent implements OnInit {
 
 
     this.myLayout.on("stateChanged", item => {
-
-      // let items = this.myLayout._findAllStackContainers();
-      // console.log(item)
       if (item == undefined) return
       let origin = item.origin;
       let layoutManager = origin.layoutManager;
@@ -244,21 +236,15 @@ export class DashboardChartSharedComponent implements OnInit {
         } else {
           origin.layoutManager.updateSize(layoutWidth, layoutHeight);
         }
-
       }
 
 
       if (origin._dimension && origin._dimension == 'height') {
-
-        const allRows = layoutManager.root.contentItems[0].contentItems;
         const splitters = origin._splitter;
 
         let height = 0;
         let top;
-        let containerHeight = [];
-        // console.log(splitters);
-        // console.log(allRows);
-
+      
         for (let i = 0; i < splitters.length; i++) {
           if (splitters[i]) {
 
@@ -291,16 +277,12 @@ export class DashboardChartSharedComponent implements OnInit {
                   const lastContainerHeightPer = (height * 100) / currentHeight;
                   const lastContainerPrevHeight = lastContainer.config.height;
                   lastContainer.config.height = lastContainerPrevHeight + lastContainerHeightPer;
-                  console.log(lastContainer.config.height)
+                  
                   if (lastContainer.config.height > 50) {
                     lastContainer.config.height = 50
                   }
                 }
 
-                // const prevFirstRowPix = ((layoutHeight) * allRows[0].config.height) / 100;
-                // const currerPer = (prevFirstRowPix * 100) / currentHeight;
-                // allRows[0].config.height = currerPer;
-                // console.log({ layoutHeight, height, top, currentHeight, prevFirstRowPix, currerPer })
               } else {
                 height = top;
                 currentHeight = layoutHeight + height;
@@ -309,37 +291,6 @@ export class DashboardChartSharedComponent implements OnInit {
               $('#layoutContainer').css({ 'height': `${currentHeight}px` });
               layoutManager.height = currentHeight;
               origin.layoutManager.updateSize()
-
-
-
-
-
-              // setTimeout(() => {
-              //   if (top == 0 && i == (splitters.length - 1)) {
-              //     top = 150;
-              //     height = layoutHeight + top;
-              //   } else {
-              //     height = layoutHeight + top;
-              //     const layoutContainerHeight = document.querySelector('.cont').clientHeight;
-              //     if (height < layoutContainerHeight) height = layoutContainerHeight;
-              //     // if (height > 2000) height = 2000;
-              //   }
-
-              //   let containerHeightPer = (top * 100) / height;
-              //   containerHeightPer = containerHeightPer;
-              //   if (containerHeightPer > 0) {
-              //     allRows[i].config.height = containerHeight[i] + containerHeightPer;
-              //   }
-
-              //   /*// if (allRows[i].config.height < 30) {
-              //   //   allRows[i].config.height = 30
-              //   // } */
-
-              //   allRows[i].callDownwards("setSize", [], true, false)
-              //   origin.layoutManager.height = height;
-              //   $('#layoutContainer').css({ 'height': `${height + 20}px` })
-              //   origin.layoutManager.updateSize(layoutWidth, height);
-              // }, 10);
 
             })
           }
@@ -401,7 +352,7 @@ export class DashboardChartSharedComponent implements OnInit {
     }
 
     if (selectedFiler == this.defaultFilterVal && this.portalName == "Energy") {
-      selectedFiler = 10121212;
+      selectedFiler = 10121212;//random
     }
 
 
