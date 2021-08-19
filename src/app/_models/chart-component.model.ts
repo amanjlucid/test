@@ -3,7 +3,7 @@ export class ChartComponentModel {
         selectionEnabled: true,
         responsiveMode: 'onload',
         constrainDragToContainer: true,
-       
+        customeSplitterResize: true,
     };
     labels = {
         popout: 'open in new window',

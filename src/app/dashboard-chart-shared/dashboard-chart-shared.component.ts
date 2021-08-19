@@ -17,7 +17,6 @@ type gridDataEventType = {
 const cloneObject = (data: any) => JSON.parse(JSON.stringify(data));
 const cloneData = (data: any[]) => data.map(item => Object.assign({}, item));
 
-
 @Component({
   selector: 'app-dashboard-chart-shared',
   templateUrl: './dashboard-chart-shared.component.html',
@@ -52,7 +51,7 @@ export class DashboardChartSharedComponent implements OnInit {
   chartRenderMap = new Map();
   checkLayoutResized = false;
   chartDivHeight = window.innerHeight - 200;
-
+  hideChart = false;
 
   constructor(
     private alertService: AlertService,
@@ -64,7 +63,6 @@ export class DashboardChartSharedComponent implements OnInit {
   }
 
   onChange(height) {
-    // console.log(height);
     if (height > (window.innerHeight - 200)) {
       const contDivWidth = document.querySelector('.cont').clientWidth;
       this.myLayout.updateSize(contDivWidth - 10, height);
@@ -75,6 +73,9 @@ export class DashboardChartSharedComponent implements OnInit {
     //EMPTY CHART CLICK SUBSCRIPTION ON COMPONENT LEAVE
     this.chartService.changeChartInfo([]);
     this.subs.unsubscribe();
+    if (this.myLayout) {
+      this.myLayout.destroy()
+    }
   }
 
   ngOnInit(): void {
@@ -171,7 +172,7 @@ export class DashboardChartSharedComponent implements OnInit {
               this.afterMyLayoutInit();
             }
 
-            
+
             this.pageload = false;
 
           }
@@ -189,24 +190,35 @@ export class DashboardChartSharedComponent implements OnInit {
 
   afterMyLayoutInit() {
     this.myLayout.on("stackCreated", item => {
+      console.log(item)
       if (item && item.type == 'stack') {
-        let layoutManager = item.layoutManager;
-        // let layoutWidth = layoutManager.width;
-        let layoutHeight = layoutManager.height + 50;
-        $('#layoutContainer').css({ 'height': `${layoutHeight}px` });
-        layoutManager.height = layoutHeight;
-        const allRows = layoutManager.root.contentItems[0].contentItems;
-        allRows[0].config.height = 40
-        allRows[1].config.height = 60
-        item.callDownwards("setSize", [], true, false);
-        // layoutManager.updateSize(layoutWidth, (layoutHeight));
-        // console.log(item)
-      }
+        setTimeout(() => {
+          let layoutManager = item.layoutManager;
+          // let layoutWidth = layoutManager.width;
+          item.config.height = 35;
+          let layoutHeight = layoutManager.height + 250;
+          const containerHeight = layoutHeight + 100
+          $('#layoutContainer').css({ 'height': `${containerHeight}px` });
+          layoutManager.height = layoutHeight;
+          const allRows = layoutManager.root.contentItems[0].contentItems;
+          const prevFirstRowPix = ((containerHeight - 470) * allRows[0].config.height) / 100;
+          const currerPer = (prevFirstRowPix * 100) / (containerHeight);
+          allRows[0].config.height = currerPer;
 
+          // allRows[1].config.height = 60
+          // item.callDownwards("setSize", [], true, true);
+          // layoutManager.updateSize(layoutWidth, (layoutHeight));
+          layoutManager.updateSize();
+
+        }, 200);
+      }
     })
 
 
     this.myLayout.on("stateChanged", item => {
+
+      // let items = this.myLayout._findAllStackContainers();
+      // console.log(item)
       if (item == undefined) return
       let origin = item.origin;
       let layoutManager = origin.layoutManager;
@@ -215,69 +227,127 @@ export class DashboardChartSharedComponent implements OnInit {
       let comp = this;
 
       const emptyContainer = origin.layoutManager.root.getItemsById("hiddenContainer");
-      if (emptyContainer[0].config && emptyContainer[0].config.height != 0) {
+      if ((!this.hideChart && this.savedState != null) || emptyContainer && emptyContainer[0].config && emptyContainer[0].config.height != 0) {
+        this.hideChart = true;
         emptyContainer[0].config.height = 0;
         emptyContainer[0].element.hide();
+        if (this.savedState != null) {
+          layoutHeight = JSON.parse(this.savedState).layoutHeight
+        }
         origin.layoutManager.height = layoutHeight;
         $('#layoutContainer').css({ 'height': `${layoutHeight}px` });
-        origin.layoutManager.updateSize(layoutWidth, layoutHeight);
+
+        if (this.savedState != null) {
+          setTimeout(() => {
+            origin.layoutManager.updateSize(layoutWidth, layoutHeight);
+          }, 1000);
+        } else {
+          origin.layoutManager.updateSize(layoutWidth, layoutHeight);
+        }
+
       }
 
 
       if (origin._dimension && origin._dimension == 'height') {
+
         const allRows = layoutManager.root.contentItems[0].contentItems;
         const splitters = origin._splitter;
 
-        let height;
+        let height = 0;
         let top;
         let containerHeight = [];
+        // console.log(splitters);
+        // console.log(allRows);
 
         for (let i = 0; i < splitters.length; i++) {
           if (splitters[i]) {
+
             splitters[i]._dragListener.on('dragStart', function (item) {
+              height = 0
               layoutWidth = layoutManager.width;
               layoutHeight = layoutManager.height;
-              containerHeight = allRows.map(x => { return x.config.height });
             })
 
             splitters[i]._dragListener.on('drag', function (item) {
+              height += 2
+
               top = comp.helper.replaceAll(splitters[i].element.css('top'), "px", "");
               if (top) top = parseInt(top)
+
             })
 
             splitters[i]._dragListener.on('dragStop', function (item) {
-              setTimeout(() => {
-                if (top == 0 && i == (splitters.length - 1)) {
-                  top = 150;
-                  height = layoutHeight + top;
-                } else {
-                  height = layoutHeight + top;
-                  const layoutContainerHeight = document.querySelector('.cont').clientHeight;
-                  if (height < layoutContainerHeight) height = layoutContainerHeight;
-                  if (height > 2000) height = 2000;
+              const nextRow = splitters[i].element.next();
+
+              let currentHeight;
+              if (top >= 0) {
+                if (top > height) height = top;
+                if (top == 0) height + 170;
+                currentHeight = layoutHeight + height;
+
+                if (!nextRow.is(":visible")) {
+                  const allContainers = layoutManager._findAllStackContainers();
+                  const lastContainer = allContainers[allContainers.length - 2];//-2 is for skip last hidden container
+                  const lastContainerHeightPer = (height * 100) / currentHeight;
+                  const lastContainerPrevHeight = lastContainer.config.height;
+                  lastContainer.config.height = lastContainerPrevHeight + lastContainerHeightPer;
+                  console.log(lastContainer.config.height)
+                  if (lastContainer.config.height > 50) {
+                    lastContainer.config.height = 50
+                  }
                 }
 
-                let containerHeightPer = (top * 100) / height;
-                containerHeightPer = containerHeightPer / 2;
-                if (containerHeightPer > 0) {
-                  allRows[i].config.height = containerHeight[i] + containerHeightPer;
-                }
+                // const prevFirstRowPix = ((layoutHeight) * allRows[0].config.height) / 100;
+                // const currerPer = (prevFirstRowPix * 100) / currentHeight;
+                // allRows[0].config.height = currerPer;
+                // console.log({ layoutHeight, height, top, currentHeight, prevFirstRowPix, currerPer })
+              } else {
+                height = top;
+                currentHeight = layoutHeight + height;
+              }
 
-                if (allRows[i].config.height < 30) {
-                  allRows[i].config.height = 30
-                }
+              $('#layoutContainer').css({ 'height': `${currentHeight}px` });
+              layoutManager.height = currentHeight;
+              origin.layoutManager.updateSize()
 
-                allRows[i].callDownwards("setSize", [], true, false)
-                origin.layoutManager.height = height;
-                $('#layoutContainer').css({ 'height': `${height + 20}px` })
-                origin.layoutManager.updateSize(layoutWidth, height);
-              }, 10);
+
+
+
+
+              // setTimeout(() => {
+              //   if (top == 0 && i == (splitters.length - 1)) {
+              //     top = 150;
+              //     height = layoutHeight + top;
+              //   } else {
+              //     height = layoutHeight + top;
+              //     const layoutContainerHeight = document.querySelector('.cont').clientHeight;
+              //     if (height < layoutContainerHeight) height = layoutContainerHeight;
+              //     // if (height > 2000) height = 2000;
+              //   }
+
+              //   let containerHeightPer = (top * 100) / height;
+              //   containerHeightPer = containerHeightPer;
+              //   if (containerHeightPer > 0) {
+              //     allRows[i].config.height = containerHeight[i] + containerHeightPer;
+              //   }
+
+              //   /*// if (allRows[i].config.height < 30) {
+              //   //   allRows[i].config.height = 30
+              //   // } */
+
+              //   allRows[i].callDownwards("setSize", [], true, false)
+              //   origin.layoutManager.height = height;
+              //   $('#layoutContainer').css({ 'height': `${height + 20}px` })
+              //   origin.layoutManager.updateSize(layoutWidth, height);
+              // }, 10);
 
             })
           }
 
         }
 
+      } else {
+        origin.layoutManager.updateSize()
       }
 
     });
@@ -299,17 +369,21 @@ export class DashboardChartSharedComponent implements OnInit {
 
   renderChartIfStateSaved(container: any, state: any) {
     let currentStateChart = state.containerChartObj;
-    const { chartType, chartName } = currentStateChart;
-    if (chartType == 3) {
-      let cl = "";
-      if (state.text == "Component1") cl = "pi111"; // DEFAULT CHART CLASS START STRING
-      if (state.text == "Component2") cl = "pi22"; // DEFAULT CHART CLASS START STRING
-      this.renderPieChartIfStatesaved(container, state, chartName + cl)
+    if (currentStateChart) {
+      // console.log(currentStateChart)
+      const { chartType, chartName } = currentStateChart;
+      if (chartType == 3) {
+        let cl = "";
+        if (state.text == "Component1") cl = "pi111"; // DEFAULT CHART CLASS START STRING
+        if (state.text == "Component2") cl = "pi22"; // DEFAULT CHART CLASS START STRING
+        this.renderPieChartIfStatesaved(container, state, chartName + cl)
+      }
+
+      if (chartType == 1) this.renderLineChartIfStatesaved(container, state, chartName);
+      if (chartType == 4) this.renderBarChartIfStatesaved(container, state, chartName);
+      if (chartType == 5) this.renderGroupBarChartIfStatesaved(container, state, chartName);
     }
 
-    if (chartType == 1) this.renderLineChartIfStatesaved(container, state, chartName);
-    if (chartType == 4) this.renderBarChartIfStatesaved(container, state, chartName);
-    if (chartType == 5) this.renderGroupBarChartIfStatesaved(container, state, chartName);
   }
 
 
@@ -359,7 +433,7 @@ export class DashboardChartSharedComponent implements OnInit {
     if ($('.lm_vertical').length == 0 && $('.lm_horizontal').length == 0 && $('.lm_item.lm_row').length == 1) {
       this.createNewChart($event, side, chartData);
     } else {
-      const numberOfCharts = document.querySelectorAll('.lm_item_container').length-1; //-1 is for hidden chart;
+      const numberOfCharts = document.querySelectorAll('.lm_item_container').length - 1; //-1 is for hidden chart;
       if (numberOfCharts >= this.numberOfChartCanBeAdded) {
         this.alertService.error(`Maximum ${this.numberOfChartCanBeAdded} chart can be added.`)
         return
@@ -911,12 +985,13 @@ export class DashboardChartSharedComponent implements OnInit {
 
 
   saveChartsState() {
-    if ($('.lm_vertical').length == 0 && $('.lm_horizontal').length == 0 && $('.lm_selectable').length == 0) {
+    if ($('.lm_vertical').length == 0 && $('.lm_horizontal').length == 0 && $('.lm_item.lm_row').length == 1) {
       this.alertService.error("There is no state to save.");
       return
     }
-    const state = JSON.stringify(this.myLayout.toConfig());
-    const chartState = { UserId: this.currentUser.userId, ChartData: state, dashboard: this.portalName }
+    let state = this.myLayout.toConfig();
+    state.layoutHeight = this.myLayout.height;
+    const chartState = { UserId: this.currentUser.userId, ChartData: JSON.stringify(state), dashboard: this.portalName }
     this.subs.add(
       this.chartService.saveUserChartData(chartState).subscribe(
         data => {
@@ -977,16 +1052,19 @@ export class DashboardChartSharedComponent implements OnInit {
         this.outputDataForGrid(data);
       } else {
         const { ddChartId } = parentChartObj;
-        this.chartService.getChartById(ddChartId).subscribe(
-          datachart => {
-            if (datachart.isSuccess) {
-              const chartData = datachart.data;
-              if (chartData.dataSP) {
-                this.outputDataForGrid(data);
+        if (ddChartId) {
+          this.chartService.getChartById(ddChartId).subscribe(
+            datachart => {
+              if (datachart.isSuccess) {
+                const chartData = datachart.data;
+                if (chartData.dataSP) {
+                  this.outputDataForGrid(data);
+                }
               }
             }
-          }
-        );
+          )
+        }
+
       }
     }
   }
