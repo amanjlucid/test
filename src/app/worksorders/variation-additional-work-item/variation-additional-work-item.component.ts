@@ -28,7 +28,7 @@ export class VariationAdditionalWorkItemComponent implements OnInit {
     take: 25,
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -40,6 +40,7 @@ export class VariationAdditionalWorkItemComponent implements OnInit {
   mySelection: any[] = [];
   packageQuantityWindow = false;
   worksOrderData: any;
+  selectedSingleVarWorkList: any;
   selectedPackagesArr: any = [];
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
 
@@ -76,12 +77,7 @@ export class VariationAdditionalWorkItemComponent implements OnInit {
   }
 
   woMenuAccess(menuName) {
-    return this.helperService.checkWorkOrderAreaAccess(this.userType, this.worksOrderAccess, this.worksOrderUsrAccess, menuName)
-    // if (this.userType == undefined) return this.worksOrderUsrAccess.indexOf(menuName) != -1;
-    // if (this.userType?.wourroletype == "Dual Role") {
-    //   return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1;
-    // }
-    // return this.worksOrderUsrAccess.indexOf(menuName) != -1;
+    return this.helperService.checkWorkOrderAreaAccess(this.worksOrderUsrAccess, menuName)
   }
 
   requiredPagedata() {
@@ -240,8 +236,12 @@ export class VariationAdditionalWorkItemComponent implements OnInit {
   }
 
   addTickedToVariation() {
+
+    let v = this.selectedSingleVarWorkList;
+    let y = this.openedFrom;
     this.packageQuantityWindow = true;
     $('.worklistPackageOvrlay').addClass('ovrlay');
+    this.chRef.detectChanges();
   }
 
   closePackageQuantiyEvent(eve) {

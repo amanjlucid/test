@@ -27,7 +27,7 @@ export class ServiceServiceNotepadsComponent implements OnInit {
     }],
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -161,7 +161,7 @@ export class ServiceServiceNotepadsComponent implements OnInit {
         this.notesDetails = true;
       } else if (this.selectedNotepad.ntplinktype == 'L') {
         let lnk = this.selectedNotepad.ntplink;
-        
+
         let fileExt = lnk.substring(lnk.lastIndexOf(".") + 1).toLowerCase();
         this.assetAttributeService.getMimeType(fileExt).subscribe(
           mimedata => {
@@ -180,7 +180,7 @@ export class ServiceServiceNotepadsComponent implements OnInit {
                       var file = new Blob([byteArray], { type: mimedata.data.mimeType1 + ';base64' });
                       var fileURL = URL.createObjectURL(file);
                       let newPdfWindow =window.open(fileURL);
-  
+
                       // let newPdfWindow = window.open("",this.selectedNotes.fileName);
                       // let iframeStart = "<\iframe title='Notepad' width='100%' height='100%' src='data:" + mimedata.data.mimeType1 + ";base64, ";
                       // let iframeEnd = "'><\/iframe>";
@@ -204,7 +204,7 @@ export class ServiceServiceNotepadsComponent implements OnInit {
               }
           }
         )
-    
+
       } else if (this.selectedNotepad.ntplinktype == 'I') {
         let url: string = '';
         if (!/^http[s]?:\/\//.test(this.selectedNotepad.ntplink)) {

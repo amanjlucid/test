@@ -1,5 +1,4 @@
-<kendo-window title="{{title}}" *ngIf="openValuationWindow" (close)="closeValuation()" [top]="10" [minWidth]="700"
-    [width]="1150" [height]="auto" [minHeight]="300">
+<kendo-window id="dialog" title="{{title}}" *ngIf="openValuationWindow" (close)="closeValuation()" [(state)]="windowState" >
 
 
     <div class="row">
@@ -105,7 +104,7 @@
 
     <div class="row mt-3 valuationGridRow">
         <div class="col-md-12 valuationGridCol">
-        
+
             <kendo-grid id="valuationGrid" #grid [data]="view | async" [sort]="gridState.sort" [pageable]="false"
                 [sortable]="true" (dataStateChange)="onStateChange($event)" (cellClick)="cellClickHandler($event)"
                 (cellClose)="cellCloseHandler($event)" (cancel)="cancelHandler($event)" (save)="saveHandler($event)"
@@ -165,7 +164,7 @@
                             {{ dataItem.woavcommittedvalue | currency:'GBP':'symbol' }}
                         </span>
                     </ng-template> -->
-                    <!-- <ng-template kendoGridEditTemplate let-dataItem="dataItem"> woavcontractorvaluationpct  
+                    <!-- <ng-template kendoGridEditTemplate let-dataItem="dataItem"> woavcontractorvaluationpct
                         <input [value]="dataItem.woavcommittedvalue" kendoGridFocusable />
                     </ng-template> -->
 
@@ -209,8 +208,8 @@
                 [disabled]="paymentScheduleInp.wpspaymentstatus != 'Unpaid' || !selectedValuation || selectedValuation.woavvaluationstatus == 'Completion'">Global
                 Valuation Updates</button>
 
-            <button *ngIf="woMenuAccess('Set to £0 Payment')" [disabled]="!selectedValuation || 
-                paymentScheduleInp.wpspaymentstatus != 'Unpaid' || 
+            <button *ngIf="woMenuAccess('Set to £0 Payment')" [disabled]="!selectedValuation ||
+                paymentScheduleInp.wpspaymentstatus != 'Unpaid' ||
                 selectedValuation.woavvaluationstatus == 'Completion'" type="button" (click)="setValutionToZero()"
                 class="btn btn-sm themeButton">Set
                 £0 Payment</button>

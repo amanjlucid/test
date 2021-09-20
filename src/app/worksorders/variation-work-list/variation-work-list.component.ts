@@ -29,7 +29,7 @@ export class VariationWorkListComponent implements OnInit {
     take: 25,
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -67,7 +67,7 @@ export class VariationWorkListComponent implements OnInit {
     take: 25,
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -132,13 +132,7 @@ export class VariationWorkListComponent implements OnInit {
 
 
   woMenuAccess(menuName) {
-    return this.helperService.checkWorkOrderAreaAccess(this.userType, this.worksOrderAccess, this.worksOrderUsrAccess, menuName)
-    // if (this.userType == undefined) return this.worksOrderUsrAccess.indexOf(menuName) != -1;
-    // console.log(menuName)
-    // if (this.userType?.wourroletype == "Dual Role") {
-    //   return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
-    // }
-    // return this.worksOrderUsrAccess.indexOf(menuName) != -1
+    return this.helperService.checkWorkOrderAreaAccess(this.worksOrderUsrAccess, menuName)
   }
 
 
@@ -248,6 +242,7 @@ export class VariationWorkListComponent implements OnInit {
   openFeesMethod() {
     $('.variationWorkListOverlay').addClass('ovrlay')
     this.openFees = true;
+    this.chRef.detectChanges();
   }
 
   closeOpenFees(eve) {
@@ -259,6 +254,7 @@ export class VariationWorkListComponent implements OnInit {
   openAdditionalWorkItem() {
     $('.variationWorkListOverlay').addClass('ovrlay')
     this.openadditionalWork = true
+    this.chRef.detectChanges();
   }
 
   closeAdditionalWorkItem(eve) {
@@ -448,7 +444,7 @@ export class VariationWorkListComponent implements OnInit {
     this.selectedSingleVarWorkList = item;
     $('.variationWorkListOverlay').addClass('ovrlay')
     this.EditWorkPackageQtyCostWindow = true;
-
+    this.chRef.detectChanges();
   }
 
   closeEditWorkPackageQtyCostWindow(eve) {

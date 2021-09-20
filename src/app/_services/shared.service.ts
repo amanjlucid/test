@@ -219,6 +219,13 @@ export class SharedService {
     this.userTypeSrc.next(data)
   }
 
+  private userIsConctractorSrc = new BehaviorSubject<any>([]);
+  isUserContractorObs = this.userIsConctractorSrc.asObservable();
+
+  changeUserIsContractor(data) {
+    this.userIsConctractorSrc.next(data)
+  }
+
 
   //######### Works order module shared service end #########//
 

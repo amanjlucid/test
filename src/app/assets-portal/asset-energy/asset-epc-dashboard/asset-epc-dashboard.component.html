@@ -1,63 +1,10 @@
+<app-dashboard-chart-shared [portalName]="portalName" [portalNameForChart]="portalNameForChart"
+  (gridDataEvent)="gridDataEvent($event)">
+</app-dashboard-chart-shared>
 
-<div class="container-fluid flex-grow-1">
-    <div class="row">
-      <div class="col-md-2 col-sm-4 p-2">
-        <h4 class="font-weight-bold">
-         Energy
-        </h4>
-      </div>
-  
-      <div class="col-md-3 col-sm-4 p-2">
-        <h5 *ngIf="dashboardName != undefined" class="font-weight-bold mt-1">{{dashboardName}} Dashboard</h5>
-      </div>
-  
-      <div class="col-md-7 col-sm-4 p-2 text-right">
-        <!-- <button id="chartBtn" (click)="openGrid()" class="btn btn-sm themeButton mr-1">Grid
-        </button> -->
-  
-        <button id="chartBtn" (click)="saveChartsState()" class="btn btn-sm themeButton mr-1">Save Chart State
-        </button>
-  
-        <button id="chartBtn" (click)="openChartList()" class="btn btn-sm themeButton">Charts
-        </button>
-      </div>
-    </div>
-  </div>
-  
-  <div class="cont">
-    <div id="wrapper">
-      <!-- <form #userlogin = "ngForm" (ngSubmit) = "onClickSubmit(userlogin.value)" > -->
-      <div id="layoutContainer"></div>
-    <!-- </form> -->
 
-    </div>
-  
-  </div>
-  
-  <!-- Search bar -->
-  <div class="search-container chartNameContainer dismiss">
-  
-    <h5 style="color:white" class="p-4 m-0 line-height-1 font-weight-bolder bg-light theme-settings-header"> Chart List
-      <a href="javascript:void(0)" (click)="closeSearchBar()" class="theme-settings-close-btn font-weight-light px-4 py-2"
-        style="color:#ffffff;" tabindex="-1">×</a> </h5>
-  
-    <div class="searchDiv">
-      <div class="btn-group spBtnGrp" *ngFor="let chartName of chartNames">
-        <button type="button" class="btn spChartBtn dropdown-toggle" data-toggle="dropdown"
-          aria-expanded="false">{{chartName.chartName}}</button>
-        <div class="dropdown-menu" x-placement="bottom-start"
-          style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
-          <a class="dropdown-item" (click)="renderChart($event, 'left',chartName)" href="javascript:void(0)">Add</a>
-  
-        </div>
-      </div>
-  
-  
-  
-    </div>
-  </div>
-  
-  <div class="eventdashboardovrlay"></div>
+<div class="eventdashboardovrlay"></div>
 
-<app-retrieved-epc-grid *ngIf="showDataPanel" [retrievedEPCs]="retrievedEPCs" [selectedBarChartXasis]="selectedBarChartXasis" [showPanel]="showDataPanel"
-    (closeEPCChartDataWindow)="closeDataPanel($event)"></app-retrieved-epc-grid>
+<app-retrieved-epc-grid *ngIf="showDataPanel" [retrievedEPCs]="retrievedEPCs"
+  [selectedBarChartXasis]="selectedBarChartXasis" [showPanel]="showDataPanel" [FromDashboard]="portalNameForChart"
+  (closeEPCChartDataWindow)="closeDataPanel($event)"></app-retrieved-epc-grid>

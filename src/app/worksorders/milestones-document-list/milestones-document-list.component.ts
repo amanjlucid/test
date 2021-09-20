@@ -23,7 +23,7 @@ export class MilestonesDocumentListComponent implements OnInit {
     sort: [],
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -42,6 +42,7 @@ export class MilestonesDocumentListComponent implements OnInit {
   fileExt: string = "JPG, GIF, PNG, PDF";
   maxSize: number = 5; // 5MB
   description: any;
+  AllowDocsUpload: boolean = false;
 
   constructor(
     private chRef: ChangeDetectorRef,
@@ -60,19 +61,17 @@ export class MilestonesDocumentListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // this.subs.add(
-    //   combineLatest([
-    //     this.sharedService.woUserSecObs,
-    //     this.sharedService.worksOrdersAccess,
-    //     this.sharedService.userTypeObs
-    //   ]).subscribe(
-    //     data => {
-    //       this.worksOrderAccess = data[0];
-    //       this.worksOrderUsrAccess = data[1];
-    //       this.userType = data[2][0];
-    //     }
-    //   )
-    // )
+
+
+    this.subs.add(
+      this.worksorderManagementService.GetDocumentsUploadEnabled().subscribe(
+        data => {
+          if (data.isSuccess) {
+            this.AllowDocsUpload = (data.data == 'Y');
+          } else this.alertService.error(data.message);
+        }, err => this.alertService.error(err)
+      )
+    )
 
     this.subs.add(
       this.worksorderManagementService.getListOfSystemValuesByCode().subscribe(
@@ -271,7 +270,9 @@ export class MilestonesDocumentListComponent implements OnInit {
 
   openFileNotExistConfirmationOnAdd() {
     $('.k-window').css({ 'z-index': 1000 });
-    this.confirmationDialogService.confirm('Please confirm..', 'You cannot add a document that is outside of the Works Order Document Location directory.  Upload Document Now?')
+    let mess = 'You cannot add a document that is outside of the Works Order Document Location directory.'
+    if(this.AllowDocsUpload){mess += '  Upload Document Now?' }
+    this.confirmationDialogService.confirm('Please confirm..', mess)
       .then((confirmed) => (confirmed) ? $('.uploadDocBtn').trigger('click') : console.log(confirmed))
       .catch(() => console.log('Attribute dismissed the dialog.'));
   }
@@ -328,7 +329,7 @@ export class MilestonesDocumentListComponent implements OnInit {
 
 
   updateDescription() {
-    //update doc description 
+    //update doc description
     const { wosequence, wocheckname, wopsequence, wochecksurcde } = this.selectedMilestoneInp;
 
     let params = {
@@ -355,12 +356,5 @@ export class MilestonesDocumentListComponent implements OnInit {
 
 
   }
-  // woMenuAccess(menuName: string) {
-  //   if (this.userType == undefined) return true;
-  //   if (this.userType?.wourroletype == "Dual Role") {
-  //     return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
-  //   }
-  //   return this.worksOrderUsrAccess.indexOf(menuName) != -1
-  // }
 
 }

@@ -303,8 +303,8 @@ export class WorksOrdersService {
         return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/WEBWorksOrdersMilestoneProgrammeLog?wosequence=${wosequence}&wopsequence=${wopsequence}`, this.httpOptions);
     }
 
-    WOReportingProgSummaryTree(wprsequence, wosequence, reporttype) {
-        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/WOReportingProgSummaryTree?wprsequence=${wprsequence}&wosequence=${wosequence}&reporttype=${reporttype}`, this.httpOptions);
+    WOReportingProgSummaryTree(wprsequence, wosequence, reporttype, status = "S") {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/WOReportingProgSummaryTree?wprsequence=${wprsequence}&wosequence=${wosequence}&reporttype=${reporttype}&actInact=${status}`, this.httpOptions);
     }
 
 
@@ -362,6 +362,26 @@ export class WorksOrdersService {
     AuthorisePayment(params) {
         return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/AuthorisePayment`, params, this.httpOptions);
     }
+
+    addScheduleValidation(params) {
+        return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/AddScheduleValidation`, params, this.httpOptions);
+    }
+
+    GetIssueVariationFromNew() {
+      return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/IssueVariationFromNew`, this.httpOptions);
+  }
+
+  GetAllowMilestones() {
+      return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/AllowMilestones`, this.httpOptions);
+  }
+
+  getWorksOrderDefectLiabilityPeriod(woSeq) {
+    return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWorksOrderDefectLiabilityPeriod?wosequence=${woSeq}`, this.httpOptions);
+  }
+
+  getWorksOrderContractType(woSeq) {
+    return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWorksOrderContractType?wosequence=${woSeq}`, this.httpOptions);
+  }
 
 
 }

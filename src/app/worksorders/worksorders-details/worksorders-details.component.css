@@ -416,6 +416,32 @@ label.radio-inline {
   color: white !important;
 }
 
+.moneytext {
+  text-align: right;
+}
+
+.k-tooltip {
+  background-color: white !important;
+}
+
+/* .workorderDetailContainer {
+  max-height: 800px;
+  overflow: scroll;
+}
+
+app-worksorders-details .gridRow {
+  height: calc(100% - 128px);
+  
+}
+
+app-worksorders-details .gridRow .workorderDetailGrid {
+  height: calc(100% - 25px);
+}
+
+app-worksorders-details .gridRow .workorderDetailGrid #workorderDetailtable {
+  height: 100%;
+} */
+
 /* .workorderDetailGrid .k-grid-content-locked {
   z-index: 2 !important;
   overflow: initial !important;

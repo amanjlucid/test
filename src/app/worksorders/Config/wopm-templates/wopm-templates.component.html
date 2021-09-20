@@ -16,7 +16,7 @@
                  type="button" class="btn btn-sm themeButton mr-1" (click)="openFile()">Import Template
                  <input type="file" [(ngModel)]="fileValue" accept=".csv" style="display:none" (change)="handleFile($event)"></button>
 
-                 <button 
+                 <button
                  type="button" class="btn btn-sm themeButton mr-1" (click)="export()">Export</button>
 
                 <button id="showFilePanel" (click)="openSearchBar()" class="btn btn-sm themeButton"><i
@@ -31,7 +31,7 @@
     <div class="row mt-2">
         <div class="col-md-12">
 
-            <kendo-grid [groupable]="true" [data]="gridView"  [height]="720" filterable="menu" [loading]="loading" [resizable]="true" 
+            <kendo-grid [groupable]="true" [data]="gridView"  [height]="720" filterable="menu" [loading]="loading" [resizable]="true"
             [sortable]="{allowUnsort: allowUnsort, mode: multiple ? 'multiple' : 'single' }" [group]="state.group"
             [skip]="state.skip" [sort]="state.sort" [selectable]="selectableSettings" kendoGridSelectBy="wotsequence"
                 [selectedKeys]="mySelection" (selectedKeysChange)="onSelectedKeysChange($event)" [filter]="state.filter"
@@ -45,13 +45,13 @@
                             style="margin-top: -7px;">
                             <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"
                                 (click)="setSeletedRow(dataItem)"></i>
-                            <div class="dropdown-menu"  
+                            <div class="dropdown-menu"
                             *ngIf="checkWorksOrdersAccess('Edit Template') || checkWorksOrdersAccess('Copy Template') || checkWorksOrdersAccess('Delete Template')"
                             >
 
                                 <a class="dropdown-item" href="javascript:void(0)" *ngIf="checkWorksOrdersAccess('Edit Template')"
                                 (click)="openEditTemplate('edit', dataItem)">Edit</a>
-                                
+
                                 <a class="dropdown-item" href="javascript:void(0)" *ngIf="checkWorksOrdersAccess('Copy Template')"
                                 (click)="copyTemplate(dataItem)">Copy</a>
 
@@ -96,7 +96,7 @@
                     <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
                     let-filterService="filterService">
                     <multicheck-filter [isPrimitive]="false" [field]="column.field" [currentFilter]="filter"
-                        [filterService]="filterService" textField="text" valueField="val"  
+                        [filterService]="filterService" textField="text" valueField="val"
                         [data]="distinctPrimitive(column.field)">
                     </multicheck-filter>
                 </ng-template>
@@ -105,11 +105,11 @@
                     <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
                     let-filterService="filterService">
                     <multicheck-filter [isPrimitive]="false" [field]="column.field" [currentFilter]="filter"
-                        [filterService]="filterService" textField="text" valueField="val"  
+                        [filterService]="filterService" textField="text" valueField="val"
                         [data]="distinctPrimitive(column.field)">
                     </multicheck-filter>
                 </ng-template>
-                </kendo-grid-column>       
+                </kendo-grid-column>
                 <kendo-grid-column field="createdby" title="Created By" width="180">
                 </kendo-grid-column>
                 <kendo-grid-column field="mPgpA" title="Created" width="120" filter="date"
@@ -149,7 +149,7 @@
         </div>
     </div>
 
- 
+
 <!-- Search bar -->
 <div class="search-container dismiss">
 
@@ -198,7 +198,7 @@
         </form>
 
     </div>
-</div>   
+</div>
 </div>
 
 <div class="disabledBackground"></div>
@@ -224,15 +224,15 @@
 </kendo-dialog>
 
 
-<app-wopm-checklist-master [checklistWindow]="checklistWindow" [wopmTemplateModel]="wopmTemplateModel" 
+<app-wopm-checklist-master [checklistWindow]="checklistWindow" [wopmTemplateModel]="wopmTemplateModel"
 *ngIf="checklistWindow" (closechecklistWindow)="closeChecklistWindow($event)">
 </app-wopm-checklist-master>
 
-<app-wopm-edit-checklist-dependencies [dependenciesWindow]="dependenciesWindow" [wopmTemplateModel]="wopmTemplateModel" 
+<app-wopm-edit-checklist-dependencies [dependenciesWindow]="dependenciesWindow" [wopmTemplateModel]="wopmTemplateModel"
 *ngIf="dependenciesWindow" (closedependenciesWindow)="closeEditDependenciesWindow($event)">
 </app-wopm-edit-checklist-dependencies>
 
 
-<app-reporting [reportingAction]="reportingAction" [surveyPortalXport]="selectedXport" [openReports]="openReports"
+<app-reporting [reportingAction]="reportingAction" [surveyPortalXport]="selectedXport" [openReports]="openReports" [worksOrderReports]=true
 *ngIf="openReports" (closeReportingWin)="closeReportingWin($event)"></app-reporting>
 

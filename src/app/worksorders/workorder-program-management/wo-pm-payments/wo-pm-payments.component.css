@@ -36,3 +36,11 @@
       border-bottom: 1px solid;
       padding-bottom: 4px;
 }
+
+.paymentsGrid .paid {
+  background-color: rgba(230, 0, 126, 0.2) !important;
+}
+
+.paymentsGrid .unpaid {
+  background-color: white !important;
+}

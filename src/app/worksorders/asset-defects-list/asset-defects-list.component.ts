@@ -16,6 +16,7 @@ import { combineLatest, forkJoin, Observable } from 'rxjs';
 
 export class AssetDefectsListComponent implements OnInit {
   @Input() openDefectsList: boolean = false;
+  @Input() woassetstatus: string = '';
   @Input() openedFrom = 'assetchecklist';
   @Input() singleWorkOrderAssetInp: any = [];
   @Input() singleWorkOrderInp: any = [];
@@ -29,7 +30,7 @@ export class AssetDefectsListComponent implements OnInit {
     take: 25,
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -51,6 +52,8 @@ export class AssetDefectsListComponent implements OnInit {
   defectFormMode = 'new';
   openDefectform = false;
   selectedSingleDefect: any;
+  disableNewDefects: boolean = true;
+  disableEditDefects: boolean = true;
 
   //asset Defect
   openAssetDefect = false;
@@ -88,7 +91,7 @@ export class AssetDefectsListComponent implements OnInit {
         }
       )
     )
-
+    this.setNewDefectDisabled()
     this.requiredPageData();
   }
 
@@ -106,7 +109,7 @@ export class AssetDefectsListComponent implements OnInit {
   requiredPageData() {
     let pageReq = [];
 
-    if (this.openedFrom == "assetchecklist") {
+    if (this.openedFrom == "workdetail" || this.openedFrom == "assetchecklist") {
       const { wprsequence, wosequence, wopsequence, assid } = this.singleWorkOrderAssetInp;
       pageReq = [
         this.workOrderProgrammeService.getWorkProgrammesByWprsequence(wprsequence),
@@ -117,7 +120,7 @@ export class AssetDefectsListComponent implements OnInit {
       ];
     }
 
-    else if (this.openedFrom == "workdetail" || this.openedFrom == "workorder") {
+    else if ( this.openedFrom == "workorder") {
       const { wprsequence, wosequence } = this.singleWorkOrderInp;
       pageReq = [
         this.workOrderProgrammeService.getWorkProgrammesByWprsequence(wprsequence),
@@ -134,7 +137,7 @@ export class AssetDefectsListComponent implements OnInit {
           if (programmeData.isSuccess) this.programmeData = programmeData.data[0];
           if (worksOrderData.isSuccess) this.worksOrderData = worksOrderData.data;
 
-          if (this.openedFrom == "assetchecklist") {
+          if (this.openedFrom == "workdetail" || this.openedFrom == "assetchecklist") {
             const phaseData = data[2];
             const workorderAsset = data[3];
             const workorderAssetFullDetail = data[4];
@@ -150,14 +153,37 @@ export class AssetDefectsListComponent implements OnInit {
     )
   }
 
+  setNewDefectDisabled()
+  {
+    if(this.woassetstatus != ''){
+      let value = this.woassetstatus
+      if(value == 'Handover' || value == 'Practical Completion' ||value == 'Final Completion'){
+        this.disableNewDefects = false
+        this.disableEditDefects = false
+      }else if(value == 'In Progress')
+      {
+        this.disableNewDefects = true
+        this.disableEditDefects = false
+      }else{
+        this.disableNewDefects = true
+        this.disableEditDefects = true
+      }
+    }else{
+      this.disableNewDefects = true
+      this.disableEditDefects = true
+    }
+
+
+  }
+
 
   getDefectList() {
     let woDefectsApiCall: Observable<any>;
 
-    if (this.openedFrom == "assetchecklist") {
+    if (this.openedFrom == "workdetail" || this.openedFrom == "assetchecklist") {
       const { wosequence, wopsequence, assid } = this.singleWorkOrderAssetInp;
       woDefectsApiCall = this.workOrderProgrammeService.workOrderDefectForAssets(wosequence, assid, wopsequence);
-    } else if (this.openedFrom == "workdetail" || this.openedFrom == "workorder") {
+    } else if (this.openedFrom == "workorder") {
       const { wprsequence, wosequence } = this.singleWorkOrderInp;
       woDefectsApiCall = this.workOrderProgrammeService.getWEBWorksOrdersDefectsForProgrammeAndUserSingleWO(wprsequence, wosequence, this.currentUser.userId);
     } else {
@@ -215,17 +241,6 @@ export class AssetDefectsListComponent implements OnInit {
   openDefectForm(mode: string, item = null) {
     this.selectedSingleDefect = item;
     this.defectFormMode = mode;
-
-    let woassstatus;
-    if (this.openedFrom == "assetchecklist") {
-      if (this.workorderAssetFullDetail == undefined) return;
-      woassstatus = this.workorderAssetFullDetail.woassstatus;
-    } else {
-      //from workorder list 
-      woassstatus = item.woassstatus;
-    }
-
-    if (woassstatus != "Handover" && woassstatus != "Final Completion") return;
     $('.defectListoverlay').addClass('ovrlay');
     this.openDefectform = true;
 
@@ -303,7 +318,7 @@ export class AssetDefectsListComponent implements OnInit {
 
 
   woMenuBtnSecurityAccess(menuName) {
-    return this.helperService.checkWorkOrderAreaAccess(this.userType, this.worksOrderAccess, this.worksOrderUsrAccess, menuName)
+    return this.helperService.checkWorkOrderAreaAccess(this.worksOrderUsrAccess, menuName)
   }
 
 

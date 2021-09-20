@@ -3,7 +3,7 @@ import { SubSink } from 'subsink';
 import { GroupDescriptor, DataResult, process, State, SortDescriptor, distinct } from '@progress/kendo-data-query';
 import { PageChangeEvent, SelectableSettings } from '@progress/kendo-angular-grid';
 import { AlertService, EventManagerService, HelperService, ConfirmationDialogService, SharedService, WopmConfigurationService } from '../../_services'
-import { forkJoin } from 'rxjs';
+import { combineLatest } from 'rxjs';
 import { Router } from '@angular/router';
 import { WopmUserrole, SurveyPortalXports } from '../../_models'
 
@@ -38,7 +38,6 @@ export class ManagementRolesComponent implements OnInit {
     public mode: any = 'single';
     currentUser: any;
     loading = true
-    wopmSecurityList: any = [];
     public editFormWindow: boolean = false;
     public editFormType: any;
     public securityFunctionWindow: boolean = false;
@@ -47,13 +46,15 @@ export class ManagementRolesComponent implements OnInit {
     public JobRole: string;
     wopmUserRole: WopmUserrole
     userRoles:any = [];
+    worksOrderAccess = [];
+    worksOrderUsrAccess: any = [];
+    userType: any = [];
 
     constructor(
       private wopmConfigurationService: WopmConfigurationService,
       private alertService: AlertService,
       private confirmationDialogService: ConfirmationDialogService,
       private sharedService: SharedService,
-      private router: Router,
       private helper: HelperService
     ) { }
 
@@ -63,6 +64,21 @@ export class ManagementRolesComponent implements OnInit {
       this.helper.updateNotificationOnTop();
       let WOName = this.selectedWorksOrder.name != undefined? this.selectedWorksOrder.name:this.selectedWorksOrder.woname;
       this.title = 'Roles: ' +this.selectedWorksOrder.wosequence + ' - ' +  WOName ;
+
+      this.subs.add(
+        combineLatest([
+          this.sharedService.worksOrdersAccess,
+          this.sharedService.woUserSecObs,
+          this.sharedService.userTypeObs
+        ]).subscribe(
+          data => {
+            this.worksOrderAccess = data[0];
+            this.worksOrderUsrAccess = data[1];
+            this.userType = data[2][0];
+          }
+        )
+      )
+
       this.getGridDataDetails();
     }
 
@@ -70,29 +86,8 @@ export class ManagementRolesComponent implements OnInit {
       this.subs.unsubscribe();
     }
 
-    ngAfterViewInit() {
-      this.subs.add(
-        this.sharedService.worksOrdersAccess.subscribe(
-          data => {
-            this.wopmSecurityList = data;
-            if (this.wopmSecurityList.length > 0) {
-              if (!(this.checkWorksOrdersAccess("Roles Tab") && this.checkWorksOrdersAccess("Works Order Portal Access"))) {
-                this.router.navigate(['/dashboard']);
-              }
-            } else {
-              this.router.navigate(['/dashboard']);
-            }
-          }
-        )
-      )
-    }
-
-    checkWorksOrdersAccess(val: string): Boolean {
-      if (this.wopmSecurityList != undefined) {
-      return this.wopmSecurityList.includes(val);
-      } else {
-        return false;
-      }
+    checkWorksOrdersAccess(menuName): Boolean {
+      return this.helper.checkWorkOrderAreaAccess(this.worksOrderUsrAccess, menuName)
     }
 
     distinctPrimitive(fieldName: string): any {

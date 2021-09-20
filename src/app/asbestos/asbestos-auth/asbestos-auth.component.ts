@@ -25,7 +25,7 @@ export class AsbestosAuthComponent implements OnInit {
     sort: [],
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }

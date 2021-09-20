@@ -1,5 +1,8 @@
 <kendo-window title="{{title}}" *ngIf="documentWindow" (close)="closeDocumentWindow()" [top]="10" [minWidth]="700"
-    [width]="870" [height]="auto" [minHeight]="300">
+    [width]="870" [height]="700" >
+
+<div style="height:100%" >
+
     <div class="row headingDetail">
         <div class="col-md-12 mt-2">
             <div class="row">
@@ -27,9 +30,9 @@
 
     </div>
 
-    <div class="row mt-4">
+    <div style="height:84%" class="row mt-4">
         <div class="col-md-12">
-            <kendo-grid #grid [data]="gridView" [height]="410" [selectable]="{
+            <kendo-grid style="height:100%" #grid [data]="gridView"  [selectable]="{
         mode: 'single'
       }" filterable="menu" [resizable]="true" [sortable]="{
         allowUnsort: allowUnsort,
@@ -64,7 +67,7 @@
 
     </div>
 
-    <div class="row mt-2">
+    <div style="height:20px" class="row mt-2">
         <div class="col-md-9 text-left leftSideBtn">
             <input (change)="onFileChange($event)" type="file" #addDoc id="addDoc" style="display: none;">
             <button *ngIf="worksOrderAccess.indexOf('View Document') != -1" class="btn btn-sm themeButton"
@@ -77,6 +80,7 @@
                 (click)="addDocument()">Add Document</button>
 
             <button *ngIf="worksOrderAccess.indexOf('Upload Document') != -1"
+                [disabled]="!AllowDocsUpload"
                 class="btn btn-sm themeButton uploadDocBtn" (click)="uploadImage()">Upload Document</button>
 
             <button *ngIf="worksOrderAccess.indexOf('Remove Document') != -1" class="btn btn-sm themeButton"
@@ -90,6 +94,7 @@
 
     </div>
 
+  </div>
 
     <div class="wodocOvrlay"></div>
 

@@ -26,7 +26,7 @@ export class AssetNotepadComponent implements OnInit, OnDestroy {
       field: 'filter',
     }],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -116,7 +116,7 @@ export class AssetNotepadComponent implements OnInit, OnDestroy {
           } else {
             this.newNotesTitle = `${this.selectedNotes.filter} Image`;
           }
-     
+
 
           $('.portalwBlur').addClass('ovrlay');
           this.notesTitle = "Attribute Image";
@@ -135,8 +135,8 @@ export class AssetNotepadComponent implements OnInit, OnDestroy {
           this.notesDetails = true;
         } else if (this.selectedNotes.linkType == 'L') {
           let lnk = this.selectedNotes.link;
-  
-          
+
+
       let fileExt = lnk.substring(lnk.lastIndexOf(".") + 1).toLowerCase();
       this.assetAttributeService.getMimeType(fileExt).subscribe(
         mimedata => {
@@ -219,7 +219,7 @@ export class AssetNotepadComponent implements OnInit, OnDestroy {
 
       $('.portalwBlur').addClass('ovrlay');
       this.notesTitle = "Attribute Image";
-      this.assetAttributeService.getNotepadImage( 
+      this.assetAttributeService.getNotepadImage(
         this.selectedNotes.ntpType, this.selectedNotes.ntpGenericCode1, this.selectedNotes.ntpGenericCode2, this.selectedNotes.ntpSequence).subscribe(
           data => {
             this.notesImagePath = this._sanitizer.bypassSecurityTrustResourceUrl(
@@ -235,7 +235,7 @@ export class AssetNotepadComponent implements OnInit, OnDestroy {
     } else if (this.selectedNotes.linkType == 'L') {
       let lnk = this.selectedNotes.link;
 
-      
+
       let fileExt = lnk.substring(lnk.lastIndexOf(".") + 1).toLowerCase();
       this.assetAttributeService.getMimeType(fileExt).subscribe(
         mimedata => {

@@ -16,16 +16,16 @@
                     style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
                     <a *ngIf="woMenuBtnSecurityAccess('Release Asset')" class="dropdown-item"
                         (click)="assetActions('RELEASE', 'multiple')" href="javascript:void(0)"
-                        [ngClass]="{'disabled' : disableButtons('release')}">
+                        [ngClass]="{'disabled' : disableMenuMultiple('release')}">
                         Release</a>
 
                     <a *ngIf="woMenuBtnSecurityAccess('Issue Asset')" class="dropdown-item"
                         (click)="assetActions('ISSUE', 'multiple')" href="javascript:void(0)"
-                        [ngClass]="{'disabled' : disableButtons('issue')}">
+                        [ngClass]="{'disabled' : disableMenuMultiple('issue')}">
                         Issue</a>
 
 
-                    <a [ngClass]="{'disabled' : disableButtons('accept')}"
+                    <a [ngClass]="{'disabled' : disableMenuMultiple('accept')}"
                         *ngIf="woMenuBtnSecurityAccess('Accept Asset')" class="dropdown-item"
                         (click)="assetActions('ACCEPT', 'multiple')" href="javascript:void(0)">
                         Accept</a>
@@ -64,7 +64,8 @@
 
 
 
-                    <div class="dropdown-toggle" *ngIf="woMenuBtnSecurityAccess('Set Status')">
+                    <div  [ngClass]="{'disabled' : disableMenuMultiple('status')}"
+                    class="dropdown-toggle" *ngIf="woMenuBtnSecurityAccess('Set Status')">
                         <div class="dropdown-item">Status</div>
                         <div class="dropdown-menu statusfirstLvl">
 
@@ -98,7 +99,7 @@
                         </div>
                     </div>
 
-                    <div [ngClass]="{'disabled' : disableButtons('COMP')}" class="dropdown-toggle"
+                    <div [ngClass]="{'disabled' : disableMenuMultiple('COMP')}" class="dropdown-toggle"
                         *ngIf="woMenuBtnSecurityAccess('Complete Item')">
                         <div class="dropdown-item">Complete</div>
                         <div class="dropdown-menu completeFirstLvl">
@@ -113,7 +114,7 @@
 
 
 
-                    <div [ngClass]="{'disabled' : disableButtons('DATES') }" class="dropdown-toggle">
+                    <div [ngClass]="{'disabled' : disableMenuMultiple('dates') }" class="dropdown-toggle">
                         <div class="dropdown-item" *ngIf="woMenuBtnSecurityAccess('Set Dates')">Dates
                         </div>
                         <div class="dropdown-menu dateFirstLvl">
@@ -173,11 +174,11 @@
                         </div>
                     </div>
 
-                    <a  class="dropdown-item" 
+                    <a  class="dropdown-item"
                     [ngClass]="{'disabled' : disableMenuMultiple('LETTER')}"
-                    *ngIf="woGlobalSecurityAccess('Report Checklist')"
+                    *ngIf="woGlobalSecurityAccess('Checklist Letter')"
                     (click)="mergeMailMultiple()" href="javascript:void(0)">Letter</a>
-                    
+
 
                     <div [ngClass]="{'disabled' : disableMenuMultiple('comments')}" class="dropdown-toggle"
                     *ngIf="woMenuBtnSecurityAccess('Comments')">
@@ -259,21 +260,13 @@
                             <div class="col-md-2">
                                 <label>Unallocated Budget:</label>
                                 <input type="text" class="form-control form-control-sm" readonly="true"
-                                    value="{{phaseFromApi?.wobudget-phaseFromApi?.woacceptedvalue | currency:'GBP':'symbol'}}">
+                                    value="{{phaseFromApi?.wobudget-phaseFromApi?.wocommitted | currency:'GBP':'symbol'}}">
                             </div>
 
                             <div class="col-md-2">
                                 <label>Phase Target Date:</label>
                                 <input type="text" class="form-control form-control-sm" readonly="true"
                                     value="{{phaseFromApi?.targetdate | dateFormat : 'DD-MMM-YYYY'}}">
-                            </div>
-
-                            <div class="col-md-2">
-                                <label></label>
-                                <button style="margin-top: 25px;" type="button" (click)="clearFilters()"
-                                    class="btn btn-sm">Clear
-                                    Filters</button>
-
                             </div>
                         </div>
                     </div>
@@ -293,6 +286,10 @@
                     (onDeSelectAll)="onStagesSelectionAllChange($event)" [(ngModel)]="selectedCheckList"
                     #stagesMultiSelect>
                 </ng-multiselect-dropdown>
+                <div class="col-md-12" >
+                                <button style="margin-top:-30px" type="button" (click)="clearFilters()"
+                                    class="btn btn-sm pull-right">Clear Filters</button>
+</div>
             </div>
         </div>
 
@@ -304,6 +301,9 @@
                 scrollable="virtual" [rowHeight]="36" [height]="600" (pageChange)="pageChange($event)"
                 [navigable]="false" [selectedKeys]="mySelection" [selectable]="selectableSettings"
                 [kendoGridSelectBy]="mySelectionKey" [groupable]="false" (selectedKeysChange)="keyChange($event)">
+                <ng-template kendoGridNoRecordsTemplate>
+                  No records selected
+                </ng-template>
 
 
 
@@ -319,7 +319,7 @@
                                 (click)="setSeletedRow(dataItem)"></i>
                             <div class="dropdown-menu">
 
-                                <div [ngClass]="{'disabled' :disableButtons('status')}" class="dropdown-toggle"
+                                <div [ngClass]="{'disabled' :disableButtons('status',dataItem)}" class="dropdown-toggle"
                                     *ngIf="woMenuBtnSecurityAccess('Set Status')">
                                     <div class="dropdown-item">Status</div>
                                     <div class="dropdown-menu">
@@ -359,7 +359,7 @@
                                     </div>
                                 </div>
 
-                                <div [ngClass]="{'disabled' : disableButtons('DATES')}" class="dropdown-toggle">
+                                <div [ngClass]="{'disabled' : disableButtons('dates',dataItem)}" class="dropdown-toggle">
                                     <div class="dropdown-item" *ngIf="woMenuBtnSecurityAccess('Set Dates')">Dates
                                     </div>
                                     <div class="dropdown-menu">
@@ -432,7 +432,7 @@
                                 </div>
 
 
-                                <div [ngClass]="{'disabled' :disableButtons('CMP', dataItem)}" class="dropdown-toggle"
+                                <div [ngClass]="{'disabled' :disableButtons('COMP',dataItem)}" class="dropdown-toggle"
                                     *ngIf="woMenuBtnSecurityAccess('Complete Item')">
                                     <div class="dropdown-item">Complete</div>
                                     <div class="dropdown-menu">
@@ -445,12 +445,13 @@
                                     </div>
                                 </div>
 
-                                <a  class="dropdown-item" 
-                                *ngIf="woGlobalSecurityAccess('Report Checklist') && dataItem.wocheckspeciaL1 == 'LETTER'"
+                                <a  class="dropdown-item"  [ngClass]="{'disabled' :disableButtons('letter', dataItem)}"
+                                *ngIf="woGlobalSecurityAccess('Checklist Letter') && dataItem.wocheckspeciaL1 == 'LETTER'"
                                 (click)="mergeMailSingle(dataItem)" href="javascript:void(0)">Letter</a>
-                                
 
-                                <div class="dropdown-toggle"*ngIf="woMenuBtnSecurityAccess('Comments')">
+
+                                <div class="dropdown-toggle" [ngClass]="{'disabled' : disableButtons('Comments')}"
+                                *ngIf="woMenuBtnSecurityAccess('Comments')">
                                     <div class="dropdown-item">Comments</div>
                                     <div class="dropdown-menu">
                                         <a class="dropdown-item" (click)="setSingleComment('replace',dataItem)" href="javascript:void(0)">Replace selected</a>
@@ -709,8 +710,8 @@
         (closePredecessorsEvent)="closePredecessors($event)">
     </app-worksorders-asset-checklist-predecessors>
 
-    
+
     <app-wo-editcomment *ngIf="showEditCommentWindow" [showEditCommentWindow]="showEditCommentWindow" [mode]="commentMode"
     (closeEditCommentWindow)="closeCommentPanel($event)" type="AssetChecklist" [checklistParms]="commentParms"> </app-wo-editcomment>
-    
+
 </kendo-window>

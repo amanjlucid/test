@@ -183,7 +183,7 @@ export class WorksorderManagementService {
         return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWEBWorksOrdersAssetChecklistFilenameList?WOSEQUENCE=${WOSEQUENCE}&Assid_WOPSequence_CheckSurcde=${Assid_WOPSequence_CheckSurcde}`, this.httpOptions);
     }
 
-    
+
     getWOPAssetDoc(WOSEQUENCE, Assid_WOPSequence) {
         return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetWEBWorksOrdersAssetFilenameList?WOSEQUENCE=${WOSEQUENCE}&Assid_WOPSequence=${Assid_WOPSequence}`, this.httpOptions);
     }
@@ -488,6 +488,11 @@ export class WorksorderManagementService {
         return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetVariationIndicator?WOSEQUENCE=${WOSEQUENCE}&WOPSEQUENCE=${WOPSEQUENCE}&assId=${assId}`, this.httpOptions);
     }
 
+
+    getDefectsIndicator(WOSEQUENCE, WOPSEQUENCE, assId) {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetDefectsIndicator?WOSEQUENCE=${WOSEQUENCE}&WOPSEQUENCE=${WOPSEQUENCE}&assId=${assId}`, this.httpOptions);
+    }
+
     processCompletionReport(params) {
         let body = JSON.stringify(params);
         return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/ProcessCompletionReport`, body, this.httpOptions);
@@ -691,6 +696,19 @@ export class WorksorderManagementService {
     let body = JSON.stringify(params);
     return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/AddGetVariationNote`, body, this.httpOptions);
   }
+
+  workOrderContract_cost(wprsequence, wosequence) {
+    return this.http.get<any>(`${appConfig.apiUrl}/api/WorkOrderDetails/WorkOrderContract_cost?wprsequence=${wprsequence}&wosequence=${wosequence}`, this.httpOptions);
+}
+
+
+  getChecklistCost(WOSEQUENCE) {
+    return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/GetChecklistCost?WOSEQUENCE=${WOSEQUENCE}`, this.httpOptions);
+}
+
+GetDocumentsUploadEnabled() {
+  return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/DocumentsUploadEnabled`, this.httpOptions);
+}
 
 
 }

@@ -60,21 +60,22 @@
 
   <div class="row mt-2" *ngIf="tabsData != undefined && tabsData != '' ">
     <div class="col-md-12">
-      <app-attributes [selectedAsset]="selectedAsset" [assetId]="assetId" *ngIf="tabName == 'attributes'">
+      <app-attributes [selectedAsset]="selectedAsset" [assetId]="assetId" *ngIf="checkTabPermission('Attributes') && tabName == 'attributes'">
       </app-attributes>
       <app-asset-characteristics [selectedAsset]="selectedAsset" [assetId]="assetId"
-        *ngIf="tabName == 'characteristics'"></app-asset-characteristics>
-      <app-asset-asbestos [selectedAsset]="selectedAsset" [assetId]="assetId" *ngIf="tabName == 'asbestos'">
+        *ngIf="checkTabPermission('Characteristics') && tabName == 'characteristics'"></app-asset-characteristics>
+      <app-asset-asbestos [selectedAsset]="selectedAsset" [assetId]="assetId" 
+      *ngIf="checkTabPermission('Asbestos') && tabName == 'asbestos' && checkAsbestosPortalAccess() && checkGroupPermission('Asbestos Portal Access')">
       </app-asset-asbestos>
-      <app-asset-energy [selectedAsset]="selectedAsset" [assetId]="assetId" *ngIf="tabName == 'energy'"></app-asset-energy>
-      <app-asset-epc [selectedAsset]="selectedAsset" [assetId]="assetId" *ngIf="tabName == 'epc'"></app-asset-epc>
-      <app-asset-surveys [selectedAsset]="selectedAsset" [assetId]="assetId" *ngIf="tabName == 'surveys'"></app-asset-surveys>
-      <app-asset-hs-assessents [selectedAsset]="selectedAsset" [assetId]="assetId" *ngIf="tabName == 'assessments'"></app-asset-hs-assessents>
-      <app-asset-servicing [selectedAsset]="selectedAsset" [assetId]="assetId" *ngIf="tabName == 'servicing'"></app-asset-servicing>
-      <app-asset-hhsrs [selectedAsset]="selectedAsset" [assetId]="assetId" *ngIf="tabName == 'hhrs'"></app-asset-hhsrs>
-      <app-asset-works-management [selectedAsset]="selectedAsset" [assetId]="assetId" *ngIf="tabName == 'workmanagement'"></app-asset-works-management>
-      <app-asset-quality [selectedAsset]="selectedAsset" [assetId]="assetId" *ngIf="tabName == 'quality'"></app-asset-quality>
-      <app-asset-notepad [selectedAsset]="selectedAsset" [assetId]="assetId" *ngIf="tabName == 'notepad'"></app-asset-notepad>
+      <app-asset-energy [selectedAsset]="selectedAsset" [assetId]="assetId" *ngIf="checkTabPermission('Energy') && (tabName == 'energy')"></app-asset-energy>
+      <app-asset-epc [selectedAsset]="selectedAsset" [assetId]="assetId" *ngIf="checkTabPermission('EPC') && tabName == 'epc' && checkModuleEnabled('EPC Module') && checkEnergyPortalAccess('Energy Portal Access') && checkMenuAccess('Energy', 1)"></app-asset-epc>
+      <app-asset-surveys [selectedAsset]="selectedAsset" [assetId]="assetId" *ngIf="checkTabPermission('Surveys') && tabName == 'surveys'"></app-asset-surveys>
+      <app-asset-hs-assessents [selectedAsset]="selectedAsset" [assetId]="assetId" *ngIf="checkTabPermission('Health and Safety') && tabName == 'assessments'"></app-asset-hs-assessents>
+      <app-asset-servicing [selectedAsset]="selectedAsset" [assetId]="assetId" *ngIf="checkTabPermission('Servicing') && tabName == 'servicing'"></app-asset-servicing>
+      <app-asset-hhsrs [selectedAsset]="selectedAsset" [assetId]="assetId" *ngIf="checkTabPermission('HHSRS') && tabName == 'hhrs'"></app-asset-hhsrs>
+      <app-asset-works-management [selectedAsset]="selectedAsset" [assetId]="assetId" *ngIf="checkTabPermission('Works Management') && tabName == 'workmanagement'"></app-asset-works-management>
+      <app-asset-quality [selectedAsset]="selectedAsset" [assetId]="assetId" *ngIf="checkTabPermission('Quality') && tabName == 'quality'"></app-asset-quality>
+      <app-asset-notepad [selectedAsset]="selectedAsset" [assetId]="assetId" *ngIf="checkTabPermission('Notepad') && tabName == 'notepad'"></app-asset-notepad>
     </div>
 
   </div>

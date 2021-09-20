@@ -23,7 +23,7 @@ export class ReportParameterComponent implements OnInit {
     sort: [],
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -193,7 +193,7 @@ export class ReportParameterComponent implements OnInit {
         return;
       }
 
-      // run report 
+      // run report
       this.alertService.success(`Report ${this.selectedReport.reportId} - ${this.selectedReport.reportName} has started.`);
       const exportId = this.selectedReport.reportId
       this.reportingGrpService.runReport(exportId, lstParamNameValue, this.currentUser.userId, "EXCEL", this.pivot, true).subscribe(

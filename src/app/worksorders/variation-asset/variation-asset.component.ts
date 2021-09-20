@@ -29,7 +29,7 @@ export class VariationAssetComponent implements OnInit {
     take: 25,
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -193,7 +193,7 @@ export class VariationAssetComponent implements OnInit {
             } else {
               this.alertService.success(resp.pRETURNMESSAGE)
               this.getVariationPageDataWithVariationAssetFromWO();
-              this.refreshParentComponent.emit(true)
+              // this.refreshParentComponent.emit(true)
             }
 
 
@@ -243,6 +243,9 @@ export class VariationAssetComponent implements OnInit {
   disableVariationBtns(btnType, item) {
 
     if (btnType == 'Edit') {
+      if (this.selectedVariationInp.isBulkVariation == "Y") {
+        return true;
+      }
       if (this.selectedVariationInp.responsibility == "ALL" && (this.selectedVariationInp.woiissuestatus == "Contractor Review" || this.selectedVariationInp.woiissuestatus == "Customer Review" || this.selectedVariationInp.woiissuestatus == "New")) {
         return false
       }
@@ -270,12 +273,7 @@ export class VariationAssetComponent implements OnInit {
   }
 
   woMenuAccess(menuName) {
-    return this.helperService.checkWorkOrderAreaAccess(this.userType, this.worksOrderAccess, this.worksOrderUsrAccess, menuName)
-    // if (this.userType == undefined) return true;
-    // if (this.userType?.wourroletype == "Dual Role") {
-    //   return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
-    // }
-    // return this.worksOrderUsrAccess.indexOf(menuName) != -1
+    return this.helperService.checkWorkOrderAreaAccess(this.worksOrderUsrAccess, menuName)
   }
 
   openVariationDetailMethod() {

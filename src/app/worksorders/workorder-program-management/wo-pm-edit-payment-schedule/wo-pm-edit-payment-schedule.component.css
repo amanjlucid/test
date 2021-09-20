@@ -8,6 +8,18 @@
     padding: 8px 12px;
 }
 
+.paymentSchedGrid .paid {
+  background-color: rgba(230, 0, 126, 0.2) !important;
+}
+
+.paymentSchedGrid .unpaid {
+  background-color: white !important;
+}
+
+.paymentSchedGrid .other {
+  background-color: rgba(230, 0, 126, 0.1) !important;
+}
+
 
 
 

@@ -27,7 +27,7 @@ export class VariationListAllComponent implements OnInit {
     take: 25,
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -55,7 +55,7 @@ export class VariationListAllComponent implements OnInit {
   displayNotesWindow: boolean = false;
   wosequence: number = 0;
   woisequence: number = 0;
-
+  IssueVariationFromNew: boolean = false;
   formMode = 'new'
   selectedSingleVariation: any;
   openNewVariation: boolean = false;
@@ -86,6 +86,17 @@ export class VariationListAllComponent implements OnInit {
           this.userType = data[2][0];
         }
       )
+    )
+
+    this.subs.add(
+      this.worksOrderService.GetIssueVariationFromNew().subscribe(
+        data => {
+          if (data.isSuccess) {
+            this.IssueVariationFromNew = data.data;
+          } else this.alertService.error(data.message);
+        }, err => this.alertService.error(err)
+      )
+
     )
 
     // this.getUserWOSecurityData();
@@ -144,24 +155,24 @@ export class VariationListAllComponent implements OnInit {
     $('.variationListAllOverlay').addClass('ovrlay');
   }
 
-  disableAddNote(dataItem){
-    if (dataItem.woiissuestatus == 'New' || dataItem.woiissuestatus == 'Accepted' || dataItem.woiissuestatus == 'Issued'){
+  disableAddNote(dataItem) {
+    if (dataItem.woiissuestatus == 'New' || dataItem.woiissuestatus == 'Accepted' || dataItem.woiissuestatus == 'Issued') {
       return true;
     }
-    if (dataItem.woiissuestatus == 'Contractor Review'){
-       if (this.userType != undefined && this.userType?.wourroletype == 'Customer'){
+    if (dataItem.woiissuestatus == 'Contractor Review') {
+      if (this.userType != undefined && this.userType?.wourroletype == 'Customer') {
         return true;
-       }
+      }
     }
-    if (dataItem.woiissuestatus == 'Customer Review'){
-      if (this.userType != undefined && this.userType?.wourroletype == 'Contractor'){
+    if (dataItem.woiissuestatus == 'Customer Review') {
+      if (this.userType != undefined && this.userType?.wourroletype == 'Contractor') {
         return true;
-       }
+      }
     }
     return false;
   }
 
-  openVariationNotes(dataItem){
+  openVariationNotes(dataItem) {
     this.disabledAddNote = this.disableAddNote(dataItem);
     this.wosequence = dataItem.wosequence;
     this.woisequence = dataItem.woisequence;
@@ -169,7 +180,7 @@ export class VariationListAllComponent implements OnInit {
     $('.variationListAllOverlay').addClass('ovrlay');
   }
 
-  closeVariationNotes(eve){
+  closeVariationNotes(eve) {
     this.displayNotesWindow = false
     $('.variationListAllOverlay').removeClass('ovrlay');
   }
@@ -188,7 +199,7 @@ export class VariationListAllComponent implements OnInit {
         // this.workOrderProgrammeService.getWorksOrderByWOsequence(wosequence),
       ]).subscribe(
         data => {
-          console.log(data);
+          // console.log(data);
           // let sec = data[0].data.map(x => `${x.spffunction} - ${x.spjrftype}`)
           // console.log(sec);
         }
@@ -239,12 +250,7 @@ export class VariationListAllComponent implements OnInit {
   }
 
   woMenuAccess(menuName) {
-    return this.helperService.checkWorkOrderAreaAccess(this.userType, this.worksOrderAccess, this.worksOrderUsrAccess, menuName)
-    // if (this.userType == undefined) return true;
-    // if (this.userType?.wourroletype == "Dual Role") {
-    //   return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
-    // }
-    // return this.worksOrderUsrAccess.indexOf(menuName) != -1
+    return this.helperService.checkWorkOrderAreaAccess(this.worksOrderUsrAccess, menuName)
   }
 
 
@@ -271,23 +277,41 @@ export class VariationListAllComponent implements OnInit {
     }
 
     else if (btnType == 'Customer') {
-      if (item.woiissuestatus == 'Contractor Review' && item.responsibility == "ALL" && item.isEmptyVariation == "N") {
+      if ((item.woiissuestatus == 'Contractor Review' || item.woiissuestatus == 'New') && item.isEmptyVariation == "N") {
         return false;
       }
     }
 
     else if (btnType == 'Contractor') {
-      if (item.woiissuestatus == 'Customer Review' && item.responsibility == "ALL" && item.isEmptyVariation == "N") {
+      if ((item.woiissuestatus == 'Customer Review' || item.woiissuestatus == 'New') && item.isEmptyVariation == "N") {
         return false;
       }
     }
 
-    else if (btnType == 'Issue') {
+    else if (btnType == 'Issue')
+    {
+      let v = item
+      let y = this.userType
+      if (this.userType != undefined && this.userType?.wourroletype == 'Contractor')
+      {
+        return true;
+      }
+      if(this.IssueVariationFromNew && item.woiissuestatus == 'New')
+      {
+        return item.isEmptyVariation == 'Y';
+      }
+      else
+      {
+        return item.woiissuestatus == 'Customer Review' ? item.isEmptyVariation == 'Y' : true;
+      }
+    }
+
+ /*   else if (btnType == 'Issue') {
       if ((item.woiissuestatus == 'New' || item.woiissuestatus == 'Customer Review') && item.isEmptyVariation == "N") {
         return false;
       }
     }
-
+*/
     else if (btnType == 'Delete') {
       if (item.isEmptyVariation == "Y") {
         return false;
@@ -537,7 +561,7 @@ export class VariationListAllComponent implements OnInit {
 
   }
 
-  
+
   openEmailInstructionReport(item) {
     this.SendEmailInsReportWindow = true;
     this.selectedSingleInstructionVariation = item;
@@ -547,7 +571,7 @@ export class VariationListAllComponent implements OnInit {
 
   closeEmailWithReportWindow(eve) {
     this.SendEmailInsReportWindow = false;
-   
+
     $('.variationListAllOverlay').removeClass('ovrlay');
     // $('.reportingDiv').removeClass('pointerEvent');
   }

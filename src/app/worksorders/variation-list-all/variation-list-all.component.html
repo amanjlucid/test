@@ -70,7 +70,8 @@
                                     class="dropdown-item" href="javascript:void(0)"
                                     (click)="openVariationlist(dataItem)">Assets</a>
 
-                                <a [ngClass]="{'disabled' : disableVariationBtns('Edit', dataItem)}"
+                                <a *ngIf="woMenuAccess('Edit Variation Description')"
+                                    [ngClass]="{'disabled' : disableVariationBtns('Edit', dataItem)}"
                                     class="dropdown-item" href="javascript:void(0)"
                                     (click)="editVariation(dataItem)">Edit</a>
 
@@ -216,8 +217,8 @@
         [singleWorksOrder]="singleWorksOrder" [selectedSingleVariationInp]="selectedSingleInstructionVariation"
         (closeBlankVariation)="closeBlankVariation($event)"></app-blank-variation>
 
-        <app-send-email *ngIf="SendEmailInsReportWindow" [SendEmailInsReportWindow]="SendEmailInsReportWindow" 
-        (closeEmailReportEvent)="closeEmailWithReportWindow($event)" [selectedObj]="selectedSingleInstructionVariation" 
+        <app-send-email *ngIf="SendEmailInsReportWindow" [SendEmailInsReportWindow]="SendEmailInsReportWindow"
+        (closeEmailReportEvent)="closeEmailWithReportWindow($event)" [selectedObj]="selectedSingleInstructionVariation"
         [opendFrom]="'variation'"></app-send-email>
 
         <app-variation-notes *ngIf="displayNotesWindow" [displayNotesWindow]="displayNotesWindow"

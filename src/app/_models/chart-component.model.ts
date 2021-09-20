@@ -1,13 +1,27 @@
 export class ChartComponentModel {
     settings = {
-        selectionEnabled: true
+        selectionEnabled: true,
+        responsiveMode: 'onload',
+        constrainDragToContainer: true,
+        customeSplitterResize: true,
+    };
+    labels = {
+        popout: 'open in new window',
+        popin: 'pop in'
+    };
+    dimensions = {
+        // dragProxyWidth: 600,
+        // dragProxyHeight: 200,
+        // minItemHeight: 400,
     };
     content = [{
         type: 'column',
         content: [{
+            height: 30,
             isClosable: true,
             type: 'row',
             content: [{
+                height: 30,
                 type: 'component',
                 componentName: 'testComponent',
                 componentState: { text: 'Component1' },
@@ -21,11 +35,26 @@ export class ChartComponentModel {
         }, {
             type: 'row',
             content: [{
+                height: 30,
                 type: 'component',
                 componentName: 'testComponent',
                 componentState: { text: 'Component3' },
                 title: 'Component 3',
 
+            }
+
+            ]
+        },
+        {
+            type: 'row',
+            id: "hiddenContainer",
+            content: [{
+                isClosable: false,
+                height: 0,
+                type: 'component',
+                componentName: 'testComponent',
+                componentState: { text: 'Component5' },
+                title: ' ',
             }
 
             ]

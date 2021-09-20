@@ -1,6 +1,7 @@
 <kendo-window title="{{title}}" *ngIf="taskData" (close)="closeWin()" [top]="20" [minWidth]="700" [width]="900"
-    [height]="auto" [minHeight]="350">
-    <div class="row taskDetailsDiv">
+    [height]="750" >
+    <div style="height:100%;" >
+      <div class="row taskDetailsDiv">
         <div class="col-md-12 headingDiv">
             <span class="eventHeading"> Task : {{selectedEvent?.eventSequence}} {{selectedEvent?.eventTypeName}} </span>
 
@@ -8,8 +9,8 @@
 
     </div>
 
-    <div class="row mt-3">
-        <div class="col-sm-12 col-md-12 radioFilterDiv">
+
+        <div class="col-sm-12 col-md-12 mt-3">
             <div class="radioDiv">
                 <label class="radio-inline">
                     <input [disabled]="selectedEvent?.eventAskType == 'I'" (ngModelChange)="onChange($event)" value="P"
@@ -29,7 +30,7 @@
 
             </div>
 
-            <div class="butnDiv">
+            <div class="butnDiv mr-0">
                 <button type="button" *ngIf="checkShowAssetBtn()" class="btn btn-sm themeButton mr-2"
                     (click)="showAssets()">Show Assets</button>
                 <button type="button" class="btn btn-sm themeButton" (click)="export()">Export</button>
@@ -39,15 +40,14 @@
 
         </div>
 
-        <div class="col-md-12 userTaskData">
-            <kendo-grid [data]="query | async" [loading]="loading" [skip]="headerFilters.CurrentPage"
+            <kendo-grid style="height:87%;" [data]="query | async" [loading]="loading" [skip]="headerFilters.CurrentPage"
                 [pageSize]="headerFilters.PageSize" [selectable]="selectableSettings" filterable="menu"
                 [resizable]="true" [sortable]="{
         allowUnsort: allowUnsort,
         mode: multiple ? 'multiple' : 'single'
         }" [sort]="state.sort" (sortChange)="sortChange($event)" (filterChange)="filterChange($event)"
                 (cellClick)="cellClickHandler($event)" [filter]="state.filter" scrollable="virtual" [rowHeight]="36"
-                [height]="600" (pageChange)="pageChange($event)" [navigable]="true" [selectedKeys]="mySelection"
+                (pageChange)="pageChange($event)" [navigable]="true" [selectedKeys]="mySelection"
                 [kendoGridSelectBy]="mySelectionKey" (selectedKeysChange)="onSelectedKeysChange($event)">
 
                 <kendo-grid-checkbox-column width="50">
@@ -85,17 +85,20 @@
 
             </kendo-grid>
 
-        </div>
 
-        <div class="col-md-12 mt-2 text-left">
-            <button [disabled]="disableProcessBtn()" type="button" class="btn btn-sm themeButton mr-2"
+
+        <div style="height:20px;" class="col-md-12 mt-2 text-left">
+            <button [disabled]="disableProcessBtn()" type="button" class="btn btn-sm themeButton mr-2 ml-0"
                 (click)="updateEvent('P')">Set to
                 Processed</button>
             <button [disabled]="disableProcessBtn()" type="button" class="btn btn-sm themeButton mr-2"
                 (click)="updateEvent('U')">Set to
                 Unprocessed</button>
-            <button type="button" class="btn btn-sm themeButton mr-2 pull-right" (click)="closeWin()">Cancel</button>
+            <button type="button" class="btn btn-sm themeButton pull-right  mr-0" (click)="closeWin()">Cancel</button>
         </div>
+
+
     </div>
+
 
 </kendo-window>

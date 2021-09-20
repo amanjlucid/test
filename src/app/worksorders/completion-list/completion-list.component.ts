@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectorRef, ViewChild, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectorRef, ViewChild, OnDestroy, ChangeDetectionStrategy, ViewEncapsulation } from '@angular/core';
 import { DataResult, process, State, CompositeFilterDescriptor, SortDescriptor, GroupDescriptor } from '@progress/kendo-data-query';
 import { GridComponent, RowArgs } from '@progress/kendo-angular-grid';
 import { AlertService, HelperService, SharedService, WorksorderManagementService } from '../../_services';
@@ -11,6 +11,7 @@ import { combineLatest } from 'rxjs';
   templateUrl: './completion-list.component.html',
   styleUrls: ['./completion-list.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  encapsulation: ViewEncapsulation.None
 })
 
 export class CompletionListComponent implements OnInit, OnDestroy {
@@ -24,7 +25,7 @@ export class CompletionListComponent implements OnInit, OnDestroy {
     sort: [],
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   };
@@ -80,9 +81,7 @@ export class CompletionListComponent implements OnInit, OnDestroy {
       )
     )
 
-
     this.getWorkOrderGetWorksOrderCompletionsList();
-
 
   }
 
@@ -110,6 +109,9 @@ export class CompletionListComponent implements OnInit, OnDestroy {
           data => {
             if (data && data.isSuccess) {
               let tempData = data.data;
+              tempData.map(s => {
+                s.wocodate = new Date(s.wocodate);
+               });
               this.workOrderProgrammeData = tempData;
               this.gridView = process(this.workOrderProgrammeData, this.state);
               this.chRef.detectChanges();
@@ -183,15 +185,7 @@ export class CompletionListComponent implements OnInit, OnDestroy {
 
 
   woMenuAccess(menuName) {
-    return this.helperService.checkWorkOrderAreaAccess(this.userType, this.worksOrderAccess, this.worksOrderUsrAccess, menuName)
-    // if (this.userType == undefined) return true;
-
-    // if (this.userType?.wourroletype == "Dual Role") {
-    //   return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
-    // }
-
-    // return this.worksOrderUsrAccess.indexOf(menuName) != -1
-
+    return this.helperService.checkWorkOrderAreaAccess(this.worksOrderUsrAccess, menuName)
   }
 
   openEmailInstructionReport(item) {

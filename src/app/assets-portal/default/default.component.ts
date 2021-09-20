@@ -3,6 +3,7 @@ import { Subject, timer, Subscription } from 'rxjs';
 import { takeUntil, take } from 'rxjs/operators';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { AuthenticationService, EventService } from '../../_services';
+import { first } from 'rxjs/operators';
 declare var $: any;
 
 
@@ -51,8 +52,16 @@ export class DefaultComponent implements OnInit {
             this.validationObj = data;
             if (data && data.validated) {
               if (data.authenticatedUserCredential.access_token) {
+   
                 localStorage.setItem('currentUser', JSON.stringify(data.authenticatedUserCredential));
-                this.loadComponent();
+                let currentUser = data.authenticatedUserCredential;
+                this.currentUser = currentUser;
+                this.authService.formAuthentication(currentUser.userId).subscribe(data => {
+                  //console.log(data);
+                  // this.loadComponent();
+                  this.router.navigate(['/asset-list'],{queryParams: {thirdParty: thirdPartyKey}} );
+                })
+
 
               }
             }

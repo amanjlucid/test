@@ -50,18 +50,6 @@ export class WopmEditChecklistMasterComponent implements OnInit {
     'cost': {
       'minError': 'Cost cannot be negative.',
     },
-    'useref2': {
-      'maxlength': 'User Ref 2 must be maximum 20 characters.',
-    },
-    'useref3': {
-      'maxlength': 'User Ref 3 must be maximum 20 characters.',
-    },
-    'useref4': {
-      'maxlength': 'User Ref 4 must be maximum 20 characters.',
-    },
-    'useref5': {
-      'maxlength': 'User Ref 5 must be maximum 20 characters.',
-    },
     'mailmergedoc': {
       'maxlength': 'Mail merge document must be maximum 1024 characters.',
     },
@@ -93,7 +81,7 @@ fileValue: any;
 
     this.getMasterStages();
     this.subs.add(
-      this.sharedService.worksOrdersAccess.subscribe(data => { 
+      this.sharedService.worksOrdersAccess.subscribe(data => {
         this.wopmPortalAccess = data;
       })
     )
@@ -107,10 +95,6 @@ fileValue: any;
       responsibility: [],
       cost: [],
       checklisttype: [],
-      useref2: ['', [Validators.maxLength(20)]],
-      useref3: ['', [Validators.maxLength(20)]],
-      useref4: ['', [Validators.maxLength(20)]],
-      useref5: ['', [Validators.maxLength(20)]],
       mailmergedoc: ['', [Validators.maxLength(1024)]],
       attachmentrequired: [],
     })
@@ -141,7 +125,7 @@ fileValue: any;
     this.populatechecklist(this.selectedChecklist);
   }
 
-    
+
   ngOnDestroy() {
     this.subs.unsubscribe();
   }
@@ -219,7 +203,7 @@ fileValue: any;
       'stage': '',
       'name': '',
       'description': '',
-      'comment': '',      
+      'comment': '',
       'status': '',
       'cost': '',
       'useref2': '',
@@ -236,7 +220,7 @@ fileValue: any;
 
   onSubmit() {
     this.submitted = true;
-    this.formErrorObject(); // empty form error 
+    this.formErrorObject(); // empty form error
     this.logValidationErrors(this.checklistForm);
 
     if (this.checklistForm.invalid) {
@@ -269,7 +253,7 @@ fileValue: any;
 
 
     }
-    
+
     if (this.f.checklisttype.value.toUpperCase() == "LETTER")
     {
       if (!(this.f.mailmergedoc.value.toLowerCase().includes(".docx") || this.f.mailmergedoc.value.toLowerCase().includes(".dotx") ||
@@ -294,10 +278,14 @@ fileValue: any;
       wocheckresp: this.f.responsibility.value,
       wocheckcost: this.f.cost.value,
       woextraref1: this.f.mailmergedoc.value,
-      woextraref2: this.f.useref2.value,
-      woextraref3: this.f.useref3.value,
-      woextraref4: this.f.useref4.value,
-      woextraref5: this.f.useref5.value,
+      // woextraref2: this.f.useref2.value,
+      // woextraref3: this.f.useref3.value,
+      // woextraref4: this.f.useref4.value,
+      // woextraref5: this.f.useref5.value,
+      woextraref2: "",
+      woextraref3: "",
+      woextraref4: "",
+      woextraref5: "",
       wocheckspecial1: this.f.checklisttype.value,
       wocheckspecial2: (this.f.attachmentrequired.value == "Yes") ? "Y" : (this.f.attachmentrequired.value == "No") ? "N" : "",
       wocheckstatus: (this.f.status.value) ? "A" : "I",
@@ -423,7 +411,7 @@ fileValue: any;
       return extensions.includes(ext);
   }
 
-  
+
   onFileChange(event) {
     if (event.target.files.length > 0) {
       this.uploadFile(event.target.files[0])

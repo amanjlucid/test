@@ -33,7 +33,7 @@ export class AssetCharacteristicsComponent implements OnInit, OnDestroy {
     group: [],
     sort: [{ field: 'characteristic', dir: 'asc' }],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -145,7 +145,7 @@ export class AssetCharacteristicsComponent implements OnInit, OnDestroy {
             if (this.characteristicType == 'N') {
               // if (isNaN(val)) {
               //   charvalueControl.setErrors({ invalideNumber: true });
-              // } 
+              // }
               this.numericAndDecimalCharacteristicValidator(charvalueControl, val, 'N');
             } else if (this.characteristicType == 'V') {
               this.numericAndDecimalCharacteristicValidator(charvalueControl, val, 'V');
@@ -373,7 +373,7 @@ export class AssetCharacteristicsComponent implements OnInit, OnDestroy {
       this.notesDetails = true;
     } else if (this.selectedNotes.linkType == 'L') {
       let lnk = this.selectedNotes.link;
-      
+
       let fileExt = lnk.substring(lnk.lastIndexOf(".") + 1).toLowerCase();
       this.assetAttributeService.getMimeType(fileExt).subscribe(
         mimedata => {
@@ -540,7 +540,7 @@ export class AssetCharacteristicsComponent implements OnInit, OnDestroy {
 
   onSubmit() {
     this.submitted = true;
-    this.formErrorObject(); // empty form error 
+    this.formErrorObject(); // empty form error
     this.logValidationErrors(this.createCarForm);
 
     if (this.createCarForm.invalid) {
@@ -593,7 +593,7 @@ export class AssetCharacteristicsComponent implements OnInit, OnDestroy {
       group: [],
       sort: [{ field: 'characteristic', dir: 'asc' }],
       filter: {
-        logic: "or",
+        logic: "and",
         filters: []
       }
     }

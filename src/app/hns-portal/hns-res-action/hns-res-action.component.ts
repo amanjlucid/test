@@ -353,13 +353,13 @@ export class HnsResActionComponent implements OnInit {
         this.selectedAction = dataItem;
         if (this.selectedAction.hasiactionstatus == "R" || this.selectedAction.hasiactionstatus == "O" || this.selectedAction.hasiactionstatus == "Y")
         {
-          if (this.hnsPermission.indexOf('Edit Issue') != -1)
+          if (this.hnsPermission.indexOf('Edit Issue') != -1 || this.hnsPermission.indexOf('Edit Issue (Work Fields Only)') != -1)
           {
         $('.actionOverlay').addClass('ovrlay');
             this.openIssue("edit", dataItem)
           }
           else{
-            this.alertService.error("You do not have permission to access the Edit Issue panel!");
+              this.alertService.error("You do not have permission to access the Edit Issue panel!");
           }
         }
         else
@@ -454,6 +454,15 @@ export class HnsResActionComponent implements OnInit {
   }
 
   openIssue(mode, data) {
+
+    if(mode == "edit"){
+      if(this.hnsPermission.indexOf('Edit Issue') == -1 ){
+        if(this.hnsPermission.indexOf('Edit Issue (Work Fields Only)') != -1 ){
+          mode = 'editWorkOnly'
+        }
+      }
+    }
+
     this.selectedAction = data
     this.issueFormMode = mode;
     this.showIssue = true;

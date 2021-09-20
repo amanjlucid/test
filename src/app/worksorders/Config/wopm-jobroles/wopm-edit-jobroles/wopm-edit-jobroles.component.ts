@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AlertService, WopmConfigurationService, ConfirmationDialogService, HelperService } from '../../../../_services';
 import { WopmJobroleModel } from '../../../../_models'
@@ -26,6 +26,7 @@ export class WopmEditJobrolesComponent implements OnInit {
   contractorList: any;
   loading = false;
   submitted = false;
+  defaultRoleError = '';
   public windowTitle: string;
   public pageHeight: number = 580
   //saveMsg: string;
@@ -38,6 +39,7 @@ export class WopmEditJobrolesComponent implements OnInit {
     private fb: FormBuilder,
     private wopmConfigurationService: WopmConfigurationService,
     private confirmationDialogService: ConfirmationDialogService,
+    private chRef: ChangeDetectorRef,
     private helperService: HelperService,
     private alertService: AlertService
   ) { }
@@ -73,7 +75,7 @@ export class WopmEditJobrolesComponent implements OnInit {
       let tempGroups = this.securityGroups;
     }
 
-    this.dummyLoad();
+    this.dataLoad();
   }
 
 
@@ -97,16 +99,21 @@ export class WopmEditJobrolesComponent implements OnInit {
 
   }
 
-  dummyLoad(){
+  dataLoad(){
 
     //not sure why we have to do this but it seems that the masked values don't display on the initial
     //load unless the form values are patched after a server returns from a callback.
 
-    this.wopmConfigurationService.getWorksOrderJobRolesPanelItems()
+    this.populateTemplate(this.selectedJobRole);
+    this.chRef.detectChanges();
+
+   /* this.wopmConfigurationService.getWorksOrderJobRolesPanelItems()
     .subscribe(
       data => {
         this.populateTemplate(this.selectedJobRole);
+        this.chRef.detectChanges();
       });
+      */
   }
 
   logValidationErrors(group: FormGroup): void {
@@ -129,7 +136,8 @@ export class WopmEditJobrolesComponent implements OnInit {
     this.formErrors = {
       'jobRoleType': '',
       'jobRole': '',
-      'securityGroup': ''
+      'securityGroup': '',
+      'defaultJobRole': ''
     }
   }
 
@@ -137,6 +145,7 @@ export class WopmEditJobrolesComponent implements OnInit {
 
   onSubmit() {
     this.submitted = true;
+    this.defaultRoleError = ''
     this.formErrorObject(); // empty form error
     this.logValidationErrors(this.jobRoleForm);
 
@@ -180,7 +189,15 @@ export class WopmEditJobrolesComponent implements OnInit {
             this.closeEditFormWin();
           }else
           {
-            this.openConfirmationDialog(data.data, data.message)
+            if (data.message == 'This Job Role already exists, please enter a unique Job Role')
+            {
+               this.formErrors.jobRole = data.message;
+            }
+            if (data.message == 'There can only be one default Job Role per Role Type')
+            {
+               this.formErrors.defaultJobRole = data.message;
+            }
+            this.chRef.detectChanges
           }
         } else {
           this.loading = false;

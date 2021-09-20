@@ -57,7 +57,8 @@
                         Work</a>
 
                     <a *ngIf="woMenuAccess('Remove Item Variation')" class="dropdown-item" href="javascript:void(0)"
-                        (click)="removeItemVariationConfirmMultiple()">Remove Item
+                         [ngClass]="{'disabled' : disableMenuMultiple('remove')}"
+                         (click)="removeItemVariationConfirmMultiple()">Remove Item
                         Variation</a>
                 </div>
             </div>
@@ -156,14 +157,13 @@
                             <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
 
                             <div class="dropdown-menu">
-                                <!-- <a [ngClass]="{'disabled' : disableVariationBtns('Edit', dataItem)}"
-                                *ngIf="woMenuAccess('Edit Variation')" class="dropdown-item"
-                                href="javascript:void(0)" (click)="editVariation(dataItem)">Delete Work</a> -->
+
                                 <a *ngIf="woMenuAccess('Remove Work (Var)')" class="dropdown-item"
                                     href="javascript:void(0)" (click)="openDeleteWorkReasonWindow(dataItem)">Delete
                                     Work</a>
 
                                 <a *ngIf="woMenuAccess('Remove Item Variation')" class="dropdown-item"
+                                    [ngClass]="{'disabled' : disableMenuSingle('remove', dataItem)}"
                                     href="javascript:void(0)" (click)="removeItemVariationConfirm(dataItem)">Remove Item
                                     Variation</a>
 

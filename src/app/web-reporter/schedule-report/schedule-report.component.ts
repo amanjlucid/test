@@ -25,7 +25,7 @@ export class ScheduleReportComponent implements OnInit {
     sort: [],
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -67,7 +67,7 @@ export class ScheduleReportComponent implements OnInit {
         res => {
           this.reportScheduleList = []; // reset reportScheduleList
           let savedScheduleData = res[0];
-          //let scheduleData = res[1]; //this.reporterService.getSchedulingList(reportId), 
+          //let scheduleData = res[1]; //this.reporterService.getSchedulingList(reportId),
           let allNotificationUsrGrp = res[1];
 
           if (savedScheduleData.isSuccess) {

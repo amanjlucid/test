@@ -17,3 +17,16 @@
 .textWithButton{
     width:100%
 }
+
+.fieldlabel{
+    float: left
+}
+
+.inputDiv {
+    display: block;
+    overflow: hidden;
+    padding: 0 4px 0 6px
+}
+.actualinput {
+    width: 100%
+}

@@ -20,7 +20,7 @@ export class WopmTemplatesComponent implements OnInit {
       sort: [],
       group: [],
       filter: {
-        logic: "or",
+        logic: "and",
         filters: []
       }
     }
@@ -298,8 +298,9 @@ export class WopmTemplatesComponent implements OnInit {
             this.alertService.error(data.data.errorMessage)
           }
         }
+            this.getTemplateDetails();
       });
-    this.getTemplateDetails();
+
   }
 
 

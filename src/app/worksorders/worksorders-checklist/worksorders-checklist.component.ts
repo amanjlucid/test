@@ -35,7 +35,7 @@ export class WorksordersChecklistComponent implements OnInit {
     sort: [],
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -76,7 +76,7 @@ export class WorksordersChecklistComponent implements OnInit {
     )
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.getChecklist();
-    this.sharedService.worksOrdersAccess.subscribe(data => { 
+    this.sharedService.worksOrdersAccess.subscribe(data => {
       this.wopmPortalAccess = data;
     });
     this.workOrdersName = this.selectedWorksOrder.woname + " (Works Order No: " + this.selectedWorksOrder.wosequence.toString() + ")";
@@ -117,13 +117,13 @@ export class WorksordersChecklistComponent implements OnInit {
             this.loading = false;
 
           }
-          
+
         }
       ))
   }
 
 
-  
+
   getYear(initialDate){
     var properDate = new Date(initialDate);
     var yearValue = properDate.getFullYear();
@@ -147,10 +147,6 @@ export class WorksordersChecklistComponent implements OnInit {
           'wocheckresp': 'Responsibility',
           'wocheckcost': 'Cost',
           'woextrareF1':'Mail Merge Document',
-          'woextrareF2': 'User Ref 2',
-          'woextrareF3': 'User Ref 3',
-          'woextrareF4': 'User Ref 4',
-          'woextrareF5': 'User Ref 5',
           'createdby': 'Created By',
           'mPgqA': 'Created Date',
           'updatedby': 'Amended By',
@@ -193,8 +189,8 @@ export class WorksordersChecklistComponent implements OnInit {
       }
     }
 
-    
-  
+
+
 
     openEditChecklist (action, record) {
 
@@ -237,16 +233,16 @@ export class WorksordersChecklistComponent implements OnInit {
                 }
             });
       }
-    }    
+    }
 
 
-    deleteChecklist(dataitem) { 
+    deleteChecklist(dataitem) {
       this.currentRow = dataitem;
       this.confirmationDialogService.confirm('Please confirm..', 'Do you really want to delete this record ?')
       .then((confirmed) => (confirmed) ? this.deleteChecklistConfirmed(confirmed) : console.log(confirmed))
       .catch(() => console.log('User dismissed the dialog.'));
     }
-  
+
     deleteChecklistConfirmed(deleteConfirmed:boolean) {
       if (deleteConfirmed) {
         const checklist = {
@@ -277,7 +273,7 @@ export class WorksordersChecklistComponent implements OnInit {
             // double click occurred
 
             if (this.checkWorksOrdersAccess("Edit WO Checklist")){
-              this.openEditChecklist ("edit", dataItem);              
+              this.openEditChecklist ("edit", dataItem);
             }
 
             this.touchtime = 0;

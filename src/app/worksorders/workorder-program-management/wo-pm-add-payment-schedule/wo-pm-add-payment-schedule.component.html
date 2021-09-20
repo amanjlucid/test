@@ -82,16 +82,18 @@
             <label>Retention Type:</label>
           </div>
           <div class="col-md-6">
-            <div class="form-check-inline">
-              <label class="form-check-label">
-                <input type="radio" class="form-check-input" value="P" formControlName="retentionType">Percentage
-              </label>
-            </div>
-            <div class="form-check-inline mt-2">
-              <label class="form-check-label">
-                <input type="radio" class="form-check-input" value="V" formControlName="retentionType">Value
-              </label>
-            </div>
+            <fieldset [disabled]="disableRetention" >
+              <div class="form-check-inline">
+                <label class="form-check-label">
+                  <input type="radio" class="form-check-input" value="P" formControlName="retentionType">Percentage
+                </label>
+              </div>
+              <div class="form-check-inline mt-2">
+                <label class="form-check-label">
+                  <input type="radio" class="form-check-input" value="V" formControlName="retentionType">Value
+                </label>
+              </div>
+            </fieldset>
           </div>
         </div>
       </div>
@@ -102,6 +104,7 @@
           </div>
           <div class="col-md-6">
             <input numberDecimal maxDigits="3" type="text" class="form-control" autocomplete="off" formControlName="retentionPct"
+            [readonly]="isReadOnlyControl('retperc')"
               [ngClass]="{'is-invalid':submitted && formErrors.retentionPct}" placeholder="0.00%">
             <div *ngIf="submitted && formErrors.retentionPct" class="invalid-feedback">
               <div *ngIf="formErrors.retentionPct">{{ formErrors.retentionPct }}</div>
@@ -114,6 +117,7 @@
           </div>
           <div class="col-md-6">
             <input appCurrencyMask maxDigits="9" autocomplete="off" type="text" class="form-control"
+            [readonly]="isReadOnlyControl('retval')"
               formControlName="retentionValue" [ngClass]="{'is-invalid':submitted && formErrors.retentionValue}" placeholder="£0.00">
             <div *ngIf="submitted && formErrors.retentionValue" class="invalid-feedback">
               <div *ngIf="formErrors.retentionValue">{{ formErrors.retentionValue }}</div>

@@ -26,7 +26,7 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
     take: 25,
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -62,19 +62,19 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
   deleteReasonMsgInput = false;
   wosequenceForDelete: any;
   worksOrderAccess = [];
-
+  allowContractorAccessToMenu = true;
   touchtime = 0;
   columnLocked: boolean = true;
   @ViewChild(GridComponent) grid: GridComponent;
 
   worksOrderUsrAccess: any = [];
   userType: any = [];
-
+  ProgrammeLogOpenedFrom = 'programme'
   mousePositioin: any = 0;
   openVariationListAll: boolean;
   completionList = false;
   workOrderId: number;
-
+  userIsContractor: any
   woProgramManagmentInstructionsWindow = false;
   documentWindow = false;
   ProgrammeLogWindow = false;
@@ -83,6 +83,7 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
   openDefectsList = false;
   openMilestoneFor = "checklist";
   menuData: any;
+  wprsequence: any;
   @ViewChild(TooltipDirective) public tooltipDir: TooltipDirective;
   @HostListener('click', ['$event']) onClick(event) {
     const element = event.target as HTMLElement;
@@ -126,16 +127,31 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
           this.worksOrderAccess = data[0];
           this.worksOrderUsrAccess = data[1];
           this.userType = data[2][0];
-
+          this.chRef.detectChanges
           if (this.worksOrderAccess.length > 0) {
             if (!this.worksOrderAccess.includes("Works Orders Menu")) {
               this.router.navigate(['login']);
             }
           }
-
         }
       )
     )
+
+    this.subs.add(
+      this.sharedService.isUserContractorObs.subscribe(
+        data => {
+          this.userIsContractor = data;
+          if (this.userIsContractor) {
+            this.allowContractorAccessToMenu = false
+            this.chRef.detectChanges
+          } else {
+            this.allowContractorAccessToMenu = true
+            this.chRef.detectChanges
+          }
+        }
+      )
+    )
+
 
 
     this.getUserWorksOrdersList(this.filterObject, "menuOpen");
@@ -146,11 +162,7 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
         .pipe(debounceTime(100))
         .subscribe(obj => this.getUserWorksOrdersList(obj))
     )
-
-
   }
-
-
 
   ngOnDestroy() {
     this.subs.unsubscribe();
@@ -165,6 +177,11 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
     document.querySelector('.k-grid .k-grid-content').addEventListener('scroll', (e) => {
       this.tooltipDir.hide();
     });
+
+
+
+
+
   }
 
 
@@ -173,6 +190,14 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
       this.loading = false
       this.getUserWorksOrdersList(this.filterObject);
     }
+  }
+
+  checkActiveInactive(event) {
+    this.loading = false;
+    setTimeout(() => {
+      this.filterObject.ActiveInactive = event.target.value;
+      this.getUserWorksOrdersList(this.filterObject);
+    }, 20);
   }
 
 
@@ -185,13 +210,27 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
     this.state.skip = 0;
   }
 
+
+  showReportsMenu()
+  {
+    if(this.allowContractorAccessToMenu && (this.woMenuAccess('Report Programme Summary') || this.woMenuAccess('Report Phase') || this.woMenuAccess('Report Asset')))
+    {
+      return true
+    }else{
+      return false
+    }
+
+  }
+
   getUserWorksOrdersList(filter, menuOpen = null) {
+
     this.subs.add(
       this.worksOrderService.getListOfUserWorksOrderByUserId(filter).subscribe(
         data => {
           this.resetGrid();
           if (data.isSuccess) {
             this.worksorderTempData = [...data.data]
+            let v = this.worksorderTempData;
             this.worksOrderData = [...data.data];
             this.gridView = process(this.worksOrderData, this.state);
             this.chRef.detectChanges();
@@ -259,6 +298,15 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
 
         }
     }
+  }
+
+  test() {
+
+    let v = this.allowContractorAccessToMenu
+    let x = this.worksOrderAccess;
+    let y = this.worksOrderUsrAccess
+    let z = this.userIsContractor
+
   }
 
   setSelectableSettings(): void {
@@ -343,15 +391,10 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
   }
 
   redirectToWorksOrder(item) {
-    if (this.userType?.wourroletype == "Dual Role") {
-      if (this.worksOrderAccess.indexOf('Works Order Detail') == -1 && this.worksOrderUsrAccess.indexOf('Works Order Detail') == -1) {
-        return;
-      }
-    } else {
-      if (this.worksOrderUsrAccess.indexOf('Works Order Detail') == -1) {
-        return
-      }
+    if (this.worksOrderUsrAccess.indexOf('Works Order Detail') == -1) {
+      return
     }
+
 
     this.selectedWorksOrder = item;
     this.sharedService.changeWorksOrderSingleData(item);
@@ -370,14 +413,8 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
 
 
   redirectToWorksOrderEdit(item) {
-    if (this.userType?.wourroletype == "Dual Role") {
-      if (this.worksOrderAccess.indexOf('Edit Works Order') == -1 && this.worksOrderUsrAccess.indexOf('Edit Works Order') == -1) {
-        return;
-      }
-    } else {
-      if (this.worksOrderUsrAccess.indexOf('Edit Works Order') == -1) {
-        return
-      }
+    if (this.worksOrderUsrAccess.indexOf('Edit Works Order') == -1) {
+      return
     }
 
     $('.bgblur').addClass('ovrlay');
@@ -474,19 +511,23 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
   }
 
   export() {
+
+    let v = this.worksOrderAccess
+    let y = this.worksOrderUsrAccess
+
     if (this.gridView.total > 0 && this.gridView.data) {
       let tempData = Object.assign([], this.worksorderTempData);
-      tempData.map((x: any) => {
-        x.wocontractorissuedate = this.helperService.formatDateWithoutTime(x.wocontractorissuedate)
-        x.wotargetcompletiondate = this.helperService.formatDateWithoutTime(x.wotargetcompletiondate)
-        x.wocontractoracceptancedate = this.helperService.formatDateWithoutTime(x.wocontractoracceptancedate)
-        x.woplanstartdate = this.helperService.formatDateWithoutTime(x.woplanstartdate)
-        x.woplanenddate = this.helperService.formatDateWithoutTime(x.woplanenddate)
-        x.woactualstartdate = this.helperService.formatDateWithoutTime(x.woactualstartdate)
-        x.woactualenddate = this.helperService.formatDateWithoutTime(x.woactualenddate)
-        x.mPgpA = this.helperService.formatDateWithoutTime(x.mPgpA)
-        x.mPgsA = this.helperService.formatDateWithoutTime(x.mPgsA)
-      });
+      // tempData.map((x: any) => {
+      //   x.wocontractorissuedate = this.helperService.formatDateWithoutTime(x.wocontractorissuedate)
+      //   x.wotargetcompletiondate = this.helperService.formatDateWithoutTime(x.wotargetcompletiondate)
+      //   x.wocontractoracceptancedate = this.helperService.formatDateWithoutTime(x.wocontractoracceptancedate)
+      //   x.woplanstartdate = this.helperService.formatDateWithoutTime(x.woplanstartdate)
+      //   x.woplanenddate = this.helperService.formatDateWithoutTime(x.woplanenddate)
+      //   x.woactualstartdate = this.helperService.formatDateWithoutTime(x.woactualstartdate)
+      //   x.woactualenddate = this.helperService.formatDateWithoutTime(x.woactualenddate)
+      //   x.mPgpA = this.helperService.formatDateWithoutTime(x.mPgpA)
+      //   x.mPgsA = this.helperService.formatDateWithoutTime(x.mPgsA)
+      // });
 
       let label = {
         'wosequence': 'Work Order',
@@ -516,7 +557,29 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
         'mPgsA': 'Amended Date',
       }
 
-      this.helperService.exportAsExcelFile(tempData, 'WorksOrders', label)
+      const fieldsToFormat = {
+        'wocontractorissuedate': 'date',
+        'wotargetcompletiondate': 'date',
+        'wocontractoracceptancedate': 'date',
+        'woplanstartdate': 'date',
+        'woplanenddate': 'date',
+        'woactualstartdate': 'date',
+        'woactualenddate': 'date',
+        'mPgpA': 'date',
+        'mPgsA': 'date',
+
+        'wobudget': 'money',
+        'woforecastplusfee': 'money',
+        'wocommittedplusfee': 'money',
+        'wocurrentcontractsum': 'money',
+        'woacceptedvalue': 'money',
+        'woactualplusfee': 'money',
+        'woapprovedplusfee': 'money',
+        'wopendingplusfee': 'money',
+        'wopayment': 'money',
+      }
+
+      this.helperService.exportAsExcelFileWithCustomiseFields(tempData, 'WorksOrders', label, fieldsToFormat)
 
     } else {
       this.alertService.error('There is no record to export');
@@ -526,29 +589,26 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
 
   woMenuAccess(menuName) {
 
-    if (this.userType == undefined) return true;
+    let MenuList = this.worksOrderAccess
 
-    if (this.userType?.wourroletype == "Dual Role") {
-      if (menuName == "Works Orders Menu") {
-        if (this.worksOrderAccess.indexOf('Edit Works Order') != -1 || this.worksOrderUsrAccess.indexOf('Edit Works Order') != -1) {
-          return true
-        }
-
-        if (this.worksOrderAccess.indexOf('Delete Works Order') != -1 || this.worksOrderUsrAccess.indexOf('Delete Works Order') != -1) {
-          return true
-        }
-
-        if (this.worksOrderAccess.indexOf('Works Order Detail') != -1 || this.worksOrderUsrAccess.indexOf('Works Order Detail') != -1) {
-          return true
-        }
-
-        return false;
-      }
-      return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
+    if(this.worksOrderUsrAccess.length > 0)
+    {
+      MenuList = this.worksOrderUsrAccess
     }
 
-    return this.worksOrderUsrAccess.indexOf(menuName) != -1
-
+    if (menuName == "Works Orders Menu") {
+      if (this.helperService.checkWorkOrderAreaAccess(MenuList, 'Edit Works Order')) {
+        return true
+      }
+      if (this.helperService.checkWorkOrderAreaAccess(MenuList, 'Delete Works Order')) {
+        return true
+      }
+      if (this.helperService.checkWorkOrderAreaAccess(MenuList, 'Works Order Detail')) {
+        return true
+      }
+      return false;
+    }
+    return this.helperService.checkWorkOrderAreaAccess(MenuList, menuName)
 
   }
 
@@ -590,13 +650,21 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
 
 
   openDocumentMethod(item) {
-    if (item.worksOrderFileCount == 0) return;
+    // if (item.worksOrderFileCount == 0) return;
     this.selectedWorksOrder = item;
     $('.worksOrderOverlay').addClass('ovrlay');
     this.documentWindow = true;
   }
 
-  openProgrammeLog(item) {
+  openProgrammeLog(item, value) {
+    if(value)
+    {
+      this.ProgrammeLogOpenedFrom = 'programme'
+    }else{this.ProgrammeLogOpenedFrom = 'workorder'}
+    let params = {
+       wprsequence: item.wprsequence
+      }
+    this.wprsequence = params;
     this.selectedWorksOrder = item;
     this.ProgrammeLogWindow = true;
     $('.worksOrderOverlay').addClass('ovrlay');
@@ -620,7 +688,10 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
   }
 
   closeDocumentWindow(eve) {
-    this.documentWindow = eve;
+    this.documentWindow = false;
+    if (eve != undefined) {
+      this.selectedWorksOrder.worksOrderFileCount = eve;
+    }
     $('.worksOrderOverlay').removeClass('ovrlay');
   }
 
@@ -628,6 +699,10 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
 
     const wprsequence = (dataItem != null) ? dataItem.wprsequence : 0;
     const wosequence = (dataItem != null) ? dataItem.wosequence : 0;
+    let status = this.filterObject.ActiveInactive;
+    if (dataItem != null) {
+      status = ''
+    }
     const wopsequence = 0;
     let level = reportLevel;
 
@@ -703,8 +778,9 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
       'paymentdaterep': 'date',
     }
 
-    this.worksOrderReportService.getWOReportingAsset(wprsequence, wosequence, wopsequence, level).subscribe(
+    this.worksOrderReportService.getWOReportingAsset(wprsequence, wosequence, wopsequence, level, status).subscribe(
       (data) => {
+
         if (data.isSuccess == true) {
           if (data.data.length == 0) {
             this.alertService.error("No Record Found.");
@@ -726,6 +802,10 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
   viewWOReportingProgSummaryTree(reportType, dataItem: any = null) {
     const wprsequence = (dataItem != null) ? dataItem.wprsequence : 0;
     const wosequence = (dataItem != null) ? dataItem.wosequence : 0;
+    let status = this.filterObject.ActiveInactive;
+    if (dataItem != null) {
+      status = ''
+    }
     let level = reportType;
 
     const label = {
@@ -756,6 +836,7 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
     const fieldsToFormat = {
       'actual___Planned_Start_Date': 'date',
       'actual___Planned_End_Date': 'date',
+      'target_Date': 'date',
       'budget': 'money',
       'forecast': 'money',
       'committed': 'money',
@@ -766,7 +847,7 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
       'payments': 'money',
     }
 
-    this.worksOrderReportService.getWOReportingProgSummaryTree(wprsequence, wosequence, level).subscribe(
+    this.worksOrderReportService.getWOReportingProgSummaryTree(wprsequence, wosequence, level, status).subscribe(
       (data) => {
         if (data.isSuccess == true) {
           if (data.data.length == 0) {
@@ -824,12 +905,13 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
     this.subs.add(
       this.reportingGrpService.runReport(xPortId, params.lstParamNameValue, this.currentUser.userId, "EXCEL", false, true).subscribe(
         data => {
-          const linkSource = 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' + data;
+          const linkSource = 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' + data.data;
           const downloadLink = document.createElement("a");
           const fileName = `${reportName}_${xPortId}.xlsx`;
           downloadLink.href = linkSource;
           downloadLink.download = fileName;
           downloadLink.click();
+
         }
       )
     )
@@ -867,16 +949,16 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
   closeChecklistWindow($event) {
     this.showChecklist = $event;
     $('.bgblur').removeClass('ovrlay');
-}
+  }
 
-  ShowWorkList(type:string, dataItem) {
-    let querystring : string = "";
+  ShowWorkList(type: string, dataItem) {
+    let querystring: string = "";
     switch (type) {
       case "Contractor":
         querystring = `?Contractor=true`;
         const worklistcontractor = {
-          concode : dataItem.concode,
-          contractorName : dataItem.contractorName
+          concode: dataItem.concode,
+          contractorName: dataItem.contractorName
         };
         localStorage.setItem('worklistcontractor', JSON.stringify(worklistcontractor));
         break;
@@ -884,10 +966,10 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
       case "Contract":
         querystring = `?Contract=true`;
         const worklistcontract = {
-          concode : dataItem.concode,
-          contractorName : dataItem.contractorName,
-          cttsurcde : dataItem.cttsurcde,
-          contractName : dataItem.contractName
+          concode: dataItem.concode,
+          contractorName: dataItem.contractorName,
+          cttsurcde: dataItem.cttsurcde,
+          contractName: dataItem.contractName
         };
         localStorage.setItem('worklistcontract', JSON.stringify(worklistcontract));
         break;
@@ -905,4 +987,42 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
     window.open(siteUrl, "_blank");
 
   }
+
+
+  getSubMenuTopMargin(subMenu) {
+    let numberMenus = 0;
+    if (subMenu == 'Works Order Reports') {
+      if (this.woMenuAccess('Works Order Report (customer)')) numberMenus += 1;
+      if (this.woMenuAccess('Works Order Asset Report (customer)')) numberMenus += 1;
+      if (this.woMenuAccess('Asset Report (customer)')) numberMenus += 1;
+      if (this.woMenuAccess('Work Report (customer)')) numberMenus += 1;
+      if (numberMenus == 1) return "-5px";
+      if (numberMenus == 2) return "-40px";
+      if (numberMenus == 3) return "-75px";
+      if (numberMenus == 4) return "-110px";
+    }
+    if (subMenu == 'View Work List') {
+      if (this.woMenuAccess('View Work List for Contractor')) numberMenus += 1;
+      if (this.woMenuAccess('View Work List for Contract')) numberMenus += 1;
+      if (this.woMenuAccess('Work List')) numberMenus += 1;
+      if (numberMenus == 1) return "-5px";
+      if (numberMenus == 2) return "-40px";
+      if (numberMenus == 3) return "-75px";
+    }
+    if (subMenu == 'Contractor Reports') {
+      if (this.woMenuAccess('Asset Report (contractor)')) numberMenus += 1;
+      if (this.woMenuAccess('Work Report (contractor)')) numberMenus += 1;
+      if (numberMenus == 1) return "-5px";
+      if (numberMenus == 2) return "-40px";
+    }
+    if (subMenu == 'Milestones') {
+      if (this.woMenuAccess('Milestones')) numberMenus += 1;
+      if (this.woMenuAccess('Manage Milestones')) numberMenus += 1;
+      if (numberMenus == 1) return "-5px";
+      if (numberMenus == 2) return "-40px";
+
+    }
+
+  }
+
 }

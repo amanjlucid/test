@@ -111,7 +111,7 @@ export class BlankVariationComponent implements OnInit {
 
   onSubmit() {
     this.submitted = true;
-    this.formErrorObject(); // empty form error 
+    this.formErrorObject(); // empty form error
     this.logValidationErrors(this.variationForm);
 
     if (this.variationForm.invalid) {
@@ -119,7 +119,7 @@ export class BlankVariationComponent implements OnInit {
     }
 
     let formRawVal = this.variationForm.getRawValue();
-   
+
     const { phase, reason } = formRawVal;
     const { cttsurcde, wosequence } = this.singleWorksOrder;
     // const { woisequence, woiworkcost } = this.selectedSingleVariationInp;
@@ -144,7 +144,8 @@ export class BlankVariationComponent implements OnInit {
       WOISEQUENCE: '',
       WOIWORKCOST: 0,
       WOPSEQUENCE: parseInt(phase),
-      WOSEQUENCE: wosequence
+      WOSEQUENCE: wosequence,
+      BlankVariation: true
     }
 
     this.subs.add(

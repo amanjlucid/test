@@ -10,7 +10,7 @@ import { anyChanged } from '@progress/kendo-angular-grid/dist/es2015/utils';
 import { SubSink } from 'subsink';
 import { EventService } from './event.service';
 import { WorksorderManagementService } from './works-order/worksorder-management.service';
-
+import { CurrencyPipe } from '@angular/common';
 
 
 @Injectable({
@@ -28,7 +28,8 @@ export class HelperService {
     constructor(
         private sharedService: SharedService,
         private worksorderManagementService: WorksorderManagementService,
-        private notificationService: EventService
+        private notificationService: EventService,
+        private currencyPipe: CurrencyPipe
     ) { }
 
     public exportAsExcelFile(json: any[], excelFileName: string, labels): void {
@@ -799,11 +800,12 @@ export class HelperService {
                     if (fieldsToFormat != null) {
                         if (fieldsToFormat[k] != undefined) {
                             if (fieldsToFormat[k] == "date") {
-                                arr[labels[k]] = this.formatDateWithoutTime(row[k]) != null ? this.formatDateWithoutTime(row[k]) : '';
+                                arr[labels[k]] = this.pipeDateformat(row[k], 'DD-MMM-YYYY');
                             }
 
                             if (fieldsToFormat[k] == "money") {
-                                arr[labels[k]] = "£" + this.moneyFormat(row[k]);
+                                // arr[labels[k]] = "£" + this.moneyFormat(row[k]);
+                                arr[labels[k]] = this.currencyPipe.transform(row[k], 'GBP');
                             }
                         } else {
                             arr[labels[k]] = row[k];
@@ -827,12 +829,7 @@ export class HelperService {
     }
 
 
-    checkWorkOrderAreaAccess(userType, worksOrderAccess, worksOrderUsrAccess, menuName) {
-        // workorder list page has own security check method
-        if (userType == undefined) return worksOrderAccess.indexOf(menuName) != -1;
-        if (userType?.wourroletype == "Dual Role") {
-            return worksOrderAccess.indexOf(menuName) != -1 || worksOrderUsrAccess.indexOf(menuName) != -1
-        }
+    checkWorkOrderAreaAccess(worksOrderUsrAccess, menuName) {
         return worksOrderUsrAccess.indexOf(menuName) != -1
     }
 
@@ -840,6 +837,25 @@ export class HelperService {
     getMDY(givenDate) {
         let date = new Date(givenDate);
         return `${this.zeorBeforeSingleDigit(date.getMonth() + 1)}/${this.zeorBeforeSingleDigit(date.getDate())}/${this.zeorBeforeSingleDigit(date.getFullYear())}`;
+    }
+
+    pipeDateformat(value, format) {
+        if (value == null) {
+            return ' ';
+        }
+
+        const momentDate = moment(new Date(value));
+        if (!momentDate.isValid()) {
+            return value
+        };
+
+        const tempDate = '01-Jan-1753';//new Date('01-Jan-1753');
+        const mmDate = momentDate.format(format);
+        if (mmDate.indexOf("1753") != -1 || mmDate == "00:00:00") {
+            return ' ';
+        } else {
+            return mmDate;
+        }
     }
 
 

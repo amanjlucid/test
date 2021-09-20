@@ -15,7 +15,7 @@
                 <div class="row mt-1" *ngIf="formMode == 'edit'">
                     <div class="col-md-2"><label>Variation:</label> </div>
                     <div class="col-md-10">
-                        <input type="text" value="{{worksOrderData?.woname}} ({{worksOrderData?.wosequence}})"
+                        <input type="text" value="{{singleVariation?.woisequence}}"
                             class="form-control form-control-sm" [readonly]="true">
                     </div>
                 </div>
@@ -49,8 +49,8 @@
                     </div>
 
                     <div class="col-md-10">
-                        <textarea class="form-control" formControlName="reason"
-                            [ngClass]="{ 'is-invalid': submitted && formErrors.reason }" autocomplete="off" rows="4">
+                        <textarea class="form-control" formControlName="reason" [readonly]="ReadOnlyReason()"
+                            [ngClass]="{ 'is-invalid': submitted && formErrors.reason}" autocomplete="off" rows="4">
                     </textarea>
 
                         <div *ngIf="submitted && formErrors.reason" class="invalid-feedback">
@@ -62,7 +62,7 @@
 
 
             <div class="col-md-12 mt-2 text-right">
-                <button type="submit" class="btn btn-sm themeButton mr-1">Apply</button>
+                <button type="submit" class="btn btn-sm themeButton mr-1" [disabled]="ReadOnlyReason()">Apply</button>
                 <button type="button" class="btn btn-sm themeButton" (click)="closeNewVariation()">Cancel</button>
             </div>
         </div>

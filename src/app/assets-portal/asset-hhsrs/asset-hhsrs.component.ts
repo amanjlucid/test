@@ -23,7 +23,7 @@ export class AssetHhsrsComponent implements OnInit, OnDestroy {
     sort: [],
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -162,7 +162,7 @@ export class AssetHhsrsComponent implements OnInit, OnDestroy {
     } else if (this.selectedNotes.linkType == 'L') {
       let lnk = this.selectedNotes.link;
 
-      
+
       let fileExt = lnk.substring(lnk.lastIndexOf(".") + 1).toLowerCase();
       this.assetAttributeService.getMimeType(fileExt).subscribe(
         mimedata => {

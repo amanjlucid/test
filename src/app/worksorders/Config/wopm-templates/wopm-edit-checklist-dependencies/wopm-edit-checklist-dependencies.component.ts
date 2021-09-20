@@ -81,9 +81,10 @@ export class WopmEditChecklistDependenciesComponent implements OnInit {
         },
       error => {
         this.alertService.error(error);
+        this.dependenciesWindow = false;
+        this.closedependenciesWindow.emit(this.dependenciesWindow)
       });
-      this.dependenciesWindow = false;
-      this.closedependenciesWindow.emit(this.dependenciesWindow)
+
   }
 
 

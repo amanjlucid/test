@@ -12,6 +12,18 @@
       padding: 8px 12px;
 }
 
-.lbl{
+.lbl {
       margin-top: 12px;
-  }
+}
+
+app-wo-pm-instruction-assets .griddRow {
+      height: calc(100% - 170px);
+}
+
+app-wo-pm-instruction-assets .griddRow .gridCol {
+      height: calc(100% - 25px);
+}
+
+app-wo-pm-instruction-assets .griddRow .gridCol #instGrid {
+      height: 100%;
+}

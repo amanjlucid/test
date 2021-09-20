@@ -29,7 +29,7 @@ export class VariationFeesComponent implements OnInit {
     take: 25,
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -70,7 +70,7 @@ export class VariationFeesComponent implements OnInit {
         }
       )
     )
-    
+
     if (this.openedFor == "details") {
       this.title = `Variation Fees: ${this.selectedSingleVariationAssetInp?.woiissuereason} (${this.selectedSingleVariationAssetInp?.wopsequence})`;
     }
@@ -232,12 +232,7 @@ export class VariationFeesComponent implements OnInit {
 
 
   woMenuAccess(menuName) {
-    return this.helperService.checkWorkOrderAreaAccess(this.userType, this.worksOrderAccess, this.worksOrderUsrAccess, menuName)
-    // if (this.userType == undefined) return true;
-    // if (this.userType?.wourroletype == "Dual Role") {
-    //   return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
-    // }
-    // return this.worksOrderUsrAccess.indexOf(menuName) != -1
+    return this.helperService.checkWorkOrderAreaAccess(this.worksOrderUsrAccess, menuName)
   }
 
 

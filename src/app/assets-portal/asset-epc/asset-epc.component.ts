@@ -27,7 +27,7 @@ export class AssetEpcComponent implements OnInit, OnDestroy {
   addendaWindow: boolean = false;
   dataWindow: boolean = false;
   retrieveWindow: boolean = false;
-  @ViewChild('RetrievePanel') RetrievePanel; 
+  @ViewChild('RetrievePanel') RetrievePanel;
   @Input() assetId: string;
   @Input() selectedAsset;
   public YValueSAP = 0;
@@ -38,7 +38,7 @@ export class AssetEpcComponent implements OnInit, OnDestroy {
   public Delay2 = 0.3;
   public Delay3 = 0.6;
   public Delay4 = 0.9;
-  
+
   public ePCViewModel
 
   public SAPRating = 0;
@@ -53,14 +53,14 @@ export class AssetEpcComponent implements OnInit, OnDestroy {
 
   public SAPChartText = '';
   public EIChartText = '';
-  
+
 
   state: State = {
     skip: 0,
     sort: [],
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -85,7 +85,10 @@ export class AssetEpcComponent implements OnInit, OnDestroy {
   epcSequence: number;
   rrn: string;
   address: string;
-  
+
+  modulesEnabled = [];
+
+
   constructor(
     private assetAttributeService: AssetAttributeService,
     private alertService: AlertService,
@@ -98,9 +101,12 @@ export class AssetEpcComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.subs.add(this.sharedService.energyPortalAccess.subscribe(data => { 
+    this.subs.add(this.sharedService.energyPortalAccess.subscribe(data => {
       this.energyPortalAccess = data;
-    })) 
+    }))
+    this.subs.add(this.sharedService.realModulesEnabled.subscribe(data => {
+      this.modulesEnabled = data;
+    }));
     this.getAssetEPCList();
 
   }
@@ -158,7 +164,7 @@ export class AssetEpcComponent implements OnInit, OnDestroy {
     };
   }
 
-  
+
   get bounceState4(): any {
     return {
       value: this.show ? 'show' : 'hide',
@@ -206,7 +212,7 @@ export class AssetEpcComponent implements OnInit, OnDestroy {
 
   // }
 
-  
+
   getAssetEPCList() {
     this.subs.add(
       this.assetAttributeService.getAssetEPCList(this.assetId).subscribe(
@@ -227,7 +233,7 @@ export class AssetEpcComponent implements OnInit, OnDestroy {
             this.YValueEI = this.IndicatorPosition(this.ePCViewModel.currentEI);
             this.EIPotentialRating = this.ePCViewModel.currentEIPotential;
             this.YValueEIPotential = this.IndicatorPosition(this.ePCViewModel.currentEIPotential);
-       
+
             this.SAPBand = this.ePCViewModel.currentSAPBand;
             this.SAPPotentialBand = this.ePCViewModel.currentSAPPotentialBand;
             this.EIBand = this.ePCViewModel.currentEIBand;
@@ -241,9 +247,9 @@ export class AssetEpcComponent implements OnInit, OnDestroy {
 
             if (["A","B","C","D","E","F","G"].includes(this.ePCViewModel.currentSAPBand) ){
               this.SAPChartText = `SAP rating is ${this.ePCViewModel.currentSAPBand}(${this.ePCViewModel.currentSAP}) and potential is ${this.ePCViewModel.currentSAPPotentialBand}(${this.ePCViewModel.currentSAPPotential})`;
-              this.EIChartText = `Environmental Impact rating is ${this.EIBand}(${this.EIRating}) and potential is ${this.EIPotentialBand}(${this.EIPotentialRating})`;              
+              this.EIChartText = `Environmental Impact rating is ${this.EIBand}(${this.EIRating}) and potential is ${this.EIPotentialBand}(${this.EIPotentialRating})`;
             }
-            
+
             if (this.ePCViewModel.currentSAP != 0)
             {
                   this.show = !this.show;
@@ -252,9 +258,9 @@ export class AssetEpcComponent implements OnInit, OnDestroy {
             {
               this.noRatingShow = !this.noRatingShow;
             }
-       
+
           }
-          
+
         }
       ))
   }
@@ -425,7 +431,7 @@ export class AssetEpcComponent implements OnInit, OnDestroy {
     }
   }
 
-  
+
   getEIColor(rating) {
     if (rating <= 20)
     {
@@ -507,7 +513,7 @@ export class AssetEpcComponent implements OnInit, OnDestroy {
 
     }
 
-    
+
     openEPCRecommendations(assetObj = null) {
       this.recWindow = true;
       this.epcSequence = assetObj.epcsequence;
@@ -517,7 +523,7 @@ export class AssetEpcComponent implements OnInit, OnDestroy {
 
     }
 
-        
+
     openEPCAddenda(assetObj = null) {
       this.addendaWindow = true;
       this.epcSequence = assetObj.epcsequence;
@@ -527,7 +533,7 @@ export class AssetEpcComponent implements OnInit, OnDestroy {
 
     }
 
-            
+
     openEPCData(assetObj = null) {
       this.dataWindow = true;
       this.epcSequence = assetObj.epcsequence;
@@ -606,14 +612,14 @@ export class AssetEpcComponent implements OnInit, OnDestroy {
       this.dataWindow = $event;
     }
 
-      
+
   openRetrieveEPCWindow() {
-    $('.portalwBlur').addClass('ovrlay');    
+    $('.portalwBlur').addClass('ovrlay');
     this.epcStatus = this.epcStatus;
     this.retrieveWindow = true;
   }
 
-  
+
   closeRetrieveEPCWindow($event) {
     this.retrieveWindow = false;
      var isItRetrieved:boolean = $event;
@@ -622,13 +628,20 @@ export class AssetEpcComponent implements OnInit, OnDestroy {
         this.show = false;
         this.noRatingShow = false;
         this.getAssetEPCList();
-        
+
       }
   }
 
   checkEnergyPortalAccess(val: string): Boolean {
     if (this.energyPortalAccess != undefined) {
     return this.energyPortalAccess.includes(val);
+    }
+  }
+
+  
+  checkModuleEnabled(val: string): Boolean {
+    if (this.modulesEnabled != undefined) {
+      return this.modulesEnabled.includes(val);
     }
   }
 

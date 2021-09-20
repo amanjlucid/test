@@ -29,7 +29,7 @@ export class AssetsComponent implements OnInit, OnDestroy, AfterViewInit {
   selectedhierarchyLevel: any;
   hiearchyWindow = false;
   tabWindow = false;
-  tabName: string = "attributes";
+  tabName: string;
   assetTypes: any;
   attributeLists: any = [];
   scrollLoad = true;
@@ -111,7 +111,7 @@ export class AssetsComponent implements OnInit, OnDestroy, AfterViewInit {
   ServicingFilter: boolean = false;
   TaskFilter: boolean = false;
   energyDashboardFilter:boolean = false;
-
+  woDashboardFilter:boolean = false;
 
   menuList: any = [];
 
@@ -181,6 +181,7 @@ export class AssetsComponent implements OnInit, OnDestroy, AfterViewInit {
     private servicePortalService: ServicePortalService,
     private chRef: ChangeDetectorRef,
     private settingService: SettingsService,
+    private router: Router,
   ) { }
 
   ngAfterViewInit() {
@@ -235,11 +236,26 @@ export class AssetsComponent implements OnInit, OnDestroy, AfterViewInit {
         const servicePortal = params['servicing'];
         const taskData = params['taskData'];
         const energyData = params['energyData'];
+        const woData = params['woData'];
         const sapBand = params['sapBand'];
         const epcStatus = params['epcStatus'];
         const openTab = params['openTab'];
         const asbestos = params['asbestos'];
-        if (assetid != undefined) {
+        const thirdParty = params['thirdParty'];
+
+        if (thirdParty != undefined) {
+          const encStr = this.router.routerState.snapshot.url;
+          const splitStr = encStr.split('thirdParty=');
+          const thirdPartytext = splitStr[1]
+          this.autService.validateDeepLinkParameters(thirdPartytext).subscribe(
+          data => {
+            this.validationObj = data;
+            if (data && data.validated) {
+
+              this.openLinkTabs(this.validationObj);
+            }
+          });
+        } else if (assetid != undefined) {
           this.autService.validateAssetIDDeepLinkParameters(this.currentUser.userId, assetid).subscribe(
             data => {
               if (data.validated) {
@@ -271,6 +287,16 @@ export class AssetsComponent implements OnInit, OnDestroy, AfterViewInit {
           this.getAllAssets(this.assetList);
         } else if (energyData != undefined && energyData == "true") {
           this.energyDashboardFilter= true;
+          let encodedTasksAssets = localStorage.getItem("assetList");
+          if (encodedTasksAssets != null) {
+            let assetIdstring = atob(encodedTasksAssets);//Decode tasks assets
+            this.assetList.TaskAsset = true;
+            this.assetList.TaskAssets = assetIdstring.split(',');
+          }
+
+          this.getAllAssets(this.assetList);
+        } else if (woData != undefined && woData == "true") {
+          this.woDashboardFilter= true;
           let encodedTasksAssets = localStorage.getItem("assetList");
           if (encodedTasksAssets != null) {
             let assetIdstring = atob(encodedTasksAssets);//Decode tasks assets
@@ -467,6 +493,56 @@ export class AssetsComponent implements OnInit, OnDestroy, AfterViewInit {
             alert('Please select one record');
           }
           const selectedAttribute = this.attributeLists[0];
+
+          if (!this.tabName) {
+            this.assetAttributeService.getAssetTabsList(this.currentUser.userId).subscribe(
+              tabData => {
+                this.tabsData = tabData;
+
+                let tabs = ['Attributes', 'Characteristics', 'Asbestos', 'Energy', 'EPC', 'Surveys', 'Health and Safety', 'Servicing', 'HHSRS', 'Works Management', 'Quality', 'Notepad'];
+                for (let tab of tabs) {
+                  if (this.tabsData.includes(tab)) {
+                    switch (tab) {
+                      case 'Asbestos':
+                        this.tabName = "asbestos";
+                        break;
+                      case 'Attributes':
+                        this.tabName = "attributes";
+                        break;
+                      case 'Characteristics':
+                        this.tabName = "characteristics";
+                        break;
+                      case 'Energy':
+                        this.tabName = "energy";
+                        break;
+                      case 'EPC':
+                        this.tabName = "epc";
+                        break;
+                      case 'Health and Safety':
+                        this.tabName = "assessments";
+                        break;
+                      case 'HHSRS':
+                        this.tabName = "hhrs";
+                        break;
+                      case 'Notepad':
+                        this.tabName = "notepad";
+                      case 'Quality':
+                        this.tabName = "quality";
+                      case 'Servicing':
+                        this.tabName = "servicing";
+                      case 'Surveys':
+                        this.tabName = "surveys";
+                      case 'Works Management':
+                        this.tabName = "workmanagement";
+                    }
+                  }
+                  if (this.tabName) {
+                    break;
+                  }
+                }
+              });
+          }
+
           this.openTabWindow(this.tabName, selectedAttribute);
         }
       },
@@ -879,6 +955,7 @@ export class AssetsComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     this.energyDashboardFilter = false;
+    this.woDashboardFilter = false;
     this.getAllAssets(this.assetList);
   }
 
@@ -1009,6 +1086,8 @@ export class AssetsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.selectedAsset = asset;
     this.tabName = tabname;
     this.tabWindow = true;
+    this.loaderService.hide();
+    this.loaderService.pageHide();
   }
 
   closeTabWindow($event) {
@@ -1055,7 +1134,7 @@ export class AssetsComponent implements OnInit, OnDestroy, AfterViewInit {
       let asbestoslbl: any = {
         'asbestosCount': 'No Asbestos',
         'presumed': 'Presumed',
-        'stronglypresumed': 'Strongly Presumed',
+        'stronglyPresumed': 'Strongly Presumed',
         'identified': 'Identified',
         'highestMaterialRisk': 'Highest Material Risk',
         'highestPriorityRisk': 'Highest Priority Risk',

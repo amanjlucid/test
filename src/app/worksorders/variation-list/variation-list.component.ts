@@ -27,7 +27,7 @@ export class VariationListComponent implements OnInit {
     take: 25,
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -37,7 +37,7 @@ export class VariationListComponent implements OnInit {
   pageSize = 25;
   selectableSettings: SelectableSettings;
   mySelection: any[] = [];
-
+  IssueVariationFromNew: boolean = false;
   filterToggle = false;
   worksOrderData: any;
   phaseData: any;
@@ -177,7 +177,7 @@ export class VariationListComponent implements OnInit {
               this.variationData = variationData.data;
 
               this.outstandingVariation = data[5].data.result;
-              //check if request type is variation 
+              //check if request type is variation
               this.variationIssuedAndAccepted = variationData.data.some(x => x.woirequesttype == "Variation" && (x.woiissuestatus == "New" || x.woiissuestatus == "Issued" || x.woiissuestatus == "Contractor Review" || x.woiissuestatus == "Customer Review"))
 
               this.gridView = process(this.variationData, this.state);
@@ -290,15 +290,7 @@ export class VariationListComponent implements OnInit {
 
 
   woMenuAccess(menuName) {
-    return this.helperService.checkWorkOrderAreaAccess(this.userType, this.worksOrderAccess, this.worksOrderUsrAccess, menuName)
-    // if (this.userType == undefined) return true;
-
-    // if (this.userType?.wourroletype == "Dual Role") {
-    //   return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
-    // }
-
-    // return this.worksOrderUsrAccess.indexOf(menuName) != -1
-
+    return this.helperService.checkWorkOrderAreaAccess(this.worksOrderUsrAccess, menuName)
   }
 
   disableNewAndAppendBtn(btnName) {
@@ -318,14 +310,37 @@ export class VariationListComponent implements OnInit {
   disableVariationBtns(btnType, item) {
     if (btnType == 'Edit') {
       return item.woiissuestatus == 'New' || item.woiissuestatus == 'Contractor Review' ? false : true;
-    } else if (btnType == 'Customer') {
+    }
+    else if (btnType == 'Customer') {
       return item.woiissuestatus == 'New' || item.woiissuestatus == 'Contractor Review' ? false : true;
-    } else if (btnType == 'Contractor' || btnType == 'Issue') {
+    }
+    else if (btnType == 'Contractor') {
+      if (this.userType != undefined && this.userType?.wourroletype == 'Contractor')
+      {
+        return true;
+      }
       return item.woiissuestatus == 'Customer Review' || item.woiissuestatus == 'New' ? false : true;
-    } else if (btnType == 'Issue') {
-      return item.woiissuestatus == 'New' ? false : true;
-    } else if (btnType == 'Accept') {
+    }
+    else if (btnType == 'Issue')
+    {
+      if (this.userType != undefined && this.userType?.wourroletype == 'Contractor')
+      {
+        return true;
+      }
+      if(item.issueVariationFromNew == 'Y' && item.woiissuestatus == 'New')
+      {
+        return item.isEmptyVariation == 'Y';
+      }
+      else
+      {
+        return item.woiissuestatus == 'Customer Review' ? item.isEmptyVariation == 'Y' : true;
+      }
+    }
+    else if (btnType == 'Accept') {
       return item.woiissuestatus == 'Issued' ? false : true;
+    }
+    else if (btnType == 'Notes') {
+      return item.woiissuestatus == 'New' ? true : false;
     }
 
   }
@@ -494,7 +509,7 @@ export class VariationListComponent implements OnInit {
       this.alertService.error('Variaton not created.');
       return;
     }
-   
+
     this.openedFor = 'edit';
     this.selectedSingleVariation = eve;
     this.selectedSingleVariation.assid = this.selectedAsset.assid;
@@ -526,7 +541,7 @@ export class VariationListComponent implements OnInit {
 
   closeEmailWithReportWindow(eve) {
     this.SendEmailInsReportWindow = false;
-   
+
     $('.variationListOverlay').removeClass('ovrlay');
     // $('.reportingDiv').removeClass('pointerEvent');
   }

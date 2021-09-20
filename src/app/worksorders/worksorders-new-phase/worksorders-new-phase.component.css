@@ -87,3 +87,7 @@
     /* top: 46% !important; */
     left: 22% !important;
 }
+
+.currencyInput {
+  text-align: left;
+}

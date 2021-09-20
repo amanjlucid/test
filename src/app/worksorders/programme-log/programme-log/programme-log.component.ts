@@ -4,6 +4,7 @@ import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data
 import { AlertService, HelperService, ReportingGroupService, SharedService, WorksorderManagementService, WorksOrdersService } from 'src/app/_services';
 import { combineLatest, forkJoin, Observable } from 'rxjs';
 import { SelectableSettings, PageChangeEvent } from '@progress/kendo-angular-grid';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
     selector: 'app-programme-log',
@@ -21,7 +22,7 @@ export class ProgramLogComponent implements OnInit {
     @Input() singleWorkOrderAssetInp: any;
     @Input() selectedProgrammeInp: any;
     subs = new SubSink();
-    title = 'View Programme Log';
+    title = 'Programme Log';
     currentUser = JSON.parse(localStorage.getItem('currentUser'));
     state: State = {
         skip: 0,
@@ -29,7 +30,7 @@ export class ProgramLogComponent implements OnInit {
         take: 20,
         group: [],
         filter: {
-            logic: "or",
+            logic: "and",
             filters: []
         }
     }
@@ -46,6 +47,10 @@ export class ProgramLogComponent implements OnInit {
     worksOrderAccess = [];
     worksOrderUsrAccess: any = [];
     userType: any = [];
+    windowNo: number = 0
+    private stateChange = new BehaviorSubject<any>(this.state);
+    public gridHeight: string = 'height: 85%'
+
 
     constructor(
         private worksOrdersService: WorksOrdersService,
@@ -80,7 +85,7 @@ export class ProgramLogComponent implements OnInit {
         )
 
         if (this.openedFrom == "assetchecklist" && this.singleWorkOrderAssetInp != undefined) {
-            this.title = "View Programme Log for Asset";
+            this.title = "Programme Log for Asset";
             const { wprsequence, wosequence, wopsequence } = this.singleWorkOrderAssetInp;
             const pageService = [
                 this.worksorderManagementService.getWorkProgrammesByWprsequence(wprsequence),
@@ -92,6 +97,7 @@ export class ProgramLogComponent implements OnInit {
         }
 
         if (this.openedFrom == "workorder" && this.singleWorkOrderInp != undefined) {
+          this.title = "Programme Log for Works Order";
             const { wprsequence } = this.singleWorkOrderInp;
             const pageService = [
                 this.worksorderManagementService.getWorkProgrammesByWprsequence(wprsequence),
@@ -118,6 +124,8 @@ export class ProgramLogComponent implements OnInit {
             this.requiredPageData(pageService);
             this.getMilestoneProgrammeLog();
         }
+
+        this.setGridHeight()
 
     }
 
@@ -150,8 +158,7 @@ export class ProgramLogComponent implements OnInit {
         )
     }
 
-
-    getProgrammeLog() {
+  getProgrammeLog() {
         const { wprsequence } = this.selectedProgrammeInp;
         this.subs.add(
             this.worksOrdersService.WEBWorksOrdersWorksProgrammeLogProgram(wprsequence, 0).subscribe(
@@ -219,6 +226,7 @@ export class ProgramLogComponent implements OnInit {
     }
 
     filterChange(filter: any): void {
+        this.state.skip = 0;
         this.state.filter = filter;
         this.gridView = process(this.gridData, this.state);
     }
@@ -229,6 +237,9 @@ export class ProgramLogComponent implements OnInit {
             data: this.gridData.slice(this.state.skip, this.state.skip + this.pageSize),
             total: this.gridData.length
         };
+
+        this.stateChange.next(this.state);
+        this.gridView = process(this.gridData, this.state);
     }
 
     cellClickHandler({ columnIndex, dataItem }) {
@@ -242,6 +253,18 @@ export class ProgramLogComponent implements OnInit {
         if (this.openedFrom != 'milestone' && !this.woMenuAccess('View Programme Transaction')) {
             return
         }
+
+        if (this.openedFrom == 'programme' && !this.woMenuAccess('View Programme Log Details')) {
+          return
+       }
+
+       if (this.openedFrom == 'workorder' && !this.woMenuAccess('View Works Order Log Details')) {
+        return
+      }
+
+      if (this.openedFrom == 'assetchecklist' && !this.woMenuAccess('View Asset Log Details')) {
+        return
+      }
 
         if (columnIndex > 0) {
             if (this.touchtime == 0) {
@@ -261,6 +284,72 @@ export class ProgramLogComponent implements OnInit {
     closeProgrammeLogWindow() {
         this.ProgrammeLogWindow = false;
         this.ProgrammeLogWindowEvent.emit(this.ProgrammeLogWindow);
+    }
+
+    setGridHeight(){
+      switch(this.openedFrom){
+        case 'programme': {
+           this.gridHeight = 'height: 87%'
+           this.chRef.detectChanges
+           break;
+        }
+        case 'workorder': {
+            this.gridHeight = 'height: 80%'
+            this.chRef.detectChanges
+           break;
+        }
+        case 'assetchecklist': {
+            this.gridHeight = 'height: 75%'
+            this.chRef.detectChanges
+           break;
+        }
+        case 'milestone': {
+            this.gridHeight = 'height: 85%'
+            this.chRef.detectChanges
+           break;
+        }
+
+    }
+  }
+    changeWindow() {
+
+      if(this.windowNo <= 2)
+      {
+        this.windowNo = this.windowNo + 1
+      }
+      else
+      {
+        this.windowNo = 0
+      }
+      switch(this.windowNo) {
+        case 0: {
+           this.openedFrom = 'programme';
+           this.title =  this.openedFrom
+           this.setGridHeight()
+           break;
+        }
+        case 1: {
+            this.openedFrom = 'workorder';
+            this.title =  this.openedFrom
+            this.setGridHeight()
+           break;
+        }
+        case 2: {
+            this.openedFrom = 'assetchecklist';
+            this.title =  this.openedFrom
+            this.setGridHeight()
+           break;
+        }
+        case 3: {
+            this.openedFrom = 'milestone';
+            this.title =  this.openedFrom
+            this.setGridHeight()
+           break;
+        }
+
+     }
+
+
     }
 
     openProgramLogTransactionsWindow(item) {
@@ -420,7 +509,7 @@ export class ProgramLogComponent implements OnInit {
         this.subs.add(
             this.reportingGrpService.runReport(xPortId, params.lstParamNameValue, this.currentUser.userId, "EXCEL", false, true).subscribe(
                 data => {
-                    const linkSource = 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' + data;
+                    const linkSource = 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' + data.data;
                     const downloadLink = document.createElement("a");
                     const fileName = `${reportName}_${xPortId}.xlsx`;
                     downloadLink.href = linkSource;
@@ -435,8 +524,9 @@ export class ProgramLogComponent implements OnInit {
 
 
     woMenuAccess(menuName: string) {
-        return this.helper.checkWorkOrderAreaAccess(this.userType, this.worksOrderAccess, this.worksOrderUsrAccess, menuName)
+        return this.helper.checkWorkOrderAreaAccess(this.worksOrderUsrAccess, menuName)
     }
+
 
 
 

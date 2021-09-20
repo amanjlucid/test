@@ -41,7 +41,8 @@ export class VariationPkzEnterQtyComponent implements OnInit {
   // selectedPackages: any;
   applyCount = 0
   submitType = 1 // apply one
-  displayHighestPkz: any;
+  displayHighestPkz: any
+  initialCostOverRide: number
 
   constructor(
     private chRef: ChangeDetectorRef,
@@ -67,7 +68,7 @@ export class VariationPkzEnterQtyComponent implements OnInit {
     // console.log({ selection: this.selectedPkzs })
 
     if (this.parentComp == 'worklist') {
-      this.title = 'Variation Cost/Qantity';
+      this.title = 'Variation Cost/Quantity';
     } else if (this.parentComp == 'additional') {
       this.title = 'Add Package Enter Quantity';
     }
@@ -100,16 +101,28 @@ export class VariationPkzEnterQtyComponent implements OnInit {
       this.pakzQuantityForm.get('quantity').valueChanges.subscribe(
         qty => {
           let formRawVal = this.pakzQuantityForm.getRawValue();
-          this.pakzQuantityForm.patchValue({
-            workCost: qty * this.helperService.convertMoneyToFlatFormat(formRawVal?.sorRate),
-            costOverride: qty * this.helperService.convertMoneyToFlatFormat(formRawVal?.sorRate),
-          });
+          if(this.helperService.convertMoneyToFlatFormat(formRawVal?.sorRate) != ''){
+            this.pakzQuantityForm.patchValue({
+              workCost: qty * this.helperService.convertMoneyToFlatFormat(formRawVal?.sorRate),
+              costOverride: qty * this.helperService.convertMoneyToFlatFormat(formRawVal?.sorRate),
+            });
+          }
         }
       )
     )
 
 
     this.chRef.detectChanges();
+    let v = this.assetDetailInp
+
+    if(this.assetDetailInp != undefined && this.assetDetailInp.recordsource != '')  {
+      if (this.assetDetailInp.recordsource == 'VAR'){
+          this.initialCostOverRide = this.assetDetailInp.woadpending + this.assetDetailInp.varcommitted;
+      }else{
+        this.initialCostOverRide = this.assetDetailInp.woadcommitted;
+      }
+    }
+
 
     //get page required data
     this.getRequiredPageData();
@@ -121,11 +134,14 @@ export class VariationPkzEnterQtyComponent implements OnInit {
   getRequiredPageData() {
     const { wosequence, wopsequence, assid } = this.selectedSingleVariationAssetInp;
 
+    let v = this.singleVariationInp
+    let y = this.selectedSingleVariationAssetInp
+
     this.subs.add(
       forkJoin([
         this.worksorderManagementService.getWorksOrderByWOsequence(wosequence),
         this.worksorderManagementService.getPlanYear(wosequence),
-        // this.worksorderManagementService.getWEBWorksOrdersAssetDetailAndVariation(wosequence, wopsequence, assid)
+      //  this.worksorderManagementService.getWEBWorksOrdersAssetDetailAndVariation(wosequence, wopsequence, assid)
       ]).subscribe(
         data => {
           // console.log(data);
@@ -154,7 +170,11 @@ export class VariationPkzEnterQtyComponent implements OnInit {
     )
   }
 
+
   populateForm(displayHighestPkz) {
+    let v = this.initialCostOverRide
+
+
     this.pakzQuantityForm.patchValue({
       code: displayHighestPkz?.wphcode,
       name: displayHighestPkz?.wphname,
@@ -164,9 +184,16 @@ export class VariationPkzEnterQtyComponent implements OnInit {
       sorRate: displayHighestPkz?.defaultcost,
       contractorRate: displayHighestPkz?.contractrate ?? displayHighestPkz?.defaultcost,
       workCost: displayHighestPkz?.asaquantity * displayHighestPkz?.defaultcost,
-      costOverride: displayHighestPkz?.asaquantity * displayHighestPkz?.defaultcost,
+      costOverride: this.initialCostOverRide,
       comment: '',
     });
+
+    if(this.initialCostOverRide == undefined)
+    {
+      this.pakzQuantityForm.patchValue({
+        costOverride: displayHighestPkz?.asaquantity * displayHighestPkz?.defaultcost
+      });
+    }
 
     this.chRef.detectChanges();
   }
@@ -174,7 +201,6 @@ export class VariationPkzEnterQtyComponent implements OnInit {
 
   getPkzQtyDataForAssetDetail() {
     let cttsurcde;
-
     if (this.parentComp == 'worklist' && this.openedFrom == 'worksorder') {
       cttsurcde = this.singleVariationInp.cttsurcde;
     } else if (this.parentComp == 'worklist' && this.openedFrom == 'assetchecklist') {
@@ -200,7 +226,7 @@ export class VariationPkzEnterQtyComponent implements OnInit {
               sorRate: pkz?.soR_RATE,
               contractorRate: pkz?.soR_RATE,
               workCost: pkz?.cost * this.assetDetailInp?.asaquantity,
-              costOverride: pkz?.cost * this.assetDetailInp?.asaquantity//pkz?.overridE_COST == null ? 0 : pkz?.overridE_COST,
+              costOverride: this.initialCostOverRide != null ? this.initialCostOverRide : pkz?.cost * this.assetDetailInp?.asaquantity,
             });
 
 

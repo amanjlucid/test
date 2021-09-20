@@ -69,7 +69,7 @@
               <div class="col-md-5 displayInherit">
                 <input type="text" class="form-control locationInp" formControlName="location">
                 <i title="The location of this issue." class="fas fa-info-circle d-block inputI"></i>
-                <span class="fa-stack spellChecker" (click)="openSpellingCheck('location')">
+                <span [style]="spellCheckerColor" class="fa-stack spellChecker" (click)="openSpellingCheck('location')">
                     <i class="fa fa-check fa-stack-1x rightCheck"></i>
                     <i class="fa fa-stack-1x spellTxt">ABC</i>
                 </span>
@@ -89,11 +89,16 @@
             <label class="col-form-label">Issue</label>
           </div>
           <div class="col-md-10 displayInherit mt-2">
-            <input type="text" [ngClass]="{ 'is-invalid': formErrors.issue }" class="form-control issueInp"
-              formControlName="issue">
+            <!--<input type="text" [ngClass]="{ 'is-invalid': formErrors.issue }" class="form-control issueInp"
+              formControlName="issue">-->
+
+              <textarea [ngClass]="{ 'is-invalid': formErrors.issue }"
+              class="form-control issueInp" formControlName="issue" ></textarea>
+
+
             <button type="button" (click)="openTemplateIssue()" class="btn btn-sm">...</button>
             <i title="Description of a problem or matter of concern." class="fas fa-info-circle d-block inputI"></i>
-            <span class="fa-stack spellChecker" (click)="openSpellingCheck('issue')">
+            <span [style]="spellCheckerColor" class="fa-stack spellChecker" (click)="openSpellingCheck('issue')">
                 <i class="fa fa-check fa-stack-1x rightCheck"></i>
                 <i class="fa fa-stack-1x spellTxt">ABC</i>
             </span>
@@ -108,11 +113,15 @@
             <label class="col-form-label">Proposed Action</label>
           </div>
           <div class="col-md-10 displayInherit mt-2">
-            <input type="text" [ngClass]="{ 'is-invalid': formErrors.proposedAction }" class="form-control paInp"
-              formControlName="proposedAction">
+        <!--    <input type="text" [ngClass]="{ 'is-invalid': formErrors.proposedAction }" class="form-control paInp"
+              formControlName="proposedAction">-->
+
+            <textarea [ngClass]="{ 'is-invalid': formErrors.proposedAction }"
+            class="form-control paInp" formControlName="proposedAction" ></textarea>
+
             <button type="button" (click)="openTemplateAction()" class="btn btn-sm postponedBtn">...</button>
 
-            <span class="fa-stack spellChecker" (click)="openSpellingCheck('proposedAction')">
+            <span [style]="spellCheckerColor" class="fa-stack spellChecker" (click)="openSpellingCheck('proposedAction')">
                 <i class="fa fa-check fa-stack-1x rightCheck"></i>
                 <i class="fa fa-stack-1x spellTxt">ABC</i>
             </span>
@@ -253,11 +262,11 @@
             <label class="col-form-label">Resolution</label>
           </div>
           <div class="col-md-10 displayInherit mt-2">
-            <input [ngClass]="{ 'is-invalid': formErrors.resolution }" [readonly]="ifNotResolved" type="text"
-              class="form-control issueInp" formControlName="resolution">
+            <textarea [ngClass]="{ 'is-invalid': formErrors.resolution }" [readonly]="ifNotResolved"
+            class="form-control issueInp" formControlName="resolution" ></textarea>
 
             <i title="How issue was resolved." class="fas fa-info-circle d-block inputI"></i>
-            <span class="fa-stack spellChecker" (click)="openSpellingCheck('resolution')">
+            <span [style]="spellCheckerColor" class="fa-stack spellChecker" (click)="openSpellingCheck('resolution')">
                 <i class="fa fa-check fa-stack-1x rightCheck"></i>
                 <i class="fa fa-stack-1x spellTxt">ABC</i>
             </span>
@@ -297,10 +306,11 @@
             <label class="col-form-label">Comments</label>
           </div>
           <div class="col-md-10 displayInherit">
-            <input type="text" class="form-control issueInp" formControlName="comments">
+           <!--<input type="text" class="form-control issueInp" formControlName="comments">-->
+            <textarea class="form-control issueInp" formControlName="comments" ></textarea>
 
             <i title="Additional information/comments." class="fas fa-info-circle d-block inputI"></i>
-            <span class="fa-stack spellChecker" (click)="openSpellingCheck('comments')">
+            <span [style]="spellCheckerColor" class="fa-stack spellChecker" (click)="openSpellingCheck('comments')">
                 <i class="fa fa-check fa-stack-1x rightCheck"></i>
                 <i class="fa fa-stack-1x spellTxt">ABC</i>
             </span>
@@ -402,7 +412,9 @@
           <div class="col-md-10 mt-1">
             <div class="row">
               <div class="col-md-12 displayInherit">
-                <input type="text" class="form-control inpFull" formControlName="workNotes">
+                <textarea  class="form-control inpFull" formControlName="workNotes">
+                </textarea>
+
                 <span class="fa-stack spellChecker" (click)="openSpellingCheck('workNotes')">
                     <i class="fa fa-check fa-stack-1x rightCheck"></i>
                     <i class="fa fa-stack-1x spellTxt">ABC</i>

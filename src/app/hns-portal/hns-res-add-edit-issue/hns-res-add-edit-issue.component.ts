@@ -42,6 +42,7 @@ export class HnsResAddEditIssueComponent implements OnInit {
   @Input() allIssuesList: any = [];
   templateIssueOpen: boolean = false;
   templateActionOpen: boolean = false;
+  spellCheckerColor: string = 'background-color: white'
   hnsPermission: any = [];
   tempIssueObj: any;
   formErrors: any = {};
@@ -212,7 +213,7 @@ export class HnsResAddEditIssueComponent implements OnInit {
         }
 
 
-        if (this.issueFormMode == "edit") {
+        if (this.issueFormMode == "edit" || this.issueFormMode == "editWorkOnly") {
           let tempspecificIssParam = {
             Hasissueid: action.hasissueid
           }
@@ -261,7 +262,7 @@ export class HnsResAddEditIssueComponent implements OnInit {
       this.sharedService.hnsPortalSecurityList.subscribe(
         data => {
           this.hnsPermission = data;
-          if (this.checkWorkFieldOnly()) {
+          if (this.issueFormMode == "editWorkOnly") {
             this.editIssueForm.controls['location'].disable();
             this.editIssueForm.controls['floor'].disable();
             this.editIssueForm.controls['issue'].disable();
@@ -313,10 +314,22 @@ export class HnsResAddEditIssueComponent implements OnInit {
         this.title = "View Issue";
       }
 
-  }
+      if(this.issueFormMode == "editWorkOnly"){
+        this.title = "Edit Issue (Work Fields Only)"
+        this.spellCheckerColor  = 'background-color: #f1f1f3'
+      }
+      if(this.issueFormMode == "add"){
+        this.title = "Add Issue"
+      }
+      if(this.issueFormMode == "edit"){
+        this.title = "Edit Issue"
+      }
+
+
+    }
 
   checkWorkFieldOnly() {
-    if (this.hnsPermission.includes("Edit Issue (Work Fields Only)") && this.currentUser.admin != "Y") {
+    if (this.issueFormMode == "editWorkOnly") {
       return true
     }
     return false;
@@ -1086,13 +1099,17 @@ export class HnsResAddEditIssueComponent implements OnInit {
   }
 
   openSpellingCheck(textId) {
-    if (this.viewOnly == false) {
-      $('.editIssOvrlay').addClass('ovrlay');
-      this.openSpellChecker = true;
-      let formRawVal = this.editIssueForm.getRawValue();
-      this.textId = textId;
-      this.textString = formRawVal[textId];
+
+    if(this.issueFormMode != 'editWorkOnly' || textId == 'workNotes'){
+      if (this.viewOnly == false) {
+        $('.editIssOvrlay').addClass('ovrlay');
+        this.openSpellChecker = true;
+        let formRawVal = this.editIssueForm.getRawValue();
+        this.textId = textId;
+        this.textString = formRawVal[textId];
+      }
     }
+
   }
 
   closeSpellChecker($event) {

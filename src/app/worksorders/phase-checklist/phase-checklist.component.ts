@@ -30,7 +30,7 @@ export class PhaseChecklistComponent implements OnInit {
     sort: [],
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -128,10 +128,12 @@ export class PhaseChecklistComponent implements OnInit {
         this.sharedService.userTypeObs
       ]).subscribe(
         data => {
-          // console.log(data);
           this.worksOrderUsrAccess = data[0];
           this.worksOrderAccess = data[1];
           this.userType = data[2][0];
+          if (this.userType && this.userType.wourroletype == "Contractor") {
+            this.headerFilters.Contractor = true;
+          }
         }
       )
     )
@@ -144,7 +146,6 @@ export class PhaseChecklistComponent implements OnInit {
       }),
       switchMap(state => this.worksorderManagementService.workOrderPhaseCheckList(state)),
       tap((res) => {
-        // console.log(res);
         this.totalCount = (res.total != undefined) ? res.total : 0;
         this.loading = false;
         setTimeout(() => {
@@ -407,7 +408,6 @@ export class PhaseChecklistComponent implements OnInit {
   resetGridFilter() {
     this.headerFilters.AssId = '';
     this.headerFilters.Address = '';
-    this.headerFilters.Contractor = false;
     this.headerFilters.AssetStatus = '';
     this.headerFilters.StageName = '';
     this.headerFilters.ChecKName = '';
@@ -440,7 +440,7 @@ export class PhaseChecklistComponent implements OnInit {
   }
 
   mySelectionKey(context: RowArgs): string {
-    return `${context.dataItem.assid}_${context.dataItem.wostagesurcde}_${context.dataItem.wochecksurcde}_${context.dataItem.wocheckspeciaL1}`;
+    return `${context.dataItem.assid}_${context.dataItem.wostagesurcde}_${context.dataItem.wochecksurcde}_${context.dataItem.wocheckspeciaL1}_${context.dataItem.woassstatus}_${context.dataItem.wocheckresp}`;
   }
 
   keyChange(eve) {
@@ -450,7 +450,7 @@ export class PhaseChecklistComponent implements OnInit {
   cellClickHandler({ sender, column, rowIndex, columnIndex, dataItem, isEdited, originalEvent }) {
     if (originalEvent.ctrlKey == false && originalEvent.shiftKey == false) {
       if (this.mySelection.length > 0) {
-        this.mySelection = [`${dataItem.assid}_${dataItem.wostagesurcde}_${dataItem.wochecksurcde}_${dataItem.wocheckspeciaL1}`];
+        this.mySelection = [`${dataItem.assid}_${dataItem.wostagesurcde}_${dataItem.wochecksurcde}_${dataItem.wocheckspeciaL1}_${dataItem.woassstatus}_${dataItem.wocheckresp}`];
         this.chRef.detectChanges();
       }
     }
@@ -487,21 +487,56 @@ export class PhaseChecklistComponent implements OnInit {
 
 
   woMenuBtnSecurityAccess(menuName) {
-    return this.helperService.checkWorkOrderAreaAccess(this.userType, this.worksOrderAccess, this.worksOrderUsrAccess, menuName)
-    // if (this.userType?.wourroletype == "Dual Role") {
-    //   return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
-    // } else {
-    //   // if(menuName == "Release Asset"){
-    //   //   console.log(this.worksOrderUsrAccess.indexOf(menuName) != -1)
-    //   // }
-    //   return this.worksOrderUsrAccess.indexOf(menuName) != -1
-    // }
+    return this.helperService.checkWorkOrderAreaAccess(this.worksOrderUsrAccess, menuName)
   }
 
 
-  disableButtons(name) {
-    if (name == "status") {
-      return this.singlePhaseChecklist?.woassstatus == 'Pending' || this.singlePhaseChecklist?.woassstatus == 'Issued'
+  disableButtons(name, dataItem) {
+
+    if (this.userType && this.userType.wourroletype == "Contractor") {
+      if (this.singlePhaseChecklist?.wocheckresp =='CLIENT') return true;
+    }
+    if (this.userType && this.userType.wourroletype == "Customer") {
+      if (this.singlePhaseChecklist?.wocheckresp =='CONTRACTOR') return true;
+    }
+
+    if (name == "status" || name == "dates") {
+      if (this.userType && this.userType.wourroletype == "Contractor") {
+        return this.singlePhaseChecklist?.woassstatus == 'Pending' || this.singlePhaseChecklist?.woassstatus == 'Issued' ||
+        this.singlePhaseChecklist?.woassstatus == 'Handover' ||
+        this.singlePhaseChecklist?.woassstatus == 'Practical Completion' || this.singlePhaseChecklist?.woassstatus == 'Final Completion';
+      } else {
+        return this.singlePhaseChecklist?.woassstatus == 'Pending';
+      }
+    }
+
+    if (name == "COMP") {
+      if (this.userType && this.userType.wourroletype == "Contractor") {
+        return this.singlePhaseChecklist?.woassstatus == 'Pending' || this.singlePhaseChecklist?.woassstatus == 'Issued' ||
+        (this.singlePhaseChecklist?.woassstatus == 'Handover' && dataItem.wocheckspeciaL1 != 'CUSTFORM') ||
+        (this.singlePhaseChecklist?.woassstatus == 'Practical Completion' && dataItem.wocheckspeciaL1 != 'CUSTFORM') ||
+        (this.singlePhaseChecklist?.woassstatus == 'Final Completion' && dataItem.wocheckspeciaL1 != 'CUSTFORM');
+      } else {
+        return this.singlePhaseChecklist?.woassstatus == 'Pending' || this.singlePhaseChecklist?.woassstatus == 'Issued';
+      }
+    }
+
+
+    if (name == "letter") {
+      if (this.userType && this.userType.wourroletype == "Contractor") {
+        return this.singlePhaseChecklist?.woassstatus == 'Pending' || this.singlePhaseChecklist?.woassstatus == 'Issued' ||
+        this.singlePhaseChecklist?.woassstatus == 'Handover' || this.singlePhaseChecklist?.woassstatus == 'Practical Completion' ||
+        this.singlePhaseChecklist?.woassstatus == 'Final Completion';
+      } else {
+        return this.singlePhaseChecklist?.woassstatus == 'Pending' || this.singlePhaseChecklist?.woassstatus == 'Issued'
+      }
+    }
+
+    if (name == "comments") {
+      if (this.userType && this.userType.wourroletype == "Contractor") {
+        return this.singlePhaseChecklist?.woassstatus == 'Handover' || this.singlePhaseChecklist?.woassstatus == 'Practical Completion' || 
+        this.singlePhaseChecklist?.woassstatus == 'Final Completion';
+      }
     }
 
     if (name == "SE") {
@@ -569,7 +604,7 @@ export class PhaseChecklistComponent implements OnInit {
   openChooseDate(type, actionType, item = null, checkOrProcess = "C") {
     if (actionType == 'multiple') {
       if (this.mySelection.length == 0) {
-        this.alertService.error("Please select atleast one record from phase checklist.")
+        this.alertService.error("Please select at least one record from phase checklist.")
         return
       }
     }
@@ -636,9 +671,9 @@ export class PhaseChecklistComponent implements OnInit {
 
 
     } else if (this.actionType == "multiple") {
-      //check if no item is selected  
+      //check if no item is selected
       if (this.mySelection.length == 0) {
-        this.alertService.error("Please select atleast one record from phase checklist.")
+        this.alertService.error("Please select at least one record from phase checklist.")
         return
       }
 
@@ -650,6 +685,7 @@ export class PhaseChecklistComponent implements OnInit {
 
       let ASSID_STAGESURCDE_CHECKSURCDE = [];
       let assetIdArr = [];
+      let nondistinctAssets = [];
 
       for (const checklist of this.mySelection) {
         const splitSelection = checklist.split('_');
@@ -660,7 +696,13 @@ export class PhaseChecklistComponent implements OnInit {
         // ASSID_STAGESURCDE_CHECKSURCDE.push(checklist.wostagesurcde)
         // ASSID_STAGESURCDE_CHECKSURCDE.push(checklist.wochecksurcde)
 
-        assetIdArr.push(splitSelection[0])
+        nondistinctAssets.push(splitSelection[0])
+      }
+
+      for (const assid of nondistinctAssets) {
+        if (!assetIdArr.includes(assid)) {
+          assetIdArr.push(assid);
+        }
       }
 
       const { wosequence, wopsequence, wocheckname } = this.singlePhaseChecklist
@@ -902,7 +944,7 @@ export class PhaseChecklistComponent implements OnInit {
 
   openRemoveReasonPanel(actionName, actionType = "single", item = null) {
     if (this.mySelection.length == 0) {
-      this.alertService.error("Please select atleast one record from phase checklist.")
+      this.alertService.error("Please select at least one record from phase checklist.")
       return
     }
     this.actionName = actionName;
@@ -937,8 +979,11 @@ export class PhaseChecklistComponent implements OnInit {
 
   openPredecessors(item) {
     // this.selectedChecklistList = [];
+    this.singlePhaseChecklist = item;
     $('.phaseChecklistovrlay').addClass('ovrlay');
     this.predecessors = true;
+
+
     // this.selectedChecklistList.push(item)
   }
 
@@ -950,7 +995,7 @@ export class PhaseChecklistComponent implements OnInit {
 
 
   woGlobalSecurityAccess(menuName) {
-    return this.worksOrderAccess.indexOf(menuName) != -1 
+    return this.worksOrderAccess.indexOf(menuName) != -1
 
 }
 
@@ -988,7 +1033,7 @@ export class PhaseChecklistComponent implements OnInit {
 
 
     const mailParms = {
-      wosequence : this.selectedPhase.wosequence, 
+      wosequence : this.selectedPhase.wosequence,
       wopsequence : this.selectedPhase.wopsequence,
       mergelist : keyArray,
       user : this.currentUser.userId,
@@ -1010,7 +1055,7 @@ export class PhaseChecklistComponent implements OnInit {
 
 
     const mailParms = {
-      wosequence : this.selectedPhase.wosequence, 
+      wosequence : this.selectedPhase.wosequence,
       wopsequence : this.selectedPhase.wopsequence,
       mergelist : keyArray,
       user : this.currentUser.userId,
@@ -1050,38 +1095,102 @@ export class PhaseChecklistComponent implements OnInit {
   }
 
   disableMenuMultiple(type) {
+    var statuses = [];
+    var responsibilities = [];
+    let letterRecs = 0;
+    let nonletterRecs = 0;
+    let nonCSS = false;
+    for (const checklist of this.mySelection) {
+      if (checklist) {
+      const splitSelection = checklist.split('_');
+      let specialchar = splitSelection[3];    
+      let status = splitSelection[4];
+      let responsibility = splitSelection[5];
+      if (specialchar == "LETTER") {
+        letterRecs += 1;
+      } else {
+        nonletterRecs += 1;
+      }
+      statuses.push(status);
+      responsibilities.push(responsibility);
+      if (specialchar != "CUSTFORM") {
+        nonCSS = true;
+      }
+      }
+    }
+
+    if (this.userType && this.userType.wourroletype == "Contractor") {
+      if (responsibilities.includes('CLIENT')) return true;
+    }
+    if (this.userType && this.userType.wourroletype == "Customer") {
+      if (responsibilities.includes('CONTRACTOR')) return true;
+    }
+
+
     if (type == "LETTER") {
 
       if (this.mySelection.length > 0) {
-        let letterRecs = 0;
-        let nonletterRecs = 0;
-        for (const checklist of this.mySelection) {
-          if (checklist) {
-          const splitSelection = checklist.split('_');
-          let specialchar = splitSelection[3];
-          if (specialchar == "LETTER") {
-            letterRecs += 1;
-          } else {
-            nonletterRecs += 1;
-          }
-        }
-        }
         if (letterRecs > 0 && nonletterRecs == 0){
-          return false;
+          if (this.userType && this.userType.wourroletype == "Contractor") {
+            return this.mySelection.length == 0 || statuses.includes('Pending') || statuses.includes('Issued') ||
+            statuses.includes('Handover') || statuses.includes('Practical Completion') ||
+            statuses.includes('Final Completion');
+          } else {
+            return this.mySelection.length == 0 || statuses.includes('Pending') || statuses.includes('Issued')
+          }
         } else {
-          return true;      
+          return true;
         }
-
       } else {
-        return true; 
+        return true;
+      }
+    }
+
+    if (type == "status" || type == "dates") {
+      if (this.userType && this.userType.wourroletype == "Contractor") {
+        return this.mySelection.length == 0 || statuses.includes('Pending') || statuses.includes('Issued') ||
+        statuses.includes('Handover') || statuses.includes('Practical Completion') ||
+        statuses.includes('Final Completion');
+      } else {
+        return this.mySelection.length == 0 || statuses.includes('Pending');
+      }
+    }
+
+    if (type == "COMP") {
+      if (this.userType && this.userType.wourroletype == "Contractor") {
+        return this.mySelection.length == 0 || statuses.includes('Pending') || statuses.includes('Issued') ||
+        (statuses.includes('Handover') && nonCSS) || (statuses.includes('Practical Completion')  && nonCSS) ||
+        (statuses.includes('Final Completion') && nonCSS);
+      } else {
+        return this.mySelection.length == 0 || statuses.includes('Pending') || statuses.includes('Issued')
       }
     }
 
     if (type == "comments") {
-      return (this.mySelection.length == 0 )
+      if (this.userType && this.userType.wourroletype == "Contractor") {
+        return this.mySelection.length == 0 || statuses.includes('Handover') || 
+        statuses.includes('Practical Completion') || statuses.includes('Final Completion');
+      } else {
+        return (this.mySelection.length == 0)
+      }
     }
 
-    return false; 
+
+    if (type == "release") {
+      return this.mySelection.length == 0 || (!(statuses.every( (val, i, arr) => val === arr[0] ) && statuses.includes('New')))
+    }
+
+    if (type == "issue") {
+      return this.mySelection.length == 0 || (!(statuses.every( (val, i, arr) => val === arr[0] ) && statuses.includes('Pending')))
+    }
+
+    if (type == "accept") {
+      return this.mySelection.length == 0 || (!(statuses.every( (val, i, arr) => val === arr[0] ) && statuses.includes('Issued')))
+    }
+
+
+
+    return false;
   }
 
 
@@ -1108,17 +1217,19 @@ export class PhaseChecklistComponent implements OnInit {
       ASSID_STAGESURCDE_CHECKSURCDE.push(checklist.wostagesurcde)
       ASSID_STAGESURCDE_CHECKSURCDE.push(checklist.wochecksurcde)
     }
-    
+
     let csvKeys : string = ASSID_STAGESURCDE_CHECKSURCDE.join(",");
     this.commentParms = {
-      wosequence : this.selectedPhase.wosequence, 
+      wosequence : this.selectedPhase.wosequence,
       wopsequence : this.selectedPhase.wopsequence,
       csvKeys : csvKeys,
-      subtitle : this.selectedPhase.woname, 
+      subtitle : this.selectedPhase.woname,
       phase: true,
       }
 
       this.showEditCommentWindow = true;
+
+    $('.phaseChecklistovrlay').addClass('ovrlay');
   }
 
   setSingleComment(type: string, dataItem : any) {
@@ -1128,13 +1239,13 @@ export class PhaseChecklistComponent implements OnInit {
     ASSID_STAGESURCDE_CHECKSURCDE.push(dataItem.wostagesurcde)
     ASSID_STAGESURCDE_CHECKSURCDE.push(dataItem.wochecksurcde)
 
-    
+
     let csvKeys : string = ASSID_STAGESURCDE_CHECKSURCDE.join(",");
     this.commentParms = {
-      wosequence : this.selectedPhase.wosequence, 
+      wosequence : this.selectedPhase.wosequence,
       wopsequence : this.selectedPhase.wopsequence,
       csvKeys : csvKeys,
-      subtitle : dataItem.assid + " - " + dataItem.astconcataddress, 
+      subtitle : dataItem.assid + " - " + dataItem.astconcataddress,
       }
 
     this.showEditCommentWindow = true;
@@ -1147,7 +1258,7 @@ export class PhaseChecklistComponent implements OnInit {
   closeCommentPanel(eve) {
     this.showEditCommentWindow = false;
     if (eve != null) {
-      this.searchGrid();  
+      this.searchGrid();
     }
     $('.phaseChecklistovrlay').removeClass('ovrlay');
 

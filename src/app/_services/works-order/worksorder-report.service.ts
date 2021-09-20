@@ -23,16 +23,12 @@ export class WorksorderReportService {
         return this.http.get<any>(`${appConfig.apiUrl}/api/WorkOrderDetails/GetWorkChecklistReport?wprsequence=${wprsequence}&wosequence=${wosequence}&wopsequence=${wopsequence}&report_level=${report_level}&asset_id=${asset_id}`, this.httpOptions);
     }
 
-    getWOReportingProgSummaryTree(wprsequence, wosequence, level) {
-        return this.http.get<any>(`${appConfig.apiUrl}/api/WorkOrderDetails/WOReportingProgSummaryTree?wprsequence=${wprsequence}&wosequence=${wosequence}&reporttype=${level}`, this.httpOptions);
+    getWOReportingProgSummaryTree(wprsequence, wosequence, level, status = "S") {
+        return this.http.get<any>(`${appConfig.apiUrl}/api/WorkOrderDetails/WOReportingProgSummaryTree?wprsequence=${wprsequence}&wosequence=${wosequence}&reporttype=${level}&actInact=${status}`, this.httpOptions);
     }
 
-    getWOReportForAssetLevel(wprsequence, wosequence, wopsequence, level) {
-        return this.http.get<any>(`${appConfig.apiUrl}/api/WorkOrderDetails/WOReportingAsset?wprsequence=${wprsequence}&wosequence=${wosequence}&wopsequence=${wopsequence}&level=${level}`, this.httpOptions);
-    }
-
-    getWOReportingAsset(wprsequence, wosequence, wopsequence, level) {
-        return this.http.get<any>(`${appConfig.apiUrl}/api/WorkOrderDetails/WOReportingAsset?wprsequence=${wprsequence}&wosequence=${wosequence}&wopsequence=${wopsequence}&level=${level}`, this.httpOptions);
+    getWOReportingAsset(wprsequence, wosequence, wopsequence, level, status = '') {
+      return this.http.get<any>(`${appConfig.apiUrl}/api/workorderdetails/WOReportingAsset?wprsequence=${wprsequence}&wosequence=${wosequence}&wopsequence=${wopsequence}&level=${level}&actInact=${status}`, this.httpOptions);
     }
 
 

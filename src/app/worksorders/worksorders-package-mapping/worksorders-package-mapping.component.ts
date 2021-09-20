@@ -22,7 +22,7 @@ export class WorksordersPackageMappingComponent implements OnInit {
     sort: [],
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -42,7 +42,7 @@ export class WorksordersPackageMappingComponent implements OnInit {
   }
 
   constructor(
-    private sharedService: SharedService,
+  
     private worksorderManagementService: WorksorderManagementService,
     private helperService: HelperService,
     private alertService: AlertService,

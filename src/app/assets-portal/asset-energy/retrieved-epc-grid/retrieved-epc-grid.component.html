@@ -7,8 +7,8 @@
       </button> -->
 
 
-<button type="button" class="btn btn-sm dropdown-toggle themeButton" data-toggle="dropdown" aria-expanded="false"  [disabled]="!chartData">View
-          Assets</button>
+<button *ngIf="showAssetLink" type="button" class="btn btn-sm dropdown-toggle themeButton" data-toggle="dropdown" aria-expanded="false"  
+[disabled]="!chartData">View Assets</button>
         <div class="dropdown-menu" x-placement="bottom-start"
           style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
           <a class="dropdown-item" (click)="AssetLink('all')" href="javascript:void(0)">All</a>

@@ -41,7 +41,7 @@ export class ValuationsComponent implements OnInit {
   gridFormStatus = false;
   mySelection: number[] = [];
   kendoRowDetail: any;
-
+  public windowState = 'maximized';
   //global valuation form
   openGlobalValuation = false;
   globalvaluationForm: FormGroup;
@@ -264,7 +264,7 @@ export class ValuationsComponent implements OnInit {
   cellCloseHandler(args: any) {
     const { formGroup, dataItem } = args;
     this.gridFormStatus = formGroup.valid;
-  
+
     if (!formGroup.valid) {
       // prevent closing the edited cell if there are invalid values.
       args.preventDefault();
@@ -276,7 +276,7 @@ export class ValuationsComponent implements OnInit {
     this.chRef.detectChanges();
   }
 
-  // add row 
+  // add row
   addHandler({ sender }) {
     sender.addRow(this.createFormGroup(new WorkOrdersValuationModel()));
   }
@@ -368,7 +368,7 @@ export class ValuationsComponent implements OnInit {
   }
 
   closeValuation() {
-    this.openValuationWindow = false; 
+    this.openValuationWindow = false;
     this.closeValuationWindow.emit(false);
     this.editService.reset();
   }
@@ -420,7 +420,7 @@ export class ValuationsComponent implements OnInit {
     if (this.worksOrderNew?.wocodE2 == "N") {
       disableFields.push('cvt', 'cvv', 'cvp');
     }
-   
+
     for (const disableField of disableFields) {
       this.globalvaluationForm.get(disableField).disable();
     }
@@ -537,7 +537,7 @@ export class ValuationsComponent implements OnInit {
 
   onSubmit() {
     this.submitted = true;
-    this.formErrorObject(); // empty form error or reinistialize 
+    this.formErrorObject(); // empty form error or reinistialize
 
     let formRawVal = this.globalvaluationForm.getRawValue();
     let gridData: any = this.grid.data;//copy data with reference
@@ -615,21 +615,24 @@ export class ValuationsComponent implements OnInit {
   }
 
 
-
   setValutionToZero() {
-    if (this.selectedValuation) {
-      this.selectedValuation.woavagreedvaluation = 0;
-      this.selectedValuation.woavagreedvaluationpct = 0;
-      this.selectedValuation.woavvaluationstatus = 'Set to Zero';
-      this.setToZero = true;
-      this.editService.update(this.selectedValuation);
-      this.gridFormStatus = true;
+    let gridData: any = this.grid.data
+    if (this.mySelection.length) {
+      for (let len of this.mySelection) {
+        let v = gridData.data[len]
+        gridData.data[len].woavagreedvaluation = 0;
+        gridData.data[len].woavagreedvaluationpct = 0;
+        gridData.data[len].woavvaluationstatus = 'Set to Zero';
+        this.setToZero = true;
+        this.editService.update(gridData.data[len]);
+        this.gridFormStatus = true;
+      }
     }
   }
 
 
   woMenuAccess(menuName) {
-    return this.helperService.checkWorkOrderAreaAccess(this.userType, this.worksOrderAccess, this.worksOrderUsrAccess, menuName)
+    return this.helperService.checkWorkOrderAreaAccess(this.worksOrderUsrAccess, menuName)
   }
 
 }

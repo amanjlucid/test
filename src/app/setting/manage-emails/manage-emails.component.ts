@@ -24,7 +24,7 @@ export class ManageEmailsComponent implements OnInit {
     group: [],
     take: 25,
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }

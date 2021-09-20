@@ -12,7 +12,7 @@
           
       </div>
       <div class="col-md-6 text-right">
-        <button type="button" [disabled]="!checkEnergyPortalAccess('Retrieve EPC')" (click)="openRetrieveEPCWindow()" class="btn btn-sm themeButton">Retrieve EPC</button>
+        <button type="button" *ngIf="checkModuleEnabled('Retrieve EPC')" [disabled]="!checkEnergyPortalAccess('Retrieve EPC')" (click)="openRetrieveEPCWindow()" class="btn btn-sm themeButton">Retrieve EPC</button>
       
       </div>
 </div>

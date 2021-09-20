@@ -95,6 +95,7 @@ export class WorksordersNewPhaseComponent implements OnInit {
   disableFields = ['WOPCONTRACTORACCEPTANCEDATE', 'WOPCONTRACTORISSUEDATE', 'WOPACTUALSTARTDATE', 'WOPACTUALENDDATE']
   @Output() refreshWorkOrderDetails = new EventEmitter<boolean>();
   phaseData: any;
+  currentStatus = '';
 
   constructor(
     private chRef: ChangeDetectorRef,
@@ -164,12 +165,16 @@ export class WorksordersNewPhaseComponent implements OnInit {
 
   populateForm() {
     if (this.phaseFormMode == 'new') {
-      this.nePhaseForm.patchValue({ WOPSTATUS: 'New', WOPACTINACT: 'A', WOPBUDGET: 0 });
+      this.nePhaseForm.patchValue({ WOPSTATUS: 'New', WOPACTINACT: 'A', WOPBUDGET: '' });
+      this.chRef.detectChanges();
       this.nePhaseForm.get('WOPSTATUS').disable();
       this.nePhaseForm.get('WOPACTINACT').disable();
+      this.nePhaseForm.patchValue({ WOPBUDGET: '' });
+      this.chRef.detectChanges();
     } else {
       this.getPhase()
     }
+    this.chRef.detectChanges();
   }
 
   getPhase() {
@@ -205,6 +210,7 @@ export class WorksordersNewPhaseComponent implements OnInit {
               WOPACTUALSTARTDATE: this.helperService.ngbDatepickerFormat(phaseData.wopactualstartdate),
               WOPACTUALENDDATE: this.helperService.ngbDatepickerFormat(phaseData.wopactualenddate),
             })
+            this.currentStatus = phaseData.wopstatus;
           }
           // debugger;
         }
@@ -270,10 +276,27 @@ export class WorksordersNewPhaseComponent implements OnInit {
 
   onSubmit() {
     this.submitted = true;
-    this.formErrorObject(); // empty form error 
+
+    this.formErrorObject();
+
+    if(this.nePhaseForm.controls.WOPPLANSTARTDATE.value == null || this.nePhaseForm.controls.WOPPLANSTARTDATE.value == undefined)
+    {
+      this.nePhaseForm.controls.WOPPLANSTARTDATE.setValue('')
+    }
+    if(this.nePhaseForm.controls.WOPPLANENDDATE.value == null || this.nePhaseForm.controls.WOPPLANENDDATE.value == undefined)
+    {
+      this.nePhaseForm.controls.WOPPLANENDDATE.setValue('')
+    }
+
+    if(this.nePhaseForm.controls.WOPTARGETCOMPLETIONDATE.value == null || this.nePhaseForm.controls.WOPTARGETCOMPLETIONDATE.value == undefined)
+    {
+      this.nePhaseForm.controls.WOPTARGETCOMPLETIONDATE.setValue('')
+    }
+
+     // empty form error
     this.logValidationErrors(this.nePhaseForm);
 
-    // console.log(this.nePhaseForm);
+     // console.log(this.nePhaseForm);
 
     if (this.nePhaseForm.invalid) {
       return;
@@ -326,6 +349,23 @@ export class WorksordersNewPhaseComponent implements OnInit {
       message = `New Works Order Phase "${phaseModel.WOPNAME}" added successfully.`;
 
     } else {
+
+      if (this.currentStatus == "New" && formRawVal.WOPSTATUS == "In Progress") {
+        this.alertService.error("The Phase Status cannot be changed from 'New' to 'In Progress'");
+        return
+      }
+
+      if (this.currentStatus == "Closed" && formRawVal.WOPSTATUS == "New") {
+        this.alertService.error("The Phase Status cannot be changed from 'Closed' to 'New'");
+        return
+      }
+
+      if (this.currentStatus == "In Progress" && formRawVal.WOPSTATUS == "New") {
+        this.alertService.error("The Phase Status cannot be changed from 'In Progress' to 'New'");
+        return
+      }
+
+
       phaseModel.WOPSEQUENCE = this.phaseData.wopsequence;
       phaseModel.WOPDISPSEQ = this.phaseData.wopdispseq;
       phaseModel.WOPFINALACCOUNT = this.phaseData.wopfinalaccount;

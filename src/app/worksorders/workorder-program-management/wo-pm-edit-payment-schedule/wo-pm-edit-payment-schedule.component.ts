@@ -1,22 +1,27 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef, ViewEncapsulation } from '@angular/core';
 import { SubSink } from 'subsink';
 import { process, State } from '@progress/kendo-data-query';
 import { EditPaymentScheduleService } from 'src/app/_services';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { GridDataResult } from '@progress/kendo-angular-grid';
+import { RowClassArgs, GridDataResult } from '@progress/kendo-angular-grid';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { WorkOrdersPaymentScheduleModel } from '../../../_models'
+
+
 
 @Component({
   selector: 'app-wo-program-management-edit-payment-schedule',
   templateUrl: './wo-pm-edit-payment-schedule.component.html',
   styleUrls: ['./wo-pm-edit-payment-schedule.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  encapsulation: ViewEncapsulation.None
 })
 
 export class WoProgramManagmentEditPaymentScheduleComponent implements OnInit {
   @Output() closeEditPaymentScheduleWindowEvent = new EventEmitter<boolean>();
+  @Input() defectLiabilityPeriod: number = 0;
+  @Input() woContractType: string = '';
   @Input() openWOEditPaymentScheduleWindow: boolean = false;
   @Input() worksOrderData: any;
   subs = new SubSink();
@@ -31,7 +36,7 @@ export class WoProgramManagmentEditPaymentScheduleComponent implements OnInit {
   changes: any = {};
   formGroup: FormGroup;
   gridLoading = true;
-
+  disableRetention: boolean = true;
   constructor(
     private formBuilder: FormBuilder,
     public editService: EditPaymentScheduleService,
@@ -45,6 +50,20 @@ export class WoProgramManagmentEditPaymentScheduleComponent implements OnInit {
     this.view = this.editService.pipe(map(data => process(data, this.gridState)));
     this.editService.read(this.worksOrderData);
     this.gridLoading = false;
+    this.disableRetention = (this.defectLiabilityPeriod == 0)
+  }
+
+  rowCallback(context: RowClassArgs) {
+    if (context.dataItem.wpspaymentstatus.toLowerCase() == 'paid') {
+      return { paid: true, }
+    }
+    if (context.dataItem.wpspaymentstatus.toLowerCase() == 'unpaid') {
+      return { unpaid: true, }
+    }
+    if (context.dataItem.wpspaymentstatus.toLowerCase() != 'paid' && context.dataItem.wpspaymentstatus.toLowerCase() != 'unpaid') {
+      return { other: true, }
+    }
+
   }
 
   ngAfterContentChecked() {
@@ -75,7 +94,8 @@ export class WoProgramManagmentEditPaymentScheduleComponent implements OnInit {
 
 
   cellClickHandler({ sender, rowIndex, column, columnIndex, dataItem, isEdited }) {
-    if (!isEdited && !this.isReadOnly(column.field)) {
+    const { wpspaymentstatus } = dataItem;
+    if (!isEdited && !this.isReadOnly(column.field) && (wpspaymentstatus != "Pending" && wpspaymentstatus != "Paid")) {
       let scheduleForm: FormGroup = this.createFormGroup(dataItem)
       sender.editCell(rowIndex, columnIndex, scheduleForm);
 
@@ -148,8 +168,13 @@ export class WoProgramManagmentEditPaymentScheduleComponent implements OnInit {
   }
 
   private isReadOnly(field: string): boolean {
-    const readOnlyColumns = ['wpsstartdate', 'wpsenddate', 'wpspaymentdate', 'wpspaymentstatus', 'wpsfixedpaymentvalue'];
-    return readOnlyColumns.indexOf(field) > -1;
+    if(this.disableRetention){
+      const readOnlyColumns = ['wpsstartdate', 'wpsenddate', 'wpspaymentdate', 'wpspaymentstatus', 'wpsfixedpaymentvalue', 'wpsretentionpct', 'wpsretentionvalue'];
+      return readOnlyColumns.indexOf(field) > -1;
+    }else{
+      const readOnlyColumns = ['wpsstartdate', 'wpsenddate', 'wpspaymentdate', 'wpspaymentstatus', 'wpsfixedpaymentvalue'];
+      return readOnlyColumns.indexOf(field) > -1;
+    }
   }
 
 

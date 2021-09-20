@@ -1,10 +1,9 @@
 import { Component, OnInit, ViewEncapsulation, ViewChild, ChangeDetectorRef, HostListener } from '@angular/core';
-import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
+import { SortDescriptor, State, CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { FilterService, SelectableSettings, TreeListComponent, ExpandEvent, RowClassArgs } from '@progress/kendo-angular-treelist';
 import { AlertService, HelperService, WorksorderManagementService, ConfirmationDialogService, SharedService, WorksOrdersService } from '../../_services'
 import { SubSink } from 'subsink';
 import { Router } from '@angular/router';
-import { SortDescriptor } from '@progress/kendo-data-query';
 import { combineLatest } from 'rxjs';
 import { TooltipDirective } from '@progress/kendo-angular-tooltip';
 
@@ -45,8 +44,7 @@ export class WorksordersManagementComponent implements OnInit {
   @ViewChild(TreeListComponent) public grid: TreeListComponent;
   selectedProgramme: any;
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
-  worksOrderAccess = [];
-
+  touchtime = 0;
   packageMappingWindow = false
   worksOrderSingleData: any;
   deleteWorksOrderReasonWindow = false;
@@ -55,11 +53,12 @@ export class WorksordersManagementComponent implements OnInit {
   managementRolesTab = false
   managementSORTab = false
   managementCostsTab = false
-
+  selectedStatus: string = "A";
   woFormType = 'new';
   woFormWindow: boolean = false;
 
   worksOrderUsrAccess: any = [];
+  worksOrderAccess: any = [];
   userType: any = []
 
   woProgramManagmentInstructionsWindow = false;
@@ -85,6 +84,7 @@ export class WorksordersManagementComponent implements OnInit {
   }
   menuData: any;
   mousePositioin: any = 0;
+  openDefectsList = false;
 
   constructor(
     private worksorderManagementService: WorksorderManagementService,
@@ -112,17 +112,9 @@ export class WorksordersManagementComponent implements OnInit {
           this.worksOrderAccess = data[0];
           this.worksOrderUsrAccess = data[1];
           this.userType = data[2][0];
-
-          if (this.worksOrderAccess.length > 0) {
-            if (!this.worksOrderAccess.includes("Management Menu")) {
-              this.router.navigate(['login']);
-            }
-          }
-
         }
       )
     )
-
 
     this.getManagement();
   }
@@ -166,7 +158,7 @@ export class WorksordersManagementComponent implements OnInit {
               return r;
             }, {});
 
-            this.groupedData = [...groupBywprsequence];
+            this.groupedData = groupBywprsequence;
 
             //Find parent and Set parent id in each row
             tempData.forEach((value, index) => {
@@ -213,9 +205,12 @@ export class WorksordersManagementComponent implements OnInit {
     )
   }
 
+
+
   public onFilterChange(filter: any): void {
     this.filter = filter;
   }
+
 
   cellClickHandler($event) {
     if ($event.dataItem.treelevel == 1) {
@@ -224,7 +219,27 @@ export class WorksordersManagementComponent implements OnInit {
 
     if ($event.dataItem.treelevel == 2) {
       this.setSeletedWORow($event.dataItem);
+      let dataItem = $event.dataItem
+      if (this.selctedWorksOrder.wosequence)
+        if (this.touchtime == 0) {
+          this.touchtime = new Date().getTime();
+        } else {
+          if (((new Date().getTime()) - this.touchtime) < 400) {
+            //open work order detail window
+            setTimeout(() => { this.redirectToWorksOrder(dataItem) }, 200);
+            this.touchtime = 0;
+          } else {
+            // not a double click so set as a new first click
+            this.touchtime = new Date().getTime();
+          }
+
+        }
+
     }
+
+
+
+
   }
 
   public clearSelection(): void {
@@ -233,9 +248,10 @@ export class WorksordersManagementComponent implements OnInit {
 
 
   checkActiveInactive($event) {
+    this.selectedStatus = $event.target.value;
     this.loading = true;
     this.gridData = [];
-    this.getManagement($event.target.value)
+    this.getManagement(this.selectedStatus)
   }
 
 
@@ -305,14 +321,35 @@ export class WorksordersManagementComponent implements OnInit {
       'pc': 'PC',
       'fc': 'FC',
     }
-    this.helperService.exportAsExcelFile(dataToExport, 'Programme', label)
+
+    const fieldsToFormat = {
+      'targetcompletiondate': 'date',
+      'wprcontractorissuedate': 'date',
+      'wprcontractoracceptancedate': 'date',
+      'wprplanstartdate': 'date',
+      'wprplanenddate': 'date',
+      'wpractualstartdate': 'date',
+      'wpractualenddate': 'date',
+
+      'budget': 'money',
+      'forecast': 'money',
+      'committed': 'money',
+      'issued': 'money',
+      'wpracceptedvalue': 'money',
+      'actual': 'money',
+      'approved': 'money',
+      'pending': 'money',
+      'payments': 'money',
+    }
+
+    this.helperService.exportAsExcelFileWithCustomiseFields(dataToExport, 'Programme', label, fieldsToFormat)
     setTimeout(() => $('.newManagementOverlay').removeClass('ovrlay'), 500);
 
   }
 
   refreshManagementGrid(event) {
     if (event) {
-      this.getManagement();
+      this.getManagement(this.selectedStatus);
       this.selectedProgramme = undefined;
     }
   }
@@ -427,9 +464,11 @@ export class WorksordersManagementComponent implements OnInit {
   }
 
   redirectToWorksOrder(item) {
-    this.sharedService.changeWorksOrderSingleData(item);
-    localStorage.setItem('worksOrderSingleData', JSON.stringify(item)); // remove code on logout service
-    this.router.navigate(['worksorders/details']);
+    if (this.UserMenuAccess('Works Order Detail')) {
+      this.sharedService.changeWorksOrderSingleData(item);
+      localStorage.setItem('worksOrderSingleData', JSON.stringify(item)); // remove code on logout service
+      this.router.navigate(['worksorders/details']);
+    }
   }
 
   lockUnlockColumn() {
@@ -516,19 +555,12 @@ export class WorksordersManagementComponent implements OnInit {
     this.selctedWorksOrder = dataItem;
   }
 
-  programmeMenuAccess(menuName) {
-    return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
+  UserMenuAccess(menuName) {
+    if (this.worksOrderUsrAccess.length == 0){
+      return this.worksOrderAccess.indexOf(menuName) != -1
+    }
+    return this.worksOrderUsrAccess.indexOf(menuName) != -1
   }
-
-  woMenuAccess(menuName) {
-    return this.helperService.checkWorkOrderAreaAccess(this.userType, this.worksOrderAccess, this.worksOrderUsrAccess, menuName)
-    // if (this.userType == undefined) return true;
-    // if (this.userType?.wourroletype == "Dual Role") {
-    //   return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
-    // }
-    // return this.worksOrderUsrAccess.indexOf(menuName) != -1
-  }
-
 
   redirectToWoProgramManagmentInstructions(item) {
     this.selctedWorksOrder = item;
@@ -632,15 +664,17 @@ export class WorksordersManagementComponent implements OnInit {
     let wprsequence = 0;
     let wosequence = 0;
     let reporttype = reportType;
+    let status = this.selectedStatus;
 
     if (reporttype == 1) {
+      status = 'S';
       this.selectedProgramme = item;
       wprsequence = this.selectedProgramme.wprsequence;
       wosequence = this.selectedProgramme.wosequence;
     }
 
     this.subs.add(
-      this.worksOrderService.WOReportingProgSummaryTree(wprsequence, wosequence, reporttype).subscribe(
+      this.worksOrderService.WOReportingProgSummaryTree(wprsequence, wosequence, reporttype, status).subscribe(
         data => {
           if (data.isSuccess) {
             this.programmeExport(data.data);
@@ -681,6 +715,7 @@ export class WorksordersManagementComponent implements OnInit {
     const fieldsToFormat = {
       'actual___Planned_Start_Date': 'date',
       'actual___Planned_End_Date': 'date',
+      'target_Date': 'date',
       'budget': 'money',
       'forecast': 'money',
       'committed': 'money',
@@ -707,5 +742,16 @@ export class WorksordersManagementComponent implements OnInit {
     this.openWOPaymentScheduleWindow = $event;
   }
 
+
+  openDefectsMethod(item) {
+    this.selectedWorksOrder = item;
+    $('.newManagementOverlay').addClass('ovrlay');
+    this.openDefectsList = true;
+  }
+
+  closeDefectList(eve) {
+    this.openDefectsList = eve;
+    $('.newManagementOverlay').removeClass('ovrlay');
+  }
 
 }

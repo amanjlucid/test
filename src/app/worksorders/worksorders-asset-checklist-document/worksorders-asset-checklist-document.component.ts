@@ -27,7 +27,7 @@ export class WorksordersAssetChecklistDocumentComponent implements OnInit {
     sort: [],
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -44,7 +44,7 @@ export class WorksordersAssetChecklistDocumentComponent implements OnInit {
   fileExt: string = "JPG, GIF, PNG, PDF";
   maxSize: number = 5; // 5MB
   filePath;
-
+  AllowDocsUpload: boolean = false;
   worksOrderAccess: any = [];
   userType: any = [];
   worksOrderUsrAccess: any = [];
@@ -64,7 +64,7 @@ export class WorksordersAssetChecklistDocumentComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    // console.log(this.selectedChecklist); 
+    // console.log(this.selectedChecklist);
     // debugger;
 
     this.worksOrderDetailPageData();
@@ -83,6 +83,17 @@ export class WorksordersAssetChecklistDocumentComponent implements OnInit {
       )
     )
 
+
+    this.subs.add(
+      this.worksorderManagementService.GetDocumentsUploadEnabled().subscribe(
+        data => {
+          if (data.isSuccess) {
+            this.AllowDocsUpload = (data.data == 'Y');
+          } else this.alertService.error(data.message);
+        }, err => this.alertService.error(err)
+      )
+    )
+
     this.subs.add(
       combineLatest([
         this.sharedService.woUserSecObs,
@@ -90,13 +101,6 @@ export class WorksordersAssetChecklistDocumentComponent implements OnInit {
         this.sharedService.userTypeObs
       ]).subscribe(
         data => {
-          // console.log(data);
-          // this.userType = data[2][0];
-          // if (this.userType?.wourroletype == "Dual Role") {
-          //   this.worksOrderAccess = [...data[0], ...data[1]];
-          // } else {
-          //   this.worksOrderAccess = data[0]
-          // }
           this.worksOrderUsrAccess = data[0];
           this.worksOrderAccess = data[1];
           this.userType = data[2][0];
@@ -105,17 +109,10 @@ export class WorksordersAssetChecklistDocumentComponent implements OnInit {
       )
     )
 
-    // this.subs.add(
-    //   this.sharedService.worksOrdersAccess.subscribe(
-    //     data => {
-    //       this.worksOrderAccess = data;
-    //     }
-    //   )
-    // )
   }
 
   woMenuBtnSecurityAccess(menuName) {
-    return this.helperService.checkWorkOrderAreaAccess(this.userType, this.worksOrderAccess, this.worksOrderUsrAccess, menuName)
+    return this.helperService.checkWorkOrderAreaAccess( this.worksOrderUsrAccess, menuName)
   }
 
   worksOrderDetailPageData() {
@@ -376,7 +373,9 @@ export class WorksordersAssetChecklistDocumentComponent implements OnInit {
 
   public openFileNotExistConfirmationOnAdd() {
     $('.k-window').css({ 'z-index': 1000 });
-    this.confirmationDialogService.confirm('Please confirm..', 'You cannot add a document that is outside of the Works Order Document Location directory.  Upload Document Now?')
+    let mess = 'You cannot add a document that is outside of the Works Order Document Location directory.'
+    if(this.AllowDocsUpload){mess += '  Upload Document Now?' }
+    this.confirmationDialogService.confirm('Please confirm..', mess)
       .then((confirmed) => (confirmed) ? $('.uploadDocBtn').trigger('click') : console.log(confirmed))
       .catch(() => console.log('Attribute dismissed the dialog.'));
   }

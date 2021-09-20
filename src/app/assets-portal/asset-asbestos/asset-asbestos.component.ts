@@ -24,7 +24,7 @@ export class AssetAsbestosComponent implements OnInit, OnDestroy {
     group: [],
     sort: [{ field: 'group', dir: 'asc' }],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -75,19 +75,26 @@ export class AssetAsbestosComponent implements OnInit, OnDestroy {
       }
     )
 
-    const deligence = {
-      ASSID: this.assetId,
-      strUserId: this.currentUser.userId,
-      LOGTYPE: 'V'
+    if (localStorage.getItem('AsbestosOpenedFromWorksOrder'))
+    {
+      const deligence = JSON.parse(localStorage.getItem('AsbestosOpenedFromWorksOrder'));
+      localStorage.removeItem('AsbestosOpenedFromWorksOrder')
+      this.dueDiligence(deligence, true)
+    }else{
+      const deligence = {
+        ASSID: this.assetId,
+        strUserId: this.currentUser.userId,
+        LOGTYPE: 'V'
+      }
+      this.dueDiligence(deligence, false)
     }
 
-    this.dueDiligence(deligence)
 
   }
 
-  dueDiligence(deligence) {
+  dueDiligence(deligence, fromWOPM) {
     this.subs.add(
-      this.asbestosService.dueDiligence(deligence).subscribe(
+      this.asbestosService.dueDiligence(deligence, fromWOPM).subscribe(
         data => {
           this.getAssetAsbestosList();
         }
@@ -321,7 +328,7 @@ export class AssetAsbestosComponent implements OnInit, OnDestroy {
   }
 
   checkFurtherInfoAccess() {
-    
+
     if (!this.containsAll(['Request Further Information'], this.asbestosPropertySecurityAccess)) {
       return true
     }

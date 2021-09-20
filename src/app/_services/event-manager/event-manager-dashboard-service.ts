@@ -17,20 +17,15 @@ export class EventManagerDashboardService {
     getListOfUserEventByCriteria(params) {
         let body = JSON.stringify(params);
         return this.http.post<any>(`${appConfig.apiUrl}/api/Manager/DrillDownChartGridData`, body, this.httpOptions);
-        
-    }
 
-    getEventManagerChartsList() {
-        return this.http.get<any>(`${appConfig.apiUrl}/api/Manager/GetEventManagerChartsList`, this.httpOptions);
-        
     }
 
     drillDownStackedBarChartData(params) {
         let body = JSON.stringify(params);
         return this.http.post<any>(`${appConfig.apiUrl}/api/Manager/DrillDownStackedBarChartData`, body, this.httpOptions);
-        
+
     }
-    
-    //api/Manager/GetEventManagerChartsList
+
+
 
 }

@@ -318,7 +318,7 @@
                         (click)="openTabWindow('energy',attributeList)" href="javascript:void(0)">Rating</a>
                           <a class="dropdown-item" *ngIf="checkTabPermission('EPC') && checkModuleEnabled('EPC Module') && checkEnergyPortalAccess('Energy Portal Access')  && checkMenuAccess('Energy', 1)"
                         (click)="openTabWindow('epc',attributeList)" href="javascript:void(0)">EPC</a>
-                          <a class="dropdown-item" *ngIf="checkTabPermission('EPC') && checkModuleEnabled('EPC Module') && checkEnergyPortalAccess('Energy Portal Access') && checkEnergyPortalAccess('Retrieve EPC') && checkMenuAccess('Energy', 1)"
+                          <a class="dropdown-item" *ngIf="checkTabPermission('EPC') && checkModuleEnabled('EPC Module') && checkModuleEnabled('Retrieve EPC') && checkEnergyPortalAccess('Energy Portal Access') && checkEnergyPortalAccess('Retrieve EPC') && checkMenuAccess('Energy', 1)"
                         (click)="openRetrieveEPCWindow(attributeList)" href="javascript:void(0)">Retrieve EPC</a>
                     </div>
                   </div>
@@ -389,13 +389,19 @@
                 <img title="Very Low/Low Asbestos" *ngIf="attributeList.colour != '' && attributeList.colour == 'Green'"
                   class="table-icon-wr" src="assets/img/icons/asbestos-green.png" />
 
-                <img title="New EPC" *ngIf="attributeList.epcStatus != '' && attributeList.epcStatus=='New'"
+                <img title="New EPC" *ngIf="attributeList.epcStatus=='New'"
                   class="table-icon-wr" src="assets/img/icons/epc-new.png" />
-                  <img title="Incomplete EPC" *ngIf="attributeList.epcStatus != '' && (attributeList.epcStatus=='EPC Started' || attributeList.epcStatus=='Mapped Successfully' || attributeList.epcStatus=='Uploaded Successfully')"
+                  <img title="EPC Started" *ngIf="attributeList.epcStatus=='EPC Started' "
                   class="table-icon-wr" src="assets/img/icons/epc-edit.png" />
-                  <img title="EPC Error" *ngIf="attributeList.epcStatus != '' && (attributeList.epcStatus=='Uploading errors' || attributeList.epcStatus=='Mapping Errors')"
+                  <img title="Mapped Successfully" *ngIf="attributeList.epcStatus=='Mapped Successfully'"
+                  class="table-icon-wr" src="assets/img/icons/epc-edit.png" />
+                  <img title="Uploaded Successfully" *ngIf="attributeList.epcStatus=='Uploaded Successfully'"
+                  class="table-icon-wr" src="assets/img/icons/epc-edit.png" />
+                  <img title="Uploading errors" *ngIf="attributeList.epcStatus=='Uploading errors'"
                   class="table-icon-wr" src="assets/img/icons/epc-error.png" />
-                <img title="Lodged EPC" *ngIf="attributeList.epcStatus != '' && attributeList.epcStatus=='Lodged EPC'"
+                  <img title="Mapping Errors" *ngIf="attributeList.epcStatus=='Mapping Errors'"
+                  class="table-icon-wr" src="assets/img/icons/epc-error.png" />
+                <img title="Lodged EPC" *ngIf="attributeList.epcStatus=='Lodged EPC'"
                   class="table-icon-wr" src="assets/img/icons/epc-logged.png" />
                 <img title="HHSRS" *ngIf="attributeList.outstandingHHSRS" style="width: 19px; margin: 3px" class=""
                   src="assets/img/icons/HHSRS.png" />
@@ -426,7 +432,7 @@
             <td class="midCol" *ngIf="asbestosColumn">{{attributeList.presumed != 0 ? attributeList.presumed : ''}}
             </td>
             <td class="bigCol" *ngIf="asbestosColumn">
-              {{attributeList.stronglypresumed != 0 ? attributeList.stronglypresumed : ''}}</td>
+              {{attributeList.stronglyPresumed != 0 ? attributeList.stronglyPresumed : ''}}</td>
             <td class="midCol" *ngIf="asbestosColumn">
               {{attributeList.identified != 0 ? attributeList.identified : ''}}</td>
             <td class="bigCol" *ngIf="asbestosColumn">{{attributeList.highestMaterialRisk }}</td>
@@ -688,6 +694,9 @@
 
   <div class="searchDiv">
     <form #assetSearch id="assetSearch">
+      <div *ngIf="woDashboardFilter" class="row col-md-12 mt-0 pt-0 pb-2">
+        <label class="col-md-12" style="color:white;font-style: italic; text-align: center;" >Active Works Order filter</label>
+      </div>
       <div *ngIf="energyDashboardFilter" class="row col-md-12 mt-0 pt-0 pb-2">
         <label class="col-md-12" style="color:white;font-style: italic; text-align: center;" >Active Energy filter</label>
       </div>

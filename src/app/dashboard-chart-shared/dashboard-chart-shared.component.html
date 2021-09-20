@@ -2,17 +2,17 @@
     <div class="row">
         <div class="col-md-2 col-sm-4 p-2">
             <h4 class="font-weight-bold">
-                {{portalName}}
+                {{portalName == 'HNS' ? 'Health & Safety' : portalName}}
             </h4>
         </div>
 
-        <div class="col-md-3 col-sm-4 p-2">
-            <h5 *ngIf="dashboardName != undefined" class="font-weight-bold mt-1">{{dashboardName}} Dashboard</h5>
-        </div>
-
-        <div class="col-md-7 col-sm-4 p-2 text-right">
+        <div class="col-md-10 col-sm-4 p-2 text-right">
+            <!-- <input type="text" [(ngModel)]="chartDivHeight" (ngModelChange)="onChange($event)"> -->
             <button id="chartBtn" (click)="saveChartsState()" class="btn btn-sm themeButton mr-1">Save Chart State
             </button>
+
+            <!-- <button id="chartBtn" (click)="deleteChartState()" class="btn btn-sm themeButton mr-1">Delete Chart State
+            </button> -->
 
             <button id="chartBtn" (click)="openChartList()" class="btn btn-sm themeButton">Charts
             </button>
@@ -20,11 +20,11 @@
     </div>
 </div>
 
-<div class="cont">
+<div class="cont" [ngStyle]="{'height' : goldenLayoutStyle.height, 'min-height' : goldenLayoutStyle.minHeight}">
+    <!-- <div class="cont" [ngStyle]="{'height' : goldenLayoutStyle.height}"> -->
     <div id="wrapper">
         <div id="layoutContainer"></div>
     </div>
-
 </div>
 
 
@@ -33,17 +33,106 @@
         <a href="javascript:void(0)" (click)="closeSearchBar()"
             class="theme-settings-close-btn font-weight-light px-4 py-2" style="color:#ffffff;" tabindex="-1">×</a>
     </h5>
+    <div *ngIf="portalName != 'Home'" >
+        <div    class="searchDiv" *ngIf="chartNames.length">
+          <div class="btn-group spBtnGrp" *ngFor="let chartName of chartNames">
+              <button type="button" class="btn spChartBtn dropdown-toggle" data-toggle="dropdown"
+                  aria-expanded="false">{{chartName.chartName}}</button>
+              <div class="dropdown-menu" x-placement="bottom-start"
+                  style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
+                  <a class="dropdown-item" (click)="renderChart('left', chartName)"
+                      href="javascript:void(0)">Add</a>
+              </div>
+          </div>
+      </div>
+    </div>
 
-    <div class="searchDiv" *ngIf="chartNames.length">
-        <div class="btn-group spBtnGrp" *ngFor="let chartName of chartNames">
+    <div *ngIf="portalName == 'Home'" >
+
+      <div class="searchDiv searchDivSection" *ngIf="chartNamesEnergy.length">
+        <h6 style="color:white" class="ml-2 line-height-1 font-weight-bolder bg-light theme-settings-header"> Energy
+        </h6>
+          <div class="btn-group spBtnGrp" *ngFor="let chartName of chartNamesEnergy">
+              <button type="button" class="btn spChartBtn dropdown-toggle" data-toggle="dropdown"
+                  aria-expanded="false">{{chartName.chartName}}</button>
+              <div class="dropdown-menu" x-placement="bottom-start"
+                  style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
+                  <a class="dropdown-item" (click)="renderChart('left', chartName)"
+                      href="javascript:void(0)">Add</a>
+              </div>
+          </div>
+      </div>
+
+      <div class="searchDiv searchDivSection" *ngIf="chartNamesTasks.length">
+        <h6 style="color:white" class="ml-2 line-height-1 font-weight-bolder bg-light theme-settings-header"> Tasks
+        </h6>
+        <div class="btn-group spBtnGrp" *ngFor="let chartName of chartNamesTasks">
             <button type="button" class="btn spChartBtn dropdown-toggle" data-toggle="dropdown"
                 aria-expanded="false">{{chartName.chartName}}</button>
             <div class="dropdown-menu" x-placement="bottom-start"
                 style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
-                <a class="dropdown-item" (click)="renderChart($event, 'left',chartName)"
+                <a class="dropdown-item" (click)="renderChart('left', chartName)"
                     href="javascript:void(0)">Add</a>
             </div>
         </div>
+
+      </div>
+
+      <div class="searchDiv searchDivSection" *ngIf="chartNamesHnS.length">
+        <h6 style="color:white" class="ml-2 line-height-1 font-weight-bolder bg-light theme-settings-header"> Health & Safety
+        </h6>
+        <div class="btn-group spBtnGrp" *ngFor="let chartName of chartNamesHnS">
+            <button type="button" class="btn spChartBtn dropdown-toggle" data-toggle="dropdown"
+                aria-expanded="false">{{chartName.chartName}}</button>
+            <div class="dropdown-menu" x-placement="bottom-start"
+                style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
+                <a class="dropdown-item" (click)="renderChart('left', chartName)"
+                    href="javascript:void(0)">Add</a>
+            </div>
+        </div>
+      </div>
+
+      <div class="searchDiv searchDivSection" *ngIf="chartNamesWOPM.length">
+        <h6 style="color:white" class="ml-2 line-height-1 font-weight-bolder bg-light theme-settings-header"> Works Order
+        </h6>
+        <div class="btn-group spBtnGrp" *ngFor="let chartName of chartNamesWOPM">
+            <button type="button" class="btn spChartBtn dropdown-toggle" data-toggle="dropdown"
+                aria-expanded="false">{{chartName.chartName}}</button>
+            <div class="dropdown-menu" x-placement="bottom-start"
+                style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
+                <a class="dropdown-item" (click)="renderChart('left', chartName)"
+                    href="javascript:void(0)">Add</a>
+            </div>
+        </div>
+      </div>
+
+      <div class="searchDiv searchDivSection" *ngIf="chartNamesSIM.length">
+        <h6 style="color:white" class="ml-2 line-height-1 font-weight-bolder bg-light theme-settings-header"> Servicing
+        </h6>
+        <div class="btn-group spBtnGrp" *ngFor="let chartName of chartNamesSIM">
+            <button type="button" class="btn spChartBtn dropdown-toggle" data-toggle="dropdown"
+                aria-expanded="false">{{chartName.chartName}}</button>
+            <div class="dropdown-menu" x-placement="bottom-start"
+                style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
+                <a class="dropdown-item" (click)="renderChart('left', chartName)"
+                    href="javascript:void(0)">Add</a>
+            </div>
+        </div>
+      </div>
+
+      <div class="searchDiv searchDivSection" *ngIf="chartNamesSurvey.length">
+        <h6 style="color:white" class="ml-2 line-height-1 font-weight-bolder bg-light theme-settings-header"> Surveying
+        </h6>
+              <div class="btn-group spBtnGrp" *ngFor="let chartName of chartNamesSurvey">
+                  <button type="button" class="btn spChartBtn dropdown-toggle" data-toggle="dropdown"
+                      aria-expanded="false">{{chartName.chartName}}</button>
+                  <div class="dropdown-menu" x-placement="bottom-start"
+                      style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
+                      <a class="dropdown-item" (click)="renderChart('left', chartName)"
+                          href="javascript:void(0)">Add</a>
+                  </div>
+              </div>
+      </div>
 
     </div>
 </div>

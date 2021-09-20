@@ -28,7 +28,7 @@ export class ProgramTransactionsComponent implements OnInit {
         take: 25,
         group: [],
         filter: {
-            logic: "or",
+            logic: "and",
             filters: []
         }
     }

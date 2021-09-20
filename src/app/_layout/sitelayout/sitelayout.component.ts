@@ -61,7 +61,7 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
     },
     {
       menuName: "Works Orders",
-      silverLightLink: `${appConfig.silverLightUrl}/WorksOrders`,
+      silverLightLink: `${appConfig.silverLightUrl}/WorksOrdersPortal`,
       grpPermissionName: "Works Order Portal Access",
     }
   ];
@@ -129,6 +129,7 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
     this.reporterPortalAccess();
     this.getWorksOrdersAccess();
     this.SurveyPortalAccess();
+    this.isUserContractor();
     this.subs.add(
       this.sharedServie.servicePortalObs.subscribe(data => { this.servicePortalAccess = data; })
     )
@@ -360,6 +361,18 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
     )
   }
 
+  isUserContractor(){
+     this.subs.add(
+        this.assetService.IsUserContractor(this.currentUser.userId).subscribe(
+            data => {
+              if (data && data.isSuccess) {
+                this.sharedServie.changeUserIsContractor(data.data);
+              }
+            }
+        )
+    )
+  }
+
   checkWorksOrdersAccess(val: string): Boolean {
     if (this.WorksOrdersPermissions != undefined) {
       return this.WorksOrdersPermissions.includes(val);
@@ -488,7 +501,7 @@ export class SitelayoutComponent implements OnInit, OnDestroy {
     if (this.servicePortalAccess == undefined || this.servicePortalAccess.length == 0) {
       return false;
     }
-    if (this.servicePortalAccess.indexOf('Charts Tab') !== -1 || this.servicePortalAccess.indexOf('Management Tab') !== -1) {
+    if (this.servicePortalAccess.indexOf('Dashboard') !== -1 || this.servicePortalAccess.indexOf('Management Tab') !== -1) {
       return true
     }
     return false;

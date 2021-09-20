@@ -26,7 +26,7 @@ export class UserEventsGridComponent implements OnInit {
     sort: [],
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -77,8 +77,9 @@ export class UserEventsGridComponent implements OnInit {
             this.usereventData = Object.assign([], userEventTempData);
             this.renderGrid();
 
-          }
-        }
+          } else this.alertService.error(data.message)
+        }, err => this.alertService.error(err)
+
       )
     )
   }

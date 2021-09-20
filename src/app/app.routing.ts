@@ -1,6 +1,7 @@
 import { Routes, RouterModule } from '@angular/router';
 import { LoginComponent } from './login/index';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { DashboardMainComponent } from './dashboard-main/dashboard-main.component';
 import { SitelayoutComponent } from './_layout/sitelayout/sitelayout.component';
 import { AuthGuard } from './_guards';
 import { SecurityPortalComponent } from './security-portal/security-portal/security-portal.component';
@@ -33,6 +34,7 @@ import { SurveyCbcreportComponent } from './survey-portal/survey-cbcreport/surve
 import { CustomPreloadingStrategy } from './_helpers/custom-preloading-strategy';
 import { AssetResidentContainerComponent } from './asset-resident-container/asset-resident-container.component';
 import { WorksOrderSettingsComponent } from './works-order-settings/works-order-settings.component';
+import { ChartSettingsComponent } from './chart-settings/chart-settings.component';
 
 
 const appRoutes: Routes = [
@@ -45,7 +47,7 @@ const appRoutes: Routes = [
         path: '',
         component: SitelayoutComponent, canActivate: [AuthGuard],
         children: [
-            { path: 'dashboard', component: DashboardComponent },
+            { path: 'dashboard', component: DashboardMainComponent },
             {
                 path: 'security-portal',
                 component: SecurityPortalComponent,
@@ -118,6 +120,7 @@ const appRoutes: Routes = [
               		]
           	},
             { path: 'resident-info', component: AssetResidentContainerComponent, canActivate: [AuthGuard] },
+            { path: 'chart-settings', component: ChartSettingsComponent, canActivate: [AuthGuard] },
 
         ]
     },

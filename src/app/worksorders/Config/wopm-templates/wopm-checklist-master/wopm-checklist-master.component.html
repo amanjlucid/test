@@ -14,7 +14,7 @@
 <div style="height:100%;" class="col-md-12 m-0 p-0">
 
   <kendo-grid id="checklistgrid" #grid="kendoGrid"  [navigable]="true" [resizable]="true" [data]="gridView" [selectable]="{
-    mode: 'single' }" [loading]="loading"  [selectedKeys]="mySelection" [kendoGridSelectBy]="mySelectionKey"  
+    mode: 'single' }" [loading]="loading"  [selectedKeys]="mySelection" [kendoGridSelectBy]="mySelectionKey"
     (cellClick)="cellClickHandler($event)">
 
     <kendo-grid-column title=" " width="37" [filterable]="false">
@@ -24,24 +24,24 @@
               <div class="dropdown-menu" >
                 <a class="dropdown-item" href="javascript:void(0)" *ngIf="checkWorksOrdersAccess('Edit Checklist')"
                 (click)="openEditChecklist('edit', dataItem)">Edit</a>
-                
+
                 <a class="dropdown-item" href="javascript:void(0)" *ngIf="checkWorksOrdersAccess('Delete Checklist')"
                 (click)="deleteChecklist(dataItem)">Delete</a>
               </div>
             <!-- </li> -->
-    
+
           </ng-template>
 <!--         <ng-template kendoGridCellTemplate let-dataItem>
             <li [ngClass]="{'disabled' : selectedRows.length > 1}" class="nav-item dropdown list-unstyled"
                 style="margin-top: -7px;">
                 <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"
                     (click)="setSelectedRow(dataItem)"></i>
-                <div class="dropdown-menu"  
+                <div class="dropdown-menu"
                 *ngIf="checkWorksOrdersAccess('Edit Checklist') || checkWorksOrdersAccess('Delete Checklist')"  >
 
                     <a class="dropdown-item" href="javascript:void(0)" *ngIf="checkWorksOrdersAccess('Edit Checklist')"
                     (click)="openEditTemplate('edit', dataItem)">Edit</a>
-                    
+
                     <a class="dropdown-item" href="javascript:void(0)" *ngIf="checkWorksOrdersAccess('Delete Checklist')"
                     (click)="deleteTemplate(dataItem)">Delete</a>
                 </div>
@@ -54,7 +54,7 @@
 
 
 
-    
+
     <kendo-grid-column field="wostagename" title="Stage" width="180">
     </kendo-grid-column>
     <kendo-grid-column field="wocheckname" title="Name" width="200">
@@ -75,14 +75,6 @@
     </kendo-grid-column>
     <kendo-grid-column field="woextrareF1" title="Mail Merge Document" width="200" >
     </kendo-grid-column>
-    <kendo-grid-column field="woextrareF2" title="User Ref 2" width="100" >
-    </kendo-grid-column>
-    <kendo-grid-column field="woextrareF3" title="User Ref 3"  width="100">
-    </kendo-grid-column>
-    <kendo-grid-column field="woextrareF4" title="User Ref 4" width="100" >
-    </kendo-grid-column>
-    <kendo-grid-column field="woextrareF5" title="User Ref 5"  width="100">
-    </kendo-grid-column>
     <kendo-grid-column field="createdby" title="Created By" width="160" >
     </kendo-grid-column>
     <kendo-grid-column field="mPgqA" title="Created Date"  width="120" format="{0:dd-MM-yyyy}">
@@ -94,14 +86,14 @@
     </kendo-grid-column>
     <kendo-grid-column field="updatedby" title="Amended By" width="160" >
     </kendo-grid-column>
-    <kendo-grid-column field="mPgtA" title="Amended Date" width="120" format="{0:dd-MM-yyyy}">   
+    <kendo-grid-column field="mPgtA" title="Amended Date" width="120" format="{0:dd-MM-yyyy}">
         <ng-template kendoGridCellTemplate let-dataItem>
             <span>
                 {{ dataItem.mPgtA | dateFormat : 'DD-MMM-YYYY' }}
             </span>
         </ng-template>
-    </kendo-grid-column> 
-    </kendo-grid> 
+    </kendo-grid-column>
+    </kendo-grid>
 
   <p style="position: absolute; top: 0px;background-color: white;  height: 50px;" class="col-md-12 m-0 p-0"></p>
 

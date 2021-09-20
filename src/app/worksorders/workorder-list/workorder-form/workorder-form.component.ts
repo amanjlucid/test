@@ -40,6 +40,7 @@ export class WorkOrderFormComponent implements OnInit {
     workOrderProgrammeListData: any;
     WorkOrderContractListData: any;
     GetPhaseTemplateListData: any;
+    WorksOrderName: string = '';
     formErrors: any;
     stage2FormSetting = {
         won: [''],
@@ -75,6 +76,7 @@ export class WorkOrderFormComponent implements OnInit {
         defectLibPeriodVal: ['', [shouldNotZero()]],
         valuationCheck: [''],
     }
+    AllowMilestones: boolean = false;
     workOrderNo: any;
     validationMessage = {
         'woType': {
@@ -214,6 +216,16 @@ export class WorkOrderFormComponent implements OnInit {
         } else {
             this.initializeForm(2)
         }
+
+        this.subs.add(
+          this.worksOrdersService.GetAllowMilestones().subscribe(
+            data => {
+              if (data.isSuccess) {
+                this.AllowMilestones = (data.data);
+              } else this.alertService.error(data.message);
+            }, err => this.alertService.error(err)
+          )
+        )
 
         this.subs.add(
             forkJoin([
@@ -370,7 +382,7 @@ export class WorkOrderFormComponent implements OnInit {
             wodefectliabperiodflag = wod.wodefectliabperiodflag == "N" ? false : true;
             wodefectliabperioddays = wod.wodefectliabperioddays;
             wocodE2 = wod.wocodE2 == "N" ? false : true;
-           
+
         }
 
         //this variable is used while saving and updating record
@@ -389,25 +401,37 @@ export class WorkOrderFormComponent implements OnInit {
             wostatus: wod?.wostatus ?? 'New',
             woactinact: wod?.woactinact ?? 'A',
             wotargetcompletiondate: compDate,
-            wobudget: wod?.wobudget ?? "",
             purchase_order_no: wod?.wocodE3 ?? '',
             wobudgetcode: wod?.wocodE4 ?? '',
             plan_year: wod?.wocodE1 ?? '',
             woplanstartdate: planStart,
             woplanenddate: planEnd,
             woinstructions: wod?.woinstructions ?? '',
-            wooverheadpct: wod?.wooverheadpct ?? 0,
-            woprelimpct: wod?.woprelimpct ?? 0,
-            woprofitpct: wod?.woprofitpct ?? 0,
-            woothercostpct: wod?.woothercostpct ?? 0,
             contract_payment_type: wod?.wocontracttype ?? '',
-
             defectLibPeriodCheck: wodefectliabperiodflag,
             defectLibPeriodVal: wodefectliabperioddays,
             valuationCheck: wocodE2,
 
         });
 
+        if(this.woFormType == "new"){
+          this.woForm2.patchValue({
+            wobudget: '',
+            wooverheadpct: this.contractSelcted?.cttoheadperc ?? 0,
+            woprelimpct: this.contractSelcted?.cttprelperc ?? 0,
+            woprofitpct: this.contractSelcted?.cttprofperc ?? 0,
+            woothercostpct: this.contractSelcted?.cttothperc ?? 0,
+          });
+        }else{
+          this.woForm2.patchValue({
+            wobudget: wod?.wobudget ?? "",
+            wooverheadpct: wod?.wooverheadpct ?? 0,
+            woprelimpct: wod?.woprelimpct ?? 0,
+            woprofitpct: wod?.woprofitpct ?? 0,
+            woothercostpct: wod?.woothercostpct ?? 0,
+          });
+
+        }
 
         let targetDateValidationArr = [Validators.required, ShouldGreaterThanYesterday(), SimpleDateValidator()];
         if (this.woFormType == "edit") {
@@ -536,7 +560,21 @@ export class WorkOrderFormComponent implements OnInit {
 
         this.submitted = true;
         this.formErrorObject(); // empty form error
+
+        if(this.woForm2.controls.woplanstartdate.value == null)
+        {
+          this.woForm2.controls.woplanstartdate.setValue('')
+        }
+        if(this.woForm2.controls.woplanenddate.value == null)
+        {
+          this.woForm2.controls.woplanenddate.setValue('')
+        }
+
         this.logValidationErrors(this.woForm2);
+
+
+
+
         this.chRef.detectChanges();
 
         if (this.woForm2.invalid) {
@@ -544,6 +582,7 @@ export class WorkOrderFormComponent implements OnInit {
         }
 
         let formRawVal = this.woForm2.getRawValue();
+
 
         let msg = "";
         let wodData: any = {};
@@ -564,6 +603,23 @@ export class WorkOrderFormComponent implements OnInit {
         } else {
             msg = "Work Order updated successfully.";
             wodData = this.worksOrderData;
+
+
+            if (wodData.wostatus == "New" && formRawVal.wostatus == "In Progress") {
+              this.alertService.error("The Works Order Status cannot be changed from 'New' to 'In Progress'");
+              return
+           }
+
+            if (wodData.wostatus == "Closed" && formRawVal.wostatus == "New") {
+                this.alertService.error("The Works Order Status cannot be changed from 'Closed' to 'New'");
+                return
+            }
+
+            if (wodData.wostatus == "In Progress" && formRawVal.wostatus == "New") {
+                this.alertService.error("The Works Order Status cannot be changed from 'In Progress' to 'New'");
+                return
+            }
+
             wocodE6 = wodData.wocodE6;
 
             userAndDate.MPgoA = wodData.mPgoA;
@@ -588,6 +644,18 @@ export class WorkOrderFormComponent implements OnInit {
         if(this.reportingCharsConfig == undefined){
           this.reportingCharsConfig = new WopmRepCharConfig();
           this.reportingCharsConfig.wosequence = 0;
+        }
+
+        if(this.contractSelcted == undefined)
+        {
+          this.alertService.error('Invalid Contract');
+          return
+        }
+
+        if(this.assetTmpSelcted == undefined)
+        {
+          this.alertService.error('Invalid Asset Template');
+          return
         }
 
         let params = {
@@ -664,6 +732,8 @@ export class WorkOrderFormComponent implements OnInit {
 
         let apiCall: any;
         if (this.woFormType == "new") {
+
+
             let validationparmas = {
                 WPRSequence: params.WPRSEQUENCE,
                 Budget: params.WOBUDGET,
@@ -685,20 +755,7 @@ export class WorkOrderFormComponent implements OnInit {
 
         } else {
 
-            if (wodData.wostatus == "New" && formRawVal.wostatus == "In Progress") {
-                this.alertService.error("The Works Order Status cannot be changed from 'New' to 'In Progress'");
-                return
-            }
 
-            if (wodData.wostatus == "Closed" && formRawVal.wostatus == "New") {
-                this.alertService.error("The Works Order Status cannot be changed from 'Closed' to 'New'");
-                return
-            }
-
-            if (wodData.wostatus == "In Progress" && formRawVal.wostatus == "New") {
-                this.alertService.error("The Works Order Status cannot be changed from 'In Progress' to 'New'");
-                return
-            }
 
             if (new Date(params.WOTARGETCOMPLETIONDATE) < new Date()) {
                 this.alertService.warning("Warning - Target Completion Date is in the past!", false);
@@ -802,6 +859,10 @@ export class WorkOrderFormComponent implements OnInit {
     }
 
     editRepChars(){
+
+      let formRawVal = this.woForm2.getRawValue();
+      this.WorksOrderName = formRawVal.woname;
+
       if(this.reportingCharsConfig == undefined){
         this.subs.add(
           this.worksorderManagementService.getReportingCharConfigData1(this.selectedWorkOrderAddEdit.wosequence).subscribe(

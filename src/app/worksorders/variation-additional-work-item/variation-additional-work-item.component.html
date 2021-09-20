@@ -23,11 +23,8 @@
                 <kendo-grid-column title="Package Code" field="wphcode" width="130">
                 </kendo-grid-column>
 
-
                 <kendo-grid-column title="Package Name" field="wphname" width="120">
                 </kendo-grid-column>
-
-
 
                 <kendo-grid-column title="Attribute Description" field="atadescription" width="120">
                 </kendo-grid-column>
@@ -62,7 +59,6 @@
                     </ng-template>
                 </kendo-grid-column>
 
-
                 <kendo-grid-column field="attributeexists" title="Attribute Status" width="100">
                 </kendo-grid-column>
 
@@ -81,17 +77,13 @@
     </div>
 
     <div class="worklistPackageOvrlay"></div>
+
     <app-variation-pkz-enter-qty *ngIf="packageQuantityWindow" [pkzQtyWindow]="packageQuantityWindow"
-        [singleVariationInp]="selectedVariationInp" [selectedSingleVariationAssetInp]="selectedSingleVariationAssetInp"
-        [assetDetailInp]="selectedSingleVarWorkList" [openedFrom]="openedFrom" [parentComp]="'additional'"
-        (closePkzQtyEvent)="closePackageQuantiyEvent($event)" [mode]="'new'" [selectedPkzs]="selectedPackagesArr">
+    [singleVariationInp]="selectedVariationInp" [selectedSingleVariationAssetInp]="selectedSingleVariationAssetInp"
+    [assetDetailInp]="selectedSingleVarWorkList" [openedFrom]="openedFrom" [parentComp]="'additional'"
+    (closePkzQtyEvent)="closePackageQuantiyEvent($event)" [mode]="'new'" [selectedPkzs]="selectedPackagesArr">
     </app-variation-pkz-enter-qty>
 
-
-    <!-- <app-worksorders-add-package-enter-quantity *ngIf="packageQuantityWindow"
-        [packageQuantityWindow]="packageQuantityWindow" [selectedWorkOrder]="worksOrderData"
-        (closePackageQuantiyEvent)="closePackageQuantiyEvent($event)" (refreshPackageList)="refreshPackageList($event)"
-        [mySelection]="mySelection" [packageData]="additionalWorkData" [swapPkz]="'false'">
-    </app-worksorders-add-package-enter-quantity> -->
-
 </kendo-window>
+
+

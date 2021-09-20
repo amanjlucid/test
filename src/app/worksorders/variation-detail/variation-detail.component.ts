@@ -28,7 +28,7 @@ export class VariationDetailComponent implements OnInit {
     take: 25,
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -49,7 +49,7 @@ export class VariationDetailComponent implements OnInit {
   worksOrderUsrAccess: any = [];
   userType: any = [];
   action = 'single';
-
+  disableRemoveVariation: boolean = true;
 
   constructor(
     private chRef: ChangeDetectorRef,
@@ -173,8 +173,8 @@ export class VariationDetailComponent implements OnInit {
   }
 
   mySelectionKey(context: RowArgs): string {
-    const { wosequence, wopsequence, assid, wlcode, wlataid, wlplanyear, woadrechargeyn, wochecksurcde, wostagesurcde } = context.dataItem;
-    return encodeURIComponent(`${wosequence}_${wopsequence}_${assid}_${wlcode}_${wlataid}_${wlplanyear}_${woadrechargeyn}_${wochecksurcde}_${wostagesurcde}`);
+    const { wosequence, wopsequence, assid, wlcode, wlataid, wlplanyear, woadrechargeyn, wochecksurcde, wostagesurcde, variationAction } = context.dataItem;
+    return encodeURIComponent(`${wosequence}_${wopsequence}_${assid}_${wlcode}_${wlataid}_${wlplanyear}_${woadrechargeyn}_${wochecksurcde}_${wostagesurcde}_${variationAction}`);
   }
 
   cellClickHandler({ dataItem }) {
@@ -182,12 +182,7 @@ export class VariationDetailComponent implements OnInit {
   }
 
   woMenuAccess(menuName) {
-    return this.helperService.checkWorkOrderAreaAccess(this.userType, this.worksOrderAccess, this.worksOrderUsrAccess, menuName)
-    // if (this.userType == undefined) return true;
-    // if (this.userType?.wourroletype == "Dual Role") {
-    //   return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
-    // }
-    // return this.worksOrderUsrAccess.indexOf(menuName) != -1
+    return this.helperService.checkWorkOrderAreaAccess(this.worksOrderUsrAccess, menuName)
   }
 
   openDeleteWorkReasonWindow(item, action = 'single') {
@@ -225,6 +220,39 @@ export class VariationDetailComponent implements OnInit {
       this.deleteWork()
     } else {
       this.deleteMultipleWork();
+    }
+
+  }
+
+
+  disableMenuMultiple(type) {
+    if (type == "remove") {
+        let actions = [];
+        let params = [];
+        for (let selection of this.mySelection) {
+          const splitArr = selection.split("_");
+          params.push({
+            Action: splitArr[9]
+          })
+        }
+        params.forEach(function (record) {
+          let v = record
+          if (record.Action != undefined && record.Action != '') {
+                actions.push(record);
+              };
+          });
+         return (actions.length == 0)
+      }
+
+  }
+
+  disableMenuSingle(type, item) {
+    if (type == "remove") {
+      if(item.variationAction == ''){
+        return true;
+      }else{
+        return false;
+      }
     }
 
   }

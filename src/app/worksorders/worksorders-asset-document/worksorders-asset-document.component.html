@@ -1,5 +1,8 @@
 <kendo-window title="{{title}}" *ngIf="assetDocWindow" (close)="closeChecklistDoc()" [top]="10" [minWidth]="700"
-    [width]="870" [height]="auto" [minHeight]="300">
+    [width]="870" [height]="800" [minHeight]="300">
+
+  <div style="height:100%">
+
     <div class="row headingDetail">
         <div class="col-md-12 mt-2">
             <div class="row">
@@ -37,9 +40,9 @@
 
     </div>
 
-    <div class="row mt-4">
+    <div style="height:80%" class="row mt-4">
         <div class="col-md-12">
-            <kendo-grid #grid [data]="gridView" [height]="410" [selectable]="{
+            <kendo-grid style="height:100%" #grid [data]="gridView"  [selectable]="{
         mode: 'single'
       }" filterable="menu" [resizable]="true" [sortable]="{
         allowUnsort: allowUnsort,
@@ -74,21 +77,22 @@
 
     </div>
 
-    <div class="row mt-2">
+    <div style="height:20px" class="row mt-2">
         <div class="col-md-9 text-left leftSideBtn">
             <input (change)="onFileChange($event)" type="file" #addDoc id="addDoc" style="display: none;">
-            <button *ngIf="worksOrderAccess.indexOf('View Checklist Document') != -1" class="btn btn-sm themeButton"
-                (click)="viewDocument()" [disabled]="!selectedDoc">View
-                Document</button>
-            <button *ngIf="worksOrderAccess.indexOf('Edit Checklist Document Description') != -1"
-                class="btn btn-sm themeButton" (click)="openEditDoc()" [disabled]="!selectedDoc">Edit
-                Description</button>
-            <button *ngIf="worksOrderAccess.indexOf('Add Checklist Document') != -1" class="btn btn-sm themeButton"
+            <button *ngIf="woMenuBtnSecurityAccess('View Asset Document')" class="btn btn-sm themeButton"
+                (click)="viewDocument()" [disabled]="!selectedDoc">View Document</button>
+
+            <button *ngIf="woMenuBtnSecurityAccess('Edit Asset Document Description')" class="btn btn-sm themeButton"
+                (click)="openEditDoc()" [disabled]="!selectedDoc">Edit Description</button>
+
+            <button *ngIf="woMenuBtnSecurityAccess('Add Asset Document')" class="btn btn-sm themeButton"
                 (click)="addDocument()">Add Document</button>
 
-            <button *ngIf="worksOrderAccess.indexOf('Upload Checklist Document') != -1"
-                class="btn btn-sm themeButton uploadDocBtn" (click)="uploadImage()">Upload Document</button>
-            <button *ngIf="worksOrderAccess.indexOf('Remove Checklist Document') != -1" class="btn btn-sm themeButton"
+            <button *ngIf="woMenuBtnSecurityAccess('Upload Asset Document')" class="btn btn-sm themeButton uploadDocBtn"
+            [disabled]="!AllowDocsUpload"
+                (click)="uploadImage()">Upload Document</button>
+            <button *ngIf="woMenuBtnSecurityAccess('Remove Asset Document')" class="btn btn-sm themeButton"
                 (click)="openConfirmationDialog()" [disabled]="!selectedDoc">Remove
                 Document</button>
         </div>
@@ -99,6 +103,7 @@
 
     </div>
 
+   </div>
 
     <div class="docOvrlay"></div>
 
@@ -106,8 +111,8 @@
         [selectedChecklist]="selectedAsset" [selectedDoc]="selectedDoc" (closeEditDoc)="closeEditDoc($event)">
     </app-worksorders-asset-checklist-edit-description>
 
-    <app-worksorders-asset-checklist-upload-doc *ngIf="uploadAttachment" [uploadAttachment]="uploadAttachment" uploadDocFor="Asset"
-        [selectedChecklist]="selectedAsset" (closeAttachment)="closeAttachment($event)"
+    <app-worksorders-asset-checklist-upload-doc *ngIf="uploadAttachment" [uploadAttachment]="uploadAttachment"
+        uploadDocFor="Asset" [selectedChecklist]="selectedAsset" (closeAttachment)="closeAttachment($event)"
         (complete)="complete($event)">
     </app-worksorders-asset-checklist-upload-doc>
 

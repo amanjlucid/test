@@ -1,16 +1,17 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef, ElementRef, ViewChild, ViewEncapsulation } from '@angular/core';
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { AlertService, ReportingGroupService, HelperService, LoaderService, ConfirmationDialogService, WorksOrdersService, PropertySecurityGroupService, SharedService } from 'src/app/_services';
 import { combineLatest } from 'rxjs';
-import { GridComponent, RowArgs } from '@progress/kendo-angular-grid';
+import { GridComponent, PageChangeEvent, RowArgs } from '@progress/kendo-angular-grid';
 // import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-wo-program-management-instructions',
   templateUrl: './wo-program-management-instructions.component.html',
   styleUrls: ['./wo-program-management-instructions.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  encapsulation: ViewEncapsulation.None
 })
 
 export class WoProgramManagmentInstructionComponent implements OnInit {
@@ -28,10 +29,11 @@ export class WoProgramManagmentInstructionComponent implements OnInit {
 
   state: State = {
     skip: 0,
+    take: 25,
     sort: [{ field: 'woname', dir: 'asc' }],
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -91,11 +93,11 @@ export class WoProgramManagmentInstructionComponent implements OnInit {
     private chRef: ChangeDetectorRef,
     private sharedService: SharedService,
     private confirmationDialogService: ConfirmationDialogService,
-    private helperService : HelperService
+    private helperService: HelperService
   ) { }
 
   ngOnInit(): void {
-    // console.log(this.selectedWorksOrder)
+   
     this.subs.add(
       combineLatest([
         this.sharedService.worksOrdersAccess,
@@ -112,9 +114,9 @@ export class WoProgramManagmentInstructionComponent implements OnInit {
 
     let woname = this.worksOrderData.woname || this.worksOrderData.name
     this.title = `Instructions: ${this.selectedWorksOrder?.wosequence} - ${woname}`
-   
+
     this.GetWEBWorksOrdersInstructionsForUser();
-    
+
 
   }
 
@@ -128,7 +130,7 @@ export class WoProgramManagmentInstructionComponent implements OnInit {
 
   closeEmailWithReportWindow(eve) {
     this.SendEmailInsReportWindow = false;
-   
+
     $('.reportBgblur').removeClass('ovrlay');
     $('.reportingDiv').removeClass('pointerEvent');
   }
@@ -156,12 +158,16 @@ export class WoProgramManagmentInstructionComponent implements OnInit {
     this.subs.add(
       this.worksOrdersService.GetWEBWorksOrdersInstructionsForUser(qs).subscribe(
         data => {
-        //  console.log(data); 
+          //  console.log(data); 
           if (data.isSuccess) {
-            this.instructionData = data.data;
+            let tempData = data.data;
+            // tempData.map(s => {
+            //   s.woirequestdate = new Date(s.woirequestdate);
+            //   s.woiacceptdate = new Date(s.woiacceptdate);
+            // });
+            this.instructionData = tempData;
             this.gridView = process(this.instructionData, this.state);
             this.loading = false;
-
 
           } else {
             this.alertService.error(data.message);
@@ -188,7 +194,6 @@ export class WoProgramManagmentInstructionComponent implements OnInit {
 
 
   openShowinstructionAssets(item) {
-
     this.woPmInstructionAssetsWindow = true;
     this.selectedInstructionRow = item;
     $('.wopminstructionoverlay').addClass('ovrlay');
@@ -215,10 +220,28 @@ export class WoProgramManagmentInstructionComponent implements OnInit {
     link.click();//console.log('openViewInstructionReport item '+ JSON.stringify(item));
     this.ViewInsReportWindow = false;
   }
-  
+
   onClickDownloadPdf(base64_string, filename) {
     let base64String = base64_string;
     this.downloadPdf(base64String, filename);
+  }
+
+  sortChange(sort: SortDescriptor[]): void {
+    this.state.sort = sort;
+    this.gridView = process(this.instructionData, this.state);
+  }
+
+  filterChange(filter: any): void {
+    this.state.filter = filter;
+    this.gridView = process(this.instructionData, this.state);
+  }
+
+  pageChange(event: PageChangeEvent): void {
+    this.state.skip = event.skip;
+    this.gridView = {
+      data: this.instructionData.slice(this.state.skip, this.state.skip + this.pageSize),
+      total: this.instructionData.length
+    };
   }
 
   openViewInstructionReport(item) {
@@ -265,15 +288,7 @@ export class WoProgramManagmentInstructionComponent implements OnInit {
   }
 
   woMenuAccess(menuName) {
-    return this.helperService.checkWorkOrderAreaAccess(this.userType, this.worksOrderAccess, this.worksOrderUsrAccess, menuName)
-    // if (this.userType == undefined) return true;
-
-    // if (this.userType?.wourroletype == "Dual Role") {
-    //   return this.worksOrderAccess.indexOf(menuName) != -1 || this.worksOrderUsrAccess.indexOf(menuName) != -1
-    // }
-
-    // return this.worksOrderUsrAccess.indexOf(menuName) != -1
-
+    return this.helperService.checkWorkOrderAreaAccess(this.worksOrderUsrAccess, menuName)
   }
 
 }

@@ -279,7 +279,10 @@
             <input [readonly]="true" type="text" class="form-control" placeholder=""
               value="{{ worksOrderData?.woname }}(Work Order No: {{ worksOrderData?.wosequence }}) ">
           </div>
-
+          <div class="col-md-2">
+            <button type="button" class="btn btn-sm themeButton mt-2"
+            (click)="WOCreateXportOutputReport(524, 'Payment Schedule Assets')">Export</button>
+          </div>
         </div>
       </div>
 
@@ -404,7 +407,7 @@
 
       </div>
 
-      <div class="col-md-12 text-right">
+      <div class="col-md-12 text-right mt-2">
         <button type="button" class="btn btn-sm themeButton"
           (click)="closGetWebWorksOrderPaymentScheduleDetailsWindow()">Close</button>
       </div>
@@ -417,6 +420,7 @@
   <div class="wopmpaymentoverlay"></div>
 
   <app-wo-program-management-edit-payment-schedule *ngIf="openWOEditPaymentScheduleWindow"
+    [defectLiabilityPeriod]="defectLiabilityPeriod" [woContractType]="woContractType"
     [worksOrderData]="worksOrderData" [openWOEditPaymentScheduleWindow]="openWOEditPaymentScheduleWindow"
     (closeEditPaymentScheduleWindowEvent)="closeEditPaymentScheduleWindow($event)">
   </app-wo-program-management-edit-payment-schedule>
@@ -427,13 +431,15 @@
     (closeValuationWindow)="closeValuationWindow($event)"></app-valuations>
 
   <app-wo-program-management-add-payment-schedule *ngIf="openWOAddPaymentScheduleWindow"
+    [defectLiabilityPeriod]="defectLiabilityPeriod" [woContractType]="woContractType"
     [worksOrderData]="worksOrderData" [paymentScheduleExist]="paymentScheduleExist"
     [openWOAddPaymentScheduleWindow]="openWOAddPaymentScheduleWindow"
     (closeAddPaymentScheduleWindowEvent)="closeAddPaymentScheduleWindow($event)">
   </app-wo-program-management-add-payment-schedule>
 
   <app-wo-program-management-create-payment-schedule *ngIf="openWOCreatePaymentScheduleWindow"
-    [worksOrderData]="worksOrderData" [openWOCreatePaymentScheduleWindow]="openWOCreatePaymentScheduleWindow"
+  [defectLiabilityPeriod]="defectLiabilityPeriod" [woContractType]="woContractType"
+  [worksOrderData]="worksOrderData" [openWOCreatePaymentScheduleWindow]="openWOCreatePaymentScheduleWindow"
     (closeCreatePaymentScheduleWindowEvent)="closeCreatePaymentScheduleWindow($event)">
   </app-wo-program-management-create-payment-schedule>
 

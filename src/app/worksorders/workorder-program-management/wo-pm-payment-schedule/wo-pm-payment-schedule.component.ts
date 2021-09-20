@@ -27,7 +27,7 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
     take: 35,
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -49,6 +49,8 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
   worksOrderAccess = [];
   worksOrderUsrAccess: any = [];
   userType: any = [];
+  defectLiabilityPeriod: number = 0;
+  woContractType: string = '';
 
   openValuationWindow = false;
   valuationBtnAccess: boolean = false;
@@ -76,6 +78,9 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
 
 
   ngOnInit(): void {
+
+    let v = this.worksOrderData
+
     if (this.worksOrderData['woname'] == undefined) {
       this.worksOrderData['woname'] = this.worksOrderData.name;
     }
@@ -94,6 +99,8 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
       )
     )
 
+    this.getDefectLiabilityPeriod()
+
     this.GetWEBWorksOrdersPaymentScheduleForWorksOrder();
   }
 
@@ -103,6 +110,22 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
       checkboxOnly: false,
       mode: 'single'
     };
+  }
+
+  getDefectLiabilityPeriod() {
+
+    this.subs.add(
+      combineLatest([
+        this.worksOrdersService.getWorksOrderDefectLiabilityPeriod(this.worksOrderData.wosequence),
+        this.worksOrdersService.getWorksOrderContractType(this.worksOrderData.wosequence)
+      ]).subscribe(
+        data => {
+          this.defectLiabilityPeriod = data[0].data;
+          this.woContractType = data[1].data;
+        }
+      )
+    )
+
   }
 
   GetWEBWorksOrdersPaymentScheduleForWorksOrder() {
@@ -187,10 +210,12 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
 
 
   valuationConfirmation(resp, item) {
-    $('.k-window').css({ 'z-index': 1000 });
-    this.confirmationDialogService.confirm('', `${resp.validationMessage}`, false)
-      .then((confirmed) => this.openValuationWindowMehhod(item, "P"))
-      .catch(() => console.log('Attribute dismissed the dialog.'));
+   // $('.k-window').css({ 'z-index': 1000 });
+   // this.confirmationDialogService.confirm('', `${resp.validationMessage}`, false)
+  //    .then((confirmed) => this.openValuationWindowMehhod(item, "P"))
+   //   .catch(() => console.log('Attribute dismissed the dialog.'));
+   this.alertService.warning(`${resp.validationMessage}`)
+   this.openValuationWindowMehhod(item, "P")
   }
 
 
@@ -313,7 +338,7 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
 
 
   woMenuAccess(menuName) {
-    return this.helperService.checkWorkOrderAreaAccess(this.userType, this.worksOrderAccess, this.worksOrderUsrAccess, menuName)
+    return this.helperService.checkWorkOrderAreaAccess(this.worksOrderUsrAccess, menuName)
   }
 
 
@@ -351,6 +376,7 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
   GetWebWorksOrderPaymentScheduleDetailsClick(item) {
     $(".wopmpaymentoverlay").addClass("ovrlay");
     const { wpspaymentdate, wosequence } = item;
+    this.selectedItem = item;
     const params = {
       "wosequence": wosequence,
       "paymentdate": this.helperService.getMDY(wpspaymentdate),
@@ -470,6 +496,12 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
       params.lstParamNameValue = ["Payment Rec to YYYYMMDD", this.selectedItem.wpsenddate_YYYYMMDD, "Payment Rec from YYYYMMDD", this.selectedItem.wpsstartdate_YYYYMMDD, "Works Order Number", this.worksOrderData.wosequence];
     }
 
+    if (xPortId == 524) {
+      let end_date = DateFormatPipe.prototype.transform(this.selectedItem.wpsenddate, 'YYYYMMDD');
+      params.lstParamNameValue = ["Works Order Payment Schedule", end_date, "Works Order Number", this.worksOrderData.wosequence];
+    }
+
+
 
     this.worksOrderReportService.WOCreateXportOutput(params).subscribe(
       (data) => {
@@ -529,7 +561,7 @@ export class WoProgramManagmentPaymentScheduleComponent implements OnInit {
     this.closePaymentScheduleWindowEvent.emit(false);
   }
 
- 
+
 
 
 

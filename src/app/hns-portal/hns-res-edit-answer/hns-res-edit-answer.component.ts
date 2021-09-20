@@ -519,6 +519,14 @@ export class HnsResEditAnswerComponent implements OnInit {
 
   openIssue(mode) {
     if (this.selectedIssue || mode == "add") {
+      if(mode == "edit"){
+        if(this.hnsPermission.indexOf('Edit Issue') == -1 ){
+          if(this.hnsPermission.indexOf('Edit Issue (Work Fields Only)') != -1 ){
+            mode = 'editWorkOnly'
+          }
+        }
+      }
+
       this.issueFormMode = mode;
       this.showIssue = true;
       $('.editAnsOvrlay').addClass('ovrlay');

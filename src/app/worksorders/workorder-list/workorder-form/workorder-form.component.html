@@ -55,7 +55,7 @@
           </div>
 
 
-          <div class="form-group col-md-12">
+          <div *ngIf="AllowMilestones" class="form-group col-md-12">
             <label class="form-label">Works Order/Phase Template</label>
             <select class="custom-select" formControlName="wophasetemplate"
               [ngClass]="{ 'is-invalid': submitted1 && formErrors.wophasetemplate }">
@@ -291,8 +291,8 @@
             <div class="thirdDiv">
               <label class="form-label">Budget</label>
               <div class="form-group">
-                <input [readonly]="readInput" appCurrencyMask maxDigits="9" type="text" class="form-control"
-                  placeholder="" formControlName="wobudget"
+                <input [readonly]="readInput" appCurrencyMask maxDigits="9" type="text" class="form-control currencyInput"
+                   formControlName="wobudget"
                   [ngClass]="{ 'is-invalid': submitted && formErrors.wobudget }">
                 <div *ngIf="submitted && formErrors.wobudget" class="invalid-feedback">
                   <div *ngIf="formErrors.wobudget">{{ formErrors.wobudget }}</div>
@@ -401,7 +401,7 @@
 
           <div class="col-md-12">
             <div class="firstdiv">
-              <label class="form-label">Other Cast %</label>
+              <label class="form-label">Other Cost %</label>
               <div class="form-group">
                 <input [readonly]="readonly" type="text" class="form-control" placeholder=""
                   (keypress)="numberOnly($event)" formControlName="woothercostpct"
@@ -492,8 +492,10 @@
 
   <div class="worksOrderOverlay"></div>
 
+  <app-reporting-char *ngIf="repCharWindow" [repCharWindow]="repCharWindow" [woSequence]="selectedWorkOrderAddEdit.wosequence" [repCharModel]="reportingCharsConfig"
+  [woName]="WorksOrderName" (closeRepCharWindow)="closeRepCharWindow($event)"></app-reporting-char>
+
 </kendo-window>
 
-<app-reporting-char *ngIf="repCharWindow" [repCharWindow]="repCharWindow" [woSequence]="selectedWorkOrderAddEdit.wosequence" [repCharModel]="reportingCharsConfig"
-[woName]="selectedWorkOrderAddEdit.woname" (closeRepCharWindow)="closeRepCharWindow($event)"></app-reporting-char>
+
 

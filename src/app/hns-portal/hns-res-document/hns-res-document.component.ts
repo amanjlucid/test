@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ViewChild, ChangeDetectorRef, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ViewChild, ChangeDetectorRef, ViewEncapsulation } from '@angular/core';
 import { SubSink } from 'subsink';
 import { DataResult, process, State, CompositeFilterDescriptor, SortDescriptor, GroupDescriptor } from '@progress/kendo-data-query';
 import { AssetAttributeService, AlertService,  HnsResultsService, ConfirmationDialogService, HelperService, SharedService, LoaderService } from '../../_services';
@@ -196,7 +196,7 @@ export class HnsResDocumentComponent implements OnInit {
                             var file = new Blob([byteArray], { type: mimedata.data.mimeType1 + ';base64' });
                             var fileURL = URL.createObjectURL(file);
                             let newPdfWindow =window.open(fileURL);
-        
+
                             // let newPdfWindow = window.open("",this.selectedNotes.fileName);
                             // let iframeStart = "<\iframe title='Notepad' width='100%' height='100%' src='data:" + mimedata.data.mimeType1 + ";base64, ";
                             // let iframeEnd = "'><\/iframe>";

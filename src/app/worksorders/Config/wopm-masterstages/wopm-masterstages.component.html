@@ -54,12 +54,13 @@
                             <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"
                                 (click)="setSelectedRow(dataItem)"></i>
                             <div class="dropdown-menu"  
-                            *ngIf="checkWorksOrdersAccess('Edit Master Stages')"
+                            *ngIf="checkWorksOrdersAccess('Edit Master Stages') || checkWorksOrdersAccess('Delete Master Stages')"
                             >
 
                                 <a class="dropdown-item" href="javascript:void(0)" *ngIf="checkWorksOrdersAccess('Edit Master Stages')"
                                 (click)="openEditStage('edit', dataItem)">Edit</a>
-
+                                <a class="dropdown-item" href="javascript:void(0)" *ngIf="checkWorksOrdersAccess('Delete Master Stages')"
+                                (click)="deleteStage(dataItem)">Delete</a>
 
                             </div>
                         </li>

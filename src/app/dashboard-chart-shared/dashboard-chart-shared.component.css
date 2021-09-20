@@ -1,7 +1,43 @@
 #wrapper {
     height: 100%;
     width: 100%;
-    overflow: hidden;
+    /* overflow-y: hidden; */
+}
+
+.cont {
+    position: relative;
+    width: 100%;
+    margin-bottom: 5px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+/* #layoutContainer .lm_goldenlayout{
+    overflow-y: scroll !important;
+    overflow-x: hidden !important;
+} */
+
+.cont .lm_item.lm_stack {
+    min-height: 180px !important;
+}
+
+.searchDivSection {
+  padding: 10px 0px;
+  border-top: 1px solid gray;
+}
+
+/* #layoutContainer .lm_content {
+    overflow-x: hidden;
+    overflow-y: auto;
+} */
+
+#layoutContainer {
+    width: 99%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 8px;
+    border: 1px solid #e6e1e1;
 }
 
 .fullscreen {
@@ -14,25 +50,14 @@
     background-color: white;
 }
 
-.cont {
-    height: 710px;
-    position: relative;
-    width: 100%;
-    margin-bottom: 5px;
-}
-
-#layoutContainer {
-    width: 99%;
-    height: 100%;
-    position: absolute;
-    top: 0;
-    left: 8px;
-    border: 1px solid #e6e1e1;
-}
-
 .spBtnGrp {
     display: block;
     padding: 10px 6px;
+}
+
+.lm_splitter {
+    opacity: 1 !important;
+    background: #bbbbbb !important;
 }
 
 .spChartBtn {
@@ -54,7 +79,8 @@
     width: 245px;
     display: none;
     height: 100%;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
     background: #070627;
     z-index: 999;
     -webkit-transform: translateX(100%);

@@ -35,7 +35,7 @@ export class CustomerSurveyComponent implements OnInit {
     sort: [],
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -78,7 +78,7 @@ export class CustomerSurveyComponent implements OnInit {
     )
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.getCustomerSurvey();
-    this.sharedService.worksOrdersAccess.subscribe(data => { 
+    this.sharedService.worksOrdersAccess.subscribe(data => {
       this.wopmPortalAccess = data;
     });
     //this.workOrdersName = this.selectedWorksOrderAsset.woname + " (Works Order No: " + this.selectedWorksOrder.wosequence.toString() + ")";
@@ -96,10 +96,10 @@ export class CustomerSurveyComponent implements OnInit {
   trackByFunction(index, item) {
     return index;
   }
-  
+
   getCustomerSurvey(currentSelected: any = undefined) {
     this.subs.add(
-      this.worksOrderService.getCustomerSurveyAnswers(this.selectedWorksOrderAsset.wosequence, this.selectedWorksOrderAsset.wopsequence, 
+      this.worksOrderService.getCustomerSurveyAnswers(this.selectedWorksOrderAsset.wosequence, this.selectedWorksOrderAsset.wopsequence,
         this.selectedWorksOrderAsset.assid).subscribe(
         data => {
 
@@ -109,13 +109,13 @@ export class CustomerSurveyComponent implements OnInit {
             this.loading = false;
 
           }
-          
+
         }
       ))
   }
 
 
-  
+
   getYear(initialDate){
     var properDate = new Date(initialDate);
     var yearValue = properDate.getFullYear();
@@ -133,33 +133,33 @@ export class CustomerSurveyComponent implements OnInit {
       let missingQuestions = [];
       this.questions.forEach((item) => {
 
-        switch(item.wocstquestiontype) { 
-          case "YESNO": { 
+        switch(item.wocstquestiontype) {
+          case "YESNO": {
             if (item.woacsrnumericanswer == 0) {
               item.hasAnswer = false;
               missingQuestions.push(item.wocstquestionsequence);
             }
-             break; 
-          } 
-          case "MULTI": { 
+             break;
+          }
+          case "MULTI": {
             if (item.woacsrnumericanswer == 0) {
               item.hasAnswer = false;
               missingQuestions.push(item.wocstquestionsequence);
             }
-             break; 
-          } 
-          case "TEXTUAL": { 
+             break;
+          }
+          case "TEXTUAL": {
             if (!item.woacsrtextualanswer) {
               item.hasAnswer = false;
               missingQuestions.push(item.wocstquestionsequence);
             }
             // WOACSRTEXTUALANSWER
-             break; 
-          } 
-          default: { 
+             break;
+          }
+          default: {
 
-             break; 
-          } 
+             break;
+          }
       }
 
     });

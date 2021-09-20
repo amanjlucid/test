@@ -16,19 +16,20 @@ export class RetrievedEpcGridComponent implements OnInit {
   subs = new SubSink();
   allowUnsort = true;
   multiple = false;
+  @Input() FromDashboard: string = "";
   @Input() retrievedEPCs: boolean = false;
   @Input() showPanel: boolean = false;
   @Input() selectedBarChartXasis: any;
   chartData: any;
   selectedEvent: any;
   @Output() closeEPCChartDataWindow = new EventEmitter<boolean>();
-  title: any = 'Energy';
+  title: any;
   state: State = {
     skip: 0,
     sort: [],
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -50,13 +51,13 @@ export class RetrievedEpcGridComponent implements OnInit {
     if (this.retrievedEPCs) {
       this.title= 'Retrieved EPCs during ' + this.selectedBarChartXasis.xAxisValue;
     } else {
-      this.title= 'Energy Data for ' + this.selectedBarChartXasis.chartName + ' - ' + this.selectedBarChartXasis.xAxisValue;
+      this.title= this.selectedBarChartXasis.chartName + ' - ' + this.selectedBarChartXasis.xAxisValue;
     }
 
     this.getData(this.selectedBarChartXasis);
   }
 
-  
+
   ngOnDestroy() {
     this.subs.unsubscribe();
   }
@@ -75,12 +76,12 @@ export class RetrievedEpcGridComponent implements OnInit {
                 this.columnName.push({ 'key': `col${cl}`, 'val': col[cl] })
             }
 
-            var seqCol = this.columnName.find(x => x.val == "Asset ID")
+            let seqCol = this.columnName.find(x => x.val == "Asset ID")
             if (seqCol) {
               this.showAssetLink = true;
             }
 
-            chartTempData.shift();
+            // chartTempData.shift();
             for (let tmpData of chartTempData) {
               for (let tindex in tmpData) {
                 tmpData[`col${tindex}`] = tmpData[tindex]
@@ -168,7 +169,13 @@ export class RetrievedEpcGridComponent implements OnInit {
       }
 
      localStorage.setItem('assetList', btoa(assetIds.toString()));
-     let siteUrl = `${appConfig.appUrl}/asset-list?energyData=true`
+     let siteUrl;
+     if (this.FromDashboard == "Energy") {
+      siteUrl = `${appConfig.appUrl}/asset-list?energyData=true`
+     } else if (this.FromDashboard == "WorksOrder") {
+      siteUrl = `${appConfig.appUrl}/asset-list?woData=true`
+     } 
+     
      window.open(siteUrl, "_blank");
 
     } else {

@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewEncapsulation, ViewChild, ChangeDetectorRef, AfterViewInit, HostListener } from '@angular/core';
 import { SubSink } from 'subsink';
-import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
+import { CompositeFilterDescriptor, FilterDescriptor } from '@progress/kendo-data-query';
 import { FilterService, SelectableSettings, TreeListComponent, RowClassArgs } from '@progress/kendo-angular-treelist';
-import { AlertService, LoaderService, ConfirmationDialogService, WorksOrdersService, HelperService, WorksorderManagementService, SharedService, PropertySecurityGroupService, AuthenticationService, WorksorderReportService } from '../../_services'
+import { AlertService, AssetAttributeService, LoaderService, ConfirmationDialogService, WorksOrdersService, HelperService, WorksorderManagementService, SharedService, PropertySecurityGroupService, AuthenticationService, WorksorderReportService } from '../../_services'
 import { combineLatest, forkJoin } from 'rxjs';
 import { WorkordersDetailModel } from 'src/app/_models';
 import { WopmRepCharConfig } from '../../_models';
@@ -37,7 +37,10 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
   userSecurityByWO: any;
   loading = true;
   public selected: any[] = [];
-  public filter: CompositeFilterDescriptor;
+  public filter: CompositeFilterDescriptor = {
+    logic: "and",
+    filters: []
+  };
   public settings: SelectableSettings = {
     mode: 'row',
     multiple: true,
@@ -49,6 +52,7 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
   public gridData: any = [];
   @ViewChild(TreeListComponent) public grid: TreeListComponent;
   gridHeight = 750;
+  contractorCost: any;
   worksOrderData: any;
   assetchecklistWindow = false;
   selectedChildRow: any;
@@ -84,6 +88,7 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
   openAssetRemoveReason = false;
   reason = '';
   openDefectsList = false;
+  allowContractorAccessToMenu = true;
   asebestosDoubleClick = 0;
   AddPhaseCostStructureWindow = false;
   documentWindow = false;
@@ -102,7 +107,7 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
   openManageMilestone = false;
   renameAssetWindow = false;
   renameItem: any;
-
+  userIsContractor = false;
   reportingCharsConfig: WopmRepCharConfig;
   displayAssetChar1 = false;
   displayAssetChar2 = false;
@@ -114,7 +119,18 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
   showEditCommentWindow = false;
   displayResidentDetails = false;
   assetID: string;
+  woassetstatus: string = ''
   assetDocWindow: boolean = false;
+  statusFilterDropDown = [{ text: "New", val: "New" }, { text: "Pending", val: "Pending" },
+  { text: "Issued", val: "Issued" }, { text: "Accepted", val: "Accepted" },
+  { text: "In Progress", val: "In Progress" }, { text: "Handover", val: "Handover" },
+  { text: "Practical Completion", val: "Practical Completion" },
+  { text: "Final Completion", val: "Final Completion" },
+  ];
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    this.updateGridHeight();
+  }
 
   constructor(
     private sharedService: SharedService,
@@ -130,6 +146,7 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
     private worksOrderReportService: WorksorderReportService,
     private currencyPipe: CurrencyPipe,
     private router: Router,
+    private assetAttributeService: AssetAttributeService,
   ) { }
 
 
@@ -147,15 +164,31 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
     //subscribe for work order security access
     this.subs.add(
       combineLatest([
-        this.sharedService.woUserSecObs,
         this.sharedService.worksOrdersAccess,
+        this.sharedService.woUserSecObs,
         this.sharedService.userTypeObs
       ]).subscribe(
         data => {
-          this.worksOrderUsrAccess = data[0];
-          this.worksOrderAccess = data[1];
+          this.worksOrderAccess = data[0];
+          this.worksOrderUsrAccess = data[1];
           this.userType = data[2][0];
+
         }
+      )
+    )
+
+    this.subs.add(
+        this.sharedService.isUserContractorObs.subscribe(
+        data => {
+            this.userIsContractor = data;
+            if(this.userIsContractor)
+            {
+              this.allowContractorAccessToMenu = false
+            }else
+            {
+              this.allowContractorAccessToMenu = true
+            }
+          }
       )
     )
 
@@ -173,8 +206,11 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
 
         }
       )
-    )
+    );
+
+    this.updateGridHeight()
   }
+
 
   ngOnDestroy() {
     this.subs.unsubscribe();
@@ -214,14 +250,17 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
         this.worksorderManagementService.getWorksOrderRepairingCharConfigExt(intWOSEQUENCE),
         this.worksorderManagementService.getListOfWorksOrderChecklistForWORK(intWOSEQUENCE),
         this.worksorderManagementService.getReportingCharConfigData1(intWOSEQUENCE),
+        this.worksorderManagementService.workOrderContract_cost(wprsequence, intWOSEQUENCE)
 
       ]).subscribe(
         data => {
           const programmeData = data[0];
           const userSecurityByWO = data[1];
           const worksOrderData = data[2];
+
           this.phaseBudgetAvailable = data[3].data;
           this.reportingCharsConfig = data[6].data.reportingCharConfig;
+          this.contractorCost = (data[7].data[0]) ? data[7].data[0] : [];
 
           if (this.reportingCharsConfig.wosequence > 0) {
             this.displayAssetChar1 = (this.reportingCharsConfig.status1 == 'A');
@@ -230,7 +269,6 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
             this.AssetChar1 = this.reportingCharsConfig.alias1;
             this.AssetChar2 = this.reportingCharsConfig.alias2;
             this.AssetChar3 = this.reportingCharsConfig.alias3;
-
           }
 
           // const repairingChar = data[3];
@@ -495,13 +533,9 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
   slideToggle() {
     this.filterToggle = !this.filterToggle;
     $('.worksorder-header').slideToggle();
-    if (this.filterToggle) {
-      this.gridHeight = 430;
-    } else {
-      setTimeout(() => {
-        this.gridHeight = 750;
-      }, 500);
-    }
+    setTimeout(() => {
+      this.updateGridHeight();
+    }, 500);
   }
 
 
@@ -691,7 +725,7 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
     params.ASSID = item.assid;
     params.strUserId = this.currentUser.userId;
     params.strCheckOrProcess = 'C';
-    let newName = item.woname.replace(item.assid + ' - ' , '');
+    let newName = item.woname.replace(item.assid + ' - ', '');
     params.NewPhaseAssetName = newName;
     this.renameItem = params;
     $('.worksOrderDetailOvrlay').addClass('ovrlay');
@@ -703,7 +737,7 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
     this.renameAssetWindow = false;
   }
 
-  renameItemComplete(params){
+  renameItemComplete(params) {
     this.renameAssetWindow = false;
     $('.worksOrderDetailOvrlay').removeClass('ovrlay');
 
@@ -722,11 +756,11 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
             resp = data.data[0];
           }
           if (params.strCheckOrProcess == "C" && (resp.pRETURNSTATUS == "E" || resp.pRETURNSTATUS == "S")) {
-            this.openConfirmationDialogRename( resp, params)
+            this.openConfirmationDialogRename(resp, params)
           } else {
-            if(resp.pRETURNSTATUS == "E" ){
+            if (resp.pRETURNSTATUS == "E") {
               this.alertService.error(resp.pRETURNMESSAGE)
-            }else{
+            } else {
               this.alertService.success(resp.pRETURNMESSAGE)
               this.worksOrderDetailPageData();
             }
@@ -776,18 +810,16 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
       params.WOSEQUENCE = item.wosequence;
       params.WOPSEQUENCE = item.wopsequence;
       if (item.treelevel == 2) {
-        if (type == 'ISSUE' || type == 'RELEASE')
-        {
+        if (type == 'ISSUE' || type == 'RELEASE') {
           params.strASSID = '';
         }
-        else
-        {
-        this.alertService.error("You must select some Assets.")
-        return
-      }
+        else {
+          this.alertService.error("You must select some Assets.")
+          return
+        }
       }
       else {
-      params.strASSID = [item.assid];
+        params.strASSID = [item.assid];
       }
 
       if (type != "REMOVE") {
@@ -805,8 +837,20 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
       }
 
       let assetIdArr = [];
+      let wopsequence = 0;
+      let differentPhase = false;
       for (const asset of assetData) {
+        if (wopsequence != 0 && asset.wopsequence != wopsequence) {
+          differentPhase = true;
+          break;
+        }
         assetIdArr.push(asset.assid)
+        wopsequence = asset.wopsequence;
+      }
+
+      if (differentPhase) {
+        this.alertService.error("You can only select assets from one phase at a time.")
+        return
       }
 
       params.strASSID = assetIdArr;
@@ -826,7 +870,7 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
     } else if (type == "ISSUE") {
       params.UserName = this.currentUser.userName;
       callApi = this.worksorderManagementService.worksOrderIssueAsset(params);
-    }else if (type == "Reset") {
+    } else if (type == "Reset") {
       params.UserName = this.currentUser.userName;
       callApi = this.worksorderManagementService.worksOrderResetAsset(params);
     }
@@ -929,12 +973,12 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
           if (checkOrProcess == "C" && (resp.pRETURNSTATUS == "E" || resp.pRETURNSTATUS == "S")) {
             this.openConfirmationDialogAction({ item, type, selection }, resp)
           } else {
-            if(resp.pRETURNSTATUS == "E" ){
+            if (resp.pRETURNSTATUS == "E") {
               this.alertService.error(resp.pRETURNMESSAGE)
-            }else{
-            this.alertService.success(resp.pRETURNMESSAGE)
-            this.worksOrderDetailPageData();
-          }
+            } else {
+              this.alertService.success(resp.pRETURNMESSAGE)
+              this.worksOrderDetailPageData();
+            }
           }
 
         }
@@ -984,7 +1028,7 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
 
 
   woMenuBtnSecurityAccess(menuName) {
-    return this.helperService.checkWorkOrderAreaAccess(this.userType, this.worksOrderAccess, this.worksOrderUsrAccess, menuName)
+    return this.helperService.checkWorkOrderAreaAccess(this.worksOrderUsrAccess, menuName)
   }
 
   lockUnlockColumn() {
@@ -996,21 +1040,109 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
     // this.mousePositioin = { x: eve.pageX, y: eve.pageY };
   }
 
+  getActionTopMargin() {
+    var numberMenus = 0;
+
+    if (this.woMenuBtnSecurityAccess('Release Asset')) numberMenus += 1;
+    if (this.woMenuBtnSecurityAccess('Issue Asset')) numberMenus += 1;
+    if (this.woMenuBtnSecurityAccess('Reset Asset')) numberMenus += 1;
+    if (this.woMenuBtnSecurityAccess('Accept Asset')) numberMenus += 1;
+    if (this.woMenuBtnSecurityAccess('Handover Asset')) numberMenus += 1;
+    if (this.woMenuBtnSecurityAccess('Signoff Asset')) numberMenus += 1;
+    if (this.woMenuBtnSecurityAccess('Cancel Asset')) numberMenus += 1;
+    if (this.woMenuBtnSecurityAccess('Remove Asset')) numberMenus += 1;
+    if (this.woMenuBtnSecurityAccess('Move Assets')) numberMenus += 1;
+
+    if (numberMenus <= 3) return "0px";
+    if (numberMenus <= 5) return "-90px";
+    return "-152px";
+  }
 
   getTopMargin() {
     if (this.mousePositioin == undefined) return;
 
     const { y } = this.mousePositioin;
     if (this.menuData.treelevel == 2) {
-      if (y > 780 && y < 824) return "-190px";
-      if (y >= 824) return "-210px";
+      var numberMenus = 0;
+
+      if (this.woMenuBtnSecurityAccess('Edit Phase')) numberMenus += 1;
+      if (this.woMenuBtnSecurityAccess('Move Assets')) numberMenus += 1;
+      if (this.woMenuBtnSecurityAccess('Delete Phase')) numberMenus += 1;
+      if (this.woMenuBtnSecurityAccess('Add Assets')) numberMenus += 1;
+      if (this.woMenuBtnSecurityAccess('Issue Work For Phase') || this.woMenuBtnSecurityAccess('Release Phase')) numberMenus += 1;
+      if (this.woMenuBtnSecurityAccess('Phase Checklist')) numberMenus += 1;
+      if (this.woMenuBtnSecurityAccess('Add Assets for Phase Work Costs')) numberMenus += 1;
+
+
+      if (y > 780 && y < 824) {
+
+        if (numberMenus <= 3) {
+          return "0px";
+        }   else {
+                return "-190px";
+        }
+      }
+      if (y >= 824) {
+
+        if (numberMenus <= 3) {
+          return "0px";
+        }   else {
+                return "-210px";
+        }
+
+      }
+
+      if (numberMenus <= 3) {
+        return "-50px";
+      }   else {
+              return "-100px";
+      }
+
+
     }
 
     if (this.menuData.treelevel == 3) {
-      if (y > 780 && y < 824) return "-170px";
-      if (y >= 824) return "-190px";
-    }
+      var numberMenus = 0;
 
+      if (this.woMenuBtnSecurityAccess('Asset Checklist')) numberMenus += 1;
+      numberMenus += 1;
+      numberMenus += 1;
+      if (this.woMenuBtnSecurityAccess('Asset Details')) numberMenus += 1;
+      numberMenus += 1;
+      if (this.woMenuBtnSecurityAccess('Defects')) numberMenus += 1;
+      if (this.woMenuBtnSecurityAccess('View Resident Info')) numberMenus += 1;
+      if (this.woMenuBtnSecurityAccess('Edit WO Comment') || this.woMenuBtnSecurityAccess('Release Phase')) numberMenus += 1;
+      if (this.woMenuBtnSecurityAccess('Asset Documents')) numberMenus += 1;
+      if (this.woMenuBtnSecurityAccess('Rename Phase Work')) numberMenus += 1;
+
+      if (y >= 800){
+        if (numberMenus <= 3) {
+          return "10px";
+        }   else  if (numberMenus <= 7) {
+          return "-270px";
+        } else{
+          return "-320px";
+        }
+      }
+
+      if (y >= 700){
+        if (numberMenus <= 3) {
+          return "10px";
+        }   else  if (numberMenus <= 7) {
+          return "-240px";
+        } else{
+          return "-280px";
+        }
+      }
+
+        if (numberMenus <= 3) {
+          return "10px";
+        }   else  if (numberMenus <= 7) {
+          return "-90px";
+        } else{
+          return "-110px";
+        }
+    }
     return "-100px"
   }
 
@@ -1192,6 +1324,33 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
 
 
   openRemoveReasonPanel(action = "single", type, item = null) {
+
+    if (action="multiple") {
+      let selectedKeyArr = this.selected.map(x => { return x.itemKey });
+      let assetData = this.gridData.filter(x => selectedKeyArr.includes(x.id) && x.treelevel == 3);
+
+      if (assetData.length == 0) {
+        this.alertService.error("You must select some Assets.")
+        return
+      }
+
+      let wopsequence = 0;
+      let differentPhase = false;
+      for (const asset of assetData) {
+        if (wopsequence != 0 && asset.wopsequence != wopsequence) {
+          differentPhase = true;
+          break;
+        }
+        wopsequence = asset.wopsequence;
+      }
+
+      if (differentPhase) {
+        this.alertService.error("You can only select assets from one phase at a time.")
+        return
+      }
+    }
+
+
     this.actionType = action;
     this.chooseDateType = type;
     this.openAssetRemoveReason = true;
@@ -1221,9 +1380,25 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
         this.autService.validateAssetIDDeepLinkParameters(this.currentUser.userId, item.assid).subscribe(
           data => {
             if (data.validated) {
-              const siteUrl = `${appConfig.appUrl}/asset-list?assetid=${encodeURIComponent(item.assid)}&openTab=Asbestos`; // UAT
-              window.open(siteUrl, "_blank");
-
+              this.assetAttributeService.getAssetTabsList(this.currentUser.userId).subscribe(
+                tabData => {
+                  if (tabData.includes('Asbestos')) {
+                    // Add Session data to inform Asbestos Panel opened from WOPM
+                    let v = item
+                    const diligence = {
+                      ASSID: item.assid,
+                      USERID: this.currentUser.userId,
+                      LOGTYPE: 'W',
+                      WOSEQUENCE: item.wosequence,
+                      WOPSEQUENCE: item.wopsequence
+                    }
+                    localStorage.setItem('AsbestosOpenedFromWorksOrder', JSON.stringify(diligence));
+                    const siteUrl = `${appConfig.appUrl}/asset-list?assetid=${encodeURIComponent(item.assid)}&openTab=Asbestos`; // UAT
+                    window.open(siteUrl, "_blank");
+                  } else {
+                    this.alertService.error("You do not have security access to the Asbestos Tab.");
+                  }
+                });
             } else {
               const errMsg = `${data.errorCode} : ${data.errorMessage}`
               this.alertService.error(errMsg);
@@ -1552,15 +1727,16 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
 
 
   openAssetDocument(item) {
-          this.actualSelectedRow = item;
-          this.assetDocWindow = true;
-          $('.worksOrderDetailOvrlay').addClass('ovrlay');
+    this.actualSelectedRow = item;
+    this.assetDocWindow = true;
+    $('.worksOrderDetailOvrlay').addClass('ovrlay');
 
   }
 
   closeAssetDocument(eve) {
     this.assetDocWindow = false;
     $('.worksOrderDetailOvrlay').removeClass('ovrlay');
+    this.refreshGrid(eve);
   }
 
   openDocumentMethod() {
@@ -1570,8 +1746,9 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
   }
 
   closeDocumentWindow(eve) {
-    this.documentWindow = eve;
+    this.documentWindow = false;
     $('.worksOrderDetailOvrlay').removeClass('ovrlay');
+
   }
 
 
@@ -1611,5 +1788,35 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
     $('.worksOrderDetailOvrlay').removeClass('ovrlay');
     this.openWOPaymentScheduleWindow = $event;
   }
+
+  updateGridHeight() {
+    const innerHeight = window.innerHeight - 200;
+    if (this.filterToggle) {
+      this.gridHeight = innerHeight - 330;
+    } else {
+      this.gridHeight = innerHeight;
+    }
+
+    if (this.gridHeight > 900) {
+      this.gridPageSize = 40;
+    } else {
+      this.gridPageSize = 25;
+    }
+
+  }
+
+  openDefectsMethod(item) {
+    this.actualSelectedRow = item;
+    $('.worksOrderDetailOvrlay').addClass('ovrlay');
+    this.woassetstatus =  item.wostatus;
+    this.openDefectsList = true;
+  }
+
+  closeDefectList(eve) {
+    this.openDefectsList = false;
+    $('.worksOrderDetailOvrlay').removeClass('ovrlay');
+   // this.worksOrderDetailPageData();
+  }
+
 
 }

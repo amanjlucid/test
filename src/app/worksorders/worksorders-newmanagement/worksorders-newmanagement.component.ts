@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef, ViewEncapsulation } from '@angular/core';
 import { SubSink } from 'subsink';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { WorksorderManagementService, AlertService, HelperService, LoaderService } from '../../_services'
@@ -10,7 +10,8 @@ import { WorkordersAddManagementModel } from '../../_models';
   selector: 'app-worksorders-newmanagement',
   templateUrl: './worksorders-newmanagement.component.html',
   styleUrls: ['./worksorders-newmanagement.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  encapsulation: ViewEncapsulation.None
 })
 
 export class WorksordersNewmanagementComponent implements OnInit {
@@ -95,6 +96,7 @@ export class WorksordersNewmanagementComponent implements OnInit {
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
   readonly = true;
   mData: any;
+  currentStatus: string;
 
 
   constructor(
@@ -112,7 +114,7 @@ export class WorksordersNewmanagementComponent implements OnInit {
       day: current.getDate()
     };
 
-    
+
   }
 
   ngAfterViewInit() {
@@ -207,13 +209,15 @@ export class WorksordersNewmanagementComponent implements OnInit {
 
   populateForm() {
     if (this.formMode == 'new') {
-      this.workManagementForm.patchValue({ WPRSTATUS: 'New', WPRACTINACT: 'A' });
+      this.currentStatus = 'New';
+      this.workManagementForm.patchValue({ WPRSTATUS: 'New', WPRACTINACT: 'A', WPRBUDGET: '' });
       this.workManagementForm.get('WPRSTATUS').disable();
       this.workManagementForm.get('WPRACTINACT').disable();
     } else {
       this.title = "Edit Works Programme"
       this.getWopmManagementData()
     }
+    this.chRef.detectChanges();
   }
 
   getWopmManagementData() {
@@ -223,6 +227,7 @@ export class WorksordersNewmanagementComponent implements OnInit {
           // console.log(data);
           if (data.isSuccess) {
             const mData = this.mData = data.data[0];
+            this.currentStatus = mData.wprstatus;
             this.workManagementForm.patchValue({
               WPRNAME: mData.wprname,
               WPREXTREF: mData.wprextref,
@@ -332,7 +337,7 @@ export class WorksordersNewmanagementComponent implements OnInit {
 
   onSubmit() {
     this.submitted = true;
-    this.formErrorObject(); // empty form error 
+    this.formErrorObject(); // empty form error
     this.logValidationErrors(this.workManagementForm);
 
     this.chRef.detectChanges();
@@ -380,17 +385,17 @@ export class WorksordersNewmanagementComponent implements OnInit {
       managementModel.MPgrA = this.currentUser.userId
       managementModel.WPRSEQUENCE = this.mData.wprsequence;
 
-      if (this.mData.wprstatus == "New" && managementModel.WPRSTATUS == "In Progress") {
+      if (this.currentStatus == "New" && managementModel.WPRSTATUS == "In Progress") {
         this.alertService.error("The Work Programme Status cannot be changed from 'New' to 'In Progress'");
         return
       }
 
-      if (this.mData.wprstatus == "Closed" && managementModel.WPRSTATUS == "New") {
+      if (this.currentStatus == "Closed" && managementModel.WPRSTATUS == "New") {
         this.alertService.error("The Work Programme Status cannot be changed from 'Closed' to 'New'");
         return
       }
 
-      if (this.mData.wprstatus == "In Progress" && managementModel.WPRSTATUS == "New") {
+      if (this.currentStatus == "In Progress" && managementModel.WPRSTATUS == "New") {
         this.alertService.error("The Work Programme Status cannot be changed from 'In Progress' to 'New'");
         return
       }

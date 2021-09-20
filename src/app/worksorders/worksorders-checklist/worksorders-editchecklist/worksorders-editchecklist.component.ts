@@ -50,18 +50,6 @@ export class WorksordersEditchecklistComponent implements OnInit {
     'cost': {
       'minError': 'Cost cannot be negative.',
     },
-    'useref2': {
-      'maxlength': 'User Ref 2 must be maximum 20 characters.',
-    },
-    'useref3': {
-      'maxlength': 'User Ref 3 must be maximum 20 characters.',
-    },
-    'useref4': {
-      'maxlength': 'User Ref 4 must be maximum 20 characters.',
-    },
-    'useref5': {
-      'maxlength': 'User Ref 5 must be maximum 20 characters.',
-    },
     'mailmergedoc': {
       'maxlength': 'Mail merge document must be maximum 1024 characters.',
     },
@@ -96,7 +84,7 @@ fileValue: any;
 
     this.getMasterStages();
     this.subs.add(
-      this.sharedService.worksOrdersAccess.subscribe(data => { 
+      this.sharedService.worksOrdersAccess.subscribe(data => {
         this.wopmPortalAccess = data;
       })
     )
@@ -144,7 +132,7 @@ fileValue: any;
     this.populatechecklist(this.selectedChecklist);
   }
 
-    
+
   ngOnDestroy() {
     this.subs.unsubscribe();
   }
@@ -222,7 +210,7 @@ fileValue: any;
       'stage': '',
       'name': '',
       'description': '',
-      'comment': '',      
+      'comment': '',
       'status': '',
       'cost': '',
       'useref2': '',
@@ -239,7 +227,7 @@ fileValue: any;
 
   onSubmit() {
     this.submitted = true;
-    this.formErrorObject(); // empty form error 
+    this.formErrorObject(); // empty form error
     this.logValidationErrors(this.checklistForm);
 
     if (this.checklistForm.invalid) {
@@ -272,7 +260,7 @@ fileValue: any;
 
 
     }
-    
+
     if (this.f.checklisttype.value.toUpperCase() == "LETTER")
     {
       if (!(this.f.mailmergedoc.value.toLowerCase().includes(".docx") || this.f.mailmergedoc.value.toLowerCase().includes(".dotx") ||
@@ -413,7 +401,7 @@ fileValue: any;
       return extensions.includes(ext);
   }
 
-  
+
   onFileChange(event) {
     if (event.target.files.length > 0) {
       this.uploadFile(event.target.files[0])

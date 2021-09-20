@@ -22,7 +22,7 @@ export class SetUserCategoryComponent implements OnInit {
     sort: [],
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -55,7 +55,7 @@ export class SetUserCategoryComponent implements OnInit {
 
   ngOnInit(): void {
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    
+
     if (this.manageUsrCategory) {
       this.templateHeading = this.selectedReport.reportId + " " + this.selectedReport.reportName;
       this.getUserCategoriesByReport();
@@ -87,7 +87,7 @@ export class SetUserCategoryComponent implements OnInit {
 
   getUserCategories() {
     let usercategoryService: any;
-    
+
     if (this.manageUsrCategory) {
       usercategoryService = this.reportService.listXportUserCategoriesCheckReportId(this.selectedReport.reportId, this.checkUserCategory);
     } else {

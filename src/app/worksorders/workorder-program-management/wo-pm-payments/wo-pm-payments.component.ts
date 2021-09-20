@@ -1,16 +1,17 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef, ViewEncapsulation  } from '@angular/core';
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { AlertService, HelperService, ConfirmationDialogService, WorksOrdersService, SharedService, WorksorderReportService, ReportingGroupService } from 'src/app/_services';
-import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
-import { PageChangeEvent } from '@progress/kendo-angular-grid';
+import { CompositeFilterDescriptor  } from '@progress/kendo-data-query';
+import { PageChangeEvent, RowClassArgs, SelectableSettings } from '@progress/kendo-angular-grid';
 import { combineLatest } from 'rxjs';
 
 @Component({
     selector: 'app-wo-pm-payments',
     templateUrl: './wo-pm-payments.component.html',
     styleUrls: ['./wo-pm-payments.component.css'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    encapsulation: ViewEncapsulation.None
 })
 
 export class WoPmPaymentsComponent implements OnInit {
@@ -23,7 +24,7 @@ export class WoPmPaymentsComponent implements OnInit {
         sort: [],
         group: [],
         filter: {
-            logic: "or",
+            logic: "and",
             filters: []
         }
     }
@@ -127,6 +128,15 @@ export class WoPmPaymentsComponent implements OnInit {
 
     }
 
+    rowCallback(context: RowClassArgs) {
+      if (context.dataItem.wpypaymentstatus.toLowerCase() == 'authorised') {
+        return { paid: true, }
+      }
+      if (context.dataItem.wpypaymentstatus.toLowerCase() == 'unauthorised') {
+        return { unpaid: true, }
+      }
+    }
+
 
     ngOnDestroy() {
         this.subs.unsubscribe();
@@ -194,8 +204,13 @@ export class WoPmPaymentsComponent implements OnInit {
     authorisedConfirmation(resultData, item) {
         $('.k-window').css({ 'z-index': 1000 });
         this.confirmationDialogService.confirm('Please confirm..', `${resultData.validationMessage}`)
-            .then((confirmed) => this.authorisePayment(item))
-            .catch(() => console.log('Attribute dismissed the dialog.'));
+            .then((confirmed) => {
+              if (confirmed) {
+                this.authorisePayment(item);
+              }else{
+                let v = 23
+              }
+            }).catch(() => console.log('Attribute dismissed the dialog.'));
     }
 
 
@@ -310,7 +325,7 @@ export class WoPmPaymentsComponent implements OnInit {
     }
 
     woMenuAccess(menuName) {
-        return this.helperService.checkWorkOrderAreaAccess(this.userType, this.worksOrderAccess, this.worksOrderUsrAccess, menuName)
+        return this.helperService.checkWorkOrderAreaAccess(this.worksOrderUsrAccess, menuName)
     }
 
     WOCreateXportOutputReport(item) {
@@ -326,7 +341,7 @@ export class WoPmPaymentsComponent implements OnInit {
         this.subs.add(
             this.reportingGrpService.runReport(xPortId, params.lstParamNameValue, this.currentUser.userId, "EXCEL", false, true).subscribe(
                 data => {
-                    const linkSource = 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' + data;
+                    const linkSource = 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' + data.data;
                     const downloadLink = document.createElement("a");
                     const fileName = `Payment_Asset_Report_${xPortId}.xlsx`;
                     downloadLink.href = linkSource;

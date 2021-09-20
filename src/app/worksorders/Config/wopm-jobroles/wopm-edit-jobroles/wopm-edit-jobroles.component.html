@@ -52,45 +52,73 @@
                     <span class="switcher-yes"><span class="ion ion-md-checkmark"></span></span>
                     <span class="switcher-no"><span class="ion ion-md-close"></span></span>
                   </span>
+
                 </label>
+
+              </div>
+           </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-md-5">
+
+          </div>
+
+          <div class="form-group col-md-7 text-right">
+              <div class="red" *ngIf="submitted && formErrors.defaultJobRole != '' ">
+                  {{formErrors.defaultJobRole}}
               </div>
           </div>
         </div>
 
-
         <div class="form-row">
           <div class="form-group col-md-6">
             <label class="form-label">Variation Limit</label>
-            <input class="form-control" appCurrencyMask maxDigits="9" type="text" formControlName="variationLimit"  >
+            <!-- <input class="form-control" appCurrencyMask maxDigits="9" type="text" formControlName="variationLimit"  > -->
+
+            <input currencyMask [options]="{ prefix: '£', thousands: ',', decimal: '.' , allowNegative: false}" type="text" class="form-control"
+            maxlength="15" formControlName="variationLimit" autocomplete="off">
           </div>
 
           <div class="form-group col-md-6">
             <label class="form-label">Issue Limit</label>
-            <input class="form-control" appCurrencyMask maxDigits="9" type="text" formControlName="issueLimit"  >
+            <!-- <input class="form-control" appCurrencyMask maxDigits="9" type="text" formControlName="issueLimit"  > -->
+
+            <input currencyMask [options]="{ prefix: '£', thousands: ',', decimal: '.' , allowNegative: false}" type="text" class="form-control"
+            maxlength="15" formControlName="issueLimit" autocomplete="off">
+
           </div>
         </div>
 
         <div class="form-row">
           <div class="form-group col-md-6">
             <label class="form-label">Request Payment Limit</label>
-            <input class="form-control" appCurrencyMask maxDigits="9" type="text"  formControlName="requestPaymentLimit"  >
+            <!-- <input class="form-control" appCurrencyMask maxDigits="9" type="text"  formControlName="requestPaymentLimit"  > -->
+            <input currencyMask [options]="{ prefix: '£', thousands: ',', decimal: '.' , allowNegative: false}" type="text" class="form-control"
+            maxlength="15" formControlName="requestPaymentLimit" autocomplete="off">
           </div>
 
           <div class="form-group col-md-6">
             <label class="form-label">Authorise Payment Limit</label>
-            <input class="form-control" appCurrencyMask maxDigits="9" type="text" formControlName="authPaymentLimit"  >
+            <!-- <input class="form-control" appCurrencyMask maxDigits="9" type="text" formControlName="authPaymentLimit"  > -->
+            <input currencyMask [options]="{ prefix: '£', thousands: ',', decimal: '.' , allowNegative: false}" type="text" class="form-control"
+            maxlength="15" formControlName="authPaymentLimit" autocomplete="off">
           </div>
         </div>
 
         <div class="form-row">
           <div class="form-group col-md-6">
             <label class="form-label">Request Fee Limit</label>
-            <input class="form-control" appCurrencyMask maxDigits="9" type="text" formControlName="requestFeeLimit"  >
+            <!-- <input class="form-control" appCurrencyMask maxDigits="9" type="text" formControlName="requestFeeLimit"  > -->
+            <input currencyMask [options]="{ prefix: '£', thousands: ',', decimal: '.' , allowNegative: false}" type="text" class="form-control"
+            maxlength="15" formControlName="requestFeeLimit" autocomplete="off">
           </div>
 
           <div class="form-group col-md-6">
             <label class="form-label">Authorise Fee Limit</label>
-            <input class="form-control" appCurrencyMask maxDigits="9" type="text"  formControlName="authFeeLimit"  >
+            <!-- <input class="form-control" appCurrencyMask maxDigits="9" type="text"  formControlName="authFeeLimit"  > -->
+            <input currencyMask [options]="{ prefix: '£', thousands: ',', decimal: '.' , allowNegative: false}" type="text" class="form-control"
+            maxlength="15" formControlName="authFeeLimit" autocomplete="off">
           </div>
         </div>
 

@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewEncapsulation, ChangeDetectorRef, ViewChild, HostListener } from '@angular/core';
 import { SubSink } from 'subsink';
-import { GroupDescriptor, DataResult, State } from '@progress/kendo-data-query';
+import { GroupDescriptor, DataResult, process, State, CompositeFilterDescriptor, SortDescriptor } from '@progress/kendo-data-query';
 import { SelectableSettings } from '@progress/kendo-angular-grid';
 import { forkJoin, Observable, Subject, of } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map, tap } from 'rxjs/operators';
@@ -134,6 +134,9 @@ export class ReportsComponent implements OnInit {
     this.toolTipData.dataLoaded = false;
     this.tooltipDir.hide();
   }
+  filter: CompositeFilterDescriptor;
+
+
 
   constructor(
     private reportService: WebReporterService,
@@ -845,4 +848,50 @@ export class ReportsComponent implements OnInit {
 
 
   }
+
+  clearAllFilters() {
+
+    var isChange : boolean = true;
+    if (this.reportListFilters.number == '' && this.reportListFilters.name == '' && !this.reportListFilters.nameMatchAll && this.reportListFilters.nameMatchAny && 
+    this.reportListFilters.selectedOutputColumns.length == 0 && !this.reportListFilters.columnMatchAll && this.reportListFilters.columnMatchAny && 
+    !this.reportListFilters.columnExactMatch && this.reportListFilters.all && !this.reportListFilters.lastMonth && !this.reportListFilters.last3Month && 
+    !this.reportListFilters.last12Month && !this.reportListFilters.frontFilter && !this.showColumns && !this.reportQueryModel.FavouritesOnly &&
+    !this.reportQueryModel.IsShceduled) {
+      isChange = false;
+    }
+
+    this.reportListFilters = {
+      number: '',
+      name: '',
+      nameMatchAll: false,
+      nameMatchAny: true,
+      selectedOutputColumns: [],
+      columnMatchAll: false,
+      columnMatchAny: true,
+      columnExactMatch: false,
+      all: true,
+      lastMonth: false,
+      last3Month: false,
+      last12Month: false,
+      frontFilter: false
+    }
+
+
+    this.showColumns = false;
+    this.reportQueryModel.FavouritesOnly = false;
+    this.reportQueryModel.IsShceduled = false;
+    this.reportQueryModel.value = 0;
+
+    this.selectedCategories = [...this.categories];
+    this.reportQueryModel.Categories = this.selectedCategories.map(x => x.item_id);
+    this.reportQueryModel.XportCategory='';
+    this.selectedCategory = '';
+    this.state.filter = {
+      logic: 'and',
+      filters: []
+    };
+    this.getReportList(this.reportQueryModel);
+
+  }
+
 }

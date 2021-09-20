@@ -146,8 +146,10 @@
   </div>
   <div class="disabledBackground"></div>
 
-</kendo-window>
-
-<app-asset-risk [displayRiskDetails]="displayRiskDetails" [assetID]="assetID" [assetAddress]="assetAddress"
+  <app-asset-risk [displayRiskDetails]="displayRiskDetails" [assetID]="assetID" [assetAddress]="assetAddress"
 *ngIf="displayRiskDetails" (closeRiskDetailsWindow)="closeRiskDetailsWindow($event)">
 </app-asset-risk>
+
+</kendo-window>
+
+

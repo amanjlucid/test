@@ -14,14 +14,14 @@
                     <label for="">Phase Budget:</label>
                 </div>
                 <div class="col-md-2">
-                    <input type="text" [readonly]="readonly" value="{{phaseData?.wopbudget | currency:'GBP':'symbol'}}">
+                    <input type="text" [readonly]="readonly" value="{{phaseData?.wopbudget | currency:'GBP':'symbol'}}" class="moneytext" >
                 </div>
                 <div class="col-md-2">
                     <label for="">Phase Available Budget</label>
                 </div>
                 <div class="col-md-2">
                     <input type="text" [readonly]="readonly"
-                        value="{{phaseData?.wopbudget - phaseData?.wopcommitted | currency:'GBP':'symbol'}}">
+                        value="{{phaseData?.wopbudget - phaseData?.wopcommitted | currency:'GBP':'symbol'}}" class="moneytext" >
                 </div>
             </div>
         </div>
@@ -29,22 +29,22 @@
         <div class="col-md-12 mt-1">
             <div class="row">
                 <div class="col-md-2">
-                    <label for=""> Asset(s) Selected:</label>
+                    <label for=""> Record(s) Selected:</label>
                 </div>
                 <div class="col-md-2">
-                    <input type="text" [readonly]="readonly" value="0">
+                    <input type="text" [readonly]="readonly" value="{{mySelection.length}}">
                 </div>
                 <div class="col-md-2">
                     <label for="">Asset Checklist Cost:</label>
                 </div>
                 <div class="col-md-2">
-                    <input type="text" [readonly]="readonly" value="{{zero| currency:'GBP':'symbol'}}">
+                    <input type="text" [readonly]="readonly" value="{{ChecklistCost| currency:'GBP':'symbol'}}" class="moneytext" >
                 </div>
                 <div class="col-md-2">
                     <label for="">Required Budget</label>
                 </div>
                 <div class="col-md-2">
-                    <input type="text" [readonly]="readonly" value="{{zero| currency:'GBP':'symbol'}}">
+                    <input type="text" [readonly]="readonly" value="{{RequiredBudget| currency:'GBP':'symbol'}}" class="moneytext" >
                 </div>
             </div>
         </div>
@@ -123,7 +123,7 @@
                     <label for=""> Plan Year:</label>
                 </div>
                 <div class="col-md-1">
-                    <input type="text" [(ngModel)]="headerFilters.planyear">
+                    <input type="text" [(ngModel)]="headerFilters.wlplanyear">
                 </div>
                 <div class="col-md-2">
                     <button (click)="searchGrid()" class="btn btn-sm">Search</button>
@@ -136,18 +136,28 @@
     <div class="row mt-2">
         <div class="col-md-12 mt-2">
             <kendo-grid #grid [data]="query | async" [loading]="loading" [skip]="headerFilters.CurrentPage"
-                [pageSize]="headerFilters.PageSize" filterable="menu" [resizable]="true" [sortable]="{
-        allowUnsort: true, mode: 'single' }" [sort]="state.sort" (sortChange)="sortChange($event)"
+                [pageSize]="headerFilters.PageSize" filterable="menu" [resizable]="true" 
+                [sortable]="{allowUnsort: true, mode: 'single' }" [sort]="state.sort" (sortChange)="sortChange($event)"
                 (filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)" [filter]="state.filter"
                 scrollable="virtual" [rowHeight]="36" [height]="550" (pageChange)="pageChange($event)"
                 [navigable]="false" [selectedKeys]="mySelection" [selectable]="selectableSettings"
-                [kendoGridSelectBy]="mySelectionKey" [groupable]="false" [virtualColumns]="false">
+                [kendoGridSelectBy]="mySelectionKey" [groupable]="false" [virtualColumns]="false"
+                [rowClass]="isDisabled"
+                (selectionChange)="selectedRowChange($event)">
 
-                <kendo-grid-checkbox-column width="40">
-                    <ng-template kendoGridCellTemplate let-dataItem>
+                <kendo-grid-checkbox-column width="40" showSelectAll="true">
+                    <ng-template kendoGridCellTemplate let-idx="rowIndex" let-dataItem>
+                        <div>
+                          <input [kendoGridSelectionCheckbox]="idx" class="k-checkbox" type="checkbox" id="{{'chk'+idx}}" 
+                          *ngIf="dataItem.alreadyInWorksOrderAssetDetail == 'N' && dataItem.woChecklistMatchCount  == 1"/>
+                          <label class="k-checkbox-label" for="{{'chk'+idx}}"></label>
+                        </div>
+                      </ng-template>
+
+                    <!-- <ng-template kendoGridCellTemplate let-dataItem>
                         <input (click)="selectionChange(dataItem)" class="k-checkbox" type="checkbox"
                             *ngIf="dataItem.alreadyInWorksOrderAssetDetail == 'N' && dataItem.woChecklistMatchCount  == 1">
-                    </ng-template>
+                    </ng-template> -->
                 </kendo-grid-checkbox-column>
 
                 <kendo-grid-column field="alreadyInWorksOrderAssetDetail" title="" width="43" [filterable]="false"

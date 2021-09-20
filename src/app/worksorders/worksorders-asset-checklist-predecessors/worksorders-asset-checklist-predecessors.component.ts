@@ -29,7 +29,7 @@ export class WorksordersAssetChecklistPredecessorsComponent implements OnInit {
     take: 25,
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -57,12 +57,12 @@ export class WorksordersAssetChecklistPredecessorsComponent implements OnInit {
     // console.log(this.selectedChecklist)
     // console.log(this.predecessorsWindowFrom)
     // this.commonParams = this.selectedChecklist;
-    if (this.predecessorsWindowFrom == 'inner') {
+    if (this.predecessorsWindowFrom == 'inner' || this.predecessorsWindowFrom == 'phasechecklist') {
       this.commonParams = this.selectedChecklist;
     } else {
       this.commonParams = this.selectedChecklist[0]
     }
-    
+
     let params = {
       WOSEQUENCE: this.commonParams.wosequence,
       ASSID: this.commonParams.assid,

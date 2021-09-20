@@ -1,4 +1,4 @@
-<kendo-window title="{{title}}" [top]="10" [minWidth]="700" [width]="1050" [minHeight]="350"
+<kendo-window title="{{title}}" [top]="10" [minWidth]="700" [width]="1050" [height]="700" [minHeight]="350"
   (close)="closeInstructionAssetsWindow()">
 
   <div class="row headerArea">
@@ -44,25 +44,24 @@
     </div>
 
     <div class="col-md-12 actionBtnDiv text-right">
-      <button *ngIf="woMenuAccess('Accept Instruction')" (click)="openAcceptInstruction()" 
-      [disabled]="CheckMultiAcceptDisabled()" class="btn btn-sm themeButton mr-1">Accept</button>
+      <button *ngIf="woMenuAccess('Accept Instruction')" (click)="openAcceptInstruction()"
+        [disabled]="CheckMultiAcceptDisabled()" class="btn btn-sm themeButton mr-1">Accept</button>
     </div>
   </div>
 
 
 
-  <div class="row mt-2">
-    <div class="col-md-12">
+  <div class="row mt-2 griddRow">
+    <div class="col-md-12 gridCol">
 
-      <kendo-grid [kendoGridGroupBinding]="gridData" [data]="gridView" [height]="570" [selectable]="{
+      <kendo-grid id="instGrid" [data]="gridView" [selectable]="{
                     mode: 'multiple'
                   }" filterable="menu" [resizable]="true" [sortable]="{
                     allowUnsort: true,
                     mode: 'multiple'
                     }" [skip]="state.skip" [sort]="state.sort" [filter]="state.filter"
         (sortChange)="sortChange($event)" (filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)"
-        [navigable]="false" [kendoGridSelectBy]="mySelectionKey"
-        [selectedKeys]="mySelection">
+        [navigable]="false" [kendoGridSelectBy]="mySelectionKey" [selectedKeys]="mySelection">
 
         <kendo-grid-column title=" " width="37" [filterable]="false" [sortable]="false">
           <ng-template kendoGridCellTemplate let-dataItem>
@@ -72,9 +71,9 @@
                 <a *ngIf="woMenuAccess('Show Instruction Detail')" (click)="openShowInstAssetsDetail(dataItem)"
                   class="dropdown-item" href="javascript:void(0)">Show Details</a>
 
-                  <a *ngIf="woMenuAccess('Accept Instruction')" (click)="openAcceptInstruction()" 
-                   [ngClass]="{'disabled' : dataItem.woiaissuestatus != 'Issued'}"
-                  class="dropdown-item" href="javascript:void(0)" >Accept Instruction</a>
+                <a *ngIf="woMenuAccess('Accept Instruction')" (click)="openAcceptInstruction()"
+                  [ngClass]="{'disabled' : dataItem.woiaissuestatus != 'Issued'}" class="dropdown-item"
+                  href="javascript:void(0)">Accept Instruction</a>
 
               </div>
             </li>
@@ -95,8 +94,11 @@
         <kendo-grid-column field="woiaissueuser" title="Requested By" width="140">
         </kendo-grid-column>
 
-        <kendo-grid-column field="woiaissuedate" title="Requested On" [width]="140" [filterable]="false"
-          [sortable]="false">
+        <kendo-grid-column field="woiaissuedate" title="Requested On" [width]="140" [sortable]="false">
+          <ng-template kendoGridFilterMenuTemplate let-filter let-column="column" let-filterService="filterService">
+            <date-range-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
+            </date-range-filter>
+          </ng-template>
           <ng-template kendoGridCellTemplate let-dataItem>
             <span>
               {{ dataItem.woiaissuedate | dateFormat : 'DD-MMM-YYYY' }}
@@ -104,7 +106,7 @@
           </ng-template>
         </kendo-grid-column>
 
-        <kendo-grid-column field="woiafeecost" title="Fee" [width]="120" [filterable]="false" [sortable]="false"
+        <kendo-grid-column field="woiafeecost" title="Fee" [width]="120" [sortable]="false"
           [style]="{'text-align': 'right'}">
           <ng-template kendoGridCellTemplate let-dataItem>
             <span>
@@ -112,7 +114,7 @@
             </span>
           </ng-template>
         </kendo-grid-column>
-        <kendo-grid-column field="woiaworkcost" title="Work" [width]="120" [filterable]="false" [sortable]="false"
+        <kendo-grid-column field="woiaworkcost" title="Work" [width]="120" [sortable]="false"
           [style]="{'text-align': 'right'}">
           <ng-template kendoGridCellTemplate let-dataItem>
             <span>
@@ -121,8 +123,7 @@
           </ng-template>
         </kendo-grid-column>
 
-        <kendo-grid-column field="woiaacceptuser" title="Accepted By" [width]="140" [filterable]="false"
-          [sortable]="false">
+        <kendo-grid-column field="woiaacceptuser" title="Accepted By" [width]="140" [sortable]="false">
           <ng-template kendoGridCellTemplate let-dataItem>
             <span>
               {{ dataItem.woiaacceptuser }}
@@ -130,8 +131,11 @@
           </ng-template>
         </kendo-grid-column>
 
-        <kendo-grid-column field="woiaacceptdate" title="Accepted On" [width]="140" [filterable]="false"
-          [sortable]="false">
+        <kendo-grid-column field="woiaacceptdate" title="Accepted On" [width]="140" [sortable]="false">
+          <ng-template kendoGridFilterMenuTemplate let-filter let-column="column" let-filterService="filterService">
+            <date-range-filter [field]="column.field" [filter]="filter" [filterService]="filterService">
+            </date-range-filter>
+          </ng-template>
           <ng-template kendoGridCellTemplate let-dataItem>
             <span>
               {{ dataItem.woiaacceptdate | dateFormat : 'DD-MMM-YYYY' }}
@@ -149,7 +153,7 @@
     </div>
 
 
-   
+
   </div>
 
 

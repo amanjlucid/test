@@ -22,7 +22,7 @@ export class AssetRemoveReasonComponent implements OnInit {
     sort: [],
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }

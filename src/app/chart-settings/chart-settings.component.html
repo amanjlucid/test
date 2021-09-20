@@ -1,0 +1,45 @@
+<div class="layout-content">
+<div class="container-fluid flex-grow-1 container-p-y">
+
+  <div class="row">
+      <div class="col-md-2 col-sm-3">
+          <h4 class="font-weight-bold py-3 mb-1">
+              Dashboard Settings
+          </h4>
+      </div>
+
+
+  </div>
+
+  <div class="row mt-2">
+      <div class="col-md-12">
+
+          <kendo-grid [groupable]="false" [data]="gridView"  [height]="720" filterable="menu" [loading]="loading" [resizable]="true"
+          [sortable]="{allowUnsort: allowUnsort, mode: multiple ? 'multiple' : 'single' }"
+          [skip]="state.skip" [sort]="state.sort"  [filter]="state.filter" (sortChange)="sortChange($event)" (filterChange)="filterChange($event)"
+          (cellClick)="cellClickHandler($event)" [navigable]="true" >
+              <kendo-grid-column field="dashboard" title="Dashboard" width="350">
+                <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
+                let-filterService="filterService" >
+                <multicheck-filter  [isPrimitive]="false" [field]="column.field" [currentFilter]="filter"
+                    [filterService]="filterService" textField="text" valueField="val"
+                    [data]="distinctPrimitive(column.field)">
+                </multicheck-filter>
+              </ng-template>
+              </kendo-grid-column>
+              <kendo-grid-column field="numberOfChart" title="Maximum Number of Charts" minwidth="450">
+                <ng-template kendoGridEditTemplate let-dataItem="dataItem">
+                    <input [(ngModel)]="dataItem.numberOfChart" kendoGridFocusable name="numberOfChart" type="number"
+                        class="k-textbox" (keyup)="keyupevent(dataItem)" (keydown.enter)="changedRowData(dataItem)"
+                        (focusout)="changedRowData(dataItem)" min="0" max="100" />
+           <!--        <input *ngIf="!checkWorksOrdersAccess('Config Contract Terms Apply')" readonly [(ngModel)]="dataItem.contractTermText" kendoGridFocusable name="contractTermText"
+                        class="k-textbox" />  -->
+                </ng-template>
+              </kendo-grid-column>
+          </kendo-grid>
+
+      </div>
+  </div>
+
+ </div>
+</div>

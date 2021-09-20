@@ -7,12 +7,11 @@
             </button>
 
             <div class="dropdown mr-1" id="nesting-dropdown-demo">
-                <button *ngIf="woMenuAccess('New Variation')" type="button" class="btn btn-sm dropdown-toggle"
-                    data-toggle="dropdown" aria-expanded="false">New</button>
+                <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown"
+                    aria-expanded="false">New</button>
 
                 <div class="dropdown-menu" x-placement="bottom-start"
-                    style="position: absolute; will-change: top, left; top: 38px; left: 0px;"
-                    *ngIf="woMenuAccess('New Variation')">
+                    style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
 
                     <a *ngIf="woMenuAccess('New Variation')" [ngClass]="{'disabled' : disableNewAndAppendBtn('new') }"
                         class="dropdown-item" href="javascript:void(0)" (click)="newVariation()">
@@ -87,12 +86,12 @@
                             <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
 
                             <div class="dropdown-menu">
-                                <a  *ngIf="woMenuAccess('Edit Variation')" class="dropdown-item" href="javascript:void(0)"
-                                    (click)="openVariationDetails(dataItem)">Edit</a>
+                                <a *ngIf="woMenuAccess('Edit Variation')" class="dropdown-item"
+                                    href="javascript:void(0)" (click)="openVariationDetails(dataItem)">Edit</a>
 
                                 <a [ngClass]="{'disabled' : disableVariationBtns('Details', dataItem)}"
-                                *ngIf="woMenuAccess('Variation Details')" class="dropdown-item" href="javascript:void(0)"
-                                (click)="openVariationDetailMethod(dataItem)">Details</a>
+                                    *ngIf="woMenuAccess('Variation Details')" class="dropdown-item"
+                                    href="javascript:void(0)" (click)="openVariationDetailMethod(dataItem)">Details</a>
 
                                 <div class="dropdown-toggle">
                                     <div class="dropdown-item">Send</div>
@@ -107,8 +106,9 @@
                                             (click)="sendVariation('Contractor', dataItem)">Contractor</a>
 
 
-                                        <a *ngIf="woMenuAccess('Email Variation Report')" (click)="openEmailInstructionReport(dataItem)"
-                                            class="dropdown-item" href="javascript:void(0)">Select Users</a>
+                                        <a *ngIf="woMenuAccess('Email Variation Report')"
+                                            (click)="openEmailInstructionReport(dataItem)" class="dropdown-item"
+                                            href="javascript:void(0)">Select Users</a>
 
                                     </div>
                                 </div>
@@ -126,8 +126,8 @@
 
 
                                 <a [ngClass]="{'disabled' : disableVariationBtns('Notes', dataItem)}"
-                                *ngIf="woMenuAccess('Variation Notes')" class="dropdown-item" href="javascript:void(0)"
-                                    (click)="openVariationNotes(dataItem)">Variation Notes</a>
+                                    *ngIf="woMenuAccess('Variation Notes')" class="dropdown-item"
+                                    href="javascript:void(0)" (click)="openVariationNotes(dataItem)">Variation Notes</a>
 
 
                             </div>
@@ -231,17 +231,17 @@
         (closeAppendVariation)="closeAppendVariation($event)" (appededVariation)="appendVariation($event)">
     </app-variation-append>
 
-    <app-send-email *ngIf="SendEmailInsReportWindow" [SendEmailInsReportWindow]="SendEmailInsReportWindow" 
-    (closeEmailReportEvent)="closeEmailWithReportWindow($event)" [selectedObj]="selectedSingleVariation" 
-    [opendFrom]="'variation'"></app-send-email>
-    <app-variation-notes *ngIf="displayNotesWindow" [displayNotesWindow]="displayNotesWindow"
-    [wosequence]="wosequence" [woisequence]="woisequence" [disabledAddNote]="disabledAddNote"
-    (closeVariationNotes)="closeVariationNotes($event)" >
+    <app-send-email *ngIf="SendEmailInsReportWindow" [SendEmailInsReportWindow]="SendEmailInsReportWindow"
+        (closeEmailReportEvent)="closeEmailWithReportWindow($event)" [selectedObj]="selectedSingleVariation"
+        [opendFrom]="'variation'"></app-send-email>
+    <app-variation-notes *ngIf="displayNotesWindow" [displayNotesWindow]="displayNotesWindow" [wosequence]="wosequence"
+        [woisequence]="woisequence" [disabledAddNote]="disabledAddNote"
+        (closeVariationNotes)="closeVariationNotes($event)">
     </app-variation-notes>
 
     <app-variation-detail *ngIf="openVariationDetail" [openVariationDetail]="openVariationDetail"
-    [openedFrom]="openedFrom" [openedFor]="openedFor" [singleVariationAsset]="selectedSingleVariation"
-    (closeVariationDetailEvent)="closeVarDetails($event)">
+        [openedFrom]="openedFrom" [openedFor]="openedFor" [singleVariationAsset]="selectedSingleVariation"
+        (closeVariationDetailEvent)="closeVarDetails($event)">
     </app-variation-detail>
 
 

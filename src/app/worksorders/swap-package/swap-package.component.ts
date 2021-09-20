@@ -26,7 +26,7 @@ export class SwapPackageComponent implements OnInit {
     sort: [],
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -172,6 +172,9 @@ export class SwapPackageComponent implements OnInit {
   closePackageQuantiyEvent(eve) {
     this.packageQuantityWindow = eve;
     $('.worklistPackageOvrlay').removeClass('ovrlay');
+    if(eve){
+      this.closePackageWindow()
+    }
   }
 
   refreshPackageList(eve) {

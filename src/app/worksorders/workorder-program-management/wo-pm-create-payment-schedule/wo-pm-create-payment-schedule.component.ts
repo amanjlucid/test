@@ -3,6 +3,7 @@ import { SubSink } from 'subsink';
 import { AlertService, HelperService, WorksOrdersService } from 'src/app/_services';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { shouldNotZero, SimpleDateValidator, firstDateIsLower, isNumberCheck } from 'src/app/_helpers';
+import { combineLatest, forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-wo-program-management-create-payment-schedule',
@@ -14,6 +15,8 @@ import { shouldNotZero, SimpleDateValidator, firstDateIsLower, isNumberCheck } f
 
 export class WoProgramManagmentCreatePaymentScheduleComponent implements OnInit {
   @Input() openWOCreatePaymentScheduleWindow: boolean = false;
+  @Input() defectLiabilityPeriod: number = 0;
+  @Input() woContractType: string = '';
   @Output() closeCreatePaymentScheduleWindowEvent = new EventEmitter<boolean>();
   @Input() worksOrderData: any;
   createScheduleForm: FormGroup;
@@ -23,9 +26,12 @@ export class WoProgramManagmentCreatePaymentScheduleComponent implements OnInit 
   loading = true;
   readonlyRetentionPct: boolean = false;
   readonlyRetentionValue: boolean = true;
+  public disableRetention: boolean = true;
   submitted: boolean = false;
   minDate: any;
   formErrors: any;
+
+
 
   validationMessage = {
     'pStartDate': {
@@ -77,7 +83,7 @@ export class WoProgramManagmentCreatePaymentScheduleComponent implements OnInit 
 
   ngOnInit(): void {
     // console.log(this.worksOrderData);
-    if (this.worksOrderData.wocontracttype == "STAGE") {
+    if (this.woContractType == "STAGE") {
       this.createScheduleForm = this.fb.group({
         pStartDate: ['', [SimpleDateValidator()]],
         pEndDate: ['', [SimpleDateValidator()]],
@@ -114,6 +120,8 @@ export class WoProgramManagmentCreatePaymentScheduleComponent implements OnInit 
       this.createScheduleForm.get('specificDays').disable();
     }
 
+    this.disableRetention = (this.defectLiabilityPeriod == 0)
+
     this.patchFormValue();
 
   }
@@ -122,13 +130,36 @@ export class WoProgramManagmentCreatePaymentScheduleComponent implements OnInit 
     this.subs.unsubscribe();
   }
 
+  isReadOnlyControl(ctrl){
+    if(ctrl == 'retval'){
+      if(this.disableRetention){
+        return true
+      }else{
+        return this.readonlyRetentionValue
+      }
+    }
+    if(ctrl == 'retperc'){
+      if(this.disableRetention){
+        return true
+      }else{
+        return this.readonlyRetentionPct
+      }
+    }
+  }
 
   patchFormValue() {
-    const { mPgsA, wotargetcompletiondate } = this.worksOrderData;
+
+    let v = this.worksOrderData
+    let targetcompletiondate
+    if( this.worksOrderData.targetcompletiondate != undefined){
+        targetcompletiondate = this.worksOrderData.targetcompletiondate;
+    }else{
+      targetcompletiondate = this.worksOrderData.wotargetcompletiondate;
+    }
     const today = this.helperService.getDateString();
     this.createScheduleForm.patchValue({
       pStartDate: this.helperService.ngbDatepickerFormat(today),
-      pEndDate: this.helperService.ngbDatepickerFormat(wotargetcompletiondate)
+      pEndDate: this.helperService.ngbDatepickerFormat(targetcompletiondate)
     });
 
     this.chRef.detectChanges();
@@ -195,22 +226,25 @@ export class WoProgramManagmentCreatePaymentScheduleComponent implements OnInit 
 
 
   changeRetentionType(value) {
-    this.createScheduleForm.patchValue({ retentionPct: 0, retentionValue: 0 });
-    if (value !== 1) {
-      this.readonlyRetentionPct = true;
-      this.readonlyRetentionValue = false;
-      this.createScheduleForm.controls['retentionValue'].setValidators([Validators.required, shouldNotZero()]);
-      this.createScheduleForm.controls["retentionPct"].setErrors(null);
-      this.createScheduleForm.controls["retentionPct"].clearValidators();
-    } else {
-      this.readonlyRetentionPct = false;
-      this.readonlyRetentionValue = true;
-      this.createScheduleForm.controls['retentionPct'].setValidators([Validators.required]);
-      this.createScheduleForm.controls["retentionValue"].setErrors(null);
-      this.createScheduleForm.controls["retentionValue"].clearValidators();
+
+    if(!this.disableRetention){
+      this.createScheduleForm.patchValue({ retentionPct: 0, retentionValue: 0 });
+      if (value !== 1) {
+        this.readonlyRetentionPct = true;
+        this.readonlyRetentionValue = false;
+        this.createScheduleForm.controls['retentionValue'].setValidators([Validators.required, shouldNotZero()]);
+        this.createScheduleForm.controls["retentionPct"].setErrors(null);
+        this.createScheduleForm.controls["retentionPct"].clearValidators();
+      } else {
+        this.readonlyRetentionPct = false;
+        this.readonlyRetentionValue = true;
+        this.createScheduleForm.controls['retentionPct'].setValidators([Validators.required]);
+        this.createScheduleForm.controls["retentionValue"].setErrors(null);
+        this.createScheduleForm.controls["retentionValue"].clearValidators();
+      }
+      this.createScheduleForm.controls['retentionPct'].updateValueAndValidity();
+      this.createScheduleForm.controls['retentionValue'].updateValueAndValidity();
     }
-    this.createScheduleForm.controls['retentionPct'].updateValueAndValidity();
-    this.createScheduleForm.controls['retentionValue'].updateValueAndValidity();
   }
 
   onSubmit(): void {
@@ -224,6 +258,13 @@ export class WoProgramManagmentCreatePaymentScheduleComponent implements OnInit 
     }
 
     let formRawVal = this.createScheduleForm.getRawValue();
+    let retperc = parseInt(formRawVal.retentionPct)
+    let retval =  parseInt(this.helperService.convertMoneyToFlatFormat(formRawVal.retentionValue))
+    let warningMessage = ''
+    if((this.defectLiabilityPeriod > 0 && retperc > 0 ) || (this.defectLiabilityPeriod > 0 && retval > 0)){
+      warningMessage = "Additional Payment Schedules will be created to accommodate Released Retention costs."
+    }
+
     const { wosequence, wprsequence } = this.worksOrderData;
     const { pStartDate, pEndDate, pFrequency, pType, specificDays = 0, stagePayment = 0, retentionPct = 0, retentionValue = 0 } = formRawVal;
 
@@ -247,7 +288,12 @@ export class WoProgramManagmentCreatePaymentScheduleComponent implements OnInit 
         data => {
           if (data.isSuccess) {
             this.closeCreatePaymentScheduleWin();
-            this.alertService.success("New Payment Schedule Successfully Created.");
+            if (warningMessage != ''){
+              this.alertService.warning("New Payment Schedule Successfully Created. " + warningMessage);
+            }else{
+              this.alertService.success("New Payment Schedule Successfully Created.");
+            }
+
           } else this.alertService.error(data.message);
           this.chRef.detectChanges();
         }, err => this.alertService.error(err)

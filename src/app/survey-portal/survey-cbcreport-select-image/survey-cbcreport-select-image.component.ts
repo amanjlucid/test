@@ -31,7 +31,7 @@ export class SurveyCbcreportSelectImageComponent implements OnInit {
     take: 50,
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }

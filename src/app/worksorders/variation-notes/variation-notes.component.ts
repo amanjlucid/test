@@ -1,14 +1,17 @@
-import { Component, OnInit, OnDestroy, Input, Output,ChangeDetectorRef, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, ChangeDetectorRef, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AlertService, EventManagerService, HelperService, ConfirmationDialogService, SharedService, WorksorderManagementService} from '../../_services'
-import { GroupDescriptor, DataResult, process, State, SortDescriptor, distinct } from '@progress/kendo-data-query';
+import { AlertService, HelperService, ConfirmationDialogService, SharedService, WorksorderManagementService } from '../../_services'
+import { DataResult, process, State, distinct } from '@progress/kendo-data-query';
 import { combineLatest } from 'rxjs';
 import { SubSink } from 'subsink';
+
 @Component({
   selector: 'app-variation-notes',
   templateUrl: './variation-notes.component.html',
-  styleUrls: ['./variation-notes.component.css']
+  styleUrls: ['./variation-notes.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
+
 export class VariationNotesComponent implements OnInit {
   @Input() displayNotesWindow: boolean = false;
   @Input() wosequence: number = 0;
@@ -79,7 +82,7 @@ export class VariationNotesComponent implements OnInit {
       )
     )
 
-    this.getGridDataDetails('',false);
+    this.getGridDataDetails('', false);
 
   }
 
@@ -113,8 +116,8 @@ export class VariationNotesComponent implements OnInit {
   }
 
   checkWorksOrdersAccess(val: string): Boolean {
-     if (this.worksOrderUsrAccess != undefined) {
-    return this.worksOrderUsrAccess.includes(val);
+    if (this.worksOrderUsrAccess != undefined) {
+      return this.worksOrderUsrAccess.includes(val);
     } else {
       return false;
     }
@@ -126,31 +129,28 @@ export class VariationNotesComponent implements OnInit {
     });
   }
 
-  closeNotesWindow()
-  {
+  closeNotesWindow() {
     this.displayNotesWindow = false;
     this.closeVariationNotes.emit(false)
   }
 
   onSubmit() {
-    this.submitted = true;
-    if (this.Validate())
-    {
+    if (this.checkWorksOrdersAccess('Add Note')) {
+      this.submitted = true;
+      if (this.Validate()) {
         let Note = this.notesForm.controls.newNote.value;
         this.getGridDataDetails(Note, true);
+      }
     }
   }
 
 
-  Validate()
-  {
-    if(this.notesForm.controls.newNote.value  == "")
-    {
+  Validate() {
+    if (this.notesForm.controls.newNote.value == "") {
       this.noteError = "A new note is required";
       return false;
     }
-    else
-    {
+    else {
       this.noteError = "";
       return true;
     }

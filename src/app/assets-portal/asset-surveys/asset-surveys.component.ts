@@ -22,7 +22,7 @@ export class AssetSurveysComponent implements OnInit, OnDestroy {
     sort: [],
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -104,7 +104,7 @@ export class AssetSurveysComponent implements OnInit, OnDestroy {
                 } else if (s.batch_Asset_Status == "X") {
                   s.batch_Asset_Status = "Archived";
                 } else {
-                  s.batch_Asset_Status = "Unknown";
+                  s.batch_Asset_Status = "";
                 }
 
                 // s.batch_Asset_Status = (s.batch_Asset_Status == 'C') ? 'Complete' : s.batch_Asset_Status == 'E' ? 'Export' : s.batch_Asset_Status == 'E' ? 'Export';

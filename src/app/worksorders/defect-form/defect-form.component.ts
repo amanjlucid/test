@@ -78,7 +78,7 @@ export class DefectFormComponent implements OnInit {
     sort: [],
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -147,7 +147,7 @@ export class DefectFormComponent implements OnInit {
       signOffBy: [''],
     });
 
-    // Change validation on status change  
+    // Change validation on status change
     const resDateCtr = this.defectForm.get('resolutionDate');
     const resByCtr = this.defectForm.get('resolvedBy');
     const resDetCtr = this.defectForm.get('resolutionDetails');
@@ -250,11 +250,11 @@ export class DefectFormComponent implements OnInit {
   requiredPageData() {
     this.loaderService.pageShow();
     let pagaRequiredParams: any;
-    if (this.openedFrom == 'assetchecklist') {
+    if (this.openedFrom == 'workdetail' || this.openedFrom == 'assetchecklist') {
       pagaRequiredParams = this.singleWorkOrderAssetInp
     }
 
-    if (this.openedFrom == 'workdetail' || this.openedFrom == "workorder") {
+    if ( this.openedFrom == "workorder") {
       pagaRequiredParams = this.selectedDefectInp
     }
 
@@ -282,7 +282,7 @@ export class DefectFormComponent implements OnInit {
           const scoreLimit = data[6].data;
 
 
-          //set min and max score validation and rule dynamically  
+          //set min and max score validation and rule dynamically
           const { defectmin, defectmax } = scoreLimit
           const scoreCtr: any = this.defectForm.get('score')
           scoreCtr.setValidators([Validators.required, Validators.min(defectmin), Validators.max(defectmax)]);
@@ -424,9 +424,9 @@ export class DefectFormComponent implements OnInit {
 
   onSubmit() {
     this.submitted = true;
-    this.formErrorObject(); // empty form error 
+    this.formErrorObject(); // empty form error
     this.logValidationErrors(this.defectForm);
-    
+
     if (this.defectForm.invalid) {
       return;
     }
@@ -496,7 +496,7 @@ export class DefectFormComponent implements OnInit {
       successMsg = "Defect updated successfully.";
     }
 
-    
+
     this.subs.add(
       apiCall.subscribe(
         data => {

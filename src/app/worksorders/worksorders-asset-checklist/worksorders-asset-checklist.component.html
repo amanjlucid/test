@@ -15,14 +15,10 @@
                     aria-expanded="false">Administration</button>
                 <div class="dropdown-menu" x-placement="bottom-start"
                     style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
-                    <a *ngIf="woMenuBtnSecurityAccess('Programme Log For Asset')" class="dropdown-item" href="javascript:void(0)"
-                        (click)="openProgrammeLog('assetchecklist')">View Programme Log</a>
+                    <a *ngIf="woMenuBtnSecurityAccess('View Asset Log')" class="dropdown-item" href="javascript:void(0)"
+                        (click)="openProgrammeLog('assetchecklist')">Asset Log</a>
                 </div>
             </div>
-
-            <button *ngIf="woMenuBtnSecurityAccess('Checklist Documents')" type="button"
-                [disabled]="!selectedChecklistsingleItem || mySelection.length != 1" class="btn btn-sm themeButton mr-1"
-                (click)="openChecklistDoc()">Documents</button>
 
             <div class="dropdown mr-1" id="nesting-dropdown-demo">
                 <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown"
@@ -35,11 +31,11 @@
                     <a *ngIf="woMenuBtnSecurityAccess('Remove All Work')" class="dropdown-item"
                         (click)="removeOrDeletework('remove')" href="javascript:void(0)"
                         [ngClass]="{'disabled' : disableMainActions('woremoveAll')}">
-                        Remove All</a>
+                        Remove</a>
                     <a *ngIf="woMenuBtnSecurityAccess('Delete All Work')" class="dropdown-item"
                         (click)="removeOrDeletework('delete')" href="javascript:void(0)"
                         [ngClass]="{'disabled' : disableMainActions('wodeleteAll')}">
-                        Delete All</a>
+                        Delete</a>
                     <a *ngIf="woMenuBtnSecurityAccess('Add Work')" class="dropdown-item"
                         (click)="openAddAssetWorkOrdersList(selectedChildRow, 'all')" href="javascript:void(0)"
                         [ngClass]="{'disabled' : disableMainActions('woAdd')}">
@@ -50,9 +46,11 @@
             </div>
 
             <button *ngIf="woMenuBtnSecurityAccess('Defects')" (click)="openDefectsMethod()"
-                class="btn btn-sm themeButton mr-1">Defects</button>
+                class="btn btn-sm themeButton mr-1 headin_section defectsBtn">
+                <span *ngIf="defectsNewOrResolved" class="badge badge-primary badge-dot indicator"></span>
+                Defects</button>
 
-            <button *ngIf="woMenuBtnSecurityAccess('New Variation')" type="button"
+            <button *ngIf="woMenuBtnSecurityAccess('Variations')" type="button"
                 class="btn btn-sm themeButton mr-1 headin_section variationBtn" (click)="openVariationFun()">
                 <span *ngIf="variationNewOrIssue" class="badge badge-primary badge-dot indicator"></span>
                 Variations
@@ -126,7 +124,8 @@
 
 
 
-                    <div class="dropdown-toggle" *ngIf="woMenuBtnSecurityAccess('Set Status')">
+                    <div class="dropdown-toggle" *ngIf="woMenuBtnSecurityAccess('Set Status')"
+                    [ngClass]="{'disabled' : disableMainActions('status')}">
                         <div class="dropdown-item">Status</div>
                         <div class="dropdown-menu">
 
@@ -174,7 +173,7 @@
 
 
 
-                    <div [ngClass]="{'disabled' : workorderAsset?.woassstatus == 'Pending'}" class="dropdown-toggle">
+                    <div [ngClass]="{'disabled' : disableMainActions('dates')}" class="dropdown-toggle">
                         <div class="dropdown-item" *ngIf="woMenuBtnSecurityAccess('Set Dates')">Dates
                         </div>
                         <div class="dropdown-menu dateDrp">
@@ -233,10 +232,10 @@
                         </div>
                     </div>
 
-                    <a class="dropdown-item" [ngClass]="{'disabled' : disableMainActions('LETTER')}"
+                    <!-- <a class="dropdown-item" [ngClass]="{'disabled' : disableMainActions('LETTER')}"
                         *ngIf="woGlobalSecurityAccess('Report Checklist')" (click)="mergeMailMultiple()"
-                        href="javascript:void(0)">Letter</a>
- 
+                        href="javascript:void(0)">Letter</a> -->
+
                    <a  class="dropdown-item"
                     [ngClass]="{'disabled' : disableMainActions('FEE')}"
                     *ngIf="woMenuBtnSecurityAccess('Edit Checklist Fee')"
@@ -470,7 +469,7 @@
                                     </div>
                                 </div>
 
-                                <div [ngClass]="{'disabled' : workorderAsset?.woassstatus == 'Pending'}"
+                                <div [ngClass]="{'disabled' :disableBtnsIndividualMenu('dates', dataItem)}"
                                     class="dropdown-toggle">
                                     <div class="dropdown-item" *ngIf="woMenuBtnSecurityAccess('Set Dates')">Dates
                                     </div>
@@ -533,7 +532,7 @@
                                 </div>
 
 
-                                <div [ngClass]="{'disabled' :disableBtnsIndividualMenu('CMP', dataItem)}"
+                                <div [ngClass]="{'disabled' :disableBtnsIndividualMenu('complete', dataItem)}"
                                     class="dropdown-toggle" *ngIf="woMenuBtnSecurityAccess('Complete Item')">
                                     <div class="dropdown-item">Complete</div>
                                     <div class="dropdown-menu">
@@ -554,6 +553,16 @@
                                             (click)="openAssetDetailChild('single', dataItem)" href="javascript:void(0)"
                                             [ngClass]="{'disabled' :disableBtnsIndividualMenu('WODETAIL', dataItem)}">Detail</a>
 
+                                        <a *ngIf="woMenuBtnSecurityAccess('Remove All Work')" class="dropdown-item"
+                                            (click)="removeOrDeletework('remove')" href="javascript:void(0)"
+                                            [ngClass]="{'disabled' : disableMainActions('woremoveAll')}">
+                                            Remove</a>
+
+                                        <a *ngIf="woMenuBtnSecurityAccess('Delete All Work')" class="dropdown-item"
+                                            (click)="removeOrDeletework('delete')" href="javascript:void(0)"
+                                            [ngClass]="{'disabled' : disableMainActions('wodeleteAll')}">
+                                            Delete</a>
+
                                         <a *ngIf="woMenuBtnSecurityAccess('Add Work')" class="dropdown-item"
                                             (click)="openAddAssetWorkOrdersList(dataItem, 'single')"
                                             href="javascript:void(0)"
@@ -565,10 +574,22 @@
                                     </div>
                                 </div>
 
-                                <a *ngIf="woMenuBtnSecurityAccess('No Access') && dataItem.wocheckspeciaL1 == 'ACCESS'"
-                                    class="dropdown-item" href="javascript:void(0)"
-                                    (click)="openNoAccessWindow(dataItem)">No
-                                    Access</a>
+                                <div class="dropdown-toggle" *ngIf="woMenuBtnSecurityAccess('No Access') && dataItem.wocheckspeciaL1 == 'ACCESS'">
+                                  <div class="dropdown-item">No Access</div>
+                                  <div class="dropdown-menu">
+
+                                      <a *ngIf="woMenuBtnSecurityAccess('No Access')"
+                                      class="dropdown-item" href="javascript:void(0)"
+                                      (click)="openNoAccessWindow(dataItem)">Add No Access</a>
+
+                                      <a *ngIf="woMenuBtnSecurityAccess('No Access')"
+                                      class="dropdown-item" href="javascript:void(0)"
+                                      (click)="openNoAccessListWindow(dataItem)">View No Access</a>
+
+                                  </div>
+                              </div>
+
+
 
                                 <a class="dropdown-item"
                                     *ngIf="woMenuBtnSecurityAccess('Customer Survey') && dataItem.wocheckspeciaL1 == 'CUSTFORM'"
@@ -580,11 +601,12 @@
                                     *ngIf="woMenuBtnSecurityAccess('Edit Checklist Fee')"
                                     (click)="updateCheckListFee('single', dataItem)" href="javascript:void(0)">Edit Checklist Fee</a>
 
-                                <a class="dropdown-item"
-                                    *ngIf="woGlobalSecurityAccess('Report Checklist') && dataItem.wocheckspeciaL1 == 'LETTER'"
+                                <a class="dropdown-item" [ngClass]="{'disabled' :disableBtnsIndividualMenu('letter', dataItem)}"
+                                    *ngIf="woGlobalSecurityAccess('Checklist Letter') && dataItem.wocheckspeciaL1 == 'LETTER'"
                                     (click)="mergeMailSingle(dataItem)" href="javascript:void(0)">Letter</a>
 
-                                <div class="dropdown-toggle" *ngIf="woMenuBtnSecurityAccess('Comments')">
+                                <div class="dropdown-toggle" [ngClass]="{'disabled' :disableBtnsIndividualMenu('comments', dataItem)}"
+                                *ngIf="woMenuBtnSecurityAccess('Comments')">
                                     <div class="dropdown-item">Comments</div>
                                     <div class="dropdown-menu">
                                         <a class="dropdown-item" (click)="setSingleComment('replace',dataItem)"
@@ -594,6 +616,11 @@
                                     </div>
                                 </div>
 
+
+                                <a class="dropdown-item"
+                                    [ngClass]="{'disabled' :disableBtnsIndividualMenu('documents', dataItem)}"
+                                    *ngIf="woMenuBtnSecurityAccess('Checklist Documents')"
+                                    (click)="openChecklistDoc(dataItem)" href="javascript:void(0)">Documents</a>
 
                             </div>
                         </li>
@@ -738,7 +765,12 @@
                         </span>
                     </ng-template>
                 </kendo-grid-column>
-                <kendo-grid-column field="woasscheckcomment" title="Comment(s)" width="400">
+                <kendo-grid-column field="woasscheckcomment" title="Comment(s)" width="1000">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span title="{{ dataItem.woasscheckcomment}}">
+                            {{ dataItem.woasscheckcomment}}
+                        </span>
+                    </ng-template>
                 </kendo-grid-column>
 
             </kendo-grid>
@@ -794,7 +826,7 @@
         (closeVariationListEvent)="closeVariation($event)">
     </app-variation-list>
 
-    <app-asset-defects-list *ngIf="openDefectsList" [openDefectsList]="openDefectsList"
+    <app-asset-defects-list *ngIf="openDefectsList" [openDefectsList]="openDefectsList" [woassetstatus]="woassetstatus"
         [singleWorkOrderAssetInp]="selectedChildRow" [openedFrom]="'assetchecklist'"
         (closeDefectsListEvent)="closeDefectList($event)">
     </app-asset-defects-list>

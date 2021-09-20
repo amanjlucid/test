@@ -61,9 +61,9 @@ export class WorksordersAddPackageEnterQuantityComponent implements OnInit {
     // console.log(this.swapPkz)
 
     if (this.mode == "new") {
-      this.title = 'Add Package To Work List Details';
+      this.title = 'Add Package To Work List Details: ( ' + this.mySelection.length + ') package(s)' ;
     } else {
-      this.title = 'Edit Package Quantity and/or Cost';
+      this.title = 'Edit Package Quantity and/or Cost'  ;
     }
 
     this.pakzQuantityForm = this.fb.group({
@@ -90,8 +90,8 @@ export class WorksordersAddPackageEnterQuantityComponent implements OnInit {
           this.planYear = data[1].data;
 
           if (this.mode == "new") {
-            //set fortm after api call
-            this.selectedPackages = this.packageData.filter(x => this.mySelection.includes(x.wphcode));
+            let y = this.mySelection
+            this.selectedPackages = this.mySelection;
             this.displayHighestPkz = this.selectedPackages[this.selectedPackages.length - 1];
             this.applyCount = this.selectedPackages.length;
 
@@ -160,13 +160,7 @@ export class WorksordersAddPackageEnterQuantityComponent implements OnInit {
                 }
               )
             )
-
-
-
-
           }
-
-
           this.pakzQuantityForm.get('code').disable();
           this.pakzQuantityForm.get('name').disable();
           this.pakzQuantityForm.get('desc').disable();
@@ -174,28 +168,14 @@ export class WorksordersAddPackageEnterQuantityComponent implements OnInit {
           this.pakzQuantityForm.get('sorRate').disable();
           this.pakzQuantityForm.get('contractorRate').disable();
           this.pakzQuantityForm.get('workCost').disable();
-
-
-
         }
       ))
-
-
-
-    // if (selectedPackage.length > 1) {
-    //   let sortSelectedPkz = selectedPackage.sort(function (a, b) {
-    //     return a.defaultcost - b.defaultcost
-    //   })
-    //   this.displayHighestPkz = sortSelectedPkz[sortSelectedPkz.length - 1];
-    // } else {
-    //   this.displayHighestPkz = selectedPackage[0];
-    // }
-
 
     this.chRef.detectChanges();
   }
 
   populateForm(displayHighestPkz) {
+    let v = displayHighestPkz
     this.pakzQuantityForm.patchValue({
       code: displayHighestPkz?.wphcode,
       name: displayHighestPkz?.wphname,
@@ -214,9 +194,9 @@ export class WorksordersAddPackageEnterQuantityComponent implements OnInit {
     this.subs.unsubscribe();
   }
 
-  closePackageQuantityWindow() {
+  closePackageQuantityWindow(res) {
     this.packageQuantityWindow = false;
-    this.closePackageQuantiyEvent.emit(this.packageQuantityWindow);
+    this.closePackageQuantiyEvent.emit(res);
     this.refreshPackageList.emit(true);
   }
 
@@ -227,49 +207,6 @@ export class WorksordersAddPackageEnterQuantityComponent implements OnInit {
       event.preventDefault();
       return false;
     }
-  }
-
-  setCost(event, field) {
-
-    // const checkDecimal = /^[-+]?[0-9]+\.[0-9]+$/;
-    // const checkDecimalVal = String(event).match(checkDecimal);
-
-    // if (checkDecimalVal != null && checkDecimalVal) {
-    //   const deciLength = event.split(".")[1].length || 0;
-
-    //   if (deciLength > 2 || isNaN(event)) {
-    //     setTimeout(() => {
-    //       this.quantity = event.slice(0, 8)
-    //       this.chRef.detectChanges();
-    //       return false;
-    //     }, 5);
-    //   } else if (deciLength <= 2 && event.split(".")[0].length > 5) {
-    //     setTimeout(() => {
-    //       this.quantity = event.slice(0, 5)
-    //       this.chRef.detectChanges();
-    //       return false;
-    //     }, 5);
-    //   }
-
-    // } else {
-    //   if (this.quantity.length > 5) {
-    //     const deciLength = event.includes(".");
-    //     if (!deciLength) {
-    //       setTimeout(() => {
-    //         this.quantity = event.slice(0, 5)
-    //         this.chRef.detectChanges();
-    //         return false;
-    //       }, 5);
-    //     } else {
-
-    //     }
-
-    //   }
-    // }
-
-
-    // this.displayHighestPkz.cost = this.costOverride = this.quantity * this.displayHighestPkz.defaultcost;
-    // this.chRef.detectChanges();
   }
 
   defaultToOne() {
@@ -360,22 +297,10 @@ export class WorksordersAddPackageEnterQuantityComponent implements OnInit {
       return
     }
 
-    // if (formRawVal.comment == "") {
-    //   this.alertService.error("Comment must be entered.");
-    //   return;
-    // }
-    // if (this.quantity == 0 && confirmed == false) {
-    //   this.openConfirmationDialog(type, "Are you sure you want to add a zero quantity?");
-    //   return
-    // }
-
-    // if (this.comment == "") {
-    //   this.alertService.error("Comment must be entered.");
-    //   return;
-    // }
-
     if (type == 1) {
       if (this.mode == "new") {
+
+        let req: any = [];
         let params = {
           WLATAID: this.displayHighestPkz.ataid,
           WPHCODE: this.displayHighestPkz.wphcode,
@@ -389,24 +314,26 @@ export class WorksordersAddPackageEnterQuantityComponent implements OnInit {
           WOSEQUENCE: this.worksOrder.wosequence,
           WOPSEQUENCE: this.selectedWorkOrder.wopsequence
         }
+        req.push(params)
 
         // console.log(params);
         if (this.applyCount > 0) {
-
+          let v = this.applyCount
           this.subs.add(
-            this.worksorderManagementService.worksOrdersInsertIntoWorkList(params).subscribe(
+            this.worksorderManagementService.worksOrdersInsertIntoWorkList(req).subscribe(
               data => {
                 if (data.isSuccess == false) {
                   this.alertService.error(data.message)
                   return
                 }
 
-                this.applyCount--
+                this.applyCount = this.applyCount - 1
+                let v = this.applyCount
                 this.displayHighestPkz = this.selectedPackages[this.applyCount - 1];
                 this.populateForm(this.displayHighestPkz)
                 this.chRef.detectChanges();
                 if (this.applyCount == 0) {
-                  this.closePackageQuantityWindow();
+                  this.closePackageQuantityWindow(true);
                   return
                 }
 
@@ -436,7 +363,7 @@ export class WorksordersAddPackageEnterQuantityComponent implements OnInit {
             if (data.isSuccess) {
               let success_msg = "Work Updated Successfully";
               this.alertService.success(success_msg);
-              this.closePackageQuantityWindow();
+              this.closePackageQuantityWindow(true);
 
             } else {
               this.alertService.error(data.message);
@@ -457,7 +384,7 @@ export class WorksordersAddPackageEnterQuantityComponent implements OnInit {
           Quantity: formRawVal.quantity,
           ASSID: this.selectedWorkOrder.assid,
           UserId: this.currentUser.userId,
-          Cost: pkz.defaultcost,//this.helperService.convertMoneyToFlatFormat(formRawVal.costOverride),
+          Cost: this.helperService.convertMoneyToFlatFormat(formRawVal.quantity * pkz.defaultcost),
           CTTSURCDE: this.worksOrder.cttsurcde,
           Comment: formRawVal.comment,
           WPRSEQUENCE: this.worksOrder.wprsequence,
@@ -465,17 +392,15 @@ export class WorksordersAddPackageEnterQuantityComponent implements OnInit {
           WOPSEQUENCE: this.selectedWorkOrder.wopsequence
         }
 
-        req.push(this.worksorderManagementService.worksOrdersInsertIntoWorkList(params))
-        //req.push(params);
+        req.push(params)
       }
 
-      //console.log(req)
-      this.subs.add(
-        forkJoin(req).subscribe(
-          data => {
-            this.closePackageQuantityWindow();
+      this.worksorderManagementService.worksOrdersInsertIntoWorkList(req).subscribe(
+        data => {
+          if (data && data.isSuccess) {
+            this.closePackageQuantityWindow(true);
           }
-        )
+        }
       )
 
     }
@@ -512,28 +437,28 @@ export class WorksordersAddPackageEnterQuantityComponent implements OnInit {
           WOPSEQUENCE: this.selectedWorkOrder.wopsequence
         }
 
-        
+
         if (this.applyCount > 0) {
 
           this.subs.add(
             this.worksorderManagementService.SwapPackage(params).subscribe(
               data => {
-             
+
 
                 if (data.data != undefined) {
                   const res = data.data[0];
-                
+
                   if (res.pRETURNSTATUS == "E") {
                     this.alertService.error(res.pRETURNMESSAGE);
                     return;
-                  
+
                   } else {
                     this.alertService.success(res.pRETURNMESSAGE);
-                    this.closePackageQuantityWindow();
+                    this.closePackageQuantityWindow(true);
                   }
                 } else {
                   this.alertService.success("Something went wrong.");
-                  
+
                 }
 
 

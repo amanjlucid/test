@@ -76,3 +76,12 @@
     position: absolute;
     left: 72px;
 }
+
+.defectsBtn{position: relative;}
+
+.defectsBtn .badge-primary{
+    font-size: 19px;
+    top: -8px;
+    position: absolute;
+    left: 60px;
+}

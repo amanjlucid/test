@@ -77,6 +77,7 @@
                 (click)="addDocument()">Add Document</button>
 
             <button *ngIf="woMenuBtnSecurityAccess('Upload Checklist Document')"
+            [disabled]="!AllowDocsUpload"
                 class="btn btn-sm themeButton uploadDocBtn" (click)="uploadImage()">Upload Document</button>
             <button *ngIf="woMenuBtnSecurityAccess('Remove Checklist Document')" class="btn btn-sm themeButton"
                 (click)="openConfirmationDialog()" [disabled]="!selectedDoc">Remove

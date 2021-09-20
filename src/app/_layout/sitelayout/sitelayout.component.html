@@ -37,7 +37,7 @@
                 <li *ngIf="checkAngularGrpPermission('Assets','Asset Portal Access', 1)" class="sidenav-item"
                     [routerLinkActive]="['active']">
                     <!-- <a [routerLink]="['/AssetPortal']" class="sidenav-link" target="_blank"> -->
-                    <a [routerLink]="['/asset-list']" class="sidenav-link">
+                    <a [routerLink]="['/asset-list']" class="sidenav-link" [queryParams]="{}">
                         <!-- <i class="sidenav-icon ion ion-md-speedometer"></i> -->
                         <img class="sidenav-icon ion" src="assets/img/icons/assets.svg">
                         <div>Assets</div>
@@ -79,14 +79,14 @@
                 </li>
 
                 <li class="sidenav-item" [routerLinkActive]="['open']"
-                    *ngIf="checkMenuAccess('Energy', 1) && checkEnergyPortalAccess('Energy Portal Access') && checkModuleEnabled('EPC Module') && checkEnergyPortalAccess('Dashboard')">
+                    *ngIf="checkMenuAccess('Energy', 1) && checkEnergyPortalAccess('Energy Portal Access') && (checkModuleEnabled('Energy') || checkModuleEnabled('EPC Module')) && checkEnergyPortalAccess('Dashboard')">
                     <a href="javascript:void(0)" class="sidenav-link sidenav-toggle">
                         <img class="sidenav-icon ion" src="assets/img/icons/energy.svg">
                         <div>Energy</div>
                     </a>
                     <ul class="sidenav-menu">
                         <li class="sidenav-item" [routerLinkActive]="['active']"
-                            *ngIf="checkMenuAccess('Energy', 1) && checkEnergyPortalAccess('Dashboard') && checkModuleEnabled('EPC Module')">
+                            *ngIf="checkMenuAccess('Energy', 1) && checkEnergyPortalAccess('Dashboard') && (checkModuleEnabled('Energy') || checkModuleEnabled('EPC Module'))">
                             <a [routerLink]="['/epc/dashboard']" class="sidenav-link">
                                 <div>Dashboard</div>
                             </a>
@@ -105,7 +105,7 @@
                     </a>
                     <ul class="sidenav-menu">
                         <li class="sidenav-item" [routerLinkActive]="['active']"
-                            *ngIf="tasksPortalPermissions.indexOf('Event Dashboard') != -1">
+                            *ngIf="tasksPortalPermissions.indexOf('Dashboard') != -1">
                             <a [routerLink]="['/tasks/dashboard']" class="sidenav-link">
                                 <div>Dashboard</div>
                             </a>
@@ -121,7 +121,7 @@
                         <li class="sidenav-item" [routerLinkActive]="['active']"
                             *ngIf="tasksPortalPermissions.indexOf('Manage User Events') != -1">
                             <a [routerLink]="['/tasks/tasks']" class="sidenav-link">
-                                <div>Tasks</div>
+                                <div>Worktray</div>
                             </a>
                         </li>
 
@@ -349,7 +349,7 @@
 
                     <ul class="sidenav-menu">
                         <li class="sidenav-item" [routerLinkActive]="['active']"
-                            *ngIf="checkValueInArray('Charts Tab')">
+                            *ngIf="checkValueInArray('Dashboard')">
                             <a [routerLink]="['/servicing/dashboard']" class="sidenav-link">
                                 <div>Dashboard</div>
                             </a>
@@ -380,7 +380,7 @@
                     </a>
                     <ul class="sidenav-menu">
                         <li class="sidenav-item" [routerLinkActive]="['active']"
-                            *ngIf="SurveyPortalPermissions.indexOf('Survey Dashboard') != -1">
+                            *ngIf="SurveyPortalPermissions.indexOf('Dashboard') != -1">
                             <a [routerLink]="['/surveying/dashboard']" class="sidenav-link">
                                 <div>Dashboard</div>
                             </a>
@@ -538,6 +538,11 @@
                                 <div>Works Orders</div>
                             </a>
                         </li>
+                        <li class="sidenav-item" [routerLinkActive]="['active']" *ngIf="currentUser?.admin == 'Y'">
+                            <a [routerLink]="['/chart-settings']" class="sidenav-link">
+                                <div>Dashboards</div>
+                            </a>
+                        </li>
                     </ul>
                 </li>
 
@@ -582,7 +587,7 @@
 
                             <ul class="sidenav-menu">
                                 <li class="sidenav-item" [routerLinkActive]="['active']"
-                                    [routerLinkActiveOptions]="{exact:true}" *ngIf="checkValueInArray('Charts Tab')">
+                                    [routerLinkActiveOptions]="{exact:true}" *ngIf="checkValueInArray('Dashboard')">
                                     <a [routerLink]="['/servicing/dashboard']" class="sidenav-link">
                                         <div>Dashboard</div>
                                     </a>
@@ -605,7 +610,7 @@
                             </a>
                             <ul class="sidenav-menu">
                                 <li class="sidenav-item" [routerLinkActive]="['active']"
-                                    *ngIf="tasksPortalPermissions.indexOf('Event Dashboard') != -1">
+                                    *ngIf="tasksPortalPermissions.indexOf('Dashboard') != -1">
                                     <a [routerLink]="['/tasks/dashboard']" class="sidenav-link">
                                         <div>Dashboard</div>
                                     </a>
@@ -621,7 +626,7 @@
                                 <li class="sidenav-item" [routerLinkActive]="['active']"
                                     *ngIf="tasksPortalPermissions.indexOf('Manage User Events') != -1">
                                     <a [routerLink]="['/tasks/tasks']" class="sidenav-link">
-                                        <div>Tasks</div>
+                                        <div>Worktray</div>
                                     </a>
                                 </li>
 
@@ -867,7 +872,7 @@
                                     <img src="assets/img/avatars/user-image.png" alt
                                         class="d-block ui-w-30 rounded-circle">
                                     <span
-                                        class="px-1 mr-lg-2 ml-2 ml-lg-0">{{currentUser?.userName | titlecase  }}</span>
+                                        class="px-1 mr-lg-2 ml-2 ml-lg-0">{{currentUser?.userName}}</span>
                                 </span>
                             </a>
                             <div class="dropdown-menu dropdown-menu-right">
@@ -909,7 +914,7 @@
                             ©
                         </div>
                         <div class="pt-3 mr-0">
-                            <span class="footer-text">Version 17.1.0</span>
+                            <span class="footer-text">Version 17.1.2</span>
                         </div>
                     </div>
                 </nav>

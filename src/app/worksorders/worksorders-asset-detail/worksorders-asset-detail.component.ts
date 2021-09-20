@@ -30,7 +30,7 @@ export class WorksordersAssetDetailComponent implements OnInit {
         sort: [],
         group: [],
         filter: {
-            logic: "or",
+            logic: "and",
             filters: []
         }
     }
@@ -55,10 +55,12 @@ export class WorksordersAssetDetailComponent implements OnInit {
     refusalCodeList: any;
     SwapPackageWindow = false;
     SwapPackagesForAssetsDataGrid: any
-
+    addAssetWorklistWindow = false
+    addWorkorderType = 'all'
     worksOrderAccess: any = []
     worksOrderUsrAccess: any = [];
-
+    selectedChecklistsingleItem: any = [];
+    itemPassToWorkList: any;
     userType: any = []
 
     constructor(
@@ -242,7 +244,7 @@ export class WorksordersAssetDetailComponent implements OnInit {
                     } else {
                         this.alertService.error(apiData.pRETURNMESSAGE);
                     }
-                    
+
                 }
 
             },
@@ -307,7 +309,7 @@ export class WorksordersAssetDetailComponent implements OnInit {
 
                     }
 
-                   
+
 
                 }
 
@@ -335,7 +337,7 @@ export class WorksordersAssetDetailComponent implements OnInit {
             'z-index': 1000
         });
 
-        this.confirmationDialogService.confirm('Please confirm..', 'Clear Refusal')
+        this.confirmationDialogService.confirm('Please confirm..', `Clear Refusal ${this.selectedItem.woadrefusal} for ${this.selectedItem.atadescription} work item?`)
             .then(
                 (confirmed) => {
 
@@ -521,7 +523,7 @@ export class WorksordersAssetDetailComponent implements OnInit {
                 err => this.alertService.error(err)
             )
         )
-     
+
 
     }
 
@@ -537,9 +539,9 @@ export class WorksordersAssetDetailComponent implements OnInit {
             this.worksOrdersService.GetDefaultCostForAssetWork(params).subscribe(
                 (data) => {
                     let costData = data.data[0];
-                  
+
                     this.itemData.wo_forcast = costData.soR_RATE;
-                   
+
                     this.itemData.work_cost = this.itemData.asaquantity * this.itemData.wo_forcast;
                     this.itemData.cost_override = costData.overridE_COST;
                     this.chRef.detectChanges();
@@ -570,7 +572,7 @@ export class WorksordersAssetDetailComponent implements OnInit {
 
     editWorkPackageQtyCostSave() {
         this.loading = true;
-       
+
         let params = {
             "PWOSEQUENCE": this.selectedItem.wosequence,
             "PWOPSEQUENCE": this.selectedItem.wopsequence,
@@ -640,7 +642,7 @@ export class WorksordersAssetDetailComponent implements OnInit {
         this.selectedItem = item;
 
         this.loading = true;
-       
+
         let params = {
             "WOSEQUENCE": this.selectedItem.wosequence,
             "WOPSEQUENCE": this.selectedItem.wopsequence,
@@ -687,7 +689,7 @@ export class WorksordersAssetDetailComponent implements OnInit {
 
     setSeletedRow(dataItem) {
         this.selectedItem = dataItem;
-       
+
     }
 
 
@@ -710,7 +712,38 @@ export class WorksordersAssetDetailComponent implements OnInit {
 
 
     woMenuBtnSecurityAccess(menuName) {
-        return this.helperService.checkWorkOrderAreaAccess(this.userType, this.worksOrderAccess, this.worksOrderUsrAccess, menuName)
+        return this.helperService.checkWorkOrderAreaAccess(this.worksOrderUsrAccess, menuName)
     }
+
+    openAddAssetWorkordersListWindow(){
+      let item = this.selectedRow
+      this.selectedChecklistsingleItem = item
+      this.itemPassToWorkList = item;
+      this.addAssetWorklistWindow = true;
+       $('.woassetdetailoverlay').addClass('ovrlay');
+    }
+
+    closeAddAssetWorkordersListWindow(eve) {
+      this.addAssetWorklistWindow = false;
+      $('.woassetdetailoverlay').removeClass('ovrlay');
+
+      this.getData();
+      this.chRef.detectChanges();
+    }
+
+    disableMainActions(type) {
+
+      if (type == "Add Work") {
+        let item = this.selectedRow
+        if(item.wostatus != 'New'){
+          return true
+        }
+      }
+    }
+
+    refreshGrid(eve) {
+
+    }
+
 
 }

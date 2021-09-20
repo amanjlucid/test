@@ -151,7 +151,8 @@ export class VariationNewComponent implements OnInit {
         WOIREQUESTUSER: this.currentUser.userId,
         WOIREQUESTTYPE: 'Variation',
         WOISEQUENCE: 0,
-        WOSEQUENCE: wosequence
+        WOSEQUENCE: wosequence,
+        BlankVariation: false
       }
 
       this.subs.add(
@@ -191,6 +192,8 @@ export class VariationNewComponent implements OnInit {
   }
 
 
-
+  ReadOnlyReason() : boolean {
+    return (this.singleVariation?.woiissuestatus == "Accepted" || this.singleVariation?.woiissuestatus == "Issued");
+  }
 
 }

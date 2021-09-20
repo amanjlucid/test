@@ -34,7 +34,7 @@ export class WopmChecklistMasterComponent implements OnInit {
     sort: [],
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -57,7 +57,7 @@ export class WopmChecklistMasterComponent implements OnInit {
   ngOnInit(): void {
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.getChecklist();
-    this.sharedService.worksOrdersAccess.subscribe(data => { 
+    this.sharedService.worksOrdersAccess.subscribe(data => {
       this.wopmPortalAccess = data;
     });
   }
@@ -97,13 +97,13 @@ export class WopmChecklistMasterComponent implements OnInit {
             this.loading = false;
 
           }
-          
+
         }
       ))
   }
 
 
-  
+
   getYear(initialDate){
     var properDate = new Date(initialDate);
     var yearValue = properDate.getFullYear();
@@ -127,10 +127,6 @@ export class WopmChecklistMasterComponent implements OnInit {
           'wocheckresp': 'Responsibility',
           'wocheckcost': 'Cost',
           'woextrareF1':'Mail Merge Document',
-          'woextrareF2': 'User Ref 2',
-          'woextrareF3': 'User Ref 3',
-          'woextrareF4': 'User Ref 4',
-          'woextrareF5': 'User Ref 5',
           'createdby': 'Created By',
           'mPgqA': 'Created Date',
           'updatedby': 'Amended By',
@@ -173,8 +169,8 @@ export class WopmChecklistMasterComponent implements OnInit {
       }
     }
 
-    
-  
+
+
 
     openEditChecklist (action, record) {
 
@@ -224,16 +220,16 @@ export class WopmChecklistMasterComponent implements OnInit {
                 }
             });
       }
-    }    
+    }
 
 
-    deleteChecklist(dataitem) { 
+    deleteChecklist(dataitem) {
       this.currentRow = dataitem;
       this.confirmationDialogService.confirm('Please confirm..', 'Do you really want to delete this record ?')
       .then((confirmed) => (confirmed) ? this.deleteChecklistConfirmed(confirmed) : console.log(confirmed))
       .catch(() => console.log('User dismissed the dialog.'));
     }
-  
+
     deleteChecklistConfirmed(deleteConfirmed:boolean) {
       if (deleteConfirmed) {
         const checklist = {

@@ -83,42 +83,42 @@
               </multicheck-filter>
             </ng-template>
           </kendo-grid-column> -->
-          <kendo-grid-column field="issueLimit" title="Issue Limit" width="160" [filterable]="false">
+          <kendo-grid-column field="issueLimit" title="Issue Limit" width="160" [filterable]="false" [style]="{'text-align': 'right'}">
             <ng-template kendoGridCellTemplate let-dataItem>
                 <div class="exportDiv">
                   {{ dataItem.issueLimit | currency:"GBP":"symbol" }}
                 </div>
             </ng-template>
           </kendo-grid-column>
-          <kendo-grid-column field="variationLimit" title="Variation Limit" width="160" [filterable]="false">
+          <kendo-grid-column field="variationLimit" title="Variation Limit" width="160" [filterable]="false" [style]="{'text-align': 'right'}">
             <ng-template kendoGridCellTemplate let-dataItem>
                 <div class="exportDiv">
                 {{ dataItem.variationLimit | currency:"GBP":"symbol" }}
               </div>
             </ng-template>
           </kendo-grid-column>
-          <kendo-grid-column field="requestFeeLimit" title="Contract Fee Request Limit" width="160" [filterable]="false">
+          <kendo-grid-column field="requestFeeLimit" title="Contract Fee Request Limit" width="160" [filterable]="false" [style]="{'text-align': 'right'}">
             <ng-template kendoGridCellTemplate let-dataItem  >
               <div class="exportDiv">
                 {{ dataItem.requestFeeLimit | currency:"GBP":"symbol" }}
               </div>
             </ng-template>
           </kendo-grid-column>
-          <kendo-grid-column field="authFeeLimit" title="Contract Fee Authorisation Limit" width="160" [filterable]="false">
+          <kendo-grid-column field="authFeeLimit" title="Contract Fee Authorisation Limit" width="160" [filterable]="false" [style]="{'text-align': 'right'}">
             <ng-template kendoGridCellTemplate let-dataItem>
               <div class="exportDiv">
                 {{ dataItem.authFeeLimit | currency:"GBP":"symbol" }}
               </div>
             </ng-template>
           </kendo-grid-column>
-          <kendo-grid-column field="requestPaymentLimit" title="Payment Request Limit" width="180" [filterable]="false">
+          <kendo-grid-column field="requestPaymentLimit" title="Payment Request Limit" width="180" [filterable]="false" [style]="{'text-align': 'right'}">
             <ng-template kendoGridCellTemplate let-dataItem>
                 <div class="exportDiv">
                   {{ dataItem.requestPaymentLimit | currency:"GBP":"symbol" }}
                 </div>
             </ng-template>
           </kendo-grid-column>
-          <kendo-grid-column field="authPaymentLimit" title="Payment Authorise Limit" width="180" [filterable]="false">
+          <kendo-grid-column field="authPaymentLimit" title="Payment Authorise Limit" width="180" [filterable]="false" [style]="{'text-align': 'right'}">
             <ng-template kendoGridCellTemplate let-dataItem>
                 <div class="exportDiv">
                   {{ dataItem.authPaymentLimit | currency:"GBP":"symbol" }}
@@ -130,20 +130,27 @@
     </div>
   </div>
 
+
   <div class="disabledBackground"></div>
 
-</kendo-window>
+  <app-wopm-sec-jobroles [securityFunctionWindow]="securityFunctionWindow" [RoleType]="this.RoleType" [JobRole]="this.JobRole"
+  *ngIf="securityFunctionWindow" (closeSecurityFunctionWindow)="closeSecurityFunctionWindow($event)">
+  </app-wopm-sec-jobroles>
+
+   <app-management-edit-roles [editFormWindow]="editFormWindow" [selectedUserRole]="wopmUserRole"
+  [editFormType]="editFormType" [selectedWorksOrder]="selectedWorksOrder"
+  *ngIf="editFormWindow" (closeEditFormWindow)="closeEditFormWin($event)">
+  </app-management-edit-roles>
+
+  </kendo-window>
 
 
 
-<app-management-edit-roles [editFormWindow]="editFormWindow" [selectedUserRole]="wopmUserRole"
-[editFormType]="editFormType" [selectedWorksOrder]="selectedWorksOrder"
-*ngIf="editFormWindow" (closeEditFormWindow)="closeEditFormWin($event)">
-</app-management-edit-roles>
 
-<app-wopm-sec-jobroles [securityFunctionWindow]="securityFunctionWindow" [RoleType]="this.RoleType" [JobRole]="this.JobRole"
-*ngIf="securityFunctionWindow" (closeSecurityFunctionWindow)="closeSecurityFunctionWindow($event)">
-</app-wopm-sec-jobroles>
+
+
+
+
 
 
 

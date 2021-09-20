@@ -24,7 +24,7 @@ export class AsbestosRequestComponent implements OnInit {
     sort: [],
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }
@@ -79,7 +79,7 @@ export class AsbestosRequestComponent implements OnInit {
     } else {
       this.editDisable = true;
     }
-    
+
     this.asbestosRequestForm = this.fb.group({
       action: [this.selectedAsbestos.aaudactiontype, [Validators.required]],
       completionDate: [this.setInitialDate(this.selectedAsbestos.aaudcompletiondate.trim()), [Validators.required, DateValidator()]],
@@ -171,7 +171,7 @@ export class AsbestosRequestComponent implements OnInit {
   onSubmit() {
 
     this.submitted = true;
-    this.formErrorObject(); // empty form error 
+    this.formErrorObject(); // empty form error
     this.logValidationErrors(this.asbestosRequestForm);
     if (this.asbestosRequestForm.invalid) {
       return;

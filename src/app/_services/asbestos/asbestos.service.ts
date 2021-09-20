@@ -74,9 +74,9 @@ export class AsbestosService {
         'Content-Type': 'application/json'
       }),
     };
-    
+
     return this.http.post<any>(`${appConfig.apiUrl}/api/Asbestos/AddAttachment`, formObj)
-    
+
   }
 
   removeAttachment(attachmentModel) {
@@ -191,7 +191,7 @@ export class AsbestosService {
     return this.http.post<any>(`${appConfig.apiUrl}/api/Asbestos/UpdateRequestDescription`, body, httpOptions);
   }
 
-  dueDiligence(deligence) {
+  dueDiligence(deligence, fromWOPM) {
     let httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json'
@@ -199,9 +199,13 @@ export class AsbestosService {
     };
 
     let body = JSON.stringify(deligence);
-    return this.http.post<any>(`${appConfig.apiUrl}/api/Asbestos/DueDiligence`, body, httpOptions);
+    if(fromWOPM)
+    {
+      return this.http.post<any>(`${appConfig.apiUrl}/api/workorderdetails/InsertLogRecord`, body, httpOptions);
+    }else{
+      return this.http.post<any>(`${appConfig.apiUrl}/api/Asbestos/DueDiligence`, body, httpOptions);
+    }
   }
-
 
   getAsbestosUserSecurity(userId: string) {
     let httpOptions = {

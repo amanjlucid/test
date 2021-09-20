@@ -11,6 +11,19 @@
     padding: 0;
 }
 
+
+app-completion-list .completionGridRow {
+    height: calc(100% - 128px);
+}
+
+app-completion-list .completionGridRow .completioGridCol {
+    height: calc(100% - 25px);
+}
+
+app-completion-list .completionGridRow .completioGridCol #completioGrid {
+    height: 100%;
+}
+
 /* app-completion-list .k-window-content, app-completion-list .k-prompt-container {
     overflow: inherit !important;
 } */

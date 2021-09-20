@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
 import { SubSink } from 'subsink';
 import { GroupDescriptor, DataResult, process, State, SortDescriptor, distinct } from '@progress/kendo-data-query';
 import { PageChangeEvent, SelectableSettings } from '@progress/kendo-angular-grid';
@@ -43,7 +43,7 @@ export class ManagementSorComponent implements OnInit {
     constructor(
       private wopmConfigurationService: WopmConfigurationService,
       private alertService: AlertService,
-      private confirmationDialogService: ConfirmationDialogService,
+      private chRef: ChangeDetectorRef,
       private sharedService: SharedService,
       private router: Router,
       private helper: HelperService
@@ -62,31 +62,6 @@ export class ManagementSorComponent implements OnInit {
       this.subs.unsubscribe();
     }
 
-    ngAfterViewInit() {
-      this.subs.add(
-        this.sharedService.worksOrdersAccess.subscribe(
-          data => {
-            this.wopmSecurityList = data;
-            if (this.wopmSecurityList.length > 0) {
-              if (!(this.checkWorksOrdersAccess("SOR Tab") && this.checkWorksOrdersAccess("Works Order Portal Access"))) {
-                this.router.navigate(['/dashboard']);
-              }
-            } else {
-              this.router.navigate(['/dashboard']);
-            }
-          }
-        )
-      )
-    }
-
-    checkWorksOrdersAccess(val: string): Boolean {
-      if (this.wopmSecurityList != undefined) {
-      return this.wopmSecurityList.includes(val);
-      } else {
-        return false;
-      }
-    }
-
     distinctPrimitive(fieldName: string): any {
       return distinct(this.SORDetails, fieldName).map(item => {
         return { val: item[fieldName], text: item[fieldName] }
@@ -94,6 +69,7 @@ export class ManagementSorComponent implements OnInit {
     }
 
     getGridDataDetails() {
+      this.loading = true;
       this.subs.add(
         this.wopmConfigurationService.getWorksOrderSOR(this.selectedWorksOrder.wosequence).subscribe(
           data => {
@@ -103,6 +79,7 @@ export class ManagementSorComponent implements OnInit {
               this.SORDetailsTemp = Object.assign([], SORs);
               this.gridView = process(this.SORDetailsTemp, this.state);
               this.loading = false;
+              this.chRef.detectChanges();
             }
             else
             {

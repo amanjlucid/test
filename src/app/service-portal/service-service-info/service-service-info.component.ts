@@ -25,7 +25,7 @@ export class ServiceServiceInfoComponent implements OnInit {
     }],
     group: [],
     filter: {
-      logic: "or",
+      logic: "and",
       filters: []
     }
   }

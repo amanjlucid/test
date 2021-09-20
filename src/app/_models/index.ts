@@ -1,6 +1,6 @@
 export * from './user.model';
 export * from './loader';
-export * from './user-group.model' 
+export * from './user-group.model'
 export * from './group.model'
 export * from './charateristic-group.model'
 export * from './element-group.model'
@@ -28,7 +28,7 @@ export * from './workorders/workorders-detail.model';
 export * from './workorders/workorders-add-phase.model';
 export * from './workorders/workorders-add-asset.model';
 export * from './workorders/workorders-add-assetworklist.model';
-
+export * from './user-chart-setting-view-model.model';
 export * from './wopm-template.model';
 export * from './wopm-masterstage.model';
 export * from './wopm-checklistmaster.model';

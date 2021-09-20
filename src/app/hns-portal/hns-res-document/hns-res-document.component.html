@@ -1,68 +1,70 @@
 <kendo-window title="{{title}}" *ngIf="showDoc" (close)="closeDoc()" [top]="10" [minWidth]="700" [width]="870"
-  [height]="auto" [minHeight]="300">
-  <div class="row headingDetail">
-    <div class="headingDiv">
-      <div class="leftHheadingDiv">
-        <div class="tp">
-          <span class="lbl">Asset ID: </span> <span>{{selectedAction?.assid}}</span>
+  [height]="700"  >
+
+<div style="height:100%" >
+
+    <div class="row headingDetail">
+      <div class="headingDiv">
+        <div class="leftHheadingDiv">
+          <div class="tp">
+            <span class="lbl">Asset ID: </span> <span>{{selectedAction?.assid}}</span>
+          </div>
+
         </div>
 
-      </div>
+        <div class="rightHheadingDiv">
+          <div class="tp">
+            <span class="lbl">Address: </span>
+            <span>{{selectedAction?.astconcataddress}}</span>
+          </div>
 
-      <div class="rightHheadingDiv">
-        <div class="tp">
-          <span class="lbl">Address: </span>
-          <span>{{selectedAction?.astconcataddress}}</span>
         </div>
+      </div>
 
+    </div>
+
+    <div style="height:92%" class="row mt-2">
+      <div class="col-md-12">
+        <kendo-grid style="height:100%" [data]="gridData" scrollable="virtual" [rowHeight]="36" [selectable]="{
+          mode: 'multiple'
+        }" filterable="menu" [resizable]="false" [sortable]="{
+          allowUnsort: allowUnsort,
+          mode: multiple ? 'multiple' : 'single'
+          }" [sort]="state.sort" (sortChange)="sortChange($event)" (filterChange)="filterChange($event)"
+          (cellClick)="cellClickHandler($event)" [filter]="state.filter">
+          <kendo-grid-column field="description" title="" width="20" [filterable]="false">
+            <ng-template kendoGridCellTemplate let-dataItem>
+              <img data-toggle="dropdown" aria-expanded="true" style="height:14px; width:16px; margin-top: 0px;"
+                class="attachmentIcon" src="assets/img/icons/attach.png" />
+            </ng-template>
+          </kendo-grid-column>
+          <kendo-grid-column field="description" title="Description" width="120">
+          </kendo-grid-column>
+          <kendo-grid-column field="fileName" title="Filename" width="220">
+          </kendo-grid-column>
+          <kendo-grid-column field="ntpmodified" title="Modified" width="100">
+          </kendo-grid-column>
+
+
+        </kendo-grid>
       </div>
     </div>
 
-  </div>
+    <div style="height:20px" class="row mt-2">
+      <div class="col-md-8 text-left leftSideBtn">
+        <button *ngIf="hnsPermission.indexOf('View Document') != -1" class="btn btn-sm themeButton" (click)="viewDocument()">View Document</button>
+        <button *ngIf="hnsPermission.indexOf('Edit Description') != -1" class="btn btn-sm themeButton" (click)="openEditDoc()">Edit Description</button>
+        <button *ngIf="hnsPermission.indexOf('Upload Document') != -1" class="btn btn-sm themeButton" (click)="uploadImage()">Upload Document</button>
+        <button *ngIf="hnsPermission.indexOf('Remove Document') != -1" class="btn btn-sm themeButton" (click)="openConfirmationDialog()">Remove Document</button>
+      </div>
 
-  <div class="row mt-2">
-    <div class="col-md-12">
-      <kendo-grid [data]="gridData" [height]="410" [selectable]="{
-        mode: 'multiple'
-      }" filterable="menu" [resizable]="true" [sortable]="{
-        allowUnsort: allowUnsort,
-        mode: multiple ? 'multiple' : 'single'
-        }" [sort]="state.sort" (sortChange)="sortChange($event)" (filterChange)="filterChange($event)"
-        (cellClick)="cellClickHandler($event)" [filter]="state.filter">
+      <div class="col-md-4 text-right rightSideBtn">
+        <button class="btn btn-sm themeButton" (click)="closeDoc()"> Close </button>
+      </div>
 
-
-        <kendo-grid-column field="description" title="" width="20" [filterable]="false">
-          <ng-template kendoGridCellTemplate let-dataItem>
-            <img data-toggle="dropdown" aria-expanded="true" style="height:14px; width:16px; margin-top: 0px;"
-              class="attachmentIcon" src="assets/img/icons/attach.png" />
-          </ng-template>
-        </kendo-grid-column>
-        <kendo-grid-column field="description" title="Description" width="120">
-        </kendo-grid-column>
-        <kendo-grid-column field="fileName" title="Filename" width="220">
-        </kendo-grid-column>
-        <kendo-grid-column field="ntpmodified" title="Modified" width="100">
-        </kendo-grid-column>
-
-
-      </kendo-grid>
-    </div>
-  </div>
-
-  <div class="row mt-2">
-    <div class="col-md-8 text-left leftSideBtn">
-      <button *ngIf="hnsPermission.indexOf('View Document') != -1" class="btn btn-sm themeButton" (click)="viewDocument()">View Document</button>
-      <button *ngIf="hnsPermission.indexOf('Edit Description') != -1" class="btn btn-sm themeButton" (click)="openEditDoc()">Edit Description</button>
-      <button *ngIf="hnsPermission.indexOf('Upload Document') != -1" class="btn btn-sm themeButton" (click)="uploadImage()">Upload Document</button>
-      <button *ngIf="hnsPermission.indexOf('Remove Document') != -1" class="btn btn-sm themeButton" (click)="openConfirmationDialog()">Remove Document</button>
-    </div>
-
-    <div class="col-md-4 text-right rightSideBtn">
-      <button class="btn btn-sm themeButton" (click)="closeDoc()"> Close </button>
     </div>
 
   </div>
-
 
   <div class="docOvrlay"></div>
 
