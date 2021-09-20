@@ -52,6 +52,7 @@ export class DashboardChartSharedComponent implements OnInit {
   checkLayoutResized = false;
   chartDivHeight = window.innerHeight - 200;
   hideChart = false;
+  uriEncodedPortalName = '';
 
   constructor(
     private alertService: AlertService,
@@ -79,6 +80,7 @@ export class DashboardChartSharedComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.uriEncodedPortalName = encodeURIComponent(this.portalName);
     //UPDATE LAYOUT HEIGHT ON LOAD
     this.updateChartLayoutSize(true);
 
@@ -89,7 +91,7 @@ export class DashboardChartSharedComponent implements OnInit {
 
     //GET MAXIMUM NUMBER OF CHART FOR THE DASHBOARD
     this.subs.add(
-      this.chartService.getUserChartByDashboard(this.portalName).subscribe(
+      this.chartService.getUserChartByDashboard(this.uriEncodedPortalName).subscribe(
         data => {
           if (data.isSuccess) {
             if (data.data.length) {
@@ -102,7 +104,7 @@ export class DashboardChartSharedComponent implements OnInit {
 
     //GET CHART AND ITS DATA
     this.subs.add(
-      this.chartService.getUserChartData(this.currentUser.userId, this.portalName)
+      this.chartService.getUserChartData(this.currentUser.userId, this.uriEncodedPortalName)
         .pipe(delay(500))//DELAY 500 MILISECOND 
         .subscribe(
           async data => {
@@ -244,7 +246,7 @@ export class DashboardChartSharedComponent implements OnInit {
 
         let height = 0;
         let top;
-      
+
         for (let i = 0; i < splitters.length; i++) {
           if (splitters[i]) {
 
@@ -277,7 +279,7 @@ export class DashboardChartSharedComponent implements OnInit {
                   const lastContainerHeightPer = (height * 100) / currentHeight;
                   const lastContainerPrevHeight = lastContainer.config.height;
                   lastContainer.config.height = lastContainerPrevHeight + lastContainerHeightPer;
-                  
+
                   if (lastContainer.config.height > 50) {
                     lastContainer.config.height = 50
                   }
@@ -942,7 +944,7 @@ export class DashboardChartSharedComponent implements OnInit {
     }
     let state = this.myLayout.toConfig();
     state.layoutHeight = this.myLayout.height;
-    const chartState = { UserId: this.currentUser.userId, ChartData: JSON.stringify(state), dashboard: this.portalName }
+    const chartState = { UserId: this.currentUser.userId, ChartData: JSON.stringify(state), dashboard: this.uriEncodedPortalName }
     this.subs.add(
       this.chartService.saveUserChartData(chartState).subscribe(
         data => {
@@ -959,7 +961,7 @@ export class DashboardChartSharedComponent implements OnInit {
 
   deleteChartState() {
     this.subs.add(
-      this.chartService.DeleteChartState(this.portalName).subscribe(
+      this.chartService.DeleteChartState(this.uriEncodedPortalName).subscribe(
         data => {
           if (data.isSuccess) {
             this.alertService.success("Chart state deleted successfully.")

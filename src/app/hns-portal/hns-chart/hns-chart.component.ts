@@ -11,7 +11,7 @@ import { Router } from "@angular/router"
 
 export class HnsChartComponent implements OnInit {
   portalNameForChart = 'Health&Safety';
-  portalName: string = "HNS";
+  portalName: string = "Health & Safety";
   servicePortalAccess: any = [];
   subs = new SubSink();
 
