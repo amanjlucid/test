@@ -73,8 +73,6 @@ export class ReportsComponent implements OnInit {
     width: 'auto',
   }
 
-
-
   selectedCategories: any = [];
   selectedCategory: any = [];
   outputColumns: any;
@@ -135,7 +133,11 @@ export class ReportsComponent implements OnInit {
     this.tooltipDir.hide();
   }
   filter: CompositeFilterDescriptor;
-
+  gridHeight = 750;
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    this.updateGridHeight();
+  }
 
 
   constructor(
@@ -148,8 +150,20 @@ export class ReportsComponent implements OnInit {
     this.setSelectableSettings();
   }
 
+  updateGridHeight() {
+    const innerHeight = window.innerHeight; 
+    if(innerHeight < 754 ){
+      this.gridHeight = innerHeight - 300;
+    } else {
+      this.gridHeight = innerHeight - 230;
+    }
+   
+   }
+
   ngOnInit(): void {
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    this.updateGridHeight();
+
     this.subs.add(
       forkJoin([this.reportService.getCategories(), this.reportService.getUserCategory(), this.reportService.getColumns()]).subscribe(
         res => {

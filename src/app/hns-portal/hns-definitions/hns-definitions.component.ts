@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy, HostListener } from '@angular/core';
 import { DataResult, process, State, CompositeFilterDescriptor, SortDescriptor, GroupDescriptor, distinct } from '@progress/kendo-data-query';
 import { PageChangeEvent } from '@progress/kendo-angular-grid';
 import { SubSink } from 'subsink';
@@ -76,7 +76,12 @@ export class HnsDefinitionsComponent implements OnInit, OnDestroy {
   loading: boolean = false;
   hnsPermission: any = [];
   activeInactive: any = "active";
-  //contextMenus = [];
+  gridHeight = 750;
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    this.updateGridHeight();
+  }
+  
 
   constructor(
     private assetAttributeService: AssetAttributeService,
@@ -88,11 +93,21 @@ export class HnsDefinitionsComponent implements OnInit, OnDestroy {
     private helper: HelperService
   ) { }
 
+  updateGridHeight() {
+    const innerHeight = window.innerHeight; 
+    if(innerHeight < 600 || innerHeight == 685){
+      this.gridHeight = window.innerHeight - 280;  
+    } else {
+      this.gridHeight = window.innerHeight - 220;
+    }
+  }
+
   ngOnInit() {
 
     //update notification on top
     this.helper.updateNotificationOnTop();
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    this.updateGridHeight();
 
     this.subs.add(
       this.searchTerm$

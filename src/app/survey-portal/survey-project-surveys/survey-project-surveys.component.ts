@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef, HostListener } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AlertService, LoaderService,  HelperService, SharedService, SurveyPortalService, AssetAttributeService } from '../../_services';
 import { SubSink } from 'subsink';
@@ -57,6 +57,12 @@ export class SurveyProjectSurveysComponent implements OnInit {
     addressSearch$ = new Subject<any>();
     srvCodeSearch$ = new Subject<any>();
 
+    tbodyHeight = "580px";
+    @HostListener('window:resize', ['$event'])
+    onResize(event) {
+      this.updateGridHeight();
+    }
+
   constructor(
     private loaderService: LoaderService,
     private alertService: AlertService,
@@ -69,12 +75,19 @@ export class SurveyProjectSurveysComponent implements OnInit {
 
   ) { }
 
+  updateGridHeight() {
+    const innerHeight = window.innerHeight;
+    this.tbodyHeight = `${innerHeight - 330}px`;
+  }
+
   ngOnDestroy() {
     this.subs.unsubscribe();
   }
 
   ngOnInit( ): void {
     this.loaderService.pageShow();
+    this.updateGridHeight();
+    
     this.subs.add(this.sharedService.surveyPortalSecurityList.subscribe(data => { this.securityFunctionAccess = data }));
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.selectedProject = JSON.parse(sessionStorage.getItem('SurvProj'));

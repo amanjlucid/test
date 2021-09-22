@@ -74,7 +74,7 @@
                 scrollable="virtual" [rowHeight]="36" kendoTreeListExpandable [sortable]="true" [sort]="sort"
                 filterable="menu" [filter]="filter" (filterChange)="onFilterChange($event)" [pageSize]="gridPageSize"
                 [navigable]="false" kendoTreeListSelectable [selectable]="settings" [(selectedItems)]="selected"
-                [height]="720" [virtualColumns]="true" [loading]="loading" [resizable]="true"
+                [height]="gridHeight" [virtualColumns]="true" [loading]="loading" [resizable]="true"
                 (cellClick)="cellClickHandler($event)" [rowClass]="rowCallback">
 
                 <kendo-treelist-column field="wosequence" title="" [width]="37" [sortable]="false" [resizable]="false"

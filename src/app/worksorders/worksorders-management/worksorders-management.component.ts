@@ -85,6 +85,11 @@ export class WorksordersManagementComponent implements OnInit {
   menuData: any;
   mousePositioin: any = 0;
   openDefectsList = false;
+  gridHeight = 750;
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    this.updateGridHeight();
+  }
 
   constructor(
     private worksorderManagementService: WorksorderManagementService,
@@ -98,9 +103,21 @@ export class WorksordersManagementComponent implements OnInit {
 
   ) { }
 
+  updateGridHeight() {
+    this.gridHeight = window.innerHeight - 200;
+    if (this.gridHeight > 900) {
+      this.gridPageSize = 40;
+    } else {
+      this.gridPageSize = 25;
+    }
+
+  }
+
   ngOnInit(): void {
     //update notification on top
     this.helperService.updateNotificationOnTop();
+    
+    this.updateGridHeight();
 
     this.subs.add(
       combineLatest([

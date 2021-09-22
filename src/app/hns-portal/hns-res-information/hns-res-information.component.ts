@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewEncapsulation, HostListener } from '@angular/core';
 import { DataResult, process, State, CompositeFilterDescriptor, SortDescriptor, GroupDescriptor, distinct } from '@progress/kendo-data-query';
 import { PageChangeEvent, RowClassArgs, BaseFilterCellComponent, FilterService } from '@progress/kendo-angular-grid';
 import { AssetAttributeService, AlertService, SharedService, HnsResultsService, HelperService } from '../../_services';
@@ -16,6 +16,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
   styleUrls: ['./hns-res-information.component.css'],
   encapsulation: ViewEncapsulation.None
 })
+
 export class HnsResInformationComponent implements OnInit {
 
   subs = new SubSink(); // to unsubscribe services
@@ -53,6 +54,11 @@ export class HnsResInformationComponent implements OnInit {
   dialogOpened: boolean = false;
   validatReportString: string;
   apiColFilter: any = [];
+  gridHeight = 750;
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    this.updateGridHeight();
+  }
 
   constructor(
     private assetAttributeService: AssetAttributeService,
@@ -62,6 +68,10 @@ export class HnsResInformationComponent implements OnInit {
     private helperService: HelperService
 
   ) { }
+
+  updateGridHeight() {
+    this.gridHeight = window.innerHeight - 340;
+  }
 
   public distinctPrimitive(fieldName: string, arr): any {
     return distinct(arr, fieldName).map(item => item[fieldName]);
@@ -73,6 +83,7 @@ export class HnsResInformationComponent implements OnInit {
     this.sharedService.changeResPageName("Information");
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.headerFilters.UserId = this.currentUser.userId;
+    this.updateGridHeight();
 
     this.query = this.stateChange.pipe(
       tap(state => {
@@ -310,12 +321,11 @@ export class HnsResInformationComponent implements OnInit {
     } else {
       // compare first click to this click and see if they occurred within double click threshold
       if (((new Date().getTime()) - this.touchtime) < 400) {
-        if(this.hnsPermission.indexOf('Edit Answer') != -1)
-        {
-        // double click occurred
-        $('.actionOverlay').addClass('ovrlay');
-        this.selectedAction = dataItem;
-        this.openEditAnswer(dataItem);
+        if (this.hnsPermission.indexOf('Edit Answer') != -1) {
+          // double click occurred
+          $('.actionOverlay').addClass('ovrlay');
+          this.selectedAction = dataItem;
+          this.openEditAnswer(dataItem);
         }
 
         this.touchtime = 0;

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewEncapsulation, HostListener } from '@angular/core';
 import { DataResult, process, State, CompositeFilterDescriptor, SortDescriptor, GroupDescriptor, distinct } from '@progress/kendo-data-query';
 import { PageChangeEvent, RowClassArgs, BaseFilterCellComponent, FilterService } from '@progress/kendo-angular-grid';
 import { AssetAttributeService, AlertService, SharedService, HnsResultsService, HelperService } from '../../_services';
@@ -47,7 +47,12 @@ export class HnsResSummaryComponent implements OnInit {
   hnsPermission: any = [];
   dialogOpened: boolean = false;
   validatReportString: string;
-  apiColFilter:any = [];
+  apiColFilter: any = [];
+  gridHeight = 750;
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    this.updateGridHeight();
+  }
 
   constructor(
     private assetAttributeService: AssetAttributeService,
@@ -57,6 +62,10 @@ export class HnsResSummaryComponent implements OnInit {
     private helperService: HelperService
 
   ) { }
+
+  updateGridHeight() {
+    this.gridHeight = window.innerHeight - 340;
+  }
 
   public distinctPrimitive(fieldName: string, arr): any {
     return distinct(arr, fieldName).map(item => item[fieldName]);
@@ -69,6 +78,7 @@ export class HnsResSummaryComponent implements OnInit {
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.headerFilters.UserId = this.currentUser.userId;
     this.headerFilters.Textstring = '';
+    this.updateGridHeight();
 
     this.query = this.stateChange.pipe(
       tap(state => {
@@ -222,7 +232,7 @@ export class HnsResSummaryComponent implements OnInit {
     if (this.headerFilters.Definition != "") {
       this.headerFilters.Definition = this.headerFilters.Definition.replace(/,\s*$/, "");
     }
-      
+
   }
 
   changeFilterState(obj) {
@@ -367,7 +377,7 @@ export class HnsResSummaryComponent implements OnInit {
     } else if (obj.field == "asspostcode") {
       this.headerFilters.Postcode = obj.value;
     } else if (obj.field == "hascode") {
-      this.headerFilters.Definition += obj.value+',';
+      this.headerFilters.Definition += obj.value + ',';
     } else if (obj.field == "hasversion") {
       let findObj = this.filters.filter(x => x.field == obj.field);
       if (findObj.length == 1) {

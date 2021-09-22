@@ -30,7 +30,7 @@
         <div class="col-md-12">
 
             <kendo-grid (groupChange)="groupChange($event)" [group]="state.group" [groupable]="true" [data]="gridView"
-                [height]="720" filterable="menu" [loading]="loading" [resizable]="true" [sortable]="{
+                [height]="gridHeight" filterable="menu" [loading]="loading" [resizable]="true" [sortable]="{
         allowUnsort: allowUnsort,
         mode: multiple ? 'multiple' : 'single'
         }" [skip]="state.skip" [sort]="state.sort" [selectable]="selectableSettings" kendoGridSelectBy="eventTypeCode"

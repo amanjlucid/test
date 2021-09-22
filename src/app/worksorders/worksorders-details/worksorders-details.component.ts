@@ -1791,6 +1791,7 @@ export class WorksordersDetailsComponent implements OnInit, AfterViewInit {
 
   updateGridHeight() {
     const innerHeight = window.innerHeight - 200;
+   
     if (this.filterToggle) {
       this.gridHeight = innerHeight - 330;
     } else {

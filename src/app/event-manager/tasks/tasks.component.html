@@ -35,7 +35,7 @@
         <div class="col-md-12" kendoTooltip position="right" showOn="none" [tooltipTemplate]="template"
             filter=".k-grid td" (mouseover)="showTooltip($event)" tooltipClass="tooltip-class">
             <kendo-grid (groupChange)="groupChange($event)" [group]="state.group" [groupable]="true" [kendoGridGroupBinding]="userEventList" [pageSize]="500"  scrollable="virtual" [rowHeight]="36"
-                [height]="720" [loading]="loading" filterable="menu" [resizable]="true" [sortable]="{
+                [height]="gridHeight" [loading]="loading" filterable="menu" [resizable]="true" [sortable]="{
     allowUnsort: allowUnsort,
     mode: multiple ? 'multiple' : 'single'
     }" [skip]="state.skip" [sort]="state.sort" [selectable]="selectableSettings" kendoGridSelectBy="eventSequence"

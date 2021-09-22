@@ -82,7 +82,7 @@
         <div class="col-md-12" kendoTooltip position="top" showOn="none" [tooltipTemplate]="template"
             filter=".k-grid td" (mouseover)="showTooltip($event)" tooltipClass="tooltip-class">
             <kendo-grid [kendoGridGroupBinding]="reportList" [groupable]="true" (groupChange)="groupChange($event)"
-                [group]="state.group" [height]="720" [loading]="loading" filterable="menu" [resizable]="true"
+                [group]="state.group" [height]="gridHeight" [loading]="loading" filterable="menu" [resizable]="true"
                 [sortable]="{
     allowUnsort: allowUnsort,
     mode: multiple ? 'multiple' : 'single'

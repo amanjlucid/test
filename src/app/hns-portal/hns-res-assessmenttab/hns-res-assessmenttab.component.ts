@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewEncapsulation, HostListener } from '@angular/core';
 import { DataResult, process, State, CompositeFilterDescriptor, SortDescriptor, GroupDescriptor, distinct } from '@progress/kendo-data-query';
 import { PageChangeEvent, RowClassArgs, BaseFilterCellComponent, FilterService } from '@progress/kendo-angular-grid';
 import { AssetAttributeService, AlertService, SharedService, HnsResultsService, HelperService } from '../../_services';
@@ -59,6 +59,12 @@ export class HnsResAssessmenttabComponent implements OnInit {
   AssetHSView;
   Assessments: any = [];
   fromAssetView: boolean = false;
+  gridHeight = 750;
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    this.updateGridHeight();
+  }
+
   constructor(
     private assetAttributeService: AssetAttributeService,
     private alertService: AlertService,
@@ -67,6 +73,10 @@ export class HnsResAssessmenttabComponent implements OnInit {
     private helperService: HelperService
 
   ) { }
+
+  updateGridHeight() {
+    this.gridHeight = window.innerHeight - 340;
+  }
 
   public distinctPrimitive(fieldName: string, arr): any {
     return distinct(arr, fieldName).map(item => item[fieldName]);
@@ -80,14 +90,14 @@ export class HnsResAssessmenttabComponent implements OnInit {
     this.headerFilters.UserId = this.currentUser.userId;
     this.headerFilters.Textstring = '';
     this.displayCustomerColOnAssessment()
+    this.updateGridHeight();
 
-    if (localStorage.getItem('AssetHSView'))
-        {
-          this.AssetHSView = JSON.parse(localStorage.getItem('AssetHSView'));
-          this.fromAssetView = true;
-          localStorage.removeItem('AssetHSView')
-		  this.gridStat = "N";
-        }
+    if (localStorage.getItem('AssetHSView')) {
+      this.AssetHSView = JSON.parse(localStorage.getItem('AssetHSView'));
+      this.fromAssetView = true;
+      localStorage.removeItem('AssetHSView')
+      this.gridStat = "N";
+    }
 
     this.query = this.stateChange.pipe(
       tap(state => {
@@ -100,11 +110,10 @@ export class HnsResAssessmenttabComponent implements OnInit {
         //console.log(res);
         this.totalCount = (res.total != undefined) ? res.total : 0;
         this.loading = false;
-        if (this.fromAssetView)
-        {
-            this.Assessments = res.data;
-            this.gridStat = "N";
-            this.displayAssessmentFromAssetWindow()
+        if (this.fromAssetView) {
+          this.Assessments = res.data;
+          this.gridStat = "N";
+          this.displayAssessmentFromAssetWindow()
         }
       })
     );
@@ -122,10 +131,10 @@ export class HnsResAssessmenttabComponent implements OnInit {
             this.headerFilters.ActiveInactive = data.status;
 
             if (this.fromAssetView) {
-               this.headerFilters.LatestAssessment = 'N';
-               this.headerFilters.ActiveInactive  = 'X';
-               this.headerFilters.AssId  = this.AssetHSView.assid;
-             }
+              this.headerFilters.LatestAssessment = 'N';
+              this.headerFilters.ActiveInactive = 'X';
+              this.headerFilters.AssId = this.AssetHSView.assid;
+            }
 
           }
         }
@@ -164,18 +173,16 @@ export class HnsResAssessmenttabComponent implements OnInit {
         }
       )
     )
-      }
-      
-  displayAssessmentFromAssetWindow(){
-    this.AssetHSView
-     for(let obj of this.Assessments)
-     {
-        if (obj.hascode == this.AssetHSView.hascode && obj.hasversion == this.AssetHSView.hasversion && obj.assid == this.AssetHSView.assid && obj.hasassessmentref == this.AssetHSView.hasref )
-        {
-          this.openAssessment(obj);
-        }
-        this.fromAssetView = false;
   }
+
+  displayAssessmentFromAssetWindow() {
+    this.AssetHSView
+    for (let obj of this.Assessments) {
+      if (obj.hascode == this.AssetHSView.hascode && obj.hasversion == this.AssetHSView.hasversion && obj.assid == this.AssetHSView.assid && obj.hasassessmentref == this.AssetHSView.hasref) {
+        this.openAssessment(obj);
+      }
+      this.fromAssetView = false;
+    }
   }
 
 
@@ -361,8 +368,8 @@ export class HnsResAssessmenttabComponent implements OnInit {
       if (((new Date().getTime()) - this.touchtime) < 400) {
         // double click occurred
         if (this.hnsPermission.indexOf('View Assessment') != -1) {
-        $('.actionOverlay').addClass('ovrlay');
-        this.selectedAction = dataItem;
+          $('.actionOverlay').addClass('ovrlay');
+          this.selectedAction = dataItem;
           this.openAssessment(dataItem);
         }
         // this.definitionDetailIsTrue = true;
@@ -779,22 +786,22 @@ export class HnsResAssessmenttabComponent implements OnInit {
               })
               //console.log(this.gridView)
               let res = this.displayCustCol;
-              if(res == 'True'){
-              let label = {
-                'assid': 'Asset',
-                'astconcataddress': 'Address',
+              if (res == 'True') {
+                let label = {
+                  'assid': 'Asset',
+                  'astconcataddress': 'Address',
 
-                'asspostcode': 'PostCode',
-                'hascode': 'Definition',
-                'hasversion': 'Vers',
-                'hasassessmentref': 'Assessment Ref',
-                'hasassessmentdate': 'Assessment Date',
-                'hasassessor': 'Assessor',
-                'customerstatus': 'Customer Status',
-                'customerriskrating': 'Customer Risk Rating',
-                'customerreviewyear': 'Customer Review Year',
-                'hasasource': 'Source',
-                'supcode': 'Project',
+                  'asspostcode': 'PostCode',
+                  'hascode': 'Definition',
+                  'hasversion': 'Vers',
+                  'hasassessmentref': 'Assessment Ref',
+                  'hasassessmentdate': 'Assessment Date',
+                  'hasassessor': 'Assessor',
+                  'customerstatus': 'Customer Status',
+                  'customerriskrating': 'Customer Risk Rating',
+                  'customerreviewyear': 'Customer Review Year',
+                  'hasasource': 'Source',
+                  'supcode': 'Project',
                   'hasscoreactual': 'Risk Score',
                   'hasscoremax': 'Max Score',
                   'hasscoreperc': 'Score %',
@@ -802,7 +809,7 @@ export class HnsResAssessmenttabComponent implements OnInit {
                 }
                 this.helperService.exportAsExcelFile(tempData, 'HnS Assessment', label)
               }
-              else{
+              else {
                 let label = {
                   'assid': 'Asset',
                   'astconcataddress': 'Address',
@@ -815,9 +822,9 @@ export class HnsResAssessmenttabComponent implements OnInit {
                   'hasasource': 'Source',
                   'supcode': 'Project',
                   'hasscoreactual': 'Risk Score',
-                'hasscoremax': 'Max Score',
+                  'hasscoremax': 'Max Score',
                   'hasscoreperc': 'Score %',
-                'hasscorebandname': 'Risk Band',
+                  'hasscorebandname': 'Risk Band',
                 }
                 this.helperService.exportAsExcelFile(tempData, 'HnS Assessment', label)
               }
@@ -974,10 +981,9 @@ export class HnsResAssessmenttabComponent implements OnInit {
                 }
               )
             }
-              else
-              {
-                this.alertService.error("This report cannot be created because: " + data.message);
-              }
+            else {
+              this.alertService.error("This report cannot be created because: " + data.message);
+            }
 
           }
         )

@@ -124,7 +124,7 @@
             <th width="10px"></th>
           </tr>
         </thead>
-        <tbody class="fixTbody" (scroll)="onScroll($event)"
+        <tbody [ngStyle]="{'height' : tbodyHeight}" class="fixTbody" (scroll)="onScroll($event)"
           [ngStyle]="{'overflow-y': batchesLists.length == 0 ? 'hidden' : 'scroll' }">
 
           <tr class="odd gradeX" *ngFor="let batchList of batchesLists let i = index; trackBy:trackByFunction"
@@ -195,7 +195,7 @@
               <th class="midCol">Active</th>
             </tr>
           </thead>
-          <tbody style="overflow-y:hidden;">
+          <tbody [ngStyle]="{'height' : tbodyHeight}" style="overflow-y:hidden;">
             <tr>
               <td style="background:#f8f8f8; border: none;">
                 No records available.

@@ -87,7 +87,7 @@
       showOn="none" [tooltipTemplate]="template" filter=".k-grid td" tooltipClass="tooltip-class">
 
       <kendo-grid #grid="kendoGrid" [data]="gridView" [pageSize]="pageSize" [rowHeight]="36"
-        (pageChange)="pageChange($event)" scrollable="virtual" [height]="680" [loading]="loading" filterable="menu"
+        (pageChange)="pageChange($event)" scrollable="virtual" [height]="gridHeight" [loading]="loading" filterable="menu"
         [resizable]="true" [sortable]="{
           allowUnsort: true,
           mode: 'single'

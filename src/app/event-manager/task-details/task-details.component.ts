@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { SubSink } from 'subsink';
 import { GroupDescriptor, DataResult, process, State, SortDescriptor, distinct } from '@progress/kendo-data-query';
 import { PageChangeEvent, SelectableSettings } from '@progress/kendo-angular-grid';
@@ -55,6 +55,11 @@ export class TaskDetailsComponent implements OnInit {
   editType = 'edit';
   addEventWin = false;
   checkUserEvents: boolean = true;
+  gridHeight = 750;
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    this.updateGridHeight();
+  }
 
   constructor(
     private eventManagerService: EventManagerService,
@@ -65,10 +70,22 @@ export class TaskDetailsComponent implements OnInit {
     private helper: HelperService
   ) { }
 
+  updateGridHeight() {
+    this.gridHeight = window.innerHeight - 200;
+    
+    if (this.gridHeight > 900) {
+      this.pageSize = 40;
+    } else {
+      this.pageSize = 25;
+    }
+
+  }
+
   ngOnInit(): void {
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.setSelectableSettings();
     this.getEventData();
+    this.updateGridHeight();
     //update notification on top
     this.helper.updateNotificationOnTop();
   }

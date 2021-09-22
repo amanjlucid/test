@@ -1,7 +1,8 @@
+let host = '104.40.138.8';
+let apiFolder = "RowanwoodWebAPI";
+
 export const appConfig = {
-  apiUrl: `http://localhost:50912`,
-  appUrl: `http://localhost:4200`,
-  // apiUrl: `<<PortalURL>><<TestText>>/rowanwoodWebAPI`,
-   //appUrl: `<<PortalURL>><<TestText>>/rowanwood`,
-   silverLightUrl: `<<PortalURL>><<TestText>>/rowanwood`
- };
+    apiUrl: `http://${host}/${apiFolder}`,
+    appUrl: `http://${host}/rowanwood`,
+    silverLightUrl: `http://${host}/Rowanwood`
+};

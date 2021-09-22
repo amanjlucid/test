@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef, HostListener } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AlertService, LoaderService,  HelperService, SharedService, SurveyPortalService } from '../../_services';
 import { SubSink } from 'subsink';
@@ -52,6 +52,12 @@ export class SurveyProjectsComponent implements OnInit, OnDestroy {
     public selectedXport: SurveyPortalXports;
     supCodeSearch$ = new Subject<any>();
 
+    tbodyHeight = "580px";
+    @HostListener('window:resize', ['$event'])
+    onResize(event) {
+      this.updateGridHeight();
+    }
+
   constructor(
     private loaderService: LoaderService,
     private alertService: AlertService,
@@ -63,12 +69,19 @@ export class SurveyProjectsComponent implements OnInit, OnDestroy {
     private router: Router,
   ) { }
 
+  updateGridHeight() {
+    const innerHeight = window.innerHeight;
+    this.tbodyHeight = `${innerHeight - 330}px`;
+  }
+
   ngOnDestroy() {
     this.subs.unsubscribe();
   }
 
   ngOnInit( ): void {
     this.loaderService.pageShow();
+    this.updateGridHeight();
+    
     this.subs.add(this.sharedService.surveyPortalSecurityList.subscribe(data => { this.securityFunctionAccess = data }));
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.projectsListItem.SupCodeOnlyFilter = "";

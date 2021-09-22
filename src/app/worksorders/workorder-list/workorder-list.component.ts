@@ -95,6 +95,12 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
 
   disabledMilestone: boolean = true;
   showChecklist = false;
+  gridHeight = 750;
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    this.updateGridHeight();
+  }
+
 
   constructor(
     private worksOrderService: WorksOrdersService,
@@ -112,9 +118,27 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
     this.setInitialFilterValue();
   }
 
+  updateGridHeight() {
+    const innerHeight = window.innerHeight; 
+    if(innerHeight < 754 ){
+      this.gridHeight = innerHeight - 330;
+    } else {
+      this.gridHeight = innerHeight - 230;
+    }
+   
+    if (this.gridHeight > 900) {
+      this.pageSize = 40;
+    } else {
+      this.pageSize = 25;
+    }
+
+  }
+
   ngOnInit(): void {
     //update notification on top
     this.helper.updateNotificationOnTop();
+
+    this.updateGridHeight();
 
     //subscribe for work order security access
     this.subs.add(
@@ -211,12 +235,10 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
   }
 
 
-  showReportsMenu()
-  {
-    if(this.allowContractorAccessToMenu && (this.woMenuAccess('Report Programme Summary') || this.woMenuAccess('Report Phase') || this.woMenuAccess('Report Asset')))
-    {
+  showReportsMenu() {
+    if (this.allowContractorAccessToMenu && (this.woMenuAccess('Report Programme Summary') || this.woMenuAccess('Report Phase') || this.woMenuAccess('Report Asset'))) {
       return true
-    }else{
+    } else {
       return false
     }
 
@@ -591,8 +613,7 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
 
     let MenuList = this.worksOrderAccess
 
-    if(this.worksOrderUsrAccess.length > 0)
-    {
+    if (this.worksOrderUsrAccess.length > 0) {
       MenuList = this.worksOrderUsrAccess
     }
 
@@ -657,13 +678,12 @@ export class WorkorderListComponent implements OnInit, AfterViewInit {
   }
 
   openProgrammeLog(item, value) {
-    if(value)
-    {
+    if (value) {
       this.ProgrammeLogOpenedFrom = 'programme'
-    }else{this.ProgrammeLogOpenedFrom = 'workorder'}
+    } else { this.ProgrammeLogOpenedFrom = 'workorder' }
     let params = {
-       wprsequence: item.wprsequence
-      }
+      wprsequence: item.wprsequence
+    }
     this.wprsequence = params;
     this.selectedWorksOrder = item;
     this.ProgrammeLogWindow = true;

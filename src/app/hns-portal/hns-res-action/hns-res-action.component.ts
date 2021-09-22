@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewEncapsulation, HostListener } from '@angular/core';
 import { DataResult, process, State, CompositeFilterDescriptor, SortDescriptor, GroupDescriptor, distinct } from '@progress/kendo-data-query';
 import { PageChangeEvent, RowClassArgs, BaseFilterCellComponent, FilterService } from '@progress/kendo-angular-grid';
 import { AssetAttributeService, AlertService, SharedService, HnsResultsService, HelperService } from '../../_services';
@@ -53,6 +53,11 @@ export class HnsResActionComponent implements OnInit {
   validatReportString: string;
   columnFiltersOpt: any = [];
   apiColFilter: any = [];
+  gridHeight = 750;
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    this.updateGridHeight();
+  }
 
   constructor(
     private assetAttributeService: AssetAttributeService,
@@ -62,6 +67,10 @@ export class HnsResActionComponent implements OnInit {
     private helperService: HelperService
 
   ) { }
+
+  updateGridHeight() {
+    this.gridHeight = window.innerHeight - 340;
+  }
 
   public distinctPrimitive(fieldName: string, arr): any {
     return distinct(arr, fieldName).map(item => item[fieldName]);
@@ -73,6 +82,7 @@ export class HnsResActionComponent implements OnInit {
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.headerFilters.UserId = this.currentUser.userId;
     this.sharedService.changeResPageName("Actions");
+    this.updateGridHeight();
 
     this.query = this.stateChange.pipe(
       tap(state => {
@@ -351,24 +361,21 @@ export class HnsResActionComponent implements OnInit {
       if (((new Date().getTime()) - this.touchtime) < 400) {
         // double click occurred
         this.selectedAction = dataItem;
-        if (this.selectedAction.hasiactionstatus == "R" || this.selectedAction.hasiactionstatus == "O" || this.selectedAction.hasiactionstatus == "Y")
-        {
-          if (this.hnsPermission.indexOf('Edit Issue') != -1 || this.hnsPermission.indexOf('Edit Issue (Work Fields Only)') != -1)
-          {
-        $('.actionOverlay').addClass('ovrlay');
+        if (this.selectedAction.hasiactionstatus == "R" || this.selectedAction.hasiactionstatus == "O" || this.selectedAction.hasiactionstatus == "Y") {
+          if (this.hnsPermission.indexOf('Edit Issue') != -1 || this.hnsPermission.indexOf('Edit Issue (Work Fields Only)') != -1) {
+            $('.actionOverlay').addClass('ovrlay');
             this.openIssue("edit", dataItem)
           }
-          else{
-              this.alertService.error("You do not have permission to access the Edit Issue panel!");
+          else {
+            this.alertService.error("You do not have permission to access the Edit Issue panel!");
           }
         }
-        else
-        {
+        else {
           if (this.hnsPermission.indexOf('Edit Answer') != -1) {
             $('.actionOverlay').addClass('ovrlay');
             this.openEditAnswer(dataItem);
           }
-          else{
+          else {
             this.alertService.error("You do not have permission to access the Edit Answer panel!");
           }
 
@@ -455,9 +462,9 @@ export class HnsResActionComponent implements OnInit {
 
   openIssue(mode, data) {
 
-    if(mode == "edit"){
-      if(this.hnsPermission.indexOf('Edit Issue') == -1 ){
-        if(this.hnsPermission.indexOf('Edit Issue (Work Fields Only)') != -1 ){
+    if (mode == "edit") {
+      if (this.hnsPermission.indexOf('Edit Issue') == -1) {
+        if (this.hnsPermission.indexOf('Edit Issue (Work Fields Only)') != -1) {
           mode = 'editWorkOnly'
         }
       }
@@ -495,7 +502,7 @@ export class HnsResActionComponent implements OnInit {
       //else {
       //   this.headerFilters.Status = obj.value.toLocaleLowerCase();
       // }
-      this.headerFilters.Status += status+',';
+      this.headerFilters.Status += status + ',';
 
     } else if (obj.field == "asspostcode") {
       this.headerFilters.Postcode = obj.value;
@@ -579,7 +586,7 @@ export class HnsResActionComponent implements OnInit {
     } else if (obj.field == "hasipriority") {
       this.headerFilters.Priority += obj.value + ',';
     } else if (obj.field == "hasibudgetcode") {
-      this.headerFilters.Budget += obj.value+',';
+      this.headerFilters.Budget += obj.value + ',';
     } else if (obj.field == "hasitargetdate") {
       let findObj = this.filters.filter(x => x.field == obj.field);
       if (findObj.length == 1) {
@@ -594,7 +601,7 @@ export class HnsResActionComponent implements OnInit {
       }
 
     } else if (obj.field == "overduepending") {
-      this.headerFilters.OverdueFilter += obj.value+',';
+      this.headerFilters.OverdueFilter += obj.value + ',';
     } else if (obj.field == "hasalocation") {
       this.headerFilters.Location = obj.value;
     } else if (obj.field == "hasafloor") {
@@ -636,7 +643,7 @@ export class HnsResActionComponent implements OnInit {
       }
 
     } else if (obj.field == "hasiworkstatus") {
-      this.headerFilters.WorkStatus += obj.value+',';
+      this.headerFilters.WorkStatus += obj.value + ',';
     } else if (obj.field == "hasiworkauthoriseddate") {
       let findObj = this.filters.filter(x => x.field == obj.field);
       if (findObj.length == 1) {
@@ -781,13 +788,13 @@ export class HnsResActionComponent implements OnInit {
                 x.hasalatestassesment = x.hasalatestassesment == "N" ? "Historical" : x.hasalatestassesment == "Y" ? "Current" : "";
                 x.hasiactionstatus = x.hasiactionstatus == "O" ? "Outstanding" : x.hasiactionstatus == "R" ? "Resolved" : "";
                 x.amend = this.helperService.formatDateWithoutTime(x.hasimodifieddate)
-                x.hasitargetdate = x.hasitargetdate == "1753-01-01T00:00:00" ? "":this.helperService.formatDateWithoutTime(x.hasitargetdate)
+                x.hasitargetdate = x.hasitargetdate == "1753-01-01T00:00:00" ? "" : this.helperService.formatDateWithoutTime(x.hasitargetdate)
                 x.hasiresolutionDate = ''
-                x.hasaassessmentdate = x.hasaassessmentdate == "1753-01-01T00:00:00" ? "":this.helperService.formatDateWithoutTime(x.hasaassessmentdate)
-                x.hasimodifieddate = x.hasimodifieddate == "1753-01-01T00:00:00" ? "":this.helperService.formatDateWithoutTime(x.hasimodifieddate)
-                x.hasiworkauthoriseddate = x.hasiworkauthoriseddate == "1753-01-01T00:00:00" ? "":this.helperService.formatDateWithoutTime(x.hasiworkauthoriseddate)
-                x.hasiworkscheduledate = x.hasiworkscheduledate == "1753-01-01T00:00:00" ? "":this.helperService.formatDateWithoutTime(x.hasiworkscheduledate)
-                x.hasiworkcompletiondate  = x.hasiworkcompletiondate == "1753-01-01T00:00:00" ? "": this.helperService.formatDateWithoutTime(x.hasiworkcompletiondate)
+                x.hasaassessmentdate = x.hasaassessmentdate == "1753-01-01T00:00:00" ? "" : this.helperService.formatDateWithoutTime(x.hasaassessmentdate)
+                x.hasimodifieddate = x.hasimodifieddate == "1753-01-01T00:00:00" ? "" : this.helperService.formatDateWithoutTime(x.hasimodifieddate)
+                x.hasiworkauthoriseddate = x.hasiworkauthoriseddate == "1753-01-01T00:00:00" ? "" : this.helperService.formatDateWithoutTime(x.hasiworkauthoriseddate)
+                x.hasiworkscheduledate = x.hasiworkscheduledate == "1753-01-01T00:00:00" ? "" : this.helperService.formatDateWithoutTime(x.hasiworkscheduledate)
+                x.hasiworkcompletiondate = x.hasiworkcompletiondate == "1753-01-01T00:00:00" ? "" : this.helperService.formatDateWithoutTime(x.hasiworkcompletiondate)
               })
 
               let label = {

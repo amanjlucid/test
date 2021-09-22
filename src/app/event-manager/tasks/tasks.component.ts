@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, HostListener, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { SubSink } from 'subsink';
 import { GroupDescriptor, DataResult, process, State, SortDescriptor, distinct } from '@progress/kendo-data-query';
 import { SelectableSettings, RowClassArgs } from '@progress/kendo-angular-grid';
@@ -58,6 +58,11 @@ export class TasksComponent implements OnInit {
   taskSecurityList: any = [];
   toolTipData = { data: [], hoverSeq: '', dataLoaded: false };
   seqChange = new BehaviorSubject<any>(this.toolTipData);
+  gridHeight = 750;
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    this.updateGridHeight();
+  }
 
   constructor(
     private eveneManagerService: EventManagerService,
@@ -69,12 +74,18 @@ export class TasksComponent implements OnInit {
     private router: Router,
     private helper: HelperService
   ) { }
+  
+  updateGridHeight() {
+    this.gridHeight = window.innerHeight - 200;
+  }
 
   ngOnInit(): void {
     //update notification on top
     this.helper.updateNotificationOnTop();
     this.setSelectableSettings();
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    this.updateGridHeight();
+
     this.subs.add(
       this.activeRoute.queryParams.subscribe(params => {
         if (params.seq != undefined) {
