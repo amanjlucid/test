@@ -115,6 +115,7 @@ import { CurrencyPipe } from '@angular/common';
 import { AssetResidentContainerComponent } from './asset-resident-container/asset-resident-container.component';
 import { WorksOrderSettingsComponent } from './works-order-settings/works-order-settings.component';
 import { ChartSettingsComponent } from './chart-settings/chart-settings.component';
+import { UserCharacteristicsComponent } from './assets-portal/user-characteristics/user-characteristics.component';
 
 
 @NgModule({
@@ -214,7 +215,8 @@ import { ChartSettingsComponent } from './chart-settings/chart-settings.componen
     SurveyCbcreportSignatureImageComponent,
     AssetResidentContainerComponent,
     WorksOrderSettingsComponent,
-    ChartSettingsComponent
+    ChartSettingsComponent,
+    UserCharacteristicsComponent
 
   ],
 

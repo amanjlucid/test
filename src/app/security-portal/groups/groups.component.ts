@@ -1,12 +1,16 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, HostListener } from '@angular/core';
 import { Group } from '../../_models'
 import { GroupService, AlertService, LoaderService, ConfirmationDialogService, HelperService } from '../../_services'
-import { DataTablesModule } from 'angular-datatables';
-import 'datatables.net';
-import 'datatables.net-dt';
+import { SubSink } from 'subsink';
+import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
+import { SelectableSettings, RowClassArgs, RowArgs, PageChangeEvent, GridComponent } from '@progress/kendo-angular-grid';
+
+// import { DataTablesModule } from 'angular-datatables';
+// import 'datatables.net';
+// import 'datatables.net-dt';
 
 
-declare var $: any;
+// declare var $: any;
 
 
 @Component({
@@ -16,10 +20,36 @@ declare var $: any;
 })
 
 export class GroupsComponent implements OnInit {
+  subs = new SubSink();
+  currentUser: any = JSON.parse(localStorage.getItem('currentUser'));
+  submitted = false;
+  state: State = {
+    skip: 0,
+    sort: [],
+    take: 25,
+    group: [],
+    filter: {
+      logic: "and",
+      filters: []
+    }
+  }
+  gridView: DataResult;
+  pageSize = 25;
+  loading = true;
+  selectableSettings: SelectableSettings;
+  mySelection: any = [];
+  mySelectionKey(context: RowArgs): string {
+    return context.dataItem.wosequence
+  }
+  gridHeight = 750;
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    this.updateGridHeight();
+  }
+
+
   groupDataTable: any;
   securityFormType: string;
-  submitted = false;
-  currentUser: any;
   public groups: Group[];
   public selectedGroup: Group;
   public windowTitle: string;
@@ -38,29 +68,29 @@ export class GroupsComponent implements OnInit {
   public windowTop = '45';
   public windowLeft = 'auto';
 
-  public groupTableSetting = {
-    scrollY: '60vh',
-    scrollX: '100vh',
-    searching: true,
-    scrollCollapse: false,
-    paging: true,
-    colReorder: true,
-    columnDefs: [
-      { "searchable": false, "targets": 0 },
-      { 'orderData': [16], 'targets': [17] },
-      { 'orderData': [19], 'targets': [20] },
-      {
-        'targets': [16],
-        'visible': false,
-        'searchable': false
-      },
-      {
-        'targets': [19],
-        'visible': false,
-        'searchable': false
-      },
-    ],
-  }
+  // public groupTableSetting = {
+  //   scrollY: '60vh',
+  //   scrollX: '100vh',
+  //   searching: true,
+  //   scrollCollapse: false,
+  //   paging: true,
+  //   colReorder: true,
+  //   columnDefs: [
+  //     { "searchable": false, "targets": 0 },
+  //     { 'orderData': [16], 'targets': [17] },
+  //     { 'orderData': [19], 'targets': [20] },
+  //     {
+  //       'targets': [16],
+  //       'visible': false,
+  //       'searchable': false
+  //     },
+  //     {
+  //       'targets': [19],
+  //       'visible': false,
+  //       'searchable': false
+  //     },
+  //   ],
+  // }
 
   constructor(
     private groupService: GroupService,
@@ -69,41 +99,102 @@ export class GroupsComponent implements OnInit {
     private chRef: ChangeDetectorRef,
     private confirmationDialogService: ConfirmationDialogService,
     private helper: HelperService
-  ) { }
+  ) {
+    this.setSelectableSettings();
+  }
+
+
+  updateGridHeight() {
+    const innerHeight = window.innerHeight; 
+    if(innerHeight < 754 ){
+      this.gridHeight = innerHeight - 330;
+    } else {
+      this.gridHeight = innerHeight - 230;
+    }
+   
+    if (this.gridHeight > 900) {
+      this.pageSize = 40;
+    } else {
+      this.pageSize = 25;
+    }
+
+  }
 
   ngOnInit() {
     //update notification on top
     this.helper.updateNotificationOnTop();
+
+
     this.getAllGroups();
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+
   }
 
   ngOnDestroy() {
-    $('.bgblur').removeClass('ovrlay');
+    this.subs.unsubscribe();
+    // $('.bgblur').removeClass('ovrlay');
+  }
+
+  setSelectableSettings(): void {
+    this.selectableSettings = {
+      checkboxOnly: false,
+      mode: 'single'
+    };
+  }
+
+
+
+  sortChange(sort: SortDescriptor[]): void {
+    this.resetGrid()
+    this.state.sort = sort;
+    // this.tempState.sort = sort;
+    // this.worksorderTempData = process(this.worksOrderData, this.tempState).data
+    this.gridView = process(this.groups, this.state);
+  }
+
+  filterChange(filter: any): void {
+    this.resetGrid()
+    this.state.filter = filter;
+    // this.tempState.filter = filter;
+    // this.worksorderTempData = process(this.worksOrderData, this.tempState).data //filter without skipping and pagination
+    this.gridView = process(this.groups, this.state);
+  }
+
+
+  pageChange(event: PageChangeEvent): void {
+    this.state.skip = event.skip;
+    this.gridView = {
+      data: this.groups.slice(this.state.skip, this.state.skip + this.pageSize),
+      total: this.groups.length
+    };
+  }
+
+  resetGrid() {
+    this.state.skip = 0;
   }
 
   getAllGroups() {
-    this.groupService.getAllGroups().subscribe(
-      (data) => {
-        if (data && data.isSuccess) {
-          this.groups = data.data;
-          if (this.groups != undefined) {
-            this.selectedGroup = this.groups[0];
+    this.loading = false;
+    // this.groupService.getAllGroups().subscribe(
+    //   (data) => {
+    //     if (data && data.isSuccess) {
+    //       this.groups = data.data;
+    //       if (this.groups != undefined) {
+    //         this.selectedGroup = this.groups[0];
 
-          }
-          this.chRef.detectChanges();
-          const grpTable: any = $('.grpTable');
-          this.groupDataTable = grpTable.DataTable(this.groupTableSetting);
-        } else {
-          this.loaderService.hide();
-          this.alertService.error(data.message);
-        }
-      },
-      (error) => {
-        this.loaderService.hide();
-        this.alertService.error(error);
-      }
-    )
+    //       }
+    //       this.chRef.detectChanges();
+    //       const grpTable: any = $('.grpTable');
+    //       this.groupDataTable = grpTable.DataTable(this.groupTableSetting);
+    //     } else {
+    //       this.loaderService.hide();
+    //       this.alertService.error(data.message);
+    //     }
+    //   },
+    //   (error) => {
+    //     this.loaderService.hide();
+    //     this.alertService.error(error);
+    //   }
+    // )
   }
 
 
@@ -122,7 +213,6 @@ export class GroupsComponent implements OnInit {
     }
     this.dialogOpened = true;
     $('.bgblur').addClass('ovrlay');
-
 
   }
 
@@ -193,71 +283,71 @@ export class GroupsComponent implements OnInit {
 
 
   public closePopup() {
-    this.refreshGroupTable();
+    // this.refreshGroupTable();
     this.dialogOpened = false;
     $('.bgblur').removeClass('ovrlay');
   }
 
 
-  public refreshGroupTable(flag = null) {
-    let searchVal = $('[type=search]').val();
+  // public refreshGroupTable(flag = null) {
+  //   let searchVal = $('[type=search]').val();
 
-    this.groupService.getAllGroups().subscribe(
-      dataGrp => {
-        if (dataGrp && dataGrp.isSuccess) {
-          if (this.submitted && (this.securityFormType == "new" || this.securityFormType == "copy" || this.securityFormType == "edit")) {
-            this.groupDataTable.destroy();
-            this.groups = dataGrp.data;
-            this.chRef.detectChanges();
-            const table: any = $('.grpTable');
-            this.groupDataTable = table.DataTable(this.groupTableSetting);
-            this.submitted = false;
-            if (searchVal != "" && searchVal != undefined && this.securityFormType != "new") {
-              this.groupDataTable.search(searchVal).draw();
-            }
-            
-            let comp = this;
-            $('.searchDiv input').each(function () {
-              if ($(this).val() != "") {
-                let values = $(this).val();
-                let colNumber = $(this).attr('data-col');
-                //console.log(colNumber);
-                comp.groupDataTable
-                  .columns(colNumber)
-                  .search(values).draw();
-              }
+  //   this.groupService.getAllGroups().subscribe(
+  //     dataGrp => {
+  //       if (dataGrp && dataGrp.isSuccess) {
+  //         if (this.submitted && (this.securityFormType == "new" || this.securityFormType == "copy" || this.securityFormType == "edit")) {
+  //           this.groupDataTable.destroy();
+  //           this.groups = dataGrp.data;
+  //           this.chRef.detectChanges();
+  //           const table: any = $('.grpTable');
+  //           this.groupDataTable = table.DataTable(this.groupTableSetting);
+  //           this.submitted = false;
+  //           if (searchVal != "" && searchVal != undefined && this.securityFormType != "new") {
+  //             this.groupDataTable.search(searchVal).draw();
+  //           }
 
-            });
+  //           let comp = this;
+  //           $('.searchDiv input').each(function () {
+  //             if ($(this).val() != "") {
+  //               let values = $(this).val();
+  //               let colNumber = $(this).attr('data-col');
+  //               //console.log(colNumber);
+  //               comp.groupDataTable
+  //                 .columns(colNumber)
+  //                 .search(values).draw();
+  //             }
 
-          } else {
-            if (dataGrp.data != undefined && dataGrp.data && this.selectedGroup.groupId != undefined && flag != undefined || flag == "delete") {
-              this.groupDataTable.destroy();
-              this.groups = dataGrp.data;
-              this.chRef.detectChanges();
-              const table: any = $('.grpTable');
-              this.groupDataTable = table.DataTable(this.groupTableSetting);
-            } else if (!this.submitted && (this.securityFormType == "edit" || this.securityFormType == "copy")) {
-              Object.keys(dataGrp.data).forEach(key => {
-                if (dataGrp.data[key].groupId === this.selectedGroup.groupId) {
-                  this.selectedGroup.groupName = dataGrp.data[key].groupName,
-                    this.selectedGroup.groupDescription = dataGrp.data[key].groupDescription,
-                    this.selectedGroup.showNoCharGroup = dataGrp.data[key].showNoCharGroup,
-                    this.selectedGroup.showNoElement = dataGrp.data[key].showNoElement,
-                    this.selectedGroup.includeAllCharGroup = dataGrp.data[key].includeAllCharGroup,
-                    this.selectedGroup.includeAllElements = dataGrp.data[key].includeAllElements,
-                    this.selectedGroup.includeAllPortalTabs = dataGrp.data[key].includeAllPortalTabs,
-                    this.selectedGroup.workOrderLevel = dataGrp.data[key].workOrderLevel,
-                    this.selectedGroup.status = dataGrp.data[key].status,
-                    this.selectedGroup.canEditWorkOrderOnly = dataGrp.data[key].canEditWorkOrderOnly
-                  return;
-                }
-              });
-            }
-          }
-        }
-      }
-    )
-  }
+  //           });
+
+  //         } else {
+  //           if (dataGrp.data != undefined && dataGrp.data && this.selectedGroup.groupId != undefined && flag != undefined || flag == "delete") {
+  //             this.groupDataTable.destroy();
+  //             this.groups = dataGrp.data;
+  //             this.chRef.detectChanges();
+  //             const table: any = $('.grpTable');
+  //             this.groupDataTable = table.DataTable(this.groupTableSetting);
+  //           } else if (!this.submitted && (this.securityFormType == "edit" || this.securityFormType == "copy")) {
+  //             Object.keys(dataGrp.data).forEach(key => {
+  //               if (dataGrp.data[key].groupId === this.selectedGroup.groupId) {
+  //                 this.selectedGroup.groupName = dataGrp.data[key].groupName,
+  //                   this.selectedGroup.groupDescription = dataGrp.data[key].groupDescription,
+  //                   this.selectedGroup.showNoCharGroup = dataGrp.data[key].showNoCharGroup,
+  //                   this.selectedGroup.showNoElement = dataGrp.data[key].showNoElement,
+  //                   this.selectedGroup.includeAllCharGroup = dataGrp.data[key].includeAllCharGroup,
+  //                   this.selectedGroup.includeAllElements = dataGrp.data[key].includeAllElements,
+  //                   this.selectedGroup.includeAllPortalTabs = dataGrp.data[key].includeAllPortalTabs,
+  //                   this.selectedGroup.workOrderLevel = dataGrp.data[key].workOrderLevel,
+  //                   this.selectedGroup.status = dataGrp.data[key].status,
+  //                   this.selectedGroup.canEditWorkOrderOnly = dataGrp.data[key].canEditWorkOrderOnly
+  //                 return;
+  //               }
+  //             });
+  //           }
+  //         }
+  //       }
+  //     }
+  //   )
+  // }
 
 
   public openConfirmationDialog(group: Group) {
@@ -270,7 +360,7 @@ export class GroupsComponent implements OnInit {
     this.groupService.deleteSecurityGroup(group.groupId).subscribe(
       delData => {
         this.submitted = true;
-        this.refreshGroupTable('delete');
+        // this.refreshGroupTable('delete');
         this.alertService.success("Record deleted successfully.");
       }
     )
@@ -388,17 +478,17 @@ export class GroupsComponent implements OnInit {
   }
 
   searchInGroupTable(event: any) {
-    let values = event.target.value;
-    let colNumber = event.target.getAttribute("data-col");
-    this.groupDataTable
-      .columns(colNumber)
-      .search(values).draw();
+    // let values = event.target.value;
+    // let colNumber = event.target.getAttribute("data-col");
+    // this.groupDataTable
+    //   .columns(colNumber)
+    //   .search(values).draw();
 
   };
 
   clearGroupSearchForm() {
-    $("#groupSearch").trigger("reset");
-    this.groupDataTable.search('').columns().search('').draw();
+    // $("#groupSearch").trigger("reset");
+    // this.groupDataTable.search('').columns().search('').draw();
   }
 
 

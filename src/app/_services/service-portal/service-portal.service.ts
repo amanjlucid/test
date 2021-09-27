@@ -252,4 +252,13 @@ export class ServicePortalService {
     }
 
 
+    getUserAssetCharacteristics(UserId) {
+        var httpOptions = {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json'
+            }),
+        };
+        return this.http.get<any>(`${appConfig.apiUrl}/api/Asset/GetUserAssetCharacteristics?UserId=${UserId}`, httpOptions);
+    }
+
 }

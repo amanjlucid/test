@@ -1,0 +1,160 @@
+<kendo-window title="{{windowTitle}}" [top]="40" [left]="left" [width]="1000" *ngIf="openUserChar"
+    (close)="closeUserCharacteristics()">
+
+    <div class="row">
+
+        <div class="col-md-12">
+            <form [formGroup]="userCharForm" (ngSubmit)="onSubmit()" autocomplete="off">
+
+                <div class="row mt-2">
+                    <div class="col-md-2">
+                        <label></label>
+                    </div>
+                    <div class="col-md-1">
+                        <label>Display</label>
+                    </div>
+                    <div class="col-md-4">
+                        <label>Select Characteristic</label>
+                    </div>
+                    <div class="col-md-2">
+                        <label>Search</label>
+                    </div>
+                    <div class="col-md-3">
+                        <label>Enter Column Heading</label>
+                    </div>
+                </div>
+
+                <div class="row mt-2">
+                    <div class="col-md-2 mt-2">
+                        <label>Characteristic 1</label>
+                    </div>
+                    <div class="col-md-1 mt-2">
+                        <label class="switcher switcher-secondary osFilterLabel">
+                            <input type="checkbox" class="switcher-input" formControlName="status1">
+                            <span class="switcher-indicator osFilterSwitch">
+                                <span class="switcher-yes">
+                                    <span class="ion ion-md-checkmark"></span>
+                                </span>
+                                <span class="switcher-no">
+                                    <span class="ion ion-md-close"></span>
+                                </span>
+                            </span>
+                        </label>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <select [ngClass]="{ 'is-invalid': submitted && formErrors.chacode1 }" class="custom-select" formControlName="chacode1">
+                            <option value=""></option>
+                            <option *ngFor="let chacode of chacodeListData1; trackBy: trackByChCode" [ngValue]="chacode.chacode">
+                                {{chacode.chaname + ' [' + chacode.chacode + ']'}}
+                            </option>
+                        </select>
+                        <div *ngIf="submitted && formErrors.chacode1" class="invalid-feedback">
+                            <div *ngIf="formErrors.chacode1">{{ formErrors.chacode1 }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <input type="text" class="form-control" width="100" maxlength="10"
+                            (keyup)="keyupevent($event.target.value, 1)">
+                    </div>
+                    <div class="col-md-3">
+                        <input type="text" class="form-control" formControlName="alias1">
+                        <div *ngIf="submitted && formErrors.alias1" class="invalid-feedback">
+                            <div *ngIf="formErrors.alias1">{{ formErrors.alias1 }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-2">
+                    <div class="col-md-2 mt-2">
+                        <label>Characteristic 2</label>
+                    </div>
+                    <div class="col-md-1 mt-2">
+                        <label class="switcher switcher-secondary osFilterLabel">
+                            <input type="checkbox" class="switcher-input" formControlName="status2">
+                            <span class="switcher-indicator osFilterSwitch">
+                                <span class="switcher-yes">
+                                    <span class="ion ion-md-checkmark"></span>
+                                </span>
+                                <span class="switcher-no">
+                                    <span class="ion ion-md-close"></span>
+                                </span>
+                            </span>
+                        </label>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <select [ngClass]="{ 'is-invalid': submitted && formErrors.chacode1 }" class="custom-select" formControlName="chacode2">
+                            <option value=""></option>
+                            <option *ngFor="let chacode of chacodeListData2 ; trackBy: trackByChCode" [ngValue]="chacode.chacode">
+                                {{chacode.chaname + ' [' + chacode.chacode + ']'}}
+                            </option>
+                        </select>
+                        <div *ngIf="submitted && formErrors.chacode2" class="invalid-feedback">
+                            <div *ngIf="formErrors.chacode2">{{ formErrors.chacode2 }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <input type="text" class="form-control" width="100" maxlength="10"
+                            (keyup)="keyupevent($event.target.value, 2)">
+                    </div>
+                    <div class="col-md-3">
+                        <input type="text" class="form-control" formControlName="alias2">
+                        <div *ngIf="submitted && formErrors.alias2" class="invalid-feedback">
+                            <div *ngIf="formErrors.alias2">{{ formErrors.alias2 }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-2">
+                    <div class="col-md-2 mt-2">
+                        <label>Characteristic 3</label>
+                    </div>
+                    <div class="col-md-1 mt-2">
+                        <label class="switcher switcher-secondary osFilterLabel">
+                            <input type="checkbox" class="switcher-input" formControlName="status3">
+                            <span class="switcher-indicator osFilterSwitch">
+                                <span class="switcher-yes">
+                                    <span class="ion ion-md-checkmark"></span>
+                                </span>
+                                <span class="switcher-no">
+                                    <span class="ion ion-md-close"></span>
+                                </span>
+                            </span>
+                        </label>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <select [ngClass]="{ 'is-invalid': submitted && formErrors.chacode1 }" class="custom-select" formControlName="chacode3">
+                            <option value=""></option>
+                            <option *ngFor="let chacode of chacodeListData3 ; trackBy: trackByChCode" [ngValue]="chacode.chacode">
+                                {{chacode.chaname + ' [' + chacode.chacode + ']'}}
+                            </option>
+                        </select>
+                        <div *ngIf="submitted && formErrors.chacode3" class="invalid-feedback">
+                            <div *ngIf="formErrors.chacode3">{{ formErrors.chacode3 }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <input type="text" class="form-control" width="100" maxlength="10"
+                            (keyup)="keyupevent($event.target.value, 3)">
+                    </div>
+                    <div class="col-md-3">
+                        <input type="text" class="form-control" formControlName="alias3">
+                        <div *ngIf="submitted && formErrors.alias3" class="invalid-feedback">
+                            <div *ngIf="formErrors.alias3">{{ formErrors.alias3 }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-3">
+                    <div class="col-md-12 text-right">
+                        <button type="submit" class="btn btn-sm themeButton mr-1">Apply</button>
+                        <button type="button" (click)="closeUserCharacteristics()"
+                            class="btn btn-sm themeButton">Cancel</button>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+
+
+    </div>
+</kendo-window>

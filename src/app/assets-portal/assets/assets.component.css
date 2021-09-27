@@ -250,10 +250,11 @@ label.tree_label:after {
 } */
 
 .btnGrp button {
-  margin-left:3px; 
+  margin-left: 3px;
 }
 
 /** scroll till window start  **/
+
 .assetGrid {
   display: block;
   max-width: 100%;
@@ -273,10 +274,10 @@ thead, tbody {
 .fixTbody {
   overflow-y: scroll;
   overflow-x: hidden;
-  height: 580px;
+  /* height: 580px; */
 }
 
-.smallCol{
+.smallCol {
   min-width: 38px;
   max-width: 38px;
   width: 38px;
@@ -287,12 +288,12 @@ thead, tbody {
   max-width: 120px;
 }
 
-.bigCol{
+.bigCol {
   min-width: 164px;
   max-width: 164px;
 }
 
-.midBigCol{
+.midBigCol {
   min-width: 189px;
   max-width: 189px;
 }
@@ -302,7 +303,7 @@ thead, tbody {
   max-width: 800px;
 }
 
-.midAddressCol{
+.midAddressCol {
   min-width: 564px;
   max-width: 564px;
 }
@@ -322,8 +323,8 @@ td, th {
     overflow-y:scroll;
   } */
 
+/** ############ old css 18-2-20 #############**/
 
-  /** ############ old css 18-2-20 #############**/
 /* .fixTbody {
   height: 580px;
   display: block;
@@ -395,12 +396,12 @@ td, th {
 .searchDiv::-webkit-scrollbar {
   width: .5em;
 }
- 
+
 .searchDiv::-webkit-scrollbar-track {
   box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
   border-radius: 10px;
 }
- 
+
 .searchDiv::-webkit-scrollbar-thumb {
   background-color: darkgrey;
   outline: 1px solid slategrey;
@@ -426,7 +427,7 @@ td, th {
   margin: 0px 5px;
 }
 
-.osFilterSwitch, .asbestosColumnSwitch, .colSwitch {
+.osFilterSwitch, .asbestosColumnSwitch, .colSwitch, .userCharColumnSwitch {
   border: 1px solid #847d7d;
 }
 
@@ -444,12 +445,25 @@ td, th {
   font-size: 18px;
 }
 
-.assetTbl td{
+.assetTbl td {
   word-break: break-all;
 }
 
-.readonlyCl{
+.readonlyCl {
   background: #eee2e2;
+}
+
+
+.userChar{
+  display: block;
+}
+
+.userChar label, .userChar button{
+  display: inline-block;
+}
+
+.userChar button{
+  float: right;
 }
 
 @keyframes slide-in {
@@ -518,34 +532,26 @@ td, th {
   .k-searchbar {
     display: none !important;
   }
-
   div .k-multiselect .k-multiselect-wrap .k-searchbar .k-input {
     height: 1.125em !important;
   }
-
-/* Style the button that is used to open and close the collapsible content */
-.collapsible {
-  background-color: #eee;
-  color: #444;
-  cursor: pointer;
-  padding: 18px;
-  width: 100%;
-  border: none;
-  text-align: left;
-  outline: none;
-  font-size: 15px;
-}
-
-
-
-
-ng-multiselect-dropdown {
-  background-color: white;
-  min-width: 168px;
-}
-
-ng-multiselect-dropdown .dropdown-btn span:nth-child(2) {
-  margin-left: 6px;
-}
-
+  /* Style the button that is used to open and close the collapsible content */
+  .collapsible {
+    background-color: #eee;
+    color: #444;
+    cursor: pointer;
+    padding: 18px;
+    width: 100%;
+    border: none;
+    text-align: left;
+    outline: none;
+    font-size: 15px;
+  }
+  ng-multiselect-dropdown {
+    background-color: white;
+    min-width: 168px;
+  }
+  ng-multiselect-dropdown .dropdown-btn span:nth-child(2) {
+    margin-left: 6px;
+  }
 }

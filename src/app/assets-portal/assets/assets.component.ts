@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy, ChangeDetectorRef, ViewChild, ViewChildren, AfterViewInit } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, ChangeDetectorRef, ViewChild, ViewChildren, AfterViewInit, HostListener } from '@angular/core';
 import { AlertService, LoaderService, PropertySecurityGroupService, AssetAttributeService, AuthenticationService, HelperService, SharedService, ServicePortalService, SettingsService } from '../../_services';
 import { AssetListModel } from '../../_models'
 import { Router, ActivatedRoute } from '@angular/router';
@@ -18,6 +18,7 @@ declare var $: any;
   templateUrl: './assets.component.html',
   styleUrls: ['./assets.component.css']
 })
+
 export class AssetsComponent implements OnInit, OnDestroy, AfterViewInit {
   myDateValue: Date;
   currentUser;
@@ -86,6 +87,7 @@ export class AssetsComponent implements OnInit, OnDestroy, AfterViewInit {
   energyPortalAccess = [];
   asbestosPropertySecurityAccess: any;
   asbestosColumn: boolean = false;
+  
   moduleAccess: any;
   modulesEnabled = [];
   checkServicePortalRef: boolean = false;
@@ -163,8 +165,15 @@ export class AssetsComponent implements OnInit, OnDestroy, AfterViewInit {
   // topping:string;
   postCodeSearch$ = new Subject<any>();
 
+  userCharacteristicsColumn: boolean = false;
+  userCharacteristicsFilter: boolean = false;
+  openUserChar = false;
 
-
+  tbodyHeight = "580px";
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    this.updateGridHeight();
+  }
 
 
 
@@ -183,6 +192,11 @@ export class AssetsComponent implements OnInit, OnDestroy, AfterViewInit {
     private settingService: SettingsService,
     private router: Router,
   ) { }
+
+  updateGridHeight() {
+    const innerHeight = window.innerHeight;
+    this.tbodyHeight = `${innerHeight - 350}px`;
+  }
 
   ngAfterViewInit() {
     this.childrenComponent.changes.subscribe((comps: QueryList<MultiSelectComponent>) => {
@@ -203,6 +217,8 @@ export class AssetsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit() {
+    this.updateGridHeight();
+
     this.getMenus();
     setTimeout(() => {
       var ss = this.sapMultiSelect;
@@ -784,6 +800,11 @@ export class AssetsComponent implements OnInit, OnDestroy, AfterViewInit {
     else { this.EPCFilter = true; }
 
 
+    // if (!this.userCharacteristicsColumn) {
+    //   this.userCharacteristicsFilter = false;
+    // }
+    // else { this.userCharacteristicsFilter = true; }
+
     this.attributeLists = [];
     this.assetAttributeService.getAssetCount(assetList).subscribe(
       datacount => {
@@ -900,7 +921,10 @@ export class AssetsComponent implements OnInit, OnDestroy, AfterViewInit {
     } else if (column == 'EPCStatus') {
       this.filterEPCStatus = value;
       this.assetList.EPCStatus = this.filterEPCStatus;
-    }
+    } else if (column == 'User Characteristics') {
+      this.userCharacteristicsColumn = (value == 'false') ? true : false;
+      // this.assetList.ShowAsbestos = this.asbestosColumn;
+    } 
 
     this.getAllAssets(this.assetList);
   }
@@ -949,6 +973,7 @@ export class AssetsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.epcView = false;
     this.selectedSAPBands = '';
     this.filterEPCStatus = "";
+    this.userCharacteristicsColumn = false;
 
     if (this.sapMultiSelect != undefined) {
       this.sapMultiSelect.reset();
@@ -1142,6 +1167,20 @@ export class AssetsComponent implements OnInit, OnDestroy, AfterViewInit {
         'hsenotifiable': 'HSE Notify'
       }
       label = { ...label, ...asbestoslbl };
+    }
+
+    if (this.userCharacteristicsColumn) {
+      let userCharLbl: any = {
+        'asbestosCount': 'No Asbestos',
+        'presumed': 'Presumed',
+        'stronglyPresumed': 'Strongly Presumed',
+        'identified': 'Identified',
+        'highestMaterialRisk': 'Highest Material Risk',
+        'highestPriorityRisk': 'Highest Priority Risk',
+        'highestTotalRisk': 'Highest Total Risk',
+        'hsenotifiable': 'HSE Notify'
+      }
+      label = { ...label, ...userCharLbl };
     }
 
     if (this.serviceColumn) {
@@ -1366,6 +1405,18 @@ export class AssetsComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       )
     )
+  }
+
+
+  openUserCharacteristics(){
+    this.closeSearchBar()
+    $('.portalwBlurtab').addClass('ovrlay');
+    this.openUserChar = true;
+  }
+
+  closeUserCharEvent(eve){
+    $('.portalwBlurtab').removeClass('ovrlay');
+    this.openUserChar = false;
   }
 
 }
