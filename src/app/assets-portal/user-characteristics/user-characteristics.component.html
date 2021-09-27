@@ -57,7 +57,7 @@
                             (keyup)="keyupevent($event.target.value, 1)">
                     </div>
                     <div class="col-md-3">
-                        <input type="text" class="form-control" formControlName="alias1">
+                        <input type="text" class="form-control" formControlName="alias1" [ngClass]="{ 'is-invalid': submitted && formErrors.alias1 }" >
                         <div *ngIf="submitted && formErrors.alias1" class="invalid-feedback">
                             <div *ngIf="formErrors.alias1">{{ formErrors.alias1 }}</div>
                         </div>
@@ -97,7 +97,7 @@
                             (keyup)="keyupevent($event.target.value, 2)">
                     </div>
                     <div class="col-md-3">
-                        <input type="text" class="form-control" formControlName="alias2">
+                        <input type="text" class="form-control" formControlName="alias2" [ngClass]="{ 'is-invalid': submitted && formErrors.alias2 }">
                         <div *ngIf="submitted && formErrors.alias2" class="invalid-feedback">
                             <div *ngIf="formErrors.alias2">{{ formErrors.alias2 }}</div>
                         </div>
@@ -137,7 +137,7 @@
                             (keyup)="keyupevent($event.target.value, 3)">
                     </div>
                     <div class="col-md-3">
-                        <input type="text" class="form-control" formControlName="alias3">
+                        <input type="text" class="form-control" formControlName="alias3" [ngClass]="{ 'is-invalid': submitted && formErrors.alias3 }">
                         <div *ngIf="submitted && formErrors.alias3" class="invalid-feedback">
                             <div *ngIf="formErrors.alias3">{{ formErrors.alias3 }}</div>
                         </div>

@@ -31,4 +31,5 @@ export class AssetListModel {
     EPCStatus : string;
     TaskAsset:boolean;
     TaskAssets:any;
+    ShowCharacteristics:boolean;
 }

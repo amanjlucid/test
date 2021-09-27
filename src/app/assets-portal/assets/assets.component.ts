@@ -68,7 +68,8 @@ export class AssetsComponent implements OnInit, OnDestroy, AfterViewInit {
     'SAPBands': '',
     'EPCStatus': '',
     'TaskAsset': false,
-    'TaskAssets': []
+    'TaskAssets': [],
+    'ShowCharacteristics': false,
   }
   visitedHierarchy: any[] = [];
   totalAssetCount: number = 0;
@@ -87,7 +88,7 @@ export class AssetsComponent implements OnInit, OnDestroy, AfterViewInit {
   energyPortalAccess = [];
   asbestosPropertySecurityAccess: any;
   asbestosColumn: boolean = false;
-  
+
   moduleAccess: any;
   modulesEnabled = [];
   checkServicePortalRef: boolean = false;
@@ -112,8 +113,8 @@ export class AssetsComponent implements OnInit, OnDestroy, AfterViewInit {
   AsbestosFilter: boolean = false;
   ServicingFilter: boolean = false;
   TaskFilter: boolean = false;
-  energyDashboardFilter:boolean = false;
-  woDashboardFilter:boolean = false;
+  energyDashboardFilter: boolean = false;
+  woDashboardFilter: boolean = false;
 
   menuList: any = [];
 
@@ -168,7 +169,7 @@ export class AssetsComponent implements OnInit, OnDestroy, AfterViewInit {
   userCharacteristicsColumn: boolean = false;
   userCharacteristicsFilter: boolean = false;
   openUserChar = false;
-
+  userCharColumnName = [];
   tbodyHeight = "580px";
   @HostListener('window:resize', ['$event'])
   onResize(event) {
@@ -264,13 +265,13 @@ export class AssetsComponent implements OnInit, OnDestroy, AfterViewInit {
           const splitStr = encStr.split('thirdParty=');
           const thirdPartytext = splitStr[1]
           this.autService.validateDeepLinkParameters(thirdPartytext).subscribe(
-          data => {
-            this.validationObj = data;
-            if (data && data.validated) {
+            data => {
+              this.validationObj = data;
+              if (data && data.validated) {
 
-              this.openLinkTabs(this.validationObj);
-            }
-          });
+                this.openLinkTabs(this.validationObj);
+              }
+            });
         } else if (assetid != undefined) {
           this.autService.validateAssetIDDeepLinkParameters(this.currentUser.userId, assetid).subscribe(
             data => {
@@ -281,7 +282,7 @@ export class AssetsComponent implements OnInit, OnDestroy, AfterViewInit {
                   if (openTab != undefined) {
                     this.openTabFromUrl(data, openTab);
                   } else {
-                this.openLinkTabs(data);
+                    this.openLinkTabs(data);
                   }
                 }
 
@@ -302,7 +303,7 @@ export class AssetsComponent implements OnInit, OnDestroy, AfterViewInit {
           }
           this.getAllAssets(this.assetList);
         } else if (energyData != undefined && energyData == "true") {
-          this.energyDashboardFilter= true;
+          this.energyDashboardFilter = true;
           let encodedTasksAssets = localStorage.getItem("assetList");
           if (encodedTasksAssets != null) {
             let assetIdstring = atob(encodedTasksAssets);//Decode tasks assets
@@ -312,7 +313,7 @@ export class AssetsComponent implements OnInit, OnDestroy, AfterViewInit {
 
           this.getAllAssets(this.assetList);
         } else if (woData != undefined && woData == "true") {
-          this.woDashboardFilter= true;
+          this.woDashboardFilter = true;
           let encodedTasksAssets = localStorage.getItem("assetList");
           if (encodedTasksAssets != null) {
             let assetIdstring = atob(encodedTasksAssets);//Decode tasks assets
@@ -386,6 +387,7 @@ export class AssetsComponent implements OnInit, OnDestroy, AfterViewInit {
           this.filterAssetTable(val, 'PostCode');
         })
     );
+
 
   }
 
@@ -640,9 +642,7 @@ export class AssetsComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.selectedAssestsExport.find(x => x.assetId == asset.assetId) != undefined) {
       this.selectedAssestsExport = this.selectedAssestsExport.filter(x => x.assetId != asset.assetId);
       parent.style.backgroundColor = '';
-      console.log('in')
     } else {
-      console.log('out')
       parent.style.backgroundColor = '#cacaca';
       this.selectedAssestsExport.push(asset);
     }
@@ -922,28 +922,43 @@ export class AssetsComponent implements OnInit, OnDestroy, AfterViewInit {
       this.filterEPCStatus = value;
       this.assetList.EPCStatus = this.filterEPCStatus;
     } else if (column == 'User Characteristics') {
+      this.userCharColumnName = [];
       this.userCharacteristicsColumn = (value == 'false') ? true : false;
-      // this.assetList.ShowAsbestos = this.asbestosColumn;
-    } 
+      this.assetList.ShowCharacteristics = this.userCharacteristicsColumn;
+
+      if (this.userCharacteristicsColumn) {
+        this.getUserCharColumns();
+      }
+    }
 
     this.getAllAssets(this.assetList);
   }
 
   getTableWidth() {
-    if (this.asbestosColumn && !this.serviceColumn && !this.epcView) {
+    if (this.asbestosColumn && !this.serviceColumn && !this.epcView && !this.userCharacteristicsColumn) {
       return '132%';
-    } else if (!this.asbestosColumn && this.serviceColumn && !this.epcView) {
+    } else if (!this.asbestosColumn && this.serviceColumn && !this.epcView && !this.userCharacteristicsColumn) {
       return '155%';
-    } else if (this.asbestosColumn && this.serviceColumn && !this.epcView) {
+    } else if (this.asbestosColumn && this.serviceColumn && !this.epcView && !this.userCharacteristicsColumn) {
       return '210%';
-    } else if (this.asbestosColumn && this.serviceColumn && this.epcView) {
-      return '280%';
-    } else if (!this.asbestosColumn && !this.serviceColumn && this.epcView) {
+    } else if (this.asbestosColumn && this.serviceColumn && this.epcView && !this.userCharacteristicsColumn) {
+      return '300%';
+    } else if (this.asbestosColumn && this.serviceColumn && this.epcView && this.userCharacteristicsColumn) {
+      return '360%';
+    } else if (!this.asbestosColumn && !this.serviceColumn && this.epcView && !this.userCharacteristicsColumn) {
       return '155%';
-    } else if (!this.asbestosColumn && this.serviceColumn && this.epcView) {
+    } else if (!this.asbestosColumn && this.serviceColumn && this.epcView && !this.userCharacteristicsColumn) {
       return '210%';
-    } else if (this.asbestosColumn && !this.serviceColumn && this.epcView) {
+    } else if (this.asbestosColumn && !this.serviceColumn && this.epcView && !this.userCharacteristicsColumn) {
       return '210%';
+    } else if (!this.asbestosColumn && !this.serviceColumn && !this.epcView && this.userCharacteristicsColumn) {
+      return '230%';
+    } else if (
+      (this.asbestosColumn && this.userCharacteristicsColumn) ||
+      (this.serviceColumn && this.userCharacteristicsColumn) ||
+      (this.epcView && this.userCharacteristicsColumn)
+    ) {
+      return '320%';
     } else {
       return '100%';
     }
@@ -952,7 +967,7 @@ export class AssetsComponent implements OnInit, OnDestroy, AfterViewInit {
   clearAssetTable() {
     $("#assetSearch").trigger("reset");
     this.scrollLoad = true;
-    this.serviceColumn = this.assetList.ShowService = this.assetList.ShowAsbestos = this.authOs = false;
+    this.serviceColumn = this.assetList.ShowService = this.assetList.ShowAsbestos = this.assetList.ShowCharacteristics = this.authOs = false;
     this.assetList.Sescode = '';
     this.assetList.Concode = '';
     this.assetList.Secocode = '';
@@ -1408,15 +1423,30 @@ export class AssetsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
 
-  openUserCharacteristics(){
+  openUserCharacteristics() {
     this.closeSearchBar()
     $('.portalwBlurtab').addClass('ovrlay');
     this.openUserChar = true;
   }
 
-  closeUserCharEvent(eve){
+  closeUserCharEvent(eve) {
     $('.portalwBlurtab').removeClass('ovrlay');
     this.openUserChar = false;
+  }
+
+
+  getUserCharColumns() {
+    this.subs.add(
+      this.servicePortalService.getUserAssetCharacteristics(this.currentUser.userId).subscribe(
+        data => {
+          if (data.isSuccess) {
+            if (data.data.length) {
+              this.userCharColumnName = data.data.filter(x => x.chadisp == 1);
+            }
+          }
+        }
+      )
+    )
   }
 
 }

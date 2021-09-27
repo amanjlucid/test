@@ -283,7 +283,11 @@
             <th class="bigCol" style="cursor: pointer;" *ngIf="epcView">Survey Batch
             </th>
 
+          
+              <th class="bigCol" style="cursor: pointer;" *ngFor="let col of userCharColumnName">{{col.chaalias}}
+              </th>
 
+              <th class="hiddenCol"></th>
             <!-- <th>Assign Group</th> -->
           </tr>
         </thead>
@@ -483,9 +487,11 @@
 
 
 
+            <td class="bigCol" *ngFor="let col of userCharColumnName">
+              {{attributeList?.chaId == col.chaid ? attributeList?.assetChar1 : '' }}
+            </td>
 
-
-
+            <td class="hiddenCol"></td>
           </tr>
         </tbody>
 
@@ -579,6 +585,10 @@
               <th class="bigCol" style="cursor: pointer;" *ngIf="epcView">Survey Batch
               </th>
 
+              <th class="bigCol" style="cursor: pointer;" *ngFor="let col of userCharColumnName">{{col.chaalias}}
+              </th>
+
+              <th class="hiddenCol"></th>
             </tr>
           </thead>
           <tbody [ngStyle]="{'height' : tbodyHeight}" style="overflow-y:hidden;">
@@ -677,7 +687,8 @@
 </app-asset-epc-retrieve>
 
 
-<app-user-characteristics *ngIf="openUserChar" [openUserChar]="openUserChar" (closeUserCharEvent)="closeUserCharEvent($event)"></app-user-characteristics>
+<app-user-characteristics *ngIf="openUserChar" [openUserChar]="openUserChar"
+  (closeUserCharEvent)="closeUserCharEvent($event)"></app-user-characteristics>
 
 
 <!-- Search bar -->
@@ -753,7 +764,7 @@
 
               <div class="userChar">
                 <label class="switcher switcher-secondary osFilterLabel">
-                  <input type="checkbox" value="{{asbestosColumn}}"
+                  <input type="checkbox" value="{{userCharacteristicsColumn}}"
                     (change)="filterAssetTable($event.target.value, 'User Characteristics')" class="switcher-input">
                   <span class="switcher-indicator userCharColumnSwitch">
                     <span class="switcher-yes">
@@ -765,7 +776,7 @@
                   </span>
                   <!-- <span class="switcher-label">Management Actions</span> -->
                 </label>
-  
+
                 <button class="btn btn-sm themeButton" (click)="openUserCharacteristics()">Edit Characteristics</button>
               </div>
             </div>

@@ -189,7 +189,7 @@ export class ServicePortalService {
         return this.http.get<any>(`${appConfig.apiUrl}/api/AssetServicing/GetServiceTypeFilter?startDate=${startDate}&endDate=${endDate}`, httpOptions);
     }
 
-    getUserChartData(userId: string, dashboard:string) {
+    getUserChartData(userId: string, dashboard: string) {
         var httpOptions = {
             headers: new HttpHeaders({
                 'Content-Type': 'application/json'
@@ -205,7 +205,7 @@ export class ServicePortalService {
             }),
         };
         let userid = params.UserId
-        let body = JSON.stringify({ chartData: params.ChartData});
+        let body = JSON.stringify({ chartData: params.ChartData });
         return this.http.post<any>(`${appConfig.apiUrl}/api/Chart/SaveUserChartData?userId=${userid}&dashboard=${params.dashboard}`, body, httpOptions);
     }
 
@@ -237,18 +237,18 @@ export class ServicePortalService {
     }
 
     getAssetDetailReport(filterParam: any) {
-      let httpOptions = {
-          headers: new HttpHeaders({
-              'Content-Type': 'application/json'
-          }),
-      };
-      let conCode = filterParam.concode;
-      let secoCode = filterParam.secocode;
-      let setCode = filterParam.setcode;
-      let sesCode = filterParam.sescode;
-      let startDate = filterParam.startdate;
-      let endDate = filterParam.enddate;
-      return this.http.get<any>(`${appConfig.apiUrl}/api/Management/SelectAssetDetailReport?concode=${conCode}&secocode=${secoCode}&setcode=${setCode}&sescode=${sesCode}&startdate=${startDate}&enddate=${endDate}`, httpOptions);
+        let httpOptions = {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json'
+            }),
+        };
+        let conCode = filterParam.concode;
+        let secoCode = filterParam.secocode;
+        let setCode = filterParam.setcode;
+        let sesCode = filterParam.sescode;
+        let startDate = filterParam.startdate;
+        let endDate = filterParam.enddate;
+        return this.http.get<any>(`${appConfig.apiUrl}/api/Management/SelectAssetDetailReport?concode=${conCode}&secocode=${secoCode}&setcode=${setCode}&sescode=${sesCode}&startdate=${startDate}&enddate=${endDate}`, httpOptions);
     }
 
 
@@ -260,5 +260,20 @@ export class ServicePortalService {
         };
         return this.http.get<any>(`${appConfig.apiUrl}/api/Asset/GetUserAssetCharacteristics?UserId=${UserId}`, httpOptions);
     }
+
+
+    addUserAssetCharacteristics(params: any) {
+        let httpOptions = {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json'
+            }),
+        };
+        let body = JSON.stringify(params);
+        return this.http.post<any>(`${appConfig.apiUrl}/api/Asset/AddUserAssetCharacteristics`, body, httpOptions);
+    }
+
+
+
+
 
 }

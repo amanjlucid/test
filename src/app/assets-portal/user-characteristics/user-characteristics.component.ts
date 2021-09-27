@@ -119,24 +119,24 @@ export class UserCharacteristicsComponent implements OnInit {
           }
 
           if (userCharSavedData.isSuccess) {
-            
+
             if (userCharSavedData.data.length == 0) return
 
             this.userCharForm.patchValue({
               chacode1: userCharSavedData.data[0].chacode,
               alias1: userCharSavedData.data[0].chaalias,
               status1: userCharSavedData.data[0].chadisp == 0 ? false : true,
-
               chacode2: userCharSavedData.data[1].chacode,
               alias2: userCharSavedData.data[1].chaalias,
               status2: userCharSavedData.data[1].chadisp == 0 ? false : true,
-
               chacode3: userCharSavedData.data[2].chacode,
               alias3: userCharSavedData.data[2].chaalias,
               status3: userCharSavedData.data[2].chadisp == 0 ? false : true,
             })
           }
 
+
+          this.chRef.detectChanges()
         }
       )
     )
@@ -151,33 +151,8 @@ export class UserCharacteristicsComponent implements OnInit {
         })
     );
 
-    this.chRef.detectChanges()
   }
 
-  // getCharCode(search = '') {
-  //   this.subs.add(
-  //     this.woService.getReportingCharConfigData2(search).subscribe(
-  //       data => {
-  //         if (data.isSuccess) {
-  //           this.chacodeListData1 = data.data.reportingCharacteristics;
-  //           this.chacodeListData2 = data.data.reportingCharacteristics;
-  //           this.chacodeListData3 = data.data.reportingCharacteristics;
-  //           this.getUserAssetCharacteristic();
-  //         }
-  //       }
-  //     )
-  //   )
-  // }
-
-  // getUserAssetCharacteristic(){
-  //   this.subs.add(
-  //     this.servicePortalService.getUserAssetCharacteristics(this.currentUser.userId).subscribe(
-  //       data => {
-  //         console.log(data)
-  //       }
-  //     )
-  //   )
-  // }
 
   findCharCode(obj) {
     const { search, row } = obj
@@ -244,16 +219,30 @@ export class UserCharacteristicsComponent implements OnInit {
     }
 
     let formRawVal = this.userCharForm.getRawValue();
-    console.log(formRawVal)
+
+    const { userId } = this.currentUser;
+    const { chacode1, chacode2, chacode3, alias1, alias2, alias3, status1, status2, status3 } = formRawVal;
 
     const params = [
-      { CHACode: formRawVal.chacode1, CHAAliase: formRawVal.alias1, CHADescription: formRawVal.alias1, CHAId: '' },
-      { CHACode: formRawVal.chacode2, CHAAliase: formRawVal.alias2, CHADescription: formRawVal.alias1, CHAId: '' },
-      { CHACode: formRawVal.chacode3, CHAAliase: formRawVal.alias3, CHADescription: formRawVal.alias1, CHAId: '' },
+      { UserId: userId, CHACode: chacode1, CHAAliase: alias1, CHADescription: this.booleanToNumber(status1), CHAId: 1 },
+      { UserId: userId, CHACode: chacode2, CHAAliase: alias2, CHADescription: this.booleanToNumber(status2), CHAId: 2 },
+      { UserId: userId, CHACode: chacode3, CHAAliase: alias3, CHADescription: this.booleanToNumber(status3), CHAId: 3 },
+    ];
 
-    ]
+    this.subs.add(
+      this.servicePortalService.addUserAssetCharacteristics(params).subscribe(
+        data => {
+          if (data.isSuccess) {
+            this.alertService.success("User Characteristics update successfully.")
+          } else this.alertService.error(data.message)
+        }, err => this.alertService.error(err)
+      )
+    )
 
+  }
 
+  booleanToNumber(val) {
+    return val ? 1 : 0
   }
 
 
