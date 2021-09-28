@@ -116,6 +116,7 @@ import { AssetResidentContainerComponent } from './asset-resident-container/asse
 import { WorksOrderSettingsComponent } from './works-order-settings/works-order-settings.component';
 import { ChartSettingsComponent } from './chart-settings/chart-settings.component';
 import { UserCharacteristicsComponent } from './assets-portal/user-characteristics/user-characteristics.component';
+import { GroupFormComponent } from './security-portal/groups/group-form/group-form.component';
 
 
 @NgModule({
@@ -216,7 +217,8 @@ import { UserCharacteristicsComponent } from './assets-portal/user-characteristi
     AssetResidentContainerComponent,
     WorksOrderSettingsComponent,
     ChartSettingsComponent,
-    UserCharacteristicsComponent
+    UserCharacteristicsComponent,
+    GroupFormComponent
 
   ],
 

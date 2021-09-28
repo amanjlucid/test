@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectorRef, HostListener } from '@angular/core';
-import { Group } from '../../_models'
+// import { Group } from '../../_models'
 import { GroupService, AlertService, LoaderService, ConfirmationDialogService, HelperService } from '../../_services'
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
@@ -20,9 +20,11 @@ import { SelectableSettings, RowClassArgs, RowArgs, PageChangeEvent, GridCompone
 })
 
 export class GroupsComponent implements OnInit {
+  currentUser = JSON.parse(localStorage.getItem('currentUser'));
   subs = new SubSink();
-  currentUser: any = JSON.parse(localStorage.getItem('currentUser'));
   submitted = false;
+  groups: any;
+  selectedGroup: any;
   state: State = {
     skip: 0,
     sort: [],
@@ -39,21 +41,25 @@ export class GroupsComponent implements OnInit {
   selectableSettings: SelectableSettings;
   mySelection: any = [];
   mySelectionKey(context: RowArgs): string {
-    return context.dataItem.wosequence
+    return context.dataItem.groupID
   }
+  booleanFilterDropDown = [{ valid: "A", val: "Active" }, { valid: "I", val: "Inactive" }];
   gridHeight = 750;
   @HostListener('window:resize', ['$event'])
   onResize(event) {
     this.updateGridHeight();
   }
+  isGroupForm = false;
+  groupFormMode = 'new';
+
 
 
   groupDataTable: any;
   securityFormType: string;
-  public groups: Group[];
-  public selectedGroup: Group;
+  // public groups: Group[];
+  // public selectedGroup: Group;
   public windowTitle: string;
-  public dialogOpened = false; // add, edit, copy user group form
+  // public dialogOpened = false; // add, edit, copy user group form
   public charGrpWindow = false;
   public elmGrpWindow = false
   public attrGrpWindow = false;
@@ -105,13 +111,13 @@ export class GroupsComponent implements OnInit {
 
 
   updateGridHeight() {
-    const innerHeight = window.innerHeight; 
-    if(innerHeight < 754 ){
+    const innerHeight = window.innerHeight;
+    if (innerHeight < 754) {
       this.gridHeight = innerHeight - 330;
     } else {
       this.gridHeight = innerHeight - 230;
     }
-   
+
     if (this.gridHeight > 900) {
       this.pageSize = 40;
     } else {
@@ -124,14 +130,11 @@ export class GroupsComponent implements OnInit {
     //update notification on top
     this.helper.updateNotificationOnTop();
 
-
     this.getAllGroups();
-
   }
 
   ngOnDestroy() {
     this.subs.unsubscribe();
-    // $('.bgblur').removeClass('ovrlay');
   }
 
   setSelectableSettings(): void {
@@ -141,21 +144,19 @@ export class GroupsComponent implements OnInit {
     };
   }
 
-
+  cellClickHandler({ columnIndex, dataItem }) {
+    this.selectedGroup = dataItem;
+  }
 
   sortChange(sort: SortDescriptor[]): void {
     this.resetGrid()
     this.state.sort = sort;
-    // this.tempState.sort = sort;
-    // this.worksorderTempData = process(this.worksOrderData, this.tempState).data
     this.gridView = process(this.groups, this.state);
   }
 
   filterChange(filter: any): void {
     this.resetGrid()
     this.state.filter = filter;
-    // this.tempState.filter = filter;
-    // this.worksorderTempData = process(this.worksOrderData, this.tempState).data //filter without skipping and pagination
     this.gridView = process(this.groups, this.state);
   }
 
@@ -173,14 +174,25 @@ export class GroupsComponent implements OnInit {
   }
 
   getAllGroups() {
-    this.loading = false;
+    this.groupService.newGroupList().subscribe(
+      data => {
+        console.log(data);
+        if (data.isSuccess) {
+          this.groups = data.data;
+          this.gridView = process(this.groups, this.state);
+          this.loading = false;
+        }
+      }
+    )
+
+
+
     // this.groupService.getAllGroups().subscribe(
     //   (data) => {
     //     if (data && data.isSuccess) {
     //       this.groups = data.data;
     //       if (this.groups != undefined) {
     //         this.selectedGroup = this.groups[0];
-
     //       }
     //       this.chRef.detectChanges();
     //       const grpTable: any = $('.grpTable');
@@ -198,95 +210,117 @@ export class GroupsComponent implements OnInit {
   }
 
 
-  public openPopup(action, groupData?: Group) {
-    this.securityFormType = action;
-    if (action == 'edit') {
-      this.windowTitle = `Edit Security Group '${groupData.groupName}'`;
-      this.selectedGroup = groupData;
-    } else if (action == 'new') {
-      this.windowTitle = `Add Security Group`;
-      this.newSecurityForm();
-    } else if (action == 'copy') {
-      this.windowTitle = `Copy Security Group`;
-      this.selectedGroup = groupData;
-      this.selectedGroup.groupName = "";
-    }
-    this.dialogOpened = true;
-    $('.bgblur').addClass('ovrlay');
+  reloadGroup(event) {
+    if (event) this.getAllGroups();
+  }
 
+  openGroupForm(mode = 'new', group = null) {
+    $('.groupOverlay').addClass('ovrlay');
+    this.isGroupForm = true;
+    this.groupFormMode = mode;
+    if (mode != 'new') this.selectedGroup = group;
+  }
+
+  closeGroupForm($event) {
+    $('.groupOverlay').removeClass('ovrlay');
+    this.isGroupForm = false;
   }
 
 
-  onSubmit() {
-    this.submitted = true;
-    this.selectedGroup.loggedInUserId = this.currentUser.userId;
-    let callApi: any;
-    let message = "";
-    let groupId = this.selectedGroup.groupId;
-    if (this.securityFormType == "copy") {
-      groupId = 0;
-    }
-    this.groupService.validateGroupName(this.selectedGroup.groupName, groupId).subscribe(
-      data => {
-        if (data.isSuccess) {
-          if (this.securityFormType == "edit") {
-            callApi = this.groupService.updateSecurityGroup(this.selectedGroup);
-            message = "Record updated succesfully."
-          } else if (this.securityFormType == "new") {
-            callApi = this.groupService.createSecurityGroup(this.selectedGroup);
-            message = "Record created succesfully."
-          } else if (this.securityFormType == "copy") {
-            callApi = this.groupService.copySecurityGroup(this.selectedGroup);
-            message = "Record copied succesfully."
-          }
-
-          callApi.subscribe(
-            data => {
-              this.closePopup();
-              this.alertService.success(message);
-            },
-            (error) => {
-              this.loaderService.hide();
-              this.alertService.error(error);
-            }
-          )
-        } else {
-          this.loaderService.hide();
-          this.alertService.error(data.message);
-        }
-      },
-      (error) => {
-        this.loaderService.hide();
-        this.alertService.error(error);
-      }
-
-    )
-  }
 
 
-  public newSecurityForm() {
-    this.selectedGroup = {
-      groupId: 0,
-      groupCode: null,
-      groupName: null,
-      groupDescription: null,
-      showNoCharGroup: false,
-      showNoElement: false,
-      includeAllCharGroup: false,
-      includeAllElements: false,
-      includeAllPortalTabs: false,
-      workOrderLevel: false,
-      status: true,
-      canEditWorkOrderOnly: true
-    };
-  }
+  // public openPopup(action, groupData?: Group) {
+  //   this.securityFormType = action;
+  //   if (action == 'edit') {
+  //     this.windowTitle = `Edit Security Group '${groupData.groupName}'`;
+  //     this.selectedGroup = groupData;
+  //   } else if (action == 'new') {
+  //     this.windowTitle = `Add Security Group`;
+  //     this.newSecurityForm();
+  //   } else if (action == 'copy') {
+  //     this.windowTitle = `Copy Security Group`;
+  //     this.selectedGroup = groupData;
+  //     this.selectedGroup.groupName = "";
+  //   }
+  //   this.dialogOpened = true;
+  //   $('.bgblur').addClass('ovrlay');
+
+  // }
 
 
-  public closePopup() {
-    // this.refreshGroupTable();
-    this.dialogOpened = false;
-    $('.bgblur').removeClass('ovrlay');
-  }
+
+  // public newSecurityForm() {
+  //   this.selectedGroup = {
+  //     groupId: 0,
+  //     groupCode: null,
+  //     groupName: null,
+  //     groupDescription: null,
+  //     showNoCharGroup: false,
+  //     showNoElement: false,
+  //     includeAllCharGroup: false,
+  //     includeAllElements: false,
+  //     includeAllPortalTabs: false,
+  //     workOrderLevel: false,
+  //     status: true,
+  //     canEditWorkOrderOnly: true
+  //   };
+  // }
+
+  // onSubmit() {
+  //   this.submitted = true;
+  //   this.selectedGroup.loggedInUserId = this.currentUser.userId;
+  //   let callApi: any;
+  //   let message = "";
+  //   let groupId = this.selectedGroup.groupId;
+  //   if (this.securityFormType == "copy") {
+  //     groupId = 0;
+  //   }
+  //   this.groupService.validateGroupName(this.selectedGroup.groupName, groupId).subscribe(
+  //     data => {
+  //       if (data.isSuccess) {
+  //         if (this.securityFormType == "edit") {
+  //           callApi = this.groupService.updateSecurityGroup(this.selectedGroup);
+  //           message = "Record updated succesfully."
+  //         } else if (this.securityFormType == "new") {
+  //           callApi = this.groupService.createSecurityGroup(this.selectedGroup);
+  //           message = "Record created succesfully."
+  //         } else if (this.securityFormType == "copy") {
+  //           callApi = this.groupService.copySecurityGroup(this.selectedGroup);
+  //           message = "Record copied succesfully."
+  //         }
+
+  //         callApi.subscribe(
+  //           data => {
+  //             this.closePopup();
+  //             this.alertService.success(message);
+  //           },
+  //           (error) => {
+  //             this.loaderService.hide();
+  //             this.alertService.error(error);
+  //           }
+  //         )
+  //       } else {
+  //         this.loaderService.hide();
+  //         this.alertService.error(data.message);
+  //       }
+  //     },
+  //     (error) => {
+  //       this.loaderService.hide();
+  //       this.alertService.error(error);
+  //     }
+
+  //   )
+  // }
+
+
+
+
+
+  // public closePopup() {
+  //   // this.refreshGroupTable();
+  //   // this.dialogOpened = false;
+  //   $('.bgblur').removeClass('ovrlay');
+  // }
 
 
   // public refreshGroupTable(flag = null) {
@@ -350,26 +384,26 @@ export class GroupsComponent implements OnInit {
   // }
 
 
-  public openConfirmationDialog(group: Group) {
-    this.confirmationDialogService.confirm('Please confirm..', 'Do you really want to delete this record ?')
-      .then((confirmed) => (confirmed) ? this.deleteSecurityGroup(group) : console.log(confirmed))
-      .catch(() => console.log('User dismissed the dialog.'));
-  }
+  // public openConfirmationDialog(group: Group) {
+  //   this.confirmationDialogService.confirm('Please confirm..', 'Do you really want to delete this record ?')
+  //     .then((confirmed) => (confirmed) ? this.deleteSecurityGroup(group) : console.log(confirmed))
+  //     .catch(() => console.log('User dismissed the dialog.'));
+  // }
 
-  private deleteSecurityGroup(group: Group) {
-    this.groupService.deleteSecurityGroup(group.groupId).subscribe(
-      delData => {
-        this.submitted = true;
-        // this.refreshGroupTable('delete');
-        this.alertService.success("Record deleted successfully.");
-      }
-    )
-  }
+  // private deleteSecurityGroup(group: Group) {
+  //   this.groupService.deleteSecurityGroup(group.groupId).subscribe(
+  //     delData => {
+  //       this.submitted = true;
+  //       // this.refreshGroupTable('delete');
+  //       this.alertService.success("Record deleted successfully.");
+  //     }
+  //   )
+  // }
 
 
-  toggleClass(group) {
-    this.selectedGroup = group;
-  }
+  // toggleClass(group) {
+  //   this.selectedGroup = group;
+  // }
 
 
   // functions for opening popup and window
@@ -460,36 +494,36 @@ export class GroupsComponent implements OnInit {
 
   }
 
-  openSearchBar() {
-    var scrollTop = $('.layout-container').height();
-    $('.notification-container').show();
-    $('.notification-container').css('height', scrollTop);
-    if ($('.notification-container').hasClass('dismiss')) {
-      $('.notification-container').removeClass('dismiss').addClass('selectedcs').show();
-    }
+  // openSearchBar() {
+  //   var scrollTop = $('.layout-container').height();
+  //   $('.notification-container').show();
+  //   $('.notification-container').css('height', scrollTop);
+  //   if ($('.notification-container').hasClass('dismiss')) {
+  //     $('.notification-container').removeClass('dismiss').addClass('selectedcs').show();
+  //   }
 
-  }
+  // }
 
-  closeSearchBar() {
-    if ($('.notification-container').hasClass('selectedcs')) {
-      $('.notification-container').removeClass('selectedcs').addClass('dismiss');
-      $('.notification-container').animate({ width: 'toggle' });
-    }
-  }
+  // closeSearchBar() {
+  //   if ($('.notification-container').hasClass('selectedcs')) {
+  //     $('.notification-container').removeClass('selectedcs').addClass('dismiss');
+  //     $('.notification-container').animate({ width: 'toggle' });
+  //   }
+  // }
 
-  searchInGroupTable(event: any) {
-    // let values = event.target.value;
-    // let colNumber = event.target.getAttribute("data-col");
-    // this.groupDataTable
-    //   .columns(colNumber)
-    //   .search(values).draw();
+  // searchInGroupTable(event: any) {
+  //   // let values = event.target.value;
+  //   // let colNumber = event.target.getAttribute("data-col");
+  //   // this.groupDataTable
+  //   //   .columns(colNumber)
+  //   //   .search(values).draw();
 
-  };
+  // };
 
-  clearGroupSearchForm() {
-    // $("#groupSearch").trigger("reset");
-    // this.groupDataTable.search('').columns().search('').draw();
-  }
+  // clearGroupSearchForm() {
+  //   // $("#groupSearch").trigger("reset");
+  //   // this.groupDataTable.search('').columns().search('').draw();
+  // }
 
 
 

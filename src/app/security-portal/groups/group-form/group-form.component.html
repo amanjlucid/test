@@ -1,0 +1,58 @@
+<kendo-window title="{{title}}" *ngIf="isGroupForm" (close)="closeGroupForm()" [top]="20" [minWidth]="600" [width]="800"
+    [height]="auto" [minHeight]="270">
+    <form [formGroup]="groupForm" id="groupForm" (ngSubmit)="onSubmit()" autocomplete="off">
+
+        <div class="row mt-2">
+            <div class="col-md-2">
+                <label>Group</label>
+            </div>
+            <div class="col-md-10">
+                <input type="text" class="form-control" formControlName="group"
+                    [ngClass]="{'is-invalid': submitted && formErrors.group}" autocomplete="off">
+                <div *ngIf="submitted && formErrors.group" class="invalid-feedback">
+                    <div *ngIf="formErrors.group">{{ formErrors.group }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-md-2">
+                <label>Description</label>
+            </div>
+            <div class="col-md-10">
+                <input type="text" class="form-control" formControlName="description"
+                    [ngClass]="{'is-invalid': submitted && formErrors.description}" autocomplete="off">
+                <div *ngIf="submitted && formErrors.description" class="invalid-feedback">
+                    <div *ngIf="formErrors.description">{{ formErrors.description }}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-2">
+            <div class="col-md-2">
+                <label>Status</label>
+            </div>
+            <div class="col-md-10">
+                <label class="switcher">
+                    <input type="checkbox" class="switcher-input" formControlName="status">
+                    <span class="switcher-indicator">
+                        <span class="switcher-yes"><span class="ion ion-md-checkmark"></span></span>
+                        <span class="switcher-no"><span class="ion ion-md-close"></span></span>
+                    </span>
+                </label>
+
+                <div *ngIf="submitted && formErrors.status" class="invalid-feedback">
+                    <div *ngIf="formErrors.status">{{ formErrors.status }}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-2">
+            <div class="col-md-12 text-right">
+                <button type="button" (click)="closeGroupForm()" class="mr-1 btn btn-sm themeButton">Cancel</button>
+                <button type="submit" class="btn btn-sm themeButton">Ok</button>
+
+            </div>
+        </div>
+
+    </form>
+</kendo-window>

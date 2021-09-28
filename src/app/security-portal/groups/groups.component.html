@@ -10,9 +10,9 @@
 
     <div class="col-md-4 col-sm-4 actionBtn">
       <div class="btn-group pull-right mt-3">
-        <button id="showFilePanel" (click)="openSearchBar()" class="btn btn-sm themeButton"><i class="fa fa-search"></i>
-        </button>
-        <button (click)="openPopup('new')" class="btn btn-sm btn-outline-secondary themeButton">New</button>
+        <!-- <button id="showFilePanel" (click)="openSearchBar()" class="btn btn-sm themeButton"><i class="fa fa-search"></i>
+        </button> -->
+        <button (click)="openGroupForm('new')" class="btn btn-sm btn-outline-secondary themeButton">New</button>
 
         <button type="button" class="btn btn-sm dropdown-toggle-split reportBtn" data-toggle="dropdown"
           aria-expanded="false">Reporting
@@ -36,24 +36,206 @@
   <div class="row groupGridRow">
     <div class="col-md-12 groupGridCol">
       <kendo-grid id="groupGrid" #grid="kendoGrid" [data]="gridView" [pageSize]="pageSize" [rowHeight]="36"
-      (pageChange)="pageChange($event)" scrollable="virtual" [loading]="loading" filterable="menu"
-      [resizable]="true" [sortable]="{
+        (pageChange)="pageChange($event)" scrollable="virtual" [loading]="loading" filterable="menu" [resizable]="true"
+        [sortable]="{
         allowUnsort: true,
         mode: 'single'
         }" [skip]="state.skip" [sort]="state.sort" [selectable]="selectableSettings" [filter]="state.filter"
-      (sortChange)="sortChange($event)" (filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)"
-      [navigable]="false" [virtualColumns]="true" [kendoGridSelectBy]="mySelectionKey"
-      [selectedKeys]="mySelection" [height]="gridHeight">
+        (sortChange)="sortChange($event)" (filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)"
+        [navigable]="false" [virtualColumns]="false" [kendoGridSelectBy]="mySelectionKey" [selectedKeys]="mySelection"
+        [height]="gridHeight">
 
-      <kendo-grid-column field="wosequence" title="Group" width="130">
-      </kendo-grid-column>
+        <kendo-grid-column title=" " width="37" [filterable]="false">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <li class="nav-item dropdown list-unstyled" style="margin-top: -7px;">
+              <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
+              <div class="dropdown-menu">
+                <a class="dropdown-item" (click)="openGroupForm('edit', dataItem)" href="javascript:void(0)">Edit</a>
+                <a class="dropdown-item" (click)="openGroupForm('copy', dataItem)" href="javascript:void(0)">Copy</a>
 
-      <kendo-grid-column field="wosequence" title="Description" width="130">
-      </kendo-grid-column>
+                <!-- 
+              <a class="dropdown-item" [class.disabled]="!group.canDelete" (click)="openConfirmationDialog(group)"
+                href="javascript:void(0)">Delete</a>
+              <a class="dropdown-item" (click)="openPopup('copy', group)" href="javascript:void(0)">Copy</a> -->
+                <!-- <a class="dropdown-item" (click)="openCharGrpWin(group)" href="javascript:void(0)">Characteristic
+                Groups</a>
+              <a class="dropdown-item" (click)="openElmGrpWin(group)" href="javascript:void(0)">Elements</a>
+              <a class="dropdown-item" (click)="openAttrGrpWin(group)" href="javascript:void(0)">Attribute
+                Groups</a>
+              <a class="dropdown-item" (click)="openPortalGrpWin(group)" href="javascript:void(0)">Asset Tabs</a>
+              <a class="dropdown-item" (click)="openFunctionSecWindow(group)" href="javascript:void(0)">Function
+                Security</a>
+              <a class="dropdown-item" (click)="openPropSecWindow(group)" href="javascript:void(0)">Property
+                Security</a> -->
+              </div>
+            </li>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column field="group" title="Group" width="300">
+        </kendo-grid-column>
+
+        <kendo-grid-column field="description" title="Description" width="310">
+        </kendo-grid-column>
+
+        <kendo-grid-column field="administration" title="Administration" width="130" [style]="{'text-align': 'center'}"
+          [filterable]="false">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <i aria-expanded="false" class="fas fa-check" *ngIf="dataItem.administration"></i>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column field="asbestos" title="Asbestos" width="100" [style]="{'text-align': 'center'}"
+          [filterable]="false">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <i aria-expanded="false" class="fas fa-check" *ngIf="dataItem.asbestos"></i>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column field="asbestos_Lite" title="Asbestos Lite" width="110" [style]="{'text-align': 'center'}"
+          [filterable]="false">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <i aria-expanded="false" class="fas fa-check" *ngIf="dataItem.asbestos_Lite"></i>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column field="assets" title="Assets" width="100" [style]="{'text-align': 'center'}"
+          [filterable]="false">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <i aria-expanded="false" class="fas fa-check" *ngIf="dataItem.assets"></i>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column field="configuration" title="Configuration" width="120" [style]="{'text-align': 'center'}"
+          [filterable]="false">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <i aria-expanded="false" class="fas fa-check" *ngIf="dataItem.configuration"></i>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column field="energy" title="Energy" width="100" [style]="{'text-align': 'center'}"
+          [filterable]="false">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <i aria-expanded="false" class="fas fa-check" *ngIf="dataItem.energy"></i>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column field="health___Safety" title="Health & Safety" width="120"
+          [style]="{'text-align': 'center'}" [filterable]="false">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <i aria-expanded="false" class="fas fa-check" *ngIf="dataItem.health___Safety"></i>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column field="programming" title="Programming" width="120" [style]="{'text-align': 'center'}"
+          [filterable]="false">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <i aria-expanded="false" class="fas fa-check" *ngIf="dataItem.programming"></i>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column field="property_Security" title="Property Security" width="140"
+          [style]="{'text-align': 'center'}" [filterable]="false">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <i aria-expanded="false" class="fas fa-check" *ngIf="dataItem.property_Security"></i>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column field="quality_Standard" title="Quality Standard" width="140"
+          [style]="{'text-align': 'center'}" [filterable]="false">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <i aria-expanded="false" class="fas fa-check" *ngIf="dataItem.quality_Standard"></i>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column field="reporting" title="Reporting" width="140" [style]="{'text-align': 'center'}"
+          [filterable]="false">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <i aria-expanded="false" class="fas fa-check" *ngIf="dataItem.reporting"></i>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column field="servicing" title="Servicing" width="140" [style]="{'text-align': 'center'}"
+          [filterable]="false">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <i aria-expanded="false" class="fas fa-check" *ngIf="dataItem.servicing"></i>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column field="surveys" title="Surveys" width="140" [style]="{'text-align': 'center'}"
+          [filterable]="false">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <i aria-expanded="false" class="fas fa-check" *ngIf="dataItem.surveys"></i>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column field="tasks" title="Tasks" width="140" [style]="{'text-align': 'center'}"
+          [filterable]="false">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <i aria-expanded="false" class="fas fa-check" *ngIf="dataItem.tasks"></i>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column field="work_Management" title="Work Management" width="140"
+          [style]="{'text-align': 'center'}" [filterable]="false">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <i aria-expanded="false" class="fas fa-check" *ngIf="dataItem.work_Management"></i>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column field="works_Orders" title="Works Orders" width="140" [style]="{'text-align': 'center'}"
+          [filterable]="false">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <i aria-expanded="false" class="fas fa-check" *ngIf="dataItem.works_Orders"></i>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column field="status" title="Status" width="130">
+          <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
+            let-filterService="filterService">
+
+            <multicheck-filter [isPrimitive]="false" [field]="column.field" [currentFilter]="filter"
+              [filterService]="filterService" textField="val" valueField="valid" [data]="booleanFilterDropDown">
+            </multicheck-filter>
+          </ng-template>
+
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span>
+              {{ dataItem.status == "A" ? 'Active' : 'Inactive' }}
+            </span>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column field="created_By" title="Created By" width="130">
+        </kendo-grid-column>
+        <kendo-grid-column field="created_On" title="Created Date" width="140">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span>
+              {{ dataItem.created_On | dateFormat : 'DD-MMM-YYYY' }}
+            </span>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column field="modified_By" title="Changed By" width="130">
+        </kendo-grid-column>
+        <kendo-grid-column field="modified_On" title="Changed Date" width="140">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span>
+              {{ dataItem.modified_On | dateFormat : 'DD-MMM-YYYY' }}
+            </span>
+          </ng-template>
+        </kendo-grid-column>
 
       </kendo-grid>
     </div>
   </div>
+
+
+
+
+
+
+
+
+
 
   <!-- <div class="row" style="margin-top:13px;">
     <div class="table-responsive groupTable">
@@ -142,10 +324,14 @@
 </div>
 
 
-
+<div class="groupOverlay"></div>
 <div class="example-wrapper">
+  <app-group-form *ngIf="isGroupForm" [isGroupForm]="isGroupForm" [groupFormMode]="groupFormMode"
+    [selectedGroup]="selectedGroup" (closeGroupFormEvent)="closeGroupForm($event)"
+    (reloadGroupEvent)=reloadGroup($event)></app-group-form>
 
-  <kendo-window title="{{windowTitle}}" [(width)]="windowWidth" [top]="20" [minWidth]="250" *ngIf="dialogOpened"
+
+  <!-- <kendo-window title="{{windowTitle}}" [(width)]="windowWidth" [top]="20" [minWidth]="250" *ngIf="dialogOpened"
     (close)="closePopup()">
     <div class="groupPopup">
       <form (ngSubmit)="onSubmit()" #securityGroupForm="ngForm">
@@ -299,10 +485,7 @@
             <div class="row">
               <label class="col-md-10">Status</label>
               <div class="col-md-2">
-                <!-- <select name="status" class="form-control-sm inp-sm" [(ngModel)]="selectedGroup.status">
-                  <option value="Active">Active</option>
-                  <option value="Inactive">Inactive</option>
-                </select> -->
+              
                 <label class="switcher">
                   <input [(ngModel)]="selectedGroup.status" [attr.checked]="selectedGroup.status ? 'checked' : null"
                     type="checkbox" name="status" class="switcher-input">
@@ -329,10 +512,10 @@
 
     </div>
 
-  </kendo-window>
+  </kendo-window> -->
 
 
-  <app-characteristic-group [charGrpWindow]="charGrpWindow" [selectedGroup]="selectedGroup" *ngIf="charGrpWindow"
+  <!-- <app-characteristic-group [charGrpWindow]="charGrpWindow" [selectedGroup]="selectedGroup" *ngIf="charGrpWindow"
     (closeCharGrpWin)="closeCharGrpWin($event)"></app-characteristic-group>
 
 
@@ -350,20 +533,24 @@
     *ngIf="functionSecurityWindow" (closeWindow)="closeFuncitonSecWin($event)"></app-function-security>
 
   <app-property-security [selectedGroup]="selectedGroup" [propertySecurityWindow]="propertySecurityWindow"
-    *ngIf="propertySecurityWindow" (closePropSecWin)="closePropSecWin($event)"></app-property-security>
+    *ngIf="propertySecurityWindow" (closePropSecWin)="closePropSecWin($event)"></app-property-security> -->
 
 
 
 
   <!-- Reporting Section -->
 
-  <app-reporting [reportingAction]="reportingAction" [selectedGroup]="selectedGroup" [openReports]="openReports"
-    *ngIf="openReports" (closeReportingWin)="closeReportingWin($event)"></app-reporting>
+  <!-- <app-reporting [reportingAction]="reportingAction" [selectedGroup]="selectedGroup" [openReports]="openReports"
+    *ngIf="openReports" (closeReportingWin)="closeReportingWin($event)"></app-reporting> -->
 
 </div>
 
 
-<div class="notification-container dismiss">
+
+
+
+
+<!-- <div class="notification-container dismiss">
 
   <h5 style="color:white" class="p-4 m-0 line-height-1 font-weight-bolder bg-light theme-settings-header"> Filters<a
       href="javascript:void(0)" (click)="closeSearchBar()" class="theme-settings-close-btn font-weight-light px-4 py-2"
@@ -390,4 +577,4 @@
     </form>
 
   </div>
-</div>
+</div> -->

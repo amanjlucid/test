@@ -2,30 +2,85 @@
   position: fixed !important;
 }
 
-.table-striped tbody tr:nth-of-type(odd) {
-  background-color: white;
+.k-grid tbody td {
+  white-space: nowrap;
+  line-height: 20px;
+  padding: 8px 12px;
 }
 
-.actionBtn button { margin-left: 5px;}
-
-.newBtn{
-    background-color: #e4287e;
-    border-color: #e4287e;
-    color: #fff;
+.dropdown.list-unstyled {
+  position: absolute !important;
 }
 
-.reportBtn{
-    background-color: #fff;
-    color: black;
-    border-top-right-radius:2px !important;
-    border-bottom-right-radius:2px !important;
+
+.actionBtn button {
+  margin-left: 5px;
 }
 
+.newBtn {
+  background-color: #e4287e;
+  border-color: #e4287e;
+  color: #fff;
+}
+
+.reportBtn {
+  background-color: #fff;
+  color: black;
+  border-top-right-radius: 2px !important;
+  border-bottom-right-radius: 2px !important;
+}
+
+.formBtn {
+  margin-top: -22px;
+}
+
+.formBtn button {
+  margin-left: 5px;
+}
+
+.k-form input, .k-form {
+  display: inline !important;
+}
+
+.incChek {
+  position: absolute;
+  margin-left: 270px;
+  margin-top: 2px
+}
+
+.incChek input[type='checkbox'] {
+  margin-top: 5px;
+  float: left;
+}
+
+.card-body {
+  padding: 0px !important;
+}
+
+.buttonDiv button {
+  margin: 0px 5px 5px 5px;
+  width: 63px;
+}
+
+.dropdown-item.disabled {
+  pointer-events: none;
+  cursor: default;
+}
+
+.groupPopup .form-control {
+  color: black;
+}
 
 /* table css */
-thead th{
+
+/* .table-striped tbody tr:nth-of-type(odd) {
+  background-color: white;
+} */
+
+
+/* thead th{
     font-weight: 600;
-   
+  
 }
 
 .groupPopup{width: 800px;}
@@ -61,56 +116,14 @@ thead th{
 
 .groupSetting label{
     color: #a59f9f;
-}
-
-.formBtn{
-    margin-top:-22px;
-}
-
-.formBtn button{
-    margin-left:5px; 
-}
+} */
 
 /* group css ends here */
-
-
-.k-form input, .k-form {
-    display: inline !important;
-}
 
 /* 
 .selectionDiv{
     float: left;
 } */
-
-.incChek{
-    position: absolute;
-   
-    margin-left: 270px;
-    margin-top: 2px
-}
-
-.incChek input[type='checkbox']{
-    margin-top: 5px;
-    float: left;
-}
-
-
-.card-body{ padding: 0px !important;}
-
-
-.buttonDiv button{
-    margin: 0px 5px 5px 5px;
-    width: 63px;
-}
-
-.dropdown-item.disabled {
-    pointer-events: none;
-    cursor: default;
-  }
-
-.groupPopup .form-control{color: black;}  
-
 
 /* app-groups .groupGridRow {
   height: calc(100% - 128px);
@@ -124,36 +137,22 @@ app-groups .groupGridRow .groupGridCol #groupGrid {
   height: 100%;
 } */
 
-
 @media screen and (max-width: 769px) {
-  .groupPopup{width: 100%;}
+  .groupPopup {
+    width: 100%;
+  }
 }
 
-
-/* Ipad device  */
-  @media only screen
-  and (min-device-width : 768px) 
-  and (max-device-width : 1024px)  { 
-    /* .groupPopup{
-        width: 600px;
-        height: 620px;
-    } */
- 
+/* @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+  #DataTables_Table_0_paginate .row:last-child {
+    position: absolute;
+    width: 83%;
+    margin-top: 20px;
   }
+} */
 
+/* side bar css */
 
-
-  @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
-    #DataTables_Table_0_paginate .row:last-child {
-        position: absolute;
-        width: 83%;
-        margin-top: 20px;
-    }
-   }
-
-   /* side bar css */
-
-  
 .notification-container {
   position: fixed;
   top: 0;
@@ -163,7 +162,6 @@ app-groups .groupGridRow .groupGridCol #groupGrid {
   height: 100%;
   overflow: hidden;
   background: #070627;
-  
   z-index: 999;
   /* transform: translateX(100%); */
   -webkit-transform: translateX(100%);
@@ -177,13 +175,11 @@ app-groups .groupGridRow .groupGridCol #groupGrid {
 .dismiss {
   animation: slide-out 0.5s forwards;
   -webkit-animation: slide-out 0.5s forwards;
-  
 }
 
-.searchDiv{
-    padding: 7px;
-    color: white;
-   
+.searchDiv {
+  padding: 7px;
+  color: white;
 }
 
 /* .searchDiv input{
@@ -226,6 +222,3 @@ app-groups .groupGridRow .groupGridCol #groupGrid {
     -webkit-transform: translateX(100%);
   }
 }
-
-
-

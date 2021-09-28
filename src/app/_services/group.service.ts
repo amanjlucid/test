@@ -63,4 +63,24 @@ export class GroupService {
     }
 
 
+    newGroupList(){
+        var httpOptions = {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json'
+            }),
+        };
+        return this.http.get<any>(`${appConfig.apiUrl}/api/Group/NewGroupList`, httpOptions);
+    }
+
+
+    groupListByGroupId(groupId){
+        var httpOptions = {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json'
+            }),
+        };
+        return this.http.get<any>(`${appConfig.apiUrl}/api/Group/GroupListByGroupId?groupId=${groupId}`, httpOptions);
+    }
+
+
 }
