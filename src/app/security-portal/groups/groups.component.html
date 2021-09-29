@@ -48,14 +48,16 @@
         <kendo-grid-column title=" " width="37" [filterable]="false">
           <ng-template kendoGridCellTemplate let-dataItem>
             <li class="nav-item dropdown list-unstyled" style="margin-top: -7px;">
-              <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
+              <i (click)="checkCanDelete(dataItem)" data-toggle="dropdown" aria-expanded="false"
+                class="fas fa-bars"></i>
               <div class="dropdown-menu">
                 <a class="dropdown-item" (click)="openGroupForm('edit', dataItem)" href="javascript:void(0)">Edit</a>
+                <a class="dropdown-item" [class.disabled]="!canDelete" (click)="openConfirmationDialog(dataItem)"
+                  href="javascript:void(0)">Delete</a>
                 <a class="dropdown-item" (click)="openGroupForm('copy', dataItem)" href="javascript:void(0)">Copy</a>
 
                 <!-- 
-              <a class="dropdown-item" [class.disabled]="!group.canDelete" (click)="openConfirmationDialog(group)"
-                href="javascript:void(0)">Delete</a>
+              
               <a class="dropdown-item" (click)="openPopup('copy', group)" href="javascript:void(0)">Copy</a> -->
                 <!-- <a class="dropdown-item" (click)="openCharGrpWin(group)" href="javascript:void(0)">Characteristic
                 Groups</a>

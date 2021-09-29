@@ -24,7 +24,8 @@ export class LoaderInterceptorService implements HttpInterceptor {
         req.url.indexOf("WorkOrderUserSecurity") !== -1 ||
         req.url.indexOf("GetUserDetail") !== -1 ||
         req.url.indexOf("VariationWorkListButtonsAccess") !== -1 ||
-        req.url.indexOf("CheckEnterValuationButtonVisibility") !== -1
+        req.url.indexOf("CheckEnterValuationButtonVisibility") !== -1 ||
+        req.url.indexOf("GroupListByGroupId") !== -1
       ) {
         return next.handle(req)
       }
