@@ -1,55 +1,42 @@
-<kendo-window [minWidth]="250" [top]="20" [minHeight]="350" [(width)]="windowWidth"
-  title="Show Attribute Association Groups (AAG) for Security Group '{{selectedGroup.groupName}}'" *ngIf="attrGrpWindow"
-  (close)="closeAttrGrpWindow()">
-  <div class="col-md-12 col-sm-12 col-xs-12 attrGrpDiv">
-    <div style="margin: 0px">
-
-      <div class="">
-        <label class="form-check form-check-inline">
-          <input (change)="includeOnlyGroup($event)" class="form-check-input" type="checkbox">
-          <span class="form-check-label">
-            Included Only
-          </span>
-        </label>
-      </div>
-    </div>
-
-
-    <div class="table-responsive mt-2">
-      <table class="table table-striped table-bordered attrGrpTable">
-        <thead>
-          <tr>
-            <th class="no-sort" style="width:3px;"></th>
-            <th>AAG Code</th>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody *ngIf="attrGroups">
-          <tr class="odd gradeX" *ngFor="let attrGroup of attrGroups">
-            <td>
-              <input class="text-center" (change)="assigneGroup($event,attrGroup.aaG_Code)"
-                [attr.checked]="attrGroup.isSelected ? 'checked' : null" type="checkbox">
-            </td>
-            <td>{{attrGroup?.aaG_Code}}</td>
-            <td>{{attrGroup?.name}}</td>
-            <td>{{attrGroup?.description}}</td>
-            <td>{{attrGroup?.status}}</td>
-          </tr>
-
-          <!-- <tr class="odd gradeX">
-              <td>
-                <input class="text-center" type="checkbox">
-              </td>
-              <td>abc</td>
-              <td>abc</td>
-              <td>abc</td>
-              <td>abc</td>
-            </tr> -->
-
-        </tbody>
-      </table>
-    </div>
+<div class="row">
+  <div class="col-md-12">
+    <label class="form-check form-check-inline">
+      <input (change)="includeOnlyGroup($event)" class="form-check-input" type="checkbox">
+      <span class="form-check-label">
+        Included Only
+      </span>
+    </label>
   </div>
-</kendo-window>
+
+
+  <div class="col-md-12 mt-2">
+    <kendo-grid id="attrGroup" #grid="kendoGrid" [data]="gridView" [pageSize]="pageSize" [rowHeight]="36"
+      (pageChange)="pageChange($event)" scrollable="virtual" [loading]="loading" filterable="menu" [resizable]="true"
+      [sortable]="{
+        allowUnsort: true,
+        mode: 'single'
+        }" [skip]="state.skip" [sort]="state.sort" [selectable]="selectableSettings" [filter]="state.filter"
+      (sortChange)="sortChange($event)" (filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)"
+      [navigable]="false" [virtualColumns]="false" [kendoGridSelectBy]="mySelectionKey" [selectedKeys]="mySelection"
+      [height]="gridHeight">
+
+      <kendo-grid-column title=" " width="30" [filterable]="false">
+        <ng-template kendoGridCellTemplate let-dataItem>
+          <input class="text-center" (change)="assigneGroup($event,dataItem.aaG_Code)"
+            [attr.checked]="dataItem.isSelected ? 'checked' : null" type="checkbox">
+        </ng-template>
+      </kendo-grid-column>
+
+      <kendo-grid-column field="aaG_Code" title="AAG Code" width="140">
+      </kendo-grid-column>
+      <kendo-grid-column field="name" title="Name" width="160">
+      </kendo-grid-column>
+      <kendo-grid-column field="description" title="Description" width="160">
+      </kendo-grid-column>
+      <kendo-grid-column field="status" title="Status" width="100">
+      </kendo-grid-column>
+
+
+    </kendo-grid>
+  </div>
+</div>

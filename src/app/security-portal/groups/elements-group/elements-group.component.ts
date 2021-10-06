@@ -1,119 +1,140 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
-import { Group, ElementGroupModel } from '../../../_models'
-import { AlertService, LoaderService, ElementGroupService } from '../../../_services'
-import { DataTablesModule } from 'angular-datatables';
-import 'datatables.net';
-import 'datatables.net-dt';
-declare var $: any;
-
+import { Component, OnInit, Input, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
+import { SubSink } from 'subsink';
+import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
+import { SelectableSettings, RowArgs, PageChangeEvent } from '@progress/kendo-angular-grid';
+import { ElementGroupModel } from '../../../_models'
+import { AlertService, ElementGroupService } from '../../../_services'
 
 @Component({
   selector: 'app-elements-group',
   templateUrl: './elements-group.component.html',
-  styleUrls: ['./elements-group.component.css']
+  styleUrls: ['./elements-group.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
+
+
 export class ElementsGroupComponent implements OnInit {
+  subs = new SubSink();
+  @Input() selectedGroup;
+  elmGroups: ElementGroupModel[];
+  actualElmGroups: ElementGroupModel[];
+  state: State = {
+    skip: 0,
+    sort: [],
+    take: 25,
+    group: [],
+    filter: {
+      logic: "and",
+      filters: []
+    }
+  }
+  gridView: DataResult;
+  pageSize = 25;
+  loading = true;
+  selectableSettings: SelectableSettings;
+  mySelection: any = [];
+  mySelectionKey(context: RowArgs): string {
+    return context.dataItem.element_Code
+  }
+  booleanFilterDropDown = [{ valid: "A", val: "Active" }, { valid: "I", val: "Inactive" }];
+  gridHeight = 700;
+
 
   constructor(
     private elmGrpService: ElementGroupService,
     private alertService: AlertService,
-    private loaderService: LoaderService,
     private chRef: ChangeDetectorRef,
-  ) { }
-
-  @Input() elmGrpWindow: boolean = false
-  @Input() selectedGroup: Group
-  @Output() closeElmGrpWin = new EventEmitter<boolean>();
-  elmGrpTable: any;
-  elmGroups: ElementGroupModel[];
-  actualElmGroups:ElementGroupModel[];
-  tableSetting = {
-    scrollY: '59vh',
-    colReorder: true,
-    scrollCollapse: true,
-    paging: true
+  ) {
+    this.setSelectableSettings();
   }
-  public windowWidth = '800';
-  public windowHeight = 'auto';
-  public windowTop = '40';
-  public windowLeft = 'auto';
+
+  setSelectableSettings(): void {
+    this.selectableSettings = {
+      checkboxOnly: false,
+      mode: 'single'
+    };
+  }
 
   ngOnInit() {
-    if(this.selectedGroup != ""){
-      this.getAllElementGroups();
-    }
+    this.getAllElementGroups()
   }
 
-  public closeElmGrpWindow() {
-    this.elmGrpWindow = false;
-    this.closeElmGrpWin.emit(this.elmGrpWindow)
+  ngOnDestroy() {
+    this.subs.unsubscribe();
   }
 
-  public getAllElementGroups() {
-    this.elmGrpService.getAllElementGroups(this.selectedGroup.groupId).subscribe(
-      (data) => {
+  getAllElementGroups() {
+    this.elmGrpService.getAllElementGroups(this.selectedGroup.groupID).subscribe(
+      data => {
         if (data && data.isSuccess) {
           this.elmGroups = data.data;
-          //console.log(this.elmGroups);
-          this.actualElmGroups = data.data;
-          this.chRef.detectChanges();
-          const grpTable: any = $('.elmGrpTable');
-          this.elmGrpTable = grpTable.DataTable(this.tableSetting);
-        } else {
-          this.loaderService.hide();
-          this.alertService.error(data.message);
+          this.gridView = process(this.elmGroups, this.state);
+          this.loading = false;
+          this.chRef.detectChanges()
         }
-      },
-      (error) => {
-
-        this.loaderService.hide();
-        this.alertService.error(error);
       }
     )
   }
 
 
-  assigneGroup(event: any, elemCode) {
-    //let isSelected = event.target.checked;
-    this.elmGrpService.assigneElementGroups(elemCode, this.selectedGroup.groupId).subscribe(
-      data => {
-        if (data && data.isSuccess) {
-          console.log(data);
-        } else {
-          this.loaderService.hide();
-          this.alertService.error(data.message);
-        }
-      },
-      error => {
-        this.loaderService.hide();
-        this.alertService.error(error);
-      }
-    );
+  cellClickHandler({ columnIndex, dataItem }) {
+    // this.selectedGroup = dataItem;
   }
 
+  sortChange(sort: SortDescriptor[]): void {
+    this.resetGrid()
+    this.state.sort = sort;
+    this.gridView = process(this.elmGroups, this.state);
+  }
+
+  filterChange(filter: any): void {
+    this.resetGrid()
+    this.state.filter = filter;
+    this.gridView = process(this.elmGroups, this.state);
+  }
+
+  pageChange(event: PageChangeEvent): void {
+    this.state.skip = event.skip;
+    this.gridView = {
+      data: this.elmGroups.slice(this.state.skip, this.state.skip + this.pageSize),
+      total: this.elmGroups.length
+    };
+  }
+
+  resetGrid() {
+    this.state.skip = 0;
+  }
+
+
   includeOnlyGroup(event: any) {
-    this.elmGrpService.getAllElementGroups(this.selectedGroup.groupId).subscribe(
-      datanew => {
-        if (datanew && datanew.isSuccess) {
-          this.elmGroups = datanew.data;
-          this.actualElmGroups = datanew.data;
-          this.elmGrpTable.destroy();
-
+    this.loading = true;
+    this.elmGrpService.getAllElementGroups(this.selectedGroup.groupID).subscribe(
+      data => {
+        if (data && data.isSuccess) {
           if (event.target.checked) {
-            let newgrp: any;
-            newgrp = this.elmGroups.filter(gr => gr.isSelected == true);
-            this.elmGroups = newgrp;
+            this.elmGroups = data.data.filter(x => x.isSelected == true)
           } else {
-            this.elmGroups = this.actualElmGroups;
+            this.elmGroups = data.data;
           }
-
-          // reinitialize datatable
-          this.chRef.detectChanges();
-          const table: any = $('.elmGrpTable');
-          this.elmGrpTable = table.DataTable(this.tableSetting);
+          this.gridView = process(this.elmGroups, this.state);
+          this.loading = false;
+          this.chRef.detectChanges()
         }
       })
 
   }
+
+
+  assigneGroup(event: any, elemCode) {
+    // const isSelected = event.target.checked;
+    this.elmGrpService.assigneElementGroups(elemCode, this.selectedGroup.groupID).subscribe(
+      data => {
+        if (data.isSuccess == false) {
+          this.alertService.error(data.message);
+        }
+      }, error => this.alertService.error(error)
+    );
+  }
+
 
 }

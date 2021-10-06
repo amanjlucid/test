@@ -43,6 +43,14 @@
             <app-characteristic-group *ngIf="tabName == 'characteristicsGroup'" [selectedGroup]="selectedGroup">
             </app-characteristic-group>
 
+            <app-elements-group *ngIf="tabName == 'elements'" [selectedGroup]="selectedGroup">
+            </app-elements-group>
+
+            <app-attribute-group *ngIf="tabName == 'attributeGroups'" [selectedGroup]="selectedGroup">
+            </app-attribute-group>
+
+            <app-portal-tabs *ngIf="tabName == 'assetPanels'" [selectedGroup]="selectedGroup"></app-portal-tabs>
+
         </div>
     </div>
 </kendo-window>

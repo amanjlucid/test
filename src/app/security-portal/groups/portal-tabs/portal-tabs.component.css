@@ -1,10 +1,6 @@
-.portalTabDiv{
-    /* width: 800px; */
-    height: 580px;
-}
-    
-.k-window {
-  position: fixed !important;
+.form-check-label {
+  margin-top: 3px !important;
+  margin-left: 5px !important;
 }
 
 .incChek{
@@ -22,11 +18,3 @@
     float: left;
 }
 
-/* Ipad device  */
-@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
-  /* .portalTabDiv{
-    width: 700px;
-    height: 620px;
-  } */
-
-}

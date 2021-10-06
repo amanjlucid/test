@@ -24,7 +24,6 @@ export class GroupAssetDetailComponent implements OnInit {
   ngOnInit(): void {
     this.title = `Asset Details - ${this.selectedGroup?.group}`;
     this.chRef.detectChanges()
-    console.log(this.selectedGroup)
   }
 
   showTab(tabName) {

@@ -1,12 +1,12 @@
+.form-check-label {
+  margin-top: 3px !important;
+  margin-left: 5px !important;
+}
+
 .elementGroupDiv{
-    /* width: 590px; */
     height: 570px;
 }
     
-.k-window {
-  position: fixed !important;
-}
-
 .incChek{
     position: absolute;
     margin-left: 270px;

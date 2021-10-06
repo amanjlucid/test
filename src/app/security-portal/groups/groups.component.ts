@@ -44,6 +44,8 @@ export class GroupsComponent implements OnInit {
   isGroupForm = false;
   groupFormMode = 'new';
   showAssetDetail = false;
+  openReports = false;
+  reportingAction = "";
 
 
 
@@ -52,25 +54,23 @@ export class GroupsComponent implements OnInit {
 
 
 
+  // groupDataTable: any;
+  // securityFormType: string;
 
-  groupDataTable: any;
-  securityFormType: string;
+  // public windowTitle: string;
 
-  public windowTitle: string;
+  // public charGrpWindow = false;
+  // public elmGrpWindow = false
+  // public attrGrpWindow = false;
+  // public portalGrpWindow = false;
+  // public functionSecurityWindow = false;
+  // public propertySecurityWindow = false;
 
-  public charGrpWindow = false;
-  public elmGrpWindow = false
-  public attrGrpWindow = false;
-  public portalGrpWindow = false;
-  public functionSecurityWindow = false;
-  public propertySecurityWindow = false;
-  public openReports = false;
-  public reportingAction = "";
 
-  public windowWidth = 'auto';
-  public windowHeight = 'auto';
-  public windowTop = '45';
-  public windowLeft = 'auto';
+  // public windowWidth = 'auto';
+  // public windowHeight = 'auto';
+  // public windowTop = '45';
+  // public windowLeft = 'auto';
 
   constructor(
     private groupService: GroupService,
@@ -219,97 +219,15 @@ export class GroupsComponent implements OnInit {
   }
 
 
-  openAssetDetail(){
+  openAssetDetail() {
     $('.groupOverlay').addClass('ovrlay');
     this.showAssetDetail = true;
   }
 
 
-  closeAssetDetail(eve){
+  closeAssetDetail(eve) {
     $('.groupOverlay').removeClass('ovrlay');
     this.showAssetDetail = false;
-  }
-
-
-
-
-
-
-
-
-  // functions for opening popup and window
-  // openCharGrpWin(group) {
-  //   $('.bgblur').addClass('ovrlay');
-  //   this.selectedGroup = group;
-  //   this.charGrpWindow = true;
-  // }
-
-  // closeCharGrpWin($event) {
-  //   this.charGrpWindow = $event;
-  //   $('.bgblur').removeClass('ovrlay');
-  // }
-
-  openElmGrpWin(group) {
-    $('.bgblur').addClass('ovrlay');
-    this.selectedGroup = group;
-    this.elmGrpWindow = true;
-  }
-
-  closeElmGrpWin($event) {
-    this.elmGrpWindow = $event;
-    $('.bgblur').removeClass('ovrlay');
-  }
-
-
-  openAttrGrpWin(group) {
-    $('.bgblur').addClass('ovrlay');
-    this.selectedGroup = group;
-    this.attrGrpWindow = true;
-  }
-
-  closeAttrGrpWin($event) {
-    this.attrGrpWindow = $event;
-    $('.bgblur').removeClass('ovrlay');
-  }
-
-
-  openPortalGrpWin(group) {
-    $('.bgblur').addClass('ovrlay');
-    this.selectedGroup = group;
-    this.portalGrpWindow = true;
-  }
-
-  closePortalGrpWin($event) {
-    $('.bgblur').removeClass('ovrlay');
-    this.portalGrpWindow = $event;
-  }
-
-
-  openFunctionSecWindow(group) {
-    $('.bgblur').addClass('ovrlay');
-    this.selectedGroup = group;
-    this.functionSecurityWindow = true;
-
-  }
-
-  closeFuncitonSecWin($event) {
-    this.functionSecurityWindow = $event;
-    $('.bgblur').removeClass('ovrlay');
-
-  }
-
-
-  openPropSecWindow(group) {
-    $('.bgblur').addClass('ovrlay');
-    this.selectedGroup = group;
-    this.propertySecurityWindow = true;
-  }
-
-
-  closePropSecWin($event) {
-    this.propertySecurityWindow = $event;
-    $('.bgblur').removeClass('ovrlay');
-
   }
 
   public openReport(group, action) {
@@ -325,7 +243,43 @@ export class GroupsComponent implements OnInit {
   }
 
 
-  
+
+
+
+
+
+
+  // openFunctionSecWindow(group) {
+  //   $('.bgblur').addClass('ovrlay');
+  //   this.selectedGroup = group;
+  //   this.functionSecurityWindow = true;
+
+  // }
+
+  // closeFuncitonSecWin($event) {
+  //   this.functionSecurityWindow = $event;
+  //   $('.bgblur').removeClass('ovrlay');
+
+  // }
+
+
+  // openPropSecWindow(group) {
+  //   $('.bgblur').addClass('ovrlay');
+  //   this.selectedGroup = group;
+  //   this.propertySecurityWindow = true;
+  // }
+
+
+  // closePropSecWin($event) {
+  //   this.propertySecurityWindow = $event;
+  //   $('.bgblur').removeClass('ovrlay');
+
+  // }
+
+
+
+
+
 
 
 

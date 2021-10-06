@@ -1,9 +1,9 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { SelectableSettings, RowArgs, PageChangeEvent } from '@progress/kendo-angular-grid';
-import { AlertService, LoaderService, CharacteristicGroupService } from '../../../_services'
-import { Group, CharateristicGroupModel } from '../../../_models'
+import { AlertService, CharacteristicGroupService } from '../../../_services'
+import { CharateristicGroupModel } from '../../../_models'
 
 @Component({
   selector: 'app-characteristic-group',
@@ -11,7 +11,6 @@ import { Group, CharateristicGroupModel } from '../../../_models'
   styleUrls: ['./characteristic-group.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-
 
 export class CharacteristicGroupComponent implements OnInit {
   subs = new SubSink();
@@ -33,18 +32,15 @@ export class CharacteristicGroupComponent implements OnInit {
   selectableSettings: SelectableSettings;
   mySelection: any = [];
   mySelectionKey(context: RowArgs): string {
-    return context.dataItem.groupID
+    return context.dataItem.characteristic_Group
   }
   booleanFilterDropDown = [{ valid: "A", val: "Active" }, { valid: "I", val: "Inactive" }];
   gridHeight = 700;
 
 
-
-
   constructor(
     private charGrpService: CharacteristicGroupService,
     private alertService: AlertService,
-    private loaderService: LoaderService,
     private chRef: ChangeDetectorRef,
   ) {
     this.setSelectableSettings();
@@ -61,22 +57,7 @@ export class CharacteristicGroupComponent implements OnInit {
     };
   }
 
-
-  // charGrpTable: any;
-  // charGroups: CharateristicGroupModel[];
-  // actualCharGroups: CharateristicGroupModel[];
-  // tableSetting = {
-  //   scrollY: '59vh',
-  //   colReorder: true,
-  //   scrollCollapse: true,
-  //   paging: true
-  // }
-  // public windowWidth = '800';
-  // public windowHeight = 'auto';
-  // public windowTop = '40';
-  // public windowLeft = 'auto';
-
-
+  
   ngOnInit() {
     this.getAllCharacteristicGroups()
   }
@@ -85,7 +66,6 @@ export class CharacteristicGroupComponent implements OnInit {
     this.subs.add(
       this.charGrpService.getAllCharacteristicGroups(this.selectedGroup.groupID).subscribe(
         data => {
-          console.log(data)
           if (data && data.isSuccess) {
             this.charGroups = data.data;
             this.gridView = process(this.charGroups, this.state);
@@ -128,7 +108,7 @@ export class CharacteristicGroupComponent implements OnInit {
   }
 
   cellClickHandler({ columnIndex, dataItem }) {
-    this.selectedGroup = dataItem;
+    // this.selectedChar = dataItem;
     // this.checkCanDelete(dataItem);
   }
 
@@ -144,7 +124,6 @@ export class CharacteristicGroupComponent implements OnInit {
     this.gridView = process(this.charGroups, this.state);
   }
 
-
   pageChange(event: PageChangeEvent): void {
     this.state.skip = event.skip;
     this.gridView = {
@@ -157,73 +136,4 @@ export class CharacteristicGroupComponent implements OnInit {
     this.state.skip = 0;
   }
 
-
-  // public closeCharGropWindow() {
-  //   this.charGrpWindow = false;
-  //   this.closeCharGrpWin.emit(this.charGrpWindow)
-  // }
-
-  // public getAllCharacteristicGroups() {
-  //   this.charGrpService.getAllCharacteristicGroups(this.selectedGroup.groupId).subscribe(
-  //     (data) => {
-  //       if (data && data.isSuccess) {
-  //         this.charGroups = data.data;
-  //         this.chRef.detectChanges();
-  //         const grpTable: any = $('.charGrpTable');
-  //         this.charGrpTable = grpTable.DataTable(this.tableSetting);
-  //       } else {
-  //         this.loaderService.hide();
-  //         this.alertService.error(data.message);
-  //       }
-  //     },
-  //     (error) => {
-
-  //       this.loaderService.hide();
-  //       this.alertService.error(error);
-  //     }
-  //   )
-  // }
-
-  // assigneGroup(event: any, charGroupId) {
-  //   //let isSelected = event.target.checked;
-  //   this.charGrpService.assigneCharacteristicGroups(charGroupId, this.selectedGroup.groupId).subscribe(
-  //     data => {
-  //       if (data && data.isSuccess) {
-  //         //console.log(data);
-  //       } else {
-  //         this.loaderService.hide();
-  //         this.alertService.error(data.message);
-  //       }
-  //     },
-  //     error => {
-  //       this.loaderService.hide();
-  //       this.alertService.error(error);
-  //     }
-  //   );
-  // }
-
-  // includeOnlyGroup(event: any) {
-  //   this.charGrpService.getAllCharacteristicGroups(this.selectedGroup.groupId).subscribe(
-  //     datanew => {
-  //       if (datanew && datanew.isSuccess) {
-  //         this.charGroups = datanew.data;
-  //         this.actualCharGroups = datanew.data;
-  //         this.charGrpTable.destroy();
-
-  //         if (event.target.checked) {
-  //           let newgrp: any;
-  //           newgrp = this.charGroups.filter(gr => gr.isSelected == true);
-  //           this.charGroups = newgrp;
-  //         } else {
-  //           this.charGroups = this.actualCharGroups;
-  //         }
-
-  //         // reinitialize datatable
-  //         this.chRef.detectChanges();
-  //         const table: any = $('.charGrpTable');
-  //         this.charGrpTable = table.DataTable(this.tableSetting);
-  //       }
-  //     })
-
-  // }
 }
