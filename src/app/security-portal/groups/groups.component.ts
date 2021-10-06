@@ -43,6 +43,9 @@ export class GroupsComponent implements OnInit {
   }
   isGroupForm = false;
   groupFormMode = 'new';
+  showAssetDetail = false;
+
+
 
 
 
@@ -163,7 +166,7 @@ export class GroupsComponent implements OnInit {
   getAllGroups() {
     this.groupService.newGroupList().subscribe(
       data => {
-        console.log(data);
+        // console.log(data);
         if (data.isSuccess) {
           this.groups = data.data;
           this.gridView = process(this.groups, this.state);
@@ -216,18 +219,35 @@ export class GroupsComponent implements OnInit {
   }
 
 
+  openAssetDetail(){
+    $('.groupOverlay').addClass('ovrlay');
+    this.showAssetDetail = true;
+  }
+
+
+  closeAssetDetail(eve){
+    $('.groupOverlay').removeClass('ovrlay');
+    this.showAssetDetail = false;
+  }
+
+
+
+
+
+
+
 
   // functions for opening popup and window
-  openCharGrpWin(group) {
-    $('.bgblur').addClass('ovrlay');
-    this.selectedGroup = group;
-    this.charGrpWindow = true;
-  }
+  // openCharGrpWin(group) {
+  //   $('.bgblur').addClass('ovrlay');
+  //   this.selectedGroup = group;
+  //   this.charGrpWindow = true;
+  // }
 
-  closeCharGrpWin($event) {
-    this.charGrpWindow = $event;
-    $('.bgblur').removeClass('ovrlay');
-  }
+  // closeCharGrpWin($event) {
+  //   this.charGrpWindow = $event;
+  //   $('.bgblur').removeClass('ovrlay');
+  // }
 
   openElmGrpWin(group) {
     $('.bgblur').addClass('ovrlay');
@@ -304,6 +324,8 @@ export class GroupsComponent implements OnInit {
     this.openReports = false;
   }
 
+
+  
 
 
 

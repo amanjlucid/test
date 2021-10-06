@@ -1,0 +1,136 @@
+<form [formGroup]="groupForm" id="groupForm" (ngSubmit)="onSubmit()" autocomplete="off">
+    <div class="row mt-2">
+        <div class="col-md-12">
+            <span class="bold"> Characteristics </span>
+
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-10">
+                            <label>Show Characteristics with no Group</label>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="switcher">
+                                <input type="checkbox" class="switcher-input" formControlName="showNoCharGroup">
+                                <span class="switcher-indicator">
+                                    <span class="switcher-yes"><span class="ion ion-md-checkmark"></span></span>
+                                    <span class="switcher-no"><span class="ion ion-md-close"></span></span>
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-10">
+                            <label>Include All Characteristics?</label>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="switcher">
+                                <input type="checkbox" class="switcher-input" formControlName="includeAllCharGroup">
+                                <span class="switcher-indicator">
+                                    <span class="switcher-yes"><span class="ion ion-md-checkmark"></span></span>
+                                    <span class="switcher-no"><span class="ion ion-md-close"></span></span>
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-md-12 mt-4">
+            <span class="bold"> Attributes </span>
+
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-10">
+                            <label>Show Attribute with no Elements?</label>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="switcher">
+                                <input type="checkbox" class="switcher-input" formControlName="showNoElement">
+                                <span class="switcher-indicator">
+                                    <span class="switcher-yes"><span class="ion ion-md-checkmark"></span></span>
+                                    <span class="switcher-no"><span class="ion ion-md-close"></span></span>
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-10">
+                            <label>Include All Elements?</label>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="switcher">
+                                <input type="checkbox" class="switcher-input" formControlName="includeAllElements">
+                                <span class="switcher-indicator">
+                                    <span class="switcher-yes"><span class="ion ion-md-checkmark"></span></span>
+                                    <span class="switcher-no"><span class="ion ion-md-close"></span></span>
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-md-12 mt-4">
+            <span class="bold"> Additional </span>
+
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-10">
+                            <label>Include All Portals</label>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="switcher">
+                                <input type="checkbox" class="switcher-input" formControlName="includeAllPortalTabs">
+                                <span class="switcher-indicator">
+                                    <span class="switcher-yes"><span class="ion ion-md-checkmark"></span></span>
+                                    <span class="switcher-no"><span class="ion ion-md-close"></span></span>
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-10">
+                            <label>Works Order Level Security?</label>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="switcher">
+                                <input type="checkbox" class="switcher-input" formControlName="workOrderLevel">
+                                <span class="switcher-indicator">
+                                    <span class="switcher-yes"><span class="ion ion-md-checkmark"></span></span>
+                                    <span class="switcher-no"><span class="ion ion-md-close"></span></span>
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="row mt-4">
+        <div class="col-md-12 text-right">
+            <button type="button" (click)="closeGroupAssetDetail()" class="mr-1 btn btn-sm themeButton">Cancel</button>
+            <button type="submit" class="btn btn-sm themeButton">Ok</button>
+
+        </div>
+    </div>
+
+</form>

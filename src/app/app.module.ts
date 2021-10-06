@@ -117,6 +117,8 @@ import { WorksOrderSettingsComponent } from './works-order-settings/works-order-
 import { ChartSettingsComponent } from './chart-settings/chart-settings.component';
 import { UserCharacteristicsComponent } from './assets-portal/user-characteristics/user-characteristics.component';
 import { GroupFormComponent } from './security-portal/groups/group-form/group-form.component';
+import { GroupAssetDetailComponent } from './security-portal/groups/group-asset-detail/group-asset-detail.component';
+import { GroupSettingsComponent } from './security-portal/groups/group-settings/group-settings.component';
 
 
 @NgModule({
@@ -218,7 +220,9 @@ import { GroupFormComponent } from './security-portal/groups/group-form/group-fo
     WorksOrderSettingsComponent,
     ChartSettingsComponent,
     UserCharacteristicsComponent,
-    GroupFormComponent
+    GroupFormComponent,
+    GroupAssetDetailComponent,
+    GroupSettingsComponent
 
   ],
 

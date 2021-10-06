@@ -84,7 +84,9 @@ export class GroupFormComponent implements OnInit {
 
   }
 
-
+  ngOnDestroy() {
+    this.subs.unsubscribe();
+  }
 
   formErrorObject() {
     this.formErrors = {
@@ -179,7 +181,7 @@ export class GroupFormComponent implements OnInit {
               } else this.alertService.error(data.message);
             }, err => this.alertService.error(err)
           )
-        }
+        } else this.alertService.error(data.message)
       }
     )
 

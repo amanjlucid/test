@@ -1,0 +1,48 @@
+<kendo-window title="{{title}}" *ngIf="showAssetDetail" (close)="closeAssetDetail()" [top]="20" [height]="auto"
+    [minHeight]="270" [minWidth]="600" [width]="1000">
+
+    <div class="row">
+        <div class="col-md-12 col-sm-12">
+            <div class="nav-responsive-lg">
+                <ul class="nav nav-tabs tabs-alt">
+                    <li class="nav-item">
+                        <a class="nav-link" [ngClass]="{'active': tabName=='settings'}" (click)="showTab('settings')"
+                            href="javascript:void(0)">Settings</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" [ngClass]="{'active': tabName=='characteristicsGroup'}"
+                            (click)="showTab('characteristicsGroup')" href="javascript:void(0)">Characteristics
+                            Group</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" [ngClass]="{'active': tabName=='elements'}" (click)="showTab('elements')"
+                            href="javascript:void(0)">Elements</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" [ngClass]="{'active': tabName=='attributeGroups'}"
+                            (click)="showTab('attributeGroups')" href="javascript:void(0)">Attribute Groups</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" [ngClass]="{'active': tabName=='assetPanels'}"
+                            (click)="showTab('assetPanels')" href="javascript:void(0)">Asset Panels</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-2">
+        <div class="col-md-12">
+            <app-group-settings *ngIf="tabName == 'settings'" [selectedGroup]="selectedGroup"
+                (closeGroupAssetDetailEvent)="closeGroupAssetDetail($event)"></app-group-settings>
+
+            <app-characteristic-group *ngIf="tabName == 'characteristicsGroup'" [selectedGroup]="selectedGroup">
+            </app-characteristic-group>
+
+        </div>
+    </div>
+</kendo-window>

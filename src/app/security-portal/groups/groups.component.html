@@ -56,6 +56,7 @@
                   href="javascript:void(0)">Delete</a>
                 <a class="dropdown-item" (click)="openGroupForm('copy', dataItem)" href="javascript:void(0)">Copy</a>
 
+                <a class="dropdown-item" (click)="openAssetDetail()" href="javascript:void(0)">Asset Details</a>
                 <!-- 
               
               <a class="dropdown-item" (click)="openPopup('copy', group)" href="javascript:void(0)">Copy</a> -->
@@ -232,97 +233,6 @@
 
 
 
-
-
-
-
-
-
-
-  <!-- <div class="row" style="margin-top:13px;">
-    <div class="table-responsive groupTable">
-      <table class="table table-striped table-bordered grpTable" *ngIf="groups">
-        <thead>
-          <tr>
-            <th style="width:3px;"></th>
-            <th>Group</th>
-            <th>Description</th>
-            <th>Show No Char Group</th>
-            <th>Show No Elements</th>
-            <th>Include All Char Groups</th>
-            <th>Include All Elements</th>
-            <th>Include All Portal Tabs</th>
-            <th>Work Order Level</th>
-            <th>Property Security Set</th>
-            <th>Char Group Security Set</th>
-            <th>Element Security Set</th>
-            <th>Function Security Set</th>
-            <th>Attribute Group Security Set</th>
-            <th>Status</th>
-            <th>Created By</th>
-            <th style="display:none;">CD</th>
-            <th>Created Date</th>
-            <th>Changed By</th>
-            <th style="display:none;">CHD</th>
-            <th>Changed Date</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr class="odd gradeX" *ngFor="let group of groups"
-            [className]="selectedGroup != undefined ? ( selectedGroup.groupId === group.groupId ? 'selected' : '') : ''"
-            (click)=toggleClass(group)>
-            <td>
-              <li class="nav-item dropdown list-unstyled">
-                <i (click)=toggleClass(group) data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
-                <div class="dropdown-menu">
-                  <a class="dropdown-item" (click)="openPopup('edit', group)" href="javascript:void(0)">Edit</a>
-                  <a class="dropdown-item" [class.disabled]="!group.canDelete" (click)="openConfirmationDialog(group)"
-                    href="javascript:void(0)">Delete</a>
-                  <a class="dropdown-item" (click)="openPopup('copy', group)" href="javascript:void(0)">Copy</a>
-                  <a class="dropdown-item" (click)="openCharGrpWin(group)" href="javascript:void(0)">Characteristic
-                    Groups</a>
-                  <a class="dropdown-item" (click)="openElmGrpWin(group)" href="javascript:void(0)">Elements</a>
-                  <a class="dropdown-item" (click)="openAttrGrpWin(group)" href="javascript:void(0)">Attribute
-                    Groups</a>
-                  <a class="dropdown-item" (click)="openPortalGrpWin(group)" href="javascript:void(0)">Asset Tabs</a>
-                  <a class="dropdown-item" (click)="openFunctionSecWindow(group)" href="javascript:void(0)">Function
-                    Security</a>
-                  <a class="dropdown-item" (click)="openPropSecWindow(group)" href="javascript:void(0)">Property
-                    Security</a>
-                </div>
-              </li>
-            </td>
-            <td>{{group.groupName}}</td>
-            <td>{{group.groupDescription}}</td>
-            <td class="text-center"><i *ngIf="group.showNoCharGroup" class="fas fa-check"></i></td>
-            <td class="text-center"><i *ngIf="group.showNoElement" class="fas fa-check"></i></td>
-            <td class="text-center"><i *ngIf="group.includeAllCharGroup" class="fas fa-check"></i></td>
-            <td class="text-center"><i *ngIf="group.includeAllElements" class="fas fa-check"></i></td>
-            <td class="text-center"><i *ngIf="group.includeAllPortalTabs" class="fas fa-check"></i></td>
-            <td class="text-center"><i *ngIf="group.workOrderLevel" class="fas fa-check"></i></td>
-            <td class="text-center"><i *ngIf="group.propertySecuritySet" class="fas fa-check"></i></td>
-            <td class="text-center"><i *ngIf="group.charGroupSecuritySet" class="fas fa-check"></i></td>
-            <td class="text-center"><i *ngIf="group.elementSecuritySet" class="fas fa-check"></i></td>
-            <td class="text-center"><i *ngIf="group.functionSecuritySet" class="fas fa-check"></i></td>
-            <td class="text-center"><i *ngIf="group.attributeGroupSecuritySet" class="fas fa-check"></i></td>
-            <td>{{group.status == true ? "Active" : "Inactive"}}</td>
-            <td>{{group.createdBy}}</td>
-            <td style="display:none;">{{group.createdDate | dateFormat : 'YYYY-MM-DD'}}</td>
-            <td>{{group.createdDate | dateFormat : 'DD-MMM-YYYY' }}</td>
-            <td>{{group.changedBy}}</td>
-            <td style="display:none;">{{group.changedDate | dateFormat : 'YYYY-MM-DD'}}</td>
-            <td>{{group.changedDate | dateFormat : 'DD-MMM-YYYY'}}</td>
-
-
-          </tr>
-
-
-        </tbody>
-      </table>
-    </div>
-  </div> -->
-
-
 </div>
 
 
@@ -331,6 +241,10 @@
   <app-group-form *ngIf="isGroupForm" [isGroupForm]="isGroupForm" [groupFormMode]="groupFormMode"
     [selectedGroup]="selectedGroup" (closeGroupFormEvent)="closeGroupForm($event)"
     (reloadGroupEvent)=reloadGroup($event)></app-group-form>
+
+    <app-group-asset-detail *ngIf="showAssetDetail" [showAssetDetail]="showAssetDetail" [selectedGroup]="selectedGroup" (closeAssetDetailEvent)="closeAssetDetail($event)"></app-group-asset-detail>
+
+
 
 
   <!-- <kendo-window title="{{windowTitle}}" [(width)]="windowWidth" [top]="20" [minWidth]="250" *ngIf="dialogOpened"
