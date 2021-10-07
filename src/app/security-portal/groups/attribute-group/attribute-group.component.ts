@@ -3,6 +3,8 @@ import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { SelectableSettings, RowArgs, PageChangeEvent } from '@progress/kendo-angular-grid';
 import { AlertService, AttributeGroupService } from '../../../_services'
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'app-attribute-group',
@@ -35,7 +37,7 @@ export class AttributeGroupComponent implements OnInit {
   }
   booleanFilterDropDown = [{ valid: "A", val: "Active" }, { valid: "I", val: "Inactive" }];
   gridHeight = 700;
-
+  textSearch$ = new Subject<string>();
 
   constructor(
     private attrGrpService: AttributeGroupService,
@@ -58,6 +60,17 @@ export class AttributeGroupComponent implements OnInit {
 
   ngOnInit() {
     this.getAllAttributeGroups();
+
+    this.subs.add(
+      this.textSearch$
+        .pipe(
+          debounceTime(600),
+          distinctUntilChanged()
+        ).subscribe((searchTerm) => {
+          this.searchInAllFields(searchTerm)
+          this.chRef.detectChanges()
+        })
+    )
   }
 
   getAllAttributeGroups() {
@@ -131,6 +144,43 @@ export class AttributeGroupComponent implements OnInit {
         }
       }, error => this.alertService.error(error)
     )
+  }
+
+
+  onFilter(inputValue: string): void {
+    this.textSearch$.next(inputValue);
+  }
+
+
+  searchInAllFields(inputValue: any) {
+    this.resetGrid()
+    this.gridView = process(this.attrGroups, {
+      filter: {
+        logic: "or",
+        filters: [
+          {
+            field: 'aaG_Code',
+            operator: 'contains',
+            value: inputValue
+          },
+          {
+            field: 'name',
+            operator: 'contains',
+            value: inputValue
+          },
+          {
+            field: 'description',
+            operator: 'contains',
+            value: inputValue
+          },
+          {
+            field: 'status',
+            operator: 'contains',
+            value: inputValue
+          },
+        ]
+      }
+    });
   }
 
 }

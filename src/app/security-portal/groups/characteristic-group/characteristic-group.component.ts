@@ -4,6 +4,8 @@ import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data
 import { SelectableSettings, RowArgs, PageChangeEvent } from '@progress/kendo-angular-grid';
 import { AlertService, CharacteristicGroupService } from '../../../_services'
 import { CharateristicGroupModel } from '../../../_models'
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'app-characteristic-group',
@@ -36,7 +38,7 @@ export class CharacteristicGroupComponent implements OnInit {
   }
   booleanFilterDropDown = [{ valid: "A", val: "Active" }, { valid: "I", val: "Inactive" }];
   gridHeight = 700;
-
+  textSearch$ = new Subject<string>();
 
   constructor(
     private charGrpService: CharacteristicGroupService,
@@ -57,9 +59,22 @@ export class CharacteristicGroupComponent implements OnInit {
     };
   }
 
-  
+
   ngOnInit() {
-    this.getAllCharacteristicGroups()
+    this.getAllCharacteristicGroups();
+
+    this.subs.add(
+      this.textSearch$
+        .pipe(
+          debounceTime(600),
+          distinctUntilChanged()
+        ).subscribe((searchTerm) => {
+          this.searchInAllFields(searchTerm)
+          this.chRef.detectChanges()
+        })
+    )
+
+
   }
 
   getAllCharacteristicGroups() {
@@ -134,6 +149,42 @@ export class CharacteristicGroupComponent implements OnInit {
 
   resetGrid() {
     this.state.skip = 0;
+  }
+
+
+  onFilter(inputValue: string): void {
+    this.textSearch$.next(inputValue);
+  }
+
+  searchInAllFields(inputValue: any) {
+    this.resetGrid()
+    this.gridView = process(this.charGroups, {
+      filter: {
+        logic: "or",
+        filters: [
+          {
+            field: 'characteristic_Group',
+            operator: 'contains',
+            value: inputValue
+          },
+          {
+            field: 'name',
+            operator: 'contains',
+            value: inputValue
+          },
+          {
+            field: 'description',
+            operator: 'contains',
+            value: inputValue
+          },
+          {
+            field: 'status',
+            operator: 'contains',
+            value: inputValue
+          },
+        ]
+      }
+    });
   }
 
 }

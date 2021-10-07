@@ -1,118 +1,191 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
-import { AlertService, LoaderService, FunctionSecurityService } from '../../../_services'
-import { Group, FunctionSecurityModel } from '../../../_models'
+import { Component, OnInit, Input, ChangeDetectorRef, ChangeDetectionStrategy, Output, EventEmitter } from '@angular/core';
+import { SubSink } from 'subsink';
+import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
+import { SelectableSettings, RowArgs, PageChangeEvent } from '@progress/kendo-angular-grid';
+import { AlertService, LoaderService, FunctionSecurityService, GroupService } from '../../../_services'
+import { forkJoin } from 'rxjs';
+import { FunctionSecurityModel } from '../../../_models'
 
 
-import { DataTablesModule } from 'angular-datatables';
-import 'datatables.net';
-import 'datatables.net-dt';
-declare var $: any;
+
+
+
+
+
+
+
+
+
+
+
+// 
+
+// import { DataTablesModule } from 'angular-datatables';
+// import 'datatables.net';
+// import 'datatables.net-dt';
+// declare var $: any;
 
 @Component({
   selector: 'app-function-security',
   templateUrl: './function-security.component.html',
-  styleUrls: ['./function-security.component.css']
+  styleUrls: ['./function-security.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FunctionSecurityComponent implements OnInit {
-
-
-  public windowState = 'maximized';
-  functionPortals: any;
+  subs = new SubSink();
+  @Input() functionSecurityWindow: boolean = false;
+  @Input() selectedGroup;
+  @Output() closeWindow = new EventEmitter<boolean>();
+  @Output() cancelGroupFunctionEvents = new EventEmitter<boolean>();
+  group: any;
+  windowState = 'maximized';
+  currentUser = JSON.parse(localStorage.getItem('currentUser'));
   selectedPortal: any;
-  functionType: any
-  selectedFunctionType: any;
-  currentUser;
+  functionPortals: any;
+  title = '';
+  functionType: any;
+  selectedFunctionType = 'Global Function';;
   availableFunctions: FunctionSecurityModel[];
   assignedFunctions: FunctionSecurityModel[];
-  availableFunctionTable: any;
-  assignedFunctionTable: any;
-  availableFunctionLists: FunctionSecurityModel[] = [];
-  assignedFunctionLists: FunctionSecurityModel[] = [];
-  tableSetting = {
-    scrollY: '22rem',
-    scrollCollapse: true,
-    bLengthChange: false,
-    paging: true
+  availableFunctionState: State = {
+    skip: 0,
+    sort: [],
+    take: 25,
+    group: [],
+    filter: {
+      logic: "and",
+      filters: []
+    }
+  }
+  availableGridView: DataResult;
+  availableGridpageSize = 25;
+  availableGridLoading = true;
+  availableGridSelectableSettings: SelectableSettings;
+  availableGridMySelection: any = [];
+  availableGridMySelectionKey(context: RowArgs): string {
+    return JSON.stringify(context.dataItem)
   }
 
+  assignFunctionState: State = {
+    skip: 0,
+    sort: [],
+    take: 25,
+    group: [],
+    filter: {
+      logic: "and",
+      filters: []
+    }
+  }
+  assignGridView: DataResult;
+  assignGridpageSize = 25;
+  assignGridLoading = true;
+  assignGridSelectableSettings: SelectableSettings;
+  assignGridMySelection: any = [];
+  assignGridMySelectionKey(context: RowArgs): string {
+    return JSON.stringify(context.dataItem)
+  }
 
-  @Input() functionSecurityWindow: boolean = false;
-  @Input() selectedGroup: Group
-  @Output() closeWindow = new EventEmitter<boolean>();
+  availableFunctionLists: FunctionSecurityModel[] = [];
+  assignedFunctionLists: FunctionSecurityModel[] = [];
+
+
 
   constructor(
     private functionSecService: FunctionSecurityService,
     private alertService: AlertService,
     private loaderService: LoaderService,
     private chRef: ChangeDetectorRef,
-  ) { }
-
-  ngOnInit() {
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    this.createSession();
+    private groupService: GroupService,
+  ) {
+    this.setSelectableSettings("AV");
+    this.setSelectableSettings("AS");
   }
 
-  public closeFunctionSecWindow() {
+  setSelectableSettings(grid = "AV"): void {
+    if (grid == "AV") {
+      this.availableGridSelectableSettings = {
+        checkboxOnly: false,
+        mode: 'multiple'
+      };
+    }
+
+    if (grid == "AS") {
+      this.assignGridSelectableSettings = {
+        checkboxOnly: false,
+        mode: 'multiple'
+      };
+    }
+
+  }
+
+
+  ngOnDestroy() {
+    this.subs.unsubscribe();
+  }
+
+  ngOnInit() {
+    this.subs.add(
+      this.groupService.groupListByGroupId(this.selectedGroup.groupID).subscribe(
+        data => {
+          if (data.isSuccess) {
+            this.group = data.data
+            this.title = `Security Functions - ${this.group.groupName}`
+            this.createSession();
+          }
+        }
+      )
+    )
+
+  }
+
+
+  showTab(tabName) {
+    this.selectedFunctionType = tabName;
+    this.getAllFunctionList()
+  }
+
+  closeFunctionSecWindow() {
     this.cancelGroupFunctions();
     this.functionSecurityWindow = false;
     this.closeWindow.emit(this.functionSecurityWindow)
-
   }
 
 
-  public createSession() {
-    this.functionSecService.createSession(this.selectedGroup.groupId, this.currentUser.userId).subscribe(
-      data => {
-
-        if (data && data.data == "Y") {
-          this.getPortalLIst();
-          this.getFunctionType();
-        } else {
-          this.loaderService.hide();
-          this.alertService.error(data.message);
+  createSession() {
+    this.subs.add(
+      this.functionSecService.createSession(this.selectedGroup.groupID, this.currentUser.userId).subscribe(
+        data => {
+          if (data && data.data == "Y") {
+            this.getPortalAndFunctionList();
+            // this.getPortalList();
+            // this.getFunctionType();
+          } else {
+            this.loaderService.hide();
+            this.alertService.error(data.message);
+          }
         }
-
-      }
+      )
     )
   }
 
-  public getPortalLIst() {
-    this.functionSecService.getFunctionPortals(this.selectedGroup.workOrderLevel).subscribe(
-      data => {
-        if (data && data.isSuccess) {
-          this.functionPortals = data.data;
+
+  getPortalAndFunctionList() {
+    this.subs.add(
+      forkJoin([
+        this.functionSecService.getFunctionPortals(this.group.workOrderLevel),
+        this.functionSecService.getFunctionTypes(this.group.workOrderLevel)
+      ]).subscribe(
+        data => {
+          this.functionPortals = data[0].data;
           this.selectedPortal = this.functionPortals[0];
-          this.getAllFunctionList();
-        } else {
-          this.loaderService.hide();
-          this.alertService.error(data.message);
-        }
-      },
-      error => {
-        this.loaderService.hide();
-        this.alertService.error(error);
-      }
-    )
-  }
 
-
-  public getFunctionType() {
-    this.functionSecService.getFunctionTypes(this.selectedGroup.workOrderLevel).subscribe(
-      data => {
-        if (data && data.isSuccess) {
-          this.functionType = data.data;
+          this.functionType = data[1].data;
           this.selectedFunctionType = this.functionType[0];
-          this.getAllFunctionList();
-          //console.log(this.functionType)
-        } else {
-          this.loaderService.hide();
-          this.alertService.error(data.message);
+
+          this.getAllFunctionList()
+          this.chRef.detectChanges()
         }
-      },
-      error => {
-        this.loaderService.hide();
-        this.alertService.error(error);
-      }
+      )
     )
   }
 
@@ -126,98 +199,124 @@ export class FunctionSecurityComponent implements OnInit {
 
 
   availableFunction() {
-
-    this.functionSecService.availableFunctionList(this.selectedPortal, this.selectedFunctionType, this.currentUser.userId, this.selectedGroup.groupId)
-      .subscribe(
+    this.availableGridResetGrid()
+    this.subs.add(
+      this.functionSecService.availableFunctionList(this.selectedPortal, this.selectedFunctionType, this.currentUser.userId, this.selectedGroup.groupID).subscribe(
         data => {
           if (data && data.isSuccess) {
-            if (this.availableFunctionTable != undefined) {
-              this.availableFunctionTable.destroy();
-            }
             this.availableFunctions = data.data;
-
-            this.chRef.detectChanges();
-            const grpTable: any = $('.availableFunctionTable');
-            this.availableFunctionTable = grpTable.DataTable(this.tableSetting);
-          } else {
-            this.loaderService.hide();
-            this.alertService.error(data.message);
+            this.availableGridView = process(this.availableFunctions, this.availableFunctionState);
+            this.availableGridLoading = false;
+            this.chRef.detectChanges()
           }
         }
       )
+    )
+
   }
 
   assignedFunction() {
-    this.functionSecService.assignedFunctionList(this.selectedPortal, this.selectedFunctionType, this.currentUser.userId, this.selectedGroup.groupId).subscribe(
+    this.assignGridResetGrid()
+   
+    this.functionSecService.assignedFunctionList(this.selectedPortal, this.selectedFunctionType, this.currentUser.userId, this.selectedGroup.groupID).subscribe(
       data => {
         if (data && data.isSuccess) {
-          if (this.assignedFunctionTable != undefined) {
-            this.assignedFunctionTable.destroy();
-          }
           this.assignedFunctions = data.data;
-          this.chRef.detectChanges();
-          const grpTable: any = $('.assignedFunctionTable');
-          this.assignedFunctionTable = grpTable.DataTable(this.tableSetting);
-        } else {
-          this.loaderService.hide();
-          this.alertService.error(data.message);
+          this.assignGridView = process(this.assignedFunctions, this.assignFunctionState);
+          this.assignGridLoading = false;
+          this.chRef.detectChanges()
         }
       }
     )
   }
 
 
-  toggleAvailableFunction(event: any, availableFunction) {
-    const parent = event.target.parentNode;
-    parent.classList.toggle("selected");
 
-    //if (this.availableFunctionLists.includes(availableFunction)) {
-    if (this.availableFunctionLists.some(x => JSON.stringify(x) === JSON.stringify(availableFunction))) {
-      this.availableFunctionLists = this.availableFunctionLists.filter(x => x.functionName != availableFunction.functionName);
-    } else {
-      availableFunction.toTemp = true;
-      this.availableFunctionLists.push(availableFunction);
-    }
+  availableGridCellClickHandler({ columnIndex, dataItem }) {
+    // this.selectedChar = dataItem;
+    // this.checkCanDelete(dataItem);
+  }
 
+  availableGridSortChange(sort: SortDescriptor[]): void {
+    this.availableGridResetGrid()
+    this.availableFunctionState.sort = sort;
+    this.availableGridView = process(this.availableFunctions, this.availableFunctionState);
+  }
+
+  availableGridFilterChange(filter: any): void {
+    this.availableGridResetGrid()
+    this.availableFunctionState.filter = filter;
+    this.availableGridView = process(this.availableFunctions, this.availableFunctionState);
+  }
+
+  availableGridPageChange(event: PageChangeEvent): void {
+    this.availableFunctionState.skip = event.skip;
+    this.availableGridView = {
+      data: this.availableFunctions.slice(this.availableFunctionState.skip, this.availableFunctionState.skip + this.availableGridpageSize),
+      total: this.availableFunctions.length
+    };
+  }
+
+  availableGridResetGrid() {
+    this.availableFunctionState.skip = 0;
+  }
+
+
+
+  assignGridCellClickHandler({ columnIndex, dataItem }) {
+    // this.selectedChar = dataItem;
+    // this.checkCanDelete(dataItem);
+  }
+
+  assignGridSortChange(sort: SortDescriptor[]): void {
+    this.assignGridResetGrid()
+    this.assignFunctionState.sort = sort;
+    this.assignGridView = process(this.assignedFunctions, this.assignFunctionState);
+  }
+
+  assignGridFilterChange(filter: any): void {
+    this.assignGridResetGrid()
+    this.assignFunctionState.filter = filter;
+    this.assignGridView = process(this.assignedFunctions, this.assignFunctionState);
+  }
+
+  assignGridPageChange(event: PageChangeEvent): void {
+    this.assignFunctionState.skip = event.skip;
+    this.assignGridView = {
+      data: this.assignedFunctions.slice(this.assignFunctionState.skip, this.assignFunctionState.skip + this.assignGridpageSize),
+      total: this.assignedFunctions.length
+    };
+  }
+
+  assignGridResetGrid() {
+    this.assignFunctionState.skip = 0;
   }
 
 
   includeAvailableFunction(incAll = false) {
-
     if (incAll) {
-      this.availableFunctionLists = this.availableFunctions.filter(x => x.toTemp = true); // change toTemp value to true to include
-    }
-    if (this.availableFunctionLists) {
-      this.functionSecService.includeAvailableFncToAssined(this.availableFunctionLists).subscribe(
-        data => {
-          if (data && data.isSuccess) {
-            this.getAllFunctionList();
-            this.availableFunctionLists = [];
-          } else {
-            this.loaderService.hide();
-            this.alertService.error(data.message);
-          }
-        },
-        error => {
-          this.loaderService.hide();
-          this.alertService.error(error);
-        }
-      )
-    }
-  }
-
-
-  toggleAssignedFunction(event: any, assignedFunction) {
-    const parent = event.target.parentNode;
-    parent.classList.toggle("selected");
-
-
-    // if (this.assignedFunctionLists.includes(assignedFunction)) {
-    if (this.assignedFunctionLists.some(x => JSON.stringify(x) === JSON.stringify(assignedFunction))) {
-      this.assignedFunctionLists = this.assignedFunctionLists.filter(x => x.functionName != assignedFunction.functionName);
+      // change toTemp value to true to include
+      this.availableFunctionLists = this.availableFunctions.filter(x => x.toTemp = true);
     } else {
-      assignedFunction.toTemp = false;  // make assigned function toTemp index to true to include
-      this.assignedFunctionLists.push(assignedFunction);
+      for (const selectedAvailable of this.availableGridMySelection) {
+        const temp = JSON.parse(selectedAvailable);
+        temp.toTemp = true;
+        this.availableFunctionLists.push(temp);
+      }
+    }
+
+    if (this.availableFunctionLists.length) {
+      this.subs.add(
+        this.functionSecService.includeAvailableFncToAssined(this.availableFunctionLists).subscribe(
+          data => {
+            if (data && data.isSuccess) {
+              this.getAllFunctionList();
+              this.availableFunctionLists = [];
+              this.assignedFunctionLists = [];
+            } else this.alertService.error(data.message)
+          }, err => this.alertService.error(err)
+        )
+      )
     }
 
   }
@@ -225,25 +324,24 @@ export class FunctionSecurityComponent implements OnInit {
 
   removeAvailableFunction(remAll = false) {
     if (remAll) {
-      //console.log(this.assignedFunctions);
       this.assignedFunctionLists = this.assignedFunctions;
-      //console.log(this.assignedFunctionLists)
+    } else {
+      for (const selectedAssignedFunction of this.assignGridMySelection) {
+        const temp = JSON.parse(selectedAssignedFunction);
+        temp.toTemp = false;
+        this.assignedFunctionLists.push(temp);
+      }
     }
-    if (this.assignedFunctionLists) {
+
+    if (this.assignedFunctionLists.length) {
       this.functionSecService.removeAvailableFncFromAssined(this.assignedFunctionLists).subscribe(
         data => {
           if (data && data.isSuccess) {
             this.getAllFunctionList();
             this.assignedFunctionLists = [];
-          } else {
-            this.loaderService.hide();
-            this.alertService.error(data.message);
-          }
-        },
-        error => {
-          this.loaderService.hide();
-          this.alertService.error(error);
-        }
+            this.availableFunctionLists = [];
+          } else this.alertService.error(data.message)
+        }, err => this.alertService.error(err)
       )
     }
   }
@@ -251,17 +349,21 @@ export class FunctionSecurityComponent implements OnInit {
 
   saveGroupFunction() {
     if (this.availableFunctions && this.assignedFunctions) {
-      this.functionSecService.saveGroupFunctions(this.selectedGroup.groupId, this.currentUser.userId).subscribe(
-        data => {
-          this.closeFunctionSecWindow();
-        }
+      this.subs.add(
+        this.functionSecService.saveGroupFunctions(this.selectedGroup.groupID, this.currentUser.userId).subscribe(
+          data => {
+            this.closeFunctionSecWindow();
+          }
+        )
       )
     }
   }
 
   cancelGroupFunctions() {
     if (this.availableFunctions && this.assignedFunctions) {
-      this.functionSecService.cancelGroupFunctions(this.selectedGroup.groupId, this.currentUser.userId).subscribe()
+      this.cancelGroupFunctionEvents.emit(true)
+    } else {
+      this.cancelGroupFunctionEvents.emit(false)
     }
   }
 

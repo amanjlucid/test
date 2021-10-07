@@ -9,6 +9,11 @@
     margin-left: 5px !important;
 }
 
+.searchBox input{
+    width: 35%;
+    display: inline-block;
+}
+
 .charGroupDiv {
     height: 590px !important;
 }

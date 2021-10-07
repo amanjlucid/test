@@ -4,6 +4,8 @@ import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data
 import { SelectableSettings, RowArgs, PageChangeEvent } from '@progress/kendo-angular-grid';
 import { ElementGroupModel } from '../../../_models'
 import { AlertService, ElementGroupService } from '../../../_services'
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'app-elements-group',
@@ -38,7 +40,7 @@ export class ElementsGroupComponent implements OnInit {
   }
   booleanFilterDropDown = [{ valid: "A", val: "Active" }, { valid: "I", val: "Inactive" }];
   gridHeight = 700;
-
+  textSearch$ = new Subject<string>();
 
   constructor(
     private elmGrpService: ElementGroupService,
@@ -57,6 +59,17 @@ export class ElementsGroupComponent implements OnInit {
 
   ngOnInit() {
     this.getAllElementGroups()
+
+    this.subs.add(
+      this.textSearch$
+        .pipe(
+          debounceTime(600),
+          distinctUntilChanged()
+        ).subscribe((searchTerm) => {
+          this.searchInAllFields(searchTerm)
+          this.chRef.detectChanges()
+        })
+    )
   }
 
   ngOnDestroy() {
@@ -135,6 +148,45 @@ export class ElementsGroupComponent implements OnInit {
       }, error => this.alertService.error(error)
     );
   }
+
+
+  onFilter(inputValue: string): void {
+    this.textSearch$.next(inputValue);
+  }
+
+
+  searchInAllFields(inputValue: any) {
+    this.resetGrid()
+    this.gridView = process(this.elmGroups, {
+      filter: {
+        logic: "or",
+        filters: [
+          {
+            field: 'element_Code',
+            operator: 'contains',
+            value: inputValue
+          },
+          {
+            field: 'name',
+            operator: 'contains',
+            value: inputValue
+          },
+          {
+            field: 'description',
+            operator: 'contains',
+            value: inputValue
+          },
+          {
+            field: 'status',
+            operator: 'contains',
+            value: inputValue
+          },
+        ]
+      }
+    });
+  }
+
+
 
 
 }

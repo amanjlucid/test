@@ -28,7 +28,6 @@ export class GroupAssetDetailComponent implements OnInit {
 
   showTab(tabName) {
     this.tabName = tabName;
-
   }
 
   closeAssetDetail() {

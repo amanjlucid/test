@@ -1,6 +1,127 @@
 <kendo-window [(state)]="windowState" [top]="100" *ngIf="functionSecurityWindow" (close)="closeFunctionSecWindow()"
-  title="Show Function Security for Security Group: {{selectedGroup.groupName}}">
-  <div class="col-md-12 col-sm-12 col-xs-12 functionSecurityWindow">
+  title="{{title}}" [height]="auto">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="form-group row">
+        <label class="col-form-label col-sm-1 text-right">Portal:</label>
+
+        <div class="col-sm-6">
+          <select class="form-control" [(ngModel)]="selectedPortal" (change)="getAllFunctionList()">
+            <option *ngFor="let val of functionPortals" [ngValue]="val">{{val}}</option>
+          </select>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12 col-sm-12">
+      <div class="nav-responsive-lg">
+        <ul class="nav nav-tabs tabs-alt">
+          <li class="nav-item">
+            <a class="nav-link" [ngClass]="{'active': selectedFunctionType=='Global Function'}"
+              (click)="showTab('Global Function')" href="javascript:void(0)">Access</a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" [ngClass]="{'active': selectedFunctionType=='Menu'}" (click)="showTab('Menu')"
+              href="javascript:void(0)">Menus</a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" [ngClass]="{'active': selectedFunctionType=='Portal'}" (click)="showTab('Portal')"
+              href="javascript:void(0)">Pages/Panels</a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" [ngClass]="{'active': selectedFunctionType=='Tab'}" (click)="showTab('Tab')"
+              href="javascript:void(0)">Functions</a>
+          </li>
+
+
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="row mt-3">
+    <div class="col-md-5">
+      <kendo-grid id="availableGroup" #grid="kendoGrid" [data]="availableGridView" [pageSize]="availableGridpageSize"
+        [rowHeight]="36" (pageChange)="pageChange($event)" scrollable="virtual" [loading]="availableGridLoading"
+        filterable="menu" [resizable]="true" [sortable]="{
+        allowUnsort: true,
+        mode: 'single'
+        }" [skip]="availableFunctionState.skip" [sort]="availableFunctionState.sort"
+        [selectable]="availableGridSelectableSettings" [filter]="availableFunctionState.filter"
+        (sortChange)="availableGridSortChange($event)" (filterChange)="availableGridFilterChange($event)"
+        (cellClick)="availableGridCellClickHandler($event)" [navigable]="false" [virtualColumns]="false"
+        [kendoGridSelectBy]="availableGridMySelectionKey" [selectedKeys]="availableGridMySelection" [height]="600">
+
+        <kendo-grid-column field="functionName" title="Available Function" width="160" [filterable]="false">
+        </kendo-grid-column>
+        <kendo-grid-column field="portalArea" title="Portal Area" width="100" [filterable]="false">
+        </kendo-grid-column>
+
+      </kendo-grid>
+    </div>
+
+
+    <div class="col-md-2 text-center">
+      <div class="btn-group-vertical btn_grp">
+        <button [disabled]="availableGridMySelection?.length == 0" (click)="includeAvailableFunction()"
+          class="btn btn-secondary">Include &gt;</button>
+        <button [disabled]="availableFunctions?.length == 0" (click)="includeAvailableFunction(true)"
+          class="btn btn-secondary">Include All &gt;&gt;</button>
+        <br>
+
+        <button [disabled]="assignGridMySelection?.length == 0" (click)="removeAvailableFunction()"
+          class="btn btn-secondary">&lt; Remove</button>
+        <button type="button" [disabled]="assignedFunctions?.length == 0" (click)="removeAvailableFunction(true)"
+          class="btn btn-secondary">&lt;&lt; Remove All</button>
+      </div>
+    </div>
+
+
+    <div class="col-md-5">
+      <kendo-grid id="assignGroup" #grid="kendoGrid" [data]="assignGridView" [pageSize]="assignGridpageSize"
+        [rowHeight]="36" (pageChange)="assignGridPageChange($event)" scrollable="virtual" [loading]="assignGridLoading"
+        filterable="menu" [resizable]="true" [sortable]="{
+        allowUnsort: true,
+        mode: 'single'
+        }" [skip]="assignFunctionState.skip" [sort]="assignFunctionState.sort"
+        [selectable]="assignGridSelectableSettings" [filter]="assignGridFilterChange.filter"
+        (sortChange)="assignGridSortChange($event)" (filterChange)="filterChange($event)"
+        (cellClick)="assignGridCellClickHandler($event)" [navigable]="false" [virtualColumns]="false"
+        [kendoGridSelectBy]="assignGridMySelectionKey" [selectedKeys]="assignGridMySelection" [height]="600">
+
+        <kendo-grid-column field="functionName" title="Assigned Function" width="160" [filterable]="false">
+        </kendo-grid-column>
+        <kendo-grid-column field="portalArea" title="Portal Area" width="100" [filterable]="false">
+        </kendo-grid-column>
+
+      </kendo-grid>
+    </div>
+  </div>
+
+  <div class="row mt-4">
+    <div class="col-md-12 text-right">
+      <button (click)="closeFunctionSecWindow()" class="btn btn-sm">Cancel</button>
+      <button [disabled]="availableFunctions?.length == 0 && assignedFunctions?.length == 0"
+        class="btn btn-sm themeButton" (click)="saveGroupFunction()">Ok</button>
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+
+  <!-- <div class="col-md-12 col-sm-12 col-xs-12 functionSecurityWindow">
     <div class="">
       <div class="cui-example">
         <div class="col-md-5 col-sm-12 col-xs-12">
@@ -112,5 +233,5 @@
 
       </div>
     </div>
-  </div>
+  </div> -->
 </kendo-window>

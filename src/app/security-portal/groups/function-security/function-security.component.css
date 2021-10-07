@@ -1,41 +1,43 @@
-.functionSecurityWindow{
-    padding: 20px;
+.k-window {
+    position: fixed !important;
 }
 
+.k-grid tbody td {
+    white-space: nowrap;
+    line-height: 20px;
+    padding: 8px 12px;
+}
+
+.btn_grp{
+    vertical-align: middle;
+    float: none;
+    top: 130px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
 .btn_grp button{
     margin-bottom: 6px;
 }
 
 
-.btn_grp{
-    vertical-align: middle;
-    float: none;
-    /* display: inline-flex; */
-    top: 130px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    /* margin-left: 74px; */
-}
 
 
 
-/* .footerButton{
-    margin-right: 40px;
-} */
 
-.footerButton button{
+/* .footerButton button{
     margin-left: 8px;
 }
 
 .footerSec{
-    /* bottom: -150px;
-    right: 0;
-    position: absolute; */
     margin-top: 10px;
-    
-}
+} */
+
+
+
+/* 
+
 
 
 
@@ -54,5 +56,5 @@ and (max-device-width : 1024px)  {
     right: 0;
 }
   
-}
+} */
 

@@ -57,6 +57,10 @@
                 <a class="dropdown-item" (click)="openGroupForm('copy', dataItem)" href="javascript:void(0)">Copy</a>
 
                 <a class="dropdown-item" (click)="openAssetDetail()" href="javascript:void(0)">Asset Details</a>
+
+                <a class="dropdown-item" (click)="openFunctionSecWindow(dataItem)" href="javascript:void(0)">Function
+                  Security</a>
+
                 <!-- 
               
               <a class="dropdown-item" (click)="openPopup('copy', group)" href="javascript:void(0)">Copy</a> -->
@@ -242,9 +246,11 @@
     [selectedGroup]="selectedGroup" (closeGroupFormEvent)="closeGroupForm($event)"
     (reloadGroupEvent)=reloadGroup($event)></app-group-form>
 
-    <app-group-asset-detail *ngIf="showAssetDetail" [showAssetDetail]="showAssetDetail" [selectedGroup]="selectedGroup" (closeAssetDetailEvent)="closeAssetDetail($event)"></app-group-asset-detail>
+  <app-group-asset-detail *ngIf="showAssetDetail" [showAssetDetail]="showAssetDetail" [selectedGroup]="selectedGroup"
+    (closeAssetDetailEvent)="closeAssetDetail($event)"></app-group-asset-detail>
 
-
+  <app-function-security [selectedGroup]="selectedGroup" [functionSecurityWindow]="functionSecurityWindow"
+    *ngIf="functionSecurityWindow" (closeWindow)="closeFuncitonSecWin($event)" (cancelGroupFunctionEvents)="cancelGroupFunctionEvents($event)"></app-function-security>
 
 
   <!-- <kendo-window title="{{windowTitle}}" [(width)]="windowWidth" [top]="20" [minWidth]="250" *ngIf="dialogOpened"

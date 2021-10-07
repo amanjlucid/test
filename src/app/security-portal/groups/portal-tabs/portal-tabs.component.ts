@@ -4,6 +4,8 @@ import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data
 import { SelectableSettings, RowArgs, PageChangeEvent } from '@progress/kendo-angular-grid';
 import { AlertService, PortalGroupService } from '../../../_services'
 import { PortalTabsModel } from '../../../_models'
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'app-portal-tabs',
@@ -36,7 +38,7 @@ export class PortalTabsComponent implements OnInit {
   }
   booleanFilterDropDown = [{ valid: "A", val: "Active" }, { valid: "I", val: "Inactive" }];
   gridHeight = 700;
-
+  textSearch$ = new Subject<string>();
 
   constructor(
     private portalGrpService: PortalGroupService,
@@ -56,6 +58,17 @@ export class PortalTabsComponent implements OnInit {
 
   ngOnInit() {
     this.getAllPortaltabas()
+
+    this.subs.add(
+      this.textSearch$
+        .pipe(
+          debounceTime(600),
+          distinctUntilChanged()
+        ).subscribe((searchTerm) => {
+          this.searchInAllFields(searchTerm)
+          this.chRef.detectChanges()
+        })
+    )
   }
 
   ngOnDestroy() {
@@ -134,6 +147,36 @@ export class PortalTabsComponent implements OnInit {
     );
   }
 
+
+  onFilter(inputValue: string): void {
+    this.textSearch$.next(inputValue);
+  }
+
+  searchInAllFields(inputValue: any) {
+    this.resetGrid()
+    this.gridView = process(this.assetTabs, {
+      filter: {
+        logic: "or",
+        filters: [
+           {
+            field: 'tabName',
+            operator: 'contains',
+            value: inputValue
+          },
+          {
+            field: 'description',
+            operator: 'contains',
+            value: inputValue
+          },
+          {
+            field: 'status',
+            operator: 'contains',
+            value: inputValue
+          },
+        ]
+      }
+    });
+  }
 
 
 }

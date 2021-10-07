@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectorRef, HostListener } from '@angular/core';
-import { GroupService, AlertService, LoaderService, ConfirmationDialogService, HelperService } from '../../_services'
+import { GroupService, AlertService, LoaderService, ConfirmationDialogService, HelperService, FunctionSecurityService } from '../../_services'
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { SelectableSettings, RowArgs, PageChangeEvent } from '@progress/kendo-angular-grid';
@@ -46,7 +46,7 @@ export class GroupsComponent implements OnInit {
   showAssetDetail = false;
   openReports = false;
   reportingAction = "";
-
+  functionSecurityWindow = false;
 
 
 
@@ -78,7 +78,8 @@ export class GroupsComponent implements OnInit {
     private loaderService: LoaderService,
     private chRef: ChangeDetectorRef,
     private confirmationDialogService: ConfirmationDialogService,
-    private helper: HelperService
+    private helper: HelperService,
+    private functionSecService: FunctionSecurityService,
   ) {
     this.setSelectableSettings();
   }
@@ -133,7 +134,7 @@ export class GroupsComponent implements OnInit {
   }
 
 
-  cellClickHandler({ columnIndex, dataItem }) {
+  cellClickHandler({ dataItem }) {
     this.selectedGroup = dataItem;
     // this.checkCanDelete(dataItem);
   }
@@ -244,23 +245,24 @@ export class GroupsComponent implements OnInit {
 
 
 
+  openFunctionSecWindow(group) {
+    this.selectedGroup = group;
+    $('.groupOverlay').addClass('ovrlay');
+    this.functionSecurityWindow = true;
+  }
 
+  closeFuncitonSecWin($event) {
+    this.functionSecurityWindow = $event;
+    $('.groupOverlay').removeClass('ovrlay');
+  }
 
-
-
-
-  // openFunctionSecWindow(group) {
-  //   $('.bgblur').addClass('ovrlay');
-  //   this.selectedGroup = group;
-  //   this.functionSecurityWindow = true;
-
-  // }
-
-  // closeFuncitonSecWin($event) {
-  //   this.functionSecurityWindow = $event;
-  //   $('.bgblur').removeClass('ovrlay');
-
-  // }
+  cancelGroupFunctionEvents(event){
+    if(event){
+      this.subs.add(
+        this.functionSecService.cancelGroupFunctions(this.selectedGroup.groupID, this.currentUser.userId).subscribe()
+      )
+    }
+  }
 
 
   // openPropSecWindow(group) {

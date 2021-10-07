@@ -22,11 +22,7 @@
     float: left;
 }
 
-/* Ipad device  */
-@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
-  /* .elementGroupDiv{
-    width: 700px;
-    height: 620px;
-  } */
-
+.searchBox input{
+  width: 35%;
+  display: inline-block;
 }

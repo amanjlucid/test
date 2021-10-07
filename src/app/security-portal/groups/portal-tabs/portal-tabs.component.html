@@ -1,11 +1,15 @@
 <div class="row">
-  <div class="col-md-12">
+  <div class="col-md-6">
     <label class="form-check form-check-inline">
       <input (change)="includeOnlyGroup($event)" class="form-check-input" type="checkbox">
       <span class="form-check-label">
         Included Only
       </span>
     </label>
+  </div>
+
+  <div class="col-md-6 searchBox text-right">
+    <input type="text" placeholder="Search" class="form-control" (input)="onFilter($event.target.value)"> 
   </div>
 
 
@@ -28,11 +32,11 @@
       </kendo-grid-column>
 
      
-      <kendo-grid-column field="tabName" title="Name" width="160">
+      <kendo-grid-column field="tabName" title="Name" width="160" [filterable]="false">
       </kendo-grid-column>
-      <kendo-grid-column field="description" title="Description" width="160">
+      <kendo-grid-column field="description" title="Description" width="160" [filterable]="false">
       </kendo-grid-column>
-      <kendo-grid-column field="status" title="Status" width="100">
+      <kendo-grid-column field="status" title="Status" width="100" [filterable]="false">
       </kendo-grid-column>
 
     </kendo-grid>

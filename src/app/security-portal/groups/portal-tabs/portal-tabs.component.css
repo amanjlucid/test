@@ -18,3 +18,7 @@
     float: left;
 }
 
+.searchBox input{
+    width: 35%;
+    display: inline-block;
+}
