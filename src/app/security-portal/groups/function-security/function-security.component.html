@@ -49,7 +49,7 @@
   <div class="row mt-3">
     <div class="col-md-5">
       <kendo-grid id="availableGroup" #grid="kendoGrid" [data]="availableGridView" [pageSize]="availableGridpageSize"
-        [rowHeight]="36" (pageChange)="pageChange($event)" scrollable="virtual" [loading]="availableGridLoading"
+        [rowHeight]="36" (pageChange)="availableGridPageChange($event)" scrollable="virtual" [loading]="availableGridLoading"
         filterable="menu" [resizable]="true" [sortable]="{
         allowUnsort: true,
         mode: 'single'

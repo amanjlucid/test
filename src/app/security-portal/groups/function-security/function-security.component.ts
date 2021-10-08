@@ -6,31 +6,13 @@ import { AlertService, LoaderService, FunctionSecurityService, GroupService } fr
 import { forkJoin } from 'rxjs';
 import { FunctionSecurityModel } from '../../../_models'
 
-
-
-
-
-
-
-
-
-
-
-
-
-// 
-
-// import { DataTablesModule } from 'angular-datatables';
-// import 'datatables.net';
-// import 'datatables.net-dt';
-// declare var $: any;
-
 @Component({
   selector: 'app-function-security',
   templateUrl: './function-security.component.html',
   styleUrls: ['./function-security.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
+
 export class FunctionSecurityComponent implements OnInit {
   subs = new SubSink();
   @Input() functionSecurityWindow: boolean = false;
@@ -215,9 +197,10 @@ export class FunctionSecurityComponent implements OnInit {
 
   }
 
+
   assignedFunction() {
     this.assignGridResetGrid()
-   
+
     this.functionSecService.assignedFunctionList(this.selectedPortal, this.selectedFunctionType, this.currentUser.userId, this.selectedGroup.groupID).subscribe(
       data => {
         if (data && data.isSuccess) {
