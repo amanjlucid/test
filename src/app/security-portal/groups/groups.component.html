@@ -61,8 +61,10 @@
                 <a class="dropdown-item" (click)="openFunctionSecWindow(dataItem)" href="javascript:void(0)">Function
                   Security</a>
 
+                <a class="dropdown-item" (click)="openPropSecWindow(dataItem)" href="javascript:void(0)">Property
+                  Security</a>
+
                 <!-- 
-              
               <a class="dropdown-item" (click)="openPopup('copy', group)" href="javascript:void(0)">Copy</a> -->
                 <!-- <a class="dropdown-item" (click)="openCharGrpWin(group)" href="javascript:void(0)">Characteristic
                 Groups</a>
@@ -250,220 +252,16 @@
     (closeAssetDetailEvent)="closeAssetDetail($event)"></app-group-asset-detail>
 
   <app-function-security [selectedGroup]="selectedGroup" [functionSecurityWindow]="functionSecurityWindow"
-    *ngIf="functionSecurityWindow" (closeWindow)="closeFuncitonSecWin($event)" (cancelGroupFunctionEvents)="cancelGroupFunctionEvents($event)"></app-function-security>
-
-
-  <!-- <kendo-window title="{{windowTitle}}" [(width)]="windowWidth" [top]="20" [minWidth]="250" *ngIf="dialogOpened"
-    (close)="closePopup()">
-    <div class="groupPopup">
-      <form (ngSubmit)="onSubmit()" #securityGroupForm="ngForm">
-        <div class="groupDiv col-md-12 col-sm-12 col-xs-12">
-          <div class="form-group">
-            <label for="group">Group:</label>
-            <input type="text" [(ngModel)]="selectedGroup.groupName" name="groupName" required #groupName="ngModel"
-              class="form-control" id="group" placeholder="Group">
-            <div [hidden]="groupName.valid || groupName.pristine" class="bg-danger text-white">
-              Grouop Name is required
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="description">Description:</label>
-            <input type="text" [(ngModel)]="selectedGroup.groupDescription" name="groupDescription" required
-              #groupDescription="ngModel" class="form-control" id="description" placeholder="Description">
-            <div [hidden]="groupDescription.valid || groupDescription.pristine" class="bg-danger text-white">
-              Description is required
-            </div>
-          </div>
-
-        </div>
-
-        <div class="groupDiv groupSetting row m-0 mt-4">
-          <p>Group Settings</p>
-          <span class="underline"></span>
-          <div class="col-md-5 mt-4">
-            <p>Characteristics</p>
-            <div class="row">
-              <label class="col-md-10">Show Characteristics with no Group</label>
-              <div class="col-md-2">
-                <label class="switcher">
-                  <input [(ngModel)]="selectedGroup.showNoCharGroup"
-                    [attr.checked]="selectedGroup.showNoCharGroup ? 'checked' : null" type="checkbox"
-                    name="showNoCharGroup" class="switcher-input">
-                  <span class="switcher-indicator">
-                    <span class="switcher-yes"><span class="ion ion-md-checkmark"></span></span>
-                    <span class="switcher-no"><span class="ion ion-md-close"></span></span>
-                  </span>
-
-                </label>
-              </div>
-
-
-            </div>
-
-          </div>
-          <div class="col-md-1 mt-4"></div>
-          <div class="col-md-4 mt-4">
-            <p>&nbsp;</p>
-            <div class="row">
-              <label class="col-md-10">Include All Characteristics?</label>
-              <div class="col-md-2">
-                <label class="switcher">
-                  <input [(ngModel)]="selectedGroup.includeAllCharGroup"
-                    [attr.checked]="selectedGroup.includeAllCharGroup ? 'checked' : null" type="checkbox"
-                    name="includeAllCharGroup" type="checkbox" class="switcher-input">
-                  <span class="switcher-indicator">
-                    <span class="switcher-yes"><span class="ion ion-md-checkmark"></span></span>
-                    <span class="switcher-no"><span class="ion ion-md-close"></span></span>
-                  </span>
-
-                </label>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-md-5 mt-4">
-            <p>Attributes</p>
-            <div class="row">
-              <label class="col-md-10">Show Attribute with no Elements?</label>
-              <div class="col-md-2">
-                <label class="switcher">
-                  <input [(ngModel)]="selectedGroup.showNoElement"
-                    [attr.checked]="selectedGroup.showNoElement ? 'checked' : null" type="checkbox" name="showNoElement"
-                    type="checkbox" class="switcher-input">
-                  <span class="switcher-indicator">
-                    <span class="switcher-yes"><span class="ion ion-md-checkmark"></span></span>
-                    <span class="switcher-no"><span class="ion ion-md-close"></span></span>
-                  </span>
-
-                </label>
-              </div>
-
-
-            </div>
-
-          </div>
-          <div class="col-md-1 mt-4"></div>
-          <div class="col-md-4 mt-4">
-            <p>&nbsp;</p>
-            <div class="row">
-              <label class="col-md-10">Include All Elements?</label>
-              <div class="col-md-2">
-                <label class="switcher">
-                  <input [(ngModel)]="selectedGroup.includeAllElements"
-                    [attr.checked]="selectedGroup.includeAllElements ? 'checked' : null" type="checkbox"
-                    name="includeAllElements" type="checkbox" class="switcher-input">
-                  <span class="switcher-indicator">
-                    <span class="switcher-yes"><span class="ion ion-md-checkmark"></span></span>
-                    <span class="switcher-no"><span class="ion ion-md-close"></span></span>
-                  </span>
-
-                </label>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-md-5 mt-4">
-            <p>Additional</p>
-            <div class="row">
-              <label class="col-md-10">Include All Portals</label>
-              <div class="col-md-2">
-                <label class="switcher">
-                  <input [(ngModel)]="selectedGroup.includeAllPortalTabs"
-                    [attr.checked]="selectedGroup.includeAllPortalTabs ? 'checked' : null" type="checkbox"
-                    name="includeAllPortalTabs" type="checkbox" class="switcher-input">
-                  <span class="switcher-indicator">
-                    <span class="switcher-yes"><span class="ion ion-md-checkmark"></span></span>
-                    <span class="switcher-no"><span class="ion ion-md-close"></span></span>
-                  </span>
-
-                </label>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-md-1 mt-4"></div>
-
-          <div class="col-md-4 mt-4">
-            <p>&nbsp;</p>
-            <div class="row">
-              <label class="col-md-10">Works Order Level Security?</label>
-              <div class="col-md-2">
-                <label class="switcher">
-                  <input [(ngModel)]="selectedGroup.workOrderLevel" [disabled]="!selectedGroup.canEditWorkOrderOnly"
-                    [attr.checked]="selectedGroup.workOrderLevel ? 'checked' : null" type="checkbox"
-                    name="workOrderLevel" class="switcher-input">
-                  <span class="switcher-indicator">
-                    <span class="switcher-yes"><span class="ion ion-md-checkmark"></span></span>
-                    <span class="switcher-no"><span class="ion ion-md-close"></span></span>
-                  </span>
-
-                </label>
-              </div>
-            </div>
-          </div>
-
-
-          <div class="col-md-5 mt-4">
-            <div class="row">
-              <label class="col-md-10">Status</label>
-              <div class="col-md-2">
-              
-                <label class="switcher">
-                  <input [(ngModel)]="selectedGroup.status" [attr.checked]="selectedGroup.status ? 'checked' : null"
-                    type="checkbox" name="status" class="switcher-input">
-                  <span class="switcher-indicator">
-                    <span class="switcher-yes"><span class="ion ion-md-checkmark"></span></span>
-                    <span class="switcher-no"><span class="ion ion-md-close"></span></span>
-                  </span>
-
-                </label>
-              </div>
-
-            </div>
-
-          </div>
-
-        </div>
-        <div class="groupDiv groupSetting m-0">
-          <div class="formBtn pull-right">
-            <button type="button" (click)="closePopup();" class="btn btn-sm">Cancel</button>
-            <button type="submit" [disabled]="!securityGroupForm.form.valid" class="btn btn-sm newBtn">Ok</button>
-          </div>
-        </div>
-      </form>
-
-    </div>
-
-  </kendo-window> -->
-
-
-  <!-- <app-characteristic-group [charGrpWindow]="charGrpWindow" [selectedGroup]="selectedGroup" *ngIf="charGrpWindow"
-    (closeCharGrpWin)="closeCharGrpWin($event)"></app-characteristic-group>
-
-
-  <app-elements-group [elmGrpWindow]="elmGrpWindow" [selectedGroup]="selectedGroup" *ngIf="elmGrpWindow"
-    (closeElmGrpWin)="closeElmGrpWin($event)"></app-elements-group>
-
-  <app-attribute-group [attrGrpWindow]="attrGrpWindow" [selectedGroup]="selectedGroup" *ngIf="attrGrpWindow"
-    (closeAttrGrpWin)="closeAttrGrpWin($event)"></app-attribute-group>
-
-
-  <app-portal-tabs [portalGrpWindow]="portalGrpWindow" [selectedGroup]="selectedGroup" *ngIf="portalGrpWindow"
-    (closePortalGrpWin)="closePortalGrpWin($event)"></app-portal-tabs>
-
-  <app-function-security [selectedGroup]="selectedGroup" [functionSecurityWindow]="functionSecurityWindow"
-    *ngIf="functionSecurityWindow" (closeWindow)="closeFuncitonSecWin($event)"></app-function-security>
+    *ngIf="functionSecurityWindow" (closeWindow)="closeFuncitonSecWin($event)"
+    (cancelGroupFunctionEvents)="cancelGroupFunctionEvents($event)"></app-function-security>
 
   <app-property-security [selectedGroup]="selectedGroup" [propertySecurityWindow]="propertySecurityWindow"
-    *ngIf="propertySecurityWindow" (closePropSecWin)="closePropSecWin($event)"></app-property-security> -->
-
-
-
+    *ngIf="propertySecurityWindow" (closePropSecWin)="closePropSecWin($event)"></app-property-security>
 
   <!-- Reporting Section -->
 
-  <!-- <app-reporting [reportingAction]="reportingAction" [selectedGroup]="selectedGroup" [openReports]="openReports"
-    *ngIf="openReports" (closeReportingWin)="closeReportingWin($event)"></app-reporting> -->
+  <app-reporting [reportingAction]="reportingAction" [selectedGroup]="selectedGroup" [openReports]="openReports"
+    *ngIf="openReports" (closeReportingWin)="closeReportingWin($event)"></app-reporting>
 
 </div>
 

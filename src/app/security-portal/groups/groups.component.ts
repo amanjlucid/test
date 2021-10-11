@@ -47,7 +47,7 @@ export class GroupsComponent implements OnInit {
   openReports = false;
   reportingAction = "";
   functionSecurityWindow = false;
-
+  propertySecurityWindow = false;
 
 
 
@@ -231,15 +231,20 @@ export class GroupsComponent implements OnInit {
     this.showAssetDetail = false;
   }
 
-  public openReport(group, action) {
-    $('.bgblur').addClass('ovrlay');
-    this.selectedGroup = group;
+  public openReport(group = null, action) {
+    if (this.selectedGroup == undefined) {
+      this.alertService.error("Please select one record from the list.")
+      return
+    }
+
+    $('.groupOverlay').addClass('ovrlay');
+    // this.selectedGroup = group;
     this.reportingAction = action;
     this.openReports = true;
   }
 
   public closeReportingWin() {
-    $('.bgblur').removeClass('ovrlay');
+    $('.groupOverlay').removeClass('ovrlay');
     this.openReports = false;
   }
 
@@ -256,8 +261,8 @@ export class GroupsComponent implements OnInit {
     $('.groupOverlay').removeClass('ovrlay');
   }
 
-  cancelGroupFunctionEvents(event){
-    if(event){
+  cancelGroupFunctionEvents(event) {
+    if (event) {
       this.subs.add(
         this.functionSecService.cancelGroupFunctions(this.selectedGroup.groupID, this.currentUser.userId).subscribe()
       )
@@ -265,18 +270,17 @@ export class GroupsComponent implements OnInit {
   }
 
 
-  // openPropSecWindow(group) {
-  //   $('.bgblur').addClass('ovrlay');
-  //   this.selectedGroup = group;
-  //   this.propertySecurityWindow = true;
-  // }
+  openPropSecWindow(group) {
+    this.selectedGroup = group;
+    $('.groupOverlay').addClass('ovrlay');
+    this.propertySecurityWindow = true;
+  }
 
 
-  // closePropSecWin($event) {
-  //   this.propertySecurityWindow = $event;
-  //   $('.bgblur').removeClass('ovrlay');
-
-  // }
+  closePropSecWin($event) {
+    this.propertySecurityWindow = $event;
+    $('.groupOverlay').removeClass('ovrlay');
+  }
 
 
 

@@ -119,6 +119,7 @@ import { UserCharacteristicsComponent } from './assets-portal/user-characteristi
 import { GroupFormComponent } from './security-portal/groups/group-form/group-form.component';
 import { GroupAssetDetailComponent } from './security-portal/groups/group-asset-detail/group-asset-detail.component';
 import { GroupSettingsComponent } from './security-portal/groups/group-settings/group-settings.component';
+import { NewPropertySecurityComponent } from './security-portal/groups/new-property-security/new-property-security.component';
 
 
 @NgModule({
@@ -222,7 +223,8 @@ import { GroupSettingsComponent } from './security-portal/groups/group-settings/
     UserCharacteristicsComponent,
     GroupFormComponent,
     GroupAssetDetailComponent,
-    GroupSettingsComponent
+    GroupSettingsComponent,
+    NewPropertySecurityComponent
 
   ],
 

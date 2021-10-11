@@ -70,8 +70,7 @@ export class FunctionSecurityComponent implements OnInit {
   availableFunctionLists: FunctionSecurityModel[] = [];
   assignedFunctionLists: FunctionSecurityModel[] = [];
 
-
-
+  
   constructor(
     private functionSecService: FunctionSecurityService,
     private alertService: AlertService,

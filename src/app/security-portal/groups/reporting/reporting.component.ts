@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit, Input, Output, EventEmitter, ChangeDetectorRef, ViewChild, ElementRef, ViewEncapsulation } from '@angular/core';
 import { SubSink } from 'subsink';
 import { Group, ElementGroupModel, SurveyPortalXports } from '../../../_models'
-import { AlertService, LoaderService, ReportingGroupService, SharedService, WebReporterService  } from '../../../_services'
+import { AlertService, GroupService, LoaderService, ReportingGroupService, SharedService, WebReporterService } from '../../../_services'
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { DataTablesModule } from 'angular-datatables';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -28,13 +28,14 @@ export class ReportingComponent implements OnInit {
     private chRef: ChangeDetectorRef,
     private sanitizer: DomSanitizer,
     private reportService: WebReporterService,
-    private sharedService: SharedService
+    private sharedService: SharedService,
+    private groupService: GroupService,
 
   ) { }
 
   @Input() reportingAction = "";
   @Input() worksOrderReports = false;
-  @Input() selectedGroup: Group;
+  @Input() selectedGroup: any;
   @Input() openReports: boolean = false;
   @Output() closeReportingWin = new EventEmitter<boolean>();
   @Input() surveyPortalXport: SurveyPortalXports;
@@ -105,11 +106,13 @@ export class ReportingComponent implements OnInit {
   parameterForPreviewReport: any = { intXportId: '', lstParamNameValue: [''], lngMaxRows: 1000 };
   reporterPortalPermission = [];
   reportName = '';
-  public formattedParameters : string = "None";
-  lstParamNameValue: string[] =[''];
+  public formattedParameters: string = "None";
+  lstParamNameValue: string[] = [''];
+  group: Group;
+
 
   ngOnInit() {
-    this.getReport();
+
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
 
     this.emailReportForm = this.fb.group({
@@ -118,51 +121,73 @@ export class ReportingComponent implements OnInit {
       userlist: [''],
     }
     );
+
+
     this.subs.add(
       this.sharedService.webReporterObs.subscribe(
         data => this.reporterPortalPermission = data
       )
     )
 
-    if (this.reportingAction == "allUserNGroup") {
-      //var exportId = 536;
-      this.lstParamNameValue = [''];
-    } else if (this.reportingAction == "selectedGrpDetail") {
-      //var exportId = 585;
-      this.lstParamNameValue = ['Security Group', this.selectedGroup.groupId.toString()];
-    } else if (this.reportingAction == "allGrpDetail") {
-      //var exportId = 586;
-      this.lstParamNameValue = [''];
-    }else if (this.reportingAction == "runSurveyPortalXports") {
-      //var exportId = 586;
-      this.lstParamNameValue = this.reportParams;
-    }else if (this.reportingAction == "runExportTemplate") {
-      this.lstParamNameValue = this.reportParams;
-    }else {
-      this.lstParamNameValue = this.reportParams;
-    }
+    this.subs.add(
+      this.groupService.groupListByGroupId(this.selectedGroup.groupID).subscribe(
+        data => {
+          if (data.isSuccess) {
+            this.group = data.data;
+            this.getReport();
 
-    
-    var pair = 1
-    if (this.lstParamNameValue.length > 0) {
-        let paramArr: string[] = [];
-        let checkValueSet = '';
-        this.lstParamNameValue.forEach(element => {
 
-         if (pair == 1) {
-          if (this.formattedParameters == "None") {
-            this.formattedParameters = ""; } else {
-              if (this.formattedParameters != "") {
-                this.formattedParameters += ", "}
+            if (this.reportingAction == "allUserNGroup") {
+              //var exportId = 536;
+              this.lstParamNameValue = [''];
+            } else if (this.reportingAction == "selectedGrpDetail") {
+              //var exportId = 585;
+              this.lstParamNameValue = ['Security Group', this.group.groupId.toString()];
+            } else if (this.reportingAction == "allGrpDetail") {
+              //var exportId = 586;
+              this.lstParamNameValue = [''];
+            } else if (this.reportingAction == "runSurveyPortalXports") {
+              //var exportId = 586;
+              this.lstParamNameValue = this.reportParams;
+            } else if (this.reportingAction == "runExportTemplate") {
+              this.lstParamNameValue = this.reportParams;
+            } else {
+              this.lstParamNameValue = this.reportParams;
             }
-          this.formattedParameters += element + "=";
-          pair = 2
-         } else {
-          this.formattedParameters += element;
-          pair = 1
-         }
-      });
-  }
+
+
+            var pair = 1
+            if (this.lstParamNameValue.length > 0) {
+              let paramArr: string[] = [];
+              let checkValueSet = '';
+              this.lstParamNameValue.forEach(element => {
+
+                if (pair == 1) {
+                  if (this.formattedParameters == "None") {
+                    this.formattedParameters = "";
+                  } else {
+                    if (this.formattedParameters != "") {
+                      this.formattedParameters += ", "
+                    }
+                  }
+                  this.formattedParameters += element + "=";
+                  pair = 2
+                } else {
+                  this.formattedParameters += element;
+                  pair = 1
+                }
+              });
+            }
+
+
+          }
+        }
+      )
+    )
+
+
+
+
 
 
 
@@ -182,7 +207,7 @@ export class ReportingComponent implements OnInit {
     } else if (this.reportingAction == "selectedGrpDetail") {
       this.exportId = 585;
       this.reportingType = "Group Details for Selected Group";
-      this.reportingGrpService.selectedGroupDetail(this.selectedGroup, this.preview).subscribe(
+      this.reportingGrpService.selectedGroupDetail(this.group, this.preview).subscribe(
         data => {
           this.renderTable(data);
         }
@@ -196,7 +221,7 @@ export class ReportingComponent implements OnInit {
         }
       )
     } else if (this.reportingAction == "runSurveyPortalXports") {
-      this.exportId =  this.surveyPortalXport.XportID;
+      this.exportId = this.surveyPortalXport.XportID;
       this.reportParams = this.surveyPortalXport.Params;
       this.reportingType = this.surveyPortalXport.ReportTitle;
       this.reportingGrpService.RunSurveyPortalXports(this.exportId, this.reportParams, this.preview).subscribe(
@@ -205,7 +230,7 @@ export class ReportingComponent implements OnInit {
         }
       )
     } else if (this.reportingAction == "runExportTemplate") {
-      this.exportId =  this.surveyPortalXport.XportID;;
+      this.exportId = this.surveyPortalXport.XportID;;
       this.reportParams = this.surveyPortalXport.Params;
       this.reportingType = this.surveyPortalXport.ReportTitle;
       this.reportingGrpService.RunSurveyPortalXports(this.exportId, this.reportParams, this.preview).subscribe(
@@ -214,7 +239,7 @@ export class ReportingComponent implements OnInit {
         }
       )
     } else if (this.reportingAction == "runExport") {
-      this.exportId =  this.surveyPortalXport.XportID;;
+      this.exportId = this.surveyPortalXport.XportID;;
       this.reportParams = this.surveyPortalXport.Params;
       this.reportingType = this.surveyPortalXport.ReportTitle;
       this.reportingGrpService.RunSurveyPortalXports(this.exportId, this.reportParams, this.preview).subscribe(
@@ -236,9 +261,9 @@ export class ReportingComponent implements OnInit {
     }
     if (data.length > 0 && data[0].columns != undefined) {
       this.reports = data[0];
-      this.chRef.detectChanges();
       const grpTable: any = $('.reportingTable');
       this.reportingTable = grpTable.DataTable(this.tableSetting);
+      this.chRef.detectChanges();
     } else {
       this.loaderService.hide();
       this.alertService.error(data.message);
@@ -269,26 +294,26 @@ export class ReportingComponent implements OnInit {
   exportToExcel(saveAs, exportId, lstParamNameValue, userId, pivotCheckBox, dataCheckBox) {
     this.subs.add(
       this.reportingGrpService.runReport(exportId, lstParamNameValue, userId, "EXCEL", pivotCheckBox, dataCheckBox).subscribe(
-      data => {
-        if (data.isSuccess) {
-          const linkSource = 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' + data.data;
-          const downloadLink = document.createElement("a");
-          const fileName = `Xport_${exportId}.xlsx`;
-          downloadLink.href = linkSource;
-          downloadLink.download = fileName;
-          downloadLink.click();
-        } else {
-          if (data.message.toLowerCase().includes("parameter")) {
-            this.alertService.error(data.message.replace("substitute","set"));
+        data => {
+          if (data.isSuccess) {
+            const linkSource = 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' + data.data;
+            const downloadLink = document.createElement("a");
+            const fileName = `Xport_${exportId}.xlsx`;
+            downloadLink.href = linkSource;
+            downloadLink.download = fileName;
+            downloadLink.click();
           } else {
+            if (data.message.toLowerCase().includes("parameter")) {
+              this.alertService.error(data.message.replace("substitute", "set"));
+            } else {
               this.alertService.error(data.message);
+            }
           }
-        }
-      },
+        },
         err => this.alertService.error(err)
       )
     )
-        }
+  }
 
   exportDataToExcel(saveAs, exportId, lstParamNameValue, userId) {
     this.subs.add(
@@ -301,12 +326,12 @@ export class ReportingComponent implements OnInit {
             downloadLink.href = linkSource;
             downloadLink.download = fileName;
             downloadLink.click();
-          }else {
+          } else {
             if (data.message.toLowerCase().includes("parameter")) {
-              this.alertService.error(data.message.replace("substitute","set"));
+              this.alertService.error(data.message.replace("substitute", "set"));
             } else {
-                this.alertService.error(data.message);
-      }
+              this.alertService.error(data.message);
+            }
           }
         },
         err => this.alertService.error(err)
@@ -316,23 +341,23 @@ export class ReportingComponent implements OnInit {
 
   exportToCsv(saveAs, exportId, lstParamNameValue, userId, pivotCheckBox) {
     this.subs.add(
-    this.reportingGrpService.runReport(exportId, lstParamNameValue, userId, "CSV", false, true).subscribe(
-      data => {
-        if (data.isSuccess) {
-          const linkSource = 'data:attachment/csv;base64,' + data.data;
-        const downloadLink = document.createElement("a");
-        const fileName = `Xport_${exportId}.csv`;
-        downloadLink.href = linkSource;
-        downloadLink.download = fileName;
-        downloadLink.click();
-        } else {
-          if (data.message.toLowerCase().includes("parameter")) {
-            this.alertService.error(data.message.replace("substitute","set"));
+      this.reportingGrpService.runReport(exportId, lstParamNameValue, userId, "CSV", false, true).subscribe(
+        data => {
+          if (data.isSuccess) {
+            const linkSource = 'data:attachment/csv;base64,' + data.data;
+            const downloadLink = document.createElement("a");
+            const fileName = `Xport_${exportId}.csv`;
+            downloadLink.href = linkSource;
+            downloadLink.download = fileName;
+            downloadLink.click();
           } else {
+            if (data.message.toLowerCase().includes("parameter")) {
+              this.alertService.error(data.message.replace("substitute", "set"));
+            } else {
               this.alertService.error(data.message);
+            }
           }
-        }
-      },
+        },
         err => this.alertService.error(err)
       )
     )
@@ -349,16 +374,16 @@ export class ReportingComponent implements OnInit {
             downloadLink.href = linkSource;
             downloadLink.download = fileName;
             downloadLink.click();
-          }else {
+          } else {
             if (data.message.toLowerCase().includes("parameter")) {
-              this.alertService.error(data.message.replace("substitute","set"));
+              this.alertService.error(data.message.replace("substitute", "set"));
             } else {
-                this.alertService.error(data.message);
-      }
+              this.alertService.error(data.message);
+            }
           }
         },
         err => this.alertService.error(err)
-    )
+      )
     )
   }
 
@@ -423,7 +448,7 @@ export class ReportingComponent implements OnInit {
 
   public openEmailWindow() {
     if (this.reportsLists.length > 0 && this.reportsLists != undefined) {
-      this.userListToEmail(true,false);
+      this.userListToEmail(true, false);
     } else {
 
       this.alertService.error('Please select at least one record');
@@ -433,27 +458,27 @@ export class ReportingComponent implements OnInit {
   public userListToEmail(emailPreview, all = null) {
     $('.reportBgblur').addClass('overlay');
 
-    setTimeout(function(){
+    setTimeout(function () {
       $('.k-dialog').hide();
-    },2000);
+    }, 2000);
 
     this.subs.add(
-    this.reportingGrpService.userListToMail().subscribe(
-      data => {
-        this.userListToMail = data.data;
-        if (emailPreview) {
-          this.emailReportsLists['rows'] = this.reportsLists;
-          this.emailReportsLists['columns'] = this.reports['columns'];
-          this.emailWindow = true;
-          if(all != undefined && all){
-            this.reportsLists = [];
-            $('.reportingTable tr').removeClass('selected');
+      this.reportingGrpService.userListToMail().subscribe(
+        data => {
+          this.userListToMail = data.data;
+          if (emailPreview) {
+            this.emailReportsLists['rows'] = this.reportsLists;
+            this.emailReportsLists['columns'] = this.reports['columns'];
+            this.emailWindow = true;
+            if (all != undefined && all) {
+              this.reportsLists = [];
+              $('.reportingTable tr').removeClass('selected');
+            }
+          } else {
+            this.emailWithReportWindow = true;
           }
-        } else {
-          this.emailWithReportWindow = true;
-        }
           this.chRef.detectChanges();
-      }
+        }
       )
     )
 
@@ -462,17 +487,17 @@ export class ReportingComponent implements OnInit {
   onSubmit() {
     //console.log(this.emailPreviewForm);
     if (this.selectedUsersToMail.length > 0 && this.selectedUsersToMail.length != undefined) {
-     let htmlBody = $('.htmlData').html();
+      let htmlBody = $('.htmlData').html();
       this.subs.add(
-      this.reportingGrpService.emailPreview(this.selectedUsersToMail,this.emailPreviewForm.subject,htmlBody,this.emailPreviewForm.topText,this.emailPreviewForm.bottomText).subscribe(
-        data => {
-          //console.log(data);
-          if(data.isSuccess){
-            this.closeEmailWindow();
+        this.reportingGrpService.emailPreview(this.selectedUsersToMail, this.emailPreviewForm.subject, htmlBody, this.emailPreviewForm.topText, this.emailPreviewForm.bottomText).subscribe(
+          data => {
+            //console.log(data);
+            if (data.isSuccess) {
+              this.closeEmailWindow();
               this.alertService.success('Email sent successfully');
-          } else {
-            this.alertService.error(data.message);
-          }
+            } else {
+              this.alertService.error(data.message);
+            }
           },
           err => this.alertService.error(err)
         )
@@ -493,7 +518,7 @@ export class ReportingComponent implements OnInit {
       return;
     }
 
-    if(this.selectedUsersToMail.length == 0){
+    if (this.selectedUsersToMail.length == 0) {
 
       this.alertService.error('Please select at least one user to send email');
       return
@@ -505,16 +530,16 @@ export class ReportingComponent implements OnInit {
       var lstParamNameValue: string[] = [''];
     } else if (this.reportingAction == "selectedGrpDetail") {
       //var exportId = 585;
-      var lstParamNameValue: string[] = ['Security Group', this.selectedGroup.groupId.toString()];
+      var lstParamNameValue: string[] = ['Security Group', this.group.groupId.toString()];
     } else if (this.reportingAction == "allGrpDetail") {
       //var exportId = 586;
       var lstParamNameValue: string[] = [''];
-    }  else if (this.reportingAction == "runExportTemplate") {
+    } else if (this.reportingAction == "runExportTemplate") {
       var lstParamNameValue: string[] = this.reportParams;
     }
 
-    this.reportingGrpService.emailReport(this.exportId, this.lstParamNameValue, this.currentUser.userId, this.reportFormat, pivotCheckBox, this.selectedUsersToMail, this.emailReportCon.subject.value, this.emailReportCon.emailText.value).subscribe( data => {
-      if(data.isSuccess){
+    this.reportingGrpService.emailReport(this.exportId, this.lstParamNameValue, this.currentUser.userId, this.reportFormat, pivotCheckBox, this.selectedUsersToMail, this.emailReportCon.subject.value, this.emailReportCon.emailText.value).subscribe(data => {
+      if (data.isSuccess) {
         //console.log(data);
         this.closeEmailWithReportWindow();
         this.alertService.success('Email sent successfully');
