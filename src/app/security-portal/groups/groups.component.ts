@@ -50,28 +50,6 @@ export class GroupsComponent implements OnInit {
   propertySecurityWindow = false;
 
 
-
-
-
-
-  // groupDataTable: any;
-  // securityFormType: string;
-
-  // public windowTitle: string;
-
-  // public charGrpWindow = false;
-  // public elmGrpWindow = false
-  // public attrGrpWindow = false;
-  // public portalGrpWindow = false;
-  // public functionSecurityWindow = false;
-  // public propertySecurityWindow = false;
-
-
-  // public windowWidth = 'auto';
-  // public windowHeight = 'auto';
-  // public windowTop = '45';
-  // public windowLeft = 'auto';
-
   constructor(
     private groupService: GroupService,
     private alertService: AlertService,
