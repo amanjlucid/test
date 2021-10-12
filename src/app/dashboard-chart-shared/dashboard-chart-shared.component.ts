@@ -207,6 +207,7 @@ export class DashboardChartSharedComponent implements OnInit {
       if (item && item.type == 'stack') {
         setTimeout(() => {
           let layoutManager = item.layoutManager;
+        
           item.config.height = 35;
           let layoutHeight = layoutManager.height + 250;
           const containerHeight = layoutHeight + 100

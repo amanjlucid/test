@@ -65,6 +65,7 @@ export class GroupsComponent implements OnInit {
 
   updateGridHeight() {
     const innerHeight = window.innerHeight;
+  
     if (innerHeight < 754) {
       this.gridHeight = innerHeight - 330;
     } else {
@@ -82,7 +83,7 @@ export class GroupsComponent implements OnInit {
   ngOnInit() {
     //update notification on top
     this.helper.updateNotificationOnTop();
-
+    this.updateGridHeight();
     this.getAllGroups();
   }
 
