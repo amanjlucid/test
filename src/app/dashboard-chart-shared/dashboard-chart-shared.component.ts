@@ -105,8 +105,8 @@ export class DashboardChartSharedComponent implements OnInit {
               this.numberOfChartCanBeAdded = data.data[0].numberOfChart;
               //this.alertService.success(this.numberOfChartCanBeAdded.toString())
             }
-            else{
-             // this.alertService.success(this.numberOfChartCanBeAdded.toString())
+            else {
+              // this.alertService.success(this.numberOfChartCanBeAdded.toString())
             }
           }
         }
@@ -203,35 +203,38 @@ export class DashboardChartSharedComponent implements OnInit {
   }
 
   afterMyLayoutInit() {
-    this.myLayout.on("stackCreated", item => {
-      if (item && item.type == 'stack') {
-        setTimeout(() => {
-          let layoutManager = item.layoutManager;
-        
-          item.config.height = 35;
-          let layoutHeight = layoutManager.height + 250;
-          const containerHeight = layoutHeight + 100
-          $('#layoutContainer').css({ 'height': `${containerHeight}px` });
-          layoutManager.height = layoutHeight;
-          const allRows = layoutManager.root.contentItems[0].contentItems;
-          const prevFirstRowPix = ((containerHeight - 470) * allRows[0].config.height) / 100;
-          const currerPer = (prevFirstRowPix * 100) / (containerHeight);
-          allRows[0].config.height = currerPer;
+    // this.myLayout.on("stackCreated", item => {
+    //   if (item && item.type == 'stack') {
+    //     setTimeout(() => {
+    //       let layoutManager = item.layoutManager;
 
-          layoutManager.updateSize();
+    //       item.config.height = 35;
+    //       let layoutHeight = layoutManager.height + 250;
+    //       const containerHeight = layoutHeight + 100
+    //       $('#layoutContainer').css({ 'height': `${containerHeight}px` });
+    //       layoutManager.height = layoutHeight;
+    //       const allRows = layoutManager.root.contentItems[0].contentItems;
+    //       const prevFirstRowPix = ((containerHeight - 470) * allRows[0].config.height) / 100;
+    //       const currerPer = (prevFirstRowPix * 100) / (containerHeight);
+    //       allRows[0].config.height = currerPer;
 
-        }, 200);
-      }
-    })
+    //       layoutManager.updateSize();
+
+    //     }, 200);
+    //   }
+    // })
 
 
     this.myLayout.on("stateChanged", item => {
       if (item == undefined) return
+
       let origin = item.origin;
       let layoutManager = origin.layoutManager;
       let layoutWidth = layoutManager.width;
       let layoutHeight = layoutManager.height;
       let comp = this;
+
+      // console.log(item)
 
       const emptyContainer = origin.layoutManager.root.getItemsById("hiddenContainer");
       if ((!this.hideChart && this.savedState != null) || emptyContainer && emptyContainer[0].config && emptyContainer[0].config.height != 0) {
@@ -245,10 +248,12 @@ export class DashboardChartSharedComponent implements OnInit {
         $('#layoutContainer').css({ 'height': `${layoutHeight}px` });
 
         if (this.savedState != null) {
+          console.log('first')
           setTimeout(() => {
             origin.layoutManager.updateSize(layoutWidth, layoutHeight);
           }, 1000);
         } else {
+          console.log('second')
           origin.layoutManager.updateSize(layoutWidth, layoutHeight);
         }
       }
@@ -279,15 +284,24 @@ export class DashboardChartSharedComponent implements OnInit {
 
             splitters[i]._dragListener.on('dragStop', function (item) {
               const nextRow = splitters[i].element.next();
-
+           
+              // console.log(top)
+              // console.log(height)
+              // console.log(layoutManager._findAllStackContainers())
+              // console.log(layoutManager)
+              // console.log(layoutManager.root.config.content[0])
+           
               let currentHeight;
               if (top >= 0) {
                 if (top > height) height = top;
                 if (top == 0) height + 170;
                 currentHeight = layoutHeight + height;
+                
+                // console.log(nextRow.is(":visible"))
 
                 if (!nextRow.is(":visible")) {
                   const allContainers = layoutManager._findAllStackContainers();
+                 
                   const lastContainer = allContainers[allContainers.length - 2];//-2 is for skip last hidden container
                   const lastContainerHeightPer = (height * 100) / currentHeight;
                   const lastContainerPrevHeight = lastContainer.config.height;
@@ -312,6 +326,12 @@ export class DashboardChartSharedComponent implements OnInit {
 
         }
 
+
+
+
+
+
+
       } else {
         origin.layoutManager.updateSize()
       }
@@ -319,25 +339,25 @@ export class DashboardChartSharedComponent implements OnInit {
     });
   }
 
-  setUpChartAreas(){
+  setUpChartAreas() {
 
     this.chartNames.forEach(element => {
-      if(element.dashboard == 'Energy'){
+      if (element.dashboard == 'Energy') {
         this.chartNamesEnergy.push(element);
       }
-      if(element.dashboard == 'Tasks'){
+      if (element.dashboard == 'Tasks') {
         this.chartNamesTasks.push(element);
       }
-      if(element.dashboard == 'Health&Safety'){
+      if (element.dashboard == 'Health&Safety') {
         this.chartNamesHnS.push(element);
       }
-      if(element.dashboard == 'WorksOrder'){
+      if (element.dashboard == 'WorksOrder') {
         this.chartNamesWOPM.push(element);
       }
-      if(element.dashboard == 'Servicing'){
+      if (element.dashboard == 'Servicing') {
         this.chartNamesSIM.push(element);
       }
-      if(element.dashboard == 'Surveying'){
+      if (element.dashboard == 'Surveying') {
         this.chartNamesSurvey.push(element);
       }
 
@@ -428,7 +448,7 @@ export class DashboardChartSharedComponent implements OnInit {
       const numberOfCharts = document.querySelectorAll('.lm_item_container').length - 1; //-1 is for hidden chart;
       if (numberOfCharts >= this.numberOfChartCanBeAdded) {
         let mes = 'Only one chart can be added.'
-        if(this.numberOfChartCanBeAdded > 1){
+        if (this.numberOfChartCanBeAdded > 1) {
           mes = ` A maximum of ${this.numberOfChartCanBeAdded} charts can be added`
         }
         this.alertService.error(mes)

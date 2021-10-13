@@ -386,11 +386,31 @@
         onMouseMove: function (oEvent) {
             if (this._timeout != null) {
                 oEvent.preventDefault();
-
                 var coordinates = this._getCoordinates(oEvent);
 
                 this._nX = coordinates.x - this._nOriginalX;
                 this._nY = coordinates.y - this._nOriginalY;
+
+                if (typeof oEvent.target.className == "string") {
+                    if (coordinates.y > 700 && !oEvent.target.className.includes('lm_drag_handle') && !oEvent.target.className.includes('container-fluid')) {
+                        $('.cont').scrollTop(coordinates.y - 200)
+                    }
+                }
+
+
+
+                // if (oEvent.target) {
+                //     if (oEvent.target.className.toString()) {
+                //         if (coordinates.y > 700 && (oEvent.target.className.toString().indexOf("lm_tab") > 0 || oEvent.target.className.toString().indexOf("lm_left") > 0 || oEvent.target.className.toString().indexOf("lm_right") > 0)) {
+
+                //             console.log(this._bDragging)
+                //             $('.cont').scrollTop(coordinates.y - 200)
+                //             // $('.cont').animate({ scrollTop: coordinates.y - 200 }, "slow")
+                //         }
+                //     }
+
+                // }
+
 
                 if (this._bDragging === false) {
                     if (
@@ -4392,7 +4412,7 @@
          * @returns {lm.controls.Splitter}
          */
         _createSplitter: function (index) {
-           
+
             var splitter;
             var isSplitterDisabled = this.layoutManager.config.settings.disableSplitterResize;
             splitter = new lm.controls.Splitter(this._isColumn, this._splitterSize, this._splitterGrabSize, isSplitterDisabled);
