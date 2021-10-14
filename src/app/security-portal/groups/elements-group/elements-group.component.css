@@ -26,3 +26,7 @@
   width: 35%;
   display: inline-block;
 }
+
+#selectAllCheckboxId{
+  display: none;
+}

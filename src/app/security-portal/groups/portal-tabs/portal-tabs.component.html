@@ -24,12 +24,13 @@
       [navigable]="false" [virtualColumns]="false" [kendoGridSelectBy]="mySelectionKey" [selectedKeys]="mySelection"
       [height]="gridHeight">
 
-      <kendo-grid-column title=" " width="30" [filterable]="false">
-        <ng-template kendoGridCellTemplate let-dataItem>
-          <input class="text-center" (change)="assigneGroup($event,dataItem.portalTabId)"
-            [attr.checked]="dataItem.isSelected ? 'checked' : null" type="checkbox">
+
+      <kendo-grid-checkbox-column width="30" showSelectAll="false">
+        <ng-template kendoGridHeaderTemplate>
+          <input class="k-checkbox" id="selectAllCheckboxId" kendoGridSelectAllCheckbox>
+          <label class="k-checkbox-label" for="selectAllCheckboxId"></label>
         </ng-template>
-      </kendo-grid-column>
+      </kendo-grid-checkbox-column>
 
      
       <kendo-grid-column field="tabName" title="Name" width="160" [filterable]="false">
@@ -41,6 +42,12 @@
 
     </kendo-grid>
   </div>
+
+  <div class="col-md-12 mt-4 text-right">
+    <button type="button" (click)="close()" class="mr-1 btn btn-sm themeButton">Cancel</button>
+    <button type="button" (click)="save()" class="btn btn-sm themeButton">Ok</button>
+  </div>
+
 
 </div>
 

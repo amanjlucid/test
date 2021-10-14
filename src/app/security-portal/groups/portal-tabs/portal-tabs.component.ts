@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef, ChangeDetectionStrategy, Output, EventEmitter } from '@angular/core';
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { SelectableSettings, RowArgs, PageChangeEvent } from '@progress/kendo-angular-grid';
@@ -17,6 +17,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 export class PortalTabsComponent implements OnInit {
   subs = new SubSink();
   @Input() selectedGroup;
+  @Output() closeGroupAssetDetailEvent = new EventEmitter<boolean>();
   assetTabs: PortalTabsModel[];
   state: State = {
     skip: 0,
@@ -37,7 +38,7 @@ export class PortalTabsComponent implements OnInit {
     return context.dataItem.portalTabId
   }
   booleanFilterDropDown = [{ valid: "A", val: "Active" }, { valid: "I", val: "Inactive" }];
-  gridHeight = 700;
+  gridHeight = 550;
   textSearch$ = new Subject<string>();
 
   constructor(
@@ -50,8 +51,8 @@ export class PortalTabsComponent implements OnInit {
 
   setSelectableSettings(): void {
     this.selectableSettings = {
-      checkboxOnly: false,
-      mode: 'single'
+      checkboxOnly: true,
+      mode: 'multiple'
     };
   }
 
@@ -76,8 +77,6 @@ export class PortalTabsComponent implements OnInit {
   }
 
   cellClickHandler({ columnIndex, dataItem }) {
-    // this.selectedChar = dataItem;
-    // this.checkCanDelete(dataItem);
   }
 
   sortChange(sort: SortDescriptor[]): void {
@@ -109,6 +108,8 @@ export class PortalTabsComponent implements OnInit {
       data => {
         if (data && data.isSuccess) {
           this.assetTabs = data.data;
+          this.mySelection = data.data.filter(x => x.isSelected == true).map(x => x.portalTabId)
+
           this.gridView = process(this.assetTabs, this.state);
           this.loading = false;
           this.chRef.detectChanges()
@@ -122,11 +123,11 @@ export class PortalTabsComponent implements OnInit {
     this.portalGrpService.getAllPortaltabas(this.selectedGroup.groupID).subscribe(
       data => {
         if (data && data.isSuccess) {
-          if (event.target.checked) {
-            this.assetTabs = data.data.filter(x => x.isSelected == true)
-          } else {
-            this.assetTabs = data.data;
-          }
+          const tempIsSelectedData = data.data.filter(x => x.isSelected == true);
+          this.mySelection = tempIsSelectedData.map(x => x.portalTabId);
+
+          if (event.target.checked) this.assetTabs = tempIsSelectedData;
+          else this.assetTabs = data.data;
 
           this.gridView = process(this.assetTabs, this.state);
           this.loading = false;
@@ -136,29 +137,19 @@ export class PortalTabsComponent implements OnInit {
     )
   }
 
-  assigneGroup(event: any, portalTabId) {
-    // const isSelected = event.target.checked;
-    this.portalGrpService.assignePortalTabGroups(portalTabId, this.selectedGroup.groupID).subscribe(
-      data => {
-        if (data.isSuccess == false) {
-          this.alertService.error(data.message);
-        }
-      }, error => this.alertService.error(error)
-    );
-  }
-
 
   onFilter(inputValue: string): void {
     this.textSearch$.next(inputValue);
   }
 
+  
   searchInAllFields(inputValue: any) {
     this.resetGrid()
     this.gridView = process(this.assetTabs, {
       filter: {
         logic: "or",
         filters: [
-           {
+          {
             field: 'tabName',
             operator: 'contains',
             value: inputValue
@@ -177,6 +168,30 @@ export class PortalTabsComponent implements OnInit {
       }
     });
   }
+
+
+  save() {
+    if (this.mySelection.length == 0) {
+      this.alertService.error("There is no change");
+      return
+    }
+
+    this.subs.add(
+      this.portalGrpService.assignePortalTabGroups(this.mySelection, this.selectedGroup.groupID).subscribe(
+        data => {
+          if (data.isSuccess) this.alertService.success("Data saved successfully");
+          else this.alertService.error(data.message);
+        }, error => this.alertService.error(error)
+      )
+    )
+
+  }
+
+  
+  close() {
+    this.closeGroupAssetDetailEvent.emit(true)
+  }
+
 
 
 }

@@ -40,16 +40,20 @@
             <app-group-settings *ngIf="tabName == 'settings'" [selectedGroup]="selectedGroup"
                 (closeGroupAssetDetailEvent)="closeGroupAssetDetail($event)"></app-group-settings>
 
-            <app-characteristic-group *ngIf="tabName == 'characteristicsGroup'" [selectedGroup]="selectedGroup">
+            <app-characteristic-group *ngIf="tabName == 'characteristicsGroup'" [selectedGroup]="selectedGroup"
+                (closeGroupAssetDetailEvent)="closeGroupAssetDetail($event)">
             </app-characteristic-group>
 
-            <app-elements-group *ngIf="tabName == 'elements'" [selectedGroup]="selectedGroup">
+            <app-elements-group *ngIf="tabName == 'elements'" [selectedGroup]="selectedGroup"
+                (closeGroupAssetDetailEvent)="closeGroupAssetDetail($event)">
             </app-elements-group>
 
-            <app-attribute-group *ngIf="tabName == 'attributeGroups'" [selectedGroup]="selectedGroup">
+            <app-attribute-group *ngIf="tabName == 'attributeGroups'" [selectedGroup]="selectedGroup"
+                (closeGroupAssetDetailEvent)="closeGroupAssetDetail($event)">
             </app-attribute-group>
 
-            <app-portal-tabs *ngIf="tabName == 'assetPanels'" [selectedGroup]="selectedGroup"></app-portal-tabs>
+            <app-portal-tabs *ngIf="tabName == 'assetPanels'" [selectedGroup]="selectedGroup"
+                (closeGroupAssetDetailEvent)="closeGroupAssetDetail($event)"></app-portal-tabs>
 
         </div>
     </div>

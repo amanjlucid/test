@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef, ChangeDetectionStrategy, Output, EventEmitter } from '@angular/core';
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { SelectableSettings, RowArgs, PageChangeEvent } from '@progress/kendo-angular-grid';
@@ -14,9 +14,9 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 
-
 export class ElementsGroupComponent implements OnInit {
   subs = new SubSink();
+  @Output() closeGroupAssetDetailEvent = new EventEmitter<boolean>();
   @Input() selectedGroup;
   elmGroups: ElementGroupModel[];
   actualElmGroups: ElementGroupModel[];
@@ -38,9 +38,9 @@ export class ElementsGroupComponent implements OnInit {
   mySelectionKey(context: RowArgs): string {
     return context.dataItem.element_Code
   }
-  booleanFilterDropDown = [{ valid: "A", val: "Active" }, { valid: "I", val: "Inactive" }];
-  gridHeight = 700;
+  gridHeight = 550;
   textSearch$ = new Subject<string>();
+
 
   constructor(
     private elmGrpService: ElementGroupService,
@@ -52,8 +52,8 @@ export class ElementsGroupComponent implements OnInit {
 
   setSelectableSettings(): void {
     this.selectableSettings = {
-      checkboxOnly: false,
-      mode: 'single'
+      checkboxOnly: true,
+      mode: 'multiple'
     };
   }
 
@@ -81,6 +81,7 @@ export class ElementsGroupComponent implements OnInit {
       data => {
         if (data && data.isSuccess) {
           this.elmGroups = data.data;
+          this.mySelection = data.data.filter(x => x.isSelected == true).map(x => x.element_Code)
           this.gridView = process(this.elmGroups, this.state);
           this.loading = false;
           this.chRef.detectChanges()
@@ -91,7 +92,7 @@ export class ElementsGroupComponent implements OnInit {
 
 
   cellClickHandler({ columnIndex, dataItem }) {
-    // this.selectedGroup = dataItem;
+
   }
 
   sortChange(sort: SortDescriptor[]): void {
@@ -124,11 +125,12 @@ export class ElementsGroupComponent implements OnInit {
     this.elmGrpService.getAllElementGroups(this.selectedGroup.groupID).subscribe(
       data => {
         if (data && data.isSuccess) {
-          if (event.target.checked) {
-            this.elmGroups = data.data.filter(x => x.isSelected == true)
-          } else {
-            this.elmGroups = data.data;
-          }
+          const tempIsSelectedData = data.data.filter(x => x.isSelected == true);
+          this.mySelection = tempIsSelectedData.map(x => x.element_Code)
+
+          if (event.target.checked) this.elmGroups = tempIsSelectedData;
+          else this.elmGroups = data.data;
+
           this.gridView = process(this.elmGroups, this.state);
           this.loading = false;
           this.chRef.detectChanges()
@@ -138,16 +140,7 @@ export class ElementsGroupComponent implements OnInit {
   }
 
 
-  assigneGroup(event: any, elemCode) {
-    // const isSelected = event.target.checked;
-    this.elmGrpService.assigneElementGroups(elemCode, this.selectedGroup.groupID).subscribe(
-      data => {
-        if (data.isSuccess == false) {
-          this.alertService.error(data.message);
-        }
-      }, error => this.alertService.error(error)
-    );
-  }
+
 
 
   onFilter(inputValue: string): void {
@@ -188,5 +181,27 @@ export class ElementsGroupComponent implements OnInit {
 
 
 
+  save() {
+    if (this.mySelection.length == 0) {
+      this.alertService.error("There is no change");
+      return
+    }
+
+    this.subs.add(
+      this.elmGrpService.assigneElementGroups(this.mySelection, this.selectedGroup.groupID).subscribe(
+        data => {
+          if (data.isSuccess) this.alertService.success("Data saved successfully");
+          else this.alertService.error(data.message);
+        }, error => this.alertService.error(error)
+      )
+    )
+
+  }
+
+
+
+  close() {
+    this.closeGroupAssetDetailEvent.emit(true)
+  }
 
 }

@@ -9,7 +9,7 @@
   </div>
 
   <div class="col-md-6 searchBox text-right">
-    <input type="text" placeholder="Search" class="form-control" (input)="onFilter($event.target.value)"> 
+    <input type="text" placeholder="Search" class="form-control" (input)="onFilter($event.target.value)">
   </div>
 
 
@@ -24,12 +24,18 @@
       [navigable]="false" [virtualColumns]="false" [kendoGridSelectBy]="mySelectionKey" [selectedKeys]="mySelection"
       [height]="gridHeight">
 
-      <kendo-grid-column title=" " width="30" [filterable]="false">
+      <!-- <kendo-grid-column title=" " width="30" [filterable]="false">
         <ng-template kendoGridCellTemplate let-dataItem>
           <input class="text-center" (change)="assigneGroup($event,dataItem.element_Code)"
             [attr.checked]="dataItem.isSelected ? 'checked' : null" type="checkbox">
         </ng-template>
-      </kendo-grid-column>
+      </kendo-grid-column> -->
+      <kendo-grid-checkbox-column width="30" showSelectAll="false">
+        <ng-template kendoGridHeaderTemplate>
+          <input class="k-checkbox" id="selectAllCheckboxId" kendoGridSelectAllCheckbox>
+          <label class="k-checkbox-label" for="selectAllCheckboxId"></label>
+        </ng-template>
+      </kendo-grid-checkbox-column>
 
       <kendo-grid-column field="element_Code" title="Element" width="140" [filterable]="false">
       </kendo-grid-column>
@@ -43,5 +49,10 @@
 
     </kendo-grid>
   </div>
-</div>
 
+  <div class="col-md-12 mt-4 text-right">
+    <button type="button" (click)="close()" class="mr-1 btn btn-sm themeButton">Cancel</button>
+    <button type="button" (click)="save()" class="btn btn-sm themeButton">Ok</button>
+  </div>
+
+</div>

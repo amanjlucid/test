@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef, ChangeDetectionStrategy, Output, EventEmitter } from '@angular/core';
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { SelectableSettings, RowArgs, PageChangeEvent } from '@progress/kendo-angular-grid';
@@ -14,9 +14,11 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 
+
 export class CharacteristicGroupComponent implements OnInit {
   subs = new SubSink();
   @Input() selectedGroup;
+  @Output() closeGroupAssetDetailEvent = new EventEmitter<boolean>();
   charGroups: CharateristicGroupModel[]
   state: State = {
     skip: 0,
@@ -36,9 +38,9 @@ export class CharacteristicGroupComponent implements OnInit {
   mySelectionKey(context: RowArgs): string {
     return context.dataItem.characteristic_Group
   }
-  booleanFilterDropDown = [{ valid: "A", val: "Active" }, { valid: "I", val: "Inactive" }];
-  gridHeight = 700;
+  gridHeight = 550;
   textSearch$ = new Subject<string>();
+
 
   constructor(
     private charGrpService: CharacteristicGroupService,
@@ -54,8 +56,8 @@ export class CharacteristicGroupComponent implements OnInit {
 
   setSelectableSettings(): void {
     this.selectableSettings = {
-      checkboxOnly: false,
-      mode: 'single'
+      checkboxOnly: true,
+      mode: 'multiple'
     };
   }
 
@@ -74,7 +76,6 @@ export class CharacteristicGroupComponent implements OnInit {
         })
     )
 
-
   }
 
   getAllCharacteristicGroups() {
@@ -83,6 +84,7 @@ export class CharacteristicGroupComponent implements OnInit {
         data => {
           if (data && data.isSuccess) {
             this.charGroups = data.data;
+            this.mySelection = data.data.filter(x => x.isSelected == true).map(x => x.characteristic_Group);
             this.gridView = process(this.charGroups, this.state);
             this.loading = false;
             this.chRef.detectChanges()
@@ -97,11 +99,11 @@ export class CharacteristicGroupComponent implements OnInit {
     this.charGrpService.getAllCharacteristicGroups(this.selectedGroup.groupID).subscribe(
       data => {
         if (data && data.isSuccess) {
-          if (event.target.checked) {
-            this.charGroups = data.data.filter(x => x.isSelected == true)
-          } else {
-            this.charGroups = data.data;
-          }
+          const tempIsSelectedData = data.data.filter(x => x.isSelected == true);
+          this.mySelection = tempIsSelectedData.map(x => x.characteristic_Group);
+
+          if (event.target.checked) this.charGroups = tempIsSelectedData
+          else this.charGroups = data.data;
 
           this.gridView = process(this.charGroups, this.state);
           this.loading = false;
@@ -111,20 +113,10 @@ export class CharacteristicGroupComponent implements OnInit {
     )
   }
 
-  assigneGroup(event: any, charGroupId) {
-    // const isSelected = event.target.checked;
-    this.charGrpService.assigneCharacteristicGroups(charGroupId, this.selectedGroup.groupID).subscribe(
-      data => {
-        if (data.isSuccess == false) {
-          this.alertService.error(data.message);
-        }
-      }, error => this.alertService.error(error)
-    );
-  }
+
 
   cellClickHandler({ columnIndex, dataItem }) {
-    // this.selectedChar = dataItem;
-    // this.checkCanDelete(dataItem);
+
   }
 
   sortChange(sort: SortDescriptor[]): void {
@@ -186,5 +178,35 @@ export class CharacteristicGroupComponent implements OnInit {
       }
     });
   }
+
+
+
+
+  save() {
+    if (this.mySelection.length == 0) {
+      this.alertService.error("There is no change");
+      return
+    }
+
+    this.subs.add(
+      this.charGrpService.assigneCharacteristicGroups(this.mySelection, this.selectedGroup.groupID).subscribe(
+        data => {
+          if (data.isSuccess) this.alertService.success("Data saved successfully");
+          else this.alertService.error(data.message);
+        }, error => this.alertService.error(error)
+      )
+    )
+  }
+
+  
+  onlyUnique(value, index, self) {
+    return self.indexOf(value) === index;
+  }
+
+  close() {
+    this.closeGroupAssetDetailEvent.emit(true)
+  }
+
+
 
 }

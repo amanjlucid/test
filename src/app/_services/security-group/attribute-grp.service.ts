@@ -17,7 +17,7 @@ export class AttributeGroupService {
     }
 
 
-    assigneAttributeGroups(aaG_Code: string, groupId: number) {
+    assigneAttributeGroups(aaG_Code: any, groupId: number) {
         var httpOptions = {
             headers: new HttpHeaders({
                 'Content-Type': 'application/json'

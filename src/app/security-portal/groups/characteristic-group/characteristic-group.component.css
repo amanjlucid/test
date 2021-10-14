@@ -37,3 +37,6 @@
     float: left;
 }
 
+#selectAllCheckboxId{
+    display: none;
+}

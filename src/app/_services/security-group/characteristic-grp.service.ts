@@ -16,7 +16,7 @@ export class CharacteristicGroupService {
         return this.http.get<any>(`${appConfig.apiUrl}/api/Group/CharacteristicGroupList?groupId=${groupId}`, httpOptions);
     }
 
-    assigneCharacteristicGroups(charGroupId: string, groupId: number) {
+    assigneCharacteristicGroups(charGroupId: any, groupId: number) {
         var httpOptions = {
             headers: new HttpHeaders({
                 'Content-Type': 'application/json'

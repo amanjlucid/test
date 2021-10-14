@@ -17,7 +17,7 @@ export class ElementGroupService {
     }
 
 
-    assigneElementGroups(elementCode: string, groupId: number) {
+    assigneElementGroups(elementCode: any, groupId: number) {
         var httpOptions = {
             headers: new HttpHeaders({
                 'Content-Type': 'application/json'

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef, ChangeDetectionStrategy, Output, EventEmitter } from '@angular/core';
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { SelectableSettings, RowArgs, PageChangeEvent } from '@progress/kendo-angular-grid';
@@ -15,6 +15,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 export class AttributeGroupComponent implements OnInit {
   subs = new SubSink();
+  @Output() closeGroupAssetDetailEvent = new EventEmitter<boolean>();
   @Input() selectedGroup;
   attrGroups;
   state: State = {
@@ -35,9 +36,9 @@ export class AttributeGroupComponent implements OnInit {
   mySelectionKey(context: RowArgs): string {
     return context.dataItem.aaG_Code
   }
-  booleanFilterDropDown = [{ valid: "A", val: "Active" }, { valid: "I", val: "Inactive" }];
-  gridHeight = 700;
+  gridHeight = 550;
   textSearch$ = new Subject<string>();
+
 
   constructor(
     private attrGrpService: AttributeGroupService,
@@ -49,8 +50,8 @@ export class AttributeGroupComponent implements OnInit {
 
   setSelectableSettings(): void {
     this.selectableSettings = {
-      checkboxOnly: false,
-      mode: 'single'
+      checkboxOnly: true,
+      mode: 'multiple'
     };
   }
 
@@ -78,6 +79,8 @@ export class AttributeGroupComponent implements OnInit {
       data => {
         if (data && data.isSuccess) {
           this.attrGroups = data.data;
+          this.mySelection = data.data.filter(x => x.isSelected == true).map(x => x.aaG_Code);
+
           this.gridView = process(this.attrGroups, this.state);
           this.loading = false;
           this.chRef.detectChanges()
@@ -88,8 +91,7 @@ export class AttributeGroupComponent implements OnInit {
 
 
   cellClickHandler({ columnIndex, dataItem }) {
-    // this.selectedChar = dataItem;
-    // this.checkCanDelete(dataItem);
+
   }
 
   sortChange(sort: SortDescriptor[]): void {
@@ -122,11 +124,11 @@ export class AttributeGroupComponent implements OnInit {
     this.attrGrpService.getAllAttributeGroups(this.selectedGroup.groupID).subscribe(
       data => {
         if (data && data.isSuccess) {
-          if (event.target.checked) {
-            this.attrGroups = data.data.filter(x => x.isSelected == true)
-          } else {
-            this.attrGroups = data.data;
-          }
+          const tempIsSelectedData = data.data.filter(x => x.isSelected == true)
+          this.mySelection = tempIsSelectedData.map(x => x.aaG_Code);
+
+          if (event.target.checked) this.attrGroups = tempIsSelectedData
+          else this.attrGroups = data.data;
 
           this.gridView = process(this.attrGroups, this.state);
           this.loading = false;
@@ -134,16 +136,6 @@ export class AttributeGroupComponent implements OnInit {
         }
 
       })
-  }
-
-  assigneGroup(event: any, aaG_Code) {
-    this.attrGrpService.assigneAttributeGroups(aaG_Code, this.selectedGroup.groupID).subscribe(
-      data => {
-        if (data.isSuccess == false) {
-          this.alertService.error(data.message);
-        }
-      }, error => this.alertService.error(error)
-    )
   }
 
 
@@ -182,5 +174,30 @@ export class AttributeGroupComponent implements OnInit {
       }
     });
   }
+
+
+
+  save() {
+    if (this.mySelection.length == 0) {
+      this.alertService.error("There is no change");
+      return
+    }
+
+    this.subs.add(
+      this.attrGrpService.assigneAttributeGroups(this.mySelection, this.selectedGroup.groupID).subscribe(
+        data => {
+          if (data.isSuccess) this.alertService.success("Data saved successfully");
+          else this.alertService.error(data.message);
+        }, error => this.alertService.error(error)
+      )
+    )
+
+  }
+
+
+  close() {
+    this.closeGroupAssetDetailEvent.emit(true)
+  }
+
 
 }

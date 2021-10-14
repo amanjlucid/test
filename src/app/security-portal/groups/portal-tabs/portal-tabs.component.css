@@ -1,24 +1,28 @@
 .form-check-label {
-  margin-top: 3px !important;
-  margin-left: 5px !important;
+    margin-top: 3px !important;
+    margin-left: 5px !important;
 }
 
-.incChek{
+.incChek {
     position: absolute;
     margin-left: 270px;
     margin-top: 2px
 }
 
-.incChek input[type='checkbox']{
+.incChek input[type='checkbox'] {
     margin-top: 5px;
     float: left;
 }
 
-.selectionDiv{
+.selectionDiv {
     float: left;
 }
 
-.searchBox input{
+.searchBox input {
     width: 35%;
     display: inline-block;
+}
+
+#selectAllCheckboxId {
+    display: none;
 }
