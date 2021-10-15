@@ -120,6 +120,7 @@ import { GroupFormComponent } from './security-portal/groups/group-form/group-fo
 import { GroupAssetDetailComponent } from './security-portal/groups/group-asset-detail/group-asset-detail.component';
 import { GroupSettingsComponent } from './security-portal/groups/group-settings/group-settings.component';
 import { NewPropertySecurityComponent } from './security-portal/groups/new-property-security/new-property-security.component';
+import { AssignGroupComponent } from './security-portal/users/assign-group/assign-group.component';
 
 
 @NgModule({
@@ -224,7 +225,8 @@ import { NewPropertySecurityComponent } from './security-portal/groups/new-prope
     GroupFormComponent,
     GroupAssetDetailComponent,
     GroupSettingsComponent,
-    NewPropertySecurityComponent
+    NewPropertySecurityComponent,
+    AssignGroupComponent
 
   ],
 

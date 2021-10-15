@@ -1,15 +1,10 @@
-import { Component, OnInit, ChangeDetectorRef, ViewChild } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-import { UserService, AlertService, LoaderService, ConfirmationDialogService, HelperService } from '../../_services'
-import { DataTablesModule } from 'angular-datatables';
+import { Component, OnInit, ChangeDetectorRef, HostListener } from '@angular/core';
+import { SubSink } from 'subsink';
+import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
+import { SelectableSettings, RowArgs, PageChangeEvent } from '@progress/kendo-angular-grid';
 import { User, UserGroup } from '../../_models'
-import 'datatables.net';
-import 'datatables.net-dt';
-
-import 'datatables.net-buttons';
-
-declare var $: any;
-
+import { UserService, AlertService, LoaderService, ConfirmationDialogService, HelperService } from '../../_services'
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-users',
@@ -18,58 +13,37 @@ declare var $: any;
 })
 
 export class UsersComponent implements OnInit {
-
-  public windowOpened = false;
-  public selectedUser: User;
-  public users: User;
-  public userGroups: UserGroup[];
-  public selectedGroup: UserGroup;
-  public actualGroups: UserGroup[];
-  dataTable: any;
-  usersTable: any;
-  public userFormType: any = "new";
-
-  public userFormWindow = false;
-  public windowWidth = 'auto';
-  public windowHeight = 'auto';
-  public windowTop = '30';
-  public windowLeft = 'auto';
-  userTableSetting = {
-    scrollY: '59vh',
-    scrollX: '200vh',
-    scrollCollapse: true,
-
-    paging: true,
-    colReorder: true,
-    "aoColumnDefs": [
-      { "bSearchable": false, "aTargets": [0] }
-    ],
-    dom: 'lBfrtip',
-    buttons: [{
-      extend: 'excel',
-      title: 'User list',
-      exportOptions: {
-        columns: 'th:not(:first-child)'
-      }
-    }]
+  subs = new SubSink();
+  selectedUser: User;
+  users: User[];
+  state: State = {
+    skip: 0,
+    sort: [],
+    take: 25,
+    group: [],
+    filter: {
+      logic: "and",
+      filters: []
+    }
+  }
+  gridView: DataResult;
+  pageSize = 25;
+  loading = true;
+  selectableSettings: SelectableSettings;
+  mySelection: any = [];
+  mySelectionKey(context: RowArgs): string {
+    return context.dataItem.userId
+  }
+  gridHeight = 750;
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    this.updateGridHeight();
   }
 
-  assignUserTblSetting = {
-    scrollY: '56vh',
-    sScrollX: "100%",
-    colReorder: true,
-    scrollCollapse: true,
-    paging: true,
-    columnDefs: [
-      { 'orderData': [5], 'targets': [4] },
-      {
-        'targets': [4],
-        'visible': false,
-        'searchable': false
-      }
-    ],
-  }
-
+  userFormWindow = false;
+  userFormType: any = "new";
+  openUserAssignGroup = false;
+  touchtime = 0;
 
 
   constructor(
@@ -80,245 +54,185 @@ export class UsersComponent implements OnInit {
     private chRef: ChangeDetectorRef,
     private confirmationDialogService: ConfirmationDialogService,
     private helper: HelperService
-  ) { }
+  ) {
+    this.setSelectableSettings();
+  }
 
 
   ngOnInit() {
     //update notification on top
     this.helper.updateNotificationOnTop();
+
+    this.updateGridHeight();
     this.getUserList();
 
   }
 
   ngOnDestroy() {
-    $('.bgblur').removeClass('ovrlay');
+    this.subs.unsubscribe();
   }
 
+  setSelectableSettings(): void {
+    this.selectableSettings = {
+      checkboxOnly: false,
+      mode: 'single'
+    };
+  }
+
+  updateGridHeight() {
+    const innerHeight = window.innerHeight;
+
+    if (innerHeight < 754) {
+      this.gridHeight = innerHeight - 330;
+    } else {
+      this.gridHeight = innerHeight - 230;
+    }
+
+    if (this.gridHeight > 900) {
+      this.pageSize = 40;
+    } else {
+      this.pageSize = 25;
+    }
+
+  }
 
   getUserList() {
-    let searchVal = $('[type=search]').val();
-    this.userService.getAllUsers().subscribe(
-      data => {
-        if (data && data.isSuccess) {
-          this.users = data.data;
-          if (this.usersTable != undefined) {
-            this.usersTable.destroy();
+    this.resetGrid()
+
+    this.subs.add(
+      this.userService.getAllUsers().subscribe(
+        data => {
+          if (data && data.isSuccess) {
+            this.users = data.data;
+            this.gridView = process(this.users, this.state);
+            this.loading = false;
           }
-          this.chRef.detectChanges();
-          const table: any = $('.usersTable');
-          this.usersTable = table.DataTable(
-            this.userTableSetting
-          );
-          if (this.users != undefined) {
-            this.selectedUser = this.users[0];
-          }
-          if (searchVal != "" && searchVal != undefined && this.userFormType != "new") {
-            this.usersTable.search(searchVal).draw();
-          }
-          //$('.dataTables_filter').hide();
-        } else {
-          this.loaderService.hide();
-          this.alertService.error(data.message);
         }
-      },
-      error => {
-        this.loaderService.hide();
-        this.alertService.error(error);
-      });
-  }
-
-
-  getAssignedUserGroup(userId: string) {
-    this.userService.getUserGroups(userId).subscribe(
-      data => {
-        if (data && data.isSuccess) {
-          this.userGroups = data.data;
-          this.actualGroups = data.data;
-          this.windowOpened = true;
-          this.chRef.detectChanges();
-          const table: any = $('.innerTable1');
-          this.dataTable = table.DataTable(
-            this.assignUserTblSetting
-          );
-        } else {
-          this.loaderService.hide();
-          this.alertService.error(data.message);
-        }
-      },
-      error => {
-        this.loaderService.hide();
-        this.alertService.error(error);
-      })
-  }
-
-
-  toggleClass(event: any, user) {
-    this.selectedUser = user;
-    const target = event.target;
-    const parent = target.parentNode;
-    var elems = document.querySelectorAll("tr");
-    [].forEach.call(elems, function (el) {
-      el.classList.remove("selected");
-    });
-    parent.classList.toggle("selected");
-  }
-
-  toggleUserClass(event: any, user) {
-    this.selectedUser = user;
-    const target = event.target;
-    const parent = target.parentNode.parentNode.parentNode;
-    var elems = document.querySelectorAll("tr");
-    [].forEach.call(elems, function (el) {
-      el.classList.remove("selected");
-    });
-    parent.classList.toggle("selected");
-  }
-
-  includeOnlyGroup(event: any) {
-    this.userService.getUserGroups(this.selectedUser.userId.toString()).subscribe(
-      datanew => {
-        if (datanew && datanew.isSuccess) {
-          this.userGroups = datanew.data;
-          this.actualGroups = datanew.data;
-          this.dataTable.destroy();
-
-          if (event.target.checked) {
-            let newgrp: UserGroup[];
-
-            newgrp = this.userGroups.filter(gr => gr.isSelected == true);
-            this.userGroups = newgrp;
-          } else {
-            this.userGroups = this.actualGroups;
-          }
-
-          // reinitialize datatable
-          this.chRef.detectChanges();
-          const table: any = $('.innerTable1');
-          this.dataTable = table.DataTable(this.assignUserTblSetting);
-        }
-      })
-
-  }
-
-
-  assigneGroup(event: any, selectedUser, groupId) {
-    let isSelected = event.target.checked;
-    let currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    this.userService.assigneGroup(isSelected, selectedUser, groupId, currentUser.userId).subscribe(
-      data => {
-        if (data && data.isSuccess) {
-          //console.log(data);
-        } else {
-          this.loaderService.hide();
-          this.alertService.error(data.message);
-        }
-      },
-      error => {
-        this.loaderService.hide();
-        this.alertService.error(error);
-      }
-    );
-  }
-
-
-  public openConfirmationDialog(user: User) {
-    this.confirmationDialogService.confirm('Please confirm..', 'Do you really want to delete this record ?')
-      .then((confirmed) => (confirmed) ? this.deleteUser(user) : console.log(confirmed))
-      .catch(() => console.log('User dismissed the dialog.'));
-  }
-
-  private deleteUser(user: User) {
-    this.userService.deleteUser(user.userId).subscribe(
-      delData => {
-        //console.log(delData);
-        if (delData.message == "") {
-          this.getUserList();
-          this.alertService.success("Record deleted successfully.");
-        } else {
-          this.alertService.error(delData.message);
-        }
-
-      }
+      )
     )
   }
 
 
+  cellClickHandler({ columnIndex, dataItem }) {
+    this.selectedUser = dataItem;
 
-  // open new window on double click of user listing
-  public opneUserGroup(user) {
-    this.selectedUser = user;
-    if (this.selectedUser != undefined) {
-      $('.bgblur').addClass('ovrlay');
-      //this.windowOpened = true;
-      this.getAssignedUserGroup(this.selectedUser.userId.toString());
-    } else {
-      alert('Please select a user first.')
+    if (columnIndex > 0) {
+      if (this.touchtime == 0) {
+        this.touchtime = new Date().getTime();
+      } else {
+        if (((new Date().getTime()) - this.touchtime) < 400) {
+          this.opneUserGroup(dataItem)
+          this.touchtime = 0;
+        } else {
+          // not a double click so set as a new first click
+          this.touchtime = new Date().getTime();
+        }
+      }
     }
+
   }
 
-  // on close of security group window
-  public close() {
-    $('.bgblur').removeClass('ovrlay');
-    this.userGroups = [];
-    this.windowOpened = false;
+  sortChange(sort: SortDescriptor[]): void {
+    this.resetGrid()
+    this.state.sort = sort;
+    this.gridView = process(this.users, this.state);
+  }
+
+  filterChange(filter: any): void {
+    this.resetGrid()
+    this.state.filter = filter;
+    this.gridView = process(this.users, this.state);
+  }
+
+
+  pageChange(event: PageChangeEvent): void {
+    this.state.skip = event.skip;
+    this.gridView = {
+      data: this.users.slice(this.state.skip, this.state.skip + this.pageSize),
+      total: this.users.length
+    };
+  }
+
+  resetGrid() {
+    this.state.skip = 0;
   }
 
 
   openUserPopup(action, user: User = null) {
-    $('.bgblur').addClass('ovrlay');
+    $('.userlistOverlay').addClass('ovrlay');
     this.userFormType = action;
     this.selectedUser = user;
     this.userFormWindow = true;
   }
 
+
   closeUserFormWin($event) {
     this.userFormWindow = $event;
-    $('.bgblur').removeClass('ovrlay');
+    $('.userlistOverlay').removeClass('ovrlay');
     this.getUserList();
   }
 
 
-  openSearchBar() {
-    var scrollTop = $('.layout-container').height();
-    $('.search-container').show();
-    $('.search-container').css('height', scrollTop);
-    if ($('.search-container').hasClass('dismiss')) {
-      $('.search-container').removeClass('dismiss').addClass('selectedcs').show();
-    }
-
-
+  openConfirmationDialog(user: User) {
+    this.confirmationDialogService.confirm('Please confirm..', 'Do you really want to delete this record ?')
+      .then((confirmed) => (confirmed) ? this.deleteUser(user) : console.log(confirmed))
+      .catch(() => console.log('User dismissed the dialog.'));
   }
 
-  closeSearchBar() {
-    if ($('.search-container').hasClass('selectedcs')) {
-      $('.search-container').removeClass('selectedcs').addClass('dismiss');
-      $('.search-container').animate({ width: 'toggle' });
-    }
+
+  private deleteUser(user: User) {
+    this.subs.add(
+      this.userService.deleteUser(user.userId).subscribe(
+        delData => {
+          if (delData.message == "") {
+            this.getUserList();
+            this.alertService.success("Record deleted successfully.");
+          } else this.alertService.error(delData.message);
+        }, err => this.alertService.error(err)
+      )
+    )
   }
 
-  searchInUserTable(event: any, inputType = null) {
-    let values = event.target.value;
-    let colNumber = event.target.getAttribute("data-col");
-    if (inputType == "select" && values != "") {
-      this.usersTable.columns(colNumber).search("^" + values + "$", true, false, true).draw();
-    } else {
-      this.usersTable.columns(colNumber).search(values).draw();
-    }
-
-
+  opneUserGroup(user) {
+    this.selectedUser = user;
+    $('.userlistOverlay').addClass('ovrlay');
+    this.openUserAssignGroup = true;
   }
 
-  clearUserSearchForm() {
-    $("#userSearch").trigger("reset");
-    this.usersTable.search('').columns().search('').draw();
+
+  closeAssignGroupEvent(event) {
+    this.openUserAssignGroup = event;
+    $('.userlistOverlay').removeClass('ovrlay');
+    this.getUserList();
   }
 
   exportData() {
-    $(".buttons-excel").trigger("click");
+    if (this.users.length == 0) {
+      this.alertService.error('There is no record to export');
+      return
+    }
+
+    let tempData = Object.assign([], this.users);
+    let label = {
+      'userId': 'User',
+      'userName': 'Name',
+      'email': 'Email',
+      'status': 'Status',
+      'logAllowed': 'Login Allowed',
+      'admin': 'Admin',
+      'loginType': 'Login Type',
+      'userType': 'User Type',
+      'deaEnabled': 'DEA Enabled',
+      'contractor': 'Contractor Name',
+    }
+
+    const fieldsToFormat = {}
+    this.helper.exportAsExcelFileWithCustomiseFields(tempData, 'User list', label, fieldsToFormat)
+
   }
 
-  toggleGroupClass($event, userGroup){
 
-  }
+
+
 
 }

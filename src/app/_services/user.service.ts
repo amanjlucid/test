@@ -17,7 +17,7 @@ export class UserService {
         return this.http.get<any>(`${appConfig.apiUrl}/api/User/UserList`, httpOptions);
     }
 
-    getUserGroups(userId:string) {
+    getUserGroups(userId: string) {
         var httpOptions = {
             headers: new HttpHeaders({
                 'Content-Type': 'application/json'
@@ -27,24 +27,36 @@ export class UserService {
     }
 
 
-    assigneGroup(IsSelected:boolean, selectedUserId:string, GroupId, loginUserid:string){
+    // assigneGroup(IsSelected:boolean, selectedUserId:string, GroupId, loginUserid:string){
+    //     var httpOptions = {
+    //         headers: new HttpHeaders({
+    //             'Content-Type': 'application/json'
+    //         }),
+    //     };
+
+    //     var postData = {
+    //         UserId :selectedUserId ,
+    //         GroupId : GroupId,
+    //         LoggedInUserId : loginUserid,
+    //         IsSelected : IsSelected
+    //     };
+
+    //     let body = JSON.stringify(postData);
+    //     return this.http.post<any>(`${appConfig.apiUrl}/api/User/AssignGroup`, body, httpOptions);
+    // }
+
+    assigneGroup(params) {
         var httpOptions = {
             headers: new HttpHeaders({
                 'Content-Type': 'application/json'
             }),
         };
 
-        var postData = {
-            UserId :selectedUserId ,
-            GroupId : GroupId,
-            LoggedInUserId : loginUserid,
-            IsSelected : IsSelected
-        };
-        let body = JSON.stringify(postData);
+        let body = JSON.stringify(params);
         return this.http.post<any>(`${appConfig.apiUrl}/api/User/AssignGroup`, body, httpOptions);
     }
 
-    manageUser(user){
+    manageUser(user) {
         var httpOptions = {
             headers: new HttpHeaders({
                 'Content-Type': 'application/json'
@@ -64,7 +76,7 @@ export class UserService {
         return this.http.get<any>(`${appConfig.apiUrl}/api/User/DeleteUser?userId=${userId}`, httpOptions);
     }
 
-    getContractors(){
+    getContractors() {
         var httpOptions = {
             headers: new HttpHeaders({
                 'Content-Type': 'application/json'

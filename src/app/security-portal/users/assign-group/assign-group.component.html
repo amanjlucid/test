@@ -1,0 +1,116 @@
+<kendo-window [top]="20" [height]="auto" [minHeight]="270" [minWidth]="600" [width]="1000"
+    title="Show Security Groups for User {{selectedUser?.userName}}" *ngIf="openUserAssignGroup" (close)="close()">
+    <div class="row">
+        <div class="col-md-6">
+            <label class="form-check form-check-inline">
+                <input (change)="includeOnlyGroup($event)" class="form-check-input" type="checkbox">
+                <span class="form-check-label">
+                    Included Only
+                </span>
+            </label>
+        </div>
+
+        <div class="col-md-6 searchBox text-right">
+            <input type="text" placeholder="Search" class="form-control" (input)="onFilter($event.target.value)">
+        </div>
+
+
+
+        <div class="col-md-12 mt-2">
+            <kendo-grid id="charGroup" #grid="kendoGrid" [data]="gridView" [pageSize]="pageSize" [rowHeight]="36"
+                (pageChange)="pageChange($event)" scrollable="virtual" [loading]="loading" filterable="menu"
+                [resizable]="true" [sortable]="{
+                allowUnsort: true,
+                mode: 'single'
+                }" [skip]="state.skip" [sort]="state.sort" [selectable]="selectableSettings" [filter]="state.filter"
+                (sortChange)="sortChange($event)" (filterChange)="filterChange($event)"
+                (cellClick)="cellClickHandler($event)" [navigable]="false" [virtualColumns]="false"
+                [kendoGridSelectBy]="mySelectionKey" [selectedKeys]="mySelection" [height]="gridHeight">
+
+                <kendo-grid-checkbox-column width="28" showSelectAll="false">
+                    <ng-template kendoGridHeaderTemplate>
+                        <input class="k-checkbox" id="selectAllCheckboxId" kendoGridSelectAllCheckbox>
+                        <label class="k-checkbox-label" for="selectAllCheckboxId"></label>
+                    </ng-template>
+                </kendo-grid-checkbox-column>
+
+
+                <kendo-grid-column field="groupName" title="Group" width="140" [filterable]="false">
+                </kendo-grid-column>
+                <kendo-grid-column field="description" title="Description" width="180" [filterable]="false">
+                </kendo-grid-column>
+                <kendo-grid-column field="createdBy" title="Created By" width="100" [filterable]="false">
+                </kendo-grid-column>
+                <kendo-grid-column field="createdDate" title="Created Date" width="100" [filterable]="false">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <span>
+                            {{ dataItem.createdDate | dateFormat : 'DD-MMM-YYYY' }}
+                        </span>
+                    </ng-template>
+                </kendo-grid-column>
+
+            </kendo-grid>
+
+        </div>
+
+        <div class="col-md-12 mt-4 text-right">
+            <button type="button" (click)="close()" class="mr-1 btn btn-sm themeButton">Cancel</button>
+            <button type="button" (click)="save()" class="btn btn-sm themeButton">Ok</button>
+        </div>
+
+    </div>
+
+
+
+
+
+
+
+    <!-- <div class="col-md-12 col-sm-12 col-xs-12 user_sec_grp">
+        <div style="margin: 0px">
+
+            <div class="">
+
+                <label class="form-check form-check-inline">
+                    <input (change)="includeOnlyGroup($event)" class="form-check-input" type="checkbox">
+                    <span class="form-check-label">
+                        Included Only
+                    </span>
+                </label>
+            </div>
+        </div>
+
+        <div class="table-responsive mt-2">
+            <table *ngIf="userGroups" class="table table-striped table-bordered innerTable1">
+                <thead>
+                    <tr>
+                        <th style="width:1px;"></th>
+                        <th style="width:80px;">Group</th>
+                        <th>Description</th>
+                        <th>Created By</th>
+                        <th style="display:none;">CD</th>
+                        <th>Created Date</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="odd gradeX" *ngFor="let userGroup of userGroups"
+                        (click)="toggleGroupClass($event, userGroup)">
+                        <td><input (change)="assigneGroup($event, userGroup.userId, userGroup.groupId)"
+                                [attr.checked]="userGroup.isSelected ? 'checked' : null" type="checkbox"></td>
+                        <td>{{ userGroup?.groupName }}</td>
+                        <td>{{ userGroup?.description }}</td>
+                        <td>{{ userGroup?.createdBy }}</td>
+                        <td style="display:none;">{{ userGroup?.createdDate | dateFormat : 'YYYY-MM-DD' }}</td>
+                        <td>{{ userGroup?.createdDate | dateFormat : 'DD-MMM-YYYY' }}</td>
+
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div> -->
+
+
+
+</kendo-window>

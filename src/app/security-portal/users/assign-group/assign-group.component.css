@@ -1,0 +1,22 @@
+.k-grid tbody td {
+    white-space: nowrap;
+    line-height: 20px;
+    padding: 8px 12px;
+}
+
+.k-window {
+    position: fixed !important;
+}
+
+.searchBox input {
+    width: 35%;
+    display: inline-block;
+}
+
+#selectAllCheckboxId {
+    display: none;
+}
+
+.form-check {
+    padding: 5px;
+}

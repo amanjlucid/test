@@ -9,10 +9,10 @@
     <div class="col-md-4 col-sm-4 actionBtn">
 
       <div class="btn-group pull-right mt-3">
-        <button id="showFilePanel" (click)="openSearchBar()" class="btn btn-sm themeButton"><i class="fa fa-search"></i>
-        </button>
+        <!-- <button id="showFilePanel" (click)="openSearchBar()" class="btn btn-sm themeButton"><i class="fa fa-search"></i>
+        </button> -->
         <button (click)="exportData()" class="btn btn-sm btn-outline-secondary themeButton">Export</button>
-        <button (click)="openUserPopup('new')" class="btn btn-sm btn-outline-secondary themeButton">New</button>
+        <button (click)="openUserPopup('new')" class="btn btn-sm btn-outline-secondary themeButton ml-1">New</button>
         <!-- <button type="button" (click)="opneUserGroup(selectedUser)"
           class="btn btn-sm btn-outline-secondary themeButton">Assign
           Groups</button> -->
@@ -20,8 +20,60 @@
     </div>
   </div>
 
+  <div class="row">
+    <div class="col-md-12">
+      <kendo-grid id="userGrid" #grid="kendoGrid" [data]="gridView" [pageSize]="pageSize" [rowHeight]="36"
+        (pageChange)="pageChange($event)" scrollable="virtual" [loading]="loading" filterable="menu" [resizable]="true"
+        [sortable]="{
+      allowUnsort: true,
+      mode: 'single'
+      }" [skip]="state.skip" [sort]="state.sort" [selectable]="selectableSettings" [filter]="state.filter"
+        (sortChange)="sortChange($event)" (filterChange)="filterChange($event)" (cellClick)="cellClickHandler($event)"
+        [navigable]="false" [virtualColumns]="false" [kendoGridSelectBy]="mySelectionKey" [selectedKeys]="mySelection"
+        [height]="gridHeight">
 
-  <div class="row" style="margin-top:13px;">
+        <kendo-grid-column title=" " width="35" [filterable]="false">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <li class="nav-item dropdown list-unstyled" style="margin-top: -7px;">
+              <i data-toggle="dropdown" aria-expanded="false" class="fas fa-bars"></i>
+              <div class="dropdown-menu">
+                <a class="dropdown-item" (click)="openUserPopup('edit', dataItem)" href="javascript:void(0)">Edit</a>
+                <a class="dropdown-item" (click)="openConfirmationDialog(dataItem)" href="javascript:void(0)">Delete</a>
+               <a class="dropdown-item" (click)="opneUserGroup(dataItem)" href="javascript:void(0)">Assign Group</a>
+
+              </div>
+            </li>
+          </ng-template>
+        </kendo-grid-column>
+
+
+        <kendo-grid-column field="userId" title="User" width="200">
+        </kendo-grid-column>
+        <kendo-grid-column field="userName" title="Name" width="200">
+        </kendo-grid-column>
+        <kendo-grid-column field="email" title="Email" width="200">
+        </kendo-grid-column>
+        <kendo-grid-column field="status" title="Status" width="200">
+        </kendo-grid-column>
+        <kendo-grid-column field="logAllowed" title="Login Allowed" width="200">
+        </kendo-grid-column>
+        <kendo-grid-column field="admin" title="Admin" width="200">
+        </kendo-grid-column>
+        <kendo-grid-column field="loginType" title="Login Type" width="200">
+        </kendo-grid-column>
+        <kendo-grid-column field="userType" title="User Type" width="200">
+        </kendo-grid-column>
+        <kendo-grid-column field="deaEnabled" title="DEA Enabled" width="200">
+        </kendo-grid-column>
+        <kendo-grid-column field="contractor" title="Contractor Name" width="200">
+        </kendo-grid-column>
+
+      </kendo-grid>
+    </div>
+  </div>
+
+
+  <!-- <div class="row" style="margin-top:13px;">
     <div class="table-responsive userTbl" *ngIf="users">
       <table class="table table-striped table-bordered usersTable">
         <thead>
@@ -37,7 +89,7 @@
             <th>User Type</th>
             <th>DEA Enabled</th>
             <th>Contractor Name</th>
-            <!-- <th>Assign Group</th> -->
+          
           </tr>
         </thead>
         <tbody *ngIf="users">
@@ -66,79 +118,44 @@
             <td>{{ user.userType }}</td>
             <td>{{ user.deaEnabled }}</td>
             <td>{{ user.contractor }}</td>
-            <!-- <td><button type="button" (click)="opneUserGroup(user)"
-              class="btn btn-sm btn-outline-secondary themeButton">Assign
-              Groups</button></td> -->
+         
           </tr>
 
         </tbody>
       </table>
     </div>
 
-  </div>
+  </div> -->
 
-
-
-  <div class="example-wrapper">
-    <kendo-window [(width)]="windowWidth" [(top)]="windowTop" [minWidth]="250" [minHeight]="350"
-      title="Show Security Groups for User {{selectedUser.userName}}" *ngIf="windowOpened" (close)="close()">
-      <div class="col-md-12 col-sm-12 col-xs-12 user_sec_grp">
-        <div style="margin: 0px">
-
-          <div class="">
-
-            <label class="form-check form-check-inline">
-              <input (change)="includeOnlyGroup($event)" class="form-check-input" type="checkbox">
-              <span class="form-check-label">
-                Included Only
-              </span>
-            </label>
-          </div>
-        </div>
-
-        <div class="table-responsive mt-2">
-          <table *ngIf="userGroups" class="table table-striped table-bordered innerTable1">
-            <thead>
-              <tr>
-                <th style="width:1px;"></th>
-                <th style="width:80px;">Group</th>
-                <th>Description</th>
-                <th>Created By</th>
-                <th style="display:none;">CD</th>
-                <th>Created Date</th>
-
-              </tr>
-            </thead>
-            <tbody>
-              <tr class="odd gradeX" *ngFor="let userGroup of userGroups" (click)="toggleGroupClass($event, userGroup)">
-                <td><input (change)="assigneGroup($event, userGroup.userId, userGroup.groupId)"
-                    [attr.checked]="userGroup.isSelected ? 'checked' : null" type="checkbox"></td>
-                <td>{{ userGroup?.groupName }}</td>
-                <td>{{ userGroup?.description }}</td>
-                <td>{{ userGroup?.createdBy }}</td>
-                <td style="display:none;">{{ userGroup?.createdDate | dateFormat : 'YYYY-MM-DD' }}</td>
-                <td>{{ userGroup?.createdDate | dateFormat : 'DD-MMM-YYYY' }}</td>
-
-              </tr>
-
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </kendo-window>
-
-    <app-user-form [userFormType]="userFormType" [userFormWindow]="userFormWindow" [selectedUser]="selectedUser"
-      *ngIf="userFormWindow" (closeUserFormWin)="closeUserFormWin($event)">
-    </app-user-form>
-  </div>
 
 </div>
 
-<div class="search-container dismiss">
+
+<div class="userlistOverlay"></div>
+
+<app-user-form [userFormType]="userFormType" [userFormWindow]="userFormWindow" [selectedUser]="selectedUser"
+*ngIf="userFormWindow" (closeUserFormWin)="closeUserFormWin($event)">
+</app-user-form>
+
+<app-assign-group *ngIf="openUserAssignGroup" [openUserAssignGroup]="openUserAssignGroup" [selectedUser]="selectedUser" (closeAssignGroupEvent)="closeAssignGroupEvent($event)"></app-assign-group>
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <div class="search-container dismiss">
 
   <h5 style="color:white" class="p-4 m-0 line-height-1 font-weight-bolder bg-light theme-settings-header"> Filters
     <a href="javascript:void(0)" (click)="closeSearchBar()" class="theme-settings-close-btn font-weight-light px-4 py-2"
-      style="color:#ffffff;" tabindex="-1">×</a> </h5>
+      style="color:#ffffff;" tabindex="-1">×</a>
+  </h5>
 
   <div class="searchDiv">
     <form id="userSearch">
@@ -200,11 +217,8 @@
 
       <div class="form-group">
         <label class="form-label form-label-sm">Login Type</label>
-        <!-- <input (keyup)="searchInUserTable($event)" name="email" data-col="7" type="text"
-          class="form-control form-control-sm" placeholder="Search By Email"> -->
-          
-          <select data-col="7" class="form-control form-control-sm"
-          (change)="searchInUserTable($event, 'select')">
+     
+        <select data-col="7" class="form-control form-control-sm" (change)="searchInUserTable($event, 'select')">
           <option value="">All</option>
           <option value="Standard">Standard</option>
           <option value="Active Directory">Active Directory</option>
@@ -215,8 +229,7 @@
       <div class="form-row">
         <div class="form-group col-md-6">
           <label class="form-label form-label-sm">User Type</label>
-          <select data-col="8" class="form-control form-control-sm"
-            (change)="searchInUserTable($event, 'select')">
+          <select data-col="8" class="form-control form-control-sm" (change)="searchInUserTable($event, 'select')">
             <option value="">All</option>
             <option value="Internal">Internal</option>
             <option value="External">External</option>
@@ -226,8 +239,7 @@
 
         <div class="form-group col-md-6">
           <label class="form-label form-label-sm">DEA Enabled</label>
-          <select data-col="9" class="form-control form-control-sm" 
-            (change)="searchInUserTable($event, 'select')">
+          <select data-col="9" class="form-control form-control-sm" (change)="searchInUserTable($event, 'select')">
             <option value="">All</option>
             <option value="Yes">Yes</option>
             <option value="No">No</option>
@@ -238,8 +250,8 @@
 
       <div class="form-group">
         <label class="form-label form-label-sm">Contractor Name</label>
-        <input (keyup)="searchInUserTable($event)"  data-col="10" type="text"
-          class="form-control form-control-sm" placeholder="Search By Contractor">
+        <input (keyup)="searchInUserTable($event)" data-col="10" type="text" class="form-control form-control-sm"
+          placeholder="Search By Contractor">
       </div>
 
 
@@ -250,4 +262,4 @@
     </form>
 
   </div>
-</div>
+</div> -->

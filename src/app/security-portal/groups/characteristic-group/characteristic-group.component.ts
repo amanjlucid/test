@@ -79,6 +79,7 @@ export class CharacteristicGroupComponent implements OnInit {
   }
 
   getAllCharacteristicGroups() {
+    this.resetGrid()
     this.subs.add(
       this.charGrpService.getAllCharacteristicGroups(this.selectedGroup.groupID).subscribe(
         data => {
@@ -95,6 +96,7 @@ export class CharacteristicGroupComponent implements OnInit {
   }
 
   includeOnlyGroup(event: any) {
+    this.resetGrid()
     this.loading = true;
     this.charGrpService.getAllCharacteristicGroups(this.selectedGroup.groupID).subscribe(
       data => {
@@ -199,10 +201,6 @@ export class CharacteristicGroupComponent implements OnInit {
   }
 
   
-  onlyUnique(value, index, self) {
-    return self.indexOf(value) === index;
-  }
-
   close() {
     this.closeGroupAssetDetailEvent.emit(true)
   }
