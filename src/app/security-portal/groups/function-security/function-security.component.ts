@@ -3,8 +3,9 @@ import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { SelectableSettings, RowArgs, PageChangeEvent } from '@progress/kendo-angular-grid';
 import { AlertService, LoaderService, FunctionSecurityService, GroupService } from '../../../_services'
-import { forkJoin } from 'rxjs';
+import { forkJoin, Subject } from 'rxjs';
 import { FunctionSecurityModel } from '../../../_models'
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'app-function-security',
@@ -47,7 +48,6 @@ export class FunctionSecurityComponent implements OnInit {
   availableGridMySelectionKey(context: RowArgs): string {
     return JSON.stringify(context.dataItem)
   }
-
   assignFunctionState: State = {
     skip: 0,
     sort: [],
@@ -69,8 +69,10 @@ export class FunctionSecurityComponent implements OnInit {
 
   availableFunctionLists: FunctionSecurityModel[] = [];
   assignedFunctionLists: FunctionSecurityModel[] = [];
+  gridHeight = window.innerHeight - 300;
+  textSearchInAvailableGrid$ = new Subject<string>();
+  textSearchInAssignGrid$ = new Subject<string>();
 
-  
   constructor(
     private functionSecService: FunctionSecurityService,
     private alertService: AlertService,
@@ -117,6 +119,28 @@ export class FunctionSecurityComponent implements OnInit {
       )
     )
 
+    this.subs.add(
+      this.textSearchInAvailableGrid$
+        .pipe(
+          debounceTime(600),
+          distinctUntilChanged()
+        ).subscribe((searchTerm) => {
+          this.searchInAvailableGridAllFields(searchTerm)
+          this.chRef.detectChanges()
+        })
+    )
+
+    this.subs.add(
+      this.textSearchInAssignGrid$
+        .pipe(
+          debounceTime(600),
+          distinctUntilChanged()
+        ).subscribe((searchTerm) => {
+          this.searchInAssignGridAllFields(searchTerm)
+          this.chRef.detectChanges()
+        })
+    )
+
   }
 
 
@@ -138,8 +162,6 @@ export class FunctionSecurityComponent implements OnInit {
         data => {
           if (data && data.data == "Y") {
             this.getPortalAndFunctionList();
-            // this.getPortalList();
-            // this.getFunctionType();
           } else {
             this.loaderService.hide();
             this.alertService.error(data.message);
@@ -215,8 +237,7 @@ export class FunctionSecurityComponent implements OnInit {
 
 
   availableGridCellClickHandler({ columnIndex, dataItem }) {
-    // this.selectedChar = dataItem;
-    // this.checkCanDelete(dataItem);
+
   }
 
   availableGridSortChange(sort: SortDescriptor[]): void {
@@ -246,8 +267,7 @@ export class FunctionSecurityComponent implements OnInit {
 
 
   assignGridCellClickHandler({ columnIndex, dataItem }) {
-    // this.selectedChar = dataItem;
-    // this.checkCanDelete(dataItem);
+
   }
 
   assignGridSortChange(sort: SortDescriptor[]): void {
@@ -348,5 +368,71 @@ export class FunctionSecurityComponent implements OnInit {
       this.cancelGroupFunctionEvents.emit(false)
     }
   }
+
+
+
+  onAvailableGridFilter(inputValue: string): void {
+    this.textSearchInAvailableGrid$.next(inputValue);
+  }
+
+  searchInAvailableGridAllFields(inputValue: any) {
+    this.availableGridResetGrid()
+    this.availableGridView = process(this.availableFunctions, {
+      filter: {
+        logic: "or",
+        filters: [
+          {
+            field: 'functionName',
+            operator: 'contains',
+            value: inputValue
+          },
+          {
+            field: 'portalArea',
+            operator: 'contains',
+            value: inputValue
+          }
+        ]
+      }
+    });
+  }
+
+  onAssignGridFilter(inputValue: string): void {
+    this.textSearchInAssignGrid$.next(inputValue);
+  }
+
+
+  searchInAssignGridAllFields(inputValue: any) {
+    this.assignGridResetGrid()
+    this.assignGridView = process(this.assignedFunctions, {
+      filter: {
+        logic: "or",
+        filters: [
+          {
+            field: 'functionName',
+            operator: 'contains',
+            value: inputValue
+          },
+          {
+            field: 'portalArea',
+            operator: 'contains',
+            value: inputValue
+          }
+        ]
+      }
+    });
+  }
+
+
+
+  getWindowHeight(height) {
+    const roudedHeight = Math.round(height);
+    this.gridHeight = roudedHeight - 307;
+  }
+
+  getWindowState(state) {
+    if (state == 'default') this.gridHeight = window.innerHeight - 400
+    if (state == 'maximized') this.gridHeight = window.innerHeight - 300
+  }
+
 
 }

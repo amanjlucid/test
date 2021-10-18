@@ -1,9 +1,10 @@
 <kendo-window [(state)]="windowState" [top]="100" *ngIf="functionSecurityWindow" (close)="closeFunctionSecWindow()"
-  title="{{title}}" [height]="auto">
+  title="{{title}}" [height]="auto" (heightChange)="getWindowHeight($event)" (stateChange)="getWindowState($event)"
+  [minHeight]="500">
   <div class="row">
     <div class="col-md-12">
       <div class="form-group row">
-        <label class="col-form-label col-sm-1 text-right">Portal:</label>
+        <label class="col-form-label col-sm-2 text-right">Business Area:</label>
 
         <div class="col-sm-6">
           <select class="form-control" [(ngModel)]="selectedPortal" (change)="getAllFunctionList()">
@@ -45,24 +46,39 @@
 
 
   <div class="row mt-3">
+
+
+
     <div class="col-md-5">
-      <kendo-grid id="availableGroup" #grid="kendoGrid" [data]="availableGridView" [pageSize]="availableGridpageSize"
-        [rowHeight]="36" (pageChange)="availableGridPageChange($event)" scrollable="virtual" [loading]="availableGridLoading"
-        filterable="menu" [resizable]="true" [sortable]="{
-        allowUnsort: true,
-        mode: 'single'
-        }" [skip]="availableFunctionState.skip" [sort]="availableFunctionState.sort"
-        [selectable]="availableGridSelectableSettings" [filter]="availableFunctionState.filter"
-        (sortChange)="availableGridSortChange($event)" (filterChange)="availableGridFilterChange($event)"
-        (cellClick)="availableGridCellClickHandler($event)" [navigable]="false" [virtualColumns]="false"
-        [kendoGridSelectBy]="availableGridMySelectionKey" [selectedKeys]="availableGridMySelection" [height]="600">
+      <div class="row">
+        <div class="col-md-12 searchBox text-right">
+          <input type="text" placeholder="Search" class="form-control"
+            (input)="onAvailableGridFilter($event.target.value)">
+        </div>
 
-        <kendo-grid-column field="functionName" title="Available Function" width="160" [filterable]="true">
-        </kendo-grid-column>
-        <kendo-grid-column field="portalArea" title="Portal Area" width="100" [filterable]="true">
-        </kendo-grid-column>
+        <div class="col-md-12 mt-2">
+          <kendo-grid id="availableGroup" #grid="kendoGrid" [data]="availableGridView"
+            [pageSize]="availableGridpageSize" [rowHeight]="36" (pageChange)="availableGridPageChange($event)"
+            scrollable="virtual" [loading]="availableGridLoading" filterable="menu" [resizable]="true" [sortable]="{
+          allowUnsort: true,
+          mode: 'single'
+          }" [skip]="availableFunctionState.skip" [sort]="availableFunctionState.sort"
+            [selectable]="availableGridSelectableSettings" [filter]="availableFunctionState.filter"
+            (sortChange)="availableGridSortChange($event)" (filterChange)="availableGridFilterChange($event)"
+            (cellClick)="availableGridCellClickHandler($event)" [navigable]="false" [virtualColumns]="false"
+            [kendoGridSelectBy]="availableGridMySelectionKey" [selectedKeys]="availableGridMySelection"
+            [height]="gridHeight">
 
-      </kendo-grid>
+            <kendo-grid-column field="functionName" title="Available Function" width="160" [filterable]="true">
+            </kendo-grid-column>
+            <kendo-grid-column field="portalArea" title="Portal Area" width="100" [filterable]="true">
+            </kendo-grid-column>
+
+          </kendo-grid>
+        </div>
+      </div>
+
+
     </div>
 
 
@@ -83,29 +99,39 @@
 
 
     <div class="col-md-5">
-      <kendo-grid id="assignGroup" #grid="kendoGrid" [data]="assignGridView" [pageSize]="assignGridpageSize"
-        [rowHeight]="36" (pageChange)="assignGridPageChange($event)" scrollable="virtual" [loading]="assignGridLoading"
-        filterable="menu" [resizable]="true" [sortable]="{
-        allowUnsort: true,
-        mode: 'single'
-        }" [skip]="assignFunctionState.skip" [sort]="assignFunctionState.sort"
-        [selectable]="assignGridSelectableSettings" [filter]="assignGridFilterChange.filter"
-        (sortChange)="assignGridSortChange($event)" (filterChange)="filterChange($event)"
-        (cellClick)="assignGridCellClickHandler($event)" [navigable]="false" [virtualColumns]="false"
-        [kendoGridSelectBy]="assignGridMySelectionKey" [selectedKeys]="assignGridMySelection" [height]="600">
+      <div class="row">
+        <div class="col-md-12 searchBox text-right">
+          <input type="text" placeholder="Search" class="form-control"
+            (input)="onAssignGridFilter($event.target.value)">
+        </div>
 
-        <kendo-grid-column field="functionName" title="Assigned Function" width="160" [filterable]="true">
-        </kendo-grid-column>
-        <kendo-grid-column field="portalArea" title="Portal Area" width="100" [filterable]="true">
-        </kendo-grid-column>
+        <div class="col-md-12 mt-2">
+          <kendo-grid id="assignGroup" #grid="kendoGrid" [data]="assignGridView" [pageSize]="assignGridpageSize"
+            [rowHeight]="36" (pageChange)="assignGridPageChange($event)" scrollable="virtual"
+            [loading]="assignGridLoading" filterable="menu" [resizable]="true" [sortable]="{
+          allowUnsort: true,
+          mode: 'single'
+          }" [skip]="assignFunctionState.skip" [sort]="assignFunctionState.sort"
+            [selectable]="assignGridSelectableSettings" [filter]="assignGridFilterChange.filter"
+            (sortChange)="assignGridSortChange($event)" (filterChange)="filterChange($event)"
+            (cellClick)="assignGridCellClickHandler($event)" [navigable]="false" [virtualColumns]="false"
+            [kendoGridSelectBy]="assignGridMySelectionKey" [selectedKeys]="assignGridMySelection" [height]="gridHeight">
 
-      </kendo-grid>
+            <kendo-grid-column field="functionName" title="Assigned Function" width="160" [filterable]="true">
+            </kendo-grid-column>
+            <kendo-grid-column field="portalArea" title="Portal Area" width="100" [filterable]="true">
+            </kendo-grid-column>
+
+          </kendo-grid>
+        </div>
+      </div>
+
     </div>
   </div>
 
   <div class="row mt-4">
     <div class="col-md-12 text-right">
-      <button (click)="closeFunctionSecWindow()" class="btn btn-sm">Cancel</button>
+      <button (click)="closeFunctionSecWindow()" class="btn btn-sm themeButton">Cancel</button>
       <button [disabled]="availableFunctions?.length == 0 && assignedFunctions?.length == 0"
         class="btn btn-sm themeButton ml-1" (click)="saveGroupFunction()">Ok</button>
     </div>

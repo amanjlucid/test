@@ -10,8 +10,8 @@
 
     <div class="col-md-4 col-sm-4 actionBtn">
       <div class="btn-group pull-right mt-3">
-        <!-- <button id="showFilePanel" (click)="openSearchBar()" class="btn btn-sm themeButton"><i class="fa fa-search"></i>
-        </button> -->
+        <button id="showFilePanel" (click)="openSearchBar()" class="btn btn-sm themeButton"><i class="fa fa-search"></i>
+        </button>
         <button (click)="openGroupForm('new')" class="btn btn-sm btn-outline-secondary themeButton">New</button>
 
         <button type="button" class="btn btn-sm dropdown-toggle-split reportBtn" data-toggle="dropdown"
@@ -258,7 +258,7 @@
 
 
 
-<!-- <div class="notification-container dismiss">
+<div class="notification-container dismiss">
 
   <h5 style="color:white" class="p-4 m-0 line-height-1 font-weight-bolder bg-light theme-settings-header"> Filters<a
       href="javascript:void(0)" (click)="closeSearchBar()" class="theme-settings-close-btn font-weight-light px-4 py-2"
@@ -268,21 +268,19 @@
     <form id="groupSearch">
       <div class="form-group">
         <label class="form-label form-label-sm">Group</label>
-        <input (keyup)="searchInGroupTable($event)" data-col="1" type="text" class="form-control form-control-sm"
-          placeholder="Search By Group">
+        <input (input)="onFilter($event.target.value, 'group')" type="text" class="form-control form-control-sm" placeholder="Search By Group">
       </div>
 
       <div class="form-group">
         <label class="form-label form-label-sm">Description</label>
-        <input (keyup)="searchInGroupTable($event)" data-col="2" type="text" class="form-control form-control-sm"
-          placeholder="Search By Description">
+        <input (input)="onFilter($event.target.value, 'description')" type="text" class="form-control form-control-sm" placeholder="Search By Description">
       </div>
 
       <div class="form-group">
-        <button id="" (click)="clearGroupSearchForm()" class="btn btn-sm themeButton">Clear
+        <button type="button" (click)="clearGroupSearchForm()" class="btn btn-sm themeButton">Clear
         </button>
       </div>
     </form>
 
   </div>
-</div> -->
+</div>

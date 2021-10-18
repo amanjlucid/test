@@ -5,6 +5,8 @@ import { SelectableSettings, RowArgs, PageChangeEvent } from '@progress/kendo-an
 import { User, UserGroup } from '../../_models'
 import { UserService, AlertService, LoaderService, ConfirmationDialogService, HelperService } from '../../_services'
 import { Router } from '@angular/router';
+import { Subject } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'app-users',
@@ -44,6 +46,8 @@ export class UsersComponent implements OnInit {
   userFormType: any = "new";
   openUserAssignGroup = false;
   touchtime = 0;
+  userCustomFilter: any = { userId: '', userName: '', email: '', status: '', logAllowed: '', admin: '', loginType: '', userType: '', deaEnabled: '', contractor: '' }
+  textSearch$ = new Subject<any>();
 
 
   constructor(
@@ -65,6 +69,12 @@ export class UsersComponent implements OnInit {
 
     this.updateGridHeight();
     this.getUserList();
+
+    this.subs.add(
+      this.textSearch$
+        .pipe(debounceTime(300))
+        .subscribe(searchObj => this.searchInUserGrid(searchObj))
+    )
 
   }
 
@@ -233,6 +243,123 @@ export class UsersComponent implements OnInit {
 
 
 
+  openSearchBar() {
+    const scrollTop = $('.layout-container').height();
+    $('.search-container').show();
+    $('.search-container').css('height', scrollTop);
+    if ($('.search-container').hasClass('dismiss')) {
+      $('.search-container').removeClass('dismiss').addClass('selectedcs').show();
+    }
 
+
+  }
+
+  closeSearchBar() {
+    if ($('.search-container').hasClass('selectedcs')) {
+      $('.search-container').removeClass('selectedcs').addClass('dismiss');
+      $('.search-container').animate({ width: 'toggle' });
+    }
+  }
+
+
+
+  searchInUserTable(event, column) {
+    const inputValue = event.target.value
+
+    if (column == 'userId') this.userCustomFilter.userId = inputValue
+    if (column == 'userName') this.userCustomFilter.userName = inputValue
+    if (column == 'email') this.userCustomFilter.email = inputValue
+    if (column == 'status') this.userCustomFilter.status = inputValue
+    if (column == 'logAllowed') this.userCustomFilter.logAllowed = inputValue
+    if (column == 'admin') this.userCustomFilter.admin = inputValue
+    if (column == 'loginType') this.userCustomFilter.loginType = inputValue
+    if (column == 'userType') this.userCustomFilter.userType = inputValue
+    if (column == 'deaEnabled') this.userCustomFilter.deaEnabled = inputValue
+    if (column == 'contractor') this.userCustomFilter.contractor = inputValue
+
+    this.textSearch$.next(this.userCustomFilter);
+  }
+
+
+  searchInUserGrid(searchObj: any) {
+    this.resetGrid();
+
+    this.gridView = process(this.users, {
+      filter: {
+        logic: "and",
+        filters: [
+          {
+            field: 'userId',
+            operator: 'contains',
+            value: searchObj.userId
+          },
+          {
+            field: 'userName',
+            operator: 'contains',
+            value: searchObj.userName
+          },
+          {
+            field: 'email',
+            operator: 'contains',
+            value: searchObj.email
+          },
+          {
+            field: 'status',
+            operator: 'contains',
+            value: searchObj.status
+          },
+          {
+            field: 'logAllowed',
+            operator: 'contains',
+            value: searchObj.logAllowed
+          },
+          {
+            field: 'admin',
+            operator: 'contains',
+            value: searchObj.admin
+          },
+          {
+            field: 'loginType',
+            operator: 'contains',
+            value: searchObj.loginType
+          },
+          {
+            field: 'userType',
+            operator: 'contains',
+            value: searchObj.userType
+          },
+          {
+            field: 'deaEnabled',
+            operator: 'contains',
+            value: searchObj.deaEnabled
+          },
+          {
+            field: 'contractor',
+            operator: 'contains',
+            value: searchObj.contractor
+          },
+        ]
+      }
+    });
+
+
+  }
+
+  clearUserSearchForm() {
+    $("#userSearch").trigger("reset");
+    this.userCustomFilter.userId = ''
+    this.userCustomFilter.userName = '';
+    this.userCustomFilter.email = '';
+    this.userCustomFilter.status = '';
+    this.userCustomFilter.logAllowed = '';
+    this.userCustomFilter.admin = '';
+    this.userCustomFilter.loginType = '';
+    this.userCustomFilter.userType = '';
+    this.userCustomFilter.deaEnabled = '';
+    this.userCustomFilter.contractor = '';
+
+    this.textSearch$.next(this.userCustomFilter);
+
+  }
 
 }

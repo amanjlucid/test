@@ -71,85 +71,12 @@
   color: black;
 }
 
-/* table css */
-
-/* .table-striped tbody tr:nth-of-type(odd) {
-  background-color: white;
-} */
-
-
-/* thead th{
-    font-weight: 600;
-  
-}
-
-.groupPopup{width: 800px;}
-
-.groupPopup .groupDiv{
-    background-color: #fff;
-    padding: 17px;
-    font-size: 13px;
-    font-weight: 700
-}
-
-.grpTable th:not(:first-child){
-    min-width: 100px !important;
-}
-
-.grpTable th:nth-child(3){
-    min-width: 305px !important;
-}
-
-.grpTable th:nth-child(2){
-    min-width: 125px !important;
-}
-
-.grpTable th:nth-last-child(-n+4){
-    min-width: 148px !important;
-}
-
-.underline{
-    border-bottom: 1px solid #e7e5e6;
-    width: 100%;
-    display: block;
-}
-
-.groupSetting label{
-    color: #a59f9f;
-} */
-
-/* group css ends here */
-
-/* 
-.selectionDiv{
-    float: left;
-} */
-
-/* app-groups .groupGridRow {
-  height: calc(100% - 128px);
-}
-
-app-groups .groupGridRow .groupGridCol {
-  height: calc(100% - 25px);
-}
-
-app-groups .groupGridRow .groupGridCol #groupGrid {
-  height: 100%;
-} */
-
 @media screen and (max-width: 769px) {
   .groupPopup {
     width: 100%;
   }
 }
 
-/* @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
-  #DataTables_Table_0_paginate .row:last-child {
-    position: absolute;
-    width: 83%;
-    margin-top: 20px;
-  }
-} */
 
 /* side bar css */
 

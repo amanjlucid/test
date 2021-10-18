@@ -3,6 +3,8 @@ import { GroupService, AlertService, LoaderService, ConfirmationDialogService, H
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { SelectableSettings, RowArgs, PageChangeEvent } from '@progress/kendo-angular-grid';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'app-groups',
@@ -48,7 +50,8 @@ export class GroupsComponent implements OnInit {
   reportingAction = "";
   functionSecurityWindow = false;
   propertySecurityWindow = false;
-
+  groupCustomFilter: any = { group: '', description: '' }
+  textSearch$ = new Subject<any>();
 
   constructor(
     private groupService: GroupService,
@@ -65,7 +68,7 @@ export class GroupsComponent implements OnInit {
 
   updateGridHeight() {
     const innerHeight = window.innerHeight;
-  
+
     if (innerHeight < 754) {
       this.gridHeight = innerHeight - 330;
     } else {
@@ -85,6 +88,12 @@ export class GroupsComponent implements OnInit {
     this.helper.updateNotificationOnTop();
     this.updateGridHeight();
     this.getAllGroups();
+
+    this.subs.add(
+      this.textSearch$
+        .pipe(debounceTime(300))
+        .subscribe(searchObj => this.searchGroupAndDescription(searchObj))
+    )
   }
 
   ngOnDestroy() {
@@ -262,6 +271,63 @@ export class GroupsComponent implements OnInit {
   }
 
 
+  openSearchBar() {
+    const scrollTop = $('.layout-container').height();
+    $('.notification-container').show();
+    $('.notification-container').css('height', scrollTop);
+    if ($('.notification-container').hasClass('dismiss')) {
+      $('.notification-container').removeClass('dismiss').addClass('selectedcs').show();
+    }
+
+  }
+
+  closeSearchBar() {
+    if ($('.notification-container').hasClass('selectedcs')) {
+      $('.notification-container').removeClass('selectedcs').addClass('dismiss');
+      $('.notification-container').animate({ width: 'toggle' });
+    }
+  }
+
+
+
+  onFilter(inputValue: string, column): void {
+    if (column == 'group') this.groupCustomFilter.group = inputValue
+    if (column == 'description') this.groupCustomFilter.description = inputValue
+
+    this.textSearch$.next(this.groupCustomFilter);
+  }
+
+
+  searchGroupAndDescription(searchObj: any) {
+    this.resetGrid()
+
+    this.gridView = process(this.groups, {
+      filter: {
+        logic: "and",
+        filters: [
+          {
+            field: 'group',
+            operator: 'contains',
+            value: searchObj.group
+          },
+          {
+            field: 'description',
+            operator: 'contains',
+            value: searchObj.description
+          },
+        ]
+      }
+    });
+
+  }
+
+
+  clearGroupSearchForm() {
+    $("#groupSearch").trigger("reset");
+    this.groupCustomFilter.group = ''
+    this.groupCustomFilter.description = ''
+    this.textSearch$.next(this.groupCustomFilter);
+  }
 
 
 

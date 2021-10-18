@@ -9,13 +9,11 @@
     <div class="col-md-4 col-sm-4 actionBtn">
 
       <div class="btn-group pull-right mt-3">
-        <!-- <button id="showFilePanel" (click)="openSearchBar()" class="btn btn-sm themeButton"><i class="fa fa-search"></i>
-        </button> -->
-        <button (click)="exportData()" class="btn btn-sm btn-outline-secondary themeButton">Export</button>
+        <button id="showFilePanel" (click)="openSearchBar()" class="btn btn-sm themeButton"><i class="fa fa-search"></i>
+        </button>
+        <button (click)="exportData()" class="btn btn-sm btn-outline-secondary themeButton ml-1">Export</button>
         <button (click)="openUserPopup('new')" class="btn btn-sm btn-outline-secondary themeButton ml-1">New</button>
-        <!-- <button type="button" (click)="opneUserGroup(selectedUser)"
-          class="btn btn-sm btn-outline-secondary themeButton">Assign
-          Groups</button> -->
+        
       </div>
     </div>
   </div>
@@ -73,61 +71,6 @@
   </div>
 
 
-  <!-- <div class="row" style="margin-top:13px;">
-    <div class="table-responsive userTbl" *ngIf="users">
-      <table class="table table-striped table-bordered usersTable">
-        <thead>
-          <tr>
-            <th class="" style="width:3px;"></th>
-            <th>User</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Status</th>
-            <th>Login Allowed</th>
-            <th>Admin</th>
-            <th>Login Type</th>
-            <th>User Type</th>
-            <th>DEA Enabled</th>
-            <th>Contractor Name</th>
-          
-          </tr>
-        </thead>
-        <tbody *ngIf="users">
-
-          <tr class="odd gradeX" *ngFor="let user of users" (click)="toggleClass($event,user)"
-            (dblclick)="opneUserGroup(user)">
-            <td>
-              <li class="nav-item dropdown list-unstyled">
-                <i (click)=toggleUserClass($event,user) data-toggle="dropdown" aria-expanded="false"
-                  class="fas fa-bars"></i>
-                <div class="dropdown-menu">
-                  <a class="dropdown-item" (click)="openUserPopup('edit', user)" href="javascript:void(0)">Edit</a>
-                  <a class="dropdown-item" (click)="openConfirmationDialog(user)" href="javascript:void(0)">Delete</a>
-                  <a class="dropdown-item" (click)="opneUserGroup(user)" href="javascript:void(0)">Assign Group</a>
-
-                </div>
-              </li>
-            </td>
-            <td>{{ user.userId }}</td>
-            <td>{{ user.userName }}</td>
-            <td>{{ user.email }}</td>
-            <td>{{ user.status }}</td>
-            <td>{{ user.logAllowed }}</td>
-            <td>{{ user.admin }}</td>
-            <td>{{ user.loginType }}</td>
-            <td>{{ user.userType }}</td>
-            <td>{{ user.deaEnabled }}</td>
-            <td>{{ user.contractor }}</td>
-         
-          </tr>
-
-        </tbody>
-      </table>
-    </div>
-
-  </div> -->
-
-
 </div>
 
 
@@ -143,15 +86,7 @@
 
 
 
-
-
-
-
-
-
-
-<!-- <div class="search-container dismiss">
-
+<div class="search-container dismiss">
   <h5 style="color:white" class="p-4 m-0 line-height-1 font-weight-bolder bg-light theme-settings-header"> Filters
     <a href="javascript:void(0)" (click)="closeSearchBar()" class="theme-settings-close-btn font-weight-light px-4 py-2"
       style="color:#ffffff;" tabindex="-1">×</a>
@@ -161,28 +96,28 @@
     <form id="userSearch">
       <div class="form-group">
         <label class="form-label form-label-sm">User</label>
-        <input (keyup)="searchInUserTable($event)" name="user" data-col="1" type="text"
+        <input (input)="searchInUserTable($event, 'userId')" type="text"
           class="form-control form-control-sm" placeholder="Search By User">
       </div>
 
 
       <div class="form-group">
         <label class="form-label form-label-sm">Name</label>
-        <input (keyup)="searchInUserTable($event)" name="name" data-col="2" type="text"
+        <input (input)="searchInUserTable($event, 'userName')" name="name" type="text"
           class="form-control form-control-sm" placeholder="Search By Name">
       </div>
 
       <div class="form-group">
         <label class="form-label form-label-sm">Email</label>
-        <input (keyup)="searchInUserTable($event)" name="email" data-col="3" type="text"
+        <input (input)="searchInUserTable($event, 'email')" name="email" type="text"
           class="form-control form-control-sm" placeholder="Search By Email">
       </div>
 
       <div class="form-row">
         <div class="form-group col-md-6">
           <label class="form-label form-label-sm">Status</label>
-          <select data-col="4" class="form-control form-control-sm" name="status"
-            (change)="searchInUserTable($event, 'select')">
+          <select class="form-control form-control-sm" name="status"
+            (change)="searchInUserTable($event, 'status')">
             <option value="">All</option>
             <option value="Active">Active</option>
             <option value="Inactive">Inactive</option>
@@ -192,8 +127,8 @@
 
         <div class="form-group col-md-6">
           <label class="form-label form-label-sm">Login Allowed?</label>
-          <select data-col="5" class="form-control form-control-sm" name="status"
-            (change)="searchInUserTable($event, 'select')">
+          <select class="form-control form-control-sm" name="logAllowed"
+            (change)="searchInUserTable($event, 'logAllowed')">
             <option value="">All</option>
             <option value="Yes">Yes</option>
             <option value="No">No</option>
@@ -206,8 +141,8 @@
 
       <div class="form-group">
         <label class="form-label form-label-sm">Admin</label>
-        <select data-col="6" class="form-control form-control-sm" name="status"
-          (change)="searchInUserTable($event, 'select')">
+        <select class="form-control form-control-sm" name="admin"
+          (change)="searchInUserTable($event, 'admin')">
           <option value="">All</option>
           <option value="Yes">Yes</option>
           <option value="No">No</option>
@@ -218,7 +153,7 @@
       <div class="form-group">
         <label class="form-label form-label-sm">Login Type</label>
      
-        <select data-col="7" class="form-control form-control-sm" (change)="searchInUserTable($event, 'select')">
+        <select class="form-control form-control-sm" (change)="searchInUserTable($event, 'loginType')">
           <option value="">All</option>
           <option value="Standard">Standard</option>
           <option value="Active Directory">Active Directory</option>
@@ -229,7 +164,7 @@
       <div class="form-row">
         <div class="form-group col-md-6">
           <label class="form-label form-label-sm">User Type</label>
-          <select data-col="8" class="form-control form-control-sm" (change)="searchInUserTable($event, 'select')">
+          <select class="form-control form-control-sm" (change)="searchInUserTable($event, 'userType')">
             <option value="">All</option>
             <option value="Internal">Internal</option>
             <option value="External">External</option>
@@ -239,7 +174,7 @@
 
         <div class="form-group col-md-6">
           <label class="form-label form-label-sm">DEA Enabled</label>
-          <select data-col="9" class="form-control form-control-sm" (change)="searchInUserTable($event, 'select')">
+          <select class="form-control form-control-sm" (change)="searchInUserTable($event, 'deaEnabled')">
             <option value="">All</option>
             <option value="Yes">Yes</option>
             <option value="No">No</option>
@@ -250,7 +185,7 @@
 
       <div class="form-group">
         <label class="form-label form-label-sm">Contractor Name</label>
-        <input (keyup)="searchInUserTable($event)" data-col="10" type="text" class="form-control form-control-sm"
+        <input (input)="searchInUserTable($event, 'contractor')" type="text" class="form-control form-control-sm"
           placeholder="Search By Contractor">
       </div>
 
@@ -262,4 +197,4 @@
     </form>
 
   </div>
-</div> -->
+</div>
