@@ -38,7 +38,7 @@ export class AttributeGroupComponent implements OnInit {
   }
   gridHeight = 550;
   textSearch$ = new Subject<string>();
-
+  @Output() refreshSecurityGroup = new EventEmitter<boolean>();
 
   constructor(
     private attrGrpService: AttributeGroupService,
@@ -186,8 +186,10 @@ export class AttributeGroupComponent implements OnInit {
     this.subs.add(
       this.attrGrpService.assigneAttributeGroups(this.mySelection, this.selectedGroup.groupID).subscribe(
         data => {
-          if (data.isSuccess) this.alertService.success("Data saved successfully");
-          else this.alertService.error(data.message);
+          if (data.isSuccess) {
+            this.alertService.success("Data saved successfully");
+            this.refreshSecurityGroup.emit(true)
+          } else this.alertService.error(data.message);
         }, error => this.alertService.error(error)
       )
     )

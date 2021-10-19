@@ -70,6 +70,13 @@ export class AssetsComponent implements OnInit, OnDestroy, AfterViewInit {
     'TaskAsset': false,
     'TaskAssets': [],
     'ShowCharacteristics': false,
+    'AssetChar1': '',
+    'AssetChar2': '',
+    'AssetChar3': '',
+    'ChaCode1': '',
+    'ChaCode2': '',
+    'ChaCode3': '',
+
   }
   visitedHierarchy: any[] = [];
   totalAssetCount: number = 0;
@@ -1440,6 +1447,7 @@ export class AssetsComponent implements OnInit, OnDestroy, AfterViewInit {
       this.servicePortalService.getUserAssetCharacteristics(this.currentUser.userId).subscribe(
         data => {
           if (data.isSuccess) {
+            console.log(data);
             if (data.data.length) {
               this.userCharColumnName = data.data.filter(x => x.chadisp == 1);
             }

@@ -362,4 +362,9 @@ export class UsersComponent implements OnInit {
 
   }
 
+
+  refreshUserSecurityGrid(event) {
+    if (event) this.getUserList();
+  }
+
 }

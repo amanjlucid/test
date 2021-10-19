@@ -14,6 +14,8 @@ export class GroupAssetDetailComponent implements OnInit {
   @Input() showAssetDetail = false;
   @Input() selectedGroup;
   @Output() closeAssetDetailEvent = new EventEmitter<boolean>();
+  @Output() refreshSecurityGroupGrid = new EventEmitter<boolean>();
+
   title = `Asset Details`;
   tabName = 'settings';
 
@@ -35,8 +37,13 @@ export class GroupAssetDetailComponent implements OnInit {
     this.closeAssetDetailEvent.emit(false);
   }
 
-  closeGroupAssetDetail(event){
+  closeGroupAssetDetail(event) {
     this.closeAssetDetail()
   }
+
+  refreshSecurityGroup(event) {
+    if (event) this.refreshSecurityGroupGrid.emit(true)
+  }
+
 
 }

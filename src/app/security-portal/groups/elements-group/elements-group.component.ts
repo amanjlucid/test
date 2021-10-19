@@ -40,7 +40,7 @@ export class ElementsGroupComponent implements OnInit {
   }
   gridHeight = 550;
   textSearch$ = new Subject<string>();
-
+  @Output() refreshSecurityGroup = new EventEmitter<boolean>();
 
   constructor(
     private elmGrpService: ElementGroupService,
@@ -190,7 +190,10 @@ export class ElementsGroupComponent implements OnInit {
     this.subs.add(
       this.elmGrpService.assigneElementGroups(this.mySelection, this.selectedGroup.groupID).subscribe(
         data => {
-          if (data.isSuccess) this.alertService.success("Data saved successfully");
+          if (data.isSuccess) {
+            this.alertService.success("Data saved successfully");
+            this.refreshSecurityGroup.emit(true)
+          }
           else this.alertService.error(data.message);
         }, error => this.alertService.error(error)
       )

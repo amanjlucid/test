@@ -58,8 +58,8 @@
 
                 <a class="dropdown-item" (click)="openAssetDetail()" href="javascript:void(0)">Asset Details</a>
 
-                <a class="dropdown-item" (click)="openFunctionSecWindow(dataItem)" href="javascript:void(0)">Function
-                  Security</a>
+                <a class="dropdown-item" (click)="openFunctionSecWindow(dataItem)" href="javascript:void(0)">Security
+                  Functions</a>
 
                 <a class="dropdown-item" (click)="openPropSecWindow(dataItem)" href="javascript:void(0)">Property
                   Security</a>
@@ -75,113 +75,228 @@
         <kendo-grid-column field="description" title="Description" width="310">
         </kendo-grid-column>
 
-        <kendo-grid-column field="administration" title="Administration" width="130" [style]="{'text-align': 'center'}"
-          [filterable]="false">
+        <kendo-grid-column field="administration" title="Administration" width="140" [style]="{'text-align': 'center'}"
+          [filterable]="true">
+
+          <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
+            let-filterService="filterService">
+            <multicheck-filter [isPrimitive]="false" [field]="column.field" [currentFilter]="filter"
+              [filterService]="filterService" textField="val" valueField="valid" [data]="yesNoFilterDropDown">
+            </multicheck-filter>
+          </ng-template>
+
+
           <ng-template kendoGridCellTemplate let-dataItem>
             <i aria-expanded="false" class="fas fa-check" *ngIf="dataItem.administration"></i>
           </ng-template>
         </kendo-grid-column>
 
-        <kendo-grid-column field="asbestos" title="Asbestos" width="100" [style]="{'text-align': 'center'}"
-          [filterable]="false">
+        <kendo-grid-column field="asbestos" title="Asbestos" width="120" [style]="{'text-align': 'center'}"
+          [filterable]="true">
+
+          <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
+            let-filterService="filterService">
+            <multicheck-filter [isPrimitive]="false" [field]="column.field" [currentFilter]="filter"
+              [filterService]="filterService" textField="val" valueField="valid" [data]="yesNoFilterDropDown">
+            </multicheck-filter>
+          </ng-template>
+
+
           <ng-template kendoGridCellTemplate let-dataItem>
             <i aria-expanded="false" class="fas fa-check" *ngIf="dataItem.asbestos"></i>
           </ng-template>
         </kendo-grid-column>
 
-        <kendo-grid-column field="asbestos_Lite" title="Asbestos Lite" width="110" [style]="{'text-align': 'center'}"
-          [filterable]="false">
+        <kendo-grid-column field="asbestos_Lite" title="Asbestos Lite" width="130" [style]="{'text-align': 'center'}"
+          [filterable]="true">
+
+          <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
+            let-filterService="filterService">
+            <multicheck-filter [isPrimitive]="false" [field]="column.field" [currentFilter]="filter"
+              [filterService]="filterService" textField="val" valueField="valid" [data]="yesNoFilterDropDown">
+            </multicheck-filter>
+          </ng-template>
+
+
           <ng-template kendoGridCellTemplate let-dataItem>
             <i aria-expanded="false" class="fas fa-check" *ngIf="dataItem.asbestos_Lite"></i>
           </ng-template>
         </kendo-grid-column>
 
-        <kendo-grid-column field="assets" title="Assets" width="100" [style]="{'text-align': 'center'}"
-          [filterable]="false">
+        <kendo-grid-column field="assets" title="Assets" width="120" [style]="{'text-align': 'center'}"
+          [filterable]="true">
+          <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
+            let-filterService="filterService">
+            <multicheck-filter [isPrimitive]="false" [field]="column.field" [currentFilter]="filter"
+              [filterService]="filterService" textField="val" valueField="valid" [data]="yesNoFilterDropDown">
+            </multicheck-filter>
+          </ng-template>
+
           <ng-template kendoGridCellTemplate let-dataItem>
             <i aria-expanded="false" class="fas fa-check" *ngIf="dataItem.assets"></i>
           </ng-template>
         </kendo-grid-column>
 
-        <kendo-grid-column field="configuration" title="Configuration" width="120" [style]="{'text-align': 'center'}"
-          [filterable]="false">
+        <kendo-grid-column field="configuration" title="Configuration" width="140" [style]="{'text-align': 'center'}"
+          [filterable]="true">
+
+          <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
+            let-filterService="filterService">
+            <multicheck-filter [isPrimitive]="false" [field]="column.field" [currentFilter]="filter"
+              [filterService]="filterService" textField="val" valueField="valid" [data]="yesNoFilterDropDown">
+            </multicheck-filter>
+          </ng-template>
+
           <ng-template kendoGridCellTemplate let-dataItem>
             <i aria-expanded="false" class="fas fa-check" *ngIf="dataItem.configuration"></i>
           </ng-template>
         </kendo-grid-column>
 
-        <kendo-grid-column field="energy" title="Energy" width="100" [style]="{'text-align': 'center'}"
-          [filterable]="false">
+        <kendo-grid-column field="energy" title="Energy" width="120" [style]="{'text-align': 'center'}"
+          [filterable]="true">
+          <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
+            let-filterService="filterService">
+            <multicheck-filter [isPrimitive]="false" [field]="column.field" [currentFilter]="filter"
+              [filterService]="filterService" textField="val" valueField="valid" [data]="yesNoFilterDropDown">
+            </multicheck-filter>
+          </ng-template>
+
           <ng-template kendoGridCellTemplate let-dataItem>
             <i aria-expanded="false" class="fas fa-check" *ngIf="dataItem.energy"></i>
           </ng-template>
         </kendo-grid-column>
 
-        <kendo-grid-column field="health___Safety" title="Health & Safety" width="120"
-          [style]="{'text-align': 'center'}" [filterable]="false">
+        <kendo-grid-column field="health___Safety" title="Health & Safety" width="150"
+          [style]="{'text-align': 'center'}" [filterable]="true">
+          <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
+            let-filterService="filterService">
+            <multicheck-filter [isPrimitive]="false" [field]="column.field" [currentFilter]="filter"
+              [filterService]="filterService" textField="val" valueField="valid" [data]="yesNoFilterDropDown">
+            </multicheck-filter>
+          </ng-template>
+
           <ng-template kendoGridCellTemplate let-dataItem>
             <i aria-expanded="false" class="fas fa-check" *ngIf="dataItem.health___Safety"></i>
           </ng-template>
         </kendo-grid-column>
 
-        <kendo-grid-column field="programming" title="Programming" width="120" [style]="{'text-align': 'center'}"
-          [filterable]="false">
+        <kendo-grid-column field="programming" title="Programming" width="140" [style]="{'text-align': 'center'}"
+          [filterable]="true">
+          <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
+            let-filterService="filterService">
+            <multicheck-filter [isPrimitive]="false" [field]="column.field" [currentFilter]="filter"
+              [filterService]="filterService" textField="val" valueField="valid" [data]="yesNoFilterDropDown">
+            </multicheck-filter>
+          </ng-template>
           <ng-template kendoGridCellTemplate let-dataItem>
             <i aria-expanded="false" class="fas fa-check" *ngIf="dataItem.programming"></i>
           </ng-template>
         </kendo-grid-column>
 
-        <kendo-grid-column field="property_Security" title="Property Security" width="140"
-          [style]="{'text-align': 'center'}" [filterable]="false">
+        <kendo-grid-column field="property_Security" title="Property Security" width="160"
+          [style]="{'text-align': 'center'}" [filterable]="true">
+          <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
+            let-filterService="filterService">
+            <multicheck-filter [isPrimitive]="false" [field]="column.field" [currentFilter]="filter"
+              [filterService]="filterService" textField="val" valueField="valid" [data]="yesNoFilterDropDown">
+            </multicheck-filter>
+          </ng-template>
+
           <ng-template kendoGridCellTemplate let-dataItem>
             <i aria-expanded="false" class="fas fa-check" *ngIf="dataItem.property_Security"></i>
           </ng-template>
         </kendo-grid-column>
 
-        <kendo-grid-column field="quality_Standard" title="Quality Standard" width="140"
-          [style]="{'text-align': 'center'}" [filterable]="false">
+        <kendo-grid-column field="quality_Standard" title="Quality Standard" width="160"
+          [style]="{'text-align': 'center'}" [filterable]="true">
+          <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
+            let-filterService="filterService">
+            <multicheck-filter [isPrimitive]="false" [field]="column.field" [currentFilter]="filter"
+              [filterService]="filterService" textField="val" valueField="valid" [data]="yesNoFilterDropDown">
+            </multicheck-filter>
+          </ng-template>
+
+
           <ng-template kendoGridCellTemplate let-dataItem>
             <i aria-expanded="false" class="fas fa-check" *ngIf="dataItem.quality_Standard"></i>
           </ng-template>
         </kendo-grid-column>
 
         <kendo-grid-column field="reporting" title="Reporting" width="140" [style]="{'text-align': 'center'}"
-          [filterable]="false">
+          [filterable]="true">
+          <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
+            let-filterService="filterService">
+            <multicheck-filter [isPrimitive]="false" [field]="column.field" [currentFilter]="filter"
+              [filterService]="filterService" textField="val" valueField="valid" [data]="yesNoFilterDropDown">
+            </multicheck-filter>
+          </ng-template>
           <ng-template kendoGridCellTemplate let-dataItem>
             <i aria-expanded="false" class="fas fa-check" *ngIf="dataItem.reporting"></i>
           </ng-template>
         </kendo-grid-column>
 
         <kendo-grid-column field="servicing" title="Servicing" width="140" [style]="{'text-align': 'center'}"
-          [filterable]="false">
+          [filterable]="true">
+          <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
+            let-filterService="filterService">
+            <multicheck-filter [isPrimitive]="false" [field]="column.field" [currentFilter]="filter"
+              [filterService]="filterService" textField="val" valueField="valid" [data]="yesNoFilterDropDown">
+            </multicheck-filter>
+          </ng-template>
+
           <ng-template kendoGridCellTemplate let-dataItem>
             <i aria-expanded="false" class="fas fa-check" *ngIf="dataItem.servicing"></i>
           </ng-template>
         </kendo-grid-column>
 
         <kendo-grid-column field="surveys" title="Surveys" width="140" [style]="{'text-align': 'center'}"
-          [filterable]="false">
+          [filterable]="true">
+          <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
+            let-filterService="filterService">
+            <multicheck-filter [isPrimitive]="false" [field]="column.field" [currentFilter]="filter"
+              [filterService]="filterService" textField="val" valueField="valid" [data]="yesNoFilterDropDown">
+            </multicheck-filter>
+          </ng-template>
           <ng-template kendoGridCellTemplate let-dataItem>
             <i aria-expanded="false" class="fas fa-check" *ngIf="dataItem.surveys"></i>
           </ng-template>
         </kendo-grid-column>
 
         <kendo-grid-column field="tasks" title="Tasks" width="140" [style]="{'text-align': 'center'}"
-          [filterable]="false">
+          [filterable]="true">
+          <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
+            let-filterService="filterService">
+            <multicheck-filter [isPrimitive]="false" [field]="column.field" [currentFilter]="filter"
+              [filterService]="filterService" textField="val" valueField="valid" [data]="yesNoFilterDropDown">
+            </multicheck-filter>
+          </ng-template>
           <ng-template kendoGridCellTemplate let-dataItem>
             <i aria-expanded="false" class="fas fa-check" *ngIf="dataItem.tasks"></i>
           </ng-template>
         </kendo-grid-column>
 
-        <kendo-grid-column field="work_Management" title="Work Management" width="140"
-          [style]="{'text-align': 'center'}" [filterable]="false">
+        <kendo-grid-column field="work_Management" title="Work Management" width="180"
+          [style]="{'text-align': 'center'}" [filterable]="true">
+          <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
+            let-filterService="filterService">
+            <multicheck-filter [isPrimitive]="false" [field]="column.field" [currentFilter]="filter"
+              [filterService]="filterService" textField="val" valueField="valid" [data]="yesNoFilterDropDown">
+            </multicheck-filter>
+          </ng-template>
+
           <ng-template kendoGridCellTemplate let-dataItem>
             <i aria-expanded="false" class="fas fa-check" *ngIf="dataItem.work_Management"></i>
           </ng-template>
         </kendo-grid-column>
 
         <kendo-grid-column field="works_Orders" title="Works Orders" width="140" [style]="{'text-align': 'center'}"
-          [filterable]="false">
+          [filterable]="true">
+          <ng-template kendoGridFilterMenuTemplate let-column="column" let-filter="filter"
+            let-filterService="filterService">
+            <multicheck-filter [isPrimitive]="false" [field]="column.field" [currentFilter]="filter"
+              [filterService]="filterService" textField="val" valueField="valid" [data]="yesNoFilterDropDown">
+            </multicheck-filter>
+          </ng-template>
           <ng-template kendoGridCellTemplate let-dataItem>
             <i aria-expanded="false" class="fas fa-check" *ngIf="dataItem.works_Orders"></i>
           </ng-template>
@@ -237,7 +352,8 @@
     (reloadGroupEvent)=reloadGroup($event)></app-group-form>
 
   <app-group-asset-detail *ngIf="showAssetDetail" [showAssetDetail]="showAssetDetail" [selectedGroup]="selectedGroup"
-    (closeAssetDetailEvent)="closeAssetDetail($event)"></app-group-asset-detail>
+    (closeAssetDetailEvent)="closeAssetDetail($event)" (refreshSecurityGroupGrid)="refreshSecurityGroupGrid($event)">
+  </app-group-asset-detail>
 
   <app-function-security [selectedGroup]="selectedGroup" [functionSecurityWindow]="functionSecurityWindow"
     *ngIf="functionSecurityWindow" (closeWindow)="closeFuncitonSecWin($event)"
@@ -268,12 +384,14 @@
     <form id="groupSearch">
       <div class="form-group">
         <label class="form-label form-label-sm">Group</label>
-        <input (input)="onFilter($event.target.value, 'group')" type="text" class="form-control form-control-sm" placeholder="Search By Group">
+        <input (input)="onFilter($event.target.value, 'group')" type="text" class="form-control form-control-sm"
+          placeholder="Search By Group">
       </div>
 
       <div class="form-group">
         <label class="form-label form-label-sm">Description</label>
-        <input (input)="onFilter($event.target.value, 'description')" type="text" class="form-control form-control-sm" placeholder="Search By Description">
+        <input (input)="onFilter($event.target.value, 'description')" type="text" class="form-control form-control-sm"
+          placeholder="Search By Description">
       </div>
 
       <div class="form-group">

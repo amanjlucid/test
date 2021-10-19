@@ -43,6 +43,8 @@ export class AssignGroupComponent implements OnInit {
   textSearch$ = new Subject<string>();
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
   initialSavedData = [];
+  @Output() refreshUserSecurityGrid = new EventEmitter<boolean>();
+
 
   constructor(
     private userService: UserService,
@@ -193,7 +195,7 @@ export class AssignGroupComponent implements OnInit {
 
 
   save() {
-   
+
     const dataToadd = this.mySelection.map(x => {
       const temp = JSON.parse(x);
       return {
@@ -227,8 +229,11 @@ export class AssignGroupComponent implements OnInit {
       this.userService.assigneGroup(params).subscribe(
         data => {
           // console.log(data)
-          if (data.isSuccess) this.alertService.success("Data saved successfully");
-          else this.alertService.error(data.message);
+          if (data.isSuccess) {
+            this.alertService.success("User Updated Successfully.");
+            this.refreshUserSecurityGrid.emit(true);
+            this.close();
+          } else this.alertService.error(data.message);
         }, error => this.alertService.error(error)
       )
     )

@@ -80,7 +80,7 @@
 *ngIf="userFormWindow" (closeUserFormWin)="closeUserFormWin($event)">
 </app-user-form>
 
-<app-assign-group *ngIf="openUserAssignGroup" [openUserAssignGroup]="openUserAssignGroup" [selectedUser]="selectedUser" (closeAssignGroupEvent)="closeAssignGroupEvent($event)"></app-assign-group>
+<app-assign-group *ngIf="openUserAssignGroup" [openUserAssignGroup]="openUserAssignGroup" [selectedUser]="selectedUser" (closeAssignGroupEvent)="closeAssignGroupEvent($event)" (refreshUserSecurityGrid)="refreshUserSecurityGrid($event)"></app-assign-group>
 
 
 

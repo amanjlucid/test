@@ -283,11 +283,15 @@
             <th class="bigCol" style="cursor: pointer;" *ngIf="epcView">Survey Batch
             </th>
 
-          
-              <th class="bigCol" style="cursor: pointer;" *ngFor="let col of userCharColumnName">{{col.chaalias}}
-              </th>
 
-              <th class="hiddenCol"></th>
+            <ng-container *ngFor="let col of userCharColumnName">
+              <th *ngIf="col.chadisp == 1" class="bigCol" style="cursor: pointer;">{{col.chaalias}}
+              </th>
+            </ng-container>
+
+
+
+            <th class="hiddenCol"></th>
             <!-- <th>Assign Group</th> -->
           </tr>
         </thead>
@@ -486,10 +490,17 @@
 
 
 
+            <ng-container *ngFor="let col of userCharColumnName">
+              <td *ngIf="col.chadisp == 1" class="bigCol">
+                <span *ngIf="col.chaid == 1"> {{attributeList?.assetChar1}}</span>
+                <span *ngIf="col.chaid == 2"> {{attributeList?.assetChar2}}</span>
+                <span *ngIf="col.chaid == 3">{{attributeList?.assetChar3}} </span>
 
-            <td class="bigCol" *ngFor="let col of userCharColumnName">
-              {{attributeList?.chaId == col.chaid ? attributeList?.assetChar1 : '' }}
-            </td>
+              </td>
+
+            </ng-container>
+
+
 
             <td class="hiddenCol"></td>
           </tr>
@@ -584,9 +595,13 @@
               </th>
               <th class="bigCol" style="cursor: pointer;" *ngIf="epcView">Survey Batch
               </th>
+             
 
-              <th class="bigCol" style="cursor: pointer;" *ngFor="let col of userCharColumnName">{{col.chaalias}}
-              </th>
+              <ng-container *ngFor="let col of userCharColumnName">
+                <th *ngIf="col.chadisp == 1" class="bigCol" style="cursor: pointer;">{{col.chaalias}}
+                </th>
+              </ng-container>
+              
 
               <th class="hiddenCol"></th>
             </tr>

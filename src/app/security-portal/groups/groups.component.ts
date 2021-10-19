@@ -38,6 +38,7 @@ export class GroupsComponent implements OnInit {
     return context.dataItem.groupID
   }
   booleanFilterDropDown = [{ valid: "A", val: "Active" }, { valid: "I", val: "Inactive" }];
+  yesNoFilterDropDown = [{ valid: true, val: "Yes" }, { valid: false, val: "No" }];
   gridHeight = 750;
   @HostListener('window:resize', ['$event'])
   onResize(event) {
@@ -330,6 +331,9 @@ export class GroupsComponent implements OnInit {
   }
 
 
+  refreshSecurityGroupGrid(event) {
+    if (event) this.getAllGroups();
+  }
 
 
 

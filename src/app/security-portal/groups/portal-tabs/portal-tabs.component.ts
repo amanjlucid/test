@@ -40,6 +40,7 @@ export class PortalTabsComponent implements OnInit {
   booleanFilterDropDown = [{ valid: "A", val: "Active" }, { valid: "I", val: "Inactive" }];
   gridHeight = 550;
   textSearch$ = new Subject<string>();
+  @Output() refreshSecurityGroup = new EventEmitter<boolean>();
 
   constructor(
     private portalGrpService: PortalGroupService,
@@ -142,7 +143,7 @@ export class PortalTabsComponent implements OnInit {
     this.textSearch$.next(inputValue);
   }
 
-  
+
   searchInAllFields(inputValue: any) {
     this.resetGrid()
     this.gridView = process(this.assetTabs, {
@@ -179,15 +180,17 @@ export class PortalTabsComponent implements OnInit {
     this.subs.add(
       this.portalGrpService.assignePortalTabGroups(this.mySelection, this.selectedGroup.groupID).subscribe(
         data => {
-          if (data.isSuccess) this.alertService.success("Data saved successfully");
-          else this.alertService.error(data.message);
+          if (data.isSuccess) {
+            this.alertService.success("Data saved successfully");
+            this.refreshSecurityGroup.emit(true)
+          } else this.alertService.error(data.message);
         }, error => this.alertService.error(error)
       )
     )
 
   }
 
-  
+
   close() {
     this.closeGroupAssetDetailEvent.emit(true)
   }

@@ -32,4 +32,11 @@ export class AssetListModel {
     TaskAsset:boolean;
     TaskAssets:any;
     ShowCharacteristics:boolean;
+
+    AssetChar1:string;
+    AssetChar2:string;
+    AssetChar3:string;
+    ChaCode1:string;
+    ChaCode2:string;
+    ChaCode3:string;
 }
