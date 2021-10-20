@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectorRef, ChangeDetectionStrategy, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef, ChangeDetectionStrategy, Output, EventEmitter, HostListener } from '@angular/core';
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { SelectableSettings, RowArgs, PageChangeEvent } from '@progress/kendo-angular-grid';
@@ -38,7 +38,7 @@ export class CharacteristicGroupComponent implements OnInit {
   mySelectionKey(context: RowArgs): string {
     return context.dataItem.characteristic_Group
   }
-  gridHeight = 550;
+  @Input() gridHeight = 550;
   textSearch$ = new Subject<string>();
   @Output() refreshSecurityGroup = new EventEmitter<boolean>();
 
@@ -50,6 +50,7 @@ export class CharacteristicGroupComponent implements OnInit {
   ) {
     this.setSelectableSettings();
   }
+
 
   ngOnDestroy() {
     this.subs.unsubscribe();

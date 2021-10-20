@@ -255,9 +255,13 @@ label.tree_label:after {
 
 /** scroll till window start  **/
 
+
+
 .assetGrid {
   display: block;
+  width: 100%!important;
   max-width: 100%;
+  
 }
 
 table {
@@ -274,7 +278,6 @@ thead, tbody {
 .fixTbody {
   overflow-y: scroll;
   overflow-x: hidden;
-  /* height: 580px; */
 }
 
 .smallCol {
@@ -309,58 +312,12 @@ thead, tbody {
 }
 
 td, th {
-  /* min-width: 100px; */
-  /* height: 25px; */
-  /* overflow: hidden; */
   text-overflow: ellipsis;
-  /* max-width: 100px; */
 }
-
-/** scroll till window end ***/
-
-/* .assetGrid{
-    height:580px;
-    overflow-y:scroll;
-  } */
-
-/** ############ old css 18-2-20 #############**/
-
-/* .fixTbody {
-  height: 580px;
-  display: block;
-  overflow-y: scroll;
-}
-
-.assetTbl tbody tr, thead {
-  display: table;
-  width: 100%;
-  table-layout: fixed;
-}
-
-.fixedHeader {
-  width: calc(100% - 20px);
-} */
-
-/** ############ old css 18-2-20 #############**/
-
-/* .assetTbl th {
-  position: sticky;
-  top: -1px;
-  background: #fafafa;
-  z-index: 1;
-} */
 
 .sortIcon {
   font-size: 11px;
 }
-
-/* #showFilePanel{
-  margin-right: 48px;
-    margin-top: 18px;
-    float: right;
-} */
-
-/* sidebar search css */
 
 .search-container {
   position: fixed;
@@ -372,7 +329,6 @@ td, th {
   overflow: hidden;
   background: #070627;
   z-index: 999;
-  /* transform: translateX(100%); */
   -webkit-transform: translateX(100%);
 }
 
@@ -453,16 +409,15 @@ td, th {
   background: #eee2e2;
 }
 
-
-.userChar{
+.userChar {
   display: block;
 }
 
-.userChar label, .userChar button{
+.userChar label, .userChar button {
   display: inline-block;
 }
 
-.userChar button{
+.userChar button {
   float: right;
 }
 

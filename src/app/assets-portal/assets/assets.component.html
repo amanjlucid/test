@@ -2,7 +2,6 @@
   <div class="row">
     <div class="col-md-2 col-sm-3">
       <h4 class="font-weight-bold py-3 mb-1">
-        <!-- <span class="text-muted font-weight-light">Assets/</span> Assets -->
         Assets
       </h4>
     </div>
@@ -66,19 +65,6 @@
       </select>
     </div>
 
-    <!-- <div class="col-md-1 col-sm-6 exportDiv">
-      <div class="dropdown" id="nesting-dropdown-demo">
-        <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown"
-          aria-expanded="false">Export</button>
-        <div class="dropdown-menu" x-placement="bottom-start"
-          style="position: absolute; will-change: top, left; top: 38px; left: 0px;">
-          <a class="dropdown-item" (click)="exportToExcel('xlsx')" href="javascript:void(0)">Export Excel</a>
-          <a class="dropdown-item" (click)="exportToExcel('csv')" href="javascript:void(0)">Export Csv</a>
-          <a class="dropdown-item" (click)="exportToExcel('txt')" href="javascript:void(0)">Export Text</a>
-          <a class="dropdown-item" (click)="exportToExcel('html')" href="javascript:void(0)">Export Html</a>
-        </div>
-      </div>
-    </div> -->
   </div>
 
   <div class="row">
@@ -103,14 +89,9 @@
         *ngIf="attributeLists.length > 0; else no_record">
         <thead class="fixedHeader">
           <tr>
-            <!-- [ngStyle]="{'width': asbestosColumn ? '3%' : '2%' }" -->
+           
             <th class="smallCol"></th>
-            <!-- <th><i class="fab fa-adversal d-block"></i></th>
-            <th><i class="fas fa-book d-block"></i></th>
-            <th><i class="fas fa-h-square d-block"></i></th>
-            <th><i class="fas fa-heartbeat d-block"></i></th>
-            <th><i class="ion ion-md-hammer d-block"></i></th>
-            <th><i class="fas fa-sticky-note d-block"></i></th> -->
+          
             <th [ngClass]="{
               'midCol': asbestosColumn || serviceColumn || epcView,
               'midBigCol': !asbestosColumn && !serviceColumn && !epcView
@@ -703,7 +684,7 @@
 
 
 <app-user-characteristics *ngIf="openUserChar" [openUserChar]="openUserChar"
-  (closeUserCharEvent)="closeUserCharEvent($event)"></app-user-characteristics>
+  (closeUserCharEvent)="closeUserCharEvent($event)" (refreshAssetGrid)="refreshAssetGrid($event)"></app-user-characteristics>
 
 
 <!-- Search bar -->

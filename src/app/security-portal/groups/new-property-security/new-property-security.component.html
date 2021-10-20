@@ -33,7 +33,7 @@
 
         
         <div class="form-group row">
-            <label class="col-form-label col-form-label-sm col-md-2 text-sm-left">Hiearchy Type:</label>
+            <label class="col-form-label col-form-label-sm col-md-2 text-sm-left">Hierarchy Name:</label>
             <div class="col-md-10">
                 <input type="text" formControlName="hiearchyType" readonly class="form-control form-control-sm"
                     placeholder="">
@@ -79,7 +79,7 @@
         </div>
 
         <div class="pull-right buttonDiv">
-            <button type="button" (click)="closeNewPropertysecurity()" class="btn btn-sm">Cancel</button>
+            <button type="button" (click)="closeNewPropertysecurity()" class="btn btn-sm themeButton">Cancel</button>
             <button type="submit" [disabled]="!newPropForm.valid" class="btn btn-sm themeButton">Ok</button>
 
         </div>
@@ -140,7 +140,7 @@
                 </ul>
 
                 <div class="pull-right footerButton footerSec">
-                    <button (click)="closeHiearchyWindow()" class="btn btn-sm">Cancel</button>
+                    <button (click)="closeHiearchyWindow()" class="btn btn-sm themeButton">Cancel</button>
                     <button class="btn btn-sm btn-default themeButton" (click)="setHiearchyValues()">Ok</button>
                 </div>
 

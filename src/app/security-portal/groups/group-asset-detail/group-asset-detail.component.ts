@@ -15,7 +15,7 @@ export class GroupAssetDetailComponent implements OnInit {
   @Input() selectedGroup;
   @Output() closeAssetDetailEvent = new EventEmitter<boolean>();
   @Output() refreshSecurityGroupGrid = new EventEmitter<boolean>();
-
+  gridHeight = 550;
   title = `Asset Details`;
   tabName = 'settings';
 
@@ -43,6 +43,16 @@ export class GroupAssetDetailComponent implements OnInit {
 
   refreshSecurityGroup(event) {
     if (event) this.refreshSecurityGroupGrid.emit(true)
+  }
+
+  getWindowHeight(height) {
+    const roudedHeight = Math.round(height);
+    this.gridHeight = roudedHeight - 240;
+  }
+
+  getWindowState(state) {
+    if (state == 'default') this.gridHeight = window.innerHeight - 400
+    if (state == 'maximized') this.gridHeight = window.innerHeight - 240
   }
 
 

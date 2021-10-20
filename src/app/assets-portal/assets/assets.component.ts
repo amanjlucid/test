@@ -204,6 +204,11 @@ export class AssetsComponent implements OnInit, OnDestroy, AfterViewInit {
   updateGridHeight() {
     const innerHeight = window.innerHeight;
     this.tbodyHeight = `${innerHeight - 350}px`;
+
+    $("#assetTbl > *").width('100%');
+    $(".fixedHeader").width('100%');
+    $(".fixTbody").width('100%');
+
   }
 
   ngAfterViewInit() {
@@ -1344,8 +1349,7 @@ export class AssetsComponent implements OnInit, OnDestroy, AfterViewInit {
   checkRendartable() {
     let ua = window.navigator.userAgent;
     let IExplorerAgent = ua.indexOf("MSIE") > -1 || ua.indexOf("rv:") > -1;
-    //console.log(IExplorerAgent);
-    // console.log(ua);
+
     if (!IExplorerAgent) {
       setTimeout(() => {
         $('#assetTbl').on('scroll', () => {
@@ -1371,7 +1375,6 @@ export class AssetsComponent implements OnInit, OnDestroy, AfterViewInit {
             $("#assetTbl tbody").css({ 'overflow-y': 'scroll' });
             this.chRef.markForCheck();
           }, 1000);
-
 
           $("#assetTbl > *").width($("#assetTbl").width() + $("#assetTbl").scrollLeft());
           this.chRef.markForCheck();
@@ -1447,7 +1450,6 @@ export class AssetsComponent implements OnInit, OnDestroy, AfterViewInit {
       this.servicePortalService.getUserAssetCharacteristics(this.currentUser.userId).subscribe(
         data => {
           if (data.isSuccess) {
-            console.log(data);
             if (data.data.length) {
               this.userCharColumnName = data.data.filter(x => x.chadisp == 1);
             }
@@ -1455,6 +1457,14 @@ export class AssetsComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       )
     )
+  }
+
+
+  refreshAssetGrid(event) {
+    if (event) {
+      this.getUserCharColumns();
+      this.getAllAssets(this.assetList);
+    }
   }
 
 }

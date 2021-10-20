@@ -357,7 +357,8 @@
 
   <app-function-security [selectedGroup]="selectedGroup" [functionSecurityWindow]="functionSecurityWindow"
     *ngIf="functionSecurityWindow" (closeWindow)="closeFuncitonSecWin($event)"
-    (cancelGroupFunctionEvents)="cancelGroupFunctionEvents($event)"></app-function-security>
+    (cancelGroupFunctionEvents)="cancelGroupFunctionEvents($event)"
+    (refreshSecurityGroupGrid)="refreshSecurityGroupGrid($event)"></app-function-security>
 
   <app-property-security [selectedGroup]="selectedGroup" [propertySecurityWindow]="propertySecurityWindow"
     *ngIf="propertySecurityWindow" (closePropSecWin)="closePropSecWin($event)"></app-property-security>

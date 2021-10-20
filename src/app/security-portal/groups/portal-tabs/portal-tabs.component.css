@@ -26,3 +26,7 @@
 #selectAllCheckboxId {
     display: none;
 }
+
+.form-check {
+    padding-top: 7px;
+}

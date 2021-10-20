@@ -1,3 +1,20 @@
 .k-window {
     position: fixed !important;
 }
+
+.tab-content {
+    border: none;
+}
+
+.nav-tabs {
+    border-bottom: 1px solid rgba(24, 28, 33, 0.06);
+}
+
+.nav-tabs .nav-link {
+    border: none;
+}
+
+.nav-tabs .nav-link.active {
+    border-bottom: 2px solid;
+    border-color: #e4287e;
+}

@@ -20,6 +20,7 @@ export class FunctionSecurityComponent implements OnInit {
   @Input() selectedGroup;
   @Output() closeWindow = new EventEmitter<boolean>();
   @Output() cancelGroupFunctionEvents = new EventEmitter<boolean>();
+  @Output() refreshSecurityGroupGrid = new EventEmitter<boolean>();
   group: any;
   windowState = 'maximized';
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
@@ -355,6 +356,7 @@ export class FunctionSecurityComponent implements OnInit {
         this.functionSecService.saveGroupFunctions(this.selectedGroup.groupID, this.currentUser.userId).subscribe(
           data => {
             this.closeFunctionSecWindow();
+            this.refreshSecurityGroupGrid.emit(true)
           }
         )
       )

@@ -38,7 +38,7 @@ export class ElementsGroupComponent implements OnInit {
   mySelectionKey(context: RowArgs): string {
     return context.dataItem.element_Code
   }
-  gridHeight = 550;
+  @Input() gridHeight = 550;
   textSearch$ = new Subject<string>();
   @Output() refreshSecurityGroup = new EventEmitter<boolean>();
 

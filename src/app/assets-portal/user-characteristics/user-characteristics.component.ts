@@ -16,6 +16,7 @@ export class UserCharacteristicsComponent implements OnInit {
   subs = new SubSink();
   @Input() openUserChar: boolean = false;
   @Output() closeUserCharEvent = new EventEmitter<boolean>();
+  @Output() refreshAssetGrid = new EventEmitter<boolean>();
   userCharForm: FormGroup;
   windowTitle = 'Edit User Characteristics'
   chacodeListData1 = []
@@ -233,7 +234,9 @@ export class UserCharacteristicsComponent implements OnInit {
       this.servicePortalService.addUserAssetCharacteristics(params).subscribe(
         data => {
           if (data.isSuccess) {
-            this.alertService.success("User Characteristics update successfully.")
+            this.alertService.success("User Characteristics update successfully.");
+            this.refreshAssetGrid.emit(true);
+            this.closeUserCharacteristics();
           } else this.alertService.error(data.message)
         }, err => this.alertService.error(err)
       )

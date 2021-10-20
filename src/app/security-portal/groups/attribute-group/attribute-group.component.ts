@@ -36,7 +36,7 @@ export class AttributeGroupComponent implements OnInit {
   mySelectionKey(context: RowArgs): string {
     return context.dataItem.aaG_Code
   }
-  gridHeight = 550;
+  @Input() gridHeight = 550;
   textSearch$ = new Subject<string>();
   @Output() refreshSecurityGroup = new EventEmitter<boolean>();
 

@@ -1,9 +1,74 @@
 <kendo-window title="{{title}}" *ngIf="showAssetDetail" (close)="closeAssetDetail()" [top]="20" [height]="auto"
-    [minHeight]="270" [minWidth]="600" [width]="1000">
+    [minHeight]="270" [minWidth]="600" [width]="1000" (heightChange)="getWindowHeight($event)"
+    (stateChange)="getWindowState($event)">
 
     <div class="row">
         <div class="col-md-12 col-sm-12">
-            <div class="nav-responsive-lg">
+
+            <div class="cui-example">
+                <div class="nav-tabs-top">
+                    <ul class="nav nav-tabs">
+                        <li class="nav-item">
+                            <a class="nav-link active show" data-toggle="tab" href="#navs-top-settings">Settings</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" href="#navs-top-characteristicsGroup">Characteristics
+                                Group</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" href="#navs-top-elements">Elements</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" href="#navs-top-attributeGroups">Attribute Groups</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" href="#navs-top-assetPanels">Asset Panels</a>
+                        </li>
+                    </ul>
+
+
+                    <div class="tab-content mt-1">
+                        <div class="tab-pane fade active show" id="navs-top-settings">
+                            <app-group-settings [selectedGroup]="selectedGroup"
+                                (closeGroupAssetDetailEvent)="closeGroupAssetDetail($event)"></app-group-settings>
+
+                        </div>
+                        <div class="tab-pane fade" id="navs-top-characteristicsGroup">
+                            <app-characteristic-group [selectedGroup]="selectedGroup"
+                                (closeGroupAssetDetailEvent)="closeGroupAssetDetail($event)"
+                                (refreshSecurityGroup)="refreshSecurityGroup($event)" [gridHeight]="gridHeight">
+                            </app-characteristic-group>
+
+                        </div>
+                        <div class="tab-pane fade" id="navs-top-elements">
+                            <app-elements-group [selectedGroup]="selectedGroup"
+                                (closeGroupAssetDetailEvent)="closeGroupAssetDetail($event)"
+                                (refreshSecurityGroup)="refreshSecurityGroup($event)" [gridHeight]="gridHeight">
+                            </app-elements-group>
+
+                        </div>
+                        <div class="tab-pane fade" id="navs-top-attributeGroups">
+                            <app-attribute-group [selectedGroup]="selectedGroup"
+                                (closeGroupAssetDetailEvent)="closeGroupAssetDetail($event)"
+                                (refreshSecurityGroup)="refreshSecurityGroup($event)" [gridHeight]="gridHeight">
+                            </app-attribute-group>
+
+                        </div>
+
+                        <div class="tab-pane fade" id="navs-top-assetPanels">
+                            <app-portal-tabs [selectedGroup]="selectedGroup"
+                                (closeGroupAssetDetailEvent)="closeGroupAssetDetail($event)"
+                                (refreshSecurityGroup)="refreshSecurityGroup($event)" [gridHeight]="gridHeight">
+                            </app-portal-tabs>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <!-- <div class="nav-responsive-lg">
                 <ul class="nav nav-tabs tabs-alt">
                     <li class="nav-item">
                         <a class="nav-link" [ngClass]="{'active': tabName=='settings'}" (click)="showTab('settings')"
@@ -31,30 +96,40 @@
                             (click)="showTab('assetPanels')" href="javascript:void(0)">Asset Panels</a>
                     </li>
                 </ul>
-            </div>
+            </div> -->
+
+
         </div>
     </div>
 
-    <div class="row mt-2">
+    <!-- <div class="row mt-2">
         <div class="col-md-12">
             <app-group-settings *ngIf="tabName == 'settings'" [selectedGroup]="selectedGroup"
                 (closeGroupAssetDetailEvent)="closeGroupAssetDetail($event)"></app-group-settings>
 
             <app-characteristic-group *ngIf="tabName == 'characteristicsGroup'" [selectedGroup]="selectedGroup"
-                (closeGroupAssetDetailEvent)="closeGroupAssetDetail($event)" (refreshSecurityGroup)="refreshSecurityGroup($event)">
+                (closeGroupAssetDetailEvent)="closeGroupAssetDetail($event)"
+                (refreshSecurityGroup)="refreshSecurityGroup($event)" [gridHeight]="gridHeight">
             </app-characteristic-group>
 
             <app-elements-group *ngIf="tabName == 'elements'" [selectedGroup]="selectedGroup"
-                (closeGroupAssetDetailEvent)="closeGroupAssetDetail($event)" (refreshSecurityGroup)="refreshSecurityGroup($event)">
+                (closeGroupAssetDetailEvent)="closeGroupAssetDetail($event)"
+                (refreshSecurityGroup)="refreshSecurityGroup($event)" [gridHeight]="gridHeight">
             </app-elements-group>
 
             <app-attribute-group *ngIf="tabName == 'attributeGroups'" [selectedGroup]="selectedGroup"
-                (closeGroupAssetDetailEvent)="closeGroupAssetDetail($event)" (refreshSecurityGroup)="refreshSecurityGroup($event)">
+                (closeGroupAssetDetailEvent)="closeGroupAssetDetail($event)"
+                (refreshSecurityGroup)="refreshSecurityGroup($event)" [gridHeight]="gridHeight">
             </app-attribute-group>
 
             <app-portal-tabs *ngIf="tabName == 'assetPanels'" [selectedGroup]="selectedGroup"
-                (closeGroupAssetDetailEvent)="closeGroupAssetDetail($event)" (refreshSecurityGroup)="refreshSecurityGroup($event)"></app-portal-tabs>
+                (closeGroupAssetDetailEvent)="closeGroupAssetDetail($event)"
+                (refreshSecurityGroup)="refreshSecurityGroup($event)" [gridHeight]="gridHeight"></app-portal-tabs>
 
         </div>
-    </div>
+    </div> -->
+
+
+
+
 </kendo-window>

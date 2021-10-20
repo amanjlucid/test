@@ -38,7 +38,7 @@ export class PortalTabsComponent implements OnInit {
     return context.dataItem.portalTabId
   }
   booleanFilterDropDown = [{ valid: "A", val: "Active" }, { valid: "I", val: "Inactive" }];
-  gridHeight = 550;
+  @Input() gridHeight = 550;
   textSearch$ = new Subject<string>();
   @Output() refreshSecurityGroup = new EventEmitter<boolean>();
 
