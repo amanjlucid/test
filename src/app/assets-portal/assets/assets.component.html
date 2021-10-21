@@ -266,7 +266,7 @@
 
 
             <ng-container *ngFor="let col of userCharColumnName">
-              <th *ngIf="col.chadisp == 1" class="bigCol" style="cursor: pointer;">{{col.chaalias}}
+              <th *ngIf="col.chadisp == 1 && userCharacteristicsColumn" class="bigCol" style="cursor: pointer;">{{col.chaalias}}
               </th>
             </ng-container>
 
@@ -472,7 +472,7 @@
 
 
             <ng-container *ngFor="let col of userCharColumnName">
-              <td *ngIf="col.chadisp == 1" class="bigCol">
+              <td *ngIf="col.chadisp == 1 && userCharacteristicsColumn" class="bigCol">
                 <span *ngIf="col.chaid == 1"> {{attributeList?.assetChar1}}</span>
                 <span *ngIf="col.chaid == 2"> {{attributeList?.assetChar2}}</span>
                 <span *ngIf="col.chaid == 3">{{attributeList?.assetChar3}} </span>
@@ -579,7 +579,7 @@
              
 
               <ng-container *ngFor="let col of userCharColumnName">
-                <th *ngIf="col.chadisp == 1" class="bigCol" style="cursor: pointer;">{{col.chaalias}}
+                <th *ngIf="col.chadisp == 1 && userCharacteristicsColumn" class="bigCol" style="cursor: pointer;">{{col.chaalias}}
                 </th>
               </ng-container>
               

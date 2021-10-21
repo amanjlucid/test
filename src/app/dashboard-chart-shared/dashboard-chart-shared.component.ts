@@ -186,7 +186,6 @@ export class DashboardChartSharedComponent implements OnInit {
               this.afterMyLayoutInit();
             }
 
-
             this.pageload = false;
 
           }
@@ -248,12 +247,10 @@ export class DashboardChartSharedComponent implements OnInit {
         $('#layoutContainer').css({ 'height': `${layoutHeight}px` });
 
         if (this.savedState != null) {
-          console.log('first')
           setTimeout(() => {
             origin.layoutManager.updateSize(layoutWidth, layoutHeight);
           }, 1000);
         } else {
-          console.log('second')
           origin.layoutManager.updateSize(layoutWidth, layoutHeight);
         }
       }
@@ -284,24 +281,24 @@ export class DashboardChartSharedComponent implements OnInit {
 
             splitters[i]._dragListener.on('dragStop', function (item) {
               const nextRow = splitters[i].element.next();
-           
+
               // console.log(top)
               // console.log(height)
               // console.log(layoutManager._findAllStackContainers())
               // console.log(layoutManager)
               // console.log(layoutManager.root.config.content[0])
-           
+
               let currentHeight;
               if (top >= 0) {
                 if (top > height) height = top;
                 if (top == 0) height + 170;
                 currentHeight = layoutHeight + height;
-                
+
                 // console.log(nextRow.is(":visible"))
 
                 if (!nextRow.is(":visible")) {
                   const allContainers = layoutManager._findAllStackContainers();
-                 
+
                   const lastContainer = allContainers[allContainers.length - 2];//-2 is for skip last hidden container
                   const lastContainerHeightPer = (height * 100) / currentHeight;
                   const lastContainerPrevHeight = lastContainer.config.height;

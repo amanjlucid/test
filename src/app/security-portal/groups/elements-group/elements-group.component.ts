@@ -6,6 +6,7 @@ import { ElementGroupModel } from '../../../_models'
 import { AlertService, ElementGroupService } from '../../../_services'
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+const cloneData = (data: any) => JSON.parse(JSON.stringify(data));
 
 @Component({
   selector: 'app-elements-group',
@@ -35,6 +36,7 @@ export class ElementsGroupComponent implements OnInit {
   loading = true;
   selectableSettings: SelectableSettings;
   mySelection: any = [];
+  initialSelection: any = [];
   mySelectionKey(context: RowArgs): string {
     return context.dataItem.element_Code
   }
@@ -82,6 +84,8 @@ export class ElementsGroupComponent implements OnInit {
         if (data && data.isSuccess) {
           this.elmGroups = data.data;
           this.mySelection = data.data.filter(x => x.isSelected == true).map(x => x.element_Code)
+          this.initialSelection = cloneData(this.mySelection);
+
           this.gridView = process(this.elmGroups, this.state);
           this.loading = false;
           this.chRef.detectChanges()
@@ -127,6 +131,7 @@ export class ElementsGroupComponent implements OnInit {
         if (data && data.isSuccess) {
           const tempIsSelectedData = data.data.filter(x => x.isSelected == true);
           this.mySelection = tempIsSelectedData.map(x => x.element_Code)
+          this.initialSelection = cloneData(this.mySelection);
 
           if (event.target.checked) this.elmGroups = tempIsSelectedData;
           else this.elmGroups = data.data;
@@ -182,8 +187,8 @@ export class ElementsGroupComponent implements OnInit {
 
 
   save() {
-    if (this.mySelection.length == 0) {
-      this.alertService.error("There is no change");
+    if (JSON.stringify(this.initialSelection) == JSON.stringify(this.mySelection)) {
+      this.close()
       return
     }
 

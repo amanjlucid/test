@@ -5,6 +5,7 @@ import { SelectableSettings, RowArgs, PageChangeEvent } from '@progress/kendo-an
 import { AlertService, AttributeGroupService } from '../../../_services'
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+const cloneData = (data: any) => JSON.parse(JSON.stringify(data));
 
 @Component({
   selector: 'app-attribute-group',
@@ -33,6 +34,7 @@ export class AttributeGroupComponent implements OnInit {
   loading = true;
   selectableSettings: SelectableSettings;
   mySelection: any = [];
+  initialSelection: any = [];
   mySelectionKey(context: RowArgs): string {
     return context.dataItem.aaG_Code
   }
@@ -80,6 +82,7 @@ export class AttributeGroupComponent implements OnInit {
         if (data && data.isSuccess) {
           this.attrGroups = data.data;
           this.mySelection = data.data.filter(x => x.isSelected == true).map(x => x.aaG_Code);
+          this.initialSelection = cloneData(this.mySelection);
 
           this.gridView = process(this.attrGroups, this.state);
           this.loading = false;
@@ -126,6 +129,7 @@ export class AttributeGroupComponent implements OnInit {
         if (data && data.isSuccess) {
           const tempIsSelectedData = data.data.filter(x => x.isSelected == true)
           this.mySelection = tempIsSelectedData.map(x => x.aaG_Code);
+          this.initialSelection = cloneData(this.mySelection);
 
           if (event.target.checked) this.attrGroups = tempIsSelectedData
           else this.attrGroups = data.data;
@@ -178,8 +182,8 @@ export class AttributeGroupComponent implements OnInit {
 
 
   save() {
-    if (this.mySelection.length == 0) {
-      this.alertService.error("There is no change");
+    if (JSON.stringify(this.initialSelection) == JSON.stringify(this.mySelection)) {
+      this.close()
       return
     }
 

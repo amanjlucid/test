@@ -6,6 +6,7 @@ import { AlertService, CharacteristicGroupService } from '../../../_services'
 import { CharateristicGroupModel } from '../../../_models'
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+const cloneData = (data: any) => JSON.parse(JSON.stringify(data));
 
 @Component({
   selector: 'app-characteristic-group',
@@ -35,6 +36,7 @@ export class CharacteristicGroupComponent implements OnInit {
   loading = true;
   selectableSettings: SelectableSettings;
   mySelection: any = [];
+  initialSelection: any = [];
   mySelectionKey(context: RowArgs): string {
     return context.dataItem.characteristic_Group
   }
@@ -88,6 +90,7 @@ export class CharacteristicGroupComponent implements OnInit {
           if (data && data.isSuccess) {
             this.charGroups = data.data;
             this.mySelection = data.data.filter(x => x.isSelected == true).map(x => x.characteristic_Group);
+            this.initialSelection = cloneData(this.mySelection);
             this.gridView = process(this.charGroups, this.state);
             this.loading = false;
             this.chRef.detectChanges()
@@ -105,6 +108,7 @@ export class CharacteristicGroupComponent implements OnInit {
         if (data && data.isSuccess) {
           const tempIsSelectedData = data.data.filter(x => x.isSelected == true);
           this.mySelection = tempIsSelectedData.map(x => x.characteristic_Group);
+          this.initialSelection = cloneData(this.mySelection);
 
           if (event.target.checked) this.charGroups = tempIsSelectedData
           else this.charGroups = data.data;
@@ -187,10 +191,11 @@ export class CharacteristicGroupComponent implements OnInit {
 
 
   save() {
-    if (this.mySelection.length == 0) {
-      this.alertService.error("There is no change");
+    if (JSON.stringify(this.initialSelection) == JSON.stringify(this.mySelection)) {
+      this.close()
       return
     }
+
 
     this.subs.add(
       this.charGrpService.assigneCharacteristicGroups(this.mySelection, this.selectedGroup.groupID).subscribe(

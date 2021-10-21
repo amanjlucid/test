@@ -2086,17 +2086,24 @@
         this.childElementContainer.append(contentItem.element);
 
         this._updateTree();
+        // console.log('dsd');
         this._layoutManager._$calculateItemAreas();
         this._setDimensions();
 
         $(document.body).append(this.element);
 
         var offset = this._layoutManager.container.offset();
+        // console.log(offset);
+        // console.log(this._layoutManager.container.height());
+        // console.log(this.element.height());
+        // console.log(this._minY);
 
         this._minX = offset.left;
         this._minY = offset.top;
         this._maxX = this._layoutManager.container.width() + this._minX;
         this._maxY = this._layoutManager.container.height() + this._minY;
+
+
         this._width = this.element.width();
         this._height = this.element.height();
 
@@ -2174,7 +2181,9 @@
          */
         _onDrop: function () {
             this._layoutManager.dropTargetIndicator.hide();
-
+            console.log(this._contentItem)
+            console.log(this._originalParent)
+            console.log(this._lastValidArea)
             /*
              * Valid drop area found
              */

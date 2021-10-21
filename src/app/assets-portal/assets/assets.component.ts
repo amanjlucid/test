@@ -1461,7 +1461,7 @@ export class AssetsComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
   refreshAssetGrid(event) {
-    if (event) {
+    if (event && this.userCharacteristicsColumn) {
       this.getUserCharColumns();
       this.getAllAssets(this.assetList);
     }

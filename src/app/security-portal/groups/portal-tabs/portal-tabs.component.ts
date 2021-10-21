@@ -6,6 +6,7 @@ import { AlertService, PortalGroupService } from '../../../_services'
 import { PortalTabsModel } from '../../../_models'
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+const cloneData = (data: any) => JSON.parse(JSON.stringify(data));
 
 @Component({
   selector: 'app-portal-tabs',
@@ -34,6 +35,7 @@ export class PortalTabsComponent implements OnInit {
   loading = true;
   selectableSettings: SelectableSettings;
   mySelection: any = [];
+  initialSelection: any = [];
   mySelectionKey(context: RowArgs): string {
     return context.dataItem.portalTabId
   }
@@ -110,6 +112,7 @@ export class PortalTabsComponent implements OnInit {
         if (data && data.isSuccess) {
           this.assetTabs = data.data;
           this.mySelection = data.data.filter(x => x.isSelected == true).map(x => x.portalTabId)
+          this.initialSelection = cloneData(this.mySelection);
 
           this.gridView = process(this.assetTabs, this.state);
           this.loading = false;
@@ -126,6 +129,7 @@ export class PortalTabsComponent implements OnInit {
         if (data && data.isSuccess) {
           const tempIsSelectedData = data.data.filter(x => x.isSelected == true);
           this.mySelection = tempIsSelectedData.map(x => x.portalTabId);
+          this.initialSelection = cloneData(this.mySelection);
 
           if (event.target.checked) this.assetTabs = tempIsSelectedData;
           else this.assetTabs = data.data;
@@ -172,8 +176,8 @@ export class PortalTabsComponent implements OnInit {
 
 
   save() {
-    if (this.mySelection.length == 0) {
-      this.alertService.error("There is no change");
+    if (JSON.stringify(this.initialSelection) == JSON.stringify(this.mySelection)) {
+      this.close()
       return
     }
 
