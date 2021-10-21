@@ -2,7 +2,7 @@ import { Component, OnInit, Input, ChangeDetectorRef, ChangeDetectionStrategy, O
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { SelectableSettings, RowArgs, PageChangeEvent } from '@progress/kendo-angular-grid';
-import { AlertService, AttributeGroupService } from '../../../_services'
+import { AlertService, AttributeGroupService, SharedService } from '../../../_services'
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 const cloneData = (data: any) => JSON.parse(JSON.stringify(data));
@@ -46,6 +46,7 @@ export class AttributeGroupComponent implements OnInit {
     private attrGrpService: AttributeGroupService,
     private alertService: AlertService,
     private chRef: ChangeDetectorRef,
+    private sharedServie: SharedService,
   ) {
     this.setSelectableSettings();
   }
@@ -74,6 +75,13 @@ export class AttributeGroupComponent implements OnInit {
           this.chRef.detectChanges()
         })
     )
+
+    this.subs.add(
+      this.sharedServie.saveSecurityGroupAssetDetailObs.subscribe(data => {
+        if (data) this.save()
+      })
+    )
+
   }
 
   getAllAttributeGroups() {
@@ -180,18 +188,21 @@ export class AttributeGroupComponent implements OnInit {
   }
 
 
+  callSaveSecurityGroupAssetDetailEvent() {
+    this.sharedServie.emitSaveSecutiyGroupAssetDetail(true)
+  }
 
   save() {
-    if (JSON.stringify(this.initialSelection) == JSON.stringify(this.mySelection)) {
-      this.close()
-      return
-    }
+    // if (JSON.stringify(this.initialSelection) == JSON.stringify(this.mySelection)) {
+    //   this.close()
+    //   return
+    // }
 
     this.subs.add(
       this.attrGrpService.assigneAttributeGroups(this.mySelection, this.selectedGroup.groupID).subscribe(
         data => {
           if (data.isSuccess) {
-            this.alertService.success("Data saved successfully");
+            // this.alertService.success("Data saved successfully");
             this.refreshSecurityGroup.emit(true)
           } else this.alertService.error(data.message);
         }, error => this.alertService.error(error)

@@ -1,4 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { SharedService } from 'src/app/_services';
 import { SubSink } from 'subsink';
 
 @Component({
@@ -21,9 +22,11 @@ export class GroupAssetDetailComponent implements OnInit {
 
   constructor(
     private chRef: ChangeDetectorRef,
+    private sharedServie: SharedService,
   ) { }
 
   ngOnInit(): void {
+    this.sharedServie.emitSaveSecutiyGroupAssetDetail(false)
     this.title = `Asset Details - ${this.selectedGroup?.group}`;
     this.chRef.detectChanges()
   }

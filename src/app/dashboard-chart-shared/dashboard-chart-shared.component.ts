@@ -323,12 +323,6 @@ export class DashboardChartSharedComponent implements OnInit {
 
         }
 
-
-
-
-
-
-
       } else {
         origin.layoutManager.updateSize()
       }

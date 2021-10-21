@@ -2086,7 +2086,7 @@
         this.childElementContainer.append(contentItem.element);
 
         this._updateTree();
-        // console.log('dsd');
+
         this._layoutManager._$calculateItemAreas();
         this._setDimensions();
 
@@ -2181,9 +2181,19 @@
          */
         _onDrop: function () {
             this._layoutManager.dropTargetIndicator.hide();
-            console.log(this._contentItem)
-            console.log(this._originalParent)
-            console.log(this._lastValidArea)
+            // console.log({ content: this._contentItem, origin: this._originalParent, last: this._lastValidArea })
+
+            var dropIndex = this._lastValidArea.contentItem._dropIndex
+            var dropSegment = this._lastValidArea.contentItem._dropSegment
+
+            // if ((dropIndex == 1 && dropSegment == "top") || (dropIndex == 1 && dropSegment == "bottom")) {
+            //     var currentHeight  = this._contentItem.layoutManager.height + 300
+            //     $('#layoutContainer').css({ 'height': `${currentHeight}px` });
+            //     this._contentItem.layoutManager.height = currentHeight
+               
+            // }
+
+
             /*
              * Valid drop area found
              */

@@ -229,4 +229,16 @@ export class SharedService {
 
   //######### Works order module shared service end #########//
 
+
+
+  private saveSecurityGroupAssetDetailSrc = new BehaviorSubject<boolean>(false);
+  saveSecurityGroupAssetDetailObs = this.saveSecurityGroupAssetDetailSrc.asObservable();
+
+  emitSaveSecutiyGroupAssetDetail(isSave) {
+    this.saveSecurityGroupAssetDetailSrc.next(isSave)
+  }
+
+
+  
+
 }

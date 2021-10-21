@@ -53,6 +53,7 @@ export class GroupsComponent implements OnInit {
   propertySecurityWindow = false;
   groupCustomFilter: any = { group: '', description: '' }
   textSearch$ = new Subject<any>();
+  countSavedGrid = 0;
 
   constructor(
     private groupService: GroupService,
@@ -218,6 +219,7 @@ export class GroupsComponent implements OnInit {
   closeAssetDetail(eve) {
     $('.groupOverlay').removeClass('ovrlay');
     this.showAssetDetail = false;
+
   }
 
   public openReport(group = null, action) {
@@ -332,7 +334,15 @@ export class GroupsComponent implements OnInit {
 
 
   refreshSecurityGroupGrid(event) {
-    if (event) this.getAllGroups();
+    if (event) {
+      this.countSavedGrid++
+     
+      if (this.countSavedGrid == 4) {
+        this.closeAssetDetail(false)
+        this.getAllGroups();
+        this.countSavedGrid = 0;
+      }
+    }
   }
 
 

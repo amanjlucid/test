@@ -2,7 +2,7 @@ import { Component, OnInit, Input, ChangeDetectorRef, ChangeDetectionStrategy, O
 import { SubSink } from 'subsink';
 import { DataResult, process, State, SortDescriptor } from '@progress/kendo-data-query';
 import { SelectableSettings, RowArgs, PageChangeEvent } from '@progress/kendo-angular-grid';
-import { AlertService, PortalGroupService } from '../../../_services'
+import { AlertService, PortalGroupService, SharedService } from '../../../_services'
 import { PortalTabsModel } from '../../../_models'
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
@@ -48,6 +48,7 @@ export class PortalTabsComponent implements OnInit {
     private portalGrpService: PortalGroupService,
     private alertService: AlertService,
     private chRef: ChangeDetectorRef,
+    private sharedServie: SharedService,
   ) {
     this.setSelectableSettings();
   }
@@ -72,6 +73,12 @@ export class PortalTabsComponent implements OnInit {
           this.searchInAllFields(searchTerm)
           this.chRef.detectChanges()
         })
+    )
+
+    this.subs.add(
+      this.sharedServie.saveSecurityGroupAssetDetailObs.subscribe(data => {
+        if (data) this.save()
+      })
     )
   }
 
@@ -175,17 +182,22 @@ export class PortalTabsComponent implements OnInit {
   }
 
 
+  callSaveSecurityGroupAssetDetailEvent() {
+    this.sharedServie.emitSaveSecutiyGroupAssetDetail(true)
+  }
+
+
   save() {
-    if (JSON.stringify(this.initialSelection) == JSON.stringify(this.mySelection)) {
-      this.close()
-      return
-    }
+    // if (JSON.stringify(this.initialSelection) == JSON.stringify(this.mySelection)) {
+    //   this.close()
+    //   return
+    // }
 
     this.subs.add(
       this.portalGrpService.assignePortalTabGroups(this.mySelection, this.selectedGroup.groupID).subscribe(
         data => {
           if (data.isSuccess) {
-            this.alertService.success("Data saved successfully");
+            // this.alertService.success("Data saved successfully");
             this.refreshSecurityGroup.emit(true)
           } else this.alertService.error(data.message);
         }, error => this.alertService.error(error)
