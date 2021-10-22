@@ -4676,23 +4676,23 @@
                 layoutManager.height = finalModifiedHeight - 30;
 
                 if (items.before.config.height < 30) {
-                    items.before.config.height = 35
+                    items.before.config.height = 25
                 }
 
                 if (items.after.config.height < 30) {
-                    items.after.config.height = 35
+                    items.after.config.height = 25
                 }
 
                 layoutManager.updateSize();
 
             } else {
-                // if (items.before.config.height < 39) {
-                //     items.before.config.height = 45
-                // }
+                if (items.before.config.height < 30) {
+                    items.before.config.height = 25
+                }
 
-                // if (items.after.config.height < 39) {
-                //     items.after.config.height = 45
-                // }
+                if (items.after.config.height < 30) {
+                    items.after.config.height = 25
+                }
             }
 
 
@@ -4729,11 +4729,11 @@
                 var height = contentLen.config.height
                 if (len >= 3) {
                     if (height < 30) {
-                        contentLen.config.height = 20
+                        contentLen.config.height = 25
                     }
                 } else {
                     if (height < 30) {
-                        contentLen.config.height = 30
+                        contentLen.config.height = 25
                     }
                 }
 
