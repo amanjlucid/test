@@ -236,96 +236,105 @@ export class DashboardChartSharedComponent implements OnInit {
       // console.log(item)
 
       const emptyContainer = origin.layoutManager.root.getItemsById("hiddenContainer");
-      if ((!this.hideChart && this.savedState != null) || emptyContainer && emptyContainer[0].config && emptyContainer[0].config.height != 0) {
+
+      // console.log(emptyContainer)
+
+      if (emptyContainer && emptyContainer[0].config) {
         this.hideChart = true;
         emptyContainer[0].config.height = 0;
         emptyContainer[0].element.hide();
-        if (this.savedState != null) {
-          layoutHeight = JSON.parse(this.savedState).layoutHeight
-        }
-        origin.layoutManager.height = layoutHeight;
-        $('#layoutContainer').css({ 'height': `${layoutHeight}px` });
-
-        if (this.savedState != null) {
-          setTimeout(() => {
-            origin.layoutManager.updateSize(layoutWidth, layoutHeight);
-          }, 1000);
-        } else {
-          origin.layoutManager.updateSize(layoutWidth, layoutHeight);
-        }
+        // console.log('in')
       }
 
 
-      if (origin._dimension && origin._dimension == 'height') {
-        const splitters = origin._splitter;
+      // if ((!this.hideChart && this.savedState != null) || emptyContainer && emptyContainer[0].config && emptyContainer[0].config.height != 0) {
 
-        let height = 0;
-        let top;
+      //   // console.log('in')
+      //   this.hideChart = true;
+      //   emptyContainer[0].config.height = 0;
+      //   emptyContainer[0].element.hide();
+      //   if (this.savedState != null) {
+      //     layoutHeight = JSON.parse(this.savedState).layoutHeight
+      //   }
+      //   origin.layoutManager.height = layoutHeight;
+      //   $('#layoutContainer').css({ 'height': `${layoutHeight}px` });
 
-        for (let i = 0; i < splitters.length; i++) {
-          if (splitters[i]) {
+      //   if (this.savedState != null) {
+      //     setTimeout(() => {
+      //       origin.layoutManager.updateSize(layoutWidth, layoutHeight);
+      //     }, 1000);
+      //   } else {
+      //     origin.layoutManager.updateSize(layoutWidth, layoutHeight);
+      //   }
+      // }
 
-            splitters[i]._dragListener.on('dragStart', function (item) {
-              height = 0
-              layoutWidth = layoutManager.width;
-              layoutHeight = layoutManager.height;
-            })
 
-            splitters[i]._dragListener.on('drag', function (item) {
-              height += 2
+      // if (origin._dimension && origin._dimension == 'height') {
+      //   // console.log('dsfsd');
+      //   const splitters = origin._splitter;
 
-              top = comp.helper.replaceAll(splitters[i].element.css('top'), "px", "");
-              if (top) top = parseInt(top)
+      //   let height = 0;
+      //   let top;
 
-            })
+      //   for (let i = 0; i < splitters.length; i++) {
+      //     if (splitters[i]) {
 
-            splitters[i]._dragListener.on('dragStop', function (item) {
-              const nextRow = splitters[i].element.next();
+      //       splitters[i]._dragListener.on('dragStart', function (item) {
+      //         height = 0
+      //         layoutWidth = layoutManager.width;
+      //         layoutHeight = layoutManager.height;
+      //       })
 
-              // console.log(top)
-              // console.log(height)
-              // console.log(layoutManager._findAllStackContainers())
-              // console.log(layoutManager)
-              // console.log(layoutManager.root.config.content[0])
+      //       splitters[i]._dragListener.on('drag', function (item) {
+      //         height += 2
 
-              let currentHeight;
-              if (top >= 0) {
-                if (top > height) height = top;
-                if (top == 0) height + 170;
-                currentHeight = layoutHeight + height;
+      //         top = comp.helper.replaceAll(splitters[i].element.css('top'), "px", "");
+      //         if (top) top = parseInt(top)
 
-                // console.log(nextRow.is(":visible"))
+      //       })
 
-                if (!nextRow.is(":visible")) {
-                  const allContainers = layoutManager._findAllStackContainers();
+      //       splitters[i]._dragListener.on('dragStop', function (item) {
+      //         const nextRow = splitters[i].element.next();
 
-                  const lastContainer = allContainers[allContainers.length - 2];//-2 is for skip last hidden container
-                  const lastContainerHeightPer = (height * 100) / currentHeight;
-                  const lastContainerPrevHeight = lastContainer.config.height;
-                  lastContainer.config.height = lastContainerPrevHeight + lastContainerHeightPer;
+      //         let currentHeight;
 
-                  if (lastContainer.config.height > 50) {
-                    lastContainer.config.height = 50
-                  }
-                }
+      //         if (top >= 0) {
+      //           if (top > height) height = top;
+      //           if (top == 0) height + 170;
+      //           currentHeight = layoutHeight + height;
 
-              } else {
-                height = top;
-                currentHeight = layoutHeight + height;
-              }
+      //           // console.log(nextRow.is(":visible"))
 
-              $('#layoutContainer').css({ 'height': `${currentHeight}px` });
-              layoutManager.height = currentHeight;
-              origin.layoutManager.updateSize()
+      //           if (!nextRow.is(":visible")) {
+      //             const allContainers = layoutManager._findAllStackContainers();
 
-            })
-          }
+      //             const lastContainer = allContainers[allContainers.length - 2];//-2 is for skip last hidden container
+      //             const lastContainerHeightPer = (height * 100) / currentHeight;
+      //             const lastContainerPrevHeight = lastContainer.config.height;
+      //             lastContainer.config.height = lastContainerPrevHeight + lastContainerHeightPer;
 
-        }
+      //             if (lastContainer.config.height > 50) {
+      //               lastContainer.config.height = 50
+      //             }
+      //           }
 
-      } else {
-        origin.layoutManager.updateSize()
-      }
+      //         } else {
+      //           height = top;
+      //           currentHeight = layoutHeight + height;
+      //         }
+
+      //         $('#layoutContainer').css({ 'height': `${currentHeight}px` });
+      //         layoutManager.height = currentHeight;
+      //         origin.layoutManager.updateSize()
+
+      //       })
+      //     }
+
+      //   }
+
+      // } else {
+      //   origin.layoutManager.updateSize()
+      // }
 
     });
   }

@@ -337,7 +337,7 @@ export class GroupsComponent implements OnInit {
     if (event) {
       this.countSavedGrid++
      
-      if (this.countSavedGrid == 4) {
+      if (this.countSavedGrid == 5) {
         this.closeAssetDetail(false)
         this.getAllGroups();
         this.countSavedGrid = 0;

@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { SubSink } from 'subsink';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AlertService, GroupService } from 'src/app/_services';
+import { AlertService, GroupService, SharedService } from 'src/app/_services';
 
 @Component({
   selector: 'app-group-settings',
@@ -14,6 +14,7 @@ export class GroupSettingsComponent implements OnInit {
   subs = new SubSink();
   @Input() selectedGroup;
   @Output() closeGroupAssetDetailEvent = new EventEmitter<boolean>();
+  @Output() refreshSecurityGroup = new EventEmitter<boolean>();
   group: any;
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
   submitted = false;
@@ -49,7 +50,8 @@ export class GroupSettingsComponent implements OnInit {
     private chRef: ChangeDetectorRef,
     private fb: FormBuilder,
     private groupService: GroupService,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private sharedServie: SharedService,
   ) { }
 
   ngOnInit(): void {
@@ -67,7 +69,7 @@ export class GroupSettingsComponent implements OnInit {
     this.subs.add(
       this.groupService.groupListByGroupId(groupID).subscribe(
         data => {
-           if (data.isSuccess) {
+          if (data.isSuccess) {
             this.group = data.data
             const { showNoCharGroup, includeAllCharGroup, showNoElement, includeAllElements, includeAllPortalTabs, workOrderLevel } = this.group;
 
@@ -85,6 +87,15 @@ export class GroupSettingsComponent implements OnInit {
         }, err => this.alertService.error(err)
       )
     )
+
+
+    this.subs.add(
+      this.sharedServie.saveSecurityGroupAssetDetailObs.subscribe(data => {
+        if (data) this.save()
+      })
+    )
+
+
   }
 
   ngOnDestroy() {
@@ -121,7 +132,14 @@ export class GroupSettingsComponent implements OnInit {
     })
   }
 
+
+
   onSubmit() {
+    this.sharedServie.emitSaveSecutiyGroupAssetDetail(true)
+  }
+
+
+  save() {
     this.submitted = true;
     this.formErrorObject(); // empty form error
     this.logValidationErrors(this.groupForm);
@@ -154,10 +172,13 @@ export class GroupSettingsComponent implements OnInit {
 
     this.groupService.updateSecurityGroup(params).subscribe(
       data => {
-        if (data.isSuccess) this.alertService.success("Group settings updated successfully.")
-        else this.alertService.error(data.message)
+        if (data.isSuccess) {
+          // this.alertService.success("Group settings updated successfully.")
+          this.refreshSecurityGroup.emit(true)
+        } else this.alertService.error(data.message)
       }, err => this.alertService.error(err)
     )
+
 
   }
 

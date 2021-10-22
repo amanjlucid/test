@@ -2093,10 +2093,6 @@
         $(document.body).append(this.element);
 
         var offset = this._layoutManager.container.offset();
-        // console.log(offset);
-        // console.log(this._layoutManager.container.height());
-        // console.log(this.element.height());
-        // console.log(this._minY);
 
         this._minX = offset.left;
         this._minY = offset.top;
@@ -2181,18 +2177,13 @@
          */
         _onDrop: function () {
             this._layoutManager.dropTargetIndicator.hide();
-            // console.log({ content: this._contentItem, origin: this._originalParent, last: this._lastValidArea })
+
 
             var dropIndex = this._lastValidArea.contentItem._dropIndex
             var dropSegment = this._lastValidArea.contentItem._dropSegment
 
-            // if ((dropIndex == 1 && dropSegment == "top") || (dropIndex == 1 && dropSegment == "bottom")) {
-            //     var currentHeight  = this._contentItem.layoutManager.height + 300
-            //     $('#layoutContainer').css({ 'height': `${currentHeight}px` });
-            //     this._contentItem.layoutManager.height = currentHeight
-               
-            // }
-
+            // console.log({ content: this._contentItem, origin: this._originalParent, last: this._lastValidArea })
+            // console.log({dropIndex, dropSegment})
 
             /*
              * Valid drop area found
@@ -2227,7 +2218,100 @@
             this.element.remove();
 
             this._layoutManager.emit('itemDropped', this._contentItem);
+
+
+            if ((dropIndex == 1 && dropSegment == "top") || (dropIndex == 1 && dropSegment == "bottom")) {
+                var layoutManager = this._lastValidArea.contentItem.layoutManager;
+                var layoutManagerHeight = layoutManager.height;
+                var parentElement = this._lastValidArea.contentItem.parent.element;
+                var dropedLayoutHeight = parentElement.height();
+                var contentItems = layoutManager.root.contentItems[0].contentItems;
+                var additionalHeight = 350;
+
+
+
+                $('#layoutContainer').css({ 'height': `${layoutManagerHeight + additionalHeight}px` });
+                layoutManager.height = layoutManagerHeight + additionalHeight;
+
+                setTimeout(() => {
+                    var parentRow = parentElement.parent()
+                    var otherLayoutHeightPerc = 0;
+                    var selectedLayoutElemenconfig;
+                    if (contentItems.length > 2) {
+                        for (let i = 0; i < 2; i++) {
+
+
+                            if (JSON.stringify(contentItems[i].element.html()) == JSON.stringify(parentRow.html())) {
+                                selectedLayoutElemenconfig = contentItems[i];
+
+                            } else {
+                                var otherLayoutHeight = layoutManagerHeight - dropedLayoutHeight;
+                                otherLayoutHeightPerc = (otherLayoutHeight * 100) / (layoutManagerHeight + additionalHeight)
+                                contentItems[i].config.height = otherLayoutHeightPerc - 1;
+                            }
+
+                            if (contentItems[i]) {
+                                this.checkAllContentItemsRecursively(contentItems[i].contentItems)
+                            }
+
+                        }
+
+                        if (selectedLayoutElemenconfig) {
+                            selectedLayoutElemenconfig.config.height = 100 - otherLayoutHeightPerc - 2;
+                        }
+
+
+                        setTimeout(() => {
+                            layoutManager.updateSize();
+                        }, 10);
+
+                    }
+
+                }, 500);
+
+
+            }
+
+
         },
+
+
+        checkAllContentItemsRecursively: function (contentItems, len = 0) {
+            var contentLen;
+
+            if (contentItems[0]) {
+                contentLen = contentItems[0];
+            } else {
+                if (contentItems) {
+                    contentLen = contentItems;
+                }
+            }
+
+            if (contentLen) {
+                var height = contentLen.config.height
+                if (len >= 3) {
+                    if (height < 30) {
+                        contentLen.config.height = 30
+                    }
+                } else {
+                    if (height >= 30) {
+                        contentLen.config.height = 24
+                    }
+                }
+
+                if (contentLen.contentItems.length > 0) {
+                    // this.checkAllContentItemsRecursively(contentLen.contentItems)
+                    for (var i = 0; i < contentLen.contentItems.length; i++) {
+                        if (contentLen.contentItems[i]) {
+                            this.checkAllContentItemsRecursively(contentLen.contentItems[i], contentLen.contentItems.length)
+                        }
+                    }
+                }
+            }
+
+        },
+
+
 
         /**
          * Removes the item from its original position within the tree
@@ -4561,7 +4645,6 @@
          * @returns {void}
          */
         _onSplitterDragStop: function (splitter) {
-
             var items = this._getItemsForSplitter(splitter),
                 sizeBefore = items.before.element[this._dimension](),
                 sizeAfter = items.after.element[this._dimension](),
@@ -4570,6 +4653,50 @@
 
             items.before.config[this._dimension] = splitterPositionInRange * totalRelativeSize;
             items.after.config[this._dimension] = (1 - splitterPositionInRange) * totalRelativeSize;
+
+            var nextRow = splitter.element.next();
+            var layoutManager = items.before.layoutManager;
+
+            var contentItems = layoutManager.root.contentItems[0].contentItems;
+
+            if (contentItems.length > 1) {
+                for (var i = 1; i <= 2; i++) {
+                    this.checkAllContentItemsRecursively(contentItems[i].contentItems)
+                }
+            }
+
+            if (!nextRow.is(":visible")) {
+                var modifiedHeight = splitter._dragListener._nY > 0 ? splitter._dragListener._nY + 50 : splitter._dragListener._nY;
+                var finalModifiedHeight = layoutManager.height + modifiedHeight;
+                finalModifiedHeight = finalModifiedHeight < 742 ? 742 : finalModifiedHeight;
+                var windowHeight = $(window).height() - 250;
+                finalModifiedHeight = finalModifiedHeight < windowHeight ? windowHeight : finalModifiedHeight
+
+                $('#layoutContainer').css({ 'height': `${finalModifiedHeight}px` });
+                layoutManager.height = finalModifiedHeight - 30;
+
+                if (items.before.config.height < 30) {
+                    items.before.config.height = 35
+                }
+
+                if (items.after.config.height < 30) {
+                    items.after.config.height = 35
+                }
+
+                layoutManager.updateSize();
+
+            } else {
+                // if (items.before.config.height < 39) {
+                //     items.before.config.height = 45
+                // }
+
+                // if (items.after.config.height < 39) {
+                //     items.after.config.height = 45
+                // }
+            }
+
+
+
 
             splitter.element.css({
                 'top': 0,
@@ -4583,8 +4710,48 @@
                 lm.utils.animFrame(lm.utils.fnBind(this.callDownwards, this, ['setSize']));
             }
 
+        },
+
+
+
+        checkAllContentItemsRecursively: function (contentItems, len = 0) {
+            var contentLen;
+
+            if (contentItems[0]) {
+                contentLen = contentItems[0];
+            } else {
+                if (contentItems) {
+                    contentLen = contentItems;
+                }
+            }
+
+            if (contentLen) {
+                var height = contentLen.config.height
+                if (len >= 3) {
+                    if (height < 30) {
+                        contentLen.config.height = 20
+                    }
+                } else {
+                    if (height < 30) {
+                        contentLen.config.height = 30
+                    }
+                }
+
+                if (contentLen.contentItems.length > 0) {
+                    // this.checkAllContentItemsRecursively(contentLen.contentItems)
+                    for (var i = 0; i < contentLen.contentItems.length; i++) {
+                        this.checkAllContentItemsRecursively(contentLen.contentItems[i], contentLen.contentItems.length)
+                    }
+                }
+            }
+
         }
+
     });
+
+
+
+
 
     lm.items.Stack = function (layoutManager, config, parent) {
         lm.items.AbstractContentItem.call(this, layoutManager, config, parent);
