@@ -391,11 +391,11 @@
                 this._nX = coordinates.x - this._nOriginalX;
                 this._nY = coordinates.y - this._nOriginalY;
 
-                if (typeof oEvent.target.className == "string") {
-                    if (coordinates.y > 700 && !oEvent.target.className.includes('lm_drag_handle') && !oEvent.target.className.includes('container-fluid')) {
-                        $('.cont').scrollTop(coordinates.y - 200)
-                    }
-                }
+                // if (typeof oEvent.target.className == "string") {
+                //     if (coordinates.y > 700 && !oEvent.target.className.includes('lm_drag_handle') && !oEvent.target.className.includes('container-fluid')) {
+                //         $('.cont').scrollTop(coordinates.y - 200)
+                //     }
+                // }
 
 
 
@@ -4659,18 +4659,27 @@
 
             var contentItems = layoutManager.root.contentItems[0].contentItems;
 
+
             if (contentItems.length > 1) {
                 for (var i = 1; i <= 2; i++) {
-                    this.checkAllContentItemsRecursively(contentItems[i].contentItems)
+                    if (contentItems[i]) {
+                        this.checkAllContentItemsRecursively(contentItems[i].contentItems)
+                    }
                 }
             }
 
+
+            // console.log(nextRow)
+            // console.log(nextRow.is(":visible"))
             if (!nextRow.is(":visible")) {
                 var modifiedHeight = splitter._dragListener._nY > 0 ? splitter._dragListener._nY + 50 : splitter._dragListener._nY;
                 var finalModifiedHeight = layoutManager.height + modifiedHeight;
                 finalModifiedHeight = finalModifiedHeight < 742 ? 742 : finalModifiedHeight;
                 var windowHeight = $(window).height() - 250;
                 finalModifiedHeight = finalModifiedHeight < windowHeight ? windowHeight : finalModifiedHeight
+
+                // console.log(finalModifiedHeight)
+                // console.log(layoutManager.height)
 
                 $('#layoutContainer').css({ 'height': `${finalModifiedHeight}px` });
                 layoutManager.height = finalModifiedHeight - 30;
@@ -4683,7 +4692,9 @@
                     items.after.config.height = 25
                 }
 
-                layoutManager.updateSize();
+                setTimeout(() => {
+                    layoutManager.updateSize();
+                }, 200);
 
             } else {
                 if (items.before.config.height < 30) {
@@ -4693,6 +4704,14 @@
                 if (items.after.config.height < 30) {
                     items.after.config.height = 25
                 }
+
+                var finalModifiedHeight = layoutManager.height
+                $('#layoutContainer').css({ 'height': `${finalModifiedHeight}px` });
+                layoutManager.height = finalModifiedHeight - 30;
+
+                setTimeout(() => {
+                    layoutManager.updateSize();
+                }, 200);
             }
 
 

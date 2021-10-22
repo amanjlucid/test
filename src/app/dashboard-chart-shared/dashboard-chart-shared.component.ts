@@ -240,11 +240,26 @@ export class DashboardChartSharedComponent implements OnInit {
       // console.log(emptyContainer)
 
       if (emptyContainer && emptyContainer[0].config) {
-        this.hideChart = true;
         emptyContainer[0].config.height = 0;
         emptyContainer[0].element.hide();
-        // console.log('in')
+
+        if (!this.hideChart) {
+          if (this.savedState != null) {
+            layoutHeight = JSON.parse(this.savedState).layoutHeight;
+          }
+        }
+
       }
+
+
+      setTimeout(() => {
+        if (!this.hideChart) {
+          // console.log('dash')
+          origin.layoutManager.updateSize(layoutWidth, layoutHeight);
+          this.hideChart = true;
+        }
+      }, 500);
+
 
 
       // if ((!this.hideChart && this.savedState != null) || emptyContainer && emptyContainer[0].config && emptyContainer[0].config.height != 0) {
@@ -264,7 +279,7 @@ export class DashboardChartSharedComponent implements OnInit {
       //       origin.layoutManager.updateSize(layoutWidth, layoutHeight);
       //     }, 1000);
       //   } else {
-      //     origin.layoutManager.updateSize(layoutWidth, layoutHeight);
+      //     // origin.layoutManager.updateSize(layoutWidth, layoutHeight);
       //   }
       // }
 
